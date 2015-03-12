@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -6,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.core.AtomGroup &mdash; MDAnalysis 0.8.2-dev documentation</title>
+    <title>MDAnalysis.core.AtomGroup &mdash; MDAnalysis 0.9.0-dev documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.8.2-dev',
+        VERSION:     '0.9.0-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +27,10 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.2-dev documentation"
+          title="Search within MDAnalysis 0.9.0-dev documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.2-dev documentation" href="../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.9.0-dev documentation" href="../../../index.html" />
     <link rel="up" title="MDAnalysis" href="../../MDAnalysis.html" /> 
   </head>
   <body>
@@ -41,7 +43,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.2-dev documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.9.0-dev documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
       </ul>
@@ -365,7 +367,7 @@
 <span class="sd">      Alternate location indicator (as used in `ATOM_` records in PDB</span>
 <span class="sd">      files)</span>
 
-<span class="sd">      .. versionadded:: 0.8.2</span>
+<span class="sd">      .. versionadded:: 0.9.0</span>
 
 <span class="sd">   .. attribute:: bonds</span>
 
@@ -411,18 +413,25 @@
 <span class="sd">.. _ATOM: http://www.wwpdb.org/documentation/format23/sect9.html#ATOM</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">absolute_import</span>
 
+<span class="c"># Global imports</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">from</span> <span class="nn">numpy.linalg</span> <span class="kn">import</span> <span class="n">eig</span>
 <span class="kn">import</span> <span class="nn">itertools</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
-
-<span class="kn">import</span> <span class="nn">MDAnalysis</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">SelectionError</span><span class="p">,</span> <span class="n">NoDataError</span><span class="p">,</span> <span class="n">SelectionWarning</span>
-<span class="kn">import</span> <span class="nn">util</span>
-<span class="kn">from</span> <span class="nn">util</span> <span class="kn">import</span> <span class="n">cached</span>
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os.path</span>
+
+<span class="c"># Local imports</span>
+<span class="kn">import</span> <span class="nn">MDAnalysis</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">SelectionError</span><span class="p">,</span> <span class="n">NoDataError</span><span class="p">,</span> <span class="n">SelectionWarning</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">util</span>
+<span class="kn">from</span> <span class="nn">.util</span> <span class="kn">import</span> <span class="n">cached</span>
+<span class="kn">from</span> <span class="nn">.transformations</span> <span class="kn">import</span> <span class="n">rotation_matrix</span><span class="p">,</span> <span class="n">vecangle</span><span class="p">,</span> <span class="n">rotaxis</span>
+
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&quot;MDAnalysis.core.AtomGroup&quot;</span><span class="p">)</span>
 
@@ -441,7 +450,7 @@
 <span class="sd">    are included (and thus it is not possible to add attributes &quot;on</span>
 <span class="sd">    the fly&quot;; they have to be included in the class definition).</span>
 
-<span class="sd">    .. versionchanged 0.8.2 </span>
+<span class="sd">    .. versionchanged 0.9.0</span>
 <span class="sd">       Added fragment managed property.</span>
 <span class="sd">       Changed bonds angles torsions impropers to be a managed property</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -560,6 +569,14 @@
     <span class="nd">@universe.setter</span>
 <div class="viewcode-block" id="Atom.universe"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom.universe">[docs]</a>    <span class="k">def</span> <span class="nf">universe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__universe</span> <span class="o">=</span> <span class="n">universe</span>
+</div>
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="Atom.bonded_atoms"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom.bonded_atoms">[docs]</a>    <span class="k">def</span> <span class="nf">bonded_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;An AtomGroup of the Atoms that this Atom is bonded to.</span>
+
+<span class="sd">        .. versionadded:: 0.9</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">AtomGroup</span><span class="p">([</span><span class="n">b</span><span class="o">.</span><span class="n">partner</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bonds</span><span class="p">])</span>
 
     <span class="c"># The following look up a dictionary stored in the Universe.</span>
     <span class="c"># These dictionaries are lazily built</span></div>
@@ -567,15 +584,15 @@
 <div class="viewcode-block" id="Atom.fragment"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom.fragment">[docs]</a>    <span class="k">def</span> <span class="nf">fragment</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;The fragment that this Atom is part of</span>
 
-<span class="sd">        .. versionadded 0.8.2</span>
+<span class="sd">        .. versionadded:: 0.9.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_fragmentDict</span><span class="p">[</span><span class="bp">self</span><span class="p">]</span>
 </div>
     <span class="nd">@property</span>
 <div class="viewcode-block" id="Atom.bonds"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom.bonds">[docs]</a>    <span class="k">def</span> <span class="nf">bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;A list of the bonds that this Atom is in</span>
-<span class="sd">        </span>
-<span class="sd">        .. versionchanged:: 0.8.2 </span>
+
+<span class="sd">        .. versionchanged:: 0.9.0</span>
 <span class="sd">           Changed to managed property</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_bondDict</span><span class="p">[</span><span class="bp">self</span><span class="p">]</span>
@@ -583,8 +600,8 @@
     <span class="nd">@property</span>
 <div class="viewcode-block" id="Atom.angles"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom.angles">[docs]</a>    <span class="k">def</span> <span class="nf">angles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;A list of the angles that this Atom is in</span>
-<span class="sd">        </span>
-<span class="sd">        .. versionchanged:: 0.8.2 </span>
+
+<span class="sd">        .. versionchanged:: 0.9.0</span>
 <span class="sd">           Changed to managed property</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_angleDict</span><span class="p">[</span><span class="bp">self</span><span class="p">]</span>
@@ -592,8 +609,8 @@
     <span class="nd">@property</span>
 <div class="viewcode-block" id="Atom.torsions"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom.torsions">[docs]</a>    <span class="k">def</span> <span class="nf">torsions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;A list of the torsions/dihedrals that this Atom is in</span>
-<span class="sd">        </span>
-<span class="sd">        .. versionchanged:: 0.8.2 </span>
+
+<span class="sd">        .. versionchanged:: 0.9.0</span>
 <span class="sd">           Changed to managed property</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_torsionDict</span><span class="p">[</span><span class="bp">self</span><span class="p">]</span>
@@ -603,8 +620,8 @@
     <span class="nd">@property</span>
 <div class="viewcode-block" id="Atom.impropers"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom.impropers">[docs]</a>    <span class="k">def</span> <span class="nf">impropers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;A list of the improper torsions that this Atom is in</span>
-<span class="sd">        </span>
-<span class="sd">        .. versionchanged:: 0.8.2 </span>
+
+<span class="sd">        .. versionchanged:: 0.9.0</span>
 <span class="sd">           Changed to managed property</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_improperDict</span><span class="p">[</span><span class="bp">self</span><span class="p">]</span>
@@ -679,7 +696,7 @@
 <span class="sd">    .. versionchanged:: 0.7.6</span>
 <span class="sd">       An empty AtomGroup can be created and no longer raises a</span>
 <span class="sd">       :exc:`NoDataError`.</span>
-<span class="sd">    .. versionchanged:: 0.8.2</span>
+<span class="sd">    .. versionchanged:: 0.9.0</span>
 <span class="sd">       The size at which cache is used for atom lookup is now stored as variable</span>
 <span class="sd">       _atomcache_size within the class.</span>
 <span class="sd">       Added fragments manged property. Is a lazily built, cached entry, similar to residues.</span>
@@ -744,7 +761,7 @@
 <span class="sd">        .. SeeAlso:: :meth:`_clear_caches`</span>
 
 <span class="sd">        .. versionadded:: 0.7.5</span>
-<span class="sd">        .. versionchanged:: 0.8.2</span>
+<span class="sd">        .. versionchanged:: 0.9.0</span>
 <span class="sd">           Added bonds/angles/torsions/impropers to rebuild.</span>
 <span class="sd">           Reworked how things are rebuilt to avoid code duplication.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -845,10 +862,12 @@
     <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return element (index) or group (slicing).</span>
 
-<span class="sd">        .. versionchanged:: 0.8 ResidueGroup and SegmentGroup: return groups themselves and allow advanced slicing</span>
-<span class="sd">        .. versionchanged:: 0.8.2</span>
-<span class="sd">           This method now used by all subclasses.  These subclasses override _cls to define</span>
-<span class="sd">           the returned class.</span>
+<span class="sd">        .. versionchanged:: 0.8 </span>
+<span class="sd">           :class:`ResidueGroup` and :class:`SegmentGroup`: </span>
+<span class="sd">           return groups themselves and allow advanced slicing</span>
+<span class="sd">        .. versionchanged:: 0.9.0</span>
+<span class="sd">           This method now used by all subclasses.  These subclasses override </span>
+<span class="sd">           :attr:`_cls` to define the returned class.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">container</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_container</span>
         <span class="n">cls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cls</span>
@@ -937,7 +956,7 @@
 <div class="viewcode-block" id="AtomGroup.types"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.types">[docs]</a>    <span class="k">def</span> <span class="nf">types</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns an array of atom types.</span>
 
-<span class="sd">        .. versionadded 0.8.2</span>
+<span class="sd">        .. versionadded 0.9.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">type</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="p">])</span>
 </div>
@@ -946,10 +965,10 @@
     <span class="k">def</span> <span class="nf">fragments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Read-only list of fragments.</span>
 
-<span class="sd">        Contains all fragments that any Atom in this AtomGroup is part of, the contents of </span>
+<span class="sd">        Contains all fragments that any Atom in this AtomGroup is part of, the contents of</span>
 <span class="sd">        the fragments may extend beyond the contents of this AtomGroup.</span>
 
-<span class="sd">        .. versionadded 0.8.2</span>
+<span class="sd">        .. versionadded 0.9.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">fragment</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="p">))</span>
 
@@ -961,15 +980,17 @@
 <span class="sd">        A :class:`ResidueGroup` of all residues that contain atoms in</span>
 <span class="sd">        this group.</span>
 
-<span class="sd">        .. versionchanged:: 0.8.2</span>
+<span class="sd">        .. versionchanged:: 0.9.0</span>
 <span class="sd">           Now returns strictly a ResidueGroup of the unique Residues that Atoms in this group</span>
 <span class="sd">           belong to.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">residues</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">seen_residues</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
         <span class="n">current_residue</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">residue</span> <span class="o">!=</span> <span class="n">current_residue</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">atom</span><span class="o">.</span><span class="n">residue</span> <span class="ow">in</span> <span class="n">residues</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">residue</span> <span class="o">!=</span> <span class="n">current_residue</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">atom</span><span class="o">.</span><span class="n">residue</span> <span class="ow">in</span> <span class="n">seen_residues</span><span class="p">:</span>
                 <span class="n">residues</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">residue</span><span class="p">)</span>
+                <span class="n">seen_residues</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">residue</span><span class="p">)</span>
             <span class="n">current_residue</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">residue</span>
         <span class="k">return</span> <span class="n">ResidueGroup</span><span class="p">(</span><span class="n">residues</span><span class="p">)</span>
 
@@ -998,6 +1019,96 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">r</span><span class="o">.</span><span class="n">resnum</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">residues</span><span class="p">])</span>
 </div>
+<div class="viewcode-block" id="AtomGroup.sequence"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.sequence">[docs]</a>    <span class="k">def</span> <span class="nf">sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the amino acid sequence.</span>
+
+<span class="sd">        The format of the sequence is selected with the keyword *format*:</span>
+
+<span class="sd">        ============== ============================================</span>
+<span class="sd">        *format*       description</span>
+<span class="sd">        ============== ============================================</span>
+<span class="sd">        &#39;SeqRecord&#39;    :class:`Bio.SeqRecord.SeqRecord` (default)</span>
+<span class="sd">        &#39;Seq&#39;          :class:`Bio.Seq.Seq`</span>
+<span class="sd">        &#39;string&#39;       string</span>
+<span class="sd">        ============== ============================================</span>
+
+<span class="sd">        The sequence is returned by default (keyword ``format = &#39;SeqRecord&#39;``)</span>
+<span class="sd">        as a :class:`Bio.SeqRecord.SeqRecord` instance, which can then be</span>
+<span class="sd">        further processed. In this case, all keyword arguments (such as the</span>
+<span class="sd">        *id* string or the *name* or the *description*) are directly passed to</span>
+<span class="sd">        :class:`Bio.SeqRecord.SeqRecord`.</span>
+
+<span class="sd">        If the keyword *format* is set to ``&#39;Seq&#39;``, all *kwargs* are ignored and</span>
+<span class="sd">        a :class:`Bio.Seq.Seq` instance is returned. The difference to the</span>
+<span class="sd">        record is that the record also contains metadata and can be directly</span>
+<span class="sd">        used as an input for other functions in :mod:`Bio`.</span>
+
+<span class="sd">        If the keyword *format* is set to ``&#39;string&#39;``, all *kwargs* are ignored</span>
+<span class="sd">        and a Python string is returned.</span>
+
+<span class="sd">        .. rubric:: Example: Write FASTA file</span>
+
+<span class="sd">        Use :func:`Bio.SeqIO.write`, which takes sequence records::</span>
+
+<span class="sd">           import Bio.SeqIO</span>
+
+<span class="sd">           # get the sequence record of a protein component of a Universe</span>
+<span class="sd">           protein = u.selectAtoms(&quot;protein&quot;)</span>
+<span class="sd">           record = protein.sequence(id=&quot;myseq1&quot;, name=&quot;myprotein&quot;)</span>
+
+<span class="sd">           Bio.SeqIO.write(record, &quot;single.fasta&quot;, &quot;fasta&quot;)</span>
+
+<span class="sd">        A FASTA file with multiple entries can be written with ::</span>
+
+<span class="sd">           Bio.SeqIO.write([record1, record2, ...], &quot;multi.fasta&quot;, &quot;fasta&quot;)</span>
+
+<span class="sd">        :Keywords:</span>
+<span class="sd">            *format*</span>
+<span class="sd">                - ``&quot;string&quot;``: return sequence as a string of 1-letter codes</span>
+<span class="sd">                - ``&quot;Seq&quot;``: return a :class:`Bio.Seq.Seq` instance</span>
+<span class="sd">                - ``&quot;SeqRecord&quot;``: return a :class:`Bio.SeqRecord.SeqRecord`</span>
+<span class="sd">                  instance</span>
+<span class="sd">                Default is ``&quot;SeqRecord&quot;``</span>
+<span class="sd">             *id*</span>
+<span class="sd">                Sequence ID for SeqRecord (should be different for different</span>
+<span class="sd">                sequences)</span>
+<span class="sd">             *name*</span>
+<span class="sd">                Name of the protein.</span>
+<span class="sd">             *description*</span>
+<span class="sd">                Short description of the sequence.</span>
+<span class="sd">             *kwargs*</span>
+<span class="sd">                Any other keyword arguments that are understood by</span>
+<span class="sd">                :class:`Bio.SeqRecord.SeqRecord`.</span>
+
+<span class="sd">        :Raises: :exc:`ValueError` if a residue name cannot be converted to a</span>
+<span class="sd">                 1-letter IUPAC protein amino acid code; make sure to only</span>
+<span class="sd">                 select protein residues. Raises :exc:`TypeError` if an unknown</span>
+<span class="sd">                 *format* is selected.</span>
+
+<span class="sd">        .. versionadded:: 0.9.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">import</span> <span class="nn">Bio.Seq</span>
+        <span class="kn">import</span> <span class="nn">Bio.SeqRecord</span>
+        <span class="kn">import</span> <span class="nn">Bio.Alphabet</span>
+        <span class="n">formats</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;string&#39;</span><span class="p">,</span> <span class="s">&#39;Seq&#39;</span><span class="p">,</span> <span class="s">&#39;SeqRecord&#39;</span><span class="p">)</span>
+
+        <span class="n">format</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&quot;format&quot;</span><span class="p">,</span> <span class="s">&quot;SeqRecord&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">format</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">formats</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;Unknown format=&#39;{0}&#39;: must be one of: {1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">format</span><span class="p">,</span> <span class="s">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">formats</span><span class="p">)))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">sequence</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">util</span><span class="o">.</span><span class="n">convert_aa_code</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">resnames</span><span class="p">()])</span>
+        <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;AtomGroup contains a residue name &#39;{0}&#39; that &quot;</span>
+                             <span class="s">&quot;does not have a IUPAC protein 1-letter &quot;</span>
+                             <span class="s">&quot;character&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">err</span><span class="o">.</span><span class="n">message</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">format</span> <span class="o">==</span> <span class="s">&quot;string&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">sequence</span>
+        <span class="n">seq</span> <span class="o">=</span> <span class="n">Bio</span><span class="o">.</span><span class="n">Seq</span><span class="o">.</span><span class="n">Seq</span><span class="p">(</span><span class="n">sequence</span><span class="p">,</span> <span class="n">alphabet</span><span class="o">=</span><span class="n">Bio</span><span class="o">.</span><span class="n">Alphabet</span><span class="o">.</span><span class="n">IUPAC</span><span class="o">.</span><span class="n">protein</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">format</span> <span class="o">==</span> <span class="s">&quot;Seq&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">seq</span>
+        <span class="k">return</span> <span class="n">Bio</span><span class="o">.</span><span class="n">SeqRecord</span><span class="o">.</span><span class="n">SeqRecord</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</div>
     <span class="nd">@property</span>
     <span class="nd">@cached</span><span class="p">(</span><span class="s">&#39;segments&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">segments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1005,14 +1116,18 @@
 
 <span class="sd">        A :class:`SegmentGroup` of all segments that contain atoms in this group.</span>
 
-<span class="sd">        .. versionchanged:: 0.8.2</span>
-<span class="sd">           Now strictly returns a SegmentGroup of a set of the Segments from this AtomGroup</span>
+<span class="sd">        .. versionchanged:: 0.9.0</span>
+<span class="sd">           Now strictly returns a :class:`SegmentGroup` of a set of</span>
+<span class="sd">           the :class:`Segment` instances from this :class:`AtomGroup`</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">segments</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">seen_segments</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
         <span class="n">current_segment</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">segment</span> <span class="o">!=</span> <span class="n">current_segment</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">atom</span><span class="o">.</span><span class="n">segment</span> <span class="ow">in</span> <span class="n">segments</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">segment</span> <span class="o">!=</span> <span class="n">current_segment</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">atom</span><span class="o">.</span><span class="n">segment</span> <span class="ow">in</span> <span class="n">seen_segments</span><span class="p">:</span>
                 <span class="n">segments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">segment</span><span class="p">)</span>
+                <span class="n">seen_segments</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">segment</span><span class="p">)</span>
             <span class="n">current_segment</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">segment</span>
         <span class="k">return</span> <span class="n">SegmentGroup</span><span class="p">(</span><span class="n">segments</span><span class="p">)</span>
 
@@ -1033,7 +1148,7 @@
 <span class="sd">        only bonds which are entirely contained by the AtomGroup use</span>
 <span class="sd">        u.bonds.atomgroup_intersection(ag, strict=True)</span>
 
-<span class="sd">        .. versionadded 0.8.2</span>
+<span class="sd">        .. versionadded 0.9.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">MDAnalysis.topology.core</span> <span class="kn">import</span> <span class="n">TopologyGroup</span>
 
@@ -1051,8 +1166,8 @@
 <span class="sd">        Note that these angles might extend out of the AtomGroup, to select</span>
 <span class="sd">        only angles which are entirely contained by the AtomGroup use</span>
 <span class="sd">        u.angles.atomgroup_intersection(ag, strict=True)</span>
-<span class="sd">     </span>
-<span class="sd">        .. versionadded 0.8.2</span>
+
+<span class="sd">        .. versionadded 0.9.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">MDAnalysis.topology.core</span> <span class="kn">import</span> <span class="n">TopologyGroup</span>
 
@@ -1070,8 +1185,8 @@
 <span class="sd">        Note that these torsions might extend out of the AtomGroup, to select</span>
 <span class="sd">        only torsions which are entirely contained by the AtomGroup use</span>
 <span class="sd">        u.torsions.atomgroup_intersection(ag, strict=True)</span>
-<span class="sd">   </span>
-<span class="sd">        .. versionadded 0.8.2</span>
+
+<span class="sd">        .. versionadded 0.9.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">MDAnalysis.topology.core</span> <span class="kn">import</span> <span class="n">TopologyGroup</span>
 
@@ -1086,11 +1201,11 @@
     <span class="k">def</span> <span class="nf">impropers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;All the improper torsions in this AtomGroup</span>
 
-<span class="sd">        Note that these improper torsions might extend out of the AtomGroup, </span>
+<span class="sd">        Note that these improper torsions might extend out of the AtomGroup,</span>
 <span class="sd">        to select only torsions which are entirely contained by the AtomGroup use</span>
 <span class="sd">        u.impropers.atomgroup_intersection(ag, strict=True)</span>
-<span class="sd">   </span>
-<span class="sd">        .. versionadded 0.8.2</span>
+
+<span class="sd">        .. versionadded 0.9.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">MDAnalysis.topology.core</span> <span class="kn">import</span> <span class="n">TopologyGroup</span>
 
@@ -1711,8 +1826,6 @@
 
 <span class="sd">        .. versionchanged:: 0.8 Added *pbc* keyword</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">numpy.linalg</span> <span class="kn">import</span> <span class="n">eig</span>
-
         <span class="n">pbc</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;pbc&#39;</span><span class="p">,</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s">&#39;use_pbc&#39;</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">pbc</span><span class="p">:</span>
             <span class="n">eigenval</span><span class="p">,</span> <span class="n">eigenvec</span> <span class="o">=</span> <span class="n">eig</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">momentOfInertia</span><span class="p">(</span><span class="n">pbc</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
@@ -2061,8 +2174,6 @@
 <span class="sd">        :Returns: The 4x4 matrix which consists of the rotation matrix ``M[:3,:3]``</span>
 <span class="sd">                  and the translation vector ``M[:3,3]``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">transformations</span> <span class="kn">import</span> <span class="n">rotation_matrix</span>
-
         <span class="n">alpha</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">sel1</span><span class="p">,</span> <span class="n">sel2</span> <span class="o">=</span> <span class="n">axis</span>
@@ -2101,8 +2212,6 @@
 <span class="sd">          u.atoms.align_principalAxis(0, [0,0,1])</span>
 <span class="sd">          u.atoms.write(&quot;aligned.pdb&quot;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">transformations</span> <span class="kn">import</span> <span class="n">vecangle</span><span class="p">,</span> <span class="n">rotaxis</span>
-
         <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">principalAxes</span><span class="p">()[</span><span class="n">axis</span><span class="p">]</span>
         <span class="n">angle</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">vecangle</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">vector</span><span class="p">))</span>
         <span class="n">ax</span> <span class="o">=</span> <span class="n">rotaxis</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">vector</span><span class="p">)</span>
@@ -2143,7 +2252,7 @@
 <span class="sd">        .. versionadded:: 0.8</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">box</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>  <span class="c">#Try and auto detect box dimensions</span>
+        <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>  <span class="c">#Try and auto detect box dimensions</span>
             <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span>  <span class="c"># Can accept any box</span>
 
         <span class="k">if</span> <span class="n">box</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
@@ -2168,7 +2277,7 @@
 
 <span class="sd">        .. SeeAlso:: :meth:`Universe.selectAtoms`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">import</span> <span class="nn">Selection</span>  <span class="c"># can ONLY import in method, otherwise cyclical import!</span>
+        <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">Selection</span>  <span class="c"># can ONLY import in method, otherwise cyclical import!</span>
 
         <span class="n">atomgrp</span> <span class="o">=</span> <span class="n">Selection</span><span class="o">.</span><span class="n">Parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">sel</span><span class="p">,</span> <span class="n">selgroups</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">othersel</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -2181,6 +2290,43 @@
                 <span class="c">#atomselections.append(Selection.Parser.parse(sel).apply(self))</span>
             <span class="c">#return tuple(atomselections)</span>
             <span class="k">return</span> <span class="n">atomgrp</span>
+</div>
+<div class="viewcode-block" id="AtomGroup.split"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.split">[docs]</a>    <span class="k">def</span> <span class="nf">split</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Split atomgroup into a list of atomgroups by *level*.</span>
+
+<span class="sd">        *level* can be &quot;atom&quot;, &quot;residue&quot;, &quot;segment&quot;.</span>
+
+<span class="sd">        .. versionadded:: 0.9.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># CHECK: What happens to duplicate atoms (with advanced slicing)?</span>
+
+        <span class="n">accessors</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;segment&#39;</span><span class="p">:</span> <span class="s">&#39;segid&#39;</span><span class="p">,</span> <span class="s">&#39;segid&#39;</span><span class="p">:</span> <span class="s">&#39;segid&#39;</span><span class="p">,</span>
+                     <span class="s">&#39;residue&#39;</span><span class="p">:</span> <span class="s">&#39;resid&#39;</span><span class="p">,</span> <span class="s">&#39;resid&#39;</span><span class="p">:</span> <span class="s">&#39;resid&#39;</span><span class="p">,</span>
+                     <span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">level</span> <span class="o">==</span> <span class="s">&quot;atom&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">AtomGroup</span><span class="p">([</span><span class="n">a</span><span class="p">])</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">]</span>
+
+        <span class="c"># more complicated groupings</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c"># use own list comprehension to avoid sorting/compression by eg self.resids()</span>
+            <span class="n">ids</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">getattr</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="n">accessors</span><span class="p">[</span><span class="n">level</span><span class="p">])</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;level = &#39;{0}&#39; not supported, must be one of {1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">level</span><span class="p">,</span> <span class="n">accessors</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+
+        <span class="c"># now sort the resids so that it doesn&#39;t matter if the AG contains</span>
+        <span class="c"># atoms in random order (i.e. non-sequential resids); groupby needs</span>
+        <span class="c"># presorted keys!</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span>
+        <span class="n">sorted_ids</span> <span class="o">=</span> <span class="n">ids</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+        <span class="c"># group (index, key) and then pull out the index for each group to form AtomGroups</span>
+        <span class="c"># by indexing self (using advanced slicing eg g[[1,2,3]]</span>
+        <span class="n">groups</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="bp">self</span><span class="p">[[</span><span class="n">idx_k</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx_k</span> <span class="ow">in</span> <span class="n">groupings</span><span class="p">]]</span>  <span class="c"># one AtomGroup for each residue or segment</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">groupings</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">izip</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">sorted_ids</span><span class="p">),</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="p">]</span>
+        <span class="k">return</span> <span class="n">groups</span>
 </div>
 <div class="viewcode-block" id="AtomGroup.write"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&quot;PDB&quot;</span><span class="p">,</span>
               <span class="n">filenamefmt</span><span class="o">=</span><span class="s">&quot;</span><span class="si">%(trjname)s</span><span class="s">_</span><span class="si">%(frame)d</span><span class="s">&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -2210,13 +2356,12 @@
 
 <span class="sd">                * ``None``: do not write out bonds</span>
 
-<span class="sd">        .. versionchanged:: 0.8.2 </span>
+<span class="sd">        .. versionchanged:: 0.9.0</span>
 <span class="sd">           Merged with write_selection.  This method can now write both</span>
 <span class="sd">           selections out.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">import</span> <span class="nn">util</span>
-        <span class="kn">import</span> <span class="nn">os.path</span>
-        <span class="kn">import</span> <span class="nn">MDAnalysis.coordinates</span><span class="o">,</span> <span class="nn">MDAnalysis.selections</span>
+        <span class="kn">import</span> <span class="nn">MDAnalysis.coordinates</span>
+        <span class="kn">import</span> <span class="nn">MDAnalysis.selections</span>
 
         <span class="n">trj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span>  <span class="c"># unified trajectory API</span>
         <span class="n">frame</span> <span class="o">=</span> <span class="n">trj</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span>
@@ -2273,11 +2418,9 @@
 <span class="sd">                additional keywords are passed on to the appropriate</span>
 <span class="sd">                :class:`~MDAnalysis.selections.base.SelectionWriter`</span>
 
-<span class="sd">        .. deprecated:: 0.8.2</span>
+<span class="sd">        .. deprecated:: 0.9.0</span>
 <span class="sd">           Use :meth:`write`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">import</span> <span class="nn">util</span>
-        <span class="kn">import</span> <span class="nn">os.path</span>
         <span class="kn">import</span> <span class="nn">MDAnalysis.selections</span>
 
         <span class="n">SelectionWriter</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">selections</span><span class="o">.</span><span class="n">get_writer</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">format</span><span class="p">)</span>
@@ -2309,7 +2452,7 @@
 <div class="viewcode-block" id="AtomGroup.dimensions"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.dimensions">[docs]</a>    <span class="k">def</span> <span class="nf">dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Pass on to Universe setter</span>
 
-<span class="sd">        .. versionadded:: 0.8.2</span>
+<span class="sd">        .. versionadded:: 0.9.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="n">box</span>
 </div>
@@ -2865,8 +3008,8 @@
 <span class="sd">       Parse arbitrary number of arguments as a single topology file and a a sequence</span>
 <span class="sd">       of trajectories.</span>
 
-<span class="sd">    .. versionchanged:: 0.8.2</span>
-<span class="sd">       Topology information now loaded lazily, but can be forced with </span>
+<span class="sd">    .. versionchanged:: 0.9.0</span>
+<span class="sd">       Topology information now loaded lazily, but can be forced with</span>
 <span class="sd">       :meth:`build_topology`</span>
 <span class="sd">       Changed .bonds attribute to be a :class:`~MDAnalysis.topology.core.TopologyGroup`</span>
 <span class="sd">       Added .angles and .torsions attribute as :class:`~MDAnalysis.topology.core.TopologyGroup`</span>
@@ -2902,12 +3045,16 @@
 <span class="sd">          *topology_format*</span>
 <span class="sd">             provide the file format of the topology file; ``None`` guesses it from the file</span>
 <span class="sd">             extension [``None``]</span>
+<span class="sd">             Can also pass a subclass of :class:`MDAnalysis.topology.base.TopologyReader`</span>
+<span class="sd">             to define a custom reader to be used on the topology file.</span>
 <span class="sd">          *format*</span>
 <span class="sd">             provide the file format of the coordinate or trajectory file;</span>
 <span class="sd">             ``None`` guesses it from the file extension. Note that this</span>
 <span class="sd">             keyword has no effect if a list of file names is supplied because</span>
 <span class="sd">             the &quot;chained&quot; reader has to guess the file format for each</span>
 <span class="sd">             individual list member. [``None``]</span>
+<span class="sd">             Can also pass a subclass of :class:`MDAnalysis.coordinates.base.Reader`</span>
+<span class="sd">             to define a custom reader to be used on the trajectory file.</span>
 <span class="sd">          *bonds*</span>
 <span class="sd">             bond handling for PDB files. The default is to read and store the</span>
 <span class="sd">             CONECT records only. When set to ``True`` it will attempt to guess</span>
@@ -2944,17 +3091,10 @@
 <span class="sd">           format detection.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">MDAnalysis.topology.core</span> <span class="kn">import</span> <span class="n">get_parser_for</span><span class="p">,</span> <span class="n">guess_format</span>
-        <span class="kn">import</span> <span class="nn">MDAnalysis.core</span>
+        <span class="kn">from</span> <span class="nn">..topology.base</span> <span class="kn">import</span> <span class="n">TopologyReader</span>
 
-        <span class="c"># managed attribute holding TRJReader (the Universe.trajectory</span>
-        <span class="c"># attribute is also aliased as Universe.&lt;EXT&gt; where &lt;EXT&gt; is the</span>
-        <span class="c"># trajectory format type (i.e. the extension))</span>
+        <span class="c"># managed attribute holding Reader</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__trajectory</span> <span class="o">=</span> <span class="bp">None</span>
-
-        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s">&#39;coordinatefile&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>  <span class="c"># deprecated</span>
-        <span class="n">topology_format</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;topology_format&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;permissive&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;permissive&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s">&#39;permissive_pdb_reader&#39;</span><span class="p">]</span>
 
         <span class="c"># Cache is used to store objects which are built lazily into Universe</span>
         <span class="c"># Currently cached objects (managed property name and cache key):</span>
@@ -2963,18 +3103,19 @@
         <span class="c"># - torsions</span>
         <span class="c"># - improper torsions</span>
         <span class="c"># - fragments</span>
+        <span class="c"># Cached stuff is handled using util.cached decorator</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="c"># create an empty universe</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span> <span class="o">=</span> <span class="n">AtomGroup</span><span class="p">([])</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span> <span class="o">=</span> <span class="bp">None</span>
             <span class="k">return</span>
 
-        <span class="n">topologyfile</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="c"># old behaviour (explicit coordfile) overrides new behaviour</span>
-        <span class="n">coordinatefile</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="k">if</span> <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;coordinatefile&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;coordinatefile&#39;</span><span class="p">]</span>
+        <span class="n">coordinatefile</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;coordinatefile&#39;</span><span class="p">,</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="n">topology_format</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;topology_format&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">coordinatefile</span><span class="p">:</span>
             <span class="c"># special hacks to treat a coordinate file as a coordinate AND topology file</span>
@@ -2983,23 +3124,27 @@
                 <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;format&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">topology_format</span>
             <span class="k">elif</span> <span class="n">topology_format</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
                 <span class="n">topology_format</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;format&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">guess_format</span><span class="p">(</span><span class="n">topologyfile</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;format&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">))</span> <span class="ow">in</span> \
+            <span class="k">if</span> <span class="n">guess_format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;format&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">))</span> <span class="ow">in</span> \
                     <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">_topology_coordinates_readers</span><span class="p">:</span>
-                <span class="n">coordinatefile</span> <span class="o">=</span> <span class="n">topologyfile</span>  <span class="c"># hack for pdb/gro/crd - only</span>
+                <span class="n">coordinatefile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span>  <span class="c"># hack for pdb/gro/crd - only</span>
             <span class="c"># Fix by SB: make sure coordinatefile is never an empty tuple</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">coordinatefile</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">coordinatefile</span> <span class="o">=</span> <span class="bp">None</span>
 
-
         <span class="c"># build the topology (or at least a list of atoms)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">topologyfile</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">parser</span> <span class="o">=</span> <span class="n">get_parser_for</span><span class="p">(</span><span class="n">topologyfile</span><span class="p">,</span>
-                                    <span class="n">permissive</span><span class="o">=</span><span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;permissive&#39;</span><span class="p">],</span>
+        <span class="k">try</span><span class="p">:</span>  <span class="c"># Try and check if the topology format is a TopologyReader</span>
+            <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">topology_format</span><span class="p">,</span> <span class="n">TopologyReader</span><span class="p">):</span>
+                <span class="n">parser</span> <span class="o">=</span> <span class="n">topology_format</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>  <span class="c"># But strings/None raise TypeError in issubclass</span>
+            <span class="n">perm</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;permissive&#39;</span><span class="p">,</span>
+                              <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s">&#39;permissive_pdb_reader&#39;</span><span class="p">])</span>
+            <span class="n">parser</span> <span class="o">=</span> <span class="n">get_parser_for</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
+                                    <span class="n">permissive</span><span class="o">=</span><span class="n">perm</span><span class="p">,</span>
                                     <span class="n">tformat</span><span class="o">=</span><span class="n">topology_format</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
             <span class="k">with</span> <span class="n">parser</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
                         <span class="n">guess_bonds_mode</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;bonds&#39;</span><span class="p">,</span> <span class="bp">False</span><span class="p">))</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
-                <span class="n">struc</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">parse</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_psf</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">parse</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">IOError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s">&quot;Failed to load from the topology file {}&quot;</span>
                           <span class="s">&quot; with parser {}.</span><span class="se">\n</span><span class="s">&quot;</span>
@@ -3009,8 +3154,8 @@
                              <span class="s">&quot; with parser {} </span><span class="se">\n</span><span class="s">&quot;</span>
                              <span class="s">&quot;Error: {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">err</span><span class="p">))</span>
 
-        <span class="c"># populate atoms etc</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_init_topology</span><span class="p">(</span><span class="n">struc</span><span class="p">)</span>
+        <span class="c"># Generate atoms, residues and segments</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init_topology</span><span class="p">()</span>
 
         <span class="c"># Load coordinates</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">load_new</span><span class="p">(</span><span class="n">coordinatefile</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -3020,7 +3165,7 @@
 
 <span class="sd">        If not args are provided, all caches are cleared.</span>
 
-<span class="sd">        .. versionadded 0.8.2</span>
+<span class="sd">        .. versionadded 0.9.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
@@ -3034,16 +3179,13 @@
     <span class="k">def</span> <span class="nf">_fill_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Populate _cache[name] with value.</span>
 
-<span class="sd">        .. versionadded:: 0.8.2</span>
+<span class="sd">        .. versionadded:: 0.9.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
-    <span class="k">def</span> <span class="nf">_init_topology</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">struc</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Populate Universe attributes from the structure dictionary *struc*.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_psf</span> <span class="o">=</span> <span class="n">struc</span>
-        <span class="c">#for data in struc.keys():</span>
-        <span class="c">#    setattr(self, data, struc[data])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span> <span class="o">=</span> <span class="n">AtomGroup</span><span class="p">(</span><span class="n">struc</span><span class="p">[</span><span class="s">&quot;_atoms&quot;</span><span class="p">])</span>
+    <span class="k">def</span> <span class="nf">_init_topology</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Populate Universe attributes from the structure dictionary *_psf*.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span> <span class="o">=</span> <span class="n">AtomGroup</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_psf</span><span class="p">[</span><span class="s">&quot;_atoms&quot;</span><span class="p">])</span>
 
         <span class="c"># XXX: add H-bond information here if available from psf (or other sources)</span>
         <span class="c"># segment instant selectors</span>
@@ -3071,8 +3213,7 @@
         <span class="k">for</span> <span class="n">seg</span> <span class="ow">in</span> <span class="n">segments</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">seg</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
                 <span class="n">newsegname</span> <span class="o">=</span> <span class="s">&#39;s&#39;</span> <span class="o">+</span> <span class="n">seg</span>
-                <span class="n">segments</span><span class="p">[</span><span class="n">newsegname</span><span class="p">]</span> <span class="o">=</span> <span class="n">segments</span><span class="p">[</span><span class="n">seg</span><span class="p">]</span>
-                <span class="k">del</span> <span class="n">segments</span><span class="p">[</span><span class="n">seg</span><span class="p">]</span>
+                <span class="n">segments</span><span class="p">[</span><span class="n">newsegname</span><span class="p">]</span> <span class="o">=</span> <span class="n">segments</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">seg</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">segments</span><span class="p">)</span>
         <span class="c"># convenience access to residues and segments (these are managed attributes</span>
         <span class="c"># (properties) and are built on the fly or read from a cache) -- does this</span>
@@ -3084,7 +3225,7 @@
     <span class="k">def</span> <span class="nf">_init_bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set bond information from u._psf[&#39;_bonds&#39;]</span>
 
-<span class="sd">        .. versionchanged 0.8.2</span>
+<span class="sd">        .. versionchanged 0.9.0</span>
 <span class="sd">           Now returns a :class:`~MDAnalysis.topology.core.TopologyGroup`</span>
 <span class="sd">           Now only accepts list of tuples as input, previously accepted either</span>
 <span class="sd">           lists of tuples or lists of Bonds.</span>
@@ -3131,8 +3272,8 @@
 
 <span class="sd">        Returns ``None`` if no angle information is present, otherwise</span>
 <span class="sd">        returns a :class:`~MDAnalysis.topology.core.TopologyGroup`</span>
-<span class="sd">        </span>
-<span class="sd">        .. versionadded 0.8.2</span>
+
+<span class="sd">        .. versionadded 0.9.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">angle_entries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_psf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;_angles&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">angle_entries</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
@@ -3152,8 +3293,8 @@
 
 <span class="sd">        Returns ``None`` if no torsion information is present, otherwise</span>
 <span class="sd">        returns a :class:`~MDAnalysis.topology.core.TopologyGroup`</span>
-<span class="sd">        </span>
-<span class="sd">        .. versionadded 0.8.2</span>
+
+<span class="sd">        .. versionadded 0.9.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">torsion_entries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_psf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;_dihe&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">torsion_entries</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
@@ -3173,8 +3314,8 @@
 
 <span class="sd">        Returns ``None`` if no improper torsion information is present,</span>
 <span class="sd">        otherwise returns a :class:`~MDAnalysis.topology.core.TopologyGroup`</span>
-<span class="sd">        </span>
-<span class="sd">        .. versionadded 0.8.2</span>
+
+<span class="sd">        .. versionadded 0.9.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">torsion_entries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_psf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;_impr&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">torsion_entries</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
@@ -3194,7 +3335,7 @@
 
 <span class="sd">        Generally built on demand by an Atom querying its fragment property.</span>
 
-<span class="sd">        .. versionadded 0.8.2</span>
+<span class="sd">        .. versionadded 0.9.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c"># Check that bond information is present, else inform</span>
         <span class="n">bonds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bonds</span>
@@ -3205,9 +3346,9 @@
         <span class="c"># Could redo this to only find fragments for a queried atom (ie. only fill out</span>
         <span class="c"># a single fragment).  This would then make it scale better for large systems.</span>
         <span class="c"># eg:</span>
-        <span class="c"># try: </span>
+        <span class="c"># try:</span>
         <span class="c">#    return self._fragDict[a]</span>
-        <span class="c"># except KeyError: </span>
+        <span class="c"># except KeyError:</span>
         <span class="c">#    self._init_fragments(a)  # builds the fragment a belongs to</span>
 
         <span class="k">class</span> <span class="nc">_fragset</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -3255,8 +3396,8 @@
     <span class="nd">@cached</span><span class="p">(</span><span class="s">&#39;fragments&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">fragments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Read only tuple of fragments in the Universe</span>
-<span class="sd">        </span>
-<span class="sd">        .. versionadded 0.8.2</span>
+
+<span class="sd">        .. versionadded 0.9.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init_fragments</span><span class="p">()</span>
 
@@ -3267,7 +3408,7 @@
 
 <span class="sd">        Translates Atom to list of bonds</span>
 
-<span class="sd">        .. versionadded:: 0.8.2</span>
+<span class="sd">        .. versionadded:: 0.9.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">bonds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bonds</span>
         <span class="n">bd</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
@@ -3287,7 +3428,7 @@
 
 <span class="sd">        Translates Atom to list of angles</span>
 
-<span class="sd">        .. versionadded:: 0.8.2</span>
+<span class="sd">        .. versionadded:: 0.9.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">bonds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">angles</span>
         <span class="n">bd</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
@@ -3307,7 +3448,7 @@
 
 <span class="sd">        Translates Atom to list of torsions</span>
 
-<span class="sd">        .. versionadded:: 0.8.2</span>
+<span class="sd">        .. versionadded:: 0.9.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">bonds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">torsions</span>
         <span class="n">bd</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
@@ -3327,7 +3468,7 @@
 
 <span class="sd">        Translates Atom to list of improper torsions</span>
 
-<span class="sd">        .. versionadded:: 0.8.2</span>
+<span class="sd">        .. versionadded:: 0.9.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">bonds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">impropers</span>
         <span class="n">bd</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
@@ -3349,7 +3490,7 @@
 
 <span class="sd">        The Atom.fragment managed property queries this dictionary.</span>
 
-<span class="sd">        .. versionadded 0.8.2</span>
+<span class="sd">        .. versionadded 0.9.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">frags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fragments</span>  <span class="c"># will build if not built</span>
         <span class="n">fd</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
@@ -3360,12 +3501,12 @@
 
 <div class="viewcode-block" id="Universe.build_topology"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe.build_topology">[docs]</a>    <span class="k">def</span> <span class="nf">build_topology</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Bond angle and torsion information is lazily constructed into the </span>
+<span class="sd">        Bond angle and torsion information is lazily constructed into the</span>
 <span class="sd">        Universe.</span>
-<span class="sd">        </span>
+
 <span class="sd">        This method forces all this information to be loaded.</span>
-<span class="sd">        </span>
-<span class="sd">        .. versionadded 0.8.2</span>
+
+<span class="sd">        .. versionadded 0.9.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="s">&#39;bonds&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s">&#39;bonds&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init_bonds</span><span class="p">()</span>
@@ -3381,10 +3522,10 @@
     <span class="k">def</span> <span class="nf">bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a :class:`~MDAnalysis.topology.core.TopologyGroup` of all</span>
-<span class="sd">        bonds in the Universe. </span>
+<span class="sd">        bonds in the Universe.</span>
 <span class="sd">        If none are found, returns ``None``</span>
 
-<span class="sd">        .. versionchaged 0.8.2</span>
+<span class="sd">        .. versionchaged 0.9.0</span>
 <span class="sd">           Now a lazily built :class:`~MDAnalysis.topology.core.TopologyGroup`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init_bonds</span><span class="p">()</span>
@@ -3396,7 +3537,7 @@
 <span class="sd">        Each bond tuple must contain the zero based indices of the two Atoms in</span>
 <span class="sd">        the bond</span>
 
-<span class="sd">        .. versionadded:: 0.8.2</span>
+<span class="sd">        .. versionadded:: 0.9.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">bonds</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_psf</span><span class="p">[</span><span class="s">&#39;_bonds&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bondlist</span>
@@ -3407,8 +3548,8 @@
         <span class="sd">&quot;&quot;&quot;Delete the bonds from Universe</span>
 
 <span class="sd">        This must also remove the per atom record of bonds (bondDict)</span>
-<span class="sd">    </span>
-<span class="sd">        .. versionadded:: 0.8.2</span>
+
+<span class="sd">        .. versionadded:: 0.9.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_clear_caches</span><span class="p">(</span><span class="s">&#39;bonds&#39;</span><span class="p">,</span> <span class="s">&#39;bondDict&#39;</span><span class="p">)</span>
 
@@ -3420,8 +3561,8 @@
 <span class="sd">        of all angles in the Universe</span>
 
 <span class="sd">        If none are found, returns ``None``</span>
-<span class="sd">        </span>
-<span class="sd">        .. versionadded 0.8.2</span>
+
+<span class="sd">        .. versionadded 0.9.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init_angles</span><span class="p">()</span>
 
@@ -3443,8 +3584,8 @@
 <span class="sd">        of all torsions in the Universe</span>
 
 <span class="sd">        If none are found, returns ``None``</span>
-<span class="sd">        </span>
-<span class="sd">        .. versionadded 0.8.2</span>
+
+<span class="sd">        .. versionadded 0.9.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init_torsions</span><span class="p">()</span>
 
@@ -3466,8 +3607,8 @@
 <span class="sd">        of all improper torsions in the Universe</span>
 
 <span class="sd">        If none are found, returns ``None``</span>
-<span class="sd">        </span>
-<span class="sd">        .. versionadded 0.8.2</span>
+
+<span class="sd">        .. versionadded 0.9.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init_impropers</span><span class="p">()</span>
 
@@ -3499,8 +3640,10 @@
 <span class="sd">                 keyword has no effect if a list of file names is supplied because</span>
 <span class="sd">                 the &quot;chained&quot; reader has to guess the file format for each</span>
 <span class="sd">                 individual list member [``None``]</span>
+<span class="sd">                 Can also pass a subclass of :class:`MDAnalysis.coordinates.base.Reader`</span>
+<span class="sd">                 to define a custom reader to be used on the trajectory file.</span>
 <span class="sd">             *kwargs*</span>
-<span class="sd">                 other kwargs are passed to the trajectory reader (only for advanced use)</span>
+<span class="sd">                 Other kwargs are passed to the trajectory reader (only for advanced use)</span>
 
 <span class="sd">        :Returns: (filename, trajectory_format) or ``None`` if *filename* == ``None``</span>
 <span class="sd">        :Raises: :exc:`TypeError` if trajectory format can not be</span>
@@ -3517,21 +3660,31 @@
             <span class="k">return</span>
 
         <span class="kn">import</span> <span class="nn">MDAnalysis.core</span>
-        <span class="kn">from</span> <span class="nn">MDAnalysis.coordinates.core</span> <span class="kn">import</span> <span class="n">get_reader_for</span>
+        <span class="kn">from</span> <span class="nn">..coordinates.core</span> <span class="kn">import</span> <span class="n">get_reader_for</span>
+        <span class="kn">from</span> <span class="nn">..coordinates.base</span> <span class="kn">import</span> <span class="n">Reader</span>
 
-        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;permissive&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;permissive&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s">&#39;permissive_pdb_reader&#39;</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">util</span><span class="o">.</span><span class="n">asiterable</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="c"># make sure a single filename is not handed to the ChainReader</span>
             <span class="n">filename</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">asiterable</span><span class="p">(</span><span class="n">filename</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;Universe.load_new(): loading {0}...&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
+
+        <span class="n">reader_format</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;format&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="n">perm</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;permissive&#39;</span><span class="p">,</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s">&#39;permissive_pdb_reader&#39;</span><span class="p">])</span>
+        <span class="n">reader</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">reader</span> <span class="o">=</span> <span class="n">get_reader_for</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span>
-                                    <span class="n">permissive</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;permissive&#39;</span><span class="p">),</span>
-                                    <span class="n">format</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;format&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">))</span>
-        <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;Cannot find an appropriate coordinate reader &quot;</span>
-                            <span class="s">&quot;for file {}.</span><span class="se">\n</span><span class="s">{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">err</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">reader_format</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">reader_format</span><span class="p">,</span> <span class="n">Reader</span><span class="p">):</span>
+                <span class="n">reader</span> <span class="o">=</span> <span class="n">reader_format</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">reader</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">reader</span> <span class="o">=</span> <span class="n">get_reader_for</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span>
+                                        <span class="n">permissive</span><span class="o">=</span><span class="n">perm</span><span class="p">,</span>
+                                        <span class="n">format</span><span class="o">=</span><span class="n">reader_format</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;Cannot find an appropriate coordinate reader &quot;</span>
+                                <span class="s">&quot;for file {}.</span><span class="se">\n</span><span class="s">{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">err</span><span class="p">))</span>
+
         <span class="c"># supply number of atoms for readers that cannot do it for themselves</span>
         <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;numatoms&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">numberOfAtoms</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span> <span class="o">=</span> <span class="n">reader</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>    <span class="c"># unified trajectory API</span>
@@ -3543,6 +3696,7 @@
                                  <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">format</span><span class="p">,</span>
                                  <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">),</span>
                                  <span class="n">filename</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">numatoms</span><span class="p">))</span>
+
         <span class="k">return</span> <span class="n">filename</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">format</span>
 </div>
 <div class="viewcode-block" id="Universe.selectAtoms"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe.selectAtoms">[docs]</a>    <span class="k">def</span> <span class="nf">selectAtoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sel</span><span class="p">,</span> <span class="o">*</span><span class="n">othersel</span><span class="p">,</span> <span class="o">**</span><span class="n">selgroups</span><span class="p">):</span>
@@ -3679,7 +3833,7 @@
 <span class="sd">        .. versionchanged:: 0.8.1</span>
 <span class="sd">           Added *group* and *fullgroup* selections.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">import</span> <span class="nn">Selection</span>  <span class="c"># can ONLY import in method, otherwise cyclical import!</span>
+        <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">Selection</span>  <span class="c"># can ONLY import in method, otherwise cyclical import!</span>
 
         <span class="n">atomgrp</span> <span class="o">=</span> <span class="n">Selection</span><span class="o">.</span><span class="n">Parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">sel</span><span class="p">,</span> <span class="n">selgroups</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">othersel</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -3714,7 +3868,7 @@
 <div class="viewcode-block" id="Universe.dimensions"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe.dimensions">[docs]</a>    <span class="k">def</span> <span class="nf">dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set dimensions if the Timestep allows this</span>
 
-<span class="sd">        .. versionadded:: 0.8.2</span>
+<span class="sd">        .. versionadded:: 0.9.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c"># Add fancy error handling here or use Timestep?</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">coord</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="n">box</span>
@@ -3816,7 +3970,7 @@
 <span class="sd">    .. Note:: Merging does not create a full trajectory but only a single</span>
 <span class="sd">              structure even if the input consists of one or more trajectories.</span>
 
-<span class="sd">    .. versionchanged 0.8.2::</span>
+<span class="sd">    .. versionchanged 0.9.0::</span>
 <span class="sd">       Raises exceptions instead of assertion errors.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -3855,8 +4009,8 @@
     <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">topology</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">build_residues</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
     <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">topology</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">build_segments</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">u</span></div>
-</pre></div>
+    <span class="k">return</span> <span class="n">u</span>
+</pre></div></div>
 
           </div>
         </div>
@@ -3872,7 +4026,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.8.2-dev documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.9.0-dev documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
       </ul>
@@ -3880,12 +4034,12 @@
     <div class="footer">
         &copy; Copyright 2005-2014, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
-    David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański,
+    David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

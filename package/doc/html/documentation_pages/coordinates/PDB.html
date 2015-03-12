@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -6,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.10. PDB structure files in MDAnalysis — MDAnalysis.coordinates.PDB &mdash; MDAnalysis 0.8.2-dev documentation</title>
+    <title>5.8. PDB structure files in MDAnalysis — MDAnalysis.coordinates.PDB &mdash; MDAnalysis 0.9.0-dev documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.2-dev',
+        VERSION:     '0.9.0-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,13 +27,13 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.2-dev documentation"
+          title="Search within MDAnalysis 0.9.0-dev documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.2-dev documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.9.0-dev documentation" href="../../index.html" />
     <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
-    <link rel="next" title="5.11. PDBQT structure files in MDAnalysis — MDAnalysis.coordinates.PDBQT" href="PDBQT.html" />
-    <link rel="prev" title="5.9. GRO file format — MDAnalysis.coordinates.GRO" href="GRO.html" /> 
+    <link rel="next" title="5.9. PDBQT structure files in MDAnalysis — MDAnalysis.coordinates.PDBQT" href="PDBQT.html" />
+    <link rel="prev" title="5.7. GRO file format — MDAnalysis.coordinates.GRO" href="GRO.html" /> 
   </head>
   <body>
     <div class="related">
@@ -44,12 +46,12 @@
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="PDBQT.html" title="5.11. PDBQT structure files in MDAnalysis — MDAnalysis.coordinates.PDBQT"
+          <a href="PDBQT.html" title="5.9. PDBQT structure files in MDAnalysis — MDAnalysis.coordinates.PDBQT"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="GRO.html" title="5.9. GRO file format — MDAnalysis.coordinates.GRO"
+          <a href="GRO.html" title="5.7. GRO file format — MDAnalysis.coordinates.GRO"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.2-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.9.0-dev documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -60,28 +62,28 @@
             </a></p>
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">5.10. PDB structure files in MDAnalysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.PDB</span></tt></a><ul>
-<li><a class="reference internal" href="#implementations">5.10.1. Implementations</a></li>
-<li><a class="reference internal" href="#simple-permissive-pdb-reader-and-writer">5.10.2. Simple (permissive) PDB Reader and Writer</a><ul>
-<li><a class="reference internal" href="#examples">5.10.2.1. Examples</a></li>
-<li><a class="reference internal" href="#classes">5.10.2.2. Classes</a></li>
+<li><a class="reference internal" href="#">5.8. PDB structure files in MDAnalysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.PDB</span></tt></a><ul>
+<li><a class="reference internal" href="#implementations">5.8.1. Implementations</a></li>
+<li><a class="reference internal" href="#simple-permissive-pdb-reader-and-writer">5.8.2. Simple (permissive) PDB Reader and Writer</a><ul>
+<li><a class="reference internal" href="#examples">5.8.2.1. Examples</a></li>
+<li><a class="reference internal" href="#classes">5.8.2.2. Classes</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#biopython-strict-pdb-reader-and-writer">5.10.3. Biopython (strict) PDB Reader and Writer</a><ul>
-<li><a class="reference internal" href="#id18">5.10.3.1. Classes</a></li>
+<li><a class="reference internal" href="#biopython-strict-pdb-reader-and-writer">5.8.3. Biopython (strict) PDB Reader and Writer</a><ul>
+<li><a class="reference internal" href="#id18">5.8.3.1. Classes</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#references">5.10.4. References</a></li>
+<li><a class="reference internal" href="#references">5.8.4. References</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="GRO.html"
-                        title="previous chapter">5.9. GRO file format &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.GRO</span></tt></a></p>
+                        title="previous chapter">5.7. GRO file format &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.coordinates.GRO</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="PDBQT.html"
-                        title="next chapter">5.11. PDBQT structure files in MDAnalysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.PDBQT</span></tt></a></p>
+                        title="next chapter">5.9. PDBQT structure files in MDAnalysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.PDBQT</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/coordinates/PDB.txt"
@@ -109,7 +111,7 @@
           <div class="body">
             
   <span class="target" id="module-MDAnalysis.coordinates.PDB"></span><div class="section" id="pdb-structure-files-in-mdanalysis-mdanalysis-coordinates-pdb">
-<h1>5.10. PDB structure files in MDAnalysis &#8212; <a class="reference internal" href="#module-MDAnalysis.coordinates.PDB" title="MDAnalysis.coordinates.PDB"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.PDB</span></tt></a><a class="headerlink" href="#pdb-structure-files-in-mdanalysis-mdanalysis-coordinates-pdb" title="Permalink to this headline">¶</a></h1>
+<h1>5.8. PDB structure files in MDAnalysis &#8212; <a class="reference internal" href="#module-MDAnalysis.coordinates.PDB" title="MDAnalysis.coordinates.PDB"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.PDB</span></tt></a><a class="headerlink" href="#pdb-structure-files-in-mdanalysis-mdanalysis-coordinates-pdb" title="Permalink to this headline">¶</a></h1>
 <p>MDAnalysis reads coordinates from PDB files and additional optional
 data such as B-factors. It is also possible to substitute a PDB file
 instead of PSF file in order to define the list of atoms (but no
@@ -141,7 +143,7 @@ trajectory, while writing each frame:</p>
 step is the final <a class="reference external" href="http://www.wwpdb.org/documentation/format32/sect11.html#END">END</a> record written, which is required by the <a class="reference external" href="http://www.wwpdb.org/documentation/format32/v3.2.html">PDB
 standard</a>.</p>
 <div class="section" id="implementations">
-<h2>5.10.1. Implementations<a class="headerlink" href="#implementations" title="Permalink to this headline">¶</a></h2>
+<h2>5.8.1. Implementations<a class="headerlink" href="#implementations" title="Permalink to this headline">¶</a></h2>
 <p>Two different implementations of PDB I/O are available: the &#8220;<a class="reference internal" href="#permissive"><em>permissive</em></a>&#8221;
 and the &#8220;<a class="reference internal" href="#strict"><em>strict</em></a>&#8221; Reader/Writers. The default are the &#8220;permissive&#8221; ones
 but this can be changed by setting the flag &#8220;permissive_pdb_reader&#8221; in
@@ -183,7 +185,7 @@ current timestep.</p>
 
 </div>
 <div class="section" id="simple-permissive-pdb-reader-and-writer">
-<span id="permissive"></span><h2>5.10.2. Simple (permissive) PDB Reader and Writer<a class="headerlink" href="#simple-permissive-pdb-reader-and-writer" title="Permalink to this headline">¶</a></h2>
+<span id="permissive"></span><h2>5.8.2. Simple (permissive) PDB Reader and Writer<a class="headerlink" href="#simple-permissive-pdb-reader-and-writer" title="Permalink to this headline">¶</a></h2>
 <p>A pure-Python implementation for PDB files commonly encountered in MD
 simulations comes under the names <a class="reference internal" href="#MDAnalysis.coordinates.PDB.PrimitivePDBReader" title="MDAnalysis.coordinates.PDB.PrimitivePDBReader"><tt class="xref py py-class docutils literal"><span class="pre">PrimitivePDBReader</span></tt></a> and
 <a class="reference internal" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter" title="MDAnalysis.coordinates.PDB.PrimitivePDBWriter"><tt class="xref py py-class docutils literal"><span class="pre">PrimitivePDBWriter</span></tt></a>. It only implements a subset of the <a class="reference external" href="http://www.wwpdb.org/documentation/format32/v3.2.html">PDB standard</a>
@@ -199,7 +201,7 @@ writes single frames. On the other hand, the <a class="reference internal" href=
 to write a PDB trajectory by default (equivalent to using <em>multiframe</em> =
 <tt class="docutils literal"><span class="pre">True</span></tt>).</p>
 <div class="section" id="examples">
-<h3>5.10.2.1. Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
+<h3>5.8.2.1. Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
 <p>In order to write a <strong>multi-frame PDB trajectory</strong> from a universe <em>u</em> one can
 do the following:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">pdb</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Writer</span><span class="p">(</span><span class="s">&quot;all.pdb&quot;</span><span class="p">,</span> <span class="n">multiframe</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
@@ -233,7 +235,7 @@ do the following:</p>
 </div>
 </div>
 <div class="section" id="classes">
-<h3>5.10.2.2. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h3>
+<h3>5.8.2.2. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.PDB.PrimitivePDBReader">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.PDB.</tt><tt class="descname">PrimitivePDBReader</tt><big>(</big><em>filename</em>, <em>convert_units=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PrimitivePDBReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBReader" title="Permalink to this definition">¶</a></dt>
@@ -381,7 +383,7 @@ do the following:</p>
 </tr>
 </tbody>
 </table>
-<div class="admonition seealso">
+<div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><a class="reference internal" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter" title="MDAnalysis.coordinates.PDB.PrimitivePDBWriter"><tt class="xref py py-class docutils literal"><span class="pre">PrimitivePDBWriter</span></tt></a></p>
 </div>
@@ -399,14 +401,14 @@ of integers (typically starting at 1 or 0).</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>filename</em></dt>
 <dd><p class="first last">filename of the output PDB file</p>
 </dd>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter" title="MDAnalysis.coordinates.PDB.PrimitivePDBWriter"><tt class="xref py py-class docutils literal"><span class="pre">PrimitivePDBWriter</span></tt></a></p>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><a class="reference internal" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter" title="MDAnalysis.coordinates.PDB.PrimitivePDBWriter"><tt class="xref py py-class docutils literal"><span class="pre">PrimitivePDBWriter</span></tt></a></p>
 </td>
 </tr>
 </tbody>
@@ -444,26 +446,24 @@ set to a PDB file (operating as a &#8220;single frame writer&#8221;, selected wi
 constructor keyword <em>multiframe</em> = <tt class="docutils literal"><span class="pre">False</span></tt>, the default) or by writing a
 PDB &#8220;movie&#8221; (multi frame mode, <em>multiframe</em> = <tt class="docutils literal"><span class="pre">True</span></tt>), consisting of
 multiple models (using the <a class="reference external" href="http://www.wwpdb.org/documentation/format32/sect9.html#MODEL">MODEL</a> and <a class="reference external" href="http://www.wwpdb.org/documentation/format32/sect9.html#ENDMDL">ENDMDL</a> records).</p>
-<div class="admonition seealso">
+<div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last">This class is identical to <a class="reference internal" href="#MDAnalysis.coordinates.PDB.MultiPDBWriter" title="MDAnalysis.coordinates.PDB.MultiPDBWriter"><tt class="xref py py-class docutils literal"><span class="pre">MultiPDBWriter</span></tt></a> with the one
 exception that it defaults to writing single-frame PDB files as if
 <em>multiframe</em> = <tt class="docutils literal"><span class="pre">False</span></tt> was selected.</p>
 </div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.7.5: </span>Initial support for multi-frame PDB files.</p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.7.6: </span>The <em>multiframe</em> keyword was added to select the writing mode. The writing
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.5: </span>Initial support for multi-frame PDB files.</p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.6: </span>The <em>multiframe</em> keyword was added to select the writing mode. The writing
 of bond information (<a class="reference external" href="http://www.wwpdb.org/documentation/format32/sect10.html#CONECT">CONECT</a> records) is now disabled by default but can be
 enabled with the <em>bonds</em> keyword.</p>
-</div>
 <p>Create a new PDBWriter</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>filename</em></dt>
 <dd><p class="first last">name of output file</p>
 </dd>
@@ -528,10 +528,9 @@ selected for, only if all the atoms for a bond are still present.</p>
 <p class="last">Therefore, this method raises a <tt class="xref py py-exc docutils literal"><span class="pre">NotImplementedError</span></tt> if CONECT
 records for anything smaller than the <tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt> are written.</p>
 </div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.7.6: </span>Only write CONECT records if <tt class="xref py py-attr docutils literal"><span class="pre">PrimitivePDBWriter.bonds</span></tt> <tt class="docutils literal"><span class="pre">==</span> <span class="pre">True</span></tt>.
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.6: </span>Only write CONECT records if <tt class="xref py py-attr docutils literal"><span class="pre">PrimitivePDBWriter.bonds</span></tt> <tt class="docutils literal"><span class="pre">==</span> <span class="pre">True</span></tt>.
 Raises <tt class="xref py py-exc docutils literal"><span class="pre">NotImplementedError</span></tt> if it would produce wrong output.</p>
-</div>
 </dd></dl>
 
 <dl class="method">
@@ -564,12 +563,11 @@ the moment we do <em>not</em> write the <a class="reference external" href="http
 <p>The <em>multiframe</em> = <tt class="docutils literal"><span class="pre">False</span></tt> keyword signals that the
 <a class="reference internal" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter" title="MDAnalysis.coordinates.PDB.PrimitivePDBWriter"><tt class="xref py py-class docutils literal"><span class="pre">PrimitivePDBWriter</span></tt></a> is in single frame mode and no <a class="reference external" href="http://www.wwpdb.org/documentation/format32/sect9.html#MODEL">MODEL</a>
 records are written.</p>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.7.6: </span>The <em>multiframe</em> keyword was added, which completely determines if
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.6: </span>The <em>multiframe</em> keyword was added, which completely determines if
 MODEL records are written. (Previously, this was decided based on the
 underlying trajectory and only if <tt class="docutils literal"><span class="pre">len(traj)</span> <span class="pre">&gt;</span> <span class="pre">1</span></tt> would MODEL records
 have been written.)</p>
-</div>
 </dd></dl>
 
 <dl class="method">
@@ -585,10 +583,9 @@ character of <em>chainID</em> becomes the PDB <em>chainID</em> (unless it has th
 special value &#8220;SYSTEM&#8221; (assigned by MDAnalysis if neither <em>segID</em> nor
 <em>chainID</em> were available), in which case the PDB will have an empty
 <em>chainID</em>).</p>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.7.6: </span>If the <em>chainID</em> has the special value &#8220;SYSTEM&#8221; (case insensitive)
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.6: </span>If the <em>chainID</em> has the special value &#8220;SYSTEM&#8221; (case insensitive)
 then the chain is set to the empty string &#8220;&#8221;.</p>
-</div>
 </dd></dl>
 
 <dl class="method">
@@ -672,7 +669,7 @@ details).</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>obj</em></dt>
 <dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a> or
 <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a></p>
@@ -714,7 +711,7 @@ constructor). Thus, if <em>u</em> is a Universe then</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>ts</em></dt>
 <dd><p class="first last"><a class="reference internal" href="#MDAnalysis.coordinates.PDB.Timestep" title="MDAnalysis.coordinates.PDB.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> object containing coordinates to be written to trajectory file;
 if <tt class="docutils literal"><span class="pre">None</span></tt> then <tt class="xref py py-attr docutils literal"><span class="pre">PrimitivePDBWriter.ts`</span></tt> is tried.</p>
@@ -747,21 +744,20 @@ is written.</p>
 <p>By default, <a class="reference internal" href="#MDAnalysis.coordinates.PDB.MultiPDBWriter" title="MDAnalysis.coordinates.PDB.MultiPDBWriter"><tt class="xref py py-class docutils literal"><span class="pre">MultiPDBWriter</span></tt></a> writes a PDB &#8220;movie&#8221; (multi frame mode,
 <em>multiframe</em> = <tt class="docutils literal"><span class="pre">True</span></tt>), consisting of multiple models (using the <a class="reference external" href="http://www.wwpdb.org/documentation/format32/sect9.html#MODEL">MODEL</a>
 and <a class="reference external" href="http://www.wwpdb.org/documentation/format32/sect9.html#ENDMDL">ENDMDL</a> records).</p>
-<div class="admonition seealso">
+<div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last">This class is identical to <a class="reference internal" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter" title="MDAnalysis.coordinates.PDB.PrimitivePDBWriter"><tt class="xref py py-class docutils literal"><span class="pre">PrimitivePDBWriter</span></tt></a> with the one
 exception that it defaults to writing multi-frame PDB files instead of
 single frames.</p>
 </div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.7.6.</span></p>
-</div>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.6.</span></p>
 <p>Create a new PDBWriter</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>filename</em></dt>
 <dd><p class="first last">name of output file</p>
 </dd>
@@ -808,9 +804,9 @@ records. If <tt class="docutils literal"><span class="pre">None</span></tt>, the
 </div>
 </div>
 <div class="section" id="biopython-strict-pdb-reader-and-writer">
-<span id="strict"></span><h2>5.10.3. Biopython (strict) PDB Reader and Writer<a class="headerlink" href="#biopython-strict-pdb-reader-and-writer" title="Permalink to this headline">¶</a></h2>
+<span id="strict"></span><h2>5.8.3. Biopython (strict) PDB Reader and Writer<a class="headerlink" href="#biopython-strict-pdb-reader-and-writer" title="Permalink to this headline">¶</a></h2>
 <p>The <tt class="xref py py-mod docutils literal"><span class="pre">PDB</span></tt> module can make use of Biopython&#8217;s <tt class="xref py py-mod docutils literal"><span class="pre">Bio.PDB</span></tt>
-<a class="reference internal" href="#hamelryck2003" id="id17">[Hamelryck2003]</a> but replaces the standard PDB file parser with one that uses
+<a class="reference internal" href="#hamelryck2003">[Hamelryck2003]</a> but replaces the standard PDB file parser with one that uses
 the <a class="reference internal" href="pdbextensions.html#MDAnalysis.coordinates.pdb.extensions.SloppyStructureBuilder" title="MDAnalysis.coordinates.pdb.extensions.SloppyStructureBuilder"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.coordinates.pdb.extensions.SloppyStructureBuilder</span></tt></a> to
 cope with very large pdb files as commonly encountered in MD simulations. The
 Biopython-based <a class="reference internal" href="#MDAnalysis.coordinates.PDB.PDBReader" title="MDAnalysis.coordinates.PDB.PDBReader"><tt class="xref py py-class docutils literal"><span class="pre">PDBReader</span></tt></a> has the advantage that it implements the
@@ -827,7 +823,7 @@ missing element names with a
 are generally harmless and therefore are filtered (and ignored) by MDAnalysis
 with the help of <a class="reference external" href="http://docs.python.org/library/warnings.html#warnings.filterwarnings" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">warnings.filterwarnings()</span></tt></a>.</p>
 <div class="section" id="id18">
-<h3>5.10.3.1. Classes<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h3>
+<h3>5.8.3.1. Classes<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.PDB.PDBReader">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.PDB.</tt><tt class="descname">PDBReader</tt><big>(</big><em>pdbfilename</em>, <em>convert_units=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PDBReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PDBReader" title="Permalink to this definition">¶</a></dt>
@@ -848,14 +844,14 @@ record and hence the unitcell dimensions are not set.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>filename</em></dt>
 <dd><p class="first last">filename of the output PDB file</p>
 </dd>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#MDAnalysis.coordinates.PDB.PDBWriter" title="MDAnalysis.coordinates.PDB.PDBWriter"><tt class="xref py py-class docutils literal"><span class="pre">PDBWriter</span></tt></a></p>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><a class="reference internal" href="#MDAnalysis.coordinates.PDB.PDBWriter" title="MDAnalysis.coordinates.PDB.PDBWriter"><tt class="xref py py-class docutils literal"><span class="pre">PDBWriter</span></tt></a></p>
 </td>
 </tr>
 </tbody>
@@ -900,7 +896,7 @@ which happens automatically when the
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt>pdbfilename     filename; if multi=True, embed a %%d formatstring</dt>
 <dd><p class="first last">so that write_next_timestep() can insert the frame number</p>
 </dd>
@@ -927,7 +923,7 @@ which happens automatically when the
 </div>
 </div>
 <div class="section" id="references">
-<h2>5.10.4. References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
+<h2>5.8.4. References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
 <table class="docutils citation" frame="void" id="hamelryck2003" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
@@ -954,24 +950,24 @@ implemented in Python. Bioinformatics, 19, 2308-2310. <a class="reference extern
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="PDBQT.html" title="5.11. PDBQT structure files in MDAnalysis — MDAnalysis.coordinates.PDBQT"
+          <a href="PDBQT.html" title="5.9. PDBQT structure files in MDAnalysis — MDAnalysis.coordinates.PDBQT"
              >next</a> |</li>
         <li class="right" >
-          <a href="GRO.html" title="5.9. GRO file format — MDAnalysis.coordinates.GRO"
+          <a href="GRO.html" title="5.7. GRO file format — MDAnalysis.coordinates.GRO"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.2-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.9.0-dev documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2005-2014, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
-    David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański,
+    David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

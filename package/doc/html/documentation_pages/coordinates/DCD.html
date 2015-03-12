@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -6,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.5. DCD trajectory I/O — MDAnalysis.coordinates.DCD &mdash; MDAnalysis 0.8.2-dev documentation</title>
+    <title>5.3. DCD trajectory I/O — MDAnalysis.coordinates.DCD &mdash; MDAnalysis 0.9.0-dev documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.2-dev',
+        VERSION:     '0.9.0-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,13 +27,13 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.2-dev documentation"
+          title="Search within MDAnalysis 0.9.0-dev documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.2-dev documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.9.0-dev documentation" href="../../index.html" />
     <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
-    <link rel="next" title="5.7. DESRES file format — MDAnalysis.coordinates.DMS" href="DMS.html" />
-    <link rel="prev" title="5.4. CRD structure files in MDAnalysis — MDAnalysis.coordinates.CRD" href="CRD.html" /> 
+    <link rel="next" title="5.5. DESRES file format — MDAnalysis.coordinates.DMS" href="DMS.html" />
+    <link rel="prev" title="5.2. CRD structure files in MDAnalysis — MDAnalysis.coordinates.CRD" href="CRD.html" /> 
   </head>
   <body>
     <div class="related">
@@ -44,12 +46,12 @@
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="DMS.html" title="5.7. DESRES file format — MDAnalysis.coordinates.DMS"
+          <a href="DMS.html" title="5.5. DESRES file format — MDAnalysis.coordinates.DMS"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="CRD.html" title="5.4. CRD structure files in MDAnalysis — MDAnalysis.coordinates.CRD"
+          <a href="CRD.html" title="5.2. CRD structure files in MDAnalysis — MDAnalysis.coordinates.CRD"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.2-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.9.0-dev documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -60,16 +62,16 @@
             </a></p>
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">5.5. DCD trajectory I/O  &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.DCD</span></tt></a></li>
-<li><a class="reference internal" href="#classes">5.6. Classes</a></li>
+<li><a class="reference internal" href="#">5.3. DCD trajectory I/O  &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.DCD</span></tt></a></li>
+<li><a class="reference internal" href="#classes">5.4. Classes</a></li>
 </ul>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="CRD.html"
-                        title="previous chapter">5.4. CRD structure files in MDAnalysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.CRD</span></tt></a></p>
+                        title="previous chapter">5.2. CRD structure files in MDAnalysis &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.coordinates.CRD</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="DMS.html"
-                        title="next chapter">5.7. DESRES file format &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.DMS</span></tt></a></p>
+                        title="next chapter">5.5. DESRES file format &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.DMS</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/coordinates/DCD.txt"
@@ -97,34 +99,42 @@
           <div class="body">
             
   <span class="target" id="module-MDAnalysis.coordinates.DCD"></span><div class="section" id="dcd-trajectory-i-o-mdanalysis-coordinates-dcd">
-<h1>5.5. DCD trajectory I/O  &#8212; <a class="reference internal" href="#module-MDAnalysis.coordinates.DCD" title="MDAnalysis.coordinates.DCD"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.DCD</span></tt></a><a class="headerlink" href="#dcd-trajectory-i-o-mdanalysis-coordinates-dcd" title="Permalink to this headline">¶</a></h1>
-<p>Classes to read and write CHARMM-style DCD binary
-trajectories. Trajectories can be read regardless of system-endianness
-as this is auto-detected.</p>
-<p>The classes in this module are the reference implementations for the
-Trajectory API.</p>
+<h1>5.3. DCD trajectory I/O  &#8212; <a class="reference internal" href="#module-MDAnalysis.coordinates.DCD" title="MDAnalysis.coordinates.DCD"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.DCD</span></tt></a><a class="headerlink" href="#dcd-trajectory-i-o-mdanalysis-coordinates-dcd" title="Permalink to this headline">¶</a></h1>
+<p>Classes to read and write DCD binary trajectories, the format used by
+CHARMM, NAMD but also LAMMPS. Trajectories can be read regardless of
+system-endianness as this is auto-detected.</p>
+<p>Generally, DCD trajectories produced by any code can be read (with the
+<a class="reference internal" href="#MDAnalysis.coordinates.DCD.DCDReader" title="MDAnalysis.coordinates.DCD.DCDReader"><tt class="xref py py-class docutils literal"><span class="pre">DCDReader</span></tt></a>) although there can be issues with the unitcell
+(simulation box) representation (see
+<a class="reference internal" href="#MDAnalysis.coordinates.DCD.Timestep.dimensions" title="MDAnalysis.coordinates.DCD.Timestep.dimensions"><tt class="xref py py-attr docutils literal"><span class="pre">Timestep.dimensions</span></tt></a>). DCDs can also be written but the
+<a class="reference internal" href="#MDAnalysis.coordinates.DCD.DCDWriter" title="MDAnalysis.coordinates.DCD.DCDWriter"><tt class="xref py py-class docutils literal"><span class="pre">DCDWriter</span></tt></a> follows recent NAMD/VMD convention for the unitcell
+but still writes AKMA time. Reading and writing these trajectories
+within MDAnalysis will work seamlessly but if you process those
+trajectories with other tools you might need to watch out that time
+and unitcell dimensions are correctly interpreted.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The DCD file format is not well defined. In particular, NAMD
-and CHARMM use it differently. Currently, MDAnalysis tries
-to guess the correct format for the unitcell representation
-but it can be wrong. <strong>Check the unitcell dimensions</strong>,
-especially for triclinic unitcells (see <a class="reference external" href="https://code.google.com/p/mdanalysis/issues/detail?id=187">Issue 187</a> and
-<a class="reference internal" href="#MDAnalysis.coordinates.DCD.Timestep.dimensions" title="MDAnalysis.coordinates.DCD.Timestep.dimensions"><tt class="xref py py-attr docutils literal"><span class="pre">Timestep.dimensions</span></tt></a>). A second potential issue are
-the units of time which are AKMA for the <a class="reference internal" href="#MDAnalysis.coordinates.DCD.DCDReader" title="MDAnalysis.coordinates.DCD.DCDReader"><tt class="xref py py-class docutils literal"><span class="pre">DCDReader</span></tt></a>
-(following CHARMM) but ps for NAMD. As a workaround one can
-employ the configurable
-<a class="reference internal" href="LAMMPS.html#MDAnalysis.coordinates.LAMMPS.DCDReader" title="MDAnalysis.coordinates.LAMMPS.DCDReader"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.coordinates.LAMMPS.DCDReader</span></tt></a> for
-NAMD trajectories.</p>
+<p class="last">The DCD file format is not well defined. In particular, NAMD and
+CHARMM use it differently. Currently, MDAnalysis tries to guess the
+correct <strong>format for the unitcell representation</strong> but it can be
+wrong. <strong>Check the unitcell dimensions</strong>, especially for triclinic
+unitcells (see <a class="reference external" href="https://code.google.com/p/mdanalysis/issues/detail?id=187">Issue 187</a> and <a class="reference internal" href="#MDAnalysis.coordinates.DCD.Timestep.dimensions" title="MDAnalysis.coordinates.DCD.Timestep.dimensions"><tt class="xref py py-attr docutils literal"><span class="pre">Timestep.dimensions</span></tt></a>). A
+second potential issue are the units of time which are AKMA for the
+<a class="reference internal" href="#MDAnalysis.coordinates.DCD.DCDReader" title="MDAnalysis.coordinates.DCD.DCDReader"><tt class="xref py py-class docutils literal"><span class="pre">DCDReader</span></tt></a> (following CHARMM) but ps for NAMD. As a
+workaround one can employ the configurable
+<a class="reference internal" href="LAMMPS.html#MDAnalysis.coordinates.LAMMPS.DCDReader" title="MDAnalysis.coordinates.LAMMPS.DCDReader"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.coordinates.LAMMPS.DCDReader</span></tt></a> for NAMD
+trajectories.</p>
 </div>
-<div class="admonition seealso">
+<div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last">The <a class="reference internal" href="LAMMPS.html#module-MDAnalysis.coordinates.LAMMPS" title="MDAnalysis.coordinates.LAMMPS"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.LAMMPS</span></tt></a> module provides
 a more flexible DCD reader/writer.</p>
 </div>
+<p>The classes in this module are the reference implementations for the
+Trajectory API.</p>
 </div>
 <div class="section" id="classes">
-<h1>5.6. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h1>
+<h1>5.4. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.DCD.Timestep">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.DCD.</tt><tt class="descname">Timestep</tt><big>(</big><em>arg</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/DCD.html#Timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.DCD.Timestep" title="Permalink to this definition">¶</a></dt>
@@ -144,7 +154,7 @@ a more flexible DCD reader/writer.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A Timestep object of the same type containing all header information and all atom information
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body">A Timestep object of the same type containing all header information and all atom information
 relevent to the selection.</td>
 </tr>
 </tbody>
@@ -153,9 +163,8 @@ relevent to the selection.</td>
 <p class="first admonition-title">Note</p>
 <p class="last">The selection must be a 0 based slice or array of the atom indices in this Timestep</p>
 </div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.8.</span></p>
-</div>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.8.</span></p>
 </dd></dl>
 
 <dl class="attribute">
@@ -185,12 +194,11 @@ and MDAnalysis is currently implementing the newer NAMD/VMD convention
 and tries to guess the new CHARMM one. Old CHARMM trajectories might
 give wrong unitcell values. For more details see <a class="reference external" href="https://code.google.com/p/mdanalysis/issues/detail?id=187">Issue 187</a>.</p>
 </div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.9.0: </span>Unitcell is now interpreted in the newer NAMD DCD format as <tt class="docutils literal"><span class="pre">[A,</span>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.9.0: </span>Unitcell is now interpreted in the newer NAMD DCD format as <tt class="docutils literal"><span class="pre">[A,</span>
 <span class="pre">gamma,</span> <span class="pre">B,</span> <span class="pre">beta,</span> <span class="pre">alpha,</span> <span class="pre">C]</span></tt> instead of the old MDAnalysis/CHARMM
 ordering <tt class="docutils literal"><span class="pre">[A,</span> <span class="pre">alpha,</span> <span class="pre">B,</span> <span class="pre">beta,</span> <span class="pre">gamma,</span> <span class="pre">C]</span></tt>. We attempt to detect the
 new CHARMM DCD unitcell format (see <a class="reference external" href="https://code.google.com/p/mdanalysis/issues/detail?id=187">Issue 187</a> for a discussion).</p>
-</div>
 </dd></dl>
 
 <dl class="attribute">
@@ -209,14 +217,14 @@ new CHARMM DCD unitcell format (see <a class="reference external" href="https://
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Data:</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Data :</th><td class="field-body"><dl class="first docutils">
 <dt>ts</dt>
 <dd><p class="first last"><a class="reference internal" href="#MDAnalysis.coordinates.DCD.Timestep" title="MDAnalysis.coordinates.DCD.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> object containing coordinates of current frame</p>
 </dd>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Methods:</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-even field"><th class="field-name">Methods :</th><td class="field-body"><dl class="first last docutils">
 <dt><tt class="docutils literal"><span class="pre">dcd</span> <span class="pre">=</span> <span class="pre">DCD(dcdfilename)</span></tt></dt>
 <dd><p class="first last">open dcd file and read header</p>
 </dd>
@@ -245,28 +253,26 @@ new CHARMM DCD unitcell format (see <a class="reference external" href="https://
 </table>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The DCD file format is not well defined. In particular,
-NAMD and CHARMM use it differently. Currently,
-MDAnalysis tries to guess the correct format for the
-unitcell representation but it can be wrong. <strong>Check the
-unitcell dimensions</strong>, especially for triclinic
-unitcells (see <a class="reference external" href="https://code.google.com/p/mdanalysis/issues/detail?id=187">Issue 187</a> and
-<a class="reference internal" href="#MDAnalysis.coordinates.DCD.Timestep.dimensions" title="MDAnalysis.coordinates.DCD.Timestep.dimensions"><tt class="xref py py-attr docutils literal"><span class="pre">Timestep.dimensions</span></tt></a>). A second potential issue
-are the units of time (TODO).</p>
+<p class="last">The DCD file format is not well defined. In particular, NAMD
+and CHARMM use it differently. Currently, MDAnalysis tries to
+guess the correct format for the unitcell representation but it
+can be wrong. <strong>Check the unitcell dimensions</strong>, especially for
+triclinic unitcells (see <a class="reference external" href="https://code.google.com/p/mdanalysis/issues/detail?id=187">Issue 187</a> and
+<a class="reference internal" href="#MDAnalysis.coordinates.DCD.Timestep.dimensions" title="MDAnalysis.coordinates.DCD.Timestep.dimensions"><tt class="xref py py-attr docutils literal"><span class="pre">Timestep.dimensions</span></tt></a>). A second potential issue are the
+units of time (TODO).</p>
 </div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.9.0: </span>The underlying DCD reader (written in C and derived from the
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.9.0: </span>The underlying DCD reader (written in C and derived from the
 catdcd/molfile plugin code of VMD) is now reading the unitcell in
 NAMD ordering: <tt class="docutils literal"><span class="pre">[A,</span> <span class="pre">B,</span> <span class="pre">C,</span> <span class="pre">sin(gamma),</span> <span class="pre">sin(beta),</span>
 <span class="pre">sin(alpha)]</span></tt>. See <a class="reference external" href="https://code.google.com/p/mdanalysis/issues/detail?id=187">Issue 187</a> for further details.</p>
-</div>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.DCD.DCDReader.OtherWriter">
 <tt class="descname">OtherWriter</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.OtherWriter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a writer appropriate for <em>filename</em>.</p>
 <p>Sets the default keywords <em>start</em>, <em>step</em> and <em>delta</em> (if
 available). <em>numatoms</em> is always set from <tt class="xref py py-attr docutils literal"><span class="pre">Reader.numatoms</span></tt>.</p>
-<div class="admonition seealso">
+<div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><tt class="xref py py-meth docutils literal"><span class="pre">Reader.Writer()</span></tt> and <tt class="xref py py-func docutils literal"><span class="pre">MDAnalysis.Writer()</span></tt></p>
 </div>
@@ -281,14 +287,14 @@ available). <em>numatoms</em> is always set from <tt class="xref py py-attr docu
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>filename</em></dt>
 <dd><p class="first last">filename of the output DCD trajectory</p>
 </dd>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first docutils">
+<tr class="field-even field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first docutils">
 <dt><em>numatoms</em></dt>
 <dd><p class="first last">number of atoms</p>
 </dd>
@@ -312,7 +318,7 @@ The default is <tt class="docutils literal"><span class="pre">None</span></tt>, 
 </dl>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#MDAnalysis.coordinates.DCD.DCDWriter" title="MDAnalysis.coordinates.DCD.DCDWriter"><tt class="xref py py-class docutils literal"><span class="pre">DCDWriter</span></tt></a></p>
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><a class="reference internal" href="#MDAnalysis.coordinates.DCD.DCDWriter" title="MDAnalysis.coordinates.DCD.DCDWriter"><tt class="xref py py-class docutils literal"><span class="pre">DCDWriter</span></tt></a></p>
 </td>
 </tr>
 </tbody>
@@ -323,7 +329,7 @@ The default is <tt class="docutils literal"><span class="pre">None</span></tt>, 
 according to the CHARMM format. The time between two frames would be
 <em>delta</em> * <em>step</em> !</p>
 </div>
-<div class="admonition seealso">
+<div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><a class="reference internal" href="#MDAnalysis.coordinates.DCD.DCDWriter" title="MDAnalysis.coordinates.DCD.DCDWriter"><tt class="xref py py-class docutils literal"><span class="pre">DCDWriter</span></tt></a> has detailed argument description</p>
 </div>
@@ -340,9 +346,8 @@ according to the CHARMM format. The time between two frames would be
 <tt class="descname">convert_forces_from_native</tt><big>(</big><em>force</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.convert_forces_from_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>In-place conversion of forces array <em>force</em> from native units to base units.</p>
 <p>By default, the input <em>force</em> is modified in place and also returned.</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.7.7.</span></p>
-</div>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.7.</span></p>
 </dd></dl>
 
 <dl class="method">
@@ -350,9 +355,8 @@ according to the CHARMM format. The time between two frames would be
 <tt class="descname">convert_forces_to_native</tt><big>(</big><em>force</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.convert_forces_to_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>In-place conversion of force array <em>force</em> from base units to native units.</p>
 <p>By default, the input <em>force</em> is modified in place and also returned.</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.7.7.</span></p>
-</div>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.7.</span></p>
 </dd></dl>
 
 <dl class="method">
@@ -360,12 +364,11 @@ according to the CHARMM format. The time between two frames would be
 <tt class="descname">convert_pos_from_native</tt><big>(</big><em>x</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.convert_pos_from_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>In-place conversion of coordinate array x from native units to base units.</p>
 <p>By default, the input <em>x</em> is modified in place and also returned.</p>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
 modified copy is returned <em>unless</em> no conversion takes
 place, in which case the reference to the unmodified <em>x</em> is
 returned.</p>
-</div>
 </dd></dl>
 
 <dl class="method">
@@ -373,12 +376,11 @@ returned.</p>
 <tt class="descname">convert_pos_to_native</tt><big>(</big><em>x</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.convert_pos_to_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>Conversion of coordinate array x from base units to native units.</p>
 <p>By default, the input <em>x</em> is modified in place and also returned.</p>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
 modified copy is returned <em>unless</em> no conversion takes
 place, in which case the reference to the unmodified <em>x</em> is
 returned.</p>
-</div>
 </dd></dl>
 
 <dl class="method">
@@ -389,12 +391,11 @@ returned.</p>
 returned (although note that scalar values <em>t</em> are passed by
 value in Python and hence an in-place modification has no
 effect on the caller.)</p>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
 modified copy is returned <em>unless</em> no conversion takes
 place, in which case the reference to the unmodified <em>x</em> is
 returned.</p>
-</div>
 </dd></dl>
 
 <dl class="method">
@@ -405,12 +406,11 @@ returned.</p>
 returned. (Also note that scalar values <em>t</em> are passed by
 value in Python and hence an in-place modification has no
 effect on the caller.)</p>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
 modified copy is returned <em>unless</em> no conversion takes
 place, in which case the reference to the unmodified <em>x</em> is
 returned.</p>
-</div>
 </dd></dl>
 
 <dl class="method">
@@ -418,9 +418,8 @@ returned.</p>
 <tt class="descname">convert_velocities_from_native</tt><big>(</big><em>v</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.convert_velocities_from_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>In-place conversion of velocities array <em>v</em> from native units to base units.</p>
 <p>By default, the input <em>v</em> is modified in place and also returned.</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.7.5.</span></p>
-</div>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.5.</span></p>
 </dd></dl>
 
 <dl class="method">
@@ -428,9 +427,8 @@ returned.</p>
 <tt class="descname">convert_velocities_to_native</tt><big>(</big><em>v</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.convert_velocities_to_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>In-place conversion of coordinate array <em>v</em> from base units to native units.</p>
 <p>By default, the input <em>v</em> is modified in place and also returned.</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.7.5.</span></p>
-</div>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.5.</span></p>
 </dd></dl>
 
 <dl class="method">
@@ -441,7 +439,7 @@ returned.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>timeseries</em></dt>
 <dd><p class="first last"><a class="reference internal" href="../core/Timeseries.html#MDAnalysis.core.Timeseries.TimeseriesCollection" title="MDAnalysis.core.Timeseries.TimeseriesCollection"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.Timeseries.TimeseriesCollection</span></tt></a></p>
 </dd>
@@ -495,7 +493,7 @@ returned.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>asel</em></dt>
 <dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a> object</p>
 </dd>
@@ -529,17 +527,16 @@ coordinates)</p>
 <em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.DCD.</tt><tt class="descname">DCDWriter</tt><big>(</big><em>filename</em>, <em>numatoms</em>, <em>start=0</em>, <em>step=1</em>, <em>delta=20.45482949774598</em>, <em>dt=None</em>, <em>remarks='Created by DCDWriter'</em>, <em>convert_units=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/DCD.html#DCDWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Writes to a DCD file</p>
 <p>Typical usage:</p>
-<div class="highlight-python"><div class="highlight"><pre>with DCDWriter(&quot;new.dcd&quot;, u.atoms.numberOfAtoms()) as w:
+<div class="highlight-python"><pre>with DCDWriter("new.dcd", u.atoms.numberOfAtoms()) as w:
     for ts in u.trajectory
-        w.write_next_timestep(ts)
-</pre></div>
+        w.write_next_timestep(ts)</pre>
 </div>
 <p>Keywords are available to set some of the low-level attributes of the DCD.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Methods:</th><td class="field-body"><tt class="docutils literal"><span class="pre">d</span> <span class="pre">=</span> <span class="pre">DCDWriter(dcdfilename,</span> <span class="pre">numatoms,</span> <span class="pre">start,</span> <span class="pre">step,</span> <span class="pre">delta,</span> <span class="pre">remarks)</span></tt></td>
+<tr class="field-odd field"><th class="field-name">Methods :</th><td class="field-body"><tt class="docutils literal"><span class="pre">d</span> <span class="pre">=</span> <span class="pre">DCDWriter(dcdfilename,</span> <span class="pre">numatoms,</span> <span class="pre">start,</span> <span class="pre">step,</span> <span class="pre">delta,</span> <span class="pre">remarks)</span></tt></td>
 </tr>
 </tbody>
 </table>
@@ -625,7 +622,7 @@ record &#8220;There are dt ps between each frame&#8221;.</p>
 <dt id="MDAnalysis.coordinates.DCD.DCDWriter.convert_dimensions_to_unitcell">
 <tt class="descname">convert_dimensions_to_unitcell</tt><big>(</big><em>ts, _ts_order=[0, 2, 5, 4, 3, 1]</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/DCD.html#DCDWriter.convert_dimensions_to_unitcell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.convert_dimensions_to_unitcell" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read dimensions from timestep <em>ts</em> and return appropriate native unitcell.</p>
-<div class="admonition seealso">
+<div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><a class="reference internal" href="#MDAnalysis.coordinates.DCD.Timestep.dimensions" title="MDAnalysis.coordinates.DCD.Timestep.dimensions"><tt class="xref py py-attr docutils literal"><span class="pre">Timestep.dimensions</span></tt></a></p>
 </div>
@@ -636,9 +633,8 @@ record &#8220;There are dt ps between each frame&#8221;.</p>
 <tt class="descname">convert_forces_from_native</tt><big>(</big><em>force</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.convert_forces_from_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>In-place conversion of forces array <em>force</em> from native units to base units.</p>
 <p>By default, the input <em>force</em> is modified in place and also returned.</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.7.7.</span></p>
-</div>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.7.</span></p>
 </dd></dl>
 
 <dl class="method">
@@ -646,9 +642,8 @@ record &#8220;There are dt ps between each frame&#8221;.</p>
 <tt class="descname">convert_forces_to_native</tt><big>(</big><em>force</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.convert_forces_to_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>In-place conversion of force array <em>force</em> from base units to native units.</p>
 <p>By default, the input <em>force</em> is modified in place and also returned.</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.7.7.</span></p>
-</div>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.7.</span></p>
 </dd></dl>
 
 <dl class="method">
@@ -656,12 +651,11 @@ record &#8220;There are dt ps between each frame&#8221;.</p>
 <tt class="descname">convert_pos_from_native</tt><big>(</big><em>x</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.convert_pos_from_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>In-place conversion of coordinate array x from native units to base units.</p>
 <p>By default, the input <em>x</em> is modified in place and also returned.</p>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
 modified copy is returned <em>unless</em> no conversion takes
 place, in which case the reference to the unmodified <em>x</em> is
 returned.</p>
-</div>
 </dd></dl>
 
 <dl class="method">
@@ -669,12 +663,11 @@ returned.</p>
 <tt class="descname">convert_pos_to_native</tt><big>(</big><em>x</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.convert_pos_to_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>Conversion of coordinate array x from base units to native units.</p>
 <p>By default, the input <em>x</em> is modified in place and also returned.</p>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
 modified copy is returned <em>unless</em> no conversion takes
 place, in which case the reference to the unmodified <em>x</em> is
 returned.</p>
-</div>
 </dd></dl>
 
 <dl class="method">
@@ -685,12 +678,11 @@ returned.</p>
 returned (although note that scalar values <em>t</em> are passed by
 value in Python and hence an in-place modification has no
 effect on the caller.)</p>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
 modified copy is returned <em>unless</em> no conversion takes
 place, in which case the reference to the unmodified <em>x</em> is
 returned.</p>
-</div>
 </dd></dl>
 
 <dl class="method">
@@ -701,12 +693,11 @@ returned.</p>
 returned. (Also note that scalar values <em>t</em> are passed by
 value in Python and hence an in-place modification has no
 effect on the caller.)</p>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
 modified copy is returned <em>unless</em> no conversion takes
 place, in which case the reference to the unmodified <em>x</em> is
 returned.</p>
-</div>
 </dd></dl>
 
 <dl class="method">
@@ -714,9 +705,8 @@ returned.</p>
 <tt class="descname">convert_velocities_from_native</tt><big>(</big><em>v</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.convert_velocities_from_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>In-place conversion of velocities array <em>v</em> from native units to base units.</p>
 <p>By default, the input <em>v</em> is modified in place and also returned.</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.7.5.</span></p>
-</div>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.5.</span></p>
 </dd></dl>
 
 <dl class="method">
@@ -724,9 +714,8 @@ returned.</p>
 <tt class="descname">convert_velocities_to_native</tt><big>(</big><em>v</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.convert_velocities_to_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>In-place conversion of coordinate array <em>v</em> from base units to native units.</p>
 <p>By default, the input <em>v</em> is modified in place and also returned.</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.7.5.</span></p>
-</div>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.5.</span></p>
 </dd></dl>
 
 <dl class="method">
@@ -740,7 +729,7 @@ returned.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>criteria</em></dt>
 <dd><p class="first last">dictionary containing the <em>max</em> and <em>min</em> values in native units</p>
 </dd>
@@ -750,7 +739,7 @@ returned.</p>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">boolean</p>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">boolean</p>
 </td>
 </tr>
 </tbody>
@@ -775,11 +764,10 @@ provided when setting up the trajectory.</p>
 <tt class="descname">write_next_timestep</tt><big>(</big><em>ts=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/DCD.html#DCDWriter.write_next_timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.write_next_timestep" title="Permalink to this definition">¶</a></dt>
 <dd><p>write a new timestep to the dcd file</p>
 <p><em>ts</em> - timestep object containing coordinates to be written to dcd file</p>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.7.5: </span>Raises <tt class="xref py py-exc docutils literal"><span class="pre">ValueError</span></tt> instead of generic <tt class="xref py py-exc docutils literal"><span class="pre">Exception</span></tt>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.7.5: </span>Raises <tt class="xref py py-exc docutils literal"><span class="pre">ValueError</span></tt> instead of generic <tt class="xref py py-exc docutils literal"><span class="pre">Exception</span></tt>
 if wrong number of atoms supplied and <tt class="xref py py-exc docutils literal"><span class="pre">NoDataError</span></tt>
 if no coordinates to be written.</p>
-</div>
 </dd></dl>
 
 </dd></dl>
@@ -802,24 +790,24 @@ if no coordinates to be written.</p>
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="DMS.html" title="5.7. DESRES file format — MDAnalysis.coordinates.DMS"
+          <a href="DMS.html" title="5.5. DESRES file format — MDAnalysis.coordinates.DMS"
              >next</a> |</li>
         <li class="right" >
-          <a href="CRD.html" title="5.4. CRD structure files in MDAnalysis — MDAnalysis.coordinates.CRD"
+          <a href="CRD.html" title="5.2. CRD structure files in MDAnalysis — MDAnalysis.coordinates.CRD"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.2-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.9.0-dev documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2005-2014, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
-    David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański,
+    David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

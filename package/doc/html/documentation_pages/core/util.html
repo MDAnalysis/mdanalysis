@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -6,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>7.9. Helper functions — MDAnalysis.core.util &mdash; MDAnalysis 0.8.2-dev documentation</title>
+    <title>7.9. Helper functions — MDAnalysis.core.util &mdash; MDAnalysis 0.9.0-dev documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.2-dev',
+        VERSION:     '0.9.0-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +27,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.2-dev documentation"
+          title="Search within MDAnalysis 0.9.0-dev documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.2-dev documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.9.0-dev documentation" href="../../index.html" />
     <link rel="up" title="7. Core modules" href="../core_modules.html" />
     <link rel="next" title="7.10. Setting up logging — MDAnalysis.core.log" href="log.html" />
     <link rel="prev" title="7.8. Constants and unit conversion — MDAnalysis.core.units" href="units.html" /> 
@@ -49,7 +51,7 @@
         <li class="right" >
           <a href="units.html" title="7.8. Constants and unit conversion — MDAnalysis.core.units"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.2-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.9.0-dev documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" accesskey="U">7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -75,10 +77,10 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="units.html"
-                        title="previous chapter">7.8. Constants and unit conversion &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.units</span></tt></a></p>
+                        title="previous chapter">7.8. Constants and unit conversion &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.core.units</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="log.html"
-                        title="next chapter">7.10. Setting up logging &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.log</span></tt></a></p>
+                        title="next chapter">7.10. Setting up logging &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.core.log</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/core/util.txt"
@@ -118,7 +120,7 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>name</em></dt>
 <dd><p class="first last">filename; extension is replaced unless keep=True;
 <em>name</em> can also be a <a class="reference internal" href="#MDAnalysis.core.util.NamedStream" title="MDAnalysis.core.util.NamedStream"><tt class="xref py py-class docutils literal"><span class="pre">NamedStream</span></tt></a> (and its
@@ -138,9 +140,8 @@
 </tr>
 </tbody>
 </table>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.8.2: </span>Also permits <a class="reference internal" href="#MDAnalysis.core.util.NamedStream" title="MDAnalysis.core.util.NamedStream"><tt class="xref py py-class docutils literal"><span class="pre">NamedStream</span></tt></a> to pass through.</p>
-</div>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.9.0: </span>Also permits <a class="reference internal" href="#MDAnalysis.core.util.NamedStream" title="MDAnalysis.core.util.NamedStream"><tt class="xref py py-class docutils literal"><span class="pre">NamedStream</span></tt></a> to pass through.</p>
 </dd></dl>
 
 <dl class="function">
@@ -163,7 +164,7 @@ default, a stream is reset to its start if possible (via
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>datasource</em></dt>
 <dd><p class="first last">a file (from <tt class="xref py py-class docutils literal"><span class="pre">file</span></tt> or <a class="reference external" href="http://docs.python.org/library/functions.html#open" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">open()</span></tt></a>) or a stream (e.g. from
 <a class="reference external" href="http://docs.python.org/library/urllib2.html#urllib2.urlopen" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">urllib2.urlopen()</span></tt></a> or <tt class="xref py py-class docutils literal"><span class="pre">cStringIO.StringIO</span></tt>)</p>
@@ -178,19 +179,18 @@ only the first letter is looked at) [<tt class="docutils literal"><span class="p
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">tuple <tt class="docutils literal"><span class="pre">stream</span></tt> which is a file-like object</p>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">tuple <tt class="docutils literal"><span class="pre">stream</span></tt> which is a file-like object</p>
 </td>
 </tr>
 </tbody>
 </table>
-<div class="admonition seealso">
+<div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><a class="reference internal" href="#MDAnalysis.core.util.openany" title="MDAnalysis.core.util.openany"><tt class="xref py py-func docutils literal"><span class="pre">openany()</span></tt></a> to be used with the <a class="reference external" href="http://docs.python.org/reference/compound_stmts.html#with" title="(in Python v2.7)"><tt class="xref std std-keyword docutils literal"><span class="pre">with</span></tt></a> statement.</p>
 </div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.8.2: </span>Only returns the <tt class="docutils literal"><span class="pre">stream</span></tt> and tries to set <tt class="docutils literal"><span class="pre">stream.name</span> <span class="pre">=</span> <span class="pre">filename</span></tt> instead of the previous
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.9.0: </span>Only returns the <tt class="docutils literal"><span class="pre">stream</span></tt> and tries to set <tt class="docutils literal"><span class="pre">stream.name</span> <span class="pre">=</span> <span class="pre">filename</span></tt> instead of the previous
 behavior to return a tuple <tt class="docutils literal"><span class="pre">(stream,</span> <span class="pre">filename)</span></tt>.</p>
-</div>
 </dd></dl>
 
 <dl class="function">
@@ -315,7 +315,7 @@ the keyword <em>reset</em> is set to <tt class="docutils literal"><span class="p
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>stream</em></dt>
 <dd><p class="first last">open stream (e.g. <tt class="xref py py-class docutils literal"><span class="pre">file</span></tt> or <a class="reference external" href="http://docs.python.org/library/stringio.html#cStringIO.StringIO" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">cStringIO.StringIO()</span></tt></a>)</p>
 </dd>
@@ -325,7 +325,7 @@ the keyword <em>reset</em> is set to <tt class="docutils literal"><span class="p
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-even field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>reset</em></dt>
 <dd><p class="first last">start the stream from the beginning (either <a class="reference internal" href="#MDAnalysis.core.util.NamedStream.reset" title="MDAnalysis.core.util.NamedStream.reset"><tt class="xref py py-meth docutils literal"><span class="pre">reset()</span></tt></a> or <a class="reference internal" href="#MDAnalysis.core.util.NamedStream.seek" title="MDAnalysis.core.util.NamedStream.seek"><tt class="xref py py-meth docutils literal"><span class="pre">seek()</span></tt></a>)
 when the class instance is constructed [<tt class="docutils literal"><span class="pre">True</span></tt>]</p>
@@ -340,9 +340,8 @@ the stream</strong> [<tt class="docutils literal"><span class="pre">False</span>
 </tr>
 </tbody>
 </table>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.8.2.</span></p>
-</div>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.9.0.</span></p>
 <dl class="method">
 <dt id="MDAnalysis.core.util.NamedStream.close">
 <tt class="descname">close</tt><big>(</big><em>force=False</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#NamedStream.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.NamedStream.close" title="Permalink to this definition">¶</a></dt>
@@ -411,7 +410,7 @@ negative</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the new absolute position.</td>
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body">the new absolute position.</td>
 </tr>
 </tbody>
 </table>
@@ -460,7 +459,7 @@ supplied). The current file position is not changed.</p>
 <li><tt class="docutils literal"><span class="pre">read()</span></tt>, <tt class="docutils literal"><span class="pre">readline()</span></tt>, <tt class="docutils literal"><span class="pre">readlines()</span></tt></li>
 <li><tt class="docutils literal"><span class="pre">write()</span></tt>, <tt class="docutils literal"><span class="pre">writeline()</span></tt>, <tt class="docutils literal"><span class="pre">writelines()</span></tt></li>
 </ul>
-<div class="admonition seealso">
+<div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><a class="reference external" href="http://docs.python.org/library/io.html#module-io" title="(in Python v2.7)"><tt class="xref py py-mod docutils literal"><span class="pre">io</span></tt></a></p>
 </div>
@@ -468,21 +467,20 @@ supplied). The current file position is not changed.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>obj</em></dt>
 <dd><p class="first last">stream or string</p>
 </dd>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">True</span></tt> is <em>obj</em> is a stream, <tt class="docutils literal"><span class="pre">False</span></tt> otherwise</p>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">True</span></tt> is <em>obj</em> is a stream, <tt class="docutils literal"><span class="pre">False</span></tt> otherwise</p>
 </td>
 </tr>
 </tbody>
 </table>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.8.2.</span></p>
-</div>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.9.0.</span></p>
 </dd></dl>
 
 </div>
@@ -541,10 +539,10 @@ supplied). The current file position is not changed.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">dict with totallength (in chars), repeat, length,
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body">dict with totallength (in chars), repeat, length,
 format, decimals</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><tt class="xref py py-exc docutils literal"><span class="pre">ValueError</span></tt> if the <em>edit_descriptor</em> is not recognized
+<tr class="field-even field"><th class="field-name">Raises :</th><td class="field-body"><tt class="xref py py-exc docutils literal"><span class="pre">ValueError</span></tt> if the <em>edit_descriptor</em> is not recognized
 and cannot be parsed</td>
 </tr>
 </tbody>
@@ -566,14 +564,14 @@ forms.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">list of entries with appropriate types</td>
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body">list of entries with appropriate types</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><tt class="xref py py-exc docutils literal"><span class="pre">ValueError</span></tt> if any of the conversions cannot be made
+<tr class="field-even field"><th class="field-name">Raises :</th><td class="field-body"><tt class="xref py py-exc docutils literal"><span class="pre">ValueError</span></tt> if any of the conversions cannot be made
 (e.g. space for an int)</td>
 </tr>
 </tbody>
 </table>
-<div class="admonition seealso">
+<div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><a class="reference internal" href="#MDAnalysis.core.util.FORTRANReader.number_of_matches" title="MDAnalysis.core.util.FORTRANReader.number_of_matches"><tt class="xref py py-meth docutils literal"><span class="pre">FORTRANReader.number_of_matches()</span></tt></a></p>
 </div>
@@ -606,7 +604,7 @@ forms.</p>
 <dt id="MDAnalysis.core.util.convert_aa_code">
 <tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">convert_aa_code</tt><big>(</big><em>x</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#convert_aa_code"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.convert_aa_code" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts between 3-letter and 1-letter amino acid codes.</p>
-<div class="admonition seealso">
+<div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last">Data are defined in <tt class="xref py py-data docutils literal"><span class="pre">amino_acid_codes</span></tt> and <tt class="xref py py-data docutils literal"><span class="pre">inverse_aa_codes</span></tt>.</p>
 </div>
@@ -631,13 +629,13 @@ forms.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Argument:</th><td class="field-body">The <em>residue</em> must contain a 1-letter or 3-letter or
+<tr class="field-odd field"><th class="field-name">Argument :</th><td class="field-body">The <em>residue</em> must contain a 1-letter or 3-letter or
 4-letter residue string, a number (the resid) and
 optionally an atom identifier, which must be separate
 from the residue with a colon (&#8221;:&#8221;). White space is
 allowed in between.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><cite>(3-letter aa string, resid, atomname)</cite>; known 1-letter
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><cite>(3-letter aa string, resid, atomname)</cite>; known 1-letter
 aa codes are converted to 3-letter codes</td>
 </tr>
 </tbody>
@@ -685,18 +683,16 @@ otherwise the original object is passed back.</p>
 <tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">dihedral</tt><big>(</big><em>ab</em>, <em>bc</em>, <em>cd</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#dihedral"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.dihedral" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the dihedral angle in radians between vectors connecting A,B,C,D.</p>
 <p>The dihedral measures the rotation around bc:</p>
-<div class="highlight-python"><div class="highlight"><pre>  ab
+<div class="highlight-python"><pre>  ab
 A----&gt;B
        \ bc
-       _\&#39;
+       _\'
          C----&gt;D
-           cd
-</pre></div>
+           cd</pre>
 </div>
 <p>The dihedral angle is restricted to the range -π &lt;= x &lt;= π.</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.8.</span></p>
-</div>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.8.</span></p>
 </dd></dl>
 
 <dl class="function">
@@ -734,9 +730,8 @@ def size(self):</p>
 size = 10.0</div></blockquote>
 </dd>
 </dl>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.8.2.</span></p>
-</div>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.9.0.</span></p>
 </dd></dl>
 
 <p class="rubric">Footnotes</p>
@@ -779,19 +774,19 @@ close it.</td></tr>
         <li class="right" >
           <a href="units.html" title="7.8. Constants and unit conversion — MDAnalysis.core.units"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.2-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.9.0-dev documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" >7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2005-2014, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
-    David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański,
+    David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

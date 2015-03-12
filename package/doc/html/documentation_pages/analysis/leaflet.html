@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -6,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>3.3.2. Leaflet identification — MDAnalysis.analysis.leaflet &mdash; MDAnalysis 0.8.2-dev documentation</title>
+    <title>3.3.2. Leaflet identification — MDAnalysis.analysis.leaflet &mdash; MDAnalysis 0.9.0-dev documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.2-dev',
+        VERSION:     '0.9.0-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +27,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.2-dev documentation"
+          title="Search within MDAnalysis 0.9.0-dev documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.2-dev documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.9.0-dev documentation" href="../../index.html" />
     <link rel="up" title="3. Analysis modules" href="../analysis_modules.html" />
     <link rel="next" title="3.4.1. Nucleic acid analysis — MDAnalysis.analysis.nuclinfo" href="nuclinfo.html" />
     <link rel="prev" title="3.3.1. Generation and Analysis of HOLE pore profiles — MDAnalysis.analysis.hole" href="hole.html" /> 
@@ -49,7 +51,7 @@
         <li class="right" >
           <a href="hole.html" title="3.3.1. Generation and Analysis of HOLE pore profiles — MDAnalysis.analysis.hole"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.2-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.9.0-dev documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" accesskey="U">3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -60,7 +62,7 @@
             </a></p>
   <h4>Previous topic</h4>
   <p class="topless"><a href="hole.html"
-                        title="previous chapter">3.3.1. Generation and Analysis of HOLE pore profiles &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.hole</span></tt></a></p>
+                        title="previous chapter">3.3.1. Generation and Analysis of HOLE pore profiles &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.analysis.hole</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="nuclinfo.html"
                         title="next chapter">3.4.1. Nucleic acid analysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.nuclinfo</span></tt></a></p>
@@ -153,7 +155,7 @@ instance. Similarly, all atoms in the first leaflet are then</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>universe</em></dt>
 <dd><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></tt> or a PDB file name.</p>
 </dd>
@@ -166,7 +168,7 @@ universe.atoms.PO4 or &#8220;name PO4&#8221; or &#8220;name P*&#8221;</p>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-even field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>cutoff</em></dt>
 <dd><p class="first last">head group-defining atoms within a distance of <em>cutoff</em>
 Angstroms are deemed to be in the same leaflet [15.0]</p>
@@ -197,7 +199,7 @@ implementation [<tt class="docutils literal"><span class="pre">None</span></tt>]
 <tt class="descname">groups</tt><big>(</big><em>component_index=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/leaflet.html#LeafletFinder.groups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.leaflet.LeafletFinder.groups" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.AtomGroup</span></tt></a> for <em>component_index</em>.</p>
 <p>If no argument is supplied, then a list of all leaflet groups is returned.</p>
-<div class="admonition seealso">
+<div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><a class="reference internal" href="#MDAnalysis.analysis.leaflet.LeafletFinder.group" title="MDAnalysis.analysis.leaflet.LeafletFinder.group"><tt class="xref py py-meth docutils literal"><span class="pre">LeafletFinder.group()</span></tt></a> and <a class="reference internal" href="#MDAnalysis.analysis.leaflet.LeafletFinder.groups_iter" title="MDAnalysis.analysis.leaflet.LeafletFinder.groups_iter"><tt class="xref py py-meth docutils literal"><span class="pre">LeafletFinder.groups_iter()</span></tt></a></p>
 </div>
@@ -253,7 +255,7 @@ balanced numbers of lipids.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>universe</em></dt>
 <dd><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></tt> instance</p>
 </dd>
@@ -272,10 +274,10 @@ balanced numbers of lipids.</p>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><tt class="docutils literal"><span class="pre">(cutoff,N)</span></tt> optimum cutoff and number of groups found</p>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first"><tt class="docutils literal"><span class="pre">(cutoff,N)</span></tt> optimum cutoff and number of groups found</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last">can die in various ways if really no appropriate number of groups
+<tr class="field-odd field"><th class="field-name">Raises :</th><td class="field-body"><p class="first last">can die in various ways if really no appropriate number of groups
 can be found; needs to be made more robust</p>
 </td>
 </tr>
@@ -306,19 +308,19 @@ can be found; needs to be made more robust</p>
         <li class="right" >
           <a href="hole.html" title="3.3.1. Generation and Analysis of HOLE pore profiles — MDAnalysis.analysis.hole"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.2-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.9.0-dev documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" >3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2005-2014, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
-    David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański,
+    David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

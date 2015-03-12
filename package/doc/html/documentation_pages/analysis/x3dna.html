@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -6,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>3.4.2. Generation and Analysis of X3DNA helicoidal parameter profiles — MDAnalysis.analysis.x3dna &mdash; MDAnalysis 0.8.2-dev documentation</title>
+    <title>3.4.2. Generation and Analysis of X3DNA helicoidal parameter profiles — MDAnalysis.analysis.x3dna &mdash; MDAnalysis 0.9.0-dev documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.8.2-dev',
+        VERSION:     '0.9.0-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +27,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.2-dev documentation"
+          title="Search within MDAnalysis 0.9.0-dev documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.2-dev documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.9.0-dev documentation" href="../../index.html" />
     <link rel="up" title="3. Analysis modules" href="../analysis_modules.html" />
     <link rel="next" title="3.5.1. Elastic network analysis of MD trajectories — MDAnalysis.analysis.gnm" href="gnm.html" />
     <link rel="prev" title="3.4.1. Nucleic acid analysis — MDAnalysis.analysis.nuclinfo" href="nuclinfo.html" /> 
@@ -49,7 +51,7 @@
         <li class="right" >
           <a href="nuclinfo.html" title="3.4.1. Nucleic acid analysis — MDAnalysis.analysis.nuclinfo"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.2-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.9.0-dev documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" accesskey="U">3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -74,10 +76,10 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="nuclinfo.html"
-                        title="previous chapter">3.4.1. Nucleic acid analysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.nuclinfo</span></tt></a></p>
+                        title="previous chapter">3.4.1. Nucleic acid analysis &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.analysis.nuclinfo</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="gnm.html"
-                        title="next chapter">3.5.1. Elastic network analysis of MD trajectories &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.gnm</span></tt></a></p>
+                        title="next chapter">3.5.1. Elastic network analysis of MD trajectories &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.analysis.gnm</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/analysis/x3dna.txt"
@@ -119,7 +121,7 @@
 </tbody>
 </table>
 <p>With the help of this module, <a class="reference external" href="http://x3dna.org/">X3DNA</a> can be run on frames in a trajectory. Data
-can be combined and analyzed. <a class="reference external" href="http://x3dna.org/">X3DNA</a> <a class="reference internal" href="#lu2003" id="id1">[Lu2003]</a> <a class="reference internal" href="#lu2008" id="id2">[Lu2008]</a> must be installed
+can be combined and analyzed. <a class="reference external" href="http://x3dna.org/">X3DNA</a> <a class="reference internal" href="#lu2003">[Lu2003]</a> <a class="reference internal" href="#lu2008">[Lu2008]</a> must be installed
 separately.</p>
 <p class="rubric">References</p>
 <table class="docutils citation" frame="void" id="lu2003" rules="none">
@@ -190,15 +192,14 @@ with keyword arguments. For further details on <a class="reference external" hre
 </div></blockquote>
 <p>The class also provides some simple plotting functions of the collected
 data such as <a class="reference internal" href="#MDAnalysis.analysis.x3dna.X3DNA.plot" title="MDAnalysis.analysis.x3dna.X3DNA.plot"><tt class="xref py py-meth docutils literal"><span class="pre">X3DNA.plot()</span></tt></a> or <tt class="xref py py-meth docutils literal"><span class="pre">X3DNA.plot3D()</span></tt>.</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.8.</span></p>
-</div>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.8.</span></p>
 <p>Set up parameters to run <a class="reference external" href="http://x3dna.org/">X3DNA</a> on PDB <em>filename</em>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><p class="first"><em>filename</em></p>
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><p class="first"><em>filename</em></p>
 <blockquote>
 <div><p>The <em>filename</em> is used as input for X3DNA in the &#8220;xdna_ensemble&#8221;
 command.  It specifies the name of a PDB coordinate file
@@ -210,7 +211,7 @@ of the <em>ignore_residues</em> keyword.</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><p class="first"><em>executable</em></p>
+<tr class="field-even field"><th class="field-name">Keywords :</th><td class="field-body"><p class="first"><em>executable</em></p>
 <blockquote>
 <div><p>Path to the <strong class="program">xdna_ensemble</strong> executable directories
 (e.g. <tt class="docutils literal"><span class="pre">/opt/x3dna/2.1</span> <span class="pre">and</span> <span class="pre">/opt/x3dna/2.1/bin</span></tt>) must be set
@@ -252,7 +253,7 @@ saved to a gzipped data file.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>run</em></dt>
 <dd><p class="first last">identifier, free form [1]</p>
 </dd>
@@ -284,15 +285,13 @@ Stretch,Stagger,Buckle,Propeller,Opening,Shift,Slide,Rise,Tilt,Roll,Twist) for e
 <dl class="method">
 <dt id="MDAnalysis.analysis.x3dna.X3DNA.plot">
 <tt class="descname">plot</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.x3dna.X3DNA.plot" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>Plot base parameter profiles  in a 1D graph</dt>
-<dd>(plotting of the mean and standard deviation parameter value for each individual base pair).</dd>
-</dl>
+<dd><p>Plot base parameter profiles  in a 1D graph
+(plotting of the mean and standard deviation parameter value for each individual base pair).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Keywords:</th><td class="field-body"><em>Not available at this time</em></td>
+<tr class="field-odd field"><th class="field-name">Keywords :</th><td class="field-body"><em>Not available at this time</em></td>
 </tr>
 </tbody>
 </table>
@@ -345,7 +344,7 @@ each frame and runs X3DNA on the frame.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>universe</em></dt>
 <dd><p class="first last">The input trajectory as part of a
 <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a>. trajectory is
@@ -394,15 +393,13 @@ Stretch,Stagger,Buckle,Propeller,Opening,Shift,Slide,Rise,Tilt,Roll,Twist) for e
 <dl class="method">
 <dt id="MDAnalysis.analysis.x3dna.X3DNAtraj.plot">
 <tt class="descname">plot</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.x3dna.X3DNAtraj.plot" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>Plot base parameter profiles  in a 1D graph</dt>
-<dd>(plotting of the mean and standard deviation parameter value for each individual base pair).</dd>
-</dl>
+<dd><p>Plot base parameter profiles  in a 1D graph
+(plotting of the mean and standard deviation parameter value for each individual base pair).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Keywords:</th><td class="field-body"><em>Not available at this time</em></td>
+<tr class="field-odd field"><th class="field-name">Keywords :</th><td class="field-body"><em>Not available at this time</em></td>
 </tr>
 </tbody>
 </table>
@@ -457,9 +454,8 @@ Buckle,Propeller,Opening,Shift,Slide,Rise,Tilt,Roll,Twist) for each nucleic acid
 <em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.x3dna.</tt><tt class="descname">ApplicationError</tt><a class="headerlink" href="#MDAnalysis.analysis.x3dna.ApplicationError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Raised when an external application failed.</p>
 <p>The error code is specific for the application.</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.7.7.</span></p>
-</div>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.7.</span></p>
 </dd></dl>
 
 </div>
@@ -486,19 +482,19 @@ Buckle,Propeller,Opening,Shift,Slide,Rise,Tilt,Roll,Twist) for each nucleic acid
         <li class="right" >
           <a href="nuclinfo.html" title="3.4.1. Nucleic acid analysis — MDAnalysis.analysis.nuclinfo"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.8.2-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.9.0-dev documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" >3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2005-2014, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
-    David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański,
+    David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

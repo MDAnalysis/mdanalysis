@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -6,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.coordinates.xdrfile.XTC &mdash; MDAnalysis 0.8.1rc1 documentation</title>
+    <title>MDAnalysis.coordinates.xdrfile.XTC &mdash; MDAnalysis 0.9.0-dev documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '0.8.1rc1',
+        VERSION:     '0.9.0-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,12 +25,12 @@
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.8.1rc1 documentation"
+          title="Search within MDAnalysis 0.9.0-dev documentation"
           href="../../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.8.1rc1 documentation" href="../../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.9.0-dev documentation" href="../../../../index.html" />
     <link rel="up" title="MDAnalysis" href="../../../MDAnalysis.html" /> 
   </head>
   <body>
@@ -41,7 +43,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">MDAnalysis 0.8.1rc1 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">MDAnalysis 0.9.0-dev documentation</a> &raquo;</li>
           <li><a href="../../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
       </ul>
@@ -73,24 +75,30 @@
           <div class="body">
             
   <h1>Source code for MDAnalysis.coordinates.xdrfile.XTC</h1><div class="highlight"><pre>
-<span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-</span>
-<span class="c"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
+<span class="c"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8</span>
 <span class="c">#</span>
 <span class="c"># MDAnalysis --- http://mdanalysis.googlecode.com</span>
-<span class="c"># Copyright (c) 2006-2011 Naveen Michaud-Agrawal,</span>
-<span class="c">#               Elizabeth J. Denning, Oliver Beckstein,</span>
-<span class="c">#               and contributors (see website for details)</span>
+<span class="c"># Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein</span>
+<span class="c"># and contributors (see AUTHORS for the full list)</span>
+<span class="c">#</span>
 <span class="c"># Released under the GNU Public Licence, v2 or any higher version</span>
 <span class="c">#</span>
 <span class="c"># Please cite your use of MDAnalysis in published work:</span>
 <span class="c">#</span>
-<span class="c">#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and</span>
-<span class="c">#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of</span>
-<span class="c">#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,</span>
-<span class="c">#     doi:10.1002/jcc.21787</span>
+<span class="c"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c">#</span>
 
-<span class="sd">&quot;&quot;&quot;Reading of `Gromacs XTC trajectories`_.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Gromacs XTC trajectory I/O --- :mod:`MDAnalysis.coordinates.xdrfile.XTC`</span>
+<span class="sd">========================================================================</span>
+
+<span class="sd">Classes for reading and writing of `Gromacs XTC trajectories`_</span>
+<span class="sd">together with supporting code.</span>
+
+<span class="sd">.. note:: Users should access classes from :mod:`MDAnalysis.coordinates.XTC`.</span>
 
 <span class="sd">.. _Gromacs XTC trajectories: http://www.gromacs.org/Documentation/File_Formats/.xtc_File</span>
 <span class="sd">.. _Gromacs: http://www.gromacs.org</span>
@@ -115,19 +123,28 @@
 
 <span class="kn">import</span> <span class="nn">core</span>
 
-<div class="viewcode-block" id="Timestep"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/XTC.html#MDAnalysis.coordinates.xdrfile.XTC.Timestep">[docs]</a><span class="k">class</span> <span class="nc">Timestep</span><span class="p">(</span><span class="n">core</span><span class="o">.</span><span class="n">Timestep</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Timestep"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/XTC.html#MDAnalysis.coordinates.xdrfile.XTC.Timestep">[docs]</a><span class="k">class</span> <span class="nc">Timestep</span><span class="p">(</span><span class="n">core</span><span class="o">.</span><span class="n">Timestep</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Timestep for a Gromacs XTC trajectory.&quot;&quot;&quot;</span>
+
 </div>
-<div class="viewcode-block" id="XTCWriter"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/XTC.html#MDAnalysis.coordinates.xdrfile.XTC.XTCWriter">[docs]</a><span class="k">class</span> <span class="nc">XTCWriter</span><span class="p">(</span><span class="n">core</span><span class="o">.</span><span class="n">TrjWriter</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Write a Gromacs_ XTC trajectory.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="XTCWriter"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/XTC.html#MDAnalysis.coordinates.xdrfile.XTC.XTCWriter">[docs]</a><span class="k">class</span> <span class="nc">XTCWriter</span><span class="p">(</span><span class="n">core</span><span class="o">.</span><span class="n">TrjWriter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Write a Gromacs_ XTC trajectory.</span>
+
+<span class="sd">    .. _Gromacs: http://www.gromacs.org</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">format</span> <span class="o">=</span> <span class="s">&quot;XTC&quot;</span>
+
 </div>
-<div class="viewcode-block" id="XTCReader"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/XTC.html#MDAnalysis.coordinates.xdrfile.XTC.XTCReader">[docs]</a><span class="k">class</span> <span class="nc">XTCReader</span><span class="p">(</span><span class="n">core</span><span class="o">.</span><span class="n">TrjReader</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Read Gromacs_ XTC trajectory.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="XTCReader"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/XTC.html#MDAnalysis.coordinates.xdrfile.XTC.XTCReader">[docs]</a><span class="k">class</span> <span class="nc">XTCReader</span><span class="p">(</span><span class="n">core</span><span class="o">.</span><span class="n">TrjReader</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Read Gromacs_ XTC trajectory.</span>
+
+<span class="sd">    .. _Gromacs: http://www.gromacs.org</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">format</span> <span class="o">=</span> <span class="s">&quot;XTC&quot;</span>
     <span class="n">_Timestep</span> <span class="o">=</span> <span class="n">Timestep</span>
-    <span class="n">_Writer</span> <span class="o">=</span> <span class="n">XTCWriter</span>
-</pre></div></div>
+    <span class="n">_Writer</span> <span class="o">=</span> <span class="n">XTCWriter</span></div>
+</pre></div>
 
           </div>
         </div>
@@ -143,20 +160,20 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">MDAnalysis 0.8.1rc1 documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">MDAnalysis 0.9.0-dev documentation</a> &raquo;</li>
           <li><a href="../../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2013, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2014, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
-    David Caplan, Jan Domański, Xavier Deupi,
+    David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
-    Benjamin Hall, Jinju Lu, Robert McGibbon,
+    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>
