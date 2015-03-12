@@ -13,17 +13,12 @@ if MDAnalysis fails to recognize a coordinate file then the user can
 provide the format in the keyword argument *format* to
 :class:`~MDAnalysis.core.AtomGroup.Universe` to force the format.
 
-Programmers and anyone trying to implement new functionality should read the
-:ref:`Trajectory API` (described in :mod:`MDAnalysis.coordinates`).
-
-.. rubric:: Contents
+.. rubric:: Coordinate formats
 
 .. toctree::
    :maxdepth: 1
 
    coordinates/init
-   coordinates/base
-   coordinates/core
    coordinates/CRD
    coordinates/DCD
    coordinates/DMS
@@ -36,6 +31,20 @@ Programmers and anyone trying to implement new functionality should read the
    coordinates/TRR
    coordinates/XTC
    coordinates/XYZ
-   coordinates/pdbextensions
-   coordinates/libxdrfile2
    coordinates/TRZ
+
+.. rubric:: Coordinate core modules
+
+The remaining pages are primarily of interest to
+developers. Programmers and anyone trying to implement new
+functionality should first read the :ref:`Trajectory API`.
+
+
+.. toctree::
+   :maxdepth: 1
+
+   coordinates/base
+   coordinates/core
+   coordinates/xdrfile
+   coordinates/pdbextensions
+
