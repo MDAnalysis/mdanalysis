@@ -23,10 +23,10 @@ import numpy as np
 import cPickle
 from numpy.testing import *
 from nose.plugins.attrib import attr
-import sys
+import warnings
 
 from .datafiles import PSF, DCD, DCD_empty, PDB_small, XPDB_small, PDB_closed, PDB_multiframe, \
-    PDB, CRD, XTC, XTC_offsets, TRR, TRR_offsets, GRO, DMS, CONECT, \
+    PDB, CRD, XTC, TRR, GRO, DMS, CONECT, \
     XYZ, XYZ_bz2, XYZ_psf, PRM, TRJ, TRJ_bz2, PRMpbc, TRJpbc_bz2, PRMncdf, NCDF, PQR, \
     PDB_sub_dry, TRR_sub_sol, PDB_sub_sol, TRZ, TRZ_psf, LAMMPSdata, LAMMPSdata_mini, \
     PSF_TRICLINIC, DCD_TRICLINIC, PSF_NAMD_TRICLINIC, DCD_NAMD_TRICLINIC
@@ -2051,8 +2051,6 @@ class _GromacsReader(TestCase):
 
 class TestXTCReader(_GromacsReader):
     filename = XTC
-    ref_offsets = np.load(XTC_offsets)
-    ref_offset_file = XTC_offsets
 
 
 class TestXTCReaderClass(TestCase):
@@ -2071,8 +2069,6 @@ class TestXTCReaderClass(TestCase):
 
 class TestTRRReader(_GromacsReader):
     filename = TRR
-    ref_offsets = np.load(TRR_offsets)
-    ref_offset_file = TRR_offsets
 
     @dec.slow
     def test_velocities(self):
@@ -2108,7 +2104,6 @@ class _GromacsReader_offsets(TestCase):
     ref_unitcell = np.array([80.017, 80.017, 80.017, 60., 60., 90.], dtype=np.float32)
     ref_volume = 362270.0  # computed with Gromacs: 362.26999999999998 nm**3 * 1000 A**3/nm**3
     ref_offsets = None
-    ref_offset_file = None
 
     def setUp(self):
         # since offsets are automatically generated in the same directory
@@ -2147,17 +2142,22 @@ class _GromacsReader_offsets(TestCase):
     def test_offsets(self):
         if self.trajectory._TrjReader__offsets is None:
             self.trajectory.numframes
-        assert_array_almost_equal(self.trajectory._TrjReader__offsets, self.ref_offsets, err_msg="wrong frame offsets")
-        # Loading
-        self.trajectory.load_offsets(self.ref_offset_file)
         assert_array_almost_equal(self.trajectory._TrjReader__offsets, self.ref_offsets,
-                                  err_msg="error loading frame offsets")
+                                  err_msg="wrong frame offsets")
+
         # Saving
         self.trajectory.save_offsets(self.outfile_offsets)
         with open(self.outfile_offsets, 'rb') as f:
             saved_offsets = cPickle.load(f)
-        assert_array_almost_equal(self.trajectory._TrjReader__offsets, saved_offsets['offsets'], err_msg="error saving frame offsets")
-        assert_array_almost_equal(self.ref_offsets, saved_offsets['offsets'], err_msg="saved frame offsets don't match the known ones")
+        assert_array_almost_equal(self.trajectory._TrjReader__offsets, saved_offsets['offsets'],
+                                  err_msg="error saving frame offsets")
+        assert_array_almost_equal(self.ref_offsets, saved_offsets['offsets'],
+                                  err_msg="saved frame offsets don't match the known ones")
+
+        # Loading
+        self.trajectory.load_offsets(self.outfile_offsets)
+        assert_array_almost_equal(self.trajectory._TrjReader__offsets, self.ref_offsets,
+                                  err_msg="error loading frame offsets")
 
     @dec.slow
     def test_persistent_offsets_new(self):
@@ -2218,8 +2218,10 @@ class _GromacsReader_offsets(TestCase):
         with open(self.trajectory._offset_filename(), 'wb') as f:
             cPickle.dump(saved_offsets, f)
 
-        u = mda.Universe(self.top, self.traj)
-        assert_equal((u.trajectory._TrjReader__offsets is None), True)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")  # Drop the warnings silently
+            u = mda.Universe(self.top, self.traj)
+            assert_equal((u.trajectory._TrjReader__offsets is None), True)
         
     @dec.slow
     def test_persistent_offsets_size_mismatch(self):
@@ -2230,7 +2232,7 @@ class _GromacsReader_offsets(TestCase):
         # from stored size
         with open(self.trajectory._offset_filename(), 'rb') as f:
             saved_offsets = cPickle.load(f)
-        saved_offsets['size'] = saved_offsets['size'] + 1
+        saved_offsets['size'] += 1
         with open(self.trajectory._offset_filename(), 'wb') as f:
             cPickle.dump(saved_offsets, f)
 
@@ -2246,12 +2248,14 @@ class _GromacsReader_offsets(TestCase):
         # appear to be wrong
         with open(self.trajectory._offset_filename(), 'rb') as f:
             saved_offsets = cPickle.load(f)
-        saved_offsets['offsets'] = saved_offsets['offsets'] + 1
+        saved_offsets['offsets'] += 1
         with open(self.trajectory._offset_filename(), 'wb') as f:
             cPickle.dump(saved_offsets, f)
 
-        u = mda.Universe(self.top, self.traj)
-        assert_equal((u.trajectory._TrjReader__offsets is None), True)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")  # Drop the warnings silently
+            u = mda.Universe(self.top, self.traj)
+            assert_equal((u.trajectory._TrjReader__offsets is None), True)
 
     @dec.slow
     def test_persistent_offsets_readonly(self):
@@ -2291,17 +2295,13 @@ class _GromacsReader_offsets(TestCase):
 
 class TestXTCReader_offsets(_GromacsReader_offsets):
     filename = XTC
-    with open(XTC_offsets, 'rb') as f:
-        ref_offsets = cPickle.load(f)['offsets']
-    ref_offset_file = XTC_offsets
-
+    ref_offsets = np.array([0,  165188,  330364,  495520,  660708,  825872,  991044, 1156212,
+                            1321384, 1486544])
 
 class TestTRRReader_offsets(_GromacsReader_offsets):
     filename = TRR
-    with open(TRR_offsets, 'rb') as f:
-        ref_offsets = cPickle.load(f)['offsets']
-    ref_offset_file = TRR_offsets
-
+    ref_offsets = np.array([0,  1144464,  2288928,  3433392,  4577856,  5722320,
+                       6866784,  8011248,  9155712, 10300176])
 
 class _XDRNoConversion(TestCase):
     filename = None

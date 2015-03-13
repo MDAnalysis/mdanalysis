@@ -651,6 +651,9 @@ class TrjReader(base.Reader):
            can no longer be loaded.
 
         """
+        if not os.path.isfile(filename):  # Return silently if the offset file is not present
+            return
+
         with open(filename, 'rb') as f:
             offsets = cPickle.load(f)
 

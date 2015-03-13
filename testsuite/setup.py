@@ -105,7 +105,7 @@ For details see the report for `Issue 87`_.
                   'data/*.gro', 'data/*.xtc', 'data/*.trr', 'data/*npy',
                   'data/*.crd', 'data/*.xyz',
                   'data/*.prmtop', 'data/*.top', 'data/*.trj', 'data/*.mdcrd', 'data/*.ncdf',
-                  'data/*.pqr', 'data/*.pdbqt', 'data/*.bz2', 'data/.*.pkl',
+                  'data/*.pqr', 'data/*.pdbqt', 'data/*.bz2',
                   'data/*.fasta',
                   'data/*.dms',
                   'data/merge/2zmm/*.pdb',

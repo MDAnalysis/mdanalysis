@@ -14,12 +14,9 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-import MDAnalysis
-import cPickle
-from numpy.testing import *
-import os
-from MDAnalysis.tests.datafiles import XTC, XTC_offsets, TRR, TRR_offsets
+from numpy.testing import TestCase, assert_equal, assert_array_almost_equal
 
+from MDAnalysis.tests.datafiles import XTC, TRR
 import MDAnalysis.coordinates.xdrfile.libxdrfile2 as xdr
 
 # FIXES: test_xdropen: error because assert_ not found in numpy < 1.3
@@ -61,26 +58,13 @@ class TestXTC(TestCase):
 
     def test_numframes_offsets(self):
         numframes, offsets = xdr.read_xtc_numframes(XTC)
-        assert_equal(numframes, 10, "Number of frames in XTC trajectory")
+        desired_offsets = [0,  165188,  330364,  495520,  660708,  825872,  991044,
+                           1156212, 1321384, 1486544]
 
-        with open(XTC_offsets, 'rb') as f:
-            s_offsets = cPickle.load(f)
+        assert_equal(numframes, len(desired_offsets), "Number of frames in XTC trajectory")
 
-        assert_array_almost_equal(offsets, s_offsets['offsets'], err_msg="wrong xtc frame offsets")
+        assert_array_almost_equal(offsets, desired_offsets, err_msg="wrong xtc frame offsets")
 
-    def test_offsets_ctime(self):
-        with open(XTC_offsets, 'rb') as f:
-            s_offsets = cPickle.load(f)
-
-        # check that stored offsets ctime matches that of trajectory file
-        assert_equal(s_offsets['ctime'], os.path.getctime(XTC))
-
-    def test_offsets_size(self):
-        with open(XTC_offsets, 'rb') as f:
-            s_offsets = cPickle.load(f)
-
-        # check that stored offsets size matches that of trajectory file
-        assert_equal(s_offsets['size'], os.path.getsize(XTC))
 
 class TestTRR(TestCase):
     def test_numatoms(self):
@@ -89,24 +73,10 @@ class TestTRR(TestCase):
 
     def test_numframes_offsets(self):
         numframes, offsets = xdr.read_trr_numframes(TRR)
-        assert_equal(numframes, 10, "Number of frames in TRR trajectory")
+        desired_offsets = [0,  1144464,  2288928,  3433392,  4577856,  5722320,
+                           6866784,  8011248,  9155712, 10300176]
 
-        with open(TRR_offsets, 'rb') as f:
-            s_offsets = cPickle.load(f)
+        assert_equal(numframes, len(desired_offsets), "Number of frames in TRR trajectory")
 
-        assert_array_almost_equal(offsets, s_offsets['offsets'], err_msg="wrong trr frame offsets")
-
-    def test_offsets_ctime(self):
-        with open(TRR_offsets, 'rb') as f:
-            s_offsets = cPickle.load(f)
-
-        # check that stored offsets ctime matches that of trajectory file
-        assert_equal(s_offsets['ctime'], os.path.getctime(TRR))
-
-    def test_offsets_size(self):
-        with open(TRR_offsets, 'rb') as f:
-            s_offsets = cPickle.load(f)
-
-        # check that stored offsets size matches that of trajectory file
-        assert_equal(s_offsets['size'], os.path.getsize(TRR))
+        assert_array_almost_equal(offsets, desired_offsets, err_msg="wrong trr frame offsets")
 

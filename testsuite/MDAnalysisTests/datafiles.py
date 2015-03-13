@@ -43,7 +43,7 @@ __all__ = [
     "PDB_helix",
     "XPDB_small",
     "NUCL",  # nucleic acid (PDB)
-    "PDB", "GRO", "XTC", "XTC_offsets", "TRR", "TRR_offsets", "TPR", "GRO_velocity",  # Gromacs (AdK)
+    "PDB", "GRO", "XTC", "TRR", "TPR", "GRO_velocity",  # Gromacs (AdK)
     "PDB_xvf", "TPR_xvf", "TRR_xvf",  # Gromacs coords/veloc/forces (cobrotoxin, OPLS-AA, Gromacs 4.5.5 tpr)
     "TPR400", "TPR402", "TPR403", "TPR404", "TPR405", "TPR406", "TPR407",
     "TPR450", "TPR451", "TPR452", "TPR453", "TPR454", "TPR455", "TPR455Double",
@@ -102,9 +102,7 @@ GRO = resource_filename(__name__, 'data/adk_oplsaa.gro')
 GRO_velocity = resource_filename(__name__, 'data/sample_velocity_file.gro')
 PDB = resource_filename(__name__, 'data/adk_oplsaa.pdb')
 XTC = resource_filename(__name__, 'data/adk_oplsaa.xtc')
-XTC_offsets = resource_filename(__name__, 'data/.adk_oplsaa.xtc_offsets.pkl')
 TRR = resource_filename(__name__, 'data/adk_oplsaa.trr')
-TRR_offsets = resource_filename(__name__, 'data/.adk_oplsaa.trr_offsets.pkl')
 TPR = resource_filename(__name__, 'data/adk_oplsaa.tpr')
 PDB_sub_dry = resource_filename(__name__, 'data/cobrotoxin_dry_neutral_0.pdb')
 TRR_sub_sol = resource_filename(__name__, 'data/cobrotoxin.trr')
