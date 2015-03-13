@@ -254,7 +254,12 @@ class Timestep(object):
         # trajectory format. It can be e.g. six floats representing
         # the box edges and angles or the 6 unique components of the
         # box matrix or the full box matrix.
-        raise NotImplementedError("The Timestep class needs to define how to process _unitcell.")
+        return self._unitcell
+
+
+    @dimensions.setter
+    def dimensions(self, box):
+        self._unitcell[:] = box
 
     @property
     def volume(self):
