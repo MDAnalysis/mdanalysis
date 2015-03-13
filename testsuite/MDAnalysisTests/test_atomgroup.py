@@ -861,9 +861,6 @@ class TestAtomGroupNoTop(TestCase):
         ag._rebuild_caches()
         assert_equal('atoms' in ag._cache, True)
 
-    def test_dimensions(self):
-        assert_raises(AttributeError, getattr, self.u.atoms[:10], "dimensions")
-
     def test_set_dimensions(self):
         u = MDAnalysis.Universe(PSF, DCD)
         box = numpy.array([10, 11, 12, 90, 90, 90])
