@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.9. PDBQT structure files in MDAnalysis — MDAnalysis.coordinates.PDBQT &mdash; MDAnalysis 0.9.0-dev documentation</title>
+    <title>5.9. PDBQT structure files in MDAnalysis — MDAnalysis.coordinates.PDBQT &mdash; MDAnalysis 0.9.0 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.9.0-dev',
+        VERSION:     '0.9.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.9.0-dev documentation"
+          title="Search within MDAnalysis 0.9.0 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.9.0-dev documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.9.0 documentation" href="../../index.html" />
     <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
     <link rel="next" title="5.10. PQR file format — MDAnalysis.coordinates.PQR" href="PQR.html" />
     <link rel="prev" title="5.8. PDB structure files in MDAnalysis — MDAnalysis.coordinates.PDB" href="PDB.html" /> 
@@ -51,7 +49,7 @@
         <li class="right" >
           <a href="PDB.html" title="5.8. PDB structure files in MDAnalysis — MDAnalysis.coordinates.PDB"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.9.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.9.0 documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -62,7 +60,7 @@
             </a></p>
   <h4>Previous topic</h4>
   <p class="topless"><a href="PDB.html"
-                        title="previous chapter">5.8. PDB structure files in MDAnalysis &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.coordinates.PDB</span></tt></a></p>
+                        title="previous chapter">5.8. PDB structure files in MDAnalysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.PDB</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="PQR.html"
                         title="next chapter">5.10. PQR file format &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.PQR</span></tt></a></p>
@@ -240,9 +238,9 @@ available in this case).</p>
 </tbody>
 </table>
 <p>We ignore torsion notation and just pull the partial charge and atom type columns:</p>
-<div class="highlight-python"><pre>COMPND    NSC7810
+<div class="highlight-python"><div class="highlight"><pre>COMPND    NSC7810
 REMARK  3 active torsions:
-REMARK  status: ('A' for Active; 'I' for Inactive)
+REMARK  status: (&#39;A&#39; for Active; &#39;I&#39; for Inactive)
 REMARK    1  A    between atoms: A7_7  and  C22_23
 REMARK    2  A    between atoms: A9_9  and  A11_11
 REMARK    3  A    between atoms: A17_17  and  C21_21
@@ -282,7 +280,8 @@ ATOM     25  O2  INH I          -4.019   2.378  -0.708  0.00  0.00    -0.644 OA
 ATOM     26  O4  INH I          -4.659   1.196   1.059  0.00  0.00    -0.644 OA
 ENDBRANCH   7  24
 TORSDOF 3
-123456789.123456789.123456789.123456789.123456789.123456789.123456789.123456789. (column reference)</pre>
+123456789.123456789.123456789.123456789.123456789.123456789.123456789.123456789. (column reference)
+</pre></div>
 </div>
 <p>Read coordinates from <em>filename</em>.</p>
 <p><em>filename</em> can be a gzipped or bzip2ed compressed PDBQT file.</p>
@@ -294,14 +293,14 @@ TORSDOF 3
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
 <dt><em>filename</em></dt>
 <dd><p class="first last">filename of the output PDBQT file</p>
 </dd>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><a class="reference internal" href="#MDAnalysis.coordinates.PDBQT.PDBQTWriter" title="MDAnalysis.coordinates.PDBQT.PDBQTWriter"><tt class="xref py py-class docutils literal"><span class="pre">PDBQTWriter</span></tt></a></p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#MDAnalysis.coordinates.PDBQT.PDBQTWriter" title="MDAnalysis.coordinates.PDBQT.PDBQTWriter"><tt class="xref py py-class docutils literal"><span class="pre">PDBQTWriter</span></tt></a></p>
 </td>
 </tr>
 </tbody>
@@ -370,7 +369,7 @@ are chopped.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>selection</em></dt>
 <dd><p class="first last">a <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a></p>
 </dd>
@@ -415,7 +414,7 @@ chainID.</p>
         <li class="right" >
           <a href="PDB.html" title="5.8. PDB structure files in MDAnalysis — MDAnalysis.coordinates.PDB"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.9.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.9.0 documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -427,7 +426,7 @@ chainID.</p>
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

@@ -101,7 +101,7 @@ especially as we are directly using this framework (imported from numpy).
 .. _Gromacs: http://www.gromacs.org
 """
 
-__version__ = "0.9.0-dev"  # keep in sync with RELEASE in setup.py
+__version__ = "0.9.0"  # keep in sync with RELEASE in setup.py
 
 try:
     from numpy.testing import Tester
