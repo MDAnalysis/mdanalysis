@@ -2929,11 +2929,11 @@ class _BaseTimestep(object):
     name = "base"  # for error messages only
     size = 10  # size of arrays, 10 is enough to allow slicing etc
     refpos = np.arange(size * 3, dtype=np.float32).reshape(size, 3)  # each coord is unique
-    has_box = False
-    set_box = False  # whether you can set dimensions info.
+    has_box = True
+    set_box = True  # whether you can set dimensions info.
     # If you can set box, what the underlying unitcell should be if dimensions are:
     newbox = np.array([10., 11., 12., 90., 90., 90.])
-    unitcell = []  # Base doesn't use this, but this is where to put the result.
+    unitcell = np.array([10., 11., 12., 90., 90., 90.])
     ref_volume = 1320.  # what the volume is after setting newbox
 
 
@@ -2963,6 +2963,9 @@ class _DMSTimestep(_BaseTimestep):
     Timestep = MDAnalysis.coordinates.DMS.Timestep
     name = "DMS"
     has_box = True
+    unitcell = {'x':np.array([10., 0, 0]),
+                'y':np.array([0, 11., 0]),
+                'z':np.array([0, 0, 12.])}
 
 
 class _GROTimestep(_BaseTimestep):
@@ -3178,7 +3181,10 @@ class TestDCDTimestep(_TestTimestep, _DCDTimestep):
 
 
 class TestDMSTimestep(_TestTimestep, _DMSTimestep):
-    pass
+    def test_dimensions_set_box(self):
+        self.ts.dimensions = self.newbox
+        assert_equal(self.ts.dimensions, self.newbox)
+        assert_equal(self.ts._unitcell, self.unitcell)
 
 
 class TestGROTimestep(_TestTimestep, _GROTimestep):
