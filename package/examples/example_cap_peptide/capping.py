@@ -58,7 +58,7 @@ def capping(ref, ace, nma, output):
         ref.selectAtoms("not (resid {} and name HT*) and not (resid {} and (name HT* or name OT1))".format(resid_min,
                                                                                                            resid_max)),
         nma.selectAtoms("resname NME or resname NMA"))
-    np.put(u.trajectory.ts._unitcell, [0, 2, 5, 1, 3, 4], ref.trajectory.ts.dimensions)
+    u.trajectory.ts.dimensions = ref.trajectory.ts.dimensions
     u.atoms.write(output)
     return u
 
