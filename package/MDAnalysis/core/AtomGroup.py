@@ -785,11 +785,11 @@ class AtomGroup(object):
     def __getitem__(self, item):
         """Return element (index) or group (slicing).
 
-        .. versionchanged:: 0.8 
-           :class:`ResidueGroup` and :class:`SegmentGroup`: 
+        .. versionchanged:: 0.8
+           :class:`ResidueGroup` and :class:`SegmentGroup`:
            return groups themselves and allow advanced slicing
         .. versionchanged:: 0.9.0
-           This method now used by all subclasses.  These subclasses override 
+           This method now used by all subclasses.  These subclasses override
            :attr:`_cls` to define the returned class.
         """
         container = self._container
@@ -1563,8 +1563,8 @@ class AtomGroup(object):
         # Create the inertia tensor
         # m_i = mass of atom i
         # (x_i, y_i, z_i) = pos of atom i
-        # Ixx = sum(m_i*(y_i^2+z_i^2)); 
-        # Iyy = sum(m_i*(x_i^2+z_i^2)); 
+        # Ixx = sum(m_i*(y_i^2+z_i^2));
+        # Iyy = sum(m_i*(x_i^2+z_i^2));
         # Izz = sum(m_i*(x_i^2+y_i^2))
         # Ixy = Iyx = -1*sum(m_i*x_i*y_i)
         # Ixz = Izx = -1*sum(m_i*x_i*z_i)
@@ -1978,7 +1978,7 @@ class AtomGroup(object):
 
         .. versionadded:: 0.7.7
         """
-        if ts == None:
+        if ts is None:
             ts = self.universe.trajectory.ts
         try:
             if hasattr(ts, 'has_f'):  # TRR handling must be told frame now holds valid force info.
