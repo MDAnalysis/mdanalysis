@@ -11,7 +11,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/15  richardjgowers, tyler.je.reddy, orbeckst, e.jjordan12, zhuyi.xue,
-          bala.biophysics, dotsdl
+          bala.biophysics, dotsdl, manuel.nuno.melo
   * 0.9.0
 
   Enhancements
@@ -103,6 +103,7 @@ The rules for this file:
 
   Fixes
 
+  * TRR coordinate access via _y and _z now works properly (Issue 224)
   * fixed DCD triclinic unit cell reading and writing (although the new CHARMM
     format with the box matrix is not supported for writing) (Issue 187)
     ATTENTION: Support for triclinic boxes from DCDs was BROKEN prior to this fix!

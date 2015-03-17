@@ -275,19 +275,19 @@ has number-of-atoms,dimensions %r, and you supplied an array of shape %r." %
 
     @property
     def _y(self):
-        return self._pos[:, 0]
+        return self._pos[:, 1]
 
     @_y.setter
     def _y(self, y):
-        self._tpos[:, 0] = y
+        self._tpos[:, 1] = y
 
     @property
     def _z(self):
-        return self._pos[:, 0]
+        return self._pos[:, 2]
 
     @_z.setter
     def _z(self, z):
-        self._tpos[:, 0] = z
+        self._tpos[:, 2] = z
 
     # VELOCITIES
     @property
