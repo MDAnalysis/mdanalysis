@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#!/usr/bin/env python
 # coding=utf-8
 """Setuptools-based setup script for tests of MDAnalysis.
 
