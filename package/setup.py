@@ -1,4 +1,4 @@
-#!python
+#!/usr/bin/env python
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
@@ -172,7 +172,7 @@ def detect_openmp():
 
 
 if __name__ == '__main__':
-    RELEASE = "0.9.0-dev"  # NOTE: keep in sync with MDAnalysis.version in __init__.py
+    RELEASE = "1.0.0-dev"  # NOTE: keep in sync with MDAnalysis.version in __init__.py
     with open("SUMMARY.txt") as summary:
         LONG_DESCRIPTION = summary.read()
     CLASSIFIERS = [

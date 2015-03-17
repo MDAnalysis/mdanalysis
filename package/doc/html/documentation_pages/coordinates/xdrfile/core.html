@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.18.3. Common high-level Gromacs XDR functionality — MDAnalysis.coordinates.xdrfile.core &mdash; MDAnalysis 0.9.0-dev documentation</title>
+    <title>5.18.3. Common high-level Gromacs XDR functionality — MDAnalysis.coordinates.xdrfile.core &mdash; MDAnalysis 1.0.0-dev documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -16,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.9.0-dev',
+        VERSION:     '1.0.0-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,10 +25,10 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.9.0-dev documentation"
+          title="Search within MDAnalysis 1.0.0-dev documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.9.0-dev documentation" href="../../../index.html" />
+    <link rel="top" title="MDAnalysis 1.0.0-dev documentation" href="../../../index.html" />
     <link rel="up" title="5.18. NumPy access to Gromacs XDR trajectories — MDAnalysis.coordinates.xdrfile" href="../xdrfile.html" />
     <link rel="next" title="5.18.4. The Gromacs XTC/TRR library libxdrfile2" href="libxdrfile2.html" />
     <link rel="prev" title="5.18.2. Gromacs TRR trajectory I/O — MDAnalysis.coordinates.xdrfile.TRR" href="TRR.html" /> 
@@ -51,9 +49,9 @@
         <li class="right" >
           <a href="TRR.html" title="5.18.2. Gromacs TRR trajectory I/O — MDAnalysis.coordinates.xdrfile.TRR"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.9.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 1.0.0-dev documentation</a> &raquo;</li>
           <li><a href="../../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li>
-          <li><a href="../xdrfile.html" accesskey="U">5.18. NumPy access to Gromacs XDR trajectories &#8212; <tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.coordinates.xdrfile</span></tt></a> &raquo;</li> 
+          <li><a href="../xdrfile.html" accesskey="U">5.18. NumPy access to Gromacs XDR trajectories &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.xdrfile</span></tt></a> &raquo;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar">
@@ -71,7 +69,7 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="TRR.html"
-                        title="previous chapter">5.18.2. Gromacs TRR trajectory I/O &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.coordinates.xdrfile.TRR</span></tt></a></p>
+                        title="previous chapter">5.18.2. Gromacs TRR trajectory I/O &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.xdrfile.TRR</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="libxdrfile2.html"
                         title="next chapter">5.18.4. The Gromacs XTC/TRR library <tt class="docutils literal"><span class="pre">libxdrfile2</span></tt></a></p>
@@ -108,7 +106,7 @@ classes to access <a class="reference external" href="http://www.gromacs.org">Gr
 and XTC.</p>
 <p>A generic <a class="reference external" href="http://www.gromacs.org">Gromacs</a> trajectory is simply called &#8220;trj&#8221; within this
 module.</p>
-<div class="admonition-see-also admonition seealso">
+<div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><a class="reference internal" href="../base.html#module-MDAnalysis.coordinates.base" title="MDAnalysis.coordinates.base"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.base</span></tt></a> for the generic MDAnalysis base
 classes and <a class="reference internal" href="libxdrfile2.html#module-MDAnalysis.coordinates.xdrfile.libxdrfile2" title="MDAnalysis.coordinates.xdrfile.libxdrfile2"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.xdrfile.libxdrfile2</span></tt></a> for
@@ -118,15 +116,16 @@ the low-level bindings to the XDR trajectories.</p>
 <h2>5.18.3.1. Generic xdr trj classes<a class="headerlink" href="#generic-xdr-trj-classes" title="Permalink to this headline">¶</a></h2>
 <p>The generic classes are subclassed to generate the specific classes
 for the XTC and TRR format.</p>
-<p class="versionchanged">
-<span class="versionmodified">Changed in version 0.8.0: </span>The XTC/TRR I/O interface now uses
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.8.0: </span>The XTC/TRR I/O interface now uses
 <a class="reference internal" href="libxdrfile2.html#module-MDAnalysis.coordinates.xdrfile.libxdrfile2" title="MDAnalysis.coordinates.xdrfile.libxdrfile2"><tt class="xref py py-mod docutils literal"><span class="pre">libxdrfile2</span></tt></a>, which has seeking and
 indexing capabilities. Note that unlike
 <tt class="xref py py-mod docutils literal"><span class="pre">libxdrfile</span></tt> before it,
 <a class="reference internal" href="libxdrfile2.html#module-MDAnalysis.coordinates.xdrfile.libxdrfile2" title="MDAnalysis.coordinates.xdrfile.libxdrfile2"><tt class="xref py py-mod docutils literal"><span class="pre">libxdrfile2</span></tt></a> is distributed under the
 GNU GENERAL PUBLIC LICENSE, version 2 (or higher).</p>
-<p class="versionchanged">
-<span class="versionmodified">Changed in version 0.9.0: </span>TrjReader now stores the offsets used for frame seeking automatically as a
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.9.0: </span>TrjReader now stores the offsets used for frame seeking automatically as a
 hidden file in the same directory as the source trajectory. These offsets
 are automatically retrieved upon TrjReader instantiation, resulting in
 substantially quicker initialization times for long trajectories. The
@@ -134,6 +133,7 @@ ctime and filesize of the trajectory are stored with the offsets, and these
 are checked against the trajectory on load to ensure the offsets aren&#8217;t
 stale. The offsets are automatically regenerated if they are stale or
 missing.</p>
+</div>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.xdrfile.core.Timestep">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.xdrfile.core.</tt><tt class="descname">Timestep</tt><big>(</big><em>arg</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../../_modules/MDAnalysis/coordinates/xdrfile/core.html#Timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.core.Timestep" title="Permalink to this definition">¶</a></dt>
@@ -169,14 +169,14 @@ for ts in reader:</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
 <dt><em>filename</em></dt>
 <dd><p class="first last">the name of the trr file.</p>
 </dd>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>sub</em></dt>
 <dd><p class="first">an numpy integer array of what subset of trajectory atoms to load into
 the timestep. Intended to work similarly to the &#8216;sub&#8217; argument to <a class="reference external" href="http://www.gromacs.org">Gromacs</a>&#8216; trjconv.</p>
@@ -194,8 +194,9 @@ new ones; if <tt class="docutils literal"><span class="pre">False</span></tt>, u
 </tr>
 </tbody>
 </table>
-<p class="versionchanged">
-<span class="versionmodified">Changed in version 0.9.0: </span>New keyword <em>refresh_offsets</em></p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.9.0: </span>New keyword <em>refresh_offsets</em></p>
+</div>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.xdrfile.core.TrjReader.Writer">
 <tt class="descname">Writer</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../../_modules/MDAnalysis/coordinates/xdrfile/core.html#TrjReader.Writer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.core.TrjReader.Writer" title="Permalink to this definition">¶</a></dt>
@@ -205,14 +206,14 @@ new ones; if <tt class="docutils literal"><span class="pre">False</span></tt>, u
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
 <dt><em>filename</em></dt>
 <dd><p class="first last">filename of the output trajectory</p>
 </dd>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first docutils">
 <dt><em>numatoms</em></dt>
 <dd><p class="first last">number of atoms</p>
 </dd>
@@ -226,7 +227,7 @@ for TRR) [1000.0]</p>
 </dl>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">appropriate <a class="reference internal" href="#MDAnalysis.coordinates.xdrfile.core.TrjWriter" title="MDAnalysis.coordinates.xdrfile.core.TrjWriter"><tt class="xref py py-class docutils literal"><span class="pre">TrjWriter</span></tt></a></p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">appropriate <a class="reference internal" href="#MDAnalysis.coordinates.xdrfile.core.TrjWriter" title="MDAnalysis.coordinates.xdrfile.core.TrjWriter"><tt class="xref py py-class docutils literal"><span class="pre">TrjWriter</span></tt></a></p>
 </td>
 </tr>
 </tbody>
@@ -277,7 +278,7 @@ avoid loading out-of-date offsets.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
 <dt><em>filename</em></dt>
 <dd><p class="first last">filename of pickle file saved with <a class="reference internal" href="#MDAnalysis.coordinates.xdrfile.core.TrjReader.save_offsets" title="MDAnalysis.coordinates.xdrfile.core.TrjReader.save_offsets"><tt class="xref py py-meth docutils literal"><span class="pre">save_offsets()</span></tt></a> 
 with the frame offsets for the loaded trajectory</p>
@@ -285,14 +286,14 @@ with the frame offsets for the loaded trajectory</p>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first docutils">
 <dt><em>check</em></dt>
 <dd><p class="first last">if False, ignore ctime and size check of trajectory file</p>
 </dd>
 </dl>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Raises :</th><td class="field-body"><p class="first last"><tt class="xref py py-exc docutils literal"><span class="pre">IOError</span></tt> if the file cannot be read (see <a class="reference external" href="http://docs.python.org/library/functions.html#open" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">open()</span></tt></a>).</p>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><tt class="xref py py-exc docutils literal"><span class="pre">IOError</span></tt> if the file cannot be read (see <a class="reference external" href="http://docs.python.org/library/functions.html#open" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">open()</span></tt></a>).</p>
 </td>
 </tr>
 </tbody>
@@ -319,7 +320,7 @@ be read then 0 is returned.</p>
 iterating through the whole trajectory. If the trajectory
 was previously loaded and saved offsets exist, then
 loading will be significantly faster.</p>
-<div class="admonition-see-also admonition seealso">
+<div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><a class="reference internal" href="#MDAnalysis.coordinates.xdrfile.core.TrjReader.load_offsets" title="MDAnalysis.coordinates.xdrfile.core.TrjReader.load_offsets"><tt class="xref py py-meth docutils literal"><span class="pre">TrjReader.load_offsets()</span></tt></a> and <a class="reference internal" href="#MDAnalysis.coordinates.xdrfile.core.TrjReader.save_offsets" title="MDAnalysis.coordinates.xdrfile.core.TrjReader.save_offsets"><tt class="xref py py-meth docutils literal"><span class="pre">TrjReader.save_offsets()</span></tt></a></p>
 </div>
@@ -333,9 +334,9 @@ loading will be significantly faster.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body">pointer to XDRFILE (and sets self.xdrfile)</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">pointer to XDRFILE (and sets self.xdrfile)</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Raises :</th><td class="field-body"><tt class="xref py py-exc docutils literal"><span class="pre">IOError</span></tt> with code EALREADY if file was already opened or
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><tt class="xref py py-exc docutils literal"><span class="pre">IOError</span></tt> with code EALREADY if file was already opened or
 ENOENT if the file cannot be found</td>
 </tr>
 </tbody>
@@ -372,7 +373,7 @@ to.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>filename</em></dt>
 <dd><p class="first last">filename in which to save the frame offsets</p>
 </dd>
@@ -401,7 +402,7 @@ to.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
 <dt><em>filename</em></dt>
 <dd><p class="first last">name of output file</p>
 </dd>
@@ -411,7 +412,7 @@ to.</p>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>start</em></dt>
 <dd><p class="first last">starting timestep; only used when <em>delta</em> is set.</p>
 </dd>
@@ -438,10 +439,11 @@ the value of <tt class="xref py py-data docutils literal"><span class="pre">MDAn
 </tr>
 </tbody>
 </table>
-<p class="versionchanged">
-<span class="versionmodified">Changed in version 0.8.0: </span>The TRR writer is now able to write TRRs without coordinates/velocities/forces,
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.8.0: </span>The TRR writer is now able to write TRRs without coordinates/velocities/forces,
 depending on the properties available in the <a class="reference internal" href="#MDAnalysis.coordinates.xdrfile.core.Timestep" title="MDAnalysis.coordinates.xdrfile.core.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> objects passed to
 <tt class="xref py py-meth docutils literal"><span class="pre">write()</span></tt>.</p>
+</div>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.xdrfile.core.TrjWriter.convert_dimensions_to_unitcell">
 <tt class="descname">convert_dimensions_to_unitcell</tt><big>(</big><em>ts</em><big>)</big><a class="reference internal" href="../../../_modules/MDAnalysis/coordinates/xdrfile/core.html#TrjWriter.convert_dimensions_to_unitcell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.core.TrjWriter.convert_dimensions_to_unitcell" title="Permalink to this definition">¶</a></dt>
@@ -494,9 +496,9 @@ be written to trajectory file</p>
         <li class="right" >
           <a href="TRR.html" title="5.18.2. Gromacs TRR trajectory I/O — MDAnalysis.coordinates.xdrfile.TRR"
              >previous</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.9.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 1.0.0-dev documentation</a> &raquo;</li>
           <li><a href="../../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li>
-          <li><a href="../xdrfile.html" >5.18. NumPy access to Gromacs XDR trajectories &#8212; <tt class="docutils literal docutils literal docutils literal docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.coordinates.xdrfile</span></tt></a> &raquo;</li> 
+          <li><a href="../xdrfile.html" >5.18. NumPy access to Gromacs XDR trajectories &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.xdrfile</span></tt></a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
@@ -507,7 +509,7 @@ be written to trajectory file</p>
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

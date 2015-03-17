@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#!/usr/bin/env python
 # coding=utf-8
 """Setuptools-based setup script for tests of MDAnalysis.
 
@@ -63,7 +63,7 @@ if sys.version_info[:2] < (2, 6):
 
 
 if __name__ == '__main__':
-    RELEASE = "0.9.0-dev"  # this must be in-sync with MDAnalysis
+    RELEASE = "1.0.0-dev"  # this must be in-sync with MDAnalysis
     LONG_DESCRIPTION = \
         """MDAnalysis is a tool for analyzing molecular dynamics trajectories.
 

@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.11. AMBER trajectories — MDAnalysis.coordinates.TRJ &mdash; MDAnalysis 0.9.0-dev documentation</title>
+    <title>5.11. AMBER trajectories — MDAnalysis.coordinates.TRJ &mdash; MDAnalysis 1.0.0-dev documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.9.0-dev',
+        VERSION:     '1.0.0-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.9.0-dev documentation"
+          title="Search within MDAnalysis 1.0.0-dev documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.9.0-dev documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 1.0.0-dev documentation" href="../../index.html" />
     <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
     <link rel="next" title="5.12. Gromacs TRR file IO — MDAnalysis.coordinates.TRR" href="TRR.html" />
     <link rel="prev" title="5.10. PQR file format — MDAnalysis.coordinates.PQR" href="PQR.html" /> 
@@ -51,7 +49,7 @@
         <li class="right" >
           <a href="PQR.html" title="5.10. PQR file format — MDAnalysis.coordinates.PQR"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.9.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 1.0.0-dev documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -71,7 +69,7 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="PQR.html"
-                        title="previous chapter">5.10. PQR file format &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.coordinates.PQR</span></tt></a></p>
+                        title="previous chapter">5.10. PQR file format &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.PQR</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="TRR.html"
                         title="next chapter">5.12. Gromacs TRR file IO &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.TRR</span></tt></a></p>
@@ -260,7 +258,7 @@ the trajectory, then <a class="reference internal" href="#MDAnalysis.coordinates
 <li>only trajectories with time in ps and lengths in Angstroem are processed</li>
 <li>scale_factors are not supported (and not checked)</li>
 </ul>
-<div class="admonition-see-also admonition seealso">
+<div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><a class="reference internal" href="#MDAnalysis.coordinates.TRJ.NCDFWriter" title="MDAnalysis.coordinates.TRJ.NCDFWriter"><tt class="xref py py-class docutils literal"><span class="pre">NCDFWriter</span></tt></a></p>
 </div>
@@ -293,14 +291,14 @@ allows iteration over that part of the trajectory.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
 <dt><em>filename</em></dt>
 <dd><p class="first last">filename of the output NCDF trajectory</p>
 </dd>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first docutils">
 <dt><em>numatoms</em></dt>
 <dd><p class="first last">number of atoms</p>
 </dd>
@@ -313,7 +311,7 @@ allows iteration over that part of the trajectory.</p>
 </dl>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><a class="reference internal" href="#MDAnalysis.coordinates.TRJ.NCDFWriter" title="MDAnalysis.coordinates.TRJ.NCDFWriter"><tt class="xref py py-class docutils literal"><span class="pre">NCDFWriter</span></tt></a></p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#MDAnalysis.coordinates.TRJ.NCDFWriter" title="MDAnalysis.coordinates.TRJ.NCDFWriter"><tt class="xref py py-class docutils literal"><span class="pre">NCDFWriter</span></tt></a></p>
 </td>
 </tr>
 </tbody>
@@ -339,7 +337,7 @@ file extension &#8221;.ncdf&#8221;.</p>
 for the lengths and picoseconds for the time (and hence Å/ps for
 velocities).</p>
 <p>Unit cell information is written if available.</p>
-<div class="admonition-see-also admonition seealso">
+<div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><a class="reference internal" href="#MDAnalysis.coordinates.TRJ.NCDFReader" title="MDAnalysis.coordinates.TRJ.NCDFReader"><tt class="xref py py-class docutils literal"><span class="pre">NCDFReader</span></tt></a></p>
 </div>
@@ -348,7 +346,7 @@ velocities).</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
 <dt><em>filename</em></dt>
 <dd><p class="first last">name of output file</p>
 </dd>
@@ -358,7 +356,7 @@ velocities).</p>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>start</em></dt>
 <dd><p class="first last">starting timestep</p>
 </dd>
@@ -424,7 +422,7 @@ be written to trajectory file</p>
         <li class="right" >
           <a href="PQR.html" title="5.10. PQR file format — MDAnalysis.coordinates.PQR"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.9.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 1.0.0-dev documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -436,7 +434,7 @@ be written to trajectory file</p>
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

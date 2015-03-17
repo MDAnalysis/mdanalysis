@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>3.2.2. Hydrogen bond autocorrelation — MDAnalysis.analysis.hbonds.hbond_autocorrel &mdash; MDAnalysis 0.9.0-dev documentation</title>
+    <title>3.2.2. Hydrogen bond autocorrelation — MDAnalysis.analysis.hbonds.hbond_autocorrel &mdash; MDAnalysis 1.0.0-dev documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.9.0-dev',
+        VERSION:     '1.0.0-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.9.0-dev documentation"
+          title="Search within MDAnalysis 1.0.0-dev documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.9.0-dev documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 1.0.0-dev documentation" href="../../index.html" />
     <link rel="up" title="3. Analysis modules" href="../analysis_modules.html" />
     <link rel="next" title="3.3.1. Generation and Analysis of HOLE pore profiles — MDAnalysis.analysis.hole" href="hole.html" />
     <link rel="prev" title="3.2.1. Hydrogen Bond analysis — MDAnalysis.analysis.hbonds.hbond_analysis" href="hbond_analysis.html" /> 
@@ -51,7 +49,7 @@
         <li class="right" >
           <a href="hbond_analysis.html" title="3.2.1. Hydrogen Bond analysis — MDAnalysis.analysis.hbonds.hbond_analysis"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.9.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 1.0.0-dev documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" accesskey="U">3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -73,7 +71,7 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="hbond_analysis.html"
-                        title="previous chapter">3.2.1. Hydrogen Bond analysis &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.analysis.hbonds.hbond_analysis</span></tt></a></p>
+                        title="previous chapter">3.2.1. Hydrogen Bond analysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.hbonds.hbond_analysis</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="hole.html"
                         title="next chapter">3.3.1. Generation and Analysis of HOLE pore profiles &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.hole</span></tt></a></p>
@@ -117,8 +115,9 @@
 </tr>
 </tbody>
 </table>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.9.0.</span></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.9.0.</span></p>
+</div>
 <div class="section" id="description">
 <h2>3.2.2.1. Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h2>
 <p>Calculates the time autocorrelation function, <span class="math">\(C_x(t)\)</span>, for the hydrogen
@@ -229,7 +228,7 @@ used.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
 <dt><em>universe</em></dt>
 <dd><p class="first last">The MDA universe</p>
 </dd>
@@ -249,7 +248,7 @@ used.</p>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>exclusions</em></dt>
 <dd><p class="first last">Indices of Hydrogen-Donor pairs to be excluded.  Must be a tuple of
 two arrays</p>
@@ -287,7 +286,7 @@ to use [1]</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>force</em></dt>
 <dd><p class="first last">Will overwrite previous results if they exist</p>
 </dd>
@@ -307,7 +306,7 @@ characteristic time</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>p_guess</em></dt>
 <dd><p class="first last">Initial guess for the leastsq fit, must match the shape of the
 expected coefficients</p>
@@ -351,7 +350,7 @@ solution dict</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>filename</em></dt>
 <dd><p class="first last">The desired filename [hbond_autocorrel]</p>
 </dd>
@@ -388,7 +387,7 @@ solution dict</p>
         <li class="right" >
           <a href="hbond_analysis.html" title="3.2.1. Hydrogen Bond analysis — MDAnalysis.analysis.hbonds.hbond_analysis"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.9.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 1.0.0-dev documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" >3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -400,7 +399,7 @@ solution dict</p>
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

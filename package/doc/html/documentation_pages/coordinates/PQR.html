@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.10. PQR file format — MDAnalysis.coordinates.PQR &mdash; MDAnalysis 0.9.0-dev documentation</title>
+    <title>5.10. PQR file format — MDAnalysis.coordinates.PQR &mdash; MDAnalysis 1.0.0-dev documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.9.0-dev',
+        VERSION:     '1.0.0-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.9.0-dev documentation"
+          title="Search within MDAnalysis 1.0.0-dev documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.9.0-dev documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 1.0.0-dev documentation" href="../../index.html" />
     <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
     <link rel="next" title="5.11. AMBER trajectories — MDAnalysis.coordinates.TRJ" href="TRJ.html" />
     <link rel="prev" title="5.9. PDBQT structure files in MDAnalysis — MDAnalysis.coordinates.PDBQT" href="PDBQT.html" /> 
@@ -51,7 +49,7 @@
         <li class="right" >
           <a href="PDBQT.html" title="5.9. PDBQT structure files in MDAnalysis — MDAnalysis.coordinates.PDBQT"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.9.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 1.0.0-dev documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -62,7 +60,7 @@
             </a></p>
   <h4>Previous topic</h4>
   <p class="topless"><a href="PDBQT.html"
-                        title="previous chapter">5.9. PDBQT structure files in MDAnalysis &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.coordinates.PDBQT</span></tt></a></p>
+                        title="previous chapter">5.9. PDBQT structure files in MDAnalysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.PDBQT</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="TRJ.html"
                         title="next chapter">5.11. AMBER trajectories &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.TRJ</span></tt></a></p>
@@ -101,11 +99,13 @@ following is adopted from the description of the <a class="reference external" h
 by the <a class="reference external" href="http://www.rcsb.org/pdb/info.html#File_Formats_and_Standards">PDB</a> format. This more liberal formatting allows coordinates
 which are larger/smaller than ±999 Å.</p>
 <p>MDAnalysis reads data on a per-line basis from PQR files using the following format:</p>
-<div class="highlight-python"><pre>recordName serial atomName residueName chainID residueNumber X Y Z charge radius</pre>
+<div class="highlight-python"><div class="highlight"><pre>recordName serial atomName residueName chainID residueNumber X Y Z charge radius
+</pre></div>
 </div>
 <p>If this fails it is assumed that the <em>chainID</em> was omitted and the shorter
 format is read:</p>
-<div class="highlight-python"><pre>recordName serial atomName residueName residueNumber X Y Z charge radius</pre>
+<div class="highlight-python"><div class="highlight"><pre>recordName serial atomName residueName residueNumber X Y Z charge radius
+</pre></div>
 </div>
 <p>Anything else will raise a <tt class="xref py py-exc docutils literal"><span class="pre">ValueError</span></tt>.</p>
 <p>The whitespace is the most important feature of this format: fields
@@ -145,7 +145,8 @@ converting PDB files into PQR files using simple scripts.</p>
 </div>
 <p>For example, PQR files created with <a class="reference external" href="http://www.poissonboltzmann.org/pdb2pqr">PDB2PQR</a> and the <cite>&#8211;whitespace</cite>
 option are guaranteed to conform to the above format:</p>
-<div class="highlight-python"><pre>pdb2pqr --ff=charmm --whitespace 4ake.pdb 4ake.pqr</pre>
+<div class="highlight-python"><div class="highlight"><pre>pdb2pqr --ff=charmm --whitespace 4ake.pdb 4ake.pqr
+</pre></div>
 </div>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.PQR.PQRReader">
@@ -167,14 +168,14 @@ accessible through the <a class="reference internal" href="#MDAnalysis.coordinat
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
 <dt><em>filename</em></dt>
 <dd><p class="first last">filename of the output PQR file</p>
 </dd>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><a class="reference internal" href="#MDAnalysis.coordinates.PQR.PQRWriter" title="MDAnalysis.coordinates.PQR.PQRWriter"><tt class="xref py py-class docutils literal"><span class="pre">PQRWriter</span></tt></a></p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#MDAnalysis.coordinates.PQR.PQRWriter" title="MDAnalysis.coordinates.PQR.PQRWriter"><tt class="xref py py-class docutils literal"><span class="pre">PQRWriter</span></tt></a></p>
 </td>
 </tr>
 </tbody>
@@ -210,14 +211,15 @@ string. Otherwise the first letter will be used as the chain ID.</li>
 for the atoms.</li>
 </ul>
 <p>The output format is similar to <tt class="docutils literal"><span class="pre">pdb2pqr</span> <span class="pre">--whitespace</span></tt>.</p>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.9.0.</span></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.9.0.</span></p>
+</div>
 <p>Set up a PQRWriter with full whitespace separation.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>filename</em></dt>
 <dd><p class="first last">output filename</p>
 </dd>
@@ -238,7 +240,7 @@ top of the PQR file</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><blockquote class="first">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><blockquote class="first">
 <div><dl class="docutils">
 <dt><em>selection</em></dt>
 <dd><p class="first last">MDAnalysis AtomGroup (selection or Universe.atoms)
@@ -290,7 +292,7 @@ or also Universe</p>
         <li class="right" >
           <a href="PDBQT.html" title="5.9. PDBQT structure files in MDAnalysis — MDAnalysis.coordinates.PDBQT"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.9.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 1.0.0-dev documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -302,7 +304,7 @@ or also Universe</p>
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

@@ -128,42 +128,9 @@ class TestFilename(TestCase):
     def testNamedStream(self):
         ns = util.NamedStream(cStringIO.StringIO(), self.filename)
         fn = util.filename(ns, ext=self.ext)
-        assert_equal(fn, ns)
-        assert_equal(str(fn), self.filename2)
-        assert_equal(ns.name, self.filename2)
-
-
-class TestFilename(TestCase):
-    def setUp(self):
-        self.root = "foo"
-        self.filename = "foo.psf"
-        self.ext = "pdb"
-        self.filename2 = "foo.pdb"
-
-    def testStringNoExt(self):
-        fn = util.filename(self.filename)
-        assert_equal(fn, self.filename)
-
-    def testStringExt(self):
-        fn = util.filename(self.filename, ext=self.ext)
-        assert_equal(fn, self.filename2)
-
-    def testStringKeep(self):
-        fn = util.filename(self.filename, ext=self.ext, keep=True)
-        assert_equal(fn, self.filename)
-
-    def testStringRootExt(self):
-        fn = util.filename(self.root, ext=self.ext)
-        assert_equal(fn, self.filename2)
-
-    def testStringRootExtKeep(self):
-        fn = util.filename(self.root, ext=self.ext, keep=True)
-        assert_equal(fn, self.filename2)
-
-    def testNamedStream(self):
-        ns = util.NamedStream(cStringIO.StringIO(), self.filename)
-        fn = util.filename(ns, ext=self.ext)
-        assert_equal(fn, ns)
+        # assert_equal replace by this if loop to avoid segfault on some systems
+        if fn != ns:
+            raise AssertionError("fn and ns are different")
         assert_equal(str(fn), self.filename2)
         assert_equal(ns.name, self.filename2)
 
