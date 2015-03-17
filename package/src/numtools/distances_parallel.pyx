@@ -122,7 +122,7 @@ def distance_array_serial(np.ndarray[DTYPE_t, ndim=2] coordA, \
     cdef char has_box = 0
     cdef DTYPE_t box_x, box_y, box_z
 
-    if box != None:
+    if box is not None:
         has_box = 1
         box_x = box[0]
         box_y = box[1]
@@ -133,7 +133,7 @@ def distance_array_serial(np.ndarray[DTYPE_t, ndim=2] coordA, \
     assert rows == cols, """Coordinate arrays of the same length must be used.
     Distance matrix must be square: number of rows (%d) must be the same as the number of columns (%d)""" % (rows, cols)
 
-    if result == None:
+    if result is None:
         result = np.empty((rows, cols), dtype=DTYPE)
     else:
         assert result.shape[0] == rows, "Results array should have %d rows, has %d" % (rows, result.shape[0])
@@ -179,7 +179,7 @@ def distance_array(np.ndarray[DTYPE_t, ndim=2] coordA, \
     cdef char has_box = 0
     cdef DTYPE_t box_x, box_y, box_z
 
-    if box != None:
+    if box is not None:
         has_box = 1
         box_x = box[0]
         box_y = box[1]
@@ -189,7 +189,7 @@ def distance_array(np.ndarray[DTYPE_t, ndim=2] coordA, \
     rows = coordA.shape[0];
     cols = coordB.shape[0];
 
-    if result == None:
+    if result is None:
         result = np.empty((rows, cols), dtype=DTYPE)
     else:
         assert result.shape[0] == rows, "Results array should have %d rows, has %d" % (rows, result.shape[0])
