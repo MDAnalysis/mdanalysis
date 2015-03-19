@@ -166,19 +166,25 @@ class HydrogenBondAutoCorrel(object):
           *universe*
             The MDA universe
           *hydrogens*
-            Hydrogens which can form hydrogen bonds
+            AtomGroup of Hydrogens which can form hydrogen bonds
           *acceptors*
-            Accepting atoms
+            AtomGroup of all Acceptor atoms
           *donors*
-            The atoms which are connected to the hydrogens
+            The atoms which are connected to the hydrogens.  This group
+            must be identical in length to the hydrogen group and matched,
+            ie hydrogens[1] is bonded to donors[0].
+            For many cases, this will mean a donor appears twice in this
+            group.
           *bond_type*
             Which definition of hydrogen bond lifetime to consider, either
-            'continuous' or 'intermittent'
+            'continuous' or 'intermittent'.
 
         :Keywords:
           *exclusions*
-            Indices of Hydrogen-Donor pairs to be excluded.  Must be a tuple of
-            two arrays
+            Indices of Hydrogen-Acceptor pairs to be excluded.
+            With nH and nA Hydrogens and Acceptors, a (nH x nA) array of distances
+            is calculated, *exclusions* is used as a mask on this array to exclude
+            some pairs.
           *angle_crit*
             The angle (in degrees) which all bonds must be greater than [130.0]
           *dist_crit*
@@ -204,8 +210,8 @@ class HydrogenBondAutoCorrel(object):
         self.h = hydrogens
         self.a = acceptors
         self.d = donors
-        if not (len(self.h) == len(self.a)) and (len(self.a) == len(self.d)):
-            raise ValueError("All selections must have the same length")
+        if not len(self.h) == len(self.d):
+            raise ValueError("Donors and Hydrogen groups must be matched")
 
         self.exclusions = exclusions
         if self.exclusions:
