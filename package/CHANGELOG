@@ -10,8 +10,12 @@ The rules for this file:
     use tabs but use spaces for formatting
 
 ------------------------------------------------------------------------------
-??/??/15  manuel.nuno.melo
+??/??/15  manuel.nuno.melo, richardjgowers
   * 0.9.1
+
+  Enhancements
+
+  * XYZ file format can be used without an associated topology file.
 
   Fixes
 

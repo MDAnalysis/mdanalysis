@@ -103,10 +103,11 @@ also recognized when they are compressed with :program:`gzip` or
    |               |           |       | correctly (requires testing). Module                 |
    |               |           |       | :mod:`MDAnalysis.coordinates.DCD`                    |
    +---------------+-----------+-------+------------------------------------------------------+
-   | LAMMPS        | dcd,      |  r/w  | CHARMM-style binary trajectory; endianness is        |
-   |               | data      |  r    | autodetected. Units are appropriate for LAMMPS.      |
+   | LAMMPS        | dcd       |  r/w  | CHARMM-style binary trajectory; endianness is        |
+   |               |           |       | autodetected. Units are appropriate for LAMMPS.      |
    |               |           |       | Module :mod:`MDAnalysis.coordinates.LAMMPS`          |
-   |               |           |       | Single frames can be read from .data files.          |
+   +---------------+-----------+-------+------------------------------------------------------+
+   | LAMMPS [#a]_  | data      |  r    | Single frame of coordinates read from .data files    |
    +---------------+-----------+-------+------------------------------------------------------+
    | Gromacs       | xtc       |  r/w  | Compressed (lossy) xtc trajectory format. Module     |
    |               |           |       | :mod:`MDAnalysis.coordinates.XTC`                    |
@@ -115,7 +116,7 @@ also recognized when they are compressed with :program:`gzip` or
    |               |           |       | velocities are processed. Module                     |
    |               |           |       | :mod:`MDAnalysis.coordinates.TRR`                    |
    +---------------+-----------+-------+------------------------------------------------------+
-   | XYZ           |  xyz      |  r/w  | Generic white-space separate XYZ format; can be      |
+   | XYZ [#a]_     |  xyz      |  r/w  | Generic white-space separate XYZ format; can be      |
    |               |           |       | compressed (gzip or bzip2). Module                   |
    |               |           |       | :mod:`MDAnalysis.coordinates.XYZ`                    |
    +---------------+-----------+-------+------------------------------------------------------+

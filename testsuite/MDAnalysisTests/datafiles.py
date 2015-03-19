@@ -50,7 +50,7 @@ __all__ = [
     "TPR460", "TPR461",
     "PDB_sub_sol", "PDB_sub_dry",  # TRRReader sub selection
     "TRR_sub_sol",
-    "XYZ", "XYZ_psf", "XYZ_bz2",  # XYZ
+    "XYZ", "XYZ_psf", "XYZ_bz2", "XYZ_mini", # XYZ
     "PRM", "TRJ", "TRJ_bz2",  # Amber (no periodic box)
     "PRMpbc", "TRJpbc_bz2",  # Amber (periodic box)
     "PRM12", "TRJ12_bz2",  # Amber (v12 format, Issue 100)
@@ -135,6 +135,7 @@ TPR461 = resource_filename(__name__, 'data/tprs/ab42_gmx_4.6.1.tpr')
 XYZ_psf = resource_filename(__name__, 'data/2r9r-1b.psf')
 XYZ_bz2 = resource_filename(__name__, 'data/2r9r-1b.xyz.bz2')
 XYZ = resource_filename(__name__, 'data/2r9r-1b.xyz')
+XYZ_mini = resource_filename(__name__, 'data/mini.xyz')
 
 PRM = resource_filename(__name__, 'data/ache.prmtop')
 TRJ = resource_filename(__name__, 'data/ache.mdcrd')

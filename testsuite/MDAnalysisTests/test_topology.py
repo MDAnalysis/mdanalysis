@@ -21,7 +21,7 @@ from MDAnalysis.topology.core import guess_atom_type, guess_atom_element, get_at
     get_parser_for
 from MDAnalysis.topology.core import Bond, Angle, Torsion, Improper_Torsion, TopologyGroup, TopologyObject, TopologyDict
 from MDAnalysis.tests.datafiles import PRMpbc, PRM12, PSF, PSF_NAMD, PSF_nosegid, DMS, PDB_small, DCD, \
-    LAMMPSdata, trz4data, TPR, PDB
+    LAMMPSdata, trz4data, TPR, PDB, XYZ_mini
 
 from numpy.testing import *
 from nose.plugins.attrib import attr
@@ -1052,3 +1052,15 @@ class TestGuessFormat(TestCase):
 
     def test_unknowntopology(self):
         assert_raises(TypeError, guess_format, 'file.jpg')
+
+
+class RefXYZ(object):
+    topology = XYZ_mini
+    parser = MDAnalysis.topology.XYZParser.XYZParser
+    ref_numatoms = 3
+    ref_numresidues = 1
+
+
+class TestXYZTopology(RefXYZ, _TestTopology):
+    def test_segments(self):
+        assert_equal(len(self.universe.segments), 1)

@@ -70,35 +70,13 @@ the `VMD xyzplugin`_ from whence the definition was taken)::
 import os
 import errno
 import numpy
-import bz2
-import gzip
 import itertools
 
 import base
 import MDAnalysis
 import MDAnalysis.core
 import MDAnalysis.core.util as util
-
-
-class Timestep(base.Timestep):
-    @property
-    def dimensions(self):
-        """unitcell dimensions (*A*, *B*, *C*, *alpha*, *beta*, *gamma*)
-
-        XYZ files do not contain unitcell information but in order to
-        allow interoperability (and give the use a chance to set the
-        simulation box themselves for e.g. writing out to different
-        formats) we add an empty unit cell, i.e. when reading a XYZ
-        file this will only contain zeros.
-
-        lengths *a*, *b*, *c* are in the MDAnalysis length unit (Å), and
-        angles are in degrees.
-        """
-        return self._unitcell
-
-    @dimensions.setter
-    def dimensions(self, box):
-        self._unitcell[:] = box
+from MDAnalysis import NoDataError
 
 
 class XYZWriter(base.Writer):
@@ -261,7 +239,7 @@ class XYZReader(base.Reader):
     format = "XYZ"
     # these are assumed!
     units = {'time': 'ps', 'length': 'Angstrom'}
-    _Timestep = Timestep
+    _Timestep = base.Timestep
 
     def __init__(self, filename, **kwargs):
         self.filename = filename

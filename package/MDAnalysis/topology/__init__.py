@@ -80,6 +80,9 @@ The following table lists the currently supported topology formats.
                                 :mod:`MDAnalysis.topology.MOL2Parser`
    LAMMPS           data        LAMMPS Data file parser
                                 :mod:`MDAnalysis.topology.LAMMPSParser`
+   XYZ [#a]_        xyz         XYZ File Parser.  Reads only the labels from atoms and
+                                constructs minimal topology data.
+                                :mod:`MDAnalysis.topology.XYZParser`
    ================ ==========  =====================================================
 
 .. [#a] This format can also be used to provide *coordinates* so that
@@ -216,7 +219,7 @@ tuple contains four atom numbers.
 
 __all__ = ['core', 'PSFParser', 'PDBParser', 'PQRParser', 'GROParser',
            'CRDParser', 'TOPParser', 'PDBQTParser', 'TPRParser',
-           'LAMMPSParser']
+           'LAMMPSParser', 'XYZParser']
 
 import core
 import PSFParser
@@ -232,6 +235,7 @@ import DMSParser
 import TPRParser
 import MOL2Parser
 import LAMMPSParser
+import XYZParser
 
 
 # dictionary of known file formats and the corresponding file parser
@@ -252,4 +256,5 @@ _topology_parsers = {'PSF': PSFParser.PSFParser,
                      'DMS': DMSParser.DMSParser,
                      'MOL2': MOL2Parser.MOL2Parser,
                      'DATA': LAMMPSParser.DATAParser,
+                     'XYZ': XYZParser.XYZParser,
                      }
