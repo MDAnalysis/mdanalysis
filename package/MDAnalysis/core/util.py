@@ -164,7 +164,7 @@ import gzip
 import re
 import io
 import warnings
-
+from functools import wraps
 import numpy
 
 
@@ -1156,6 +1156,7 @@ def cached(key):
     """
 
     def cached_lookup(func):
+        @wraps(func)
         def wrapper(self, *args, **kwargs):
             try:
                 return self._cache[key]
