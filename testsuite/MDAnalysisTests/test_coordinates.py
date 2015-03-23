@@ -3157,11 +3157,26 @@ class _TestTimestep(TestCase):
         else:
             assert_raises(NotImplementedError, getattr, self.ts, "volume")
 
+    @attr('issue')
     def test_coordinate_getter_shortcuts(self):
-        """Check that reading _x, _y, and _z works as expected (Issue 224)"""
+        """testing that reading _x, _y, and _z works as expected (Issue 224) (TestTimestep)"""
         assert_allclose(self.ts._x, self.ts._pos[:,0])
         assert_allclose(self.ts._y, self.ts._pos[:,1])
         assert_allclose(self.ts._z, self.ts._pos[:,2])
+
+    @attr('issue')
+    @knownfailure("Timesteps without setter decorators break the _x, _y, _z views onto _pos (Issue 213)", AssertionError, mightpass=True)
+    def test_coordinate_setter_shortcuts(self):
+        # Check that writing to _x, _y, and _z works as expected (Issues 224 and 213)#
+        # For TRRs setting _x, _y, and _z works because the assignment is managed by a decorator.
+        # For other formats that don't have such decorators assigning to any of these silently breaks
+        #  their being a view of the _pos array. Hopefuly all gets clean after Issue 213 is addressed
+        #  and this test can be moved to the general Timestep test class.
+        for idx, coordinate in enumerate(('_x', '_y', '_z')):
+            random_positions = np.random.random(self.size).astype(np.float32)
+            setattr(self.ts, coordinate, random_positions)
+            assert_allclose(getattr(self.ts, coordinate), random_positions)
+            assert_allclose(self.ts._pos[:,idx], random_positions)
 
 # Can add in custom tests for a given Timestep here!
 class TestBaseTimestep(_TestTimestep, _BaseTimestep):
@@ -3240,13 +3255,4 @@ class TestXTCTimestep(_TestTimestep, _XTCTimestep):
 
 
 class TestTRRTimestep(_TestTimestep, _TRRTimestep):
-    def test_coordinate_setter_shortcuts(self):
-        """Check that writing to _x, _y, and _z works as expected (Issue 224)"""
-        # For TRRs setting _x, _y, and _z works because the assignment is managed by a decorator.
-        # For other formats that don't have such decorators assigning to any of these silently breaks
-        #  their being a view of the _pos array. Hopefuly all gets clean after Issue 213 is addressed
-        #  and this test can be moved to the general Timestep test class.
-        for coordinate in ('_x', '_y', '_z'):
-            random_positions = np.random.random(self.size).astype(np.float32)
-            setattr(self.ts, coordinate, random_positions)
-            assert_allclose(getattr(self.ts, coordinate), random_positions)
+    pass

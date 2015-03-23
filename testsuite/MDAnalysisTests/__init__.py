@@ -129,7 +129,7 @@ except ImportError:
 import MDAnalysis.core.util
 
 
-def knownfailure(msg="Test skipped due to expected failure", exc_type=AssertionError):
+def knownfailure(msg="Test skipped due to expected failure", exc_type=AssertionError, mightpass=False):
     """If decorated function raises exception *exc_type* skip test, else raise AssertionError."""
 
     def knownfailure_decorator(f):
@@ -139,7 +139,8 @@ def knownfailure(msg="Test skipped due to expected failure", exc_type=AssertionE
             except exc_type:
                 raise nose.SkipTest(msg)
             else:
-                raise AssertionError('Failure expected')
+                if not mightpass:
+                    raise AssertionError('Failure expected')
 
         return nose.tools.make_decorator(f)(inner)
 
