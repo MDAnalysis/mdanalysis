@@ -279,7 +279,6 @@ if __name__ == '__main__':
               'MDAnalysis.KDTree',
               'MDAnalysis.analysis',
               'MDAnalysis.analysis.hbonds',
-              'MDAnalysis.builder',
               'MDAnalysis.tests',
               'MDAnalysis.visualization'],
           package_dir={'MDAnalysis': 'MDAnalysis'},
