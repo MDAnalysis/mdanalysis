@@ -17,6 +17,10 @@ The rules for this file:
 
   * XYZ file format can be used without an associated topology file.
 
+  Changes
+
+  * removed undocumented MDAnalysis.builder module
+
   Fixes
 
   * TRR coordinate access via _y and _z now works properly (Issue 224)
