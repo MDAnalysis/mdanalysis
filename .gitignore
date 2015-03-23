@@ -19,3 +19,10 @@ examples/output.txt
 .idea
 # ignore Vagrant virtual machines
 .vagrant
+# ignore nosetest/coverage files
+.coverage
+.noseids
+# ignore trajectory offset caches
+.adk_oplsaa.trr_offsets.pkl
+.adk_oplsaa.xtc_offsets.pkl
+.gram_A_identical_frames.xtc_offsets.pkl
