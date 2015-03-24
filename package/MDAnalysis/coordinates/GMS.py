@@ -15,7 +15,7 @@
 #     doi:10.1002/jcc.21787
 #
 
-"""GMS trajectory reader --- :mod:`MDAnalysis.coordinates.XYZ`
+"""GMS trajectory reader --- :mod:`MDAnalysis.coordinates.GMS`
 ==============================================================
 
 Resources: the GMS output format is a common output format for different
@@ -27,10 +27,9 @@ There appears to be no rigid format definition so it is likely users
 will need to tweak this Class.
 """
 
+import MDAnalysis.core.util as util
 import os, errno, re
 import numpy
-import bz2
-import gzip
 
 import base
 from base import Timestep
@@ -63,29 +62,17 @@ class GMSReader(base.Reader):
     def __init__(self, outfilename, **kwargs):
         self.filename = outfilename
 
-        # the filename has been parsed to be either be foo.xyz or foo.out.bz2 by coordinates::core.py
-        # so the last file extension will tell us if it is bzipped or not
-        root, ext = os.path.splitext(self.filename)
-        if ext[1:] == "bz2":
-            self.compression = "bz2"
-            self.outfile = bz2.BZ2File(self.filename, 'rb')
-        elif ext[1:] == "gz":
-            self.compression = "gz"
-            self.outfile = gzip.open(self.filename, 'rb')
-        elif ext[1:] in ["gms","out","log"]:
-            self.compression = None
-            self.outfile = open(self.filename, 'r')
-        else:
-            raise IOError('Wrong extension '+ext[1:])
+        # the filename has been parsed to be either b(g)zipped or not
+        self.outfile = util.anyopen(self.filename, 'r')
 
-        # note that, like for xtc and trr files, __numatoms and __numframes are used quasi-private variables
+        # note that, like for xtc and trr files, _numatoms and _numframes are used quasi-private variables
         # to prevent the properties being recalculated
         # this is because there is no indexing so the way it measures the number of frames is to read the whole file!
-        self.__numatoms = None
-        self.__numframes = None
-        self.__runtyp = None
+        self._numatoms = None
+        self._numframes = None
+        self._runtyp = None
 
-        self.ts = Timestep(0)
+        self.ts = Timestep(0) # need for properties initial calculations
         self.fixed = 0
         self.skip = 1
         self.periodic = False
@@ -107,14 +94,14 @@ class GMSReader(base.Reader):
     @property
     def runtyp(self):
         """RUNTYP property of the GAMESS run"""
-        if not self.__runtyp is None:   # return cached value
-            return self.__runtyp
+        if not self._runtyp is None:   # return cached value
+            return self._runtyp
         try:
-            self.__runtyp = self._determine_runtyp()
+            self._runtyp = self._determine_runtyp()
         except IOError:
             return 0
         else:
-            return self.__runtyp
+            return self._runtyp
 
 
     def _determine_runtyp(self):
@@ -134,14 +121,14 @@ class GMSReader(base.Reader):
     @property
     def numatoms(self):
         """number of atoms in a frame"""
-        if not self.__numatoms is None:   # return cached value
-            return self.__numatoms
+        if not self._numatoms is None:   # return cached value
+            return self._numatoms
         try:
-            self.__numatoms = self._read_out_natoms()
+            self._numatoms = self._read_out_natoms()
         except IOError:
             return 0
         else:
-            return self.__numatoms
+            return self._numatoms
 
     def _read_out_natoms(self):
         self._reopen()
@@ -159,14 +146,14 @@ class GMSReader(base.Reader):
 
     @property
     def numframes(self):
-        if not self.__numframes is None:   # return cached value
-            return self.__numframes
+        if not self._numframes is None:   # return cached value
+            return self._numframes
         try:
-            self.__numframes = self._read_out_numframes(self.filename)
+            self._numframes = self._read_out_numframes(self.filename)
         except IOError:
             return 0
         else:
-            return self.__numframes
+            return self._numframes
 
     def _read_out_numframes(self, filename):
         self._reopen()
@@ -244,7 +231,7 @@ class GMSReader(base.Reader):
                     counter += 1
 
             # stop when the cursor has reached the end of that block
-            if counter == self.__numatoms:
+            if counter == self._numatoms:
                 ts._unitcell = numpy.zeros((6), numpy.float)
                 ts._x[:] = x # more efficient to do it this way to avoid re-creating the numpy arrays
                 ts._y[:] = y
@@ -273,12 +260,7 @@ class GMSReader(base.Reader):
             # must check; otherwise might segmentation fault
             raise IOError(errno.ENOENT, 'GMS file not found', self.filename)
 
-        if self.compression == "bz2":
-            self.outfile = bz2.BZ2File(self.filename, 'rb')
-        elif self.compression == "gz":
-            self.outfile = gzip.open(self.filename, 'rb')
-        elif self.compression == None:
-            self.outfile = open(self.filename, 'r')
+        self.outfile = util.anyopen(self.filename, 'r')
 
         # reset ts
         ts = self.ts
@@ -296,6 +278,5 @@ class GMSReader(base.Reader):
         self.outfile = None
 
     def __del__(self):
-        if not self.outfile is None:
-            self.close()
+        self.close()
 

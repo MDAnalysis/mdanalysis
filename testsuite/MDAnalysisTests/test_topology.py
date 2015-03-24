@@ -21,7 +21,7 @@ from MDAnalysis.topology.core import guess_atom_type, guess_atom_element, get_at
     get_parser_for
 from MDAnalysis.topology.core import Bond, Angle, Torsion, Improper_Torsion, TopologyGroup, TopologyObject, TopologyDict
 from MDAnalysis.tests.datafiles import PRMpbc, PRM12, PSF, PSF_NAMD, PSF_nosegid, DMS, PDB_small, DCD, \
-    LAMMPSdata, trz4data, TPR, PDB, XYZ_mini
+    LAMMPSdata, trz4data, TPR, PDB, XYZ_mini, GMS_SYMOPT, GMS_ASYMSURF
 
 from numpy.testing import *
 from nose.plugins.attrib import attr
@@ -1064,3 +1064,22 @@ class RefXYZ(object):
 class TestXYZTopology(RefXYZ, _TestTopology):
     def test_segments(self):
         assert_equal(len(self.universe.segments), 1)
+
+class RefGMSsym(object):
+    topology = GMS_SYMOPT
+    parser = MDAnalysis.topology.GMSParser.GMSParser
+    ref_numatoms = 4
+    ref_numresidues = 1
+
+class TestGMS_withSymmetry(_TestTopology, RefGMSsym):
+    """Testing GAMESS output file format"""
+
+class RefGMSasym(object):
+    topology = GMS_ASYMSURF
+    parser = MDAnalysis.topology.GMSParser.GMSParser
+    ref_numatoms = 6
+    ref_numresidues = 1
+
+class TestGMS_noSymmetry(_TestTopology, RefGMSasym):
+    """Testing GAMESS output file format"""
+

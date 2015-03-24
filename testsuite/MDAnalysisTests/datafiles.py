@@ -71,9 +71,9 @@ __all__ = [
     "altloc",
     "LAMMPSdata", "trz4data", "LAMMPSdata_mini",
     "unordered_res",  # pdb file with resids non sequential
-    "GMS_ASYMOPT", "GMS_ASYMOPT_xyz",   # GAMESS C1  optimization
-    "GMS_SYMOPT", "GMS_SYMOPT_xyz",     # GAMESS D4h optimization
-    "GMS_ASYMSURF", "GMS_ASYMSURF_xyz", # GAMESS C1  surface
+    "GMS_ASYMOPT",  # GAMESS C1  optimization
+    "GMS_SYMOPT",   # GAMESS D4h optimization
+    "GMS_ASYMSURF", # GAMESS C1  surface
 ]
 
 from pkg_resources import resource_filename
@@ -194,10 +194,7 @@ LAMMPSdata_mini = resource_filename(__name__, "data/mini.data")
 
 unordered_res = resource_filename(__name__, "data/unordered_res.pdb")
 
-GMS_ASYMOPT       = resource_filename(__name__, "data/gms/c1opt.gms")
-GMS_ASYMOPT_xyz   = resource_filename(__name__, "data/gms/c1opt.xyz")
+GMS_ASYMOPT       = resource_filename(__name__, "data/gms/c1opt.gms.gz")
 GMS_SYMOPT        = resource_filename(__name__, "data/gms/symopt.gms")
-GMS_SYMOPT_xyz    = resource_filename(__name__, "data/gms/symopt.xyz")
 GMS_ASYMSURF      = resource_filename(__name__, "data/gms/surf2wat.gms")
-GMS_ASYMSURF_xyz  = resource_filename(__name__, "data/gms/surf2wat.xyz")
 

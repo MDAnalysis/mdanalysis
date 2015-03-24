@@ -30,7 +30,7 @@ from .datafiles import PSF, DCD, DCD_empty, PDB_small, XPDB_small, PDB_closed, P
     XYZ, XYZ_bz2, XYZ_psf, PRM, TRJ, TRJ_bz2, PRMpbc, TRJpbc_bz2, PRMncdf, NCDF, PQR, \
     PDB_sub_dry, TRR_sub_sol, PDB_sub_sol, TRZ, TRZ_psf, LAMMPSdata, LAMMPSdata_mini, \
     PSF_TRICLINIC, DCD_TRICLINIC, PSF_NAMD_TRICLINIC, DCD_NAMD_TRICLINIC, \
-    GMS_ASYMOPT, GMS_ASYMOPT_xyz, GMS_SYMOPT, GMS_SYMOPT_xyz, GMS_ASYMSURF, GMS_ASYMSURF_xyz
+    GMS_ASYMOPT, GMS_SYMOPT, GMS_ASYMSURF
 
 
 
@@ -720,9 +720,10 @@ class TestGMSReader(TestCase):
 
     def setUp(self):
         # optimize no-symmetry
-        self.u_aso = mda.Universe(GMS_ASYMOPT_xyz, GMS_ASYMOPT)
-        self.u_so =  mda.Universe(GMS_SYMOPT_xyz,  GMS_SYMOPT)
-        self.u_ass = mda.Universe(GMS_ASYMSURF_xyz, GMS_ASYMSURF)
+        self.u_aso = mda.Universe(GMS_ASYMOPT, GMS_ASYMOPT, format='GMS',
+                topology_format='GMS')
+        self.u_so =  mda.Universe(GMS_SYMOPT,  GMS_SYMOPT)
+        self.u_ass = mda.Universe(GMS_ASYMSURF, GMS_ASYMSURF)
 
     def test_numframes(self):
         desired = [21,8,10]
@@ -733,14 +734,25 @@ class TestGMSReader(TestCase):
         assert_equal(self.u_ass.trajectory.numframes, desired[2],
                 err_msg="Wrong number of frames read from GAMESS C1 surface")
 
-    def test_step5distances(self):
-        ''' Distance between 1st and 4th atoms changes after 5 steps '''
-        desired = [-0.0484664, 0.227637, -0.499996] 
-        assert_almost_equal(self.__calcFD(self.u_aso), desired[0], decimal=5,
+    def test_step5distances_asymopt(self):
+        ''' C1 optimization: 
+            distance between 1st and 4th atoms changes after 5 steps '''
+        desired = -0.0484664
+        assert_almost_equal(self.__calcFD(self.u_aso), desired, decimal=5,
                 err_msg="Wrong 1-4 atom distance change after 5 steps for GAMESS C1 optimization")
-        assert_almost_equal(self.__calcFD(self.u_so), desired[1], decimal=5,
+
+    def test_step5distances_symopt(self):
+        ''' Symmetry-input optimization: 
+            distance between 1st and 4th atoms changes after 5 steps '''
+        desired = 0.227637
+        assert_almost_equal(self.__calcFD(self.u_so), desired, decimal=5,
                 err_msg="Wrong 1-4 atom distance change after 5 steps for GAMESS D4H optimization")
-        assert_almost_equal(self.__calcFD(self.u_ass), desired[2], decimal=5,
+
+    def test_step5distances_asymsurf(self):
+        ''' Symmetry-input potential-energy surface: 
+            distance between 1st and 4th atoms changes after 5 steps '''
+        desired = -0.499996
+        assert_almost_equal(self.__calcFD(self.u_ass), desired, decimal=5,
                 err_msg="Wrong 1-4 atom distance change after 5 steps for GAMESS C1 surface")
 
     def __calcFD(self, u):

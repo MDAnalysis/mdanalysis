@@ -676,6 +676,7 @@ _topology_coordinates_readers = {
     'DMS': DMS.DMSReader,
     'MOL2': MOL2.MOL2Reader,
     'DATA': LAMMPS.DATAReader,
+    'GMS': GMS.GMSReader,
 }
 
 #: hack: readers that ignore most errors (permissive=True); at the moment
