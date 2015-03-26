@@ -735,21 +735,21 @@ class TestGMSReader(TestCase):
                 err_msg="Wrong number of frames read from GAMESS C1 surface")
 
     def test_step5distances_asymopt(self):
-        ''' C1 optimization: 
+        '''TestGMSReader: C1 optimization: 
             distance between 1st and 4th atoms changes after 5 steps '''
         desired = -0.0484664
         assert_almost_equal(self.__calcFD(self.u_aso), desired, decimal=5,
                 err_msg="Wrong 1-4 atom distance change after 5 steps for GAMESS C1 optimization")
 
     def test_step5distances_symopt(self):
-        ''' Symmetry-input optimization: 
+        '''TestGMSReader: Symmetry-input optimization: 
             distance between 1st and 4th atoms changes after 5 steps '''
         desired = 0.227637
         assert_almost_equal(self.__calcFD(self.u_so), desired, decimal=5,
                 err_msg="Wrong 1-4 atom distance change after 5 steps for GAMESS D4H optimization")
 
     def test_step5distances_asymsurf(self):
-        ''' Symmetry-input potential-energy surface: 
+        '''TestGMSReader: Symmetry-input potential-energy surface: 
             distance between 1st and 4th atoms changes after 5 steps '''
         desired = -0.499996
         assert_almost_equal(self.__calcFD(self.u_ass), desired, decimal=5,

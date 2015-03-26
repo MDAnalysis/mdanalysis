@@ -113,7 +113,7 @@ For details see the report for `Issue 87`_.
                   'data/mol2/*.mol2',
                   'data/capping/*.gro', 'data/capping/*.pdb',
                   'data/*.data',
-                  'data/gms/*.xyz', 'data/gms/*.gms',
+                  'data/gms/*.xyz', 'data/gms/*.gms', 'data/gms/*.gms.gz',
               ],
           },
           classifiers=CLASSIFIERS,
