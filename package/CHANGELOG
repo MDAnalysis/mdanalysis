@@ -16,6 +16,8 @@ The rules for this file:
   Enhancements
 
   * XYZ file format can be used without an associated topology file.
+  * GAMESS output files can be read as trajectories for calculations of 
+type ``SURFACE'' and ``OPTIMIZE'' (work wit both GAMESS-US and Firefly)
 
   Changes
 

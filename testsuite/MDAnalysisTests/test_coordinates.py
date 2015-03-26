@@ -29,7 +29,10 @@ from .datafiles import PSF, DCD, DCD_empty, PDB_small, XPDB_small, PDB_closed, P
     PDB, CRD, XTC, TRR, GRO, DMS, CONECT, \
     XYZ, XYZ_bz2, XYZ_psf, PRM, TRJ, TRJ_bz2, PRMpbc, TRJpbc_bz2, PRMncdf, NCDF, PQR, \
     PDB_sub_dry, TRR_sub_sol, PDB_sub_sol, TRZ, TRZ_psf, LAMMPSdata, LAMMPSdata_mini, \
-    PSF_TRICLINIC, DCD_TRICLINIC, PSF_NAMD_TRICLINIC, DCD_NAMD_TRICLINIC
+    PSF_TRICLINIC, DCD_TRICLINIC, PSF_NAMD_TRICLINIC, DCD_NAMD_TRICLINIC, \
+    GMS_ASYMOPT, GMS_SYMOPT, GMS_ASYMSURF
+
+
 
 from . import knownfailure
 
@@ -710,6 +713,64 @@ class TestPrimitivePDBWriter(TestCase):
         u.atoms[1000].pos[1] = 9999.9996  # OB: 9999.99951 is not caught by '<=' ?!?
         assert_raises(ValueError, u.atoms.write, self.outfile)
         del u
+
+
+class TestGMSReader(TestCase):
+    ''' Test cases for GAMESS output log-files '''
+
+    def setUp(self):
+        # optimize no-symmetry
+        self.u_aso = mda.Universe(GMS_ASYMOPT, GMS_ASYMOPT, format='GMS',
+                topology_format='GMS')
+        self.u_so =  mda.Universe(GMS_SYMOPT,  GMS_SYMOPT)
+        self.u_ass = mda.Universe(GMS_ASYMSURF, GMS_ASYMSURF)
+
+    def test_numframes(self):
+        desired = [21,8,10]
+        assert_equal(self.u_aso.trajectory.numframes, desired[0],
+                err_msg="Wrong number of frames read from GAMESS C1 optimization")
+        assert_equal(self.u_so.trajectory.numframes, desired[1],
+                err_msg="Wrong number of frames read from GAMESS D4H optimization")
+        assert_equal(self.u_ass.trajectory.numframes, desired[2],
+                err_msg="Wrong number of frames read from GAMESS C1 surface")
+
+    def test_step5distances_asymopt(self):
+        ''' C1 optimization: 
+            distance between 1st and 4th atoms changes after 5 steps '''
+        desired = -0.0484664
+        assert_almost_equal(self.__calcFD(self.u_aso), desired, decimal=5,
+                err_msg="Wrong 1-4 atom distance change after 5 steps for GAMESS C1 optimization")
+
+    def test_step5distances_symopt(self):
+        ''' Symmetry-input optimization: 
+            distance between 1st and 4th atoms changes after 5 steps '''
+        desired = 0.227637
+        assert_almost_equal(self.__calcFD(self.u_so), desired, decimal=5,
+                err_msg="Wrong 1-4 atom distance change after 5 steps for GAMESS D4H optimization")
+
+    def test_step5distances_asymsurf(self):
+        ''' Symmetry-input potential-energy surface: 
+            distance between 1st and 4th atoms changes after 5 steps '''
+        desired = -0.499996
+        assert_almost_equal(self.__calcFD(self.u_ass), desired, decimal=5,
+                err_msg="Wrong 1-4 atom distance change after 5 steps for GAMESS C1 surface")
+
+    def __calcFD(self, u):
+        u.trajectory.rewind()
+        pp = (u.trajectory.ts._pos[0] - u.trajectory.ts._pos[3])
+        z1 = np.sqrt(sum(pp**2))
+        for i in range(5):
+            u.trajectory.next()
+        pp = (u.trajectory.ts._pos[0] - u.trajectory.ts._pos[3])
+        z2 = np.sqrt(sum(pp**2))
+        return z1-z2
+
+    def tearDown(self):
+        del self.u_aso
+        del self.u_so
+        del self.u_ass
+
+
 
 
 class TestMultiPDBReader(TestCase):

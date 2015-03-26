@@ -120,6 +120,10 @@ also recognized when they are compressed with :program:`gzip` or
    |               |           |       | compressed (gzip or bzip2). Module                   |
    |               |           |       | :mod:`MDAnalysis.coordinates.XYZ`                    |
    +---------------+-----------+-------+------------------------------------------------------+
+   | GAMESS        |  gms,     |  r    | Generic semi-formatted GAMESS output log; can be     |
+   |               |  log,     |       | compressed (gzip or bzip2). Module                   |
+   |               |  out      |       | :mod:`MDAnalysis.coordinates.GMS`                    |
+   +---------------+-----------+-------+------------------------------------------------------+
    | AMBER         | trj,      |  r    | formatted (ASCII) trajectories; the presence of a    |
    |               | mdcrd     |       | periodic box is autodetected (*experimental*).       |
    |               |           |       | Module :mod:`MDAnalysis.coordinates.TRJ`             |
@@ -627,6 +631,7 @@ import LAMMPS
 import DMS
 import TRZ
 import MOL2
+import GMS
 import base
 from core import reader, writer
 
@@ -653,6 +658,7 @@ _trajectory_readers = {
     'DMS': DMS.DMSReader,
     'TRZ': TRZ.TRZReader,
     'DATA': LAMMPS.DATAReader,
+    'GMS': GMS.GMSReader,
 }
 
 #: formats of readers that can also handle gzip or bzip2 compressed files
@@ -670,6 +676,7 @@ _topology_coordinates_readers = {
     'DMS': DMS.DMSReader,
     'MOL2': MOL2.MOL2Reader,
     'DATA': LAMMPS.DATAReader,
+    'GMS': GMS.GMSReader,
 }
 
 #: hack: readers that ignore most errors (permissive=True); at the moment
