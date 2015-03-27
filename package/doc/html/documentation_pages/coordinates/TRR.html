@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.12. Gromacs TRR file IO — MDAnalysis.coordinates.TRR &mdash; MDAnalysis 1.0.0-dev documentation</title>
+    <title>5.12. Gromacs TRR file IO — MDAnalysis.coordinates.TRR &mdash; MDAnalysis 0.9.1 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '1.0.0-dev',
+        VERSION:     '0.9.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 1.0.0-dev documentation"
+          title="Search within MDAnalysis 0.9.1 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 1.0.0-dev documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.9.1 documentation" href="../../index.html" />
     <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
     <link rel="next" title="5.13. Gromacs XTC file IO — MDAnalysis.coordinates.XTC" href="XTC.html" />
     <link rel="prev" title="5.11. AMBER trajectories — MDAnalysis.coordinates.TRJ" href="TRJ.html" /> 
@@ -49,7 +49,7 @@
         <li class="right" >
           <a href="TRJ.html" title="5.11. AMBER trajectories — MDAnalysis.coordinates.TRJ"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 1.0.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.9.1 documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -149,19 +149,19 @@ subsequent ones. The mode number is stored in the
 and the mode coordinates are filling the
 <tt class="xref py py-attr docutils literal"><span class="pre">_pos</span></tt> attribute of
 <a class="reference internal" href="xdrfile/TRR.html#MDAnalysis.coordinates.xdrfile.TRR.Timestep" title="MDAnalysis.coordinates.xdrfile.TRR.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a>:</p>
-<div class="highlight-python"><div class="highlight"><pre># &#39;modes&#39; is a mode object with M PCs, similar to a MxNx3 array
-# &#39;xav&#39; the average coordinates, a Nx3 array for N atoms
+<div class="highlight-python"><pre># 'modes' is a mode object with M PCs, similar to a MxNx3 array
+# 'xav' the average coordinates, a Nx3 array for N atoms
 
 N = len(xav)   # number of atoms, i.e. number of coordinates
 
-W = Writer(&#39;pca.trr&#39;, numatoms=N)            # TRR writer
+W = Writer('pca.trr', numatoms=N)            # TRR writer
 ts = MDAnalysis.coordinates.TRR.Timestep(N)  # TRR time step
-                                             #   TRR handling requires &#39;has_x&#39; to be set
+                                             #   TRR handling requires 'has_x' to be set
                                              #   before low-level assignment to ts._pos.
-                                             #   (likewise for &#39;has_v&#39; and &#39;has_f&#39; for assignment
+                                             #   (likewise for 'has_v' and 'has_f' for assignment
                                              #   to ts._velocites and ts._forces). The default of
-                                             #   the Timestep constructor is to set &#39;has_x&#39; to True
-                                             #   (but not &#39;has_v&#39; or &#39;has_f&#39;) when only the number
+                                             #   the Timestep constructor is to set 'has_x' to True
+                                             #   (but not 'has_v' or 'has_f') when only the number
                                              #   of atoms is passed.
 for frame,mode in enumerate(modes[4:16]):
     ts.lmbda = -1
@@ -177,8 +177,7 @@ for frame,mode in enumerate(modes[4:16]):
        ts.time = mode.frequency
     W.write(ts)             # converts angstrom to nm for gmx
 
- W.close()
-</pre></div>
+ W.close()</pre>
 </div>
 </div>
 </div>
@@ -906,7 +905,7 @@ be written to trajectory file</p>
         <li class="right" >
           <a href="TRJ.html" title="5.11. AMBER trajectories — MDAnalysis.coordinates.TRJ"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 1.0.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.9.1 documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -918,7 +917,7 @@ be written to trajectory file</p>
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>

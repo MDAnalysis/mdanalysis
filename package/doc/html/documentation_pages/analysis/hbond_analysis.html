@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>3.2.1. Hydrogen Bond analysis — MDAnalysis.analysis.hbonds.hbond_analysis &mdash; MDAnalysis 1.0.0-dev documentation</title>
+    <title>3.2.1. Hydrogen Bond analysis — MDAnalysis.analysis.hbonds.hbond_analysis &mdash; MDAnalysis 0.9.1 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '1.0.0-dev',
+        VERSION:     '0.9.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 1.0.0-dev documentation"
+          title="Search within MDAnalysis 0.9.1 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 1.0.0-dev documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.9.1 documentation" href="../../index.html" />
     <link rel="up" title="3. Analysis modules" href="../analysis_modules.html" />
     <link rel="next" title="3.2.2. Hydrogen bond autocorrelation — MDAnalysis.analysis.hbonds.hbond_autocorrel" href="hbond_autocorrel.html" />
     <link rel="prev" title="3.1.4. Calculating root mean square quantities — MDAnalysis.analysis.rms" href="rms.html" /> 
@@ -49,7 +49,7 @@
         <li class="right" >
           <a href="rms.html" title="3.1.4. Calculating root mean square quantities — MDAnalysis.analysis.rms"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 1.0.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.9.1 documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" accesskey="U">3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -147,7 +147,7 @@ that is bonded to the heavy atom donor,</li>
 <p>Hydrogen bond data are returned per frame, which is stored in
 <a class="reference internal" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.timeseries" title="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.timeseries"><tt class="xref py py-attr docutils literal"><span class="pre">HydrogenBondAnalysis.timeseries</span></tt></a> (In the following description, <tt class="docutils literal"><span class="pre">#</span></tt>
 indicates comments that are not part of the output.):</p>
-<div class="highlight-python"><div class="highlight"><pre>results = [
+<div class="highlight-python"><pre>results = [
     [ # frame 1
        [ # hbond 1
           &lt;donor index&gt;, &lt;acceptor index&gt;, &lt;donor string&gt;, &lt;acceptor string&gt;, &lt;distance&gt;, &lt;angle&gt;
@@ -161,8 +161,7 @@ indicates comments that are not part of the output.):</p>
       [ ... ], [ ... ], ...
     ],
     ...
-]
-</pre></div>
+]</pre>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -585,7 +584,7 @@ of a hydrogen bond existence, or see <a class="reference internal" href="#MDAnal
 <dd><p>Results of the hydrogen bond analysis, stored for each frame. In
 the following description, # indicates comments that are not
 part of the output:</p>
-<div class="highlight-python"><div class="highlight"><pre>results = [
+<div class="highlight-python"><pre>results = [
     [ # frame 1
        [ # hbond 1
           &lt;donor index&gt;, &lt;acceptor index&gt;, &lt;donor string&gt;, &lt;acceptor string&gt;, &lt;distance&gt;, &lt;angle&gt;
@@ -599,8 +598,7 @@ part of the output:</p>
       [ ... ], [ ... ], ...
     ],
     ...
-]
-</pre></div>
+]</pre>
 </div>
 <p>The time of each step is not stored with each hydrogen bond frame but in
 <a class="reference internal" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.timesteps" title="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.timesteps"><tt class="xref py py-attr docutils literal"><span class="pre">timesteps</span></tt></a>.</p>
@@ -809,7 +807,7 @@ with e.g. <a class="reference external" href="http://pypi.python.org/pypi/RecSQL
 
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.r_cov">
-<tt class="descname">r_cov</tt><em class="property"> = defaultdict(&lt;function &lt;lambda&gt; at 0x7f32c5aaf2a8&gt;, {'P': 1.58, 'S': 1.55, 'O': 1.31, 'N': 1.31})</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.r_cov" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">r_cov</tt><em class="property"> = defaultdict(&lt;function &lt;lambda&gt; at 0x7fb8c0e93aa0&gt;, {'P': 1.58, 'S': 1.55, 'O': 1.31, 'N': 1.31})</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.r_cov" title="Permalink to this definition">¶</a></dt>
 <dd><p>A <a class="reference external" href="http://docs.python.org/library/collections.html#collections.defaultdict" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">collections.defaultdict</span></tt></a> of covalent radii of common donors
 (used in :meth`_get_bonded_hydrogens_list` to check if a hydrogen is
 sufficiently close to its donor heavy atom). Values are stored for
@@ -896,7 +894,7 @@ of timesteps at which the hydrogen bond was detected.</p>
         <li class="right" >
           <a href="rms.html" title="3.1.4. Calculating root mean square quantities — MDAnalysis.analysis.rms"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 1.0.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.9.1 documentation</a> &raquo;</li>
           <li><a href="../analysis_modules.html" >3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -908,7 +906,7 @@ of timesteps at which the hydrogen bond was detected.</p>
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>

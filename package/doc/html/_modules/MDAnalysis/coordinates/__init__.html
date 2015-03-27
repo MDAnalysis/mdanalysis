@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.coordinates.__init__ &mdash; MDAnalysis 1.0.0-dev documentation</title>
+    <title>MDAnalysis.coordinates.__init__ &mdash; MDAnalysis 0.9.1 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.0.0-dev',
+        VERSION:     '0.9.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 1.0.0-dev documentation"
+          title="Search within MDAnalysis 0.9.1 documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 1.0.0-dev documentation" href="../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.9.1 documentation" href="../../../index.html" />
     <link rel="up" title="MDAnalysis" href="../../MDAnalysis.html" /> 
   </head>
   <body>
@@ -41,7 +41,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 1.0.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.9.1 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
       </ul>
@@ -178,10 +178,11 @@
 <span class="sd">   |               |           |       | correctly (requires testing). Module                 |</span>
 <span class="sd">   |               |           |       | :mod:`MDAnalysis.coordinates.DCD`                    |</span>
 <span class="sd">   +---------------+-----------+-------+------------------------------------------------------+</span>
-<span class="sd">   | LAMMPS        | dcd,      |  r/w  | CHARMM-style binary trajectory; endianness is        |</span>
-<span class="sd">   |               | data      |  r    | autodetected. Units are appropriate for LAMMPS.      |</span>
+<span class="sd">   | LAMMPS        | dcd       |  r/w  | CHARMM-style binary trajectory; endianness is        |</span>
+<span class="sd">   |               |           |       | autodetected. Units are appropriate for LAMMPS.      |</span>
 <span class="sd">   |               |           |       | Module :mod:`MDAnalysis.coordinates.LAMMPS`          |</span>
-<span class="sd">   |               |           |       | Single frames can be read from .data files.          |</span>
+<span class="sd">   +---------------+-----------+-------+------------------------------------------------------+</span>
+<span class="sd">   | LAMMPS [#a]_  | data      |  r    | Single frame of coordinates read from .data files    |</span>
 <span class="sd">   +---------------+-----------+-------+------------------------------------------------------+</span>
 <span class="sd">   | Gromacs       | xtc       |  r/w  | Compressed (lossy) xtc trajectory format. Module     |</span>
 <span class="sd">   |               |           |       | :mod:`MDAnalysis.coordinates.XTC`                    |</span>
@@ -190,9 +191,13 @@
 <span class="sd">   |               |           |       | velocities are processed. Module                     |</span>
 <span class="sd">   |               |           |       | :mod:`MDAnalysis.coordinates.TRR`                    |</span>
 <span class="sd">   +---------------+-----------+-------+------------------------------------------------------+</span>
-<span class="sd">   | XYZ           |  xyz      |  r/w  | Generic white-space separate XYZ format; can be      |</span>
+<span class="sd">   | XYZ [#a]_     |  xyz      |  r/w  | Generic white-space separate XYZ format; can be      |</span>
 <span class="sd">   |               |           |       | compressed (gzip or bzip2). Module                   |</span>
 <span class="sd">   |               |           |       | :mod:`MDAnalysis.coordinates.XYZ`                    |</span>
+<span class="sd">   +---------------+-----------+-------+------------------------------------------------------+</span>
+<span class="sd">   | GAMESS        |  gms,     |  r    | Generic semi-formatted GAMESS output log; can be     |</span>
+<span class="sd">   |               |  log,     |       | compressed (gzip or bzip2). Module                   |</span>
+<span class="sd">   |               |  out      |       | :mod:`MDAnalysis.coordinates.GMS`                    |</span>
 <span class="sd">   +---------------+-----------+-------+------------------------------------------------------+</span>
 <span class="sd">   | AMBER         | trj,      |  r    | formatted (ASCII) trajectories; the presence of a    |</span>
 <span class="sd">   |               | mdcrd     |       | periodic box is autodetected (*experimental*).       |</span>
@@ -701,6 +706,7 @@
 <span class="kn">import</span> <span class="nn">DMS</span>
 <span class="kn">import</span> <span class="nn">TRZ</span>
 <span class="kn">import</span> <span class="nn">MOL2</span>
+<span class="kn">import</span> <span class="nn">GMS</span>
 <span class="kn">import</span> <span class="nn">base</span>
 <span class="kn">from</span> <span class="nn">core</span> <span class="kn">import</span> <span class="n">reader</span><span class="p">,</span> <span class="n">writer</span>
 
@@ -727,6 +733,7 @@
     <span class="s">&#39;DMS&#39;</span><span class="p">:</span> <span class="n">DMS</span><span class="o">.</span><span class="n">DMSReader</span><span class="p">,</span>
     <span class="s">&#39;TRZ&#39;</span><span class="p">:</span> <span class="n">TRZ</span><span class="o">.</span><span class="n">TRZReader</span><span class="p">,</span>
     <span class="s">&#39;DATA&#39;</span><span class="p">:</span> <span class="n">LAMMPS</span><span class="o">.</span><span class="n">DATAReader</span><span class="p">,</span>
+    <span class="s">&#39;GMS&#39;</span><span class="p">:</span> <span class="n">GMS</span><span class="o">.</span><span class="n">GMSReader</span><span class="p">,</span>
 <span class="p">}</span>
 
 <span class="c">#: formats of readers that can also handle gzip or bzip2 compressed files</span>
@@ -744,6 +751,7 @@
     <span class="s">&#39;DMS&#39;</span><span class="p">:</span> <span class="n">DMS</span><span class="o">.</span><span class="n">DMSReader</span><span class="p">,</span>
     <span class="s">&#39;MOL2&#39;</span><span class="p">:</span> <span class="n">MOL2</span><span class="o">.</span><span class="n">MOL2Reader</span><span class="p">,</span>
     <span class="s">&#39;DATA&#39;</span><span class="p">:</span> <span class="n">LAMMPS</span><span class="o">.</span><span class="n">DATAReader</span><span class="p">,</span>
+    <span class="s">&#39;GMS&#39;</span><span class="p">:</span> <span class="n">GMS</span><span class="o">.</span><span class="n">GMSReader</span><span class="p">,</span>
 <span class="p">}</span>
 
 <span class="c">#: hack: readers that ignore most errors (permissive=True); at the moment</span>
@@ -803,7 +811,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 1.0.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">MDAnalysis 0.9.1 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
       </ul>
@@ -816,7 +824,7 @@
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>

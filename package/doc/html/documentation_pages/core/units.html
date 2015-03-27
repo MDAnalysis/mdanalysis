@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>7.8. Constants and unit conversion — MDAnalysis.core.units &mdash; MDAnalysis 1.0.0-dev documentation</title>
+    <title>7.8. Constants and unit conversion — MDAnalysis.core.units &mdash; MDAnalysis 0.9.1 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '1.0.0-dev',
+        VERSION:     '0.9.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 1.0.0-dev documentation"
+          title="Search within MDAnalysis 0.9.1 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 1.0.0-dev documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.9.1 documentation" href="../../index.html" />
     <link rel="up" title="7. Core modules" href="../core_modules.html" />
     <link rel="next" title="7.9. Helper functions — MDAnalysis.core.util" href="util.html" />
     <link rel="prev" title="7.7. Fast QCP RMSD structure alignment — MDAnalysis.core.qcprot" href="qcprot.html" /> 
@@ -49,7 +49,7 @@
         <li class="right" >
           <a href="qcprot.html" title="7.7. Fast QCP RMSD structure alignment — MDAnalysis.core.qcprot"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 1.0.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.9.1 documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" accesskey="U">7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -170,10 +170,9 @@ is then</p>
 <span class="math">\(f_{b,b'}\)</span>.</p>
 <p>Conversion between different units is always carried out via the base unit as
 an intermediate step:</p>
-<div class="highlight-python"><div class="highlight"><pre>x is in u1: from u1 to b:  x&#39;  = x  / factor[u1]
-            from b  to u2: x&#39;&#39; = x&#39; * factor[u2]
-so f[u1,u2] = factor[u2]/factor[u1]
-</pre></div>
+<div class="highlight-python"><pre>x is in u1: from u1 to b:  x'  = x  / factor[u1]
+            from b  to u2: x'' = x' * factor[u2]
+so f[u1,u2] = factor[u2]/factor[u1]</pre>
 </div>
 <div class="section" id="conversions">
 <h3>7.8.1.1. Conversions<a class="headerlink" href="#conversions" title="Permalink to this headline">¶</a></h3>
@@ -196,14 +195,12 @@ hard-coded in <a class="reference internal" href="#module-MDAnalysis.core.units"
 </dd>
 <dt>concentration:</dt>
 <dd><p class="first">Example for how to convert the conversion factor to Molar (mol/l):</p>
-<div class="highlight-python"><div class="highlight"><pre>factor = 1 A**-3 / (N_Avogadro * (10**-9 dm)**-3)
-</pre></div>
+<div class="highlight-python"><pre>factor = 1 A**-3 / (N_Avogadro * (10**-9 dm)**-3)</pre>
 </div>
 <p>relative to a density rho0 in g/cm^3:</p>
-<div class="highlight-python"><div class="highlight"><pre>M(H2O) = 18 g/mol   Molar mass of water
+<div class="highlight-python"><pre>M(H2O) = 18 g/mol   Molar mass of water
 
-factor = 1/(1e-24 * N_Avogadro / M(H2O))
-</pre></div>
+factor = 1/(1e-24 * N_Avogadro / M(H2O))</pre>
 </div>
 <p class="last">from <cite>rho/rho0 = n/(N_A * M**-1) / rho0</cite>  where <cite>[n] = 1/Volume</cite>, <cite>[rho] = mass/Volume</cite></p>
 </dd>
@@ -419,7 +416,7 @@ become</p>
         <li class="right" >
           <a href="qcprot.html" title="7.7. Fast QCP RMSD structure alignment — MDAnalysis.core.qcprot"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 1.0.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.9.1 documentation</a> &raquo;</li>
           <li><a href="../core_modules.html" >7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -431,7 +428,7 @@ become</p>
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>

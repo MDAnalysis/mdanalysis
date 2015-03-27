@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>4.1. Topology readers — MDAnalysis.topology &mdash; MDAnalysis 1.0.0-dev documentation</title>
+    <title>4.1. Topology readers — MDAnalysis.topology &mdash; MDAnalysis 0.9.1 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '1.0.0-dev',
+        VERSION:     '0.9.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 1.0.0-dev documentation"
+          title="Search within MDAnalysis 0.9.1 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 1.0.0-dev documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.9.1 documentation" href="../../index.html" />
     <link rel="up" title="4. Topology modules" href="../topology_modules.html" />
     <link rel="next" title="4.2. Common functions for topology building — MDAnalysis.topology.core" href="core.html" />
     <link rel="prev" title="4. Topology modules" href="../topology_modules.html" /> 
@@ -49,7 +49,7 @@
         <li class="right" >
           <a href="../topology_modules.html" title="4. Topology modules"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 1.0.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.9.1 documentation</a> &raquo;</li>
           <li><a href="../topology_modules.html" accesskey="U">4. Topology modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -119,8 +119,8 @@ coordinate file and their residue names and numbers.</p>
 <caption>Table of Supported topology formats</caption>
 <colgroup>
 <col width="20%" />
-<col width="13%" />
-<col width="67%" />
+<col width="12%" />
+<col width="68%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Name</th>
@@ -205,12 +205,25 @@ versions of the file format);
 <td>LAMMPS Data file parser
 <tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.LAMMPSParser</span></tt></td>
 </tr>
+<tr class="row-even"><td>XYZ <a class="footnote-reference" href="#a" id="id7">[1]</a></td>
+<td>xyz</td>
+<td>XYZ File Parser.  Reads only the labels from atoms and
+constructs minimal topology data.
+<tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.XYZParser</span></tt></td>
+</tr>
+<tr class="row-odd"><td>GMS</td>
+<td>gms,
+log</td>
+<td>GAMESS output parser. Read only atoms of assembly
+section (atom, elems and coords) and construct topology.
+<tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.GMSParser</span></tt></td>
+</tr>
 </tbody>
 </table>
 <table class="docutils footnote" frame="void" id="a" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[1]</td><td><em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id2">2</a>, <a class="fn-backref" href="#id3">3</a>, <a class="fn-backref" href="#id4">4</a>, <a class="fn-backref" href="#id5">5</a>, <a class="fn-backref" href="#id6">6</a>)</em> This format can also be used to provide <em>coordinates</em> so that
+<tr><td class="label">[1]</td><td><em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id2">2</a>, <a class="fn-backref" href="#id3">3</a>, <a class="fn-backref" href="#id4">4</a>, <a class="fn-backref" href="#id5">5</a>, <a class="fn-backref" href="#id6">6</a>, <a class="fn-backref" href="#id7">7</a>)</em> This format can also be used to provide <em>coordinates</em> so that
 it is possible to create a full
 <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-mod docutils literal"><span class="pre">Universe</span></tt></a> by simply providing a
 file of this format as the sole argument to
@@ -341,7 +354,7 @@ topology file defines improper dihedrals..</p>
         <li class="right" >
           <a href="../topology_modules.html" title="4. Topology modules"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 1.0.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../index.html">MDAnalysis 0.9.1 documentation</a> &raquo;</li>
           <li><a href="../topology_modules.html" >4. Topology modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -353,7 +366,7 @@ topology file defines improper dihedrals..</p>
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.analysis.hbonds.hbond_autocorrel &mdash; MDAnalysis 1.0.0-dev documentation</title>
+    <title>MDAnalysis.analysis.hbonds.hbond_autocorrel &mdash; MDAnalysis 0.9.1 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '1.0.0-dev',
+        VERSION:     '0.9.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 1.0.0-dev documentation"
+          title="Search within MDAnalysis 0.9.1 documentation"
           href="../../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 1.0.0-dev documentation" href="../../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.9.1 documentation" href="../../../../index.html" />
     <link rel="up" title="MDAnalysis" href="../../../MDAnalysis.html" /> 
   </head>
   <body>
@@ -41,7 +41,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">MDAnalysis 1.0.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">MDAnalysis 0.9.1 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
       </ul>
@@ -241,19 +241,25 @@
 <span class="sd">          *universe*</span>
 <span class="sd">            The MDA universe</span>
 <span class="sd">          *hydrogens*</span>
-<span class="sd">            Hydrogens which can form hydrogen bonds</span>
+<span class="sd">            AtomGroup of Hydrogens which can form hydrogen bonds</span>
 <span class="sd">          *acceptors*</span>
-<span class="sd">            Accepting atoms</span>
+<span class="sd">            AtomGroup of all Acceptor atoms</span>
 <span class="sd">          *donors*</span>
-<span class="sd">            The atoms which are connected to the hydrogens</span>
+<span class="sd">            The atoms which are connected to the hydrogens.  This group</span>
+<span class="sd">            must be identical in length to the hydrogen group and matched,</span>
+<span class="sd">            ie hydrogens[1] is bonded to donors[0].</span>
+<span class="sd">            For many cases, this will mean a donor appears twice in this</span>
+<span class="sd">            group.</span>
 <span class="sd">          *bond_type*</span>
 <span class="sd">            Which definition of hydrogen bond lifetime to consider, either</span>
-<span class="sd">            &#39;continuous&#39; or &#39;intermittent&#39;</span>
+<span class="sd">            &#39;continuous&#39; or &#39;intermittent&#39;.</span>
 
 <span class="sd">        :Keywords:</span>
 <span class="sd">          *exclusions*</span>
-<span class="sd">            Indices of Hydrogen-Donor pairs to be excluded.  Must be a tuple of</span>
-<span class="sd">            two arrays</span>
+<span class="sd">            Indices of Hydrogen-Acceptor pairs to be excluded.</span>
+<span class="sd">            With nH and nA Hydrogens and Acceptors, a (nH x nA) array of distances</span>
+<span class="sd">            is calculated, *exclusions* is used as a mask on this array to exclude</span>
+<span class="sd">            some pairs.</span>
 <span class="sd">          *angle_crit*</span>
 <span class="sd">            The angle (in degrees) which all bonds must be greater than [130.0]</span>
 <span class="sd">          *dist_crit*</span>
@@ -279,8 +285,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">h</span> <span class="o">=</span> <span class="n">hydrogens</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="n">acceptors</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">d</span> <span class="o">=</span> <span class="n">donors</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">h</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">))</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">d</span><span class="p">)):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;All selections must have the same length&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">h</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">d</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Donors and Hydrogen groups must be matched&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">exclusions</span> <span class="o">=</span> <span class="n">exclusions</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">exclusions</span><span class="p">:</span>
@@ -605,7 +611,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">MDAnalysis 1.0.0-dev documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">MDAnalysis 0.9.1 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
       </ul>
@@ -618,7 +624,7 @@
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>
