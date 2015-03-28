@@ -56,7 +56,7 @@ Trajectory API.
 
 
 Classes
-=======
+-------
 
 .. autoclass:: Timestep
    :inherited-members:

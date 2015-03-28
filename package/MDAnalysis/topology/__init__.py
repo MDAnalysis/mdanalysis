@@ -51,7 +51,7 @@ The following table lists the currently supported topology formats.
                                 numbers). To use, specify the format "XPBD"
                                 explicitly:
                                 ``Universe(..., topology_format="XPDB")``.
-                                Module :MDAnalysis.coordinates.PDB`
+                                Module :mod:`MDAnalysis.coordinates.PDB`
 
    PQR [#a]_        pqr         PDB-like but whitespace-separated files with charge
                                 and radius information;
@@ -83,7 +83,7 @@ The following table lists the currently supported topology formats.
    XYZ [#a]_        xyz         XYZ File Parser.  Reads only the labels from atoms and
                                 constructs minimal topology data.
                                 :mod:`MDAnalysis.topology.XYZParser`
-   GMS              gms,        GAMESS output parser. Read only atoms of assembly 
+   GAMESS           gms,        GAMESS output parser. Read only atoms of assembly 
                     log         section (atom, elems and coords) and construct topology.
                                 :mod:`MDAnalysis.topology.GMSParser`
    ================ ==========  =====================================================

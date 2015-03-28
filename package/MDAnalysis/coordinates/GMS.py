@@ -15,8 +15,8 @@
 #     doi:10.1002/jcc.21787
 #
 
-"""GMS trajectory reader --- :mod:`MDAnalysis.coordinates.GMS`
-==============================================================
+"""GAMESS trajectory reader --- :mod:`MDAnalysis.coordinates.GMS`
+=================================================================
 
 Resources: the GMS output format is a common output format for different
 GAMESS distributions: US-GAMESS, Firefly (PC-GAMESS) and GAMESS-UK.

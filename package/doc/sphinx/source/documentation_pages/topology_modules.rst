@@ -38,3 +38,7 @@ topology file format in the *topology_format* keyword argument to
    topology/PQRParser
    topology/DMSParser
    topology/TPRParser
+   topology/MOL2Parser
+   topology/XYZParser
+   topology/LAMMPSParser
+   topology/GMSParser

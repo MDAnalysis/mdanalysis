@@ -142,7 +142,7 @@ also recognized when they are compressed with :program:`gzip` or
    | XPDB          | pdb       |   r   | Extended PDB format (can use 5-digit residue         |
    |               |           |       | numbers). To use, specify the format "XPBD"          |
    |               |           |       | explicitly: ``Universe(..., format="XPDB")``.        |
-   |               |           |       | Module :MDAnalysis.coordinates.PDB`                  |
+   |               |           |       | Module :mod:`MDAnalysis.coordinates.PDB`             |
    +---------------+-----------+-------+------------------------------------------------------+
    | PDBQT [#a]_   | pdbqt     | r/w   | file format used by AutoDock with atom types *t*     |
    |               |           |       | and partial charges *q*. Module:                     |

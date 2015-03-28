@@ -22,10 +22,12 @@ provide the format in the keyword argument *format* to
    coordinates/CRD
    coordinates/DCD
    coordinates/DMS
-   coordinates/LAMMPS
+   coordinates/GMS
    coordinates/GRO
+   coordinates/LAMMPS
+   coordinates/MOL2
    coordinates/PDB
-   coordinates/PDBQT	
+   coordinates/PDBQT
    coordinates/PQR
    coordinates/TRJ
    coordinates/TRR

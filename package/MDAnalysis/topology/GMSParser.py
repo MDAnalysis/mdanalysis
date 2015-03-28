@@ -14,8 +14,8 @@
 #
 
 """
-GMS Topology Parser
-===================
+GAMESS Topology Parser
+======================
 
 Reads an GAMESS output file and pulls element information from it.
 Symmetrical assembly is readed (not symmetry element!). 
