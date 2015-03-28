@@ -89,11 +89,11 @@ authors = u"""Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
-    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
+    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein"""
 project = u'MDAnalysis'
-copyright = u'2005-2014, ' + authors
+copyright = u'2005-2015, ' + authors
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -278,7 +278,7 @@ man_pages = [
 epub_title = u'MDAnalysis'
 epub_author = authors
 epub_publisher = 'Arizona State University, Tempe, Arizona, USA'
-epub_copyright = u'2013, '+authors
+epub_copyright = u'2015, '+authors
 
 # The language of the text. It defaults to the language option
 # or en if the language is not set.

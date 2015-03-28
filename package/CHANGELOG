@@ -10,14 +10,19 @@ The rules for this file:
     use tabs but use spaces for formatting
 
 ------------------------------------------------------------------------------
-03/27/15  manuel.nuno.melo, richardjgowers
+??/??/15
+  * 0.9.2
+
+  Fixes
+
+03/27/15  manuel.nuno.melo, richardjgowers, comconadin
   * 0.9.1
 
   Enhancements
 
   * XYZ file format can be used without an associated topology file.
   * GAMESS output files can be read as trajectories for calculations of 
-type ``SURFACE'' and ``OPTIMIZE'' (work wit both GAMESS-US and Firefly)
+    type ``SURFACE'' and ``OPTIMIZE'' (work wit both GAMESS-US and Firefly)
 
   Changes
 
