@@ -17,12 +17,25 @@
 GAMESS Topology Parser
 ======================
 
-Reads an GAMESS output file and pulls element information from it.
-Symmetrical assembly is readed (not symmetry element!). 
-Atom names becomes as read from GAMESS section.
-All information about residues and segments won't be populated.
-
 .. versionadded:: 0.9.1
+
+Reads a GAMESS_ output file (also Firefly_ and `GAMESS-UK`_) and pulls
+element information from it.  Symmetrical assembly is read (not
+symmetry element!).  Atom names are read from the GAMESS section.  Any
+information about residues or segments will not be populated.
+
+.. _GAMESS: http://www.msg.ameslab.gov/gamess/
+.. _Firefly: http://classic.chem.msu.su/gran/gamess/index.html
+.. _`GAMESS-UK`: http://www.cfs.dl.ac.uk/
+
+
+Classes
+-------
+
+.. autoclass:: GMSParser
+   :members:
+   :inherited-members:
+
 """
 from __future__ import absolute_import
 
@@ -34,8 +47,13 @@ import re
 
 
 class GMSParser(TopologyReader):
+    """GAMESS_ topology parser.
 
+    .. versionadded:: 0.9.1
+    """
     def parse(self):
+        """Read list of atoms from a GAMESS file."""
+
         with openany(self.filename, 'r') as inf:
             natoms = 0
             while True:

@@ -16,23 +16,25 @@
 
 
 """
-TPR support module
-==================
+TPR support
+===========
 
-The modules are required for the :mod:`MDAnalysis.topology.TPRParser` module.
+The :mod:`MDAnalysis.topology.tpr` module is required for the
+:mod:`MDAnalysis.topology.TPRParser` module.
 
 .. autodata:: SUPPORTED_VERSIONS
 
-Sub-modules
------------
+.. rubric:: Sub-modules
 
-.. automodule:: setting
-   :members:
-.. automodule:: obj
-   :members:
-.. automodule:: util
+* :mod:`MDAnalysis.topology.tpr.setting`
+* :mod:`MDAnalysis.topology.tpr.obj`
+* :mod:`MDAnalysis.topology.tpr.utils`
 
 """
-__all__ = ["obj", "setting", "util"]
+from __future__ import absolute_import
 
-from setting import SUPPORTED_VERSIONS
+from .setting import SUPPORTED_VERSIONS
+
+__all__ = ["obj", "setting", "utils"]
+
+

@@ -17,13 +17,20 @@
 MOL2 file format --- :mod:`MDAnalysis.coordinates.MOL2`
 ========================================================
 
-Classes to read Tripos_ molecule structure format (MOL2_)
-coordinate and topology files. Used by the DOCK_ docking
-code.
+Classes to read Tripos_ molecule structure format (MOL2_) coordinate
+and topology files. Used by the DOCK_ docking code.
 
 .. _MOL2: http://www.tripos.com/data/support/mol2.pdf
 .. _Tripos: http://www.tripos.com/
 .. _DOCK: http://dock.compbio.ucsf.edu/
+
+
+Classes
+-------
+
+.. autoclass:: MOL2Parser
+   :members:
+   :inherited-members:
 
 """
 import os
@@ -40,6 +47,7 @@ class MOL2Parser(TopologyReader):
     .. versionchanged:: 0.9
        Now subclasses TopologyReader
     """
+
     def parse(self, filename=None):
         """Parse MOL2 file *filename* and return the dict `structure`.
 

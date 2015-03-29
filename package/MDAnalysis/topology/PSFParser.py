@@ -25,6 +25,14 @@ It reads both standard and extended ("EXT") PSF formats and can also parse NAMD
 space-separated "PSF" file variants.
 
 .. _PSF: http://www.charmm.org/documentation/c35b1/struct.html
+
+Classes
+-------
+
+.. autoclass:: PSFParser
+   :members:
+   :inherited-members:
+
 """
 
 import logging
@@ -38,8 +46,13 @@ logger = logging.getLogger("MDAnalysis.topology.PSF")
 
 
 class PSFParser(TopologyReader):
+    """Read topology information from a CHARMM/NAMD/XPLOR PSF_ file.
+
+    .. _PSF: http://www.charmm.org/documentation/c35b1/struct.html
+    """
+
     def parse(self):
-        """Parse CHARMM/NAMD/XPLOR PSF_ file *filename*.
+        """Parse PSF file *filename*.
 
         :Returns: MDAnalysis internal *structure* dict as defined here.
         """

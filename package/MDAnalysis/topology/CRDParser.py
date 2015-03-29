@@ -20,6 +20,14 @@ CRD topology parser
 Read a list of atoms from a CHARMM CARD coordinate file (CRD) to build a basic topology.
 
 Atom types, charges and masses are guessed.
+
+Classes
+-------
+
+.. autoclass:: CRDParser
+   :members:
+   :inherited-members:
+
 """
 
 from MDAnalysis.core.AtomGroup import Atom
@@ -29,6 +37,8 @@ from .base import TopologyReader
 
 
 class CRDParser(TopologyReader):
+    """Parse a CHARMM CARD coordinate file for topology information."""
+
     def parse(self):
         """Parse CRD file *filename* and return the dict `structure`.
 

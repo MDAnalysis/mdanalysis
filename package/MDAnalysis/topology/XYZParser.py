@@ -17,11 +17,19 @@
 XYZ Topology Parser
 ===================
 
+.. versionadded:: 0.9.1
+
 Reads an xyz file and pulls the atom information from it.  Because
 xyz only has atom name information, all information about residues
 and segments won't be populated.
 
-.. versionadded:: 0.9.1
+Classes
+-------
+
+.. autoclass:: XYZParser
+   :members:
+   :inherited-members:
+
 """
 from __future__ import absolute_import
 
@@ -32,7 +40,16 @@ from .base import TopologyReader
 
 
 class XYZParser(TopologyReader):
+    """Parse a list of atoms from an XYZ file.
+
+    .. versionadded:: 0.9.1
+    """
+
     def parse(self):
+        """Read the file and return the structure.
+
+        :Returns: MDAnalysis internal *structure* dict.
+        """
         with openany(self.filename, 'r') as inf:
             natoms = int(inf.readline().strip())
             inf.readline()

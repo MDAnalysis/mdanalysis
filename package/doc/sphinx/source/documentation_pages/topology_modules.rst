@@ -19,14 +19,12 @@ properly recognize a file format then a user can explicitly set the
 topology file format in the *topology_format* keyword argument to
 :class:`~MDAnalysis.core.AtomGroup.Universe`.
 
-.. rubric:: Contents
+.. rubric:: Topology formats
 
 .. toctree::
    :maxdepth: 1
 
    topology/init
-   topology/core
-   topology/tables
    topology/PSFParser
    topology/TOPParser
    topology/CRDParser
@@ -42,3 +40,17 @@ topology file format in the *topology_format* keyword argument to
    topology/XYZParser
    topology/LAMMPSParser
    topology/GMSParser
+
+.. rubric:: Topology core modules
+
+The remaining pages are primarily of interest to developers as they
+contain functions and classes that are used in the implementation of
+the topology readers.
+
+.. toctree::
+   :maxdepth: 1
+
+   topology/base
+   topology/core
+   topology/tables
+   topology/tpr_util

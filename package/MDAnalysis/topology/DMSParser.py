@@ -23,6 +23,14 @@ format (DMS_) coordinate files (as used by the Desmond_ MD package).
 .. _DESRES: http://www.deshawresearch.com
 .. _Desmond: http://www.deshawresearch.com/resources_desmond.html
 .. _DMS: http://www.deshawresearch.com/Desmond_Users_Guide-0.7.pdf
+
+Classes
+-------
+
+.. autoclass:: DMSParser
+   :members:
+   :inherited-members:
+
 """
 
 import sqlite3
@@ -34,14 +42,23 @@ from .base import TopologyReader
 
 
 class DMSParser(TopologyReader):
+    """Read a topology from a DESRES_ Molecular Structure file.
+
+    Format (DMS_) coordinate files (as used by the Desmond_ MD package).
+
+    .. _DESRES: http://www.deshawresearch.com
+    .. _Desmond: http://www.deshawresearch.com/resources_desmond.html
+    .. _DMS: http://www.deshawresearch.com/Desmond_Users_Guide-0.7.pdf
+    """
+
     def parse(self):
         """Parse DMS file *filename* and return the dict `structure`.
-                
+
         Only reads the list of atoms.
-                
+
         :Returns: MDAnalysis internal *structure* dict, which contains
         Atom and Bond objects
-                
+
         .. SeeAlso:: The *structure* dict is defined in
         `MDAnalysis.topology`.
 

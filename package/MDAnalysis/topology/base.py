@@ -16,8 +16,16 @@
 Base topology reader classes --- :mod:`MDAnalysis.topology.base`
 ================================================================
 
-Derive topology reader classes from the base class in this module.
+Derive topology reader classes from the base class in this module. All
+topology readers raise :exc:`IOError` upon failing to read a topology
+file and :exc:`ValueError` upon failing to make sense of the read data.
 
+Classes
+-------
+
+.. autoclass:: TopologyReader
+   :members:
+   :inherited-members:
 
 """
 
@@ -32,12 +40,31 @@ class TopologyReader(IObase):
       * Return a struct dict by calling their parse function
 
     :Raises:
-       IOError upon failing to read a topology file
-       ValueError upon failing to make sense of the read data
+       * :exc:`IOError` upon failing to read a topology file
+       * :exc:`ValueError` upon failing to make sense of the read data
 
-    .. versionadded:: 0.9
+    .. versionadded:: 0.9.0
     """
     def __init__(self, filename, guess_bonds_mode=False, **kwargs):
+        """Standard arguments for a TopologyReader:
+
+        :Arguments:
+
+           *filename*
+               name of the topology file
+
+        :Keywords:
+
+           *guess_bonds_mode*
+               * ``True``: attempt to derive bonds from a distance search if no
+                 connectivity information is available or parsed
+               * ``False``: only load a list of atoms (and possibly identify residues
+                 and segments)
+               * default: ``False``
+           *kwargs*
+               Other keyword arguments that can vary with the specific format.
+
+        """
         self.filename = filename
         self.guess_bonds_mode = guess_bonds_mode
         self.kwargs = kwargs

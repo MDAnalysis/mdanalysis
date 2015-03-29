@@ -43,6 +43,13 @@ handle such residue numbers.
    * :class:`MDAnalysis.coordinates.PDB.ExtendedPDBReader`
    * :class:`MDAnalysis.core.AtomGroup.Universe`
 
+Classes
+-------
+
+.. autoclass:: ExtendedPDBParser
+   :members:
+   :inherited-members:
+
 """
 
 import MDAnalysis.coordinates.PDB

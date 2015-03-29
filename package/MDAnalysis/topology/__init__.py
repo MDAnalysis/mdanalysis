@@ -27,66 +27,70 @@ The following table lists the currently supported topology formats.
 
 .. _`Supported topology formats`:
 
-.. table:: Table of Supported topology formats
+.. table:: Table of Supported Topology Formats
 
-   ================ ==========  =====================================================
-   Name             extension   remarks
-   ================ ==========  =====================================================
-   CHARMM/XPLOR     psf         reads either format, atoms, bonds, angles,
-                                torsions/dihedrals information is all used;
-                                :mod:`MDAnalysis.topology.PSFParser`
+   ================= ==========  =====================================================
+   Name              extension   remarks
+   ================= ==========  =====================================================
+   CHARMM/XPLOR PSF  psf         reads either format, atoms, bonds, angles,
+                                 torsions/dihedrals information is all used;
+                                 :mod:`MDAnalysis.topology.PSFParser`
 
-   CHARMM [#a]_     crd         "CARD" coordinate output from CHARMM; deals with
-                                either standard or EXTended format;
-                                :mod:`MDAnalysis.topology.CRDParser`
+   CHARMM CARD [#a]_ crd         "CARD" coordinate output from CHARMM; deals with
+                                 either standard or EXTended format;
+                                 :mod:`MDAnalysis.topology.CRDParser`
 
-   Brookhaven [#a]_ pdb         a simplified PDB format (as used in MD simulations)
-                                is read by default; the full format can be read by
-                                supplying the `permissive=False` flag to
-                                :class:`MDAnalysis.Universe`;
-                                :mod:`MDAnalysis.topology.PrimitivePDBParser` and
-                                :mod:`MDAnalysis.topology.PDBParser`
+   Brookhaven [#a]_  pdb         a simplified PDB format (as used in MD simulations)
+                                 is read by default; the full format can be read by
+                                 supplying the `permissive=False` flag to
+                                 :class:`MDAnalysis.Universe`;
+                                 :mod:`MDAnalysis.topology.PrimitivePDBParser` and
+                                 :mod:`MDAnalysis.topology.PDBParser`
 
-   XPDB             pdb         Extended PDB format (can use 5-digit residue
-                                numbers). To use, specify the format "XPBD"
-                                explicitly:
-                                ``Universe(..., topology_format="XPDB")``.
-                                Module :mod:`MDAnalysis.coordinates.PDB`
+   XPDB [#a]_        pdb         Extended PDB format (can use 5-digit residue
+                                 numbers). To use, specify the format "XPBD"
+                                 explicitly:
+                                 ``Universe(..., topology_format="XPDB")``.
+                                 Module :mod:`MDAnalysis.coordinates.PDB`
 
-   PQR [#a]_        pqr         PDB-like but whitespace-separated files with charge
-                                and radius information;
-                                :mod:`MDAnalysis.topology.PQRParser`
+   PQR [#a]_         pqr         PDB-like but whitespace-separated files with charge
+                                 and radius information;
+                                 :mod:`MDAnalysis.topology.PQRParser`
 
-   PDBQT [#a]_      pdbqt       file format used by AutoDock with atom types *t*
-                                and partial charges *q*. Module:
-                                :mod:`MDAnalysis.topology.PDBQTParser`
+   PDBQT [#a]_       pdbqt       file format used by AutoDock with atom types *t*
+                                 and partial charges *q*. Module:
+                                 :mod:`MDAnalysis.topology.PDBQTParser`
 
-   GROMOS96 [#a]_   gro         GROMOS96 coordinate file;
-                                :mod:`MDAnalysis.topology.GROParser`
+   GROMOS96 [#a]_    gro         GROMOS96 coordinate file;
+                                 :mod:`MDAnalysis.topology.GROParser`
 
-   AMBER            top,        simple AMBER format reader (only supports a subset
-                    prmtop      of flags);
-                                :mod:`MDAnalysis.topology.TOPParser`
+   AMBER             top,        simple AMBER format reader (only supports a subset
+                     prmtop      of flags);
+                                 :mod:`MDAnalysis.topology.TOPParser`
 
-   DESRES [#a]_     dms         DESRES molecular sturcture reader (only supports
-                                the atom and bond records);
-                                :mod:`MDAnalysis.topology.DMSParser`
+   DESRES [#a]_      dms         DESRES molecular sturcture reader (only supports
+                                 the atom and bond records);
+                                 :mod:`MDAnalysis.topology.DMSParser`
 
-   TPR              tpr         Gromacs portable run input reader (limited
-                                experimental support for some of the more recent
-                                versions of the file format);
-                                :mod:`MDAnalysis.topology.TPRParser`
-   MOL2             mol2        Tripos MOL2 molecular structure format;
-                                :mod:`MDAnalysis.topology.MOL2Parser`
-   LAMMPS           data        LAMMPS Data file parser
-                                :mod:`MDAnalysis.topology.LAMMPSParser`
-   XYZ [#a]_        xyz         XYZ File Parser.  Reads only the labels from atoms and
-                                constructs minimal topology data.
-                                :mod:`MDAnalysis.topology.XYZParser`
-   GAMESS           gms,        GAMESS output parser. Read only atoms of assembly 
-                    log         section (atom, elems and coords) and construct topology.
-                                :mod:`MDAnalysis.topology.GMSParser`
-   ================ ==========  =====================================================
+   TPR [#b]_         tpr         Gromacs portable run input reader (limited
+                                 experimental support for some of the more recent
+                                 versions of the file format);
+                                 :mod:`MDAnalysis.topology.TPRParser`
+
+   MOL2 [#a]_        mol2        Tripos MOL2 molecular structure format;
+                                 :mod:`MDAnalysis.topology.MOL2Parser`
+
+   LAMMPS [#a]_      data        LAMMPS Data file parser
+                                 :mod:`MDAnalysis.topology.LAMMPSParser`
+
+   XYZ [#a]_         xyz         XYZ File Parser.  Reads only the labels from atoms and
+                                 constructs minimal topology data.
+                                 :mod:`MDAnalysis.topology.XYZParser`
+
+   GAMESS [#a]_      gms,        GAMESS output parser. Read only atoms of assembly
+                     log         section (atom, elems and coords) and construct topology.
+                                 :mod:`MDAnalysis.topology.GMSParser`
+   ================= ==========  =====================================================
 
 .. [#a] This format can also be used to provide *coordinates* so that
    it is possible to create a full
@@ -94,6 +98,10 @@ The following table lists the currently supported topology formats.
    file of this format as the sole argument to
    :mod:`~MDAnalysis.core.AtomGroup.Universe`: ``u =
    Universe(filename)``
+
+.. [#b] The Gromacs TPR format contains coordinate information but
+        parsing coordinates from a TPR file is currently not implemented
+        in :mod:`~MDAnalysis.topology.TPRParser`.
 
 .. SeeAlso:: :ref:`Coordinates` with the :ref:`Supported coordinate formats`
 

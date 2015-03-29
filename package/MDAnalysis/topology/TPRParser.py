@@ -54,10 +54,14 @@ For further discussion and notes see `Issue 2`_. Also add a comment to
 supported.
 
 
-Functions
+Classes
 ---------
 
 .. autoclass:: TPRParser
+   :members:
+   :inherited-members:
+
+.. SeeAlso:: :mod:`MDAnalysis.topology.tpr`
 
 Development notes
 -----------------
@@ -116,6 +120,13 @@ logger = logging.getLogger("MDAnalysis.topology.TPRparser")
 
 
 class TPRParser(TopologyReader):
+    """Read topology information from a Gromacs_ TPR_ file.
+
+    .. SeeAlso:: :mod:`MDAnalysis.topology.TPR`
+
+    .. _Gromacs: http://www.gromacs.org
+    .. _TPR file: http://manual.gromacs.org/current/online/tpr.html
+    """
     def parse(self):
         """Parse a Gromacs TPR file into a MDAnalysis internal topology structure.
 

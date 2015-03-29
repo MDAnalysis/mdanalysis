@@ -40,6 +40,13 @@ numbers up to 99,999.
    * :class:`MDAnalysis.coordinates.PDB.PrimitivePDBReader`
    * :class:`MDAnalysis.core.AtomGroup.Universe`
 
+Classes
+-------
+
+.. autoclass:: PrimitivePDBParser
+   :members:
+   :inherited-members:
+
 """
 
 import numpy as np

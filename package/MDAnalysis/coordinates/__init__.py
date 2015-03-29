@@ -93,7 +93,7 @@ also recognized when they are compressed with :program:`gzip` or
 
 .. _Supported coordinate formats:
 
-.. table:: Table of Supported coordinate formats
+.. table:: Table of supported coordinate formats
 
    +---------------+-----------+-------+------------------------------------------------------+
    |Name           | extension |  IO   | remarks                                              |
@@ -155,8 +155,8 @@ also recognized when they are compressed with :program:`gzip` or
    | GROMOS96      | gro       |  r/w  | basic GROMOS96 format (velocities as well). Module   |
    | [#a]_         |           |       | :mod:`MDAnalysis.coordinates.GRO`                    |
    +---------------+-----------+-------+------------------------------------------------------+
-   | CHARMM [#a]_  | crd       |  r/w  | "CARD" coordinate output from CHARMM; deals with     |
-   |               |           |       | either standard or EXTended format. Module           |
+   | CHARMM        | crd       |  r/w  | "CARD" coordinate output from CHARMM; deals with     |
+   | CARD [#a]_    |           |       | either standard or EXTended format. Module           |
    |               |           |       | :mod:`MDAnalysis.coordinates.CRD`                    |
    +---------------+-----------+-------+------------------------------------------------------+
    | DESRES [#a]_  | dms       |  r    | DESRES Molecular Structure file format reader.       |

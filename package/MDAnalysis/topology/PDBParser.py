@@ -19,9 +19,23 @@ PDB topology parser
 
 Use a PDB file to build a minimum internal structure representation.
 
-.. Warning:: Only cares for atoms and their names; neither
-             connectivity nor (partial) charges are deduced. Masses
-             are guessed and set to 0 if unknown.
+.. Note:: Only atoms and their names are read; no bond connectivity of
+          (partial) charges are deduced. Masses are guessed and set to
+          0 if unknown.
+
+.. SeeAlso:: :mod:`MDAnalysis.coordinates.PDB` and :mod:`Bio.PDB`
+
+.. SeeAlso:: :mod:`MDAnalysis.topology.PrimitivePDBParser` (which
+             *can* guess conectivity but does not support all subleties of the full
+             PDB format)
+
+Classes
+-------
+
+.. autoclass:: PDBParser
+   :members:
+   :inherited-members:
+
 """
 
 try:
@@ -37,6 +51,8 @@ from MDAnalysis.topology.core import guess_atom_type, guess_atom_mass, guess_ato
 
 
 class PDBParser(TopologyReader):
+    """Read minimum topology information from a PDB file."""
+
     def parse(self):
         """Parse atom information from PDB file *pdbfile*.
 
@@ -44,28 +60,23 @@ class PDBParser(TopologyReader):
 
         This functions uses the :class:`Bio.PDB.PDBParser` as used by
         :func:`MDAnalysis.coordinates.pdb.extensions.get_structure`.
-        
+
         :Returns: MDAnalysis internal *structure* dict
 
-        .. SeeAlso:: The *structure* dict is defined in
-           `MDAnalysis.topology`.
+        .. SeeAlso:: The *structure* dict is defined in `MDAnalysis.topology`.
         """
         structure = {}
         # use Sloppy PDB parser to cope with big PDBs!
         pdb = MDAnalysis.coordinates.pdb.extensions.get_structure(self.filename, "0UNK")
-
         structure['_atoms'] = self._parseatoms(pdb)
-
         return structure
 
     def _parseatoms(self, pdb):
         atoms = []
-
         # translate Bio.PDB atom objects to MDAnalysis Atom.
         for iatom, atom in enumerate(pdb.get_atoms()):
             residue = atom.parent
             chain_id = residue.parent.id
-
             atomname = atom.name
             atomtype = guess_atom_type(atomname)
             resname = residue.resname
@@ -76,8 +87,6 @@ class PDBParser(TopologyReader):
             charge = guess_atom_charge(atomname)
             bfactor = atom.bfactor
             # occupancy = atom.occupancy
-
             atoms.append(Atom(iatom, atomname, atomtype, resname, resid, segid,
                               mass, charge, bfactor=bfactor))
-
         return atoms

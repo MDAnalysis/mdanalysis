@@ -26,6 +26,14 @@ connectivity is deduced.
 .. _APBS:    http://www.poissonboltzmann.org/apbs
 .. _PDB2PQR: http://www.poissonboltzmann.org/pdb2pqr
 .. _PDB:     http://www.rcsb.org/pdb/info.html#File_Formats_and_Standards
+
+Classes
+-------
+
+.. autoclass:: PQRParser
+   :members:
+   :inherited-members:
+
 """
 
 from MDAnalysis.core.AtomGroup import Atom
@@ -42,21 +50,19 @@ class PQRParser(TopologyReader):
     :attr:`MDAnalysis.core.AtomGroup.Atom.charge` and
     :attr:`MDAnalysis.core.AtomGroup.Atom.radius` attribute.
 
-    :Returns: MDAnalysis internal *structure* dict
-
-    .. SeeAlso:: The *structure* dict is defined in
-                 `MDAnalysis.topology` and
-                 :class:`~MDAnalysis.coordinates.PQR.PQRReader` is used to read
-                 the PQR file.
-
     .. versionchanged:: 0.9.0
        Read chainID from a PQR file and use it as segid (before we always used
        'SYSTEM' as the new segid).
     """
     def parse(self):
         """Parse atom information from PQR file *filename*.
-        
+
         :Returns: MDAnalysis internal *structure* dict
+
+        .. SeeAlso:: The *structure* dict is defined in
+                     `MDAnalysis.topology` and
+                     :class:`~MDAnalysis.coordinates.PQR.PQRReader` is used to read
+                     the PQR file.
         """
         structure = {}
         pqr = MDAnalysis.coordinates.PQR.PQRReader(self.filename)

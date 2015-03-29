@@ -22,11 +22,12 @@ topology.
 
 .. _LAMMPS: http://lammps.sandia.gov/
 
-Functions and classes
-----------------------
+Classes
+-------
 
 .. autoclass:: DATAParser
-
+   :members:
+   :inherited-members:
 
 Deprecated classes
 ------------------
@@ -49,29 +50,30 @@ logger = logging.getLogger("MDAnalysis.topology.LAMMPS")
 
 
 class DATAParser(TopologyReader):
-    """Contains a parse function for topology reading as well as a coordinate
-    reader as DATA files can be used standalone.
+    """Parse a LAMMPS DATA file for topology and coordinates.
 
-    This is kept in this class as the topology and coordinate reader share
-    many common functions
-    
-    .. versionadded:: 0.9
+    Note that LAMMPS_ DATA files can be used standalone.
+
+    Both topology and coordinate parsing functionality is kept in this
+    class as the topology and coordinate reader share many common
+    functions
+
+    The parser implements the `LAMMPS DATA file format`_ but only for
+    the LAMMPS `atom_style`_ *full* (numeric ids 7, 10) and
+    *molecular* (6, 9).
+
+    .. _LAMMPS DATA file format: :http://lammps.sandia.gov/doc/2001/data_format.html
+    .. _`atom_style`: http://lammps.sandia.gov/doc/atom_style.html
+
+    .. versionadded:: 0.9.0
     """
 
     def parse(self):
         """Parses a LAMMPS_ DATA file.
 
-        The parser implements the `LAMMPS DATA file format`_ but only for
-        the LAMMPS `atom_style`_ *full* (numeric ids 7, 10) and
-        *molecular* (6, 9).
-
         :Returns: MDAnalysis internal *structure* dict.
-
-        .. versionadded:: 0.9.0
-
-        .. _LAMMPS DATA file format: :http://lammps.sandia.gov/doc/2001/data_format.html
-        .. _`atom_style`: http://lammps.sandia.gov/doc/atom_style.html
         """
+
         # Can pass atom_style to help parsing
         atom_style = self.kwargs.get('atom_style', None)
 
@@ -156,7 +158,8 @@ class DATAParser(TopologyReader):
             return structure
 
     def read_DATA_timestep(self, ts):
-        """Read a DATA file and try and extract:
+        """Read a DATA file and try and extract x, v, box.
+
         - positions
         - velocities (optional)
         - box information
@@ -168,8 +171,8 @@ class DATAParser(TopologyReader):
         read_atoms = False
         read_velocities = False
 
-        with openany(self.filename, 'r') as psffile:
-            nitems, ntypes, box = self._parse_header(psffile)
+        with openany(self.filename, 'r') as datafile:
+            nitems, ntypes, box = self._parse_header(datafile)
 
             # lammps box: xlo, xhi, ylo, yhi, zlo, zhi
             lx = box[1] - box[0]
@@ -181,22 +184,22 @@ class DATAParser(TopologyReader):
 
             while not (read_atoms & read_velocities):
                 try:
-                    section = psffile.next().strip().split()[0]
+                    section = datafile.next().strip().split()[0]
                 except IndexError:  # blank lines don't split
                     section = ''
                 except StopIteration:
                     break
 
                 if section == 'Atoms':
-                    self._parse_pos(psffile, ts._pos)
+                    self._parse_pos(datafile, ts._pos)
                     read_atoms = True
                 elif section == 'Velocities':
                     ts._velocities = numpy.zeros((ts.numatoms, 3),
                                                  dtype=numpy.float32, order='F')
-                    self._parse_vel(psffile, ts._velocities)
+                    self._parse_vel(datafile, ts._velocities)
                     read_velocities = True
                 elif len(section) > 0:
-                    self._skip_section(psffile)
+                    self._skip_section(datafile)
                 else:
                     continue
 
@@ -205,11 +208,11 @@ class DATAParser(TopologyReader):
 
         return ts
 
-    def _parse_pos(self, psffile, pos):
+    def _parse_pos(self, datafile, pos):
         """Strip coordinate info into np array"""
-        psffile.next()
+        datafile.next()
         for i in xrange(pos.shape[0]):
-            line = psffile.next()
+            line = datafile.next()
             idx, resid, atype, q, x, y, z = self._parse_atom_line(line)
             # assumes atom ids are well behaved?
             # LAMMPS sometimes dumps atoms in random order
@@ -243,28 +246,28 @@ class DATAParser(TopologyReader):
 
         return idx, resid, atype, q, x, y, z
 
-    def _parse_vel(self, psffile, vel):
+    def _parse_vel(self, datafile, vel):
         """Strip velocity info into np array"""
-        psffile.next()
+        datafile.next()
         for i in xrange(vel.shape[0]):
-            line = psffile.next().split()
+            line = datafile.next().split()
             idx = int(line[0]) - 1
             vx, vy, vz = map(float, line[1:4])
             vel[idx] = vx, vy, vz
 
-    def _parse_section(self, psffile, nlines, nentries):
+    def _parse_section(self, datafile, nlines, nentries):
         """Read lines and strip information"""
-        psffile.next()
+        datafile.next()
         section = []
         for i in xrange(nlines):
-            line = psffile.next().split()
+            line = datafile.next().split()
             # logging.debug("Line is: {}".format(line))
             # map to 0 based int
             section.append(tuple(map(lambda x: int(x) - 1, line[2:2 + nentries])))
 
         return tuple(section)
 
-    def _parse_atoms(self, psffile, natoms, mass, atom_style):
+    def _parse_atoms(self, datafile, natoms, mass, atom_style):
         """Special parsing for atoms
 
         Lammps atoms can have lots of different formats, and even custom formats.
@@ -277,9 +280,9 @@ class DATAParser(TopologyReader):
         """
         logger.info("Doing Atoms section")
         atoms = []
-        psffile.next()
+        datafile.next()
         for i in xrange(natoms):
-            line = psffile.next().strip()
+            line = datafile.next().strip()
             # logger.debug("Line: {} contains: {}".format(i, line))
             idx, resid, atype, q, x, y, z = self._parse_atom_line(line)
             name = str(atype)
@@ -296,7 +299,7 @@ class DATAParser(TopologyReader):
 
         return atoms
 
-    def _parse_masses(self, psffile, ntypes):
+    def _parse_masses(self, datafile, ntypes):
         """Lammps defines mass on a per atom basis.
 
         This reads mass for each type and stores in dict
@@ -305,26 +308,26 @@ class DATAParser(TopologyReader):
 
         masses = {}
 
-        psffile.next()
+        datafile.next()
         for i in xrange(ntypes):
-            line = psffile.next().split()
+            line = datafile.next().split()
             masses[int(line[0])] = float(line[1])
 
         return masses
 
-    def _skip_section(self, psffile):
+    def _skip_section(self, datafile):
         """Read lines but don't parse"""
-        psffile.next()
-        line = psffile.next().split()
+        datafile.next()
+        line = datafile.next().split()
         while len(line) != 0:
             try:
-                line = psffile.next().split()
+                line = datafile.next().split()
             except StopIteration:
                 break
 
         return
 
-    def _parse_header(self, psffile):
+    def _parse_header(self, datafile):
         """Parse the header of DATA file
 
         This should be fixed in all files
@@ -337,28 +340,28 @@ class DATAParser(TopologyReader):
             'impropers': '_impr'}
         nitems = {k: 0 for k in hvals.values()}
 
-        psffile.next()  # Title
-        psffile.next()  # Blank line
+        datafile.next()  # Title
+        datafile.next()  # Blank line
 
-        line = psffile.next().strip()
+        line = datafile.next().strip()
         while line:
             val, key = line.split()
             nitems[hvals[key]] = int(val)
-            line = psffile.next().strip()
+            line = datafile.next().strip()
 
         ntypes = {k: 0 for k in hvals.values()}
-        line = psffile.next().strip()
+        line = datafile.next().strip()
         while line:
             val, key, _ = line.split()
             ntypes[hvals[key + 's']] = int(val)
-            line = psffile.next().strip()
+            line = datafile.next().strip()
 
         # Read box information next
         box = numpy.zeros(6, dtype=numpy.float64)
-        box[0:2] = psffile.next().split()[:2]
-        box[2:4] = psffile.next().split()[:2]
-        box[4:6] = psffile.next().split()[:2]
-        psffile.next()
+        box[0:2] = datafile.next().split()[:2]
+        box[2:4] = datafile.next().split()[:2]
+        box[4:6] = datafile.next().split()[:2]
+        datafile.next()
 
         return nitems, ntypes, box
 
@@ -399,9 +402,9 @@ class LAMMPSAtom(object):
 
 
 class LAMMPSDataConverter(object):
-    """Class to parse a LAMMPS_ data file.
+    """Class to parse a LAMMPS_ DATA file and convert it to PSF/PDB.
 
-    The data file contains both topology and coordinate information.
+    The DATA file contains both topology and coordinate information.
 
     The :class:`LAMMPSDataConverter` class can extract topology information and
     coordinates from a LAMMPS_ data file. For instance, in order to

@@ -21,17 +21,26 @@ Use a PDBQT_ file to build a minimum internal structure representation (list of
 atoms), including AutoDock_ atom types (stored as :attr:`Atom.type`) and
 partial charges (:attr:`Atom.charge`).
 
-Reads a PDBQT file line by line and is not fuzzy about numbering.
+* Reads a PDBQT file line by line and does not require sequential atom numbering.
+* Multi-model PDBQT files are not supported.
 
-This does not support multi-model PDBQT files (yet!)
+.. Note:: Only reads atoms and their names; connectivity is not
+          deduced. Masses are guessed and set to 0 if unknown.
 
-.. Warning:: Only cares for atoms and their names; connectivity is not
-             deduced. Masses are guessed and set to 0 if unknown.
+.. SeeAlso:: `MDAnalysis.coordinates.PDBQT`
 
 .. _PDBQT:
    http://autodock.scripps.edu/faqs-help/faq/what-is-the-format-of-a-pdbqt-file
 .. _AutoDock:
    http://autodock.scripps.edu/
+
+Classes
+-------
+
+.. autoclass:: PDBQTParser
+   :members:
+   :inherited-members:
+
 """
 
 import MDAnalysis.coordinates.PDBQT
@@ -41,6 +50,8 @@ from .base import TopologyReader
 
 
 class PDBQTParser(TopologyReader):
+    """Read topology from a PDBQT file."""
+
     def parse(self):
         """Parse atom information from PDBQT file *filename*.
 
@@ -60,7 +71,6 @@ class PDBQTParser(TopologyReader):
 
     def _parseatoms_(self, pdb):
         atoms = []
-
         # translate list of atoms to MDAnalysis Atom.
         for iatom, atom in enumerate(pdb._atoms):
             atomname = atom.name
@@ -75,5 +85,4 @@ class PDBQTParser(TopologyReader):
             # occupancy = atom.occupancy
             atoms.append(Atom(iatom, atomname, atomtype, resname, resid, segid,
                               mass, charge, bfactor=bfactor))
-            
         return atoms
