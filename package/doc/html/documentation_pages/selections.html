@@ -434,10 +434,11 @@ automatically:</p>
 </div>
 <p>Just for comparison to show that a single selection string does not work as one
 might expect:</p>
-<div class="highlight-python"><pre># WRONG!
-&gt;&gt;&gt; print list(universe.selectAtoms("segid DMPC and ( resid 3 or resid 2 ) and name P"))
-[&lt; Atom 452: name 'P' of type '180' of resid 'DMPC', 2 and 'DMPC'&gt;,
-&lt; Atom 570: name 'P' of type '180' of resid 'DMPC', 3 and 'DMPC'&gt;]</pre>
+<div class="highlight-python"><div class="highlight"><pre># WRONG!
+&gt;&gt;&gt; print list(universe.selectAtoms(&quot;segid DMPC and ( resid 3 or resid 2 ) and name P&quot;))
+[&lt; Atom 452: name &#39;P&#39; of type &#39;180&#39; of resid &#39;DMPC&#39;, 2 and &#39;DMPC&#39;&gt;,
+&lt; Atom 570: name &#39;P&#39; of type &#39;180&#39; of resid &#39;DMPC&#39;, 3 and &#39;DMPC&#39;&gt;]
+</pre></div>
 </div>
 </div>
 </div>
@@ -467,14 +468,14 @@ might expect:</p>
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2014, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
-    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
+    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

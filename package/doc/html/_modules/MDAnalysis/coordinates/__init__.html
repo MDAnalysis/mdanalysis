@@ -168,7 +168,7 @@
 
 <span class="sd">.. _Supported coordinate formats:</span>
 
-<span class="sd">.. table:: Table of Supported coordinate formats</span>
+<span class="sd">.. table:: Table of supported coordinate formats</span>
 
 <span class="sd">   +---------------+-----------+-------+------------------------------------------------------+</span>
 <span class="sd">   |Name           | extension |  IO   | remarks                                              |</span>
@@ -217,7 +217,7 @@
 <span class="sd">   | XPDB          | pdb       |   r   | Extended PDB format (can use 5-digit residue         |</span>
 <span class="sd">   |               |           |       | numbers). To use, specify the format &quot;XPBD&quot;          |</span>
 <span class="sd">   |               |           |       | explicitly: ``Universe(..., format=&quot;XPDB&quot;)``.        |</span>
-<span class="sd">   |               |           |       | Module :MDAnalysis.coordinates.PDB`                  |</span>
+<span class="sd">   |               |           |       | Module :mod:`MDAnalysis.coordinates.PDB`             |</span>
 <span class="sd">   +---------------+-----------+-------+------------------------------------------------------+</span>
 <span class="sd">   | PDBQT [#a]_   | pdbqt     | r/w   | file format used by AutoDock with atom types *t*     |</span>
 <span class="sd">   |               |           |       | and partial charges *q*. Module:                     |</span>
@@ -230,8 +230,8 @@
 <span class="sd">   | GROMOS96      | gro       |  r/w  | basic GROMOS96 format (velocities as well). Module   |</span>
 <span class="sd">   | [#a]_         |           |       | :mod:`MDAnalysis.coordinates.GRO`                    |</span>
 <span class="sd">   +---------------+-----------+-------+------------------------------------------------------+</span>
-<span class="sd">   | CHARMM [#a]_  | crd       |  r/w  | &quot;CARD&quot; coordinate output from CHARMM; deals with     |</span>
-<span class="sd">   |               |           |       | either standard or EXTended format. Module           |</span>
+<span class="sd">   | CHARMM        | crd       |  r/w  | &quot;CARD&quot; coordinate output from CHARMM; deals with     |</span>
+<span class="sd">   | CARD [#a]_    |           |       | either standard or EXTended format. Module           |</span>
 <span class="sd">   |               |           |       | :mod:`MDAnalysis.coordinates.CRD`                    |</span>
 <span class="sd">   +---------------+-----------+-------+------------------------------------------------------+</span>
 <span class="sd">   | DESRES [#a]_  | dms       |  r    | DESRES Molecular Structure file format reader.       |</span>
@@ -817,14 +817,14 @@
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2014, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
-    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
+    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

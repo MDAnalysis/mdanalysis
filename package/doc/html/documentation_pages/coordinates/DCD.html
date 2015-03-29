@@ -30,7 +30,7 @@
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
     <link rel="top" title="MDAnalysis 0.9.2-dev documentation" href="../../index.html" />
     <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
-    <link rel="next" title="5.5. DESRES file format — MDAnalysis.coordinates.DMS" href="DMS.html" />
+    <link rel="next" title="5.4. DESRES file format — MDAnalysis.coordinates.DMS" href="DMS.html" />
     <link rel="prev" title="5.2. CRD structure files in MDAnalysis — MDAnalysis.coordinates.CRD" href="CRD.html" /> 
   </head>
   <body>
@@ -44,7 +44,7 @@
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="DMS.html" title="5.5. DESRES file format — MDAnalysis.coordinates.DMS"
+          <a href="DMS.html" title="5.4. DESRES file format — MDAnalysis.coordinates.DMS"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="CRD.html" title="5.2. CRD structure files in MDAnalysis — MDAnalysis.coordinates.CRD"
@@ -60,8 +60,10 @@
             </a></p>
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">5.3. DCD trajectory I/O  &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.DCD</span></tt></a></li>
-<li><a class="reference internal" href="#classes">5.4. Classes</a></li>
+<li><a class="reference internal" href="#">5.3. DCD trajectory I/O  &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.DCD</span></tt></a><ul>
+<li><a class="reference internal" href="#classes">5.3.1. Classes</a></li>
+</ul>
+</li>
 </ul>
 
   <h4>Previous topic</h4>
@@ -69,7 +71,7 @@
                         title="previous chapter">5.2. CRD structure files in MDAnalysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.CRD</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="DMS.html"
-                        title="next chapter">5.5. DESRES file format &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.DMS</span></tt></a></p>
+                        title="next chapter">5.4. DESRES file format &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.DMS</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/coordinates/DCD.txt"
@@ -130,9 +132,8 @@ a more flexible DCD reader/writer.</p>
 </div>
 <p>The classes in this module are the reference implementations for the
 Trajectory API.</p>
-</div>
 <div class="section" id="classes">
-<h1>5.4. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h1>
+<h2>5.3.1. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.DCD.Timestep">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.DCD.</tt><tt class="descname">Timestep</tt><big>(</big><em>arg</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/DCD.html#Timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.DCD.Timestep" title="Permalink to this definition">¶</a></dt>
@@ -536,9 +537,10 @@ coordinates)</p>
 <em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.DCD.</tt><tt class="descname">DCDWriter</tt><big>(</big><em>filename</em>, <em>numatoms</em>, <em>start=0</em>, <em>step=1</em>, <em>delta=20.45482949774598</em>, <em>dt=None</em>, <em>remarks='Created by DCDWriter'</em>, <em>convert_units=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/DCD.html#DCDWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Writes to a DCD file</p>
 <p>Typical usage:</p>
-<div class="highlight-python"><pre>with DCDWriter("new.dcd", u.atoms.numberOfAtoms()) as w:
+<div class="highlight-python"><div class="highlight"><pre>with DCDWriter(&quot;new.dcd&quot;, u.atoms.numberOfAtoms()) as w:
     for ts in u.trajectory
-        w.write_next_timestep(ts)</pre>
+        w.write_next_timestep(ts)
+</pre></div>
 </div>
 <p>Keywords are available to set some of the low-level attributes of the DCD.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -791,6 +793,7 @@ if no coordinates to be written.</p>
 </dd></dl>
 
 </div>
+</div>
 
 
           </div>
@@ -808,7 +811,7 @@ if no coordinates to be written.</p>
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="DMS.html" title="5.5. DESRES file format — MDAnalysis.coordinates.DMS"
+          <a href="DMS.html" title="5.4. DESRES file format — MDAnalysis.coordinates.DMS"
              >next</a> |</li>
         <li class="right" >
           <a href="CRD.html" title="5.2. CRD structure files in MDAnalysis — MDAnalysis.coordinates.CRD"
@@ -818,14 +821,14 @@ if no coordinates to be written.</p>
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2014, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
-    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
+    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

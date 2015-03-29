@@ -166,7 +166,8 @@ arrays of coordinates, where atom1[i] and atom2[i] represent a bond.</p>
 <p>In comparison to distance_array and self_distance_array which calculate distances
 between all combinations of coordinates, calc_bonds can be used to calculate distance
 between pairs of objects, similar to:</p>
-<div class="highlight-python"><pre>numpy.linalg.norm(a - b) for a, b in zip(coords1, coords2)</pre>
+<div class="highlight-python"><div class="highlight"><pre>numpy.linalg.norm(a - b) for a, b in zip(coords1, coords2)
+</pre></div>
 </div>
 <p>The optional argument <em>box</em> applies minimum image convention if supplied.
 <em>box</em> can be either orthogonal or triclinic</p>
@@ -272,11 +273,12 @@ array and dtype=numpy.float64.</p>
 <dd><p>Calculate the torsional angle formed by four atoms, over a list of coordinates.</p>
 <p>Torsional angle around axis connecting atoms 1 and 2 (i.e. the angle
 between the planes spanned by atoms (0,1,2) and (1,2,3)):</p>
-<div class="highlight-python"><pre>        3
+<div class="highlight-python"><div class="highlight"><pre>        3
         |
   1-----2
  /
-0</pre>
+0
+</pre></div>
 </div>
 <p>If a 1D numpy array of dtype <tt class="docutils literal"><span class="pre">numpy.float64</span></tt> with <tt class="docutils literal"><span class="pre">len(atom1)</span></tt> elements is
 provided in <em>result</em> then this preallocated array is filled. This can speed
@@ -455,14 +457,14 @@ array and dtype=numpy.float64.</p>
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2014, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
-    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
+    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

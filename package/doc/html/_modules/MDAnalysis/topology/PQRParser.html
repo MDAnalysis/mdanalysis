@@ -101,6 +101,14 @@
 <span class="sd">.. _APBS:    http://www.poissonboltzmann.org/apbs</span>
 <span class="sd">.. _PDB2PQR: http://www.poissonboltzmann.org/pdb2pqr</span>
 <span class="sd">.. _PDB:     http://www.rcsb.org/pdb/info.html#File_Formats_and_Standards</span>
+
+<span class="sd">Classes</span>
+<span class="sd">-------</span>
+
+<span class="sd">.. autoclass:: PQRParser</span>
+<span class="sd">   :members:</span>
+<span class="sd">   :inherited-members:</span>
+
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">MDAnalysis.core.AtomGroup</span> <span class="kn">import</span> <span class="n">Atom</span>
@@ -117,21 +125,19 @@
 <span class="sd">    :attr:`MDAnalysis.core.AtomGroup.Atom.charge` and</span>
 <span class="sd">    :attr:`MDAnalysis.core.AtomGroup.Atom.radius` attribute.</span>
 
-<span class="sd">    :Returns: MDAnalysis internal *structure* dict</span>
-
-<span class="sd">    .. SeeAlso:: The *structure* dict is defined in</span>
-<span class="sd">                 `MDAnalysis.topology` and</span>
-<span class="sd">                 :class:`~MDAnalysis.coordinates.PQR.PQRReader` is used to read</span>
-<span class="sd">                 the PQR file.</span>
-
 <span class="sd">    .. versionchanged:: 0.9.0</span>
 <span class="sd">       Read chainID from a PQR file and use it as segid (before we always used</span>
 <span class="sd">       &#39;SYSTEM&#39; as the new segid).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 <div class="viewcode-block" id="PQRParser.parse"><a class="viewcode-back" href="../../../documentation_pages/topology/PQRParser.html#MDAnalysis.topology.PQRParser.PQRParser.parse">[docs]</a>    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Parse atom information from PQR file *filename*.</span>
-<span class="sd">        </span>
+
 <span class="sd">        :Returns: MDAnalysis internal *structure* dict</span>
+
+<span class="sd">        .. SeeAlso:: The *structure* dict is defined in</span>
+<span class="sd">                     `MDAnalysis.topology` and</span>
+<span class="sd">                     :class:`~MDAnalysis.coordinates.PQR.PQRReader` is used to read</span>
+<span class="sd">                     the PQR file.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">structure</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">pqr</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">PQR</span><span class="o">.</span><span class="n">PQRReader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
@@ -181,14 +187,14 @@
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2014, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
-    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
+    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

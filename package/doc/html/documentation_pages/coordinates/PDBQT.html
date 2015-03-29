@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.9. PDBQT structure files in MDAnalysis — MDAnalysis.coordinates.PDBQT &mdash; MDAnalysis 0.9.2-dev documentation</title>
+    <title>5.10. PDBQT structure files in MDAnalysis — MDAnalysis.coordinates.PDBQT &mdash; MDAnalysis 0.9.2-dev documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -30,8 +30,8 @@
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
     <link rel="top" title="MDAnalysis 0.9.2-dev documentation" href="../../index.html" />
     <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
-    <link rel="next" title="5.10. PQR file format — MDAnalysis.coordinates.PQR" href="PQR.html" />
-    <link rel="prev" title="5.8. PDB structure files in MDAnalysis — MDAnalysis.coordinates.PDB" href="PDB.html" /> 
+    <link rel="next" title="5.11. PQR file format — MDAnalysis.coordinates.PQR" href="PQR.html" />
+    <link rel="prev" title="5.9. PDB structure files in MDAnalysis — MDAnalysis.coordinates.PDB" href="PDB.html" /> 
   </head>
   <body>
     <div class="related">
@@ -44,10 +44,10 @@
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="PQR.html" title="5.10. PQR file format — MDAnalysis.coordinates.PQR"
+          <a href="PQR.html" title="5.11. PQR file format — MDAnalysis.coordinates.PQR"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="PDB.html" title="5.8. PDB structure files in MDAnalysis — MDAnalysis.coordinates.PDB"
+          <a href="PDB.html" title="5.9. PDB structure files in MDAnalysis — MDAnalysis.coordinates.PDB"
              accesskey="P">previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis 0.9.2-dev documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
@@ -60,10 +60,10 @@
             </a></p>
   <h4>Previous topic</h4>
   <p class="topless"><a href="PDB.html"
-                        title="previous chapter">5.8. PDB structure files in MDAnalysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.PDB</span></tt></a></p>
+                        title="previous chapter">5.9. PDB structure files in MDAnalysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.PDB</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="PQR.html"
-                        title="next chapter">5.10. PQR file format &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.PQR</span></tt></a></p>
+                        title="next chapter">5.11. PQR file format &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.PQR</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/coordinates/PDBQT.txt"
@@ -91,7 +91,7 @@
           <div class="body">
             
   <span class="target" id="module-MDAnalysis.coordinates.PDBQT"></span><div class="section" id="pdbqt-structure-files-in-mdanalysis-mdanalysis-coordinates-pdbqt">
-<h1>5.9. PDBQT structure files in MDAnalysis &#8212; <a class="reference internal" href="#module-MDAnalysis.coordinates.PDBQT" title="MDAnalysis.coordinates.PDBQT"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.PDBQT</span></tt></a><a class="headerlink" href="#pdbqt-structure-files-in-mdanalysis-mdanalysis-coordinates-pdbqt" title="Permalink to this headline">¶</a></h1>
+<h1>5.10. PDBQT structure files in MDAnalysis &#8212; <a class="reference internal" href="#module-MDAnalysis.coordinates.PDBQT" title="MDAnalysis.coordinates.PDBQT"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.PDBQT</span></tt></a><a class="headerlink" href="#pdbqt-structure-files-in-mdanalysis-mdanalysis-coordinates-pdbqt" title="Permalink to this headline">¶</a></h1>
 <p>MDAnalysis reads coordinates from <a class="reference external" href="http://autodock.scripps.edu/faqs-help/faq/what-is-the-format-of-a-pdbqt-file">PDBQT</a> files and additional optional
 data such as B-factors, partial charge and <a class="reference external" href="http://autodock.scripps.edu/">AutoDock</a> atom types.  It
 is also possible to substitute a PDBQT file for a PSF file in order to
@@ -238,9 +238,9 @@ available in this case).</p>
 </tbody>
 </table>
 <p>We ignore torsion notation and just pull the partial charge and atom type columns:</p>
-<div class="highlight-python"><pre>COMPND    NSC7810
+<div class="highlight-python"><div class="highlight"><pre>COMPND    NSC7810
 REMARK  3 active torsions:
-REMARK  status: ('A' for Active; 'I' for Inactive)
+REMARK  status: (&#39;A&#39; for Active; &#39;I&#39; for Inactive)
 REMARK    1  A    between atoms: A7_7  and  C22_23
 REMARK    2  A    between atoms: A9_9  and  A11_11
 REMARK    3  A    between atoms: A17_17  and  C21_21
@@ -280,7 +280,8 @@ ATOM     25  O2  INH I          -4.019   2.378  -0.708  0.00  0.00    -0.644 OA
 ATOM     26  O4  INH I          -4.659   1.196   1.059  0.00  0.00    -0.644 OA
 ENDBRANCH   7  24
 TORSDOF 3
-123456789.123456789.123456789.123456789.123456789.123456789.123456789.123456789. (column reference)</pre>
+123456789.123456789.123456789.123456789.123456789.123456789.123456789.123456789. (column reference)
+</pre></div>
 </div>
 <p>Read coordinates from <em>filename</em>.</p>
 <p><em>filename</em> can be a gzipped or bzip2ed compressed PDBQT file.</p>
@@ -408,24 +409,24 @@ chainID.</p>
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="PQR.html" title="5.10. PQR file format — MDAnalysis.coordinates.PQR"
+          <a href="PQR.html" title="5.11. PQR file format — MDAnalysis.coordinates.PQR"
              >next</a> |</li>
         <li class="right" >
-          <a href="PDB.html" title="5.8. PDB structure files in MDAnalysis — MDAnalysis.coordinates.PDB"
+          <a href="PDB.html" title="5.9. PDB structure files in MDAnalysis — MDAnalysis.coordinates.PDB"
              >previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis 0.9.2-dev documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2014, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
-    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
+    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

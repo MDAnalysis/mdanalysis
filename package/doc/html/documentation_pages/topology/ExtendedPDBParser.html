@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>4.10. Extended PDB topology parser &mdash; MDAnalysis 0.9.2-dev documentation</title>
+    <title>4.8. Extended PDB topology parser &mdash; MDAnalysis 0.9.2-dev documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -30,8 +30,8 @@
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
     <link rel="top" title="MDAnalysis 0.9.2-dev documentation" href="../../index.html" />
     <link rel="up" title="4. Topology modules" href="../topology_modules.html" />
-    <link rel="next" title="4.11. PDBQT topology parser" href="PDBQTParser.html" />
-    <link rel="prev" title="4.9. Primitive PDB topology parser" href="PrimitivePDBParser.html" /> 
+    <link rel="next" title="4.9. PDBQT topology parser" href="PDBQTParser.html" />
+    <link rel="prev" title="4.7. Primitive PDB topology parser" href="PrimitivePDBParser.html" /> 
   </head>
   <body>
     <div class="related">
@@ -44,10 +44,10 @@
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="PDBQTParser.html" title="4.11. PDBQT topology parser"
+          <a href="PDBQTParser.html" title="4.9. PDBQT topology parser"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="PrimitivePDBParser.html" title="4.9. Primitive PDB topology parser"
+          <a href="PrimitivePDBParser.html" title="4.7. Primitive PDB topology parser"
              accesskey="P">previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis 0.9.2-dev documentation</a> &raquo;</li>
           <li><a href="../topology_modules.html" accesskey="U">4. Topology modules</a> &raquo;</li> 
@@ -58,12 +58,20 @@
             <p class="logo"><a href="../../index.html">
               <img class="logo" src="../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
             </a></p>
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">4.8. Extended PDB topology parser</a><ul>
+<li><a class="reference internal" href="#classes">4.8.1. Classes</a></li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
   <p class="topless"><a href="PrimitivePDBParser.html"
-                        title="previous chapter">4.9. Primitive PDB topology parser</a></p>
+                        title="previous chapter">4.7. Primitive PDB topology parser</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="PDBQTParser.html"
-                        title="next chapter">4.11. PDBQT topology parser</a></p>
+                        title="next chapter">4.9. PDBQT topology parser</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/topology/ExtendedPDBParser.txt"
@@ -91,7 +99,7 @@
           <div class="body">
             
   <span class="target" id="module-MDAnalysis.topology.ExtendedPDBParser"></span><div class="section" id="extended-pdb-topology-parser">
-<h1>4.10. Extended PDB topology parser<a class="headerlink" href="#extended-pdb-topology-parser" title="Permalink to this headline">¶</a></h1>
+<h1>4.8. Extended PDB topology parser<a class="headerlink" href="#extended-pdb-topology-parser" title="Permalink to this headline">¶</a></h1>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.8.</span></p>
 </div>
@@ -119,6 +127,8 @@ the <tt class="docutils literal"><span class="pre">bonds=True</span></tt> keywor
 <li><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.Universe</span></tt></a></li>
 </ul>
 </div>
+<div class="section" id="classes">
+<h2>4.8.1. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.topology.ExtendedPDBParser.ExtendedPDBParser">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.topology.ExtendedPDBParser.</tt><tt class="descname">ExtendedPDBParser</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/ExtendedPDBParser.html#ExtendedPDBParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.ExtendedPDBParser.ExtendedPDBParser" title="Permalink to this definition">¶</a></dt>
@@ -133,8 +143,140 @@ the PDB standard.</p>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.8.</span></p>
 </div>
+<dl class="method">
+<dt id="MDAnalysis.topology.ExtendedPDBParser.ExtendedPDBParser.close">
+<tt class="descname">close</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.topology.ExtendedPDBParser.ExtendedPDBParser.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the trajectory file.</p>
 </dd></dl>
 
+<dl class="method">
+<dt id="MDAnalysis.topology.ExtendedPDBParser.ExtendedPDBParser.close_trajectory">
+<tt class="descname">close_trajectory</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.topology.ExtendedPDBParser.ExtendedPDBParser.close_trajectory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Specific implementation of trajectory closing.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.ExtendedPDBParser.ExtendedPDBParser.convert_forces_from_native">
+<tt class="descname">convert_forces_from_native</tt><big>(</big><em>force</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.topology.ExtendedPDBParser.ExtendedPDBParser.convert_forces_from_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>In-place conversion of forces array <em>force</em> from native units to base units.</p>
+<p>By default, the input <em>force</em> is modified in place and also returned.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.7.</span></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.ExtendedPDBParser.ExtendedPDBParser.convert_forces_to_native">
+<tt class="descname">convert_forces_to_native</tt><big>(</big><em>force</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.topology.ExtendedPDBParser.ExtendedPDBParser.convert_forces_to_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>In-place conversion of force array <em>force</em> from base units to native units.</p>
+<p>By default, the input <em>force</em> is modified in place and also returned.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.7.</span></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.ExtendedPDBParser.ExtendedPDBParser.convert_pos_from_native">
+<tt class="descname">convert_pos_from_native</tt><big>(</big><em>x</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.topology.ExtendedPDBParser.ExtendedPDBParser.convert_pos_from_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>In-place conversion of coordinate array x from native units to base units.</p>
+<p>By default, the input <em>x</em> is modified in place and also returned.</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
+modified copy is returned <em>unless</em> no conversion takes
+place, in which case the reference to the unmodified <em>x</em> is
+returned.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.ExtendedPDBParser.ExtendedPDBParser.convert_pos_to_native">
+<tt class="descname">convert_pos_to_native</tt><big>(</big><em>x</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.topology.ExtendedPDBParser.ExtendedPDBParser.convert_pos_to_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>Conversion of coordinate array x from base units to native units.</p>
+<p>By default, the input <em>x</em> is modified in place and also returned.</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
+modified copy is returned <em>unless</em> no conversion takes
+place, in which case the reference to the unmodified <em>x</em> is
+returned.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.ExtendedPDBParser.ExtendedPDBParser.convert_time_from_native">
+<tt class="descname">convert_time_from_native</tt><big>(</big><em>t</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.topology.ExtendedPDBParser.ExtendedPDBParser.convert_time_from_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert time <em>t</em> from native units to base units.</p>
+<p>By default, the input <em>t</em> is modified in place and also
+returned (although note that scalar values <em>t</em> are passed by
+value in Python and hence an in-place modification has no
+effect on the caller.)</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
+modified copy is returned <em>unless</em> no conversion takes
+place, in which case the reference to the unmodified <em>x</em> is
+returned.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.ExtendedPDBParser.ExtendedPDBParser.convert_time_to_native">
+<tt class="descname">convert_time_to_native</tt><big>(</big><em>t</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.topology.ExtendedPDBParser.ExtendedPDBParser.convert_time_to_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert time <em>t</em> from base units to native units.</p>
+<p>By default, the input <em>t</em> is modified in place and also
+returned. (Also note that scalar values <em>t</em> are passed by
+value in Python and hence an in-place modification has no
+effect on the caller.)</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
+modified copy is returned <em>unless</em> no conversion takes
+place, in which case the reference to the unmodified <em>x</em> is
+returned.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.ExtendedPDBParser.ExtendedPDBParser.convert_velocities_from_native">
+<tt class="descname">convert_velocities_from_native</tt><big>(</big><em>v</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.topology.ExtendedPDBParser.ExtendedPDBParser.convert_velocities_from_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>In-place conversion of velocities array <em>v</em> from native units to base units.</p>
+<p>By default, the input <em>v</em> is modified in place and also returned.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.5.</span></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.ExtendedPDBParser.ExtendedPDBParser.convert_velocities_to_native">
+<tt class="descname">convert_velocities_to_native</tt><big>(</big><em>v</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.topology.ExtendedPDBParser.ExtendedPDBParser.convert_velocities_to_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>In-place conversion of coordinate array <em>v</em> from base units to native units.</p>
+<p>By default, the input <em>v</em> is modified in place and also returned.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.5.</span></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.ExtendedPDBParser.ExtendedPDBParser.parse">
+<tt class="descname">parse</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.topology.ExtendedPDBParser.ExtendedPDBParser.parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse atom information from PDB file <em>filename</em>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">MDAnalysis internal <em>structure</em> dict</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">The <em>structure</em> dict is defined in
+<cite>MDAnalysis.topology</cite> and the file is
+read with
+<a class="reference internal" href="../coordinates/PDB.html#MDAnalysis.coordinates.PDB.PrimitivePDBReader" title="MDAnalysis.coordinates.PDB.PrimitivePDBReader"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.coordinates.PDB.PrimitivePDBReader</span></tt></a>.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
 </div>
 
 
@@ -153,24 +295,24 @@ the PDB standard.</p>
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="PDBQTParser.html" title="4.11. PDBQT topology parser"
+          <a href="PDBQTParser.html" title="4.9. PDBQT topology parser"
              >next</a> |</li>
         <li class="right" >
-          <a href="PrimitivePDBParser.html" title="4.9. Primitive PDB topology parser"
+          <a href="PrimitivePDBParser.html" title="4.7. Primitive PDB topology parser"
              >previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis 0.9.2-dev documentation</a> &raquo;</li>
           <li><a href="../topology_modules.html" >4. Topology modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2014, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
-    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
+    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

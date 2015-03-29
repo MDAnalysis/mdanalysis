@@ -95,30 +95,44 @@ files. MDAnalysis uses topology files to identify atoms and bonds
 between the atoms. It can use topology files from MD packages such as
 CHARMM&#8217;s and NAMD&#8217;s PSF format or Amber&#8217;s PRMTOP files. In addition,
 it can also glean atom information from single frame coordinate files
-such the PDB, CRD, or PQR formats (see the <a class="reference internal" href="topology/init.html#supported-topology-formats"><em>Table of Supported topology formats</em></a>).</p>
+such the PDB, CRD, or PQR formats (see the <a class="reference internal" href="topology/init.html#supported-topology-formats"><em>Table of Supported Topology Formats</em></a>).</p>
 <p>Typically, MDAnalysis recognizes formats by the file extension and
 hence most users probably do not need to concern themselves with
 classes and functions described here. However, if MDAnalysis does not
 properly recognize a file format then a user can explicitly set the
 topology file format in the <em>topology_format</em> keyword argument to
 <a class="reference internal" href="core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a>.</p>
-<p class="rubric">Contents</p>
+<p class="rubric">Topology formats</p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="topology/init.html">4.1. Topology readers &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.topology</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="topology/core.html">4.2. Common functions for topology building &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.topology.core</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="topology/tables.html">4.3. MDAnalysis topology tables</a></li>
-<li class="toctree-l1"><a class="reference internal" href="topology/PSFParser.html">4.4. PSF topology parser</a></li>
-<li class="toctree-l1"><a class="reference internal" href="topology/TOPParser.html">4.5. AMBER PRMTOP topology parser</a></li>
-<li class="toctree-l1"><a class="reference internal" href="topology/CRDParser.html">4.6. CRD topology parser</a></li>
-<li class="toctree-l1"><a class="reference internal" href="topology/GROParser.html">4.7. GRO topology parser</a></li>
-<li class="toctree-l1"><a class="reference internal" href="topology/PDBParser.html">4.8. PDB topology parser</a></li>
-<li class="toctree-l1"><a class="reference internal" href="topology/PrimitivePDBParser.html">4.9. Primitive PDB topology parser</a></li>
-<li class="toctree-l1"><a class="reference internal" href="topology/ExtendedPDBParser.html">4.10. Extended PDB topology parser</a></li>
-<li class="toctree-l1"><a class="reference internal" href="topology/PDBQTParser.html">4.11. PDBQT topology parser</a></li>
-<li class="toctree-l1"><a class="reference internal" href="topology/PQRParser.html">4.12. PQR topology parser</a></li>
-<li class="toctree-l1"><a class="reference internal" href="topology/DMSParser.html">4.13. DESRES Molecular Structure file format topology parser</a></li>
-<li class="toctree-l1"><a class="reference internal" href="topology/TPRParser.html">4.14. Gromacs portable run input TPR format parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/PSFParser.html">4.2. PSF topology parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/TOPParser.html">4.3. AMBER PRMTOP topology parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/CRDParser.html">4.4. CRD topology parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/GROParser.html">4.5. GRO topology parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/PDBParser.html">4.6. PDB topology parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/PrimitivePDBParser.html">4.7. Primitive PDB topology parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/ExtendedPDBParser.html">4.8. Extended PDB topology parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/PDBQTParser.html">4.9. PDBQT topology parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/PQRParser.html">4.10. PQR topology parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/DMSParser.html">4.11. DESRES Molecular Structure file format topology parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/TPRParser.html">4.12. Gromacs portable run input TPR format parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/MOL2Parser.html">4.13. MOL2 file format &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.MOL2</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/XYZParser.html">4.14. XYZ Topology Parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/LAMMPSParser.html">4.15. LAMMPSParser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/GMSParser.html">4.16. GAMESS Topology Parser</a></li>
+</ul>
+</div>
+<p class="rubric">Topology core modules</p>
+<p>The remaining pages are primarily of interest to developers as they
+contain functions and classes that are used in the implementation of
+the topology readers.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="topology/base.html">4.17. Base topology reader classes &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.topology.base</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/core.html">4.18. Common functions for topology building &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.topology.core</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/tables.html">4.19. MDAnalysis topology tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology/tpr_util.html">4.20. Utility functions for the TPR topology parser</a></li>
 </ul>
 </div>
 </div>
@@ -148,14 +162,14 @@ topology file format in the <em>topology_format</em> keyword argument to
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2014, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
-    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
+    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

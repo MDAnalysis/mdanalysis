@@ -199,16 +199,17 @@ recursive descent parsing using Precedence climbing (see
 <a class="reference external" href="http://www.engr.mun.ca/~theo/Misc/exp_parsing.htm">http://www.engr.mun.ca/~theo/Misc/exp_parsing.htm</a>).  Transforms
 expressions into nested Selection tree.</p>
 <p>For reference, the grammar that we parse is</p>
-<div class="highlight-python"><pre>E(xpression)--&gt; Exp(0)
+<div class="highlight-python"><div class="highlight"><pre>E(xpression)--&gt; Exp(0)
 Exp(p) --&gt;      P {B Exp(q)}
-P --&gt;           U Exp(q) | "(" E ")" | v
-B(inary) --&gt;    "and" | "or"
-U(nary) --&gt;     "not"
+P --&gt;           U Exp(q) | &quot;(&quot; E &quot;)&quot; | v
+B(inary) --&gt;    &quot;and&quot; | &quot;or&quot;
+U(nary) --&gt;     &quot;not&quot;
 T(erms) --&gt;     segid [value]
                 | resname [value]
                 | resid [value]
                 | name [value]
-                | type [value]</pre>
+                | type [value]
+</pre></div>
 </div>
 </dd></dl>
 
@@ -240,14 +241,14 @@ T(erms) --&gt;     segid [value]
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2014, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
-    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
+    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

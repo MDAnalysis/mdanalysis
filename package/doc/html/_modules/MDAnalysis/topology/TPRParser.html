@@ -129,10 +129,14 @@
 <span class="sd">supported.</span>
 
 
-<span class="sd">Functions</span>
+<span class="sd">Classes</span>
 <span class="sd">---------</span>
 
 <span class="sd">.. autoclass:: TPRParser</span>
+<span class="sd">   :members:</span>
+<span class="sd">   :inherited-members:</span>
+
+<span class="sd">.. SeeAlso:: :mod:`MDAnalysis.topology.tpr`</span>
 
 <span class="sd">Development notes</span>
 <span class="sd">-----------------</span>
@@ -191,7 +195,14 @@
 
 
 <div class="viewcode-block" id="TPRParser"><a class="viewcode-back" href="../../../documentation_pages/topology/TPRParser.html#MDAnalysis.topology.TPRParser.TPRParser">[docs]</a><span class="k">class</span> <span class="nc">TPRParser</span><span class="p">(</span><span class="n">TopologyReader</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Read topology information from a Gromacs_ TPR_ file.</span>
+
+<span class="sd">    .. SeeAlso:: :mod:`MDAnalysis.topology.TPR`</span>
+
+<span class="sd">    .. _Gromacs: http://www.gromacs.org</span>
+<span class="sd">    .. _TPR file: http://manual.gromacs.org/current/online/tpr.html</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="TPRParser.parse"><a class="viewcode-back" href="../../../documentation_pages/topology/TPRParser.html#MDAnalysis.topology.TPRParser.TPRParser.parse">[docs]</a>    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Parse a Gromacs TPR file into a MDAnalysis internal topology structure.</span>
 
 <span class="sd">        :Returns: ``structure`` dict</span>
@@ -266,7 +277,7 @@
     <span class="c">#         # a crazily long (670 lines) function in c, slightly better here</span>
     <span class="c">#         # (240 lines), so put it in setting.py</span>
     <span class="c">#         setting.do_inputrec(data)</span>
-
+</div>
     <span class="k">def</span> <span class="nf">_log_header</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">th</span><span class="p">):</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Gromacs version   : {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">th</span><span class="o">.</span><span class="n">ver_str</span><span class="p">))</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;tpx version       : {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">th</span><span class="o">.</span><span class="n">fver</span><span class="p">))</span>
@@ -306,14 +317,14 @@
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2014, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
-    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
+    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

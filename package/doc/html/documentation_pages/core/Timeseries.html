@@ -132,12 +132,13 @@ the trajectory frame by frame in python. Inspired by CHARMM&#8217;s correl
 command.</p>
 <p>The disadvantage is that the timeseries &#8216;plugins&#8217; must be implemented in
 C-code.</p>
-<div class="highlight-python"><pre>collection = TimeseriesCollection()
+<div class="highlight-python"><div class="highlight"><pre>collection = TimeseriesCollection()
 collection.addTimeseries(Timeseries.Atom(...)) - add a new Timeseries object
 collection.compute(...)                        - compute the collection of timeseries from the trajectory
 collection.clear()                             - clear the collection
-collection[i]                                  - access the i'th timeseries
-len(collection)                                - return the number of Timeseries added to the collection</pre>
+collection[i]                                  - access the i&#39;th timeseries
+len(collection)                                - return the number of Timeseries added to the collection
+</pre></div>
 </div>
 <dl class="method">
 <dt id="MDAnalysis.core.Timeseries.TimeseriesCollection.addTimeseries">
@@ -311,14 +312,14 @@ molecule is not oxygen then results will be wrong.</em></p>
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2014, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
-    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
+    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

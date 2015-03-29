@@ -94,8 +94,9 @@
 <h1>6.1. VMD selections<a class="headerlink" href="#vmd-selections" title="Permalink to this headline">¶</a></h1>
 <p>Write <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.AtomGroup</span></tt></a> selection to a <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a> <cite>tcl</cite> file
 that defines <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/current/ug/node120.html">atomselect macros</a>. To be used in VMD like this:</p>
-<div class="highlight-python"><pre>source macros.vmd
-set sel [atomselect top mdanalysis001]  # use macro 001</pre>
+<div class="highlight-python"><div class="highlight"><pre>source macros.vmd
+set sel [atomselect top mdanalysis001]  # use macro 001
+</pre></div>
 </div>
 <dl class="class">
 <dt id="MDAnalysis.selections.vmd.SelectionWriter">
@@ -207,14 +208,14 @@ when appending) [<tt class="docutils literal"><span class="pre">None</span></tt>
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2014, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
-    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
+    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

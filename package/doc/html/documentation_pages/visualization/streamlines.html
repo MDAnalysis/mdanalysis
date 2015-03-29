@@ -180,21 +180,22 @@ displacements crossing the periodic boundary)</p>
 </tr>
 </tbody>
 </table>
-<div class="highlight-python"><pre>import matplotlib, matplotlib.pyplot, numpy
+<div class="highlight-python"><div class="highlight"><pre>import matplotlib, matplotlib.pyplot, numpy
 import MDAnalysis, MDAnalysis.visualization.streamlines
 u1, v1, average_displacement,standard_deviation_of_displacement =
-MDAnalysis.visualization.streamlines.generate_streamlines('testing.gro','testing_filtered.xtc',grid_spacing =
-20, MDA_selection = 'name PO4',start_frame=2,end_frame=3,xmin=-8.73000049591,xmax= 1225.96008301,
+MDAnalysis.visualization.streamlines.generate_streamlines(&#39;testing.gro&#39;,&#39;testing_filtered.xtc&#39;,grid_spacing =
+20, MDA_selection = &#39;name PO4&#39;,start_frame=2,end_frame=3,xmin=-8.73000049591,xmax= 1225.96008301,
 ymin= -12.5799999237, ymax=1224.34008789,maximum_delta_magnitude = 1.0,num_cores=16)
 x = numpy.linspace(0,1200,61)
 y = numpy.linspace(0,1200,61)
 speed = numpy.sqrt(u1*u1 + v1*v1)
 fig = matplotlib.pyplot.figure()
-ax = fig.add_subplot(111,aspect='equal')
-ax.set_xlabel('x ($\AA$)')
-ax.set_ylabel('y ($\AA$)')
+ax = fig.add_subplot(111,aspect=&#39;equal&#39;)
+ax.set_xlabel(&#39;x ($\AA$)&#39;)
+ax.set_ylabel(&#39;y ($\AA$)&#39;)
 ax.streamplot(x,y,u1,v1,density=(10,10),color=speed,linewidth=3*speed/speed.max())
-fig.savefig('testing_streamline.png',dpi=300)</pre>
+fig.savefig(&#39;testing_streamline.png&#39;,dpi=300)
+</pre></div>
 </div>
 <img alt="../../_images/testing_streamline.png" src="../../_images/testing_streamline.png" />
 <table class="docutils citation" frame="void" id="chavent2014" rules="none">
@@ -237,14 +238,14 @@ fig.savefig('testing_streamline.png',dpi=300)</pre>
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2014, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
-    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
+    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

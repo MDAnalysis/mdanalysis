@@ -147,7 +147,7 @@ that is bonded to the heavy atom donor,</li>
 <p>Hydrogen bond data are returned per frame, which is stored in
 <a class="reference internal" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.timeseries" title="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.timeseries"><tt class="xref py py-attr docutils literal"><span class="pre">HydrogenBondAnalysis.timeseries</span></tt></a> (In the following description, <tt class="docutils literal"><span class="pre">#</span></tt>
 indicates comments that are not part of the output.):</p>
-<div class="highlight-python"><pre>results = [
+<div class="highlight-python"><div class="highlight"><pre>results = [
     [ # frame 1
        [ # hbond 1
           &lt;donor index&gt;, &lt;acceptor index&gt;, &lt;donor string&gt;, &lt;acceptor string&gt;, &lt;distance&gt;, &lt;angle&gt;
@@ -161,7 +161,8 @@ indicates comments that are not part of the output.):</p>
       [ ... ], [ ... ], ...
     ],
     ...
-]</pre>
+]
+</pre></div>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -584,7 +585,7 @@ of a hydrogen bond existence, or see <a class="reference internal" href="#MDAnal
 <dd><p>Results of the hydrogen bond analysis, stored for each frame. In
 the following description, # indicates comments that are not
 part of the output:</p>
-<div class="highlight-python"><pre>results = [
+<div class="highlight-python"><div class="highlight"><pre>results = [
     [ # frame 1
        [ # hbond 1
           &lt;donor index&gt;, &lt;acceptor index&gt;, &lt;donor string&gt;, &lt;acceptor string&gt;, &lt;distance&gt;, &lt;angle&gt;
@@ -598,7 +599,8 @@ part of the output:</p>
       [ ... ], [ ... ], ...
     ],
     ...
-]</pre>
+]
+</pre></div>
 </div>
 <p>The time of each step is not stored with each hydrogen bond frame but in
 <a class="reference internal" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.timesteps" title="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.timesteps"><tt class="xref py py-attr docutils literal"><span class="pre">timesteps</span></tt></a>.</p>
@@ -807,7 +809,7 @@ with e.g. <a class="reference external" href="http://pypi.python.org/pypi/RecSQL
 
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.r_cov">
-<tt class="descname">r_cov</tt><em class="property"> = defaultdict(&lt;function &lt;lambda&gt; at 0x7fc4397b6c08&gt;, {'P': 1.58, 'S': 1.55, 'O': 1.31, 'N': 1.31})</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.r_cov" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">r_cov</tt><em class="property"> = defaultdict(&lt;function &lt;lambda&gt; at 0x101bc5410&gt;, {'P': 1.58, 'S': 1.55, 'O': 1.31, 'N': 1.31})</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.r_cov" title="Permalink to this definition">¶</a></dt>
 <dd><p>A <a class="reference external" href="http://docs.python.org/library/collections.html#collections.defaultdict" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">collections.defaultdict</span></tt></a> of covalent radii of common donors
 (used in :meth`_get_bonded_hydrogens_list` to check if a hydrogen is
 sufficiently close to its donor heavy atom). Values are stored for
@@ -899,14 +901,14 @@ of timesteps at which the hydrogen bond was detected.</p>
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2014, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
-    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
+    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

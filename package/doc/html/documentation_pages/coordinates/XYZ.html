@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.14. XYZ trajectory reader — MDAnalysis.coordinates.XYZ &mdash; MDAnalysis 0.9.2-dev documentation</title>
+    <title>5.15. XYZ trajectory reader — MDAnalysis.coordinates.XYZ &mdash; MDAnalysis 0.9.2-dev documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -30,8 +30,8 @@
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
     <link rel="top" title="MDAnalysis 0.9.2-dev documentation" href="../../index.html" />
     <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
-    <link rel="next" title="5.15. TRZ trajectory I/O — MDAnalysis.coordinates.TRZ" href="TRZ.html" />
-    <link rel="prev" title="5.13. Gromacs XTC file IO — MDAnalysis.coordinates.XTC" href="XTC.html" /> 
+    <link rel="next" title="5.16. TRZ trajectory I/O — MDAnalysis.coordinates.TRZ" href="TRZ.html" />
+    <link rel="prev" title="5.14. Gromacs XTC file IO — MDAnalysis.coordinates.XTC" href="XTC.html" /> 
   </head>
   <body>
     <div class="related">
@@ -44,10 +44,10 @@
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="TRZ.html" title="5.15. TRZ trajectory I/O — MDAnalysis.coordinates.TRZ"
+          <a href="TRZ.html" title="5.16. TRZ trajectory I/O — MDAnalysis.coordinates.TRZ"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="XTC.html" title="5.13. Gromacs XTC file IO — MDAnalysis.coordinates.XTC"
+          <a href="XTC.html" title="5.14. Gromacs XTC file IO — MDAnalysis.coordinates.XTC"
              accesskey="P">previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis 0.9.2-dev documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
@@ -60,18 +60,18 @@
             </a></p>
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">5.14. XYZ trajectory reader &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.XYZ</span></tt></a><ul>
-<li><a class="reference internal" href="#xyz-file-format">5.14.1. XYZ File format</a></li>
+<li><a class="reference internal" href="#">5.15. XYZ trajectory reader &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.XYZ</span></tt></a><ul>
+<li><a class="reference internal" href="#xyz-file-format">5.15.1. XYZ File format</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="XTC.html"
-                        title="previous chapter">5.13. Gromacs XTC file IO &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.XTC</span></tt></a></p>
+                        title="previous chapter">5.14. Gromacs XTC file IO &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.XTC</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="TRZ.html"
-                        title="next chapter">5.15. TRZ trajectory I/O  &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.TRZ</span></tt></a></p>
+                        title="next chapter">5.16. TRZ trajectory I/O  &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.TRZ</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/coordinates/XYZ.txt"
@@ -99,7 +99,7 @@
           <div class="body">
             
   <span class="target" id="module-MDAnalysis.coordinates.XYZ"></span><div class="section" id="xyz-trajectory-reader-mdanalysis-coordinates-xyz">
-<h1>5.14. XYZ trajectory reader &#8212; <a class="reference internal" href="#module-MDAnalysis.coordinates.XYZ" title="MDAnalysis.coordinates.XYZ"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.XYZ</span></tt></a><a class="headerlink" href="#xyz-trajectory-reader-mdanalysis-coordinates-xyz" title="Permalink to this headline">¶</a></h1>
+<h1>5.15. XYZ trajectory reader &#8212; <a class="reference internal" href="#module-MDAnalysis.coordinates.XYZ" title="MDAnalysis.coordinates.XYZ"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.XYZ</span></tt></a><a class="headerlink" href="#xyz-trajectory-reader-mdanalysis-coordinates-xyz" title="Permalink to this headline">¶</a></h1>
 <p>The <a class="reference internal" href="#xyz-format"><em>XYZ format</em></a> is a loosely defined, simple
 coordinate trajectory format. The implemented format definition was
 taken from the <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html">VMD xyzplugin</a> and is therefore compatible with VMD.</p>
@@ -123,16 +123,17 @@ the XYZ format</li>
 <p>There appears to be no rigid format definition so it is likely users
 will need to tweak this Class.</p>
 <div class="section" id="xyz-file-format">
-<span id="xyz-format"></span><h2>5.14.1. XYZ File format<a class="headerlink" href="#xyz-file-format" title="Permalink to this headline">¶</a></h2>
+<span id="xyz-format"></span><h2>5.15.1. XYZ File format<a class="headerlink" href="#xyz-file-format" title="Permalink to this headline">¶</a></h2>
 <p>Definiton used by the <a class="reference internal" href="#MDAnalysis.coordinates.XYZ.XYZReader" title="MDAnalysis.coordinates.XYZ.XYZReader"><tt class="xref py py-class docutils literal"><span class="pre">XYZReader</span></tt></a> and <a class="reference internal" href="#MDAnalysis.coordinates.XYZ.XYZWriter" title="MDAnalysis.coordinates.XYZ.XYZWriter"><tt class="xref py py-class docutils literal"><span class="pre">XYZWriter</span></tt></a> (and
 the <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html">VMD xyzplugin</a> from whence the definition was taken):</p>
-<div class="highlight-python"><pre>[ comment line            ] !! NOT IMPLEMENTED !! DO NOT INCLUDE
+<div class="highlight-python"><div class="highlight"><pre>[ comment line            ] !! NOT IMPLEMENTED !! DO NOT INCLUDE
 [ N                       ] # of atoms, required by this xyz reader plugin  line 1
 [ molecule name           ] name of molecule (can be blank)                 line 2
 atom1 x y z [optional data] atom name followed by xyz coords                line 3
 atom2 x y z [ ...         ] and (optionally) other data.
 ...
-atomN x y z [ ...         ]                                                 line N+2</pre>
+atomN x y z [ ...         ]                                                 line N+2
+</pre></div>
 </div>
 <ul class="simple">
 <li>comment lines not implemented</li>
@@ -325,24 +326,24 @@ to the value of the <em>atoms</em> keyword supplied to the
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="TRZ.html" title="5.15. TRZ trajectory I/O — MDAnalysis.coordinates.TRZ"
+          <a href="TRZ.html" title="5.16. TRZ trajectory I/O — MDAnalysis.coordinates.TRZ"
              >next</a> |</li>
         <li class="right" >
-          <a href="XTC.html" title="5.13. Gromacs XTC file IO — MDAnalysis.coordinates.XTC"
+          <a href="XTC.html" title="5.14. Gromacs XTC file IO — MDAnalysis.coordinates.XTC"
              >previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis 0.9.2-dev documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2014, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
-    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
+    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

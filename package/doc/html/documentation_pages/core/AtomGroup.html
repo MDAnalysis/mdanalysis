@@ -240,32 +240,33 @@ combine all of them together:</p>
 <p>It is also possible to replicate a molecule to build a system with
 multiple copies of the same molecule. In the example, we replicate an
 AdK molecule and then translate and rotate the second copy:</p>
-<div class="highlight-python"><pre>import MDAnalysis; from MDAnalysis.tests.datafiles import *
+<div class="highlight-python"><div class="highlight"><pre>import MDAnalysis; from MDAnalysis.tests.datafiles import *
 u = MDAnalysis.Universe(PSF, DCD)
-p = u.selectAtoms("protein")
+p = u.selectAtoms(&quot;protein&quot;)
 m = MDAnalysis.Merge(p,p)
 
 # now renumber resids and segids for each copy
 
-# first copy of the protein (need to use atom indices because currently that's the only reliable property in the
+# first copy of the protein (need to use atom indices because currently that&#39;s the only reliable property in the
 merged universe)
-p1 = m.selectAtoms("bynum 1:3341")
+p1 = m.selectAtoms(&quot;bynum 1:3341&quot;)
 # second copy
-p2 = m.selectAtoms("bynum 3342:6682")
+p2 = m.selectAtoms(&quot;bynum 3342:6682&quot;)
 
-p1.set_segid("A")
-p2.set_segid("B")
+p1.set_segid(&quot;A&quot;)
+p2.set_segid(&quot;B&quot;)
 p2.residues.set_resid(p2.residues.resids() + p1.residues.resids()[-1])  # increment resids for p2 with the last
 resid from p1
 
 # you must regenerate the selections after modifying them (see notes in the docs!)
 # because the changed resids are not reflected in the selection (due to how residues are referenced internally)
-p1 = m.selectAtoms("segid A")       # or as before:  m.selectAtoms("bynum 1:3341")
-p2 = m.selectAtoms("segid B")
+p1 = m.selectAtoms(&quot;segid A&quot;)       # or as before:  m.selectAtoms(&quot;bynum 1:3341&quot;)
+p2 = m.selectAtoms(&quot;segid B&quot;)
 
 # rotate and translate
 p2.rotateby(180, [0,0,1])
-p2.translate([50,0,0])</pre>
+p2.translate([50,0,0])
+</pre></div>
 </div>
 <p>Note that we have to manually set the residue numbers (resids) and
 segment identifies because <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Merge" title="MDAnalysis.core.AtomGroup.Merge"><tt class="xref py py-func docutils literal"><span class="pre">Merge()</span></tt></a> simply concatenates the
@@ -282,12 +283,12 @@ in the new merged universe.</p>
 <p>The system always requires a <em>topology</em> file &#8212; in the simplest case just
 a list of atoms. This can be a CHARMM/NAMD PSF file or a simple coordinate
 file with atom informations such as PDB, Gromacs GRO, or CHARMM CRD. See
-<a class="reference internal" href="../topology/init.html#supported-topology-formats"><em>Table of Supported topology formats</em></a> for what kind of topologies can be read.</p>
+<a class="reference internal" href="../topology/init.html#supported-topology-formats"><em>Table of Supported Topology Formats</em></a> for what kind of topologies can be read.</p>
 <p>A trajectory provides coordinates; the coordinates have to be ordered in
 the same way as the list of atoms in the topology. A trajectory can be a
 single frame such as a PDB, CRD, or GRO file, or it can be a MD trajectory
 (in CHARMM/NAMD/LAMMPS DCD, Gromacs XTC/TRR, or generic XYZ format).  See
-<a class="reference internal" href="../coordinates/init.html#id1"><em>Table of Supported coordinate formats</em></a> for what can be read as a
+<a class="reference internal" href="../coordinates/init.html#id1"><em>Table of supported coordinate formats</em></a> for what can be read as a
 &#8220;trajectory&#8221;.</p>
 <p>As a special case, when the topology is a PDB, GRO or CRD file
 then the coordinates are immediately loaded from the &#8220;topology&#8221;
@@ -374,7 +375,7 @@ MDAnalysis default (which is set in <tt class="xref py py-class docutils literal
 <dt><em>topology_format</em></dt>
 <dd><p class="first last">provide the file format of the topology file; <tt class="docutils literal"><span class="pre">None</span></tt> guesses it from the file
 extension [<tt class="docutils literal"><span class="pre">None</span></tt>]
-Can also pass a subclass of <tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.topology.base.TopologyReader</span></tt>
+Can also pass a subclass of <a class="reference internal" href="../topology/base.html#MDAnalysis.topology.base.TopologyReader" title="MDAnalysis.topology.base.TopologyReader"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.topology.base.TopologyReader</span></tt></a>
 to define a custom reader to be used on the topology file.</p>
 </dd>
 <dt><em>format</em></dt>
@@ -923,10 +924,11 @@ i.e. <em>axis</em> = 0) with the z-axis:</p>
 <tt class="descname">angle</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.angle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.angle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the angle in degrees between atoms 0, 1, 2.</p>
 <p>Angle between atoms 0 and 2 with apex at 1:</p>
-<div class="highlight-python"><pre>   2
+<div class="highlight-python"><div class="highlight"><pre>   2
   /
  /
-1------0</pre>
+1------0
+</pre></div>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -1227,11 +1229,12 @@ flag to be used by default.</p>
 <dd><p>Calculate the dihedral angle in degrees.</p>
 <p>Dihedral angle around axis connecting atoms 1 and 2 (i.e. the angle
 between the planes spanned by atoms (0,1,2) and (1,2,3)):</p>
-<div class="highlight-python"><pre>        3
+<div class="highlight-python"><div class="highlight"><pre>        3
         |
   1-----2
  /
-0</pre>
+0
+</pre></div>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -2970,14 +2973,16 @@ these atoms.</p>
 <dd><p>Return a universe from the input arguments.</p>
 <ol class="arabic">
 <li><p class="first">If the first argument is a universe, just return it:</p>
-<div class="highlight-python"><pre>as_universe(universe) --&gt; universe</pre>
+<div class="highlight-python"><div class="highlight"><pre>as_universe(universe) --&gt; universe
+</pre></div>
 </div>
 </li>
 <li><p class="first">Otherwise try to build a universe from the first or the first
 and second argument:</p>
-<div class="highlight-python"><pre>asUniverse(PDB, **kwargs) --&gt; Universe(PDB, **kwargs)
+<div class="highlight-python"><div class="highlight"><pre>asUniverse(PDB, **kwargs) --&gt; Universe(PDB, **kwargs)
 asUniverse(PSF, DCD, **kwargs) --&gt; Universe(PSF, DCD, **kwargs)
-asUniverse(*args, **kwargs) --&gt; Universe(*args, **kwargs)</pre>
+asUniverse(*args, **kwargs) --&gt; Universe(*args, **kwargs)
+</pre></div>
 </div>
 </li>
 </ol>
@@ -2995,21 +3000,18 @@ asUniverse(*args, **kwargs) --&gt; Universe(*args, **kwargs)</pre>
 <dt id="MDAnalysis.core.AtomGroup.SelectionError">
 <em class="property">exception </em><tt class="descclassname">MDAnalysis.core.AtomGroup.</tt><tt class="descname">SelectionError</tt><a class="headerlink" href="#MDAnalysis.core.AtomGroup.SelectionError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Raised when a atom selection failed.</p>
-<p>x.__init__(...) initializes x; see help(type(x)) for signature</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="MDAnalysis.core.AtomGroup.SelectionWarning">
 <em class="property">exception </em><tt class="descclassname">MDAnalysis.core.AtomGroup.</tt><tt class="descname">SelectionWarning</tt><a class="headerlink" href="#MDAnalysis.core.AtomGroup.SelectionWarning" title="Permalink to this definition">¶</a></dt>
 <dd><p>Warning indicating a possible problem with a selection.</p>
-<p>x.__init__(...) initializes x; see help(type(x)) for signature</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="MDAnalysis.core.AtomGroup.NoDataError">
 <em class="property">exception </em><tt class="descclassname">MDAnalysis.core.AtomGroup.</tt><tt class="descname">NoDataError</tt><a class="headerlink" href="#MDAnalysis.core.AtomGroup.NoDataError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Raised when empty input is not allowed or required data are missing.</p>
-<p>x.__init__(...) initializes x; see help(type(x)) for signature</p>
 </dd></dl>
 
 </div>
@@ -3041,14 +3043,14 @@ asUniverse(*args, **kwargs) --&gt; Universe(*args, **kwargs)</pre>
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2014, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
-    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
+    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

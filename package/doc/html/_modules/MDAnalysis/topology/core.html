@@ -99,6 +99,7 @@
 <span class="sd">   :func:`guess_atom_mass`.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
+
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
 <span class="c"># Global imports</span>
 <span class="kn">import</span> <span class="nn">os.path</span>
@@ -130,7 +131,7 @@
 <span class="sd">              :class:`~MDAnalysis.core.AtomGroup.Segment`</span>
 
 <span class="sd">    .. versionchanged:: 0.9.0</span>
-<span class="sd">       Now allows resids in a given Segment to be given in non sequential order.</span>
+<span class="sd">       Now allows resids in a given :class:`Segment` to be given in non sequential order.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">struc</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">resatomlist</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
@@ -183,7 +184,7 @@
 
 </div>
 <div class="viewcode-block" id="TopologyObject"><a class="viewcode-back" href="../../../documentation_pages/topology/core.html#MDAnalysis.topology.core.TopologyObject">[docs]</a><span class="k">class</span> <span class="nc">TopologyObject</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Base class for all Topology items</span>
+    <span class="sd">&quot;&quot;&quot;Base class for all Topology items.</span>
 
 <span class="sd">    Defines the behaviour by which Bonds/Angles/etc in MDAnalysis should</span>
 <span class="sd">    behave.</span>
@@ -199,10 +200,10 @@
 <div class="viewcode-block" id="TopologyObject.type"><a class="viewcode-back" href="../../../documentation_pages/topology/core.html#MDAnalysis.topology.core.TopologyObject.type">[docs]</a>    <span class="k">def</span> <span class="nf">type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Type of the bond as a tuple</span>
 
-<span class="sd">        .. Note::</span>
-<span class="sd">             When comparing types, it is important to consider the</span>
-<span class="sd">             reverse of the type too, ie::</span>
-<span class="sd">               a.type == b.type or a.type == b.type[::-1]</span>
+<span class="sd">        When comparing types, it is important to consider the reverse</span>
+<span class="sd">        of the type too, ie::</span>
+<span class="sd">            a.type == b.type or a.type == b.type[::-1]</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">type</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">])</span>
 </div>
@@ -215,7 +216,7 @@
                 <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">]))</span>
 
     <span class="k">def</span> <span class="nf">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Check whether an atom is in this TopologyObject&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Check whether an atom is in this :class:`TopologyObject`&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">other</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span>
 
     <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
@@ -230,7 +231,7 @@
 
     <span class="k">def</span> <span class="nf">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>  <span class="c"># so bondlists can be sorted</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span> <span class="o">&lt;</span> <span class="n">other</span><span class="o">.</span><span class="n">atoms</span>
-        
+
     <span class="k">def</span> <span class="nf">__gt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span> <span class="o">&gt;</span> <span class="n">other</span><span class="o">.</span><span class="n">atoms</span>
 
@@ -256,12 +257,11 @@
 
 <span class="sd">    The presence of a particular atom can also be queried::</span>
 <span class="sd">       &gt;&gt;&gt; Atom in Bond</span>
-<span class="sd">       True / False</span>
+<span class="sd">    will return either ``True`` or ``False``.</span>
 
 <span class="sd">    .. versionchanged:: 0.9.0</span>
-<span class="sd">       * Now a subclass of :class:`TopologyObject`</span>
-<span class="sd">       * Changed class to use __slots__</span>
-<span class="sd">       * Changed class to store atoms in .atoms attribute.</span>
+<span class="sd">       Now a subclass of :class:`TopologyObject`. Changed class to use</span>
+<span class="sd">       :attr:`__slots__` and stores atoms in :attr:`atoms` attribute.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;atoms&quot;</span><span class="p">,</span> <span class="s">&quot;order&quot;</span><span class="p">,</span> <span class="s">&quot;__is_guessed&quot;</span><span class="p">)</span>
 
@@ -274,7 +274,8 @@
         <span class="sd">&quot;&quot;&quot;Bond.partner(Atom)</span>
 
 <span class="sd">        :Returns: the other :class:`~MDAnalysis.core.AtomGroup.Atom` in this</span>
-<span class="sd">        bond</span>
+<span class="sd">                  bond</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">atom</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
@@ -320,9 +321,8 @@
 
 <span class="sd">    .. versionadded:: 0.8</span>
 <span class="sd">    .. versionchanged:: 0.9.0</span>
-<span class="sd">       * Now a subclass of :class:`TopologyObject`</span>
-<span class="sd">       * Changed class to use __slots__</span>
-<span class="sd">       * Changed class to store atoms in .atoms attribute.</span>
+<span class="sd">       Now a subclass of :class:`TopologyObject`; now uses</span>
+<span class="sd">       :attr:`__slots__` and stores atoms in :attr:`atoms` attribute</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 <div class="viewcode-block" id="Angle.angle"><a class="viewcode-back" href="../../../documentation_pages/topology/core.html#MDAnalysis.topology.core.Angle.angle">[docs]</a>    <span class="k">def</span> <span class="nf">angle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns the angle in degrees of this Angle.</span>
@@ -350,9 +350,8 @@
 
 <span class="sd">    .. versionadded:: 0.8</span>
 <span class="sd">    .. versionchanged:: 0.9.0</span>
-<span class="sd">       * Now a subclass of :class:`TopologyObject`</span>
-<span class="sd">       * Changed class to use __slots__</span>
-<span class="sd">       * Changed class to store atoms in .atoms attribute.</span>
+<span class="sd">       Now a subclass of :class:`TopologyObject`; now uses :attr:`__slots__` and</span>
+<span class="sd">       stores atoms in :attr:`atoms` attribute.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># http://cbio.bmt.tue.nl/pumma/uploads/Theory/dihedral.png</span>
 <div class="viewcode-block" id="Torsion.torsion"><a class="viewcode-back" href="../../../documentation_pages/topology/core.html#MDAnalysis.topology.core.Torsion.torsion">[docs]</a>    <span class="k">def</span> <span class="nf">torsion</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -368,7 +367,7 @@
 <span class="sd">          0</span>
 
 <span class="sd">        .. versionadded:: 0.9.0</span>
-<span class="sd">        &quot;&quot;&quot;</span>   
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span>
         <span class="n">ab</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">position</span> <span class="o">-</span> <span class="n">B</span><span class="o">.</span><span class="n">position</span>
         <span class="n">bc</span> <span class="o">=</span> <span class="n">B</span><span class="o">.</span><span class="n">position</span> <span class="o">-</span> <span class="n">C</span><span class="o">.</span><span class="n">position</span>
@@ -381,11 +380,11 @@
 <span class="sd">    Improper Torsion (improper dihedral angle) between four</span>
 <span class="sd">    :class:`~MDAnalysis.core.AtomGroup.Atom` instances.</span>
 
-<span class="sd">    MDAnalysis treats the improper torsion angle as the angle between </span>
+<span class="sd">    MDAnalysis treats the improper torsion angle as the angle between</span>
 <span class="sd">    the planes formed by Atoms (1, 2, 3) and (2, 3, 4).</span>
 
 <span class="sd">    .. warning:: Definitions of Atom ordering in improper torsions</span>
-<span class="sd">                 can change. Check the definitions here against </span>
+<span class="sd">                 can change. Check the definitions here against</span>
 <span class="sd">                 your software.</span>
 
 <span class="sd">    .. versionadded 0.9.0</span>
@@ -496,12 +495,12 @@
 <span class="sd">    :Keywords:</span>
 
 <span class="sd">      *fudge_factor*</span>
-<span class="sd">        The factor by which atoms must overlap eachother to be considered a </span>
+<span class="sd">        The factor by which atoms must overlap eachother to be considered a</span>
 <span class="sd">        bond.  Larger values will increase the number of bonds found. [0.72]</span>
 
 <span class="sd">      *vdwradii*</span>
 <span class="sd">        To supply custom vdwradii for atoms in the algorithm. Must be a dict</span>
-<span class="sd">        of format {type:radii}. The default table of van der Waals radii is </span>
+<span class="sd">        of format {type:radii}. The default table of van der Waals radii is</span>
 <span class="sd">        hard-coded as :data:`MDAnalysis.topology.tables.vdwradii`.  Any user</span>
 <span class="sd">        defined vdwradii passed as an argument will supercede the table</span>
 <span class="sd">        values. [``None``]</span>
@@ -521,7 +520,6 @@
 <span class="sd">       List of tuples suitable for use in Universe topology building.</span>
 
 <span class="sd">    .. warning::</span>
-
 <span class="sd">       No check is done after the bonds are guessed to see if Lewis</span>
 <span class="sd">       structure is correct. This is wrong and will burn somebody.</span>
 
@@ -530,9 +528,10 @@
 
 <span class="sd">    .. versionadded:: 0.7.7</span>
 <span class="sd">    .. versionchanged:: 0.9.0</span>
-<span class="sd">       * Updated method internally to use more numpy, should work faster.</span>
-<span class="sd">       * Should also use less memory, previously scaled O(n^2)</span>
-<span class="sd">       * vdwradii argument now augments table list rather than replacing entirely</span>
+<span class="sd">       Updated method internally to use more :mod:`numpy`, should work</span>
+<span class="sd">       faster.  Should also use less memory, previously scaled as</span>
+<span class="sd">       :math:`O(n^2)`.  *vdwradii* argument now augments table list</span>
+<span class="sd">       rather than replacing entirely.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># why not just use atom.positions?</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="p">):</span>
@@ -551,14 +550,14 @@
         <span class="n">atomtypes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">type</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">atoms</span><span class="p">])</span>
     <span class="c"># check that all types have a defined vdw</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">([</span><span class="n">val</span> <span class="ow">in</span> <span class="n">vdwradii</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">atomtypes</span><span class="p">]):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s">&quot;vdw radii for types: &quot;</span> <span class="o">+</span> 
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s">&quot;vdw radii for types: &quot;</span> <span class="o">+</span>
                           <span class="s">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">atomtypes</span> <span class="k">if</span>
-                                     <span class="ow">not</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">vdwradii</span><span class="p">])</span> <span class="o">+</span> 
+                                     <span class="ow">not</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">vdwradii</span><span class="p">])</span> <span class="o">+</span>
                           <span class="s">&quot;. These can be defined manually using the&quot;</span> <span class="o">+</span>
                           <span class="s">&quot; keyword &#39;vdwradii&#39;&quot;</span><span class="p">))</span>
 
     <span class="n">lower_bound</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;lower_bound&#39;</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
-    
+
     <span class="n">box</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;box&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
 
     <span class="c"># to speed up checking, calculate what the largest possible bond</span>
@@ -582,7 +581,7 @@
             <span class="n">atom_j</span> <span class="o">=</span> <span class="n">atoms</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">a</span><span class="p">]</span>
 
             <span class="k">if</span> <span class="n">dist</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">vdw_i</span> <span class="o">+</span> <span class="n">vdwradii</span><span class="p">[</span><span class="n">atom_j</span><span class="o">.</span><span class="n">type</span><span class="p">])</span> <span class="o">*</span> <span class="n">fudge_factor</span><span class="p">:</span>
-                <span class="c"># because of method used, same bond won&#39;t be seen twice, </span>
+                <span class="c"># because of method used, same bond won&#39;t be seen twice,</span>
                 <span class="c"># so don&#39;t need to worry about duplicates</span>
                 <span class="n">bonds</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">atom</span><span class="o">.</span><span class="n">number</span><span class="p">,</span> <span class="n">atom_j</span><span class="o">.</span><span class="n">number</span><span class="p">))</span>
 
@@ -635,7 +634,7 @@
         <span class="n">a_tup</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">number</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">b</span><span class="p">])</span>  <span class="c"># angle as tuple of numbers</span>
         <span class="c"># if searching with b[0], want tuple of (b[2], b[1], b[0], +new)</span>
         <span class="c"># search the first and last atom of each angle</span>
-        <span class="k">for</span> <span class="n">atom</span><span class="p">,</span> <span class="n">prefix</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">([</span><span class="n">b</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">b</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]],</span> 
+        <span class="k">for</span> <span class="n">atom</span><span class="p">,</span> <span class="n">prefix</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">([</span><span class="n">b</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">b</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]],</span>
                                 <span class="p">[</span><span class="n">a_tup</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">a_tup</span><span class="p">]):</span>
             <span class="k">for</span> <span class="n">other_b</span> <span class="ow">in</span> <span class="n">atom</span><span class="o">.</span><span class="n">bonds</span><span class="p">:</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">other_b</span><span class="o">.</span><span class="n">partner</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span> <span class="ow">in</span> <span class="n">b</span><span class="p">:</span>
@@ -649,7 +648,7 @@
 
 </div>
 <div class="viewcode-block" id="guess_improper_torsions"><a class="viewcode-back" href="../../../documentation_pages/topology/core.html#MDAnalysis.topology.core.guess_improper_torsions">[docs]</a><span class="k">def</span> <span class="nf">guess_improper_torsions</span><span class="p">(</span><span class="n">angles</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Given a list of Angles, find all improper torsions that exist between </span>
+    <span class="sd">&quot;&quot;&quot;Given a list of Angles, find all improper torsions that exist between</span>
 <span class="sd">    atoms.</span>
 
 <span class="sd">    Works by assuming that if (1,2,3) is an angle, and 2 &amp; 4 are bonded,</span>
@@ -658,7 +657,7 @@
 <span class="sd">    (1, 2, 3) and (1, 3, 4)</span>
 
 <span class="sd">    :Returns:</span>
-<span class="sd">      List of tuples defining the improper torsions.  Suitable for use in </span>
+<span class="sd">      List of tuples defining the improper torsions.  Suitable for use in</span>
 <span class="sd">      u._psf</span>
 
 <span class="sd">    .. versionadded 0.9.0</span>
@@ -733,12 +732,12 @@
 <span class="sd">    TopologyDicts are also built lazily from a :class:`TopologyGroup.topDict`</span>
 <span class="sd">    attribute.</span>
 
-<span class="sd">    The TopologyDict collects all the selected topology type from the</span>
+<span class="sd">    The :class:`TopologyDict` collects all the selected topology type from the</span>
 <span class="sd">    atoms and categorises them according to the types of the atoms within.</span>
 <span class="sd">    A :class:`TopologyGroup` containing all of a given bond type can</span>
 <span class="sd">    be made by querying with the appropriate key.  The keys to the</span>
-<span class="sd">    topologyDict are a tuple of the atom types that the bond represents</span>
-<span class="sd">    and can be viewed using the keys() method.</span>
+<span class="sd">    :class:`TopologyDict` are a tuple of the atom types that the bond represents</span>
+<span class="sd">    and can be viewed using the :meth:`keys` method.</span>
 
 <span class="sd">    For example, from a system containing pure ethanol ::</span>
 
@@ -761,16 +760,16 @@
 <span class="sd">    Duplicate entries are automatically removed upon creation and</span>
 <span class="sd">    combination of different Dicts.  This means a bond between atoms</span>
 <span class="sd">    1 and 2 will only ever appear once in a dict despite both atoms 1</span>
-<span class="sd">    and 2 having the bond in their .bond attribute.</span>
+<span class="sd">    and 2 having the bond in their :attr:`bond` attribute.</span>
 
-<span class="sd">    Two TopologyDicts can be combined using addition, this will not</span>
-<span class="sd">    create any duplicate bonds in the process.</span>
+<span class="sd">    Two :class:`TopologyDict` instances can be combined using</span>
+<span class="sd">    addition and it will not create any duplicate bonds in the process.</span>
 
 <span class="sd">    .. versionadded:: 0.8</span>
 <span class="sd">    .. versionchanged:: 0.9.0</span>
-<span class="sd">       * Changed initialisation to use a list of TopologyObjects</span>
-<span class="sd">       instead of list of atoms</span>
-<span class="sd">       * Now used from within TopologyGroup instead of accessed from AtomGroup</span>
+<span class="sd">       Changed initialisation to use a list of :class:`TopologyObject`</span>
+<span class="sd">       instances instead of list of atoms; now used from within</span>
+<span class="sd">       :class:`TopologyGroup` instead of accessed from :class:`AtomGroup`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">members</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
@@ -847,18 +846,18 @@
 <div class="viewcode-block" id="TopologyGroup"><a class="viewcode-back" href="../../../documentation_pages/topology/core.html#MDAnalysis.topology.core.TopologyGroup">[docs]</a><span class="k">class</span> <span class="nc">TopologyGroup</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A container for a groups of bonds.</span>
 
-<span class="sd">    All bonds of a certain types can be retrieved from within the </span>
+<span class="sd">    All bonds of a certain types can be retrieved from within the</span>
 <span class="sd">    :class:`TopologyGroup` by querying with a tuple of types::</span>
 
 <span class="sd">      tg2 = tg.selectBonds([key])</span>
 
-<span class="sd">    Where *key* describes the desired bond as a tuple of the involved </span>
-<span class="sd">    :class:`~MDAnalysis.AtomGroup.Atom` types, as defined by the .type Atom </span>
-<span class="sd">    attribute). A list of available keys can be displayed using the </span>
+<span class="sd">    Where *key* describes the desired bond as a tuple of the involved</span>
+<span class="sd">    :class:`~MDAnalysis.AtomGroup.Atom` types, as defined by the .type Atom</span>
+<span class="sd">    attribute). A list of available keys can be displayed using the</span>
 <span class="sd">    :meth:`types` method.</span>
 
-<span class="sd">    Alternatively, all the bonds which are in a given </span>
-<span class="sd">    :class:`~MDAnalysis.AtomGroup.AtomGroup` can be extracted using </span>
+<span class="sd">    Alternatively, all the bonds which are in a given</span>
+<span class="sd">    :class:`~MDAnalysis.AtomGroup.AtomGroup` can be extracted using</span>
 <span class="sd">    :meth:`atomgroup_intersection`::</span>
 
 <span class="sd">      tg2 = tg.atomgroup_intersection(ag)</span>
@@ -879,12 +878,11 @@
 
 <span class="sd">    .. versionadded:: 0.8</span>
 <span class="sd">    .. versionchanged:: 0.9.0</span>
-<span class="sd">       Overhauled completely</span>
-<span class="sd">       * Added internal TopologyDict accessible by the topDict attribute</span>
-<span class="sd">       * :meth:`selectBonds` allows the topDict to be queried with tuple of </span>
-<span class="sd">         types</span>
-<span class="sd">       * Added :meth:`atomgroup_intersection` to allow bonds which are in </span>
-<span class="sd">         a given AtomGroup to be retrieved.</span>
+<span class="sd">       Overhauled completely: (1) Added internal :class:`TopologyDict`</span>
+<span class="sd">       accessible by the :attr:`topDict` attribute. (2)</span>
+<span class="sd">       :meth:`selectBonds` allows the :attr:`topDict` to be queried</span>
+<span class="sd">       with tuple of types. (3) Added :meth:`atomgroup_intersection`</span>
+<span class="sd">       to allow bonds which are in a given :class:`AtomGroup` to be retrieved.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bondlist</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">bondlist</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -941,7 +939,7 @@
 <span class="sd">          *strict*</span>
 <span class="sd">            Only retrieve bonds which are completely contained within the</span>
 <span class="sd">            AtomGroup. [``False``]</span>
-<span class="sd">        </span>
+
 <span class="sd">        .. versionadded:: 0.9.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">strict</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;strict&#39;</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
@@ -990,14 +988,14 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c"># Create a dictionary of all bonds within this TG, initialised to 0</span>
         <span class="c"># for each</span>
-        <span class="c"># </span>
+        <span class="c">#</span>
         <span class="c"># Then go through all TopObjs in AtomGroup and count their appearances</span>
         <span class="c"># keeping track using the dict</span>
-        <span class="c"># </span>
+        <span class="c">#</span>
         <span class="c"># Then see how many times each TopObj was spotted in the AtomGroup&#39;s bonds</span>
         <span class="c">#</span>
         <span class="c"># If this count is equal to crit, (bond=2, angle=3, torsion=4) then</span>
-        <span class="c"># the TopObj was seen enough for it to have to be completely be </span>
+        <span class="c"># the TopObj was seen enough for it to have to be completely be</span>
         <span class="c"># present in the AtomGroup</span>
 
         <span class="c"># each bond starts with 0 appearances</span>
@@ -1068,9 +1066,9 @@
 <span class="sd">        .. versionadded 0.9.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c"># should allow topology information to be pickled even if it is</span>
-        <span class="c"># substantially changed from original input, </span>
+        <span class="c"># substantially changed from original input,</span>
         <span class="c"># eg through merging universes or defining new bonds manually.</span>
-        <span class="n">bondlist</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="nb">tuple</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">number</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">b</span><span class="o">.</span><span class="n">atoms</span><span class="p">])</span> 
+        <span class="n">bondlist</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="nb">tuple</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">number</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">b</span><span class="o">.</span><span class="n">atoms</span><span class="p">])</span>
                           <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bondlist</span><span class="p">])</span>
 
         <span class="k">return</span> <span class="n">bondlist</span>
@@ -1214,13 +1212,13 @@
 <span class="sd">              will be overwritten</span>
 <span class="sd">           *pbc*</span>
 <span class="sd">              apply periodic boundary conditions when calculating angles</span>
-<span class="sd">              [False] this is important when connecting vectors between atoms</span>
+<span class="sd">              [``False``] this is important when connecting vectors between atoms</span>
 <span class="sd">              might require minimum image convention</span>
 
 <span class="sd">        Uses cython implementation</span>
 
 <span class="sd">        .. versionchanged :: 0.9.0</span>
-<span class="sd">           Added pbc option (default False)</span>
+<span class="sd">           Added *pbc* option (default ``False``)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">toptype</span> <span class="o">==</span> <span class="s">&#39;Angle&#39;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;TopologyGroup is not of type &#39;Angle&#39;&quot;</span><span class="p">)</span>
@@ -1264,13 +1262,13 @@
 <span class="sd">              will be overwritten</span>
 <span class="sd">           *pbc*</span>
 <span class="sd">              apply periodic boundary conditions when calculating angles</span>
-<span class="sd">              [False] this is important when connecting vectors between</span>
+<span class="sd">              [``False``] this is important when connecting vectors between</span>
 <span class="sd">              atoms might require minimum image convention</span>
 
 <span class="sd">        Uses cython implementation.</span>
 
 <span class="sd">        .. versionchanged:: 0.9.0</span>
-<span class="sd">           Added pbc option (default False)</span>
+<span class="sd">           Added *pbc* option (default ``False``)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">toptype</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;Torsion&#39;</span><span class="p">,</span> <span class="s">&#39;Improper_Torsion&#39;</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;TopologyGroup is not of type &#39;Torsion&#39; or &quot;</span>
@@ -1312,14 +1310,14 @@
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2014, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
-    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
+    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

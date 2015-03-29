@@ -30,7 +30,7 @@
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
     <link rel="top" title="MDAnalysis 0.9.2-dev documentation" href="../../index.html" />
     <link rel="up" title="4. Topology modules" href="../topology_modules.html" />
-    <link rel="next" title="4.2. Common functions for topology building — MDAnalysis.topology.core" href="core.html" />
+    <link rel="next" title="4.2. PSF topology parser" href="PSFParser.html" />
     <link rel="prev" title="4. Topology modules" href="../topology_modules.html" /> 
   </head>
   <body>
@@ -44,7 +44,7 @@
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="core.html" title="4.2. Common functions for topology building — MDAnalysis.topology.core"
+          <a href="PSFParser.html" title="4.2. PSF topology parser"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="../topology_modules.html" title="4. Topology modules"
@@ -78,8 +78,8 @@
   <p class="topless"><a href="../topology_modules.html"
                         title="previous chapter">4. Topology modules</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="core.html"
-                        title="next chapter">4.2. Common functions for topology building &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.topology.core</span></tt></a></p>
+  <p class="topless"><a href="PSFParser.html"
+                        title="next chapter">4.2. PSF topology parser</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/topology/init.txt"
@@ -116,11 +116,11 @@ minimum, a topology file has to contain the names of atoms in the order of the
 coordinate file and their residue names and numbers.</p>
 <p>The following table lists the currently supported topology formats.</p>
 <table border="1" class="docutils" id="supported-topology-formats">
-<caption>Table of Supported topology formats</caption>
+<caption>Table of Supported Topology Formats</caption>
 <colgroup>
 <col width="20%" />
 <col width="12%" />
-<col width="68%" />
+<col width="67%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Name</th>
@@ -129,13 +129,13 @@ coordinate file and their residue names and numbers.</p>
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td>CHARMM/XPLOR</td>
+<tr class="row-even"><td>CHARMM/XPLOR PSF</td>
 <td>psf</td>
 <td>reads either format, atoms, bonds, angles,
 torsions/dihedrals information is all used;
 <a class="reference internal" href="PSFParser.html#module-MDAnalysis.topology.PSFParser" title="MDAnalysis.topology.PSFParser"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.PSFParser</span></tt></a></td>
 </tr>
-<tr class="row-odd"><td>CHARMM <a class="footnote-reference" href="#a" id="id1">[1]</a></td>
+<tr class="row-odd"><td>CHARMM CARD <a class="footnote-reference" href="#a" id="id1">[1]</a></td>
 <td>crd</td>
 <td>&#8220;CARD&#8221; coordinate output from CHARMM; deals with
 either standard or EXTended format;
@@ -150,27 +150,27 @@ supplying the <cite>permissive=False</cite> flag to
 <a class="reference internal" href="PrimitivePDBParser.html#module-MDAnalysis.topology.PrimitivePDBParser" title="MDAnalysis.topology.PrimitivePDBParser"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.PrimitivePDBParser</span></tt></a> and
 <a class="reference internal" href="PDBParser.html#module-MDAnalysis.topology.PDBParser" title="MDAnalysis.topology.PDBParser"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.PDBParser</span></tt></a></td>
 </tr>
-<tr class="row-odd"><td>XPDB</td>
+<tr class="row-odd"><td>XPDB <a class="footnote-reference" href="#a" id="id3">[1]</a></td>
 <td>pdb</td>
 <td>Extended PDB format (can use 5-digit residue
 numbers). To use, specify the format &#8220;XPBD&#8221;
 explicitly:
 <tt class="docutils literal"><span class="pre">Universe(...,</span> <span class="pre">topology_format=&quot;XPDB&quot;)</span></tt>.
-Module :MDAnalysis.coordinates.PDB`</td>
+Module <a class="reference internal" href="../coordinates/PDB.html#module-MDAnalysis.coordinates.PDB" title="MDAnalysis.coordinates.PDB"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.PDB</span></tt></a></td>
 </tr>
-<tr class="row-even"><td>PQR <a class="footnote-reference" href="#a" id="id3">[1]</a></td>
+<tr class="row-even"><td>PQR <a class="footnote-reference" href="#a" id="id4">[1]</a></td>
 <td>pqr</td>
 <td>PDB-like but whitespace-separated files with charge
 and radius information;
 <a class="reference internal" href="PQRParser.html#module-MDAnalysis.topology.PQRParser" title="MDAnalysis.topology.PQRParser"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.PQRParser</span></tt></a></td>
 </tr>
-<tr class="row-odd"><td>PDBQT <a class="footnote-reference" href="#a" id="id4">[1]</a></td>
+<tr class="row-odd"><td>PDBQT <a class="footnote-reference" href="#a" id="id5">[1]</a></td>
 <td>pdbqt</td>
 <td>file format used by AutoDock with atom types <em>t</em>
 and partial charges <em>q</em>. Module:
 <a class="reference internal" href="PDBQTParser.html#module-MDAnalysis.topology.PDBQTParser" title="MDAnalysis.topology.PDBQTParser"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.PDBQTParser</span></tt></a></td>
 </tr>
-<tr class="row-even"><td>GROMOS96 <a class="footnote-reference" href="#a" id="id5">[1]</a></td>
+<tr class="row-even"><td>GROMOS96 <a class="footnote-reference" href="#a" id="id6">[1]</a></td>
 <td>gro</td>
 <td>GROMOS96 coordinate file;
 <a class="reference internal" href="GROParser.html#module-MDAnalysis.topology.GROParser" title="MDAnalysis.topology.GROParser"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.GROParser</span></tt></a></td>
@@ -182,48 +182,48 @@ prmtop</td>
 of flags);
 <a class="reference internal" href="TOPParser.html#module-MDAnalysis.topology.TOPParser" title="MDAnalysis.topology.TOPParser"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.TOPParser</span></tt></a></td>
 </tr>
-<tr class="row-even"><td>DESRES <a class="footnote-reference" href="#a" id="id6">[1]</a></td>
+<tr class="row-even"><td>DESRES <a class="footnote-reference" href="#a" id="id7">[1]</a></td>
 <td>dms</td>
 <td>DESRES molecular sturcture reader (only supports
 the atom and bond records);
 <a class="reference internal" href="DMSParser.html#module-MDAnalysis.topology.DMSParser" title="MDAnalysis.topology.DMSParser"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.DMSParser</span></tt></a></td>
 </tr>
-<tr class="row-odd"><td>TPR</td>
+<tr class="row-odd"><td>TPR <a class="footnote-reference" href="#b" id="id8">[2]</a></td>
 <td>tpr</td>
 <td>Gromacs portable run input reader (limited
 experimental support for some of the more recent
 versions of the file format);
 <a class="reference internal" href="TPRParser.html#module-MDAnalysis.topology.TPRParser" title="MDAnalysis.topology.TPRParser"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.TPRParser</span></tt></a></td>
 </tr>
-<tr class="row-even"><td>MOL2</td>
+<tr class="row-even"><td>MOL2 <a class="footnote-reference" href="#a" id="id9">[1]</a></td>
 <td>mol2</td>
 <td>Tripos MOL2 molecular structure format;
-<tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.MOL2Parser</span></tt></td>
+<a class="reference internal" href="MOL2Parser.html#module-MDAnalysis.topology.MOL2Parser" title="MDAnalysis.topology.MOL2Parser"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.MOL2Parser</span></tt></a></td>
 </tr>
-<tr class="row-odd"><td>LAMMPS</td>
+<tr class="row-odd"><td>LAMMPS <a class="footnote-reference" href="#a" id="id10">[1]</a></td>
 <td>data</td>
 <td>LAMMPS Data file parser
-<tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.LAMMPSParser</span></tt></td>
+<a class="reference internal" href="LAMMPSParser.html#module-MDAnalysis.topology.LAMMPSParser" title="MDAnalysis.topology.LAMMPSParser"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.LAMMPSParser</span></tt></a></td>
 </tr>
-<tr class="row-even"><td>XYZ <a class="footnote-reference" href="#a" id="id7">[1]</a></td>
+<tr class="row-even"><td>XYZ <a class="footnote-reference" href="#a" id="id11">[1]</a></td>
 <td>xyz</td>
 <td>XYZ File Parser.  Reads only the labels from atoms and
 constructs minimal topology data.
-<tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.XYZParser</span></tt></td>
+<a class="reference internal" href="XYZParser.html#module-MDAnalysis.topology.XYZParser" title="MDAnalysis.topology.XYZParser"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.XYZParser</span></tt></a></td>
 </tr>
-<tr class="row-odd"><td>GMS</td>
+<tr class="row-odd"><td>GAMESS <a class="footnote-reference" href="#a" id="id12">[1]</a></td>
 <td>gms,
 log</td>
 <td>GAMESS output parser. Read only atoms of assembly
 section (atom, elems and coords) and construct topology.
-<tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.GMSParser</span></tt></td>
+<a class="reference internal" href="GMSParser.html#module-MDAnalysis.topology.GMSParser" title="MDAnalysis.topology.GMSParser"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.GMSParser</span></tt></a></td>
 </tr>
 </tbody>
 </table>
 <table class="docutils footnote" frame="void" id="a" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[1]</td><td><em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id2">2</a>, <a class="fn-backref" href="#id3">3</a>, <a class="fn-backref" href="#id4">4</a>, <a class="fn-backref" href="#id5">5</a>, <a class="fn-backref" href="#id6">6</a>, <a class="fn-backref" href="#id7">7</a>)</em> This format can also be used to provide <em>coordinates</em> so that
+<tr><td class="label">[1]</td><td><em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id2">2</a>, <a class="fn-backref" href="#id3">3</a>, <a class="fn-backref" href="#id4">4</a>, <a class="fn-backref" href="#id5">5</a>, <a class="fn-backref" href="#id6">6</a>, <a class="fn-backref" href="#id7">7</a>, <a class="fn-backref" href="#id9">8</a>, <a class="fn-backref" href="#id10">9</a>, <a class="fn-backref" href="#id11">10</a>, <a class="fn-backref" href="#id12">11</a>)</em> This format can also be used to provide <em>coordinates</em> so that
 it is possible to create a full
 <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-mod docutils literal"><span class="pre">Universe</span></tt></a> by simply providing a
 file of this format as the sole argument to
@@ -231,9 +231,17 @@ file of this format as the sole argument to
 <span class="pre">Universe(filename)</span></tt></td></tr>
 </tbody>
 </table>
+<table class="docutils footnote" frame="void" id="b" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id8">[2]</a></td><td>The Gromacs TPR format contains coordinate information but
+parsing coordinates from a TPR file is currently not implemented
+in <a class="reference internal" href="TPRParser.html#module-MDAnalysis.topology.TPRParser" title="MDAnalysis.topology.TPRParser"><tt class="xref py py-mod docutils literal"><span class="pre">TPRParser</span></tt></a>.</td></tr>
+</tbody>
+</table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="../coordinates_modules.html#coordinates"><em>Coordinates modules</em></a> with the <a class="reference internal" href="../coordinates/init.html#id1"><em>Table of Supported coordinate formats</em></a></p>
+<p class="last"><a class="reference internal" href="../coordinates_modules.html#coordinates"><em>Coordinates modules</em></a> with the <a class="reference internal" href="../coordinates/init.html#id1"><em>Table of supported coordinate formats</em></a></p>
 </div>
 <div class="section" id="developer-notes">
 <h2>4.1.1. Developer Notes<a class="headerlink" href="#developer-notes" title="Permalink to this headline">¶</a></h2>
@@ -349,7 +357,7 @@ topology file defines improper dihedrals..</p>
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="core.html" title="4.2. Common functions for topology building — MDAnalysis.topology.core"
+          <a href="PSFParser.html" title="4.2. PSF topology parser"
              >next</a> |</li>
         <li class="right" >
           <a href="../topology_modules.html" title="4. Topology modules"
@@ -359,14 +367,14 @@ topology file defines improper dihedrals..</p>
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2014, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
-    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
+    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

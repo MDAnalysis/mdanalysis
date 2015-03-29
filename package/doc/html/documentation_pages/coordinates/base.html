@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.16. Base classes — MDAnalysis.coordinates.base &mdash; MDAnalysis 0.9.2-dev documentation</title>
+    <title>5.17. Base classes — MDAnalysis.coordinates.base &mdash; MDAnalysis 0.9.2-dev documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -30,8 +30,8 @@
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
     <link rel="top" title="MDAnalysis 0.9.2-dev documentation" href="../../index.html" />
     <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
-    <link rel="next" title="5.17. Common functions for coordinate reading — MDAnalysis.coordinates.core" href="core.html" />
-    <link rel="prev" title="5.15. TRZ trajectory I/O — MDAnalysis.coordinates.TRZ" href="TRZ.html" /> 
+    <link rel="next" title="5.18. Common functions for coordinate reading — MDAnalysis.coordinates.core" href="core.html" />
+    <link rel="prev" title="5.16. TRZ trajectory I/O — MDAnalysis.coordinates.TRZ" href="TRZ.html" /> 
   </head>
   <body>
     <div class="related">
@@ -44,10 +44,10 @@
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="core.html" title="5.17. Common functions for coordinate reading — MDAnalysis.coordinates.core"
+          <a href="core.html" title="5.18. Common functions for coordinate reading — MDAnalysis.coordinates.core"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="TRZ.html" title="5.15. TRZ trajectory I/O — MDAnalysis.coordinates.TRZ"
+          <a href="TRZ.html" title="5.16. TRZ trajectory I/O — MDAnalysis.coordinates.TRZ"
              accesskey="P">previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis 0.9.2-dev documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
@@ -60,10 +60,10 @@
             </a></p>
   <h4>Previous topic</h4>
   <p class="topless"><a href="TRZ.html"
-                        title="previous chapter">5.15. TRZ trajectory I/O  &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.TRZ</span></tt></a></p>
+                        title="previous chapter">5.16. TRZ trajectory I/O  &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.TRZ</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="core.html"
-                        title="next chapter">5.17. Common functions for coordinate reading &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.core</span></tt></a></p>
+                        title="next chapter">5.18. Common functions for coordinate reading &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.core</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/coordinates/base.txt"
@@ -91,7 +91,7 @@
           <div class="body">
             
   <span class="target" id="module-MDAnalysis.coordinates.base"></span><div class="section" id="base-classes-mdanalysis-coordinates-base">
-<h1>5.16. Base classes &#8212; <a class="reference internal" href="#module-MDAnalysis.coordinates.base" title="MDAnalysis.coordinates.base"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.base</span></tt></a><a class="headerlink" href="#base-classes-mdanalysis-coordinates-base" title="Permalink to this headline">¶</a></h1>
+<h1>5.17. Base classes &#8212; <a class="reference internal" href="#module-MDAnalysis.coordinates.base" title="MDAnalysis.coordinates.base"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.base</span></tt></a><a class="headerlink" href="#base-classes-mdanalysis-coordinates-base" title="Permalink to this headline">¶</a></h1>
 <p>Derive other Reader and Writer classes from the classes in this
 module. The derived classes must follow the Trajectory API in
 <a class="reference internal" href="init.html#module-MDAnalysis.coordinates.__init__" title="MDAnalysis.coordinates.__init__"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.__init__</span></tt></a>.</p>
@@ -234,7 +234,6 @@ which is used everywhere in MDAnalysis.</p>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.8: </span>Added context manager protocol.</p>
 </div>
-<p>x.__init__(...) initializes x; see help(type(x)) for signature</p>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.base.IObase.close">
 <tt class="descname">close</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#IObase.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.close" title="Permalink to this definition">¶</a></dt>
@@ -366,7 +365,6 @@ returned.</p>
 <dd><p>Base class for trajectory readers.</p>
 <p>See the <a class="reference internal" href="init.html#trajectory-api"><em>Trajectory API</em></a> definition in
 <a class="reference internal" href="init.html#module-MDAnalysis.coordinates.__init__" title="MDAnalysis.coordinates.__init__"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.__init__</span></tt></a> for the required attributes and methods.</p>
-<p>x.__init__(...) initializes x; see help(type(x)) for signature</p>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.base.Reader.OtherWriter">
 <tt class="descname">OtherWriter</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Reader.OtherWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.Reader.OtherWriter" title="Permalink to this definition">¶</a></dt>
@@ -517,7 +515,6 @@ trajectory reader unchanged</p>
 <dd><p>Base class for trajectory writers.</p>
 <p>See Trajectory API definition in <a class="reference internal" href="init.html#module-MDAnalysis.coordinates.__init__" title="MDAnalysis.coordinates.__init__"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.__init__</span></tt></a> for
 the required attributes and methods.</p>
-<p>x.__init__(...) initializes x; see help(type(x)) for signature</p>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.base.Writer.convert_dimensions_to_unitcell">
 <tt class="descname">convert_dimensions_to_unitcell</tt><big>(</big><em>ts</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Writer.convert_dimensions_to_unitcell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.Writer.convert_dimensions_to_unitcell" title="Permalink to this definition">¶</a></dt>
@@ -587,24 +584,24 @@ provided when setting up the trajectory.</p>
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="core.html" title="5.17. Common functions for coordinate reading — MDAnalysis.coordinates.core"
+          <a href="core.html" title="5.18. Common functions for coordinate reading — MDAnalysis.coordinates.core"
              >next</a> |</li>
         <li class="right" >
-          <a href="TRZ.html" title="5.15. TRZ trajectory I/O — MDAnalysis.coordinates.TRZ"
+          <a href="TRZ.html" title="5.16. TRZ trajectory I/O — MDAnalysis.coordinates.TRZ"
              >previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis 0.9.2-dev documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2014, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
-    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
+    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

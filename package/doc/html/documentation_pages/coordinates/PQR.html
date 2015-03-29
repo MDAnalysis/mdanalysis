@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.10. PQR file format — MDAnalysis.coordinates.PQR &mdash; MDAnalysis 0.9.2-dev documentation</title>
+    <title>5.11. PQR file format — MDAnalysis.coordinates.PQR &mdash; MDAnalysis 0.9.2-dev documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -30,8 +30,8 @@
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
     <link rel="top" title="MDAnalysis 0.9.2-dev documentation" href="../../index.html" />
     <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
-    <link rel="next" title="5.11. AMBER trajectories — MDAnalysis.coordinates.TRJ" href="TRJ.html" />
-    <link rel="prev" title="5.9. PDBQT structure files in MDAnalysis — MDAnalysis.coordinates.PDBQT" href="PDBQT.html" /> 
+    <link rel="next" title="5.12. AMBER trajectories — MDAnalysis.coordinates.TRJ" href="TRJ.html" />
+    <link rel="prev" title="5.10. PDBQT structure files in MDAnalysis — MDAnalysis.coordinates.PDBQT" href="PDBQT.html" /> 
   </head>
   <body>
     <div class="related">
@@ -44,10 +44,10 @@
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="TRJ.html" title="5.11. AMBER trajectories — MDAnalysis.coordinates.TRJ"
+          <a href="TRJ.html" title="5.12. AMBER trajectories — MDAnalysis.coordinates.TRJ"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="PDBQT.html" title="5.9. PDBQT structure files in MDAnalysis — MDAnalysis.coordinates.PDBQT"
+          <a href="PDBQT.html" title="5.10. PDBQT structure files in MDAnalysis — MDAnalysis.coordinates.PDBQT"
              accesskey="P">previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis 0.9.2-dev documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
@@ -60,10 +60,10 @@
             </a></p>
   <h4>Previous topic</h4>
   <p class="topless"><a href="PDBQT.html"
-                        title="previous chapter">5.9. PDBQT structure files in MDAnalysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.PDBQT</span></tt></a></p>
+                        title="previous chapter">5.10. PDBQT structure files in MDAnalysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.PDBQT</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="TRJ.html"
-                        title="next chapter">5.11. AMBER trajectories &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.TRJ</span></tt></a></p>
+                        title="next chapter">5.12. AMBER trajectories &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.TRJ</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/coordinates/PQR.txt"
@@ -91,7 +91,7 @@
           <div class="body">
             
   <span class="target" id="module-MDAnalysis.coordinates.PQR"></span><div class="section" id="pqr-file-format-mdanalysis-coordinates-pqr">
-<h1>5.10. PQR file format &#8212; <a class="reference internal" href="#module-MDAnalysis.coordinates.PQR" title="MDAnalysis.coordinates.PQR"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.PQR</span></tt></a><a class="headerlink" href="#pqr-file-format-mdanalysis-coordinates-pqr" title="Permalink to this headline">¶</a></h1>
+<h1>5.11. PQR file format &#8212; <a class="reference internal" href="#module-MDAnalysis.coordinates.PQR" title="MDAnalysis.coordinates.PQR"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.PQR</span></tt></a><a class="headerlink" href="#pqr-file-format-mdanalysis-coordinates-pqr" title="Permalink to this headline">¶</a></h1>
 <p>Read atoms with charges from a <a class="reference external" href="http://www.poissonboltzmann.org/file-formats/biomolecular-structurw/pqr">PQR</a> file (as written by <a class="reference external" href="http://www.poissonboltzmann.org/pdb2pqr">PDB2PQR</a>). The
 following is adopted from the description of the <a class="reference external" href="http://www.poissonboltzmann.org/file-formats/biomolecular-structurw/pqr">PQR</a> format as used by <a class="reference external" href="http://www.poissonboltzmann.org/apbs">APBS</a>:</p>
 <p><em>MDAnalysis</em> reads very loosely-formatted PQR files: all fields are
@@ -99,11 +99,13 @@ following is adopted from the description of the <a class="reference external" h
 by the <a class="reference external" href="http://www.rcsb.org/pdb/info.html#File_Formats_and_Standards">PDB</a> format. This more liberal formatting allows coordinates
 which are larger/smaller than ±999 Å.</p>
 <p>MDAnalysis reads data on a per-line basis from PQR files using the following format:</p>
-<div class="highlight-python"><pre>recordName serial atomName residueName chainID residueNumber X Y Z charge radius</pre>
+<div class="highlight-python"><div class="highlight"><pre>recordName serial atomName residueName chainID residueNumber X Y Z charge radius
+</pre></div>
 </div>
 <p>If this fails it is assumed that the <em>chainID</em> was omitted and the shorter
 format is read:</p>
-<div class="highlight-python"><pre>recordName serial atomName residueName residueNumber X Y Z charge radius</pre>
+<div class="highlight-python"><div class="highlight"><pre>recordName serial atomName residueName residueNumber X Y Z charge radius
+</pre></div>
 </div>
 <p>Anything else will raise a <tt class="xref py py-exc docutils literal"><span class="pre">ValueError</span></tt>.</p>
 <p>The whitespace is the most important feature of this format: fields
@@ -143,7 +145,8 @@ converting PDB files into PQR files using simple scripts.</p>
 </div>
 <p>For example, PQR files created with <a class="reference external" href="http://www.poissonboltzmann.org/pdb2pqr">PDB2PQR</a> and the <cite>&#8211;whitespace</cite>
 option are guaranteed to conform to the above format:</p>
-<div class="highlight-python"><pre>pdb2pqr --ff=charmm --whitespace 4ake.pdb 4ake.pqr</pre>
+<div class="highlight-python"><div class="highlight"><pre>pdb2pqr --ff=charmm --whitespace 4ake.pdb 4ake.pqr
+</pre></div>
 </div>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.PQR.PQRReader">
@@ -284,24 +287,24 @@ or also Universe</p>
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="TRJ.html" title="5.11. AMBER trajectories — MDAnalysis.coordinates.TRJ"
+          <a href="TRJ.html" title="5.12. AMBER trajectories — MDAnalysis.coordinates.TRJ"
              >next</a> |</li>
         <li class="right" >
-          <a href="PDBQT.html" title="5.9. PDBQT structure files in MDAnalysis — MDAnalysis.coordinates.PDBQT"
+          <a href="PDBQT.html" title="5.10. PDBQT structure files in MDAnalysis — MDAnalysis.coordinates.PDBQT"
              >previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis 0.9.2-dev documentation</a> &raquo;</li>
           <li><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2005-2014, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
-    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon,
+    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>
