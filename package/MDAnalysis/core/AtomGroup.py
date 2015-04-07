@@ -373,19 +373,21 @@ class Atom(object):
     are included (and thus it is not possible to add attributes "on
     the fly"; they have to be included in the class definition).
 
-    .. versionchanged 0.9.0
+    .. versionchanged:: 0.9.0
        Added fragment managed property.
        Changed bonds angles torsions impropers to be a managed property
+    .. versionchanged:: 0.9.2
+       Residue now a managed property.
     """
 
     __slots__ = (
         "number", "id", "name", "type", "resname", "resid", "segid",
-        "mass", "charge", "residue", "segment",
-        "__universe",
+        "mass", "charge", "_residue",
+        "_universe",
         "radius", "bfactor", "resnum", "serial", "altLoc")
 
     def __init__(self, number, name, type, resname, resid, segid, mass, charge,
-                 residue=None, segment=None, radius=None, bfactor=None,
+                 residue=None, radius=None, bfactor=None,
                  resnum=None, serial=None, altLoc=None):
         self.number = number
         self.name = name
@@ -394,15 +396,14 @@ class Atom(object):
         self.resname = resname
         self.resid = resid
         self.resnum = resnum
-        self.residue = residue  # typically patched in later
+        self._residue = residue  # typically patched in later
         self.segid = segid
-        self.segment = segment  # typically patched in later
         self.mass = mass
         self.charge = charge
         self.radius = radius
         self.bfactor = bfactor
         self.serial = serial
-        self.__universe = None
+        self._universe = None
 
     def __repr__(self):
         return ("<Atom {idx}: {name} of type {t} of resname {rname}, "
@@ -428,7 +429,51 @@ class Atom(object):
         if isinstance(other, Atom):
             return AtomGroup([self, other])
         else:
-            return AtomGroup([self] + other._atoms)
+            return AtomGroup([self] + list(other.atoms))
+
+    @property
+    def residue(self):
+        """The Residue this Atom belongs to
+
+        .. versionchanged:: 0.9.2
+           Now a managed property, so that setting Residue is smarter.
+        """
+        return self._residue
+
+    @residue.setter
+    def residue(self, new):
+        """Set the Residue for this Atom.
+
+        .. versionadded:: 0.9.2
+        """
+        if self._residue is not None:
+            # leave current residue
+            self._residue._atoms.remove(self)
+
+        # check if I need to clear segment caches
+        # if both residues exist
+        if self._residue is not None and new is not None:
+            # if they're different segments, clear their atom caches
+            if self._residue.segment is not new.segment:
+                self._residue.segment._clear_caches('atoms')
+                new.segment._clear_caches('atoms')
+
+        self._residue = new
+        if new is not None:
+            new._atoms.append(self)
+
+    @property
+    def segment(self):
+        """The Segment this Atom belongs to
+
+        .. versionchanged:: 0.9.2
+           Atom no longer has own pointer to Segment, now relies on Residue.
+        """
+        return self.residue.segment
+
+    @segment.setter
+    def segment(self, new):
+        self.residue.segment = new
 
     @property
     def pos(self):
@@ -524,15 +569,15 @@ class Atom(object):
     @property
     def universe(self):
         """a pointer back to the Universe"""
-        if not self.__universe is None:
-            return self.__universe
+        if not self._universe is None:
+            return self._universe
         else:
             raise AttributeError(
                 "Atom {} is not assigned to a Universe".format(self.number))
 
     @universe.setter
     def universe(self, universe):
-        self.__universe = universe
+        self._universe = universe
 
     @property
     def bonded_atoms(self):
@@ -664,6 +709,9 @@ class AtomGroup(object):
        The size at which cache is used for atom lookup is now stored as variable
        _atomcache_size within the class.
        Added fragments manged property. Is a lazily built, cached entry, similar to residues.
+    .. versionchanged:: 0.9.2
+       Removed _atoms property, use list(atoms) for shallow copy of list.
+       Renamed __atoms to _atoms
     """
     # for generalized __getitem__ __iter__ and __len__
     # (override _containername for ResidueGroup and SegmentGroup)
@@ -672,22 +720,22 @@ class AtomGroup(object):
 
     def __init__(self, atoms):
         if len(atoms) > 0:
-            # __atoms property is effectively readonly
+            # _atoms property is effectively readonly
             # check that atoms is indexable:
             try:
                 atoms[0]
-                self.__atoms = atoms
+                self._atoms = atoms
             except TypeError:
-                self.__atoms = list(atoms)
+                self._atoms = list(atoms)
             # sanity check
-            if not isinstance(self.__atoms[0], Atom):
+            if not isinstance(self._atoms[0], Atom):
                 raise TypeError("atoms must be a Atom or a list of Atoms.")
         else:
             # empty AtomGroup
-            self.__atoms = []
+            self._atoms = []
 
         # managed timestep object
-        self.__ts = None
+        self._ts = None
 
         # caches:
         # - built on the fly when they are needed
@@ -730,15 +778,12 @@ class AtomGroup(object):
            Reworked how things are rebuilt to avoid code duplication.
         """
         # If the number of atoms is very large, create a dictionary cache for lookup
-        if len(self._atoms) > self._atomcache_size:
-            self._cache['atoms'] = dict(((x, None) for x in self.__atoms))
+        if len(self.atoms) > self._atomcache_size:
+            self._cache['atoms'] = dict(((x, None) for x in self.atoms))
 
         # Delete preexisting cache if exists
-        for att in \
-                [
-                    'indices', 'residues', 'segments', 'masses',
-                    'bonds', 'angles', 'torsions', 'impropers'
-                ]:
+        for att in ['indices', 'residues', 'segments', 'masses', \
+                    'bonds', 'angles', 'torsions', 'impropers']:
             try:
                 del self._cache[att]
             except KeyError:
@@ -800,19 +845,14 @@ class AtomGroup(object):
         # Cannot just return self because fails with inheritance from AtomGroup
         if type(self) == AtomGroup:
             return self
-        return AtomGroup(self.__atoms)
-
-    @property
-    def _atoms(self):
-        """a immutable list of references to the atoms in the group"""
-        return self.__atoms
+        return AtomGroup(self._atoms)
 
     # Universe pointer is important for Selections to work on groups
     @property
     def universe(self):
         """The universe to which the atoms belong (read-only)."""
         try:
-            return self._atoms[0].universe
+            return self.atoms[0].universe
         except AttributeError:
             return None
 
@@ -851,7 +891,7 @@ class AtomGroup(object):
 
     def __getattr__(self, name):
         # There can be more than one atom with the same name
-        atomlist = [atom for atom in self._atoms if name == atom.name]
+        atomlist = [atom for atom in self.atoms if name == atom.name]
         if len(atomlist) == 0:
             raise SelectionError("No atoms or attributes with name " + name)
         elif len(atomlist) == 1:
@@ -862,7 +902,7 @@ class AtomGroup(object):
     def __contains__(self, other):
         # If the number of atoms is very large, create a dictionary cache for lookup
         if len(self) > self._atomcache_size and not 'atoms' in self._cache:
-            self._cache['atoms'] = dict(((x, None) for x in self.__atoms))
+            self._cache['atoms'] = dict(((x, None) for x in self._atoms))
         try:
             return other in self._cache['atoms']
         except KeyError:
@@ -873,9 +913,9 @@ class AtomGroup(object):
             raise TypeError('Can only concatenate AtomGroup (not "{}") to'
                             ' AtomGroup'.format(other.__class__.__name__))
         if isinstance(other, AtomGroup):
-            return AtomGroup(self._atoms + other._atoms)
+            return AtomGroup(list(self.atoms) + list(other.atoms))
         else:
-            return AtomGroup(self._atoms + [other])
+            return AtomGroup(list(self.atoms) + [other])
 
     def __repr__(self):
         return "<AtomGroup with {natoms} atoms>".format(
@@ -889,7 +929,7 @@ class AtomGroup(object):
 
     def numberOfAtoms(self):
         """Total number of atoms in the group"""
-        return len(self._atoms)
+        return len(self.atoms)
 
     def numberOfResidues(self):
         """Total number of residues in the group"""
@@ -907,7 +947,7 @@ class AtomGroup(object):
         :attr:`Universe.atoms` or the coordinate array
         :attr:`MDAnalysis.coordinates.base.Timestep._pos`.
         """
-        return numpy.array([atom.number for atom in self._atoms])
+        return numpy.array([atom.number for atom in self.atoms])
 
     def names(self):
         """Returns a list of atom names.
@@ -915,14 +955,14 @@ class AtomGroup(object):
         .. versionchanged:: 0.8
            Returns a :class:`numpy.ndarray`
         """
-        return numpy.array([a.name for a in self._atoms])
+        return numpy.array([a.name for a in self.atoms])
 
     def types(self):
         """Returns an array of atom types.
 
         .. versionadded 0.9.0
         """
-        return numpy.array([a.type for a in self._atoms])
+        return numpy.array([a.type for a in self.atoms])
 
     @property
     @cached('fragments')
@@ -934,7 +974,7 @@ class AtomGroup(object):
 
         .. versionadded 0.9.0
         """
-        return tuple(set(a.fragment for a in self._atoms))
+        return tuple(set(a.fragment for a in self.atoms))
 
     @property
     @cached('residues')
@@ -951,7 +991,7 @@ class AtomGroup(object):
         residues = []
         seen_residues = set()
         current_residue = None
-        for atom in self._atoms:
+        for atom in self.atoms:
             if atom.residue != current_residue and not atom.residue in seen_residues:
                 residues.append(atom.residue)
                 seen_residues.add(atom.residue)
@@ -1088,7 +1128,7 @@ class AtomGroup(object):
         segments = []
         seen_segments = set()
         current_segment = None
-        for atom in self._atoms:
+        for atom in self.atoms:
             if atom.segment != current_segment and not atom.segment in seen_segments:
                 segments.append(atom.segment)
                 seen_segments.add(atom.segment)
@@ -1116,7 +1156,7 @@ class AtomGroup(object):
         """
         from MDAnalysis.topology.core import TopologyGroup
 
-        mybonds = [b for a in self._atoms for b in a.bonds]
+        mybonds = [b for a in self.atoms for b in a.bonds]
         if len(mybonds) == 0:
             return None
         else:
@@ -1135,7 +1175,7 @@ class AtomGroup(object):
         """
         from MDAnalysis.topology.core import TopologyGroup
 
-        mybonds = [b for a in self._atoms for b in a.angles]
+        mybonds = [b for a in self.atoms for b in a.angles]
         if len(mybonds) == 0:
             return None
         else:
@@ -1154,7 +1194,7 @@ class AtomGroup(object):
         """
         from MDAnalysis.topology.core import TopologyGroup
 
-        mybonds = [b for a in self._atoms for b in a.torsions]
+        mybonds = [b for a in self.atoms for b in a.torsions]
         if len(mybonds) == 0:
             return None
         else:
@@ -1173,7 +1213,7 @@ class AtomGroup(object):
         """
         from MDAnalysis.topology.core import TopologyGroup
 
-        mybonds = [b for a in self._atoms for b in a.impropers]
+        mybonds = [b for a in self.atoms for b in a.impropers]
         if len(mybonds) == 0:
             return None
         else:
@@ -1182,7 +1222,7 @@ class AtomGroup(object):
     @cached('masses')
     def masses(self):
         """Array of atomic masses (as defined in the topology)"""
-        return numpy.array([atom.mass for atom in self._atoms])
+        return numpy.array([atom.mass for atom in self.atoms])
 
     def totalMass(self):
         """Total mass of the selection (masses are taken from the topology or guessed)."""
@@ -1190,7 +1230,7 @@ class AtomGroup(object):
 
     def charges(self):
         """Array of partial charges of the atoms (as defined in the topology)"""
-        return numpy.array([atom.charge for atom in self._atoms])
+        return numpy.array([atom.charge for atom in self.atoms])
 
     def totalCharge(self):
         """Sum of all partial charges (must be defined in topology)."""
@@ -1198,13 +1238,13 @@ class AtomGroup(object):
 
     def radii(self):
         """Array of atomic radii (as defined in the PQR file)"""
-        return numpy.array([atom.radius for atom in self._atoms])
+        return numpy.array([atom.radius for atom in self.atoms])
 
     @property
     def bfactors(self):
         """Crystallographic B-factors (from PDB) in A**2.
         """
-        return numpy.array([atom.bfactor for atom in self._atoms])
+        return numpy.array([atom.bfactor for atom in self.atoms])
 
     def _set_attribute(self, groupname, name, value, **kwargs):
         """Set attribute *name* to *value* for all elements in *groupname*.
@@ -2447,10 +2487,10 @@ class AtomGroup(object):
         :attr:`AtomGroup.ts` attribute; change attributes of the object.
         """
         trj_ts = self.universe.trajectory.ts  # original time step
-        if self.__ts is None or self.__ts.frame != trj_ts.frame:
+        if self._ts is None or self._ts.frame != trj_ts.frame:
             # create a timestep of same type as the underlying trajectory
-            self.__ts = trj_ts.copy_slice(self.indices())
-        return self.__ts
+            self._ts = trj_ts.copy_slice(self.indices())
+        return self._ts
 
 
 class Residue(AtomGroup):
@@ -2483,6 +2523,8 @@ class Residue(AtomGroup):
 
     .. versionchanged:: 0.7.4
        Added :attr:`Residue.resnum` attribute and *resnum* keyword argument.
+    .. versionchanged:: 0.9.2
+       Segment now a managed property
     """
     ## FIXME (see below, Issue 70)
     ##_cache = {}
@@ -2495,11 +2537,11 @@ class Residue(AtomGroup):
             self.resnum = resnum
         else:
             self.resnum = self.id  # TODO: get resnum from topologies that support it
-        self.segment = None
+        self._segment = None
         for i, a in enumerate(atoms):
             a.id = i
             a.resnum = self.resnum
-            a.residue = self
+            a._residue = self
 
         self._cls = AtomGroup
         # Should I cache the positions of atoms within a residue?
@@ -2507,6 +2549,21 @@ class Residue(AtomGroup):
         #        have the SAME residue name but different atoms!!! Issue 70
         ##if not Residue._cache.has_key(name):
         ##    Residue._cache[name] = dict([(a.name, i) for i, a in enumerate(self._atoms)])
+
+    @property
+    def segment(self):
+        return self._segment
+
+    @segment.setter
+    def segment(self, new):
+        # leave current segment
+        if self._segment is not None:
+            self._segment._residues.remove(self)
+            self._segment._clear_caches('atoms')
+        self._segment = new
+        # join new segment
+        if new is not None:
+            new._residues.append(self)
 
     def phi_selection(self):
         """AtomGroup corresponding to the phi protein backbone dihedral C'-N-CA-C.
@@ -2599,11 +2656,37 @@ class ResidueGroup(AtomGroup):
     def __init__(self, residues):
         """Initialize the ResidueGroup with a list of :class:`Residue` instances."""
         self._residues = residues
-        atoms = []
-        for res in residues:
-            atoms.extend(res.atoms)
-        super(ResidueGroup, self).__init__(atoms)
         self._cls = self.__class__
+
+        self._ts = None
+        self._cache = dict()
+        self._container = getattr(self, self._containername)
+
+    @property
+    @cached('atoms')
+    def atoms(self):
+        """The atoms within this ResidueGroup
+
+        .. versionadded:: 0.9.2
+        """
+        atoms = []
+        for res in self._residues:
+            atoms.extend(list(res.atoms))
+        return AtomGroup(atoms)
+
+    @property
+    @cached('segments')
+    def segments(self):
+        # Similar to AG.segments, but loop over Residues instead
+        segments = []
+        seen_segments = set()
+        current_segment = None
+        for res in self._residues:
+            if res.segment != current_segment and not res.segment in seen_segments:
+                segments.append(res.segment)
+                seen_segments.add(res.segment)
+            current_segment = res.segment
+        return SegmentGroup(segments)
 
     def _set_residues(self, name, value, **kwargs):
         """Set attribute *name* to *value* for all residues in the :class:`ResidueGroup`.
@@ -2762,9 +2845,7 @@ class Segment(ResidueGroup):
         super(Segment, self).__init__(residues)
         self.name = name
         for res in self._residues:
-            res.segment = self
-            for atom in res:
-                atom.segment = self
+            res._segment = self
         self._cls = ResidueGroup
 
     @property
@@ -2822,11 +2903,35 @@ class SegmentGroup(ResidueGroup):
     def __init__(self, segments):
         """Initialize the SegmentGroup with a list of :class:`Segment` instances."""
         self._segments = segments
-        residues = []
-        for s in segments:
-            residues.extend(s.residues)
-        super(SegmentGroup, self).__init__(residues)
         self._cls = self.__class__
+
+        self._ts = None
+        self._cache = dict()
+        self._container = getattr(self, self._containername)
+
+    @property
+    @cached('atoms')
+    def atoms(self):
+        atoms = []
+        for s in self._segments:
+            atoms.extend(list(s.atoms))
+        return AtomGroup(atoms)
+
+    @property
+    @cached('residues')
+    def residues(self):
+        """A ResidueGroup of the Residues in this SegmentGroup
+
+        .. versionadded:: 0.9.2
+        """
+        residues = []
+        for s in self._segments:
+            residues.extend(list(s.residues))
+        return ResidueGroup(residues)
+
+    @property
+    def segments(self):
+        return self
 
     def _set_segments(self, name, value, **kwargs):
         """Set attribute *name* to *value* for all :class:`Segment` in this :class:`AtomGroup`.

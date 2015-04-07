@@ -483,14 +483,14 @@ class TestAtomGroup(TestCase):
 
     def test_residues(self):
         u = self.universe
-        assert_equal(u.residues[100]._atoms,
-                     u.selectAtoms('resname ILE and resid 101')._atoms,
+        assert_equal(list(u.residues[100].atoms),
+                     list(u.selectAtoms('resname ILE and resid 101').atoms),
                      "Direct selection from residue group does not match expected I101.")
 
     def test_segments(self):
         u = self.universe
-        assert_equal(u.segments.s4AKE._atoms,
-                     u.selectAtoms('segid 4AKE')._atoms,
+        assert_equal(list(u.segments.s4AKE.atoms),
+                     list(u.selectAtoms('segid 4AKE').atoms),
                      "Direct selection of segment 4AKE from segments failed.")
 
     def test_index_integer(self):
@@ -841,15 +841,24 @@ class TestAtomGroupNoTop(TestCase):
         assert_equal(len(self.ag.residues), 2)
 
     def test_rebuild_cache_segments(self):
-        # This test is similar to above, but a second segment has to be taken from a new universe
-        assert_equal(len(self.ag.segments), 1)
+        from MDAnalysis.core.AtomGroup import Segment
+        # Start with many Residues.
+        ag = self.u.residues[:3].atoms
+        # Move one Residue into a new Segment
+        # check that the atomgroup detects new segments on flushing cache
+        # originally one segment
+        assert_equal(len(ag.segments), 1,
+                     "Failed assertion on original amount of segments")
+        # Blank segment to start with
+        newseg = Segment('New', [])
 
-        u2 = MDAnalysis.Universe(PSF_notop, DCD)
-        self.ag[0].segment = u2.atoms[0].segment
+        ag[0].segment = newseg
 
-        assert_equal(len(self.ag.segments), 1)
-        self.ag._rebuild_caches()
-        assert_equal(len(self.ag.segments), 2)
+        assert_equal(len(ag.segments), 1,
+                     "Segments weren't cached properly, change detected too soon")
+        ag._rebuild_caches()
+        assert_equal(len(ag.segments), 2,
+                     "Segments weren't detected after rebuilding cache")
 
     def test_atom_cachesize_change(self):
         # By default 10,000 atoms are required to necessitate cache lookup, we can change this though
@@ -1717,6 +1726,7 @@ class TestUnorderedResidues(TestCase):
     def test_build_residues(self):
         assert_equal(len(self.u.residues), 35)
 
+
 class TestCustomReaders(TestCase):
     """
     Can pass a reader as kwarg on Universe creation
@@ -1736,3 +1746,26 @@ class TestCustomReaders(TestCase):
         u = MDAnalysis.Universe(TRZ_psf, TRZ, format=MDAnalysis.coordinates.TRZ.TRZReader,
                                 topology_format=MDAnalysis.topology.PSFParser.PSFParser)
         assert_equal(len(u.atoms), 8184)
+
+
+class TestResidueSystem(TestCase):
+    """Check that moving residues etc works nicely. """
+    def setUp(self):
+        self.u = MDAnalysis.Universe(PSF, DCD)
+
+    def tearDown(self):
+        del self.u
+
+    def test_simple_move(self):
+        a = self.u.atoms[0]
+        start_res = a.residue
+
+        dest_res = self.u.residues[-1]
+
+        assert_equal(a in start_res, True)
+        assert_equal(a in dest_res, False)
+
+        a.residue = dest_res
+
+        assert_equal(a in start_res, False)
+        assert_equal(a in dest_res, True)
