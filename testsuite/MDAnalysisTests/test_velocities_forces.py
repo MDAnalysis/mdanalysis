@@ -22,6 +22,36 @@ from nose.plugins.attrib import attr
 from MDAnalysis.tests.datafiles import GRO_velocity, PDB_xvf, TRR_xvf
 
 
+class TestAtom_ForceVelocity(TestCase):
+    def setUp(self):
+        self.u = MDAnalysis.Universe(PDB_xvf, TRR_xvf)
+        self.a = self.u.atoms[0]
+
+    def tearDown(self):
+        del self.u
+        del self.a
+
+    def test_atom_force_get(self):
+        assert_equal(self.a.force, self.u.atoms.forces[0])
+
+    def test_atom_velocity_get(self):
+        assert_equal(self.a.velocity, self.u.atoms.velocities[0])
+
+    def test_atom_force_set(self):
+        ref = numpy.arange(3)
+        self.a.force = ref
+
+        assert_equal(self.a.force, ref)
+        assert_equal(self.u.atoms.forces[0], ref)
+
+    def test_atom_velocity_set(self):
+        ref = numpy.arange(3)
+        self.a.velocity = ref
+
+        assert_equal(self.a.velocity, ref)
+        assert_equal(self.u.atoms.velocities[0], ref)
+
+
 class TestGROVelocities(TestCase):
     def setUp(self):
         #reference velocities for the full 6-atom test case:

@@ -10,8 +10,14 @@ The rules for this file:
     use tabs but use spaces for formatting
 
 ------------------------------------------------------------------------------
-??/??/15
+??/??/15  richardjgowers
   * 0.9.2
+
+  Enhancements
+
+  * Can now set velocity from Atom object. (Issue 221)
+  * Atom object now has force attribute for getting/setting forces (requires a
+    trajectory with forces) (Issue 221)
 
   Fixes
 

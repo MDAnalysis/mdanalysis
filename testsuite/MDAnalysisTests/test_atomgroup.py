@@ -17,7 +17,8 @@
 import MDAnalysis
 from MDAnalysis.tests.datafiles import PSF, DCD, PDB_small, GRO, TRR, \
     merge_protein, merge_water, merge_ligand, \
-    TRZ, TRZ_psf, PSF_notop, PSF_BAD, unordered_res
+    TRZ, TRZ_psf, PSF_notop, PSF_BAD, unordered_res, \
+    XYZ_mini
 import MDAnalysis.core.AtomGroup
 from MDAnalysis.core.AtomGroup import Atom, AtomGroup, asUniverse
 from MDAnalysis import NoDataError
@@ -133,6 +134,27 @@ class TestAtom(TestCase):
         at = self.universe.atoms[0]
         ref = [b.partner(at) for b in at.bonds]
         assert_equal(ref, list(at.bonded_atoms))
+
+
+class TestAtomNoForceNoVel(TestCase):
+    def setUp(self):
+        self.u = MDAnalysis.Universe(XYZ_mini)
+        self.a = self.u.atoms[0]
+
+    def tearDown(self):
+        del self.u
+
+    def test_velocity_fail(self):
+        assert_raises(NoDataError, getattr, self.a, 'velocity')
+
+    def test_force_fail(self):
+        assert_raises(NoDataError, getattr, self.a, 'force')
+
+    def test_velocity_set_fail(self):
+        assert_raises(NoDataError, setattr, self.a, 'velocity', [1.0, 1.0, 1.0])
+
+    def test_force_set_fail(self):
+        assert_raises(NoDataError, setattr, self.a, 'force', [1.0, 1.0, 1.0])
 
 
 class TestAtomGroup(TestCase):

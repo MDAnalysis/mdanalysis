@@ -469,11 +469,52 @@ class Atom(object):
 
         .. versionadded:: 0.7.5
         """
+        # TODO: Remove error checking here (and all similar below)
+        # and add to Timestep
         try:
             return numpy.array(self.universe.coord._velocities[self.number],
                                dtype=numpy.float32)
         except AttributeError:
             raise NoDataError("Timestep does not contain velocities")
+
+    @velocity.setter
+    def velocity(self, vals):
+        """Set the current velocity of the atom.
+
+        A :exc:`~MDAnalysis.NoDataError` is raised if the trajectory
+        does not contain velocities.
+
+        .. versionadded:: 0.9.1
+        """
+        try:
+            self.universe.coord._velocities[self.number] = vals
+        except AttributeError:
+            raise NoDataError("Timestep does not contain velocities")
+
+    @property
+    def force(self):
+        """Current force of the atom.
+
+        A :exc:`~MDAnalysis.NoDataError` is raised if the trajectory
+        does not contain velocities.
+
+        .. versionadded:: 0.9.1
+        """
+        try:
+            return self.universe.coord._forces[self.number]
+        except AttributeError:
+            raise NoDataError("Timestep does not contain forces")
+
+    @force.setter
+    def force(self, vals):
+        """Set the current force of the atom.
+
+        .. versionadded:: 0.9.1
+        """
+        try:
+            self.universe.coord._forces[self.number] = vals
+        except AttributeError:
+            raise NoDataError("Timestep does not contain forces")
 
     def centroid(self):
         """The centroid of an atom is its position, :attr:`Atom.pos`."""
