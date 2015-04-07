@@ -447,7 +447,7 @@ class Atom(object):
 
         Get the current cartesian coordinates of the atom.
 
-        :Returns: a numpy 1x3 array
+        :Returns: a (3,) shape numpy array
         """
         return self.universe.coord[self.number]  # internal numbering starts at 0
 
@@ -463,6 +463,8 @@ class Atom(object):
     @property
     def velocity(self):
         """Current velocity of the atom.
+
+        :Returns: a (3,) shape numpy array
 
         A :exc:`~MDAnalysis.NoDataError` is raised if the trajectory
         does not contain velocities.
@@ -484,7 +486,7 @@ class Atom(object):
         A :exc:`~MDAnalysis.NoDataError` is raised if the trajectory
         does not contain velocities.
 
-        .. versionadded:: 0.9.1
+        .. versionadded:: 0.9.2
         """
         try:
             self.universe.coord._velocities[self.number] = vals
@@ -495,10 +497,12 @@ class Atom(object):
     def force(self):
         """Current force of the atom.
 
+        :Returns: a (3,) shape numpy array
+
         A :exc:`~MDAnalysis.NoDataError` is raised if the trajectory
         does not contain velocities.
 
-        .. versionadded:: 0.9.1
+        .. versionadded:: 0.9.2
         """
         try:
             return self.universe.coord._forces[self.number]
@@ -509,7 +513,7 @@ class Atom(object):
     def force(self, vals):
         """Set the current force of the atom.
 
-        .. versionadded:: 0.9.1
+        .. versionadded:: 0.9.2
         """
         try:
             self.universe.coord._forces[self.number] = vals
