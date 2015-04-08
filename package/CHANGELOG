@@ -21,6 +21,9 @@ The rules for this file:
 
   Changes
 
+  * The MDAnalysis project moved from Google Code to GitHub: the new
+    website is http://www.mdanalysis.org and the new source code
+    repository is at https://github.com/MDAnalysis/mdanalysis
   * "applications" were removed from the mdanalysis source code
     repository and now exist as independent repositories under
     https://github.com/MDAnalysis/

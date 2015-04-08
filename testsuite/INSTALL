@@ -18,9 +18,9 @@ Help
 If you have any problems please read through the files INSTALL (this
 file) and README and check the MDAnalysis project pages at
 
-      http://mdanalysis.googlecode.com
+      http://www.mdanalysis.org
 
-in particular http://code.google.com/p/mdanalysis/wiki/Install and
+in particular https://github.com/MDAnalysis/mdanalysis/wiki/INSTALL and
 related pages.
 
 You can always ask questions on the MDAnalysis mailing list:
@@ -40,18 +40,15 @@ problem.
 Getting the source 
 ==================
 
-Download a tar ball from
-http://code.google.com/p/mdanalysis/downloads/list ; these
-instructions apply to versions 0.6.0-rc2 or higher.
+Download a tar ball from https://pypi.python.org/pypi/MDAnalysisTests; these
+instructions apply to versions 0.7.4 or higher.
 
 Alternatively, check out the MDAnalysis directory from the git
-repository at http://mdanalysis.googlecode.com. See the source
-checkout instructions for details
-(http://code.google.com/p/mdanalysis/source/checkout). Typically:
+repository at https://github.com/MDAnalysis/mdanalysis. In most cases
+simply do ::
 
-  git clone https://code.google.com/p/mdanalysis/
+  git clone https://github.com/MDAnalysis/mdanalysis
   cd mdanalysis/testsuite
-
 
 
 Installation from source

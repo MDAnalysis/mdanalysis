@@ -26,7 +26,7 @@ For a basic installation just type the command::
 For more in-depth instructions, see the installation section at the
 MDAnalysis Wiki:
 
-  http://code.google.com/p/mdanalysis/wiki/Install
+  https://github.com/MDAnalysis/mdanalysis/wiki/INSTALL
 
 Also free to ask on the MDAnalysis mailing list for help:
 
@@ -261,7 +261,7 @@ if __name__ == '__main__':
                       'Gromacs, NAMD, LAMMPS, or Amber.',
           author='Naveen Michaud-Agrawal',
           author_email='naveen.michaudagrawal@gmail.com',
-          url='http://mdanalysis.googlecode.com/',
+          url='http://www.mdanalysis.org',
           requires=['numpy (>=1.0.3)', 'biopython',
               'networkx (>=1.0)', 'scipy',
               'GridDataFormats'],

@@ -44,14 +44,14 @@ See *Additional non-standard packages* below for what else you need at
 run time.
 
 Stable releases are distributed as tar files from
-http://code.google.com/p/mdanalysis/downloads/list .  The current
-source code can als be obtained from the SVN (subversion) source code
-repository http://code.google.com/p/mdanalysis/source/checkout. 
+https://pypi.python.org/pypi/MDAnalysis/.  The current source code can
+als be obtained from the SVN (subversion) source code repository
+https://github.com/MDAnalysis/mdanalysis.
 
 The primary dependency is NumPy http://numpy.scipy.org, which needs to
-be installed before MDAnalysis can be installed itself. (pylab
-http://matplotlib.sourceforge.net is a useful addition to plot results
-generated with MDAnalysis and is recommended.)
+be installed before MDAnalysis can be installed itself. (matplotlib
+http://matplotlib.org/ is a useful addition to plot results generated
+with MDAnalysis and is recommended.)
 
 
 Help
@@ -60,10 +60,10 @@ Help
 If you have any problems please read through the files INSTALL (this
 file) and README and check the MDAnalysis project pages at
 
-      http://mdanalysis.googlecode.com
+      http://www.mdanalysis.org
 
-in particular http://code.google.com/p/mdanalysis/wiki/Install and
-related pages.
+in particular https://github.com/MDAnalysis/mdanalysis/wiki/Install
+and related pages.
 
 You can always ask questions on the MDAnalysis mailing list:
 
@@ -71,28 +71,25 @@ You can always ask questions on the MDAnalysis mailing list:
 
 People there are very happy to help. When posting please remember to
 mention the release of MDAnalysis you are trying to install (e.g. "tar
-file MDAnalysis-0.7.3 from website" or "subversion r818"), all the
+file MDAnalysis-0.7.3 from website" or "commit deadbee1"), all the
 commands that you typed to install the package, and the full output
-(typically right from 'python setup.py build'). You should also
-mention your operating system (e.g. Ubuntu 10.04) and Python version
-(output from 'python --version') so that we can better diagnose the
+(typically right from ``python setup.py build``). You should also
+mention your operating system (e.g. Ubuntu 14.04) and Python version
+(output from ``python --version``) so that we can better diagnose the
 problem.
 
 
 Getting the source 
 ==================
 
-Download a tar ball from
-http://code.google.com/p/mdanalysis/downloads/list ; these
+Download a tar ball from https://pypi.python.org/pypi/MDAnalysis/; these
 instructions apply to versions 0.6.0-rc2 or higher.
 
 Alternatively, check out the MDAnalysis directory from the git
-repository at http://mdanalysis.googlecode.com. See the source
-checkout instructions for details
-(http://code.google.com/p/mdanalysis/source/checkout). In most cases
+repository at https://github.com/MDAnalysis/mdanalysis. In most cases
 simply do ::
 
-  git clone https://code.google.com/p/mdanalysis/
+  git clone https://github.com/MDAnalysis/mdanalysis
   cd mdanalysis
 
 
@@ -210,8 +207,6 @@ package:
 Optional python packages (used in MDAnalysis.analysis):
 
     * nose (http://somethingaboutorange.com/mrl/projects/nose/) -- for testing
-    * ScientificPython http://dirac.cnrs-orleans.fr/plone/software/scientificpython/
-      Scientific.IO.FortranFormat (experimental LAMMPS parser)
 
 
 Running test cases
@@ -225,14 +220,16 @@ test input).
 
 Download and install MDAnalysisTestData from 
 
-  http://code.google.com/p/mdanalysis/downloads/list
+  https://pypi.python.org/pypi/MDAnalysisTests
+
+(or get the development version from https://github.com/MDAnalysis/mdanalysis)
 
 Pick a file named `MDAnalysisTests-X.Y.Z.tar.gz` where the release
 number X.Y.Z should match the release number of MDAnalysis
 itself. E.g. For MDAnalysis-0.7.6 you would get MDAnalysisTests-0.7.6.
 
-For more details on the test cases see
-http://code.google.com/p/mdanalysis/wiki/UnitTests
+For more details on the test cases see https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
+
 
 .. Note:: In order to install the other packages you can use
           easy_install with the special `test` specifier::

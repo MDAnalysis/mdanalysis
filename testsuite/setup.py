@@ -11,7 +11,7 @@ For a basic installation just type the command::
 For more in-depth instructions, see the installation section at the
 MDAnalysis Wiki:
 
-  http://code.google.com/p/mdanalysis/wiki/Install
+  https://github.com/MDAnalysis/mdanalysis/wiki/INSTALL
 
 Also free to ask on the MDAnalysis mailing list for help:
 
@@ -73,7 +73,7 @@ maintenance more efficient, these tests were moved into this package.
 
 For details see the report for `Issue 87`_.
 
-.. _`Issue 87`: http://code.google.com/p/mdanalysis/issues/detail?id=87
+.. _`Issue 87`: https://github.com/MDAnalysis/mdanalysis/issues/87
 """
     CLASSIFIERS = [
         'Development Status :: 4 - Beta',
@@ -94,7 +94,7 @@ For details see the report for `Issue 87`_.
           description='Python tools to support analysis of trajectories (test cases)',
           author='Naveen Michaud-Agrawal',
           author_email='naveen.michaudagrawal@gmail.com',
-          url='http://mdanalysis.googlecode.com/',
+          url='http://www.mdanalysis.org',
           license='GPL 2',
           packages=['MDAnalysisTests'],
           package_dir={'MDAnalysisTests': 'MDAnalysisTests'},
