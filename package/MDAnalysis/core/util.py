@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
-# MDAnalysis --- http://mdanalysis.googlecode.com
+# MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
 # and contributors (see AUTHORS for the full list)
 #
@@ -244,7 +244,7 @@ def openany(datasource, mode='r', reset=True):
     Open a URL and read it::
 
        import urllib2
-       with openany(urllib2.urlopen("http://mdanalysis.googlecode.com/")) as html:
+       with openany(urllib2.urlopen("http://www.MDAnalysis.org/")) as html:
           print(html.read())
 
     .. SeeAlso:: :func:`anyopen`

@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
-# MDAnalysis --- http://mdanalysis.googlecode.com
+# MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
 # and contributors (see AUTHORS for the full list)
 #
@@ -21,7 +21,7 @@ Test cases for MDAnalysis
 =========================
 
 Test cases are stored in a separate packacge (:mod:`MDAnalysisTests`)
-that has to be installed separately from http://mdanalysis.googlecode.com
+that has to be installed separately from http://www.MDAnalysis.org
 
 We are using the NumPy_ testing frame work; thus, numpy *must* be
 installed for the tests to run at all.

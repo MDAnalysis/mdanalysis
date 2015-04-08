@@ -35,7 +35,7 @@ if __name__ == '__main__':
           description       = 'Python interface to libxdrfile2 library',
           author            = 'David van der Spoel, Erik Lindahl, Oliver Beckstein, Manuel Melo',
           author_email      = 'orbeckst@gmail.com',
-          url               = 'http://mdanalysis.googlecode.com/',
+          url               = 'http://www.MDAnalysis.org/',
           license           = 'GPL 2',
           packages          = ['xdrfile'],
           package_dir       = {'xdrfile': 'xdrfile'},

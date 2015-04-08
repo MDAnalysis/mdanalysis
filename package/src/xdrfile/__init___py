@@ -4,7 +4,7 @@
 # Published under the GNU GENERAL PUBLIC LICENSE Version 2 (or higher)
 """Stand-alone xdrfile library.
 
-See `MDAnalysis <http://mdanalysis.googlecode.com>`_ for details.
+See `MDAnalysis <http://www.MDAnalysis.org>`_ for details.
 """
 
 __all__ = ['libxdrfile2']

@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
-# MDAnalysis --- http://mdanalysis.googlecode.com
+# MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2011 Naveen Michaud-Agrawal,
 #               Elizabeth J. Denning, Oliver Beckstein,
 #               and contributors (see website for details)
