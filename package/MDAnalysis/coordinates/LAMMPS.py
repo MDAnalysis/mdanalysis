@@ -48,8 +48,8 @@ keywords *timeunit* and/or *lengthunit* to :class:`DCDWriter` and
 .. _DCD: http://lammps.sandia.gov/doc/dump.html
 .. _CHARMM trajectory: http://www.charmm.org/documentation/c36b1/dynamc.html#%20Trajectory
 .. _AKMA: http://www.charmm.org/documentation/c36b1/usage.html#%20AKMA
-.. _`Issue 64`: http://code.google.com/p/mdanalysis/issues/detail?id=64
-.. _`Issue 84`: http://code.google.com/p/mdanalysis/issues/detail?id=84
+.. _`Issue 64`: https://github.com/MDAnalysis/mdanalysis/issues/64
+.. _`Issue 84`: https://github.com/MDAnalysis/mdanalysis/issues/84
 
 Classes
 -------

@@ -116,7 +116,7 @@ those and will raise a :exc:`NotImplementedError` if anything else is detected.
 .. _AMBER netcdf format: http://ambermd.org/netcdf/nctraj.html
 .. _AMBER netcdf: http://ambermd.org/netcdf/nctraj.html
 .. _NetCDF: http://www.unidata.ucar.edu/software/netcdf
-.. _Issue Tracker: http://code.google.com/p/mdanalysis/issues/list
+.. _Issue Tracker: https://github.com/MDAnalysis/mdanalysis/issues
 .. _MDAnalysis mailinglist: http://groups.google.com/group/mdnalysis-discussion
 
 
@@ -790,7 +790,7 @@ class NCDFWriter(base.Writer):
         Based on Joshua Adelman's `netcdf4storage.py`_ in `Issue 109`_.
 
         .. _`Issue 109`:
-           http://code.google.com/p/mdanalysis/issues/detail?id=109#c2
+           https://github.com/MDAnalysis/mdanalysis/issues/109
         .. _`netcdf4storage.py`:
            http://code.google.com/p/mdanalysis/issues/attachmentText?id=109&aid=1090002000&name=netcdf4storage.py
         """
@@ -887,7 +887,7 @@ class NCDFWriter(base.Writer):
         Based on Joshua Adelman's `netcdf4storage.py`_ in `Issue 109`_.
 
         .. _`Issue 109`:
-           http://code.google.com/p/mdanalysis/issues/detail?id=109#c2
+           https://github.com/MDAnalysis/mdanalysis/issues/109
         .. _`netcdf4storage.py`:
            http://code.google.com/p/mdanalysis/issues/attachmentText?id=109&aid=1090002000&name=netcdf4storage.py
         """

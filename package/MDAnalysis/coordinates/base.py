@@ -506,7 +506,7 @@ class Reader(IObase):
     def Writer(self, filename, **kwargs):
         """Returns a trajectory writer with the same properties as this trajectory."""
         raise NotImplementedError("Sorry, there is no Writer for this format in MDAnalysis. "
-                                  "Please file an enhancement request at http://code.google.com/p/mdanalysis/issues/")
+                "Please file an enhancement request at https://github.com/MDAnalysis/mdanalysis/issues")
 
     def OtherWriter(self, filename, **kwargs):
         """Returns a writer appropriate for *filename*.

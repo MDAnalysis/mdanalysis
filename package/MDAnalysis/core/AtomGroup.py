@@ -2976,7 +2976,7 @@ class Universe(object):
        information needed. Furthermore, the list of bonds is only constructed
        when provided in the topology and never guessed (see `Issue 23`).
 
-    .. _`Issue 23`: http://code.google.com/p/mdanalysis/issues/detail?id=23
+    .. _`Issue 23`: https://github.com/MDAnalysis/mdanalysis/issues/23
 
     .. versionchanged:: 0.7.5
        Can also read multi-frame PDB files with the

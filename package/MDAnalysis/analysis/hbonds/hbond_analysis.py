@@ -501,7 +501,7 @@ class HydrogenBondAnalysis(object):
            heavy atoms or hydrogen-acceptor. It defaults to the previous
            behavior (i.e. "hydrogen").
 
-        .. _`Issue 138`: http://code.google.com/p/mdanalysis/issues/detail?id=138
+        .. _`Issue 138`: https://github.com/MDAnalysis/mdanalysis/issues/138
         """
         self._get_bonded_hydrogens_algorithms = {
             "distance": self._get_bonded_hydrogens_dist,  # 0.7.6 default

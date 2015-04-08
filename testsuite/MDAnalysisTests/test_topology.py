@@ -202,7 +202,7 @@ class RefNAMD_CGENFF(object):
 
     NAMD/VMD XPLOR-style PSF file (using CGENFF residues/atoms).
 
-    http://code.google.com/p/mdanalysis/issues/detail?id=107
+    https://github.com/MDAnalysis/mdanalysis/issues/107
     """
     topology = PSF_NAMD
     parser = MDAnalysis.topology.PSFParser.PSFParser

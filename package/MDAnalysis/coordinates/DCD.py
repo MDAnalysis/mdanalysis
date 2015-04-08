@@ -52,7 +52,7 @@ The classes in this module are the reference implementations for the
 Trajectory API.
 
 .. _Issue 187:
-   https://code.google.com/p/mdanalysis/issues/detail?id=187
+   https://github.com/MDAnalysis/mdanalysis/issues/187
 
 
 Classes
@@ -123,7 +123,7 @@ class Timestep(base.Timestep):
            new CHARMM DCD unitcell format (see `Issue 187`_ for a discussion).
 
         .. _`X-PLOR DCD format`: http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/dcdplugin.html
-        .. _Issue 187: https://code.google.com/p/mdanalysis/issues/detail?id=187
+        .. _Issue 187: https://github.com/MDAnalysis/mdanalysis/issues/187
         .. _DCDplugin: http://www.ks.uiuc.edu/Research/vmd/plugins/doxygen/dcdplugin_8c-source.html#l00947
         """
 
@@ -186,7 +186,7 @@ class DCDWriter(base.Writer):
        that of the DCD molfile plugin of VMD with the exception that
        by default it will use AKMA time units.
 
-    .. _Issue 187: https://code.google.com/p/mdanalysis/issues/detail?id=187
+    .. _Issue 187: https://github.com/MDAnalysis/mdanalysis/issues/187
     """
     format = 'DCD'
     units = {'time': 'AKMA', 'length': 'Angstrom'}
@@ -402,7 +402,7 @@ class DCDReader(base.Reader):
        NAMD ordering: ``[A, B, C, sin(gamma), sin(beta),
        sin(alpha)]``. See `Issue 187`_ for further details.
 
-    .. _Issue 187: https://code.google.com/p/mdanalysis/issues/detail?id=187
+    .. _Issue 187: https://github.com/MDAnalysis/mdanalysis/issues/187
 
     """
     format = 'DCD'

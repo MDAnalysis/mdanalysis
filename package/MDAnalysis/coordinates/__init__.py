@@ -211,7 +211,7 @@ History
 - 2013-08-02 Readers/Writers must conform to the Python `Context Manager`_ API
 - 2015-01-15 Timestep._init_unitcell() method added
 
-.. _Issue 49: http://code.google.com/p/mdanalysis/issues/detail?id=49
+.. _Issue 49: https://github.com/MDAnalysis/mdanalysis/issues/49
 .. _Context Manager: http://docs.python.org/2/reference/datamodel.html#context-managers
 
 Registry

@@ -106,7 +106,7 @@ and the mode coordinates are filling the
 
 .. _MMTK: http://dirac.cnrs-orleans.fr/Manuals/MMTK/index.html
 
-.. _`recipe by Ramon Crehuet`: http://code.google.com/p/mdanalysis/issues/detail?id=79
+.. _`recipe by Ramon Crehuet`: https://github.com/MDAnalysis/mdanalysis/issues/79
 
 Module reference
 ----------------

@@ -103,7 +103,7 @@ before 4.x)
 .. Links
 .. _Gromacs: http://www.gromacs.org
 .. _TPR file: http://manual.gromacs.org/current/online/tpr.html
-.. _`Issue 2`: http://code.google.com/p/mdanalysis/issues/detail?id=2
+.. _`Issue 2`: https://github.com/MDAnalysis/mdanalysis/issues/2
 .. _TPRReaderDevelopment: http://code.google.com/p/mdanalysis/wiki/TPRReaderDevelopment
 """
 __author__ = "Zhuyi Xue"
