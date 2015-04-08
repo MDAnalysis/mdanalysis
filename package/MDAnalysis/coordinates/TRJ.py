@@ -792,7 +792,7 @@ class NCDFWriter(base.Writer):
         .. _`Issue 109`:
            https://github.com/MDAnalysis/mdanalysis/issues/109
         .. _`netcdf4storage.py`:
-           http://code.google.com/p/mdanalysis/issues/attachmentText?id=109&aid=1090002000&name=netcdf4storage.py
+           https://storage.googleapis.com/google-code-attachments/mdanalysis/issue-109/comment-2/netcdf4storage.py
         """
         try:
             import netCDF4 as netcdf
@@ -889,7 +889,7 @@ class NCDFWriter(base.Writer):
         .. _`Issue 109`:
            https://github.com/MDAnalysis/mdanalysis/issues/109
         .. _`netcdf4storage.py`:
-           http://code.google.com/p/mdanalysis/issues/attachmentText?id=109&aid=1090002000&name=netcdf4storage.py
+           https://storage.googleapis.com/google-code-attachments/mdanalysis/issue-109/comment-2/netcdf4storage.py
         """
         assert self.trjfile is not None, "trjfile must be open in order to write to it"
 
