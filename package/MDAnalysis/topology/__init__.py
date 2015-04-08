@@ -154,7 +154,7 @@ stored as :attr:`MDAnalysis.AtomGroup.Universe._psf`.
 .. SeeAlso:: `Topology Data Structures Wiki page`_
 
 .. _`Topology Data Structures Wiki page`:
-   http://code.google.com/p/mdanalysis/wiki/TopologyDataStructures
+   https://github.com/MDAnalysis/mdanalysis/wiki/TopologyDataStructures
 
 The format of the individual keys is the following (see
 :mod:`PSFParser` for a reference implementation):

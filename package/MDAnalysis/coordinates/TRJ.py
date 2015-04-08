@@ -143,7 +143,7 @@ except ImportError:
     # See Issue 122 for a discussion.
     logger.debug("Failed to import netCDF4; AMBER NETCDFReader/Writer will not work. "
                  "Install netCDF4 from http://code.google.com/p/netcdf4-python/.")
-    logger.debug("See also https://code.google.com/p/mdanalysis/wiki/netcdf")
+    logger.debug("See also https://github.com/MDAnalysis/mdanalysis/wiki/netcdf")
 
 
 class Timestep(base.Timestep):
@@ -523,11 +523,11 @@ class NCDFReader(base.Reader):
         except ImportError:
             logger.fatal(
                 "netcdf4-python with the netCDF and HDF5 libraries must be installed for the AMBER ncdf Reader.")
-            logger.fatal("See installation instructions at https://code.google.com/p/mdanalysis/wiki/netcdf")
+            logger.fatal("See installation instructions at https://github.com/MDAnalysis/mdanalysis/wiki/netcdf")
             raise ImportError("netCDF4 package missing.\n"
                               "netcdf4-python with the netCDF and HDF5 libraries must be installed for the AMBER ncdf "
                               "Reader.\n"
-                              "See installation instructions at https://code.google.com/p/mdanalysis/wiki/netcdf")
+                              "See installation instructions at https://github.com/MDAnalysis/mdanalysis/wiki/netcdf")
 
         self.filename = filename
         convert_units = kwargs.pop('convert_units', None)
@@ -799,11 +799,11 @@ class NCDFWriter(base.Writer):
         except ImportError:
             logger.fatal(
                 "netcdf4-python with the netCDF and HDF5 libraries must be installed for the AMBER ncdf Writer.")
-            logger.fatal("See installation instructions at https://code.google.com/p/mdanalysis/wiki/netcdf")
+            logger.fatal("See installation instructions at https://github.com/MDAnalysis/mdanalysis/wiki/netcdf")
             raise ImportError("netCDF4 package missing.\n"
                               "netcdf4-python with the netCDF and HDF5 libraries must be installed for the AMBER ncdf "
                               "Writer.\n"
-                              "See installation instructions at https://code.google.com/p/mdanalysis/wiki/netcdf")
+                              "See installation instructions at https://github.com/MDAnalysis/mdanalysis/wiki/netcdf")
 
         if not self.__first_frame:
             raise IOError(errno.EIO, "Attempt to write to closed file {0}".format(self.filename))
