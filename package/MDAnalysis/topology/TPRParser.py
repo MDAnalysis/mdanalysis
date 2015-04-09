@@ -112,7 +112,7 @@ __copyright__ = "GNU Public Licence, v2"
 import xdrlib
 
 import MDAnalysis.core.util
-from tpr import utils as U
+from .tpr import utils as U
 from .base import TopologyReader
 
 import logging
@@ -201,7 +201,7 @@ class TPRParser(TopologyReader):
     #     if th.fgen < setting.tpx_generation:
     #         # a crazily long (670 lines) function in c, slightly better here
     #         # (240 lines), so put it in setting.py
-    #         setting.do_inputrec(data)
+    #         utils.do_inputrec(data)
 
     def _log_header(self, th):
         logger.info("Gromacs version   : {0}".format(th.ver_str))
