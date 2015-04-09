@@ -142,7 +142,7 @@ except ImportError:
     # will raise a proper ImportError if they are called without the netCDF4 library present.
     # See Issue 122 for a discussion.
     logger.debug("Failed to import netCDF4; AMBER NETCDFReader/Writer will not work. "
-                 "Install netCDF4 from http://code.google.com/p/netcdf4-python/.")
+                 "Install netCDF4 from https://github.com/Unidata/netcdf4-python.")
     logger.debug("See also https://github.com/MDAnalysis/mdanalysis/wiki/netcdf")
 
 

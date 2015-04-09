@@ -32,25 +32,31 @@ through the standard "python doc strings". Type ::
 Online html manual
 ==================
 
-The manual is provided in the doc/html directory (start at
-doc/html/index.html). 
+The documentation for the latest stable release can always be found at
 
-The latest version is also on the internet at
+   https://pythonhosted.org/MDAnalysis/
 
-   http://mdanalysis.googlecode.com/git/package/doc/html/index.html
+The docs for the latest development version are also on the internet
+at
+
+   http://www.mdanalysis.org/mdanalysis/package/doc/html/
 
 The manual includes all the doc strings with some additional text; it
 is a work in progress and suggestions to improve it are welcome. File
 them via the Issue Tracker at
-http://code.google.com/p/mdanalysis/issues/list or mention it on the
+https://github.com/MDAnalysis/mdanalysis/issues/ or mention it on the
 mailing list http://groups.google.com/group/mdnalysis-discussion .
+
+The manual corresponding to the current sources is provided in the
+doc/html directory (start at doc/html/index.html).
+
 
 
 Wiki and online docs
 ====================
 
-There is also documentation available associated with the googlecode
-site; start with the 
+There is also documentation available associated with the GitHub site
+in the Wiki https://github.com/MDAnalysis/mdanalysis/wiki
 
-   http://code.google.com/p/mdanalysis/wiki/TableOfContents
+   
 

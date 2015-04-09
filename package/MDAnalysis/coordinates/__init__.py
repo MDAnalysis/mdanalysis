@@ -174,7 +174,7 @@ also recognized when they are compressed with :program:`gzip` or
    full :mod:`~MDAnalysis.core.AtomGroup.Universe` by simply
    providing a file of this format: ``u = Universe(filename)``
 
-.. _`netcdf4-python`: http://code.google.com/p/netcdf4-python/
+.. _`netcdf4-python`: https://github.com/Unidata/netcdf4-python
 
 .. _Trajectory API:
 

@@ -194,15 +194,15 @@ If you want to operate on AMBER binary trajectories (NetCDF) then you
 will need to have working NetCDF support based on the netcdf4-python
 package:
 
-    * netcdf4-python (http://code.google.com/p/netcdf4-python/)
+    * netcdf4-python (https://github.com/Unidata/netcdf4-python)
 
       If you get a 'ValueError: did not find HDF5 headers' during
       installation then you should install the hdf5 development
       package through your package manager (see below for some hints
       on how to do this for Linux and Mac OS X).
 
-      See also https://code.google.com/p/mdanalysis/wiki/netcdf for
-      notes on how to compile HDF5 and netcdf.
+      See also https://github.com/MDAnalysis/mdanalysis/wiki/netcdf
+      for notes on how to compile HDF5 and netcdf.
 
 Optional python packages (used in MDAnalysis.analysis):
 
@@ -276,9 +276,8 @@ Linux
   (The netcdf and libhdf5-dev packages are only required if you want
   to be able to process AMBER netcdf (binary) trajectories. If you
   don't have netcdf4 available from your package manager (eg Ubuntu
-  10.04) then follow the instructions for installing netcdf4 given at
-  http://netcdf4-python.googlecode.com/svn/trunk/docs/netCDF4-module.html
-  and http://code.google.com/p/mdanalysis/wiki/netcdf)
+  10.04) then follow the instructions for installing netcdf4 given at  
+  and http://code.google.com/p/mdanalysis/wiki/netcdf.
 
 
 Mac OS X
