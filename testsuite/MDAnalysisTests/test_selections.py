@@ -33,13 +33,13 @@ class TestSelectionsCHARMM(TestCase):
     def test_segid(self):
         sel = self.universe.selectAtoms('segid 4AKE')
         assert_equal(sel.numberOfAtoms(), 3341, "failed to select segment 4AKE")
-        assert_equal(sel._atoms, self.universe.s4AKE._atoms,
+        assert_equal(list(sel.atoms), list(self.universe.s4AKE.atoms),
                      "selected segment 4AKE is not the same as auto-generated segment s4AKE")
 
     def test_protein(self):
         sel = self.universe.selectAtoms('protein')
         assert_equal(sel.numberOfAtoms(), 3341, "failed to select protein")
-        assert_equal(sel._atoms, self.universe.s4AKE._atoms,
+        assert_equal(list(sel.atoms), list(self.universe.s4AKE.atoms),
                      "selected protein is not the same as auto-generated protein segment s4AKE")
 
     def test_backbone(self):
@@ -87,7 +87,7 @@ class TestSelectionsCHARMM(TestCase):
         sel = self.universe.selectAtoms('resname LEU')
         assert_equal(sel.numberOfAtoms(), 304, "Failed to find all 'resname LEU' atoms.")
         assert_equal(sel.numberOfResidues(), 16, "Failed to find all 'resname LEU' residues.")
-        assert_equal(sel._atoms, self.universe.s4AKE.LEU._atoms,
+        assert_equal(list(sel.atoms), list(self.universe.s4AKE.LEU.atoms),
                      "selected 'resname LEU' atoms are not the same as auto-generated s4AKE.LEU")
 
     def test_name(self):
