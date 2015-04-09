@@ -128,7 +128,7 @@ as described in :ref:`selection-commands-label`.
 
 .. _SciPy: http://www.scipy.org/
 .. _IPython: http://ipython.scipy.org/
-.. _MDAnalysis test suite: http://code.google.com/p/mdanalysis/wiki/UnitTests
+.. _MDAnalysis test suite: https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
 
 
 Examples
@@ -198,23 +198,23 @@ and more.
 .. Links to the stable git repository:
 
 .. _examples:
-   https://code.google.com/p/mdanalysis/source/browse/package#package%2Fexamples
+   https://github.com/MDAnalysis/mdanalysis/blob/master/package/examples/
 
 .. _`rmsfit_qcp.py`:
-   https://code.google.com/p/mdanalysis/source/browse/package/examples/rmsfit_qcp.py
+   https://github.com/MDAnalysis/mdanalysis/blob/master/package/examples/rmsfit_qcp.py
 .. _`blocks.py`:
-   https://code.google.com/p/mdanalysis/source/browse/package/examples/blocks.py
+   https://github.com/MDAnalysis/mdanalysis/blob/master/package/examples/blocks.py
 .. _`potential_profile.py`:
-   https://code.google.com/p/mdanalysis/source/browse/package/examples/potential_profile.py
+   https://github.com/MDAnalysis/mdanalysis/blob/master/package/examples/potential_profile.py
 .. _`nativecontacts.py`:
-   https://code.google.com/p/mdanalysis/source/browse/package/examples/nativecontacts.py
+   https://github.com/MDAnalysis/mdanalysis/blob/master/package/examples/nativecontacts.py
 .. _`membrane-leaflets.py`:
-   https://code.google.com/p/mdanalysis/source/browse/package/examples/membrane-leaflets.py
+   https://github.com/MDAnalysis/mdanalysis/blob/master/package/examples/membrane-leaflets.py
 .. _`multimers-analysis.py`:
-   https://code.google.com/p/mdanalysis/source/browse/package/examples/multimers-analysis.py
+   https://github.com/MDAnalysis/mdanalysis/blob/master/package/examples/multimers-analysis.py
 .. _`dcd2xtc.py`:
-   https://code.google.com/p/mdanalysis/source/browse/package/examples/dcd2xtc.py
+   https://github.com/MDAnalysis/mdanalysis/blob/master/package/examples/dcd2xtc.py
 .. _`amber2dcd.py`:
-   https://code.google.com/p/mdanalysis/source/browse/package/examples/amber2dcd.py
+   https://github.com/MDAnalysis/mdanalysis/blob/master/package/examples/amber2dcd.py
 .. _`make_MthK_tetramer.py`:
-   https://code.google.com/p/mdanalysis/source/browse/package/examples/make_MthK_tetramer.py
+   https://github.com/MDAnalysis/mdanalysis/blob/master/package/examples/make_MthK_tetramer.py

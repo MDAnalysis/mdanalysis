@@ -214,7 +214,7 @@ html_favicon = "logos/mdanalysis-logo.ico"
 # If true, an OpenSearch description file will be output, and all pages will
 # contain a <link> tag referring to it.  The value of this option must be the
 # base URL from which the finished HTML is served.
-html_use_opensearch = 'http://packages.python.org/MDAnalysis/'
+html_use_opensearch = 'http://pythonhosted.org/MDAnalysis'
 
 # This is the file name suffix for HTML files (e.g. ".xhtml").
 #html_file_suffix = None
