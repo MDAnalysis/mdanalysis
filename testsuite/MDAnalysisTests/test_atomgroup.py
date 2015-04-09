@@ -1597,7 +1597,7 @@ class TestFragments(TestCase):
     def setUp(self):
         self.u = MDAnalysis.Universe(PSF, DCD)
         # To create a fragment with only one atom in, remove a bond
-        self.u._psf['_bonds'].remove((2, 0))
+        self.u._topology['bonds'].remove((2, 0))
 
     def tearDown(self):
         del self.u

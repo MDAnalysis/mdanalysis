@@ -68,10 +68,10 @@ class XYZParser(TopologyReader):
                 charge = guess_atom_charge(name)
 
                 at = Atom(i, name, elem, resname, resid,
-                          segid, mass, charge)
+                          segid, mass, charge, universe=self._u)
 
                 atoms.append(at)
 
-        struc = {"_atoms": atoms}
+        struc = {"atoms": atoms}
 
         return struc

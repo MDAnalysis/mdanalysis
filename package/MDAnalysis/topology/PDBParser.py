@@ -37,17 +37,19 @@ Classes
    :inherited-members:
 
 """
+from __future__ import absolute_import
 
 try:
     # BioPython is overkill but potentially extensible (altLoc etc)
     import Bio.PDB
 except ImportError:
-    raise ImportError("Bio.PDB from biopython not found. Required for PDB->PSF parser.")
+    raise ImportError("Bio.PDB from biopython not found."
+                      "Required for PDB topology parser.")
 
 from .base import TopologyReader
-from MDAnalysis.core.AtomGroup import Atom
-import MDAnalysis.coordinates.pdb.extensions
-from MDAnalysis.topology.core import guess_atom_type, guess_atom_mass, guess_atom_charge
+from ..core.AtomGroup import Atom
+from ..coordinates.pdb.extensions import get_structure
+from .core import guess_atom_type, guess_atom_mass, guess_atom_charge
 
 
 class PDBParser(TopologyReader):
@@ -65,13 +67,16 @@ class PDBParser(TopologyReader):
 
         .. SeeAlso:: The *structure* dict is defined in `MDAnalysis.topology`.
         """
-        structure = {}
-        # use Sloppy PDB parser to cope with big PDBs!
-        pdb = MDAnalysis.coordinates.pdb.extensions.get_structure(self.filename, "0UNK")
-        structure['_atoms'] = self._parseatoms(pdb)
+        atoms = self._parseatoms()
+
+        structure = {'atoms': atoms}
+
         return structure
 
-    def _parseatoms(self, pdb):
+    def _parseatoms(self):
+        # use Sloppy PDB parser to cope with big PDBs!
+        pdb = get_structure(self.filename, "0UNK")
+
         atoms = []
         # translate Bio.PDB atom objects to MDAnalysis Atom.
         for iatom, atom in enumerate(pdb.get_atoms()):
@@ -88,5 +93,5 @@ class PDBParser(TopologyReader):
             bfactor = atom.bfactor
             # occupancy = atom.occupancy
             atoms.append(Atom(iatom, atomname, atomtype, resname, resid, segid,
-                              mass, charge, bfactor=bfactor))
+                              mass, charge, bfactor=bfactor, universe=self._u))
         return atoms

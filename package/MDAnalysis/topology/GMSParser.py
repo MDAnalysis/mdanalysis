@@ -39,11 +39,12 @@ Classes
 """
 from __future__ import absolute_import
 
+import re
+
 from ..core.AtomGroup import Atom
 from ..core.util import openany
 from .core import get_atom_mass, guess_atom_charge, guess_atom_element
 from .base import TopologyReader
-import re
 
 
 class GMSParser(TopologyReader):
@@ -82,10 +83,10 @@ r'^\s*([A-Za-z_][A-Za-z_0-9]*)\s+([0-9]+\.[0-9]+)\s+(\-?[0-9]+\.[0-9]+)\s+(\-?[0
                 mass = get_atom_mass(elem)
                 #TODO: may be use coordinates info from _m.group(3-5) ??
                 at = Atom(i, name, elem, resname, resid,
-                          segid, mass, charge)
+                          segid, mass, charge, universe=self._u)
                 atoms.append(at)
                 i += 1
 
-        struc = {"_atoms": atoms}
+        struc = {"atoms": atoms}
 
         return struc

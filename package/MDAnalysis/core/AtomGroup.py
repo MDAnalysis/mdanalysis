@@ -386,7 +386,7 @@ class Atom(object):
 
     def __init__(self, number, name, type, resname, resid, segid, mass, charge,
                  residue=None, segment=None, radius=None, bfactor=None,
-                 resnum=None, serial=None, altLoc=None):
+                 resnum=None, serial=None, altLoc=None, universe=None):
         self.number = number
         self.name = name
         self.altLoc = altLoc
@@ -402,7 +402,7 @@ class Atom(object):
         self.radius = radius
         self.bfactor = bfactor
         self.serial = serial
-        self.__universe = None
+        self.__universe = universe
 
     def __repr__(self):
         return ("<Atom {idx}: {name} of type {t} of resname {rname}, "
@@ -2964,7 +2964,8 @@ class Universe(object):
       :attr:`Universe.trajectory.ts` is the current time step
     - :attr:`Universe.dimensions`: current system dimensions (simulation unit cell, if
       set in the trajectory)
-    - bonds, angles, dihedrals, impropers (low level access through :attr:`Universe._psf`)
+    - bonds, angles, dihedrals, impropers
+      (low level access through :attr:`Universe._topology`)
 
     .. Note::
 
@@ -3120,9 +3121,9 @@ class Universe(object):
                                     permissive=perm,
                                     tformat=topology_format)
         try:
-            with parser(self.filename,
+            with parser(self.filename, universe=self,
                         guess_bonds_mode=kwargs.get('bonds', False)) as p:
-                self._psf = p.parse()
+                self._topology = p.parse()
         except IOError as err:
             raise IOError("Failed to load from the topology file {}"
                           " with parser {}.\n"
@@ -3162,16 +3163,14 @@ class Universe(object):
         self._cache[name] = value
 
     def _init_topology(self):
-        """Populate Universe attributes from the structure dictionary *_psf*."""
-        self.atoms = AtomGroup(self._psf["_atoms"])
+        """Populate Universe attributes from the structure dictionary
+        *_topology*.
+        """
+        self.atoms = AtomGroup(self._topology['atoms'])
 
         # XXX: add H-bond information here if available from psf (or other sources)
         # segment instant selectors
         self._build_segments()
-
-        # Let atoms access the universe
-        for a in self.atoms:
-            a.universe = self
 
     def _build_segments(self):
         """Parse list of atoms into segments.
@@ -3201,7 +3200,7 @@ class Universe(object):
         self.universe = self  # for Writer.write(universe), see Issue 49
 
     def _init_bonds(self):
-        """Set bond information from u._psf['_bonds']
+        """Set bond information from u._topology['bonds']
 
         .. versionchanged 0.9.0
            Now returns a :class:`~MDAnalysis.topology.core.TopologyGroup`
@@ -3216,11 +3215,11 @@ class Universe(object):
 
         bondlist = set()
 
-        defined_bonds = fix_order(self._psf.get('_bonds', set()))
-        guessed_bonds = fix_order(self._psf.get('_guessed_bonds', set()))
+        defined_bonds = fix_order(self._topology.get('bonds', set()))
+        guessed_bonds = fix_order(self._topology.get('guessed_bonds', set()))
         # Some topologies define an order for bonds, this is stored
         # as dict of bondtuple:value
-        bondorder = self._psf.get('_bondorder', False)
+        bondorder = self._topology.get('bondorder', False)
         # Defined bonds take priority, remove bonds in 'guessed' that are in 'defined'
         guessed_bonds.difference_update(defined_bonds)
 
@@ -3246,14 +3245,14 @@ class Universe(object):
             return None
 
     def _init_angles(self):
-        """Builds angle information from u._psf['_angles']
+        """Builds angle information from u._topology['angles']
 
         Returns ``None`` if no angle information is present, otherwise
         returns a :class:`~MDAnalysis.topology.core.TopologyGroup`
 
         .. versionadded 0.9.0
         """
-        angle_entries = self._psf.get('_angles', None)
+        angle_entries = self._topology.get('angles', None)
         if angle_entries is None:
             return None
         else:
@@ -3267,14 +3266,14 @@ class Universe(object):
                 return None
 
     def _init_torsions(self):
-        """Builds torsion information from u._psf['_dihe']
+        """Builds torsion information from u._topology['torsions']
 
         Returns ``None`` if no torsion information is present, otherwise
         returns a :class:`~MDAnalysis.topology.core.TopologyGroup`
 
         .. versionadded 0.9.0
         """
-        torsion_entries = self._psf.get('_dihe', None)
+        torsion_entries = self._topology.get('torsions', None)
         if torsion_entries is None:
             return None
         else:
@@ -3288,14 +3287,14 @@ class Universe(object):
                 return None
 
     def _init_impropers(self):
-        """Build improper torsion information from u._psf['_impr']
+        """Build improper torsion information from u._topology['impropers']
 
         Returns ``None`` if no improper torsion information is present,
         otherwise returns a :class:`~MDAnalysis.topology.core.TopologyGroup`
 
         .. versionadded 0.9.0
         """
-        torsion_entries = self._psf.get('_impr', None)
+        torsion_entries = self._topology.get('impropers', None)
         if torsion_entries is None:
             return None
         else:
@@ -3518,7 +3517,7 @@ class Universe(object):
         .. versionadded:: 0.9.0
         """
         del self.bonds
-        self._psf['_bonds'] = bondlist
+        self._topology['bonds'] = bondlist
         self._fill_cache('bonds', self._init_bonds())
 
     @bonds.deleter
@@ -3547,7 +3546,7 @@ class Universe(object):
     @angles.setter
     def angles(self, bondlist):
         del self.angles
-        self._psf['_angles'] = bondlist
+        self._topology['angles'] = bondlist
         self._fill_cache('angles', self._init_angles())
 
     @angles.deleter
@@ -3570,7 +3569,7 @@ class Universe(object):
     @torsions.setter
     def torsions(self, bondlist):
         del self.torsions
-        self._psf['_dihe'] = bondlist
+        self._topology['torsions'] = bondlist
         self._fill_cache('torsions', self._init_torsions())
 
     @torsions.deleter
@@ -3593,7 +3592,7 @@ class Universe(object):
     @impropers.setter
     def impropers(self, bondlist):
         del self.impropers
-        self._psf['_impr'] = bondlist
+        self._topology['impropers'] = bondlist
         self._fill_cache('impropers', self._init_impropers())
 
     @impropers.deleter

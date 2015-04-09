@@ -32,12 +32,13 @@ Classes
    :inherited-members:
 
 """
+from __future__ import absolute_import
 
 import sqlite3
 import os
 
-from MDAnalysis.core.AtomGroup import Atom
-from MDAnalysis.topology.core import guess_atom_type
+from ..core.AtomGroup import Atom
+from .core import guess_atom_type
 from .base import TopologyReader
 
 
@@ -92,7 +93,8 @@ class DMSParser(TopologyReader):
                     atoms = [Atom(p["id"], p["name"].strip(),
                                   guess_atom_type(p["name"].strip()),
                                   p["resname"].strip(), p["resid"],
-                                  p["segid"].strip(), p["mass"], p["charge"])
+                                  p["segid"].strip(), p["mass"], p["charge"],
+                                  universe=self._u)
                              for p in particles]
                 except KeyError:
                     raise ValueError("Failed reading atom information")
@@ -112,6 +114,8 @@ class DMSParser(TopologyReader):
         # All the records below besides donors and acceptors can be contained in a DMS file.
         # In addition to the coordinates and bonds, DMS may contain the entire force-field
         # information (terms+parameters),
-        structure = {"_atoms": atoms, "_bonds": tuple(bondlist), "_bondorder": bondorder}
+        structure = {"atoms": atoms,
+                     "bonds": tuple(bondlist),
+                     "bondorder": bondorder}
 
         return structure

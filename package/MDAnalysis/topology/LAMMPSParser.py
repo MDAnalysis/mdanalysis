@@ -36,13 +36,14 @@ Deprecated classes
    :members:
 
 """
+from __future__ import absolute_import
 
 import numpy
 import logging
 import string
 
-from MDAnalysis.core.AtomGroup import Atom
-from MDAnalysis.core.util import openany, conv_float
+from ..core.AtomGroup import Atom
+from ..core.util import openany, conv_float
 from .base import TopologyReader
 from .core import guess_atom_mass, guess_atom_charge
 
@@ -89,15 +90,15 @@ class DATAParser(TopologyReader):
                 raise IOError("Failed to read DATA header")
 
             strkey = {
-                'Bonds': '_bonds',
-                'Angles': '_angles',
-                'Dihedrals': '_dihe',
-                'Impropers': '_impr'}
+                'Bonds': 'bonds',
+                'Angles': 'angles',
+                'Dihedrals': 'torsions',
+                'Impropers': 'impropers'}
             nentries = {
-                '_bonds': 2,
-                '_angles': 3,
-                '_dihe': 4,
-                '_impr': 4}
+                'bonds': 2,
+                'angles': 3,
+                'torsions': 4,
+                'impropers': 4}
             # Masses can appear after Atoms section.
             # If this happens, this blank dict will be used and all atoms
             # will have zero mass, can fix this later
@@ -118,15 +119,15 @@ class DATAParser(TopologyReader):
                 if section == 'Atoms':
                     fix_masses = False if read_masses else True
 
-                    structure['_atoms'] = self._parse_atoms(psffile,
-                                                            nitems['_atoms'],
-                                                            masses,
-                                                            atom_style)
+                    structure['atoms'] = self._parse_atoms(psffile,
+                                                           nitems['atoms'],
+                                                           masses,
+                                                           atom_style)
                     read_coords = True
                 elif section == 'Masses':
                     read_masses = True
                     try:
-                        masses = self._parse_masses(psffile, ntypes['_atoms'])
+                        masses = self._parse_masses(psffile, ntypes['atoms'])
                     except:
                         raise IOError("Failed to read masses section")
                 elif section in strkey:  # for sections we use in MDAnalysis
@@ -148,7 +149,7 @@ class DATAParser(TopologyReader):
                 raise IOError("Failed to find coordinate data")
 
             if fix_masses:
-                for a in structure['_atoms']:
+                for a in structure['atoms']:
                     try:
                         a.mass = masses[a.type]
                     except KeyError:
@@ -295,7 +296,7 @@ class DATAParser(TopologyReader):
             # Number, name, type, resname, resid, segid, mass, charge
             atoms.append(Atom(idx, name, atype,
                               str(resid), resid, str(resid),
-                              m, q))
+                              m, q, universe=self._u))
 
         return atoms
 
@@ -333,11 +334,11 @@ class DATAParser(TopologyReader):
         This should be fixed in all files
         """
         hvals = {
-            'atoms': '_atoms',
-            'bonds': '_bonds',
-            'angles': '_angles',
-            'dihedrals': '_dihe',
-            'impropers': '_impr'}
+            'atoms': 'atoms',
+            'bonds': 'bonds',
+            'angles': 'angles',
+            'dihedrals': 'torsions',
+            'impropers': 'impropers'}
         nitems = {k: 0 for k in hvals.values()}
 
         datafile.next()  # Title

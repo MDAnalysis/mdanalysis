@@ -188,12 +188,12 @@ class Bond(TopologyObject):
        Now a subclass of :class:`TopologyObject`. Changed class to use
        :attr:`__slots__` and stores atoms in :attr:`atoms` attribute.
     """
-    __slots__ = ("atoms", "order", "__is_guessed")
+    __slots__ = ("atoms", "order", "_is_guessed")
 
     def __init__(self, atoms, order=None):
         self.atoms = tuple(atoms)
         self.order = order
-        self.__is_guessed = False
+        self._is_guessed = False
 
     def partner(self, atom):
         """Bond.partner(Atom)
@@ -215,11 +215,11 @@ class Bond(TopologyObject):
 
         .. SeeAlso:: :func:`guess_bonds`
         """
-        return self.__is_guessed
+        return self._is_guessed
 
     @is_guessed.setter
     def is_guessed(self, b):
-        self.__is_guessed = b
+        self._is_guessed = b
 
     def length(self):
         """Length of the bond."""
@@ -520,7 +520,8 @@ def guess_angles(bonds):
     then (1,2,3) must be an angle.
 
     :Returns:
-      List of tuples defining the angles.  Suitable for use in u._psf
+      List of tuples defining the angles.
+      Suitable for use in u._topology
 
     .. seeAlso:: :meth:`guess_bonds`
 
@@ -549,7 +550,8 @@ def guess_torsions(angles):
     then (1,2,3,4) must be a torsion.
 
     :Returns:
-      List of tuples defining the torsions.  Suitable for use in u._psf
+      List of tuples defining the torsions.
+      Suitable for use in u._topology
 
     .. versionadded 0.9.0
     """
@@ -582,8 +584,8 @@ def guess_improper_torsions(angles):
     (1, 2, 3) and (1, 3, 4)
 
     :Returns:
-      List of tuples defining the improper torsions.  Suitable for use in
-      u._psf
+      List of tuples defining the improper torsions.
+      Suitable for use in u._topology
 
     .. versionadded 0.9.0
     """
@@ -984,7 +986,7 @@ class TopologyGroup(object):
         (0 based index within u.atoms)
 
         This format should be identical to the original contents of the
-        entries in universe._psf.
+        entries in universe._topology.
         Note that because bonds are sorted as they are initialised, the order
         that atoms are defined in each entry might be reversed.
 
