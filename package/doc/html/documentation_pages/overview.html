@@ -173,7 +173,7 @@ binary file, a Gromacs XTC/TRR trajectory, or a XYZ trajectory (possibly
 compressed with gzip or bzip2).</li>
 </ul>
 <p>For the remainder of this introduction we are using a short example trajectory
-that is provided with MDAnalysis (as part of the <a class="reference external" href="http://code.google.com/p/mdanalysis/wiki/UnitTests">MDAnalysis test suite</a>). The
+that is provided with MDAnalysis (as part of the <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests">MDAnalysis test suite</a>). The
 trajectory is loaded with</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">Universe</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span>
@@ -243,23 +243,23 @@ Open &lt;&#8211;&gt; Closed Transitions. <em>J Mol Biol</em> <strong>394</strong
 </div>
 <div class="section" id="code-snippets">
 <h3>1.2.2. Code snippets<a class="headerlink" href="#code-snippets" title="Permalink to this headline">¶</a></h3>
-<p>The source code distribution comes with a directory <a class="reference external" href="https://code.google.com/p/mdanalysis/source/browse/package#package%2Fexamples">examples</a> that
+<p>The source code distribution comes with a directory <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/blob/master/package/examples/">examples</a> that
 contains a number of code snippets that show how to use certain
 aspects of MDAnalysis.</p>
 <p>For instance, there is code that shows how to</p>
 <ul class="simple">
 <li>fit a trajectory to a reference structure using the QCP
 RMSD-alignment code in <a class="reference internal" href="core/qcprot.html#module-MDAnalysis.core.qcprot" title="MDAnalysis.core.qcprot"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.core.qcprot</span></tt></a>
-(<a class="reference external" href="https://code.google.com/p/mdanalysis/source/browse/package/examples/rmsfit_qcp.py">rmsfit_qcp.py</a>);</li>
-<li>do a block-averaging error analysis (<a class="reference external" href="https://code.google.com/p/mdanalysis/source/browse/package/examples/blocks.py">blocks.py</a>);</li>
-<li>calculate a potential profile across a membrane (<a class="reference external" href="https://code.google.com/p/mdanalysis/source/browse/package/examples/potential_profile.py">potential_profile.py</a>);</li>
-<li>do a native contact analysis using <a class="reference internal" href="analysis/contacts.html#module-MDAnalysis.analysis.contacts" title="MDAnalysis.analysis.contacts"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.contacts</span></tt></a> (<a class="reference external" href="https://code.google.com/p/mdanalysis/source/browse/package/examples/nativecontacts.py">nativecontacts.py</a>)</li>
+(<a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/blob/master/package/examples/rmsfit_qcp.py">rmsfit_qcp.py</a>);</li>
+<li>do a block-averaging error analysis (<a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/blob/master/package/examples/blocks.py">blocks.py</a>);</li>
+<li>calculate a potential profile across a membrane (<a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/blob/master/package/examples/potential_profile.py">potential_profile.py</a>);</li>
+<li>do a native contact analysis using <a class="reference internal" href="analysis/contacts.html#module-MDAnalysis.analysis.contacts" title="MDAnalysis.analysis.contacts"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.contacts</span></tt></a> (<a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/blob/master/package/examples/nativecontacts.py">nativecontacts.py</a>)</li>
 <li>get the lipid composition of the individual leaflets of a bilayer
-using <a class="reference internal" href="analysis/leaflet.html#module-MDAnalysis.analysis.leaflet" title="MDAnalysis.analysis.leaflet"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.leaflet</span></tt></a> (<a class="reference external" href="https://code.google.com/p/mdanalysis/source/browse/package/examples/membrane-leaflets.py">membrane-leaflets.py</a>);</li>
+using <a class="reference internal" href="analysis/leaflet.html#module-MDAnalysis.analysis.leaflet" title="MDAnalysis.analysis.leaflet"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.leaflet</span></tt></a> (<a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/blob/master/package/examples/membrane-leaflets.py">membrane-leaflets.py</a>);</li>
 <li>define the multimeric states of a number of transmembrane peptides
-via clustering (<a class="reference external" href="https://code.google.com/p/mdanalysis/source/browse/package/examples/multimers-analysis.py">multimers-analysis.py</a>);</li>
-<li>convert between trajectory formats (e.g. <a class="reference external" href="https://code.google.com/p/mdanalysis/source/browse/package/examples/dcd2xtc.py">dcd2xtc.py</a> or <a class="reference external" href="https://code.google.com/p/mdanalysis/source/browse/package/examples/amber2dcd.py">amber2dcd.py</a>)</li>
-<li>use MDAnalysis for simple model building (<a class="reference external" href="https://code.google.com/p/mdanalysis/source/browse/package/examples/make_MthK_tetramer.py">make_MthK_tetramer.py</a>);</li>
+via clustering (<a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/blob/master/package/examples/multimers-analysis.py">multimers-analysis.py</a>);</li>
+<li>convert between trajectory formats (e.g. <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/blob/master/package/examples/dcd2xtc.py">dcd2xtc.py</a> or <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/blob/master/package/examples/amber2dcd.py">amber2dcd.py</a>)</li>
+<li>use MDAnalysis for simple model building (<a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/blob/master/package/examples/make_MthK_tetramer.py">make_MthK_tetramer.py</a>);</li>
 </ul>
 <p>and more.</p>
 </div>

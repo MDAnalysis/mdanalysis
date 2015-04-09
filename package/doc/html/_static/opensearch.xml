@@ -4,7 +4,7 @@
   <Description>Search MDAnalysis 0.9.2-dev documentation</Description>
   <InputEncoding>utf-8</InputEncoding>
   <Url type="text/html" method="get"
-       template="http://packages.python.org/MDAnalysis//search.html?q={searchTerms}&amp;check_keywords=yes&amp;area=default"/>
+       template="http://pythonhosted.org/MDAnalysis/search.html?q={searchTerms}&amp;check_keywords=yes&amp;area=default"/>
   <LongName>MDAnalysis 0.9.2-dev documentation</LongName>
   
 </OpenSearchDescription>

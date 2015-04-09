@@ -77,7 +77,7 @@
 <span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
 <span class="c"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8</span>
 <span class="c">#</span>
-<span class="c"># MDAnalysis --- http://mdanalysis.googlecode.com</span>
+<span class="c"># MDAnalysis --- http://www.MDAnalysis.org</span>
 <span class="c"># Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein</span>
 <span class="c"># and contributors (see AUTHORS for the full list)</span>
 <span class="c">#</span>
@@ -99,15 +99,12 @@
 <span class="sd">TPRParser settings</span>
 <span class="sd">==================</span>
 
-<span class="sd">Definition of constants and reading of the TPR header with</span>
-<span class="sd">:func:`do_inputrec`.</span>
+<span class="sd">Definition of constants.</span>
 
 <span class="sd">The currently read file format versions are defined in</span>
 <span class="sd">:data:`SUPPORTED_VERSIONS`.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-
-<span class="kn">import</span> <span class="nn">utils</span> <span class="kn">as</span> <span class="nn">U</span>
 
 <span class="c">#: Gromacs TPR file format versions that can be read by the TPRParser.</span>
 <span class="n">SUPPORTED_VERSIONS</span> <span class="o">=</span> <span class="p">(</span><span class="mi">58</span><span class="p">,</span> <span class="mi">73</span><span class="p">,</span> <span class="mi">83</span><span class="p">)</span>
@@ -258,250 +255,6 @@
     <span class="p">(</span><span class="s">&quot;DVR/DL&quot;</span><span class="p">,</span> <span class="s">&quot;dVrestraint/dl&quot;</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
     <span class="p">(</span><span class="s">&quot;DVT/DL&quot;</span><span class="p">,</span> <span class="s">&quot;dVtemperature/dl&quot;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
 <span class="p">]</span>
-
-
-<div class="viewcode-block" id="do_inputrec"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.setting.do_inputrec">[docs]</a><span class="k">def</span> <span class="nf">do_inputrec</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># ir_eI</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># ir_nsteps = idum</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># ir_init_step = idum =</span>
-
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># simulation_part</span>
-    <span class="c"># not relevant here</span>
-    <span class="c"># ir_nstcalcenergy = 1</span>
-
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># ir_ns_type</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># ir_nslist</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># ir_ndelta</span>
-
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c"># ir_rtpi</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># ir_nstcomm</span>
-    <span class="nb">abs</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">())</span>  <span class="c"># ir_comm_mode</span>
-
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># ir_nstcheckpoint</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># ir_nstcgsteep</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># ir_nbfgscorr</span>
-
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># ir_nstlog</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># ir_nstxout</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># ir_nstvout</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># ir_nstfout</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># ir_nstenergy</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># ir_nstxtcout</span>
-
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c"># ir_init_t = rdum =</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c"># ir_delta_t = rdum =</span>
-
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c"># ir_xtcprec</span>
-    <span class="n">ir_rlist</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>
-
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># ir_coulombtype</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c"># ir_rcoulomb_switch</span>
-    <span class="n">ir_rcoulomb</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>
-
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># ir_rvdwtype</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c"># ir_rvdw_switch</span>
-    <span class="n">ir_rvdw</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>
-
-    <span class="nb">max</span><span class="p">(</span><span class="n">ir_rlist</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">ir_rvdw</span><span class="p">,</span> <span class="n">ir_rcoulomb</span><span class="p">))</span>  <span class="c"># ir_rlistlong</span>
-
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># ir_eDispCorr</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c"># ir_epsilon_r</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c"># ir_epsilon_rf</span>
-
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c"># ir_tabext</span>
-
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># ir_gb_algorithm</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># ir_nstgbradii</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c"># ir_rgbradii</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c"># ir_gb_saltconc</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># ir_implicit_solvent</span>
-
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c"># ir_gb_epsilon_solvent</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c"># ir_gb_obc_alpha</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c"># ir_gb_obc_beta</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c"># ir_gb_obc_gamma</span>
-
-    <span class="c"># not relevant here</span>
-    <span class="c"># ir_gb_dielectric_offset = 0.009</span>
-    <span class="c"># ir_sa_algorithm = 0                                     # esaAPPROX</span>
-
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c"># ir_sa_surface_tension</span>
-
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># ir_nkx</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># ir_nky</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># ir_nkz</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># ir_pme_order</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c"># ir_ewald_rtol</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># ir_ewald_geometry</span>
-
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c"># ir_epsilon_surface</span>
-
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_bool</span><span class="p">()</span>  <span class="c"># ir_bOptFFT</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_bool</span><span class="p">()</span>  <span class="c"># ir_bContinuation</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># ir_etc</span>
-
-    <span class="c"># not relevant here</span>
-    <span class="c"># ir_nsttcouple = ir_nstcalcenergy</span>
-
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># ir_epcpressure coupling</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># ir_epctepctype, e.g. isotropic</span>
-
-    <span class="c"># not relevant here</span>
-    <span class="c"># ir_nstpcouple = ir_nstcalcenergy</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c"># tau_p</span>
-
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_farray</span><span class="p">(</span><span class="n">DIM</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">)</span>  <span class="c"># ir_ref_p_XX</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_farray</span><span class="p">(</span><span class="n">DIM</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">)</span>  <span class="c"># ir_ref_p_YY</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_farray</span><span class="p">(</span><span class="n">DIM</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">)</span>  <span class="c"># ir_ref_p_ZZ</span>
-
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_farray</span><span class="p">(</span><span class="n">DIM</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">)</span>  <span class="c"># ir_compress_XX</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_farray</span><span class="p">(</span><span class="n">DIM</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">)</span>  <span class="c"># ir_compress_YY</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_farray</span><span class="p">(</span><span class="n">DIM</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">)</span>  <span class="c"># ir_compress_ZZ</span>
-
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># ir_refcoord_scaling</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_farray</span><span class="p">(</span><span class="n">DIM</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">)</span>  <span class="c"># ir_posres_com</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_farray</span><span class="p">(</span><span class="n">DIM</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">)</span>  <span class="c"># ir_posres_comB</span>
-
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># ir_andersen_seed</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c"># ir_shake_tol</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># ir_efep</span>
-
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c"># ir_init_lambda = rdum =</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c"># ir_delta_lambda = rdum =</span>
-
-    <span class="c"># Not relevant here</span>
-    <span class="c"># ir_n_flambda = 0</span>
-    <span class="c"># ir_flambda   = None</span>
-
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c"># ir_sc_alpha</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># ir_sc_power</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c"># ir_sc_sigma</span>
-
-    <span class="c"># not relevant here</span>
-    <span class="c"># ir_sc_sigma_min = 0</span>
-    <span class="c"># ir_nstdhdl = 1</span>
-    <span class="c"># ir_separate_dhdl_file  = 0                            # epdhdlfileYES;</span>
-    <span class="c"># ir_dhdl_derivatives = 0                               # dhdlderivativesYES</span>
-    <span class="c"># ir_dh_hist_size    = 0</span>
-    <span class="c"># ir_dh_hist_spacing = 0.1</span>
-
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># ir_eDisre</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># ir_eDisre_weighting</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_bool</span><span class="p">()</span>  <span class="c"># ir_bDisreMixed</span>
-
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c"># ir_dr_fc</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c"># ir_dr_tau</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># ir_nstdisreout</span>
-
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c"># ir_orires_fc</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c"># ir_orires_tau</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># ir_nstorireout</span>
-
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c"># ir_dihre_fc</span>
-
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c"># ir_em_stepsize</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c"># ir_em_tol</span>
-
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_bool</span><span class="p">()</span>  <span class="c"># ir_bShakeSOR</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># ir_niter</span>
-
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c"># ir_fc_stepsize</span>
-
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># ir_eConstrAlg</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># ir_nProjOrder</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c"># ir_LincsWarnAngle</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># ir_nLincsIter</span>
-
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c"># ir_bd_fric</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># ir_ld_seed</span>
-
-    <span class="n">U</span><span class="o">.</span><span class="n">ndo_rvec</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">DIM</span><span class="p">)</span>  <span class="c"># ir_deform</span>
-
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c"># ir_cos_accel</span>
-
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># ir_userint1</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># ir_userint2</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># ir_userint3</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># ir_userint4</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c"># ir_userreal1</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c"># ir_userreal2</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c"># ir_userreal3</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c"># ir_userreal4</span>
-
-    <span class="c"># pull_stuff</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># ir_ePull</span>
-
-    <span class="c"># grpopts stuff</span>
-    <span class="n">ir_opts_ngtc</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>
-    <span class="c"># not relevant here</span>
-    <span class="c"># ir_opts_nhchainlength = 1</span>
-
-    <span class="n">ir_opts_ngacc</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>
-    <span class="n">ir_opts_ngfrz</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>
-    <span class="n">ir_opts_ngener</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>
-
-    <span class="n">U</span><span class="o">.</span><span class="n">ndo_real</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">ir_opts_ngtc</span><span class="p">)</span>  <span class="c"># ir_nrdf</span>
-    <span class="n">U</span><span class="o">.</span><span class="n">ndo_real</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">ir_opts_ngtc</span><span class="p">)</span>  <span class="c"># ir_ref_t</span>
-    <span class="n">U</span><span class="o">.</span><span class="n">ndo_real</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">ir_opts_ngtc</span><span class="p">)</span>  <span class="c"># ir_tau_t</span>
-
-    <span class="k">if</span> <span class="n">ir_opts_ngfrz</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">U</span><span class="o">.</span><span class="n">ndo_ivec</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">ir_opts_ngfrz</span><span class="p">)</span>  <span class="c"># ir_opts_nFreeze</span>
-
-    <span class="k">if</span> <span class="n">ir_opts_ngacc</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">U</span><span class="o">.</span><span class="n">ndo_rvec</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">ir_opts_ngacc</span><span class="p">)</span>  <span class="c"># ir_opts_acc</span>
-
-    <span class="n">U</span><span class="o">.</span><span class="n">ndo_int</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">ir_opts_ngener</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>  <span class="c"># ir_opts_egp_flags</span>
-    <span class="n">U</span><span class="o">.</span><span class="n">ndo_int</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">ir_opts_ngtc</span><span class="p">)</span>  <span class="c"># ir_opts_annealing</span>
-    <span class="n">ir_opts_anneal_npoints</span> <span class="o">=</span> <span class="n">U</span><span class="o">.</span><span class="n">ndo_int</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">ir_opts_ngtc</span><span class="p">)</span>
-
-    <span class="n">ir_opts_anneal_time</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">ir_opts_anneal_temp</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ir_opts_ngtc</span><span class="p">):</span>
-        <span class="n">k</span> <span class="o">=</span> <span class="n">ir_opts_anneal_npoints</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
-        <span class="n">ir_opts_anneal_time</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">U</span><span class="o">.</span><span class="n">ndo_int</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">k</span><span class="p">))</span>
-        <span class="n">ir_opts_anneal_temp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">U</span><span class="o">.</span><span class="n">ndo_int</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">k</span><span class="p">))</span>
-
-    <span class="c"># Walls</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># ir_nwall</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># ir_nwall_type</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c"># ir_wall_r_linpot</span>
-
-    <span class="c"># ir-&gt;wall_atomtype[0], ir-&gt;wall_atomtype[1]</span>
-    <span class="n">ir_wall_atomtype</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">ir_wall_atomtype</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">())</span>
-    <span class="n">ir_wall_atomtype</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">())</span>
-
-    <span class="c"># ir-&gt;wall_density[0], ir-&gt;wall_density[1]</span>
-    <span class="n">ir_wall_density</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">ir_wall_density</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">())</span>
-    <span class="n">ir_wall_density</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">())</span>
-
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c"># ir_wall_ewald_zfac</span>
-
-    <span class="c"># cosine stuff for electric fields</span>
-    <span class="n">ir_ex_n</span><span class="p">,</span> <span class="n">ir_et_n</span><span class="p">,</span> <span class="n">ir_ex_a</span><span class="p">,</span> <span class="n">ir_ex_phi</span><span class="p">,</span> <span class="n">ir_et_a</span><span class="p">,</span> <span class="n">ir_et_phi</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">DIM</span><span class="p">):</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>
-        <span class="n">ir_ex_n</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>
-        <span class="n">ir_et_n</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-
-        <span class="n">ir_ex_a</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">U</span><span class="o">.</span><span class="n">ndo_real</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
-        <span class="n">ir_ex_phi</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">U</span><span class="o">.</span><span class="n">ndo_real</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
-        <span class="n">ir_et_a</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">U</span><span class="o">.</span><span class="n">ndo_real</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
-        <span class="n">ir_et_phi</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">U</span><span class="o">.</span><span class="n">ndo_real</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
-
-    <span class="c"># QMM stuff</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_bool</span><span class="p">()</span>  <span class="c"># ir_bQMMM</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># ir_bQMMMscheme</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c"># ir_scalefactor</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># ir_opts_ngQM</span>
-
-    <span class="c"># if ir_opts_ngQM &gt; 0:</span>
-    <span class="c"># do_something</span>
-
-    <span class="c"># indicating the parsing finishes properly</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">done</span><span class="p">()</span></div>
 </pre></div>
 
           </div>

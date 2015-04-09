@@ -118,7 +118,7 @@ and unitcell dimensions are correctly interpreted.</p>
 CHARMM use it differently. Currently, MDAnalysis tries to guess the
 correct <strong>format for the unitcell representation</strong> but it can be
 wrong. <strong>Check the unitcell dimensions</strong>, especially for triclinic
-unitcells (see <a class="reference external" href="https://code.google.com/p/mdanalysis/issues/detail?id=187">Issue 187</a> and <a class="reference internal" href="#MDAnalysis.coordinates.DCD.Timestep.dimensions" title="MDAnalysis.coordinates.DCD.Timestep.dimensions"><tt class="xref py py-attr docutils literal"><span class="pre">Timestep.dimensions</span></tt></a>). A
+unitcells (see <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/issues/187">Issue 187</a> and <a class="reference internal" href="#MDAnalysis.coordinates.DCD.Timestep.dimensions" title="MDAnalysis.coordinates.DCD.Timestep.dimensions"><tt class="xref py py-attr docutils literal"><span class="pre">Timestep.dimensions</span></tt></a>). A
 second potential issue are the units of time which are AKMA for the
 <a class="reference internal" href="#MDAnalysis.coordinates.DCD.DCDReader" title="MDAnalysis.coordinates.DCD.DCDReader"><tt class="xref py py-class docutils literal"><span class="pre">DCDReader</span></tt></a> (following CHARMM) but ps for NAMD. As a
 workaround one can employ the configurable
@@ -192,13 +192,13 @@ dimensions carefully, especially when using triclinic
 boxes. Different software packages implement different conventions
 and MDAnalysis is currently implementing the newer NAMD/VMD convention
 and tries to guess the new CHARMM one. Old CHARMM trajectories might
-give wrong unitcell values. For more details see <a class="reference external" href="https://code.google.com/p/mdanalysis/issues/detail?id=187">Issue 187</a>.</p>
+give wrong unitcell values. For more details see <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/issues/187">Issue 187</a>.</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.9.0: </span>Unitcell is now interpreted in the newer NAMD DCD format as <tt class="docutils literal"><span class="pre">[A,</span>
 <span class="pre">gamma,</span> <span class="pre">B,</span> <span class="pre">beta,</span> <span class="pre">alpha,</span> <span class="pre">C]</span></tt> instead of the old MDAnalysis/CHARMM
 ordering <tt class="docutils literal"><span class="pre">[A,</span> <span class="pre">alpha,</span> <span class="pre">B,</span> <span class="pre">beta,</span> <span class="pre">gamma,</span> <span class="pre">C]</span></tt>. We attempt to detect the
-new CHARMM DCD unitcell format (see <a class="reference external" href="https://code.google.com/p/mdanalysis/issues/detail?id=187">Issue 187</a> for a discussion).</p>
+new CHARMM DCD unitcell format (see <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/issues/187">Issue 187</a> for a discussion).</p>
 </div>
 </dd></dl>
 
@@ -258,7 +258,7 @@ new CHARMM DCD unitcell format (see <a class="reference external" href="https://
 and CHARMM use it differently. Currently, MDAnalysis tries to
 guess the correct format for the unitcell representation but it
 can be wrong. <strong>Check the unitcell dimensions</strong>, especially for
-triclinic unitcells (see <a class="reference external" href="https://code.google.com/p/mdanalysis/issues/detail?id=187">Issue 187</a> and
+triclinic unitcells (see <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/issues/187">Issue 187</a> and
 <a class="reference internal" href="#MDAnalysis.coordinates.DCD.Timestep.dimensions" title="MDAnalysis.coordinates.DCD.Timestep.dimensions"><tt class="xref py py-attr docutils literal"><span class="pre">Timestep.dimensions</span></tt></a>). A second potential issue are the
 units of time (TODO).</p>
 </div>
@@ -266,7 +266,7 @@ units of time (TODO).</p>
 <p><span class="versionmodified">Changed in version 0.9.0: </span>The underlying DCD reader (written in C and derived from the
 catdcd/molfile plugin code of VMD) is now reading the unitcell in
 NAMD ordering: <tt class="docutils literal"><span class="pre">[A,</span> <span class="pre">B,</span> <span class="pre">C,</span> <span class="pre">sin(gamma),</span> <span class="pre">sin(beta),</span>
-<span class="pre">sin(alpha)]</span></tt>. See <a class="reference external" href="https://code.google.com/p/mdanalysis/issues/detail?id=187">Issue 187</a> for further details.</p>
+<span class="pre">sin(alpha)]</span></tt>. See <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/issues/187">Issue 187</a> for further details.</p>
 </div>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.DCD.DCDReader.OtherWriter">
@@ -561,7 +561,7 @@ matrix of the box vectors. Writing this matrix to a DCD is currently not
 supported (although reading is supported with the
 <a class="reference internal" href="#MDAnalysis.coordinates.DCD.DCDReader" title="MDAnalysis.coordinates.DCD.DCDReader"><tt class="xref py py-class docutils literal"><span class="pre">DCDReader</span></tt></a>); instead the angle cosines are written,
 which <em>might make the DCD file unusable in CHARMM itself</em>. See
-<a class="reference external" href="https://code.google.com/p/mdanalysis/issues/detail?id=187">Issue 187</a> for further information.</p>
+<a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/issues/187">Issue 187</a> for further information.</p>
 <p class="last">The writing behavior of the <a class="reference internal" href="#MDAnalysis.coordinates.DCD.DCDWriter" title="MDAnalysis.coordinates.DCD.DCDWriter"><tt class="xref py py-class docutils literal"><span class="pre">DCDWriter</span></tt></a> is identical to
 that of the DCD molfile plugin of VMD with the exception that
 by default it will use AKMA time units.</p>

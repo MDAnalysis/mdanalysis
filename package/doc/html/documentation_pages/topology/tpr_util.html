@@ -127,8 +127,7 @@ tuple(iterable) -&gt; tuple initialized from iterable&#8217;s items</p>
 </div>
 <span class="target" id="module-MDAnalysis.topology.tpr.setting"></span><div class="section" id="tprparser-settings">
 <h2>4.20.2. TPRParser settings<a class="headerlink" href="#tprparser-settings" title="Permalink to this headline">¶</a></h2>
-<p>Definition of constants and reading of the TPR header with
-<a class="reference internal" href="#MDAnalysis.topology.tpr.setting.do_inputrec" title="MDAnalysis.topology.tpr.setting.do_inputrec"><tt class="xref py py-func docutils literal"><span class="pre">do_inputrec()</span></tt></a>.</p>
+<p>Definition of constants.</p>
 <p>The currently read file format versions are defined in
 <a class="reference internal" href="#MDAnalysis.topology.tpr.setting.SUPPORTED_VERSIONS" title="MDAnalysis.topology.tpr.setting.SUPPORTED_VERSIONS"><tt class="xref py py-data docutils literal"><span class="pre">SUPPORTED_VERSIONS</span></tt></a>.</p>
 <dl class="data">
@@ -136,11 +135,6 @@ tuple(iterable) -&gt; tuple initialized from iterable&#8217;s items</p>
 <tt class="descclassname">MDAnalysis.topology.tpr.setting.</tt><tt class="descname">SUPPORTED_VERSIONS</tt><em class="property"> = (58, 73, 83)</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.SUPPORTED_VERSIONS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gromacs TPR file format versions that can be read by the TPRParser.</p>
 </dd></dl>
-
-<dl class="function">
-<dt id="MDAnalysis.topology.tpr.setting.do_inputrec">
-<tt class="descclassname">MDAnalysis.topology.tpr.setting.</tt><tt class="descname">do_inputrec</tt><big>(</big><em>data</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/setting.html#do_inputrec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.do_inputrec" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 
 <dl class="data">
 <dt id="MDAnalysis.topology.tpr.setting.ftupd">
@@ -620,6 +614,7 @@ do_mtop -&gt; do_symtab
 </pre></div>
 </div>
 <p>Then compose the stuffs in the format <tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></tt> reads in.</p>
+<p>The module also contains the <a class="reference internal" href="#MDAnalysis.topology.tpr.utils.do_inputrec" title="MDAnalysis.topology.tpr.utils.do_inputrec"><tt class="xref py py-func docutils literal"><span class="pre">do_inputrec()</span></tt></a> to read the TPR header with.</p>
 <dl class="function">
 <dt id="MDAnalysis.topology.tpr.utils.define_unpack_real">
 <tt class="descclassname">MDAnalysis.topology.tpr.utils.</tt><tt class="descname">define_unpack_real</tt><big>(</big><em>prec</em>, <em>data</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#define_unpack_real"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.define_unpack_real" title="Permalink to this definition">¶</a></dt>
@@ -675,6 +670,15 @@ do_mtop -&gt; do_symtab
 <dt id="MDAnalysis.topology.tpr.utils.do_ilists">
 <tt class="descclassname">MDAnalysis.topology.tpr.utils.</tt><tt class="descname">do_ilists</tt><big>(</big><em>data</em>, <em>fver</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#do_ilists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.do_ilists" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.topology.tpr.utils.do_inputrec">
+<tt class="descclassname">MDAnalysis.topology.tpr.utils.</tt><tt class="descname">do_inputrec</tt><big>(</big><em>data</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#do_inputrec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.do_inputrec" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read through header information from TPR file <em>data</em> structure.</p>
+<p>Note that this function does not return any useful data itself. If
+your are interested in using the header information, use this
+functions as a starting point for your own code.</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="MDAnalysis.topology.tpr.utils.do_iparams">

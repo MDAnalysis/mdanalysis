@@ -7,8 +7,6 @@ functions on which the Gromacs TPR topology reader
 :class:`~MDAnalysis.topology.TPRParser.TPRParser` is built.
 
 .. automodule:: MDAnalysis.topology.tpr
-   :members:
-   :undoc-members:
 
 .. automodule:: MDAnalysis.topology.tpr.setting
    :members:

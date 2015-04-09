@@ -2518,6 +2518,25 @@ participates in.</p>
 </dd></dl>
 
 <dl class="attribute">
+<dt id="MDAnalysis.core.AtomGroup.Atom.force">
+<tt class="descname">force</tt><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#Atom.force"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Atom.force" title="Permalink to this definition">¶</a></dt>
+<dd><p>Current force of the atom.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">a (3,) shape numpy array</td>
+</tr>
+</tbody>
+</table>
+<p>A <tt class="xref py py-exc docutils literal"><span class="pre">NoDataError</span></tt> is raised if the trajectory
+does not contain velocities.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.9.2.</span></p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="MDAnalysis.core.AtomGroup.Atom.fragment">
 <tt class="descname">fragment</tt><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#Atom.fragment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Atom.fragment" title="Permalink to this definition">¶</a></dt>
 <dd><p>The fragment that this Atom is part of</p>
@@ -2554,7 +2573,7 @@ participates in.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">a numpy 1x3 array</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">a (3,) shape numpy array</td>
 </tr>
 </tbody>
 </table>
@@ -2579,6 +2598,14 @@ participates in.</p>
 <dt id="MDAnalysis.core.AtomGroup.Atom.velocity">
 <tt class="descname">velocity</tt><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#Atom.velocity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Atom.velocity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Current velocity of the atom.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">a (3,) shape numpy array</td>
+</tr>
+</tbody>
+</table>
 <p>A <tt class="xref py py-exc docutils literal"><span class="pre">NoDataError</span></tt> is raised if the trajectory
 does not contain velocities.</p>
 <div class="versionadded">

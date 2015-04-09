@@ -76,7 +76,7 @@
 <span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
 <span class="c"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8</span>
 <span class="c">#</span>
-<span class="c"># MDAnalysis --- http://mdanalysis.googlecode.com</span>
+<span class="c"># MDAnalysis --- http://www.MDAnalysis.org</span>
 <span class="c"># Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein</span>
 <span class="c"># and contributors (see AUTHORS for the full list)</span>
 <span class="c">#</span>
@@ -191,7 +191,7 @@
 <span class="sd">.. _AMBER netcdf format: http://ambermd.org/netcdf/nctraj.html</span>
 <span class="sd">.. _AMBER netcdf: http://ambermd.org/netcdf/nctraj.html</span>
 <span class="sd">.. _NetCDF: http://www.unidata.ucar.edu/software/netcdf</span>
-<span class="sd">.. _Issue Tracker: http://code.google.com/p/mdanalysis/issues/list</span>
+<span class="sd">.. _Issue Tracker: https://github.com/MDAnalysis/mdanalysis/issues</span>
 <span class="sd">.. _MDAnalysis mailinglist: http://groups.google.com/group/mdnalysis-discussion</span>
 
 
@@ -217,8 +217,8 @@
     <span class="c"># will raise a proper ImportError if they are called without the netCDF4 library present.</span>
     <span class="c"># See Issue 122 for a discussion.</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;Failed to import netCDF4; AMBER NETCDFReader/Writer will not work. &quot;</span>
-                 <span class="s">&quot;Install netCDF4 from http://code.google.com/p/netcdf4-python/.&quot;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;See also https://code.google.com/p/mdanalysis/wiki/netcdf&quot;</span><span class="p">)</span>
+                 <span class="s">&quot;Install netCDF4 from https://github.com/Unidata/netcdf4-python.&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;See also https://github.com/MDAnalysis/mdanalysis/wiki/netcdf&quot;</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="Timestep"><a class="viewcode-back" href="../../../documentation_pages/coordinates/TRJ.html#MDAnalysis.coordinates.TRJ.Timestep">[docs]</a><span class="k">class</span> <span class="nc">Timestep</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">Timestep</span><span class="p">):</span>
@@ -598,11 +598,11 @@
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">fatal</span><span class="p">(</span>
                 <span class="s">&quot;netcdf4-python with the netCDF and HDF5 libraries must be installed for the AMBER ncdf Reader.&quot;</span><span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">fatal</span><span class="p">(</span><span class="s">&quot;See installation instructions at https://code.google.com/p/mdanalysis/wiki/netcdf&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">fatal</span><span class="p">(</span><span class="s">&quot;See installation instructions at https://github.com/MDAnalysis/mdanalysis/wiki/netcdf&quot;</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s">&quot;netCDF4 package missing.</span><span class="se">\n</span><span class="s">&quot;</span>
                               <span class="s">&quot;netcdf4-python with the netCDF and HDF5 libraries must be installed for the AMBER ncdf &quot;</span>
                               <span class="s">&quot;Reader.</span><span class="se">\n</span><span class="s">&quot;</span>
-                              <span class="s">&quot;See installation instructions at https://code.google.com/p/mdanalysis/wiki/netcdf&quot;</span><span class="p">)</span>
+                              <span class="s">&quot;See installation instructions at https://github.com/MDAnalysis/mdanalysis/wiki/netcdf&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
         <span class="n">convert_units</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;convert_units&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
@@ -865,20 +865,20 @@
 <span class="sd">        Based on Joshua Adelman&#39;s `netcdf4storage.py`_ in `Issue 109`_.</span>
 
 <span class="sd">        .. _`Issue 109`:</span>
-<span class="sd">           http://code.google.com/p/mdanalysis/issues/detail?id=109#c2</span>
+<span class="sd">           https://github.com/MDAnalysis/mdanalysis/issues/109</span>
 <span class="sd">        .. _`netcdf4storage.py`:</span>
-<span class="sd">           http://code.google.com/p/mdanalysis/issues/attachmentText?id=109&amp;aid=1090002000&amp;name=netcdf4storage.py</span>
+<span class="sd">           https://storage.googleapis.com/google-code-attachments/mdanalysis/issue-109/comment-2/netcdf4storage.py</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="kn">import</span> <span class="nn">netCDF4</span> <span class="kn">as</span> <span class="nn">netcdf</span>
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">fatal</span><span class="p">(</span>
                 <span class="s">&quot;netcdf4-python with the netCDF and HDF5 libraries must be installed for the AMBER ncdf Writer.&quot;</span><span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">fatal</span><span class="p">(</span><span class="s">&quot;See installation instructions at https://code.google.com/p/mdanalysis/wiki/netcdf&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">fatal</span><span class="p">(</span><span class="s">&quot;See installation instructions at https://github.com/MDAnalysis/mdanalysis/wiki/netcdf&quot;</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s">&quot;netCDF4 package missing.</span><span class="se">\n</span><span class="s">&quot;</span>
                               <span class="s">&quot;netcdf4-python with the netCDF and HDF5 libraries must be installed for the AMBER ncdf &quot;</span>
                               <span class="s">&quot;Writer.</span><span class="se">\n</span><span class="s">&quot;</span>
-                              <span class="s">&quot;See installation instructions at https://code.google.com/p/mdanalysis/wiki/netcdf&quot;</span><span class="p">)</span>
+                              <span class="s">&quot;See installation instructions at https://github.com/MDAnalysis/mdanalysis/wiki/netcdf&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__first_frame</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="n">errno</span><span class="o">.</span><span class="n">EIO</span><span class="p">,</span> <span class="s">&quot;Attempt to write to closed file {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">))</span>
@@ -962,9 +962,9 @@
 <span class="sd">        Based on Joshua Adelman&#39;s `netcdf4storage.py`_ in `Issue 109`_.</span>
 
 <span class="sd">        .. _`Issue 109`:</span>
-<span class="sd">           http://code.google.com/p/mdanalysis/issues/detail?id=109#c2</span>
+<span class="sd">           https://github.com/MDAnalysis/mdanalysis/issues/109</span>
 <span class="sd">        .. _`netcdf4storage.py`:</span>
-<span class="sd">           http://code.google.com/p/mdanalysis/issues/attachmentText?id=109&amp;aid=1090002000&amp;name=netcdf4storage.py</span>
+<span class="sd">           https://storage.googleapis.com/google-code-attachments/mdanalysis/issue-109/comment-2/netcdf4storage.py</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">,</span> <span class="s">&quot;trjfile must be open in order to write to it&quot;</span>
 
