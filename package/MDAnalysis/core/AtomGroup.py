@@ -2258,9 +2258,13 @@ class AtomGroup(object):
     def wrap(self, compound="atoms", center="com", box=None):
         """Shift the contents of this AtomGroup back into the unit cell.
 
+        This is a more powerful version of :meth:`packIntoBox`, allowing
+        groups of atoms to be kept together through the process.
+
         :Keywords:
            *compound*
-               The group which will be kept together through the shifting process. [``atoms``]
+               The group which will be kept together through the shifting
+               process. [``atoms``]
                Possible options:
                    * ``atoms``
                    * ``group`` - This AtomGroup
@@ -2270,15 +2274,24 @@ class AtomGroup(object):
            *center*
                How to define the center of a given group of atoms [``com``]
            *box*
-               Unit cell information.  If not provided, the values from Timestep
-               will be used.
+               Unit cell information.  If not provided, the values from
+               Timestep will be used.
 
-        This is a more powerful version of :meth:`packIntoBox`.
-        When specifying a *compound*, the same shift is applied to all atoms within
-        this compound, making it not be broken by the shift.
-        This might however mean that all atoms from the compound are not inside the
-        unit cell, but rather the center of the compound is.
-        Compounds available for use include *atoms*, *residues*, *segments* and *fragments*
+        When specifying a *compound*, the translation is calculated based on
+        each compound. The same translation is applied to all atoms
+        within this compound, meaning it will not be broken by the shift.
+        This might however mean that all atoms from the compound are not
+        inside the unit cell, but rather the center of the compound is.
+        Compounds available for use are *atoms*, *residues*,
+        *segments* and *fragments*
+
+        *center* allows the definition of the center of each group to be
+        specified.  This can be either 'com' for center of mass, or 'cog'
+        for center of geometry.
+
+        *box* allows a unit cell to be given for the transformation.  If not
+        specified, an the dimensions information from the current Timestep
+        will be used.
 
         .. Note::
            wrap with all default keywords is identical to :meth:`packIntoBox`
@@ -2299,14 +2312,17 @@ class AtomGroup(object):
         elif compound.lower() == 'fragments':
             objects = self.fragments
         else:
-            raise ValueError("Unrecognised compound definition")
+            raise ValueError("Unrecognised compound definition: {}"
+                             "Please use one of 'group' 'residues' 'segments'"
+                             "or 'fragments'".format(compound))
 
         if center.lower() in ('com', 'centerofmass'):
             centers = numpy.vstack([o.centerOfMass() for o in objects])
         elif center.lower() in ('cog', 'centroid', 'centerofgeometry'):
             centers = numpy.vstack([o.centerOfGeometry() for o in objects])
         else:
-            raise ValueError("Unrecognised center definition")
+            raise ValueError("Unrecognised center definition: {}"
+                             "Please use one of 'com' or 'cog'".format(center))
         centers = centers.astype(numpy.float32)
 
         if box is None:
