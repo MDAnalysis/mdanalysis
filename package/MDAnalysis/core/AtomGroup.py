@@ -1706,12 +1706,14 @@ class AtomGroup(object):
         .. versionadded:: 0.7.3
         .. versionchanged:: 0.8 Added *pbc* keyword
         """
+        from ..core import distances
+
         if len(self) != 2:
             raise ValueError("distance computation only makes sense for a group with exactly 2 atoms")
         if not pbc:
-            return numpy.linalg.norm(self[0].pos - self[1].pos)
+            return util.norm(self[0].pos - self[1].pos)
         else:
-            return MDAnalysis.core.distances.self_distance_array(self.coordinates(), box=self.dimensions)[0]
+            return distances.self_distance_array(self.coordinates(), box=self.dimensions)[0]
 
     def angle(self):
         """Returns the angle in degrees between atoms 0, 1, 2.
@@ -1735,7 +1737,7 @@ class AtomGroup(object):
         a = self[0].pos - self[1].pos
         b = self[2].pos - self[1].pos
         return numpy.rad2deg(numpy.arccos(numpy.dot(a, b) /
-                                          (numpy.linalg.norm(a) * numpy.linalg.norm(b))))
+                                          (util.norm(a) * util.norm(b))))
 
     def improper(self):
         """Returns the improper dihedral between 4 atoms.
@@ -2230,23 +2232,110 @@ class AtomGroup(object):
         .. versionadded:: 0.8
 
         """
+        from ..core import distances
+
         if box is None:  #Try and auto detect box dimensions
             box = self.dimensions  # Can accept any box
 
         if box.shape == (3, 3):
-            if (box.diagonal() == 0.0).any():  # for a vector representation, diagonal cannot be zero
-                raise ValueError("One or more box dimensions is zero.  You can specify a boxsize with 'box ='")
+            # for a vector representation, diagonal cannot be zero
+            if (box.diagonal() == 0.0).any():
+                raise ValueError("One or more box dimensions is zero."
+                                 "  You can specify a boxsize with 'box ='")
         else:
             if (box == 0).any():  #Check that a box dimension isn't zero
-                raise ValueError("One or more box dimensions is zero.  You can specify a boxsize with 'box='")
+                raise ValueError("One or more box dimensions is zero."
+                                 "  You can specify a boxsize with 'box='")
 
-        coords = self.universe.trajectory.ts._pos[self.indices()]
+        coords = self.universe.coord._pos[self.indices()]
         if not inplace:
-            return MDAnalysis.core.distances.applyPBC(coords, box)
+            return distances.applyPBC(coords, box)
 
-        self.universe.trajectory.ts._pos[self.indices()] = MDAnalysis.core.distances.applyPBC(coords, box)
+        self.universe.coord._pos[self.indices()] = distances.applyPBC(coords, box)
 
-        return self.universe.trajectory.ts._pos[self.indices()]
+        return self.universe.coord._pos[self.indices()]
+
+    def wrap(self, compound="atoms", center="com", box=None):
+        """Shift the contents of this AtomGroup back into the unit cell.
+
+        This is a more powerful version of :meth:`packIntoBox`, allowing
+        groups of atoms to be kept together through the process.
+
+        :Keywords:
+           *compound*
+               The group which will be kept together through the shifting
+               process. [``atoms``]
+               Possible options:
+                   * ``atoms``
+                   * ``group`` - This AtomGroup
+                   * ``residues``
+                   * ``segments``
+                   * ``fragments``
+           *center*
+               How to define the center of a given group of atoms [``com``]
+           *box*
+               Unit cell information.  If not provided, the values from
+               Timestep will be used.
+
+        When specifying a *compound*, the translation is calculated based on
+        each compound. The same translation is applied to all atoms
+        within this compound, meaning it will not be broken by the shift.
+        This might however mean that all atoms from the compound are not
+        inside the unit cell, but rather the center of the compound is.
+        Compounds available for use are *atoms*, *residues*,
+        *segments* and *fragments*
+
+        *center* allows the definition of the center of each group to be
+        specified.  This can be either 'com' for center of mass, or 'cog'
+        for center of geometry.
+
+        *box* allows a unit cell to be given for the transformation.  If not
+        specified, an the dimensions information from the current Timestep
+        will be used.
+
+        .. Note::
+           wrap with all default keywords is identical to :meth:`packIntoBox`
+
+        .. versionadded:: 0.9.2
+        """
+        from ..core import distances
+
+        if compound.lower() == "atoms":
+            return self.packIntoBox(box=box)
+
+        if compound.lower() == 'group':
+            objects = [self.atoms]
+        elif compound.lower() == 'residues':
+            objects = self.residues
+        elif compound.lower() == 'segments':
+            objects = self.segments
+        elif compound.lower() == 'fragments':
+            objects = self.fragments
+        else:
+            raise ValueError("Unrecognised compound definition: {}"
+                             "Please use one of 'group' 'residues' 'segments'"
+                             "or 'fragments'".format(compound))
+
+        if center.lower() in ('com', 'centerofmass'):
+            centers = numpy.vstack([o.centerOfMass() for o in objects])
+        elif center.lower() in ('cog', 'centroid', 'centerofgeometry'):
+            centers = numpy.vstack([o.centerOfGeometry() for o in objects])
+        else:
+            raise ValueError("Unrecognised center definition: {}"
+                             "Please use one of 'com' or 'cog'".format(center))
+        centers = centers.astype(numpy.float32)
+
+        if box is None:
+            box = self.dimensions
+
+        # calculate shift per object center
+        dests = distances.applyPBC(centers, box=box)
+        shifts = dests - centers
+
+        for o, s in itertools.izip(objects, shifts):
+            # Save some needless shifts
+            if not all(s == 0.0):
+                o.translate(s)
 
     def selectAtoms(self, sel, *othersel, **selgroups):
         """Selection of atoms using the MDAnalysis selection syntax.
