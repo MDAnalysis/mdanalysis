@@ -27,8 +27,9 @@ The rules for this file:
   * "applications" were removed from the mdanalysis source code
     repository and now exist as independent repositories under
     https://github.com/MDAnalysis/
+  * Using a non-existent atom name as an instant selector now raises
+    AttributeError instead of SelectionError (Issue 220)
 
-  Fixes
 
 03/27/15  manuel.nuno.melo, richardjgowers, comconadin
   * 0.9.1
