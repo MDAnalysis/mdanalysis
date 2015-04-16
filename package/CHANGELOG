@@ -18,6 +18,8 @@ The rules for this file:
   * Can now set velocity from Atom object. (Issue 221)
   * Atom object now has force attribute for getting/setting forces (requires a
     trajectory with forces) (Issue 221)
+  * Added wrap method. Wrap allows the centers of groups of atoms to be
+    moved within the primary unit cell without breaking up the group. (Issue 190)
 
   Changes
 

@@ -1593,13 +1593,13 @@ class TestFragments(TestCase):
     def setUp(self):
         self.u = MDAnalysis.Universe(PSF, DCD)
         # To create a fragment with only one atom in, remove a bond
-        self.u._psf['_bonds'].remove((2, 0))
+        self.u._topology['bonds'].remove((2, 0))
 
     def tearDown(self):
         del self.u
 
     def test_nobondsfail(self):
-        u2 = MDAnalysis.Universe(TRZ_psf, TRZ)
+        u2 = MDAnalysis.Universe(XYZ_mini)
 
         def query_frag(u):
             return u.fragments
@@ -1732,3 +1732,65 @@ class TestCustomReaders(TestCase):
         u = MDAnalysis.Universe(TRZ_psf, TRZ, format=MDAnalysis.coordinates.TRZ.TRZReader,
                                 topology_format=MDAnalysis.topology.PSFParser.PSFParser)
         assert_equal(len(u.atoms), 8184)
+
+class TestWrap(TestCase):
+    def setUp(self):
+        self.u = MDAnalysis.Universe(TRZ_psf, TRZ)
+        self.ag = self.u.atoms[:100]
+
+    def tearDown(self):
+        del self.u
+        del self.ag
+
+    def test_wrap_comp_fail(self):
+        assert_raises(ValueError, self.ag.wrap, compound='strawberries')
+
+    def test_wrap_cent_fail(self):
+        assert_raises(ValueError, self.ag.wrap, compound='residues', center='avacado')
+
+    def test_wrap_box_fail(self):
+        assert_raises(ValueError, self.ag.wrap, box=numpy.array([0, 1]))
+
+    def _in_box(self, coords):
+        """Check that a set of coordinates are 0.0 <= r <= box"""
+        box = self.u.dimensions[:3]
+
+        return (coords >= 0.0).all() and (coords <= box).all()
+
+    def test_wrap_atoms(self):
+        ag = self.u.atoms[100:200]
+        ag.wrap(compound='atoms')
+
+        assert_equal(self._in_box(ag.positions), True)
+
+    def test_wrap_group(self):
+        ag = self.u.atoms[:100]
+        ag.wrap(compound='group')
+
+        cen = ag.centerOfMass()
+
+        assert_equal(self._in_box(cen), True)
+
+    def test_wrap_residues(self):
+        ag = self.u.atoms[300:400]
+        ag.wrap(compound='residues')
+
+        cen = numpy.vstack([r.centerOfMass() for r in ag.residues])
+
+        assert_equal(self._in_box(cen), True)
+
+    def test_wrap_segments(self):
+        ag = self.u.atoms[1000:1200]
+        ag.wrap(compound='segments')
+
+        cen = numpy.vstack([s.centerOfMass() for s in ag.segments])
+
+        assert_equal(self._in_box(cen), True)
+
+    def test_wrap_fragments(self):
+        ag = self.u.atoms[:250]
+        ag.wrap(compound='fragments')
+
+        cen = numpy.vstack([f.centerOfMass() for f in ag.fragments])
+
+        assert_equal(self._in_box(cen), True)

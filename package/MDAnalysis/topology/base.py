@@ -44,8 +44,10 @@ class TopologyReader(IObase):
        * :exc:`ValueError` upon failing to make sense of the read data
 
     .. versionadded:: 0.9.0
+    .. versionchanged:: 0.9.2
+       Added keyword 'universe' to pass to Atom creation.
     """
-    def __init__(self, filename, guess_bonds_mode=False, **kwargs):
+    def __init__(self, filename, universe=None, guess_bonds_mode=False, **kwargs):
         """Standard arguments for a TopologyReader:
 
         :Arguments:
@@ -54,7 +56,9 @@ class TopologyReader(IObase):
                name of the topology file
 
         :Keywords:
-
+           *universe*
+               Supply a Universe to the Parser.  This then passes it to the
+               atom instances that are created within parsers.
            *guess_bonds_mode*
                * ``True``: attempt to derive bonds from a distance search if no
                  connectivity information is available or parsed
@@ -63,10 +67,12 @@ class TopologyReader(IObase):
                * default: ``False``
            *kwargs*
                Other keyword arguments that can vary with the specific format.
+               These are stored as self.kwargs
 
         """
         self.filename = filename
         self.guess_bonds_mode = guess_bonds_mode
+        self._u = universe
         self.kwargs = kwargs
 
     def parse(self):

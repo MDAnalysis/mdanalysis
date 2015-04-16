@@ -33,11 +33,13 @@ Classes
    :inherited-members:
 
 """
+from __future__ import absolute_import
+
 import os
 
-from MDAnalysis.core.util import openany
-from MDAnalysis.core.AtomGroup import Atom
-from MDAnalysis.topology.core import guess_atom_type, guess_atom_mass, guess_atom_charge
+from ..core.util import openany
+from ..core.AtomGroup import Atom
+from .core import guess_atom_type, guess_atom_mass, guess_atom_charge
 from .base import TopologyReader
 
 
@@ -110,7 +112,7 @@ class MOL2Parser(TopologyReader):
             mass = guess_atom_mass(element)
             # atom type is sybl atom type
             atoms.append(Atom(aid, name, atom_type, resname,
-                              resid, "X", mass, charge))
+                              resid, "X", mass, charge, universe=self._u))
             #guess_atom_type(a.split()[1]
 
         bonds = []
@@ -122,7 +124,7 @@ class MOL2Parser(TopologyReader):
             bond = tuple(sorted([a0, a1]))
             bondorder[bond] = bond_type
             bonds.append(bond)
-        structure = {"_atoms": atoms,
-                     "_bonds": bonds,
-                     "_bondorder": bondorder}
+        structure = {"atoms": atoms,
+                     "bonds": bonds,
+                     "bondorder": bondorder}
         return structure

@@ -106,12 +106,13 @@ before 4.x)
 .. _`Issue 2`: https://github.com/MDAnalysis/mdanalysis/issues/2
 .. _TPRReaderDevelopment: https://github.com/MDAnalysis/mdanalysis/wiki/TPRReaderDevelopment
 """
+from __future__ import absolute_import
 __author__ = "Zhuyi Xue"
 __copyright__ = "GNU Public Licence, v2"
 
 import xdrlib
 
-import MDAnalysis.core.util
+from ..core.util import anyopen
 from .tpr import utils as U
 from .base import TopologyReader
 
@@ -137,7 +138,7 @@ class TPRParser(TopologyReader):
         #ndo_rvec = U.ndo_rvec
         #ndo_ivec = U.ndo_ivec
 
-        tprf = MDAnalysis.core.util.anyopen(self.filename).read()
+        tprf = anyopen(self.filename).read()
         data = xdrlib.Unpacker(tprf)
         try:
             th = U.read_tpxheader(data)                    # tpxheader
@@ -163,13 +164,13 @@ class TPRParser(TopologyReader):
             U.fver_err(V)
 
         if th.bTop:
-            tpr_top = U.do_mtop(data, V)
+            tpr_top = U.do_mtop(data, V, self._u)
             structure = {
-                '_atoms': tpr_top.atoms,
-                '_bonds': tpr_top.bonds,
-                '_angles': tpr_top.angles,
-                '_dihe': tpr_top.dihe,
-                '_impr': tpr_top.impr
+                'atoms': tpr_top.atoms,
+                'bonds': tpr_top.bonds,
+                'angles': tpr_top.angles,
+                'torsions': tpr_top.dihe,
+                'impropers': tpr_top.impr
             }
         else:
             msg = "{0}: No topology found in tpr file".format(self.filename)

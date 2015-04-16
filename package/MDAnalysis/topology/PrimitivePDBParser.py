@@ -48,14 +48,14 @@ Classes
    :inherited-members:
 
 """
+from __future__ import absolute_import
 
 import numpy as np
 
-from MDAnalysis.core.AtomGroup import Atom
-from MDAnalysis.topology.core import (guess_atom_type, guess_atom_mass,
-                                      guess_atom_charge, guess_bonds)
-import MDAnalysis.coordinates.PDB
-from MDAnalysis.core.util import openany
+from ..core.AtomGroup import Atom
+from .core import (guess_atom_type, guess_atom_mass,
+                   guess_atom_charge, guess_bonds)
+from ..core.util import openany
 from .base import TopologyReader
 
 
@@ -66,7 +66,8 @@ class PrimitivePDBParser(TopologyReader):
     """
     def __init__(self, filename, **kwargs):
         super(PrimitivePDBParser, self).__init__(filename, **kwargs)
-        self.PDBReader = MDAnalysis.coordinates.PDB.PrimitivePDBReader
+        from ..coordinates.PDB import PrimitivePDBReader
+        self.PDBReader = PrimitivePDBReader
 
     def parse(self):
         """Parse atom information from PDB file *filename*.
@@ -78,15 +79,23 @@ class PrimitivePDBParser(TopologyReader):
                      read with
                      :class:`MDAnalysis.coordinates.PDB.PrimitivePDBReader`.
         """
-        self.structure = {}
+        structure = {}
         try:
             pdb = self.PDBReader(self.filename)
         except ValueError:
             raise IOError("Failed to open and read PDB file")
 
-        self._parseatoms(pdb)
-        self._parsebonds(pdb)
-        return self.structure
+        atoms = self._parseatoms(pdb)
+        structure['atoms'] = atoms
+
+        if self.guess_bonds_mode:
+            guessed_bonds = self._guess_bonds(pdb, atoms)
+            structure['guessed_bonds'] = guessed_bonds
+
+        bonds = self._parsebonds(pdb, atoms)
+        structure['bonds'] = bonds
+
+        return structure
 
     def _parseatoms(self, pdb):
         atoms = []
@@ -111,23 +120,23 @@ class PrimitivePDBParser(TopologyReader):
                 atoms.append(Atom(iatom, atomname, atomtype, resname, resid,
                                   segid, mass, charge,
                                   bfactor=bfactor, serial=atom.serial,
-                                  altLoc=altLoc))
+                                  altLoc=altLoc, universe=self._u))
             # TER atoms
             #elif len(atom.__dict__) == 5:
             #    pass
             #    #atoms.append(None)
-        self.structure["_atoms"] = atoms
+        return atoms
 
-    def _parsebonds(self, primitive_pdb_reader):
-        if self.guess_bonds_mode:
-            guessed_bonds = guess_bonds(self.structure["_atoms"],
-                                        np.array(primitive_pdb_reader.ts))
-            self.structure["_guessed_bonds"] = guessed_bonds
+    def _guess_bonds(self, primitive_pdb_reader, atoms):
+        guessed_bonds = guess_bonds(atoms,
+                                    np.array(primitive_pdb_reader.ts))
+        return guessed_bonds
 
+    def _parsebonds(self, primitive_pdb_reader, atoms):
         # Mapping between the atom array indicies a.number and atom ids
         # (serial) in the original PDB file
 
-        mapping = dict((a.serial, a.number) for a in self.structure["_atoms"])
+        mapping = dict((a.serial, a.number) for a in atoms)
 
         bonds = set()
         with openany(self.filename, "r") as fname:
@@ -139,4 +148,6 @@ class PrimitivePDBParser(TopologyReader):
                     bond = tuple([mapping[atom], mapping[a]])
                     bonds.add(bond)
 
-        self.structure["_bonds"] = tuple(bonds)
+        bonds = tuple(bonds)
+
+        return bonds

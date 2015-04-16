@@ -386,7 +386,7 @@ class Atom(object):
 
     def __init__(self, number, name, type, resname, resid, segid, mass, charge,
                  residue=None, segment=None, radius=None, bfactor=None,
-                 resnum=None, serial=None, altLoc=None):
+                 resnum=None, serial=None, altLoc=None, universe=None):
         self.number = number
         self.name = name
         self.altLoc = altLoc
@@ -402,7 +402,7 @@ class Atom(object):
         self.radius = radius
         self.bfactor = bfactor
         self.serial = serial
-        self.__universe = None
+        self.__universe = universe
 
     def __repr__(self):
         return ("<Atom {idx}: {name} of type {t} of resname {rname}, "
@@ -1721,12 +1721,14 @@ class AtomGroup(object):
         .. versionadded:: 0.7.3
         .. versionchanged:: 0.8 Added *pbc* keyword
         """
+        from ..core import distances
+
         if len(self) != 2:
             raise ValueError("distance computation only makes sense for a group with exactly 2 atoms")
         if not pbc:
-            return numpy.linalg.norm(self[0].pos - self[1].pos)
+            return util.norm(self[0].pos - self[1].pos)
         else:
-            return MDAnalysis.core.distances.self_distance_array(self.coordinates(), box=self.dimensions)[0]
+            return distances.self_distance_array(self.coordinates(), box=self.dimensions)[0]
 
     def angle(self):
         """Returns the angle in degrees between atoms 0, 1, 2.
@@ -1750,7 +1752,7 @@ class AtomGroup(object):
         a = self[0].pos - self[1].pos
         b = self[2].pos - self[1].pos
         return numpy.rad2deg(numpy.arccos(numpy.dot(a, b) /
-                                          (numpy.linalg.norm(a) * numpy.linalg.norm(b))))
+                                          (util.norm(a) * util.norm(b))))
 
     def improper(self):
         """Returns the improper dihedral between 4 atoms.
@@ -2245,23 +2247,110 @@ class AtomGroup(object):
         .. versionadded:: 0.8
 
         """
+        from ..core import distances
+
         if box is None:  #Try and auto detect box dimensions
             box = self.dimensions  # Can accept any box
 
         if box.shape == (3, 3):
-            if (box.diagonal() == 0.0).any():  # for a vector representation, diagonal cannot be zero
-                raise ValueError("One or more box dimensions is zero.  You can specify a boxsize with 'box ='")
+            # for a vector representation, diagonal cannot be zero
+            if (box.diagonal() == 0.0).any():
+                raise ValueError("One or more box dimensions is zero."
+                                 "  You can specify a boxsize with 'box ='")
         else:
             if (box == 0).any():  #Check that a box dimension isn't zero
-                raise ValueError("One or more box dimensions is zero.  You can specify a boxsize with 'box='")
+                raise ValueError("One or more box dimensions is zero."
+                                 "  You can specify a boxsize with 'box='")
 
-        coords = self.universe.trajectory.ts._pos[self.indices()]
+        coords = self.universe.coord._pos[self.indices()]
         if not inplace:
-            return MDAnalysis.core.distances.applyPBC(coords, box)
+            return distances.applyPBC(coords, box)
 
-        self.universe.trajectory.ts._pos[self.indices()] = MDAnalysis.core.distances.applyPBC(coords, box)
+        self.universe.coord._pos[self.indices()] = distances.applyPBC(coords, box)
 
-        return self.universe.trajectory.ts._pos[self.indices()]
+        return self.universe.coord._pos[self.indices()]
+
+    def wrap(self, compound="atoms", center="com", box=None):
+        """Shift the contents of this AtomGroup back into the unit cell.
+
+        This is a more powerful version of :meth:`packIntoBox`, allowing
+        groups of atoms to be kept together through the process.
+
+        :Keywords:
+           *compound*
+               The group which will be kept together through the shifting
+               process. [``atoms``]
+               Possible options:
+                   * ``atoms``
+                   * ``group`` - This AtomGroup
+                   * ``residues``
+                   * ``segments``
+                   * ``fragments``
+           *center*
+               How to define the center of a given group of atoms [``com``]
+           *box*
+               Unit cell information.  If not provided, the values from
+               Timestep will be used.
+
+        When specifying a *compound*, the translation is calculated based on
+        each compound. The same translation is applied to all atoms
+        within this compound, meaning it will not be broken by the shift.
+        This might however mean that all atoms from the compound are not
+        inside the unit cell, but rather the center of the compound is.
+        Compounds available for use are *atoms*, *residues*,
+        *segments* and *fragments*
+
+        *center* allows the definition of the center of each group to be
+        specified.  This can be either 'com' for center of mass, or 'cog'
+        for center of geometry.
+
+        *box* allows a unit cell to be given for the transformation.  If not
+        specified, an the dimensions information from the current Timestep
+        will be used.
+
+        .. Note::
+           wrap with all default keywords is identical to :meth:`packIntoBox`
+
+        .. versionadded:: 0.9.2
+        """
+        from ..core import distances
+
+        if compound.lower() == "atoms":
+            return self.packIntoBox(box=box)
+
+        if compound.lower() == 'group':
+            objects = [self.atoms]
+        elif compound.lower() == 'residues':
+            objects = self.residues
+        elif compound.lower() == 'segments':
+            objects = self.segments
+        elif compound.lower() == 'fragments':
+            objects = self.fragments
+        else:
+            raise ValueError("Unrecognised compound definition: {}"
+                             "Please use one of 'group' 'residues' 'segments'"
+                             "or 'fragments'".format(compound))
+
+        if center.lower() in ('com', 'centerofmass'):
+            centers = numpy.vstack([o.centerOfMass() for o in objects])
+        elif center.lower() in ('cog', 'centroid', 'centerofgeometry'):
+            centers = numpy.vstack([o.centerOfGeometry() for o in objects])
+        else:
+            raise ValueError("Unrecognised center definition: {}"
+                             "Please use one of 'com' or 'cog'".format(center))
+        centers = centers.astype(numpy.float32)
+
+        if box is None:
+            box = self.dimensions
+
+        # calculate shift per object center
+        dests = distances.applyPBC(centers, box=box)
+        shifts = dests - centers
+
+        for o, s in itertools.izip(objects, shifts):
+            # Save some needless shifts
+            if not all(s == 0.0):
+                o.translate(s)
 
     def selectAtoms(self, sel, *othersel, **selgroups):
         """Selection of atoms using the MDAnalysis selection syntax.
@@ -2979,7 +3068,8 @@ class Universe(object):
       :attr:`Universe.trajectory.ts` is the current time step
     - :attr:`Universe.dimensions`: current system dimensions (simulation unit cell, if
       set in the trajectory)
-    - bonds, angles, dihedrals, impropers (low level access through :attr:`Universe._psf`)
+    - bonds, angles, dihedrals, impropers
+      (low level access through :attr:`Universe._topology`)
 
     .. Note::
 
@@ -3135,9 +3225,9 @@ class Universe(object):
                                     permissive=perm,
                                     tformat=topology_format)
         try:
-            with parser(self.filename,
+            with parser(self.filename, universe=self,
                         guess_bonds_mode=kwargs.get('bonds', False)) as p:
-                self._psf = p.parse()
+                self._topology = p.parse()
         except IOError as err:
             raise IOError("Failed to load from the topology file {}"
                           " with parser {}.\n"
@@ -3177,16 +3267,14 @@ class Universe(object):
         self._cache[name] = value
 
     def _init_topology(self):
-        """Populate Universe attributes from the structure dictionary *_psf*."""
-        self.atoms = AtomGroup(self._psf["_atoms"])
+        """Populate Universe attributes from the structure dictionary
+        *_topology*.
+        """
+        self.atoms = AtomGroup(self._topology['atoms'])
 
         # XXX: add H-bond information here if available from psf (or other sources)
         # segment instant selectors
         self._build_segments()
-
-        # Let atoms access the universe
-        for a in self.atoms:
-            a.universe = self
 
     def _build_segments(self):
         """Parse list of atoms into segments.
@@ -3216,7 +3304,7 @@ class Universe(object):
         self.universe = self  # for Writer.write(universe), see Issue 49
 
     def _init_bonds(self):
-        """Set bond information from u._psf['_bonds']
+        """Set bond information from u._topology['bonds']
 
         .. versionchanged 0.9.0
            Now returns a :class:`~MDAnalysis.topology.core.TopologyGroup`
@@ -3231,11 +3319,11 @@ class Universe(object):
 
         bondlist = set()
 
-        defined_bonds = fix_order(self._psf.get('_bonds', set()))
-        guessed_bonds = fix_order(self._psf.get('_guessed_bonds', set()))
+        defined_bonds = fix_order(self._topology.get('bonds', set()))
+        guessed_bonds = fix_order(self._topology.get('guessed_bonds', set()))
         # Some topologies define an order for bonds, this is stored
         # as dict of bondtuple:value
-        bondorder = self._psf.get('_bondorder', False)
+        bondorder = self._topology.get('bondorder', False)
         # Defined bonds take priority, remove bonds in 'guessed' that are in 'defined'
         guessed_bonds.difference_update(defined_bonds)
 
@@ -3261,14 +3349,14 @@ class Universe(object):
             return None
 
     def _init_angles(self):
-        """Builds angle information from u._psf['_angles']
+        """Builds angle information from u._topology['angles']
 
         Returns ``None`` if no angle information is present, otherwise
         returns a :class:`~MDAnalysis.topology.core.TopologyGroup`
 
         .. versionadded 0.9.0
         """
-        angle_entries = self._psf.get('_angles', None)
+        angle_entries = self._topology.get('angles', None)
         if angle_entries is None:
             return None
         else:
@@ -3282,14 +3370,14 @@ class Universe(object):
                 return None
 
     def _init_torsions(self):
-        """Builds torsion information from u._psf['_dihe']
+        """Builds torsion information from u._topology['torsions']
 
         Returns ``None`` if no torsion information is present, otherwise
         returns a :class:`~MDAnalysis.topology.core.TopologyGroup`
 
         .. versionadded 0.9.0
         """
-        torsion_entries = self._psf.get('_dihe', None)
+        torsion_entries = self._topology.get('torsions', None)
         if torsion_entries is None:
             return None
         else:
@@ -3303,14 +3391,14 @@ class Universe(object):
                 return None
 
     def _init_impropers(self):
-        """Build improper torsion information from u._psf['_impr']
+        """Build improper torsion information from u._topology['impropers']
 
         Returns ``None`` if no improper torsion information is present,
         otherwise returns a :class:`~MDAnalysis.topology.core.TopologyGroup`
 
         .. versionadded 0.9.0
         """
-        torsion_entries = self._psf.get('_impr', None)
+        torsion_entries = self._topology.get('impropers', None)
         if torsion_entries is None:
             return None
         else:
@@ -3533,7 +3621,7 @@ class Universe(object):
         .. versionadded:: 0.9.0
         """
         del self.bonds
-        self._psf['_bonds'] = bondlist
+        self._topology['bonds'] = bondlist
         self._fill_cache('bonds', self._init_bonds())
 
     @bonds.deleter
@@ -3562,7 +3650,7 @@ class Universe(object):
     @angles.setter
     def angles(self, bondlist):
         del self.angles
-        self._psf['_angles'] = bondlist
+        self._topology['angles'] = bondlist
         self._fill_cache('angles', self._init_angles())
 
     @angles.deleter
@@ -3585,7 +3673,7 @@ class Universe(object):
     @torsions.setter
     def torsions(self, bondlist):
         del self.torsions
-        self._psf['_dihe'] = bondlist
+        self._topology['torsions'] = bondlist
         self._fill_cache('torsions', self._init_torsions())
 
     @torsions.deleter
@@ -3608,7 +3696,7 @@ class Universe(object):
     @impropers.setter
     def impropers(self, bondlist):
         del self.impropers
-        self._psf['_impr'] = bondlist
+        self._topology['impropers'] = bondlist
         self._fill_cache('impropers', self._init_impropers())
 
     @impropers.deleter

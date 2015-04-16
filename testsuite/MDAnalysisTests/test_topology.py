@@ -237,7 +237,7 @@ class TestPSF_bonds(TestCase):
         del self.universe
 
     def test_bonds_counts(self):
-        assert_equal(len(self.universe._psf['_bonds']), 3365)
+        assert_equal(len(self.universe._topology['bonds']), 3365)
         assert_equal(len(self.universe.atoms[0].bonds), 4)
         assert_equal(len(self.universe.atoms[42].bonds), 1)
 
@@ -257,7 +257,7 @@ class TestPSF_bonds(TestCase):
         assert_equal(any([a42 in b for b in a1.bonds]), False)  # and check everything isn't True
 
     def test_angles_counts(self):
-        assert_equal(len(self.universe._psf['_angles']), 6123)
+        assert_equal(len(self.universe._topology['angles']), 6123)
         assert_equal(len(self.universe.atoms[0].angles), 9)
         assert_equal(len(self.universe.atoms[42].angles), 2)
 
@@ -276,7 +276,7 @@ class TestPSF_bonds(TestCase):
                      False)  # both a2 and a6 feature, but never simultaneously
 
     def test_torsions_counts(self):
-        assert_equal(len(self.universe._psf['_dihe']), 8921)
+        assert_equal(len(self.universe._topology['torsions']), 8921)
         assert_equal(len(self.universe.atoms[0].torsions), 14)
 
     def test_torsions_identity(self):
@@ -683,7 +683,7 @@ class TestTopologyGroup(TestCase):
         has bonds that are backwards compared to the input, hence all the hacking
         in this test.
         """
-        inpt = self.universe._psf['_bonds']  # what we started with
+        inpt = self.universe._topology['bonds']  # what we started with
         inpt = [tuple(sorted(a)) for a in inpt]  # make sure each entry is sorted
 
         dump = self.universe.bonds.dump_contents()
@@ -1029,16 +1029,17 @@ class TestLammpsData(_TestTopology, RefLammpsData):
     # Testing _psf prevent building TGs
     # test length and random item from within
     def test_bonds(self):
-        assert_equal(len(self.universe._psf['_bonds']), 18336)
-        assert_equal((5684, 5685) in self.universe._psf['_bonds'], True)
+        assert_equal(len(self.universe._topology['bonds']), 18336)
+        assert_equal((5684, 5685) in self.universe._topology['bonds'], True)
 
     def test_angles(self):
-        assert_equal(len(self.universe._psf['_angles']), 29904)
-        assert_equal((7575, 7578, 7579) in self.universe._psf['_angles'], True)
+        assert_equal(len(self.universe._topology['angles']), 29904)
+        assert_equal((7575, 7578, 7579) in self.universe._topology['angles'], True)
 
     def test_torsions(self):
-        assert_equal(len(self.universe._psf['_dihe']), 5712)
-        assert_equal((3210, 3212, 3215, 3218) in self.universe._psf['_dihe'], True)
+        assert_equal(len(self.universe._topology['torsions']), 5712)
+        assert_equal((3210, 3212, 3215, 3218) in self.universe._topology['torsions'],
+                     True)
 
     def test_masses(self):
         assert_equal(self.universe.atoms[0].mass, 0.012)

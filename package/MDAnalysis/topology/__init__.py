@@ -142,7 +142,7 @@ file types. Each submodule *must* contain a function :func:`parse`:
 The function returns the basic MDAnalysis representation of the
 topology. At the moment, this is simply a dictionary with keys
 *_atoms*, *_bonds*, *_angles*, *_dihe*, *_impr*. The dictionary is
-stored as :attr:`MDAnalysis.AtomGroup.Universe._psf`.
+stored as :attr:`MDAnalysis.AtomGroup.Universe._topology`.
 
 .. warning::
 

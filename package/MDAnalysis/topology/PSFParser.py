@@ -34,12 +34,13 @@ Classes
    :inherited-members:
 
 """
+from __future__ import absolute_import
 
 import logging
 from math import ceil
 
-from MDAnalysis.core.AtomGroup import Atom
-from MDAnalysis.core.util import openany
+from ..core.AtomGroup import Atom
+from ..core.util import openany
 from .base import TopologyReader
 
 logger = logging.getLogger("MDAnalysis.topology.PSF")
@@ -88,13 +89,13 @@ class PSFParser(TopologyReader):
             structure = {}
 
             sections = (
-                ("_atoms", ("NATOM", 1, 1, self._parseatoms)),
-                ("_bonds", ("NBOND", 2, 4, self._parsesection)),
-                ("_angles", ("NTHETA", 3, 3, self._parsesection)),
-                ("_dihe", ("NPHI", 4, 2, self._parsesection)),
-                ("_impr", ("NIMPHI", 4, 2, self._parsesection)),
-                ("_donors", ("NDON", 2, 4, self._parsesection)),
-                ("_acceptors", ("NACC", 2, 4, self._parsesection))
+                ("atoms", ("NATOM", 1, 1, self._parseatoms)),
+                ("bonds", ("NBOND", 2, 4, self._parsesection)),
+                ("angles", ("NTHETA", 3, 3, self._parsesection)),
+                ("torsions", ("NPHI", 4, 2, self._parsesection)),
+                ("impropers", ("NIMPHI", 4, 2, self._parsesection)),
+                ("donors", ("NDON", 2, 4, self._parsesection)),
+                ("acceptors", ("NACC", 2, 4, self._parsesection))
             )
 
             try:
@@ -103,7 +104,7 @@ class PSFParser(TopologyReader):
                     structure[attr] = self._parse_sec(psffile, info)
             except StopIteration:
                 # Reached the end of the file before we expected
-                if "_atoms" not in structure:
+                if "atoms" not in structure:
                     err = ("The PSF file didn't contain the required"
                            " section of NATOM")
                     logger.error(err)
@@ -226,7 +227,7 @@ class PSFParser(TopologyReader):
                 logger.debug("First NAMD-type line: {}: {}".format(i, line.rstrip()))
 
             atoms[i] = Atom(iatom, atomname, atomtype, resname, resid,
-                            segid, mass, charge)
+                            segid, mass, charge, universe=self._u)
         return atoms
 
     def _parsesection(self, lines, atoms_per, numlines):

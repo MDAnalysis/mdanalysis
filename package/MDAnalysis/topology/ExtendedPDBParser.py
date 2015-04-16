@@ -51,9 +51,9 @@ Classes
    :inherited-members:
 
 """
+from __future__ import absolute_import
 
-import MDAnalysis.coordinates.PDB
-import PrimitivePDBParser
+from . import PrimitivePDBParser
 
 
 class ExtendedPDBParser(PrimitivePDBParser.PrimitivePDBParser):
@@ -69,4 +69,5 @@ class ExtendedPDBParser(PrimitivePDBParser.PrimitivePDBParser):
     """
     def __init__(self, filename, **kwargs):
         super(ExtendedPDBParser, self).__init__(filename, **kwargs)
-        self.PDBReader = MDAnalysis.coordinates.PDB.ExtendedPDBReader
+        from ..coordinates.PDB import ExtendedPDBReader
+        self.PDBReader = ExtendedPDBReader

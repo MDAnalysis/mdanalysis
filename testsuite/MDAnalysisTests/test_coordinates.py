@@ -927,7 +927,7 @@ class TestMultiPDBReader(TestCase):
         assert_equal(conect, desired,
                      err_msg="The bond list does not match the test reference; len(actual) is %d, len(desired) is %d "
                              "" % (
-                     len(u._psf['_bonds']), len(desired)))
+                     len(u._topology['bonds']), len(desired)))
 
 
 class TestMultiPDBWriter(TestCase):

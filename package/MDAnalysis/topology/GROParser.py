@@ -31,9 +31,10 @@ Classes
    :inherited-members:
 
 """
+from __future__ import absolute_import
 
-from MDAnalysis.core.util import openany
-from MDAnalysis.core.AtomGroup import Atom
+from ..core.util import openany
+from ..core.AtomGroup import Atom
 from .core import get_atom_mass, guess_atom_charge, guess_atom_element
 from .base import TopologyReader
 
@@ -89,8 +90,8 @@ class GROParser(TopologyReader):
                     # Just use the atom_iter (counting from 0) rather than
                     # the number in the .gro file (which wraps at 99999)
                     atoms.append(Atom(atom_iter, name, atype, resname, resid,
-                                      segid, mass, charge))
+                                      segid, mass, charge, universe=self._u))
                     atom_iter += 1
-        structure = {'_atoms':atoms}
+        structure = {'atoms': atoms}
 
         return structure
