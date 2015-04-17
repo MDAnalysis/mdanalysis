@@ -33,9 +33,7 @@ handle such residue numbers.
 .. Note::
 
    The parser processes atoms and their names. Masses are guessed and set to 0
-   if unknown. Partial charges are not set. Bond connectivity can be guessed if
-   the ``bonds=True`` keyword is set for
-   :class:`~MDAnalysis.core.AtomGroup.Universe`.
+   if unknown. Partial charges are not set.
 
 .. SeeAlso::
 
