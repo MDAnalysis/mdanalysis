@@ -28,6 +28,7 @@ class TestSelectionsCHARMM(TestCase):
         self.universe = MDAnalysis.Universe(PSF, DCD)
 
     def tearDown(self):
+        self.universe.trajectory.close()
         del self.universe
 
     def test_segid(self):
@@ -177,6 +178,7 @@ class TestSelectionsAMBER(TestCase):
         self.universe = MDAnalysis.Universe(PRMpbc, TRJpbc_bz2)
 
     def tearDown(self):
+        self.universe.trajectory.close()
         del self.universe
 
     def test_protein(self):
@@ -204,6 +206,7 @@ class TestSelectionsNAMD(TestCase):
         self.universe = MDAnalysis.Universe(PSF_NAMD, PDB_NAMD)
 
     def tearDown(self):
+        self.universe.trajectory.close()
         del self.universe
 
     def test_protein(self):
