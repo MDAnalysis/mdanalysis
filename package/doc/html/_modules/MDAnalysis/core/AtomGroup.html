@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.core.AtomGroup &mdash; MDAnalysis 0.9.2-dev documentation</title>
+    <title>MDAnalysis.core.AtomGroup &mdash; MDAnalysis 0.9.2 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.9.2-dev',
+        VERSION:     '0.9.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,14 +25,14 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.9.2-dev documentation"
+          title="Search within MDAnalysis 0.9.2 documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.9.2-dev documentation" href="../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.9.2 documentation" href="../../../index.html" />
     <link rel="up" title="MDAnalysis" href="../../MDAnalysis.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -41,17 +41,17 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.9.2-dev documentation</a> &raquo;</li>
-          <li><a href="../../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.9.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../../index.html">
               <img class="logo" src="../../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
             </a></p>
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../../search.html" method="get">
       <input type="text" name="q" />
@@ -70,7 +70,7 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <h1>Source code for MDAnalysis.core.AtomGroup</h1><div class="highlight"><pre>
 <span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
@@ -461,7 +461,7 @@
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">resname</span><span class="p">,</span> <span class="n">resid</span><span class="p">,</span> <span class="n">segid</span><span class="p">,</span> <span class="n">mass</span><span class="p">,</span> <span class="n">charge</span><span class="p">,</span>
                  <span class="n">residue</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">segment</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">bfactor</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                 <span class="n">resnum</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">serial</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">altLoc</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+                 <span class="n">resnum</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">serial</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">altLoc</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">universe</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">number</span> <span class="o">=</span> <span class="n">number</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">altLoc</span> <span class="o">=</span> <span class="n">altLoc</span>
@@ -477,7 +477,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">=</span> <span class="n">radius</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bfactor</span> <span class="o">=</span> <span class="n">bfactor</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">serial</span> <span class="o">=</span> <span class="n">serial</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__universe</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__universe</span> <span class="o">=</span> <span class="n">universe</span>
 
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span><span class="s">&quot;&lt;Atom {idx}: {name} of type {t} of resname {rname}, &quot;</span>
@@ -506,7 +506,7 @@
             <span class="k">return</span> <span class="n">AtomGroup</span><span class="p">([</span><span class="bp">self</span><span class="p">]</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">_atoms</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-<div class="viewcode-block" id="Atom.pos"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom.pos">[docs]</a>    <span class="k">def</span> <span class="nf">pos</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">pos</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;coordinates of the atom</span>
 
 <span class="sd">        Get the current cartesian coordinates of the atom (read-only).</span>
@@ -515,7 +515,7 @@
 <span class="sd">           use :attr:`position`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span>
-</div>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">position</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;coordinates of the atom</span>
@@ -527,14 +527,14 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">coord</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">number</span><span class="p">]</span>  <span class="c"># internal numbering starts at 0</span>
 
     <span class="nd">@position.setter</span>
-<div class="viewcode-block" id="Atom.position"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom.position">[docs]</a>    <span class="k">def</span> <span class="nf">position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coords</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coords</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the current cartesian coordinates of the atom.</span>
 <span class="sd">        @param coords: a 1x3 numpy array of {x,y,z} coordinates, or optionally</span>
 <span class="sd">            a single scalar if you should want to set all coordinates to the same value.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">coord</span><span class="o">.</span><span class="n">_pos</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">number</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">coords</span>  <span class="c"># internal numbering starts at 0</span>
-</div>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Current velocity of the atom.</span>
@@ -555,7 +555,7 @@
             <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s">&quot;Timestep does not contain velocities&quot;</span><span class="p">)</span>
 
     <span class="nd">@velocity.setter</span>
-<div class="viewcode-block" id="Atom.velocity"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom.velocity">[docs]</a>    <span class="k">def</span> <span class="nf">velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vals</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vals</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set the current velocity of the atom.</span>
 
 <span class="sd">        A :exc:`~MDAnalysis.NoDataError` is raised if the trajectory</span>
@@ -567,7 +567,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">coord</span><span class="o">.</span><span class="n">_velocities</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">number</span><span class="p">]</span> <span class="o">=</span> <span class="n">vals</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s">&quot;Timestep does not contain velocities&quot;</span><span class="p">)</span>
-</div>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">force</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Current force of the atom.</span>
@@ -585,7 +585,7 @@
             <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s">&quot;Timestep does not contain forces&quot;</span><span class="p">)</span>
 
     <span class="nd">@force.setter</span>
-<div class="viewcode-block" id="Atom.force"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom.force">[docs]</a>    <span class="k">def</span> <span class="nf">force</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vals</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">force</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vals</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set the current force of the atom.</span>
 
 <span class="sd">        .. versionadded:: 0.9.2</span>
@@ -594,7 +594,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">coord</span><span class="o">.</span><span class="n">_forces</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">number</span><span class="p">]</span> <span class="o">=</span> <span class="n">vals</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s">&quot;Timestep does not contain forces&quot;</span><span class="p">)</span>
-</div>
+
 <div class="viewcode-block" id="Atom.centroid"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom.centroid">[docs]</a>    <span class="k">def</span> <span class="nf">centroid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;The centroid of an atom is its position, :attr:`Atom.pos`.&quot;&quot;&quot;</span>
         <span class="c"># centroid exists for compatibility with AtomGroup</span>
@@ -610,11 +610,11 @@
                 <span class="s">&quot;Atom {} is not assigned to a Universe&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number</span><span class="p">))</span>
 
     <span class="nd">@universe.setter</span>
-<div class="viewcode-block" id="Atom.universe"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom.universe">[docs]</a>    <span class="k">def</span> <span class="nf">universe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">universe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__universe</span> <span class="o">=</span> <span class="n">universe</span>
-</div>
+
     <span class="nd">@property</span>
-<div class="viewcode-block" id="Atom.bonded_atoms"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom.bonded_atoms">[docs]</a>    <span class="k">def</span> <span class="nf">bonded_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">bonded_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;An AtomGroup of the Atoms that this Atom is bonded to.</span>
 
 <span class="sd">        .. versionadded:: 0.9</span>
@@ -622,46 +622,46 @@
         <span class="k">return</span> <span class="n">AtomGroup</span><span class="p">([</span><span class="n">b</span><span class="o">.</span><span class="n">partner</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bonds</span><span class="p">])</span>
 
     <span class="c"># The following look up a dictionary stored in the Universe.</span>
-    <span class="c"># These dictionaries are lazily built</span></div>
+    <span class="c"># These dictionaries are lazily built</span>
     <span class="nd">@property</span>
-<div class="viewcode-block" id="Atom.fragment"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom.fragment">[docs]</a>    <span class="k">def</span> <span class="nf">fragment</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">fragment</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;The fragment that this Atom is part of</span>
 
 <span class="sd">        .. versionadded:: 0.9.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_fragmentDict</span><span class="p">[</span><span class="bp">self</span><span class="p">]</span>
-</div>
+
     <span class="nd">@property</span>
-<div class="viewcode-block" id="Atom.bonds"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom.bonds">[docs]</a>    <span class="k">def</span> <span class="nf">bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;A list of the bonds that this Atom is in</span>
 
 <span class="sd">        .. versionchanged:: 0.9.0</span>
 <span class="sd">           Changed to managed property</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_bondDict</span><span class="p">[</span><span class="bp">self</span><span class="p">]</span>
-</div>
+
     <span class="nd">@property</span>
-<div class="viewcode-block" id="Atom.angles"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom.angles">[docs]</a>    <span class="k">def</span> <span class="nf">angles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">angles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;A list of the angles that this Atom is in</span>
 
 <span class="sd">        .. versionchanged:: 0.9.0</span>
 <span class="sd">           Changed to managed property</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_angleDict</span><span class="p">[</span><span class="bp">self</span><span class="p">]</span>
-</div>
+
     <span class="nd">@property</span>
-<div class="viewcode-block" id="Atom.torsions"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom.torsions">[docs]</a>    <span class="k">def</span> <span class="nf">torsions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">torsions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;A list of the torsions/dihedrals that this Atom is in</span>
 
 <span class="sd">        .. versionchanged:: 0.9.0</span>
 <span class="sd">           Changed to managed property</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_torsionDict</span><span class="p">[</span><span class="bp">self</span><span class="p">]</span>
-</div>
+
     <span class="n">dihedrals</span> <span class="o">=</span> <span class="n">torsions</span>
 
     <span class="nd">@property</span>
-<div class="viewcode-block" id="Atom.impropers"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom.impropers">[docs]</a>    <span class="k">def</span> <span class="nf">impropers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">impropers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;A list of the improper torsions that this Atom is in</span>
 
 <span class="sd">        .. versionchanged:: 0.9.0</span>
@@ -669,7 +669,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_improperDict</span><span class="p">[</span><span class="bp">self</span><span class="p">]</span>
 
-</div></div>
+</div>
 <div class="viewcode-block" id="AtomGroup"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup">[docs]</a><span class="k">class</span> <span class="nc">AtomGroup</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A group of atoms.</span>
 
@@ -866,7 +866,7 @@
     <span class="c"># between AtomGroup, Residue, ResidueGroup, Segment; access the list as</span>
     <span class="c"># _atoms (although atoms supports all list-like operations, too).</span></div>
     <span class="nd">@property</span>
-<div class="viewcode-block" id="AtomGroup.atoms"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.atoms">[docs]</a>    <span class="k">def</span> <span class="nf">atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;:class:`AtomGroup` of all atoms in this group.</span>
 
 <span class="sd">        If this is a :class:`AtomGroup` then it returns itself. Otherwise, it</span>
@@ -880,21 +880,21 @@
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="n">AtomGroup</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span>
         <span class="k">return</span> <span class="n">AtomGroup</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__atoms</span><span class="p">)</span>
-</div>
+
     <span class="nd">@property</span>
-<div class="viewcode-block" id="AtomGroup._atoms"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup._atoms">[docs]</a>    <span class="k">def</span> <span class="nf">_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;a immutable list of references to the atoms in the group&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__atoms</span>
 
-    <span class="c"># Universe pointer is important for Selections to work on groups</span></div>
+    <span class="c"># Universe pointer is important for Selections to work on groups</span>
     <span class="nd">@property</span>
-<div class="viewcode-block" id="AtomGroup.universe"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.universe">[docs]</a>    <span class="k">def</span> <span class="nf">universe</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">universe</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;The universe to which the atoms belong (read-only).&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">universe</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">None</span>
-</div>
+
     <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Number of atoms in the group&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_container</span><span class="p">)</span>
@@ -924,15 +924,30 @@
             <span class="c"># advanced slicing, requires array or list</span>
             <span class="k">return</span> <span class="n">cls</span><span class="p">([</span><span class="n">container</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">item</span><span class="p">])</span>
         <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
-            <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_named_atom</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;Cannot slice with type: {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">item</span><span class="p">)))</span>
 
     <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_named_atom</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">SelectionError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s">&quot;&#39;{0}&#39; object has no attribute &#39;{1}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_get_named_atom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get all atoms with name *name* in the current AtomGroup.</span>
+
+<span class="sd">        For more than one atom it returns a list of :class:`Atom`</span>
+<span class="sd">        instance. A single :class:`Atom` is returned just as such. If</span>
+<span class="sd">        no atoms are found, a :exc:`SelectionError` is raised.</span>
+
+<span class="sd">        .. versionadded:: 0.9.2</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c"># There can be more than one atom with the same name</span>
         <span class="n">atomlist</span> <span class="o">=</span> <span class="p">[</span><span class="n">atom</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span> <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="n">atom</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">atomlist</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">SelectionError</span><span class="p">(</span><span class="s">&quot;No atoms or attributes with name &quot;</span> <span class="o">+</span> <span class="n">name</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">SelectionError</span><span class="p">(</span><span class="s">&quot;No atoms with name &#39;{0}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
         <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">atomlist</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">atomlist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c"># XXX: keep this, makes more sense for names</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1005,7 +1020,7 @@
 </div>
     <span class="nd">@property</span>
     <span class="nd">@cached</span><span class="p">(</span><span class="s">&#39;fragments&#39;</span><span class="p">)</span>
-<div class="viewcode-block" id="AtomGroup.fragments"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.fragments">[docs]</a>    <span class="k">def</span> <span class="nf">fragments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">fragments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Read-only list of fragments.</span>
 
 <span class="sd">        Contains all fragments that any Atom in this AtomGroup is part of, the contents of</span>
@@ -1014,10 +1029,10 @@
 <span class="sd">        .. versionadded 0.9.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">fragment</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="p">))</span>
-</div>
+
     <span class="nd">@property</span>
     <span class="nd">@cached</span><span class="p">(</span><span class="s">&#39;residues&#39;</span><span class="p">)</span>
-<div class="viewcode-block" id="AtomGroup.residues"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.residues">[docs]</a>    <span class="k">def</span> <span class="nf">residues</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">residues</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Read-only list of :class:`Residue` objects.</span>
 
 <span class="sd">        A :class:`ResidueGroup` of all residues that contain atoms in</span>
@@ -1036,7 +1051,7 @@
                 <span class="n">seen_residues</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">residue</span><span class="p">)</span>
             <span class="n">current_residue</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">residue</span>
         <span class="k">return</span> <span class="n">ResidueGroup</span><span class="p">(</span><span class="n">residues</span><span class="p">)</span>
-</div>
+
 <div class="viewcode-block" id="AtomGroup.resids"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.resids">[docs]</a>    <span class="k">def</span> <span class="nf">resids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns a list of residue numbers.</span>
 
@@ -1154,7 +1169,7 @@
 </div>
     <span class="nd">@property</span>
     <span class="nd">@cached</span><span class="p">(</span><span class="s">&#39;segments&#39;</span><span class="p">)</span>
-<div class="viewcode-block" id="AtomGroup.segments"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.segments">[docs]</a>    <span class="k">def</span> <span class="nf">segments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">segments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Read-only list of :class:`Segment` objects.</span>
 
 <span class="sd">        A :class:`SegmentGroup` of all segments that contain atoms in this group.</span>
@@ -1173,7 +1188,7 @@
                 <span class="n">seen_segments</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">segment</span><span class="p">)</span>
             <span class="n">current_segment</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">segment</span>
         <span class="k">return</span> <span class="n">SegmentGroup</span><span class="p">(</span><span class="n">segments</span><span class="p">)</span>
-</div>
+
 <div class="viewcode-block" id="AtomGroup.segids"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.segids">[docs]</a>    <span class="k">def</span> <span class="nf">segids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns a list of segment ids (=segment names).</span>
 
@@ -1184,7 +1199,7 @@
 </div>
     <span class="nd">@property</span>
     <span class="nd">@cached</span><span class="p">(</span><span class="s">&#39;bonds&#39;</span><span class="p">)</span>
-<div class="viewcode-block" id="AtomGroup.bonds"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.bonds">[docs]</a>    <span class="k">def</span> <span class="nf">bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;All the bonds in this AtomGroup</span>
 
 <span class="sd">        Note that these bonds might extend out of the AtomGroup, to select</span>
@@ -1200,10 +1215,10 @@
             <span class="k">return</span> <span class="bp">None</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">TopologyGroup</span><span class="p">(</span><span class="n">mybonds</span><span class="p">)</span>
-</div>
+
     <span class="nd">@property</span>
     <span class="nd">@cached</span><span class="p">(</span><span class="s">&#39;angles&#39;</span><span class="p">)</span>
-<div class="viewcode-block" id="AtomGroup.angles"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.angles">[docs]</a>    <span class="k">def</span> <span class="nf">angles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">angles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;All the angles in this AtomGroup</span>
 
 <span class="sd">        Note that these angles might extend out of the AtomGroup, to select</span>
@@ -1219,10 +1234,10 @@
             <span class="k">return</span> <span class="bp">None</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">TopologyGroup</span><span class="p">(</span><span class="n">mybonds</span><span class="p">)</span>
-</div>
+
     <span class="nd">@property</span>
     <span class="nd">@cached</span><span class="p">(</span><span class="s">&#39;torsions&#39;</span><span class="p">)</span>
-<div class="viewcode-block" id="AtomGroup.torsions"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.torsions">[docs]</a>    <span class="k">def</span> <span class="nf">torsions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">torsions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;All the torsions in this AtomGroup</span>
 
 <span class="sd">        Note that these torsions might extend out of the AtomGroup, to select</span>
@@ -1238,10 +1253,10 @@
             <span class="k">return</span> <span class="bp">None</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">TopologyGroup</span><span class="p">(</span><span class="n">mybonds</span><span class="p">)</span>
-</div>
+
     <span class="nd">@property</span>
     <span class="nd">@cached</span><span class="p">(</span><span class="s">&#39;impropers&#39;</span><span class="p">)</span>
-<div class="viewcode-block" id="AtomGroup.impropers"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.impropers">[docs]</a>    <span class="k">def</span> <span class="nf">impropers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">impropers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;All the improper torsions in this AtomGroup</span>
 
 <span class="sd">        Note that these improper torsions might extend out of the AtomGroup,</span>
@@ -1257,7 +1272,7 @@
             <span class="k">return</span> <span class="bp">None</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">TopologyGroup</span><span class="p">(</span><span class="n">mybonds</span><span class="p">)</span>
-</div>
+
     <span class="nd">@cached</span><span class="p">(</span><span class="s">&#39;masses&#39;</span><span class="p">)</span>
 <div class="viewcode-block" id="AtomGroup.masses"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.masses">[docs]</a>    <span class="k">def</span> <span class="nf">masses</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Array of atomic masses (as defined in the topology)&quot;&quot;&quot;</span>
@@ -1280,11 +1295,11 @@
         <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">atom</span><span class="o">.</span><span class="n">radius</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="p">])</span>
 </div>
     <span class="nd">@property</span>
-<div class="viewcode-block" id="AtomGroup.bfactors"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.bfactors">[docs]</a>    <span class="k">def</span> <span class="nf">bfactors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">bfactors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Crystallographic B-factors (from PDB) in A**2.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">atom</span><span class="o">.</span><span class="n">bfactor</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="p">])</span>
-</div>
+
     <span class="k">def</span> <span class="nf">_set_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">groupname</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set attribute *name* to *value* for all elements in *groupname*.</span>
 
@@ -1781,12 +1796,14 @@
 <span class="sd">        .. versionadded:: 0.7.3</span>
 <span class="sd">        .. versionchanged:: 0.8 Added *pbc* keyword</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">..core</span> <span class="kn">import</span> <span class="n">distances</span>
+
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;distance computation only makes sense for a group with exactly 2 atoms&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">pbc</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">pos</span> <span class="o">-</span> <span class="bp">self</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">pos</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">util</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">pos</span> <span class="o">-</span> <span class="bp">self</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">pos</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">distances</span><span class="o">.</span><span class="n">self_distance_array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span><span class="p">(),</span> <span class="n">box</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">distances</span><span class="o">.</span><span class="n">self_distance_array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span><span class="p">(),</span> <span class="n">box</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 </div>
 <div class="viewcode-block" id="AtomGroup.angle"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.angle">[docs]</a>    <span class="k">def</span> <span class="nf">angle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns the angle in degrees between atoms 0, 1, 2.</span>
@@ -1810,7 +1827,7 @@
         <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">pos</span> <span class="o">-</span> <span class="bp">self</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">pos</span>
         <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">pos</span> <span class="o">-</span> <span class="bp">self</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">pos</span>
         <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="o">/</span>
-                                          <span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">b</span><span class="p">))))</span>
+                                          <span class="p">(</span><span class="n">util</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">*</span> <span class="n">util</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">b</span><span class="p">))))</span>
 </div>
 <div class="viewcode-block" id="AtomGroup.improper"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.improper">[docs]</a>    <span class="k">def</span> <span class="nf">improper</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns the improper dihedral between 4 atoms.</span>
@@ -2305,23 +2322,110 @@
 <span class="sd">        .. versionadded:: 0.8</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">..core</span> <span class="kn">import</span> <span class="n">distances</span>
+
         <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>  <span class="c">#Try and auto detect box dimensions</span>
             <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span>  <span class="c"># Can accept any box</span>
 
         <span class="k">if</span> <span class="n">box</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">box</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>  <span class="c"># for a vector representation, diagonal cannot be zero</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;One or more box dimensions is zero.  You can specify a boxsize with &#39;box =&#39;&quot;</span><span class="p">)</span>
+            <span class="c"># for a vector representation, diagonal cannot be zero</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">box</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;One or more box dimensions is zero.&quot;</span>
+                                 <span class="s">&quot;  You can specify a boxsize with &#39;box =&#39;&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">box</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>  <span class="c">#Check that a box dimension isn&#39;t zero</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;One or more box dimensions is zero.  You can specify a boxsize with &#39;box=&#39;&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;One or more box dimensions is zero.&quot;</span>
+                                 <span class="s">&quot;  You can specify a boxsize with &#39;box=&#39;&quot;</span><span class="p">)</span>
 
-        <span class="n">coords</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">()]</span>
+        <span class="n">coords</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">coord</span><span class="o">.</span><span class="n">_pos</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">()]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">inplace</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">distances</span><span class="o">.</span><span class="n">applyPBC</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">box</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">distances</span><span class="o">.</span><span class="n">applyPBC</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">box</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">()]</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">distances</span><span class="o">.</span><span class="n">applyPBC</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">box</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">coord</span><span class="o">.</span><span class="n">_pos</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">()]</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">applyPBC</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">box</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">()]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">coord</span><span class="o">.</span><span class="n">_pos</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">()]</span>
+</div>
+<div class="viewcode-block" id="AtomGroup.wrap"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.wrap">[docs]</a>    <span class="k">def</span> <span class="nf">wrap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s">&quot;atoms&quot;</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="s">&quot;com&quot;</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Shift the contents of this AtomGroup back into the unit cell.</span>
+
+<span class="sd">        This is a more powerful version of :meth:`packIntoBox`, allowing</span>
+<span class="sd">        groups of atoms to be kept together through the process.</span>
+
+<span class="sd">        :Keywords:</span>
+<span class="sd">           *compound*</span>
+<span class="sd">               The group which will be kept together through the shifting</span>
+<span class="sd">               process. [``atoms``]</span>
+<span class="sd">               Possible options:</span>
+<span class="sd">                   * ``atoms``</span>
+<span class="sd">                   * ``group`` - This AtomGroup</span>
+<span class="sd">                   * ``residues``</span>
+<span class="sd">                   * ``segments``</span>
+<span class="sd">                   * ``fragments``</span>
+<span class="sd">           *center*</span>
+<span class="sd">               How to define the center of a given group of atoms [``com``]</span>
+<span class="sd">           *box*</span>
+<span class="sd">               Unit cell information.  If not provided, the values from</span>
+<span class="sd">               Timestep will be used.</span>
+
+<span class="sd">        When specifying a *compound*, the translation is calculated based on</span>
+<span class="sd">        each compound. The same translation is applied to all atoms</span>
+<span class="sd">        within this compound, meaning it will not be broken by the shift.</span>
+<span class="sd">        This might however mean that all atoms from the compound are not</span>
+<span class="sd">        inside the unit cell, but rather the center of the compound is.</span>
+<span class="sd">        Compounds available for use are *atoms*, *residues*,</span>
+<span class="sd">        *segments* and *fragments*</span>
+
+<span class="sd">        *center* allows the definition of the center of each group to be</span>
+<span class="sd">        specified.  This can be either &#39;com&#39; for center of mass, or &#39;cog&#39;</span>
+<span class="sd">        for center of geometry.</span>
+
+<span class="sd">        *box* allows a unit cell to be given for the transformation.  If not</span>
+<span class="sd">        specified, an the dimensions information from the current Timestep</span>
+<span class="sd">        will be used.</span>
+
+<span class="sd">        .. Note::</span>
+<span class="sd">           wrap with all default keywords is identical to :meth:`packIntoBox`</span>
+
+<span class="sd">        .. versionadded:: 0.9.2</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">..core</span> <span class="kn">import</span> <span class="n">distances</span>
+
+        <span class="k">if</span> <span class="n">compound</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s">&quot;atoms&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">packIntoBox</span><span class="p">(</span><span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">compound</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s">&#39;group&#39;</span><span class="p">:</span>
+            <span class="n">objects</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">compound</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s">&#39;residues&#39;</span><span class="p">:</span>
+            <span class="n">objects</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">residues</span>
+        <span class="k">elif</span> <span class="n">compound</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s">&#39;segments&#39;</span><span class="p">:</span>
+            <span class="n">objects</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">segments</span>
+        <span class="k">elif</span> <span class="n">compound</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s">&#39;fragments&#39;</span><span class="p">:</span>
+            <span class="n">objects</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fragments</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Unrecognised compound definition: {}&quot;</span>
+                             <span class="s">&quot;Please use one of &#39;group&#39; &#39;residues&#39; &#39;segments&#39;&quot;</span>
+                             <span class="s">&quot;or &#39;fragments&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">compound</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">center</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;com&#39;</span><span class="p">,</span> <span class="s">&#39;centerofmass&#39;</span><span class="p">):</span>
+            <span class="n">centers</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">o</span><span class="o">.</span><span class="n">centerOfMass</span><span class="p">()</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">objects</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="n">center</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;cog&#39;</span><span class="p">,</span> <span class="s">&#39;centroid&#39;</span><span class="p">,</span> <span class="s">&#39;centerofgeometry&#39;</span><span class="p">):</span>
+            <span class="n">centers</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">o</span><span class="o">.</span><span class="n">centerOfGeometry</span><span class="p">()</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">objects</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Unrecognised center definition: {}&quot;</span>
+                             <span class="s">&quot;Please use one of &#39;com&#39; or &#39;cog&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">center</span><span class="p">))</span>
+        <span class="n">centers</span> <span class="o">=</span> <span class="n">centers</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span>
+
+        <span class="c"># calculate shift per object center</span>
+        <span class="n">dests</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">applyPBC</span><span class="p">(</span><span class="n">centers</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
+        <span class="n">shifts</span> <span class="o">=</span> <span class="n">dests</span> <span class="o">-</span> <span class="n">centers</span>
+
+        <span class="k">for</span> <span class="n">o</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">izip</span><span class="p">(</span><span class="n">objects</span><span class="p">,</span> <span class="n">shifts</span><span class="p">):</span>
+            <span class="c"># Save some needless shifts</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">s</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">):</span>
+                <span class="n">o</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="AtomGroup.selectAtoms"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms">[docs]</a>    <span class="k">def</span> <span class="nf">selectAtoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sel</span><span class="p">,</span> <span class="o">*</span><span class="n">othersel</span><span class="p">,</span> <span class="o">**</span><span class="n">selgroups</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Selection of atoms using the MDAnalysis selection syntax.</span>
@@ -2502,15 +2606,15 @@
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s">&quot;This AtomGroup does not belong to a Universe with a dimension.&quot;</span><span class="p">)</span>
 
     <span class="nd">@dimensions.setter</span>
-<div class="viewcode-block" id="AtomGroup.dimensions"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.dimensions">[docs]</a>    <span class="k">def</span> <span class="nf">dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Pass on to Universe setter</span>
 
 <span class="sd">        .. versionadded:: 0.9.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="n">box</span>
-</div>
+
     <span class="nd">@property</span>
-<div class="viewcode-block" id="AtomGroup.ts"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.ts">[docs]</a>    <span class="k">def</span> <span class="nf">ts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">ts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Temporary Timestep that contains the selection coordinates.</span>
 
 <span class="sd">        A :class:`~MDAnalysis.coordinates.base.Timestep` instance,</span>
@@ -2531,7 +2635,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">__ts</span> <span class="o">=</span> <span class="n">trj_ts</span><span class="o">.</span><span class="n">copy_slice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">())</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__ts</span>
 
-</div></div>
+</div>
 <div class="viewcode-block" id="Residue"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.Residue">[docs]</a><span class="k">class</span> <span class="nc">Residue</span><span class="p">(</span><span class="n">AtomGroup</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A group of atoms corresponding to a residue.</span>
 
@@ -2596,7 +2700,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">sel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span>
             <span class="s">&#39;segid </span><span class="si">%s</span><span class="s"> and resid </span><span class="si">%d</span><span class="s"> and name C&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span> <span class="o">+</span> \
-              <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">CA</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">C</span>
+              <span class="bp">self</span><span class="p">[</span><span class="s">&#39;N&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="p">[</span><span class="s">&#39;CA&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="p">[</span><span class="s">&#39;C&#39;</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sel</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>  <span class="c"># selectAtoms doesnt raise errors if nothing found, so check size</span>
             <span class="k">return</span> <span class="n">sel</span>
         <span class="k">else</span><span class="p">:</span>
@@ -2609,7 +2713,7 @@
 <span class="sd">                  found in the following residue (by resid) then this</span>
 <span class="sd">                  method returns ``None``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">sel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">CA</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">C</span> <span class="o">+</span> \
+        <span class="n">sel</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s">&#39;N&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="p">[</span><span class="s">&#39;CA&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="p">[</span><span class="s">&#39;C&#39;</span><span class="p">]</span> <span class="o">+</span> \
               <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span>
                   <span class="s">&#39;segid </span><span class="si">%s</span><span class="s"> and resid </span><span class="si">%d</span><span class="s"> and name N&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sel</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
@@ -2631,7 +2735,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">nextres</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">+</span> <span class="mi">1</span>
         <span class="n">segid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="o">.</span><span class="n">id</span>
-        <span class="n">sel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">CA</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">C</span> <span class="o">+</span> \
+        <span class="n">sel</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s">&#39;CA&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="p">[</span><span class="s">&#39;C&#39;</span><span class="p">]</span> <span class="o">+</span> \
               <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span>
                   <span class="s">&#39;segid </span><span class="si">%s</span><span class="s"> and resid </span><span class="si">%d</span><span class="s"> and name N&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">segid</span><span class="p">,</span> <span class="n">nextres</span><span class="p">),</span>
                   <span class="s">&#39;segid </span><span class="si">%s</span><span class="s"> and resid </span><span class="si">%d</span><span class="s"> and name CA&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">segid</span><span class="p">,</span> <span class="n">nextres</span><span class="p">))</span>
@@ -2649,7 +2753,7 @@
 <span class="sd">        .. versionadded:: 0.7.5</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">CA</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">CB</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">CG</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="s">&#39;N&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="p">[</span><span class="s">&#39;CA&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="p">[</span><span class="s">&#39;CB&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="p">[</span><span class="s">&#39;CG&#39;</span><span class="p">]</span>
         <span class="k">except</span> <span class="p">(</span><span class="n">SelectionError</span><span class="p">,</span> <span class="n">NoDataError</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">None</span>
 </div>
@@ -2852,9 +2956,9 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
 
     <span class="nd">@id.setter</span>
-<div class="viewcode-block" id="Segment.id"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.Segment.id">[docs]</a>    <span class="k">def</span> <span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">x</span>
-</div>
+
     <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">attr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;r&#39;</span><span class="p">:</span>
             <span class="n">resnum</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">attr</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">-</span> <span class="mi">1</span>  <span class="c"># 1-based for the user, 0-based internally</span>
@@ -3039,7 +3143,8 @@
 <span class="sd">      :attr:`Universe.trajectory.ts` is the current time step</span>
 <span class="sd">    - :attr:`Universe.dimensions`: current system dimensions (simulation unit cell, if</span>
 <span class="sd">      set in the trajectory)</span>
-<span class="sd">    - bonds, angles, dihedrals, impropers (low level access through :attr:`Universe._psf`)</span>
+<span class="sd">    - bonds, angles, dihedrals, impropers</span>
+<span class="sd">      (low level access through :attr:`Universe._topology`)</span>
 
 <span class="sd">    .. Note::</span>
 
@@ -3195,9 +3300,9 @@
                                     <span class="n">permissive</span><span class="o">=</span><span class="n">perm</span><span class="p">,</span>
                                     <span class="n">tformat</span><span class="o">=</span><span class="n">topology_format</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">with</span> <span class="n">parser</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
+            <span class="k">with</span> <span class="n">parser</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">universe</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
                         <span class="n">guess_bonds_mode</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;bonds&#39;</span><span class="p">,</span> <span class="bp">False</span><span class="p">))</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_psf</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">parse</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_topology</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">parse</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">IOError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s">&quot;Failed to load from the topology file {}&quot;</span>
                           <span class="s">&quot; with parser {}.</span><span class="se">\n</span><span class="s">&quot;</span>
@@ -3237,16 +3342,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="k">def</span> <span class="nf">_init_topology</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Populate Universe attributes from the structure dictionary *_psf*.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span> <span class="o">=</span> <span class="n">AtomGroup</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_psf</span><span class="p">[</span><span class="s">&quot;_atoms&quot;</span><span class="p">])</span>
+        <span class="sd">&quot;&quot;&quot;Populate Universe attributes from the structure dictionary</span>
+<span class="sd">        *_topology*.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span> <span class="o">=</span> <span class="n">AtomGroup</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="p">[</span><span class="s">&#39;atoms&#39;</span><span class="p">])</span>
 
         <span class="c"># XXX: add H-bond information here if available from psf (or other sources)</span>
         <span class="c"># segment instant selectors</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_build_segments</span><span class="p">()</span>
-
-        <span class="c"># Let atoms access the universe</span>
-        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">:</span>
-            <span class="n">a</span><span class="o">.</span><span class="n">universe</span> <span class="o">=</span> <span class="bp">self</span>
 
     <span class="k">def</span> <span class="nf">_build_segments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Parse list of atoms into segments.</span>
@@ -3276,7 +3379,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">universe</span> <span class="o">=</span> <span class="bp">self</span>  <span class="c"># for Writer.write(universe), see Issue 49</span>
 
     <span class="k">def</span> <span class="nf">_init_bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set bond information from u._psf[&#39;_bonds&#39;]</span>
+        <span class="sd">&quot;&quot;&quot;Set bond information from u._topology[&#39;bonds&#39;]</span>
 
 <span class="sd">        .. versionchanged 0.9.0</span>
 <span class="sd">           Now returns a :class:`~MDAnalysis.topology.core.TopologyGroup`</span>
@@ -3291,11 +3394,11 @@
 
         <span class="n">bondlist</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 
-        <span class="n">defined_bonds</span> <span class="o">=</span> <span class="n">fix_order</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_psf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;_bonds&#39;</span><span class="p">,</span> <span class="nb">set</span><span class="p">()))</span>
-        <span class="n">guessed_bonds</span> <span class="o">=</span> <span class="n">fix_order</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_psf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;_guessed_bonds&#39;</span><span class="p">,</span> <span class="nb">set</span><span class="p">()))</span>
+        <span class="n">defined_bonds</span> <span class="o">=</span> <span class="n">fix_order</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;bonds&#39;</span><span class="p">,</span> <span class="nb">set</span><span class="p">()))</span>
+        <span class="n">guessed_bonds</span> <span class="o">=</span> <span class="n">fix_order</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;guessed_bonds&#39;</span><span class="p">,</span> <span class="nb">set</span><span class="p">()))</span>
         <span class="c"># Some topologies define an order for bonds, this is stored</span>
         <span class="c"># as dict of bondtuple:value</span>
-        <span class="n">bondorder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_psf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;_bondorder&#39;</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
+        <span class="n">bondorder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;bondorder&#39;</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
         <span class="c"># Defined bonds take priority, remove bonds in &#39;guessed&#39; that are in &#39;defined&#39;</span>
         <span class="n">guessed_bonds</span><span class="o">.</span><span class="n">difference_update</span><span class="p">(</span><span class="n">defined_bonds</span><span class="p">)</span>
 
@@ -3321,14 +3424,14 @@
             <span class="k">return</span> <span class="bp">None</span>
 
     <span class="k">def</span> <span class="nf">_init_angles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Builds angle information from u._psf[&#39;_angles&#39;]</span>
+        <span class="sd">&quot;&quot;&quot;Builds angle information from u._topology[&#39;angles&#39;]</span>
 
 <span class="sd">        Returns ``None`` if no angle information is present, otherwise</span>
 <span class="sd">        returns a :class:`~MDAnalysis.topology.core.TopologyGroup`</span>
 
 <span class="sd">        .. versionadded 0.9.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">angle_entries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_psf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;_angles&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="n">angle_entries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;angles&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">angle_entries</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">None</span>
         <span class="k">else</span><span class="p">:</span>
@@ -3342,14 +3445,14 @@
                 <span class="k">return</span> <span class="bp">None</span>
 
     <span class="k">def</span> <span class="nf">_init_torsions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Builds torsion information from u._psf[&#39;_dihe&#39;]</span>
+        <span class="sd">&quot;&quot;&quot;Builds torsion information from u._topology[&#39;torsions&#39;]</span>
 
 <span class="sd">        Returns ``None`` if no torsion information is present, otherwise</span>
 <span class="sd">        returns a :class:`~MDAnalysis.topology.core.TopologyGroup`</span>
 
 <span class="sd">        .. versionadded 0.9.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">torsion_entries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_psf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;_dihe&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="n">torsion_entries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;torsions&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">torsion_entries</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">None</span>
         <span class="k">else</span><span class="p">:</span>
@@ -3363,14 +3466,14 @@
                 <span class="k">return</span> <span class="bp">None</span>
 
     <span class="k">def</span> <span class="nf">_init_impropers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Build improper torsion information from u._psf[&#39;_impr&#39;]</span>
+        <span class="sd">&quot;&quot;&quot;Build improper torsion information from u._topology[&#39;impropers&#39;]</span>
 
 <span class="sd">        Returns ``None`` if no improper torsion information is present,</span>
 <span class="sd">        otherwise returns a :class:`~MDAnalysis.topology.core.TopologyGroup`</span>
 
 <span class="sd">        .. versionadded 0.9.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">torsion_entries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_psf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;_impr&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="n">torsion_entries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;impropers&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">torsion_entries</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">None</span>
         <span class="k">else</span><span class="p">:</span>
@@ -3447,13 +3550,13 @@
 
     <span class="nd">@property</span>
     <span class="nd">@cached</span><span class="p">(</span><span class="s">&#39;fragments&#39;</span><span class="p">)</span>
-<div class="viewcode-block" id="Universe.fragments"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe.fragments">[docs]</a>    <span class="k">def</span> <span class="nf">fragments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">fragments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Read only tuple of fragments in the Universe</span>
 
 <span class="sd">        .. versionadded 0.9.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init_fragments</span><span class="p">()</span>
-</div>
+
     <span class="nd">@property</span>
     <span class="nd">@cached</span><span class="p">(</span><span class="s">&#39;bondDict&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">_bondDict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -3593,11 +3696,11 @@
 <span class="sd">        .. versionadded:: 0.9.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">bonds</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_psf</span><span class="p">[</span><span class="s">&#39;_bonds&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bondlist</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="p">[</span><span class="s">&#39;bonds&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bondlist</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fill_cache</span><span class="p">(</span><span class="s">&#39;bonds&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init_bonds</span><span class="p">())</span>
 
     <span class="nd">@bonds.deleter</span>
-<div class="viewcode-block" id="Universe.bonds"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe.bonds">[docs]</a>    <span class="k">def</span> <span class="nf">bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Delete the bonds from Universe</span>
 
 <span class="sd">        This must also remove the per atom record of bonds (bondDict)</span>
@@ -3605,7 +3708,7 @@
 <span class="sd">        .. versionadded:: 0.9.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_clear_caches</span><span class="p">(</span><span class="s">&#39;bonds&#39;</span><span class="p">,</span> <span class="s">&#39;bondDict&#39;</span><span class="p">)</span>
-</div>
+
     <span class="nd">@property</span>
     <span class="nd">@cached</span><span class="p">(</span><span class="s">&#39;angles&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">angles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -3622,13 +3725,13 @@
     <span class="nd">@angles.setter</span>
     <span class="k">def</span> <span class="nf">angles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bondlist</span><span class="p">):</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">angles</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_psf</span><span class="p">[</span><span class="s">&#39;_angles&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bondlist</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="p">[</span><span class="s">&#39;angles&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bondlist</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fill_cache</span><span class="p">(</span><span class="s">&#39;angles&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init_angles</span><span class="p">())</span>
 
     <span class="nd">@angles.deleter</span>
-<div class="viewcode-block" id="Universe.angles"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe.angles">[docs]</a>    <span class="k">def</span> <span class="nf">angles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">angles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_clear_caches</span><span class="p">(</span><span class="s">&#39;angles&#39;</span><span class="p">,</span> <span class="s">&#39;angleDict&#39;</span><span class="p">)</span>
-</div>
+
     <span class="nd">@property</span>
     <span class="nd">@cached</span><span class="p">(</span><span class="s">&#39;torsions&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">torsions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -3645,13 +3748,13 @@
     <span class="nd">@torsions.setter</span>
     <span class="k">def</span> <span class="nf">torsions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bondlist</span><span class="p">):</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">torsions</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_psf</span><span class="p">[</span><span class="s">&#39;_dihe&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bondlist</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="p">[</span><span class="s">&#39;torsions&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bondlist</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fill_cache</span><span class="p">(</span><span class="s">&#39;torsions&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init_torsions</span><span class="p">())</span>
 
     <span class="nd">@torsions.deleter</span>
-<div class="viewcode-block" id="Universe.torsions"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe.torsions">[docs]</a>    <span class="k">def</span> <span class="nf">torsions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">torsions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_clear_caches</span><span class="p">(</span><span class="s">&#39;torsions&#39;</span><span class="p">,</span> <span class="s">&#39;torsionDict&#39;</span><span class="p">)</span>
-</div>
+
     <span class="nd">@property</span>
     <span class="nd">@cached</span><span class="p">(</span><span class="s">&#39;impropers&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">impropers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -3668,13 +3771,13 @@
     <span class="nd">@impropers.setter</span>
     <span class="k">def</span> <span class="nf">impropers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bondlist</span><span class="p">):</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">impropers</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_psf</span><span class="p">[</span><span class="s">&#39;_impr&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bondlist</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="p">[</span><span class="s">&#39;impropers&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bondlist</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fill_cache</span><span class="p">(</span><span class="s">&#39;impropers&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init_impropers</span><span class="p">())</span>
 
     <span class="nd">@impropers.deleter</span>
-<div class="viewcode-block" id="Universe.impropers"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe.impropers">[docs]</a>    <span class="k">def</span> <span class="nf">impropers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">impropers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_clear_caches</span><span class="p">(</span><span class="s">&#39;impropers&#39;</span><span class="p">,</span> <span class="s">&#39;improperDict&#39;</span><span class="p">)</span>
-</div>
+
 <div class="viewcode-block" id="Universe.load_new"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe.load_new">[docs]</a>    <span class="k">def</span> <span class="nf">load_new</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Load coordinates from *filename*, using the suffix to detect file format.</span>
 
@@ -3918,16 +4021,16 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">coord</span><span class="o">.</span><span class="n">dimensions</span>
 
     <span class="nd">@dimensions.setter</span>
-<div class="viewcode-block" id="Universe.dimensions"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe.dimensions">[docs]</a>    <span class="k">def</span> <span class="nf">dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set dimensions if the Timestep allows this</span>
 
 <span class="sd">        .. versionadded:: 0.9.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c"># Add fancy error handling here or use Timestep?</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">coord</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="n">box</span>
-</div>
+
     <span class="nd">@property</span>
-<div class="viewcode-block" id="Universe.coord"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe.coord">[docs]</a>    <span class="k">def</span> <span class="nf">coord</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">coord</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Reference to current timestep and coordinates of universe.</span>
 
 <span class="sd">        The raw trajectory coordinates are :attr:`Universe.coord._pos`,</span>
@@ -3945,7 +4048,7 @@
 <span class="sd">           :meth:`Universe.atoms.coordinates`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span>
-</div>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">trajectory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Reference to trajectory reader object containing trajectory data.&quot;&quot;&quot;</span>
@@ -3955,7 +4058,7 @@
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s">&quot;No trajectory loaded into Universe&quot;</span><span class="p">)</span>
 
     <span class="nd">@trajectory.setter</span>
-<div class="viewcode-block" id="Universe.trajectory"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe.trajectory">[docs]</a>    <span class="k">def</span> <span class="nf">trajectory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">trajectory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">__trajectory</span>  <span class="c"># guarantees that files are closed (?)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__trajectory</span> <span class="o">=</span> <span class="n">value</span>
 
@@ -3963,7 +4066,7 @@
     <span class="c">#       alive during unit tests and the unit tests run out of memory!</span>
     <span class="c">#### def __del__(self): &lt;------ do not add this! [orbeckst]</span>
 
-</div></div>
+</div>
 <div class="viewcode-block" id="asUniverse"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.asUniverse">[docs]</a><span class="k">def</span> <span class="nf">asUniverse</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return a universe from the input arguments.</span>
 
@@ -4070,7 +4173,7 @@
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -4079,12 +4182,12 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.9.2-dev documentation</a> &raquo;</li>
-          <li><a href="../../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.9.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
+    <div class="footer" role="contentinfo">
         &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
@@ -4092,7 +4195,7 @@
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>
 </html>

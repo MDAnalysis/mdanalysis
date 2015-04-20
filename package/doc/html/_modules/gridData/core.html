@@ -1,0 +1,722 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>gridData.core &mdash; MDAnalysis 0.9.2 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.9.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 0.9.2 documentation"
+          href="../../_static/opensearch.xml"/>
+    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+    <link rel="top" title="MDAnalysis 0.9.2 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.9.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for gridData.core</h1><div class="highlight"><pre>
+<span class="c"># gridDataFormats --- python modules to read and write gridded data</span>
+<span class="c"># Copyright (c) 2009-2010 Oliver Beckstein &lt;orbeckst@gmail.com&gt;</span>
+<span class="c"># Released under the GNU Lesser Public License, version 3 or later.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">:mod:`gridData.core` --- Core functionality for storing n-D grids</span>
+<span class="sd">=================================================================</span>
+<span class="sd"> </span>
+<span class="sd">Classes and functions that are independent of the grid data</span>
+<span class="sd">format. In particular this module contains the :class:`Grid` class that acts as</span>
+<span class="sd">a universal constructor for specific formats::</span>
+
+<span class="sd"> g = Grid(**kwargs)           # construct</span>
+<span class="sd"> g.export(filename, format)   # export to the desired format</span>
+
+<span class="sd">Some formats can also be read::</span>
+
+<span class="sd"> g = Grid()                   # make an empty Grid</span>
+<span class="sd"> g.load(filename)             # populate with data from filename</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">cPickle</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">OpenDX</span><span class="o">,</span> <span class="nn">gOpenMol</span>
+
+<span class="kn">from</span> <span class="nn">gridData</span> <span class="kn">import</span> <span class="n">gridDataWarning</span>
+
+<span class="k">def</span> <span class="nf">_grid</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Access the underlying ndarray of a Grid object or return the object itself&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">grid</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">x</span>
+
+<div class="viewcode-block" id="Grid"><a class="viewcode-back" href="../../documentation_pages/analysis/density.html#MDAnalysis.analysis.density.Grid">[docs]</a><span class="k">class</span> <span class="nc">Grid</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Class to manage a multidimensional grid object.</span>
+
+<span class="sd">    The export(format=&#39;dx&#39;) method always exports a 3D object, the</span>
+<span class="sd">    rest should work for an array of any dimension.</span>
+
+<span class="sd">    The grid (Grid.grid) can be manipulated as a standard numpy</span>
+<span class="sd">    array. </span>
+
+<span class="sd">    The attribute Grid.metadata holds a user-defined dictionary that</span>
+<span class="sd">    can be used to annotate the data. It is saved with save().</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">default_format</span> <span class="o">=</span> <span class="s">&#39;DX&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">grid</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">edges</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">origin</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">delta</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a Grid object from data.</span>
+
+<span class="sd">        From a numpy.histogramdd()::</span>
+<span class="sd">          grid,edges = numpy.histogramdd(...)</span>
+<span class="sd">          g = Grid(grid,edges=edges)</span>
+
+<span class="sd">        From an arbitrary grid::</span>
+<span class="sd">          g = Grid(grid,origin=origin,delta=delta)</span>
+
+<span class="sd">        From a saved file::</span>
+<span class="sd">          g = Grid(filename)</span>
+<span class="sd">        or</span>
+<span class="sd">          g = Grid()</span>
+<span class="sd">          g.load(filename)</span>
+<span class="sd"> </span>
+<span class="sd">        :Arguments:</span>
+<span class="sd">          grid       </span>
+<span class="sd">            histogram or density, defined on numpy nD array</span>
+<span class="sd">          edges</span>
+<span class="sd">            list of arrays, the lower and upper bin edges along the axes</span>
+<span class="sd">            (both are output by numpy.histogramdd())</span>
+<span class="sd">          origin</span>
+<span class="sd">            cartesian coordinates of the center of grid[0,0,...,0]</span>
+<span class="sd">          delta</span>
+<span class="sd">            Either n x n array containing the cell lengths in each dimension, </span>
+<span class="sd">            or n x 1 array for rectangular arrays.</span>
+<span class="sd">          metadata</span>
+<span class="sd">            a user defined dictionary of arbitrary values</span>
+<span class="sd">            associated with the density; the class does not touch</span>
+<span class="sd">            metadata[] but stores it with save()</span>
+<span class="sd">          interpolation_spline_order</span>
+<span class="sd">            order of interpolation function for resampling; cubic splines = 3 [3]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># file formats are guess from extension == lower case key</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_exporters</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;DX&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_export_dx</span><span class="p">,</span>
+                           <span class="s">&#39;PICKLE&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_export_python</span><span class="p">,</span>
+                           <span class="s">&#39;PYTHON&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_export_python</span><span class="p">,</span>  <span class="c"># compatibility</span>
+                           <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_loaders</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;DX&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_dx</span><span class="p">,</span>
+                         <span class="s">&#39;PLT&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_plt</span><span class="p">,</span>
+                         <span class="s">&#39;PICKLE&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_python</span><span class="p">,</span>
+                         <span class="s">&#39;PYTHON&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_python</span><span class="p">,</span>      <span class="c"># compatibility</span>
+                         <span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">metadata</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span> 
+            <span class="n">metadata</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="n">metadata</span>     <span class="c"># use this to record arbitrary data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__interpolated</span> <span class="o">=</span> <span class="bp">None</span>   <span class="c"># cache for interpolated grid</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__interpolation_spline_order</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;interpolation_spline_order&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interpolation_cval</span> <span class="o">=</span> <span class="bp">None</span>       <span class="c"># default to using min(grid)</span>
+
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+            <span class="c"># read from a file</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="p">(</span><span class="n">grid</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">edges</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">):</span>
+            <span class="c"># set up from histogramdd-type data</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">edges</span> <span class="o">=</span> <span class="n">edges</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_update</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="p">(</span><span class="n">grid</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">origin</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">delta</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">):</span>
+            <span class="c"># setup from generic data</span>
+            <span class="n">origin</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">origin</span><span class="p">)</span>
+            <span class="n">delta</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">delta</span><span class="p">)</span>
+            <span class="n">N</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">ndim</span>
+            <span class="k">assert</span><span class="p">(</span><span class="n">N</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">origin</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">delta</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">N</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">numpy</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">delta</span> <span class="o">-</span> <span class="n">numpy</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">delta</span><span class="p">)):</span>
+                    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&quot;Non-rectangular grids are not supported.&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">delta</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="n">N</span><span class="p">,):</span>
+                <span class="n">delta</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">diagflat</span><span class="p">(</span><span class="n">delta</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">delta</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">():</span>
+                <span class="n">delta</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">diagflat</span><span class="p">(</span><span class="n">N</span><span class="o">*</span><span class="p">[</span><span class="n">delta</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;delta = </span><span class="si">%r</span><span class="s"> has the wrong shape&#39;</span> <span class="o">%</span> <span class="n">delta</span><span class="p">)</span>
+            <span class="c"># note that origin is CENTER so edges must be shifted by -0.5*delta</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">edges</span> <span class="o">=</span> <span class="p">[</span><span class="n">origin</span><span class="p">[</span><span class="n">dim</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">m</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">delta</span><span class="p">[</span><span class="n">dim</span><span class="p">,</span><span class="n">dim</span><span class="p">]</span> 
+                          <span class="k">for</span> <span class="n">dim</span><span class="p">,</span><span class="n">m</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">)]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_update</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># empty, must manually populate with load()</span>
+            <span class="c">#print &quot;Setting up empty grid object. Use Grid.load(filename).&quot;</span>
+            <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">interpolation_spline_order</span><span class="p">():</span>
+        <span class="sd">&quot;&quot;&quot;Order of the B-spline interpolation of the data.</span>
+
+<span class="sd">        3 = cubic; 4 &amp; 5 are also supported</span>
+
+<span class="sd">        Only choose values that are acceptable to :func:`scipy.ndimage.spline_filter`!</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span> <span class="nf">fget</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__interpolation_spline_order</span>
+        <span class="k">def</span> <span class="nf">fset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+            <span class="c"># As we cache the interpolation function, we need to rebuild the cache</span>
+            <span class="c"># whenever the interpolation order changes: this is handled by _update()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__interpolation_spline_order</span> <span class="o">=</span> <span class="n">x</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_update</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nb">locals</span><span class="p">()</span>
+    <span class="n">interpolation_spline_order</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="o">**</span><span class="n">interpolation_spline_order</span><span class="p">())</span>
+
+<div class="viewcode-block" id="Grid.resample"><a class="viewcode-back" href="../../documentation_pages/analysis/density.html#MDAnalysis.analysis.density.Grid.resample">[docs]</a>    <span class="k">def</span> <span class="nf">resample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">edges</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Resample data to a new grid with edges *edges*.</span>
+
+<span class="sd">          resample(edges) --&gt; Grid</span>
+
+<span class="sd">        or </span>
+
+<span class="sd">          resample(otherGrid) --&gt; Grid</span>
+
+<span class="sd">        The order of the interpolation is set by</span>
+<span class="sd">        :attr:`Grid.interpolation_spline_order`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">edges</span> <span class="o">=</span> <span class="n">edges</span><span class="o">.</span><span class="n">edges</span>  <span class="c"># can also supply another Grid</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="n">midpoints</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_midpoints</span><span class="p">(</span><span class="n">edges</span><span class="p">)</span>
+        <span class="n">coordinates</span> <span class="o">=</span> <span class="n">ndmeshgrid</span><span class="p">(</span><span class="o">*</span><span class="n">midpoints</span><span class="p">)</span>
+        <span class="n">newgrid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">interpolated</span><span class="p">(</span><span class="o">*</span><span class="n">coordinates</span><span class="p">)</span>  <span class="c"># feed a meshgrid to generate all points</span>
+        <span class="k">return</span> <span class="n">Grid</span><span class="p">(</span><span class="n">newgrid</span><span class="p">,</span> <span class="n">edges</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Grid.resample_factor"><a class="viewcode-back" href="../../documentation_pages/analysis/density.html#MDAnalysis.analysis.density.Grid.resample_factor">[docs]</a>    <span class="k">def</span> <span class="nf">resample_factor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">factor</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Resample to a new regular grid with factor*oldN cells along each dimension.&quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">izip</span>
+        <span class="c"># new number of edges N&#39; = (N-1)*f + 1</span>
+        <span class="n">newlengths</span> <span class="o">=</span> <span class="p">[(</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="nb">float</span><span class="p">(</span><span class="n">factor</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">N</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_len_edges</span><span class="p">()]</span>
+        <span class="n">edges</span> <span class="o">=</span> <span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span><span class="n">num</span><span class="o">=</span><span class="n">N</span><span class="p">,</span><span class="n">endpoint</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span><span class="n">N</span><span class="p">)</span> <span class="ow">in</span> 
+                 <span class="n">izip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_min_edges</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_edges</span><span class="p">(),</span> <span class="n">newlengths</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="n">edges</span><span class="p">)</span>
+</div>
+    <span class="k">def</span> <span class="nf">_edgify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">midpoints</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return edges, given midpoints.&quot;&quot;&quot;</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">midpoints</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([[</span><span class="n">m</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">m</span><span class="p">[</span><span class="mi">0</span><span class="p">])],</span> <span class="n">m</span><span class="p">,</span> <span class="p">[</span><span class="n">m</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">m</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">])]])</span>
+
+    <span class="k">def</span> <span class="nf">_update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;compute/update all derived data</span>
+
+<span class="sd">        Grid._update()</span>
+
+<span class="sd">        Can be called without harm and is idem-potent.</span>
+
+<span class="sd">        Updates these attributes and methods:</span>
+<span class="sd">           :attr:`origin`</span>
+<span class="sd">              the center of the cell with index 0,0,0</span>
+<span class="sd">           :attr:`midpoints`</span>
+<span class="sd">              centre coordinate of each grid cell</span>
+<span class="sd">           :meth:`interpolated`</span>
+<span class="sd">              spline interpolation function that can generated a value for</span>
+<span class="sd">              coordinate</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delta</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span>
+            <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">e</span><span class="p">:</span> <span class="p">(</span><span class="n">e</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">e</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">/</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">)</span> <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">midpoints</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_midpoints</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">origin</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">m</span><span class="p">:</span> <span class="n">m</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">midpoints</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__interpolated</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="c"># only update if we are using it</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__interpolated</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interpolationFunctionFactory</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">interpolated</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;B-spline function over the data grid(x,y,z).</span>
+
+<span class="sd">           interpolated([x1,x2,...],[y1,y2,...],[z1,z2,...]) -&gt; F[x1,y1,z1],F[x2,y2,z2],...</span>
+
+<span class="sd">        The interpolation order is set in :attr:`Grid.interpolation_spline_order`.</span>
+
+<span class="sd">        The interpolated function is computed once and is cached for better</span>
+<span class="sd">        performance. Whenever :attr:`~Grid.interpolation_spline_order` is</span>
+<span class="sd">        modified, :meth:`Grid.interpolated` is recomputed.</span>
+
+<span class="sd">        The value for unknown data is set in :attr:`Grid.interpolation_cval`</span>
+<span class="sd">        (TODO: also recompute when interpolation_cval value is changed.)</span>
+
+<span class="sd">        Example usage for resampling::</span>
+<span class="sd">           &gt;&gt;&gt; XX,YY,ZZ = numpy.mgrid[40:75:0.5, 96:150:0.5, 20:50:0.5]</span>
+<span class="sd">           &gt;&gt;&gt; FF = interpolated(XX,YY,ZZ)            </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__interpolated</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__interpolated</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interpolationFunctionFactory</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__interpolated</span>        
+
+    <span class="k">def</span> <span class="nf">_map_edges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">edges</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">edges</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">edges</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">edges</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">func</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_midpoints</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">edges</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_map_edges</span><span class="p">(</span><span class="k">lambda</span> <span class="n">e</span><span class="p">:</span> <span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="n">e</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">e</span><span class="p">[</span><span class="mi">1</span><span class="p">:]),</span> <span class="n">edges</span><span class="o">=</span><span class="n">edges</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_len_edges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">edges</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_map_edges</span><span class="p">(</span><span class="nb">len</span><span class="p">,</span> <span class="n">edges</span><span class="o">=</span><span class="n">edges</span><span class="p">)</span>    
+
+    <span class="k">def</span> <span class="nf">_min_edges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">edges</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_map_edges</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">min</span><span class="p">,</span> <span class="n">edges</span><span class="o">=</span><span class="n">edges</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_max_edges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">edges</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_map_edges</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">max</span><span class="p">,</span> <span class="n">edges</span><span class="o">=</span><span class="n">edges</span><span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="nf">_guess_format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">export</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">export</span><span class="p">:</span>
+            <span class="n">available</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exporters</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">available</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loaders</span>
+        <span class="k">if</span> <span class="n">format</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">format</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">filename</span><span class="p">)[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="n">format</span> <span class="o">=</span> <span class="n">format</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">format</span><span class="p">:</span>
+            <span class="n">format</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_format</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">format</span> <span class="ow">in</span> <span class="n">available</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;File format </span><span class="si">%r</span><span class="s"> not available, choose one of </span><span class="si">%r</span><span class="s">&quot;</span>\
+                                 <span class="o">%</span> <span class="p">(</span><span class="n">format</span><span class="p">,</span> <span class="n">available</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+        <span class="k">return</span> <span class="n">format</span>
+
+    <span class="k">def</span> <span class="nf">_get_exporter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exporters</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_guess_format</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="n">format</span><span class="p">,</span> <span class="n">export</span><span class="o">=</span><span class="bp">True</span><span class="p">)]</span>
+
+    <span class="k">def</span> <span class="nf">_get_loader</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loaders</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_guess_format</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="n">format</span><span class="p">,</span> <span class="n">export</span><span class="o">=</span><span class="bp">False</span><span class="p">)]</span>
+
+<div class="viewcode-block" id="Grid.load"><a class="viewcode-back" href="../../documentation_pages/analysis/density.html#MDAnalysis.analysis.density.Grid.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">filename</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Load saved (pickled or dx) grid and edges from &lt;filename&gt;.pickle</span>
+
+<span class="sd">           Grid.load(&lt;filename&gt;.pickle)</span>
+<span class="sd">           Grid.load(&lt;filename&gt;.dx)</span>
+
+<span class="sd">        The load() method calls the class&#39;s constructor method and</span>
+<span class="sd">        completely resets all values, based on the loaded data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">loader</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_loader</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="n">format</span><span class="p">)</span>
+        <span class="n">loader</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+</div>
+    <span class="k">def</span> <span class="nf">_load_python</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">filename</span><span class="p">):</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="s">&#39;rb&#39;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">saved</span> <span class="o">=</span> <span class="n">cPickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">grid</span><span class="o">=</span><span class="n">saved</span><span class="p">[</span><span class="s">&#39;grid&#39;</span><span class="p">],</span><span class="n">edges</span><span class="o">=</span><span class="n">saved</span><span class="p">[</span><span class="s">&#39;edges&#39;</span><span class="p">],</span><span class="n">metadata</span><span class="o">=</span><span class="n">saved</span><span class="p">[</span><span class="s">&#39;metadata&#39;</span><span class="p">])</span>
+        <span class="k">del</span> <span class="n">saved</span>
+
+    <span class="k">def</span> <span class="nf">_load_dx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initializes Grid from a OpenDX file.&quot;&quot;&quot;</span>
+        
+        <span class="n">dx</span> <span class="o">=</span> <span class="n">OpenDX</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">dx</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="n">grid</span><span class="p">,</span><span class="n">edges</span> <span class="o">=</span> <span class="n">dx</span><span class="o">.</span><span class="n">histogramdd</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">,</span><span class="n">edges</span><span class="o">=</span><span class="n">edges</span><span class="p">,</span><span class="n">metadata</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">_load_plt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize Grid from gOpenMol plt file.&quot;&quot;&quot;</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="n">gOpenMol</span><span class="o">.</span><span class="n">Plt</span><span class="p">()</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="n">grid</span><span class="p">,</span><span class="n">edges</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">histogramdd</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">,</span><span class="n">edges</span><span class="o">=</span><span class="n">edges</span><span class="p">,</span><span class="n">metadata</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">)</span>        
+
+<div class="viewcode-block" id="Grid.export"><a class="viewcode-back" href="../../documentation_pages/analysis/density.html#MDAnalysis.analysis.density.Grid.export">[docs]</a>    <span class="k">def</span> <span class="nf">export</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">filename</span><span class="p">,</span><span class="n">format</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;export density to file using the given format; use &#39;dx&#39; for visualization.</span>
+
+<span class="sd">        export(filename=&lt;filename&gt;,format=&lt;format&gt;)</span>
+
+<span class="sd">        The format can also be deduced from the suffix of the filename</span>
+<span class="sd">        though the *format* keyword takes precedence.</span>
+
+<span class="sd">        The default format for export() is &#39;dx&#39;.</span>
+<span class="sd">        </span>
+<span class="sd">        Only implemented formats:</span>
+
+<span class="sd">        dx        OpenDX</span>
+<span class="sd">        pickle    pickle (use Grid.load(filename) to restore); Grid.save()</span>
+<span class="sd">                  is simpler than export(format=&#39;python&#39;).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">exporter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_exporter</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="n">format</span><span class="p">)</span>
+        <span class="n">exporter</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+</div>
+    <span class="k">def</span> <span class="nf">_export_python</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">filename</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Pickle the Grid object</span>
+
+<span class="sd">        The object is dumped as a dictionary with grid and edges: This</span>
+<span class="sd">        is sufficient to recreate the grid object with __init__().</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">root</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">root</span> <span class="o">+</span> <span class="s">&quot;.pickle&quot;</span>
+        
+        <span class="n">data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">grid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="p">,</span><span class="n">edges</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">,</span><span class="n">metadata</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">)</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="s">&#39;wb&#39;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">cPickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">f</span><span class="p">,</span><span class="n">cPickle</span><span class="o">.</span><span class="n">HIGHEST_PROTOCOL</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">del</span> <span class="n">data</span>
+
+    <span class="k">def</span> <span class="nf">_export_dx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">filename</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Export the density grid to an OpenDX file. The file format</span>
+<span class="sd">        is the simplest regular grid array and it is also understood</span>
+<span class="sd">        by VMD&#39;s and PyMOL&#39;s DX reader.</span>
+
+<span class="sd">        For the file format see</span>
+<span class="sd">        http://opendx.sdsc.edu/docs/html/pages/usrgu068.htm#HDREDF</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">root</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">root</span> <span class="o">+</span> <span class="s">&#39;.dx&#39;</span>
+
+        <span class="n">comments</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s">&#39;OpenDX density file written by gridDataFormats.Grid.export()&#39;</span><span class="p">,</span>
+            <span class="s">&#39;File format: http://opendx.sdsc.edu/docs/html/pages/usrgu068.htm#HDREDF&#39;</span><span class="p">,</span>
+            <span class="s">&#39;Data are embedded in the header and tied to the grid positions.&#39;</span><span class="p">,</span>
+            <span class="s">&#39;Data is written in C array order: In grid[x,y,z] the axis z is fastest&#39;</span><span class="p">,</span>
+            <span class="s">&#39;varying, then y, then finally x, i.e. z is the innermost loop.&#39;</span><span class="p">]</span>
+
+        <span class="c"># write metadata in comments section</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">:</span>
+            <span class="n">comments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;Meta data stored with the python Grid object:&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">:</span>
+            <span class="n">comments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;   &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">+</span><span class="s">&#39; = &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">k</span><span class="p">]))</span>
+        <span class="n">comments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;(Note: the VMD dx-reader chokes on comments below this line)&#39;</span><span class="p">)</span>
+
+        <span class="n">components</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">positions</span> <span class="o">=</span> <span class="n">OpenDX</span><span class="o">.</span><span class="n">gridpositions</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">delta</span><span class="p">),</span>
+            <span class="n">connections</span> <span class="o">=</span> <span class="n">OpenDX</span><span class="o">.</span><span class="n">gridconnections</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">OpenDX</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="n">dx</span> <span class="o">=</span> <span class="n">OpenDX</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s">&#39;density&#39;</span><span class="p">,</span><span class="n">components</span><span class="o">=</span><span class="n">components</span><span class="p">,</span><span class="n">comments</span><span class="o">=</span><span class="n">comments</span><span class="p">)</span>
+        <span class="n">dx</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Grid.save"><a class="viewcode-back" href="../../documentation_pages/analysis/density.html#MDAnalysis.analysis.density.Grid.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">filename</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Save a grid object to &lt;filename&gt;.pickle</span>
+
+<span class="sd">           Grid.save(filename)</span>
+
+<span class="sd">        Internally, this calls Grid.export(filename,format=&quot;python&quot;). A grid can be</span>
+<span class="sd">        regenerated from the saved data with</span>
+
+<span class="sd">           g = Grid(filename=&lt;filename&gt;)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="n">format</span><span class="o">=</span><span class="s">&quot;pickle&quot;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Grid.centers"><a class="viewcode-back" href="../../documentation_pages/analysis/density.html#MDAnalysis.analysis.density.Grid.centers">[docs]</a>    <span class="k">def</span> <span class="nf">centers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the coordinates of the centers of all grid cells as an iterator.&quot;&quot;&quot;</span>
+        <span class="c"># crappy</span>
+        <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndindex</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">):</span>
+            <span class="c"># TODO: CHECK that this delta*(i,j,k) is really correct, even for non-diagonal delta</span>
+            <span class="c"># NOTE: origin is center of (0,0,0) (and already has index offset by 0.5)</span>
+            <span class="k">yield</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">delta</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">idx</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin</span>
+</div>
+<div class="viewcode-block" id="Grid.check_compatible"><a class="viewcode-back" href="../../documentation_pages/analysis/density.html#MDAnalysis.analysis.density.Grid.check_compatible">[docs]</a>    <span class="k">def</span> <span class="nf">check_compatible</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check if *other* can be used in an arithmetic operation.</span>
+
+<span class="sd">        1) *other* is a scalar</span>
+<span class="sd">        2) *other* is a grid defined on the same edges</span>
+<span class="sd">        </span>
+<span class="sd">        :Raises: :exc:`TypeError` if not compatible.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">other</span><span class="p">)</span> <span class="ow">or</span> 
+                <span class="n">numpy</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">)</span> <span class="o">==</span> <span class="n">numpy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">edges</span><span class="p">))):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;The argument can not be arithmetically combined with the grid. &quot;</span>
+                            <span class="s">&quot;It must be a scalar or a grid with identical edges. &quot;</span>
+                            <span class="s">&quot;Use Grid.resample(other.edges) to make a new grid that is &quot;</span>
+                            <span class="s">&quot;compatible with other.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">True</span>
+</div>
+    <span class="k">def</span> <span class="nf">_interpolationFunctionFactory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">spline_order</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">cval</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns a function F(x,y,z) that interpolates any values on the grid.</span>
+
+<span class="sd">        _interpolationFunctionFactory(self,spline_order=3,cval=None) --&gt; F</span>
+
+<span class="sd">        *cval* is set to :meth:`Grid.grid.min`. *cval* cannot be chosen too</span>
+<span class="sd">        large or too small or NaN because otherwise the spline interpolation</span>
+<span class="sd">        breaks down near that region and produces wild oscillations.</span>
+
+<span class="sd">        .. Note:: Only correct for equally spaced values (i.e. regular edges with</span>
+<span class="sd">                  constant delta).</span>
+<span class="sd">        .. SeeAlso:: http://www.scipy.org/Cookbook/Interpolation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># for scipy &gt;=0.9: should use scipy.interpolate.griddata</span>
+        <span class="c"># http://docs.scipy.org/doc/scipy/reference/generated/scipy.interpolate.griddata.html#scipy.interpolate.griddata</span>
+        <span class="c"># (does it work for nD?)</span>
+
+        <span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">ndimage</span>
+
+        <span class="k">if</span> <span class="n">spline_order</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="c"># must be compatible with whatever :func:`scipy.ndimage.spline_filter` takes.</span>
+            <span class="n">spline_order</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">interpolation_spline_order</span>
+        <span class="k">if</span> <span class="n">cval</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">cval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">interpolation_cval</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid</span>
+        <span class="k">if</span> <span class="n">cval</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">cval</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c"># masked arrays</span>
+            <span class="n">_data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">filled</span><span class="p">(</span><span class="n">cval</span><span class="p">)</span>   <span class="c"># fill with min; hopefully keeps spline happy</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="n">_data</span> <span class="o">=</span> <span class="n">data</span>
+
+        <span class="n">coeffs</span> <span class="o">=</span> <span class="n">ndimage</span><span class="o">.</span><span class="n">spline_filter</span><span class="p">(</span><span class="n">_data</span><span class="p">,</span><span class="n">order</span><span class="o">=</span><span class="n">spline_order</span><span class="p">)</span>
+        <span class="n">x0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin</span>
+        <span class="n">dx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">delta</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span>    <span class="c"># fixed dx required!!</span>
+        <span class="k">def</span> <span class="nf">_transform</span><span class="p">(</span><span class="n">cnew</span><span class="p">,</span> <span class="n">c0</span><span class="p">,</span> <span class="n">dc</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">cnew</span><span class="p">)</span> <span class="o">-</span> <span class="n">c0</span><span class="p">)</span><span class="o">/</span><span class="n">dc</span>
+        <span class="k">def</span> <span class="nf">interpolatedF</span><span class="p">(</span><span class="o">*</span><span class="n">coordinates</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;B-spline function over the data grid(x,y,z).</span>
+
+<span class="sd">            interpolatedF([x1,x2,...],[y1,y2,...],[z1,z2,...]) -&gt; F[x1,y1,z1],F[x2,y2,z2],...</span>
+
+<span class="sd">            Example usage for resampling::</span>
+<span class="sd">              &gt;&gt;&gt; XX,YY,ZZ = numpy.mgrid[40:75:0.5, 96:150:0.5, 20:50:0.5]</span>
+<span class="sd">              &gt;&gt;&gt; FF = _interpolationFunction(XX,YY,ZZ)            </span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">_coordinates</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">_transform</span><span class="p">(</span><span class="n">coordinates</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">x0</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">dx</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">coordinates</span><span class="p">))])</span>
+            <span class="k">return</span> <span class="n">ndimage</span><span class="o">.</span><span class="n">map_coordinates</span><span class="p">(</span><span class="n">coeffs</span><span class="p">,</span> <span class="n">_coordinates</span><span class="p">,</span> <span class="n">prefilter</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> 
+                                           <span class="n">mode</span><span class="o">=</span><span class="s">&#39;nearest&#39;</span><span class="p">,</span><span class="n">cval</span><span class="o">=</span><span class="n">cval</span><span class="p">)</span>
+        <span class="c"># mode=&#39;wrap&#39; would be ideal but is broken: http://projects.scipy.org/scipy/ticket/796</span>
+        <span class="k">return</span> <span class="n">interpolatedF</span>            
+                
+
+    <span class="c"># basic arithmetic (left and right associative so that Grid1 + Grid2 but also</span>
+    <span class="c"># 3 * Grid and Grid/0.5 work)</span>
+
+    <span class="k">def</span> <span class="nf">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a new :class:`Grid` with the point-wise sum of the data.</span>
+
+<span class="sd">        g.__add__(h) &lt;==&gt; g + h</span>
+
+<span class="sd">        :Returns: :class:`Grid`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_compatible</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Grid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">+</span> <span class="n">_grid</span><span class="p">(</span><span class="n">other</span><span class="p">),</span> <span class="n">edges</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a new :class:`Grid` with the point-wise difference of the data.</span>
+
+<span class="sd">        g.__sub__(h) &lt;==&gt; g - h</span>
+
+<span class="sd">        :Returns: :class:`Grid`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_compatible</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Grid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">-</span> <span class="n">_grid</span><span class="p">(</span><span class="n">other</span><span class="p">),</span> <span class="n">edges</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a new :class:`Grid` with the point-wise product of the data.</span>
+
+<span class="sd">        g.__mul__(h) &lt;==&gt; g * h</span>
+
+<span class="sd">        :Returns: :class:`Grid`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_compatible</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Grid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">*</span> <span class="n">_grid</span><span class="p">(</span><span class="n">other</span><span class="p">),</span> <span class="n">edges</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__div__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a new :class:`Grid` with the point-wise quotient of the data.</span>
+
+<span class="sd">        g.__div__(h) &lt;==&gt; g/h</span>
+
+<span class="sd">        :Returns: :class:`Grid`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_compatible</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Grid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">/</span> <span class="n">_grid</span><span class="p">(</span><span class="n">other</span><span class="p">),</span> <span class="n">edges</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__pow__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a new :class:`Grid` with the point-wise power of the data.</span>
+
+<span class="sd">        g.__pow__(h) &lt;==&gt; numpy.power(g, h)</span>
+
+<span class="sd">        :Returns: :class:`Grid`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_compatible</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Grid</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="p">,</span> <span class="n">_grid</span><span class="p">(</span><span class="n">other</span><span class="p">)),</span> <span class="n">edges</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__radd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a new :class:`Grid` with the point-wise sum of the data.</span>
+
+<span class="sd">        g.__add__(h) &lt;==&gt; h + g</span>
+
+<span class="sd">        :Returns: :class:`Grid`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_compatible</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Grid</span><span class="p">(</span><span class="n">_grid</span><span class="p">(</span><span class="n">other</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="p">,</span> <span class="n">edges</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__rsub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a new :class:`Grid` with the point-wise difference of the data.</span>
+
+<span class="sd">        g.__sub__(h) &lt;==&gt; h - g</span>
+
+<span class="sd">        :Returns: :class:`Grid`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_compatible</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Grid</span><span class="p">(</span><span class="n">_grid</span><span class="p">(</span><span class="n">other</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="p">,</span> <span class="n">edges</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__rmul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a new :class:`Grid` with the point-wise product of the data.</span>
+
+<span class="sd">        g.__mul__(h) &lt;==&gt; h * g</span>
+
+<span class="sd">        :Returns: :class:`Grid`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_compatible</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Grid</span><span class="p">(</span><span class="n">_grid</span><span class="p">(</span><span class="n">other</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="p">,</span> <span class="n">edges</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__rdiv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a new :class:`Grid` with the point-wise quotient of the data.</span>
+
+<span class="sd">        g.__div__(h) &lt;==&gt; h/g</span>
+
+<span class="sd">        :Returns: :class:`Grid`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_compatible</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Grid</span><span class="p">(</span><span class="n">_grid</span><span class="p">(</span><span class="n">other</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="p">,</span> <span class="n">edges</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__rpow__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a new :class:`Grid` with the point-wise power of the data.</span>
+
+<span class="sd">        g.__pow__(h) &lt;==&gt; numpy.power(h, g)</span>
+
+<span class="sd">        :Returns: :class:`Grid`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_compatible</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Grid</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">_grid</span><span class="p">(</span><span class="n">other</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="p">),</span> <span class="n">edges</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">bins</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="n">bins</span> <span class="o">=</span> <span class="s">&quot;no&quot;</span>
+        <span class="k">return</span> <span class="s">&#39;&lt;Grid with &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">bins</span><span class="p">)</span><span class="o">+</span><span class="s">&#39; bins&gt;&#39;</span>
+</div>
+<span class="k">def</span> <span class="nf">ndmeshgrid</span><span class="p">(</span><span class="o">*</span><span class="n">arrs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return a mesh grid for N dimensions.</span>
+
+<span class="sd">    The input are N arrays, each of which contains the values along one axis of</span>
+<span class="sd">    the coordinate system. The arrays do not have to have the same number of</span>
+<span class="sd">    entries. The function returns arrays that can be fed into numpy functions</span>
+<span class="sd">    so that they produce values for *all* points spanned by the axes *arrs*.</span>
+
+<span class="sd">    Original from </span>
+<span class="sd">    http://stackoverflow.com/questions/1827489/numpy-meshgrid-in-3d and fixed.</span>
+
+<span class="sd">    .. SeeAlso: :func:`numpy.meshgrid` for the 2D case.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c">#arrs = tuple(reversed(arrs)) &lt;-- wrong on stackoverflow.com</span>
+    <span class="n">arrs</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">arrs</span><span class="p">)</span>
+    <span class="n">lens</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">len</span><span class="p">,</span> <span class="n">arrs</span><span class="p">)</span>
+    <span class="n">dim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">arrs</span><span class="p">)</span>
+
+    <span class="n">sz</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">lens</span><span class="p">:</span>
+        <span class="n">sz</span><span class="o">*=</span><span class="n">s</span>
+
+    <span class="n">ans</span> <span class="o">=</span> <span class="p">[]</span>    
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">arr</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">arrs</span><span class="p">):</span>
+        <span class="n">slc</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">dim</span>
+        <span class="n">slc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">lens</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">arr2</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">slc</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">sz</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">lens</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">j</span><span class="o">!=</span><span class="n">i</span><span class="p">:</span>
+                <span class="n">arr2</span> <span class="o">=</span> <span class="n">arr2</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">sz</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">j</span><span class="p">)</span> 
+        <span class="n">ans</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arr2</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">ans</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.9.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
+    David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
+    Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
+    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
+    Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
+    Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

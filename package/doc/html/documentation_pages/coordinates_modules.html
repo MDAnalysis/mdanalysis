@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5. Coordinates modules &mdash; MDAnalysis 0.9.2-dev documentation</title>
+    <title>5. Coordinates modules &mdash; MDAnalysis 0.9.2 documentation</title>
     
     <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.9.2-dev',
+        VERSION:     '0.9.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,15 +25,15 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.9.2-dev documentation"
+          title="Search within MDAnalysis 0.9.2 documentation"
           href="../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.9.2-dev documentation" href="../index.html" />
+    <link rel="top" title="MDAnalysis 0.9.2 documentation" href="../index.html" />
     <link rel="next" title="5.1. Coordinate/Trajectory Readers and Writers — MDAnalysis.coordinates" href="coordinates/init.html" />
     <link rel="prev" title="4.20. Utility functions for the TPR topology parser" href="topology/tpr_util.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -48,10 +48,10 @@
         <li class="right" >
           <a href="topology/tpr_util.html" title="4.20. Utility functions for the TPR topology parser"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">MDAnalysis 0.9.2-dev documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">MDAnalysis 0.9.2 documentation</a> &raquo;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../index.html">
               <img class="logo" src="../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
@@ -61,13 +61,15 @@
                         title="previous chapter">4.20. Utility functions for the TPR topology parser</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="coordinates/init.html"
-                        title="next chapter">5.1. Coordinate/Trajectory Readers and Writers  &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates</span></tt></a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="../_sources/documentation_pages/coordinates_modules.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
+                        title="next chapter">5.1. Coordinate/Trajectory Readers and Writers  &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.coordinates</span></code></a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/documentation_pages/coordinates_modules.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
       <input type="text" name="q" />
@@ -86,47 +88,47 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="coordinates-modules">
 <span id="coordinates"></span><h1>5. Coordinates modules<a class="headerlink" href="#coordinates-modules" title="Permalink to this headline">¶</a></h1>
 <p>The coordinates module contains the classes to read and write
-trajectories. Typically, MDAnalysis recognizes <a class="reference internal" href="coordinates/init.html#id1"><em>Table of supported coordinate formats</em></a> by the file extension and hence most users probably do not need to
+trajectories. Typically, MDAnalysis recognizes <a class="reference internal" href="coordinates/init.html#id1"><span>Table of supported coordinate formats</span></a> by the file extension and hence most users probably do not need to
 concern themselves with classes and functions described here. However,
 if MDAnalysis fails to recognize a coordinate file then the user can
 provide the format in the keyword argument <em>format</em> to
-<a class="reference internal" href="core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a> to force the format.</p>
+<a class="reference internal" href="core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><code class="xref py py-class docutils literal"><span class="pre">Universe</span></code></a> to force the format.</p>
 <p class="rubric">Coordinate formats</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="coordinates/init.html">5.1. Coordinate/Trajectory Readers and Writers  &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="coordinates/CRD.html">5.2. CRD structure files in MDAnalysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.CRD</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="coordinates/DCD.html">5.3. DCD trajectory I/O  &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.DCD</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="coordinates/DMS.html">5.4. DESRES file format &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.DMS</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="coordinates/GMS.html">5.5. GAMESS trajectory reader &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.GMS</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="coordinates/GRO.html">5.6. GRO file format &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.GRO</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="coordinates/LAMMPS.html">5.7. LAMMPS DCD trajectory I/O  &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.LAMMPS</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="coordinates/MOL2.html">5.8. MOL2 file format &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.MOL2</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="coordinates/PDB.html">5.9. PDB structure files in MDAnalysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.PDB</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="coordinates/PDBQT.html">5.10. PDBQT structure files in MDAnalysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.PDBQT</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="coordinates/PQR.html">5.11. PQR file format &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.PQR</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="coordinates/TRJ.html">5.12. AMBER trajectories &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.TRJ</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="coordinates/TRR.html">5.13. Gromacs TRR file IO &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.TRR</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="coordinates/XTC.html">5.14. Gromacs XTC file IO &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.XTC</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="coordinates/XYZ.html">5.15. XYZ trajectory reader &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.XYZ</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="coordinates/TRZ.html">5.16. TRZ trajectory I/O  &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.TRZ</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="coordinates/init.html">5.1. Coordinate/Trajectory Readers and Writers  &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.coordinates</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="coordinates/CRD.html">5.2. CRD structure files in MDAnalysis &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.CRD</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="coordinates/DCD.html">5.3. DCD trajectory I/O  &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.DCD</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="coordinates/DMS.html">5.4. DESRES file format &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.DMS</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="coordinates/GMS.html">5.5. GAMESS trajectory reader &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.GMS</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="coordinates/GRO.html">5.6. GRO file format &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.GRO</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="coordinates/LAMMPS.html">5.7. LAMMPS DCD trajectory I/O  &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.LAMMPS</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="coordinates/MOL2.html">5.8. MOL2 file format &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.MOL2</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="coordinates/PDB.html">5.9. PDB structure files in MDAnalysis &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.PDB</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="coordinates/PDBQT.html">5.10. PDBQT structure files in MDAnalysis &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.PDBQT</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="coordinates/PQR.html">5.11. PQR file format &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.PQR</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="coordinates/TRJ.html">5.12. AMBER trajectories &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.TRJ</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="coordinates/TRR.html">5.13. Gromacs TRR file IO &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.TRR</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="coordinates/XTC.html">5.14. Gromacs XTC file IO &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.XTC</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="coordinates/XYZ.html">5.15. XYZ trajectory reader &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.XYZ</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="coordinates/TRZ.html">5.16. TRZ trajectory I/O  &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.TRZ</span></code></a></li>
 </ul>
 </div>
 <p class="rubric">Coordinate core modules</p>
 <p>The remaining pages are primarily of interest to
 developers. Programmers and anyone trying to implement new
-functionality should first read the <a class="reference internal" href="coordinates/init.html#trajectory-api"><em>Trajectory API</em></a>.</p>
+functionality should first read the <a class="reference internal" href="coordinates/init.html#trajectory-api"><span>Trajectory API</span></a>.</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="coordinates/base.html">5.17. Base classes &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.base</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="coordinates/core.html">5.18. Common functions for coordinate reading &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.core</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="coordinates/xdrfile.html">5.19. NumPy access to Gromacs XDR trajectories &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.xdrfile</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="coordinates/pdbextensions.html">5.20. Extensions to <tt class="docutils literal"><span class="pre">Bio.PDB</span></tt> &#8212; <tt class="docutils literal"><span class="pre">pdb.extensions</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="coordinates/base.html">5.17. Base classes &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.base</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="coordinates/core.html">5.18. Common functions for coordinate reading &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.core</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="coordinates/xdrfile.html">5.19. NumPy access to Gromacs XDR trajectories &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.xdrfile</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="coordinates/pdbextensions.html">5.20. Extensions to <code class="docutils literal"><span class="pre">Bio.PDB</span></code> &#8212; <code class="docutils literal"><span class="pre">pdb.extensions</span></code></a></li>
 </ul>
 </div>
 </div>
@@ -137,7 +139,7 @@ functionality should first read the <a class="reference internal" href="coordina
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -152,10 +154,10 @@ functionality should first read the <a class="reference internal" href="coordina
         <li class="right" >
           <a href="topology/tpr_util.html" title="4.20. Utility functions for the TPR topology parser"
              >previous</a> |</li>
-        <li><a href="../index.html">MDAnalysis 0.9.2-dev documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">MDAnalysis 0.9.2 documentation</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
+    <div class="footer" role="contentinfo">
         &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
@@ -163,7 +165,7 @@ functionality should first read the <a class="reference internal" href="coordina
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>
 </html>

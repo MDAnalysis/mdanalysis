@@ -5,7 +5,7 @@
  * Sphinx stylesheet -- sphinxdoc theme.  Originally created by
  * Armin Ronacher for Werkzeug.
  *
- * :copyright: Copyright 2007-2014 by the Sphinx team, see AUTHORS.
+ * :copyright: Copyright 2007-2015 by the Sphinx team, see AUTHORS.
  * :license: BSD, see LICENSE for details.
  *
  */
@@ -204,20 +204,20 @@ a.headerlink:hover {
     color: white!important;
 }
 
-cite, code, tt {
+cite, code, code {
     font-family: 'Consolas', 'Deja Vu Sans Mono',
                  'Bitstream Vera Sans Mono', monospace;
     font-size: 0.95em;
     letter-spacing: 0.01em;
 }
 
-tt {
+code {
     background-color: #f2f2f2;
     border-bottom: 1px solid #ddd;
     color: #333;
 }
 
-tt.descname, tt.descclassname, tt.xref {
+code.descname, code.descclassname, code.xref {
     border: 0;
 }
 
@@ -226,12 +226,12 @@ hr {
     margin: 2em;
 }
 
-a tt {
+a code {
     border: 0;
     color: #CA7900;
 }
 
-a tt:hover {
+a code:hover {
     color: #2491CF;
 }
 
@@ -336,4 +336,10 @@ div.viewcode-block:target {
     background-color: #f4debf;
     border-top: 1px solid #ac9;
     border-bottom: 1px solid #ac9;
+}
+
+div.code-block-caption {
+    background-color: #ddd;
+    color: #222;
+    border: 1px solid #ccc;
 }
