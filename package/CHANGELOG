@@ -10,7 +10,7 @@ The rules for this file:
     use tabs but use spaces for formatting
 
 ------------------------------------------------------------------------------
-??/??/15  richardjgowers, orbeckst
+??/??/15  tyler.je.reddy, richardjgowers, orbeckst
   * 0.9.2
 
   Enhancements
@@ -31,6 +31,10 @@ The rules for this file:
     https://github.com/MDAnalysis/
   * Using a non-existent atom name as an instant selector now raises
     AttributeError instead of SelectionError (Issue 220)
+
+  Fixes
+
+  * trajectory objects are now properly closed in unit tests (Issue 256)
 
 
 03/27/15  manuel.nuno.melo, richardjgowers, comconadin
