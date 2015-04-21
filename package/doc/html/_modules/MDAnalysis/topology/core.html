@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.topology.core &mdash; MDAnalysis 0.9.2-dev documentation</title>
+    <title>MDAnalysis.topology.core &mdash; MDAnalysis 0.9.3-dev documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.9.2-dev',
+        VERSION:     '0.9.3-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,14 +25,14 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.9.2-dev documentation"
+          title="Search within MDAnalysis 0.9.3-dev documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.9.2-dev documentation" href="../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.9.3-dev documentation" href="../../../index.html" />
     <link rel="up" title="MDAnalysis" href="../../MDAnalysis.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -41,17 +41,17 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.9.2-dev documentation</a> &raquo;</li>
-          <li><a href="../../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.9.3-dev documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../../index.html">
               <img class="logo" src="../../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
             </a></p>
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../../search.html" method="get">
       <input type="text" name="q" />
@@ -70,7 +70,7 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <h1>Source code for MDAnalysis.topology.core</h1><div class="highlight"><pre>
 <span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
@@ -197,7 +197,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-<div class="viewcode-block" id="TopologyObject.type"><a class="viewcode-back" href="../../../documentation_pages/topology/core.html#MDAnalysis.topology.core.TopologyObject.type">[docs]</a>    <span class="k">def</span> <span class="nf">type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Type of the bond as a tuple</span>
 
 <span class="sd">        When comparing types, it is important to consider the reverse</span>
@@ -206,7 +206,7 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">type</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">])</span>
-</div>
+
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s">&quot;&lt;{cname} between: {conts}&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="n">cname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span>
@@ -263,12 +263,12 @@
 <span class="sd">       Now a subclass of :class:`TopologyObject`. Changed class to use</span>
 <span class="sd">       :attr:`__slots__` and stores atoms in :attr:`atoms` attribute.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;atoms&quot;</span><span class="p">,</span> <span class="s">&quot;order&quot;</span><span class="p">,</span> <span class="s">&quot;__is_guessed&quot;</span><span class="p">)</span>
+    <span class="n">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;atoms&quot;</span><span class="p">,</span> <span class="s">&quot;order&quot;</span><span class="p">,</span> <span class="s">&quot;_is_guessed&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="n">order</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__is_guessed</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_guessed</span> <span class="o">=</span> <span class="bp">False</span>
 
 <div class="viewcode-block" id="Bond.partner"><a class="viewcode-back" href="../../../documentation_pages/topology/core.html#MDAnalysis.topology.core.Bond.partner">[docs]</a>    <span class="k">def</span> <span class="nf">partner</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Bond.partner(Atom)</span>
@@ -290,12 +290,12 @@
 
 <span class="sd">        .. SeeAlso:: :func:`guess_bonds`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__is_guessed</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_guessed</span>
 
     <span class="nd">@is_guessed.setter</span>
-<div class="viewcode-block" id="Bond.is_guessed"><a class="viewcode-back" href="../../../documentation_pages/topology/core.html#MDAnalysis.topology.core.Bond.is_guessed">[docs]</a>    <span class="k">def</span> <span class="nf">is_guessed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__is_guessed</span> <span class="o">=</span> <span class="n">b</span>
-</div>
+    <span class="k">def</span> <span class="nf">is_guessed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_guessed</span> <span class="o">=</span> <span class="n">b</span>
+
 <div class="viewcode-block" id="Bond.length"><a class="viewcode-back" href="../../../documentation_pages/topology/core.html#MDAnalysis.topology.core.Bond.length">[docs]</a>    <span class="k">def</span> <span class="nf">length</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Length of the bond.&quot;&quot;&quot;</span>
         <span class="n">bond</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">pos</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">pos</span>
@@ -595,7 +595,8 @@
 <span class="sd">    then (1,2,3) must be an angle.</span>
 
 <span class="sd">    :Returns:</span>
-<span class="sd">      List of tuples defining the angles.  Suitable for use in u._psf</span>
+<span class="sd">      List of tuples defining the angles.</span>
+<span class="sd">      Suitable for use in u._topology</span>
 
 <span class="sd">    .. seeAlso:: :meth:`guess_bonds`</span>
 
@@ -624,7 +625,8 @@
 <span class="sd">    then (1,2,3,4) must be a torsion.</span>
 
 <span class="sd">    :Returns:</span>
-<span class="sd">      List of tuples defining the torsions.  Suitable for use in u._psf</span>
+<span class="sd">      List of tuples defining the torsions.</span>
+<span class="sd">      Suitable for use in u._topology</span>
 
 <span class="sd">    .. versionadded 0.9.0</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -657,8 +659,8 @@
 <span class="sd">    (1, 2, 3) and (1, 3, 4)</span>
 
 <span class="sd">    :Returns:</span>
-<span class="sd">      List of tuples defining the improper torsions.  Suitable for use in</span>
-<span class="sd">      u._psf</span>
+<span class="sd">      List of tuples defining the improper torsions.</span>
+<span class="sd">      Suitable for use in u._topology</span>
 
 <span class="sd">    .. versionadded 0.9.0</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -917,7 +919,7 @@
 </div>
     <span class="nd">@property</span>
     <span class="nd">@cached</span><span class="p">(</span><span class="s">&#39;dict&#39;</span><span class="p">)</span>
-<div class="viewcode-block" id="TopologyGroup.topDict"><a class="viewcode-back" href="../../../documentation_pages/topology/core.html#MDAnalysis.topology.core.TopologyGroup.topDict">[docs]</a>    <span class="k">def</span> <span class="nf">topDict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">topDict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the TopologyDict for this topology group.</span>
 
@@ -930,7 +932,7 @@
 <span class="sd">        .. versionadded 0.9.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">TopologyDict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bondlist</span><span class="p">)</span>
-</div>
+
 <div class="viewcode-block" id="TopologyGroup.atomgroup_intersection"><a class="viewcode-back" href="../../../documentation_pages/topology/core.html#MDAnalysis.topology.core.TopologyGroup.atomgroup_intersection">[docs]</a>    <span class="k">def</span> <span class="nf">atomgroup_intersection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Retrieve all bonds from within this TopologyGroup that are within</span>
 <span class="sd">        the AtomGroup which is passed.</span>
@@ -1059,7 +1061,7 @@
 <span class="sd">        (0 based index within u.atoms)</span>
 
 <span class="sd">        This format should be identical to the original contents of the</span>
-<span class="sd">        entries in universe._psf.</span>
+<span class="sd">        entries in universe._topology.</span>
 <span class="sd">        Note that because bonds are sorted as they are initialised, the order</span>
 <span class="sd">        that atoms are defined in each entry might be reversed.</span>
 
@@ -1295,7 +1297,7 @@
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -1304,12 +1306,12 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.9.2-dev documentation</a> &raquo;</li>
-          <li><a href="../../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.9.3-dev documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
+    <div class="footer" role="contentinfo">
         &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
@@ -1317,7 +1319,7 @@
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
     Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>
 </html>

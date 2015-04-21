@@ -368,7 +368,6 @@ class TestAtomGroup(TestCase):
     def test_badd_add_AG(self):
         def bad_add():
             return self.ag + [1, 2, 3]
-
         assert_raises(TypeError, bad_add)
 
     def test_repr(self):
@@ -650,12 +649,10 @@ class TestAtomGroup(TestCase):
         # should work
         assert_almost_equal(ag.coordinates(), pos,
                             err_msg="failed to update atoms 12:42 position to new position")
-
         def set_badarr(pos=pos):
             # create wrong size array
             badarr = numpy.random.random((pos.shape[0] - 1, pos.shape[1] - 1))
             ag.positions = badarr
-
         assert_raises(ValueError, set_badarr)
 
     def test_set_positions(self):
@@ -668,26 +665,22 @@ class TestAtomGroup(TestCase):
     def test_no_velocities_raises_NoDataError(self):
         def get_vel(ag=self.universe.selectAtoms("bynum 12:42")):
             v = ag.get_velocities()
-
         # trj has no velocities
         assert_raises(NoDataError, get_vel)
 
     def test_set_velocities_NoData(self):
         def set_vel():
             return self.universe.atoms[:2].set_velocities([0.2])
-
         assert_raises(NoDataError, set_vel)
 
     def test_get_forces_NoData(self):
         def get_for():
             return self.universe.atoms[:2].get_forces()
-
         assert_raises(NoDataError, get_for)
 
     def test_set_forces_NoData(self):
         def set_for():
             return self.universe.atoms[:2].set_forces([0.2])
-
         assert_raises(NoDataError, set_for)
 
     def test_set_resid(self):
@@ -753,16 +746,13 @@ class TestAtomGroup(TestCase):
 
     def test_pickle_raises_NotImplementedError(self):
         import cPickle
-
         ag = self.universe.selectAtoms("bynum 12:42 and name H*")
         assert_raises(NotImplementedError, cPickle.dumps, ag, protocol=cPickle.HIGHEST_PROTOCOL)
 
-    def test_unpickle_raises_NotImp(self):
+    def test_unpickle_raises_NotImplementedError(self):
         ag = self.universe.atoms[:3]
-
         def ag_setstate(ag):
             return ag.__setstate__('a')
-
         assert_raises(NotImplementedError, ag_setstate, ag)
 
     def test_wronglen_set(self):
@@ -799,6 +789,12 @@ class TestAtomGroup(TestCase):
             for atom in g:
                 assert_equal(atom.segid, ref_segname)
 
+    # instant selectors
+    @attr("issue")
+    def test_nonexistent_instantselector_raises_AttributeError(self):
+        def access_nonexistent_instantselector():
+            self.universe.atoms.NO_SUCH_ATOM
+        assert_raises(AttributeError, access_nonexistent_instantselector)
 
 class TestAtomGroupNoTop(TestCase):
     def setUp(self):

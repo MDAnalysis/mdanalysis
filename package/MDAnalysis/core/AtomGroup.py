@@ -917,15 +917,30 @@ class AtomGroup(object):
             # advanced slicing, requires array or list
             return cls([container[i] for i in item])
         elif type(item) == str:
-            return getattr(self, item)
+            return self._get_named_atom(item)
         else:
             raise TypeError("Cannot slice with type: {0}".format(type(item)))
 
     def __getattr__(self, name):
+        try:
+            return self._get_named_atom(name)
+        except SelectionError:
+            raise AttributeError("'{0}' object has no attribute '{1}'".format(
+                    self.__class__.__name__, name))
+
+    def _get_named_atom(self, name):
+        """Get all atoms with name *name* in the current AtomGroup.
+
+        For more than one atom it returns a list of :class:`Atom`
+        instance. A single :class:`Atom` is returned just as such. If
+        no atoms are found, a :exc:`SelectionError` is raised.
+
+        .. versionadded:: 0.9.2
+        """
         # There can be more than one atom with the same name
         atomlist = [atom for atom in self._atoms if name == atom.name]
         if len(atomlist) == 0:
-            raise SelectionError("No atoms or attributes with name " + name)
+            raise SelectionError("No atoms with name '{0}'".format(name))
         elif len(atomlist) == 1:
             return atomlist[0]  # XXX: keep this, makes more sense for names
         else:
@@ -2724,7 +2739,7 @@ class Residue(AtomGroup):
         """
         sel = self.universe.selectAtoms(
             'segid %s and resid %d and name C' % (self.segment.id, self.id - 1)) + \
-              self.N + self.CA + self.C
+              self['N'] + self['CA'] + self['C']
         if len(sel) == 4:  # selectAtoms doesnt raise errors if nothing found, so check size
             return sel
         else:
@@ -2737,7 +2752,7 @@ class Residue(AtomGroup):
                   found in the following residue (by resid) then this
                   method returns ``None``.
         """
-        sel = self.N + self.CA + self.C + \
+        sel = self['N'] + self['CA'] + self['C'] + \
               self.universe.selectAtoms(
                   'segid %s and resid %d and name N' % (self.segment.id, self.id + 1))
         if len(sel) == 4:
@@ -2759,7 +2774,7 @@ class Residue(AtomGroup):
         """
         nextres = self.id + 1
         segid = self.segment.id
-        sel = self.CA + self.C + \
+        sel = self['CA'] + self['C'] + \
               self.universe.selectAtoms(
                   'segid %s and resid %d and name N' % (segid, nextres),
                   'segid %s and resid %d and name CA' % (segid, nextres))
@@ -2777,7 +2792,7 @@ class Residue(AtomGroup):
         .. versionadded:: 0.7.5
         """
         try:
-            return self.N + self.CA + self.CB + self.CG
+            return self['N'] + self['CA'] + self['CB'] + self['CG']
         except (SelectionError, NoDataError):
             return None
 
