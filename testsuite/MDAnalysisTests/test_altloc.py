@@ -43,7 +43,7 @@ class TestAltloc(TestCase):
         assert_equal(sum, segidB0 + altlocB0)
 
     def test_bonds(self):
-        u = Universe(altloc, bonds=True)
+        u = Universe(altloc, guess_bonds=True)
         # need to force topology to load before querying individual atom bonds
         u.build_topology()
         bonds0 = u.selectAtoms("segid B and (altloc A)")[0].bonds

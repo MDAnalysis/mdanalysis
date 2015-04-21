@@ -41,7 +41,7 @@ import numpy as np
 
 import base
 from MDAnalysis.core.AtomGroup import Universe, AtomGroup
-from MDAnalysis.topology.core import guess_atom_element, guess_bonds
+from MDAnalysis.topology.core import guess_atom_element
 from .. import core
 import MDAnalysis.core.util as util
 

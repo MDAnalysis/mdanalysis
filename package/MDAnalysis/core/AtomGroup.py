@@ -138,6 +138,66 @@ One can also read the resids directly from  an original PDB file::
   protein.set_resnum(orig.selectAtoms("protein").resids())
 
 
+Working with Topologies
+-----------------------
+
+If the topology file given to the Universe had bonding information then this
+will have been loaded into the Universe as :attr:`Universe.bonds`
+:attr:`Universe.angles` :attr:`Universe.torsions` and :attr:`Universe.impropers`.
+
+
+If your topology file does not have this information, it is still possible
+to construct it based on the positions of the atoms and assumed vdw radii
+for these atoms.  See :meth:`MDAnalysis.AtomGroup.guess_bonds` and
+:func:`MDAnalysis.topology.core.guess_bonds` for details.
+
+This Topology information is stored in :class:`MDAnalysis.topology.core.TopologyGroup`
+objects.  These are designed to be analogous to the AtomGroup container for Atoms.
+
+For examples working with a box of ethanol::
+
+    >>> import MDAnalysis as mda
+    >>> u = mda.Universe('ethanol.gro', guess_bonds=True)
+    >>> u.bonds
+    <TopologyGroup containing 11784 Bonds>
+    >>> u.bonds.types()  # view available types
+    [('O', 'H'), ('C', 'O'), ('C', 'H'), ('C', 'C')]
+    >>> u.bonds.selectBonds(('C', 'O'))  # return all C-O bonds from the group
+    <TopologyGroup containing 1473 Bonds>
+
+Bonds are categorised based on the types of atoms.  This is done in a way
+so that type (a, b, c) is equivalent to (c, b, a) ie. bonds are reversible.
+For example::
+
+    >>> u.angles.types()
+    [('C', 'C', 'H'),
+     ('H', 'C', 'H'),
+     ('C', 'O', 'H'),
+     ('C', 'C', 'O'),
+     ('H', 'C', 'O')]
+
+There is only C-C-H bonds and no H-C-C bonds.  Selection however is
+aware that sometimes types are reversed::
+
+    u.angles.selectBonds(('H', 'C', 'C'))  # note reversal of type
+    >>> <TopologyGroup containing 7365 Angles>
+
+TopologyGroups can be combined and indexed::
+
+    >>> tg = u.angles.selectBonds(('C', 'C', 'O')) + u.angles.selectBonds(('C', 'O', 'H'))
+    >>> tg.types()
+    [('C', 'O', 'H'), ('C', 'C', 'O')]
+    >>> tg[:100]
+    <TopologyGroup containing 100 Angles>
+
+Finally, TopologyGroups are linked to some fast Cython calculation methods to
+determine bond lengths and angle sizes::
+
+    >>> tg.angles()
+    array([ 1.88042373,  1.95928987,  1.74770012, ...,  1.79306789,
+            1.95522678,  1.88881045])
+
+
 Combining objects: system building
 ----------------------------------
 
@@ -563,7 +623,9 @@ class Atom(object):
         .. versionchanged:: 0.9.0
            Changed to managed property
         """
-        return self.universe._bondDict[self]
+        from ..topology.core import TopologyGroup
+
+        return TopologyGroup(self.universe._bondDict[self])
 
     @property
     def angles(self):
@@ -572,7 +634,9 @@ class Atom(object):
         .. versionchanged:: 0.9.0
            Changed to managed property
         """
-        return self.universe._angleDict[self]
+        from ..topology.core import TopologyGroup
+
+        return TopologyGroup(self.universe._angleDict[self])
 
     @property
     def torsions(self):
@@ -581,7 +645,9 @@ class Atom(object):
         .. versionchanged:: 0.9.0
            Changed to managed property
         """
-        return self.universe._torsionDict[self]
+        from ..topology.core import TopologyGroup
+
+        return TopologyGroup(self.universe._torsionDict[self])
 
     dihedrals = torsions
 
@@ -592,7 +658,9 @@ class Atom(object):
         .. versionchanged:: 0.9.0
            Changed to managed property
         """
-        return self.universe._improperDict[self]
+        from ..topology.core import TopologyGroup
+
+        return TopologyGroup(self.universe._improperDict[self])
 
 
 class AtomGroup(object):
@@ -1107,6 +1175,52 @@ class AtomGroup(object):
         """
         return numpy.array([s.name for s in self.segments])
 
+    def guess_bonds(self, vdwradii=None):
+        """Guess all the bonds that exist within this AtomGroup and add to Universe.
+
+        :Keywords:
+          *vdwradii*
+            Pass a dict relating atom types to vdwradii.
+
+        .. SeeAlso::
+           :func:`MDAnalysis.topology.core.guess_bonds`
+
+        .. versionadded:: 0.9.3
+        """
+        from ..topology.core import (guess_bonds, Bond,
+                                     guess_angles, Angle,
+                                     guess_torsions, Torsion,
+                                     TopologyGroup)
+
+        b = guess_bonds(self.atoms, self.atoms.positions, vdwradii=vdwradii)
+
+        # eliminate bonds that already exist
+        # have to compare indices not bond objects as same bond which is True and False
+        # will hash differently.
+        existing_bonds = set(self.universe.bonds.to_indices())
+        new_b = set(b).difference(existing_bonds)
+        bgroup = TopologyGroup.from_indices(new_b, self.universe.atoms,
+                                            bondclass=Bond, guessed=True)
+        self.universe.bonds += bgroup
+        self._clear_caches('bonds')
+
+        a = guess_angles(self.bonds)
+        existing_angles = set(self.universe.angles.to_indices())
+        new_a = set(a).difference(existing_angles)
+        agroup = TopologyGroup.from_indices(new_a, self.universe.atoms,
+                                            bondclass=Angle, guessed=True)
+        self.universe.angles += agroup
+
+        self._clear_caches('angles')
+
+        t = guess_torsions(self.angles)
+        existing_t = set(self.universe.torsions.to_indices())
+        new_t = set(t).difference(existing_t)
+        tgroup = TopologyGroup.from_indices(new_t, self.universe.atoms,
+                                          bondclass=Torsion, guessed=True)
+        self.universe.torsions += tgroup
+        self._clear_caches('torsions')
+
     @property
     @cached('bonds')
     def bonds(self):
@@ -1116,15 +1230,15 @@ class AtomGroup(object):
         only bonds which are entirely contained by the AtomGroup use
         u.bonds.atomgroup_intersection(ag, strict=True)
 
-        .. versionadded 0.9.0
+        .. versionadded:: 0.9.0
+        .. versionchanged:: 0.9.3
+           Now always returns a (possibly empty) TopologyGroup
         """
-        from MDAnalysis.topology.core import TopologyGroup
+        from ..topology.core import TopologyGroup
 
         mybonds = [b for a in self._atoms for b in a.bonds]
-        if len(mybonds) == 0:
-            return None
-        else:
-            return TopologyGroup(mybonds)
+
+        return TopologyGroup(mybonds)
 
     @property
     @cached('angles')
@@ -1135,15 +1249,15 @@ class AtomGroup(object):
         only angles which are entirely contained by the AtomGroup use
         u.angles.atomgroup_intersection(ag, strict=True)
 
-        .. versionadded 0.9.0
+        .. versionadded:: 0.9.0
+        .. versionchanged:: 0.9.3
+           Now always returns a (possibly empty) TopologyGroup
         """
-        from MDAnalysis.topology.core import TopologyGroup
+        from ..topology.core import TopologyGroup
 
         mybonds = [b for a in self._atoms for b in a.angles]
-        if len(mybonds) == 0:
-            return None
-        else:
-            return TopologyGroup(mybonds)
+
+        return TopologyGroup(mybonds)
 
     @property
     @cached('torsions')
@@ -1154,15 +1268,15 @@ class AtomGroup(object):
         only torsions which are entirely contained by the AtomGroup use
         u.torsions.atomgroup_intersection(ag, strict=True)
 
-        .. versionadded 0.9.0
+        .. versionadded:: 0.9.0
+        .. versionchanged:: 0.9.3
+           Now always returns a (possibly empty) TopologyGroup
         """
-        from MDAnalysis.topology.core import TopologyGroup
+        from ..topology.core import TopologyGroup
 
         mybonds = [b for a in self._atoms for b in a.torsions]
-        if len(mybonds) == 0:
-            return None
-        else:
-            return TopologyGroup(mybonds)
+
+        return TopologyGroup(mybonds)
 
     @property
     @cached('impropers')
@@ -1173,15 +1287,15 @@ class AtomGroup(object):
         to select only torsions which are entirely contained by the AtomGroup use
         u.impropers.atomgroup_intersection(ag, strict=True)
 
-        .. versionadded 0.9.0
+        .. versionadded:: 0.9.0
+        .. versionchanged:: 0.9.3
+           Now always returns a (possibly empty) TopologyGroup
         """
-        from MDAnalysis.topology.core import TopologyGroup
+        from ..topology.core import TopologyGroup
 
         mybonds = [b for a in self._atoms for b in a.impropers]
-        if len(mybonds) == 0:
-            return None
-        else:
-            return TopologyGroup(mybonds)
+
+        return TopologyGroup(mybonds)
 
     @cached('masses')
     def masses(self):
@@ -3017,7 +3131,7 @@ class Universe(object):
 
     The system always requires a *topology* file --- in the simplest case just
     a list of atoms. This can be a CHARMM/NAMD PSF file or a simple coordinate
-    file with atom informations such as PDB, Gromacs GRO, or CHARMM CRD. See
+    file with atom informations such as XYZ, PDB, Gromacs GRO, or CHARMM CRD. See
     :ref:`Supported topology formats` for what kind of topologies can be read.
 
     A trajectory provides coordinates; the coordinates have to be ordered in
@@ -3027,7 +3141,7 @@ class Universe(object):
     :ref:`Supported coordinate formats` for what can be read as a
     "trajectory".
 
-    As a special case, when the topology is a PDB, GRO or CRD file
+    As a special case, when the topology is a XYZ, PDB, GRO or CRD file
     then the coordinates are immediately loaded from the "topology"
     file unless a trajectory is supplied.
 
@@ -3053,7 +3167,8 @@ class Universe(object):
       :attr:`Universe.trajectory.ts` is the current time step
     - :attr:`Universe.dimensions`: current system dimensions (simulation unit cell, if
       set in the trajectory)
-    - bonds, angles, dihedrals, impropers
+    - :attr:`Universe.bonds`: TopologyGroup of bonds in Universe, also
+      :attr:`Universe.angles`, :attr:`Universe.dihedrals`, and :attr:`Universe.impropers`
       (low level access through :attr:`Universe._topology`)
 
     .. Note::
@@ -3063,10 +3178,7 @@ class Universe(object):
        :mod:`MDAnalysis.topology.tables`). This does not always work and if you
        require correct values (e.g. because you want to calculate the center of
        mass) then you need to make sure that MDAnalysis gets all the
-       information needed. Furthermore, the list of bonds is only constructed
-       when provided in the topology and never guessed (see `Issue 23`).
-
-    .. _`Issue 23`: https://github.com/MDAnalysis/mdanalysis/issues/23
+       information needed.
 
     .. versionchanged:: 0.7.5
        Can also read multi-frame PDB files with the
@@ -3123,17 +3235,13 @@ class Universe(object):
              individual list member. [``None``]
              Can also pass a subclass of :class:`MDAnalysis.coordinates.base.Reader`
              to define a custom reader to be used on the trajectory file.
-          *bonds*
-             bond handling for PDB files. The default is to read and store the
-             CONECT records only. When set to ``True`` it will attempt to guess
-             connectivity between all atoms in the Universe.
-             Each bond knows if it was guessed or was a CONECT record, so when
-             saving out one can specify which ones to write out by ::
-
-               u = Universe("example.pdb")
-               u.atoms.write("output.pdb", bonds="conect") # default, only CONECT
-               u.atoms.write("output.pdb", bonds="all")
-               u.atoms.write("output.pdb", bonds=None)
+          *guess_bonds*
+              Once Universe has been loaded, attempt to guess the connectivity
+              between atoms.  This will populate the .bonds .angles and
+              .torsions attributes of the Universe.
+          *vdwradii*
+              For use with *guess_bonds*. Supply a dict giving a vdwradii for each atom type
+              which are used in guessing bonds.
 
 
         This routine tries to do the right thing:
@@ -3157,8 +3265,12 @@ class Universe(object):
         .. versionchanged:: 0.7.4
            New *topology_format* and *format* parameters to override the file
            format detection.
+        .. versionchanged:: 0.9.3
+           Added ``'guess_bonds'`` keyword to cause topology to be guessed on
+           Universe creation.
+           Deprecated ``'bonds'`` keyword, use ``'guess_bonds'`` instead.
         """
-        from MDAnalysis.topology.core import get_parser_for, guess_format
+        from ..topology.core import get_parser_for, guess_format
         from ..topology.base import TopologyReader
 
         # managed attribute holding Reader
@@ -3210,8 +3322,7 @@ class Universe(object):
                                     permissive=perm,
                                     tformat=topology_format)
         try:
-            with parser(self.filename, universe=self,
-                        guess_bonds_mode=kwargs.get('bonds', False)) as p:
+            with parser(self.filename, universe=self) as p:
                 self._topology = p.parse()
         except IOError as err:
             raise IOError("Failed to load from the topology file {}"
@@ -3227,6 +3338,17 @@ class Universe(object):
 
         # Load coordinates
         self.load_new(coordinatefile, **kwargs)
+
+        # Deprecated bonds mode handling here, remove eventually.
+        if 'bonds' in kwargs:
+            warnings.warn("The 'bonds' keyword has been deprecated"
+                          " and will be removed in 0.11.0."
+                          " Please use 'guess_bonds' instead.")
+            if kwargs.get('bonds') in ['all', True]:
+                kwargs['guess_bonds'] = True
+
+        if kwargs.get('guess_bonds', False):
+            self.atoms.guess_bonds(vdwradii=kwargs.get('vdwradii',None))
 
     def _clear_caches(self, *args):
         """Clear cache for all *args*.
@@ -3288,50 +3410,51 @@ class Universe(object):
         self.residues = self.atoms.residues
         self.universe = self  # for Writer.write(universe), see Issue 49
 
+    def _init_top(self, cat, Top):
+        """Initiate a generic form of topology.
+
+        Arguments:
+          *cat*
+            The key which will be searched in the _topology dict.
+            The key "guessed_" + cat will also be searched.
+          *Top*
+            Class of the topology object to be created.
+
+        .. versionadded:: 0.9.3
+        """
+        from ..topology.core import TopologyGroup
+
+        defined = self._topology.get(cat, set())
+        guessed = self._topology.get('guessed_' + cat, set())
+
+        TopSet = TopologyGroup.from_indices(defined, self.atoms,
+                                            bondclass=Top, guessed=False,
+                                            remove_duplicates=True)
+        TopSet += TopologyGroup.from_indices(guessed, self.atoms,
+                                             bondclass=Top, guessed=True,
+                                             remove_duplicates=True)
+
+        return TopSet
+
     def _init_bonds(self):
         """Set bond information from u._topology['bonds']
 
         .. versionchanged 0.9.0
            Now returns a :class:`~MDAnalysis.topology.core.TopologyGroup`
-           Now only accepts list of tuples as input, previously accepted either
-           lists of tuples or lists of Bonds.
         """
-        from MDAnalysis.topology.core import Bond, TopologyGroup
+        from ..topology.core import Bond
 
-        def fix_order(bondset):
-            """Make sure that all bonds have first index less than second"""
-            return set([tuple(sorted(b)) for b in bondset])
+        bonds = self._init_top('bonds', Bond)
 
-        bondlist = set()
+        bondorder = self._topology.get('bondorder', None)
+        if bondorder:
+            for b in bonds:
+                try:
+                    b.order = bondorder[b.indices]
+                except KeyError:
+                    pass
 
-        defined_bonds = fix_order(self._topology.get('bonds', set()))
-        guessed_bonds = fix_order(self._topology.get('guessed_bonds', set()))
-        # Some topologies define an order for bonds, this is stored
-        # as dict of bondtuple:value
-        bondorder = self._topology.get('bondorder', False)
-        # Defined bonds take priority, remove bonds in 'guessed' that are in 'defined'
-        guessed_bonds.difference_update(defined_bonds)
-
-        for bondset, guessed in zip([defined_bonds, guessed_bonds],
-                                    [False, True]):
-            for bond in bondset:
-                i, j = bond[0], bond[1]
-
-                if bondorder:
-                    order = bondorder.get(bond, None)
-                else:
-                    order = None
-
-                a1, a2 = self.atoms[i], self.atoms[j]
-                bond = Bond([a1, a2], order=order)
-                bond.is_guessed = guessed
-
-                bondlist.add(bond)
-
-        if len(bondlist) > 0:
-            return TopologyGroup(list(bondlist))
-        else:
-            return None
+        return bonds
 
     def _init_angles(self):
         """Builds angle information from u._topology['angles']
@@ -3339,20 +3462,13 @@ class Universe(object):
         Returns ``None`` if no angle information is present, otherwise
         returns a :class:`~MDAnalysis.topology.core.TopologyGroup`
 
-        .. versionadded 0.9.0
+        .. versionadded:: 0.9.0
+        .. versionchanged:: 0.9.3
+           Now reads guessed angles and tags them appropriately.
         """
-        angle_entries = self._topology.get('angles', None)
-        if angle_entries is None:
-            return None
-        else:
-            from MDAnalysis.topology.core import TopologyGroup, Angle
+        from ..topology.core import Angle
 
-            angle_list = [Angle([self.atoms[a] for a in entry])
-                          for entry in angle_entries]
-            if len(angle_list) > 0:
-                return TopologyGroup(angle_list)
-            else:
-                return None
+        return self._init_top('angles', Angle)
 
     def _init_torsions(self):
         """Builds torsion information from u._topology['torsions']
@@ -3360,20 +3476,13 @@ class Universe(object):
         Returns ``None`` if no torsion information is present, otherwise
         returns a :class:`~MDAnalysis.topology.core.TopologyGroup`
 
-        .. versionadded 0.9.0
+        .. versionadded:: 0.9.0
+        .. versionchanged:: 0.9.3
+           Now reads guessed torsions and tags them appropriately.
         """
-        torsion_entries = self._topology.get('torsions', None)
-        if torsion_entries is None:
-            return None
-        else:
-            from MDAnalysis.topology.core import TopologyGroup, Torsion
+        from ..topology.core import Torsion
 
-            torsion_list = [Torsion([self.atoms[a] for a in entry])
-                            for entry in torsion_entries]
-            if len(torsion_list) > 0:
-                return TopologyGroup(torsion_list)
-            else:
-                return None
+        return self._init_top('torsions', Torsion)
 
     def _init_impropers(self):
         """Build improper torsion information from u._topology['impropers']
@@ -3381,31 +3490,23 @@ class Universe(object):
         Returns ``None`` if no improper torsion information is present,
         otherwise returns a :class:`~MDAnalysis.topology.core.TopologyGroup`
 
-        .. versionadded 0.9.0
+        .. versionadded:: 0.9.0
+        .. versionchanged:: 0.9.3
         """
-        torsion_entries = self._topology.get('impropers', None)
-        if torsion_entries is None:
-            return None
-        else:
-            from MDAnalysis.topology.core import TopologyGroup, Improper_Torsion
+        from ..topology.core import Improper_Torsion
 
-            torsion_list = [Improper_Torsion([self.atoms[a] for a in entry])
-                            for entry in torsion_entries]
-            if len(torsion_list) > 0:
-                return TopologyGroup(torsion_list)
-            else:
-                return None
+        return self._init_top('impropers', Improper_Torsion)
 
     def _init_fragments(self):
         """Build all fragments in the Universe
 
         Generally built on demand by an Atom querying its fragment property.
 
-        .. versionadded 0.9.0
+        .. versionadded:: 0.9.0
         """
         # Check that bond information is present, else inform
         bonds = self.bonds
-        if bonds is None:
+        if not bonds:
             raise NoDataError("Fragments require that the Universe has Bond information")
 
         # This current finds all fragments from all Atoms
@@ -3479,7 +3580,7 @@ class Universe(object):
         bonds = self.bonds
         bd = defaultdict(list)
 
-        if bonds is None:
+        if not bonds:
             pass
         else:
             for b in bonds:
@@ -3499,7 +3600,7 @@ class Universe(object):
         bonds = self.angles
         bd = defaultdict(list)
 
-        if bonds is None:
+        if not bonds:
             pass
         else:
             for b in bonds:
@@ -3589,10 +3690,11 @@ class Universe(object):
         """
         Returns a :class:`~MDAnalysis.topology.core.TopologyGroup` of all
         bonds in the Universe.
-        If none are found, returns ``None``
 
-        .. versionchaged 0.9.0
+        .. versionchanged:: 0.9.0
            Now a lazily built :class:`~MDAnalysis.topology.core.TopologyGroup`
+        .. versionchanged:: 0.9.2
+           Now can return empty TopologyGroup
         """
         return self._init_bonds()
 
@@ -3605,9 +3707,8 @@ class Universe(object):
 
         .. versionadded:: 0.9.0
         """
-        del self.bonds
-        self._topology['bonds'] = bondlist
-        self._fill_cache('bonds', self._init_bonds())
+        self._fill_cache('bonds', bondlist)
+        self._clear_caches('bondDict')
 
     @bonds.deleter
     def bonds(self):
@@ -3626,17 +3727,16 @@ class Universe(object):
         Returns a :class:`~MDAnalysis.topology.core.TopologyGroup`
         of all angles in the Universe
 
-        If none are found, returns ``None``
-
-        .. versionadded 0.9.0
+        .. versionadded:: 0.9.0
+        .. versionchanged:: 0.9.2
+           Now can return empty TopologyGroup
         """
         return self._init_angles()
 
     @angles.setter
     def angles(self, bondlist):
-        del self.angles
-        self._topology['angles'] = bondlist
-        self._fill_cache('angles', self._init_angles())
+        self._fill_cache('angles', bondlist)
+        self._clear_caches('angleDict')
 
     @angles.deleter
     def angles(self):
@@ -3649,17 +3749,16 @@ class Universe(object):
         Returns a :class:`~MDAnalysis.topology.core.TopologyGroup`
         of all torsions in the Universe
 
-        If none are found, returns ``None``
-
-        .. versionadded 0.9.0
+        .. versionadded:: 0.9.0
+        .. versionchanged:: 0.9.2
+           Now can return empty TopologyGroup
         """
         return self._init_torsions()
 
     @torsions.setter
     def torsions(self, bondlist):
-        del self.torsions
-        self._topology['torsions'] = bondlist
-        self._fill_cache('torsions', self._init_torsions())
+        self._fill_cache('torsions', bondlist)
+        self._clear_caches('torsionDict')
 
     @torsions.deleter
     def torsions(self):
@@ -3672,17 +3771,16 @@ class Universe(object):
         Returns a :class:`~MDAnalysis.topology.core.TopologyGroup`
         of all improper torsions in the Universe
 
-        If none are found, returns ``None``
-
-        .. versionadded 0.9.0
+        .. versionadded:: 0.9.0
+        .. versionchanged:: 0.9.2
+           Now can return empty TopologyGroup
         """
         return self._init_impropers()
 
     @impropers.setter
     def impropers(self, bondlist):
-        del self.impropers
-        self._topology['impropers'] = bondlist
-        self._fill_cache('impropers', self._init_impropers())
+        self._fill_cache('impropers', bondlist)
+        self._clear_caches('improperDict')
 
     @impropers.deleter
     def impropers(self):

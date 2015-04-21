@@ -20,6 +20,12 @@ The rules for this file:
     trajectory with forces) (Issue 221)
   * Added wrap method. Wrap allows the centers of groups of atoms to be
     moved within the primary unit cell without breaking up the group. (Issue 190)
+  * Added guess_bonds keyword argument to Universe creation.  This will attempt to
+    guess all topology information on Universe creation. (Issue #245)
+  * Added guess_bonds method to AtomGroup. (Issue #245)
+  * All TopologyObjects (Bond, Angle etc) now have is_guessed attribute
+  * TopologyGroup now has alternate constructor method, .from_indices()
+  * Added TopologyObject.indices property
 
   Changes
 
@@ -29,6 +35,10 @@ The rules for this file:
   * "applications" were removed from the mdanalysis source code
     repository and now exist as independent repositories under
     https://github.com/MDAnalysis/
+  * TopologyGroup can now have zero length, and will evaluate to False
+    when empty.
+  * Renamed TopologyGroup.dump_contents to "to_indices"
+  * Deprecated 'bonds' keyword from Universe and replaced with 'guess_bonds'
 
   Fixes
 
