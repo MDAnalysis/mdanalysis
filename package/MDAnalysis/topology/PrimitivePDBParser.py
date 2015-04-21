@@ -30,9 +30,7 @@ numbers up to 99,999.
 .. Note::
 
    The parser processes atoms and their names. Masses are guessed and set to 0
-   if unknown. Partial charges are not set. Bond connectivity can be guessed if
-   the ``bonds=True`` keyword is set for
-   :class:`~MDAnalysis.core.AtomGroup.Universe`.
+   if unknown. Partial charges are not set.
 
 .. SeeAlso::
 
@@ -50,11 +48,9 @@ Classes
 """
 from __future__ import absolute_import
 
-import numpy as np
-
 from ..core.AtomGroup import Atom
 from .core import (guess_atom_type, guess_atom_mass,
-                   guess_atom_charge, guess_bonds)
+                   guess_atom_charge)
 from ..core.util import openany
 from .base import TopologyReader
 
@@ -87,10 +83,6 @@ class PrimitivePDBParser(TopologyReader):
 
         atoms = self._parseatoms(pdb)
         structure['atoms'] = atoms
-
-        if self.guess_bonds_mode:
-            guessed_bonds = self._guess_bonds(pdb, atoms)
-            structure['guessed_bonds'] = guessed_bonds
 
         bonds = self._parsebonds(pdb, atoms)
         structure['bonds'] = bonds
@@ -126,11 +118,6 @@ class PrimitivePDBParser(TopologyReader):
             #    pass
             #    #atoms.append(None)
         return atoms
-
-    def _guess_bonds(self, primitive_pdb_reader, atoms):
-        guessed_bonds = guess_bonds(atoms,
-                                    np.array(primitive_pdb_reader.ts))
-        return guessed_bonds
 
     def _parsebonds(self, primitive_pdb_reader, atoms):
         # Mapping between the atom array indicies a.number and atom ids
