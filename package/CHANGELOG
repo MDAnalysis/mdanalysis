@@ -15,7 +15,13 @@ The rules for this file:
 
   Enhancements
 
-  * Amber netCDF4 will now read Forces (Issue 257)
+  * Amber netCDF4 Reader will now read Forces (Issue #257)
+  * Amber netCDF4 Writer will now write Velocities and Forces
+
+  Fixes
+
+  * NetCDFWriter previously always wrote velocities/forces if found
+    in timestep, rather than following how the Writer was created.
 
 04/20/15  tyler.je.reddy, richardjgowers, orbeckst
   * 0.9.2
