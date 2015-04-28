@@ -115,7 +115,7 @@ class TopologyObject(object):
     behave.
 
     .. versionadded:: 0.9.0
-    .. versionchanged:: 0.9.3
+    .. versionchanged:: 0.10.0
        All TopologyObject now keep track of if they were guessed or not
        via the ``is_guessed`` managed property.
     """
@@ -129,7 +129,7 @@ class TopologyObject(object):
     def indices(self):
         """Tuple of indices describing this object
 
-        .. versionadded:: 0.9.3
+        .. versionadded:: 0.10.0
         """
         return tuple([a.number for a in self.atoms])
 
@@ -838,7 +838,7 @@ class TopologyGroup(object):
        :meth:`selectBonds` allows the :attr:`topDict` to be queried
        with tuple of types. (3) Added :meth:`atomgroup_intersection`
        to allow bonds which are in a given :class:`AtomGroup` to be retrieved.
-    .. versionchanged:: 0.9.3
+    .. versionchanged:: 0.10.0
        Added :func:`from_indices` constructor, allowing class to be created
        from indices.
        Can now create empty Group.
@@ -884,7 +884,7 @@ class TopologyGroup(object):
           *remove_duplicates*
             Sort through items and make sure that no duplicates are created [``False``]
 
-        .. versionadded:: 0.9.3
+        .. versionadded:: 0.10.0
         """
         if remove_duplicates:
             # always have first index less than last
@@ -1054,7 +1054,7 @@ class TopologyGroup(object):
         that atoms are defined in each entry might be reversed.
 
         .. versionadded:: 0.9.0
-        .. versionchanged:: 0.9.3
+        .. versionchanged:: 0.10.0
            Renamed from "dump_contents" to "to_indices"
         """
         # should allow topology information to be pickled even if it is

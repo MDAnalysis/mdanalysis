@@ -169,7 +169,7 @@ class Timestep(base.Timestep):
        ``velocities = arg[:,3:6]``.
 
 
-    .. versionchanged:: 0.9.3
+    .. versionchanged:: 0.10.0
        Added ability to contain Forces
     """
     # based on TRR Timestep (MDAnalysis.coordinates.xdrfile.TRR.Timestep)
@@ -530,7 +530,7 @@ class NCDFReader(base.Reader):
     .. SeeAlso:: :class:`NCDFWriter`
 
     .. versionadded: 0.7.6
-    .. versionchanged:: 0.9.3
+    .. versionchanged:: 0.10.0
        Added ability to read Forces
     """
 
@@ -754,7 +754,7 @@ class NCDFWriter(base.Writer):
 
     .. versionadded: 0.7.6
 
-    .. versionchanged:: 0.9.3
+    .. versionchanged:: 0.10.0
        Added ability to write velocities and forces
     """
 
