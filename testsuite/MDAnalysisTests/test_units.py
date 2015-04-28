@@ -94,3 +94,6 @@ class TestConversion(object):
     def testForce(self):
         yield self._assert_almost_equal_convert, 1, 'kJ/(mol*A)', 'J/m', 1.66053892103219e-11
         yield self._assert_almost_equal_convert, 2.5, 'kJ/(mol*nm)', 'kJ/(mol*A)', 0.25
+        yield self._assert_almost_equal_convert, 1, 'kcal/(mol*Angstrom)', 'kJ/(mol*Angstrom)', 4.184
+
+

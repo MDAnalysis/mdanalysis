@@ -274,6 +274,7 @@ forceUnit_factor = {
     'Newton': 1e13/constants['N_Avogadro'],
     'N': 1e13/constants['N_Avogadro'],
     'J/m': 1e13/constants['N_Avogadro'],
+    'kcal/(mol*Angstrom)': 1/constants['calorie'],
 }
 # (TODO: build this combinatorically from lengthUnit and energyUnit)
 

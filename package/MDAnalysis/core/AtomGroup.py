@@ -1200,7 +1200,7 @@ class AtomGroup(object):
         .. SeeAlso::
            :func:`MDAnalysis.topology.core.guess_bonds`
 
-        .. versionadded:: 0.9.3
+        .. versionadded:: 0.10.0
         """
         from ..topology.core import (guess_bonds, Bond,
                                      guess_angles, Angle,
@@ -1246,7 +1246,7 @@ class AtomGroup(object):
         u.bonds.atomgroup_intersection(ag, strict=True)
 
         .. versionadded:: 0.9.0
-        .. versionchanged:: 0.9.3
+        .. versionchanged:: 0.10.0
            Now always returns a (possibly empty) TopologyGroup
         """
         from ..topology.core import TopologyGroup
@@ -1265,7 +1265,7 @@ class AtomGroup(object):
         u.angles.atomgroup_intersection(ag, strict=True)
 
         .. versionadded:: 0.9.0
-        .. versionchanged:: 0.9.3
+        .. versionchanged:: 0.10.0
            Now always returns a (possibly empty) TopologyGroup
         """
         from ..topology.core import TopologyGroup
@@ -1284,7 +1284,7 @@ class AtomGroup(object):
         u.torsions.atomgroup_intersection(ag, strict=True)
 
         .. versionadded:: 0.9.0
-        .. versionchanged:: 0.9.3
+        .. versionchanged:: 0.10.0
            Now always returns a (possibly empty) TopologyGroup
         """
         from ..topology.core import TopologyGroup
@@ -1303,7 +1303,7 @@ class AtomGroup(object):
         u.impropers.atomgroup_intersection(ag, strict=True)
 
         .. versionadded:: 0.9.0
-        .. versionchanged:: 0.9.3
+        .. versionchanged:: 0.10.0
            Now always returns a (possibly empty) TopologyGroup
         """
         from ..topology.core import TopologyGroup
@@ -3280,7 +3280,7 @@ class Universe(object):
         .. versionchanged:: 0.7.4
            New *topology_format* and *format* parameters to override the file
            format detection.
-        .. versionchanged:: 0.9.3
+        .. versionchanged:: 0.10.0
            Added ``'guess_bonds'`` keyword to cause topology to be guessed on
            Universe creation.
            Deprecated ``'bonds'`` keyword, use ``'guess_bonds'`` instead.
@@ -3435,7 +3435,7 @@ class Universe(object):
           *Top*
             Class of the topology object to be created.
 
-        .. versionadded:: 0.9.3
+        .. versionadded:: 0.10.0
         """
         from ..topology.core import TopologyGroup
 
@@ -3478,7 +3478,7 @@ class Universe(object):
         returns a :class:`~MDAnalysis.topology.core.TopologyGroup`
 
         .. versionadded:: 0.9.0
-        .. versionchanged:: 0.9.3
+        .. versionchanged:: 0.10.0
            Now reads guessed angles and tags them appropriately.
         """
         from ..topology.core import Angle
@@ -3492,7 +3492,7 @@ class Universe(object):
         returns a :class:`~MDAnalysis.topology.core.TopologyGroup`
 
         .. versionadded:: 0.9.0
-        .. versionchanged:: 0.9.3
+        .. versionchanged:: 0.10.0
            Now reads guessed torsions and tags them appropriately.
         """
         from ..topology.core import Torsion
@@ -3506,7 +3506,7 @@ class Universe(object):
         otherwise returns a :class:`~MDAnalysis.topology.core.TopologyGroup`
 
         .. versionadded:: 0.9.0
-        .. versionchanged:: 0.9.3
+        .. versionchanged:: 0.10.0
         """
         from ..topology.core import Improper_Torsion
 

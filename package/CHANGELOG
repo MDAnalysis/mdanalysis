@@ -11,7 +11,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/??  richardjgowers
-  * 0.9.3
+  * 0.10.0
 
   Enhancements
 
@@ -21,6 +21,8 @@ The rules for this file:
   * All TopologyObjects (Bond, Angle etc) now have is_guessed attribute
   * TopologyGroup now has alternate constructor method, .from_indices()
   * Added TopologyObject.indices property
+  * Amber netCDF4 Reader will now read Forces (Issue #257)
+  * Amber netCDF4 Writer will now write Velocities and Forces
 
   Changes
 
@@ -28,6 +30,11 @@ The rules for this file:
     when empty.
   * Renamed TopologyGroup.dump_contents to "to_indices"
   * Deprecated 'bonds' keyword from Universe and replaced with 'guess_bonds'
+
+  Fixes
+
+  * NetCDFWriter previously always wrote velocities/forces if found
+    in timestep, rather than following how the Writer was created.
 
 
 04/20/15  tyler.je.reddy, richardjgowers, orbeckst

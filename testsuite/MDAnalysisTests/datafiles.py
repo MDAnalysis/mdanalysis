@@ -55,6 +55,7 @@ __all__ = [
     "PRMpbc", "TRJpbc_bz2",  # Amber (periodic box)
     "PRM12", "TRJ12_bz2",  # Amber (v12 format, Issue 100)
     "PRMncdf", "TRJncdf", "NCDF",  # Amber (netcdf)
+    "PFncdf_Top", "PFncdf_Trj", # Amber ncdf with Positions and Forces
     "PQR",  # PQR
     "PDBQT_input",  # PDBQT
     "PDBQT_querypdb",
@@ -144,6 +145,8 @@ XYZ_mini = resource_filename(__name__, 'data/mini.xyz')
 PRM = resource_filename(__name__, 'data/ache.prmtop')
 TRJ = resource_filename(__name__, 'data/ache.mdcrd')
 TRJ_bz2 = resource_filename(__name__, 'data/ache.mdcrd.bz2')
+PFncdf_Top = resource_filename(__name__, 'data/posfor.top')
+PFncdf_Trj = resource_filename(__name__, 'data/posfor.ncdf')
 
 PRMpbc = resource_filename(__name__, 'data/capped-ala.prmtop')
 TRJpbc_bz2 = resource_filename(__name__, 'data/capped-ala.mdcrd.bz2')

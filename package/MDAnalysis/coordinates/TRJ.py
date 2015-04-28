@@ -50,6 +50,12 @@ object.
       only available if the trajectory contains velocities or if the
       *velocities* = ``True`` keyword has been supplied.
 
+   .. attribute:: _forces
+
+      forces of the atoms as a :class:`numpy.ndarray` of shape `(numatoms, 3)`;
+      only available if the trajectory contains forces or if the
+      *forces* = ``True`` keyword has been supplied.
+
 
 .. _ascii-trajectories:
 
@@ -94,7 +100,8 @@ The `AMBER netcdf`_ format make use of NetCDF_ (Network Common Data
 Form) format. Such binary trajectories are recognized in MDAnalysis by
 the '.ncdf' suffix and read by the :class:`NCDFReader`.
 
-Binary trajectories can also contain velocities and can record the exact time
+Binary trajectories can also contain velocities and forces, and can record the
+exact time
 step. In principle, the trajectories can be in different units than the AMBER
 defaults of ångström and picoseconds but at the moment MDAnalysis only supports
 those and will raise a :exc:`NotImplementedError` if anything else is detected.
@@ -122,16 +129,17 @@ those and will raise a :exc:`NotImplementedError` if anything else is detected.
 
 
 """
+from __future__ import absolute_import
 
 import numpy
 import warnings
-
-import MDAnalysis
-import base
-import MDAnalysis.core.util as util
-
 import errno
 import logging
+
+import MDAnalysis
+from . import base
+import MDAnalysis.core.util as util
+
 
 logger = logging.getLogger("MDAnalysis.coordinates.AMBER")
 
@@ -160,6 +168,9 @@ class Timestep(base.Timestep):
        ``(numatoms, 6)`` (for positions and velocities): ``positions = arg[:,:3]``,
        ``velocities = arg[:,3:6]``.
 
+
+    .. versionchanged:: 0.10.0
+       Added ability to contain Forces
     """
     # based on TRR Timestep (MDAnalysis.coordinates.xdrfile.TRR.Timestep)
     #
@@ -168,6 +179,7 @@ class Timestep(base.Timestep):
     # two different classes, one with the other without velocities. [orbeckst, 2012-05-29]
     def __init__(self, arg, **kwargs):
         velocities = kwargs.pop('velocities', False)
+        forces = kwargs.pop('forces', False)
         DIM = 3
         if numpy.dtype(type(arg)) == numpy.dtype(int):
             self.frame = 0
@@ -178,6 +190,8 @@ class Timestep(base.Timestep):
             self._pos = numpy.zeros((self.numatoms, DIM), dtype=numpy.float32, order='C')
             if velocities:
                 self._velocities = numpy.zeros((self.numatoms, DIM), dtype=numpy.float32, order='C')
+            if forces:
+                self._forces = numpy.zeros((self.numatoms, DIM), dtype=numpy.float32, order='C')
             self._unitcell = numpy.zeros(2 * DIM, dtype=numpy.float32)  # A,B,C,alpha,beta,gamma
         elif isinstance(arg, Timestep):  # Copy constructor
             # This makes a deepcopy of the timestep
@@ -187,6 +201,10 @@ class Timestep(base.Timestep):
             self._pos = numpy.array(arg._pos)
             try:
                 self._velocities = numpy.array(arg._velocities)
+            except AttributeError:
+                pass
+            try:
+                self._forces = numpy.array(arg._forces)
             except AttributeError:
                 pass
             for attr in ('step', 'time', 'status'):
@@ -494,6 +512,9 @@ class NCDFReader(base.Reader):
     Velocities are autodetected and read into the
     :attr:`Timestep._velocities` attribute.
 
+    Forces are autodetected and read into the
+    :attr:`Timestep._forces` attribute.
+
     Periodic unit cell information is detected and used to populate the
     :attr:`Timestep.dimensions` attribute. (If no unit cell is available in
     the trajectory, then :attr:`Timestep.dimensions` will return
@@ -509,12 +530,14 @@ class NCDFReader(base.Reader):
     .. SeeAlso:: :class:`NCDFWriter`
 
     .. versionadded: 0.7.6
-
+    .. versionchanged:: 0.10.0
+       Added ability to read Forces
     """
 
     format = 'NCDF'
     version = "1.0"
-    units = {'time': 'ps', 'length': 'Angstrom', 'velocity': 'Angstrom/ps'}
+    units = {'time': 'ps', 'length': 'Angstrom', 'velocity': 'Angstrom/ps',
+             'force': 'kcal/(mol*Angstrom)'}
     _Timestep = Timestep
 
     def __init__(self, filename, numatoms=None, **kwargs):
@@ -537,7 +560,8 @@ class NCDFReader(base.Reader):
 
         self.trjfile = netcdf.Dataset(self.filename)
 
-        if not ('AMBER' in self.trjfile.Conventions.split(',') or 'AMBER' in self.trjfile.Conventions.split()):
+        if not ('AMBER' in self.trjfile.Conventions.split(',') or
+                'AMBER' in self.trjfile.Conventions.split()):
             errmsg = ("NCDF trajectory {0} does not conform to AMBER specifications, " +
                       "http://ambermd.org/netcdf/nctraj.html ('AMBER' must be one of the tokens " +
                       "in attribute Conventions)").format(self.filename)
@@ -583,7 +607,8 @@ class NCDFReader(base.Reader):
                                  "Note: numatoms can be None and then the ncdf value is used!" % (
                                  numatoms, self.numatoms))
 
-        self.has_velocities = ('velocities' in self.trjfile.variables)
+        self.has_velocities = 'velocities' in self.trjfile.variables
+        self.has_forces = 'forces' in self.trjfile.variables
         self.fixed = 0
         self.skip = 1
         self.skip_timestep = 1  # always 1 for trj at the moment ? CHECK DOCS??
@@ -591,7 +616,8 @@ class NCDFReader(base.Reader):
         self.periodic = 'cell_lengths' in self.trjfile.variables
         self._current_frame = 0
 
-        self.ts = self._Timestep(self.numatoms, velocities=self.has_velocities)
+        self.ts = self._Timestep(self.numatoms, velocities=self.has_velocities,
+                                 forces=self.has_forces)
 
         # load first data frame
         self._read_frame(0, self.ts)
@@ -609,6 +635,8 @@ class NCDFReader(base.Reader):
         ts.time = self.trjfile.variables['time'][frame]
         if self.has_velocities:
             ts._velocities[:] = self.trjfile.variables['velocities'][frame]
+        if self.has_forces:
+            ts._forces[:] = self.trjfile.variables['forces'][frame]
         if self.periodic:
             ts._unitcell[:3] = self.trjfile.variables['cell_lengths'][frame]
             ts._unitcell[3:] = self.trjfile.variables['cell_angles'][frame]
@@ -616,7 +644,9 @@ class NCDFReader(base.Reader):
             self.convert_pos_from_native(ts._pos)  # in-place !
             self.convert_time_from_native(ts.time)  # in-place ! (hope this works...)
             if self.has_velocities:
-                self.convert_velocities_from_native(ts._velocities)  # in-place !
+                self.convert_velocities_from_native(ts._velocities, inplace=True)
+            if self.has_forces:
+                self.convert_forces_from_native(ts._forces, inplace=True)
             if self.periodic:
                 self.convert_pos_from_native(ts._unitcell[:3])  # in-place ! (only lengths)
         ts.frame = frame + 1  # frame labels are 1-based
@@ -724,15 +754,18 @@ class NCDFWriter(base.Writer):
 
     .. versionadded: 0.7.6
 
+    .. versionchanged:: 0.10.0
+       Added ability to write velocities and forces
     """
 
     format = 'NCDF'
     version = "1.0"
-    units = {'time': 'ps', 'length': 'Angstrom', 'velocity': 'Angstrom/ps'}
+    units = {'time': 'ps', 'length': 'Angstrom', 'velocity': 'Angstrom/ps',
+             'force': 'kcal/(mol*Angstrom)'}
 
     def __init__(self, filename, numatoms, start=0, step=1, delta=1.0, remarks=None,
-                 convert_units=None, zlib=False, cmplevel=1):
-        '''Create a new NCDFWriter
+                 convert_units=None, zlib=False, cmplevel=1, **kwargs):
+        """Create a new NCDFWriter
 
         :Arguments:
          *filename*
@@ -755,7 +788,11 @@ class NCDFWriter(base.Writer):
             compress data [``False``]
           *cmplevel*
             compression level (1-9) [1]
-        '''
+          *velocities*
+            Write velocities into the trajectory [``False``]
+          *forces*
+            Write forces into the trajectory [``False``]
+        """
         self.filename = filename
         if numatoms == 0:
             raise ValueError("NCDFWriter: no atoms in output trajectory")
@@ -776,10 +813,11 @@ class NCDFWriter(base.Writer):
         self.__first_frame = True  # signals to open trajectory
         self.trjfile = None  # open on first write with _init_netcdf()
         self.periodic = None  # detect on first write
-        self.has_velocities = False  # velocities disabled for the moment
+        self.has_velocities = kwargs.get('velocities', False)
+        self.has_forces = kwargs.get('forces', False)
         self.curr_frame = 0
 
-    def _init_netcdf(self, periodic=True, velocities=False):
+    def _init_netcdf(self, periodic=True):
         """Initialize netcdf AMBER 1.0 trajectory.
 
         The trajectory is opened when the first frame is written
@@ -840,12 +878,15 @@ class NCDFWriter(base.Writer):
             cell_angles = ncfile.createVariable('cell_angles', 'f8', ('frame', 'cell_angular'),
                                                 zlib=self.zlib, complevel=self.cmplevel)
             setattr(cell_angles, 'units', 'degrees')
-
-        self.has_velocities = velocities
+        # These properties are optional, and are specified on Writer creation
         if self.has_velocities:
             velocs = ncfile.createVariable('velocities', 'f8', ('frame', 'atom', 'spatial'),
                                            zlib=self.zlib, complevel=self.cmplevel)
             setattr(velocs, 'units', 'angstrom/picosecond')
+        if self.has_forces:
+            forces = ncfile.createVariable('forces', 'f8', ('frame', 'atom', 'spatial'),
+                                           zlib=self.zlib, complevel=self.cmplevel)
+            setattr(forces, 'units', 'kilocalorie/mole/angstrom')
 
         ncfile.sync()
         self.__first_frame = False
@@ -872,8 +913,7 @@ class NCDFWriter(base.Writer):
 
         if self.trjfile is None:
             # first time step: analyze data and open trajectory accordingly
-            # (also sets self.periodic and self.has_velocities)
-            self._init_netcdf(periodic=self.is_periodic(ts), velocities=hasattr(ts, "_velocities"))
+            self._init_netcdf(periodic=self.is_periodic(ts))
 
         return self._write_next_timestep(ts)
 
@@ -930,6 +970,12 @@ class NCDFWriter(base.Writer):
             else:
                 velocities = ts._velocities
             self.trjfile.variables['velocities'][self.curr_frame, :, :] = velocities
+        if self.has_forces:
+            if self.convert_units:
+                forces = self.convert_forces_to_native(ts._forces, inplace=False)
+            else:
+                forces = ts._velocities
+            self.trjfile.variables['forces'][self.curr_frame, :, :] = forces
         self.trjfile.sync()
         self.curr_frame += 1
 

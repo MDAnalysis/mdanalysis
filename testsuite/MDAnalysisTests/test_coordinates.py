@@ -30,7 +30,7 @@ from .datafiles import PSF, DCD, DCD_empty, PDB_small, XPDB_small, PDB_closed, P
     XYZ, XYZ_bz2, XYZ_psf, PRM, TRJ, TRJ_bz2, PRMpbc, TRJpbc_bz2, PRMncdf, NCDF, PQR, \
     PDB_sub_dry, TRR_sub_sol, PDB_sub_sol, TRZ, TRZ_psf, LAMMPSdata, LAMMPSdata_mini, \
     PSF_TRICLINIC, DCD_TRICLINIC, PSF_NAMD_TRICLINIC, DCD_NAMD_TRICLINIC, \
-    GMS_ASYMOPT, GMS_SYMOPT, GMS_ASYMSURF
+    GMS_ASYMOPT, GMS_SYMOPT, GMS_ASYMSURF, XYZ_mini, PFncdf_Top, PFncdf_Trj
 
 
 
@@ -413,6 +413,61 @@ class TestNCDFReader(_TRJReaderTest, RefVGV):
         assert_equal(data.Conventions, 'AMBER')
         assert_equal(data.ConventionVersion, '1.0')
 
+class TestNCDFReader2(TestCase):
+    """NCDF Trajectory with positions and forces.
+
+    Contributed by Albert Solernou
+    """
+    def setUp(self):
+        self.u = mda.Universe(PFncdf_Top, PFncdf_Trj)
+        self.prec = 3
+
+    def tearDown(self):
+        self.u.trajectory.close()
+        del self.u
+
+    def test_positions_1(self):
+        """Check positions on first frame"""
+        self.u.trajectory[0]
+        ref_1 = np.array([[ -0.11980818,  18.70524979,  11.6477766 ],
+                          [ -0.44717646,  18.61727142,  12.59919548],
+                          [ -0.60952115,  19.47885513,  11.22137547]], dtype=np.float32)
+        assert_array_almost_equal(ref_1, self.u.atoms.positions[:3], self.prec)
+
+    def test_positions_2(self):
+        """Check positions on second frame"""
+        self.u.trajectory[1]
+        ref_2= np.array([[ -0.13042036,  18.6671524 ,  11.69647026],
+                         [ -0.46643803,  18.60186768,  12.646698  ],
+                         [ -0.46567637,  19.49173927,  11.21922874]], dtype=np.float32)
+        assert_array_almost_equal(ref_2, self.u.atoms.positions[:3], self.prec)
+
+    def test_forces_1(self):
+        """Check forces on first frame"""
+        self.u.trajectory[0]
+        ref_1 = np.array([[ 49.23017883, -97.05565643, -86.09863281],
+                          [  2.97547197,  29.84169388,  11.12069607],
+                          [-15.93093777,  14.43616867,  30.25889015]], dtype=np.float32)
+        assert_array_almost_equal(ref_1, self.u.atoms.forces[:3], self.prec)
+
+    def test_forces_2(self):
+        """Check forces on second frame"""
+        self.u.trajectory[1]
+        ref_2 = np.array([[ 116.39096832, -145.44448853, -151.3155365 ],
+                          [ -18.90058327,   27.20145798,    1.95245135],
+                          [ -31.08556366,   14.95863628,   41.10367966]], dtype=np.float32)
+        assert_array_almost_equal(ref_2, self.u.atoms.forces[:3], self.prec)
+
+    def test_time_1(self):
+        """Check time on first frame"""
+        ref = 35.02
+        assert_almost_equal(ref, self.u.trajectory[0].time, self.prec)
+
+    def test_time_2(self):
+        """Check time on second frame"""
+        ref = 35.04
+        assert_almost_equal(ref, self.u.trajectory[1].time, self.prec)
+
 
 class TestNCDFWriter(TestCase, RefVGV):
     def setUp(self):
@@ -466,7 +521,7 @@ class TestNCDFWriter(TestCase, RefVGV):
     @attr('slow')
     def test_TRR2NCDF(self):
         trr = MDAnalysis.Universe(GRO, TRR)
-        W = self.Writer(self.outfile, trr.trajectory.numatoms)
+        W = self.Writer(self.outfile, trr.trajectory.numatoms, velocities=True)
         for ts in trr.trajectory:
             W.write_next_timestep(ts)
         W.close()
@@ -510,6 +565,76 @@ class TestNCDFWriter(TestCase, RefVGV):
                                 err_msg="Time for step {0} are not the same.".format(orig_ts.frame))
             assert_array_almost_equal(written_ts.dimensions, orig_ts.dimensions, self.prec,
                                       err_msg="unitcells are not identical")
+
+
+class TestNCDFWriterVelsForces(TestCase):
+    """Test writing NCDF trajectories with a mixture of options"""
+    def setUp(self):
+        fd, self.outfile = tempfile.mkstemp(suffix='.ncdf')
+        os.close(fd)
+        self.prec = 3
+        self.top = XYZ_mini
+        self.numatoms = 3
+
+        self.ts1 = MDAnalysis.coordinates.TRJ.Timestep(self.numatoms, velocities=True, forces=True)
+        self.ts1._pos[:] = np.arange(self.numatoms * 3).reshape(self.numatoms, 3)
+        self.ts1._velocities[:] = np.arange(self.numatoms * 3).reshape(self.numatoms, 3) + 100
+        self.ts1._forces[:] = np.arange(self.numatoms * 3).reshape(self.numatoms, 3) + 200
+
+        self.ts2 = MDAnalysis.coordinates.TRJ.Timestep(self.numatoms, velocities=True, forces=True)
+        self.ts2._pos[:] = np.arange(self.numatoms * 3).reshape(self.numatoms, 3) + 300
+        self.ts2._velocities[:] = np.arange(self.numatoms * 3).reshape(self.numatoms, 3) + 400
+        self.ts2._forces[:] = np.arange(self.numatoms * 3).reshape(self.numatoms, 3) + 500
+
+    def tearDown(self):
+        try:
+            os.unlink(self.outfile)
+        except:
+            pass
+
+        del self.numatoms
+        del self.ts1
+        del self.ts2
+
+    def _write_ts(self, pos, vel, force):
+        """Write the two reference timesteps, then open them up and check values
+
+        pos vel and force are bools which define whether these properties should
+        be in TS
+        """
+        with MDAnalysis.Writer(self.outfile, numatoms=self.numatoms,
+                               velocities=vel, forces=force) as w:
+            w.write(self.ts1)
+            w.write(self.ts2)
+
+        u = MDAnalysis.Universe(self.top, self.outfile)
+        for ts, ref_ts in itertools.izip(u.trajectory, [self.ts1, self.ts2]):
+            if pos:
+                assert_almost_equal(ts._pos, ref_ts._pos, self.prec)
+            else:
+                assert_raises(AttributeError, getattr, ts, '_pos')
+            if vel:
+                assert_almost_equal(ts._velocities, ref_ts._velocities, self.prec)
+            else:
+                assert_raises(AttributeError, getattr, ts, '_velocities')
+            if force:
+                assert_almost_equal(ts._forces, ref_ts._forces, self.prec)
+            else:
+                assert_raises(AttributeError, getattr, ts, 'forces')
+
+        u.trajectory.close()
+
+    def test_pos(self):
+        self._write_ts(True, False, False)
+
+    def test_pos_vel(self):
+        self._write_ts(True, True, False)
+
+    def test_pos_force(self):
+        self._write_ts(True, False, True)
+
+    def test_pos_vel_force(self):
+        self._write_ts(True, True, True)
 
 
 class _SingleFrameReader(TestCase, RefAdKSmall):
