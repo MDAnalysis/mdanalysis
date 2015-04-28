@@ -900,9 +900,9 @@ class TestGMSReader(TestCase):
 
 class TestMultiPDBReader(TestCase):
     def setUp(self):
-        self.multiverse = mda.Universe(PDB_multiframe, permissive=True, bonds=True)
+        self.multiverse = mda.Universe(PDB_multiframe, permissive=True, guess_bonds=True)
         self.multiverse.build_topology()
-        self.conect = mda.Universe(CONECT, bonds=True)
+        self.conect = mda.Universe(CONECT, guess_bonds=True)
         self.conect.build_topology()
 
     def tearDown(self):
@@ -966,7 +966,7 @@ class TestMultiPDBReader(TestCase):
             fd, outfile = tempfile.mkstemp(suffix=".pdb")
             os.close(fd)
             self.conect.atoms.write(outfile, bonds="conect")
-            u1 = mda.Universe(outfile, bonds=True)
+            u1 = mda.Universe(outfile, guess_bonds=True)
         finally:
             os.unlink(outfile)
         assert_equal(len(u1.atoms), 1890)
@@ -982,7 +982,7 @@ class TestMultiPDBReader(TestCase):
             fd, outfile = tempfile.mkstemp(suffix=".pdb")
             os.close(fd)
             self.conect.atoms.write(outfile, bonds="all")
-            u2 = mda.Universe(outfile, bonds=True)
+            u2 = mda.Universe(outfile, guess_bonds=True)
         finally:
             os.unlink(outfile)
         assert_equal(len(u2.atoms), 1890)
@@ -1057,9 +1057,9 @@ class TestMultiPDBReader(TestCase):
 
 class TestMultiPDBWriter(TestCase):
     def setUp(self):
-        self.universe = mda.Universe(PSF, PDB_small, permissive=True, bonds=True)
-        self.multiverse = mda.Universe(PDB_multiframe, permissive=True, bonds=True)
-        self.universe2 = mda.Universe(PSF, DCD, permissive=True, bonds=True)
+        self.universe = mda.Universe(PSF, PDB_small, permissive=True)
+        self.multiverse = mda.Universe(PDB_multiframe, permissive=True)
+        self.universe2 = mda.Universe(PSF, DCD, permissive=True)
         self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
         ext = ".pdb"
         fd, self.outfile = tempfile.mkstemp(suffix=ext)

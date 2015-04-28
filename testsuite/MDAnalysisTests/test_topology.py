@@ -353,6 +353,9 @@ class TestTopologyObjects(TestCase):
     def test_len(self):
         assert_equal(len(self.a1), 2)
 
+    def test_indices(self):
+        assert_equal(self.b.indices, tuple([b.number for b in self.b.atoms]))
+
     # Bond class checks
     def test_partner(self):
         a1, a2 = self.b
@@ -501,11 +504,14 @@ class TestTopologyGroup(TestCase):
         assert_equal(tg1 == tg2, True)
 
     def test_bad_creation(self):
-        """Test making a TopologyDict/Group out of nonsense"""
+        """Test making a TopologyDict out of nonsense"""
         inputlist = ['a', 'b', 'c']
         assert_raises(TypeError, TopologyDict, inputlist)
+
+    def test_bad_creation_TG(self):
+        """Test making a TopologyGroup out of nonsense"""
+        inputlist = ['a', 'b', 'c']
         assert_raises(TypeError, TopologyGroup, inputlist)
-        assert_raises(ValueError, TopologyGroup, [])
 
     def test_TG_equality(self):
         """Make two identical TGs, 
@@ -529,6 +535,19 @@ class TestTopologyGroup(TestCase):
 
         res1_tg2 = self.res1.bonds.selectBonds(('23', '3'))
         assert_equal(res1_tg == res1_tg2, True)
+
+    def test_create_empty_TG(self):
+        tg = TopologyGroup([])
+
+        def check(a):
+            if a:
+                return True
+            else:
+                return False
+
+        assert_equal(check(tg), False)
+        assert_equal(len(tg), 0)
+        assert_equal(tg.toptype, None)
 
     # Loose TG intersection
     def test_TG_loose_intersection(self):
@@ -689,6 +708,31 @@ class TestTopologyGroup(TestCase):
         dump = self.universe.bonds.dump_contents()
 
         assert_equal(set(dump), set(inpt))
+
+    def test_TG_indices_creation(self):
+        """Create a TG from indices"""
+        bond = self.universe.bonds[0]
+
+        tg = TopologyGroup.from_indices([bond.indices], self.universe.atoms,
+                                        bondclass=Bond)
+
+        assert_equal(len(tg), 1)
+        assert_equal(bond.indices in tg.to_indices(), True)
+
+    def test_TG_from_indices_roundtrip(self):
+        """Round trip check of dumping indices then recreating"""
+        tg = self.universe.bonds[:10]
+        idx = tg.to_indices()
+
+        tg2 = TopologyGroup.from_indices(idx, self.universe.atoms,
+                                         bondclass=Bond)
+
+        # This doesn't work as it uses set operation and .from_indices
+        # has created new Bond instances
+        # assert_equal(tg, tg2)
+        # instead...
+        assert_equal(len(tg), len(tg2))
+        assert_equal(tg.to_indices(), tg2.to_indices())
 
 
 class TestTopologyGroup_Cython(TestCase):
