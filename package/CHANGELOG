@@ -10,11 +10,12 @@ The rules for this file:
     use tabs but use spaces for formatting
 
 ------------------------------------------------------------------------------
-??/??/??  richardjgowers
+??/??/??  richardjgowers, caio s. souza, manuel.nuno.melo
   * 0.10.0
 
   Enhancements
 
+  * Added the 'same ... as' selection keyword (Issue #217)
   * Added guess_bonds keyword argument to Universe creation.  This will attempt to
     guess all topology information on Universe creation. (Issue #245)
   * Added guess_bonds method to AtomGroup. (Issue #245)
