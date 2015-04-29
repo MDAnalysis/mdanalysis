@@ -815,6 +815,32 @@ class PropertySelection(Selection):
         return "<'PropertySelection' " + abs_str + repr(self.prop) + " " + repr(self.operator.__name__) + " " + repr(
             self.value) + ">"
 
+class SameSelection(Selection):
+    def __init__(self, sel, prop):
+        Selection.__init__(self)
+        self.sel = sel
+        self.prop = prop
+    def _apply(self, group):
+        res = self.sel._apply(group)
+        if not res:
+            return set([])
+        if self.prop in ("residue", "fragment"):
+            atoms = set([])
+            for a in res:
+                atoms |= set(getattr(a, self.prop).atoms)
+            return Selection._group_atoms & atoms
+        elif self.prop in ("name", "type", "resname", "resid", "segid", "mass", "charge", "radius", "bfactor", "resnum"):
+            props = [getattr(a, self.prop) for a in res]
+            result_set = (a for a in Selection._group_atoms if getattr(a, self.prop) in props)
+        elif self.prop in ("x", "y", "z"):
+            p = getattr(Selection.coord, "_"+self.prop)
+            res_indices = numpy.array([a.number for a in res])
+            sel_indices = numpy.array([a.number for a in Selection._group_atoms])
+            result_set = group.atoms[numpy.where(numpy.in1d(p[sel_indices], p[res_indices]))[0]]._atoms
+        return set(result_set)
+    def __repr__(self):
+        return "<'SameSelection' of "+ repr(self.prop)+" >"
+
 
 class ParseError(Exception):
     pass
@@ -872,6 +898,7 @@ class SelectionParser:
     NBB = 'nucleicbackbone'
     BASE = 'nucleicbase'
     SUGAR = 'nucleicsugar'
+    SAME = 'same'
     EOF = 'EOF'
     GT = '>'
     LT = '<'
@@ -894,11 +921,12 @@ class SelectionParser:
         (BB, BackboneSelection), (NBB, NucleicBackboneSelection),
         (BASE, BaseSelection), (SUGAR, NucleicSugarSelection),
         #(BONDED, BondedSelection), not supported yet, need a better way to walk the bond lists
-        (ATOM, AtomSelection), (SELGROUP, SelgroupSelection), (FULLSELGROUP, FullSelgroupSelection)])
+        (ATOM, AtomSelection), (SELGROUP, SelgroupSelection), (FULLSELGROUP, FullSelgroupSelection),
+        (SAME, SameSelection)])
     associativity = dict([(AND, "left"), (OR, "left")])
     precedence = dict(
         [(AROUND, 1), (SPHLAYER, 1), (SPHZONE, 1), (CYLAYER, 1), (CYZONE, 1), (POINT, 1), (BYRES, 1), (BONDED, 1),
-            (AND, 3), (OR, 3), (NOT, 5)])
+            (SAME, 1), (AND, 3), (OR, 3), (NOT, 5)])
 
     # Borg pattern: http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/66531
     _shared_state = {}
@@ -1049,6 +1077,15 @@ class SelectionParser:
             resid = int(self.__consume_token())
             name = self.__consume_token()
             return self.classdict[op](name, resid, segid)
+        elif op == self.SAME:
+            prop = self.__consume_token()
+            self.__expect("as")
+            if prop in ("name", "type", "resname", "resid", "segid", "mass", "charge", "radius", "bfactor",
+                        "resnum", "residue", "segment", "fragment", "x", "y", "z"):
+                exp = self.__parse_expression(self.precedence[op])
+                return self.classdict[op](exp, prop)
+            else:
+                self.__error(prop, expected=False)
         else:
             self.__error(op)
 
