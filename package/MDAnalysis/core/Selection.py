@@ -816,6 +816,8 @@ class PropertySelection(Selection):
             self.value) + ">"
 
 class SameSelection(Selection):
+    # When adding new keywords here don't forget to also add them to the
+    #  case statement under the SAME op, where they are first checked.
     def __init__(self, sel, prop):
         Selection.__init__(self)
         self.sel = sel
@@ -824,10 +826,13 @@ class SameSelection(Selection):
         res = self.sel._apply(group)
         if not res:
             return set([])
-        if self.prop in ("residue", "fragment"):
+        if self.prop in ("residue", "fragment", "segment"):
             atoms = set([])
             for a in res:
-                atoms |= set(getattr(a, self.prop).atoms)
+                if a not in atoms:
+                # This shortcut assumes consistency that all atoms in a residue/fragment/segment
+                # belong to the exact same residue/fragment/segment.
+                    atoms |= set(getattr(a, self.prop).atoms)
             return Selection._group_atoms & atoms
         elif self.prop in ("name", "type", "resname", "resid", "segid", "mass", "charge", "radius", "bfactor", "resnum"):
             props = [getattr(a, self.prop) for a in res]
@@ -837,6 +842,8 @@ class SameSelection(Selection):
             res_indices = numpy.array([a.number for a in res])
             sel_indices = numpy.array([a.number for a in Selection._group_atoms])
             result_set = group.atoms[numpy.where(numpy.in1d(p[sel_indices], p[res_indices]))[0]]._atoms
+        else:
+            self.__error(self.prop, expected=False)
         return set(result_set)
     def __repr__(self):
         return "<'SameSelection' of "+ repr(self.prop)+" >"
@@ -944,9 +951,12 @@ class SelectionParser:
         """Pops off the next token in our token stream."""
         return self.tokens.pop(0)
 
-    def __error(self, token):
-        """Stops parsing and reports and error."""
-        raise ParseError("Parsing error- '" + self.selectstr + "'\n" + repr(token) + " expected")
+    def __error(self, token, expected=True):
+        """Stops parsing and reports an error."""
+        if expected:
+            raise ParseError("Parsing error- '" + self.selectstr + "'\n" + repr(token) + " expected")
+        else:
+            raise ParseError("Parsing error- '" + self.selectstr + "'\n" + repr(token) + " unexpected")
 
     def __expect(self, token):
         if self.__peek_token() == token:

@@ -140,12 +140,19 @@ these two flags::
   MDAnalysis.core.flags['use_KDTree_routines'] = False
 
 
-Connectivity
-------------
+Similarity and connectivity
+---------------------------
+
+    same *subkeyword* as *selection*
+        selects all atoms that have the same *subkeyword* value as any atom in
+        *selection*. Allowed *subkeyword* values are the atom properties: ``name, type, resname, resid, segid, mass, charge, radius, bfactor, resnum``,
+        the groups an atom belong to: ``residue, segment, fragment``, and the atom 
+        coordinates ``x, y, z``.
 
     byres *selection*
         selects all atoms that are in the same segment and residue as
-        selection, e.g. specify the subselection after the byres keyword  
+        selection, e.g. specify the subselection after the byres keyword.
+        ``byres`` is a shortcut to ``same residue as``
 
 Index
 -----

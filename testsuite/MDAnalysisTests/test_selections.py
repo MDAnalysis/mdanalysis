@@ -18,7 +18,7 @@ import MDAnalysis.core.Selection
 from MDAnalysis.tests.datafiles import PSF, DCD, PRMpbc, TRJpbc_bz2, PSF_NAMD, PDB_NAMD, GRO, NUCL, TPR, XTC
 
 from numpy.testing import *
-from numpy import array, float32
+from numpy import array, float32, arange
 from nose.plugins.attrib import attr
 
 
@@ -156,6 +156,31 @@ class TestSelectionsCHARMM(TestCase):
                                49, 55, 56, 66, 73, 80, 85, 93, 95, 99, 100, 122, 127,
                               130, 144, 150, 176, 180, 186, 188, 189, 194, 198, 203, 207, 214])
         assert_array_equal(sel.resids(), target_resids, "Found wrong residues with same resname as resids 10 or 11")
+
+    def test_same_segment(self):
+        """Test the 'same ... as' construct (Issue 217)"""
+        self.universe.residues[:100].set_segid("A")  # make up some segments
+        self.universe.residues[100:150].set_segid("B")
+        self.universe.residues[150:].set_segid("C")
+
+        target_resids = arange(100)+1 
+        sel = self.universe.selectAtoms("same segment as resid 10")
+        assert_equal(len(sel), 1520, "Found a wrong number of atoms in the same segment of resid 10")
+        assert_array_equal(sel.resids(), target_resids, "Found wrong residues in the same segment of resid 10")
+
+        target_resids = arange(100,150)+1 
+        sel = self.universe.selectAtoms("same segment as resid 110")
+        assert_equal(len(sel), 797, "Found a wrong number of atoms in the same segment of resid 110")
+        assert_array_equal(sel.resids(), target_resids, "Found wrong residues in the same segment of resid 110")
+
+        target_resids = arange(150,self.universe.atoms.numberOfResidues())+1
+        sel = self.universe.selectAtoms("same segment as resid 160")
+        assert_equal(len(sel), 1024, "Found a wrong number of atoms in the same segment of resid 160")
+        assert_array_equal(sel.resids(), target_resids, "Found wrong residues in the same segment of resid 160")
+
+        #cleanup
+        self.universe.residues.set_segid("4AKE")
+
 
 
     def test_empty_selection(self):
