@@ -15,7 +15,7 @@
 #
 import MDAnalysis
 import MDAnalysis.core.Selection
-from MDAnalysis.tests.datafiles import PSF, DCD, PRMpbc, TRJpbc_bz2, PSF_NAMD, PDB_NAMD, GRO, NUCL
+from MDAnalysis.tests.datafiles import PSF, DCD, PRMpbc, TRJpbc_bz2, PSF_NAMD, PDB_NAMD, GRO, NUCL, TPR, XTC
 
 from numpy.testing import *
 from numpy import array, float32
@@ -148,6 +148,16 @@ class TestSelectionsCHARMM(TestCase):
     # add more test cases for byres, bynum, point
     # and also for selection keywords such as 'nucleic'
 
+    def test_same_resname(self):
+        """Test the 'same ... as' construct (Issue 217)"""
+        sel = self.universe.selectAtoms("same resname as resid 10 or resid 11")
+        assert_equal(len(sel), 331, "Found a wrong number of atoms with same resname as resids 10 or 11")
+        target_resids = array([ 7, 8, 10, 11, 12, 14, 17, 25, 32, 37, 38, 42, 46,
+                               49, 55, 56, 66, 73, 80, 85, 93, 95, 99, 100, 122, 127,
+                              130, 144, 150, 176, 180, 186, 188, 189, 194, 198, 203, 207, 214])
+        assert_array_equal(sel.resids(), target_resids, "Found wrong residues with same resname as resids 10 or 11")
+
+
     def test_empty_selection(self):
         """Test that empty selection can be processed (see Issue 12)"""
         assert_equal(len(self.universe.selectAtoms('resname TRP')), 0)  # no Trp in AdK
@@ -260,6 +270,29 @@ class TestSelectionsGRO(TestCase):
         assert_equal(len(sel), 1)
         assert_equal(sel.resnames(), ['GLY'])
 
+    @dec.slow
+    def test_same_coordinate(self):
+        """Test the 'same ... as' construct (Issue 217)"""
+        # This test comes here because it's hard to get same _x with full precision formats.
+        #  The 'same' construct uses numpy.in1d to compare floats. It might be sensitive to
+        #  precision issues, but I am expecting .gro coordinates with the same values to
+        #  be converted to the exact same floats, at least in the same machine.
+        sel = self.universe.selectAtoms("same x as bynum 1 or bynum 10")
+        assert_equal(len(sel), 12, "Found a wrong number of atoms with same x as ids 1 or 10")
+        target_ids = array([ 0, 8, 9, 224, 643, 3515, 11210, 14121, 18430, 25418, 35811, 43618])
+        assert_array_equal(sel.indices(), target_ids, "Found wrong atoms with same x as ids 1 or 10")
+
+
+class TestSelectionsXTC(TestCase):
+    def setUp(self):
+        self.universe = MDAnalysis.Universe(TPR,XTC)
+
+    def test_same_fragment(self):
+        """Test the 'same ... as' construct (Issue 217)"""
+        # This test comes here because it's a system with solvent, and thus multiple fragments.
+        sel = self.universe.selectAtoms("same fragment as bynum 1")
+        assert_equal(len(sel), 3341, "Found a wrong number of atoms on the same fragment as id 1")
+        assert_equal(sel._atoms, self.universe.atoms[0].fragment._atoms, "Found a different set of atoms when using the 'same fragment as' construct vs. the .fragment prperty")
 
 class TestSelectionsNucleicAcids(TestCase):
     def setUp(self):
