@@ -23,6 +23,10 @@
 #include <float.h>
 typedef float coordinate[3];
 
+#ifdef PARALLEL
+#include <omp.h>
+#endif
+
 static void minimum_image(double *x, float *box, float *inverse_box)
 {
     int i;
@@ -83,7 +87,10 @@ static void calc_distance_array(coordinate* ref, int numref, coordinate* conf, i
 	inverse_box[0] = 1.0/box[0];
 	inverse_box[1] = 1.0/box[1];
 	inverse_box[2] = 1.0/box[2];
-	
+
+#ifdef PARALLEL
+#pragma omp parallel for private(i, j, dx, rsq) shared(numref, numconf, conf, ref, box, inverse_box, distances)
+#endif
 	for (i=0; i < numref; i++) {
 		for (j=0; j < numconf; j++) {
 			dx[0] = conf[j][0]-ref[i][0];
@@ -103,6 +110,9 @@ static void calc_distance_array_noPBC(coordinate* ref, int numref, coordinate* c
 	double dx[3];
 	double rsq;
 
+#ifdef PARALLEL
+#pragma omp parallel for private(i, j, dx, rsq) shared(numref, numconf, conf, ref, distances)
+#endif
 	for (i=0; i < numref; i++) {
 		for (j=0; j < numconf; j++) {
 			dx[0] = conf[j][0]-ref[i][0];
@@ -126,6 +136,8 @@ static void calc_self_distance_array(coordinate* ref, int numref, float* box, do
 	inverse_box[1] = 1.0/box[1];
 	inverse_box[2] = 1.0/box[2];
 	
+    // TODO: Make me parallel
+    // Have to replace distpos with a thread independent way of knowing where in distances to drop values
 	distpos = 0;
 	for (i=0; i < numref; i++) {
 		for (j=i+1; j < numref; j++) {
@@ -148,6 +160,8 @@ static void calc_self_distance_array_noPBC(coordinate* ref, int numref, double* 
 	double dx[3];
 	double rsq;
 
+    // TODO: Make me parallel
+    // Have to replace distpos with a thread independent way of knowing where in distances to drop values
 	distpos = 0;
 	for (i=0; i < numref; i++) {
 		for (j=i+1; j < numref; j++) {
@@ -185,6 +199,9 @@ static void coord_transform(coordinate* coords, int numCoords, coordinate* box)
 static void ortho_pbc(coordinate* coords, int numcoords, float* box, float* box_inverse){
   int i, s[3];
   // Moves all coordinates to within the box boundaries for a orthogonal box
+#ifdef PARALLEL
+#pragma omp parallel for private(i, s) shared(numcoords, coords, box_inverse)
+#endif
   for (i=0; i < numcoords; i++){
     s[0] = floor(coords[i][0] * box_inverse[0]);
     s[1] = floor(coords[i][1] * box_inverse[1]);
@@ -198,6 +215,9 @@ static void triclinic_pbc(coordinate* coords, int numcoords, coordinate* box, fl
   int i, s;
   // Moves all coordinates to within the box boundaries for a triclinic box
   // Assumes box having zero values for box[0][1], box[0][2] and box [1][2]
+#ifdef PARALLEL
+#pragma omp parallel for private(i, s) shared(coords, box)
+#endif
   for (i=0; i < numcoords; i++){
     // z
     s = floor(coords[i][2] * box_inverse[2]);
@@ -231,6 +251,9 @@ static void calc_distance_array_triclinic(coordinate* ref, int numref, coordinat
   triclinic_pbc(ref, numref, box, box_inverse);
   triclinic_pbc(conf, numconf, box, box_inverse);
 
+#ifdef PARALLEL
+#pragma omp parallel for private(i, j, dx, rsq) shared(numref, numconf, conf, ref, distances)
+#endif
   for (i=0; i < numref; i++){
     for (j=0; j < numconf; j++){
       dx[0] = conf[j][0] - ref[i][0];
@@ -259,6 +282,7 @@ static void calc_self_distance_array_triclinic(coordinate* ref, int numref, coor
 
   triclinic_pbc(ref, numref, box, box_inverse);
 
+  // TODO: Parallelise
   distpos = 0;
   for (i=0; i < numref; i++){
     for (j=i+1; j < numref; j++){
@@ -284,6 +308,9 @@ static void calc_bond_distance(coordinate* atom1, coordinate* atom2, int numatom
   inverse_box[1] = 1.0/box[1];
   inverse_box[2] = 1.0/box[2];
  
+#ifdef PARALLEL
+#pragma omp parallel for private(i, dx, rsq) shared(numatom, box, inverse_box, distances)
+#endif
   for (i=0; i<numatom; i++) {
     dx[0] = atom1[i][0] - atom2[i][0];
     dx[1] = atom1[i][1] - atom2[i][1];
@@ -312,6 +339,9 @@ static void calc_bond_distance_triclinic(coordinate* atom1, coordinate* atom2, i
   triclinic_pbc(atom1, numatom, box, box_inverse);
   triclinic_pbc(atom2, numatom, box, box_inverse);
 
+#ifdef PARALLEL
+#pragma omp parallel for private(i, dx, rsq) shared(numatom, atom1, atom2, distances, box, box_half)
+#endif
   for (i=0; i<numatom; i++) {
     dx[0] = atom1[i][0] - atom2[i][0];
     dx[1] = atom1[i][1] - atom2[i][1];
@@ -328,6 +358,9 @@ static void calc_bond_distance_noPBC(coordinate* atom1, coordinate* atom2, int n
   double dx[3];
   double rsq;
  
+#ifdef PARALLEL
+#pragma omp parallel for private(i, dx, rsq) shared(numatom, atom1, atom2, distances)
+#endif
   for (i=0; i<numatom; i++) {
     dx[0] = atom1[i][0] - atom2[i][0];
     dx[1] = atom1[i][1] - atom2[i][1];
@@ -343,6 +376,9 @@ static void calc_angle(coordinate* atom1, coordinate* atom2, coordinate* atom3, 
   double rji[3], rjk[3];
   double x, y, xp[3];
 
+#ifdef PARALLEL
+#pragma omp parallel for private(i, rji, rjk, x, xp, y) shared(numatom, atom1, atom2, atom3, angles)
+#endif
   for (i=0; i<numatom; i++) {
     rji[0] = atom1[i][0] - atom2[i][0];
     rji[1] = atom1[i][1] - atom2[i][1];
@@ -379,6 +415,9 @@ static void calc_angle_ortho(coordinate* atom1, coordinate* atom2, coordinate* a
   inverse_box[1] = 1.0/box[1];
   inverse_box[2] = 1.0/box[2];
 
+#ifdef PARALLEL
+#pragma omp parallel for private(i, rji, rjk, x, xp, y) shared(numatom, atom1, atom2, atom3, angles, box, inverse_box)
+#endif
   for (i=0; i<numatom; i++) {
     rji[0] = atom1[i][0] - atom2[i][0];
     rji[1] = atom1[i][1] - atom2[i][1];
@@ -421,6 +460,9 @@ static void calc_angle_triclinic(coordinate* atom1, coordinate* atom2, coordinat
   triclinic_pbc(atom2, numatom, box, box_inverse);
   triclinic_pbc(atom3, numatom, box, box_inverse);
 
+#ifdef PARALLEL
+#pragma omp parallel for private(i, rji, rjk, x, xp, y) shared(numatom, atom1, atom2, atom3, angles, box, box_half)
+#endif
   for (i=0; i<numatom; i++) {
     rji[0] = atom1[i][0] - atom2[i][0];
     rji[1] = atom1[i][1] - atom2[i][1];
@@ -453,6 +495,9 @@ static void calc_torsion(coordinate* atom1, coordinate* atom2, coordinate* atom3
   double xp[3];
   double x, y;
 
+#ifdef PARALLEL
+#pragma omp parallel for private(i, va, vb, vc, n1, n2, x, y, xp) shared(numatom, atom1, atom2, atom3, atom4, angles)
+#endif
   for (i=0; i<numatom; i++) {
     // connecting vectors between all 4 atoms: 1 -va-> 2 -vb-> 3 -vc-> 4
     va[0] = atom2[i][0] - atom1[i][0];
@@ -504,6 +549,9 @@ static void calc_torsion_ortho(coordinate* atom1, coordinate* atom2, coordinate*
   inverse_box[1] = 1.0/box[1];
   inverse_box[2] = 1.0/box[2];
 
+#ifdef PARALLEL
+#pragma omp parallel for private(i, va, vb, vc, n1, n2, x, y, xp) shared(numatom, atom1, atom2, atom3, atom4, angles, box, inverse_box)
+#endif
   for (i=0; i<numatom; i++) {
     // connecting vectors between all 4 atoms: 1 -va-> 2 -vb-> 3 -vc-> 4
     va[0] = atom2[i][0] - atom1[i][0];
@@ -567,6 +615,9 @@ static void calc_torsion_triclinic(coordinate* atom1, coordinate* atom2, coordin
   triclinic_pbc(atom3, numatom, box, box_inverse);
   triclinic_pbc(atom4, numatom, box, box_inverse);
 
+#ifdef PARALLEL
+#pragma omp parallel for private(i, va, vb, vc, n1, n2, x, y, xp) shared(numatom, atom1, atom2, atom3, atom4, angles, box, box_half)
+#endif
   for (i=0; i<numatom; i++) {
     // connecting vectors between all 4 atoms: 1 -va-> 2 -vb-> 3 -vc-> 4
     va[0] = atom2[i][0] - atom1[i][0];
