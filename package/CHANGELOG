@@ -24,6 +24,7 @@ The rules for this file:
   * Added TopologyObject.indices property
   * Amber netCDF4 Reader will now read Forces (Issue #257)
   * Amber netCDF4 Writer will now write Velocities and Forces
+  * Added Amber coordinate/restart file reader (Issue #262)
 
   Changes
 
