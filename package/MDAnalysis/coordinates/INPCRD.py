@@ -45,7 +45,10 @@ class INPReader(base.Reader):
             self.title = inf.readline().strip()
             line = inf.readline().split()
             self.numatoms = int(line[0])
-            time = float(line[1])
+            try:
+                time = float(line[1])
+            except IndexError:
+                time = 0.0
 
             self.ts = self._Timestep(self.numatoms)
             self.ts.time = time
