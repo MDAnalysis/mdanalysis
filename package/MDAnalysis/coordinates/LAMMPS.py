@@ -68,11 +68,11 @@ Classes
    :inherited-members:
 """
 
-import DCD
+from . import DCD
 from MDAnalysis.core import units
 from MDAnalysis.topology.LAMMPSParser import DATAParser
 import MDAnalysis.core
-import base
+from . import base
 
 
 class Timestep(DCD.Timestep):
@@ -125,33 +125,7 @@ class DCDReader(DCD.DCDReader):
         super(DCDReader, self).__init__(dcdfilename, **kwargs)
 
 
-class DATATimestep(base.Timestep):
-    """Data file time step"""
-
-    @property
-    def dimensions(self):
-        """unitcell dimensions (*A*, *B*, *C*, *alpha*, *beta*, *gamma*)
-
-        lengths *a*, *b*, *c* are in the MDAnalysis length unit (Å), and
-        angles are in degrees.
-
-        :attr:`dimensions` is read-only because it transforms the
-        actual format of the unitcell (which differs between different
-        trajectory formats) to the representation described here,
-        which is used everywhere in MDAnalysis.
-        """
-        return self._unitcell
-
-    @dimensions.setter
-    def dimensions(self, box):
-        """Set unitcell information 
-
-        .. versionadded:: 0.9.0
-        """
-        self._unitcell[:] = box
-
-
-class DATAReader(base.Reader):
+class DATAReader(base.SingleFrameReader):
     """
     Reads a single frame of coordinate information from a LAMMPS DATA file.
 
@@ -160,40 +134,17 @@ class DATAReader(base.Reader):
     format = 'DATA'
     units = {'time': None, 'length': 'Angstrom'}
 
-    def __init__(self, pdbfilename, numatoms=None, convert_units=None, **kwargs):
-        self.filename = pdbfilename
-
-        if convert_units is None:
-            convert_units = MDAnalysis.core.flags['convert_lengths']
-        self.convert_units = convert_units  # convert length and time to base units
-
-        if numatoms is None:  # this should be done by parsing DATA first
+    def __init__(self, filename, **kwargs):
+        self.numatoms = kwargs.pop('numatoms', None)
+        if self.numatoms is None:  # this should be done by parsing DATA first
             raise ValueError("DATAReader requires numatoms keyword")
-        self.numatoms = numatoms
+        super(DATAReader, self).__init__(filename, **kwargs)
 
-        self.ts = DATATimestep(self.numatoms)
+    def _read_first_frame(self):
+        self.ts = base.Timestep(self.numatoms)
         with DATAParser(self.filename) as p:
             p.read_DATA_timestep(self.ts)
-
-        self.numframes = 1
-        self.fixed = 0  # parse B field for fixed atoms?
-        self.skip = 1
-        self.periodic = False
-        self.delta = 0
-        self.skip_timestep = 1
 
         self.ts.frame = 1
         if self.convert_units:
             self.convert_pos_from_native(self.ts._pos)  # in-place !
-
-    def __iter__(self):
-        yield self.ts  # just a single frame available
-        raise StopIteration
-
-    def _read_frame(self, frame):
-        """Bounds checking of frame is done in __iter__ """
-        return self.ts
-
-    def _read_next_timestep(self):
-        # DATA file only contains a single frame
-        raise IOError

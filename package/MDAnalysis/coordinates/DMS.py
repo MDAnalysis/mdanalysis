@@ -29,16 +29,14 @@ coordinate files (as used by the Desmond_ MD package).
 import os
 import errno
 import warnings
-
+from copy import deepcopy
 import numpy
 import sqlite3
 
 import MDAnalysis
-import base
+from . import base
 import MDAnalysis.core.util as util
 from MDAnalysis.coordinates.core import triclinic_box, triclinic_vectors
-
-from copy import deepcopy
 
 
 class Timestep(base.Timestep):
@@ -62,7 +60,7 @@ class Timestep(base.Timestep):
         self._unitcell = cell
 
 
-class DMSReader(base.Reader):
+class DMSReader(base.SingleFrameReader):
     """
     Reads both coordinates and velocities.
     """
@@ -89,14 +87,10 @@ class DMSReader(base.Reader):
         z = [row["z"] for row in rows]
         return {'x': x, 'y': y, 'z': z}
 
-    def __init__(self, filename, convert_units=None, **kwargs):
-        if convert_units is None:
-            convert_units = MDAnalysis.core.flags['convert_lengths']
-        self.convert_units = convert_units  # convert length and time to base units
-
+    def _read_first_frame(self):
         coords_list = None
         velocities_list = None
-        con = sqlite3.connect(filename)
+        con = sqlite3.connect(self.filename)
 
         def dict_factory(cursor, row):
             d = {}
@@ -116,7 +110,7 @@ class DMSReader(base.Reader):
         coords_list = numpy.array(coords_list)
         self.ts = self._Timestep(coords_list)
         self.ts.frame = 1  # 1-based frame number
-        if velocities_list:  # perform this operation only if velocities are present in coord file
+        if velocities_list:
             # TODO: use a Timestep that knows about velocities such as TRR.Timestep or better, TRJ.Timestep
             velocities_arr = numpy.array(velocities_list, dtype=numpy.float32)
             if numpy.any(velocities_arr):
@@ -127,25 +121,3 @@ class DMSReader(base.Reader):
         if self.convert_units:
             self.convert_pos_from_native(self.ts._pos)  # in-place !
             self.convert_pos_from_native(self.ts._unitcell)  # in-place ! (all are lengths)
-        self.numframes = 1
-        self.fixed = 0
-        self.skip = 1
-        self.periodic = False
-        self.delta = 0
-        self.skip_timestep = 1
-
-    def Writer(self, filename, **kwargs):
-        raise NotImplementedError
-
-    def __iter__(self):
-        yield self.ts  # Just a single frame
-        raise StopIteration
-
-    def _read_frame(self, frame):
-        if frame != 0:
-            raise IndexError("DMSReader only handles a single frame at frame index 0")
-        return self.ts
-
-    def _read_next_timestep(self):
-        # CRD files only contain a single frame
-        raise IOError

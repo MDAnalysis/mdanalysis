@@ -29,15 +29,13 @@ Classes to read and write Gromacs_ GRO_ coordinate files; see the notes on the
 import os
 import errno
 import warnings
-
+from copy import deepcopy
 import numpy
 
 import MDAnalysis
-import base
+from . import base
 import MDAnalysis.core.util as util
 from MDAnalysis.coordinates.core import triclinic_box, triclinic_vectors
-
-from copy import deepcopy
 
 
 class Timestep(base.Timestep):
@@ -83,23 +81,17 @@ class Timestep(base.Timestep):
         numpy.put(self._unitcell, self._ts_order_z, z)
 
 
-class GROReader(base.Reader):
+class GROReader(base.SingleFrameReader):
     '''Now reads in velocities as well, if available.'''
     format = 'GRO'
     units = {'time': None, 'length': 'nm', 'velocity': 'nm/ps'}
     _Timestep = Timestep
 
-    def __init__(self, grofilename, convert_units=None, **kwargs):
-        self.grofilename = grofilename
-        self.filename = self.grofilename
-        if convert_units is None:
-            convert_units = MDAnalysis.core.flags['convert_lengths']
-        self.convert_units = convert_units  # convert length and time to base units
-
+    def _read_first_frame(self):
         coords_list = []
         velocities_list = []
 
-        with util.openany(grofilename, 'r') as grofile:
+        with util.openany(self.filename, 'r') as grofile:
             # Read first two lines to get number of atoms
             grofile.readline()
             total_atnums = int(grofile.readline())
@@ -142,19 +134,11 @@ class GROReader(base.Reader):
         elif len(unitcell) == 9:
             self.ts._unitcell[:] = unitcell  # fill all
         else:  # or maybe raise an error for wrong format??
-            import warnings
-
             warnings.warn("GRO unitcell has neither 3 nor 9 entries --- might be wrong.")
             self.ts._unitcell[:len(unitcell)] = unitcell  # fill linearly ... not sure about this
         if self.convert_units:
             self.convert_pos_from_native(self.ts._pos)  # in-place !
             self.convert_pos_from_native(self.ts._unitcell)  # in-place ! (all are lengths)
-        self.numframes = 1
-        self.fixed = 0
-        self.skip = 1
-        self.periodic = False
-        self.delta = 0
-        self.skip_timestep = 1
 
     def Writer(self, filename, **kwargs):
         """Returns a CRDWriter for *filename*.
@@ -167,19 +151,6 @@ class GROReader(base.Reader):
 
         """
         return GROWriter(filename, **kwargs)
-
-    def __iter__(self):
-        yield self.ts  # Just a single frame
-        raise StopIteration
-
-    def _read_frame(self, frame):
-        if frame != 0:
-            raise IndexError("GROReader only handles a single frame at frame index 0")
-        return self.ts
-
-    def _read_next_timestep(self):
-        # CRD files only contain a single frame
-        raise IOError
 
 
 class GROWriter(base.Writer):

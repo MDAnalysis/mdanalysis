@@ -34,11 +34,11 @@ available in this case).
 import os
 import errno
 import numpy
+import warnings
 
 import MDAnalysis.core
 import MDAnalysis.core.util as util
-import base
-
+from . import base
 from MDAnalysis.topology.core import guess_atom_element
 
 # PDBQTReader and Writer classes will subclass PrimitiveReader/Writer from PDB module
@@ -47,28 +47,7 @@ from MDAnalysis.topology.core import guess_atom_element
 #from MDAnalysis.coordinates.PDB import Timestep
 
 
-import warnings
-
-
-class Timestep(base.Timestep):
-    @property
-    def dimensions(self):
-        """unitcell dimensions (`A, B, C, alpha, beta, gamma`)
-
-        - `A, B, C` are the lengths of the primitive cell vectors `e1, e2, e3`
-        - `alpha` = angle(`e1, e2`)
-        - `beta` = angle(`e1, e3`)
-        - `gamma` = angle(`e2, e3`)
-        """
-        # Layout of unitcell is [A,B,C,90,90,90] with the primitive cell vectors
-        return self._unitcell
-
-    @dimensions.setter
-    def dimensions(self, box):
-        self._unitcell = box
-
-
-class PDBQTReader(base.Reader):
+class PDBQTReader(base.SingleFrameReader):
     """PDBQTReader that reads a PDBQT-formatted file, no frills.
 
     Records read:
@@ -161,18 +140,9 @@ class PDBQTReader(base.Reader):
     """
     format = 'PDBQT'
     units = {'time': None, 'length': 'Angstrom'}
-    _Timestep = Timestep
+    _Timestep = base.Timestep
 
-    def __init__(self, filename, convert_units=None, **kwargs):
-        """Read coordinates from *filename*.
-
-        *filename* can be a gzipped or bzip2ed compressed PDBQT file.
-        """
-        self.filename = filename
-        if convert_units is None:
-            convert_units = MDAnalysis.core.flags['convert_lengths']
-        self.convert_units = convert_units  # convert length and time to base units
-
+    def _read_first_frame(self):
         # Ugly inner method: moved outside of for-loop below
         def _c(start, stop, typeclass=float):
             return self._col(line, start, stop, typeclass=typeclass)
@@ -180,7 +150,7 @@ class PDBQTReader(base.Reader):
         coords = []
         atoms = []
         unitcell = numpy.zeros(6, dtype=numpy.float32)
-        with util.openany(filename, 'r') as pdbfile:
+        with util.openany(self.filename, 'r') as pdbfile:
             for line in pdbfile:
                 if line[:4] == 'END\n':  # Should only break at the 'END' of a model definition not
                     # and prevent premature exit for a torsion termination, eg, ENDBRANCH
@@ -259,19 +229,6 @@ class PDBQTReader(base.Reader):
 
         """
         return PDBQTWriter(filename, **kwargs)
-
-    def __iter__(self):
-        yield self.ts  # Just a single frame
-        raise StopIteration
-
-    def _read_frame(self, frame):
-        if frame != 0:
-            raise IndexError("PDBQT only contains a single frame at frame index 0")
-        return self.ts
-
-    def _read_next_timestep(self):
-        # PDBQT file only contains a single frame
-        raise IOError
 
 
 class PDBQTWriter(base.Writer):
