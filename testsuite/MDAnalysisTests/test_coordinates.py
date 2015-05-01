@@ -30,7 +30,8 @@ from .datafiles import PSF, DCD, DCD_empty, PDB_small, XPDB_small, PDB_closed, P
     XYZ, XYZ_bz2, XYZ_psf, PRM, TRJ, TRJ_bz2, PRMpbc, TRJpbc_bz2, PRMncdf, NCDF, PQR, \
     PDB_sub_dry, TRR_sub_sol, PDB_sub_sol, TRZ, TRZ_psf, LAMMPSdata, LAMMPSdata_mini, \
     PSF_TRICLINIC, DCD_TRICLINIC, PSF_NAMD_TRICLINIC, DCD_NAMD_TRICLINIC, \
-    GMS_ASYMOPT, GMS_SYMOPT, GMS_ASYMSURF, XYZ_mini, PFncdf_Top, PFncdf_Trj
+    GMS_ASYMOPT, GMS_SYMOPT, GMS_ASYMSURF, XYZ_mini, PFncdf_Top, PFncdf_Trj, \
+    INPCRD, XYZ_five
 
 
 
@@ -565,6 +566,37 @@ class TestNCDFWriter(TestCase, RefVGV):
                                 err_msg="Time for step {0} are not the same.".format(orig_ts.frame))
             assert_array_almost_equal(written_ts.dimensions, orig_ts.dimensions, self.prec,
                                       err_msg="unitcells are not identical")
+
+
+class TestINPCRDReader(TestCase):
+    """Test reading Amber restart coordinate files"""
+    def _check_ts(self, ts):
+        # Check a ts has the right values in
+        ref_pos = np.array([[6.6528795, 6.6711416, -8.5963255],
+                        [7.3133773, 5.8359736, -8.8294175],
+                        [8.3254058, 6.2227613, -8.7098593],
+                        [7.0833200, 5.5038197, -9.8417650],
+                        [7.1129439, 4.6170351, -7.9729560]])
+        for ref, val in itertools.izip(ref_pos, ts._pos):
+            assert_allclose(ref, val)
+    
+    def test_reader(self):
+        from MDAnalysis.coordinates.INPCRD import INPReader
+
+        r = INPReader(INPCRD)
+
+        assert_equal(r.numatoms, 5)
+        self._check_ts(r.ts)
+
+    def test_universe_inpcrd(self):
+        u = MDAnalysis.Universe(XYZ_five, INPCRD)
+
+        self._check_ts(u.trajectory.ts)
+
+    def test_universe_restrt(self):
+        u = MDAnalysis.Universe(XYZ_five, INPCRD, format='RESTRT')
+
+        self._check_ts(u.trajectory.ts)
 
 
 class TestNCDFWriterVelsForces(TestCase):
