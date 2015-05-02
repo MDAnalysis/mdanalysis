@@ -50,8 +50,10 @@ __all__ = [
     "TPR460", "TPR461",
     "PDB_sub_sol", "PDB_sub_dry",  # TRRReader sub selection
     "TRR_sub_sol",
-    "XYZ", "XYZ_psf", "XYZ_bz2", "XYZ_mini", # XYZ
+    "XYZ", "XYZ_psf", "XYZ_bz2",
+    "XYZ_mini", "XYZ_five", # 3 and 5 atoms xyzs for an easy topology
     "PRM", "TRJ", "TRJ_bz2",  # Amber (no periodic box)
+    "INPCRD",
     "PRMpbc", "TRJpbc_bz2",  # Amber (periodic box)
     "PRM12", "TRJ12_bz2",  # Amber (v12 format, Issue 100)
     "PRMncdf", "TRJncdf", "NCDF",  # Amber (netcdf)
@@ -141,9 +143,11 @@ XYZ_psf = resource_filename(__name__, 'data/2r9r-1b.psf')
 XYZ_bz2 = resource_filename(__name__, 'data/2r9r-1b.xyz.bz2')
 XYZ = resource_filename(__name__, 'data/2r9r-1b.xyz')
 XYZ_mini = resource_filename(__name__, 'data/mini.xyz')
+XYZ_five = resource_filename(__name__, 'data/five.xyz')
 
 PRM = resource_filename(__name__, 'data/ache.prmtop')
 TRJ = resource_filename(__name__, 'data/ache.mdcrd')
+INPCRD = resource_filename(__name__, 'data/test.inpcrd')
 TRJ_bz2 = resource_filename(__name__, 'data/ache.mdcrd.bz2')
 PFncdf_Top = resource_filename(__name__, 'data/posfor.top')
 PFncdf_Trj = resource_filename(__name__, 'data/posfor.ncdf')
