@@ -984,3 +984,53 @@ class Writer(IObase):
         return numpy.all(criteria["min"] < x) and numpy.all(x <= criteria["max"])
 
         # def write_next_timestep(self, ts=None)
+
+class SingleFrameReader(Reader):
+    """Base class for Readers that only have one frame.
+
+    .. versionadded:: 0.10.0
+    """
+    _err = "{} only contains a single frame"
+
+    def __init__(self, filename, convert_units=None, **kwargs):
+        self.filename = filename
+        if convert_units is None:
+            convert_units = MDAnalysis.core.flags['convert_lengths']
+        self.convert_units = convert_units
+
+        self.numframes = 1
+        self.fixed = 0
+        self.skip = 1
+        self.periodic = False
+        self.delta = 0
+        self.skip_timestep = 1
+
+        self._read_first_frame()
+
+    def _read_first_frame(self):
+        # Override this in subclasses to create and fill a Timestep
+        pass
+
+    def next(self):
+        raise IOError(self._err.format(self.__class__.__name__))
+
+    def __iter__(self):
+        yield self.ts
+        raise StopIteration
+
+    def _read_frame(self, frame):
+        if frame != 0:
+            raise IndexError(self._err.format(self.__class__.__name__))
+
+        return self.ts
+
+    def read_next_timestep(self):
+        raise IOError(self._err.format(self.__class__.__name__))
+                             
+    def close(self):
+        # all single frame readers should use context managers to access
+        # self.filename
+        pass
+
+    def __del__(self):
+        self.close()

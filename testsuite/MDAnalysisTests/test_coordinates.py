@@ -18,6 +18,7 @@ import MDAnalysis
 import MDAnalysis as mda
 import MDAnalysis.coordinates
 import MDAnalysis.coordinates.core
+from MDAnalysis.coordinates.base import Timestep, SingleFrameReader
 
 import numpy as np
 import cPickle
@@ -3126,7 +3127,7 @@ class _TestLammpsData_Coords(TestCase):
 
     def test_seek_2(self):
         ts = self.u.trajectory[0]
-        assert_equal(type(ts), MDAnalysis.coordinates.LAMMPS.DATATimestep)
+        assert_equal(type(ts), MDAnalysis.coordinates.base.Timestep)
 
     def test_iter(self):
         # Check that iterating works, but only gives a single frame
@@ -3204,25 +3205,9 @@ class _LAMMPSTimestep(_DCDTimestep):  # LAMMPS Timestep is a subclass of DCD Tim
     name = "LAMMPS"
 
 
-class _LAMMPSDataTimestep(_BaseTimestep):
-    Timestep = MDAnalysis.coordinates.LAMMPS.DATATimestep
-    name = "LAMMPSData"
-    has_box = True
-    set_box = True
-    unitcell = np.array([10., 11., 12., 90., 90., 90.])
-
-
 class _PDBTimestep(_BaseTimestep):
     Timestep = MDAnalysis.coordinates.PDB.Timestep
     name = "PDB"
-    has_box = True
-    set_box = True
-    unitcell = np.array([10., 11., 12., 90., 90., 90.])
-
-
-class _PDBQTTimestep(_BaseTimestep):
-    Timestep = MDAnalysis.coordinates.PDBQT.Timestep
-    name = "PDBQT"
     has_box = True
     set_box = True
     unitcell = np.array([10., 11., 12., 90., 90., 90.])
@@ -3448,15 +3433,7 @@ class TestLAMMPSTimestep(_TestTimestep, _LAMMPSTimestep):
     pass
 
 
-class TestLAMMPSDataTimestep(_TestTimestep, _LAMMPSDataTimestep):
-    pass
-
-
 class TestPDBTimestep(_TestTimestep, _PDBTimestep):
-    pass
-
-
-class TestPDBQTTimestep(_TestTimestep, _PDBQTTimestep):
     pass
 
 
@@ -3474,3 +3451,93 @@ class TestXTCTimestep(_TestTimestep, _XTCTimestep):
 
 class TestTRRTimestep(_TestTimestep, _TRRTimestep):
     pass
+
+
+class AmazingReader(SingleFrameReader):
+    format = 'Amazing'
+    # have to hack this in to get the base class to "work"
+    def _read_first_frame(self):
+        self.numatoms = 10
+        self.ts = Timestep(self.numatoms)
+        self.ts.frame = 1
+
+class TestSingleFrameReader(TestCase):
+    def setUp(self):
+        self.numatoms = 10
+        self.r = AmazingReader
+        self.sfr = AmazingReader('test.txt')
+        self.ts = self.sfr.ts
+
+    def tearDown(self):
+        del self.r
+        del self.sfr
+        del self.ts
+        del self.numatoms
+
+    def test_required_attributes(self):
+        """Test that SFReader has the required attributes"""
+        for attr in ['filename', 'numatoms', 'numframes', 'fixed', 'skip',
+                     'skip_timestep', 'delta', 'periodic', 'ts',
+                     'units', 'format']:
+            assert_equal(hasattr(self.sfr, attr), True, "Missing attr: {}".format(attr))
+        
+    def test_iter(self):
+        l = [ts for ts in self.sfr]
+
+        assert_equal(len(l), 1)
+
+    def test_close(self):
+        sfr = self.r('text.txt')
+
+        ret = sfr.close()
+        # Check that method works?
+        assert_equal(ret, None)
+
+    def test_next(self):
+        assert_raises(IOError, self.sfr.next)
+
+    def test_rewind(self):
+        ret = self.sfr.rewind()
+
+        assert_equal(ret, None)
+        assert_equal(self.sfr.ts.frame, 1)
+
+    def test_context(self):
+        with self.r('text.txt') as sfr:
+            l = sfr.ts.frame
+
+        assert_equal(l, 1)
+
+    def test_len(self):
+        l = len(self.sfr)
+
+        assert_equal(l, 1)
+
+    # Getitem tests
+    # only 0 & -1 should work
+    # others should get IndexError
+    def _check_get_results(self, l):
+        assert_equal(len(l), 1)
+        assert_equal(self.ts in l, True)
+
+    def test_getitem(self):
+        fr = [self.sfr[0]]
+
+        self._check_get_results(fr)
+
+    def test_getitem_2(self):
+        fr = [self.sfr[-1]]
+
+        self._check_get_results(fr)
+
+    def test_getitem_IE(self):
+        assert_raises(IndexError, self.sfr.__getitem__, 1)
+
+    def test_getitem_IE_2(self):
+        assert_raises(IndexError, self.sfr.__getitem__, -2)
+
+    # Slicing should still work!
+    def test_slice_1(self):
+        l = list(self.sfr[::])
+
+        self._check_get_results(l)
