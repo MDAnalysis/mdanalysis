@@ -25,21 +25,14 @@ Read and write coordinates in Amber_ coordinate/restart file (suffix
 """
 from __future__ import absolute_import, division
 
-from ..core import flags
 from . import base
 
-class INPReader(base.Reader):
+class INPReader(base.SingleFrameReader):
     format = 'INPCRD'
+    units = {'length': 'Angstrom'}
     _Timestep = base.Timestep
 
-    def __init__(self, filename, convert_units=None, **kwargs):
-        self.filename = filename
-        self.numframes = 1
-        self.fixed = 0
-        if convert_units is None:
-            convert_units = flags['convert_lengths']
-        self.convert_units = convert_units  # convert length and time to base units       
-
+    def _read_first_frame(self):
         # Read header
         with open(self.filename, 'r') as inf:
             self.title = inf.readline().strip()
