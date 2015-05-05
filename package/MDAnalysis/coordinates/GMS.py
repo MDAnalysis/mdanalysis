@@ -103,7 +103,6 @@ class GMSReader(base.Reader):
         else:
             return self._runtyp
 
-
     def _determine_runtyp(self):
         self._reopen()
         counter = 0
@@ -115,8 +114,6 @@ class GMSReader(base.Reader):
 
         self.close()
         raise EOFError
-
-
 
     @property
     def numatoms(self):
@@ -143,7 +140,6 @@ class GMSReader(base.Reader):
         self.close()
         raise EOFError
 
-
     @property
     def numframes(self):
         if not self._numframes is None:   # return cached value
@@ -169,7 +165,6 @@ class GMSReader(base.Reader):
 
         self.close()
         return int(counter)
-
 
     def __iter__(self):
         self.ts.frame = 0  # start at 0 so that the first frame becomes 1
@@ -242,7 +237,6 @@ class GMSReader(base.Reader):
 
         raise EOFError
 
-
     def rewind(self):
         """reposition on first frame"""
         self._reopen()
@@ -277,6 +271,4 @@ class GMSReader(base.Reader):
         self.outfile.close()
         self.outfile = None
 
-    def __del__(self):
-        self.close()
 

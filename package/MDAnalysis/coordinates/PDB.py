@@ -220,39 +220,20 @@ import errno
 import textwrap
 import warnings
 import logging
-
 import numpy
 
 import MDAnalysis.core
 import MDAnalysis.core.util as util
-import base
+from . import base
 from MDAnalysis.topology.core import guess_atom_element
-from MDAnalysis.core.AtomGroup import Universe, AtomGroup
+from MDAnalysis.core.AtomGroup import Universe
 from MDAnalysis import NoDataError
 
 
 logger = logging.getLogger("MDAnalysis.coordinates.PBD")
 
 
-class Timestep(base.Timestep):
-    @property
-    def dimensions(self):
-        """unitcell dimensions (`A, B, C, alpha, beta, gamma`)
-
-        - `A, B, C` are the lengths of the primitive cell vectors `e1, e2, e3`
-        - `alpha` = angle(`e1, e2`)
-        - `beta` = angle(`e1, e3`)
-        - `gamma` = angle(`e2, e3`)
-        """
-        # Layout of unitcell is [A,B,C,90,90,90] with the primitive cell vectors
-        return self._unitcell
-
-    @dimensions.setter
-    def dimensions(self, box):
-        self._unitcell = box
-
-
-class PDBReader(base.Reader):
+class PDBReader(base.SingleFrameReader):
     """Read a pdb file into a BioPython pdb structure.
 
     The coordinates are also supplied as one numpy array and wrapped
@@ -264,25 +245,14 @@ class PDBReader(base.Reader):
     """
     format = 'PDB'
     units = {'time': None, 'length': 'Angstrom'}
-    _Timestep = Timestep
+    _Timestep = base.Timestep
 
-    def __init__(self, pdbfilename, convert_units=None, **kwargs):
-        self.pdbfilename = pdbfilename
-        self.filename = self.pdbfilename
-        if convert_units is None:
-            convert_units = MDAnalysis.core.flags['convert_lengths']
-        self.convert_units = convert_units  # convert length and time to base units
-
+    def _read_first_frame(self):
         pdb_id = "0UNK"
-        self.pdb = pdb.extensions.get_structure(pdbfilename, pdb_id)
+        self.pdb = pdb.extensions.get_structure(self.filename, pdb_id)
         pos = numpy.array([atom.coord for atom in self.pdb.get_atoms()])
         self.numatoms = pos.shape[0]
-        self.numframes = 1
         self.fixed = 0  # parse B field for fixed atoms?
-        self.skip = 1
-        self.periodic = False
-        self.delta = 0
-        self.skip_timestep = 1
         #self.ts._unitcell[:] = ??? , from CRYST1? --- not implemented in Biopython.PDB
         self.ts = self._Timestep(pos)
         self.ts.frame = 1
@@ -320,19 +290,6 @@ class PDBReader(base.Reader):
         kwargs['BioPDBstructure'] = self.pdb  # make sure that this Writer is
         kwargs.pop('universe', None)  # always linked to this reader, don't bother with Universe
         return PDBWriter(filename, **kwargs)
-
-    def __iter__(self):
-        yield self.ts  # just a single frame available
-        raise StopIteration
-
-    def _read_frame(self, frame):
-        if frame != 0:
-            raise IndexError("CRD only contains a single frame at frame index 0")
-        return self.ts
-
-    def _read_next_timestep(self):
-        # PDB file only contains a single frame
-        raise IOError
 
 
 class PDBWriter(base.Writer):
@@ -477,7 +434,7 @@ class PrimitivePDBReader(base.Reader):
     """
     format = 'PDB'
     units = {'time': None, 'length': 'Angstrom'}
-    _Timestep = Timestep
+    _Timestep = base.Timestep
 
     def __init__(self, filename, convert_units=None, **kwargs):
         """Read coordinates from *filename*.
@@ -649,19 +606,12 @@ class PrimitivePDBReader(base.Reader):
 
     __del__ = close
 
-    def next(self):
-        """Read the next time step."""
-        return self._read_next_timestep()
-
     def __iter__(self):
         for i in xrange(0, self.numframes):
             try:
                 yield self._read_frame(i)
             except IOError:
                 raise StopIteration
-
-    #def __getitem__(self,frame):
-    #    return self._read_frame(frame+1)
 
     def _read_next_timestep(self, ts=None):
         if ts is None:
@@ -1029,7 +979,7 @@ class PrimitivePDBWriter(base.Writer):
         current frame.
         """
 
-        if isinstance(obj, Timestep):
+        if isinstance(obj, base.Timestep):
             raise TypeError(
                 "PrimitivePDBWriter cannot write Timestep objects directly, since they lack topology information ("
                 "atom names and types) required in PDB files")

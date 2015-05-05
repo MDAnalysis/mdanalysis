@@ -26,5 +26,5 @@ dimensions) are made available as numpy_ arrays.
 
 __all__ = ['XTC', 'TRR']
 
-import XTC
-import TRR
+from . import XTC
+from . import TRR

@@ -44,11 +44,13 @@ Classes
    :inherited-members:
 """
 
-import core
+import numpy
+import errno
 
-
-class Timestep(core.Timestep):
-    """Timestep for a Gromacs XTC trajectory."""
+from . import statno
+from . import core
+from . import libxdrfile2
+from .core import Timestep
 
 
 class XTCWriter(core.TrjWriter):
@@ -67,3 +69,45 @@ class XTCReader(core.TrjReader):
     format = "XTC"
     _Timestep = Timestep
     _Writer = XTCWriter
+
+    def _allocate_sub(self, DIM):
+        self._pos_buf = numpy.zeros((self._trr_numatoms, DIM), dtype=numpy.float32, order='C')
+        self._velocities_buf = None
+        self._forces_buf = None
+
+    def _read_trj_natoms(self, filename):
+        return libxdrfile2.read_xtc_natoms(filename)
+
+    def _read_trj_numframes(self, filename):
+        self._numframes, self._offsets = libxdrfile2.read_xtc_numframes(filename)
+        self._store_offsets()
+
+        return
+
+    def _read_next_timestep(self, ts=None):
+        if ts is None:
+            ts = self.ts
+
+        if self.xdrfile is None:
+            self.open_trajectory()
+
+        if self._sub is None:
+            ts.status, ts.step, ts.time, ts.prec = libxdrfile2.read_xtc(self.xdrfile, ts._unitcell, ts._pos)
+        else:
+            ts.status, ts.step, ts.time, ts.prec = libxdrfile2.read_xtc(self.xdrfile, ts._unitcell, self._pos_buf)
+            ts._pos[:] = self._pos_buf[self._sub]
+
+        if ts.status == libxdrfile2.exdrENDOFFILE:
+            raise IOError(errno.EIO, "End of file reached for %s file" % self.format,
+                          self.filename)
+        elif not ts.status == libxdrfile2.exdrOK:
+            raise IOError(errno.EBADF, "Problem with %s file, status %s" %
+                                       (self.format, statno.errorcode[ts.status]), self.filename)
+
+        if self.convert_units:
+            self.convert_pos_from_native(ts._pos)  # in-place !
+            self.convert_pos_from_native(ts._unitcell)  # in-place ! (note: xtc contain unit vecs!)
+            ts.time = self.convert_time_from_native(ts.time)  # in-place does not work with scalars
+
+        ts.frame += 1
+        return ts

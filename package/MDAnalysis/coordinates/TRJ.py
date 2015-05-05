@@ -288,18 +288,13 @@ class TRJReader(base.Reader):
     units = {'time': 'ps', 'length': 'Angstrom'}
     _Timestep = Timestep
 
-    # TODO: implement random access via seek
-    #       - compute size of frame
-    #       - compute seek offset & go
-    #       - check that this works for files >2GB
-
     def __init__(self, filename, numatoms=None, **kwargs):
         # amber trj REQUIRES the number of atoms from the topology
         if numatoms is None:
             raise ValueError("AMBER TRJ reader REQUIRES the numatoms keyword")
         self.filename = filename
-        self.__numatoms = numatoms
-        self.__numframes = None
+        self._numatoms = numatoms
+        self._numframes = None
 
         self.trjfile = None  # have _read_next_timestep() open it properly!
         self.fixed = 0
@@ -413,17 +408,14 @@ class TRJReader(base.Reader):
     @property
     def numframes(self):
         """Number of frames (obtained from reading the whole trajectory)."""
-        if not self.__numframes is None:  # return cached value
-            return self.__numframes
+        if not self._numframes is None:  # return cached value
+            return self._numframes
         try:
-            self.__numframes = self._read_trj_numframes(self.filename)
+            self._numframes = self._read_trj_numframes(self.filename)
         except IOError:
             return 0
         else:
-            return self.__numframes
-
-    def _read_trj_numatoms(self, filename):
-        raise NotImplementedError("It is not possible to reliably deduce NATOMS from AMBER trj files")
+            return self._numframes
 
     def _read_trj_numframes(self, filename):
         self._reopen()
@@ -440,21 +432,7 @@ class TRJReader(base.Reader):
 
     @property
     def numatoms(self):
-        if not self.__numatoms is None:  # return cached value
-            return self.__numatoms
-        try:
-            self.__numatoms = self._read_trj_numatoms(self.filename)
-        except IOError:
-            return 0
-        else:
-            return self.__numatoms
-
-    def __del__(self):
-        if not self.trjfile is None:
-            self.close()
-
-    def __len__(self):
-        return self.numframes
+        return self._numatoms
 
     def _reopen(self):
         self.close()
@@ -620,9 +598,11 @@ class NCDFReader(base.Reader):
                                  forces=self.has_forces)
 
         # load first data frame
-        self._read_frame(0, self.ts)
+        self._read_frame(0)
 
-    def _read_frame(self, frame, ts):
+    def _read_frame(self, frame):
+        ts = self.ts
+
         if self.trjfile is None:
             raise IOError("Trajectory is closed")
         if numpy.dtype(type(frame)) != numpy.dtype(int):
@@ -657,49 +637,22 @@ class NCDFReader(base.Reader):
         if ts is None:
             ts = self.ts
         try:
-            return self._read_frame(self._current_frame + 1, ts)
+            return self._read_frame(self._current_frame + 1)
         except IndexError:
             raise IOError
 
-    def __getitem__(self, frame):
-        """Return the Timestep corresponding to *frame*.
+    def _sliced_iter(self, start, stop, step):
+        def iterNETCDF(start=start, stop=stop, step=step):
+            for i in xrange(start, stop, step):
+                yield self._read_frame(i)
 
-        If *frame* is a integer then the corresponding frame is
-        returned. Negative numbers are counted from the end.
-
-        If frame is a :class:`slice` then an iterator is returned that
-        allows iteration over that part of the trajectory.
-
-        .. Note:: *frame* is a 0-based frame index.
-        """
-        if numpy.dtype(type(frame)) != numpy.dtype(int) and type(frame) != slice:
-            raise TypeError("Can only index NETCDF trajectory with int or a slice.")
-        if numpy.dtype(type(frame)) == numpy.dtype(int):
-            if frame < 0:
-                # Interpret similar to a sequence
-                frame = len(self) + frame
-                if frame < 0 or frame >= len(self):
-                    raise IndexError
-            return self._read_frame(frame, self.ts)
-        elif type(frame) == slice:  # if frame is a slice object
-            if not (((type(frame.start) == int) or (frame.start is None)) and
-               ((type(frame.stop) == int) or (frame.stop is None)) and
-               ((type(frame.step) == int) or (frame.step is None))):
-                raise TypeError("Slice indices are not integers")
-
-            def iterNETCDF(start=frame.start, stop=frame.stop, step=frame.step):
-                start, stop, step = self._check_slice_indices(start, stop, step)
-                for i in xrange(start, stop, step):
-                    yield self._read_frame(i, self.ts)
-
-            return iterNETCDF()
-        raise ValueError("Type {0} of argument {1} not supported".format(type(frame), frame))
-
+        return iterNETCDF() 
+    
     def __iter__(self):
         """Iterate over the whole trajectory"""
         for i in xrange(0, self.numframes):
             try:
-                yield self._read_frame(i, self.ts)
+                yield self._read_frame(i)
             except IndexError:
                 raise StopIteration
 
@@ -708,8 +661,6 @@ class NCDFReader(base.Reader):
         if not self.trjfile is None:
             self.trjfile.close()
             self.trjfile = None
-
-    __del__ = close
 
     def Writer(self, filename, **kwargs):
         """Returns a NCDFWriter for *filename* with the same parameters as this NCDF.

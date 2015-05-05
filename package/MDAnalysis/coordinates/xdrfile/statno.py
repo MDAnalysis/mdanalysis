@@ -31,7 +31,7 @@ symbol names.
 
 """
 
-import libxdrfile2
+from . import libxdrfile2
 
 #: List of all error symbols ``exdr*`` extracted from :mod:`libxdrfile2`.
 errorsymbols = [k for k in libxdrfile2.__dict__.keys() if k[:4] == 'exdr']
