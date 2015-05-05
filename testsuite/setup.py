@@ -114,6 +114,7 @@ For details see the report for `Issue 87`_.
                   'data/capping/*.gro', 'data/capping/*.pdb',
                   'data/*.data',
                   'data/gms/*.xyz', 'data/gms/*.gms', 'data/gms/*.gms.gz',
+                  'data/*.inpcrd',
               ],
           },
           classifiers=CLASSIFIERS,
