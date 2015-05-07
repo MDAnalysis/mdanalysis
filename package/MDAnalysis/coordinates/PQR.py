@@ -88,8 +88,6 @@ import numpy
 import MDAnalysis.core
 import MDAnalysis.core.util as util
 from . import base
-from base import Timestep
-import pdb.extensions
 
 
 class PQRReader(base.SingleFrameReader):
@@ -107,7 +105,6 @@ class PQRReader(base.SingleFrameReader):
     """
     format = 'PQR'
     units = {'time': None, 'length': 'Angstrom'}
-    _Timestep = Timestep
 
     def _read_first_frame(self):
         coords = []

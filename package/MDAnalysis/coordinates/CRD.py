@@ -25,7 +25,6 @@ Read and write coordinates in CHARMM CARD coordinate format (suffix
 
 import numpy
 
-import MDAnalysis
 import MDAnalysis.core.util as util
 from . import base
 from MDAnalysis import FormatError
@@ -36,7 +35,6 @@ class CRDReader(base.SingleFrameReader):
     """
     format = 'CRD'
     units = {'time': None, 'length': 'Angstrom'}
-    _Timestep = base.Timestep
 
     def _read_first_frame(self):
         # EXT:

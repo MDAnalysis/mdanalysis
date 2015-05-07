@@ -72,9 +72,9 @@ import errno
 import numpy
 import itertools
 
-import base
 import MDAnalysis
-import MDAnalysis.core
+from . import base
+from ..core import flags
 import MDAnalysis.core.util as util
 from MDAnalysis import NoDataError
 
@@ -115,7 +115,7 @@ class XYZWriter(base.Writer):
         self.filename = args[0]
         # convert length and time to base units on the fly?
         convert_units = kwargs.pop('convert_units', None)
-        self.convert_units = convert_units if convert_units is not None else MDAnalysis.core.flags['convert_lengths']
+        self.convert_units = convert_units if convert_units is not None else flags['convert_lengths']
         self.atomnames = self._get_atomnames(kwargs.pop('atoms', "X"))
         self.remark = kwargs.pop('remark',
                                  "Written by {0} (release {1})".format(self.__class__.__name__, MDAnalysis.__version__))

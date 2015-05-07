@@ -39,39 +39,14 @@ To open a mol2, remove all hydrogens and save as a new file, use the following::
 
 import numpy as np
 
-import base
-from MDAnalysis.core.AtomGroup import Universe, AtomGroup
-from MDAnalysis.topology.core import guess_atom_element
+from . import base
 from .. import core
-import MDAnalysis.core.util as util
-
-
-class Timestep(base.Timestep):
-    @property
-    def dimensions(self):
-        """unitcell dimensions (`A, B, C, alpha, beta, gamma`)
-
-        MOL2 does not contain unitcell information but for
-        compatibility, an empty unitcell is provided.
-
-        - `A, B, C` are the lengths of the primitive cell vectors `e1, e2, e3`
-        - `alpha` = angle(`e1, e2`)
-        - `beta` = angle(`e1, e3`)
-        - `gamma` = angle(`e2, e3`)
-
-        """
-        # Layout of unitcell is [A,B,C,90,90,90] with the primitive cell vectors
-        return self._unitcell
-
-    @dimensions.setter
-    def dimensions(self, box):
-        self._unitcell = box
+from ..core import util
 
 
 class MOL2Reader(base.Reader):
     format = 'MOL2'
     units = {'time': None, 'length': 'Angstrom'}
-    _Timestep = Timestep
 
     def __init__(self, filename, convert_units=None, **kwargs):
         """Read coordinates from *filename*.
@@ -120,10 +95,6 @@ class MOL2Reader(base.Reader):
         self.periodic = False
         self.delta = 0
         self.skip_timestep = 1
-
-    def next(self):
-        """Read the next time step."""
-        return self._read_next_timestep()
 
     def __iter__(self):
         for i in xrange(0, self.numframes):
@@ -300,8 +271,6 @@ class MOL2Writer(base.Writer):
 
     def close(self):
         self.file.close()
-
-    __del__ = close
 
     def encode_block(self, obj):
         traj = obj.universe.trajectory

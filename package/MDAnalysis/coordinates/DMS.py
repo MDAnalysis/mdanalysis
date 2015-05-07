@@ -26,16 +26,10 @@ coordinate files (as used by the Desmond_ MD package).
 .. _DMS: http://www.deshawresearch.com/Desmond_Users_Guide-0.7.pdf
 """
 
-import os
-import errno
-import warnings
-from copy import deepcopy
 import numpy
 import sqlite3
 
-import MDAnalysis
 from . import base
-import MDAnalysis.core.util as util
 from MDAnalysis.coordinates.core import triclinic_box, triclinic_vectors
 
 

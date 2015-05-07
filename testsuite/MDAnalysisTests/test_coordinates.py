@@ -18,7 +18,7 @@ import MDAnalysis
 import MDAnalysis as mda
 import MDAnalysis.coordinates
 import MDAnalysis.coordinates.core
-from MDAnalysis.coordinates.base import Timestep, SingleFrameReader
+from MDAnalysis.coordinates.base import Timestep
 
 import numpy as np
 import cPickle
@@ -149,7 +149,7 @@ class TestXYZReader(TestCase, Ref2r9r):
 
     def test_slice_raises_TypeError(self):
         def trj_iter():
-            return self.universe.trajectory[::2]
+            return list(self.universe.trajectory[::2])
 
         assert_raises(TypeError, trj_iter)
 
@@ -193,7 +193,7 @@ class TestCompressedXYZReader(TestCase, Ref2r9r):
 
     def test_slice_raises_TypeError(self):
         def trj_iter():
-            return self.universe.trajectory[::2]
+            return list(self.universe.trajectory[::2])
 
         assert_raises(TypeError, trj_iter)
 
@@ -370,7 +370,7 @@ class TestTRJReader(_TRJReaderTest, RefACHE):
 
     def test_slice_raises_TypeError(self):
         def trj_iter():
-            return self.universe.trajectory[::2]
+            return list(self.universe.trajectory[::2])
 
         assert_raises(TypeError, trj_iter)
 
@@ -380,12 +380,6 @@ class TestBzippedTRJReader(TestTRJReader):
         self.universe = mda.Universe(PRM, TRJ_bz2)
         self.prec = 3
 
-    def test_slice_raises_TypeError(self):
-        def trj_iter():
-            return self.universe.trajectory[::2]
-
-        assert_raises(TypeError, trj_iter)
-
 
 class TestBzippedTRJReaderPBC(_TRJReaderTest, RefCappedAla):
     def setUp(self):
@@ -394,7 +388,7 @@ class TestBzippedTRJReaderPBC(_TRJReaderTest, RefCappedAla):
 
     def test_slice_raises_TypeError(self):
         def trj_iter():
-            return self.universe.trajectory[::2]
+            return list(self.universe.trajectory[::2])
 
         assert_raises(TypeError, trj_iter)
 
@@ -2359,36 +2353,36 @@ class _GromacsReader_offsets(TestCase):
 
     @dec.slow
     def test_offsets(self):
-        if self.trajectory._TrjReader__offsets is None:
+        if self.trajectory._offsets is None:
             self.trajectory.numframes
-        assert_array_almost_equal(self.trajectory._TrjReader__offsets, self.ref_offsets,
+        assert_array_almost_equal(self.trajectory._offsets, self.ref_offsets,
                                   err_msg="wrong frame offsets")
 
         # Saving
         self.trajectory.save_offsets(self.outfile_offsets)
         with open(self.outfile_offsets, 'rb') as f:
             saved_offsets = cPickle.load(f)
-        assert_array_almost_equal(self.trajectory._TrjReader__offsets, saved_offsets['offsets'],
+        assert_array_almost_equal(self.trajectory._offsets, saved_offsets['offsets'],
                                   err_msg="error saving frame offsets")
         assert_array_almost_equal(self.ref_offsets, saved_offsets['offsets'],
                                   err_msg="saved frame offsets don't match the known ones")
 
         # Loading
         self.trajectory.load_offsets(self.outfile_offsets)
-        assert_array_almost_equal(self.trajectory._TrjReader__offsets, self.ref_offsets,
+        assert_array_almost_equal(self.trajectory._offsets, self.ref_offsets,
                                   err_msg="error loading frame offsets")
 
     @dec.slow
     def test_persistent_offsets_new(self):
         # check that offsets will be newly generated and not loaded from stored
         # offsets
-        assert_equal(self.trajectory._TrjReader__offsets, None)
+        assert_equal(self.trajectory._offsets, None)
 
     @dec.slow
     def test_persistent_offsets_stored(self):
         # build offsets
         self.trajectory.numframes
-        assert_equal((self.trajectory._TrjReader__offsets is None), False)
+        assert_equal((self.trajectory._offsets is None), False)
     
         # check that stored offsets present
         assert_equal(os.path.exists(self.trajectory._offset_filename()), True)
@@ -2422,7 +2416,7 @@ class _GromacsReader_offsets(TestCase):
 
         # check that stored offsets are loaded for new universe
         u = mda.Universe(self.top, self.traj)
-        assert_equal((u.trajectory._TrjReader__offsets is not None), True)
+        assert_equal((u.trajectory._offsets is not None), True)
 
     @dec.slow
     def test_persistent_offsets_ctime_mismatch(self):
@@ -2440,7 +2434,7 @@ class _GromacsReader_offsets(TestCase):
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")  # Drop the warnings silently
             u = mda.Universe(self.top, self.traj)
-            assert_equal((u.trajectory._TrjReader__offsets is None), True)
+            assert_equal((u.trajectory._offsets is None), True)
         
     @dec.slow
     def test_persistent_offsets_size_mismatch(self):
@@ -2456,7 +2450,7 @@ class _GromacsReader_offsets(TestCase):
             cPickle.dump(saved_offsets, f)
 
         u = mda.Universe(self.top, self.traj)
-        assert_equal((u.trajectory._TrjReader__offsets is None), True)
+        assert_equal((u.trajectory._offsets is None), True)
         
     @dec.slow
     def test_persistent_offsets_last_frame_wrong(self):
@@ -2474,7 +2468,7 @@ class _GromacsReader_offsets(TestCase):
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")  # Drop the warnings silently
             u = mda.Universe(self.top, self.traj)
-            assert_equal((u.trajectory._TrjReader__offsets is None), True)
+            assert_equal((u.trajectory._offsets is None), True)
 
     @dec.slow
     def test_persistent_offsets_readonly(self):
@@ -2500,7 +2494,7 @@ class _GromacsReader_offsets(TestCase):
         # check that the *refresh_offsets* keyword ensures stored offsets
         # aren't retrieved
         u = mda.Universe(self.top, self.traj, refresh_offsets=True)
-        assert_equal((u.trajectory._TrjReader__offsets is None), True)
+        assert_equal((u.trajectory._offsets is None), True)
 
     @dec.slow
     def test_persistent_offsets_refreshFalse(self):
@@ -2509,7 +2503,7 @@ class _GromacsReader_offsets(TestCase):
 
         # check that the *refresh_offsets* keyword as False grabs offsets
         u = mda.Universe(self.top, self.traj, refresh_offsets=False)
-        assert_equal((u.trajectory._TrjReader__offsets is None), False)
+        assert_equal((u.trajectory._offsets is None), False)
 
 
 class TestXTCReader_offsets(_GromacsReader_offsets):
@@ -3200,19 +3194,6 @@ class _GROTimestep(_BaseTimestep):
         ])
 
 
-class _LAMMPSTimestep(_DCDTimestep):  # LAMMPS Timestep is a subclass of DCD Timestep
-    Timestep = MDAnalysis.coordinates.LAMMPS.Timestep
-    name = "LAMMPS"
-
-
-class _PDBTimestep(_BaseTimestep):
-    Timestep = MDAnalysis.coordinates.PDB.Timestep
-    name = "PDB"
-    has_box = True
-    set_box = True
-    unitcell = np.array([10., 11., 12., 90., 90., 90.])
-
-
 class _TRJTimestep(_BaseTimestep):
     Timestep = MDAnalysis.coordinates.TRJ.Timestep
     name = "TRJ"
@@ -3429,14 +3410,6 @@ class TestGROTimestep(_TestTimestep, _GROTimestep):
         self.ts._unitcell = old
 
 
-class TestLAMMPSTimestep(_TestTimestep, _LAMMPSTimestep):
-    pass
-
-
-class TestPDBTimestep(_TestTimestep, _PDBTimestep):
-    pass
-
-
 class TestTRJTimestep(_TestTimestep, _TRJTimestep):
     pass
 
@@ -3451,93 +3424,3 @@ class TestXTCTimestep(_TestTimestep, _XTCTimestep):
 
 class TestTRRTimestep(_TestTimestep, _TRRTimestep):
     pass
-
-
-class AmazingReader(SingleFrameReader):
-    format = 'Amazing'
-    # have to hack this in to get the base class to "work"
-    def _read_first_frame(self):
-        self.numatoms = 10
-        self.ts = Timestep(self.numatoms)
-        self.ts.frame = 1
-
-class TestSingleFrameReader(TestCase):
-    def setUp(self):
-        self.numatoms = 10
-        self.r = AmazingReader
-        self.sfr = AmazingReader('test.txt')
-        self.ts = self.sfr.ts
-
-    def tearDown(self):
-        del self.r
-        del self.sfr
-        del self.ts
-        del self.numatoms
-
-    def test_required_attributes(self):
-        """Test that SFReader has the required attributes"""
-        for attr in ['filename', 'numatoms', 'numframes', 'fixed', 'skip',
-                     'skip_timestep', 'delta', 'periodic', 'ts',
-                     'units', 'format']:
-            assert_equal(hasattr(self.sfr, attr), True, "Missing attr: {}".format(attr))
-        
-    def test_iter(self):
-        l = [ts for ts in self.sfr]
-
-        assert_equal(len(l), 1)
-
-    def test_close(self):
-        sfr = self.r('text.txt')
-
-        ret = sfr.close()
-        # Check that method works?
-        assert_equal(ret, None)
-
-    def test_next(self):
-        assert_raises(IOError, self.sfr.next)
-
-    def test_rewind(self):
-        ret = self.sfr.rewind()
-
-        assert_equal(ret, None)
-        assert_equal(self.sfr.ts.frame, 1)
-
-    def test_context(self):
-        with self.r('text.txt') as sfr:
-            l = sfr.ts.frame
-
-        assert_equal(l, 1)
-
-    def test_len(self):
-        l = len(self.sfr)
-
-        assert_equal(l, 1)
-
-    # Getitem tests
-    # only 0 & -1 should work
-    # others should get IndexError
-    def _check_get_results(self, l):
-        assert_equal(len(l), 1)
-        assert_equal(self.ts in l, True)
-
-    def test_getitem(self):
-        fr = [self.sfr[0]]
-
-        self._check_get_results(fr)
-
-    def test_getitem_2(self):
-        fr = [self.sfr[-1]]
-
-        self._check_get_results(fr)
-
-    def test_getitem_IE(self):
-        assert_raises(IndexError, self.sfr.__getitem__, 1)
-
-    def test_getitem_IE_2(self):
-        assert_raises(IndexError, self.sfr.__getitem__, -2)
-
-    # Slicing should still work!
-    def test_slice_1(self):
-        l = list(self.sfr[::])
-
-        self._check_get_results(l)

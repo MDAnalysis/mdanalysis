@@ -23,14 +23,13 @@ Read and write coordinates in Amber_ coordinate/restart file (suffix
 
 .. _Amber: http://ambermd.org/formats.html#restart
 """
-from __future__ import absolute_import, division
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 from . import base
 
 class INPReader(base.SingleFrameReader):
     format = 'INPCRD'
     units = {'length': 'Angstrom'}
-    _Timestep = base.Timestep
 
     def _read_first_frame(self):
         # Read header
