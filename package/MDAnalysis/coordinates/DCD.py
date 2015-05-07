@@ -352,13 +352,10 @@ class DCDWriter(base.Writer):
 
     def close(self):
         """Close trajectory and flush buffers."""
-        self._finish_dcd_write()
-        self.dcdfile.close()
-        self.dcdfile = None
-
-    def __del__(self):
         if hasattr(self, 'dcdfile') and not self.dcdfile is None:
-            self.close()
+            self._finish_dcd_write()
+            self.dcdfile.close()
+            self.dcdfile = None
 
 
 class DCDReader(base.Reader):
@@ -405,6 +402,7 @@ class DCDReader(base.Reader):
     """
     format = 'DCD'
     units = {'time': 'AKMA', 'length': 'Angstrom'}
+    _Timestep = Timestep
 
     def __init__(self, dcdfilename, **kwargs):
         self.filename = self.dcdfilename = dcdfilename  # dcdfilename is legacy
@@ -424,7 +422,7 @@ class DCDReader(base.Reader):
         self.periodic = False
 
         self._read_dcd_header()
-        self.ts = Timestep(self.numatoms)
+        self.ts = self._Timestep(self.numatoms)
         # Read in the first timestep
         self._read_next_timestep()
 
@@ -536,7 +534,7 @@ class DCDReader(base.Reader):
                                      sizedata, lowerb, upperb, start, stop, skip)
 
     def close(self):
-        if not self.dcdfile is None:
+        if self.dcdfile is not None:
             self._finish_dcd_read()
             self.dcdfile.close()
             self.dcdfile = None

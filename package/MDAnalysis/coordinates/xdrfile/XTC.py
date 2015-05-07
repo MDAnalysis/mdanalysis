@@ -82,8 +82,6 @@ class XTCReader(core.TrjReader):
         self._numframes, self._offsets = libxdrfile2.read_xtc_numframes(filename)
         self._store_offsets()
 
-        return
-
     def _read_next_timestep(self, ts=None):
         if ts is None:
             ts = self.ts
@@ -102,7 +100,7 @@ class XTCReader(core.TrjReader):
                           self.filename)
         elif not ts.status == libxdrfile2.exdrOK:
             raise IOError(errno.EBADF, "Problem with %s file, status %s" %
-                                       (self.format, statno.errorcode[ts.status]), self.filename)
+                                       (self.format, statno.ERRORCODE[ts.status]), self.filename)
 
         if self.convert_units:
             self.convert_pos_from_native(ts._pos)  # in-place !

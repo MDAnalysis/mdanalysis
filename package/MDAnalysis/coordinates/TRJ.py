@@ -129,7 +129,7 @@ those and will raise a :exc:`NotImplementedError` if anything else is detected.
 
 
 """
-from __future__ import absolute_import
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import numpy
 import warnings
@@ -137,6 +137,7 @@ import errno
 import logging
 
 import MDAnalysis
+from ..core import flags
 from . import base
 import MDAnalysis.core.util as util
 
@@ -301,7 +302,7 @@ class TRJReader(base.Reader):
         self.skip = 1
         self.skip_timestep = 1  # always 1 for trj at the moment
         self.delta = kwargs.pop("delta", 1.0)  # can set delta manually, default is 1ps
-        self.ts = Timestep(self.numatoms)
+        self.ts = self._Timestep(self.numatoms)
 
         # FORMAT(10F8.3)  (X(i), Y(i), Z(i), i=1,NATOM)
         self.default_line_parser = util.FORTRANReader("10F8.3")
@@ -533,7 +534,7 @@ class NCDFReader(base.Reader):
         self.filename = filename
         convert_units = kwargs.pop('convert_units', None)
         if convert_units is None:
-            convert_units = MDAnalysis.core.flags['convert_lengths']
+            convert_units = flags['convert_lengths']
             self.convert_units = convert_units  # convert length and time to base units
 
         self.trjfile = netcdf.Dataset(self.filename)
@@ -761,7 +762,7 @@ class NCDFWriter(base.Writer):
         self.cmplevel = cmplevel
 
         self.ts = None  # when/why would this be assigned??
-        self.__first_frame = True  # signals to open trajectory
+        self._first_frame = True  # signals to open trajectory
         self.trjfile = None  # open on first write with _init_netcdf()
         self.periodic = None  # detect on first write
         self.has_velocities = kwargs.get('velocities', False)
@@ -794,7 +795,7 @@ class NCDFWriter(base.Writer):
                               "Writer.\n"
                               "See installation instructions at https://github.com/MDAnalysis/mdanalysis/wiki/netcdf")
 
-        if not self.__first_frame:
+        if not self._first_frame:
             raise IOError(errno.EIO, "Attempt to write to closed file {0}".format(self.filename))
 
         ncfile = netcdf.Dataset(self.filename, clobber=True, mode='w', format='NETCDF3_64BIT')
@@ -840,7 +841,7 @@ class NCDFWriter(base.Writer):
             setattr(forces, 'units', 'kilocalorie/mole/angstrom')
 
         ncfile.sync()
-        self.__first_frame = False
+        self._first_frame = False
         self.trjfile = ncfile
 
     def is_periodic(self, ts=None):
@@ -934,5 +935,3 @@ class NCDFWriter(base.Writer):
         if not self.trjfile is None:
             self.trjfile.close()
             self.trjfile = None
-
-    __del__ = close

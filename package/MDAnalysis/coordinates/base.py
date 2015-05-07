@@ -567,8 +567,8 @@ class Reader(IObase):
 
     def _read_frame(self, frame):
         """Move to *frame* and fill timestep with data."""
-        raise NotImplementedError("{} does not support direct frame indexing."
-                                  "".format(self.__class__.__name__))
+        raise TypeError("{} does not support direct frame indexing."
+                        "".format(self.__class__.__name__))
         # Example implementation in the DCDReader:
         #self._jump_to_frame(frame)
         #ts = self.ts
@@ -590,9 +590,9 @@ class Reader(IObase):
             try:
                 for i in xrange(start, stop, step):
                     yield self[i]
-            except NotImplementedError:  # if _read_frame not implemented
-                raise NotImplementedError("{} does not support slicing."
-                                          "".format(self.__class__.__name__))
+            except TypeError:  # if _read_frame not implemented
+                raise TypeError("{} does not support slicing."
+                                "".format(self.__class__.__name__))
         return _iter()
 
     def _check_slice_indices(self, start, stop, step):

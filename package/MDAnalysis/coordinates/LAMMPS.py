@@ -69,14 +69,9 @@ Classes
 """
 
 from . import DCD
-from MDAnalysis.core import units
-from MDAnalysis.topology.LAMMPSParser import DATAParser
-import MDAnalysis.core
+from ..core import units
+from ..topology.LAMMPSParser import DATAParser
 from . import base
-
-
-class Timestep(DCD.Timestep):
-    """LAMMPS trajectory time step"""
 
 
 class DCDWriter(DCD.DCDWriter):
@@ -126,8 +121,7 @@ class DCDReader(DCD.DCDReader):
 
 
 class DATAReader(base.SingleFrameReader):
-    """
-    Reads a single frame of coordinate information from a LAMMPS DATA file.
+    """Reads a single frame of coordinate information from a LAMMPS DATA file.
 
     .. versionadded:: 0.9.0
     """
@@ -141,7 +135,7 @@ class DATAReader(base.SingleFrameReader):
         super(DATAReader, self).__init__(filename, **kwargs)
 
     def _read_first_frame(self):
-        self.ts = base.Timestep(self.numatoms)
+        self.ts = self._Timestep(self.numatoms)
         with DATAParser(self.filename) as p:
             p.read_DATA_timestep(self.ts)
 

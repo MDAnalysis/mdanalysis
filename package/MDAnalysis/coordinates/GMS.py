@@ -27,12 +27,13 @@ There appears to be no rigid format definition so it is likely users
 will need to tweak this Class.
 """
 
-import MDAnalysis.core.util as util
-import os, errno, re
+import os
+import errno
+import re
 import numpy
 
-import base
-from base import Timestep
+from . import base
+import MDAnalysis.core.util as util
 
 
 class GMSReader(base.Reader):
@@ -72,7 +73,7 @@ class GMSReader(base.Reader):
         self._numframes = None
         self._runtyp = None
 
-        self.ts = Timestep(0) # need for properties initial calculations
+        self.ts = self._Timestep(0) # need for properties initial calculations
         self.fixed = 0
         self.skip = 1
         self.periodic = False
@@ -83,7 +84,7 @@ class GMSReader(base.Reader):
             raise AttributeError('Wrong RUNTYP= '+self.runtyp)
         self.skip_timestep = 1
 
-        self.ts = Timestep(self.numatoms)
+        self.ts = self._Timestep(self.numatoms)
         # update numframes property
         self.numframes
 

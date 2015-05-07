@@ -245,7 +245,6 @@ class PDBReader(base.SingleFrameReader):
     """
     format = 'PDB'
     units = {'time': None, 'length': 'Angstrom'}
-    _Timestep = base.Timestep
 
     def _read_first_frame(self):
         pdb_id = "0UNK"
@@ -434,7 +433,6 @@ class PrimitivePDBReader(base.Reader):
     """
     format = 'PDB'
     units = {'time': None, 'length': 'Angstrom'}
-    _Timestep = base.Timestep
 
     def __init__(self, filename, convert_units=None, **kwargs):
         """Read coordinates from *filename*.
@@ -521,7 +519,7 @@ class PrimitivePDBReader(base.Reader):
                     else:
                         assert self.format == "PDB"
                         resSeq = _c(23, 26, int)
-                        insertCode = _c(27, 27, str)  # not used
+                        # insertCode = _c(27, 27, str)  # not used
                     x, y, z = _c(31, 38), _c(39, 46), _c(47, 54)
                     occupancy = _c(55, 60)
                     tempFactor = _c(61, 66)
@@ -600,11 +598,6 @@ class PrimitivePDBReader(base.Reader):
         """
         kwargs.setdefault('multiframe', self.numframes > 1)
         return PrimitivePDBWriter(filename, **kwargs)
-
-    def close(self):
-        pass
-
-    __del__ = close
 
     def __iter__(self):
         for i in xrange(0, self.numframes):
@@ -828,8 +821,6 @@ class PrimitivePDBWriter(base.Writer):
                 logger.warn("END record has already been written before the final closing of the file")
             self.pdbfile.close()
         self.pdbfile = None
-
-    __del__ = close
 
     def _write_pdb_title(self):
         if self.multiframe:

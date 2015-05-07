@@ -36,10 +36,8 @@ import errno
 import numpy
 import warnings
 
-import MDAnalysis.core
 import MDAnalysis.core.util as util
 from . import base
-from MDAnalysis.topology.core import guess_atom_element
 
 # PDBQTReader and Writer classes will subclass PrimitiveReader/Writer from PDB module
 #from MDAnalysis.coordinates.PDB import PrimitivePDBReader
@@ -140,7 +138,6 @@ class PDBQTReader(base.SingleFrameReader):
     """
     format = 'PDBQT'
     units = {'time': None, 'length': 'Angstrom'}
-    _Timestep = base.Timestep
 
     def _read_first_frame(self):
         # Ugly inner method: moved outside of for-loop below
@@ -378,5 +375,3 @@ class PDBQTWriter(base.Writer):
         partialCharge = float(partialCharge)  # Already pre-formatted when passed to this method
         self.pdb.write(self.fmt['ATOM'] % vars())
 
-    def __del__(self):
-        self.close()

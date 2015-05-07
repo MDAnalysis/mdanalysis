@@ -26,10 +26,7 @@ Classes to read and write Gromacs_ GRO_ coordinate files; see the notes on the
 .. _GRO format: http://chembytes.wikidot.com/g-grofile
 """
 
-import os
-import errno
 import warnings
-from copy import deepcopy
 import numpy
 
 import MDAnalysis

@@ -40,15 +40,13 @@ To open a mol2, remove all hydrogens and save as a new file, use the following::
 import numpy as np
 
 from . import base
-from MDAnalysis.topology.core import guess_atom_element
 from .. import core
-import MDAnalysis.core.util as util
+from ..core import util
 
 
 class MOL2Reader(base.Reader):
     format = 'MOL2'
     units = {'time': None, 'length': 'Angstrom'}
-    _Timestep = base.Timestep
 
     def __init__(self, filename, convert_units=None, **kwargs):
         """Read coordinates from *filename*.
@@ -273,8 +271,6 @@ class MOL2Writer(base.Writer):
 
     def close(self):
         self.file.close()
-
-    __del__ = close
 
     def encode_block(self, obj):
         traj = obj.universe.trajectory

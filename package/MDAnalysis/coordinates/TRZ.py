@@ -77,8 +77,7 @@ import numpy
 import os
 import errno
 
-import base
-from base import Timestep
+from . import base
 import MDAnalysis.core
 import MDAnalysis.core.util as util
 from MDAnalysis.coordinates.core import triclinic_box

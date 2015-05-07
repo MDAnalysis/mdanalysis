@@ -147,11 +147,11 @@ class TestXYZReader(TestCase, Ref2r9r):
         frames = [ts.frame - 1 for ts in trj_iter]
         assert_equal(frames, np.arange(self.universe.trajectory.numframes))
 
-    def test_slice_raises_NotImplemented(self):
+    def test_slice_raises_TypeError(self):
         def trj_iter():
             return list(self.universe.trajectory[::2])
 
-        assert_raises(NotImplementedError, trj_iter)
+        assert_raises(TypeError, trj_iter)
 
         # for whenever full slicing is implemented ...
         #frames = [ts.frame-1 for ts in trj_iter()]
@@ -191,11 +191,11 @@ class TestCompressedXYZReader(TestCase, Ref2r9r):
         frames = [ts.frame - 1 for ts in trj_iter]
         assert_equal(frames, np.arange(self.universe.trajectory.numframes))
 
-    def test_slice_raises_NotImplemented(self):
+    def test_slice_raises_TypeError(self):
         def trj_iter():
             return list(self.universe.trajectory[::2])
 
-        assert_raises(NotImplementedError, trj_iter)
+        assert_raises(TypeError, trj_iter)
 
 
 class TestXYZWriter(TestCase, Ref2r9r):
@@ -368,11 +368,11 @@ class TestTRJReader(_TRJReaderTest, RefACHE):
         self.universe = mda.Universe(PRM, TRJ)
         self.prec = 3
 
-    def test_slice_raises_NotImplemented(self):
+    def test_slice_raises_TypeError(self):
         def trj_iter():
             return list(self.universe.trajectory[::2])
 
-        assert_raises(NotImplementedError, trj_iter)
+        assert_raises(TypeError, trj_iter)
 
 
 class TestBzippedTRJReader(TestTRJReader):
@@ -390,7 +390,7 @@ class TestBzippedTRJReaderPBC(_TRJReaderTest, RefCappedAla):
         def trj_iter():
             return list(self.universe.trajectory[::2])
 
-        assert_raises(NotImplementedError, trj_iter)
+        assert_raises(TypeError, trj_iter)
 
 
 class TestNCDFReader(_TRJReaderTest, RefVGV):
@@ -3194,11 +3194,6 @@ class _GROTimestep(_BaseTimestep):
         ])
 
 
-class _LAMMPSTimestep(_DCDTimestep):  # LAMMPS Timestep is a subclass of DCD Timestep
-    Timestep = MDAnalysis.coordinates.LAMMPS.Timestep
-    name = "LAMMPS"
-
-
 class _TRJTimestep(_BaseTimestep):
     Timestep = MDAnalysis.coordinates.TRJ.Timestep
     name = "TRJ"
@@ -3413,10 +3408,6 @@ class TestGROTimestep(_TestTimestep, _GROTimestep):
         assert_array_almost_equal(self.ts._unitcell, ref, decimal=2)
 
         self.ts._unitcell = old
-
-
-class TestLAMMPSTimestep(_TestTimestep, _LAMMPSTimestep):
-    pass
 
 
 class TestTRJTimestep(_TestTimestep, _TRJTimestep):
