@@ -375,16 +375,33 @@ def guess_format(filename, format=None):
                 ext = ext[1:]
             format = ext.upper()
         except:
-            raise TypeError("Cannot determine topology type for %r" % filename)
+            raise TypeError(
+                "Cannot autodetect topology type for file '{0}' "
+                "(file extension could not be parsed).\n"
+                "           You can use 'Universe(topology, ..., topology_format=FORMAT)' "
+                "to explicitly specify the format and\n"
+                "           override automatic detection. Known FORMATs are:\n"
+                "           {1}\n"
+                "           See http://docs.mdanalysis.org/documentation_pages/topology/init.html#supported-topology-formats\n"
+                "           For missing formats, raise an issue at "
+                "http://issues.mdanalysis.org".format(filename, _topology_parsers.keys()))
+                #TypeError: ...."
     else:
         # internally, formats are all uppercase
         format = str(format).upper()
 
     # sanity check
     if format not in _topology_parsers:
-        raise TypeError("Unknown topology format %r for %r; "
-                        "only %r are implemented in MDAnalysis." %
-                        (format, filename, _topology_parsers.keys()))
+        raise TypeError(
+            "Unknown topology format '{0}' for file '{1}'.\n"
+            "           The following FORMATs are implemented in MDAnalysis:\n"
+            "           {2}\n"
+            "           See http://docs.mdanalysis.org/documentation_pages/topology/init.html#supported-topology-formats\n"
+            "           You can use 'Universe(topology, ..., topology_format=FORMAT)' to explicitly\n"
+            "           specify the format and override automatic detection.\n"
+            "           For missing formats, raise an issue at "
+            "http://issues.mdanalysis.org".format(format, filename, _topology_parsers.keys()))
+            #TypeError: ...."
     return format
 
 

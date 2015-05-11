@@ -3861,8 +3861,10 @@ class Universe(object):
                                         permissive=perm,
                                         format=reader_format)
             except TypeError as err:
-                raise TypeError("Cannot find an appropriate coordinate reader "
-                                "for file {}.\n{}".format(filename, err))
+                raise TypeError(
+                    "Cannot find an appropriate coordinate reader for file '{0}'.\n"
+                    "           {1}".format(filename, err))
+                    #TypeError: ...."
 
         # supply number of atoms for readers that cannot do it for themselves
         kwargs['numatoms'] = self.atoms.numberOfAtoms()
