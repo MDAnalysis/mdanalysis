@@ -72,13 +72,14 @@ Reads coordinates, velocities and more (see attributes of the
    :members:
 """
 
+from sys import maxint
+import numpy
 import os
 import errno
-import base
-from base import Timestep
+
+from . import base
 import MDAnalysis.core
 import MDAnalysis.core.util as util
-import numpy
 from MDAnalysis.coordinates.core import triclinic_box
 
 
@@ -211,14 +212,14 @@ class TRZReader(base.Reader):
         self.filename = trzfilename
         self.trzfile = util.anyopen(self.filename, 'rb')
 
-        self.__numatoms = numatoms
+        self._numatoms = numatoms
         self.fixed = False
         self.periodic = True
         self.skip = 1
-        self.__numframes = None
-        self.__delta = None
-        self.__dt = None
-        self.__skip_timestep = None
+        self._numframes = None
+        self._delta = None
+        self._dt = None
+        self._skip_timestep = None
 
         self._read_trz_header()
         self.ts = Timestep(self.numatoms, has_force=self.has_force)
@@ -325,19 +326,19 @@ class TRZReader(base.Reader):
     @property
     def numatoms(self):
         """Number of atoms in a frame"""
-        return self.__numatoms
+        return self._numatoms
 
     @property
     def numframes(self):
         """Total number of frames in a trajectory"""
-        if not self.__numframes is None:
-            return self.__numframes
+        if not self._numframes is None:
+            return self._numframes
         try:
-            self.__numframes = self._read_trz_numframes(self.trzfile)
+            self._numframes = self._read_trz_numframes(self.trzfile)
         except IOError:
             return 0
         else:
-            return self.__numframes
+            return self._numframes
 
     def _read_trz_numframes(self, trzfile):
         """Uses size of file and dtype information to determine how many frames exist
@@ -362,42 +363,42 @@ class TRZReader(base.Reader):
         stitched together)
         Returns 0 in case of IOError
         """
-        if not self.__dt is None:
-            return self.__dt
+        if not self._dt is None:
+            return self._dt
         try:
             t0 = self.ts.time
             self.next()
             t1 = self.ts.time
-            self.__dt = t1 - t0
+            self._dt = t1 - t0
         except IOError:
             return 0
         finally:
             self.rewind()
-        return self.__dt
+        return self._dt
 
     @property
     def delta(self):
         """MD integration timestep"""
-        if not self.__delta is None:
-            return self.__delta
-        self.__delta = self.dt / self.skip_timestep
-        return self.__delta
+        if not self._delta is None:
+            return self._delta
+        self._delta = self.dt / self.skip_timestep
+        return self._delta
 
     @property
     def skip_timestep(self):
         """Timesteps between trajectory frames"""
-        if not self.__skip_timestep is None:
-            return self.__skip_timestep
+        if not self._skip_timestep is None:
+            return self._skip_timestep
         try:
             t0 = self.ts.step
             self.next()
             t1 = self.ts.step
-            self.__skip_timestep = t1 - t0
+            self._skip_timestep = t1 - t0
         except IOError:
             return 0
         finally:
             self.rewind()
-        return self.__skip_timestep
+        return self._skip_timestep
 
     def __iter__(self):
         self._reopen()
@@ -418,8 +419,6 @@ class TRZReader(base.Reader):
         return self.ts
 
     def _seek(self, nframes):
-        from sys import maxint
-
         """Move *nframes* in the trajectory
 
         Note that this doens't read the trajectory (ts remains unchanged)
@@ -483,9 +482,6 @@ class TRZReader(base.Reader):
         if self.trzfile is not None:
             self.trzfile.close()
             self.trzfile = None
-
-    def __del__(self):
-        self.close()
 
 
 class TRZWriter(base.Writer):

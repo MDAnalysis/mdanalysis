@@ -72,4 +72,4 @@ Module reference
 
 """
 
-from xdrfile.XTC import XTCReader, XTCWriter, Timestep
+from .xdrfile.XTC import XTCReader, XTCWriter, Timestep

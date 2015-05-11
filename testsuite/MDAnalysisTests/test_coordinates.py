@@ -18,6 +18,7 @@ import MDAnalysis
 import MDAnalysis as mda
 import MDAnalysis.coordinates
 import MDAnalysis.coordinates.core
+from MDAnalysis.coordinates.base import Timestep
 
 import numpy as np
 import cPickle
@@ -30,7 +31,8 @@ from .datafiles import PSF, DCD, DCD_empty, PDB_small, XPDB_small, PDB_closed, P
     XYZ, XYZ_bz2, XYZ_psf, PRM, TRJ, TRJ_bz2, PRMpbc, TRJpbc_bz2, PRMncdf, NCDF, PQR, \
     PDB_sub_dry, TRR_sub_sol, PDB_sub_sol, TRZ, TRZ_psf, LAMMPSdata, LAMMPSdata_mini, \
     PSF_TRICLINIC, DCD_TRICLINIC, PSF_NAMD_TRICLINIC, DCD_NAMD_TRICLINIC, \
-    GMS_ASYMOPT, GMS_SYMOPT, GMS_ASYMSURF, XYZ_mini, PFncdf_Top, PFncdf_Trj
+    GMS_ASYMOPT, GMS_SYMOPT, GMS_ASYMSURF, XYZ_mini, PFncdf_Top, PFncdf_Trj, \
+    INPCRD, XYZ_five
 
 
 
@@ -147,7 +149,7 @@ class TestXYZReader(TestCase, Ref2r9r):
 
     def test_slice_raises_TypeError(self):
         def trj_iter():
-            return self.universe.trajectory[::2]
+            return list(self.universe.trajectory[::2])
 
         assert_raises(TypeError, trj_iter)
 
@@ -191,7 +193,7 @@ class TestCompressedXYZReader(TestCase, Ref2r9r):
 
     def test_slice_raises_TypeError(self):
         def trj_iter():
-            return self.universe.trajectory[::2]
+            return list(self.universe.trajectory[::2])
 
         assert_raises(TypeError, trj_iter)
 
@@ -368,7 +370,7 @@ class TestTRJReader(_TRJReaderTest, RefACHE):
 
     def test_slice_raises_TypeError(self):
         def trj_iter():
-            return self.universe.trajectory[::2]
+            return list(self.universe.trajectory[::2])
 
         assert_raises(TypeError, trj_iter)
 
@@ -378,12 +380,6 @@ class TestBzippedTRJReader(TestTRJReader):
         self.universe = mda.Universe(PRM, TRJ_bz2)
         self.prec = 3
 
-    def test_slice_raises_TypeError(self):
-        def trj_iter():
-            return self.universe.trajectory[::2]
-
-        assert_raises(TypeError, trj_iter)
-
 
 class TestBzippedTRJReaderPBC(_TRJReaderTest, RefCappedAla):
     def setUp(self):
@@ -392,7 +388,7 @@ class TestBzippedTRJReaderPBC(_TRJReaderTest, RefCappedAla):
 
     def test_slice_raises_TypeError(self):
         def trj_iter():
-            return self.universe.trajectory[::2]
+            return list(self.universe.trajectory[::2])
 
         assert_raises(TypeError, trj_iter)
 
@@ -565,6 +561,37 @@ class TestNCDFWriter(TestCase, RefVGV):
                                 err_msg="Time for step {0} are not the same.".format(orig_ts.frame))
             assert_array_almost_equal(written_ts.dimensions, orig_ts.dimensions, self.prec,
                                       err_msg="unitcells are not identical")
+
+
+class TestINPCRDReader(TestCase):
+    """Test reading Amber restart coordinate files"""
+    def _check_ts(self, ts):
+        # Check a ts has the right values in
+        ref_pos = np.array([[6.6528795, 6.6711416, -8.5963255],
+                        [7.3133773, 5.8359736, -8.8294175],
+                        [8.3254058, 6.2227613, -8.7098593],
+                        [7.0833200, 5.5038197, -9.8417650],
+                        [7.1129439, 4.6170351, -7.9729560]])
+        for ref, val in itertools.izip(ref_pos, ts._pos):
+            assert_allclose(ref, val)
+    
+    def test_reader(self):
+        from MDAnalysis.coordinates.INPCRD import INPReader
+
+        r = INPReader(INPCRD)
+
+        assert_equal(r.numatoms, 5)
+        self._check_ts(r.ts)
+
+    def test_universe_inpcrd(self):
+        u = MDAnalysis.Universe(XYZ_five, INPCRD)
+
+        self._check_ts(u.trajectory.ts)
+
+    def test_universe_restrt(self):
+        u = MDAnalysis.Universe(XYZ_five, INPCRD, format='RESTRT')
+
+        self._check_ts(u.trajectory.ts)
 
 
 class TestNCDFWriterVelsForces(TestCase):
@@ -2326,36 +2353,36 @@ class _GromacsReader_offsets(TestCase):
 
     @dec.slow
     def test_offsets(self):
-        if self.trajectory._TrjReader__offsets is None:
+        if self.trajectory._offsets is None:
             self.trajectory.numframes
-        assert_array_almost_equal(self.trajectory._TrjReader__offsets, self.ref_offsets,
+        assert_array_almost_equal(self.trajectory._offsets, self.ref_offsets,
                                   err_msg="wrong frame offsets")
 
         # Saving
         self.trajectory.save_offsets(self.outfile_offsets)
         with open(self.outfile_offsets, 'rb') as f:
             saved_offsets = cPickle.load(f)
-        assert_array_almost_equal(self.trajectory._TrjReader__offsets, saved_offsets['offsets'],
+        assert_array_almost_equal(self.trajectory._offsets, saved_offsets['offsets'],
                                   err_msg="error saving frame offsets")
         assert_array_almost_equal(self.ref_offsets, saved_offsets['offsets'],
                                   err_msg="saved frame offsets don't match the known ones")
 
         # Loading
         self.trajectory.load_offsets(self.outfile_offsets)
-        assert_array_almost_equal(self.trajectory._TrjReader__offsets, self.ref_offsets,
+        assert_array_almost_equal(self.trajectory._offsets, self.ref_offsets,
                                   err_msg="error loading frame offsets")
 
     @dec.slow
     def test_persistent_offsets_new(self):
         # check that offsets will be newly generated and not loaded from stored
         # offsets
-        assert_equal(self.trajectory._TrjReader__offsets, None)
+        assert_equal(self.trajectory._offsets, None)
 
     @dec.slow
     def test_persistent_offsets_stored(self):
         # build offsets
         self.trajectory.numframes
-        assert_equal((self.trajectory._TrjReader__offsets is None), False)
+        assert_equal((self.trajectory._offsets is None), False)
     
         # check that stored offsets present
         assert_equal(os.path.exists(self.trajectory._offset_filename()), True)
@@ -2389,7 +2416,7 @@ class _GromacsReader_offsets(TestCase):
 
         # check that stored offsets are loaded for new universe
         u = mda.Universe(self.top, self.traj)
-        assert_equal((u.trajectory._TrjReader__offsets is not None), True)
+        assert_equal((u.trajectory._offsets is not None), True)
 
     @dec.slow
     def test_persistent_offsets_ctime_mismatch(self):
@@ -2407,7 +2434,7 @@ class _GromacsReader_offsets(TestCase):
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")  # Drop the warnings silently
             u = mda.Universe(self.top, self.traj)
-            assert_equal((u.trajectory._TrjReader__offsets is None), True)
+            assert_equal((u.trajectory._offsets is None), True)
         
     @dec.slow
     def test_persistent_offsets_size_mismatch(self):
@@ -2423,7 +2450,7 @@ class _GromacsReader_offsets(TestCase):
             cPickle.dump(saved_offsets, f)
 
         u = mda.Universe(self.top, self.traj)
-        assert_equal((u.trajectory._TrjReader__offsets is None), True)
+        assert_equal((u.trajectory._offsets is None), True)
         
     @dec.slow
     def test_persistent_offsets_last_frame_wrong(self):
@@ -2441,7 +2468,7 @@ class _GromacsReader_offsets(TestCase):
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")  # Drop the warnings silently
             u = mda.Universe(self.top, self.traj)
-            assert_equal((u.trajectory._TrjReader__offsets is None), True)
+            assert_equal((u.trajectory._offsets is None), True)
 
     @dec.slow
     def test_persistent_offsets_readonly(self):
@@ -2467,7 +2494,7 @@ class _GromacsReader_offsets(TestCase):
         # check that the *refresh_offsets* keyword ensures stored offsets
         # aren't retrieved
         u = mda.Universe(self.top, self.traj, refresh_offsets=True)
-        assert_equal((u.trajectory._TrjReader__offsets is None), True)
+        assert_equal((u.trajectory._offsets is None), True)
 
     @dec.slow
     def test_persistent_offsets_refreshFalse(self):
@@ -2476,7 +2503,7 @@ class _GromacsReader_offsets(TestCase):
 
         # check that the *refresh_offsets* keyword as False grabs offsets
         u = mda.Universe(self.top, self.traj, refresh_offsets=False)
-        assert_equal((u.trajectory._TrjReader__offsets is None), False)
+        assert_equal((u.trajectory._offsets is None), False)
 
 
 class TestXTCReader_offsets(_GromacsReader_offsets):
@@ -3094,7 +3121,7 @@ class _TestLammpsData_Coords(TestCase):
 
     def test_seek_2(self):
         ts = self.u.trajectory[0]
-        assert_equal(type(ts), MDAnalysis.coordinates.LAMMPS.DATATimestep)
+        assert_equal(type(ts), MDAnalysis.coordinates.base.Timestep)
 
     def test_iter(self):
         # Check that iterating works, but only gives a single frame
@@ -3165,35 +3192,6 @@ class _GROTimestep(_BaseTimestep):
             0., 0., 0.,
             0., 0., 0.
         ])
-
-
-class _LAMMPSTimestep(_DCDTimestep):  # LAMMPS Timestep is a subclass of DCD Timestep
-    Timestep = MDAnalysis.coordinates.LAMMPS.Timestep
-    name = "LAMMPS"
-
-
-class _LAMMPSDataTimestep(_BaseTimestep):
-    Timestep = MDAnalysis.coordinates.LAMMPS.DATATimestep
-    name = "LAMMPSData"
-    has_box = True
-    set_box = True
-    unitcell = np.array([10., 11., 12., 90., 90., 90.])
-
-
-class _PDBTimestep(_BaseTimestep):
-    Timestep = MDAnalysis.coordinates.PDB.Timestep
-    name = "PDB"
-    has_box = True
-    set_box = True
-    unitcell = np.array([10., 11., 12., 90., 90., 90.])
-
-
-class _PDBQTTimestep(_BaseTimestep):
-    Timestep = MDAnalysis.coordinates.PDBQT.Timestep
-    name = "PDBQT"
-    has_box = True
-    set_box = True
-    unitcell = np.array([10., 11., 12., 90., 90., 90.])
 
 
 class _TRJTimestep(_BaseTimestep):
@@ -3410,22 +3408,6 @@ class TestGROTimestep(_TestTimestep, _GROTimestep):
         assert_array_almost_equal(self.ts._unitcell, ref, decimal=2)
 
         self.ts._unitcell = old
-
-
-class TestLAMMPSTimestep(_TestTimestep, _LAMMPSTimestep):
-    pass
-
-
-class TestLAMMPSDataTimestep(_TestTimestep, _LAMMPSDataTimestep):
-    pass
-
-
-class TestPDBTimestep(_TestTimestep, _PDBTimestep):
-    pass
-
-
-class TestPDBQTTimestep(_TestTimestep, _PDBQTTimestep):
-    pass
 
 
 class TestTRJTimestep(_TestTimestep, _TRJTimestep):

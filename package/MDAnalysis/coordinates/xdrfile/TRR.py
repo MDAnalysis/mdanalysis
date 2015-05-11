@@ -47,9 +47,11 @@ Classes
 """
 
 import numpy
+import errno
 
-import core
-import libxdrfile2
+from . import statno
+from . import core
+from . import libxdrfile2
 from MDAnalysis import NoDataError
 
 
@@ -353,3 +355,64 @@ class TRRReader(core.TrjReader):
     _Timestep = Timestep
     _Writer = TRRWriter
     units = {'time': 'ps', 'length': 'nm', 'velocity': 'nm/ps', 'force': 'kJ/(mol*nm)'}
+
+    def _allocate_sub(self, DIM):
+        self._pos_buf = numpy.zeros((self._trr_numatoms, DIM), dtype=numpy.float32, order='C')
+        self._velocities_buf = numpy.zeros((self._trr_numatoms, DIM), dtype=numpy.float32, order='C')
+        self._forces_buf = numpy.zeros((self._trr_numatoms, DIM), dtype=numpy.float32, order='C')
+    
+    def _read_trj_natoms(self, filename):
+        return libxdrfile2.read_trr_natoms(filename)
+    
+    def _read_trj_numframes(self, filename):
+        self._numframes, self._offsets = libxdrfile2.read_trr_numframes(filename)
+        self._store_offsets()
+
+    def _read_next_timestep(self, ts=None):
+        if ts is None:
+            ts = self.ts
+        elif not hasattr(ts, '_tpos'):  # If a foreign Timestep is passed as the receptacle of the data
+            ts = Timestep(ts)  # we must make sure the access-checking stuff gets set up.
+
+        if self.xdrfile is None:
+            self.open_trajectory()
+
+        if self._sub is None:
+            ts.status, ts.step, ts.time, ts.lmbda,\
+                ts.has_x, ts.has_v, ts.has_f = libxdrfile2.read_trr(self.xdrfile,
+                                                                    ts._unitcell,
+                                                                    ts._tpos,
+                                                                    ts._tvelocities,
+                                                                    ts._tforces)
+        else:
+            ts.status, ts.step, ts.time, ts.lmbda,\
+                ts.has_x, ts.has_v, ts.has_f = libxdrfile2.read_trr(self.xdrfile,
+                                                                    ts._unitcell,
+                                                                    self._pos_buf,
+                                                                    self._velocities_buf,
+                                                                    self._forces_buf)
+            ts._tpos[:] = self._pos_buf[self._sub]
+            ts._tvelocities[:] = self._velocities_buf[self._sub]
+            ts._tforces[:] = self._forces_buf[self._sub]
+
+        if (ts.status == libxdrfile2.exdrENDOFFILE) or \
+           (ts.status == libxdrfile2.exdrINT):
+            # seems that trr files can get a exdrINT when reaching EOF (??)
+            raise IOError(errno.EIO, "End of file reached for %s file" % self.format,
+                          self.filename)
+        elif not ts.status == libxdrfile2.exdrOK:
+            raise IOError(errno.EBADF, "Problem with %s file, status %s" %
+                                       (self.format, statno.ERRORCODE[ts.status]), self.filename)
+
+        if self.convert_units:
+            # TRRs have the annoying possibility of frames without coordinates/velocities/forces...
+            if ts.has_x:
+                self.convert_pos_from_native(ts._pos)  # in-place !
+            self.convert_pos_from_native(ts._unitcell)  # in-place ! (note: trr contain unit vecs!)
+            ts.time = self.convert_time_from_native(ts.time)  # in-place does not work with scalars
+            if ts.has_v:
+                self.convert_velocities_from_native(ts._velocities)  # in-place
+            if ts.has_f:
+                self.convert_forces_from_native(ts._forces)  # in-place
+        ts.frame += 1
+        return ts        

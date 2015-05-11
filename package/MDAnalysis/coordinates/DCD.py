@@ -69,9 +69,9 @@ Classes
 import os
 import errno
 import numpy
+import struct
 
-import base
-
+from . import base
 import MDAnalysis.core
 import MDAnalysis.core.units
 from MDAnalysis import NoDataError
@@ -288,8 +288,6 @@ class DCDWriter(base.Writer):
         #    struct.unpack("LLiiiiidiPPiiii",self._dcd_C_str)
         # seems to do the job on Mac OS X 10.6.4 ... but I have no idea why,
         # given that the C code seems to define them as normal integers
-        import struct
-
         desc = [
             'file_desc', 'header_size', 'natoms', 'nsets', 'setsread', 'istart',
             'nsavc', 'delta', 'nfixed', 'freeind_ptr', 'fixedcoords_ptr',
@@ -354,13 +352,10 @@ class DCDWriter(base.Writer):
 
     def close(self):
         """Close trajectory and flush buffers."""
-        self._finish_dcd_write()
-        self.dcdfile.close()
-        self.dcdfile = None
-
-    def __del__(self):
         if hasattr(self, 'dcdfile') and not self.dcdfile is None:
-            self.close()
+            self._finish_dcd_write()
+            self.dcdfile.close()
+            self.dcdfile = None
 
 
 class DCDReader(base.Reader):
@@ -407,6 +402,7 @@ class DCDReader(base.Reader):
     """
     format = 'DCD'
     units = {'time': 'AKMA', 'length': 'Angstrom'}
+    _Timestep = Timestep
 
     def __init__(self, dcdfilename, **kwargs):
         self.filename = self.dcdfilename = dcdfilename  # dcdfilename is legacy
@@ -426,7 +422,7 @@ class DCDReader(base.Reader):
         self.periodic = False
 
         self._read_dcd_header()
-        self.ts = Timestep(self.numatoms)
+        self.ts = self._Timestep(self.numatoms)
         # Read in the first timestep
         self._read_next_timestep()
 
@@ -460,8 +456,6 @@ class DCDReader(base.Reader):
         #    struct.unpack("LLiiiiidiPPiiii",self._dcd_C_str)
         # seems to do the job on Mac OS X 10.6.4 ... but I have no idea why,
         # given that the C code seems to define them as normal integers
-        import struct
-
         desc = [
             'file_desc', 'header_size', 'natoms', 'nsets', 'setsread', 'istart',
             'nsavc', 'delta', 'nfixed', 'freeind_ptr', 'fixedcoords_ptr', 'reverse',
@@ -488,31 +482,11 @@ class DCDReader(base.Reader):
         ts.frame = self._read_next_frame(ts._x, ts._y, ts._z, ts._unitcell, self.skip)
         return ts
 
-    def __getitem__(self, frame):
-        if (numpy.dtype(type(frame)) != numpy.dtype(int)) and (type(frame) != slice):
-            raise TypeError
-        if (numpy.dtype(type(frame)) == numpy.dtype(int)):
-            if (frame < 0):
-                # Interpret similar to a sequence
-                frame = len(self) + frame
-            if (frame < 0) or (frame >= len(self)):
-                raise IndexError
-            self._jump_to_frame(frame)  # XXX required!!
-            ts = self.ts
-            ts.frame = self._read_next_frame(ts._x, ts._y, ts._z, ts._unitcell, 1)  # XXX required!!
-            return ts
-        elif type(frame) == slice:  # if frame is a slice object
-            if not (((type(frame.start) == int) or (frame.start is None)) and
-               ((type(frame.stop) == int) or (frame.stop is None)) and
-               ((type(frame.step) == int) or (frame.step is None))):
-                raise TypeError("Slice indices are not integers")
-
-            def iterDCD(start=frame.start, stop=frame.stop, step=frame.step):
-                start, stop, step = self._check_slice_indices(start, stop, step)
-                for i in xrange(start, stop, step):
-                    yield self[i]
-
-            return iterDCD()
+    def _read_frame(self, frame):
+        self._jump_to_frame(frame)
+        ts = self.ts
+        ts.frame = self._read_next_frame(ts._x, ts._y, ts._z, ts._unitcell, 1)  # XXX required!!
+        return ts
 
     def timeseries(self, asel, start=0, stop=-1, skip=1, format='afc'):
         """Return a subset of coordinate data for an AtomGroup
@@ -556,12 +530,14 @@ class DCDReader(base.Reader):
         sizedata = timeseries._getDataSize()
         atomcounts = timeseries._getAtomCounts()
         auxdata = timeseries._getAuxData()
-        return self._read_timecorrel(atomlist, atomcounts, format, auxdata, sizedata, lowerb, upperb, start, stop, skip)
+        return self._read_timecorrel(atomlist, atomcounts, format, auxdata,
+                                     sizedata, lowerb, upperb, start, stop, skip)
 
     def close(self):
-        self._finish_dcd_read()
-        self.dcdfile.close()
-        self.dcdfile = None
+        if self.dcdfile is not None:
+            self._finish_dcd_read()
+            self.dcdfile.close()
+            self.dcdfile = None
 
     def Writer(self, filename, **kwargs):
         """Returns a DCDWriter for *filename* with the same parameters as this DCD.
@@ -604,10 +580,6 @@ class DCDReader(base.Reader):
         kwargs.setdefault('remarks', self.remarks)
         # dt keyword is simply passed through if provided
         return DCDWriter(filename, numatoms, **kwargs)
-
-    def __del__(self):
-        if not self.dcdfile is None:
-            self.close()
 
 # Add the c functions to their respective classes so they act as class methods
 import _dcdmodule

@@ -27,12 +27,13 @@ There appears to be no rigid format definition so it is likely users
 will need to tweak this Class.
 """
 
-import MDAnalysis.core.util as util
-import os, errno, re
+import os
+import errno
+import re
 import numpy
 
-import base
-from base import Timestep
+from . import base
+import MDAnalysis.core.util as util
 
 
 class GMSReader(base.Reader):
@@ -72,7 +73,7 @@ class GMSReader(base.Reader):
         self._numframes = None
         self._runtyp = None
 
-        self.ts = Timestep(0) # need for properties initial calculations
+        self.ts = self._Timestep(0) # need for properties initial calculations
         self.fixed = 0
         self.skip = 1
         self.periodic = False
@@ -83,7 +84,7 @@ class GMSReader(base.Reader):
             raise AttributeError('Wrong RUNTYP= '+self.runtyp)
         self.skip_timestep = 1
 
-        self.ts = Timestep(self.numatoms)
+        self.ts = self._Timestep(self.numatoms)
         # update numframes property
         self.numframes
 
@@ -103,7 +104,6 @@ class GMSReader(base.Reader):
         else:
             return self._runtyp
 
-
     def _determine_runtyp(self):
         self._reopen()
         counter = 0
@@ -115,8 +115,6 @@ class GMSReader(base.Reader):
 
         self.close()
         raise EOFError
-
-
 
     @property
     def numatoms(self):
@@ -143,7 +141,6 @@ class GMSReader(base.Reader):
         self.close()
         raise EOFError
 
-
     @property
     def numframes(self):
         if not self._numframes is None:   # return cached value
@@ -169,7 +166,6 @@ class GMSReader(base.Reader):
 
         self.close()
         return int(counter)
-
 
     def __iter__(self):
         self.ts.frame = 0  # start at 0 so that the first frame becomes 1
@@ -242,7 +238,6 @@ class GMSReader(base.Reader):
 
         raise EOFError
 
-
     def rewind(self):
         """reposition on first frame"""
         self._reopen()
@@ -277,6 +272,4 @@ class GMSReader(base.Reader):
         self.outfile.close()
         self.outfile = None
 
-    def __del__(self):
-        self.close()
 

@@ -26,17 +26,17 @@ in ``xdrfile.h``).
 The dictionary :data:`xdrfile.errno.errorcode` maps numeric codes to
 symbol names.
 
-.. data:: errorcode
-.. data:: errorsymbols
+.. data:: ERRORCODE
+.. data:: ERRORSYMBOLS
 
 """
 
-import libxdrfile2
+from . import libxdrfile2
 
 #: List of all error symbols ``exdr*`` extracted from :mod:`libxdrfile2`.
-errorsymbols = [k for k in libxdrfile2.__dict__.keys() if k[:4] == 'exdr']
+ERRORSYMBOLS = [k for k in libxdrfile2.__dict__.keys() if k[:4] == 'exdr']
 
 #: Dictionary that maps error codes to symbol names.
-errorcode = dict(((libxdrfile2.__dict__[k], k) for k in errorsymbols))
+ERRORCODE = dict(((libxdrfile2.__dict__[k], k) for k in ERRORSYMBOLS))
 
-globals().update(dict((errorcode[n], n) for n in errorcode))
+globals().update(dict((ERRORCODE[n], n) for n in ERRORCODE))
