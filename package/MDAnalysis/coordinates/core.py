@@ -36,12 +36,11 @@ Helper functions:
 
 """
 import os.path
+import numpy
+from numpy import sin, cos, sqrt
+
 import MDAnalysis.coordinates
 import MDAnalysis.core.util
-
-import numpy
-
-from numpy import sin, cos, sqrt
 
 try:
     from numpy import rad2deg, deg2rad  # numpy 1.3+
@@ -60,8 +59,8 @@ def get_reader_for(filename, permissive=False, format=None):
     provided.
     """
     format = guess_format(filename, format=format)
-    if permissive:
-        return MDAnalysis.coordinates._trajectory_readers_permissive[format]
+    if permissive and format == 'PDB':
+        return MDAnalysis.coordinates._trajectory_readers['Permissive_PDB']
     return MDAnalysis.coordinates._trajectory_readers[format]
 
 
@@ -71,8 +70,8 @@ def reader(filename, **kwargs):
     This function guesses the file format from the extension of *filename* and
     it will throw a :exc:`TypeError` if the extension is not recognized.
 
-    In most cases, no special keyword arguments are necessary. For some readers
-    (such as PDB) it might be useful to set the *permissive* = ``True`` flag to
+    In most cases, no special keyword arguments are necessary. For PDB readers
+    it might be useful to set the *permissive* = ``True`` flag to
     select a simpler but faster reader.
 
     All other keywords are passed on to the underlying Reader classes; see

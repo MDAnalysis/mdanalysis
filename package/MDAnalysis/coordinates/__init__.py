@@ -611,7 +611,6 @@ PDB). In theses cases, the kind of writer is selected with the
 
 .. autodata:: _trajectory_readers
 .. autodata:: _topology_coordinates_readers
-.. autodata:: _trajectory_readers_permissive
 .. autodata:: _compressed_formats
 .. autodata:: _frame_writers
 .. autodata:: _trajectory_writers
@@ -646,6 +645,7 @@ _trajectory_readers = {
     'XTC': XTC.XTCReader,
     'XYZ': XYZ.XYZReader,
     'TRR': TRR.TRRReader,
+    'Permissive_PDB': PDB.PrimitivePDBReader,
     'PDB': PDB.PDBReader,
     'XPDB': PDB.ExtendedPDBReader,
     'PDBQT': PDBQT.PDBQTReader,
@@ -655,6 +655,7 @@ _trajectory_readers = {
     'TRJ': TRJ.TRJReader,  # AMBER text
     'MDCRD': TRJ.TRJReader,  # AMBER text
     'NCDF': TRJ.NCDFReader,  # AMBER netcdf
+    'NC': TRJ.NCDFReader,
     'INPCRD': INPCRD.INPReader,
     'RESTRT': INPCRD.INPReader,
     'PQR': PQR.PQRReader,
@@ -683,13 +684,6 @@ _topology_coordinates_readers = {
     'DATA': LAMMPS.DATAReader,
     'GMS': GMS.GMSReader,
 }
-
-#: hack: readers that ignore most errors (permissive=True); at the moment
-#: the same as :data:`_trajectory_readers` with the exception of the
-#: the PDB reader (:class:`~MDAnalysis.coordinates.PDB.PDBReader` is replaced by
-# :class:`~MDAnalysis.coordinates.PDB.PrimitivePDBReader`).
-_trajectory_readers_permissive = _trajectory_readers.copy()
-_trajectory_readers_permissive['PDB'] = PDB.PrimitivePDBReader
 
 #: frame writers: export to single frame formats such as PDB, gro, crd
 #: Signature::

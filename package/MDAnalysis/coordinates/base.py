@@ -93,14 +93,12 @@ module. The derived classes must follow the Trajectory API in
 import itertools
 import os.path
 import warnings
-
 import bisect
 import numpy
 
-import MDAnalysis.core
 from MDAnalysis.core import units, flags
-from MDAnalysis.core.util import iterable, asiterable
-import core
+from MDAnalysis.core.util import asiterable
+from . import core
 
 
 class Timestep(object):
@@ -292,7 +290,7 @@ class IObase(object):
            returned.
 
         """
-        f = units.get_conversion_factor('length', self.units['length'], MDAnalysis.core.flags['length_unit'])
+        f = units.get_conversion_factor('length', self.units['length'], flags['length_unit'])
         if f == 1.:
             return x
         if not inplace:
@@ -307,7 +305,7 @@ class IObase(object):
 
         .. versionadded:: 0.7.5
         """
-        f = units.get_conversion_factor('speed', self.units['velocity'], MDAnalysis.core.flags['speed_unit'])
+        f = units.get_conversion_factor('speed', self.units['velocity'], flags['speed_unit'])
         if f == 1.:
             return v
         if not inplace:
@@ -322,7 +320,7 @@ class IObase(object):
 
         .. versionadded:: 0.7.7
         """
-        f = units.get_conversion_factor('force', self.units['force'], MDAnalysis.core.flags['force_unit'])
+        f = units.get_conversion_factor('force', self.units['force'], flags['force_unit'])
         if f == 1.:
             return force
         if not inplace:
@@ -345,7 +343,7 @@ class IObase(object):
            returned.
 
         """
-        f = units.get_conversion_factor('time', self.units['time'], MDAnalysis.core.flags['time_unit'])
+        f = units.get_conversion_factor('time', self.units['time'], flags['time_unit'])
         if f == 1.:
             return t
         if not inplace:
@@ -365,7 +363,7 @@ class IObase(object):
            returned.
 
         """
-        f = units.get_conversion_factor('length', MDAnalysis.core.flags['length_unit'], self.units['length'])
+        f = units.get_conversion_factor('length', flags['length_unit'], self.units['length'])
         if f == 1.:
             return x
         if not inplace:
@@ -380,7 +378,7 @@ class IObase(object):
 
         .. versionadded:: 0.7.5
         """
-        f = units.get_conversion_factor('speed', MDAnalysis.core.flags['speed_unit'], self.units['velocity'])
+        f = units.get_conversion_factor('speed', flags['speed_unit'], self.units['velocity'])
         if f == 1.:
             return v
         if not inplace:
@@ -395,7 +393,7 @@ class IObase(object):
 
         .. versionadded:: 0.7.7
         """
-        f = units.get_conversion_factor('force', MDAnalysis.core.flags['force_unit'], self.units['force'])
+        f = units.get_conversion_factor('force', flags['force_unit'], self.units['force'])
         if f == 1.:
             return force
         if not inplace:
@@ -418,7 +416,7 @@ class IObase(object):
            returned.
 
         """
-        f = units.get_conversion_factor('time', MDAnalysis.core.flags['time_unit'], self.units['time'])
+        f = units.get_conversion_factor('time', flags['time_unit'], self.units['time'])
         if f == 1.:
             return t
         if not inplace:
@@ -1003,7 +1001,7 @@ class SingleFrameReader(Reader):
     def __init__(self, filename, convert_units=None, **kwargs):
         self.filename = filename
         if convert_units is None:
-            convert_units = MDAnalysis.core.flags['convert_lengths']
+            convert_units = flags['convert_lengths']
         self.convert_units = convert_units
 
         self.numframes = 1
