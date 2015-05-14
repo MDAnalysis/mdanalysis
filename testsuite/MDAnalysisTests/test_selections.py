@@ -132,17 +132,32 @@ class TestSelectionsCHARMM(TestCase):
 
     def test_cylayer(self):
         sel = self.universe.selectAtoms('cylayer 4.0 6.0 10 -10 bynum 1281')
-        assert_equal(len(sel), 91)
+        assert_equal(len(sel), 88)
 
     def test_cyzone(self):
         sel = self.universe.selectAtoms('cyzone 6.0 10 -10 bynum 1281')
-        assert_equal(len(sel), 179)
+        assert_equal(len(sel), 166)
 
     def test_prop(self):
         sel = self.universe.selectAtoms('prop y <= 16')
         sel2 = self.universe.selectAtoms('prop abs z < 8')
         assert_equal(len(sel), 3194)
         assert_equal(len(sel2), 2001)
+
+    def test_bynum(self):
+        "Tests the bynum selection, also from AtomGroup instances (Issue 275)"
+        sel = self.universe.selectAtoms('bynum 5')
+        assert_equal(sel[0].number, 4)
+        sel = self.universe.selectAtoms('bynum 1:10')
+        assert_equal(len(sel), 10)
+        assert_equal(sel[0].number, 0)
+        assert_equal(sel[-1].number, 9)
+        subsel = sel.selectAtoms('bynum 5')
+        assert_equal(subsel[0].number, 4)
+        subsel = sel.selectAtoms('bynum 2:5')
+        assert_equal(len(subsel), 4)
+        assert_equal(subsel[0].number, 1)
+        assert_equal(subsel[-1].number, 4)
 
     # TODO:
     # add more test cases for byres, bynum, point
@@ -306,6 +321,18 @@ class TestSelectionsGRO(TestCase):
         assert_equal(len(sel), 12, "Found a wrong number of atoms with same x as ids 1 or 10")
         target_ids = array([ 0, 8, 9, 224, 643, 3515, 11210, 14121, 18430, 25418, 35811, 43618])
         assert_array_equal(sel.indices(), target_ids, "Found wrong atoms with same x as ids 1 or 10")
+
+    def test_cylayer(self):
+        """Test cylinder layer selections from AtomGroups, and with tricilinic periodicity (Issue 274)"""
+        atgp = self.universe.selectAtoms('name OW')
+        sel = atgp.selectAtoms('cylayer 10 20 20 -20 bynum 3554')
+        assert_equal(len(sel), 1155)
+
+    def test_cyzone(self):
+        """Test cylinder zone selections from AtomGroups, and with tricilinic periodicity (Issue 274)"""
+        atgp = self.universe.selectAtoms('name OW')
+        sel = atgp.selectAtoms('cyzone 20 20 -20 bynum 3554')
+        assert_equal(len(sel), 1556)
 
 
 class TestSelectionsXTC(TestCase):
