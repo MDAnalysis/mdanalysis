@@ -35,6 +35,9 @@ The rules for this file:
 
   Fixes
 
+  * bynum selections now work from AtomGroup instances (Issue #275)
+  * Cylinder selections now work from AtomGroup instances and honor
+    PBC (Issue #274)
   * NetCDFWriter previously always wrote velocities/forces if found
     in timestep, rather than following how the Writer was created.
 
