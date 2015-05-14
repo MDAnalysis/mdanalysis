@@ -31,7 +31,6 @@ try:
 except NameError:
     from sets import Set as set
 
-#import math
 import numpy
 
 from AtomGroup import AtomGroup, Universe
