@@ -78,12 +78,6 @@ On a case-by-case basis one kind of reader can be selected with the
 would select :class:`PDBReader` instead of the default
 :class:`PrimitivePDBReader`.
 
-All classes make use of the :class:`Timestep` class, which represents the
-current timestep.
-
-.. autoclass:: Timestep
-   :members:
-
 .. _permissive:
 
 Simple (permissive) PDB Reader and Writer
@@ -278,7 +272,7 @@ class PDBReader(base.SingleFrameReader):
         .. Note::
 
            This :class:`PDBWriter` 's :meth:`~PDBWriter.write` method
-           always requires a :class:`Timestep` as an argument (it is
+           always requires a :class:`base.Timestep` as an argument (it is
            not optional anymore when the Writer is obtained through
            this method of :class:`PDBReader` .)
         """
@@ -1069,14 +1063,14 @@ class PrimitivePDBWriter(base.Writer):
 
         :Keywords:
           *ts*
-             :class:`Timestep` object containing coordinates to be written to trajectory file;
+             :class:`base.Timestep` object containing coordinates to be written to trajectory file;
              if ``None`` then :attr:`PrimitivePDBWriter.ts`` is tried.
           *multiframe*
              ``False``: write a single frame (default); ``True`` behave as a trajectory writer
 
         .. Note::
 
-           Before using this method with another :class:`Timestep` in the *ts*
+           Before using this method with another :class:`base.Timestep` in the *ts*
            argument, :meth:`PrimitivePDBWriter._update_frame` *must* be called
            with the :class:`~MDAnalysis.core.AtomGroup.AtomGroup.Universe` as
            its argument so that topology information can be gathered.

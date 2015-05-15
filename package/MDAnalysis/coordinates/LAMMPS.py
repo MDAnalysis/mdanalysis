@@ -54,9 +54,6 @@ keywords *timeunit* and/or *lengthunit* to :class:`DCDWriter` and
 Classes
 -------
 
-.. autoclass:: Timestep
-   :members:
-   :inherited-members:
 .. autoclass:: DCDReader
    :members:
    :inherited-members:

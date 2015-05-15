@@ -16,7 +16,7 @@
 
 
 """INPCRD structure files in MDAnalysis --- :mod:`MDAnalysis.coordinates.INPCRD`
-===========================================================================
+================================================================================
 
 Read and write coordinates in Amber_ coordinate/restart file (suffix
 "inpcrd").
