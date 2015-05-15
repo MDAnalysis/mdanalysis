@@ -34,6 +34,7 @@ static void minimum_image(double *x, float *box, float *inverse_box)
         }
     }
 }
+
 static void minimum_image_triclinic(double *dx, coordinate* box, float* box_half)
 {
   // Minimum image convention for triclinic systems, modelled after domain.cpp in LAMMPS
@@ -73,7 +74,9 @@ static void minimum_image_triclinic(double *dx, coordinate* box, float* box_half
     }
   }
 }
-static void calc_distance_array(coordinate* ref, int numref, coordinate* conf, int numconf, float* box, double* distances)
+
+static void _calc_distance_array_ortho(coordinate* ref, int numref, coordinate* conf,
+                                       int numconf, float* box, double* distances)
 {
 	int i, j;
 	double dx[3];
@@ -97,7 +100,8 @@ static void calc_distance_array(coordinate* ref, int numref, coordinate* conf, i
 	}
 }
 
-static void calc_distance_array_noPBC(coordinate* ref, int numref, coordinate* conf, int numconf, double* distances)
+static void _calc_distance_array(coordinate* ref, int numref, coordinate* conf,
+                                 int numconf, double* distances)
 {
 	int i, j;
 	double dx[3];
@@ -114,8 +118,8 @@ static void calc_distance_array_noPBC(coordinate* ref, int numref, coordinate* c
 	}
 }
 
-
-static void calc_self_distance_array(coordinate* ref, int numref, float* box, double* distances, int distnum)
+static void _calc_self_distance_array_ortho(coordinate* ref, int numref, float* box,
+                                            double* distances, int distnum)
 {
 	int i, j, distpos;
 	double dx[3];
@@ -142,7 +146,8 @@ static void calc_self_distance_array(coordinate* ref, int numref, float* box, do
 }
 
 
-static void calc_self_distance_array_noPBC(coordinate* ref, int numref, double* distances, int distnum)
+static void _calc_self_distance_array(coordinate* ref, int numref, double* distances,
+                                      int distnum)
 {
 	int i, j, distpos;
 	double dx[3];
@@ -161,7 +166,7 @@ static void calc_self_distance_array_noPBC(coordinate* ref, int numref, double* 
 	}
 }
 
-static void coord_transform(coordinate* coords, int numCoords, coordinate* box)
+static void _coord_transform(coordinate* coords, int numCoords, coordinate* box)
 {
   int i, j, k;
   float new[3];
@@ -182,7 +187,8 @@ static void coord_transform(coordinate* coords, int numCoords, coordinate* box)
     coords[i][2] = new[2];
   }
 }
-static void ortho_pbc(coordinate* coords, int numcoords, float* box, float* box_inverse){
+
+static void _ortho_pbc(coordinate* coords, int numcoords, float* box, float* box_inverse){
   int i, s[3];
   // Moves all coordinates to within the box boundaries for a orthogonal box
   for (i=0; i < numcoords; i++){
@@ -194,7 +200,8 @@ static void ortho_pbc(coordinate* coords, int numcoords, float* box, float* box_
     coords[i][2] -= s[2] * box[2];
   }
 }
-static void triclinic_pbc(coordinate* coords, int numcoords, coordinate* box, float* box_inverse){
+
+static void _triclinic_pbc(coordinate* coords, int numcoords, coordinate* box, float* box_inverse){
   int i, s;
   // Moves all coordinates to within the box boundaries for a triclinic box
   // Assumes box having zero values for box[0][1], box[0][2] and box [1][2]
@@ -213,7 +220,10 @@ static void triclinic_pbc(coordinate* coords, int numcoords, coordinate* box, fl
     coords[i][0] -= s * box[0][0];
   }
 }
-static void calc_distance_array_triclinic(coordinate* ref, int numref, coordinate* conf, int numconf, coordinate* box, double* distances)
+
+static void _calc_distance_array_triclinic(coordinate* ref, int numref,
+                                           coordinate* conf, int numconf,
+                                           coordinate* box, double* distances)
 {
   int i, j;
   double dx[3];
@@ -228,8 +238,8 @@ static void calc_distance_array_triclinic(coordinate* ref, int numref, coordinat
   box_inverse[1] = 1.0 / box[1][1];
   box_inverse[2] = 1.0 / box[2][2];
   // Move coords to inside box
-  triclinic_pbc(ref, numref, box, box_inverse);
-  triclinic_pbc(conf, numconf, box, box_inverse);
+  _triclinic_pbc(ref, numref, box, box_inverse);
+  _triclinic_pbc(conf, numconf, box, box_inverse);
 
   for (i=0; i < numref; i++){
     for (j=0; j < numconf; j++){
@@ -242,7 +252,10 @@ static void calc_distance_array_triclinic(coordinate* ref, int numref, coordinat
     }
   }
 }
-static void calc_self_distance_array_triclinic(coordinate* ref, int numref, coordinate* box, double *distances, int distnum)
+
+static void _calc_self_distance_array_triclinic(coordinate* ref, int numref,
+                                                coordinate* box, double *distances,
+                                                int distnum)
 {
   int i, j, distpos;
   double dx[3];
@@ -257,7 +270,7 @@ static void calc_self_distance_array_triclinic(coordinate* ref, int numref, coor
   box_inverse[1] = 1.0 / box[1][1];
   box_inverse[2] = 1.0 / box[2][2];
 
-  triclinic_pbc(ref, numref, box, box_inverse);
+  _triclinic_pbc(ref, numref, box, box_inverse);
 
   distpos = 0;
   for (i=0; i < numref; i++){
@@ -273,7 +286,8 @@ static void calc_self_distance_array_triclinic(coordinate* ref, int numref, coor
   }
 }
 
-static void calc_bond_distance(coordinate* atom1, coordinate* atom2, int numatom, float* box, double* distances)
+static void _calc_bond_distance_ortho(coordinate* atom1, coordinate* atom2,
+                                      int numatom, float* box, double* distances)
 {
   int i;
   double dx[3];
@@ -294,7 +308,9 @@ static void calc_bond_distance(coordinate* atom1, coordinate* atom2, int numatom
     *(distances+i) = sqrt(rsq);
   }
 }
-static void calc_bond_distance_triclinic(coordinate* atom1, coordinate* atom2, int numatom, coordinate* box, double* distances)
+static void _calc_bond_distance_triclinic(coordinate* atom1, coordinate* atom2,
+                                          int numatom, coordinate* box,
+                                          double* distances)
 {
   int i;
   double dx[3];
@@ -309,8 +325,8 @@ static void calc_bond_distance_triclinic(coordinate* atom1, coordinate* atom2, i
   box_inverse[1] = 1.0/box[1][1];
   box_inverse[2] = 1.0/box[2][2];
  
-  triclinic_pbc(atom1, numatom, box, box_inverse);
-  triclinic_pbc(atom2, numatom, box, box_inverse);
+  _triclinic_pbc(atom1, numatom, box, box_inverse);
+  _triclinic_pbc(atom2, numatom, box, box_inverse);
 
   for (i=0; i<numatom; i++) {
     dx[0] = atom1[i][0] - atom2[i][0];
@@ -322,7 +338,9 @@ static void calc_bond_distance_triclinic(coordinate* atom1, coordinate* atom2, i
     *(distances+i) = sqrt(rsq);
   }
 }
-static void calc_bond_distance_noPBC(coordinate* atom1, coordinate* atom2, int numatom, double* distances)
+
+static void _calc_bond_distance(coordinate* atom1, coordinate* atom2,
+                                int numatom, double* distances)
 {
   int i;
   double dx[3];
@@ -337,7 +355,8 @@ static void calc_bond_distance_noPBC(coordinate* atom1, coordinate* atom2, int n
   }
 }
 
-static void calc_angle(coordinate* atom1, coordinate* atom2, coordinate* atom3, int numatom, double* angles)
+static void _calc_angle(coordinate* atom1, coordinate* atom2,
+                        coordinate* atom3, int numatom, double* angles)
 {
   int i;
   double rji[3], rjk[3];
@@ -364,7 +383,9 @@ static void calc_angle(coordinate* atom1, coordinate* atom2, coordinate* atom3, 
   }
 }
 
-static void calc_angle_ortho(coordinate* atom1, coordinate* atom2, coordinate* atom3, int numatom, float* box, double* angles)
+static void _calc_angle_ortho(coordinate* atom1, coordinate* atom2,
+                              coordinate* atom3, int numatom,
+                              float* box, double* angles)
 {
   // Angle is calculated between two vectors
   // pbc option ensures that vectors are constructed between atoms in the same image as eachother
@@ -401,7 +422,10 @@ static void calc_angle_ortho(coordinate* atom1, coordinate* atom2, coordinate* a
     *(angles+i) = atan2(y,x);
   }
 }
-static void calc_angle_triclinic(coordinate* atom1, coordinate* atom2, coordinate* atom3, int numatom, coordinate* box, double* angles)
+
+static void _calc_angle_triclinic(coordinate* atom1, coordinate* atom2,
+                                  coordinate* atom3, int numatom,
+                                  coordinate* box, double* angles)
 {
   // Triclinic version of min image aware angle calculate, see above
   int i;
@@ -417,9 +441,9 @@ static void calc_angle_triclinic(coordinate* atom1, coordinate* atom2, coordinat
   box_inverse[1] = 1.0/box[1][1];
   box_inverse[2] = 1.0/box[2][2];
 
-  triclinic_pbc(atom1, numatom, box, box_inverse);
-  triclinic_pbc(atom2, numatom, box, box_inverse);
-  triclinic_pbc(atom3, numatom, box, box_inverse);
+  _triclinic_pbc(atom1, numatom, box, box_inverse);
+  _triclinic_pbc(atom2, numatom, box, box_inverse);
+  _triclinic_pbc(atom3, numatom, box, box_inverse);
 
   for (i=0; i<numatom; i++) {
     rji[0] = atom1[i][0] - atom2[i][0];
@@ -444,8 +468,9 @@ static void calc_angle_triclinic(coordinate* atom1, coordinate* atom2, coordinat
   }
 }
 
-static void calc_torsion(coordinate* atom1, coordinate* atom2, coordinate* atom3, coordinate* atom4,
-                             int numatom, double* angles)
+static void _calc_torsion(coordinate* atom1, coordinate* atom2,
+                          coordinate* atom3, coordinate* atom4,
+                          int numatom, double* angles)
 {
   int i;
   double va[3], vb[3], vc[3];
@@ -490,8 +515,10 @@ static void calc_torsion(coordinate* atom1, coordinate* atom2, coordinate* atom3
     *(angles + i) = atan2(y,x); //atan2 is better conditioned than acos
   }
 }
-static void calc_torsion_ortho(coordinate* atom1, coordinate* atom2, coordinate* atom3, coordinate* atom4,
-                               int numatom, float* box, double* angles)
+
+static void _calc_torsion_ortho(coordinate* atom1, coordinate* atom2,
+                                coordinate* atom3, coordinate* atom4,
+                                int numatom, float* box, double* angles)
 {
   int i;
   double va[3], vb[3], vc[3];
@@ -544,8 +571,10 @@ static void calc_torsion_ortho(coordinate* atom1, coordinate* atom2, coordinate*
     *(angles + i) = atan2(y,x); //atan2 is better conditioned than acos
   }
 }
-static void calc_torsion_triclinic(coordinate* atom1, coordinate* atom2, coordinate* atom3, coordinate* atom4,
-                                   int numatom, coordinate* box, double* angles)
+
+static void _calc_torsion_triclinic(coordinate* atom1, coordinate* atom2,
+                                    coordinate* atom3, coordinate* atom4,
+                                    int numatom, coordinate* box, double* angles)
 {
   int i;
   double va[3], vb[3], vc[3];
@@ -562,10 +591,10 @@ static void calc_torsion_triclinic(coordinate* atom1, coordinate* atom2, coordin
   box_inverse[1] = 1.0/box[1][1];
   box_inverse[2] = 1.0/box[2][2];
 
-  triclinic_pbc(atom1, numatom, box, box_inverse);
-  triclinic_pbc(atom2, numatom, box, box_inverse);
-  triclinic_pbc(atom3, numatom, box, box_inverse);
-  triclinic_pbc(atom4, numatom, box, box_inverse);
+  _triclinic_pbc(atom1, numatom, box, box_inverse);
+  _triclinic_pbc(atom2, numatom, box, box_inverse);
+  _triclinic_pbc(atom3, numatom, box, box_inverse);
+  _triclinic_pbc(atom4, numatom, box, box_inverse);
 
   for (i=0; i<numatom; i++) {
     // connecting vectors between all 4 atoms: 1 -va-> 2 -vb-> 3 -vc-> 4
