@@ -55,10 +55,11 @@ from ..lib._distances import (calc_distance_array,
                               ortho_pbc,
                               triclinic_pbc)
 
+
 def _box_check(box):
     """Take a box input and deduce what type of system it represents based
     on the shape of the array and whether all angles are 90.
-    
+
     :Arguments:
       *box*
           box information of unknown format
@@ -79,8 +80,8 @@ def _box_check(box):
 
     if box.shape == (3,):
         boxtype = 'ortho'
-    elif box.shape == (3,3):
-        if numpy.all([box[0][1] == 0.0, #Checks that tri box is properly formatted
+    elif box.shape == (3, 3):
+        if numpy.all([box[0][1] == 0.0,  # Checks that tri box is properly formatted
                       box[0][2] == 0.0,
                       box[1][2] == 0.0]):
             boxtype = 'tri_vecs'
@@ -98,6 +99,7 @@ def _box_check(box):
 
     return boxtype
 
+
 def _check_array(coords, desc):
     """Check an array is a valid array of coordinates
 
@@ -110,6 +112,7 @@ def _check_array(coords, desc):
                          "".format(desc))
     if conf.dtype != numpy.float32:
         raise TypeError("{} must be of type float32".format(desc))
+
 
 def _check_results_array(results, size):
     """Check the results array is ok to use
@@ -124,28 +127,38 @@ def _check_results_array(results, size):
     if results.dtype != numpy.float64:
         raise TypeError("Results array must be of type float64")
 
+
 def distance_array(reference, configuration, box=None, result=None):
     """Calculate all distances between a reference set and another configuration.
+
+    Calculate all distances d_ij between the coordinates ref[i] and
+    conf[j] in the numpy arrays *ref* and *conf*. If an orthorhombic
+    *box* is supplied then a minimum image convention is used before
+    calculating distances.
+
+    If a 2D numpy array of dtype ``numpy.float64`` with the shape ``(len(ref),
+    len(conf))`` is provided in *result* then this preallocated array is
+    filled. This can speed up calculations.
 
     d = distance_array(ref,conf[,box[,result=d]])
 
     :Arguments:
-                *ref*
-                        reference coordinate array
-                *conf*
-                        configuration coordinate array
-                *box*
-                        cell dimensions (minimum image convention is applied)
-                        or None [None]
-                *result*
-                        optional preallocated result array which must have the
-                        shape (len(ref), len(conf)) and dtype=numpy.float64.
-                        Avoids creating the array which saves time when the function
-                        is called repeatedly. [None]
+        *ref*
+             reference coordinate array
+        *conf*
+             configuration coordinate array
+        *box*
+             cell dimensions (minimum image convention is applied)
+             or None [``None``]
+        *result*
+             optional preallocated result array which must have the
+             shape (len(ref), len(conf)) and dtype=numpy.float64.
+             Avoids creating the array which saves time when the function
+             is called repeatedly. [``None``]
     :Returns:
-                *d*
-                        (len(ref),len(conf)) numpy array with the distances d[i,j] 
-                        between ref coordinates i and conf coordinates j
+         *d*
+             (len(ref),len(conf)) numpy array with the distances d[i,j]
+             between ref coordinates i and conf coordinates j
 
     .. Note:: This method is slower than it could be because internally we need to
           make copies of the ref and conf arrays.
@@ -158,7 +171,8 @@ def distance_array(reference, configuration, box=None, result=None):
 
     if box:
         boxtype = _box_check(box)
-        if (boxtype == 'tri_box'): # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
+        # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
+        if (boxtype == 'tri_box'):
             box = triclinic_vectors(box)
         if (boxtype == 'tri_vecs_bad'):
             box = triclinic_vectors(triclinic_box(box[0], box[1], box[2]))
@@ -175,41 +189,47 @@ def distance_array(reference, configuration, box=None, result=None):
     if box:
         if boxtype == 'ortho':
             calc_distance_array_ortho(ref, conf, box, distances)
-        else: 
+        else:
             calc_distance_array_triclinic(ref, conf, box, distances)
     else:
         calc_distance_array(ref, conf, distances)
 
     return distances
 
-def self_distance_array(reference, box=None, result=None):
-    """Calculate all distances d_ij between atoms i and j within a configuration *ref*.
 
-    d = self_distance_array(ref[,box[,result=d]])
+def self_distance_array(reference, box=None, result=None):
+    """Calculate all distances within a configuration *reference*.
+
+    If a *box* is supplied then a minimum image convention is used before
+    calculating distances.
+
+    If a 1D numpy array of dtype ``numpy.float64`` with the shape
+    ``(N*(N-1)/2)`` is provided in *result* then this preallocated array
+    is filled. This can speed up calculations.
 
     :Arguments:
-                *ref*
-                        reference coordinate array with N=len(ref) coordinates
-                *box*
-                        cell dimensions (minimum image convention is applied)
-                        or None [None]
-                *result*
-                        optional preallocated result array which must have the shape
-                        (N*(N-1)/2,) and dtype ``numpy.float64``. Avoids creating
-                        the array which saves time when the function is called
-                        repeatedly. [None]
+        *ref*
+             reference coordinate array with N=len(ref) coordinates
+        *box*
+             cell dimensions (minimum image convention is applied)
+             or None [``None``]
+        *result*
+             optional preallocated result array which must have the shape
+             (N*(N-1)/2,) and dtype ``numpy.float64``. Avoids creating
+             the array which saves time when the function is called
+             repeatedly. [``None``]
     :Returns:
-                *d*
-                        N*(N-1)/2 numpy 1D array with the distances dist[i,j] between ref
-                           coordinates i and j at position d[k]. Loop through d::
+        *d*
+             N*(N-1)/2 numpy 1D array with the distances dist[i,j] between ref
+             coordinates i and j at position d[k]. Loop through d::
 
-                             for i in xrange(N):
-                                for j in xrange(i+1, N):
-                                    k += 1
-                                    dist[i,j] = d[k]
+                 for i in xrange(N):
+                     for j in xrange(i+1, N):
+                         k += 1
+                         dist[i,j] = d[k]
 
     .. Note:: This method is slower than it could be because internally we need to
-          make copies of the coordinate arrays.
+              make copies of the coordinate arrays.
     """
     ref = reference.copy('C')
 
@@ -218,13 +238,14 @@ def self_distance_array(reference, box=None, result=None):
     with_PBC = (box is not None)
     if box:
         boxtype = _box_check(box)
-        if (boxtype == 'tri_box'): # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
+        # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
+        if (boxtype == 'tri_box'):
             box = triclinic_vectors(box)
         if (boxtype == 'tri_vecs_bad'):
             box = triclinic_vectors(triclinic_box(box[0], box[1], box[2]))
 
     refnum = ref.dimensions[0]
-    distnum = (refnum*(refnum-1))/2
+    distnum = (refnum * (refnum - 1)) / 2
 
     if result:
         _check_results_array(results, (distnum,))
@@ -241,6 +262,7 @@ def self_distance_array(reference, box=None, result=None):
         calc_self_distance_array(ref, distances)
 
     return distances
+
 
 def transform_RtoS(inputcoords, box):
     """Transform an array of coordinates from real space to S space (aka lambda space)
@@ -263,27 +285,29 @@ def transform_RtoS(inputcoords, box):
     numcoords = coords.dimensions[0]
 
     boxtype = _box_check(box)
-    if (boxtype == 'tri_box'): # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
+    # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
+    if (boxtype == 'tri_box'):
         box = triclinic_vectors(box)
     if (boxtype == 'tri_vecs_bad'):
         box = triclinic_vectors(triclinic_box(box[0], box[1], box[2]))
     elif (boxtype == 'ortho'):
         box = numpy.array([[box[0], 0.0, 0.0],
                            [0.0, box[1], 0.0],
-                           [0.0, 0.0, box[2]]], dtype = numpy.float32)
+                           [0.0, 0.0, box[2]]], dtype=numpy.float32)
 
     # Create inverse matrix of box
     # need order C here
-    inv = numpy.array(numpy.matrix(box).I, dtype = numpy.float32, order='C')
+    inv = numpy.array(numpy.matrix(box).I, dtype=numpy.float32, order='C')
 
     coord_transform(coords, inv)
 
     return coords
 
+
 def transform_StoR(inputcoords, box):
     """Transform an array of coordinates from S space into real space.
 
-    S space represents fractional space within the unit cell for this system    
+    S space represents fractional space within the unit cell for this system
 
     Reciprocal operation to :meth:`transform_RtoS`
 
@@ -301,31 +325,33 @@ def transform_StoR(inputcoords, box):
     numcoords = coords.dimensions[0]
 
     boxtype = _box_check(box)
-    if (boxtype == 'tri_box'): # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
+    # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
+    if (boxtype == 'tri_box'):
         box = triclinic_vectors(box)
     elif (boxtype == 'ortho'):
         box = numpy.array([[box[0], 0.0, 0.0],
                            [0.0, box[1], 0.0],
-                           [0.0, 0.0, box[2]]], dtype = numpy.float32)
-    
+                           [0.0, 0.0, box[2]]], dtype=numpy.float32)
+
     coord_transform(coords, box)
 
     return coords
 
+
 def calc_bonds(coords1, coords2, box=None, result=None):
     """
     Calculate all distances between a pair of atoms.  *atom1* and *atom2* are both
-    arrays of coordinates, where atom1[i] and atom2[i] represent a bond.  
+    arrays of coordinates, where atom1[i] and atom2[i] represent a bond.
 
     In comparison to distance_array and self_distance_array which calculate distances
     between all combinations of coordinates, calc_bonds can be used to calculate distance
     between pairs of objects, similar to::
-    
+
        numpy.linalg.norm(a - b) for a, b in zip(coords1, coords2)
 
     The optional argument *box* applies minimum image convention if supplied.
     *box* can be either orthogonal or triclinic
-    
+
     If a 1D numpy array of dtype ``numpy.float64`` with ``len(atom1)`` elements is
     provided in *result* then this preallocated array is filled. This can speed
     up calculations.
@@ -340,8 +366,8 @@ def calc_bonds(coords1, coords2, box=None, result=None):
        *box*
           Unit cell information if periodic boundary conditions are required [None]
        *result*
-          optional preallocated result array which must be same length as coord 
-          arrays and dtype=numpy.float64. Avoids creating the              
+          optional preallocated result array which must be same length as coord
+          arrays and dtype=numpy.float64. Avoids creating the
           array which saves time when the function is called repeatedly. [None]
 
     :Returns:
@@ -361,7 +387,8 @@ def calc_bonds(coords1, coords2, box=None, result=None):
 
     if box:
         boxtype = _box_check(box)
-        if (boxtype == 'tri_box'): # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
+        # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
+        if (boxtype == 'tri_box'):
             box = triclinic_vectors(box)
         if (boxtype == 'tri_vecs_bad'):
             box = triclinic_vectors(triclinic_box(box[0], box[1], box[2]))
@@ -388,7 +415,7 @@ def calc_bonds(coords1, coords2, box=None, result=None):
 def calc_angles(coords1, coords2, coords3, box=None, result=None):
     """
     Calculates the angle formed between three atoms, over a list of coordinates.
-    All *atom* inputs are lists of coordinates of equal length, with *atom2* 
+    All *atom* inputs are lists of coordinates of equal length, with *atom2*
     representing the apex of the angle.
 
     If a 1D numpy array of dtype ``numpy.float64`` with ``len(atom1)`` elements is
@@ -411,15 +438,15 @@ def calc_angles(coords1, coords2, coords3, box=None, result=None):
         *box*
             optional unit cell information.  This ensures that the connecting vectors between
             atoms respect minimum image convention.  This is import when the angle might
-            be between atoms in different images.  
+            be between atoms in different images.
         *result*
-            optional preallocated results array which must have same length as coordinate 
-            array and dtype=numpy.float64. 
+            optional preallocated results array which must have same length as coordinate
+            array and dtype=numpy.float64.
 
     :Returns:
         *angles*
             A numpy.array of angles in radians
-    
+
     .. versionadded:: 0.8
     .. versionchanged:: 0.9.0
        Added optional box argument to account for periodic boundaries in calculation
@@ -435,7 +462,8 @@ def calc_angles(coords1, coords2, coords3, box=None, result=None):
 
     if box:
         boxtype = _box_check(box)
-        if (boxtype == 'tri_box'): # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
+        # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
+        if (boxtype == 'tri_box'):
             box = triclinic_vectors(box)
         if (boxtype == 'tri_vecs_bad'):
             box = triclinic_vectors(triclinic_box(box[0], box[1], box[2]))
@@ -456,10 +484,11 @@ def calc_angles(coords1, coords2, coords3, box=None, result=None):
 
     return angles
 
+
 def calc_torsions(coords1, coords2, coords3, coords4, box=None, result=None):
     """
     Calculate the torsional angle formed by four atoms, over a list of coordinates.
-    
+
     Torsional angle around axis connecting atoms 1 and 2 (i.e. the angle
     between the planes spanned by atoms (0,1,2) and (1,2,3))::
 
@@ -491,15 +520,15 @@ def calc_torsions(coords1, coords2, coords3, coords4, box=None, result=None):
         *box*
             optional unit cell information.  This ensures that the connecting vectors
             between atoms respect minimum image convention.  This is import when the
-            angle might be between atoms in different images.  
+            angle might be between atoms in different images.
         *result*
             optional preallocated results array which must have same length as
-            coordinate array and dtype=numpy.float64. 
+            coordinate array and dtype=numpy.float64.
 
     :Returns:
         *angles*
             A numpy.array of angles in radians
-    
+
     .. versionadded:: 0.8
     .. versionchanged:: 0.9.0
        Added optional box argument to account for periodic boundaries in calculation
@@ -518,7 +547,8 @@ def calc_torsions(coords1, coords2, coords3, coords4, box=None, result=None):
 
     if box:
         boxtype = _box_check(box)
-        if (boxtype == 'tri_box'): # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
+        # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
+        if (boxtype == 'tri_box'):
             box = triclinic_vectors(box)
         if (boxtype == 'tri_vecs_bad'):
             box = triclinic_vectors(triclinic_box(box[0], box[1], box[2]))
@@ -538,6 +568,7 @@ def calc_torsions(coords1, coords2, coords3, coords4, box=None, result=None):
         calc_torsion(atom1, atom2, atom3, atom4, angles)
 
     return angles
+
 
 def applyPBC(incoords, box):
     """Moves a set of coordinates to all be within the primary unit cell
@@ -565,7 +596,8 @@ def applyPBC(incoords, box):
 
     # determine boxtype
     boxtype = _box_check(box)
-    if (boxtype == 'tri_box'): # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
+    # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
+    if (boxtype == 'tri_box'):
         box = triclinic_vectors(box)
     if (boxtype == 'tri_vecs_bad'):
         box = triclinic_vectors(triclinic_box(box[0], box[1], box[2]))
@@ -574,7 +606,7 @@ def applyPBC(incoords, box):
     if boxtype == 'ortho':
         box_inv[0] = 1.0 / box[0]
         box_inv[1] = 1.0 / box[1]
-        box_inv[2] = 1.0 / box[2] 
+        box_inv[2] = 1.0 / box[2]
         ortho_pbc(coords, box, box_inv)
     else:
         box_inv[0] = 1.0 / box[0][0]
