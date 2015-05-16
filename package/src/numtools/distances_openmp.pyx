@@ -16,10 +16,11 @@
 #
 
 """
-Distance calculation library --- :mod:`MDAnalysis.lib._distances`
-=================================================================
+Parallel distance calculation library --- :mod:`MDAnalysis.lib._distances_openmp`
+=================================================================================
 
-Serial versions of all distance calculations
+
+Contains OpenMP versions of the contents of "calc_distances.h"
 """
 
 cimport c_numpy

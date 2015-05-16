@@ -209,6 +209,7 @@ if __name__ == '__main__':
     has_openmp, needs_gomp = detect_openmp()
     parallel_args = ['-fopenmp'] if has_openmp else []
     parallel_libraries = ['gomp'] if needs_gomp else []
+    parallel_macros = [('PARALLEL', None)] if has_openmp else []
 
     extensions = [
         Extension('coordinates._dcdmodule', ['src/dcd/dcd.c'],
@@ -224,6 +225,12 @@ if __name__ == '__main__':
                   libraries=['m'],
                   define_macros=define_macros,
                   extra_compile_args=extra_compile_args),
+        Extension('lib._distances_openmp', ['src/numtools/distances_openmp.%s' %('pyx' if use_cython else 'c')],
+                  include_dirs=include_dirs + ['src/numtools'],
+                  libraries=['m'] + parallel_libraries,
+                  define_macros=define_macros + parallel_macros,
+                  extra_compile_args=parallel_args,
+                  extra_link_args=parallel_args),
         Extension("core.parallel.distances",
                   ['src/numtools/distances_parallel.%s' % ("pyx" if use_cython else "c")],
                   include_dirs=include_dirs,
