@@ -231,8 +231,8 @@ void __Pyx_call_destructor(T* x) {
 #define _USE_MATH_DEFINES
 #endif
 #include <math.h>
-#define __PYX_HAVE__lib___distances
-#define __PYX_HAVE_API__lib___distances
+#define __PYX_HAVE__lib___distances_openmp
+#define __PYX_HAVE_API__lib___distances_openmp
 #include "numpy/arrayobject.h"
 #include "string.h"
 #include "calc_distances.h"
@@ -418,7 +418,7 @@ static const char *__pyx_filename;
 
 
 static const char *__pyx_f[] = {
-  "ools/distances.pyx",
+  "ools/distances_openmp.pyx",
   "ools/c_numpy.pxd",
 };
 
@@ -544,29 +544,29 @@ static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 /* Module declarations from 'c_numpy' */
 static PyTypeObject *__pyx_ptype_7c_numpy_ndarray = 0;
 
-/* Module declarations from 'lib._distances' */
-#define __Pyx_MODULE_NAME "lib._distances"
-int __pyx_module_is_main_lib___distances = 0;
+/* Module declarations from 'lib._distances_openmp' */
+#define __Pyx_MODULE_NAME "lib._distances_openmp"
+int __pyx_module_is_main_lib___distances_openmp = 0;
 
-/* Implementation of 'lib._distances' */
-static PyObject *__pyx_pf_3lib_10_distances_calc_distance_array(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_ref, PyArrayObject *__pyx_v_conf, PyArrayObject *__pyx_v_result); /* proto */
-static PyObject *__pyx_pf_3lib_10_distances_2calc_distance_array_ortho(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_ref, PyArrayObject *__pyx_v_conf, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_result); /* proto */
-static PyObject *__pyx_pf_3lib_10_distances_4calc_distance_array_triclinic(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_ref, PyArrayObject *__pyx_v_conf, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_result); /* proto */
-static PyObject *__pyx_pf_3lib_10_distances_6calc_self_distance_array(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_ref, PyArrayObject *__pyx_v_result); /* proto */
-static PyObject *__pyx_pf_3lib_10_distances_8calc_self_distance_array_ortho(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_ref, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_result); /* proto */
-static PyObject *__pyx_pf_3lib_10_distances_10calc_self_distance_array_triclinic(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_ref, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_result); /* proto */
-static PyObject *__pyx_pf_3lib_10_distances_12coord_transform(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coords, PyArrayObject *__pyx_v_box); /* proto */
-static PyObject *__pyx_pf_3lib_10_distances_14calc_bond_distance(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coords1, PyArrayObject *__pyx_v_coords2, PyArrayObject *__pyx_v_results); /* proto */
-static PyObject *__pyx_pf_3lib_10_distances_16calc_bond_distance_ortho(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coords1, PyArrayObject *__pyx_v_coords2, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_results); /* proto */
-static PyObject *__pyx_pf_3lib_10_distances_18calc_bond_distance_triclinic(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coords1, PyArrayObject *__pyx_v_coords2, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_results); /* proto */
-static PyObject *__pyx_pf_3lib_10_distances_20calc_angle(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coords1, PyArrayObject *__pyx_v_coords2, PyArrayObject *__pyx_v_coords3, PyArrayObject *__pyx_v_results); /* proto */
-static PyObject *__pyx_pf_3lib_10_distances_22calc_angle_ortho(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coords1, PyArrayObject *__pyx_v_coords2, PyArrayObject *__pyx_v_coords3, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_results); /* proto */
-static PyObject *__pyx_pf_3lib_10_distances_24calc_angle_triclinic(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coords1, PyArrayObject *__pyx_v_coords2, PyArrayObject *__pyx_v_coords3, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_results); /* proto */
-static PyObject *__pyx_pf_3lib_10_distances_26calc_torsion(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coords1, PyArrayObject *__pyx_v_coords2, PyArrayObject *__pyx_v_coords3, PyArrayObject *__pyx_v_coords4, PyArrayObject *__pyx_v_results); /* proto */
-static PyObject *__pyx_pf_3lib_10_distances_28calc_torsion_ortho(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coords1, PyArrayObject *__pyx_v_coords2, PyArrayObject *__pyx_v_coords3, PyArrayObject *__pyx_v_coords4, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_results); /* proto */
-static PyObject *__pyx_pf_3lib_10_distances_30calc_torsion_triclinic(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coords1, PyArrayObject *__pyx_v_coords2, PyArrayObject *__pyx_v_coords3, PyArrayObject *__pyx_v_coords4, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_results); /* proto */
-static PyObject *__pyx_pf_3lib_10_distances_32ortho_pbc(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coords, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_box_inverse); /* proto */
-static PyObject *__pyx_pf_3lib_10_distances_34triclinic_pbc(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coords, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_box_inverse); /* proto */
+/* Implementation of 'lib._distances_openmp' */
+static PyObject *__pyx_pf_3lib_17_distances_openmp_calc_distance_array(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_ref, PyArrayObject *__pyx_v_conf, PyArrayObject *__pyx_v_result); /* proto */
+static PyObject *__pyx_pf_3lib_17_distances_openmp_2calc_distance_array_ortho(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_ref, PyArrayObject *__pyx_v_conf, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_result); /* proto */
+static PyObject *__pyx_pf_3lib_17_distances_openmp_4calc_distance_array_triclinic(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_ref, PyArrayObject *__pyx_v_conf, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_result); /* proto */
+static PyObject *__pyx_pf_3lib_17_distances_openmp_6calc_self_distance_array(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_ref, PyArrayObject *__pyx_v_result); /* proto */
+static PyObject *__pyx_pf_3lib_17_distances_openmp_8calc_self_distance_array_ortho(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_ref, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_result); /* proto */
+static PyObject *__pyx_pf_3lib_17_distances_openmp_10calc_self_distance_array_triclinic(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_ref, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_result); /* proto */
+static PyObject *__pyx_pf_3lib_17_distances_openmp_12coord_transform(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coords, PyArrayObject *__pyx_v_box); /* proto */
+static PyObject *__pyx_pf_3lib_17_distances_openmp_14calc_bond_distance(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coords1, PyArrayObject *__pyx_v_coords2, PyArrayObject *__pyx_v_results); /* proto */
+static PyObject *__pyx_pf_3lib_17_distances_openmp_16calc_bond_distance_ortho(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coords1, PyArrayObject *__pyx_v_coords2, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_results); /* proto */
+static PyObject *__pyx_pf_3lib_17_distances_openmp_18calc_bond_distance_triclinic(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coords1, PyArrayObject *__pyx_v_coords2, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_results); /* proto */
+static PyObject *__pyx_pf_3lib_17_distances_openmp_20calc_angle(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coords1, PyArrayObject *__pyx_v_coords2, PyArrayObject *__pyx_v_coords3, PyArrayObject *__pyx_v_results); /* proto */
+static PyObject *__pyx_pf_3lib_17_distances_openmp_22calc_angle_ortho(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coords1, PyArrayObject *__pyx_v_coords2, PyArrayObject *__pyx_v_coords3, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_results); /* proto */
+static PyObject *__pyx_pf_3lib_17_distances_openmp_24calc_angle_triclinic(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coords1, PyArrayObject *__pyx_v_coords2, PyArrayObject *__pyx_v_coords3, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_results); /* proto */
+static PyObject *__pyx_pf_3lib_17_distances_openmp_26calc_torsion(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coords1, PyArrayObject *__pyx_v_coords2, PyArrayObject *__pyx_v_coords3, PyArrayObject *__pyx_v_coords4, PyArrayObject *__pyx_v_results); /* proto */
+static PyObject *__pyx_pf_3lib_17_distances_openmp_28calc_torsion_ortho(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coords1, PyArrayObject *__pyx_v_coords2, PyArrayObject *__pyx_v_coords3, PyArrayObject *__pyx_v_coords4, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_results); /* proto */
+static PyObject *__pyx_pf_3lib_17_distances_openmp_30calc_torsion_triclinic(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coords1, PyArrayObject *__pyx_v_coords2, PyArrayObject *__pyx_v_coords3, PyArrayObject *__pyx_v_coords4, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_results); /* proto */
+static PyObject *__pyx_pf_3lib_17_distances_openmp_32ortho_pbc(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coords, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_box_inverse); /* proto */
+static PyObject *__pyx_pf_3lib_17_distances_openmp_34triclinic_pbc(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coords, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_box_inverse); /* proto */
 static char __pyx_k_box[] = "box";
 static char __pyx_k_ref[] = "ref";
 static char __pyx_k_conf[] = "conf";
@@ -588,13 +588,13 @@ static char __pyx_k_calc_angle[] = "calc_angle";
 static char __pyx_k_box_inverse[] = "box_inverse";
 static char __pyx_k_calc_torsion[] = "calc_torsion";
 static char __pyx_k_triclinic_pbc[] = "triclinic_pbc";
-static char __pyx_k_lib__distances[] = "lib._distances";
 static char __pyx_k_coord_transform[] = "coord_transform";
 static char __pyx_k_calc_angle_ortho[] = "calc_angle_ortho";
 static char __pyx_k_calc_bond_distance[] = "calc_bond_distance";
 static char __pyx_k_calc_torsion_ortho[] = "calc_torsion_ortho";
 static char __pyx_k_calc_distance_array[] = "calc_distance_array";
 static char __pyx_k_calc_angle_triclinic[] = "calc_angle_triclinic";
+static char __pyx_k_lib__distances_openmp[] = "lib._distances_openmp";
 static char __pyx_k_calc_torsion_triclinic[] = "calc_torsion_triclinic";
 static char __pyx_k_calc_bond_distance_ortho[] = "calc_bond_distance_ortho";
 static char __pyx_k_calc_self_distance_array[] = "calc_self_distance_array";
@@ -602,8 +602,8 @@ static char __pyx_k_calc_distance_array_ortho[] = "calc_distance_array_ortho";
 static char __pyx_k_calc_bond_distance_triclinic[] = "calc_bond_distance_triclinic";
 static char __pyx_k_calc_distance_array_triclinic[] = "calc_distance_array_triclinic";
 static char __pyx_k_calc_self_distance_array_ortho[] = "calc_self_distance_array_ortho";
-static char __pyx_k_Distance_calculation_library_mo[] = "\nDistance calculation library --- :mod:`MDAnalysis.lib._distances`\n=================================================================\n\nSerial versions of all distance calculations\n";
-static char __pyx_k_home_richard_code_mdanalysis_pa[] = "/home/richard/code/mdanalysis/package/src/numtools/distances.pyx";
+static char __pyx_k_Parallel_distance_calculation_l[] = "\nParallel distance calculation library --- :mod:`MDAnalysis.lib._distances_openmp`\n=================================================================================\n\n\nContains OpenMP versions of the contents of \"calc_distances.h\"\n";
+static char __pyx_k_home_richard_code_mdanalysis_pa[] = "/home/richard/code/mdanalysis/package/src/numtools/distances_openmp.pyx";
 static char __pyx_k_calc_self_distance_array_triclin[] = "calc_self_distance_array_triclinic";
 static PyObject *__pyx_n_s_box;
 static PyObject *__pyx_n_s_box_inverse;
@@ -632,7 +632,7 @@ static PyObject *__pyx_n_s_coords3;
 static PyObject *__pyx_n_s_coords4;
 static PyObject *__pyx_n_s_distnum;
 static PyObject *__pyx_kp_s_home_richard_code_mdanalysis_pa;
-static PyObject *__pyx_n_s_lib__distances;
+static PyObject *__pyx_n_s_lib__distances_openmp;
 static PyObject *__pyx_n_s_main;
 static PyObject *__pyx_n_s_numcoords;
 static PyObject *__pyx_n_s_ortho_pbc;
@@ -679,7 +679,7 @@ static PyObject *__pyx_codeobj__32;
 static PyObject *__pyx_codeobj__34;
 static PyObject *__pyx_codeobj__36;
 
-/* "src/numtools/distances.pyx":53
+/* "src/numtools/distances_openmp.pyx":54
  *     void _triclinic_pbc(coordinate* coords, int numcoords, coordinate* box, float* box_inverse)
  * 
  * def calc_distance_array(c_numpy.ndarray ref, c_numpy.ndarray conf,             # <<<<<<<<<<<<<<
@@ -688,9 +688,9 @@ static PyObject *__pyx_codeobj__36;
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3lib_10_distances_1calc_distance_array(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_3lib_10_distances_1calc_distance_array = {"calc_distance_array", (PyCFunction)__pyx_pw_3lib_10_distances_1calc_distance_array, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_3lib_10_distances_1calc_distance_array(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_3lib_17_distances_openmp_1calc_distance_array(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_3lib_17_distances_openmp_1calc_distance_array = {"calc_distance_array", (PyCFunction)__pyx_pw_3lib_17_distances_openmp_1calc_distance_array, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_3lib_17_distances_openmp_1calc_distance_array(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyArrayObject *__pyx_v_ref = 0;
   PyArrayObject *__pyx_v_conf = 0;
   PyArrayObject *__pyx_v_result = 0;
@@ -721,16 +721,16 @@ static PyObject *__pyx_pw_3lib_10_distances_1calc_distance_array(PyObject *__pyx
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_conf)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("calc_distance_array", 1, 3, 3, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 53; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("calc_distance_array", 1, 3, 3, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 54; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_result)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("calc_distance_array", 1, 3, 3, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 53; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("calc_distance_array", 1, 3, 3, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 54; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "calc_distance_array") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 53; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "calc_distance_array") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 54; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
       goto __pyx_L5_argtuple_error;
@@ -745,16 +745,16 @@ static PyObject *__pyx_pw_3lib_10_distances_1calc_distance_array(PyObject *__pyx
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("calc_distance_array", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 53; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("calc_distance_array", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 54; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
-  __Pyx_AddTraceback("lib._distances.calc_distance_array", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("lib._distances_openmp.calc_distance_array", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_ref), __pyx_ptype_7c_numpy_ndarray, 1, "ref", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 53; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_conf), __pyx_ptype_7c_numpy_ndarray, 1, "conf", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 53; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_result), __pyx_ptype_7c_numpy_ndarray, 1, "result", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 54; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_r = __pyx_pf_3lib_10_distances_calc_distance_array(__pyx_self, __pyx_v_ref, __pyx_v_conf, __pyx_v_result);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_ref), __pyx_ptype_7c_numpy_ndarray, 1, "ref", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 54; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_conf), __pyx_ptype_7c_numpy_ndarray, 1, "conf", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 54; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_result), __pyx_ptype_7c_numpy_ndarray, 1, "result", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 55; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_r = __pyx_pf_3lib_17_distances_openmp_calc_distance_array(__pyx_self, __pyx_v_ref, __pyx_v_conf, __pyx_v_result);
 
   /* function exit code */
   goto __pyx_L0;
@@ -765,14 +765,14 @@ static PyObject *__pyx_pw_3lib_10_distances_1calc_distance_array(PyObject *__pyx
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3lib_10_distances_calc_distance_array(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_ref, PyArrayObject *__pyx_v_conf, PyArrayObject *__pyx_v_result) {
+static PyObject *__pyx_pf_3lib_17_distances_openmp_calc_distance_array(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_ref, PyArrayObject *__pyx_v_conf, PyArrayObject *__pyx_v_result) {
   int __pyx_v_confnum;
   int __pyx_v_refnum;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("calc_distance_array", 0);
 
-  /* "src/numtools/distances.pyx":56
+  /* "src/numtools/distances_openmp.pyx":57
  *                         c_numpy.ndarray result):
  *     cdef int confnum, refnum
  *     confnum = conf.dimensions[0]             # <<<<<<<<<<<<<<
@@ -781,7 +781,7 @@ static PyObject *__pyx_pf_3lib_10_distances_calc_distance_array(CYTHON_UNUSED Py
  */
   __pyx_v_confnum = (__pyx_v_conf->dimensions[0]);
 
-  /* "src/numtools/distances.pyx":57
+  /* "src/numtools/distances_openmp.pyx":58
  *     cdef int confnum, refnum
  *     confnum = conf.dimensions[0]
  *     refnum = ref.dimensions[0]             # <<<<<<<<<<<<<<
@@ -790,7 +790,7 @@ static PyObject *__pyx_pf_3lib_10_distances_calc_distance_array(CYTHON_UNUSED Py
  */
   __pyx_v_refnum = (__pyx_v_ref->dimensions[0]);
 
-  /* "src/numtools/distances.pyx":59
+  /* "src/numtools/distances_openmp.pyx":60
  *     refnum = ref.dimensions[0]
  * 
  *     _calc_distance_array(<coordinate*>ref.data, refnum,             # <<<<<<<<<<<<<<
@@ -799,7 +799,7 @@ static PyObject *__pyx_pf_3lib_10_distances_calc_distance_array(CYTHON_UNUSED Py
  */
   _calc_distance_array(((coordinate *)__pyx_v_ref->data), __pyx_v_refnum, ((coordinate *)__pyx_v_conf->data), __pyx_v_confnum, ((double *)__pyx_v_result->data));
 
-  /* "src/numtools/distances.pyx":53
+  /* "src/numtools/distances_openmp.pyx":54
  *     void _triclinic_pbc(coordinate* coords, int numcoords, coordinate* box, float* box_inverse)
  * 
  * def calc_distance_array(c_numpy.ndarray ref, c_numpy.ndarray conf,             # <<<<<<<<<<<<<<
@@ -814,7 +814,7 @@ static PyObject *__pyx_pf_3lib_10_distances_calc_distance_array(CYTHON_UNUSED Py
   return __pyx_r;
 }
 
-/* "src/numtools/distances.pyx":63
+/* "src/numtools/distances_openmp.pyx":64
  *                          <double*>result.data)
  * 
  * def calc_distance_array_ortho(c_numpy.ndarray ref, c_numpy.ndarray conf,             # <<<<<<<<<<<<<<
@@ -823,9 +823,9 @@ static PyObject *__pyx_pf_3lib_10_distances_calc_distance_array(CYTHON_UNUSED Py
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3lib_10_distances_3calc_distance_array_ortho(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_3lib_10_distances_3calc_distance_array_ortho = {"calc_distance_array_ortho", (PyCFunction)__pyx_pw_3lib_10_distances_3calc_distance_array_ortho, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_3lib_10_distances_3calc_distance_array_ortho(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_3lib_17_distances_openmp_3calc_distance_array_ortho(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_3lib_17_distances_openmp_3calc_distance_array_ortho = {"calc_distance_array_ortho", (PyCFunction)__pyx_pw_3lib_17_distances_openmp_3calc_distance_array_ortho, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_3lib_17_distances_openmp_3calc_distance_array_ortho(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyArrayObject *__pyx_v_ref = 0;
   PyArrayObject *__pyx_v_conf = 0;
   PyArrayObject *__pyx_v_box = 0;
@@ -858,21 +858,21 @@ static PyObject *__pyx_pw_3lib_10_distances_3calc_distance_array_ortho(PyObject 
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_conf)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("calc_distance_array_ortho", 1, 4, 4, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 63; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("calc_distance_array_ortho", 1, 4, 4, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 64; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_box)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("calc_distance_array_ortho", 1, 4, 4, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 63; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("calc_distance_array_ortho", 1, 4, 4, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 64; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  3:
         if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_result)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("calc_distance_array_ortho", 1, 4, 4, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 63; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("calc_distance_array_ortho", 1, 4, 4, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 64; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "calc_distance_array_ortho") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 63; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "calc_distance_array_ortho") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 64; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 4) {
       goto __pyx_L5_argtuple_error;
@@ -889,17 +889,17 @@ static PyObject *__pyx_pw_3lib_10_distances_3calc_distance_array_ortho(PyObject 
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("calc_distance_array_ortho", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 63; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("calc_distance_array_ortho", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 64; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
-  __Pyx_AddTraceback("lib._distances.calc_distance_array_ortho", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("lib._distances_openmp.calc_distance_array_ortho", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_ref), __pyx_ptype_7c_numpy_ndarray, 1, "ref", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 63; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_conf), __pyx_ptype_7c_numpy_ndarray, 1, "conf", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 63; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_box), __pyx_ptype_7c_numpy_ndarray, 1, "box", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 64; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_result), __pyx_ptype_7c_numpy_ndarray, 1, "result", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 65; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_r = __pyx_pf_3lib_10_distances_2calc_distance_array_ortho(__pyx_self, __pyx_v_ref, __pyx_v_conf, __pyx_v_box, __pyx_v_result);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_ref), __pyx_ptype_7c_numpy_ndarray, 1, "ref", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 64; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_conf), __pyx_ptype_7c_numpy_ndarray, 1, "conf", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 64; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_box), __pyx_ptype_7c_numpy_ndarray, 1, "box", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 65; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_result), __pyx_ptype_7c_numpy_ndarray, 1, "result", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 66; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_r = __pyx_pf_3lib_17_distances_openmp_2calc_distance_array_ortho(__pyx_self, __pyx_v_ref, __pyx_v_conf, __pyx_v_box, __pyx_v_result);
 
   /* function exit code */
   goto __pyx_L0;
@@ -910,14 +910,14 @@ static PyObject *__pyx_pw_3lib_10_distances_3calc_distance_array_ortho(PyObject 
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3lib_10_distances_2calc_distance_array_ortho(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_ref, PyArrayObject *__pyx_v_conf, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_result) {
+static PyObject *__pyx_pf_3lib_17_distances_openmp_2calc_distance_array_ortho(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_ref, PyArrayObject *__pyx_v_conf, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_result) {
   int __pyx_v_confnum;
   int __pyx_v_refnum;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("calc_distance_array_ortho", 0);
 
-  /* "src/numtools/distances.pyx":67
+  /* "src/numtools/distances_openmp.pyx":68
  *                               c_numpy.ndarray result):
  *     cdef int confnum, refnum
  *     confnum = conf.dimensions[0]             # <<<<<<<<<<<<<<
@@ -926,7 +926,7 @@ static PyObject *__pyx_pf_3lib_10_distances_2calc_distance_array_ortho(CYTHON_UN
  */
   __pyx_v_confnum = (__pyx_v_conf->dimensions[0]);
 
-  /* "src/numtools/distances.pyx":68
+  /* "src/numtools/distances_openmp.pyx":69
  *     cdef int confnum, refnum
  *     confnum = conf.dimensions[0]
  *     refnum = ref.dimensions[0]             # <<<<<<<<<<<<<<
@@ -935,7 +935,7 @@ static PyObject *__pyx_pf_3lib_10_distances_2calc_distance_array_ortho(CYTHON_UN
  */
   __pyx_v_refnum = (__pyx_v_ref->dimensions[0]);
 
-  /* "src/numtools/distances.pyx":70
+  /* "src/numtools/distances_openmp.pyx":71
  *     refnum = ref.dimensions[0]
  * 
  *     _calc_distance_array_ortho(<coordinate*>ref.data, refnum,             # <<<<<<<<<<<<<<
@@ -944,7 +944,7 @@ static PyObject *__pyx_pf_3lib_10_distances_2calc_distance_array_ortho(CYTHON_UN
  */
   _calc_distance_array_ortho(((coordinate *)__pyx_v_ref->data), __pyx_v_refnum, ((coordinate *)__pyx_v_conf->data), __pyx_v_confnum, ((float *)__pyx_v_box->data), ((double *)__pyx_v_result->data));
 
-  /* "src/numtools/distances.pyx":63
+  /* "src/numtools/distances_openmp.pyx":64
  *                          <double*>result.data)
  * 
  * def calc_distance_array_ortho(c_numpy.ndarray ref, c_numpy.ndarray conf,             # <<<<<<<<<<<<<<
@@ -959,7 +959,7 @@ static PyObject *__pyx_pf_3lib_10_distances_2calc_distance_array_ortho(CYTHON_UN
   return __pyx_r;
 }
 
-/* "src/numtools/distances.pyx":75
+/* "src/numtools/distances_openmp.pyx":76
  *                                <double*>result.data)
  * 
  * def calc_distance_array_triclinic(c_numpy.ndarray ref, c_numpy.ndarray conf,             # <<<<<<<<<<<<<<
@@ -968,9 +968,9 @@ static PyObject *__pyx_pf_3lib_10_distances_2calc_distance_array_ortho(CYTHON_UN
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3lib_10_distances_5calc_distance_array_triclinic(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_3lib_10_distances_5calc_distance_array_triclinic = {"calc_distance_array_triclinic", (PyCFunction)__pyx_pw_3lib_10_distances_5calc_distance_array_triclinic, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_3lib_10_distances_5calc_distance_array_triclinic(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_3lib_17_distances_openmp_5calc_distance_array_triclinic(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_3lib_17_distances_openmp_5calc_distance_array_triclinic = {"calc_distance_array_triclinic", (PyCFunction)__pyx_pw_3lib_17_distances_openmp_5calc_distance_array_triclinic, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_3lib_17_distances_openmp_5calc_distance_array_triclinic(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyArrayObject *__pyx_v_ref = 0;
   PyArrayObject *__pyx_v_conf = 0;
   PyArrayObject *__pyx_v_box = 0;
@@ -1003,21 +1003,21 @@ static PyObject *__pyx_pw_3lib_10_distances_5calc_distance_array_triclinic(PyObj
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_conf)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("calc_distance_array_triclinic", 1, 4, 4, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 75; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("calc_distance_array_triclinic", 1, 4, 4, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 76; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_box)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("calc_distance_array_triclinic", 1, 4, 4, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 75; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("calc_distance_array_triclinic", 1, 4, 4, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 76; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  3:
         if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_result)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("calc_distance_array_triclinic", 1, 4, 4, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 75; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("calc_distance_array_triclinic", 1, 4, 4, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 76; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "calc_distance_array_triclinic") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 75; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "calc_distance_array_triclinic") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 76; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 4) {
       goto __pyx_L5_argtuple_error;
@@ -1034,17 +1034,17 @@ static PyObject *__pyx_pw_3lib_10_distances_5calc_distance_array_triclinic(PyObj
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("calc_distance_array_triclinic", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 75; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("calc_distance_array_triclinic", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 76; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
-  __Pyx_AddTraceback("lib._distances.calc_distance_array_triclinic", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("lib._distances_openmp.calc_distance_array_triclinic", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_ref), __pyx_ptype_7c_numpy_ndarray, 1, "ref", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 75; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_conf), __pyx_ptype_7c_numpy_ndarray, 1, "conf", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 75; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_box), __pyx_ptype_7c_numpy_ndarray, 1, "box", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 76; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_result), __pyx_ptype_7c_numpy_ndarray, 1, "result", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 77; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_r = __pyx_pf_3lib_10_distances_4calc_distance_array_triclinic(__pyx_self, __pyx_v_ref, __pyx_v_conf, __pyx_v_box, __pyx_v_result);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_ref), __pyx_ptype_7c_numpy_ndarray, 1, "ref", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 76; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_conf), __pyx_ptype_7c_numpy_ndarray, 1, "conf", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 76; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_box), __pyx_ptype_7c_numpy_ndarray, 1, "box", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 77; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_result), __pyx_ptype_7c_numpy_ndarray, 1, "result", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 78; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_r = __pyx_pf_3lib_17_distances_openmp_4calc_distance_array_triclinic(__pyx_self, __pyx_v_ref, __pyx_v_conf, __pyx_v_box, __pyx_v_result);
 
   /* function exit code */
   goto __pyx_L0;
@@ -1055,14 +1055,14 @@ static PyObject *__pyx_pw_3lib_10_distances_5calc_distance_array_triclinic(PyObj
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3lib_10_distances_4calc_distance_array_triclinic(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_ref, PyArrayObject *__pyx_v_conf, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_result) {
+static PyObject *__pyx_pf_3lib_17_distances_openmp_4calc_distance_array_triclinic(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_ref, PyArrayObject *__pyx_v_conf, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_result) {
   int __pyx_v_confnum;
   int __pyx_v_refnum;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("calc_distance_array_triclinic", 0);
 
-  /* "src/numtools/distances.pyx":79
+  /* "src/numtools/distances_openmp.pyx":80
  *                                   c_numpy.ndarray result):
  *     cdef int confnum, refnum
  *     confnum = conf.dimensions[0]             # <<<<<<<<<<<<<<
@@ -1071,7 +1071,7 @@ static PyObject *__pyx_pf_3lib_10_distances_4calc_distance_array_triclinic(CYTHO
  */
   __pyx_v_confnum = (__pyx_v_conf->dimensions[0]);
 
-  /* "src/numtools/distances.pyx":80
+  /* "src/numtools/distances_openmp.pyx":81
  *     cdef int confnum, refnum
  *     confnum = conf.dimensions[0]
  *     refnum = ref.dimensions[0]             # <<<<<<<<<<<<<<
@@ -1080,7 +1080,7 @@ static PyObject *__pyx_pf_3lib_10_distances_4calc_distance_array_triclinic(CYTHO
  */
   __pyx_v_refnum = (__pyx_v_ref->dimensions[0]);
 
-  /* "src/numtools/distances.pyx":82
+  /* "src/numtools/distances_openmp.pyx":83
  *     refnum = ref.dimensions[0]
  * 
  *     _calc_distance_array_triclinic(<coordinate*>ref.data, refnum,             # <<<<<<<<<<<<<<
@@ -1089,7 +1089,7 @@ static PyObject *__pyx_pf_3lib_10_distances_4calc_distance_array_triclinic(CYTHO
  */
   _calc_distance_array_triclinic(((coordinate *)__pyx_v_ref->data), __pyx_v_refnum, ((coordinate *)__pyx_v_conf->data), __pyx_v_confnum, ((coordinate *)__pyx_v_box->data), ((double *)__pyx_v_result->data));
 
-  /* "src/numtools/distances.pyx":75
+  /* "src/numtools/distances_openmp.pyx":76
  *                                <double*>result.data)
  * 
  * def calc_distance_array_triclinic(c_numpy.ndarray ref, c_numpy.ndarray conf,             # <<<<<<<<<<<<<<
@@ -1104,7 +1104,7 @@ static PyObject *__pyx_pf_3lib_10_distances_4calc_distance_array_triclinic(CYTHO
   return __pyx_r;
 }
 
-/* "src/numtools/distances.pyx":87
+/* "src/numtools/distances_openmp.pyx":88
  *                                    <double*>result.data)
  * 
  * def calc_self_distance_array(c_numpy.ndarray ref,             # <<<<<<<<<<<<<<
@@ -1113,9 +1113,9 @@ static PyObject *__pyx_pf_3lib_10_distances_4calc_distance_array_triclinic(CYTHO
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3lib_10_distances_7calc_self_distance_array(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_3lib_10_distances_7calc_self_distance_array = {"calc_self_distance_array", (PyCFunction)__pyx_pw_3lib_10_distances_7calc_self_distance_array, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_3lib_10_distances_7calc_self_distance_array(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_3lib_17_distances_openmp_7calc_self_distance_array(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_3lib_17_distances_openmp_7calc_self_distance_array = {"calc_self_distance_array", (PyCFunction)__pyx_pw_3lib_17_distances_openmp_7calc_self_distance_array, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_3lib_17_distances_openmp_7calc_self_distance_array(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyArrayObject *__pyx_v_ref = 0;
   PyArrayObject *__pyx_v_result = 0;
   int __pyx_lineno = 0;
@@ -1144,11 +1144,11 @@ static PyObject *__pyx_pw_3lib_10_distances_7calc_self_distance_array(PyObject *
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_result)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("calc_self_distance_array", 1, 2, 2, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 87; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("calc_self_distance_array", 1, 2, 2, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 88; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "calc_self_distance_array") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 87; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "calc_self_distance_array") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 88; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -1161,15 +1161,15 @@ static PyObject *__pyx_pw_3lib_10_distances_7calc_self_distance_array(PyObject *
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("calc_self_distance_array", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 87; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("calc_self_distance_array", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 88; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
-  __Pyx_AddTraceback("lib._distances.calc_self_distance_array", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("lib._distances_openmp.calc_self_distance_array", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_ref), __pyx_ptype_7c_numpy_ndarray, 1, "ref", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 87; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_result), __pyx_ptype_7c_numpy_ndarray, 1, "result", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 88; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_r = __pyx_pf_3lib_10_distances_6calc_self_distance_array(__pyx_self, __pyx_v_ref, __pyx_v_result);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_ref), __pyx_ptype_7c_numpy_ndarray, 1, "ref", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 88; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_result), __pyx_ptype_7c_numpy_ndarray, 1, "result", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 89; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_r = __pyx_pf_3lib_17_distances_openmp_6calc_self_distance_array(__pyx_self, __pyx_v_ref, __pyx_v_result);
 
   /* function exit code */
   goto __pyx_L0;
@@ -1180,14 +1180,14 @@ static PyObject *__pyx_pw_3lib_10_distances_7calc_self_distance_array(PyObject *
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3lib_10_distances_6calc_self_distance_array(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_ref, PyArrayObject *__pyx_v_result) {
+static PyObject *__pyx_pf_3lib_17_distances_openmp_6calc_self_distance_array(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_ref, PyArrayObject *__pyx_v_result) {
   int __pyx_v_refnum;
   int __pyx_v_distnum;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("calc_self_distance_array", 0);
 
-  /* "src/numtools/distances.pyx":90
+  /* "src/numtools/distances_openmp.pyx":91
  *                              c_numpy.ndarray result):
  *     cdef int refnum, distnum
  *     refnum = ref.dimensions[0]             # <<<<<<<<<<<<<<
@@ -1196,7 +1196,7 @@ static PyObject *__pyx_pf_3lib_10_distances_6calc_self_distance_array(CYTHON_UNU
  */
   __pyx_v_refnum = (__pyx_v_ref->dimensions[0]);
 
-  /* "src/numtools/distances.pyx":91
+  /* "src/numtools/distances_openmp.pyx":92
  *     cdef int refnum, distnum
  *     refnum = ref.dimensions[0]
  *     distnum = (refnum*(refnum-1))/2             # <<<<<<<<<<<<<<
@@ -1205,7 +1205,7 @@ static PyObject *__pyx_pf_3lib_10_distances_6calc_self_distance_array(CYTHON_UNU
  */
   __pyx_v_distnum = __Pyx_div_long((__pyx_v_refnum * (__pyx_v_refnum - 1)), 2);
 
-  /* "src/numtools/distances.pyx":93
+  /* "src/numtools/distances_openmp.pyx":94
  *     distnum = (refnum*(refnum-1))/2
  * 
  *     _calc_self_distance_array(<coordinate*>ref.data, refnum,             # <<<<<<<<<<<<<<
@@ -1214,7 +1214,7 @@ static PyObject *__pyx_pf_3lib_10_distances_6calc_self_distance_array(CYTHON_UNU
  */
   _calc_self_distance_array(((coordinate *)__pyx_v_ref->data), __pyx_v_refnum, ((double *)__pyx_v_result->data), __pyx_v_distnum);
 
-  /* "src/numtools/distances.pyx":87
+  /* "src/numtools/distances_openmp.pyx":88
  *                                    <double*>result.data)
  * 
  * def calc_self_distance_array(c_numpy.ndarray ref,             # <<<<<<<<<<<<<<
@@ -1229,7 +1229,7 @@ static PyObject *__pyx_pf_3lib_10_distances_6calc_self_distance_array(CYTHON_UNU
   return __pyx_r;
 }
 
-/* "src/numtools/distances.pyx":96
+/* "src/numtools/distances_openmp.pyx":97
  *                               <double*>result.data, distnum)
  * 
  * def calc_self_distance_array_ortho(c_numpy.ndarray ref,             # <<<<<<<<<<<<<<
@@ -1238,9 +1238,9 @@ static PyObject *__pyx_pf_3lib_10_distances_6calc_self_distance_array(CYTHON_UNU
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3lib_10_distances_9calc_self_distance_array_ortho(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_3lib_10_distances_9calc_self_distance_array_ortho = {"calc_self_distance_array_ortho", (PyCFunction)__pyx_pw_3lib_10_distances_9calc_self_distance_array_ortho, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_3lib_10_distances_9calc_self_distance_array_ortho(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_3lib_17_distances_openmp_9calc_self_distance_array_ortho(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_3lib_17_distances_openmp_9calc_self_distance_array_ortho = {"calc_self_distance_array_ortho", (PyCFunction)__pyx_pw_3lib_17_distances_openmp_9calc_self_distance_array_ortho, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_3lib_17_distances_openmp_9calc_self_distance_array_ortho(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyArrayObject *__pyx_v_ref = 0;
   PyArrayObject *__pyx_v_box = 0;
   PyArrayObject *__pyx_v_result = 0;
@@ -1271,16 +1271,16 @@ static PyObject *__pyx_pw_3lib_10_distances_9calc_self_distance_array_ortho(PyOb
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_box)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("calc_self_distance_array_ortho", 1, 3, 3, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 96; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("calc_self_distance_array_ortho", 1, 3, 3, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 97; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_result)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("calc_self_distance_array_ortho", 1, 3, 3, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 96; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("calc_self_distance_array_ortho", 1, 3, 3, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 97; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "calc_self_distance_array_ortho") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 96; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "calc_self_distance_array_ortho") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 97; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
       goto __pyx_L5_argtuple_error;
@@ -1295,16 +1295,16 @@ static PyObject *__pyx_pw_3lib_10_distances_9calc_self_distance_array_ortho(PyOb
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("calc_self_distance_array_ortho", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 96; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("calc_self_distance_array_ortho", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 97; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
-  __Pyx_AddTraceback("lib._distances.calc_self_distance_array_ortho", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("lib._distances_openmp.calc_self_distance_array_ortho", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_ref), __pyx_ptype_7c_numpy_ndarray, 1, "ref", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 96; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_box), __pyx_ptype_7c_numpy_ndarray, 1, "box", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 97; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_result), __pyx_ptype_7c_numpy_ndarray, 1, "result", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 98; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_r = __pyx_pf_3lib_10_distances_8calc_self_distance_array_ortho(__pyx_self, __pyx_v_ref, __pyx_v_box, __pyx_v_result);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_ref), __pyx_ptype_7c_numpy_ndarray, 1, "ref", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 97; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_box), __pyx_ptype_7c_numpy_ndarray, 1, "box", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 98; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_result), __pyx_ptype_7c_numpy_ndarray, 1, "result", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 99; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_r = __pyx_pf_3lib_17_distances_openmp_8calc_self_distance_array_ortho(__pyx_self, __pyx_v_ref, __pyx_v_box, __pyx_v_result);
 
   /* function exit code */
   goto __pyx_L0;
@@ -1315,14 +1315,14 @@ static PyObject *__pyx_pw_3lib_10_distances_9calc_self_distance_array_ortho(PyOb
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3lib_10_distances_8calc_self_distance_array_ortho(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_ref, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_result) {
+static PyObject *__pyx_pf_3lib_17_distances_openmp_8calc_self_distance_array_ortho(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_ref, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_result) {
   int __pyx_v_refnum;
   int __pyx_v_distnum;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("calc_self_distance_array_ortho", 0);
 
-  /* "src/numtools/distances.pyx":100
+  /* "src/numtools/distances_openmp.pyx":101
  *                                    c_numpy.ndarray result):
  *     cdef int refnum, distnum
  *     refnum = ref.dimensions[0]             # <<<<<<<<<<<<<<
@@ -1331,7 +1331,7 @@ static PyObject *__pyx_pf_3lib_10_distances_8calc_self_distance_array_ortho(CYTH
  */
   __pyx_v_refnum = (__pyx_v_ref->dimensions[0]);
 
-  /* "src/numtools/distances.pyx":101
+  /* "src/numtools/distances_openmp.pyx":102
  *     cdef int refnum, distnum
  *     refnum = ref.dimensions[0]
  *     distnum = (refnum*(refnum-1))/2             # <<<<<<<<<<<<<<
@@ -1340,7 +1340,7 @@ static PyObject *__pyx_pf_3lib_10_distances_8calc_self_distance_array_ortho(CYTH
  */
   __pyx_v_distnum = __Pyx_div_long((__pyx_v_refnum * (__pyx_v_refnum - 1)), 2);
 
-  /* "src/numtools/distances.pyx":103
+  /* "src/numtools/distances_openmp.pyx":104
  *     distnum = (refnum*(refnum-1))/2
  * 
  *     _calc_self_distance_array_ortho(<coordinate*>ref.data, refnum,             # <<<<<<<<<<<<<<
@@ -1349,7 +1349,7 @@ static PyObject *__pyx_pf_3lib_10_distances_8calc_self_distance_array_ortho(CYTH
  */
   _calc_self_distance_array_ortho(((coordinate *)__pyx_v_ref->data), __pyx_v_refnum, ((float *)__pyx_v_box->data), ((double *)__pyx_v_result->data), __pyx_v_distnum);
 
-  /* "src/numtools/distances.pyx":96
+  /* "src/numtools/distances_openmp.pyx":97
  *                               <double*>result.data, distnum)
  * 
  * def calc_self_distance_array_ortho(c_numpy.ndarray ref,             # <<<<<<<<<<<<<<
@@ -1364,7 +1364,7 @@ static PyObject *__pyx_pf_3lib_10_distances_8calc_self_distance_array_ortho(CYTH
   return __pyx_r;
 }
 
-/* "src/numtools/distances.pyx":107
+/* "src/numtools/distances_openmp.pyx":108
  *                                     <double*>result.data, distnum)
  * 
  * def calc_self_distance_array_triclinic(c_numpy.ndarray ref,             # <<<<<<<<<<<<<<
@@ -1373,9 +1373,9 @@ static PyObject *__pyx_pf_3lib_10_distances_8calc_self_distance_array_ortho(CYTH
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3lib_10_distances_11calc_self_distance_array_triclinic(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_3lib_10_distances_11calc_self_distance_array_triclinic = {"calc_self_distance_array_triclinic", (PyCFunction)__pyx_pw_3lib_10_distances_11calc_self_distance_array_triclinic, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_3lib_10_distances_11calc_self_distance_array_triclinic(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_3lib_17_distances_openmp_11calc_self_distance_array_triclinic(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_3lib_17_distances_openmp_11calc_self_distance_array_triclinic = {"calc_self_distance_array_triclinic", (PyCFunction)__pyx_pw_3lib_17_distances_openmp_11calc_self_distance_array_triclinic, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_3lib_17_distances_openmp_11calc_self_distance_array_triclinic(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyArrayObject *__pyx_v_ref = 0;
   PyArrayObject *__pyx_v_box = 0;
   PyArrayObject *__pyx_v_result = 0;
@@ -1406,16 +1406,16 @@ static PyObject *__pyx_pw_3lib_10_distances_11calc_self_distance_array_triclinic
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_box)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("calc_self_distance_array_triclinic", 1, 3, 3, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 107; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("calc_self_distance_array_triclinic", 1, 3, 3, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 108; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_result)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("calc_self_distance_array_triclinic", 1, 3, 3, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 107; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("calc_self_distance_array_triclinic", 1, 3, 3, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 108; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "calc_self_distance_array_triclinic") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 107; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "calc_self_distance_array_triclinic") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 108; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
       goto __pyx_L5_argtuple_error;
@@ -1430,16 +1430,16 @@ static PyObject *__pyx_pw_3lib_10_distances_11calc_self_distance_array_triclinic
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("calc_self_distance_array_triclinic", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 107; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("calc_self_distance_array_triclinic", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 108; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
-  __Pyx_AddTraceback("lib._distances.calc_self_distance_array_triclinic", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("lib._distances_openmp.calc_self_distance_array_triclinic", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_ref), __pyx_ptype_7c_numpy_ndarray, 1, "ref", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 107; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_box), __pyx_ptype_7c_numpy_ndarray, 1, "box", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 108; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_result), __pyx_ptype_7c_numpy_ndarray, 1, "result", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 109; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_r = __pyx_pf_3lib_10_distances_10calc_self_distance_array_triclinic(__pyx_self, __pyx_v_ref, __pyx_v_box, __pyx_v_result);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_ref), __pyx_ptype_7c_numpy_ndarray, 1, "ref", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 108; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_box), __pyx_ptype_7c_numpy_ndarray, 1, "box", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 109; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_result), __pyx_ptype_7c_numpy_ndarray, 1, "result", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 110; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_r = __pyx_pf_3lib_17_distances_openmp_10calc_self_distance_array_triclinic(__pyx_self, __pyx_v_ref, __pyx_v_box, __pyx_v_result);
 
   /* function exit code */
   goto __pyx_L0;
@@ -1450,14 +1450,14 @@ static PyObject *__pyx_pw_3lib_10_distances_11calc_self_distance_array_triclinic
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3lib_10_distances_10calc_self_distance_array_triclinic(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_ref, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_result) {
+static PyObject *__pyx_pf_3lib_17_distances_openmp_10calc_self_distance_array_triclinic(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_ref, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_result) {
   int __pyx_v_refnum;
   int __pyx_v_distnum;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("calc_self_distance_array_triclinic", 0);
 
-  /* "src/numtools/distances.pyx":111
+  /* "src/numtools/distances_openmp.pyx":112
  *                                        c_numpy.ndarray result):
  *     cdef int refnum, distnum
  *     refnum = ref.dimensions[0]             # <<<<<<<<<<<<<<
@@ -1466,7 +1466,7 @@ static PyObject *__pyx_pf_3lib_10_distances_10calc_self_distance_array_triclinic
  */
   __pyx_v_refnum = (__pyx_v_ref->dimensions[0]);
 
-  /* "src/numtools/distances.pyx":112
+  /* "src/numtools/distances_openmp.pyx":113
  *     cdef int refnum, distnum
  *     refnum = ref.dimensions[0]
  *     distnum = (refnum*(refnum-1))/2             # <<<<<<<<<<<<<<
@@ -1475,7 +1475,7 @@ static PyObject *__pyx_pf_3lib_10_distances_10calc_self_distance_array_triclinic
  */
   __pyx_v_distnum = __Pyx_div_long((__pyx_v_refnum * (__pyx_v_refnum - 1)), 2);
 
-  /* "src/numtools/distances.pyx":114
+  /* "src/numtools/distances_openmp.pyx":115
  *     distnum = (refnum*(refnum-1))/2
  * 
  *     _calc_self_distance_array_triclinic(<coordinate*>ref.data, refnum,             # <<<<<<<<<<<<<<
@@ -1484,7 +1484,7 @@ static PyObject *__pyx_pf_3lib_10_distances_10calc_self_distance_array_triclinic
  */
   _calc_self_distance_array_triclinic(((coordinate *)__pyx_v_ref->data), __pyx_v_refnum, ((coordinate *)__pyx_v_box->data), ((double *)__pyx_v_result->data), __pyx_v_distnum);
 
-  /* "src/numtools/distances.pyx":107
+  /* "src/numtools/distances_openmp.pyx":108
  *                                     <double*>result.data, distnum)
  * 
  * def calc_self_distance_array_triclinic(c_numpy.ndarray ref,             # <<<<<<<<<<<<<<
@@ -1499,7 +1499,7 @@ static PyObject *__pyx_pf_3lib_10_distances_10calc_self_distance_array_triclinic
   return __pyx_r;
 }
 
-/* "src/numtools/distances.pyx":118
+/* "src/numtools/distances_openmp.pyx":119
  *                                         <double*>result.data, distnum)
  * 
  * def coord_transform(c_numpy.ndarray coords,             # <<<<<<<<<<<<<<
@@ -1508,9 +1508,9 @@ static PyObject *__pyx_pf_3lib_10_distances_10calc_self_distance_array_triclinic
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3lib_10_distances_13coord_transform(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_3lib_10_distances_13coord_transform = {"coord_transform", (PyCFunction)__pyx_pw_3lib_10_distances_13coord_transform, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_3lib_10_distances_13coord_transform(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_3lib_17_distances_openmp_13coord_transform(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_3lib_17_distances_openmp_13coord_transform = {"coord_transform", (PyCFunction)__pyx_pw_3lib_17_distances_openmp_13coord_transform, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_3lib_17_distances_openmp_13coord_transform(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyArrayObject *__pyx_v_coords = 0;
   PyArrayObject *__pyx_v_box = 0;
   int __pyx_lineno = 0;
@@ -1539,11 +1539,11 @@ static PyObject *__pyx_pw_3lib_10_distances_13coord_transform(PyObject *__pyx_se
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_box)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("coord_transform", 1, 2, 2, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 118; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("coord_transform", 1, 2, 2, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 119; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "coord_transform") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 118; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "coord_transform") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 119; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -1556,15 +1556,15 @@ static PyObject *__pyx_pw_3lib_10_distances_13coord_transform(PyObject *__pyx_se
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("coord_transform", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 118; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("coord_transform", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 119; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
-  __Pyx_AddTraceback("lib._distances.coord_transform", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("lib._distances_openmp.coord_transform", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords), __pyx_ptype_7c_numpy_ndarray, 1, "coords", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 118; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_box), __pyx_ptype_7c_numpy_ndarray, 1, "box", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 119; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_r = __pyx_pf_3lib_10_distances_12coord_transform(__pyx_self, __pyx_v_coords, __pyx_v_box);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords), __pyx_ptype_7c_numpy_ndarray, 1, "coords", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 119; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_box), __pyx_ptype_7c_numpy_ndarray, 1, "box", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 120; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_r = __pyx_pf_3lib_17_distances_openmp_12coord_transform(__pyx_self, __pyx_v_coords, __pyx_v_box);
 
   /* function exit code */
   goto __pyx_L0;
@@ -1575,13 +1575,13 @@ static PyObject *__pyx_pw_3lib_10_distances_13coord_transform(PyObject *__pyx_se
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3lib_10_distances_12coord_transform(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coords, PyArrayObject *__pyx_v_box) {
+static PyObject *__pyx_pf_3lib_17_distances_openmp_12coord_transform(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coords, PyArrayObject *__pyx_v_box) {
   int __pyx_v_numcoords;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("coord_transform", 0);
 
-  /* "src/numtools/distances.pyx":121
+  /* "src/numtools/distances_openmp.pyx":122
  *                     c_numpy.ndarray box):
  *     cdef int numcoords
  *     numcoords = coords.dimensions[0]             # <<<<<<<<<<<<<<
@@ -1590,7 +1590,7 @@ static PyObject *__pyx_pf_3lib_10_distances_12coord_transform(CYTHON_UNUSED PyOb
  */
   __pyx_v_numcoords = (__pyx_v_coords->dimensions[0]);
 
-  /* "src/numtools/distances.pyx":123
+  /* "src/numtools/distances_openmp.pyx":124
  *     numcoords = coords.dimensions[0]
  * 
  *     _coord_transform(<coordinate*> coords.data, numcoords,             # <<<<<<<<<<<<<<
@@ -1599,7 +1599,7 @@ static PyObject *__pyx_pf_3lib_10_distances_12coord_transform(CYTHON_UNUSED PyOb
  */
   _coord_transform(((coordinate *)__pyx_v_coords->data), __pyx_v_numcoords, ((coordinate *)__pyx_v_box->data));
 
-  /* "src/numtools/distances.pyx":118
+  /* "src/numtools/distances_openmp.pyx":119
  *                                         <double*>result.data, distnum)
  * 
  * def coord_transform(c_numpy.ndarray coords,             # <<<<<<<<<<<<<<
@@ -1614,7 +1614,7 @@ static PyObject *__pyx_pf_3lib_10_distances_12coord_transform(CYTHON_UNUSED PyOb
   return __pyx_r;
 }
 
-/* "src/numtools/distances.pyx":126
+/* "src/numtools/distances_openmp.pyx":127
  *                      <coordinate*> box.data)
  * 
  * def calc_bond_distance(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -1623,9 +1623,9 @@ static PyObject *__pyx_pf_3lib_10_distances_12coord_transform(CYTHON_UNUSED PyOb
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3lib_10_distances_15calc_bond_distance(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_3lib_10_distances_15calc_bond_distance = {"calc_bond_distance", (PyCFunction)__pyx_pw_3lib_10_distances_15calc_bond_distance, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_3lib_10_distances_15calc_bond_distance(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_3lib_17_distances_openmp_15calc_bond_distance(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_3lib_17_distances_openmp_15calc_bond_distance = {"calc_bond_distance", (PyCFunction)__pyx_pw_3lib_17_distances_openmp_15calc_bond_distance, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_3lib_17_distances_openmp_15calc_bond_distance(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyArrayObject *__pyx_v_coords1 = 0;
   PyArrayObject *__pyx_v_coords2 = 0;
   PyArrayObject *__pyx_v_results = 0;
@@ -1656,16 +1656,16 @@ static PyObject *__pyx_pw_3lib_10_distances_15calc_bond_distance(PyObject *__pyx
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_coords2)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("calc_bond_distance", 1, 3, 3, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 126; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("calc_bond_distance", 1, 3, 3, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 127; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_results)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("calc_bond_distance", 1, 3, 3, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 126; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("calc_bond_distance", 1, 3, 3, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 127; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "calc_bond_distance") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 126; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "calc_bond_distance") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 127; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
       goto __pyx_L5_argtuple_error;
@@ -1680,16 +1680,16 @@ static PyObject *__pyx_pw_3lib_10_distances_15calc_bond_distance(PyObject *__pyx
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("calc_bond_distance", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 126; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("calc_bond_distance", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 127; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
-  __Pyx_AddTraceback("lib._distances.calc_bond_distance", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("lib._distances_openmp.calc_bond_distance", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords1), __pyx_ptype_7c_numpy_ndarray, 1, "coords1", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 126; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords2), __pyx_ptype_7c_numpy_ndarray, 1, "coords2", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 127; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_results), __pyx_ptype_7c_numpy_ndarray, 1, "results", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 128; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_r = __pyx_pf_3lib_10_distances_14calc_bond_distance(__pyx_self, __pyx_v_coords1, __pyx_v_coords2, __pyx_v_results);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords1), __pyx_ptype_7c_numpy_ndarray, 1, "coords1", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 127; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords2), __pyx_ptype_7c_numpy_ndarray, 1, "coords2", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 128; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_results), __pyx_ptype_7c_numpy_ndarray, 1, "results", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 129; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_r = __pyx_pf_3lib_17_distances_openmp_14calc_bond_distance(__pyx_self, __pyx_v_coords1, __pyx_v_coords2, __pyx_v_results);
 
   /* function exit code */
   goto __pyx_L0;
@@ -1700,13 +1700,13 @@ static PyObject *__pyx_pw_3lib_10_distances_15calc_bond_distance(PyObject *__pyx
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3lib_10_distances_14calc_bond_distance(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coords1, PyArrayObject *__pyx_v_coords2, PyArrayObject *__pyx_v_results) {
+static PyObject *__pyx_pf_3lib_17_distances_openmp_14calc_bond_distance(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coords1, PyArrayObject *__pyx_v_coords2, PyArrayObject *__pyx_v_results) {
   int __pyx_v_numcoords;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("calc_bond_distance", 0);
 
-  /* "src/numtools/distances.pyx":130
+  /* "src/numtools/distances_openmp.pyx":131
  *                        c_numpy.ndarray results):
  *     cdef int numcoords
  *     numcoords = coords1.dimensions[0]             # <<<<<<<<<<<<<<
@@ -1715,7 +1715,7 @@ static PyObject *__pyx_pf_3lib_10_distances_14calc_bond_distance(CYTHON_UNUSED P
  */
   __pyx_v_numcoords = (__pyx_v_coords1->dimensions[0]);
 
-  /* "src/numtools/distances.pyx":132
+  /* "src/numtools/distances_openmp.pyx":133
  *     numcoords = coords1.dimensions[0]
  * 
  *     _calc_bond_distance(<coordinate*> coords1.data, <coordinate*> coords2.data,             # <<<<<<<<<<<<<<
@@ -1724,7 +1724,7 @@ static PyObject *__pyx_pf_3lib_10_distances_14calc_bond_distance(CYTHON_UNUSED P
  */
   _calc_bond_distance(((coordinate *)__pyx_v_coords1->data), ((coordinate *)__pyx_v_coords2->data), __pyx_v_numcoords, ((double *)__pyx_v_results->data));
 
-  /* "src/numtools/distances.pyx":126
+  /* "src/numtools/distances_openmp.pyx":127
  *                      <coordinate*> box.data)
  * 
  * def calc_bond_distance(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -1739,7 +1739,7 @@ static PyObject *__pyx_pf_3lib_10_distances_14calc_bond_distance(CYTHON_UNUSED P
   return __pyx_r;
 }
 
-/* "src/numtools/distances.pyx":136
+/* "src/numtools/distances_openmp.pyx":137
  *                         <double*>results.data)
  * 
  * def calc_bond_distance_ortho(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -1748,9 +1748,9 @@ static PyObject *__pyx_pf_3lib_10_distances_14calc_bond_distance(CYTHON_UNUSED P
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3lib_10_distances_17calc_bond_distance_ortho(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_3lib_10_distances_17calc_bond_distance_ortho = {"calc_bond_distance_ortho", (PyCFunction)__pyx_pw_3lib_10_distances_17calc_bond_distance_ortho, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_3lib_10_distances_17calc_bond_distance_ortho(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_3lib_17_distances_openmp_17calc_bond_distance_ortho(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_3lib_17_distances_openmp_17calc_bond_distance_ortho = {"calc_bond_distance_ortho", (PyCFunction)__pyx_pw_3lib_17_distances_openmp_17calc_bond_distance_ortho, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_3lib_17_distances_openmp_17calc_bond_distance_ortho(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyArrayObject *__pyx_v_coords1 = 0;
   PyArrayObject *__pyx_v_coords2 = 0;
   PyArrayObject *__pyx_v_box = 0;
@@ -1783,21 +1783,21 @@ static PyObject *__pyx_pw_3lib_10_distances_17calc_bond_distance_ortho(PyObject 
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_coords2)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("calc_bond_distance_ortho", 1, 4, 4, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 136; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("calc_bond_distance_ortho", 1, 4, 4, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 137; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_box)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("calc_bond_distance_ortho", 1, 4, 4, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 136; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("calc_bond_distance_ortho", 1, 4, 4, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 137; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  3:
         if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_results)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("calc_bond_distance_ortho", 1, 4, 4, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 136; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("calc_bond_distance_ortho", 1, 4, 4, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 137; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "calc_bond_distance_ortho") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 136; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "calc_bond_distance_ortho") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 137; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 4) {
       goto __pyx_L5_argtuple_error;
@@ -1814,17 +1814,17 @@ static PyObject *__pyx_pw_3lib_10_distances_17calc_bond_distance_ortho(PyObject 
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("calc_bond_distance_ortho", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 136; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("calc_bond_distance_ortho", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 137; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
-  __Pyx_AddTraceback("lib._distances.calc_bond_distance_ortho", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("lib._distances_openmp.calc_bond_distance_ortho", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords1), __pyx_ptype_7c_numpy_ndarray, 1, "coords1", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 136; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords2), __pyx_ptype_7c_numpy_ndarray, 1, "coords2", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 137; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_box), __pyx_ptype_7c_numpy_ndarray, 1, "box", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 138; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_results), __pyx_ptype_7c_numpy_ndarray, 1, "results", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 139; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_r = __pyx_pf_3lib_10_distances_16calc_bond_distance_ortho(__pyx_self, __pyx_v_coords1, __pyx_v_coords2, __pyx_v_box, __pyx_v_results);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords1), __pyx_ptype_7c_numpy_ndarray, 1, "coords1", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 137; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords2), __pyx_ptype_7c_numpy_ndarray, 1, "coords2", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 138; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_box), __pyx_ptype_7c_numpy_ndarray, 1, "box", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 139; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_results), __pyx_ptype_7c_numpy_ndarray, 1, "results", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 140; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_r = __pyx_pf_3lib_17_distances_openmp_16calc_bond_distance_ortho(__pyx_self, __pyx_v_coords1, __pyx_v_coords2, __pyx_v_box, __pyx_v_results);
 
   /* function exit code */
   goto __pyx_L0;
@@ -1835,13 +1835,13 @@ static PyObject *__pyx_pw_3lib_10_distances_17calc_bond_distance_ortho(PyObject 
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3lib_10_distances_16calc_bond_distance_ortho(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coords1, PyArrayObject *__pyx_v_coords2, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_results) {
+static PyObject *__pyx_pf_3lib_17_distances_openmp_16calc_bond_distance_ortho(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coords1, PyArrayObject *__pyx_v_coords2, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_results) {
   int __pyx_v_numcoords;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("calc_bond_distance_ortho", 0);
 
-  /* "src/numtools/distances.pyx":141
+  /* "src/numtools/distances_openmp.pyx":142
  *                              c_numpy.ndarray results):
  *     cdef int numcoords
  *     numcoords = coords1.dimensions[0]             # <<<<<<<<<<<<<<
@@ -1850,7 +1850,7 @@ static PyObject *__pyx_pf_3lib_10_distances_16calc_bond_distance_ortho(CYTHON_UN
  */
   __pyx_v_numcoords = (__pyx_v_coords1->dimensions[0]);
 
-  /* "src/numtools/distances.pyx":143
+  /* "src/numtools/distances_openmp.pyx":144
  *     numcoords = coords1.dimensions[0]
  * 
  *     _calc_bond_distance_ortho(<coordinate*> coords1.data, <coordinate*> coords2.data,             # <<<<<<<<<<<<<<
@@ -1859,7 +1859,7 @@ static PyObject *__pyx_pf_3lib_10_distances_16calc_bond_distance_ortho(CYTHON_UN
  */
   _calc_bond_distance_ortho(((coordinate *)__pyx_v_coords1->data), ((coordinate *)__pyx_v_coords2->data), __pyx_v_numcoords, ((float *)__pyx_v_box->data), ((double *)__pyx_v_results->data));
 
-  /* "src/numtools/distances.pyx":136
+  /* "src/numtools/distances_openmp.pyx":137
  *                         <double*>results.data)
  * 
  * def calc_bond_distance_ortho(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -1874,7 +1874,7 @@ static PyObject *__pyx_pf_3lib_10_distances_16calc_bond_distance_ortho(CYTHON_UN
   return __pyx_r;
 }
 
-/* "src/numtools/distances.pyx":148
+/* "src/numtools/distances_openmp.pyx":149
  *                               <double*>results.data)
  * 
  * def calc_bond_distance_triclinic(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -1883,9 +1883,9 @@ static PyObject *__pyx_pf_3lib_10_distances_16calc_bond_distance_ortho(CYTHON_UN
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3lib_10_distances_19calc_bond_distance_triclinic(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_3lib_10_distances_19calc_bond_distance_triclinic = {"calc_bond_distance_triclinic", (PyCFunction)__pyx_pw_3lib_10_distances_19calc_bond_distance_triclinic, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_3lib_10_distances_19calc_bond_distance_triclinic(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_3lib_17_distances_openmp_19calc_bond_distance_triclinic(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_3lib_17_distances_openmp_19calc_bond_distance_triclinic = {"calc_bond_distance_triclinic", (PyCFunction)__pyx_pw_3lib_17_distances_openmp_19calc_bond_distance_triclinic, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_3lib_17_distances_openmp_19calc_bond_distance_triclinic(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyArrayObject *__pyx_v_coords1 = 0;
   PyArrayObject *__pyx_v_coords2 = 0;
   PyArrayObject *__pyx_v_box = 0;
@@ -1918,21 +1918,21 @@ static PyObject *__pyx_pw_3lib_10_distances_19calc_bond_distance_triclinic(PyObj
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_coords2)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("calc_bond_distance_triclinic", 1, 4, 4, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 148; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("calc_bond_distance_triclinic", 1, 4, 4, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_box)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("calc_bond_distance_triclinic", 1, 4, 4, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 148; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("calc_bond_distance_triclinic", 1, 4, 4, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  3:
         if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_results)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("calc_bond_distance_triclinic", 1, 4, 4, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 148; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("calc_bond_distance_triclinic", 1, 4, 4, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "calc_bond_distance_triclinic") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 148; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "calc_bond_distance_triclinic") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 4) {
       goto __pyx_L5_argtuple_error;
@@ -1949,17 +1949,17 @@ static PyObject *__pyx_pw_3lib_10_distances_19calc_bond_distance_triclinic(PyObj
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("calc_bond_distance_triclinic", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 148; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("calc_bond_distance_triclinic", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
-  __Pyx_AddTraceback("lib._distances.calc_bond_distance_triclinic", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("lib._distances_openmp.calc_bond_distance_triclinic", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords1), __pyx_ptype_7c_numpy_ndarray, 1, "coords1", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 148; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords2), __pyx_ptype_7c_numpy_ndarray, 1, "coords2", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_box), __pyx_ptype_7c_numpy_ndarray, 1, "box", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 150; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_results), __pyx_ptype_7c_numpy_ndarray, 1, "results", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 151; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_r = __pyx_pf_3lib_10_distances_18calc_bond_distance_triclinic(__pyx_self, __pyx_v_coords1, __pyx_v_coords2, __pyx_v_box, __pyx_v_results);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords1), __pyx_ptype_7c_numpy_ndarray, 1, "coords1", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords2), __pyx_ptype_7c_numpy_ndarray, 1, "coords2", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 150; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_box), __pyx_ptype_7c_numpy_ndarray, 1, "box", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 151; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_results), __pyx_ptype_7c_numpy_ndarray, 1, "results", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 152; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_r = __pyx_pf_3lib_17_distances_openmp_18calc_bond_distance_triclinic(__pyx_self, __pyx_v_coords1, __pyx_v_coords2, __pyx_v_box, __pyx_v_results);
 
   /* function exit code */
   goto __pyx_L0;
@@ -1970,13 +1970,13 @@ static PyObject *__pyx_pw_3lib_10_distances_19calc_bond_distance_triclinic(PyObj
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3lib_10_distances_18calc_bond_distance_triclinic(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coords1, PyArrayObject *__pyx_v_coords2, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_results) {
+static PyObject *__pyx_pf_3lib_17_distances_openmp_18calc_bond_distance_triclinic(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coords1, PyArrayObject *__pyx_v_coords2, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_results) {
   int __pyx_v_numcoords;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("calc_bond_distance_triclinic", 0);
 
-  /* "src/numtools/distances.pyx":153
+  /* "src/numtools/distances_openmp.pyx":154
  *                                  c_numpy.ndarray results):
  *     cdef int numcoords
  *     numcoords = coords1.dimensions[0]             # <<<<<<<<<<<<<<
@@ -1985,7 +1985,7 @@ static PyObject *__pyx_pf_3lib_10_distances_18calc_bond_distance_triclinic(CYTHO
  */
   __pyx_v_numcoords = (__pyx_v_coords1->dimensions[0]);
 
-  /* "src/numtools/distances.pyx":155
+  /* "src/numtools/distances_openmp.pyx":156
  *     numcoords = coords1.dimensions[0]
  * 
  *     _calc_bond_distance_triclinic(<coordinate*> coords1.data, <coordinate*> coords2.data,             # <<<<<<<<<<<<<<
@@ -1994,7 +1994,7 @@ static PyObject *__pyx_pf_3lib_10_distances_18calc_bond_distance_triclinic(CYTHO
  */
   _calc_bond_distance_triclinic(((coordinate *)__pyx_v_coords1->data), ((coordinate *)__pyx_v_coords2->data), __pyx_v_numcoords, ((coordinate *)__pyx_v_box->data), ((double *)__pyx_v_results->data));
 
-  /* "src/numtools/distances.pyx":148
+  /* "src/numtools/distances_openmp.pyx":149
  *                               <double*>results.data)
  * 
  * def calc_bond_distance_triclinic(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -2009,7 +2009,7 @@ static PyObject *__pyx_pf_3lib_10_distances_18calc_bond_distance_triclinic(CYTHO
   return __pyx_r;
 }
 
-/* "src/numtools/distances.pyx":160
+/* "src/numtools/distances_openmp.pyx":161
  *                                   <double*>results.data)
  * 
  * def calc_angle(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -2018,9 +2018,9 @@ static PyObject *__pyx_pf_3lib_10_distances_18calc_bond_distance_triclinic(CYTHO
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3lib_10_distances_21calc_angle(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_3lib_10_distances_21calc_angle = {"calc_angle", (PyCFunction)__pyx_pw_3lib_10_distances_21calc_angle, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_3lib_10_distances_21calc_angle(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_3lib_17_distances_openmp_21calc_angle(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_3lib_17_distances_openmp_21calc_angle = {"calc_angle", (PyCFunction)__pyx_pw_3lib_17_distances_openmp_21calc_angle, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_3lib_17_distances_openmp_21calc_angle(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyArrayObject *__pyx_v_coords1 = 0;
   PyArrayObject *__pyx_v_coords2 = 0;
   PyArrayObject *__pyx_v_coords3 = 0;
@@ -2053,21 +2053,21 @@ static PyObject *__pyx_pw_3lib_10_distances_21calc_angle(PyObject *__pyx_self, P
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_coords2)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("calc_angle", 1, 4, 4, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 160; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("calc_angle", 1, 4, 4, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_coords3)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("calc_angle", 1, 4, 4, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 160; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("calc_angle", 1, 4, 4, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  3:
         if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_results)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("calc_angle", 1, 4, 4, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 160; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("calc_angle", 1, 4, 4, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "calc_angle") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 160; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "calc_angle") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 4) {
       goto __pyx_L5_argtuple_error;
@@ -2084,17 +2084,17 @@ static PyObject *__pyx_pw_3lib_10_distances_21calc_angle(PyObject *__pyx_self, P
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("calc_angle", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 160; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("calc_angle", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
-  __Pyx_AddTraceback("lib._distances.calc_angle", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("lib._distances_openmp.calc_angle", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords1), __pyx_ptype_7c_numpy_ndarray, 1, "coords1", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 160; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords2), __pyx_ptype_7c_numpy_ndarray, 1, "coords2", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords3), __pyx_ptype_7c_numpy_ndarray, 1, "coords3", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 162; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_results), __pyx_ptype_7c_numpy_ndarray, 1, "results", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 163; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_r = __pyx_pf_3lib_10_distances_20calc_angle(__pyx_self, __pyx_v_coords1, __pyx_v_coords2, __pyx_v_coords3, __pyx_v_results);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords1), __pyx_ptype_7c_numpy_ndarray, 1, "coords1", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords2), __pyx_ptype_7c_numpy_ndarray, 1, "coords2", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 162; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords3), __pyx_ptype_7c_numpy_ndarray, 1, "coords3", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 163; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_results), __pyx_ptype_7c_numpy_ndarray, 1, "results", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 164; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_r = __pyx_pf_3lib_17_distances_openmp_20calc_angle(__pyx_self, __pyx_v_coords1, __pyx_v_coords2, __pyx_v_coords3, __pyx_v_results);
 
   /* function exit code */
   goto __pyx_L0;
@@ -2105,13 +2105,13 @@ static PyObject *__pyx_pw_3lib_10_distances_21calc_angle(PyObject *__pyx_self, P
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3lib_10_distances_20calc_angle(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coords1, PyArrayObject *__pyx_v_coords2, PyArrayObject *__pyx_v_coords3, PyArrayObject *__pyx_v_results) {
+static PyObject *__pyx_pf_3lib_17_distances_openmp_20calc_angle(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coords1, PyArrayObject *__pyx_v_coords2, PyArrayObject *__pyx_v_coords3, PyArrayObject *__pyx_v_results) {
   int __pyx_v_numcoords;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("calc_angle", 0);
 
-  /* "src/numtools/distances.pyx":165
+  /* "src/numtools/distances_openmp.pyx":166
  *                c_numpy.ndarray results):
  *     cdef int numcoords
  *     numcoords = coords1.dimensions[0]             # <<<<<<<<<<<<<<
@@ -2120,7 +2120,7 @@ static PyObject *__pyx_pf_3lib_10_distances_20calc_angle(CYTHON_UNUSED PyObject 
  */
   __pyx_v_numcoords = (__pyx_v_coords1->dimensions[0]);
 
-  /* "src/numtools/distances.pyx":167
+  /* "src/numtools/distances_openmp.pyx":168
  *     numcoords = coords1.dimensions[0]
  * 
  *     _calc_angle(<coordinate*> coords1.data, <coordinate*> coords2.data,             # <<<<<<<<<<<<<<
@@ -2129,7 +2129,7 @@ static PyObject *__pyx_pf_3lib_10_distances_20calc_angle(CYTHON_UNUSED PyObject 
  */
   _calc_angle(((coordinate *)__pyx_v_coords1->data), ((coordinate *)__pyx_v_coords2->data), ((coordinate *)__pyx_v_coords3->data), __pyx_v_numcoords, ((double *)__pyx_v_results->data));
 
-  /* "src/numtools/distances.pyx":160
+  /* "src/numtools/distances_openmp.pyx":161
  *                                   <double*>results.data)
  * 
  * def calc_angle(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -2144,7 +2144,7 @@ static PyObject *__pyx_pf_3lib_10_distances_20calc_angle(CYTHON_UNUSED PyObject 
   return __pyx_r;
 }
 
-/* "src/numtools/distances.pyx":172
+/* "src/numtools/distances_openmp.pyx":173
  *                 <double*>results.data)
  * 
  * def calc_angle_ortho(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -2153,9 +2153,9 @@ static PyObject *__pyx_pf_3lib_10_distances_20calc_angle(CYTHON_UNUSED PyObject 
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3lib_10_distances_23calc_angle_ortho(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_3lib_10_distances_23calc_angle_ortho = {"calc_angle_ortho", (PyCFunction)__pyx_pw_3lib_10_distances_23calc_angle_ortho, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_3lib_10_distances_23calc_angle_ortho(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_3lib_17_distances_openmp_23calc_angle_ortho(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_3lib_17_distances_openmp_23calc_angle_ortho = {"calc_angle_ortho", (PyCFunction)__pyx_pw_3lib_17_distances_openmp_23calc_angle_ortho, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_3lib_17_distances_openmp_23calc_angle_ortho(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyArrayObject *__pyx_v_coords1 = 0;
   PyArrayObject *__pyx_v_coords2 = 0;
   PyArrayObject *__pyx_v_coords3 = 0;
@@ -2190,26 +2190,26 @@ static PyObject *__pyx_pw_3lib_10_distances_23calc_angle_ortho(PyObject *__pyx_s
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_coords2)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("calc_angle_ortho", 1, 5, 5, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 172; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("calc_angle_ortho", 1, 5, 5, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 173; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_coords3)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("calc_angle_ortho", 1, 5, 5, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 172; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("calc_angle_ortho", 1, 5, 5, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 173; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  3:
         if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_box)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("calc_angle_ortho", 1, 5, 5, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 172; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("calc_angle_ortho", 1, 5, 5, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 173; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  4:
         if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_results)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("calc_angle_ortho", 1, 5, 5, 4); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 172; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("calc_angle_ortho", 1, 5, 5, 4); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 173; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "calc_angle_ortho") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 172; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "calc_angle_ortho") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 173; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 5) {
       goto __pyx_L5_argtuple_error;
@@ -2228,18 +2228,18 @@ static PyObject *__pyx_pw_3lib_10_distances_23calc_angle_ortho(PyObject *__pyx_s
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("calc_angle_ortho", 1, 5, 5, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 172; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("calc_angle_ortho", 1, 5, 5, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 173; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
-  __Pyx_AddTraceback("lib._distances.calc_angle_ortho", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("lib._distances_openmp.calc_angle_ortho", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords1), __pyx_ptype_7c_numpy_ndarray, 1, "coords1", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 172; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords2), __pyx_ptype_7c_numpy_ndarray, 1, "coords2", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 173; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords3), __pyx_ptype_7c_numpy_ndarray, 1, "coords3", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 174; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_box), __pyx_ptype_7c_numpy_ndarray, 1, "box", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 175; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_results), __pyx_ptype_7c_numpy_ndarray, 1, "results", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 176; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_r = __pyx_pf_3lib_10_distances_22calc_angle_ortho(__pyx_self, __pyx_v_coords1, __pyx_v_coords2, __pyx_v_coords3, __pyx_v_box, __pyx_v_results);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords1), __pyx_ptype_7c_numpy_ndarray, 1, "coords1", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 173; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords2), __pyx_ptype_7c_numpy_ndarray, 1, "coords2", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 174; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords3), __pyx_ptype_7c_numpy_ndarray, 1, "coords3", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 175; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_box), __pyx_ptype_7c_numpy_ndarray, 1, "box", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 176; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_results), __pyx_ptype_7c_numpy_ndarray, 1, "results", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 177; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_r = __pyx_pf_3lib_17_distances_openmp_22calc_angle_ortho(__pyx_self, __pyx_v_coords1, __pyx_v_coords2, __pyx_v_coords3, __pyx_v_box, __pyx_v_results);
 
   /* function exit code */
   goto __pyx_L0;
@@ -2250,13 +2250,13 @@ static PyObject *__pyx_pw_3lib_10_distances_23calc_angle_ortho(PyObject *__pyx_s
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3lib_10_distances_22calc_angle_ortho(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coords1, PyArrayObject *__pyx_v_coords2, PyArrayObject *__pyx_v_coords3, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_results) {
+static PyObject *__pyx_pf_3lib_17_distances_openmp_22calc_angle_ortho(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coords1, PyArrayObject *__pyx_v_coords2, PyArrayObject *__pyx_v_coords3, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_results) {
   int __pyx_v_numcoords;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("calc_angle_ortho", 0);
 
-  /* "src/numtools/distances.pyx":178
+  /* "src/numtools/distances_openmp.pyx":179
  *                      c_numpy.ndarray results):
  *     cdef int numcoords
  *     numcoords = coords1.dimensions[0]             # <<<<<<<<<<<<<<
@@ -2265,7 +2265,7 @@ static PyObject *__pyx_pf_3lib_10_distances_22calc_angle_ortho(CYTHON_UNUSED PyO
  */
   __pyx_v_numcoords = (__pyx_v_coords1->dimensions[0]);
 
-  /* "src/numtools/distances.pyx":180
+  /* "src/numtools/distances_openmp.pyx":181
  *     numcoords = coords1.dimensions[0]
  * 
  *     _calc_angle_ortho(<coordinate*> coords1.data, <coordinate*> coords2.data,             # <<<<<<<<<<<<<<
@@ -2274,7 +2274,7 @@ static PyObject *__pyx_pf_3lib_10_distances_22calc_angle_ortho(CYTHON_UNUSED PyO
  */
   _calc_angle_ortho(((coordinate *)__pyx_v_coords1->data), ((coordinate *)__pyx_v_coords2->data), ((coordinate *)__pyx_v_coords3->data), __pyx_v_numcoords, ((float *)__pyx_v_box->data), ((double *)__pyx_v_results->data));
 
-  /* "src/numtools/distances.pyx":172
+  /* "src/numtools/distances_openmp.pyx":173
  *                 <double*>results.data)
  * 
  * def calc_angle_ortho(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -2289,7 +2289,7 @@ static PyObject *__pyx_pf_3lib_10_distances_22calc_angle_ortho(CYTHON_UNUSED PyO
   return __pyx_r;
 }
 
-/* "src/numtools/distances.pyx":186
+/* "src/numtools/distances_openmp.pyx":187
  *                       <double*>results.data)
  * 
  * def calc_angle_triclinic(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -2298,9 +2298,9 @@ static PyObject *__pyx_pf_3lib_10_distances_22calc_angle_ortho(CYTHON_UNUSED PyO
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3lib_10_distances_25calc_angle_triclinic(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_3lib_10_distances_25calc_angle_triclinic = {"calc_angle_triclinic", (PyCFunction)__pyx_pw_3lib_10_distances_25calc_angle_triclinic, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_3lib_10_distances_25calc_angle_triclinic(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_3lib_17_distances_openmp_25calc_angle_triclinic(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_3lib_17_distances_openmp_25calc_angle_triclinic = {"calc_angle_triclinic", (PyCFunction)__pyx_pw_3lib_17_distances_openmp_25calc_angle_triclinic, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_3lib_17_distances_openmp_25calc_angle_triclinic(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyArrayObject *__pyx_v_coords1 = 0;
   PyArrayObject *__pyx_v_coords2 = 0;
   PyArrayObject *__pyx_v_coords3 = 0;
@@ -2335,26 +2335,26 @@ static PyObject *__pyx_pw_3lib_10_distances_25calc_angle_triclinic(PyObject *__p
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_coords2)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("calc_angle_triclinic", 1, 5, 5, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 186; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("calc_angle_triclinic", 1, 5, 5, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 187; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_coords3)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("calc_angle_triclinic", 1, 5, 5, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 186; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("calc_angle_triclinic", 1, 5, 5, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 187; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  3:
         if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_box)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("calc_angle_triclinic", 1, 5, 5, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 186; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("calc_angle_triclinic", 1, 5, 5, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 187; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  4:
         if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_results)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("calc_angle_triclinic", 1, 5, 5, 4); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 186; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("calc_angle_triclinic", 1, 5, 5, 4); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 187; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "calc_angle_triclinic") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 186; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "calc_angle_triclinic") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 187; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 5) {
       goto __pyx_L5_argtuple_error;
@@ -2373,18 +2373,18 @@ static PyObject *__pyx_pw_3lib_10_distances_25calc_angle_triclinic(PyObject *__p
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("calc_angle_triclinic", 1, 5, 5, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 186; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("calc_angle_triclinic", 1, 5, 5, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 187; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
-  __Pyx_AddTraceback("lib._distances.calc_angle_triclinic", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("lib._distances_openmp.calc_angle_triclinic", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords1), __pyx_ptype_7c_numpy_ndarray, 1, "coords1", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 186; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords2), __pyx_ptype_7c_numpy_ndarray, 1, "coords2", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 187; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords3), __pyx_ptype_7c_numpy_ndarray, 1, "coords3", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 188; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_box), __pyx_ptype_7c_numpy_ndarray, 1, "box", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 189; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_results), __pyx_ptype_7c_numpy_ndarray, 1, "results", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 190; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_r = __pyx_pf_3lib_10_distances_24calc_angle_triclinic(__pyx_self, __pyx_v_coords1, __pyx_v_coords2, __pyx_v_coords3, __pyx_v_box, __pyx_v_results);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords1), __pyx_ptype_7c_numpy_ndarray, 1, "coords1", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 187; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords2), __pyx_ptype_7c_numpy_ndarray, 1, "coords2", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 188; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords3), __pyx_ptype_7c_numpy_ndarray, 1, "coords3", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 189; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_box), __pyx_ptype_7c_numpy_ndarray, 1, "box", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 190; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_results), __pyx_ptype_7c_numpy_ndarray, 1, "results", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 191; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_r = __pyx_pf_3lib_17_distances_openmp_24calc_angle_triclinic(__pyx_self, __pyx_v_coords1, __pyx_v_coords2, __pyx_v_coords3, __pyx_v_box, __pyx_v_results);
 
   /* function exit code */
   goto __pyx_L0;
@@ -2395,13 +2395,13 @@ static PyObject *__pyx_pw_3lib_10_distances_25calc_angle_triclinic(PyObject *__p
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3lib_10_distances_24calc_angle_triclinic(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coords1, PyArrayObject *__pyx_v_coords2, PyArrayObject *__pyx_v_coords3, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_results) {
+static PyObject *__pyx_pf_3lib_17_distances_openmp_24calc_angle_triclinic(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coords1, PyArrayObject *__pyx_v_coords2, PyArrayObject *__pyx_v_coords3, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_results) {
   int __pyx_v_numcoords;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("calc_angle_triclinic", 0);
 
-  /* "src/numtools/distances.pyx":192
+  /* "src/numtools/distances_openmp.pyx":193
  *                          c_numpy.ndarray results):
  *     cdef int numcoords
  *     numcoords = coords1.dimensions[0]             # <<<<<<<<<<<<<<
@@ -2410,7 +2410,7 @@ static PyObject *__pyx_pf_3lib_10_distances_24calc_angle_triclinic(CYTHON_UNUSED
  */
   __pyx_v_numcoords = (__pyx_v_coords1->dimensions[0]);
 
-  /* "src/numtools/distances.pyx":194
+  /* "src/numtools/distances_openmp.pyx":195
  *     numcoords = coords1.dimensions[0]
  * 
  *     _calc_angle_triclinic(<coordinate*> coords1.data, <coordinate*> coords2.data,             # <<<<<<<<<<<<<<
@@ -2419,7 +2419,7 @@ static PyObject *__pyx_pf_3lib_10_distances_24calc_angle_triclinic(CYTHON_UNUSED
  */
   _calc_angle_triclinic(((coordinate *)__pyx_v_coords1->data), ((coordinate *)__pyx_v_coords2->data), ((coordinate *)__pyx_v_coords3->data), __pyx_v_numcoords, ((coordinate *)__pyx_v_box->data), ((double *)__pyx_v_results->data));
 
-  /* "src/numtools/distances.pyx":186
+  /* "src/numtools/distances_openmp.pyx":187
  *                       <double*>results.data)
  * 
  * def calc_angle_triclinic(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -2434,7 +2434,7 @@ static PyObject *__pyx_pf_3lib_10_distances_24calc_angle_triclinic(CYTHON_UNUSED
   return __pyx_r;
 }
 
-/* "src/numtools/distances.pyx":200
+/* "src/numtools/distances_openmp.pyx":201
  *                           <double*>results.data)
  * 
  * def calc_torsion(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -2443,9 +2443,9 @@ static PyObject *__pyx_pf_3lib_10_distances_24calc_angle_triclinic(CYTHON_UNUSED
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3lib_10_distances_27calc_torsion(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_3lib_10_distances_27calc_torsion = {"calc_torsion", (PyCFunction)__pyx_pw_3lib_10_distances_27calc_torsion, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_3lib_10_distances_27calc_torsion(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_3lib_17_distances_openmp_27calc_torsion(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_3lib_17_distances_openmp_27calc_torsion = {"calc_torsion", (PyCFunction)__pyx_pw_3lib_17_distances_openmp_27calc_torsion, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_3lib_17_distances_openmp_27calc_torsion(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyArrayObject *__pyx_v_coords1 = 0;
   PyArrayObject *__pyx_v_coords2 = 0;
   PyArrayObject *__pyx_v_coords3 = 0;
@@ -2480,26 +2480,26 @@ static PyObject *__pyx_pw_3lib_10_distances_27calc_torsion(PyObject *__pyx_self,
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_coords2)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("calc_torsion", 1, 5, 5, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 200; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("calc_torsion", 1, 5, 5, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 201; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_coords3)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("calc_torsion", 1, 5, 5, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 200; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("calc_torsion", 1, 5, 5, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 201; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  3:
         if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_coords4)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("calc_torsion", 1, 5, 5, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 200; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("calc_torsion", 1, 5, 5, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 201; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  4:
         if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_results)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("calc_torsion", 1, 5, 5, 4); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 200; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("calc_torsion", 1, 5, 5, 4); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 201; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "calc_torsion") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 200; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "calc_torsion") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 201; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 5) {
       goto __pyx_L5_argtuple_error;
@@ -2518,18 +2518,18 @@ static PyObject *__pyx_pw_3lib_10_distances_27calc_torsion(PyObject *__pyx_self,
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("calc_torsion", 1, 5, 5, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 200; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("calc_torsion", 1, 5, 5, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 201; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
-  __Pyx_AddTraceback("lib._distances.calc_torsion", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("lib._distances_openmp.calc_torsion", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords1), __pyx_ptype_7c_numpy_ndarray, 1, "coords1", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 200; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords2), __pyx_ptype_7c_numpy_ndarray, 1, "coords2", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 201; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords3), __pyx_ptype_7c_numpy_ndarray, 1, "coords3", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 202; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords4), __pyx_ptype_7c_numpy_ndarray, 1, "coords4", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 203; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_results), __pyx_ptype_7c_numpy_ndarray, 1, "results", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 204; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_r = __pyx_pf_3lib_10_distances_26calc_torsion(__pyx_self, __pyx_v_coords1, __pyx_v_coords2, __pyx_v_coords3, __pyx_v_coords4, __pyx_v_results);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords1), __pyx_ptype_7c_numpy_ndarray, 1, "coords1", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 201; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords2), __pyx_ptype_7c_numpy_ndarray, 1, "coords2", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 202; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords3), __pyx_ptype_7c_numpy_ndarray, 1, "coords3", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 203; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords4), __pyx_ptype_7c_numpy_ndarray, 1, "coords4", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 204; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_results), __pyx_ptype_7c_numpy_ndarray, 1, "results", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 205; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_r = __pyx_pf_3lib_17_distances_openmp_26calc_torsion(__pyx_self, __pyx_v_coords1, __pyx_v_coords2, __pyx_v_coords3, __pyx_v_coords4, __pyx_v_results);
 
   /* function exit code */
   goto __pyx_L0;
@@ -2540,13 +2540,13 @@ static PyObject *__pyx_pw_3lib_10_distances_27calc_torsion(PyObject *__pyx_self,
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3lib_10_distances_26calc_torsion(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coords1, PyArrayObject *__pyx_v_coords2, PyArrayObject *__pyx_v_coords3, PyArrayObject *__pyx_v_coords4, PyArrayObject *__pyx_v_results) {
+static PyObject *__pyx_pf_3lib_17_distances_openmp_26calc_torsion(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coords1, PyArrayObject *__pyx_v_coords2, PyArrayObject *__pyx_v_coords3, PyArrayObject *__pyx_v_coords4, PyArrayObject *__pyx_v_results) {
   int __pyx_v_numcoords;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("calc_torsion", 0);
 
-  /* "src/numtools/distances.pyx":206
+  /* "src/numtools/distances_openmp.pyx":207
  *                  c_numpy.ndarray results):
  *     cdef int numcoords
  *     numcoords = coords1.dimensions[0]             # <<<<<<<<<<<<<<
@@ -2555,7 +2555,7 @@ static PyObject *__pyx_pf_3lib_10_distances_26calc_torsion(CYTHON_UNUSED PyObjec
  */
   __pyx_v_numcoords = (__pyx_v_coords1->dimensions[0]);
 
-  /* "src/numtools/distances.pyx":208
+  /* "src/numtools/distances_openmp.pyx":209
  *     numcoords = coords1.dimensions[0]
  * 
  *     _calc_torsion(<coordinate*> coords1.data, <coordinate*> coords2.data,             # <<<<<<<<<<<<<<
@@ -2564,7 +2564,7 @@ static PyObject *__pyx_pf_3lib_10_distances_26calc_torsion(CYTHON_UNUSED PyObjec
  */
   _calc_torsion(((coordinate *)__pyx_v_coords1->data), ((coordinate *)__pyx_v_coords2->data), ((coordinate *)__pyx_v_coords3->data), ((coordinate *)__pyx_v_coords4->data), __pyx_v_numcoords, ((double *)__pyx_v_results->data));
 
-  /* "src/numtools/distances.pyx":200
+  /* "src/numtools/distances_openmp.pyx":201
  *                           <double*>results.data)
  * 
  * def calc_torsion(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -2579,7 +2579,7 @@ static PyObject *__pyx_pf_3lib_10_distances_26calc_torsion(CYTHON_UNUSED PyObjec
   return __pyx_r;
 }
 
-/* "src/numtools/distances.pyx":213
+/* "src/numtools/distances_openmp.pyx":214
  *                   <double*>results.data)
  * 
  * def calc_torsion_ortho(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -2588,9 +2588,9 @@ static PyObject *__pyx_pf_3lib_10_distances_26calc_torsion(CYTHON_UNUSED PyObjec
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3lib_10_distances_29calc_torsion_ortho(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_3lib_10_distances_29calc_torsion_ortho = {"calc_torsion_ortho", (PyCFunction)__pyx_pw_3lib_10_distances_29calc_torsion_ortho, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_3lib_10_distances_29calc_torsion_ortho(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_3lib_17_distances_openmp_29calc_torsion_ortho(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_3lib_17_distances_openmp_29calc_torsion_ortho = {"calc_torsion_ortho", (PyCFunction)__pyx_pw_3lib_17_distances_openmp_29calc_torsion_ortho, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_3lib_17_distances_openmp_29calc_torsion_ortho(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyArrayObject *__pyx_v_coords1 = 0;
   PyArrayObject *__pyx_v_coords2 = 0;
   PyArrayObject *__pyx_v_coords3 = 0;
@@ -2627,31 +2627,31 @@ static PyObject *__pyx_pw_3lib_10_distances_29calc_torsion_ortho(PyObject *__pyx
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_coords2)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("calc_torsion_ortho", 1, 6, 6, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 213; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("calc_torsion_ortho", 1, 6, 6, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 214; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_coords3)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("calc_torsion_ortho", 1, 6, 6, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 213; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("calc_torsion_ortho", 1, 6, 6, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 214; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  3:
         if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_coords4)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("calc_torsion_ortho", 1, 6, 6, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 213; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("calc_torsion_ortho", 1, 6, 6, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 214; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  4:
         if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_box)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("calc_torsion_ortho", 1, 6, 6, 4); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 213; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("calc_torsion_ortho", 1, 6, 6, 4); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 214; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  5:
         if (likely((values[5] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_results)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("calc_torsion_ortho", 1, 6, 6, 5); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 213; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("calc_torsion_ortho", 1, 6, 6, 5); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 214; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "calc_torsion_ortho") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 213; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "calc_torsion_ortho") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 214; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 6) {
       goto __pyx_L5_argtuple_error;
@@ -2672,19 +2672,19 @@ static PyObject *__pyx_pw_3lib_10_distances_29calc_torsion_ortho(PyObject *__pyx
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("calc_torsion_ortho", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 213; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("calc_torsion_ortho", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 214; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
-  __Pyx_AddTraceback("lib._distances.calc_torsion_ortho", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("lib._distances_openmp.calc_torsion_ortho", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords1), __pyx_ptype_7c_numpy_ndarray, 1, "coords1", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 213; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords2), __pyx_ptype_7c_numpy_ndarray, 1, "coords2", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 214; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords3), __pyx_ptype_7c_numpy_ndarray, 1, "coords3", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 215; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords4), __pyx_ptype_7c_numpy_ndarray, 1, "coords4", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 216; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_box), __pyx_ptype_7c_numpy_ndarray, 1, "box", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 217; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_results), __pyx_ptype_7c_numpy_ndarray, 1, "results", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 218; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_r = __pyx_pf_3lib_10_distances_28calc_torsion_ortho(__pyx_self, __pyx_v_coords1, __pyx_v_coords2, __pyx_v_coords3, __pyx_v_coords4, __pyx_v_box, __pyx_v_results);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords1), __pyx_ptype_7c_numpy_ndarray, 1, "coords1", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 214; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords2), __pyx_ptype_7c_numpy_ndarray, 1, "coords2", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 215; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords3), __pyx_ptype_7c_numpy_ndarray, 1, "coords3", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 216; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords4), __pyx_ptype_7c_numpy_ndarray, 1, "coords4", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 217; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_box), __pyx_ptype_7c_numpy_ndarray, 1, "box", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 218; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_results), __pyx_ptype_7c_numpy_ndarray, 1, "results", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 219; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_r = __pyx_pf_3lib_17_distances_openmp_28calc_torsion_ortho(__pyx_self, __pyx_v_coords1, __pyx_v_coords2, __pyx_v_coords3, __pyx_v_coords4, __pyx_v_box, __pyx_v_results);
 
   /* function exit code */
   goto __pyx_L0;
@@ -2695,13 +2695,13 @@ static PyObject *__pyx_pw_3lib_10_distances_29calc_torsion_ortho(PyObject *__pyx
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3lib_10_distances_28calc_torsion_ortho(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coords1, PyArrayObject *__pyx_v_coords2, PyArrayObject *__pyx_v_coords3, PyArrayObject *__pyx_v_coords4, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_results) {
+static PyObject *__pyx_pf_3lib_17_distances_openmp_28calc_torsion_ortho(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coords1, PyArrayObject *__pyx_v_coords2, PyArrayObject *__pyx_v_coords3, PyArrayObject *__pyx_v_coords4, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_results) {
   int __pyx_v_numcoords;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("calc_torsion_ortho", 0);
 
-  /* "src/numtools/distances.pyx":220
+  /* "src/numtools/distances_openmp.pyx":221
  *                        c_numpy.ndarray results):
  *     cdef int numcoords
  *     numcoords = coords1.dimensions[0]             # <<<<<<<<<<<<<<
@@ -2710,7 +2710,7 @@ static PyObject *__pyx_pf_3lib_10_distances_28calc_torsion_ortho(CYTHON_UNUSED P
  */
   __pyx_v_numcoords = (__pyx_v_coords1->dimensions[0]);
 
-  /* "src/numtools/distances.pyx":222
+  /* "src/numtools/distances_openmp.pyx":223
  *     numcoords = coords1.dimensions[0]
  * 
  *     _calc_torsion_ortho(<coordinate*> coords1.data, <coordinate*> coords2.data,             # <<<<<<<<<<<<<<
@@ -2719,7 +2719,7 @@ static PyObject *__pyx_pf_3lib_10_distances_28calc_torsion_ortho(CYTHON_UNUSED P
  */
   _calc_torsion_ortho(((coordinate *)__pyx_v_coords1->data), ((coordinate *)__pyx_v_coords2->data), ((coordinate *)__pyx_v_coords3->data), ((coordinate *)__pyx_v_coords4->data), __pyx_v_numcoords, ((float *)__pyx_v_box->data), ((double *)__pyx_v_results->data));
 
-  /* "src/numtools/distances.pyx":213
+  /* "src/numtools/distances_openmp.pyx":214
  *                   <double*>results.data)
  * 
  * def calc_torsion_ortho(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -2734,7 +2734,7 @@ static PyObject *__pyx_pf_3lib_10_distances_28calc_torsion_ortho(CYTHON_UNUSED P
   return __pyx_r;
 }
 
-/* "src/numtools/distances.pyx":228
+/* "src/numtools/distances_openmp.pyx":229
  *                         <double*>results.data)
  * 
  * def calc_torsion_triclinic(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -2743,9 +2743,9 @@ static PyObject *__pyx_pf_3lib_10_distances_28calc_torsion_ortho(CYTHON_UNUSED P
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3lib_10_distances_31calc_torsion_triclinic(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_3lib_10_distances_31calc_torsion_triclinic = {"calc_torsion_triclinic", (PyCFunction)__pyx_pw_3lib_10_distances_31calc_torsion_triclinic, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_3lib_10_distances_31calc_torsion_triclinic(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_3lib_17_distances_openmp_31calc_torsion_triclinic(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_3lib_17_distances_openmp_31calc_torsion_triclinic = {"calc_torsion_triclinic", (PyCFunction)__pyx_pw_3lib_17_distances_openmp_31calc_torsion_triclinic, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_3lib_17_distances_openmp_31calc_torsion_triclinic(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyArrayObject *__pyx_v_coords1 = 0;
   PyArrayObject *__pyx_v_coords2 = 0;
   PyArrayObject *__pyx_v_coords3 = 0;
@@ -2782,31 +2782,31 @@ static PyObject *__pyx_pw_3lib_10_distances_31calc_torsion_triclinic(PyObject *_
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_coords2)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("calc_torsion_triclinic", 1, 6, 6, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 228; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("calc_torsion_triclinic", 1, 6, 6, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 229; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_coords3)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("calc_torsion_triclinic", 1, 6, 6, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 228; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("calc_torsion_triclinic", 1, 6, 6, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 229; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  3:
         if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_coords4)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("calc_torsion_triclinic", 1, 6, 6, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 228; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("calc_torsion_triclinic", 1, 6, 6, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 229; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  4:
         if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_box)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("calc_torsion_triclinic", 1, 6, 6, 4); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 228; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("calc_torsion_triclinic", 1, 6, 6, 4); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 229; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  5:
         if (likely((values[5] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_results)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("calc_torsion_triclinic", 1, 6, 6, 5); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 228; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("calc_torsion_triclinic", 1, 6, 6, 5); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 229; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "calc_torsion_triclinic") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 228; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "calc_torsion_triclinic") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 229; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 6) {
       goto __pyx_L5_argtuple_error;
@@ -2827,19 +2827,19 @@ static PyObject *__pyx_pw_3lib_10_distances_31calc_torsion_triclinic(PyObject *_
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("calc_torsion_triclinic", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 228; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("calc_torsion_triclinic", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 229; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
-  __Pyx_AddTraceback("lib._distances.calc_torsion_triclinic", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("lib._distances_openmp.calc_torsion_triclinic", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords1), __pyx_ptype_7c_numpy_ndarray, 1, "coords1", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 228; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords2), __pyx_ptype_7c_numpy_ndarray, 1, "coords2", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 229; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords3), __pyx_ptype_7c_numpy_ndarray, 1, "coords3", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 230; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords4), __pyx_ptype_7c_numpy_ndarray, 1, "coords4", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 231; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_box), __pyx_ptype_7c_numpy_ndarray, 1, "box", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 232; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_results), __pyx_ptype_7c_numpy_ndarray, 1, "results", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 233; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_r = __pyx_pf_3lib_10_distances_30calc_torsion_triclinic(__pyx_self, __pyx_v_coords1, __pyx_v_coords2, __pyx_v_coords3, __pyx_v_coords4, __pyx_v_box, __pyx_v_results);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords1), __pyx_ptype_7c_numpy_ndarray, 1, "coords1", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 229; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords2), __pyx_ptype_7c_numpy_ndarray, 1, "coords2", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 230; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords3), __pyx_ptype_7c_numpy_ndarray, 1, "coords3", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 231; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords4), __pyx_ptype_7c_numpy_ndarray, 1, "coords4", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 232; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_box), __pyx_ptype_7c_numpy_ndarray, 1, "box", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 233; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_results), __pyx_ptype_7c_numpy_ndarray, 1, "results", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 234; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_r = __pyx_pf_3lib_17_distances_openmp_30calc_torsion_triclinic(__pyx_self, __pyx_v_coords1, __pyx_v_coords2, __pyx_v_coords3, __pyx_v_coords4, __pyx_v_box, __pyx_v_results);
 
   /* function exit code */
   goto __pyx_L0;
@@ -2850,13 +2850,13 @@ static PyObject *__pyx_pw_3lib_10_distances_31calc_torsion_triclinic(PyObject *_
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3lib_10_distances_30calc_torsion_triclinic(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coords1, PyArrayObject *__pyx_v_coords2, PyArrayObject *__pyx_v_coords3, PyArrayObject *__pyx_v_coords4, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_results) {
+static PyObject *__pyx_pf_3lib_17_distances_openmp_30calc_torsion_triclinic(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coords1, PyArrayObject *__pyx_v_coords2, PyArrayObject *__pyx_v_coords3, PyArrayObject *__pyx_v_coords4, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_results) {
   int __pyx_v_numcoords;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("calc_torsion_triclinic", 0);
 
-  /* "src/numtools/distances.pyx":235
+  /* "src/numtools/distances_openmp.pyx":236
  *                            c_numpy.ndarray results):
  *     cdef int numcoords
  *     numcoords = coords1.dimensions[0]             # <<<<<<<<<<<<<<
@@ -2865,7 +2865,7 @@ static PyObject *__pyx_pf_3lib_10_distances_30calc_torsion_triclinic(CYTHON_UNUS
  */
   __pyx_v_numcoords = (__pyx_v_coords1->dimensions[0]);
 
-  /* "src/numtools/distances.pyx":237
+  /* "src/numtools/distances_openmp.pyx":238
  *     numcoords = coords1.dimensions[0]
  * 
  *     _calc_torsion_triclinic(<coordinate*> coords1.data, <coordinate*> coords2.data,             # <<<<<<<<<<<<<<
@@ -2874,7 +2874,7 @@ static PyObject *__pyx_pf_3lib_10_distances_30calc_torsion_triclinic(CYTHON_UNUS
  */
   _calc_torsion_triclinic(((coordinate *)__pyx_v_coords1->data), ((coordinate *)__pyx_v_coords2->data), ((coordinate *)__pyx_v_coords3->data), ((coordinate *)__pyx_v_coords4->data), __pyx_v_numcoords, ((coordinate *)__pyx_v_box->data), ((double *)__pyx_v_results->data));
 
-  /* "src/numtools/distances.pyx":228
+  /* "src/numtools/distances_openmp.pyx":229
  *                         <double*>results.data)
  * 
  * def calc_torsion_triclinic(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -2889,7 +2889,7 @@ static PyObject *__pyx_pf_3lib_10_distances_30calc_torsion_triclinic(CYTHON_UNUS
   return __pyx_r;
 }
 
-/* "src/numtools/distances.pyx":243
+/* "src/numtools/distances_openmp.pyx":244
  *                             <double*>results.data)
  * 
  * def ortho_pbc(c_numpy.ndarray coords,             # <<<<<<<<<<<<<<
@@ -2898,9 +2898,9 @@ static PyObject *__pyx_pf_3lib_10_distances_30calc_torsion_triclinic(CYTHON_UNUS
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3lib_10_distances_33ortho_pbc(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_3lib_10_distances_33ortho_pbc = {"ortho_pbc", (PyCFunction)__pyx_pw_3lib_10_distances_33ortho_pbc, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_3lib_10_distances_33ortho_pbc(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_3lib_17_distances_openmp_33ortho_pbc(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_3lib_17_distances_openmp_33ortho_pbc = {"ortho_pbc", (PyCFunction)__pyx_pw_3lib_17_distances_openmp_33ortho_pbc, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_3lib_17_distances_openmp_33ortho_pbc(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyArrayObject *__pyx_v_coords = 0;
   PyArrayObject *__pyx_v_box = 0;
   PyArrayObject *__pyx_v_box_inverse = 0;
@@ -2931,16 +2931,16 @@ static PyObject *__pyx_pw_3lib_10_distances_33ortho_pbc(PyObject *__pyx_self, Py
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_box)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("ortho_pbc", 1, 3, 3, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 243; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("ortho_pbc", 1, 3, 3, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 244; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_box_inverse)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("ortho_pbc", 1, 3, 3, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 243; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("ortho_pbc", 1, 3, 3, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 244; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "ortho_pbc") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 243; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "ortho_pbc") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 244; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
       goto __pyx_L5_argtuple_error;
@@ -2955,16 +2955,16 @@ static PyObject *__pyx_pw_3lib_10_distances_33ortho_pbc(PyObject *__pyx_self, Py
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("ortho_pbc", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 243; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("ortho_pbc", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 244; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
-  __Pyx_AddTraceback("lib._distances.ortho_pbc", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("lib._distances_openmp.ortho_pbc", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords), __pyx_ptype_7c_numpy_ndarray, 1, "coords", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 243; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_box), __pyx_ptype_7c_numpy_ndarray, 1, "box", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 244; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_box_inverse), __pyx_ptype_7c_numpy_ndarray, 1, "box_inverse", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 244; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_r = __pyx_pf_3lib_10_distances_32ortho_pbc(__pyx_self, __pyx_v_coords, __pyx_v_box, __pyx_v_box_inverse);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords), __pyx_ptype_7c_numpy_ndarray, 1, "coords", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 244; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_box), __pyx_ptype_7c_numpy_ndarray, 1, "box", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 245; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_box_inverse), __pyx_ptype_7c_numpy_ndarray, 1, "box_inverse", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 245; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_r = __pyx_pf_3lib_17_distances_openmp_32ortho_pbc(__pyx_self, __pyx_v_coords, __pyx_v_box, __pyx_v_box_inverse);
 
   /* function exit code */
   goto __pyx_L0;
@@ -2975,13 +2975,13 @@ static PyObject *__pyx_pw_3lib_10_distances_33ortho_pbc(PyObject *__pyx_self, Py
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3lib_10_distances_32ortho_pbc(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coords, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_box_inverse) {
+static PyObject *__pyx_pf_3lib_17_distances_openmp_32ortho_pbc(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coords, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_box_inverse) {
   int __pyx_v_numcoords;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("ortho_pbc", 0);
 
-  /* "src/numtools/distances.pyx":246
+  /* "src/numtools/distances_openmp.pyx":247
  *               c_numpy.ndarray box, c_numpy.ndarray box_inverse):
  *     cdef int numcoords
  *     numcoords = coords.dimensions[0]             # <<<<<<<<<<<<<<
@@ -2990,7 +2990,7 @@ static PyObject *__pyx_pf_3lib_10_distances_32ortho_pbc(CYTHON_UNUSED PyObject *
  */
   __pyx_v_numcoords = (__pyx_v_coords->dimensions[0]);
 
-  /* "src/numtools/distances.pyx":248
+  /* "src/numtools/distances_openmp.pyx":249
  *     numcoords = coords.dimensions[0]
  * 
  *     _ortho_pbc(<coordinate*> coords.data, numcoords,             # <<<<<<<<<<<<<<
@@ -2999,7 +2999,7 @@ static PyObject *__pyx_pf_3lib_10_distances_32ortho_pbc(CYTHON_UNUSED PyObject *
  */
   _ortho_pbc(((coordinate *)__pyx_v_coords->data), __pyx_v_numcoords, ((float *)__pyx_v_box->data), ((float *)__pyx_v_box_inverse->data));
 
-  /* "src/numtools/distances.pyx":243
+  /* "src/numtools/distances_openmp.pyx":244
  *                             <double*>results.data)
  * 
  * def ortho_pbc(c_numpy.ndarray coords,             # <<<<<<<<<<<<<<
@@ -3014,7 +3014,7 @@ static PyObject *__pyx_pf_3lib_10_distances_32ortho_pbc(CYTHON_UNUSED PyObject *
   return __pyx_r;
 }
 
-/* "src/numtools/distances.pyx":251
+/* "src/numtools/distances_openmp.pyx":252
  *                <float*>box.data, <float*>box_inverse.data)
  * 
  * def triclinic_pbc(c_numpy.ndarray coords,             # <<<<<<<<<<<<<<
@@ -3023,9 +3023,9 @@ static PyObject *__pyx_pf_3lib_10_distances_32ortho_pbc(CYTHON_UNUSED PyObject *
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3lib_10_distances_35triclinic_pbc(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_3lib_10_distances_35triclinic_pbc = {"triclinic_pbc", (PyCFunction)__pyx_pw_3lib_10_distances_35triclinic_pbc, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_3lib_10_distances_35triclinic_pbc(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_3lib_17_distances_openmp_35triclinic_pbc(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_3lib_17_distances_openmp_35triclinic_pbc = {"triclinic_pbc", (PyCFunction)__pyx_pw_3lib_17_distances_openmp_35triclinic_pbc, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_3lib_17_distances_openmp_35triclinic_pbc(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyArrayObject *__pyx_v_coords = 0;
   PyArrayObject *__pyx_v_box = 0;
   PyArrayObject *__pyx_v_box_inverse = 0;
@@ -3056,16 +3056,16 @@ static PyObject *__pyx_pw_3lib_10_distances_35triclinic_pbc(PyObject *__pyx_self
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_box)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("triclinic_pbc", 1, 3, 3, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 251; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("triclinic_pbc", 1, 3, 3, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 252; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_box_inverse)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("triclinic_pbc", 1, 3, 3, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 251; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("triclinic_pbc", 1, 3, 3, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 252; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "triclinic_pbc") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 251; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "triclinic_pbc") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 252; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
       goto __pyx_L5_argtuple_error;
@@ -3080,16 +3080,16 @@ static PyObject *__pyx_pw_3lib_10_distances_35triclinic_pbc(PyObject *__pyx_self
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("triclinic_pbc", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 251; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("triclinic_pbc", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 252; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
-  __Pyx_AddTraceback("lib._distances.triclinic_pbc", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("lib._distances_openmp.triclinic_pbc", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords), __pyx_ptype_7c_numpy_ndarray, 1, "coords", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 251; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_box), __pyx_ptype_7c_numpy_ndarray, 1, "box", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 252; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_box_inverse), __pyx_ptype_7c_numpy_ndarray, 1, "box_inverse", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 252; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_r = __pyx_pf_3lib_10_distances_34triclinic_pbc(__pyx_self, __pyx_v_coords, __pyx_v_box, __pyx_v_box_inverse);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coords), __pyx_ptype_7c_numpy_ndarray, 1, "coords", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 252; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_box), __pyx_ptype_7c_numpy_ndarray, 1, "box", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 253; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_box_inverse), __pyx_ptype_7c_numpy_ndarray, 1, "box_inverse", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 253; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_r = __pyx_pf_3lib_17_distances_openmp_34triclinic_pbc(__pyx_self, __pyx_v_coords, __pyx_v_box, __pyx_v_box_inverse);
 
   /* function exit code */
   goto __pyx_L0;
@@ -3100,13 +3100,13 @@ static PyObject *__pyx_pw_3lib_10_distances_35triclinic_pbc(PyObject *__pyx_self
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3lib_10_distances_34triclinic_pbc(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coords, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_box_inverse) {
+static PyObject *__pyx_pf_3lib_17_distances_openmp_34triclinic_pbc(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coords, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_box_inverse) {
   int __pyx_v_numcoords;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("triclinic_pbc", 0);
 
-  /* "src/numtools/distances.pyx":254
+  /* "src/numtools/distances_openmp.pyx":255
  *                   c_numpy.ndarray box, c_numpy.ndarray box_inverse):
  *     cdef int numcoords
  *     numcoords = coords.dimensions[0]             # <<<<<<<<<<<<<<
@@ -3115,7 +3115,7 @@ static PyObject *__pyx_pf_3lib_10_distances_34triclinic_pbc(CYTHON_UNUSED PyObje
  */
   __pyx_v_numcoords = (__pyx_v_coords->dimensions[0]);
 
-  /* "src/numtools/distances.pyx":256
+  /* "src/numtools/distances_openmp.pyx":257
  *     numcoords = coords.dimensions[0]
  * 
  *     _triclinic_pbc(<coordinate*> coords.data, numcoords,             # <<<<<<<<<<<<<<
@@ -3123,7 +3123,7 @@ static PyObject *__pyx_pf_3lib_10_distances_34triclinic_pbc(CYTHON_UNUSED PyObje
  */
   _triclinic_pbc(((coordinate *)__pyx_v_coords->data), __pyx_v_numcoords, ((coordinate *)__pyx_v_box->data), ((float *)__pyx_v_box_inverse->data));
 
-  /* "src/numtools/distances.pyx":251
+  /* "src/numtools/distances_openmp.pyx":252
  *                <float*>box.data, <float*>box_inverse.data)
  * 
  * def triclinic_pbc(c_numpy.ndarray coords,             # <<<<<<<<<<<<<<
@@ -3149,8 +3149,8 @@ static struct PyModuleDef __pyx_moduledef = {
   #else
     PyModuleDef_HEAD_INIT,
   #endif
-    "_distances",
-    __pyx_k_Distance_calculation_library_mo, /* m_doc */
+    "_distances_openmp",
+    __pyx_k_Parallel_distance_calculation_l, /* m_doc */
     -1, /* m_size */
     __pyx_methods /* m_methods */,
     NULL, /* m_reload */
@@ -3188,7 +3188,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_coords4, __pyx_k_coords4, sizeof(__pyx_k_coords4), 0, 0, 1, 1},
   {&__pyx_n_s_distnum, __pyx_k_distnum, sizeof(__pyx_k_distnum), 0, 0, 1, 1},
   {&__pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_k_home_richard_code_mdanalysis_pa, sizeof(__pyx_k_home_richard_code_mdanalysis_pa), 0, 0, 1, 0},
-  {&__pyx_n_s_lib__distances, __pyx_k_lib__distances, sizeof(__pyx_k_lib__distances), 0, 0, 1, 1},
+  {&__pyx_n_s_lib__distances_openmp, __pyx_k_lib__distances_openmp, sizeof(__pyx_k_lib__distances_openmp), 0, 0, 1, 1},
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
   {&__pyx_n_s_numcoords, __pyx_k_numcoords, sizeof(__pyx_k_numcoords), 0, 0, 1, 1},
   {&__pyx_n_s_ortho_pbc, __pyx_k_ortho_pbc, sizeof(__pyx_k_ortho_pbc), 0, 0, 1, 1},
@@ -3208,221 +3208,221 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "src/numtools/distances.pyx":53
+  /* "src/numtools/distances_openmp.pyx":54
  *     void _triclinic_pbc(coordinate* coords, int numcoords, coordinate* box, float* box_inverse)
  * 
  * def calc_distance_array(c_numpy.ndarray ref, c_numpy.ndarray conf,             # <<<<<<<<<<<<<<
  *                         c_numpy.ndarray result):
  *     cdef int confnum, refnum
  */
-  __pyx_tuple_ = PyTuple_Pack(5, __pyx_n_s_ref, __pyx_n_s_conf, __pyx_n_s_result, __pyx_n_s_confnum, __pyx_n_s_refnum); if (unlikely(!__pyx_tuple_)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 53; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple_ = PyTuple_Pack(5, __pyx_n_s_ref, __pyx_n_s_conf, __pyx_n_s_result, __pyx_n_s_confnum, __pyx_n_s_refnum); if (unlikely(!__pyx_tuple_)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 54; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple_);
   __Pyx_GIVEREF(__pyx_tuple_);
-  __pyx_codeobj__2 = (PyObject*)__Pyx_PyCode_New(3, 0, 5, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple_, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_calc_distance_array, 53, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 53; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__2 = (PyObject*)__Pyx_PyCode_New(3, 0, 5, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple_, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_calc_distance_array, 54, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 54; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "src/numtools/distances.pyx":63
+  /* "src/numtools/distances_openmp.pyx":64
  *                          <double*>result.data)
  * 
  * def calc_distance_array_ortho(c_numpy.ndarray ref, c_numpy.ndarray conf,             # <<<<<<<<<<<<<<
  *                               c_numpy.ndarray box,
  *                               c_numpy.ndarray result):
  */
-  __pyx_tuple__3 = PyTuple_Pack(6, __pyx_n_s_ref, __pyx_n_s_conf, __pyx_n_s_box, __pyx_n_s_result, __pyx_n_s_confnum, __pyx_n_s_refnum); if (unlikely(!__pyx_tuple__3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 63; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__3 = PyTuple_Pack(6, __pyx_n_s_ref, __pyx_n_s_conf, __pyx_n_s_box, __pyx_n_s_result, __pyx_n_s_confnum, __pyx_n_s_refnum); if (unlikely(!__pyx_tuple__3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 64; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__3);
   __Pyx_GIVEREF(__pyx_tuple__3);
-  __pyx_codeobj__4 = (PyObject*)__Pyx_PyCode_New(4, 0, 6, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__3, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_calc_distance_array_ortho, 63, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 63; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__4 = (PyObject*)__Pyx_PyCode_New(4, 0, 6, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__3, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_calc_distance_array_ortho, 64, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 64; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "src/numtools/distances.pyx":75
+  /* "src/numtools/distances_openmp.pyx":76
  *                                <double*>result.data)
  * 
  * def calc_distance_array_triclinic(c_numpy.ndarray ref, c_numpy.ndarray conf,             # <<<<<<<<<<<<<<
  *                                   c_numpy.ndarray box,
  *                                   c_numpy.ndarray result):
  */
-  __pyx_tuple__5 = PyTuple_Pack(6, __pyx_n_s_ref, __pyx_n_s_conf, __pyx_n_s_box, __pyx_n_s_result, __pyx_n_s_confnum, __pyx_n_s_refnum); if (unlikely(!__pyx_tuple__5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 75; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__5 = PyTuple_Pack(6, __pyx_n_s_ref, __pyx_n_s_conf, __pyx_n_s_box, __pyx_n_s_result, __pyx_n_s_confnum, __pyx_n_s_refnum); if (unlikely(!__pyx_tuple__5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 76; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__5);
   __Pyx_GIVEREF(__pyx_tuple__5);
-  __pyx_codeobj__6 = (PyObject*)__Pyx_PyCode_New(4, 0, 6, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__5, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_calc_distance_array_triclinic, 75, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 75; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__6 = (PyObject*)__Pyx_PyCode_New(4, 0, 6, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__5, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_calc_distance_array_triclinic, 76, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 76; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "src/numtools/distances.pyx":87
+  /* "src/numtools/distances_openmp.pyx":88
  *                                    <double*>result.data)
  * 
  * def calc_self_distance_array(c_numpy.ndarray ref,             # <<<<<<<<<<<<<<
  *                              c_numpy.ndarray result):
  *     cdef int refnum, distnum
  */
-  __pyx_tuple__7 = PyTuple_Pack(4, __pyx_n_s_ref, __pyx_n_s_result, __pyx_n_s_refnum, __pyx_n_s_distnum); if (unlikely(!__pyx_tuple__7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 87; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__7 = PyTuple_Pack(4, __pyx_n_s_ref, __pyx_n_s_result, __pyx_n_s_refnum, __pyx_n_s_distnum); if (unlikely(!__pyx_tuple__7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 88; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__7);
   __Pyx_GIVEREF(__pyx_tuple__7);
-  __pyx_codeobj__8 = (PyObject*)__Pyx_PyCode_New(2, 0, 4, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__7, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_calc_self_distance_array, 87, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 87; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__8 = (PyObject*)__Pyx_PyCode_New(2, 0, 4, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__7, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_calc_self_distance_array, 88, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 88; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "src/numtools/distances.pyx":96
+  /* "src/numtools/distances_openmp.pyx":97
  *                               <double*>result.data, distnum)
  * 
  * def calc_self_distance_array_ortho(c_numpy.ndarray ref,             # <<<<<<<<<<<<<<
  *                                    c_numpy.ndarray box,
  *                                    c_numpy.ndarray result):
  */
-  __pyx_tuple__9 = PyTuple_Pack(5, __pyx_n_s_ref, __pyx_n_s_box, __pyx_n_s_result, __pyx_n_s_refnum, __pyx_n_s_distnum); if (unlikely(!__pyx_tuple__9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 96; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__9 = PyTuple_Pack(5, __pyx_n_s_ref, __pyx_n_s_box, __pyx_n_s_result, __pyx_n_s_refnum, __pyx_n_s_distnum); if (unlikely(!__pyx_tuple__9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 97; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__9);
   __Pyx_GIVEREF(__pyx_tuple__9);
-  __pyx_codeobj__10 = (PyObject*)__Pyx_PyCode_New(3, 0, 5, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__9, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_calc_self_distance_array_ortho, 96, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 96; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__10 = (PyObject*)__Pyx_PyCode_New(3, 0, 5, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__9, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_calc_self_distance_array_ortho, 97, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 97; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "src/numtools/distances.pyx":107
+  /* "src/numtools/distances_openmp.pyx":108
  *                                     <double*>result.data, distnum)
  * 
  * def calc_self_distance_array_triclinic(c_numpy.ndarray ref,             # <<<<<<<<<<<<<<
  *                                        c_numpy.ndarray box,
  *                                        c_numpy.ndarray result):
  */
-  __pyx_tuple__11 = PyTuple_Pack(5, __pyx_n_s_ref, __pyx_n_s_box, __pyx_n_s_result, __pyx_n_s_refnum, __pyx_n_s_distnum); if (unlikely(!__pyx_tuple__11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 107; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__11 = PyTuple_Pack(5, __pyx_n_s_ref, __pyx_n_s_box, __pyx_n_s_result, __pyx_n_s_refnum, __pyx_n_s_distnum); if (unlikely(!__pyx_tuple__11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 108; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__11);
   __Pyx_GIVEREF(__pyx_tuple__11);
-  __pyx_codeobj__12 = (PyObject*)__Pyx_PyCode_New(3, 0, 5, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__11, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_calc_self_distance_array_triclin, 107, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 107; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__12 = (PyObject*)__Pyx_PyCode_New(3, 0, 5, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__11, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_calc_self_distance_array_triclin, 108, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 108; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "src/numtools/distances.pyx":118
+  /* "src/numtools/distances_openmp.pyx":119
  *                                         <double*>result.data, distnum)
  * 
  * def coord_transform(c_numpy.ndarray coords,             # <<<<<<<<<<<<<<
  *                     c_numpy.ndarray box):
  *     cdef int numcoords
  */
-  __pyx_tuple__13 = PyTuple_Pack(3, __pyx_n_s_coords, __pyx_n_s_box, __pyx_n_s_numcoords); if (unlikely(!__pyx_tuple__13)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 118; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__13 = PyTuple_Pack(3, __pyx_n_s_coords, __pyx_n_s_box, __pyx_n_s_numcoords); if (unlikely(!__pyx_tuple__13)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 119; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__13);
   __Pyx_GIVEREF(__pyx_tuple__13);
-  __pyx_codeobj__14 = (PyObject*)__Pyx_PyCode_New(2, 0, 3, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__13, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_coord_transform, 118, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__14)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 118; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__14 = (PyObject*)__Pyx_PyCode_New(2, 0, 3, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__13, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_coord_transform, 119, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__14)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 119; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "src/numtools/distances.pyx":126
+  /* "src/numtools/distances_openmp.pyx":127
  *                      <coordinate*> box.data)
  * 
  * def calc_bond_distance(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
  *                        c_numpy.ndarray coords2,
  *                        c_numpy.ndarray results):
  */
-  __pyx_tuple__15 = PyTuple_Pack(4, __pyx_n_s_coords1, __pyx_n_s_coords2, __pyx_n_s_results, __pyx_n_s_numcoords); if (unlikely(!__pyx_tuple__15)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 126; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__15 = PyTuple_Pack(4, __pyx_n_s_coords1, __pyx_n_s_coords2, __pyx_n_s_results, __pyx_n_s_numcoords); if (unlikely(!__pyx_tuple__15)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 127; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__15);
   __Pyx_GIVEREF(__pyx_tuple__15);
-  __pyx_codeobj__16 = (PyObject*)__Pyx_PyCode_New(3, 0, 4, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__15, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_calc_bond_distance, 126, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__16)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 126; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__16 = (PyObject*)__Pyx_PyCode_New(3, 0, 4, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__15, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_calc_bond_distance, 127, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__16)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 127; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "src/numtools/distances.pyx":136
+  /* "src/numtools/distances_openmp.pyx":137
  *                         <double*>results.data)
  * 
  * def calc_bond_distance_ortho(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
  *                              c_numpy.ndarray coords2,
  *                              c_numpy.ndarray box,
  */
-  __pyx_tuple__17 = PyTuple_Pack(5, __pyx_n_s_coords1, __pyx_n_s_coords2, __pyx_n_s_box, __pyx_n_s_results, __pyx_n_s_numcoords); if (unlikely(!__pyx_tuple__17)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 136; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__17 = PyTuple_Pack(5, __pyx_n_s_coords1, __pyx_n_s_coords2, __pyx_n_s_box, __pyx_n_s_results, __pyx_n_s_numcoords); if (unlikely(!__pyx_tuple__17)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 137; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__17);
   __Pyx_GIVEREF(__pyx_tuple__17);
-  __pyx_codeobj__18 = (PyObject*)__Pyx_PyCode_New(4, 0, 5, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__17, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_calc_bond_distance_ortho, 136, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__18)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 136; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__18 = (PyObject*)__Pyx_PyCode_New(4, 0, 5, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__17, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_calc_bond_distance_ortho, 137, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__18)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 137; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "src/numtools/distances.pyx":148
+  /* "src/numtools/distances_openmp.pyx":149
  *                               <double*>results.data)
  * 
  * def calc_bond_distance_triclinic(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
  *                                  c_numpy.ndarray coords2,
  *                                  c_numpy.ndarray box,
  */
-  __pyx_tuple__19 = PyTuple_Pack(5, __pyx_n_s_coords1, __pyx_n_s_coords2, __pyx_n_s_box, __pyx_n_s_results, __pyx_n_s_numcoords); if (unlikely(!__pyx_tuple__19)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 148; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__19 = PyTuple_Pack(5, __pyx_n_s_coords1, __pyx_n_s_coords2, __pyx_n_s_box, __pyx_n_s_results, __pyx_n_s_numcoords); if (unlikely(!__pyx_tuple__19)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__19);
   __Pyx_GIVEREF(__pyx_tuple__19);
-  __pyx_codeobj__20 = (PyObject*)__Pyx_PyCode_New(4, 0, 5, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__19, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_calc_bond_distance_triclinic, 148, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__20)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 148; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__20 = (PyObject*)__Pyx_PyCode_New(4, 0, 5, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__19, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_calc_bond_distance_triclinic, 149, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__20)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "src/numtools/distances.pyx":160
+  /* "src/numtools/distances_openmp.pyx":161
  *                                   <double*>results.data)
  * 
  * def calc_angle(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
  *                c_numpy.ndarray coords2,
  *                c_numpy.ndarray coords3,
  */
-  __pyx_tuple__21 = PyTuple_Pack(5, __pyx_n_s_coords1, __pyx_n_s_coords2, __pyx_n_s_coords3, __pyx_n_s_results, __pyx_n_s_numcoords); if (unlikely(!__pyx_tuple__21)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 160; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__21 = PyTuple_Pack(5, __pyx_n_s_coords1, __pyx_n_s_coords2, __pyx_n_s_coords3, __pyx_n_s_results, __pyx_n_s_numcoords); if (unlikely(!__pyx_tuple__21)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__21);
   __Pyx_GIVEREF(__pyx_tuple__21);
-  __pyx_codeobj__22 = (PyObject*)__Pyx_PyCode_New(4, 0, 5, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__21, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_calc_angle, 160, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__22)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 160; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__22 = (PyObject*)__Pyx_PyCode_New(4, 0, 5, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__21, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_calc_angle, 161, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__22)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "src/numtools/distances.pyx":172
+  /* "src/numtools/distances_openmp.pyx":173
  *                 <double*>results.data)
  * 
  * def calc_angle_ortho(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
  *                      c_numpy.ndarray coords2,
  *                      c_numpy.ndarray coords3,
  */
-  __pyx_tuple__23 = PyTuple_Pack(6, __pyx_n_s_coords1, __pyx_n_s_coords2, __pyx_n_s_coords3, __pyx_n_s_box, __pyx_n_s_results, __pyx_n_s_numcoords); if (unlikely(!__pyx_tuple__23)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 172; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__23 = PyTuple_Pack(6, __pyx_n_s_coords1, __pyx_n_s_coords2, __pyx_n_s_coords3, __pyx_n_s_box, __pyx_n_s_results, __pyx_n_s_numcoords); if (unlikely(!__pyx_tuple__23)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 173; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__23);
   __Pyx_GIVEREF(__pyx_tuple__23);
-  __pyx_codeobj__24 = (PyObject*)__Pyx_PyCode_New(5, 0, 6, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__23, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_calc_angle_ortho, 172, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__24)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 172; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__24 = (PyObject*)__Pyx_PyCode_New(5, 0, 6, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__23, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_calc_angle_ortho, 173, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__24)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 173; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "src/numtools/distances.pyx":186
+  /* "src/numtools/distances_openmp.pyx":187
  *                       <double*>results.data)
  * 
  * def calc_angle_triclinic(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
  *                          c_numpy.ndarray coords2,
  *                          c_numpy.ndarray coords3,
  */
-  __pyx_tuple__25 = PyTuple_Pack(6, __pyx_n_s_coords1, __pyx_n_s_coords2, __pyx_n_s_coords3, __pyx_n_s_box, __pyx_n_s_results, __pyx_n_s_numcoords); if (unlikely(!__pyx_tuple__25)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 186; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__25 = PyTuple_Pack(6, __pyx_n_s_coords1, __pyx_n_s_coords2, __pyx_n_s_coords3, __pyx_n_s_box, __pyx_n_s_results, __pyx_n_s_numcoords); if (unlikely(!__pyx_tuple__25)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 187; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__25);
   __Pyx_GIVEREF(__pyx_tuple__25);
-  __pyx_codeobj__26 = (PyObject*)__Pyx_PyCode_New(5, 0, 6, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__25, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_calc_angle_triclinic, 186, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__26)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 186; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__26 = (PyObject*)__Pyx_PyCode_New(5, 0, 6, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__25, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_calc_angle_triclinic, 187, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__26)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 187; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "src/numtools/distances.pyx":200
+  /* "src/numtools/distances_openmp.pyx":201
  *                           <double*>results.data)
  * 
  * def calc_torsion(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
  *                  c_numpy.ndarray coords2,
  *                  c_numpy.ndarray coords3,
  */
-  __pyx_tuple__27 = PyTuple_Pack(6, __pyx_n_s_coords1, __pyx_n_s_coords2, __pyx_n_s_coords3, __pyx_n_s_coords4, __pyx_n_s_results, __pyx_n_s_numcoords); if (unlikely(!__pyx_tuple__27)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 200; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__27 = PyTuple_Pack(6, __pyx_n_s_coords1, __pyx_n_s_coords2, __pyx_n_s_coords3, __pyx_n_s_coords4, __pyx_n_s_results, __pyx_n_s_numcoords); if (unlikely(!__pyx_tuple__27)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 201; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__27);
   __Pyx_GIVEREF(__pyx_tuple__27);
-  __pyx_codeobj__28 = (PyObject*)__Pyx_PyCode_New(5, 0, 6, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__27, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_calc_torsion, 200, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__28)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 200; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__28 = (PyObject*)__Pyx_PyCode_New(5, 0, 6, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__27, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_calc_torsion, 201, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__28)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 201; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "src/numtools/distances.pyx":213
+  /* "src/numtools/distances_openmp.pyx":214
  *                   <double*>results.data)
  * 
  * def calc_torsion_ortho(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
  *                        c_numpy.ndarray coords2,
  *                        c_numpy.ndarray coords3,
  */
-  __pyx_tuple__29 = PyTuple_Pack(7, __pyx_n_s_coords1, __pyx_n_s_coords2, __pyx_n_s_coords3, __pyx_n_s_coords4, __pyx_n_s_box, __pyx_n_s_results, __pyx_n_s_numcoords); if (unlikely(!__pyx_tuple__29)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 213; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__29 = PyTuple_Pack(7, __pyx_n_s_coords1, __pyx_n_s_coords2, __pyx_n_s_coords3, __pyx_n_s_coords4, __pyx_n_s_box, __pyx_n_s_results, __pyx_n_s_numcoords); if (unlikely(!__pyx_tuple__29)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 214; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__29);
   __Pyx_GIVEREF(__pyx_tuple__29);
-  __pyx_codeobj__30 = (PyObject*)__Pyx_PyCode_New(6, 0, 7, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__29, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_calc_torsion_ortho, 213, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__30)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 213; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__30 = (PyObject*)__Pyx_PyCode_New(6, 0, 7, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__29, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_calc_torsion_ortho, 214, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__30)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 214; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "src/numtools/distances.pyx":228
+  /* "src/numtools/distances_openmp.pyx":229
  *                         <double*>results.data)
  * 
  * def calc_torsion_triclinic(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
  *                            c_numpy.ndarray coords2,
  *                            c_numpy.ndarray coords3,
  */
-  __pyx_tuple__31 = PyTuple_Pack(7, __pyx_n_s_coords1, __pyx_n_s_coords2, __pyx_n_s_coords3, __pyx_n_s_coords4, __pyx_n_s_box, __pyx_n_s_results, __pyx_n_s_numcoords); if (unlikely(!__pyx_tuple__31)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 228; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__31 = PyTuple_Pack(7, __pyx_n_s_coords1, __pyx_n_s_coords2, __pyx_n_s_coords3, __pyx_n_s_coords4, __pyx_n_s_box, __pyx_n_s_results, __pyx_n_s_numcoords); if (unlikely(!__pyx_tuple__31)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 229; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__31);
   __Pyx_GIVEREF(__pyx_tuple__31);
-  __pyx_codeobj__32 = (PyObject*)__Pyx_PyCode_New(6, 0, 7, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__31, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_calc_torsion_triclinic, 228, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__32)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 228; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__32 = (PyObject*)__Pyx_PyCode_New(6, 0, 7, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__31, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_calc_torsion_triclinic, 229, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__32)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 229; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "src/numtools/distances.pyx":243
+  /* "src/numtools/distances_openmp.pyx":244
  *                             <double*>results.data)
  * 
  * def ortho_pbc(c_numpy.ndarray coords,             # <<<<<<<<<<<<<<
  *               c_numpy.ndarray box, c_numpy.ndarray box_inverse):
  *     cdef int numcoords
  */
-  __pyx_tuple__33 = PyTuple_Pack(4, __pyx_n_s_coords, __pyx_n_s_box, __pyx_n_s_box_inverse, __pyx_n_s_numcoords); if (unlikely(!__pyx_tuple__33)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 243; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__33 = PyTuple_Pack(4, __pyx_n_s_coords, __pyx_n_s_box, __pyx_n_s_box_inverse, __pyx_n_s_numcoords); if (unlikely(!__pyx_tuple__33)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 244; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__33);
   __Pyx_GIVEREF(__pyx_tuple__33);
-  __pyx_codeobj__34 = (PyObject*)__Pyx_PyCode_New(3, 0, 4, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__33, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_ortho_pbc, 243, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__34)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 243; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__34 = (PyObject*)__Pyx_PyCode_New(3, 0, 4, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__33, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_ortho_pbc, 244, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__34)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 244; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "src/numtools/distances.pyx":251
+  /* "src/numtools/distances_openmp.pyx":252
  *                <float*>box.data, <float*>box_inverse.data)
  * 
  * def triclinic_pbc(c_numpy.ndarray coords,             # <<<<<<<<<<<<<<
  *                   c_numpy.ndarray box, c_numpy.ndarray box_inverse):
  *     cdef int numcoords
  */
-  __pyx_tuple__35 = PyTuple_Pack(4, __pyx_n_s_coords, __pyx_n_s_box, __pyx_n_s_box_inverse, __pyx_n_s_numcoords); if (unlikely(!__pyx_tuple__35)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 251; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__35 = PyTuple_Pack(4, __pyx_n_s_coords, __pyx_n_s_box, __pyx_n_s_box_inverse, __pyx_n_s_numcoords); if (unlikely(!__pyx_tuple__35)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 252; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__35);
   __Pyx_GIVEREF(__pyx_tuple__35);
-  __pyx_codeobj__36 = (PyObject*)__Pyx_PyCode_New(3, 0, 4, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__35, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_triclinic_pbc, 251, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__36)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 251; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__36 = (PyObject*)__Pyx_PyCode_New(3, 0, 4, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__35, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_triclinic_pbc, 252, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__36)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 252; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -3438,11 +3438,11 @@ static int __Pyx_InitGlobals(void) {
 }
 
 #if PY_MAJOR_VERSION < 3
-PyMODINIT_FUNC init_distances(void); /*proto*/
-PyMODINIT_FUNC init_distances(void)
+PyMODINIT_FUNC init_distances_openmp(void); /*proto*/
+PyMODINIT_FUNC init_distances_openmp(void)
 #else
-PyMODINIT_FUNC PyInit__distances(void); /*proto*/
-PyMODINIT_FUNC PyInit__distances(void)
+PyMODINIT_FUNC PyInit__distances_openmp(void); /*proto*/
+PyMODINIT_FUNC PyInit__distances_openmp(void)
 #endif
 {
   PyObject *__pyx_t_1 = NULL;
@@ -3459,7 +3459,7 @@ PyMODINIT_FUNC PyInit__distances(void)
           Py_FatalError("failed to import 'refnanny' module");
   }
   #endif
-  __Pyx_RefNannySetupContext("PyMODINIT_FUNC PyInit__distances(void)", 0);
+  __Pyx_RefNannySetupContext("PyMODINIT_FUNC PyInit__distances_openmp(void)", 0);
   if ( __Pyx_check_binary_version() < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_empty_tuple = PyTuple_New(0); if (unlikely(!__pyx_empty_tuple)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_empty_bytes = PyBytes_FromStringAndSize("", 0); if (unlikely(!__pyx_empty_bytes)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
@@ -3481,7 +3481,7 @@ PyMODINIT_FUNC PyInit__distances(void)
   #endif
   /*--- Module creation code ---*/
   #if PY_MAJOR_VERSION < 3
-  __pyx_m = Py_InitModule4("_distances", __pyx_methods, __pyx_k_Distance_calculation_library_mo, 0, PYTHON_API_VERSION); Py_XINCREF(__pyx_m);
+  __pyx_m = Py_InitModule4("_distances_openmp", __pyx_methods, __pyx_k_Parallel_distance_calculation_l, 0, PYTHON_API_VERSION); Py_XINCREF(__pyx_m);
   #else
   __pyx_m = PyModule_Create(&__pyx_moduledef);
   #endif
@@ -3498,14 +3498,14 @@ PyMODINIT_FUNC PyInit__distances(void)
   #if PY_MAJOR_VERSION < 3 && (__PYX_DEFAULT_STRING_ENCODING_IS_ASCII || __PYX_DEFAULT_STRING_ENCODING_IS_DEFAULT)
   if (__Pyx_init_sys_getdefaultencoding_params() < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   #endif
-  if (__pyx_module_is_main_lib___distances) {
+  if (__pyx_module_is_main_lib___distances_openmp) {
     if (PyObject_SetAttrString(__pyx_m, "__name__", __pyx_n_s_main) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
   }
   #if PY_MAJOR_VERSION >= 3
   {
     PyObject *modules = PyImport_GetModuleDict(); if (unlikely(!modules)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    if (!PyDict_GetItemString(modules, "lib._distances")) {
-      if (unlikely(PyDict_SetItemString(modules, "lib._distances", __pyx_m) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (!PyDict_GetItemString(modules, "lib._distances_openmp")) {
+      if (unlikely(PyDict_SetItemString(modules, "lib._distances_openmp", __pyx_m) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
   }
   #endif
@@ -3523,7 +3523,7 @@ PyMODINIT_FUNC PyInit__distances(void)
   /*--- Function import code ---*/
   /*--- Execution code ---*/
 
-  /* "src/numtools/distances.pyx":26
+  /* "src/numtools/distances_openmp.pyx":27
  * 
  * cimport c_numpy
  * c_numpy.import_array()             # <<<<<<<<<<<<<<
@@ -3532,223 +3532,223 @@ PyMODINIT_FUNC PyInit__distances(void)
  */
   import_array();
 
-  /* "src/numtools/distances.pyx":53
+  /* "src/numtools/distances_openmp.pyx":54
  *     void _triclinic_pbc(coordinate* coords, int numcoords, coordinate* box, float* box_inverse)
  * 
  * def calc_distance_array(c_numpy.ndarray ref, c_numpy.ndarray conf,             # <<<<<<<<<<<<<<
  *                         c_numpy.ndarray result):
  *     cdef int confnum, refnum
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3lib_10_distances_1calc_distance_array, NULL, __pyx_n_s_lib__distances); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 53; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3lib_17_distances_openmp_1calc_distance_array, NULL, __pyx_n_s_lib__distances_openmp); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 54; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_calc_distance_array, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 53; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_calc_distance_array, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 54; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "src/numtools/distances.pyx":63
+  /* "src/numtools/distances_openmp.pyx":64
  *                          <double*>result.data)
  * 
  * def calc_distance_array_ortho(c_numpy.ndarray ref, c_numpy.ndarray conf,             # <<<<<<<<<<<<<<
  *                               c_numpy.ndarray box,
  *                               c_numpy.ndarray result):
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3lib_10_distances_3calc_distance_array_ortho, NULL, __pyx_n_s_lib__distances); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 63; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3lib_17_distances_openmp_3calc_distance_array_ortho, NULL, __pyx_n_s_lib__distances_openmp); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 64; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_calc_distance_array_ortho, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 63; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_calc_distance_array_ortho, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 64; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "src/numtools/distances.pyx":75
+  /* "src/numtools/distances_openmp.pyx":76
  *                                <double*>result.data)
  * 
  * def calc_distance_array_triclinic(c_numpy.ndarray ref, c_numpy.ndarray conf,             # <<<<<<<<<<<<<<
  *                                   c_numpy.ndarray box,
  *                                   c_numpy.ndarray result):
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3lib_10_distances_5calc_distance_array_triclinic, NULL, __pyx_n_s_lib__distances); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 75; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3lib_17_distances_openmp_5calc_distance_array_triclinic, NULL, __pyx_n_s_lib__distances_openmp); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 76; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_calc_distance_array_triclinic, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 75; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_calc_distance_array_triclinic, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 76; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "src/numtools/distances.pyx":87
+  /* "src/numtools/distances_openmp.pyx":88
  *                                    <double*>result.data)
  * 
  * def calc_self_distance_array(c_numpy.ndarray ref,             # <<<<<<<<<<<<<<
  *                              c_numpy.ndarray result):
  *     cdef int refnum, distnum
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3lib_10_distances_7calc_self_distance_array, NULL, __pyx_n_s_lib__distances); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 87; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3lib_17_distances_openmp_7calc_self_distance_array, NULL, __pyx_n_s_lib__distances_openmp); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 88; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_calc_self_distance_array, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 87; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_calc_self_distance_array, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 88; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "src/numtools/distances.pyx":96
+  /* "src/numtools/distances_openmp.pyx":97
  *                               <double*>result.data, distnum)
  * 
  * def calc_self_distance_array_ortho(c_numpy.ndarray ref,             # <<<<<<<<<<<<<<
  *                                    c_numpy.ndarray box,
  *                                    c_numpy.ndarray result):
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3lib_10_distances_9calc_self_distance_array_ortho, NULL, __pyx_n_s_lib__distances); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 96; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3lib_17_distances_openmp_9calc_self_distance_array_ortho, NULL, __pyx_n_s_lib__distances_openmp); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 97; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_calc_self_distance_array_ortho, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 96; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_calc_self_distance_array_ortho, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 97; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "src/numtools/distances.pyx":107
+  /* "src/numtools/distances_openmp.pyx":108
  *                                     <double*>result.data, distnum)
  * 
  * def calc_self_distance_array_triclinic(c_numpy.ndarray ref,             # <<<<<<<<<<<<<<
  *                                        c_numpy.ndarray box,
  *                                        c_numpy.ndarray result):
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3lib_10_distances_11calc_self_distance_array_triclinic, NULL, __pyx_n_s_lib__distances); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 107; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3lib_17_distances_openmp_11calc_self_distance_array_triclinic, NULL, __pyx_n_s_lib__distances_openmp); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 108; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_calc_self_distance_array_triclin, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 107; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_calc_self_distance_array_triclin, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 108; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "src/numtools/distances.pyx":118
+  /* "src/numtools/distances_openmp.pyx":119
  *                                         <double*>result.data, distnum)
  * 
  * def coord_transform(c_numpy.ndarray coords,             # <<<<<<<<<<<<<<
  *                     c_numpy.ndarray box):
  *     cdef int numcoords
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3lib_10_distances_13coord_transform, NULL, __pyx_n_s_lib__distances); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 118; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3lib_17_distances_openmp_13coord_transform, NULL, __pyx_n_s_lib__distances_openmp); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 119; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_coord_transform, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 118; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_coord_transform, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 119; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "src/numtools/distances.pyx":126
+  /* "src/numtools/distances_openmp.pyx":127
  *                      <coordinate*> box.data)
  * 
  * def calc_bond_distance(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
  *                        c_numpy.ndarray coords2,
  *                        c_numpy.ndarray results):
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3lib_10_distances_15calc_bond_distance, NULL, __pyx_n_s_lib__distances); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 126; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3lib_17_distances_openmp_15calc_bond_distance, NULL, __pyx_n_s_lib__distances_openmp); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 127; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_calc_bond_distance, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 126; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_calc_bond_distance, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 127; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "src/numtools/distances.pyx":136
+  /* "src/numtools/distances_openmp.pyx":137
  *                         <double*>results.data)
  * 
  * def calc_bond_distance_ortho(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
  *                              c_numpy.ndarray coords2,
  *                              c_numpy.ndarray box,
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3lib_10_distances_17calc_bond_distance_ortho, NULL, __pyx_n_s_lib__distances); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 136; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3lib_17_distances_openmp_17calc_bond_distance_ortho, NULL, __pyx_n_s_lib__distances_openmp); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 137; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_calc_bond_distance_ortho, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 136; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_calc_bond_distance_ortho, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 137; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "src/numtools/distances.pyx":148
+  /* "src/numtools/distances_openmp.pyx":149
  *                               <double*>results.data)
  * 
  * def calc_bond_distance_triclinic(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
  *                                  c_numpy.ndarray coords2,
  *                                  c_numpy.ndarray box,
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3lib_10_distances_19calc_bond_distance_triclinic, NULL, __pyx_n_s_lib__distances); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 148; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3lib_17_distances_openmp_19calc_bond_distance_triclinic, NULL, __pyx_n_s_lib__distances_openmp); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_calc_bond_distance_triclinic, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 148; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_calc_bond_distance_triclinic, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "src/numtools/distances.pyx":160
+  /* "src/numtools/distances_openmp.pyx":161
  *                                   <double*>results.data)
  * 
  * def calc_angle(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
  *                c_numpy.ndarray coords2,
  *                c_numpy.ndarray coords3,
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3lib_10_distances_21calc_angle, NULL, __pyx_n_s_lib__distances); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 160; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3lib_17_distances_openmp_21calc_angle, NULL, __pyx_n_s_lib__distances_openmp); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_calc_angle, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 160; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_calc_angle, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "src/numtools/distances.pyx":172
+  /* "src/numtools/distances_openmp.pyx":173
  *                 <double*>results.data)
  * 
  * def calc_angle_ortho(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
  *                      c_numpy.ndarray coords2,
  *                      c_numpy.ndarray coords3,
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3lib_10_distances_23calc_angle_ortho, NULL, __pyx_n_s_lib__distances); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 172; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3lib_17_distances_openmp_23calc_angle_ortho, NULL, __pyx_n_s_lib__distances_openmp); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 173; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_calc_angle_ortho, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 172; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_calc_angle_ortho, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 173; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "src/numtools/distances.pyx":186
+  /* "src/numtools/distances_openmp.pyx":187
  *                       <double*>results.data)
  * 
  * def calc_angle_triclinic(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
  *                          c_numpy.ndarray coords2,
  *                          c_numpy.ndarray coords3,
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3lib_10_distances_25calc_angle_triclinic, NULL, __pyx_n_s_lib__distances); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 186; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3lib_17_distances_openmp_25calc_angle_triclinic, NULL, __pyx_n_s_lib__distances_openmp); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 187; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_calc_angle_triclinic, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 186; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_calc_angle_triclinic, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 187; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "src/numtools/distances.pyx":200
+  /* "src/numtools/distances_openmp.pyx":201
  *                           <double*>results.data)
  * 
  * def calc_torsion(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
  *                  c_numpy.ndarray coords2,
  *                  c_numpy.ndarray coords3,
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3lib_10_distances_27calc_torsion, NULL, __pyx_n_s_lib__distances); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 200; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3lib_17_distances_openmp_27calc_torsion, NULL, __pyx_n_s_lib__distances_openmp); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 201; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_calc_torsion, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 200; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_calc_torsion, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 201; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "src/numtools/distances.pyx":213
+  /* "src/numtools/distances_openmp.pyx":214
  *                   <double*>results.data)
  * 
  * def calc_torsion_ortho(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
  *                        c_numpy.ndarray coords2,
  *                        c_numpy.ndarray coords3,
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3lib_10_distances_29calc_torsion_ortho, NULL, __pyx_n_s_lib__distances); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 213; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3lib_17_distances_openmp_29calc_torsion_ortho, NULL, __pyx_n_s_lib__distances_openmp); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 214; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_calc_torsion_ortho, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 213; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_calc_torsion_ortho, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 214; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "src/numtools/distances.pyx":228
+  /* "src/numtools/distances_openmp.pyx":229
  *                         <double*>results.data)
  * 
  * def calc_torsion_triclinic(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
  *                            c_numpy.ndarray coords2,
  *                            c_numpy.ndarray coords3,
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3lib_10_distances_31calc_torsion_triclinic, NULL, __pyx_n_s_lib__distances); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 228; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3lib_17_distances_openmp_31calc_torsion_triclinic, NULL, __pyx_n_s_lib__distances_openmp); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 229; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_calc_torsion_triclinic, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 228; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_calc_torsion_triclinic, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 229; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "src/numtools/distances.pyx":243
+  /* "src/numtools/distances_openmp.pyx":244
  *                             <double*>results.data)
  * 
  * def ortho_pbc(c_numpy.ndarray coords,             # <<<<<<<<<<<<<<
  *               c_numpy.ndarray box, c_numpy.ndarray box_inverse):
  *     cdef int numcoords
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3lib_10_distances_33ortho_pbc, NULL, __pyx_n_s_lib__distances); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 243; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3lib_17_distances_openmp_33ortho_pbc, NULL, __pyx_n_s_lib__distances_openmp); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 244; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_ortho_pbc, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 243; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_ortho_pbc, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 244; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "src/numtools/distances.pyx":251
+  /* "src/numtools/distances_openmp.pyx":252
  *                <float*>box.data, <float*>box_inverse.data)
  * 
  * def triclinic_pbc(c_numpy.ndarray coords,             # <<<<<<<<<<<<<<
  *                   c_numpy.ndarray box, c_numpy.ndarray box_inverse):
  *     cdef int numcoords
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3lib_10_distances_35triclinic_pbc, NULL, __pyx_n_s_lib__distances); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 251; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3lib_17_distances_openmp_35triclinic_pbc, NULL, __pyx_n_s_lib__distances_openmp); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 252; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_triclinic_pbc, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 251; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_triclinic_pbc, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 252; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "src/numtools/distances.pyx":1
+  /* "src/numtools/distances_openmp.pyx":1
  * # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-             # <<<<<<<<<<<<<<
  * # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
  * #
@@ -3765,11 +3765,11 @@ PyMODINIT_FUNC PyInit__distances(void)
   __Pyx_XDECREF(__pyx_t_1);
   if (__pyx_m) {
     if (__pyx_d) {
-      __Pyx_AddTraceback("init lib._distances", __pyx_clineno, __pyx_lineno, __pyx_filename);
+      __Pyx_AddTraceback("init lib._distances_openmp", __pyx_clineno, __pyx_lineno, __pyx_filename);
     }
     Py_DECREF(__pyx_m); __pyx_m = 0;
   } else if (!PyErr_Occurred()) {
-    PyErr_SetString(PyExc_ImportError, "init lib._distances");
+    PyErr_SetString(PyExc_ImportError, "init lib._distances_openmp");
   }
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
