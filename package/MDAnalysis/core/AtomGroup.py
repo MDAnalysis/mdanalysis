@@ -3303,6 +3303,7 @@ class Universe(object):
 
         if len(args) == 0:
             # create an empty universe
+            self._topology = dict()
             self.atoms = AtomGroup([])
             return
 
