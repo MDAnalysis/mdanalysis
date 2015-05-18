@@ -107,10 +107,10 @@ def _check_array(coords, desc):
        (n,3) in shape
        float32 data
     """
-    if (coords.nd != 2 or coords.dimensions[1] != 3):
+    if (coords.ndim != 2 or coords.shape[1] != 3):
         raise ValueError("{} must be a sequence of 3 dimensional coordinates"
                          "".format(desc))
-    if conf.dtype != numpy.float32:
+    if coords.dtype != numpy.float32:
         raise TypeError("{} must be of type float32".format(desc))
 
 
@@ -121,12 +121,20 @@ def _check_results_array(results, size):
       same shape as size
       float64
     """
-    if (results.nd != 2 or results.shape != size):
+    if results.shape != size:
         raise ValueError("Result array has incorrect size,"
-                         "should be {}".format(size))
+                         "should be {}, got {}".format(size, results.shape))
     if results.dtype != numpy.float64:
         raise TypeError("Results array must be of type float64")
 
+
+def _check_lengths_match(*arrays):
+    """Check all arrays are same shape"""
+    ref = arrays[0].shape
+
+    if not all([a.shape == ref for a in arrays]):
+        raise ValueError("Input arrays must all be same shape"
+                         "Got {}".format([a.shape for a in arrays]))
 
 def distance_array(reference, configuration, box=None, result=None):
     """Calculate all distances between a reference set and another configuration.
@@ -169,7 +177,7 @@ def distance_array(reference, configuration, box=None, result=None):
     _check_array(conf, 'conf')
     _check_array(ref, 'ref')
 
-    if box:
+    if box is not None:
         boxtype = _box_check(box)
         # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
         if (boxtype == 'tri_box'):
@@ -177,16 +185,16 @@ def distance_array(reference, configuration, box=None, result=None):
         if (boxtype == 'tri_vecs_bad'):
             box = triclinic_vectors(triclinic_box(box[0], box[1], box[2]))
 
-    confnum = conf.dimensions[0]
-    refnum = ref.dimensions[0]
+    confnum = conf.shape[0]
+    refnum = ref.shape[0]
 
-    if result:
+    if result is not None:
         _check_results_array(result, (refnum, confnum))
         distances = numpy.asarray(result)
     else:
         distances = numpy.zeros((refnum, confnum), numpy.float64)
 
-    if box:
+    if box is not None:
         if boxtype == 'ortho':
             calc_distance_array_ortho(ref, conf, box, distances)
         else:
@@ -236,7 +244,7 @@ def self_distance_array(reference, box=None, result=None):
     _check_array(ref, 'ref')
 
     with_PBC = (box is not None)
-    if box:
+    if box is not None:
         boxtype = _box_check(box)
         # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
         if (boxtype == 'tri_box'):
@@ -244,16 +252,16 @@ def self_distance_array(reference, box=None, result=None):
         if (boxtype == 'tri_vecs_bad'):
             box = triclinic_vectors(triclinic_box(box[0], box[1], box[2]))
 
-    refnum = ref.dimensions[0]
-    distnum = (refnum * (refnum - 1)) / 2
+    refnum = ref.shape[0]
+    distnum = refnum * (refnum - 1) / 2
 
-    if result:
-        _check_results_array(results, (distnum,))
+    if result is not None:
+        _check_results_array(result, (distnum,))
         distances = numpy.asarray(result)
     else:
         distances = numpy.zeros((distnum,), numpy.float64)
 
-    if box:
+    if box is not None:
         if boxtype == 'ortho':
             calc_self_distance_array_ortho(ref, box, distances)
         else:
@@ -282,7 +290,7 @@ def transform_RtoS(inputcoords, box):
                       An n x 3 array of fractional coordiantes
     """
     coords = inputcoords.copy('C')
-    numcoords = coords.dimensions[0]
+    numcoords = coords.shape[0]
 
     boxtype = _box_check(box)
     # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
@@ -322,7 +330,7 @@ def transform_StoR(inputcoords, box):
                       An n x 3 array of fracional coordiantes
     """
     coords = inputcoords.copy('C')
-    numcoords = coords.dimensions[0]
+    numcoords = coords.shape[0]
 
     boxtype = _box_check(box)
     # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
@@ -379,13 +387,11 @@ def calc_bonds(coords1, coords2, box=None, result=None):
     atom1 = coords1.copy('C')
     atom2 = coords2.copy('C')
 
-    _check_array(atom1)
-    _check_array(atom2)
+    _check_array(atom1, 'atom1')
+    _check_array(atom2, 'atom2')
+    _check_lengths_match(atom1, atom2)
 
-    if (atom1.dimensions[0] != atom2.dimensions[0]):
-        raise ValueError("coords1 and coords2 of different size")
-
-    if box:
+    if box is not None:
         boxtype = _box_check(box)
         # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
         if (boxtype == 'tri_box'):
@@ -393,21 +399,21 @@ def calc_bonds(coords1, coords2, box=None, result=None):
         if (boxtype == 'tri_vecs_bad'):
             box = triclinic_vectors(triclinic_box(box[0], box[1], box[2]))
 
-    numatom = atom1.dimensions[0]
+    numatom = atom1.shape[0]
 
-    if result:
+    if result is not None:
         _check_results_array(result, (numatom,))
         distances = numpy.asarray(result)
     else:
         distances = numpy.zeros((numatom,), numpy.float64)
 
-    if box:
+    if box is not None:
         if boxtype == 'ortho':
-            calc_bond_distance(atom1, atom2, box, distances)
+            calc_bond_distance_ortho(atom1, atom2, box, distances)
         else:
             calc_bond_distance_triclinic(atom1, atom2, box, distances)
     else:
-        calc_bond_distance_noPBC(atom1, atom2, distances)
+        calc_bond_distance(atom1, atom2, distances)
 
     return distances
 
@@ -454,13 +460,14 @@ def calc_angles(coords1, coords2, coords3, box=None, result=None):
     atom1 = coords1.copy('C')
     atom2 = coords2.copy('C')
     atom3 = coords3.copy('C')
-    numatom = atom1.dimensions[0]
+    numatom = atom1.shape[0]
 
     _check_array(atom1, 'coords1')
     _check_array(atom2, 'coords2')
     _check_array(atom3, 'coords3')
+    _check_lengths_match(atom1, atom2, atom3)
 
-    if box:
+    if box is not None:
         boxtype = _box_check(box)
         # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
         if (boxtype == 'tri_box'):
@@ -468,13 +475,13 @@ def calc_angles(coords1, coords2, coords3, box=None, result=None):
         if (boxtype == 'tri_vecs_bad'):
             box = triclinic_vectors(triclinic_box(box[0], box[1], box[2]))
 
-    if result:
+    if result is not None:
         _check_results_array(result, (numatom,))
         angles = numpy.asarray(result)
     else:
         angles = numpy.zeros((numatom,), numpy.float64)
 
-    if box:
+    if box is not None:
         if boxtype == 'ortho':
             calc_angle_ortho(atom1, atom2, atom3, box, angles)
         else:
@@ -542,10 +549,11 @@ def calc_torsions(coords1, coords2, coords3, coords4, box=None, result=None):
     _check_array(atom2, 'atom2')
     _check_array(atom3, 'atom3')
     _check_array(atom4, 'atom4')
+    _check_lengths_match(atom1, atom2, atom3, atom4)
 
-    numatom = atom1.dimensions[0]
+    numatom = atom1.shape[0]
 
-    if box:
+    if box is not None:
         boxtype = _box_check(box)
         # Convert [A,B,C,alpha,beta,gamma] to [[A],[B],[C]]
         if (boxtype == 'tri_box'):
@@ -553,13 +561,13 @@ def calc_torsions(coords1, coords2, coords3, coords4, box=None, result=None):
         if (boxtype == 'tri_vecs_bad'):
             box = triclinic_vectors(triclinic_box(box[0], box[1], box[2]))
 
-    if result:
+    if result is not None:
         _check_results_array(result, (numatom,))
         angles = numpy.asarray(result)
     else:
         angles = numpy.zeros((numatom,), numpy.float64)
 
-    if box:
+    if box is not None:
         if boxtype == 'ortho':
             calc_torsion_ortho(atom1, atom2, atom3, atom4, box, angles)
         else:
@@ -592,7 +600,7 @@ def applyPBC(incoords, box):
 
     _check_array(coords, 'coords')
 
-    coordnum = coords.dimensions[0]
+    coordnum = coords.shape[0]
 
     # determine boxtype
     boxtype = _box_check(box)
