@@ -366,17 +366,23 @@ class TestCythonFunctions(TestCase):
         assert_almost_equal(dists_pbc[3], 3.46410072, self.prec,
                             err_msg="PBC check #w with box")
         #Bad input checking
-        badboxtype = np.array([10., 10., 10.], dtype=np.float64)
-        badboxsize = np.array([[10., 10.], [10., 10., ]], dtype=np.float32)
-        badresult = np.zeros(len(self.a) - 1)
+    def test_bonds_wrongtype(self):
         assert_raises(TypeError, MDAnalysis.core.distances.calc_bonds, self.a, self.wrongtype)
         assert_raises(TypeError, MDAnalysis.core.distances.calc_bonds, self.wrongtype, self.b)
         assert_raises(ValueError, MDAnalysis.core.distances.calc_bonds, self.a, self.wronglength)
         assert_raises(ValueError, MDAnalysis.core.distances.calc_bonds, self.wronglength, self.b)
+
+    def test_bonds_badbox(self):
+        badboxtype = np.array([10., 10., 10.], dtype=np.float64)
+        badboxsize = np.array([[10., 10.], [10., 10., ]], dtype=np.float32)
+
         assert_raises(ValueError, MDAnalysis.core.distances.calc_bonds, self.a, self.b,
                       box=badboxsize)  # Bad box data
         assert_raises(TypeError, MDAnalysis.core.distances.calc_bonds, self.a, self.b,
                       box=badboxtype)  # Bad box type
+
+    def test_bonds_badresult(self):
+        badresult = np.zeros(len(self.a) - 1)
         assert_raises(ValueError, MDAnalysis.core.distances.calc_bonds, self.a, self.b,
                       result=badresult)  # Bad result array
 
@@ -397,8 +403,9 @@ class TestCythonFunctions(TestCase):
                             err_msg="Ninety degree angle in calc_angles failed")
         assert_almost_equal(angles[3], 0.098174833, self.prec,
                             err_msg="Small angle failed in calc_angles")
-        # Check data type checks
-        badresult = np.zeros(len(self.a) - 1)
+
+    # Check data type checks
+    def test_angles_wrongtype(self):
         assert_raises(TypeError, MDAnalysis.core.distances.calc_angles,
                       self.a, self.wrongtype, self.c)  # try inputting float64 values
         assert_raises(TypeError, MDAnalysis.core.distances.calc_angles,
@@ -411,6 +418,9 @@ class TestCythonFunctions(TestCase):
                       self.wronglength, self.b, self.c)
         assert_raises(ValueError, MDAnalysis.core.distances.calc_angles,
                       self.a, self.b, self.wronglength)
+
+    def test_angles_bad_result(self):
+        badresult = np.zeros(len(self.a) - 1)
         assert_raises(ValueError, MDAnalysis.core.distances.calc_angles,
                       self.a, self.b, self.c, result=badresult)  # Bad result array
 
@@ -423,8 +433,8 @@ class TestCythonFunctions(TestCase):
         assert_almost_equal(torsions[2], np.pi, self.prec, err_msg="180 degree torsion failed")
         assert_almost_equal(torsions[3], 0.50714064, self.prec,
                             err_msg="arbitrary torsion angle failed")
-        # Check data type checks
-        badresult = np.zeros(len(self.a) - 1)
+    # Check data type checks
+    def test_torsions_wrongtype(self):
         assert_raises(TypeError, MDAnalysis.core.distances.calc_torsions,
                       self.a, self.wrongtype, self.c, self.d)  # try inputting float64 values
         assert_raises(TypeError, MDAnalysis.core.distances.calc_torsions,
@@ -433,6 +443,8 @@ class TestCythonFunctions(TestCase):
                       self.a, self.b, self.wrongtype, self.d)
         assert_raises(TypeError, MDAnalysis.core.distances.calc_torsions,
                       self.a, self.b, self.c, self.wrongtype)
+
+    def test_torsions_wronglength(self):
         assert_raises(ValueError, MDAnalysis.core.distances.calc_torsions,
                       self.a, self.wronglength, self.c, self.d)
         assert_raises(ValueError, MDAnalysis.core.distances.calc_torsions,
@@ -441,6 +453,10 @@ class TestCythonFunctions(TestCase):
                       self.a, self.b, self.wronglength, self.d)
         assert_raises(ValueError, MDAnalysis.core.distances.calc_torsions,
                       self.a, self.b, self.c, self.wronglength)
+
+    def test_torsions_bad_result(self):
+        badresult = np.zeros(len(self.a) - 1)
+
         assert_raises(ValueError, MDAnalysis.core.distances.calc_torsions,
                       self.a, self.b, self.c, self.d, result=badresult)  # Bad result array
 
