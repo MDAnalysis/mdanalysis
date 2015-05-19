@@ -3549,7 +3549,7 @@ class Universe(object):
             def update(self, other):
                 self.ats.update(other.ats)
 
-        f = {a: None for a in self.atoms}  # each atom starts with its own list
+        f = dict.fromkeys(self.atoms, None)  # each atom starts with its own list
 
         for a1, a2 in bonds:  # Iterate through all bonds
             if not (f[a1] or f[a2]):  # New set made here

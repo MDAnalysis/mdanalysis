@@ -1011,7 +1011,7 @@ class TopologyGroup(object):
         # each bond starts with 0 appearances
         # I'm only interested in intersection, so if its not in tg then
         # i'll get keyerrors which i'll pass
-        count_dict = {b: 0 for b in self.bondlist}
+        count_dict = dict.fromkeys(self.bondlist, 0)
 
         # then go through ag and count appearances of bonds
 # This seems to benchmark slow, because __getattribute__ is slower than a.bonds

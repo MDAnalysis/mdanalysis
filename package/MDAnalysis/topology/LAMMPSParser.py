@@ -339,7 +339,7 @@ class DATAParser(TopologyReader):
             'angles': 'angles',
             'dihedrals': 'torsions',
             'impropers': 'impropers'}
-        nitems = {k: 0 for k in hvals.values()}
+        nitems = dict.fromkeys(hvals.values(), 0)
 
         datafile.next()  # Title
         datafile.next()  # Blank line
