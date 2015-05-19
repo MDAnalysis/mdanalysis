@@ -115,7 +115,7 @@ class DATAParser(TopologyReader):
                 except StopIteration:
                     break
 
-                logger.info("Parsing section '{}'".format(section))
+                logger.info("Parsing section '{0}'".format(section))
                 if section == 'Atoms':
                     fix_masses = False if read_masses else True
 
@@ -131,16 +131,16 @@ class DATAParser(TopologyReader):
                     except:
                         raise IOError("Failed to read masses section")
                 elif section in strkey:  # for sections we use in MDAnalysis
-                    logger.debug("Doing strkey section for {}".format(section))
+                    logger.debug("Doing strkey section for {0}".format(section))
                     f = strkey[section]
                     try:
                         structure[f] = self._parse_section(psffile,
                                                            nitems[f],
                                                            nentries[f])
                     except:
-                        raise IOError("Failed to read section {}".format(section))
+                        raise IOError("Failed to read section {0}".format(section))
                 elif len(section) > 0:  # for sections we don't use in MDAnalysis
-                    logger.debug("Skipping section, found: {}".format(section))
+                    logger.debug("Skipping section, found: {0}".format(section))
                     self._skip_section(psffile)
                 else:  # for blank lines
                     continue
@@ -350,7 +350,7 @@ class DATAParser(TopologyReader):
             nitems[hvals[key]] = int(val)
             line = datafile.next().strip()
 
-        ntypes = {k: 0 for k in hvals.values()}
+        ntypes = dict.fromkeys(hvals.values(), 0)
         line = datafile.next().strip()
         while line:
             val, key, _ = line.split()

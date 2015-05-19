@@ -66,7 +66,7 @@ class DMSParser(TopologyReader):
         """
         # Fix by SB: Needed because sqlite3.connect does not raise anything if file is not there
         if not os.path.isfile(self.filename):
-            raise IOError("No such file: {}".format(self.filename))
+            raise IOError("No such file: {0}".format(self.filename))
 
         def dict_factory(cursor, row):
             """

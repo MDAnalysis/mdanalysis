@@ -161,8 +161,11 @@ class TopologyObject(object):
         return "<{cname} between: {conts}>".format(
             cname=self.__class__.__name__,
             conts=", ".join([
-                "Atom {} ({} of {}-{})".format(
-                    a.number + 1, a.name, a.resname, a.resid)
+                "Atom {num} ({name} of {resname}-{resid})".format(
+                    num=a.number + 1,
+                    name=a.name,
+                    resname=a.resname,
+                    resid=a.resid)
                 for a in self.atoms]))
 
     def __contains__(self, other):
@@ -1128,7 +1131,7 @@ class TopologyGroup(object):
         if not (isinstance(other, TopologyObject)
                 or isinstance(other, TopologyGroup)):
             raise TypeError("Can only combine TopologyObject or TopologyGroup to"
-                            " TopologyGroup, not {}".format(type(other)))
+                            " TopologyGroup, not {0}".format(type(other)))
 
         # cases where either other or self is empty TG
         if not other:  # adding empty TG to me

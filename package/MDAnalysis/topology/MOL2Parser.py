@@ -76,7 +76,7 @@ class MOL2Parser(TopologyReader):
                 blocks[-1]["lines"].append(line)
 
         if not len(blocks):
-            raise ValueError("The mol2 file '{}' needs to have at least one"
+            raise ValueError("The mol2 file '{0}' needs to have at least one"
                              " @<TRIPOS>MOLECULE block".format(filename))
         block = blocks[0]
 
@@ -95,10 +95,10 @@ class MOL2Parser(TopologyReader):
         atom_lines, bond_lines = sections["atom"], sections["bond"]
 
         if not len(atom_lines):
-            raise ValueError("The mol2 block ({}:{}) has no atoms".format(
+            raise ValueError("The mol2 block ({0}:{1}) has no atoms".format(
                 os.path.basename(filename), block["start_line"]))
         if not len(bond_lines):
-            raise ValueError("The mol2 block ({}:{}) has no bonds".format(
+            raise ValueError("The mol2 block ({0}:{1}) has no bonds".format(
                 os.path.basename(filename), block["start_line"]))
 
         atoms = []

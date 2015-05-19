@@ -250,7 +250,7 @@ class DCDWriter(base.Writer):
                 self.step = 1
                 self.delta = MDAnalysis.core.units.convert(dt, 'ps', 'AKMA')
             else:
-                raise ValueError("DCDWriter: dt must be > 0, not {}".format(dt))
+                raise ValueError("DCDWriter: dt must be > 0, not {0}".format(dt))
         else:
             self.step = step
             self.delta = delta

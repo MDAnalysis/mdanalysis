@@ -83,7 +83,7 @@ class _TestReader(TestCase):
         for attr in ['filename', 'numatoms', 'numframes', 'fixed', 'skip',
                      'skip_timestep', 'delta', 'periodic', 'ts',
                      'units', 'format']:
-            assert_equal(hasattr(self.reader, attr), True, "Missing attr: {}".format(attr))
+            assert_equal(hasattr(self.reader, attr), True, "Missing attr: {0}".format(attr))
         
     def test_iter(self):
         l = [ts for ts in self.reader]

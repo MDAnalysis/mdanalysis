@@ -565,7 +565,7 @@ class Reader(IObase):
 
     def _read_frame(self, frame):
         """Move to *frame* and fill timestep with data."""
-        raise TypeError("{} does not support direct frame indexing."
+        raise TypeError("{0} does not support direct frame indexing."
                         "".format(self.__class__.__name__))
         # Example implementation in the DCDReader:
         #self._jump_to_frame(frame)
@@ -589,7 +589,7 @@ class Reader(IObase):
                 for i in xrange(start, stop, step):
                     yield self[i]
             except TypeError:  # if _read_frame not implemented
-                raise TypeError("{} does not support slicing."
+                raise TypeError("{0} does not support slicing."
                                 "".format(self.__class__.__name__))
         return _iter()
 
@@ -996,7 +996,7 @@ class SingleFrameReader(Reader):
 
     .. versionadded:: 0.10.0
     """
-    _err = "{} only contains a single frame"
+    _err = "{0} only contains a single frame"
 
     def __init__(self, filename, convert_units=None, **kwargs):
         self.filename = filename

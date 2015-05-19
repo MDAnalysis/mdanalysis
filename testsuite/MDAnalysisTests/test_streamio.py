@@ -247,7 +247,7 @@ class TestStreamIO(TestCase, RefAdKSmall):
         try:
             u = MDAnalysis.Universe(streamData.as_NamedStream('PDB'), permissive=False)
         except Exception as err:
-            raise AssertionError("StreamIO not supported:\n>>>>> {}".format(err))
+            raise AssertionError("StreamIO not supported:\n>>>>> {0}".format(err))
         assert_equal(u.atoms.numberOfAtoms(), self.ref_numatoms)
 
     def test_CRDReader(self):
