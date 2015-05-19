@@ -155,7 +155,7 @@ class _TestTopology(TestCase):
         assert_equal(self.parser, ret)
 
     def test_parser(self):
-        """Check that the parser works as intended, 
+        """Check that the parser works as intended,
         and that the returned value is a dictionary
         """
         with self.parser(self.topology) as p:
@@ -296,7 +296,7 @@ class TestPSF_bonds(TestCase):
 
 class TestTopologyObjects(TestCase):
     """Test the base TopologyObject funtionality
-    
+
     init
     repr
     eq
@@ -306,6 +306,7 @@ class TestTopologyObjects(TestCase):
     """
 
     def setUp(self):
+        self.precision = 3  # rather lenient but see #271
         self.u = MDAnalysis.Universe(PSF, DCD)
         self.u.build_topology()
         self.a1 = list(self.u.atoms[1:3])
@@ -372,7 +373,7 @@ class TestTopologyObjects(TestCase):
         assert_equal(b.is_guessed, True)
 
     def test_bondlength(self):
-        assert_almost_equal(self.b.length(), 1.7661301556941993, 4)
+        assert_almost_equal(self.b.length(), 1.7661301556941993, self.precision)
 
     def test_bondrepr(self):
         assert_equal(repr(self.b),
@@ -382,19 +383,19 @@ class TestTopologyObjects(TestCase):
     def test_angle(self):
         angle = self.u.atoms[210].angles[0]
 
-        assert_almost_equal(angle.angle(), 107.20893, 4)
+        assert_almost_equal(angle.angle(), 107.20893, self.precision)
 
     # Torsion class check
     def test_torsion(self):
         torsion = self.u.atoms[14].torsions[0]
 
-        assert_almost_equal(torsion.torsion(), 18.317778, 4)
+        assert_almost_equal(torsion.torsion(), 18.317778, self.precision)
 
     # Improper_Torsion class check
     def test_improper(self):
         imp = self.u.atoms[4].impropers[0]
 
-        assert_almost_equal(imp.improper(), -3.8370631, 4)
+        assert_almost_equal(imp.improper(), -3.8370631, self.precision)
 
 
 class TestTopologyGroup(TestCase):
@@ -514,7 +515,7 @@ class TestTopologyGroup(TestCase):
         assert_raises(TypeError, TopologyGroup, inputlist)
 
     def test_TG_equality(self):
-        """Make two identical TGs, 
+        """Make two identical TGs,
         * check they're equal
         * change one very slightly and see if they notice
         """
@@ -698,7 +699,7 @@ class TestTopologyGroup(TestCase):
         """
         this function tries to spit back out the tuple of tuples that made it
 
-        because bonds are sorted before initialisation, sometimes this list 
+        because bonds are sorted before initialisation, sometimes this list
         has bonds that are backwards compared to the input, hence all the hacking
         in this test.
         """
@@ -746,7 +747,7 @@ class TestTopologyGroup_Cython(TestCase):
         self.u = MDAnalysis.Universe(PSF, DCD)
         self.u.build_topology()
         # topologygroups for testing
-        # bond, angle, torsion, improper 
+        # bond, angle, torsion, improper
         ag = self.u.atoms[:5]
         self.bgroup = ag.bonds
         self.agroup = ag.angles
@@ -790,7 +791,7 @@ class TestTopologyGroup_Cython(TestCase):
                                  self.agroup.atom3.positions,
                                  box=self.u.dimensions))
 
-    # torsions & impropers 
+    # torsions & impropers
     def test_wrong_type_torsions(self):
         for tg in [self.bgroup, self.agroup]:
             assert_raises(TypeError, tg.torsions)

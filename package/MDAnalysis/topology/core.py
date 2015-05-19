@@ -274,6 +274,9 @@ class Angle(TopologyObject):
             /
            1------0
 
+        .. Note:: The numerical precision is typically not better than
+                  4 decimals (and is only tested to 3 decimals).
+
         .. versionadded:: 0.9.0
         """
         a = self[0].pos - self[1].pos
@@ -309,6 +312,10 @@ class Torsion(TopologyObject):
            /
           0
 
+
+        .. Note:: The numerical precision is typically not better than
+                  4 decimals (and is only tested to 3 decimals).
+
         .. versionadded:: 0.9.0
         """
         A, B, C, D = self.atoms
@@ -336,7 +343,11 @@ class Improper_Torsion(Torsion):  # subclass Torsion to inherit torsion method
     # http://cbio.bmt.tue.nl/pumma/uploads/Theory/improper.png
 
     def improper(self):
-        """Improper dihedral angle in degrees"""
+        """Improper dihedral angle in degrees.
+
+        .. Note:: The numerical precision is typically not better than
+                  4 decimals (and is only tested to 3 decimals).
+        """
         return self.torsion()
 
 
