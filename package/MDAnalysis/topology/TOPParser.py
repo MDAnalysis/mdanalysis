@@ -143,10 +143,10 @@ class TOPParser(TopologyReader):
             next_line = topfile.next
             header = next_line()
             if header[:3] != "%VE":
-                raise ValueError("{} is not a valid TOP file. %VE Missing in header".format(topfile))
+                raise ValueError("{0} is not a valid TOP file. %VE Missing in header".format(topfile))
             title = next_line().split()
             if not (title[1] == "TITLE"):
-                raise ValueError("{} is not a valid TOP file. 'TITLE' missing in header".format(topfile))
+                raise ValueError("{0} is not a valid TOP file. 'TITLE' missing in header".format(topfile))
             while header[:14] != '%FLAG POINTERS':
                 header = next_line()
             header = next_line()

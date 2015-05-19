@@ -422,8 +422,8 @@ class TrjReader(base.Reader):
             if not isinstance(sub, numpy.ndarray) or len(sub.shape) != 1 or sub.dtype.kind != 'i':
                 raise TypeError("sub MUST be a single dimensional numpy array of integers")
             if len(sub) > self._trr_numatoms:
-                raise ValueError("sub MUST be less than or equal to the number of actual trr atoms, {} in this case".
-                                 format(self._trr_numatoms))
+                raise ValueError("sub MUST be less than or equal to the number of actual trr atoms,"
+                                 " {0} in this case".format(self._trr_numatoms))
             if numpy.max(sub) >= self._trr_numatoms or numpy.min(sub) < 0:
                 raise IndexError("sub contains out-of-range elements for the given trajectory")
             # sub appears to be valid
@@ -524,7 +524,7 @@ class TrjReader(base.Reader):
 
     def _offset_filename(self):
         head, tail = os.path.split(self.filename)
-        return os.path.join(head, '.{}_offsets.pkl'.format(tail))
+        return os.path.join(head, '.{0}_offsets.pkl'.format(tail))
 
     def _store_offsets(self):
         """Stores offsets for trajectory as a hidden file in the same directory
@@ -638,7 +638,7 @@ class TrjReader(base.Reader):
                 key = 'size'
                 conditions = (os.path.getsize(self.filename) == offsets[key]) and conditions
             except KeyError:
-                warnings.warn("Offsets in file '{}' not suitable; missing {}.".format(filename, key))
+                warnings.warn("Offsets in file '{0}' not suitable; missing {1}.".format(filename, key))
                 return
 
             # if conditions not met, abort immediately
@@ -650,7 +650,7 @@ class TrjReader(base.Reader):
         try:
             self._offsets = offsets['offsets']
         except KeyError:
-            warnings.warn("Missing key 'offsets' in file '{}'; aborting load of offsets.".format(filename))
+            warnings.warn("Missing key 'offsets' in file '{0}'; aborting load of offsets.".format(filename))
             return
         self._numframes = len(self._offsets)
 

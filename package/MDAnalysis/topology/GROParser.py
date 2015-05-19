@@ -85,7 +85,7 @@ class GROParser(TopologyReader):
                     #  pass
                 except:
                     raise IOError("Couldn't read the following line of the .gro file:\n"
-                                  "{}".format(line))
+                                  "{0}".format(line))
                 else:
                     # Just use the atom_iter (counting from 0) rather than
                     # the number in the .gro file (which wraps at 99999)
