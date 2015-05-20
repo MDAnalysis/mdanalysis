@@ -778,6 +778,16 @@ class TestPrimitivePDBReader(_SingleFrameReader):
         self.universe = mda.Universe(PDB_small, permissive=True)
         self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
 
+    def test_missing_natoms(self):
+        from MDAnalysis.coordinates.PDB import PrimitivePDBReader
+
+        assert_raises(ValueError, PrimitivePDBReader, 'something.pdb')
+
+    def test_wrong_natoms(self):
+        from MDAnalysis.coordinates.PDB import PrimitivePDBReader
+
+        assert_raises(ValueError, PrimitivePDBReader, PDB_small, numatoms=4000)
+
 
 class TestExtendedPDBReader(_SingleFrameReader):
     def setUp(self):

@@ -15,6 +15,7 @@ The rules for this file:
 
   Enhancements
 
+  * Improved performance of PDB Reading.  Up to 3x faster. (Issue #212)
   * Added the 'same ... as' selection keyword (Issue #217)
   * Added guess_bonds keyword argument to Universe creation.  This will attempt to
     guess all topology information on Universe creation. (Issue #245)
@@ -32,6 +33,7 @@ The rules for this file:
     when empty.
   * Renamed TopologyGroup.dump_contents to "to_indices"
   * Deprecated 'bonds' keyword from Universe and replaced with 'guess_bonds'
+  * PrimitivePDBReader now requires the numatoms keyword
 
   Fixes
 
