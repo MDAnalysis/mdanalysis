@@ -443,6 +443,11 @@ class PrimitivePDBReader(base.Reader):
             convert_units = MDAnalysis.core.flags['convert_lengths']
         self.convert_units = convert_units  # convert length and time to base units
 
+        try:
+            self._numatoms = kwargs['numatoms']
+        except KeyError:
+            raise ValueError("PrimitivePDBReader requires the numatoms keyword")
+
         # = NOTE to clear up confusion over 0-based vs 1-based frame numbering =
         # self.frame is 1-based for this Reader, which matches the behavior of
         # the MODEL record in a typical multi-model PDB file.  If the MODEL
@@ -459,15 +464,11 @@ class PrimitivePDBReader(base.Reader):
         remarks = []
 
         frames = {}
-        coords = []
-        atoms = []
 
-        unitcell = numpy.zeros(6, dtype=numpy.float32)
-
-        class Struct(object):
-            def __init__(self, **entries):
-                self.__dict__.update(entries)
-
+        self.ts = self._Timestep(self._numatoms)
+        
+        pos = 0  # atom position for filling coordinates array
+        self._occupancy = []
         with util.openany(filename, 'r') as pdbfile:
             for i, line in enumerate(pdbfile):
                 line = line.strip()  # Remove extra spaces
@@ -475,15 +476,12 @@ class PrimitivePDBReader(base.Reader):
                     continue
                 record = line[:6].strip()
 
-                def _c(start, stop, typeclass=float):
-                    return self._col(line, start, stop, typeclass=typeclass)
-
                 if record == 'END':
                     break
                 elif record == 'CRYST1':
-                    A, B, C = _c(7, 15), _c(16, 24), _c(25, 33)
-                    alpha, beta, gamma = _c(34, 40), _c(41, 47), _c(48, 54)
-                    unitcell[:] = A, B, C, alpha, beta, gamma
+                    A, B, C = map(float, [line[6:15], line[15:24], line[24:33]])
+                    alpha, beta, gamma = map(float, [line[33:40], line[40:47], line[47:54]])
+                    self.ts._unitcell[:] = A, B, C, alpha, beta, gamma
                     continue
                 elif record == 'HEADER':
                     header = line[6:-1]
@@ -498,44 +496,28 @@ class PrimitivePDBReader(base.Reader):
                 elif record == 'MODEL':
                     frames[len(frames) + 1] = i  # 1-based indexing
                 elif line[:6] in ('ATOM  ', 'HETATM'):
-                    # skip atom/hetatm for frames other than the first - they will be read in when next() is called
+                    # skip atom/hetatm for frames other than the first
+                    # they will be read in when next() is called
                     # on the trajectory reader
                     if len(frames) > 1:
                         continue
-                    # directly use COLUMNS from PDB spec
-                    serial = _c(7, 11, int)
-                    name = _c(13, 16, str).strip()
-                    altLoc = _c(17, 17, str).strip()
-                    resName = _c(18, 21, str).strip()
-                    chainID = _c(22, 22, str)  # empty chainID is a single space ' '!
-                    if self.format == "XPDB":
-                        resSeq = _c(23, 27, int)  # extended non-standard format used by VMD
-                    else:
-                        assert self.format == "PDB"
-                        resSeq = _c(23, 26, int)
-                        # insertCode = _c(27, 27, str)  # not used
-                    x, y, z = _c(31, 38), _c(39, 46), _c(47, 54)
-                    occupancy = _c(55, 60)
-                    tempFactor = _c(61, 66)
-                    segID = _c(67, 76, str).strip()
-                    element = _c(77, 78, str).strip()
-                    coords.append((x, y, z))
-
-                    atom = Struct(**dict(zip(
-                        (
-                            "serial", "name", "altLoc", "resName", "chainID", "resSeq",
-                            "occupancy", "tempFactor", "segID", "element"),
-                        (serial, name, altLoc, resName, chainID, resSeq, occupancy, tempFactor, segID, element)
-                    )))
-                    atoms.append(atom)
+                    self.ts._pos[pos] = map(float, [line[30:38], line[38:46], line[46:54]])
+                    pos += 1
+                    occupancy = float(line[54:60])
+                    self._occupancy.append(occupancy)
 
         self.header = header
         self.compound = compound
         self.remarks = remarks
-        self.numatoms = len(coords)
-        self.ts = self._Timestep(numpy.array(coords, dtype=numpy.float32))
+
+        if pos != self._numatoms:
+            raise ValueError("Read an incorrect number of atoms\n"
+                             "Expected {expected} got {actual}"
+                             "".format(expected=self._numatoms, actual=pos))
+        self.numatoms = pos
+
         self.ts.frame = 1  # 1-based frame number as starting frame
-        self.ts._unitcell[:] = unitcell
+
         if self.convert_units:
             self.convert_pos_from_native(self.ts._pos)  # in-place !
             self.convert_pos_from_native(self.ts._unitcell[:3])  # in-place ! (only lengths)
@@ -552,33 +534,9 @@ class PrimitivePDBReader(base.Reader):
         self.delta = 0
         self.skip_timestep = 1
 
-        self._atoms = atoms
-
-    def _col(self, line, start, stop, typeclass=float):
-        """Pick out and convert the columns start-stop.
-
-        Numbering starts at column 1 with *start* and includes *stop*;
-        this is the convention used in FORTRAN (and also in the PDB format).
-
-        :Returns: ``typeclass(line[start-1:stop])`` or
-                  ``typeclass(0)`` if conversion fails
-        """
-        x = line[start - 1:stop]
-        try:
-            return typeclass(x)
-        except ValueError:
-            return typeclass(0)
-
-    def get_bfactors(self):
-        """Return an array of bfactors (tempFactor) in atom order."""
-        warnings.warn("get_bfactors() will be removed in MDAnalysis 0.8; "
-                      "use AtomGroup.bfactors [which will become AtomGroup.bfactors()]",
-                      DeprecationWarning)
-        return self._atoms.tempFactor
-
     def get_occupancy(self):
         """Return an array of occupancies in atom order."""
-        return self._atoms.occupancy
+        return numpy.array(self._occupancy)
 
     def Writer(self, filename, **kwargs):
         """Returns a permissive (simple) PDBWriter for *filename*.
@@ -626,15 +584,10 @@ class PrimitivePDBReader(base.Reader):
             # single frame file, we already have the timestep
             return self.ts
 
-        coords = []
-        atoms = []
-        unitcell = numpy.zeros(6, dtype=numpy.float32)
-
-        def _c(start, stop, typeclass=float):
-            return self._col(line, start, stop, typeclass=typeclass)
-
         # TODO: only open file once and leave the file open; then seek back and forth;
         #       should improve performance substantially
+        pos = 0
+        self._occupancy = []
         with util.openany(self.filename, 'r') as f:
             for i in xrange(line):
                 f.next()  # forward to frame
@@ -644,27 +597,25 @@ class PrimitivePDBReader(base.Reader):
                 # NOTE - CRYST1 line won't be found if it comes before the MODEL line,
                 # which is sometimes the case, e.g. output from gromacs trjconv
                 elif line[:6] == 'CRYST1':
-                    A, B, C = _c(7, 15), _c(16, 24), _c(25, 33)
-                    alpha, beta, gamma = _c(34, 40), _c(41, 47), _c(48, 54)
-                    unitcell[:] = A, B, C, alpha, beta, gamma
+                    A, B, C = map(float, [line[6:15], line[15:24], line[24:33]])
+                    alpha, beta, gamma = map(float, [line[33:40], line[40:47], line[47:54]])
+                    self.ts._unitcell[:] = A, B, C, alpha, beta, gamma
                     continue
                 elif line[:6] in ('ATOM  ', 'HETATM'):
                     # we only care about coordinates
-                    x, y, z = _c(31, 38), _c(39, 46), _c(47, 54)
-                    # TODO import occupancy, bfactors - might these change?
-                    # OB: possibly, at least that would be a useful feature of a PDB trajectory
-                    coords.append((x, y, z))
+                    self.ts._pos[pos] = map(float, [line[30:38], line[38:46], line[46:54]])
+                    pos += 1
+                    # TODO import bfactors - might these change?
+                    occupancy = float(line[54:60])
+                    self._occupancy.append(occupancy)
                     continue
 
         # check if atom number changed
-        if len(coords) != len(self.ts._pos):
-            raise ValueError(
-                "PrimitivePDBReader assumes that the number of atoms remains unchanged between frames; the current "
-                "frame has %d, the next frame has %d atoms" % (
-                    len(self.ts._pos), len(coords)))
+        if pos != self._numatoms:
+            raise ValueError("Read an incorrect number of atoms\n"
+                             "Expected {expected} got {actual}"
+                             "".format(expected=self._numatoms, actual=pos+1))
 
-        self.ts = self._Timestep(numpy.array(coords, dtype=numpy.float32))
-        self.ts._unitcell[:] = unitcell
         if self.convert_units:
             self.convert_pos_from_native(self.ts._pos)  # in-place !
             self.convert_pos_from_native(self.ts._unitcell[:3])  # in-place ! (only lengths)

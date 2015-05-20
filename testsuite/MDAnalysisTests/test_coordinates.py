@@ -978,8 +978,8 @@ class TestMultiPDBReader(TestCase):
         u = self.multiverse
         frames = []
         for ts in u.trajectory[4:-2:4]:
-            frames.append(ts)
-        assert_equal(np.array([ts.frame - 1 for ts in frames]),
+            frames.append(ts.frame - 1)
+        assert_equal(np.array(frames),
                      np.arange(u.trajectory.numframes)[4:-2:4],
                      err_msg="slicing did not produce the expected frames")
 
