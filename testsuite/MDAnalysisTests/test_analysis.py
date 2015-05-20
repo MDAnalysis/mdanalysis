@@ -354,8 +354,12 @@ class Test_Helanal(TestCase):
         """Check for sustained resolution of Issue 188."""
         u = self.universe
         sel = self.selection
-        with assert_raises(FinishTimeException):
-            try:
-                MDAnalysis.analysis.helanal.helanal_trajectory(u, selection=sel, finish=5)
-            except IndexError:
-                self.fail("IndexError consistent with Issue 188.")
+
+
+        assert_raises(FinishTimeException, MDAnalysis.analysis.helanal.helanal_trajectory,
+                      u, selection=sel, finish=5)
+        #with assert_raises(FinishTimeException):
+        #    try:
+        #        MDAnalysis.analysis.helanal.helanal_trajectory(u, selection=sel, finish=5)
+         #   except IndexError:
+         #       self.fail("IndexError consistent with Issue 188.")

@@ -1796,7 +1796,7 @@ class _TestDCDReader_TriclinicUnitcell(TestCase):
         """test reading of triclinic unitcell (Issue 187) for NAMD or new CHARMM format (at least since c36b2)"""
         for ts, box in itertools.izip(self.u.trajectory, self.ref_dimensions[:, 1:]):
             assert_array_almost_equal(ts.dimensions, box, 4,
-                                     err_msg="box dimensions A,B,C,alpha,beta,gamma not identical at frame {}".format(ts.frame))
+                                      err_msg="box dimensions A,B,C,alpha,beta,gamma not identical at frame {0}".format(ts.frame))
     @attr('issue')
     def test_write_triclinic(self):
         """test writing of triclinic unitcell (Issue 187) for NAMD or new CHARMM format (at least since c36b2)"""
@@ -1806,7 +1806,7 @@ class _TestDCDReader_TriclinicUnitcell(TestCase):
         w = MDAnalysis.Universe(self.topology, self.dcd)
         for ts_orig, ts_copy in itertools.izip(self.u.trajectory, w.trajectory):
             assert_almost_equal(ts_orig.dimensions, ts_copy.dimensions, 4,
-                                err_msg="DCD->DCD: unit cell dimensions wrong at frame {}".format(ts_orig.frame))
+                                err_msg="DCD->DCD: unit cell dimensions wrong at frame {0}".format(ts_orig.frame))
         del w
 
 class TestDCDReader_CHARMM_Unitcell(_TestDCDReader_TriclinicUnitcell, RefCHARMMtriclinicDCD):

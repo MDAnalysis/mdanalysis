@@ -61,7 +61,7 @@ class PSFParser(TopologyReader):
         with openany(self.filename, 'r') as psffile:
             header = psffile.next()
             if header[:3] != "PSF":
-                err = ("{} is not valid PSF file (header = {})"
+                err = ("{0} is not valid PSF file (header = {1})"
                        "".format(self.filename, header))
                 logger.error(err)
                 raise ValueError(err)
@@ -77,13 +77,13 @@ class PSFParser(TopologyReader):
             psffile.next()
             title = psffile.next().split()
             if not (title[1] == "!NTITLE"):
-                err = "{} is not a valid PSF file".format(psffile.name)
+                err = "{0} is not a valid PSF file".format(psffile.name)
                 logger.error(err)
                 raise ValueError(err)
             # psfremarks = [psffile.next() for i in range(int(title[0]))]
             for _ in range(int(title[0])):
                 psffile.next()
-            logger.debug("PSF file {}: format {}"
+            logger.debug("PSF file {0}: format {1}"
                          "".format(psffile.name, self._format))
 
             structure = {}
@@ -124,7 +124,7 @@ class PSFParser(TopologyReader):
         sect_type = header[1].strip('!:')
         # Make sure the section type matches the desc
         if not sect_type == desc:
-            err = "Expected section {} but found {}".format(desc, sect_type)
+            err = "Expected section {0} but found {1}".format(desc, sect_type)
             logger.error(err)
             raise ValueError(err)
         # Now figure out how many lines to read
@@ -224,7 +224,7 @@ class PSFParser(TopologyReader):
                 iatom, segid, resid, resname, atomname, atomtype, charge, mass = set_type(atom_parser(line))
                 logger.warn("Guessing that this is actually a NAMD-type PSF file..."
                             " continuing with fingers crossed!")
-                logger.debug("First NAMD-type line: {}: {}".format(i, line.rstrip()))
+                logger.debug("First NAMD-type line: {0}: {1}".format(i, line.rstrip()))
 
             atoms[i] = Atom(iatom, atomname, atomtype, resname, resid,
                             segid, mass, charge, universe=self._u)

@@ -470,7 +470,7 @@ class Atom(object):
                     idx=self.number + 1, name=self.name, t=self.type,
                     rname=self.resname, rid=self.resid, sid=self.segid,
                     altloc="" if not self.altLoc
-                    else " and altloc {}".format(self.altLoc)))
+                    else " and altloc {0}".format(self.altLoc)))
 
     def __cmp__(self, other):
         return cmp(self.number, other.number)
@@ -483,7 +483,7 @@ class Atom(object):
 
     def __add__(self, other):
         if not (isinstance(other, Atom) or isinstance(other, AtomGroup)):
-            raise TypeError('Can only concatenate Atoms (not "{}")'
+            raise TypeError('Can only concatenate Atoms (not "{0}")'
                             ' to AtomGroup'.format(other.__class__.__name__))
         if isinstance(other, Atom):
             return AtomGroup([self, other])
@@ -592,7 +592,7 @@ class Atom(object):
             return self.__universe
         else:
             raise AttributeError(
-                "Atom {} is not assigned to a Universe".format(self.number))
+                "Atom {0} is not assigned to a Universe".format(self.number))
 
     @universe.setter
     def universe(self, universe):
@@ -957,7 +957,7 @@ class AtomGroup(object):
 
     def __add__(self, other):
         if not (isinstance(other, Atom) or isinstance(other, AtomGroup)):
-            raise TypeError('Can only concatenate AtomGroup (not "{}") to'
+            raise TypeError('Can only concatenate AtomGroup (not "{0}") to'
                             ' AtomGroup'.format(other.__class__.__name__))
         if isinstance(other, AtomGroup):
             return AtomGroup(self._atoms + other._atoms)
@@ -2441,7 +2441,7 @@ class AtomGroup(object):
         elif compound.lower() == 'fragments':
             objects = self.fragments
         else:
-            raise ValueError("Unrecognised compound definition: {}"
+            raise ValueError("Unrecognised compound definition: {0}"
                              "Please use one of 'group' 'residues' 'segments'"
                              "or 'fragments'".format(compound))
 
@@ -2450,7 +2450,7 @@ class AtomGroup(object):
         elif center.lower() in ('cog', 'centroid', 'centerofgeometry'):
             centers = numpy.vstack([o.centerOfGeometry() for o in objects])
         else:
-            raise ValueError("Unrecognised center definition: {}"
+            raise ValueError("Unrecognised center definition: {0}"
                              "Please use one of 'com' or 'cog'".format(center))
         centers = centers.astype(numpy.float32)
 
@@ -2589,7 +2589,7 @@ class AtomGroup(object):
             selection = True
 
         if not (coords or selection):
-            raise ValueError("No writer found for format: {}".format(filename))
+            raise ValueError("No writer found for format: {0}".format(filename))
         else:
             writer.write(self.atoms)
             if coords:  # only these writers have a close method
@@ -3130,7 +3130,8 @@ class SegmentGroup(ResidueGroup):
         if len(seglist) == 0:
             return super(SegmentGroup, self).__getattr__(attr)
         if len(seglist) > 1:
-            warnings.warn("SegmentGroup: Multiple segments with the same name {}; a combined, NON-CONSECUTIVE "
+            warnings.warn("SegmentGroup: Multiple segments with the same name {0};"
+                          " a combined, NON-CONSECUTIVE "
                           "Segment is returned.".format(attr), category=SelectionWarning)
             #return Segment(sum([s.residues for s in seglist])) ### FIXME: not working yet, need __add__
             return seglist[0]
@@ -3341,13 +3342,13 @@ class Universe(object):
             with parser(self.filename, universe=self) as p:
                 self._topology = p.parse()
         except IOError as err:
-            raise IOError("Failed to load from the topology file {}"
-                          " with parser {}.\n"
-                          "Error: {}".format(self.filename, parser, err))
+            raise IOError("Failed to load from the topology file {0}"
+                          " with parser {1}.\n"
+                          "Error: {2}".format(self.filename, parser, err))
         except ValueError as err:
-            raise ValueError("Failed to construct topology from file {}"
-                             " with parser {} \n"
-                             "Error: {}".format(self.filename, parser, err))
+            raise ValueError("Failed to construct topology from file {0}"
+                             " with parser {1} \n"
+                             "Error: {2}".format(self.filename, parser, err))
 
         # Generate atoms, residues and segments
         self._init_topology()
@@ -3565,10 +3566,10 @@ class Universe(object):
                 continue
             else:  # If they are both in different fragments, combine fragments
                 f[a1].update(f[a2])
-                f.update({a: f[a1] for a in f[a2]})
+                f.update(dict((a, f[a1]) for a in f[a2]))
 
                 # Lone atoms get their own fragment
-        f.update({a: _fragset((a,)) for a, val in f.items() if not val})
+        f.update(dict((a, _fragset((a,))) for a, val in f.items() if not val))
 
         # All the unique values in f are the fragments
         frags = tuple([AtomGroup(list(a.ats)) for a in set(f.values())])
@@ -3871,13 +3872,14 @@ class Universe(object):
         kwargs['numatoms'] = self.atoms.numberOfAtoms()
         self.trajectory = reader(filename, **kwargs)    # unified trajectory API
         if self.trajectory.numatoms != self.atoms.numberOfAtoms():
-            raise ValueError("The topology and {} trajectory files don't"
+            raise ValueError("The topology and {form} trajectory files don't"
                              " have the same number of atoms!\n"
-                             "Topology number of atoms {}\n"
-                             "Trajectory: {} Number of atoms {}".format(
-                                 self.trajectory.format,
-                                 len(self.atoms),
-                                 filename, self.trajectory.numatoms))
+                             "Topology number of atoms {top_natoms}\n"
+                             "Trajectory: {fname} Number of atoms {trj_natoms}".format(
+                                 form=self.trajectory.format,
+                                 top_natoms=len(self.atoms),
+                                 fname=filename,
+                                 trj_natoms=self.trajectory.numatoms))
 
         return filename, self.trajectory.format
 
@@ -4032,7 +4034,7 @@ class Universe(object):
     def __repr__(self):
         return "<Universe with {natoms} atoms{bonds}>".format(
             natoms=len(self.atoms),
-            bonds=" and {} bonds".format(len(self.bonds)) if self.bonds else "")
+            bonds=" and {0} bonds".format(len(self.bonds)) if self.bonds else "")
 
     def __getstate__(self):
         raise NotImplementedError

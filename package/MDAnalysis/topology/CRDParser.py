@@ -70,8 +70,8 @@ class CRDParser(TopologyReader):
                 try:
                     serial, TotRes, resName, name, x, y, z, chainID, resSeq, tempFactor = r.read(line)
                 except:
-                    raise ValueError("Check CRD format at line {}: {}".format(
-                        linenum, line.rstrip()))
+                    raise ValueError("Check CRD format at line {0}: {1}"
+                                     "".format(linenum, line.rstrip()))
 
                 atomtype = guess_atom_type(name)
                 mass = guess_atom_mass(name)

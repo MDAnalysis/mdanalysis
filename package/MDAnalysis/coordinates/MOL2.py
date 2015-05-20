@@ -117,9 +117,11 @@ class MOL2Reader(base.Reader):
 
         atom_lines, bond_lines = sections["atom"], sections["bond"]
         if not len(atom_lines):
-            raise Exception("The mol2 (starting at line {}) block has no atoms".format(block["start_line"]))
+            raise Exception("The mol2 (starting at line {0}) block has no atoms"
+                            "".format(block["start_line"]))
         if not len(bond_lines):
-            raise Exception("The mol2 (starting at line {}) block has no bonds".format(block["start_line"]))
+            raise Exception("The mol2 (starting at line {0}) block has no bonds"
+                            "".format(block["start_line"]))
 
         coords = []
         for a in atom_lines:
@@ -284,8 +286,8 @@ class MOL2Writer(base.Writer):
         bonds = sorted([(bond[0].id, bond[1].id, bond.order) for bond in bonds])
         mapping = dict([(a.id, i) for i, a in enumerate(obj.atoms)])
 
-        atom_lines = ["{:>4} {:>4} {:>13.4f} {:>9.4f} {:>9.4f} {:>4} {} {} "
-                      "{:>7.4f}".format(mapping[a.id] + 1, a.name,
+        atom_lines = ["{0:>4} {1:>4} {2:>13.4f} {3:>9.4f} {4:>9.4f} {5:>4} {6} {7} "
+                      "{8:>7.4f}".format(mapping[a.id] + 1, a.name,
                                         float(a.pos[0]),
                                         float(a.pos[1]),
                                         float(a.pos[2]), a.type,
@@ -295,10 +297,11 @@ class MOL2Writer(base.Writer):
         atom_lines = "\n".join(atom_lines)
 
         bonds = [(atom1, atom2, order) for atom1, atom2, order in bonds if atom1 in mapping and atom2 in mapping]
-        bond_lines = ["{:>5} {:>5} {:>5} {:>2}".format(bid + 1,
-                                                       mapping[atom1] + 1,
-                                                       mapping[atom2] + 1,
-                                                       order) for bid, (atom1, atom2, order) in enumerate(bonds)]
+        bond_lines = ["{0:>5} {1:>5} {2:>5} {3:>2}"
+                      "".format(bid + 1,
+                                mapping[atom1] + 1,
+                                mapping[atom2] + 1,
+                                order) for bid, (atom1, atom2, order) in enumerate(bonds)]
         bond_lines = ["@<TRIPOS>BOND"] + bond_lines + ["\n"]
         bond_lines = "\n".join(bond_lines)
 
@@ -312,7 +315,7 @@ class MOL2Writer(base.Writer):
         molecule = traj.molecule[traj.frame]
         check_sums = molecule[1].split()
         check_sums[0], check_sums[1] = str(len(obj.atoms)), str(len(bonds))
-        molecule[1] = "{}\n".format(" ".join(check_sums))
+        molecule[1] = "{0}\n".format(" ".join(check_sums))
         molecule = ["@<TRIPOS>MOLECULE\n"] + molecule
 
         return "".join(molecule) + atom_lines + bond_lines + "".join(substructure)

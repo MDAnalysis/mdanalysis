@@ -1,0 +1,14 @@
+[run]
+branch = True
+source = MDAnalysis
+
+exclude_lines =
+    pragma: no cover
+
+[report]
+exclude_lines =
+    pragma: no cover
+
+    def __repr__
+    raise NotImplementedError
+    if __name__ == .__main__.: 

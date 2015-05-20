@@ -108,10 +108,10 @@ def _check_array(coords, desc):
        float32 data
     """
     if (coords.ndim != 2 or coords.shape[1] != 3):
-        raise ValueError("{} must be a sequence of 3 dimensional coordinates"
+        raise ValueError("{0} must be a sequence of 3 dimensional coordinates"
                          "".format(desc))
     if coords.dtype != numpy.float32:
-        raise TypeError("{} must be of type float32".format(desc))
+        raise TypeError("{0} must be of type float32".format(desc))
 
 
 def _check_results_array(results, size):
@@ -123,7 +123,7 @@ def _check_results_array(results, size):
     """
     if results.shape != size:
         raise ValueError("Result array has incorrect size,"
-                         "should be {}, got {}".format(size, results.shape))
+                         "should be {0}, got {1}".format(size, results.shape))
     if results.dtype != numpy.float64:
         raise TypeError("Results array must be of type float64")
 
@@ -134,7 +134,7 @@ def _check_lengths_match(*arrays):
 
     if not all([a.shape == ref for a in arrays]):
         raise ValueError("Input arrays must all be same shape"
-                         "Got {}".format([a.shape for a in arrays]))
+                         "Got {0}".format([a.shape for a in arrays]))
 
 def distance_array(reference, configuration, box=None, result=None):
     """Calculate all distances between a reference set and another configuration.
