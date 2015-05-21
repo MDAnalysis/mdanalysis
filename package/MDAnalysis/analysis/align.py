@@ -453,7 +453,8 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
     traj_atoms = traj.selectAtoms(*select['mobile'])
     natoms = traj_atoms.numberOfAtoms()
 
-    ref_atoms, mobile_atoms = get_matching_atoms(ref_atoms, mobile_atoms, tol_mass=tol_mass)
+    ref_atoms, traj_atoms = get_matching_atoms(ref_atoms, traj_atoms,
+                                                 tol_mass=tol_mass, strict=strict)
 
     logger.info("RMS-fitting on %d atoms." % len(ref_atoms))
     if mass_weighted:
@@ -756,7 +757,7 @@ def fasta2select(fastafilename, is_aligned=False,
     return {'reference': ref_selection, 'mobile': target_selection}
 
 
-def get_matching_atoms(ag1, ag2, tol_mass=0.1):
+def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
     """Return two atom groups with one-to-one matched atoms.
 
     The function takes two :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
@@ -782,6 +783,14 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1):
       *tol_mass*
          Reject if the atomic masses for matched atoms differ by more than
          *tol_mass* [0.1]
+      *strict*
+         ``True``
+             Will raise :exc:`SelectioError` if a single atom does not
+             match between the two selections.
+         ``False`` [default]
+             Will try to prepare a matching selection by dropping
+             residues with non-matching atoms. See :func:`get_matching_atoms`
+             for details.
 
     :Returns: Tuple ``(g1, g2)`` with :class:`~MDAnalysis.core.AtomGroup.AtomGroup` instances
               that match, atom by atom. The groups are either the original groups if all matches
@@ -802,7 +811,7 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1):
 
     """
 
-    if len(ag1) != len(ag2):
+    if ag1.numberOfAtoms() != ag2.numberOfAtoms():
         if ag1.numberOfResidues() != ag2.numberOfResidues():
             errmsg = "Reference and trajectory atom selections do not contain "
             "the same number of atoms: \n"
@@ -812,7 +821,8 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1):
             "\n"
             "(More details can be found in the log file "
             "which can be enabled with 'MDAnalysis.start_logging()')".format(
-                len(ag1), len(ag2), ag1.numberOfResidues(), ag2.numberOfResidues())
+                ag1.numberOfAtoms(), ag2.numberOfAtoms(),
+                ag1.numberOfResidues(), ag2.numberOfResidues())
             dbgmsg = "mismatched residue numbers\n" + \
                 "\n".join(["{0} | {1}"  for r1, r2 in
                            itertools.izip_longest(ag1.resids(), ag2.resids())])
@@ -820,49 +830,81 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1):
             logger.debug(dbgmsg)
             raise SelectionError(errmsg)
         else:
-            warnings.warn("Reference and trajectory atom selections do not contain "
-                          "the same number of atoms: \n"
-                          "atoms:    N_ref={0}, N_traj={1}\n"
-                          "but we attempt to create a valid selection.".format(len(ag1), len(ag2)),
+            msg = ("Reference and trajectory atom selections do not contain "
+                   "the same number of atoms: \n"
+                   "atoms:    N_ref={0}, N_traj={1}").format(
+                ag1.numberOfAtoms(), ag2.numberOfAtoms())
+            if strict:
+                raise SelectionError(msg)
+
+            # continue with trying to creating a valid selection
+            warnings.warn(msg + "\nbut we attempt to create a valid selection.",
                           category=SelectionWarning)
 
-    # could align all atoms but Needleman-Wunsch pairwise2 consumes too much memory for
-    # thousands of characters in each sequence
-    # aln_elem = Bio.pairwise2.align.globalms("".join([MDAnalysis.topology.core.guess_atom_element(n) for n in gref.atoms.names()]),
-    #    "".join([MDAnalysis.topology.core.guess_atom_element(n) for n in models[0].atoms.names()]),
-    #                               2, -1, -1, -0.1,
-    #                               one_alignment_only=True)
-    #
-    # instead, just remove the residues that don't have matching numbers
-    assert ag1.numberOfResidues() == ag2.numberOfResidues()
-    rsize1 = numpy.array([r.numberOfAtoms() for r in ag1.residues])
-    rsize2 = numpy.array([r.numberOfAtoms() for r in ag2.residues])
-    rsize_mismatches = numpy.absolute(rsize1 - rsize2)
-    mismatch_mask = (rsize_mismatches > 0)
-    if numpy.any(mismatch_mask):
-        def get_atoms_byres(g, match_mask=numpy.logical_not(mismatch_mask)):
-            # not pretty... but need to do things on a per-atom basis in order
-            # to preserve original selection
-            ag = g.atoms
-            good = ag.resids()[match_mask]
-            resids = numpy.array([a.resid for a in ag])  # resid for each atom
-            ix_good = numpy.in1d(resids, good)   # boolean array for all matching atoms
-            return ag[numpy.arange(len(ag))[ix_good]]   # workaround for missing boolean indexing
-        _ag1 = get_atoms_byres(ag1)
-        _ag2 = get_atoms_byres(ag2)
+        # continue with trying to salvage the selection:
+        # - number of atoms is different
+        # - number of residues is the same
+        # We will remove residues with mismatching number of atoms (e.g. not resolved
+        # in an X-ray structure)
+        assert ag1.numberOfResidues() == ag2.numberOfResidues()
 
-        # diagnostics
-        # (ugly workaround for missing boolean indexing of AtomGroup)
-        # note: ag[arange(len(ag))[boolean]] is ~2x faster than ag[where[boolean]]
-        mismatch_resindex = numpy.arange(ag1.numberOfResidues())[mismatch_mask]
-        logger.warn("Removed {0} residues with non-matching numbers of atoms".format(
-                mismatch_mask.sum()))
-        logger.debug("Removed residue ids: group 1: {0}".format(ag1.resids()[mismatch_resindex]))
-        logger.debug("Removed residue ids: group 2: {0}".format(ag2.resids()[mismatch_resindex]))
-        # replace after logging (still need old ag1 and ag2 for diagnostics)
-        ag1 = _ag1
-        ag2 = _ag2
-        del _ag1, _ag2
+        # Alternatively, we could align all atoms but Needleman-Wunsch
+        # pairwise2 consumes too much memory for thousands of characters in
+        # each sequence. Perhaps a solution would be pairwise alignment per residue.
+        #
+        # aln_elem = Bio.pairwise2.align.globalms("".join([MDAnalysis.topology.core.guess_atom_element(n) for n in gref.atoms.names()]),
+        #    "".join([MDAnalysis.topology.core.guess_atom_element(n) for n in models[0].atoms.names()]),
+        #                               2, -1, -1, -0.1,
+        #                               one_alignment_only=True)
+
+        # For now, just remove the residues that don't have matching numbers
+        rsize1 = numpy.array([r.numberOfAtoms() for r in ag1.residues])
+        rsize2 = numpy.array([r.numberOfAtoms() for r in ag2.residues])
+        rsize_mismatches = numpy.absolute(rsize1 - rsize2)
+        mismatch_mask = (rsize_mismatches > 0)
+        if numpy.any(mismatch_mask):
+            if strict:
+                # diagnostics
+                mismatch_resindex = numpy.arange(ag1.numberOfResidues())[mismatch_mask]
+                def log_mismatch(number, ag, rsize, mismatch_resindex=mismatch_resindex):
+                    logger.error("Offending residues: group {0}: {1}".format(
+                            number,
+                            ", ".join(["{0[0]}{0[1]} ({0[2]})".format(r) for r in
+                                       itertools.izip(ag.resnames()[mismatch_resindex],
+                                                      ag.resids()[mismatch_resindex],
+                                                      rsize[mismatch_resindex]
+                                                      )])))
+                logger.error("Found {0} residues with non-matching numbers of atoms (#)".format(
+                        mismatch_mask.sum()))
+                log_mismatch(1, ag1, rsize1)
+                log_mismatch(2, ag2, rsize2)
+
+                raise SelectionError("Different number of atoms in some residues. "
+                                     "(Use strict=False to attempt using matching atoms only.)")
+
+            def get_atoms_byres(g, match_mask=numpy.logical_not(mismatch_mask)):
+                # not pretty... but need to do things on a per-atom basis in order
+                # to preserve original selection
+                ag = g.atoms
+                good = ag.resids()[match_mask]
+                resids = numpy.array([a.resid for a in ag])  # resid for each atom
+                ix_good = numpy.in1d(resids, good)   # boolean array for all matching atoms
+                return ag[numpy.arange(len(ag))[ix_good]]   # workaround for missing boolean indexing
+            _ag1 = get_atoms_byres(ag1)
+            _ag2 = get_atoms_byres(ag2)
+
+            # diagnostics
+            # (ugly workaround for missing boolean indexing of AtomGroup)
+            # note: ag[arange(len(ag))[boolean]] is ~2x faster than ag[where[boolean]]
+            mismatch_resindex = numpy.arange(ag1.numberOfResidues())[mismatch_mask]
+            logger.warn("Removed {0} residues with non-matching numbers of atoms".format(
+                    mismatch_mask.sum()))
+            logger.debug("Removed residue ids: group 1: {0}".format(ag1.resids()[mismatch_resindex]))
+            logger.debug("Removed residue ids: group 2: {0}".format(ag2.resids()[mismatch_resindex]))
+            # replace after logging (still need old ag1 and ag2 for diagnostics)
+            ag1 = _ag1
+            ag2 = _ag2
+            del _ag1, _ag2
 
     mass_mismatches = (numpy.absolute(ag1.masses() - ag2.masses()) > tol_mass)
     if numpy.any(mass_mismatches):
