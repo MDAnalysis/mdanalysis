@@ -65,7 +65,4 @@ class ExtendedPDBParser(PrimitivePDBParser.PrimitivePDBParser):
 
     .. versionadded:: 0.8
     """
-    def __init__(self, filename, **kwargs):
-        super(ExtendedPDBParser, self).__init__(filename, **kwargs)
-        from ..coordinates.PDB import ExtendedPDBReader
-        self.PDBReader = ExtendedPDBReader
+    format = 'XPDB'

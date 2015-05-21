@@ -49,8 +49,7 @@ Classes
 from __future__ import absolute_import
 
 from ..core.AtomGroup import Atom
-from .core import (guess_atom_type, guess_atom_mass,
-                   guess_atom_charge)
+from .core import get_atom_mass, guess_atom_element
 from ..core.util import openany
 from .base import TopologyReader
 
@@ -58,12 +57,11 @@ from .base import TopologyReader
 class PrimitivePDBParser(TopologyReader):
     """Parser that obtains a list of atoms from a standard PDB file.
 
+    .. seealso:: :class:`MDAnalysis.coordinates.PDB.PrimitivePDBReader`
+
     .. versionadded:: 0.8
     """
-    def __init__(self, filename, **kwargs):
-        super(PrimitivePDBParser, self).__init__(filename, **kwargs)
-        from ..coordinates.PDB import PrimitivePDBReader
-        self.PDBReader = PrimitivePDBReader
+    format = 'PDB'
 
     def parse(self):
         """Parse atom information from PDB file *filename*.
@@ -76,60 +74,78 @@ class PrimitivePDBParser(TopologyReader):
                      :class:`MDAnalysis.coordinates.PDB.PrimitivePDBReader`.
         """
         structure = {}
-        try:
-            pdb = self.PDBReader(self.filename)
-        except ValueError:
-            raise IOError("Failed to open and read PDB file")
 
-        atoms = self._parseatoms(pdb)
+        atoms = self._parseatoms()
         structure['atoms'] = atoms
 
-        bonds = self._parsebonds(pdb, atoms)
+        bonds = self._parsebonds(atoms)
         structure['bonds'] = bonds
 
         return structure
 
-    def _parseatoms(self, pdb):
+    def _parseatoms(self):
+        iatom = 0
         atoms = []
+        
+        with openany(self.filename) as f:
+            for i, line in enumerate(f):
+                line = line.strip()  # Remove extra spaces
+                if len(line) == 0:  # Skip line if empty
+                    continue
+                record = line[:6].strip()
 
-        # translate list of atoms to MDAnalysis Atom.
-        for iatom, atom in enumerate(pdb._atoms):
-            # ATOM
-            if len(atom.__dict__) == 10:
-                atomname = atom.name
-                atomtype = atom.element or guess_atom_type(atomname)
-                resname = atom.resName
-                resid = int(atom.resSeq)
-                chain = atom.chainID.strip()
-                # no empty segids (or Universe throws IndexError)
-                segid = atom.segID.strip() or chain or "SYSTEM"
-                mass = guess_atom_mass(atomname)
-                charge = guess_atom_charge(atomname)
-                bfactor = atom.tempFactor
-                # occupancy = atom.occupancy
-                altLoc = atom.altLoc
+                if record.startswith('END'):
+                    break
+                elif line[:6] in ('ATOM  ', 'HETATM'):
+                    serial = int(line[6:11])
+                    name = line[12:16].strip()
+                    altLoc = line[16:17].strip()
+                    resName = line[17:21].strip()
+                    chainID = line[21:22].strip()  # empty chainID is a single space ' '!
+                    if self.format == "XPDB":  # fugly but keeps code DRY
+                        resSeq = int(line[22:27])  # extended non-standard format used by VMD
+                    else:
+                        resSeq = int(line[22:26])
+                        # insertCode = _c(27, 27, str)  # not used
+                        # occupancy = float(line[54:60])
+                    tempFactor = float(line[60:66])
+                    segID = line[66:76].strip()
+                    element = line[76:78].strip()
 
-                atoms.append(Atom(iatom, atomname, atomtype, resname, resid,
-                                  segid, mass, charge,
-                                  bfactor=bfactor, serial=atom.serial,
-                                  altLoc=altLoc, universe=self._u))
-            # TER atoms
-            #elif len(atom.__dict__) == 5:
-            #    pass
-            #    #atoms.append(None)
+                    segid = segID.strip() or chainID.strip() or "SYSTEM"
+
+                    elem = guess_atom_element(name)
+                    
+                    atomtype = element or elem
+                    mass = get_atom_mass(elem)
+                    # charge = guess_atom_charge(name)
+                    charge = 0.0
+                    
+                    atom = Atom(iatom, name, atomtype, resName, resSeq,
+                                segid, mass, charge,
+                                bfactor=tempFactor, serial=serial,
+                                altLoc=altLoc, universe=self._u)
+                    iatom += 1
+                    atoms.append(atom)
+
         return atoms
 
-    def _parsebonds(self, primitive_pdb_reader, atoms):
+    def _parsebonds(self, atoms):
+        # Could optimise this by saving lines in the main loop
+        # then doing post processing after all Atoms have been read
+        # ie do one pass through the file only        
+        # Problem is that in multiframe PDB, the CONECT is at end of file,
+        # so the "break" call happens before bonds are reached.
+
         # Mapping between the atom array indicies a.number and atom ids
         # (serial) in the original PDB file
-
         mapping = dict((a.serial, a.number) for a in atoms)
 
         bonds = set()
-        with openany(self.filename, "r") as fname:
-            lines = ((num, line[6:].split()) for num, line in enumerate(fname)
+        with openany(self.filename, "r") as f:
+            lines = (line[6:].split() for line in f
                      if line[:6] == "CONECT")
-            for num, bond in lines:
+            for bond in lines:
                 atom, atoms = int(bond[0]), map(int, bond[1:])
                 for a in atoms:
                     bond = tuple([mapping[atom], mapping[a]])

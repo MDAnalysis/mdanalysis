@@ -10,11 +10,12 @@ The rules for this file:
     use tabs but use spaces for formatting
 
 ------------------------------------------------------------------------------
-??/??/??  richardjgowers, caio s. souza, manuel.nuno.melo, orbeckst
+??/??/15  richardjgowers, caio s. souza, manuel.nuno.melo, orbeckst
   * 0.10.0
 
   Enhancements
 
+  * Improved performance of PDB Reading.  Up to 3x faster. (Issue #212)
   * Added the 'same ... as' selection keyword (Issue #217)
   * Added guess_bonds keyword argument to Universe creation.  This will attempt to
     guess all topology information on Universe creation. (Issue #245)
@@ -34,6 +35,7 @@ The rules for this file:
     when empty.
   * Renamed TopologyGroup.dump_contents to "to_indices"
   * Deprecated 'bonds' keyword from Universe and replaced with 'guess_bonds'
+  * PrimitivePDBReader now requires the numatoms keyword
   * Structural superpositions (MDAnalysis.analysis.align) use partial
     matches of atoms by default (use strict=True for old behavior)
 

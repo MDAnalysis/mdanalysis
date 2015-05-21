@@ -778,6 +778,16 @@ class TestPrimitivePDBReader(_SingleFrameReader):
         self.universe = mda.Universe(PDB_small, permissive=True)
         self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
 
+    def test_missing_natoms(self):
+        from MDAnalysis.coordinates.PDB import PrimitivePDBReader
+
+        assert_raises(ValueError, PrimitivePDBReader, 'something.pdb')
+
+    def test_wrong_natoms(self):
+        from MDAnalysis.coordinates.PDB import PrimitivePDBReader
+
+        assert_raises(ValueError, PrimitivePDBReader, PDB_small, numatoms=4000)
+
 
 class TestExtendedPDBReader(_SingleFrameReader):
     def setUp(self):
@@ -978,8 +988,8 @@ class TestMultiPDBReader(TestCase):
         u = self.multiverse
         frames = []
         for ts in u.trajectory[4:-2:4]:
-            frames.append(ts)
-        assert_equal(np.array([ts.frame - 1 for ts in frames]),
+            frames.append(ts.frame - 1)
+        assert_equal(np.array(frames),
                      np.arange(u.trajectory.numframes)[4:-2:4],
                      err_msg="slicing did not produce the expected frames")
 
