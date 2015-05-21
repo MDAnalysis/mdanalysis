@@ -10,7 +10,7 @@ The rules for this file:
     use tabs but use spaces for formatting
 
 ------------------------------------------------------------------------------
-??/??/??  richardjgowers, caio s. souza, manuel.nuno.melo
+??/??/15  richardjgowers, caio s. souza, manuel.nuno.melo, orbeckst
   * 0.10.0
 
   Enhancements
@@ -26,6 +26,8 @@ The rules for this file:
   * Amber netCDF4 Reader will now read Forces (Issue #257)
   * Amber netCDF4 Writer will now write Velocities and Forces
   * Added Amber coordinate/restart file reader (Issue #262)
+  * Structural superpositions (MDAnalysis.analysis.align) can work
+    with partial matches of atoms.
 
   Changes
 
@@ -34,6 +36,8 @@ The rules for this file:
   * Renamed TopologyGroup.dump_contents to "to_indices"
   * Deprecated 'bonds' keyword from Universe and replaced with 'guess_bonds'
   * PrimitivePDBReader now requires the numatoms keyword
+  * Structural superpositions (MDAnalysis.analysis.align) use partial
+    matches of atoms by default (use strict=True for old behavior)
 
   Fixes
 

@@ -72,11 +72,13 @@ def capping(ref, ace, nma, output):
     # TODO consider a case when the protein resid is 1 and all peptide has to be shifted by +1, put that in docs as a
     #  post-processing step
     alignto(ace, ref, select={
-        "mobile": "resid {0} and backbone".format(resid_min),
-        "reference": "resid {0} and backbone".format(resid_min)})
+            "mobile": "resid {0} and backbone".format(resid_min),
+            "reference": "resid {0} and backbone".format(resid_min)},
+            strict=True)
     alignto(nma, ref, select={
-        "mobile": "resid {0} and backbone and not (resname NMA or resname NME)".format(resid_max),
-        "reference": "resid {0} and (backbone or name OT2)".format(resid_max)})
+            "mobile": "resid {0} and backbone and not (resname NMA or resname NME)".format(resid_max),
+            "reference": "resid {0} and (backbone or name OT2)".format(resid_max)},
+            strict=True)
 
     #  TODO remove the Hydrogen closest to ACE's oxygen
     u = Merge(ace.selectAtoms("resname ACE"),

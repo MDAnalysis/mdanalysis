@@ -63,7 +63,7 @@ if sys.version_info[:2] < (2, 6):
 
 
 if __name__ == '__main__':
-    RELEASE = "0.9.3-dev"  # this must be in-sync with MDAnalysis
+    RELEASE = "0.10.0-dev"  # this must be in-sync with MDAnalysis
     LONG_DESCRIPTION = \
         """MDAnalysis is a tool for analyzing molecular dynamics trajectories.
 
@@ -121,7 +121,7 @@ For details see the report for `Issue 87`_.
           long_description=LONG_DESCRIPTION,
           install_requires=[
               'MDAnalysis==%s' % RELEASE,  # same as this release!
-              'numpy>=1.3',
+              'numpy>=1.4',
               'nose>=0.10',
           ],
           zip_safe=False,  # had 'KeyError' as zipped egg (2MB savings are not worth the trouble)

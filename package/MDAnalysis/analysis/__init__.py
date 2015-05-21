@@ -72,20 +72,15 @@ Available analysis modules
 .. _HELANAL: http://www.ccrnp.ncifcrf.gov/users/kumarsan/HELANAL/helanal.html
 .. _X3DNA: http://x3dna.org/
 
+.. versionchanged:: 0.10.0
+   The analysis submodules are not automatically imported any more. Manually
+   import any submodule that you need.
+
 """
+
 __all__ = [
     'align', 'contacts', 'density', 'distances',
     'hbonds', 'helanal', 'leaflet', 'nuclinfo',
     'rms', 'x3dna',
 ]
 
-import align
-import contacts
-import density
-import distances
-import helanal
-import hbonds
-import leaflet
-import nuclinfo
-import x3dna
-import rms

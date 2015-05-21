@@ -153,7 +153,7 @@ the OPLS/AA force field.
                 394 (2009), 160--176, doi:10.1016/j.jmb.2009.09.009
 """
 
-__version__ = "0.9.3-dev"  # NOTE: keep in sync with RELEASE in setup.py
+__version__ = "0.10.0-dev"  # NOTE: keep in sync with RELEASE in setup.py
 
 __all__ = ['Timeseries', 'Universe', 'asUniverse', 'Writer', 'collection']
 

@@ -37,9 +37,9 @@ MDAnalysis issue tracker.)
 .. _MDAnalysis: http://www.MDAnalysis.org
 .. _LICENSE: https://github.com/MDAnalysis/mdanalysis/blob/master/LICENSE
 
-.. |build| image:: https://travis-ci.org/richardjgowers/mdanalysis.svg?branch=develop
+.. |build| image:: https://travis-ci.org/MDAnalysis/mdanalysis.svg?branch=develop
     :alt: Build Status
-    :target: https://travis-ci.org/richardjgowers/mdanalysis
-.. |cov|   image:: https://coveralls.io/repos/richardjgowers/mdanalysis/badge.svg?branch=develop
+    :target: https://travis-ci.org/MDAnalysis/mdanalysis
+.. |cov|   image:: https://coveralls.io/repos/MDAnalysis/mdanalysis/badge.svg?branch=develop
     :alt: Coverage Status
-    :target: https://coveralls.io/r/richardjgowers/mdanalysis?branch=develop
+    :target: https://coveralls.io/r/MDAnalysis/mdanalysis?branch=develop
