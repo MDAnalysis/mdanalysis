@@ -62,6 +62,11 @@ Available analysis modules
     pucker, and Watson-Crick distance (minor and major groove
     distances).
 
+:mod:`~MDAnalysis.analysis.psa`
+    Perform Path Similarity Analysis (PSA) on a set of trajectories to measure
+    their mutual similarities, including the ability to perform hierarchical
+    clustering and generate heat map-dendrogram plots.
+
 :mod:`~MDAnalysis.analysis.rms`
     Calculation of RMSD and RMSF.
 
