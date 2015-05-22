@@ -10,7 +10,8 @@ The rules for this file:
     use tabs but use spaces for formatting
 
 ------------------------------------------------------------------------------
-??/??/15  richardjgowers, caio s. souza, manuel.nuno.melo, orbeckst
+??/??/15  richardjgowers, caio s. souza, manuel.nuno.melo, orbeckst, 
+          sseyler
   * 0.10.0
 
   Enhancements
@@ -28,6 +29,7 @@ The rules for this file:
   * Added Amber coordinate/restart file reader (Issue #262)
   * Structural superpositions (MDAnalysis.analysis.align) can work
     with partial matches of atoms.
+  * new path similarity analysis module MDAnalysis.analysis.psa
 
   Changes
 
