@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -33,8 +35,8 @@
     <link rel="next" title="5.20.1. Gromacs XTC trajectory I/O — MDAnalysis.coordinates.xdrfile.XTC" href="xdrfile/XTC.html" />
     <link rel="prev" title="5.19. Common functions for coordinate reading — MDAnalysis.coordinates.core" href="core.html" /> 
   </head>
-  <body role="document">
-    <div class="related" role="navigation" aria-label="related navigation">
+  <body>
+    <div class="related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -49,29 +51,27 @@
         <li class="right" >
           <a href="core.html" title="5.19. Common functions for coordinate reading — MDAnalysis.coordinates.core"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.10.0-dev documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
+        <li><a href="../../index.html">MDAnalysis 0.10.0-dev documentation</a> &raquo;</li>
+          <li><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../index.html">
               <img class="logo" src="../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
             </a></p>
   <h4>Previous topic</h4>
   <p class="topless"><a href="core.html"
-                        title="previous chapter">5.19. Common functions for coordinate reading &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.core</span></code></a></p>
+                        title="previous chapter">5.19. Common functions for coordinate reading &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.coordinates.core</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="xdrfile/XTC.html"
-                        title="next chapter">5.20.1. Gromacs XTC trajectory I/O &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.xdrfile.XTC</span></code></a></p>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="../../_sources/documentation_pages/coordinates/xdrfile.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
+                        title="next chapter">5.20.1. Gromacs XTC trajectory I/O &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.xdrfile.XTC</span></tt></a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/documentation_pages/coordinates/xdrfile.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
       <input type="text" name="q" />
@@ -90,28 +90,28 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body" role="main">
+          <div class="body">
             
   <div class="section" id="numpy-access-to-gromacs-xdr-trajectories-mdanalysis-coordinates-xdrfile">
-<h1>5.20. NumPy access to Gromacs XDR trajectories &#8212; <code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.xdrfile</span></code><a class="headerlink" href="#numpy-access-to-gromacs-xdr-trajectories-mdanalysis-coordinates-xdrfile" title="Permalink to this headline">¶</a></h1>
+<h1>5.20. NumPy access to Gromacs XDR trajectories &#8212; <tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.xdrfile</span></tt><a class="headerlink" href="#numpy-access-to-gromacs-xdr-trajectories-mdanalysis-coordinates-xdrfile" title="Permalink to this headline">¶</a></h1>
 <p><a class="reference external" href="http://www.gromacs.org">Gromacs</a> trajectory formats are based on the <a class="reference external" href="http://en.wikipedia.org/wiki/External_Data_Representation">XDR</a> (eXternal Data
 Representation) format. Within this module, classes are provided to
-access frames of Gromacs <a class="reference internal" href="XTC.html#module-MDAnalysis.coordinates.XTC" title="MDAnalysis.coordinates.XTC"><code class="xref py py-mod docutils literal"><span class="pre">XTC</span></code></a> or
-<a class="reference internal" href="TRR.html#module-MDAnalysis.coordinates.TRR" title="MDAnalysis.coordinates.TRR"><code class="xref py py-mod docutils literal"><span class="pre">TRR</span></code></a> trajectories. Relevant data
+access frames of Gromacs <a class="reference internal" href="XTC.html#module-MDAnalysis.coordinates.XTC" title="MDAnalysis.coordinates.XTC"><tt class="xref py py-mod docutils literal"><span class="pre">XTC</span></tt></a> or
+<a class="reference internal" href="TRR.html#module-MDAnalysis.coordinates.TRR" title="MDAnalysis.coordinates.TRR"><tt class="xref py py-mod docutils literal"><span class="pre">TRR</span></tt></a> trajectories. Relevant data
 (positions, velocities, forces, box dimensions) are made available as
 <a class="reference external" href="http://www.numpy.org/">NumPy</a> arrays. The module also contains low-level code in
-<a class="reference internal" href="xdrfile/libxdrfile2.html#module-MDAnalysis.coordinates.xdrfile.libxdrfile2" title="MDAnalysis.coordinates.xdrfile.libxdrfile2"><code class="xref py py-mod docutils literal"><span class="pre">libxdrfile2</span></code></a> that performs the
+<a class="reference internal" href="xdrfile/libxdrfile2.html#module-MDAnalysis.coordinates.xdrfile.libxdrfile2" title="MDAnalysis.coordinates.xdrfile.libxdrfile2"><tt class="xref py py-mod docutils literal"><span class="pre">libxdrfile2</span></tt></a> that performs the
 actual file access and includes some additions such as trajectory
 indices that provide random access for the Gromacs trajectories (which
 is not available with current standard Gromacs tools).</p>
 <p class="rubric">Contents</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="xdrfile/XTC.html">5.20.1. Gromacs XTC trajectory I/O &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.xdrfile.XTC</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="xdrfile/TRR.html">5.20.2. Gromacs TRR trajectory I/O &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.xdrfile.TRR</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="xdrfile/core.html">5.20.3. Common high-level Gromacs XDR functionality &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.xdrfile.core</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="xdrfile/libxdrfile2.html">5.20.4. The Gromacs XTC/TRR library <code class="docutils literal"><span class="pre">libxdrfile2</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="xdrfile/statno.html">5.20.5. Status codes and symbols &#8212; <code class="docutils literal"><span class="pre">statno</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="xdrfile/XTC.html">5.20.1. Gromacs XTC trajectory I/O &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.xdrfile.XTC</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="xdrfile/TRR.html">5.20.2. Gromacs TRR trajectory I/O &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.xdrfile.TRR</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="xdrfile/core.html">5.20.3. Common high-level Gromacs XDR functionality &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.xdrfile.core</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="xdrfile/libxdrfile2.html">5.20.4. The Gromacs XTC/TRR library <tt class="docutils literal"><span class="pre">libxdrfile2</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="xdrfile/statno.html">5.20.5. Status codes and symbols &#8212; <tt class="docutils literal"><span class="pre">statno</span></tt></a></li>
 </ul>
 </div>
 </div>
@@ -122,7 +122,7 @@ is not available with current standard Gromacs tools).</p>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -137,19 +137,20 @@ is not available with current standard Gromacs tools).</p>
         <li class="right" >
           <a href="core.html" title="5.19. Common functions for coordinate reading — MDAnalysis.coordinates.core"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.10.0-dev documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
+        <li><a href="../../index.html">MDAnalysis 0.10.0-dev documentation</a> &raquo;</li>
+          <li><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer" role="contentinfo">
+    <div class="footer">
         &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
-    Paul Rigor, Andy Somogyi, Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
+    and Oliver Beckstein.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -33,8 +35,8 @@
     <link rel="next" title="3.5.2. HELANAL — analysis of protein helices" href="helanal.html" />
     <link rel="prev" title="3.4.2. Generation and Analysis of X3DNA helicoidal parameter profiles — MDAnalysis.analysis.x3dna" href="x3dna.html" /> 
   </head>
-  <body role="document">
-    <div class="related" role="navigation" aria-label="related navigation">
+  <body>
+    <div class="related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -49,18 +51,18 @@
         <li class="right" >
           <a href="x3dna.html" title="3.4.2. Generation and Analysis of X3DNA helicoidal parameter profiles — MDAnalysis.analysis.x3dna"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.10.0-dev documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="../analysis_modules.html" accesskey="U">3. Analysis modules</a> &raquo;</li> 
+        <li><a href="../../index.html">MDAnalysis 0.10.0-dev documentation</a> &raquo;</li>
+          <li><a href="../analysis_modules.html" accesskey="U">3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../index.html">
               <img class="logo" src="../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
             </a></p>
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">3.5.1. Elastic network analysis of MD trajectories &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.analysis.gnm</span></code></a><ul>
+<li><a class="reference internal" href="#">3.5.1. Elastic network analysis of MD trajectories &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.gnm</span></tt></a><ul>
 <li><a class="reference internal" href="#analysis-tasks">3.5.1.1. Analysis tasks</a></li>
 <li><a class="reference internal" href="#utility-functions">3.5.1.2. Utility functions</a></li>
 </ul>
@@ -69,18 +71,16 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="x3dna.html"
-                        title="previous chapter">3.4.2. Generation and Analysis of X3DNA helicoidal parameter profiles &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.analysis.x3dna</span></code></a></p>
+                        title="previous chapter">3.4.2. Generation and Analysis of X3DNA helicoidal parameter profiles &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.x3dna</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="helanal.html"
                         title="next chapter">3.5.2. HELANAL &#8212; analysis of protein helices</a></p>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="../../_sources/documentation_pages/analysis/gnm.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/documentation_pages/analysis/gnm.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
       <input type="text" name="q" />
@@ -99,10 +99,10 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body" role="main">
+          <div class="body">
             
   <span class="target" id="module-MDAnalysis.analysis.gnm"></span><div class="section" id="elastic-network-analysis-of-md-trajectories-mdanalysis-analysis-gnm">
-<h1>3.5.1. Elastic network analysis of MD trajectories &#8212; <a class="reference internal" href="#module-MDAnalysis.analysis.gnm" title="MDAnalysis.analysis.gnm"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.gnm</span></code></a><a class="headerlink" href="#elastic-network-analysis-of-md-trajectories-mdanalysis-analysis-gnm" title="Permalink to this headline">¶</a></h1>
+<h1>3.5.1. Elastic network analysis of MD trajectories &#8212; <a class="reference internal" href="#module-MDAnalysis.analysis.gnm" title="MDAnalysis.analysis.gnm"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.gnm</span></tt></a><a class="headerlink" href="#elastic-network-analysis-of-md-trajectories-mdanalysis-analysis-gnm" title="Permalink to this headline">¶</a></h1>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -115,9 +115,9 @@
 </tr>
 </tbody>
 </table>
-<p>Analyse a trajectory using elastic network models, following the approach of <a class="reference internal" href="#hall2007" id="id1">[Hall2007]</a>.</p>
-<p>An example is provided in <code class="file docutils literal"><span class="pre">examples/GNMExample.py</span></code>. The basic
-approach is to pass a trajectory to <a class="reference internal" href="#MDAnalysis.analysis.gnm.GNMAnalysis" title="MDAnalysis.analysis.gnm.GNMAnalysis"><code class="xref py py-class docutils literal"><span class="pre">GNMAnalysis</span></code></a> and then run
+<p>Analyse a trajectory using elastic network models, following the approach of <a class="reference internal" href="#hall2007">[Hall2007]</a>.</p>
+<p>An example is provided in <tt class="file docutils literal"><span class="pre">examples/GNMExample.py</span></tt>. The basic
+approach is to pass a trajectory to <a class="reference internal" href="#MDAnalysis.analysis.gnm.GNMAnalysis" title="MDAnalysis.analysis.gnm.GNMAnalysis"><tt class="xref py py-class docutils literal"><span class="pre">GNMAnalysis</span></tt></a> and then run
 the analysis:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">)</span>
 <span class="n">C</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">analysis</span><span class="o">.</span><span class="n">gnm</span><span class="o">.</span><span class="n">GNMAnalysis</span><span class="p">(</span><span class="n">u</span><span class="p">,</span><span class="n">ReportVector</span><span class="o">=</span><span class="s">&quot;output.txt&quot;</span><span class="p">)</span>
@@ -131,8 +131,8 @@ the analysis:</p>
 <span class="n">outputfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>The results are found in <code class="xref py py-attr docutils literal"><span class="pre">GNMAnalysis.results</span></code>, which can be
-used for further processing (see <a class="reference internal" href="#hall2007" id="id2">[Hall2007]</a>).</p>
+<p>The results are found in <tt class="xref py py-attr docutils literal"><span class="pre">GNMAnalysis.results</span></tt>, which can be
+used for further processing (see <a class="reference internal" href="#hall2007">[Hall2007]</a>).</p>
 <p class="rubric">References</p>
 <table class="docutils citation" frame="void" id="hall2007" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
@@ -146,7 +146,7 @@ States by Normal-Mode Frequencies. <em>JACS</em> 129 (2007), 11394&#8211;11401.<
 <h2>3.5.1.1. Analysis tasks<a class="headerlink" href="#analysis-tasks" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.analysis.gnm.GNMAnalysis">
-<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.gnm.</code><code class="descname">GNMAnalysis</code><span class="sig-paren">(</span><em>universe</em>, <em>selection='protein and name CA'</em>, <em>cutoff=7.0</em>, <em>ReportVector=None</em>, <em>Bonus_groups=()</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/gnm.html#GNMAnalysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.gnm.GNMAnalysis" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.gnm.</tt><tt class="descname">GNMAnalysis</tt><big>(</big><em>universe</em>, <em>selection='protein and name CA'</em>, <em>cutoff=7.0</em>, <em>ReportVector=None</em>, <em>Bonus_groups=()</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/gnm.html#GNMAnalysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.gnm.GNMAnalysis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Basic tool for GNM analysis.</p>
 <p>Each frame is treated as a novel structure and the GNM
 calculated.  By default, this stores the dominant eigenvector
@@ -154,7 +154,7 @@ and its associated eigenvalue; either can be used to monitor
 conformational change in a simulation.</p>
 <dl class="method">
 <dt id="MDAnalysis.analysis.gnm.GNMAnalysis.generate_kirchoff">
-<code class="descname">generate_kirchoff</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/gnm.html#GNMAnalysis.generate_kirchoff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.gnm.GNMAnalysis.generate_kirchoff" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">generate_kirchoff</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/gnm.html#GNMAnalysis.generate_kirchoff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.gnm.GNMAnalysis.generate_kirchoff" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate the Kirchhoff matrix of contacts.</p>
 <p>This generates the neighbour matrix by generating a grid of
 near-neighbours and then calculating which are are within
@@ -163,7 +163,7 @@ the cutoff. Returns the resulting matrix</p>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.gnm.GNMAnalysis.generate_output">
-<code class="descname">generate_output</code><span class="sig-paren">(</span><em>w</em>, <em>v</em>, <em>outputobject</em>, <em>time</em>, <em>matrix</em>, <em>nmodes=2</em>, <em>ReportVector=None</em>, <em>counter=0</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/gnm.html#GNMAnalysis.generate_output"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.gnm.GNMAnalysis.generate_output" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">generate_output</tt><big>(</big><em>w</em>, <em>v</em>, <em>outputobject</em>, <em>time</em>, <em>matrix</em>, <em>nmodes=2</em>, <em>ReportVector=None</em>, <em>counter=0</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/gnm.html#GNMAnalysis.generate_output"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.gnm.GNMAnalysis.generate_output" title="Permalink to this definition">¶</a></dt>
 <dd><p>Appends eigenvalues and eigenvectors to results.</p>
 <p>This generates the output by adding eigenvalue and
 eigenvector data to an appendable object and optionally
@@ -174,11 +174,10 @@ outputs</p>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.gnm.GNMAnalysis.run">
-<code class="descname">run</code><span class="sig-paren">(</span><em>skip=1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/gnm.html#GNMAnalysis.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.gnm.GNMAnalysis.run" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">run</tt><big>(</big><em>skip=1</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/gnm.html#GNMAnalysis.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.gnm.GNMAnalysis.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Analyze trajectory and produce timeseries.</p>
 <p>Returns GNM results per frame:</p>
-<div class="highlight-python"><div class="highlight"><pre>results = [(time,eigenvalues[1],eigenvectors[1]),(time,eigenvalues[1],eigenvectors[1])... ]
-</pre></div>
+<div class="highlight-python"><pre>results = [(time,eigenvalues[1],eigenvectors[1]),(time,eigenvalues[1],eigenvectors[1])... ]</pre>
 </div>
 </dd></dl>
 
@@ -186,7 +185,7 @@ outputs</p>
 
 <dl class="class">
 <dt id="MDAnalysis.analysis.gnm.closeContactGNMAnalysis">
-<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.gnm.</code><code class="descname">closeContactGNMAnalysis</code><span class="sig-paren">(</span><em>universe</em>, <em>selection='protein'</em>, <em>cutoff=4.5</em>, <em>ReportVector=None</em>, <em>MassWeight=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/gnm.html#closeContactGNMAnalysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.gnm.closeContactGNMAnalysis" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.gnm.</tt><tt class="descname">closeContactGNMAnalysis</tt><big>(</big><em>universe</em>, <em>selection='protein'</em>, <em>cutoff=4.5</em>, <em>ReportVector=None</em>, <em>MassWeight=True</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/gnm.html#closeContactGNMAnalysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.gnm.closeContactGNMAnalysis" title="Permalink to this definition">¶</a></dt>
 <dd><p>GNMAnalysis only using close contacts.</p>
 <p>This is a version of the GNM where the Kirchoff matrix is
 constructed from the close contacts between individual atoms
@@ -200,13 +199,13 @@ in different residues</p>
 directly needed to perform the analysis.</p>
 <dl class="function">
 <dt id="MDAnalysis.analysis.gnm.backup_file">
-<code class="descclassname">MDAnalysis.analysis.gnm.</code><code class="descname">backup_file</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/gnm.html#backup_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.gnm.backup_file" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.analysis.gnm.</tt><tt class="descname">backup_file</tt><big>(</big><em>filename</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/gnm.html#backup_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.gnm.backup_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function helps prevent overwriting default named files</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="MDAnalysis.analysis.gnm.generate_grid">
-<code class="descclassname">MDAnalysis.analysis.gnm.</code><code class="descname">generate_grid</code><span class="sig-paren">(</span><em>positions</em>, <em>cutoff</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/gnm.html#generate_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.gnm.generate_grid" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.analysis.gnm.</tt><tt class="descname">generate_grid</tt><big>(</big><em>positions</em>, <em>cutoff</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/gnm.html#generate_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.gnm.generate_grid" title="Permalink to this definition">¶</a></dt>
 <dd><p>An alternative to searching the entire list of each atom; divide the structure into cutoff sized boxes
 This way, for each particle you only need to search the neighbouring boxes to find the particles within the cutoff
 Observed a 6x speed up for a smallish protein with ~300 residues; this should get better with bigger systems.</p>
@@ -214,7 +213,7 @@ Observed a 6x speed up for a smallish protein with ~300 residues; this should ge
 
 <dl class="function">
 <dt id="MDAnalysis.analysis.gnm.order_list">
-<code class="descclassname">MDAnalysis.analysis.gnm.</code><code class="descname">order_list</code><span class="sig-paren">(</span><em>w</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/gnm.html#order_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.gnm.order_list" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.analysis.gnm.</tt><tt class="descname">order_list</tt><big>(</big><em>w</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/gnm.html#order_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.gnm.order_list" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a dictionary showing the order of eigenvalues (which are reported scrambled normally)</p>
 </dd></dl>
 
@@ -227,7 +226,7 @@ Observed a 6x speed up for a smallish protein with ~300 residues; this should ge
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -242,19 +241,20 @@ Observed a 6x speed up for a smallish protein with ~300 residues; this should ge
         <li class="right" >
           <a href="x3dna.html" title="3.4.2. Generation and Analysis of X3DNA helicoidal parameter profiles — MDAnalysis.analysis.x3dna"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.10.0-dev documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="../analysis_modules.html" >3. Analysis modules</a> &raquo;</li> 
+        <li><a href="../../index.html">MDAnalysis 0.10.0-dev documentation</a> &raquo;</li>
+          <li><a href="../analysis_modules.html" >3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer" role="contentinfo">
+    <div class="footer">
         &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
-    Paul Rigor, Andy Somogyi, Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
+    and Oliver Beckstein.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

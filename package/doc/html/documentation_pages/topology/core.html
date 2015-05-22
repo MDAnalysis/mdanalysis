@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -33,8 +35,8 @@
     <link rel="next" title="4.19. MDAnalysis topology tables" href="tables.html" />
     <link rel="prev" title="4.17. Base topology reader classes — MDAnalysis.topology.base" href="base.html" /> 
   </head>
-  <body role="document">
-    <div class="related" role="navigation" aria-label="related navigation">
+  <body>
+    <div class="related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -49,29 +51,27 @@
         <li class="right" >
           <a href="base.html" title="4.17. Base topology reader classes — MDAnalysis.topology.base"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.10.0-dev documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="../topology_modules.html" accesskey="U">4. Topology modules</a> &raquo;</li> 
+        <li><a href="../../index.html">MDAnalysis 0.10.0-dev documentation</a> &raquo;</li>
+          <li><a href="../topology_modules.html" accesskey="U">4. Topology modules</a> &raquo;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../index.html">
               <img class="logo" src="../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
             </a></p>
   <h4>Previous topic</h4>
   <p class="topless"><a href="base.html"
-                        title="previous chapter">4.17. Base topology reader classes &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.topology.base</span></code></a></p>
+                        title="previous chapter">4.17. Base topology reader classes &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.topology.base</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="tables.html"
                         title="next chapter">4.19. MDAnalysis topology tables</a></p>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="../../_sources/documentation_pages/topology/core.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/documentation_pages/topology/core.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
       <input type="text" name="q" />
@@ -90,59 +90,55 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body" role="main">
+          <div class="body">
             
   <span class="target" id="module-MDAnalysis.topology.core"></span><div class="section" id="common-functions-for-topology-building-mdanalysis-topology-core">
-<h1>4.18. Common functions for topology building &#8212; <a class="reference internal" href="#module-MDAnalysis.topology.core" title="MDAnalysis.topology.core"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.core</span></code></a><a class="headerlink" href="#common-functions-for-topology-building-mdanalysis-topology-core" title="Permalink to this headline">¶</a></h1>
+<h1>4.18. Common functions for topology building &#8212; <a class="reference internal" href="#module-MDAnalysis.topology.core" title="MDAnalysis.topology.core"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.core</span></tt></a><a class="headerlink" href="#common-functions-for-topology-building-mdanalysis-topology-core" title="Permalink to this headline">¶</a></h1>
 <p>The various topology parsers make use of functions and classes in this
 module. They are mostly of use to developers.</p>
-<div class="admonition seealso">
+<div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="tables.html#module-MDAnalysis.topology.tables" title="MDAnalysis.topology.tables"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.tables</span></code></a> for some hard-coded atom
-information that is used by functions such as <a class="reference internal" href="#MDAnalysis.topology.core.guess_atom_type" title="MDAnalysis.topology.core.guess_atom_type"><code class="xref py py-func docutils literal"><span class="pre">guess_atom_type()</span></code></a> and
-<a class="reference internal" href="#MDAnalysis.topology.core.guess_atom_mass" title="MDAnalysis.topology.core.guess_atom_mass"><code class="xref py py-func docutils literal"><span class="pre">guess_atom_mass()</span></code></a>.</p>
+<p class="last"><a class="reference internal" href="tables.html#module-MDAnalysis.topology.tables" title="MDAnalysis.topology.tables"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.tables</span></tt></a> for some hard-coded atom
+information that is used by functions such as <a class="reference internal" href="#MDAnalysis.topology.core.guess_atom_type" title="MDAnalysis.topology.core.guess_atom_type"><tt class="xref py py-func docutils literal"><span class="pre">guess_atom_type()</span></tt></a> and
+<a class="reference internal" href="#MDAnalysis.topology.core.guess_atom_mass" title="MDAnalysis.topology.core.guess_atom_mass"><tt class="xref py py-func docutils literal"><span class="pre">guess_atom_mass()</span></tt></a>.</p>
 </div>
 <dl class="class">
 <dt id="MDAnalysis.topology.core.Angle">
-<em class="property">class </em><code class="descclassname">MDAnalysis.topology.core.</code><code class="descname">Angle</code><span class="sig-paren">(</span><em>atoms</em>, <em>is_guessed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#Angle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.Angle" title="Permalink to this definition">¶</a></dt>
-<dd><p>An angle between three <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atom</span></code></a> instances.
+<em class="property">class </em><tt class="descclassname">MDAnalysis.topology.core.</tt><tt class="descname">Angle</tt><big>(</big><em>atoms</em>, <em>is_guessed=False</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#Angle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.Angle" title="Permalink to this definition">¶</a></dt>
+<dd><p>An angle between three <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a> instances.
 Atom 2 is the apex of the angle</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.8.</span></p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.9.0: </span>Now a subclass of <a class="reference internal" href="#MDAnalysis.topology.core.TopologyObject" title="MDAnalysis.topology.core.TopologyObject"><code class="xref py py-class docutils literal"><span class="pre">TopologyObject</span></code></a>; now uses
-<code class="xref py py-attr docutils literal"><span class="pre">__slots__</span></code> and stores atoms in <code class="xref py py-attr docutils literal"><span class="pre">atoms</span></code> attribute</p>
-</div>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.8.</span></p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.9.0: </span>Now a subclass of <a class="reference internal" href="#MDAnalysis.topology.core.TopologyObject" title="MDAnalysis.topology.core.TopologyObject"><tt class="xref py py-class docutils literal"><span class="pre">TopologyObject</span></tt></a>; now uses
+<tt class="xref py py-attr docutils literal"><span class="pre">__slots__</span></tt> and stores atoms in <tt class="xref py py-attr docutils literal"><span class="pre">atoms</span></tt> attribute</p>
 <dl class="method">
 <dt id="MDAnalysis.topology.core.Angle.angle">
-<code class="descname">angle</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#Angle.angle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.Angle.angle" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">angle</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#Angle.angle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.Angle.angle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the angle in degrees of this Angle.</p>
 <p>Angle between atoms 0 and 2 with apex at 1:</p>
-<div class="highlight-python"><div class="highlight"><pre>   2
+<div class="highlight-python"><pre>   2
   /
  /
-1------0
-</pre></div>
+1------0</pre>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">The numerical precision is typically not better than
 4 decimals (and is only tested to 3 decimals).</p>
 </div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.9.0.</span></p>
-</div>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.9.0.</span></p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="MDAnalysis.topology.core.Bond">
-<em class="property">class </em><code class="descclassname">MDAnalysis.topology.core.</code><code class="descname">Bond</code><span class="sig-paren">(</span><em>atoms</em>, <em>order=None</em>, <em>is_guessed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#Bond"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.Bond" title="Permalink to this definition">¶</a></dt>
-<dd><p>A bond between two <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atom</span></code></a> instances.</p>
-<p>Two <a class="reference internal" href="#MDAnalysis.topology.core.Bond" title="MDAnalysis.topology.core.Bond"><code class="xref py py-class docutils literal"><span class="pre">Bond</span></code></a> instances can be compared with the <code class="docutils literal"><span class="pre">==</span></code> and
-<code class="docutils literal"><span class="pre">!=</span></code> operators. A bond is equal to another if the same atom
+<em class="property">class </em><tt class="descclassname">MDAnalysis.topology.core.</tt><tt class="descname">Bond</tt><big>(</big><em>atoms</em>, <em>order=None</em>, <em>is_guessed=False</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#Bond"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.Bond" title="Permalink to this definition">¶</a></dt>
+<dd><p>A bond between two <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a> instances.</p>
+<p>Two <a class="reference internal" href="#MDAnalysis.topology.core.Bond" title="MDAnalysis.topology.core.Bond"><tt class="xref py py-class docutils literal"><span class="pre">Bond</span></tt></a> instances can be compared with the <tt class="docutils literal"><span class="pre">==</span></tt> and
+<tt class="docutils literal"><span class="pre">!=</span></tt> operators. A bond is equal to another if the same atom
 numbers are connected and they have the same bond order. The
 ordering of the two atom numbers is ignored as is the fact that a
 bond was guessed.</p>
@@ -153,25 +149,24 @@ bond was guessed.</p>
 </div>
 </dd>
 </dl>
-<p>will return either <code class="docutils literal"><span class="pre">True</span></code> or <code class="docutils literal"><span class="pre">False</span></code>.</p>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.9.0: </span>Now a subclass of <a class="reference internal" href="#MDAnalysis.topology.core.TopologyObject" title="MDAnalysis.topology.core.TopologyObject"><code class="xref py py-class docutils literal"><span class="pre">TopologyObject</span></code></a>. Changed class to use
-<code class="xref py py-attr docutils literal"><span class="pre">__slots__</span></code> and stores atoms in <code class="xref py py-attr docutils literal"><span class="pre">atoms</span></code> attribute.</p>
-</div>
+<p>will return either <tt class="docutils literal"><span class="pre">True</span></tt> or <tt class="docutils literal"><span class="pre">False</span></tt>.</p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.9.0: </span>Now a subclass of <a class="reference internal" href="#MDAnalysis.topology.core.TopologyObject" title="MDAnalysis.topology.core.TopologyObject"><tt class="xref py py-class docutils literal"><span class="pre">TopologyObject</span></tt></a>. Changed class to use
+<tt class="xref py py-attr docutils literal"><span class="pre">__slots__</span></tt> and stores atoms in <tt class="xref py py-attr docutils literal"><span class="pre">atoms</span></tt> attribute.</p>
 <dl class="method">
 <dt id="MDAnalysis.topology.core.Bond.length">
-<code class="descname">length</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#Bond.length"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.Bond.length" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">length</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#Bond.length"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.Bond.length" title="Permalink to this definition">¶</a></dt>
 <dd><p>Length of the bond.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.topology.core.Bond.partner">
-<code class="descname">partner</code><span class="sig-paren">(</span><em>Atom</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#Bond.partner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.Bond.partner" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">partner</tt><big>(</big><em>Atom</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#Bond.partner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.Bond.partner" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the other <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atom</span></code></a> in this
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body">the other <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a> in this
 bond</td>
 </tr>
 </tbody>
@@ -182,9 +177,9 @@ bond</td>
 
 <dl class="class">
 <dt id="MDAnalysis.topology.core.Improper_Torsion">
-<em class="property">class </em><code class="descclassname">MDAnalysis.topology.core.</code><code class="descname">Improper_Torsion</code><span class="sig-paren">(</span><em>atoms</em>, <em>is_guessed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#Improper_Torsion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.Improper_Torsion" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.topology.core.</tt><tt class="descname">Improper_Torsion</tt><big>(</big><em>atoms</em>, <em>is_guessed=False</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#Improper_Torsion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.Improper_Torsion" title="Permalink to this definition">¶</a></dt>
 <dd><p>Improper Torsion (improper dihedral angle) between four
-<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atom</span></code></a> instances.</p>
+<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a> instances.</p>
 <p>MDAnalysis treats the improper torsion angle as the angle between
 the planes formed by Atoms (1, 2, 3) and (2, 3, 4).</p>
 <div class="admonition warning">
@@ -195,7 +190,7 @@ your software.</p>
 </div>
 <dl class="method">
 <dt id="MDAnalysis.topology.core.Improper_Torsion.improper">
-<code class="descname">improper</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#Improper_Torsion.improper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.Improper_Torsion.improper" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">improper</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#Improper_Torsion.improper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.Improper_Torsion.improper" title="Permalink to this definition">¶</a></dt>
 <dd><p>Improper dihedral angle in degrees.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -208,7 +203,7 @@ your software.</p>
 
 <dl class="class">
 <dt id="MDAnalysis.topology.core.TopologyDict">
-<em class="property">class </em><code class="descclassname">MDAnalysis.topology.core.</code><code class="descname">TopologyDict</code><span class="sig-paren">(</span><em>members</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#TopologyDict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.TopologyDict" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.topology.core.</tt><tt class="descname">TopologyDict</tt><big>(</big><em>members</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#TopologyDict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.TopologyDict" title="Permalink to this definition">¶</a></dt>
 <dd><p>A customised dictionary designed for sorting the bonds, angles and
 torsions present in a group of atoms.</p>
 <p>Usage:</p>
@@ -219,14 +214,14 @@ torsions present in a group of atoms.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>members</em></dt>
-<dd><p class="first last">A list of <a class="reference internal" href="#MDAnalysis.topology.core.TopologyObject" title="MDAnalysis.topology.core.TopologyObject"><code class="xref py py-class docutils literal"><span class="pre">TopologyObject</span></code></a> instances</p>
+<dd><p class="first last">A list of <a class="reference internal" href="#MDAnalysis.topology.core.TopologyObject" title="MDAnalysis.topology.core.TopologyObject"><tt class="xref py py-class docutils literal"><span class="pre">TopologyObject</span></tt></a> instances</p>
 </dd>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>topologydict</em></dt>
 <dd><p class="first last">A specialised dictionary of the topology instances passed to it</p>
 </dd>
@@ -235,14 +230,14 @@ torsions present in a group of atoms.</p>
 </tr>
 </tbody>
 </table>
-<p>TopologyDicts are also built lazily from a <a class="reference internal" href="#MDAnalysis.topology.core.TopologyGroup.topDict" title="MDAnalysis.topology.core.TopologyGroup.topDict"><code class="xref py py-class docutils literal"><span class="pre">TopologyGroup.topDict</span></code></a>
+<p>TopologyDicts are also built lazily from a <a class="reference internal" href="#MDAnalysis.topology.core.TopologyGroup.topDict" title="MDAnalysis.topology.core.TopologyGroup.topDict"><tt class="xref py py-class docutils literal"><span class="pre">TopologyGroup.topDict</span></tt></a>
 attribute.</p>
-<p>The <a class="reference internal" href="#MDAnalysis.topology.core.TopologyDict" title="MDAnalysis.topology.core.TopologyDict"><code class="xref py py-class docutils literal"><span class="pre">TopologyDict</span></code></a> collects all the selected topology type from the
+<p>The <a class="reference internal" href="#MDAnalysis.topology.core.TopologyDict" title="MDAnalysis.topology.core.TopologyDict"><tt class="xref py py-class docutils literal"><span class="pre">TopologyDict</span></tt></a> collects all the selected topology type from the
 atoms and categorises them according to the types of the atoms within.
-A <a class="reference internal" href="#MDAnalysis.topology.core.TopologyGroup" title="MDAnalysis.topology.core.TopologyGroup"><code class="xref py py-class docutils literal"><span class="pre">TopologyGroup</span></code></a> containing all of a given bond type can
+A <a class="reference internal" href="#MDAnalysis.topology.core.TopologyGroup" title="MDAnalysis.topology.core.TopologyGroup"><tt class="xref py py-class docutils literal"><span class="pre">TopologyGroup</span></tt></a> containing all of a given bond type can
 be made by querying with the appropriate key.  The keys to the
-<a class="reference internal" href="#MDAnalysis.topology.core.TopologyDict" title="MDAnalysis.topology.core.TopologyDict"><code class="xref py py-class docutils literal"><span class="pre">TopologyDict</span></code></a> are a tuple of the atom types that the bond represents
-and can be viewed using the <a class="reference internal" href="#MDAnalysis.topology.core.TopologyDict.keys" title="MDAnalysis.topology.core.TopologyDict.keys"><code class="xref py py-meth docutils literal"><span class="pre">keys()</span></code></a> method.</p>
+<a class="reference internal" href="#MDAnalysis.topology.core.TopologyDict" title="MDAnalysis.topology.core.TopologyDict"><tt class="xref py py-class docutils literal"><span class="pre">TopologyDict</span></tt></a> are a tuple of the atom types that the bond represents
+and can be viewed using the <a class="reference internal" href="#MDAnalysis.topology.core.TopologyDict.keys" title="MDAnalysis.topology.core.TopologyDict.keys"><tt class="xref py py-meth docutils literal"><span class="pre">keys()</span></tt></a> method.</p>
 <p>For example, from a system containing pure ethanol</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">td</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">bonds</span><span class="o">.</span><span class="n">topDict</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">td</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
@@ -263,20 +258,18 @@ angle is considered identical to a H-C-C angle.</p>
 <p>Duplicate entries are automatically removed upon creation and
 combination of different Dicts.  This means a bond between atoms
 1 and 2 will only ever appear once in a dict despite both atoms 1
-and 2 having the bond in their <code class="xref py py-attr docutils literal"><span class="pre">bond</span></code> attribute.</p>
-<p>Two <a class="reference internal" href="#MDAnalysis.topology.core.TopologyDict" title="MDAnalysis.topology.core.TopologyDict"><code class="xref py py-class docutils literal"><span class="pre">TopologyDict</span></code></a> instances can be combined using
+and 2 having the bond in their <tt class="xref py py-attr docutils literal"><span class="pre">bond</span></tt> attribute.</p>
+<p>Two <a class="reference internal" href="#MDAnalysis.topology.core.TopologyDict" title="MDAnalysis.topology.core.TopologyDict"><tt class="xref py py-class docutils literal"><span class="pre">TopologyDict</span></tt></a> instances can be combined using
 addition and it will not create any duplicate bonds in the process.</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.8.</span></p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.9.0: </span>Changed initialisation to use a list of <a class="reference internal" href="#MDAnalysis.topology.core.TopologyObject" title="MDAnalysis.topology.core.TopologyObject"><code class="xref py py-class docutils literal"><span class="pre">TopologyObject</span></code></a>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.8.</span></p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.9.0: </span>Changed initialisation to use a list of <a class="reference internal" href="#MDAnalysis.topology.core.TopologyObject" title="MDAnalysis.topology.core.TopologyObject"><tt class="xref py py-class docutils literal"><span class="pre">TopologyObject</span></tt></a>
 instances instead of list of atoms; now used from within
-<a class="reference internal" href="#MDAnalysis.topology.core.TopologyGroup" title="MDAnalysis.topology.core.TopologyGroup"><code class="xref py py-class docutils literal"><span class="pre">TopologyGroup</span></code></a> instead of accessed from <code class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></code>.</p>
-</div>
+<a class="reference internal" href="#MDAnalysis.topology.core.TopologyGroup" title="MDAnalysis.topology.core.TopologyGroup"><tt class="xref py py-class docutils literal"><span class="pre">TopologyGroup</span></tt></a> instead of accessed from <tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt>.</p>
 <dl class="method">
 <dt id="MDAnalysis.topology.core.TopologyDict.keys">
-<code class="descname">keys</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#TopologyDict.keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.TopologyDict.keys" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">keys</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#TopologyDict.keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.TopologyDict.keys" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a list of the different types of available bonds</p>
 </dd></dl>
 
@@ -284,20 +277,20 @@ instances instead of list of atoms; now used from within
 
 <dl class="class">
 <dt id="MDAnalysis.topology.core.TopologyGroup">
-<em class="property">class </em><code class="descclassname">MDAnalysis.topology.core.</code><code class="descname">TopologyGroup</code><span class="sig-paren">(</span><em>bondlist</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#TopologyGroup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.TopologyGroup" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.topology.core.</tt><tt class="descname">TopologyGroup</tt><big>(</big><em>bondlist</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#TopologyGroup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.TopologyGroup" title="Permalink to this definition">¶</a></dt>
 <dd><p>A container for a groups of bonds.</p>
 <p>All bonds of a certain types can be retrieved from within the
-<a class="reference internal" href="#MDAnalysis.topology.core.TopologyGroup" title="MDAnalysis.topology.core.TopologyGroup"><code class="xref py py-class docutils literal"><span class="pre">TopologyGroup</span></code></a> by querying with a tuple of types:</p>
+<a class="reference internal" href="#MDAnalysis.topology.core.TopologyGroup" title="MDAnalysis.topology.core.TopologyGroup"><tt class="xref py py-class docutils literal"><span class="pre">TopologyGroup</span></tt></a> by querying with a tuple of types:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">tg2</span> <span class="o">=</span> <span class="n">tg</span><span class="o">.</span><span class="n">selectBonds</span><span class="p">([</span><span class="n">key</span><span class="p">])</span>
 </pre></div>
 </div>
 <p>Where <em>key</em> describes the desired bond as a tuple of the involved
-<code class="xref py py-class docutils literal"><span class="pre">Atom</span></code> types, as defined by the .type Atom
+<tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt> types, as defined by the .type Atom
 attribute). A list of available keys can be displayed using the
-<a class="reference internal" href="#MDAnalysis.topology.core.TopologyGroup.types" title="MDAnalysis.topology.core.TopologyGroup.types"><code class="xref py py-meth docutils literal"><span class="pre">types()</span></code></a> method.</p>
+<a class="reference internal" href="#MDAnalysis.topology.core.TopologyGroup.types" title="MDAnalysis.topology.core.TopologyGroup.types"><tt class="xref py py-meth docutils literal"><span class="pre">types()</span></tt></a> method.</p>
 <p>Alternatively, all the bonds which are in a given
-<code class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></code> can be extracted using
-<a class="reference internal" href="#MDAnalysis.topology.core.TopologyGroup.atomgroup_intersection" title="MDAnalysis.topology.core.TopologyGroup.atomgroup_intersection"><code class="xref py py-meth docutils literal"><span class="pre">atomgroup_intersection()</span></code></a>:</p>
+<tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt> can be extracted using
+<a class="reference internal" href="#MDAnalysis.topology.core.TopologyGroup.atomgroup_intersection" title="MDAnalysis.topology.core.TopologyGroup.atomgroup_intersection"><tt class="xref py py-meth docutils literal"><span class="pre">atomgroup_intersection()</span></tt></a>:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">tg2</span> <span class="o">=</span> <span class="n">tg</span><span class="o">.</span><span class="n">atomgroup_intersection</span><span class="p">(</span><span class="n">ag</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -307,44 +300,41 @@ all bonds to be inside the AtomGroup passed to it.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">tg2</span> <span class="o">=</span> <span class="n">tg</span><span class="p">[</span><span class="mi">5</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
 </pre></div>
 </div>
-<p>The <a class="reference internal" href="#MDAnalysis.topology.core.TopologyGroup.bonds" title="MDAnalysis.topology.core.TopologyGroup.bonds"><code class="xref py py-meth docutils literal"><span class="pre">bonds()</span></code></a>, <a class="reference internal" href="#MDAnalysis.topology.core.TopologyGroup.angles" title="MDAnalysis.topology.core.TopologyGroup.angles"><code class="xref py py-meth docutils literal"><span class="pre">angles()</span></code></a> and <a class="reference internal" href="#MDAnalysis.topology.core.TopologyGroup.torsions" title="MDAnalysis.topology.core.TopologyGroup.torsions"><code class="xref py py-meth docutils literal"><span class="pre">torsions()</span></code></a> methods offer
+<p>The <a class="reference internal" href="#MDAnalysis.topology.core.TopologyGroup.bonds" title="MDAnalysis.topology.core.TopologyGroup.bonds"><tt class="xref py py-meth docutils literal"><span class="pre">bonds()</span></tt></a>, <a class="reference internal" href="#MDAnalysis.topology.core.TopologyGroup.angles" title="MDAnalysis.topology.core.TopologyGroup.angles"><tt class="xref py py-meth docutils literal"><span class="pre">angles()</span></tt></a> and <a class="reference internal" href="#MDAnalysis.topology.core.TopologyGroup.torsions" title="MDAnalysis.topology.core.TopologyGroup.torsions"><tt class="xref py py-meth docutils literal"><span class="pre">torsions()</span></tt></a> methods offer
 a &#8220;shortcut&#8221; to the Cython distance calculation functions in
-<a class="reference internal" href="../core/distances.html#module-MDAnalysis.core.distances" title="MDAnalysis.core.distances"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.distances</span></code></a>.</p>
+<a class="reference internal" href="../core/distances.html#module-MDAnalysis.core.distances" title="MDAnalysis.core.distances"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.distances</span></tt></a>.</p>
 <p>TopologyGroups can be combined with TopologyGroups of the same bond
 type (ie can combine two angle containing TopologyGroups).</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.8.</span></p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.9.0: </span>Overhauled completely: (1) Added internal <a class="reference internal" href="#MDAnalysis.topology.core.TopologyDict" title="MDAnalysis.topology.core.TopologyDict"><code class="xref py py-class docutils literal"><span class="pre">TopologyDict</span></code></a>
-accessible by the <a class="reference internal" href="#MDAnalysis.topology.core.TopologyGroup.topDict" title="MDAnalysis.topology.core.TopologyGroup.topDict"><code class="xref py py-attr docutils literal"><span class="pre">topDict</span></code></a> attribute. (2)
-<a class="reference internal" href="#MDAnalysis.topology.core.TopologyGroup.selectBonds" title="MDAnalysis.topology.core.TopologyGroup.selectBonds"><code class="xref py py-meth docutils literal"><span class="pre">selectBonds()</span></code></a> allows the <a class="reference internal" href="#MDAnalysis.topology.core.TopologyGroup.topDict" title="MDAnalysis.topology.core.TopologyGroup.topDict"><code class="xref py py-attr docutils literal"><span class="pre">topDict</span></code></a> to be queried
-with tuple of types. (3) Added <a class="reference internal" href="#MDAnalysis.topology.core.TopologyGroup.atomgroup_intersection" title="MDAnalysis.topology.core.TopologyGroup.atomgroup_intersection"><code class="xref py py-meth docutils literal"><span class="pre">atomgroup_intersection()</span></code></a>
-to allow bonds which are in a given <code class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></code> to be retrieved.</p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.10.0: </span>Added <a class="reference internal" href="#MDAnalysis.topology.core.TopologyGroup.from_indices" title="MDAnalysis.topology.core.TopologyGroup.from_indices"><code class="xref py py-func docutils literal"><span class="pre">from_indices()</span></code></a> constructor, allowing class to be created
+<p class="versionadded">
+<span class="versionmodified">New in version 0.8.</span></p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.9.0: </span>Overhauled completely: (1) Added internal <a class="reference internal" href="#MDAnalysis.topology.core.TopologyDict" title="MDAnalysis.topology.core.TopologyDict"><tt class="xref py py-class docutils literal"><span class="pre">TopologyDict</span></tt></a>
+accessible by the <a class="reference internal" href="#MDAnalysis.topology.core.TopologyGroup.topDict" title="MDAnalysis.topology.core.TopologyGroup.topDict"><tt class="xref py py-attr docutils literal"><span class="pre">topDict</span></tt></a> attribute. (2)
+<a class="reference internal" href="#MDAnalysis.topology.core.TopologyGroup.selectBonds" title="MDAnalysis.topology.core.TopologyGroup.selectBonds"><tt class="xref py py-meth docutils literal"><span class="pre">selectBonds()</span></tt></a> allows the <a class="reference internal" href="#MDAnalysis.topology.core.TopologyGroup.topDict" title="MDAnalysis.topology.core.TopologyGroup.topDict"><tt class="xref py py-attr docutils literal"><span class="pre">topDict</span></tt></a> to be queried
+with tuple of types. (3) Added <a class="reference internal" href="#MDAnalysis.topology.core.TopologyGroup.atomgroup_intersection" title="MDAnalysis.topology.core.TopologyGroup.atomgroup_intersection"><tt class="xref py py-meth docutils literal"><span class="pre">atomgroup_intersection()</span></tt></a>
+to allow bonds which are in a given <tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt> to be retrieved.</p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.10.0: </span>Added <a class="reference internal" href="#MDAnalysis.topology.core.TopologyGroup.from_indices" title="MDAnalysis.topology.core.TopologyGroup.from_indices"><tt class="xref py py-func docutils literal"><span class="pre">from_indices()</span></tt></a> constructor, allowing class to be created
 from indices.
 Can now create empty Group.
-Renamed <a class="reference internal" href="#MDAnalysis.topology.core.TopologyGroup.dump_contents" title="MDAnalysis.topology.core.TopologyGroup.dump_contents"><code class="xref py py-meth docutils literal"><span class="pre">dump_contents()</span></code></a> to <a class="reference internal" href="#MDAnalysis.topology.core.TopologyGroup.to_indices" title="MDAnalysis.topology.core.TopologyGroup.to_indices"><code class="xref py py-meth docutils literal"><span class="pre">to_indices()</span></code></a></p>
-</div>
+Renamed <a class="reference internal" href="#MDAnalysis.topology.core.TopologyGroup.dump_contents" title="MDAnalysis.topology.core.TopologyGroup.dump_contents"><tt class="xref py py-meth docutils literal"><span class="pre">dump_contents()</span></tt></a> to <a class="reference internal" href="#MDAnalysis.topology.core.TopologyGroup.to_indices" title="MDAnalysis.topology.core.TopologyGroup.to_indices"><tt class="xref py py-meth docutils literal"><span class="pre">to_indices()</span></tt></a></p>
 <dl class="method">
 <dt id="MDAnalysis.topology.core.TopologyGroup.angles">
-<code class="descname">angles</code><span class="sig-paren">(</span><em>result=None</em>, <em>pbc=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#TopologyGroup.angles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.TopologyGroup.angles" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">angles</tt><big>(</big><em>result=None</em>, <em>pbc=False</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#TopologyGroup.angles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.TopologyGroup.angles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the angle in radians formed between a bond
 between atoms 1 and 2 and a bond between atoms 2 &amp; 3</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>result</em></dt>
 <dd><p class="first last">allows a predefined results array to be used, note that this
 will be overwritten</p>
 </dd>
 <dt><em>pbc</em></dt>
 <dd><p class="first last">apply periodic boundary conditions when calculating angles
-[<code class="docutils literal"><span class="pre">False</span></code>] this is important when connecting vectors between atoms
+[<tt class="docutils literal"><span class="pre">False</span></tt>] this is important when connecting vectors between atoms
 might require minimum image convention</p>
 </dd>
 </dl>
@@ -353,44 +343,42 @@ might require minimum image convention</p>
 </tbody>
 </table>
 <p>Uses cython implementation</p>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.9.0: </span>Added <em>pbc</em> option (default <code class="docutils literal"><span class="pre">False</span></code>)</p>
-</div>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.9.0: </span>Added <em>pbc</em> option (default <tt class="docutils literal"><span class="pre">False</span></tt>)</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.topology.core.TopologyGroup.atomgroup_intersection">
-<code class="descname">atomgroup_intersection</code><span class="sig-paren">(</span><em>ag</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#TopologyGroup.atomgroup_intersection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.TopologyGroup.atomgroup_intersection" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">atomgroup_intersection</tt><big>(</big><em>ag</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#TopologyGroup.atomgroup_intersection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.TopologyGroup.atomgroup_intersection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieve all bonds from within this TopologyGroup that are within
 the AtomGroup which is passed.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>strict</em></dt>
 <dd><p class="first last">Only retrieve bonds which are completely contained within the
-AtomGroup. [<code class="docutils literal"><span class="pre">False</span></code>]</p>
+AtomGroup. [<tt class="docutils literal"><span class="pre">False</span></tt>]</p>
 </dd>
 </dl>
 </td>
 </tr>
 </tbody>
 </table>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.9.0.</span></p>
-</div>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.9.0.</span></p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.topology.core.TopologyGroup.bonds">
-<code class="descname">bonds</code><span class="sig-paren">(</span><em>pbc=False</em>, <em>result=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#TopologyGroup.bonds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.TopologyGroup.bonds" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">bonds</tt><big>(</big><em>pbc=False</em>, <em>result=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#TopologyGroup.bonds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.TopologyGroup.bonds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the distance between all bonds in this TopologyGroup</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>pbc</em></dt>
 <dd><p class="first last">apply periodic boundary conditions when calculating distance
 [False]</p>
@@ -409,7 +397,7 @@ note that this will be overwritten</p>
 
 <dl class="method">
 <dt id="MDAnalysis.topology.core.TopologyGroup.dump_contents">
-<code class="descname">dump_contents</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.core.TopologyGroup.dump_contents" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">dump_contents</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.topology.core.TopologyGroup.dump_contents" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a tuple of tuples which define the contents of this
 TopologyGroup in terms of the atom numbers,
 (0 based index within u.atoms)</p>
@@ -417,23 +405,21 @@ TopologyGroup in terms of the atom numbers,
 entries in universe._topology.
 Note that because bonds are sorted as they are initialised, the order
 that atoms are defined in each entry might be reversed.</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.9.0.</span></p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.10.0: </span>Renamed from &#8220;dump_contents&#8221; to &#8220;to_indices&#8221;</p>
-</div>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.9.0.</span></p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.10.0: </span>Renamed from &#8220;dump_contents&#8221; to &#8220;to_indices&#8221;</p>
 </dd></dl>
 
 <dl class="classmethod">
 <dt id="MDAnalysis.topology.core.TopologyGroup.from_indices">
-<em class="property">classmethod </em><code class="descname">from_indices</code><span class="sig-paren">(</span><em>bondlist</em>, <em>atomgroup</em>, <em>bondclass=None</em>, <em>guessed=True</em>, <em>remove_duplicates=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#TopologyGroup.from_indices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.TopologyGroup.from_indices" title="Permalink to this definition">¶</a></dt>
+<em class="property">classmethod </em><tt class="descname">from_indices</tt><big>(</big><em>bondlist</em>, <em>atomgroup</em>, <em>bondclass=None</em>, <em>guessed=True</em>, <em>remove_duplicates=False</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#TopologyGroup.from_indices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.TopologyGroup.from_indices" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initiate from a list of indices.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>bondlist</em></dt>
 <dd><p class="first last">A list of list of indices.</p>
 </dd>
@@ -443,37 +429,36 @@ that atoms are defined in each entry might be reversed.</p>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-even field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>bond</em></dt>
 <dd><p class="first last">The Class of the topology object to be made.
 If missing this will try and be guessed according to the number
 of indices in each record.  This will only work for Bonds and Angles.</p>
 </dd>
 <dt><em>guessed</em></dt>
-<dd><p class="first last">Whether or not the bonds were guessed. [<code class="docutils literal"><span class="pre">True</span></code>]</p>
+<dd><p class="first last">Whether or not the bonds were guessed. [<tt class="docutils literal"><span class="pre">True</span></tt>]</p>
 </dd>
 <dt><em>remove_duplicates</em></dt>
-<dd><p class="first last">Sort through items and make sure that no duplicates are created [<code class="docutils literal"><span class="pre">False</span></code>]</p>
+<dd><p class="first last">Sort through items and make sure that no duplicates are created [<tt class="docutils literal"><span class="pre">False</span></tt>]</p>
 </dd>
 </dl>
 </td>
 </tr>
 </tbody>
 </table>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.10.0.</span></p>
-</div>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.10.0.</span></p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.topology.core.TopologyGroup.selectBonds">
-<code class="descname">selectBonds</code><span class="sig-paren">(</span><em>selection</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#TopologyGroup.selectBonds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.TopologyGroup.selectBonds" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">selectBonds</tt><big>(</big><em>selection</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#TopologyGroup.selectBonds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.TopologyGroup.selectBonds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieves a selection from this topology group based on types.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.topology.core.TopologyGroup.to_indices">
-<code class="descname">to_indices</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#TopologyGroup.to_indices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.TopologyGroup.to_indices" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">to_indices</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#TopologyGroup.to_indices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.TopologyGroup.to_indices" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a tuple of tuples which define the contents of this
 TopologyGroup in terms of the atom numbers,
 (0 based index within u.atoms)</p>
@@ -481,17 +466,15 @@ TopologyGroup in terms of the atom numbers,
 entries in universe._topology.
 Note that because bonds are sorted as they are initialised, the order
 that atoms are defined in each entry might be reversed.</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.9.0.</span></p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.10.0: </span>Renamed from &#8220;dump_contents&#8221; to &#8220;to_indices&#8221;</p>
-</div>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.9.0.</span></p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.10.0: </span>Renamed from &#8220;dump_contents&#8221; to &#8220;to_indices&#8221;</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="MDAnalysis.topology.core.TopologyGroup.topDict">
-<code class="descname">topDict</code><a class="headerlink" href="#MDAnalysis.topology.core.TopologyGroup.topDict" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">topDict</tt><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#TopologyGroup.topDict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.TopologyGroup.topDict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the TopologyDict for this topology group.</p>
 <p>This is used for the selectBonds method when fetching a certain type
 of bond.</p>
@@ -501,7 +484,7 @@ accessed.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.topology.core.TopologyGroup.torsions">
-<code class="descname">torsions</code><span class="sig-paren">(</span><em>result=None</em>, <em>pbc=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#TopologyGroup.torsions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.TopologyGroup.torsions" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">torsions</tt><big>(</big><em>result=None</em>, <em>pbc=False</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#TopologyGroup.torsions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.TopologyGroup.torsions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the torsional angle in radians for this topology
 group.</p>
 <p>Defined as the angle between a plane formed by atoms 1, 2 and
@@ -510,14 +493,14 @@ group.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>result</em></dt>
 <dd><p class="first last">allows a predefined results array to be used, note that this
 will be overwritten</p>
 </dd>
 <dt><em>pbc</em></dt>
 <dd><p class="first last">apply periodic boundary conditions when calculating angles
-[<code class="docutils literal"><span class="pre">False</span></code>] this is important when connecting vectors between
+[<tt class="docutils literal"><span class="pre">False</span></tt>] this is important when connecting vectors between
 atoms might require minimum image convention</p>
 </dd>
 </dl>
@@ -526,14 +509,13 @@ atoms might require minimum image convention</p>
 </tbody>
 </table>
 <p>Uses cython implementation.</p>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.9.0: </span>Added <em>pbc</em> option (default <code class="docutils literal"><span class="pre">False</span></code>)</p>
-</div>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.9.0: </span>Added <em>pbc</em> option (default <tt class="docutils literal"><span class="pre">False</span></tt>)</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.topology.core.TopologyGroup.types">
-<code class="descname">types</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#TopologyGroup.types"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.TopologyGroup.types" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">types</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#TopologyGroup.types"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.TopologyGroup.types" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a list of the bond types in this TopologyGroup</p>
 </dd></dl>
 
@@ -541,40 +523,37 @@ atoms might require minimum image convention</p>
 
 <dl class="class">
 <dt id="MDAnalysis.topology.core.TopologyObject">
-<em class="property">class </em><code class="descclassname">MDAnalysis.topology.core.</code><code class="descname">TopologyObject</code><span class="sig-paren">(</span><em>atoms</em>, <em>is_guessed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#TopologyObject"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.TopologyObject" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.topology.core.</tt><tt class="descname">TopologyObject</tt><big>(</big><em>atoms</em>, <em>is_guessed=False</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#TopologyObject"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.TopologyObject" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class for all Topology items.</p>
 <p>Defines the behaviour by which Bonds/Angles/etc in MDAnalysis should
 behave.</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.9.0.</span></p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.10.0: </span>All TopologyObject now keep track of if they were guessed or not
-via the <code class="docutils literal"><span class="pre">is_guessed</span></code> managed property.</p>
-</div>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.9.0.</span></p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.10.0: </span>All TopologyObject now keep track of if they were guessed or not
+via the <tt class="docutils literal"><span class="pre">is_guessed</span></tt> managed property.</p>
 <dl class="attribute">
 <dt id="MDAnalysis.topology.core.TopologyObject.indices">
-<code class="descname">indices</code><a class="headerlink" href="#MDAnalysis.topology.core.TopologyObject.indices" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">indices</tt><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#TopologyObject.indices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.TopologyObject.indices" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tuple of indices describing this object</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.10.0.</span></p>
-</div>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.10.0.</span></p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="MDAnalysis.topology.core.TopologyObject.is_guessed">
-<code class="descname">is_guessed</code><a class="headerlink" href="#MDAnalysis.topology.core.TopologyObject.is_guessed" title="Permalink to this definition">¶</a></dt>
-<dd><p><code class="docutils literal"><span class="pre">True</span></code> if the bond was guessed.</p>
-<div class="admonition seealso">
+<tt class="descname">is_guessed</tt><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#TopologyObject.is_guessed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.TopologyObject.is_guessed" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">True</span></tt> if the bond was guessed.</p>
+<div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#MDAnalysis.topology.core.guess_bonds" title="MDAnalysis.topology.core.guess_bonds"><code class="xref py py-func docutils literal"><span class="pre">guess_bonds()</span></code></a> <a class="reference internal" href="#MDAnalysis.topology.core.guess_angles" title="MDAnalysis.topology.core.guess_angles"><code class="xref py py-func docutils literal"><span class="pre">guess_angles()</span></code></a> and
-<a class="reference internal" href="#MDAnalysis.topology.core.guess_torsions" title="MDAnalysis.topology.core.guess_torsions"><code class="xref py py-func docutils literal"><span class="pre">guess_torsions()</span></code></a></p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.topology.core.guess_bonds" title="MDAnalysis.topology.core.guess_bonds"><tt class="xref py py-func docutils literal"><span class="pre">guess_bonds()</span></tt></a> <a class="reference internal" href="#MDAnalysis.topology.core.guess_angles" title="MDAnalysis.topology.core.guess_angles"><tt class="xref py py-func docutils literal"><span class="pre">guess_angles()</span></tt></a> and
+<a class="reference internal" href="#MDAnalysis.topology.core.guess_torsions" title="MDAnalysis.topology.core.guess_torsions"><tt class="xref py py-func docutils literal"><span class="pre">guess_torsions()</span></tt></a></p>
 </div>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="MDAnalysis.topology.core.TopologyObject.type">
-<code class="descname">type</code><a class="headerlink" href="#MDAnalysis.topology.core.TopologyObject.type" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">type</tt><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#TopologyObject.type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.TopologyObject.type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Type of the bond as a tuple</p>
 <p>When comparing types, it is important to consider the reverse
 of the type too, ie:</p>
@@ -587,96 +566,89 @@ of the type too, ie:</p>
 
 <dl class="class">
 <dt id="MDAnalysis.topology.core.Torsion">
-<em class="property">class </em><code class="descclassname">MDAnalysis.topology.core.</code><code class="descname">Torsion</code><span class="sig-paren">(</span><em>atoms</em>, <em>is_guessed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#Torsion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.Torsion" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.topology.core.</tt><tt class="descname">Torsion</tt><big>(</big><em>atoms</em>, <em>is_guessed=False</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#Torsion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.Torsion" title="Permalink to this definition">¶</a></dt>
 <dd><p>Torsion (dihedral angle) between four
-<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atom</span></code></a> instances.</p>
+<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a> instances.</p>
 <p>The torsion is defined as the angle between the planes formed by
 Atoms (1, 2, 3) and (2, 3, 4).</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.8.</span></p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.9.0: </span>Now a subclass of <a class="reference internal" href="#MDAnalysis.topology.core.TopologyObject" title="MDAnalysis.topology.core.TopologyObject"><code class="xref py py-class docutils literal"><span class="pre">TopologyObject</span></code></a>; now uses <code class="xref py py-attr docutils literal"><span class="pre">__slots__</span></code> and
-stores atoms in <code class="xref py py-attr docutils literal"><span class="pre">atoms</span></code> attribute.</p>
-</div>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.8.</span></p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.9.0: </span>Now a subclass of <a class="reference internal" href="#MDAnalysis.topology.core.TopologyObject" title="MDAnalysis.topology.core.TopologyObject"><tt class="xref py py-class docutils literal"><span class="pre">TopologyObject</span></tt></a>; now uses <tt class="xref py py-attr docutils literal"><span class="pre">__slots__</span></tt> and
+stores atoms in <tt class="xref py py-attr docutils literal"><span class="pre">atoms</span></tt> attribute.</p>
 <dl class="method">
 <dt id="MDAnalysis.topology.core.Torsion.torsion">
-<code class="descname">torsion</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#Torsion.torsion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.Torsion.torsion" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">torsion</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#Torsion.torsion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.Torsion.torsion" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the dihedral angle in degrees.</p>
 <p>Dihedral angle around axis connecting atoms 1 and 2 (i.e. the angle
 between the planes spanned by atoms (0,1,2) and (1,2,3)):</p>
-<div class="highlight-python"><div class="highlight"><pre>        3
+<div class="highlight-python"><pre>        3
         |
   1-----2
  /
-0
-</pre></div>
+0</pre>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">The numerical precision is typically not better than
 4 decimals (and is only tested to 3 decimals).</p>
 </div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.9.0.</span></p>
-</div>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.9.0.</span></p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="function">
 <dt id="MDAnalysis.topology.core.build_residues">
-<code class="descclassname">MDAnalysis.topology.core.</code><code class="descname">build_residues</code><span class="sig-paren">(</span><em>atoms</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#build_residues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.build_residues" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a list <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Residue" title="MDAnalysis.core.AtomGroup.Residue"><code class="xref py py-class docutils literal"><span class="pre">Residue</span></code></a> instances from
-a list of <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atom</span></code></a> instances.</p>
+<tt class="descclassname">MDAnalysis.topology.core.</tt><tt class="descname">build_residues</tt><big>(</big><em>atoms</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#build_residues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.build_residues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a list <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Residue" title="MDAnalysis.core.AtomGroup.Residue"><tt class="xref py py-class docutils literal"><span class="pre">Residue</span></tt></a> instances from
+a list of <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a> instances.</p>
 <p>Updating residues also changes the underlying
-<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atom</span></code></a> instances, which record
+<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a> instances, which record
 to which residue an atom belongs.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">List of <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Residue" title="MDAnalysis.core.AtomGroup.Residue"><code class="xref py py-class docutils literal"><span class="pre">Residue</span></code></a> instances</td>
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body">List of <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Residue" title="MDAnalysis.core.AtomGroup.Residue"><tt class="xref py py-class docutils literal"><span class="pre">Residue</span></tt></a> instances</td>
 </tr>
 </tbody>
 </table>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.8.</span></p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.9.0: </span>Now allows resids to be given in non sequential order</p>
-</div>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.8.</span></p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.9.0: </span>Now allows resids to be given in non sequential order</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="MDAnalysis.topology.core.build_segments">
-<code class="descclassname">MDAnalysis.topology.core.</code><code class="descname">build_segments</code><span class="sig-paren">(</span><em>atoms</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#build_segments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.build_segments" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create all <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Segment" title="MDAnalysis.core.AtomGroup.Segment"><code class="xref py py-class docutils literal"><span class="pre">Segment</span></code></a> instancess from
-a list of <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atom</span></code></a> instances.</p>
-<p>The function also builds the <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Residue" title="MDAnalysis.core.AtomGroup.Residue"><code class="xref py py-class docutils literal"><span class="pre">Residue</span></code></a>
+<tt class="descclassname">MDAnalysis.topology.core.</tt><tt class="descname">build_segments</tt><big>(</big><em>atoms</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#build_segments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.build_segments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create all <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Segment" title="MDAnalysis.core.AtomGroup.Segment"><tt class="xref py py-class docutils literal"><span class="pre">Segment</span></tt></a> instancess from
+a list of <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a> instances.</p>
+<p>The function also builds the <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Residue" title="MDAnalysis.core.AtomGroup.Residue"><tt class="xref py py-class docutils literal"><span class="pre">Residue</span></tt></a>
 instances by tracking residue numbers.</p>
 <p>Updating segments also changes the underlying
-<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><code class="xref py py-class docutils literal"><span class="pre">Atom</span></code></a> instances, which record
+<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom" title="MDAnalysis.core.AtomGroup.Atom"><tt class="xref py py-class docutils literal"><span class="pre">Atom</span></tt></a> instances, which record
 to which residue and segment an atom belongs.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">structure dict, which associates a segname with a
-<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Segment" title="MDAnalysis.core.AtomGroup.Segment"><code class="xref py py-class docutils literal"><span class="pre">Segment</span></code></a></td>
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body">structure dict, which associates a segname with a
+<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Segment" title="MDAnalysis.core.AtomGroup.Segment"><tt class="xref py py-class docutils literal"><span class="pre">Segment</span></tt></a></td>
 </tr>
 </tbody>
 </table>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.9.0: </span>Now allows resids in a given <code class="xref py py-class docutils literal"><span class="pre">Segment</span></code> to be given in non sequential order.</p>
-</div>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.9.0: </span>Now allows resids in a given <tt class="xref py py-class docutils literal"><span class="pre">Segment</span></tt> to be given in non sequential order.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="MDAnalysis.topology.core.get_atom_mass">
-<code class="descclassname">MDAnalysis.topology.core.</code><code class="descname">get_atom_mass</code><span class="sig-paren">(</span><em>element</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#get_atom_mass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.get_atom_mass" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.topology.core.</tt><tt class="descname">get_atom_mass</tt><big>(</big><em>element</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#get_atom_mass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.get_atom_mass" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the atomic mass in u for <em>element</em>.</p>
-<p>Masses are looked up in <a class="reference internal" href="tables.html#MDAnalysis.topology.tables.masses" title="MDAnalysis.topology.tables.masses"><code class="xref py py-data docutils literal"><span class="pre">MDAnalysis.topology.tables.masses</span></code></a>.</p>
+<p>Masses are looked up in <a class="reference internal" href="tables.html#MDAnalysis.topology.tables.masses" title="MDAnalysis.topology.tables.masses"><tt class="xref py py-data docutils literal"><span class="pre">MDAnalysis.topology.tables.masses</span></tt></a>.</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
 <p class="last">Unknown masses are set to 0.00</p>
@@ -685,7 +657,7 @@ to which residue and segment an atom belongs.</p>
 
 <dl class="function">
 <dt id="MDAnalysis.topology.core.get_parser_for">
-<code class="descclassname">MDAnalysis.topology.core.</code><code class="descname">get_parser_for</code><span class="sig-paren">(</span><em>filename</em>, <em>permissive=False</em>, <em>tformat=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#get_parser_for"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.get_parser_for" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.topology.core.</tt><tt class="descname">get_parser_for</tt><big>(</big><em>filename</em>, <em>permissive=False</em>, <em>tformat=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#get_parser_for"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.get_parser_for" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the appropriate topology parser for <em>filename</em>.</p>
 <p>Automatic detection is disabled when an explicit <em>format</em> is
 provided.</p>
@@ -693,7 +665,7 @@ provided.</p>
 
 <dl class="function">
 <dt id="MDAnalysis.topology.core.guess_angles">
-<code class="descclassname">MDAnalysis.topology.core.</code><code class="descname">guess_angles</code><span class="sig-paren">(</span><em>bonds</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#guess_angles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.guess_angles" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.topology.core.</tt><tt class="descname">guess_angles</tt><big>(</big><em>bonds</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#guess_angles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.guess_angles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Given a list of Bonds, find all angles that exist between atoms.</p>
 <p>Works by assuming that if atoms 1 &amp; 2 are bonded, and 2 &amp; 3 are bonded,
 then (1,2,3) must be an angle.</p>
@@ -701,20 +673,20 @@ then (1,2,3) must be an angle.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">List of tuples defining the angles.
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body">List of tuples defining the angles.
 Suitable for use in u._topology</td>
 </tr>
 </tbody>
 </table>
-<div class="admonition seealso">
+<div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#MDAnalysis.topology.core.guess_bonds" title="MDAnalysis.topology.core.guess_bonds"><code class="xref py py-meth docutils literal"><span class="pre">guess_bonds()</span></code></a></p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.topology.core.guess_bonds" title="MDAnalysis.topology.core.guess_bonds"><tt class="xref py py-meth docutils literal"><span class="pre">guess_bonds()</span></tt></a></p>
 </div>
 </dd></dl>
 
 <dl class="function">
 <dt id="MDAnalysis.topology.core.guess_atom_charge">
-<code class="descclassname">MDAnalysis.topology.core.</code><code class="descname">guess_atom_charge</code><span class="sig-paren">(</span><em>atomname</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#guess_atom_charge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.guess_atom_charge" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.topology.core.</tt><tt class="descname">guess_atom_charge</tt><big>(</big><em>atomname</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#guess_atom_charge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.guess_atom_charge" title="Permalink to this definition">¶</a></dt>
 <dd><p>Guess atom charge from the name.</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
@@ -724,24 +696,24 @@ Suitable for use in u._topology</td>
 
 <dl class="function">
 <dt id="MDAnalysis.topology.core.guess_atom_element">
-<code class="descclassname">MDAnalysis.topology.core.</code><code class="descname">guess_atom_element</code><span class="sig-paren">(</span><em>atomname</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#guess_atom_element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.guess_atom_element" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.topology.core.</tt><tt class="descname">guess_atom_element</tt><big>(</big><em>atomname</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#guess_atom_element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.guess_atom_element" title="Permalink to this definition">¶</a></dt>
 <dd><p>Guess the element of the atom from the name.</p>
 <p>Looks in dict to see if element is found, otherwise it uses the first
 character in the atomname. The table comes from CHARMM and AMBER atom
 types, where the first character is not sufficient to determine the atom
 type. Some GROMOS ions have also been added.</p>
-<div class="admonition seealso">
+<div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#MDAnalysis.topology.core.guess_atom_type" title="MDAnalysis.topology.core.guess_atom_type"><code class="xref py py-func docutils literal"><span class="pre">guess_atom_type()</span></code></a> and
-<a class="reference internal" href="tables.html#module-MDAnalysis.topology.tables" title="MDAnalysis.topology.tables"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.tables</span></code></a> (where the data are stored)</p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.topology.core.guess_atom_type" title="MDAnalysis.topology.core.guess_atom_type"><tt class="xref py py-func docutils literal"><span class="pre">guess_atom_type()</span></tt></a> and
+<a class="reference internal" href="tables.html#module-MDAnalysis.topology.tables" title="MDAnalysis.topology.tables"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.tables</span></tt></a> (where the data are stored)</p>
 </div>
 </dd></dl>
 
 <dl class="function">
 <dt id="MDAnalysis.topology.core.guess_atom_mass">
-<code class="descclassname">MDAnalysis.topology.core.</code><code class="descname">guess_atom_mass</code><span class="sig-paren">(</span><em>atomname</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#guess_atom_mass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.guess_atom_mass" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.topology.core.</tt><tt class="descname">guess_atom_mass</tt><big>(</big><em>atomname</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#guess_atom_mass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.guess_atom_mass" title="Permalink to this definition">¶</a></dt>
 <dd><p>Guess a mass based on the atom name.</p>
-<p><a class="reference internal" href="#MDAnalysis.topology.core.guess_atom_element" title="MDAnalysis.topology.core.guess_atom_element"><code class="xref py py-func docutils literal"><span class="pre">guess_atom_element()</span></code></a> is used to determine the kind of atom.</p>
+<p><a class="reference internal" href="#MDAnalysis.topology.core.guess_atom_element" title="MDAnalysis.topology.core.guess_atom_element"><tt class="xref py py-func docutils literal"><span class="pre">guess_atom_element()</span></tt></a> is used to determine the kind of atom.</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
 <p class="last">Anything not recognized is simply set to 0; if you rely on the
@@ -751,20 +723,20 @@ masses you might want to double check.</p>
 
 <dl class="function">
 <dt id="MDAnalysis.topology.core.guess_atom_type">
-<code class="descclassname">MDAnalysis.topology.core.</code><code class="descname">guess_atom_type</code><span class="sig-paren">(</span><em>atomname</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#guess_atom_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.guess_atom_type" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.topology.core.</tt><tt class="descname">guess_atom_type</tt><big>(</big><em>atomname</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#guess_atom_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.guess_atom_type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Guess atom type from the name.</p>
 <p>At the moment, this function simply returns the element, as
-guessed by <a class="reference internal" href="#MDAnalysis.topology.core.guess_atom_element" title="MDAnalysis.topology.core.guess_atom_element"><code class="xref py py-func docutils literal"><span class="pre">guess_atom_element()</span></code></a>.</p>
-<div class="admonition seealso">
+guessed by <a class="reference internal" href="#MDAnalysis.topology.core.guess_atom_element" title="MDAnalysis.topology.core.guess_atom_element"><tt class="xref py py-func docutils literal"><span class="pre">guess_atom_element()</span></tt></a>.</p>
+<div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#MDAnalysis.topology.core.guess_atom_element" title="MDAnalysis.topology.core.guess_atom_element"><code class="xref py py-func docutils literal"><span class="pre">guess_atom_element()</span></code></a> and
-<a class="reference internal" href="tables.html#module-MDAnalysis.topology.tables" title="MDAnalysis.topology.tables"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.tables</span></code></a></p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.topology.core.guess_atom_element" title="MDAnalysis.topology.core.guess_atom_element"><tt class="xref py py-func docutils literal"><span class="pre">guess_atom_element()</span></tt></a> and
+<a class="reference internal" href="tables.html#module-MDAnalysis.topology.tables" title="MDAnalysis.topology.tables"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.tables</span></tt></a></p>
 </div>
 </dd></dl>
 
 <dl class="function">
 <dt id="MDAnalysis.topology.core.guess_bonds">
-<code class="descclassname">MDAnalysis.topology.core.</code><code class="descname">guess_bonds</code><span class="sig-paren">(</span><em>atoms</em>, <em>coords</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#guess_bonds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.guess_bonds" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.topology.core.</tt><tt class="descname">guess_bonds</tt><big>(</big><em>atoms</em>, <em>coords</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#guess_bonds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.guess_bonds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Guess if bonds exist between two atoms based on their distance.</p>
 <p>Bond between two atoms is created, if the two atoms are within</p>
 <div class="math">
@@ -776,7 +748,7 @@ the <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/vmd-
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first docutils">
 <dt><em>fudge_factor</em></dt>
 <dd><p class="first last">The factor by which atoms must overlap eachother to be considered a
 bond.  Larger values will increase the number of bonds found. [0.72]</p>
@@ -784,9 +756,9 @@ bond.  Larger values will increase the number of bonds found. [0.72]</p>
 <dt><em>vdwradii</em></dt>
 <dd><p class="first last">To supply custom vdwradii for atoms in the algorithm. Must be a dict
 of format {type:radii}. The default table of van der Waals radii is
-hard-coded as <code class="xref py py-data docutils literal"><span class="pre">MDAnalysis.topology.tables.vdwradii</span></code>.  Any user
+hard-coded as <tt class="xref py py-data docutils literal"><span class="pre">MDAnalysis.topology.tables.vdwradii</span></tt>.  Any user
 defined vdwradii passed as an argument will supercede the table
-values. [<code class="docutils literal"><span class="pre">None</span></code>]</p>
+values. [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
 </dd>
 <dt><em>lower_bound</em></dt>
 <dd><p class="first last">The minimum bond length. All bonds found shorter than this length will
@@ -797,12 +769,12 @@ no chemical bond between them. [0.1]</p>
 <dt><em>box</em></dt>
 <dd><p class="first last">Bonds are found using a distance search, if unit cell information is
 given, periodic boundary conditions will be considered in the distance
-search. [<code class="docutils literal"><span class="pre">None</span></code>]</p>
+search. [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
 </dd>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">List of tuples suitable for use in Universe topology building.</p>
+<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">List of tuples suitable for use in Universe topology building.</p>
 </td>
 </tr>
 </tbody>
@@ -816,24 +788,22 @@ structure is correct. This is wrong and will burn somebody.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body">ValueError if inputs are malformed or <em>vdwradii</em> data is missing.</td>
+<tr class="field-odd field"><th class="field-name">Raises :</th><td class="field-body">ValueError if inputs are malformed or <em>vdwradii</em> data is missing.</td>
 </tr>
 </tbody>
 </table>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.7.7.</span></p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.9.0: </span>Updated method internally to use more <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/index.html#module-numpy" title="(in NumPy v1.9)"><code class="xref py py-mod docutils literal"><span class="pre">numpy</span></code></a>, should work
+<p class="versionadded">
+<span class="versionmodified">New in version 0.7.7.</span></p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.9.0: </span>Updated method internally to use more <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/index.html#module-numpy" title="(in NumPy v1.9)"><tt class="xref py py-mod docutils literal"><span class="pre">numpy</span></tt></a>, should work
 faster.  Should also use less memory, previously scaled as
 <span class="math">\(O(n^2)\)</span>.  <em>vdwradii</em> argument now augments table list
 rather than replacing entirely.</p>
-</div>
 </dd></dl>
 
 <dl class="function">
 <dt id="MDAnalysis.topology.core.guess_format">
-<code class="descclassname">MDAnalysis.topology.core.</code><code class="descname">guess_format</code><span class="sig-paren">(</span><em>filename</em>, <em>format=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#guess_format"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.guess_format" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.topology.core.</tt><tt class="descname">guess_format</tt><big>(</big><em>filename</em>, <em>format=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#guess_format"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.guess_format" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the type of topology file <em>filename</em>.</p>
 <p>The current heuristic simply looks at the filename extension but
 more complicated probes could be implemented here or in the
@@ -843,7 +813,7 @@ individual packages (e.g. as static methods).</p>
 
 <dl class="function">
 <dt id="MDAnalysis.topology.core.guess_improper_torsions">
-<code class="descclassname">MDAnalysis.topology.core.</code><code class="descname">guess_improper_torsions</code><span class="sig-paren">(</span><em>angles</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#guess_improper_torsions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.guess_improper_torsions" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.topology.core.</tt><tt class="descname">guess_improper_torsions</tt><big>(</big><em>angles</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#guess_improper_torsions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.guess_improper_torsions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Given a list of Angles, find all improper torsions that exist between
 atoms.</p>
 <p>Works by assuming that if (1,2,3) is an angle, and 2 &amp; 4 are bonded,
@@ -854,7 +824,7 @@ ie the improper torsion is the angle between the planes formed by
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">List of tuples defining the improper torsions.
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body">List of tuples defining the improper torsions.
 Suitable for use in u._topology</td>
 </tr>
 </tbody>
@@ -863,7 +833,7 @@ Suitable for use in u._topology</td>
 
 <dl class="function">
 <dt id="MDAnalysis.topology.core.guess_torsions">
-<code class="descclassname">MDAnalysis.topology.core.</code><code class="descname">guess_torsions</code><span class="sig-paren">(</span><em>angles</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#guess_torsions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.guess_torsions" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.topology.core.</tt><tt class="descname">guess_torsions</tt><big>(</big><em>angles</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#guess_torsions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.guess_torsions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Given a list of Angles, find all torsions that exist between atoms.</p>
 <p>Works by assuming that if (1,2,3) is an angle, and 3 &amp; 4 are bonded,
 then (1,2,3,4) must be a torsion.</p>
@@ -871,7 +841,7 @@ then (1,2,3,4) must be a torsion.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">List of tuples defining the torsions.
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body">List of tuples defining the torsions.
 Suitable for use in u._topology</td>
 </tr>
 </tbody>
@@ -886,7 +856,7 @@ Suitable for use in u._topology</td>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -901,19 +871,20 @@ Suitable for use in u._topology</td>
         <li class="right" >
           <a href="base.html" title="4.17. Base topology reader classes — MDAnalysis.topology.base"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.10.0-dev documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="../topology_modules.html" >4. Topology modules</a> &raquo;</li> 
+        <li><a href="../../index.html">MDAnalysis 0.10.0-dev documentation</a> &raquo;</li>
+          <li><a href="../topology_modules.html" >4. Topology modules</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer" role="contentinfo">
+    <div class="footer">
         &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
-    Paul Rigor, Andy Somogyi, Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
+    and Oliver Beckstein.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>
