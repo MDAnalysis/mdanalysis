@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>7.5. Fast distance array computation — MDAnalysis.core.distances &mdash; MDAnalysis 0.9.3-dev documentation</title>
+    <title>7.5. Fast distance array computation — MDAnalysis.core.distances &mdash; MDAnalysis 0.10.0-dev documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.9.3-dev',
+        VERSION:     '0.10.0-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.9.3-dev documentation"
+          title="Search within MDAnalysis 0.10.0-dev documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.9.3-dev documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.10.0-dev documentation" href="../../index.html" />
     <link rel="up" title="7. Core modules" href="../core_modules.html" />
     <link rel="next" title="7.6. Homogeneous Transformation Matrices and Quaternions — MDAnalysis.core.transformations" href="transformations.html" />
     <link rel="prev" title="7.4. Compute observable timeseries from trajectories — MDAnalysis.core.Timeseries" href="Timeseries.html" /> 
@@ -49,7 +49,7 @@
         <li class="right" >
           <a href="Timeseries.html" title="7.4. Compute observable timeseries from trajectories — MDAnalysis.core.Timeseries"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.9.3-dev documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.10.0-dev documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../core_modules.html" accesskey="U">7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -61,8 +61,7 @@
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">7.5. Fast distance array computation &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.core.distances</span></code></a><ul>
-<li><a class="reference internal" href="#overview">7.5.1. Overview</a></li>
-<li><a class="reference internal" href="#functions">7.5.2. Functions</a></li>
+<li><a class="reference internal" href="#functions">7.5.1. Functions</a></li>
 </ul>
 </li>
 </ul>
@@ -104,65 +103,117 @@
   <span class="target" id="module-MDAnalysis.core.distances"></span><div class="section" id="fast-distance-array-computation-mdanalysis-core-distances">
 <h1>7.5. Fast distance array computation &#8212; <a class="reference internal" href="#module-MDAnalysis.core.distances" title="MDAnalysis.core.distances"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.core.distances</span></code></a><a class="headerlink" href="#fast-distance-array-computation-mdanalysis-core-distances" title="Permalink to this headline">¶</a></h1>
 <p>Fast C-routines to calculate distance arrays from coordinate arrays.</p>
-<div class="section" id="overview">
-<h2>7.5.1. Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="functions">
+<h2>7.5.1. Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.core.distances.distance_array">
-<code class="descclassname">MDAnalysis.core.distances.</code><code class="descname">distance_array</code><span class="sig-paren">(</span><em>ref</em>, <em>conf</em><span class="optional">[</span>, <em>box</em><span class="optional">[</span>, <em>result</em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.distances.distance_array" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate all distances d_ij between the coordinates ref[i] and
+<code class="descclassname">MDAnalysis.core.distances.</code><code class="descname">distance_array</code><span class="sig-paren">(</span><em>reference</em>, <em>configuation</em><span class="optional">[</span>, <em>box</em><span class="optional">[</span>, <em>result</em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/distances.html#distance_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.distances.distance_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate all distances between a reference set and another configuration.</p>
+<p>Calculate all distances d_ij between the coordinates ref[i] and
 conf[j] in the numpy arrays <em>ref</em> and <em>conf</em>. If an orthorhombic
 <em>box</em> is supplied then a minimum image convention is used before
 calculating distances.</p>
 <p>If a 2D numpy array of dtype <code class="docutils literal"><span class="pre">numpy.float64</span></code> with the shape <code class="docutils literal"><span class="pre">(len(ref),</span>
 <span class="pre">len(conf))</span></code> is provided in <em>result</em> then this preallocated array is
 filled. This can speed up calculations.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="MDAnalysis.core.distances.self_distance_array">
-<code class="descclassname">MDAnalysis.core.distances.</code><code class="descname">self_distance_array</code><span class="sig-paren">(</span><em>ref</em><span class="optional">[</span>, <em>box</em><span class="optional">[</span>, <em>result</em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.distances.self_distance_array" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate all distances d_ij between atoms i and j in the reference
-coordinates <em>ref</em> for all N coordinates. Other options as in
-<a class="reference internal" href="#MDAnalysis.core.distances.distance_array" title="MDAnalysis.core.distances.distance_array"><code class="xref py py-func docutils literal"><span class="pre">distance_array()</span></code></a>.</p>
-<p>If a 1D numpy array of dtype <code class="docutils literal"><span class="pre">numpy.float64</span></code> with <code class="docutils literal"><span class="pre">N*(N-1)/2</span></code> elements is
-provided in <em>result</em> then this preallocated array is filled. This can speed
-up calculations.</p>
-</dd></dl>
-
-</div>
-<div class="section" id="functions">
-<h2>7.5.2. Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="MDAnalysis.core.distances.boxCheck">
-<code class="descclassname">MDAnalysis.core.distances.</code><code class="descname">boxCheck</code><span class="sig-paren">(</span><em>box</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.distances.boxCheck" title="Permalink to this definition">¶</a></dt>
-<dd><p>Take a box input and deduce what type of system it represents based
-on the shape of the array and whether all angles are 90.</p>
+<p>d = distance_array(ref,conf[,box[,result=d]])</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<dt><em>ref</em></dt>
+<dd><p class="first last">reference coordinate array</p>
+</dd>
+<dt><em>conf</em></dt>
+<dd><p class="first last">configuration coordinate array</p>
+</dd>
 <dt><em>box</em></dt>
-<dd><p class="first last">box information of unknown format</p>
+<dd><p class="first last">cell dimensions (minimum image convention is applied)
+or None [<code class="docutils literal"><span class="pre">None</span></code>]</p>
+</dd>
+<dt><em>result</em></dt>
+<dd><p class="first last">optional preallocated result array which must have the
+shape (len(ref), len(conf)) and dtype=numpy.float64.
+Avoids creating the array which saves time when the function
+is called repeatedly. [<code class="docutils literal"><span class="pre">None</span></code>]</p>
 </dd>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ul class="first last simple">
-<li><code class="docutils literal"><span class="pre">ortho</span></code> orthogonal box</li>
-<li><code class="docutils literal"><span class="pre">tri_vecs</span></code> triclinic box vectors</li>
-<li><code class="docutils literal"><span class="pre">tri_box</span></code> triclinic box lengths and angles</li>
-<li><code class="docutils literal"><span class="pre">unknown</span></code> boxCheck default, indicates no match found</li>
-</ul>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>d</em></dt>
+<dd><p class="first last">(len(ref),len(conf)) numpy array with the distances d[i,j]
+between ref coordinates i and conf coordinates j</p>
+</dd>
+</dl>
 </td>
 </tr>
 </tbody>
 </table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This method is slower than it could be because internally we need to
+make copies of the ref and conf arrays.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.core.distances.self_distance_array">
+<code class="descclassname">MDAnalysis.core.distances.</code><code class="descname">self_distance_array</code><span class="sig-paren">(</span><em>reference</em><span class="optional">[</span>, <em>box</em><span class="optional">[</span>, <em>result</em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/distances.html#self_distance_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.distances.self_distance_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate all distances within a configuration <em>reference</em>.</p>
+<p>If a <em>box</em> is supplied then a minimum image convention is used before
+calculating distances.</p>
+<p>If a 1D numpy array of dtype <code class="docutils literal"><span class="pre">numpy.float64</span></code> with the shape
+<code class="docutils literal"><span class="pre">(N*(N-1)/2)</span></code> is provided in <em>result</em> then this preallocated array
+is filled. This can speed up calculations.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<dt><em>ref</em></dt>
+<dd><p class="first last">reference coordinate array with N=len(ref) coordinates</p>
+</dd>
+<dt><em>box</em></dt>
+<dd><p class="first last">cell dimensions (minimum image convention is applied)
+or None [<code class="docutils literal"><span class="pre">None</span></code>]</p>
+</dd>
+<dt><em>result</em></dt>
+<dd><p class="first last">optional preallocated result array which must have the shape
+(N*(N-1)/2,) and dtype <code class="docutils literal"><span class="pre">numpy.float64</span></code>. Avoids creating
+the array which saves time when the function is called
+repeatedly. [<code class="docutils literal"><span class="pre">None</span></code>]</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>d</em></dt>
+<dd><p class="first">N*(N-1)/2 numpy 1D array with the distances dist[i,j] between ref
+coordinates i and j at position d[k]. Loop through d:</p>
+<div class="last highlight-python"><div class="highlight"><pre><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">N</span><span class="p">):</span>
+        <span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">dist</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This method is slower than it could be because internally we need to
+make copies of the coordinate arrays.</p>
+</div>
 </dd></dl>
 
 <dl class="function">
 <dt id="MDAnalysis.core.distances.calc_bonds">
-<code class="descclassname">MDAnalysis.core.distances.</code><code class="descname">calc_bonds</code><span class="sig-paren">(</span><em>atom1</em>, <em>atom2</em><span class="optional">[</span>, <em>box</em><span class="optional">[</span>, <em>result</em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.distances.calc_bonds" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.core.distances.</code><code class="descname">calc_bonds</code><span class="sig-paren">(</span><em>atom1</em>, <em>atom2</em><span class="optional">[</span>, <em>box</em><span class="optional">[</span>, <em>result</em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/distances.html#calc_bonds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.distances.calc_bonds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate all distances between a pair of atoms.  <em>atom1</em> and <em>atom2</em> are both
 arrays of coordinates, where atom1[i] and atom2[i] represent a bond.</p>
 <p>In comparison to distance_array and self_distance_array which calculate distances
@@ -192,8 +243,8 @@ up calculations.</p>
 <dd><p class="first last">Unit cell information if periodic boundary conditions are required [None]</p>
 </dd>
 <dt><em>result</em></dt>
-<dd><p class="first last">optional preallocated result array which must be same length as coord 
-arrays and dtype=numpy.float64. Avoids creating the              
+<dd><p class="first last">optional preallocated result array which must be same length as coord
+arrays and dtype=numpy.float64. Avoids creating the
 array which saves time when the function is called repeatedly. [None]</p>
 </dd>
 </dl>
@@ -215,9 +266,9 @@ array which saves time when the function is called repeatedly. [None]</p>
 
 <dl class="function">
 <dt id="MDAnalysis.core.distances.calc_angles">
-<code class="descclassname">MDAnalysis.core.distances.</code><code class="descname">calc_angles</code><span class="sig-paren">(</span><em>atom1</em>, <em>atom2</em>, <em>atom3</em><span class="optional">[</span>, <em>box</em><span class="optional">[</span>, <em>result</em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.distances.calc_angles" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.core.distances.</code><code class="descname">calc_angles</code><span class="sig-paren">(</span><em>atom1</em>, <em>atom2</em>, <em>atom3</em><span class="optional">[</span>, <em>box</em><span class="optional">[</span>, <em>result</em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/distances.html#calc_angles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.distances.calc_angles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the angle formed between three atoms, over a list of coordinates.
-All <em>atom</em> inputs are lists of coordinates of equal length, with <em>atom2</em> 
+All <em>atom</em> inputs are lists of coordinates of equal length, with <em>atom2</em>
 representing the apex of the angle.</p>
 <p>If a 1D numpy array of dtype <code class="docutils literal"><span class="pre">numpy.float64</span></code> with <code class="docutils literal"><span class="pre">len(atom1)</span></code> elements is
 provided in <em>result</em> then this preallocated array is filled. This can speed
@@ -246,7 +297,7 @@ atoms respect minimum image convention.  This is import when the angle might
 be between atoms in different images.</p>
 </dd>
 <dt><em>result</em></dt>
-<dd><p class="first last">optional preallocated results array which must have same length as coordinate 
+<dd><p class="first last">optional preallocated results array which must have same length as coordinate
 array and dtype=numpy.float64.</p>
 </dd>
 </dl>
@@ -271,7 +322,7 @@ array and dtype=numpy.float64.</p>
 
 <dl class="function">
 <dt id="MDAnalysis.core.distances.calc_torsions">
-<code class="descclassname">MDAnalysis.core.distances.</code><code class="descname">calc_torsions</code><span class="sig-paren">(</span><em>atom1</em>, <em>atom2</em>, <em>atom3</em>, <em>atom4</em><span class="optional">[</span>, <em>box</em><span class="optional">[</span>, <em>result</em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.distances.calc_torsions" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.core.distances.</code><code class="descname">calc_torsions</code><span class="sig-paren">(</span><em>atom1</em>, <em>atom2</em>, <em>atom3</em>, <em>atom4</em><span class="optional">[</span>, <em>box</em><span class="optional">[</span>, <em>result</em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/distances.html#calc_torsions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.distances.calc_torsions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the torsional angle formed by four atoms, over a list of coordinates.</p>
 <p>Torsional angle around axis connecting atoms 1 and 2 (i.e. the angle
 between the planes spanned by atoms (0,1,2) and (1,2,3)):</p>
@@ -285,9 +336,9 @@ between the planes spanned by atoms (0,1,2) and (1,2,3)):</p>
 <p>If a 1D numpy array of dtype <code class="docutils literal"><span class="pre">numpy.float64</span></code> with <code class="docutils literal"><span class="pre">len(atom1)</span></code> elements is
 provided in <em>result</em> then this preallocated array is filled. This can speed
 up calculations.</p>
-<p>The optional argument <code class="docutils literal"><span class="pre">box</span></code> ensures that periodic boundaries are taken into account when
-constructing the connecting vectors between atoms, ie that the vector between atoms 1 &amp; 2
-goes between coordinates in the same image.</p>
+<p>The optional argument <code class="docutils literal"><span class="pre">box</span></code> ensures that periodic boundaries are taken into
+account when constructing the connecting vectors between atoms, ie that the vector
+between atoms 1 &amp; 2 goes between coordinates in the same image.</p>
 <p>angles = calc_torsions(coords1, coords2, coords3, coords4 [,box=box, result=angles])</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -307,13 +358,13 @@ goes between coordinates in the same image.</p>
 <dd><p class="first last">coordinate array of 4th atom in torsions</p>
 </dd>
 <dt><em>box</em></dt>
-<dd><p class="first last">optional unit cell information.  This ensures that the connecting vectors between
-atoms respect minimum image convention.  This is import when the angle might
-be between atoms in different images.</p>
+<dd><p class="first last">optional unit cell information.  This ensures that the connecting vectors
+between atoms respect minimum image convention.  This is import when the
+angle might be between atoms in different images.</p>
 </dd>
 <dt><em>result</em></dt>
-<dd><p class="first last">optional preallocated results array which must have same length as coordinate 
-array and dtype=numpy.float64.</p>
+<dd><p class="first last">optional preallocated results array which must have same length as
+coordinate array and dtype=numpy.float64.</p>
 </dd>
 </dl>
 </td>
@@ -337,7 +388,7 @@ array and dtype=numpy.float64.</p>
 
 <dl class="function">
 <dt id="MDAnalysis.core.distances.applyPBC">
-<code class="descclassname">MDAnalysis.core.distances.</code><code class="descname">applyPBC</code><span class="sig-paren">(</span><em>coordinates</em>, <em>box</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.distances.applyPBC" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.core.distances.</code><code class="descname">applyPBC</code><span class="sig-paren">(</span><em>coordinates</em>, <em>box</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/distances.html#applyPBC"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.distances.applyPBC" title="Permalink to this definition">¶</a></dt>
 <dd><p>Moves a set of coordinates to all be within the primary unit cell</p>
 <p>newcoords = applyPBC(coords, box)</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -356,7 +407,8 @@ array and dtype=numpy.float64.</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>newcoords</em></dt>
-<dd><p class="first last">coordinates that are now all within the primary unit cell, as defined by box</p>
+<dd><p class="first last">coordinates that are now all within the primary unit cell,
+as defined by box</p>
 </dd>
 </dl>
 </td>
@@ -370,10 +422,41 @@ array and dtype=numpy.float64.</p>
 
 <dl class="function">
 <dt id="MDAnalysis.core.distances.transform_RtoS">
-<code class="descclassname">MDAnalysis.core.distances.</code><code class="descname">transform_RtoS</code><span class="sig-paren">(</span><em>coordinates</em>, <em>box</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.distances.transform_RtoS" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.core.distances.</code><code class="descname">transform_RtoS</code><span class="sig-paren">(</span><em>coordinates</em>, <em>box</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/distances.html#transform_RtoS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.distances.transform_RtoS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transform an array of coordinates from real space to S space (aka lambda space)</p>
 <p>S space represents fractional space within the unit cell for this system</p>
 <p>Reciprocal operation to <a class="reference internal" href="#MDAnalysis.core.distances.transform_StoR" title="MDAnalysis.core.distances.transform_StoR"><code class="xref py py-meth docutils literal"><span class="pre">transform_StoR()</span></code></a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<dt><em>inputcoords</em></dt>
+<dd><p class="first last">An n x 3 array of coordinate data, of type np.float32</p>
+</dd>
+<dt><em>box</em></dt>
+<dd><p class="first last">The unitcell dimesions for this system</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>outcoords</em></dt>
+<dd><p class="first last">An n x 3 array of fractional coordiantes</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.core.distances.transform_StoR">
+<code class="descclassname">MDAnalysis.core.distances.</code><code class="descname">transform_StoR</code><span class="sig-paren">(</span><em>coordinates</em>, <em>box</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/distances.html#transform_StoR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.distances.transform_StoR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform an array of coordinates from S space into real space.</p>
+<p>S space represents fractional space within the unit cell for this system</p>
+<p>Reciprocal operation to <a class="reference internal" href="#MDAnalysis.core.distances.transform_RtoS" title="MDAnalysis.core.distances.transform_RtoS"><code class="xref py py-meth docutils literal"><span class="pre">transform_RtoS()</span></code></a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -400,8 +483,354 @@ array and dtype=numpy.float64.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="MDAnalysis.core.distances.transform_StoR">
-<code class="descclassname">MDAnalysis.core.distances.</code><code class="descname">transform_StoR</code><span class="sig-paren">(</span><em>coordinates</em>, <em>box</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.distances.transform_StoR" title="Permalink to this definition">¶</a></dt>
+<dt>
+<code class="descclassname">MDAnalysis.core.distances.</code><code class="descname">applyPBC</code><span class="sig-paren">(</span><em>incoords</em>, <em>box</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/distances.html#applyPBC"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Moves a set of coordinates to all be within the primary unit cell</p>
+<p>newcoords = applyPBC(coords, box)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<dt><em>coords</em></dt>
+<dd><p class="first last">coordinate array (of type numpy.float32)</p>
+</dd>
+<dt><em>box</em></dt>
+<dd><p class="first last">box dimensions, can be either orthogonal or triclinic information</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>newcoords</em></dt>
+<dd><p class="first last">coordinates that are now all within the primary unit cell,
+as defined by box</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.8.</span></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descclassname">MDAnalysis.core.distances.</code><code class="descname">calc_angles</code><span class="sig-paren">(</span><em>coords1</em>, <em>coords2</em>, <em>coords3</em>, <em>box=None</em>, <em>result=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/distances.html#calc_angles"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Calculates the angle formed between three atoms, over a list of coordinates.
+All <em>atom</em> inputs are lists of coordinates of equal length, with <em>atom2</em>
+representing the apex of the angle.</p>
+<p>If a 1D numpy array of dtype <code class="docutils literal"><span class="pre">numpy.float64</span></code> with <code class="docutils literal"><span class="pre">len(atom1)</span></code> elements is
+provided in <em>result</em> then this preallocated array is filled. This can speed
+up calculations.</p>
+<p>The optional argument <code class="docutils literal"><span class="pre">box</span></code> ensures that periodic boundaries are taken into account when
+constructing the connecting vectors between atoms, ie that the vector between atoms 1 &amp; 2
+goes between coordinates in the same image.</p>
+<p>angles = calc_angles(coords1, coords2, coords3, [[box=None],result=angles])</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<dt><em>coords1</em></dt>
+<dd><p class="first last">coordinate array of one side of angles</p>
+</dd>
+<dt><em>coords2</em></dt>
+<dd><p class="first last">coordinate array of apex of angles</p>
+</dd>
+<dt><em>coords3</em></dt>
+<dd><p class="first last">coordinate array of other side of angles</p>
+</dd>
+<dt><em>box</em></dt>
+<dd><p class="first last">optional unit cell information.  This ensures that the connecting vectors between
+atoms respect minimum image convention.  This is import when the angle might
+be between atoms in different images.</p>
+</dd>
+<dt><em>result</em></dt>
+<dd><p class="first last">optional preallocated results array which must have same length as coordinate
+array and dtype=numpy.float64.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>angles</em></dt>
+<dd><p class="first last">A numpy.array of angles in radians</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.8.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.9.0: </span>Added optional box argument to account for periodic boundaries in calculation</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descclassname">MDAnalysis.core.distances.</code><code class="descname">calc_bonds</code><span class="sig-paren">(</span><em>coords1</em>, <em>coords2</em>, <em>box=None</em>, <em>result=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/distances.html#calc_bonds"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Calculate all distances between a pair of atoms.  <em>atom1</em> and <em>atom2</em> are both
+arrays of coordinates, where atom1[i] and atom2[i] represent a bond.</p>
+<p>In comparison to distance_array and self_distance_array which calculate distances
+between all combinations of coordinates, calc_bonds can be used to calculate distance
+between pairs of objects, similar to:</p>
+<div class="highlight-python"><div class="highlight"><pre>numpy.linalg.norm(a - b) for a, b in zip(coords1, coords2)
+</pre></div>
+</div>
+<p>The optional argument <em>box</em> applies minimum image convention if supplied.
+<em>box</em> can be either orthogonal or triclinic</p>
+<p>If a 1D numpy array of dtype <code class="docutils literal"><span class="pre">numpy.float64</span></code> with <code class="docutils literal"><span class="pre">len(atom1)</span></code> elements is
+provided in <em>result</em> then this preallocated array is filled. This can speed
+up calculations.</p>
+<p>bondlengths = calc_bonds(coords1, coords2 [, box [,result=bondlengths]])</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<dt><em>coords1</em></dt>
+<dd><p class="first last">An array of coordinates for one half of the bond</p>
+</dd>
+<dt><em>coords2</em></dt>
+<dd><p class="first last">An array of coordinates for the other half of bond</p>
+</dd>
+<dt><em>box</em></dt>
+<dd><p class="first last">Unit cell information if periodic boundary conditions are required [None]</p>
+</dd>
+<dt><em>result</em></dt>
+<dd><p class="first last">optional preallocated result array which must be same length as coord
+arrays and dtype=numpy.float64. Avoids creating the
+array which saves time when the function is called repeatedly. [None]</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>bondlengths</em></dt>
+<dd><p class="first last">Numpy array with the length between each pair in coords1 and coords2</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.8.</span></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descclassname">MDAnalysis.core.distances.</code><code class="descname">calc_torsions</code><span class="sig-paren">(</span><em>coords1</em>, <em>coords2</em>, <em>coords3</em>, <em>coords4</em>, <em>box=None</em>, <em>result=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/distances.html#calc_torsions"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Calculate the torsional angle formed by four atoms, over a list of coordinates.</p>
+<p>Torsional angle around axis connecting atoms 1 and 2 (i.e. the angle
+between the planes spanned by atoms (0,1,2) and (1,2,3)):</p>
+<div class="highlight-python"><div class="highlight"><pre>        3
+        |
+  1-----2
+ /
+0
+</pre></div>
+</div>
+<p>If a 1D numpy array of dtype <code class="docutils literal"><span class="pre">numpy.float64</span></code> with <code class="docutils literal"><span class="pre">len(atom1)</span></code> elements is
+provided in <em>result</em> then this preallocated array is filled. This can speed
+up calculations.</p>
+<p>The optional argument <code class="docutils literal"><span class="pre">box</span></code> ensures that periodic boundaries are taken into
+account when constructing the connecting vectors between atoms, ie that the vector
+between atoms 1 &amp; 2 goes between coordinates in the same image.</p>
+<p>angles = calc_torsions(coords1, coords2, coords3, coords4 [,box=box, result=angles])</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<dt><em>coords1</em></dt>
+<dd><p class="first last">coordinate array of 1st atom in torsions</p>
+</dd>
+<dt><em>coords2</em></dt>
+<dd><p class="first last">coordinate array of 2nd atom in torsions</p>
+</dd>
+<dt><em>coords3</em></dt>
+<dd><p class="first last">coordinate array of 3rd atom in torsions</p>
+</dd>
+<dt><em>coords4</em></dt>
+<dd><p class="first last">coordinate array of 4th atom in torsions</p>
+</dd>
+<dt><em>box</em></dt>
+<dd><p class="first last">optional unit cell information.  This ensures that the connecting vectors
+between atoms respect minimum image convention.  This is import when the
+angle might be between atoms in different images.</p>
+</dd>
+<dt><em>result</em></dt>
+<dd><p class="first last">optional preallocated results array which must have same length as
+coordinate array and dtype=numpy.float64.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>angles</em></dt>
+<dd><p class="first last">A numpy.array of angles in radians</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.8.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.9.0: </span>Added optional box argument to account for periodic boundaries in calculation</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descclassname">MDAnalysis.core.distances.</code><code class="descname">distance_array</code><span class="sig-paren">(</span><em>reference</em>, <em>configuration</em>, <em>box=None</em>, <em>result=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/distances.html#distance_array"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Calculate all distances between a reference set and another configuration.</p>
+<p>Calculate all distances d_ij between the coordinates ref[i] and
+conf[j] in the numpy arrays <em>ref</em> and <em>conf</em>. If an orthorhombic
+<em>box</em> is supplied then a minimum image convention is used before
+calculating distances.</p>
+<p>If a 2D numpy array of dtype <code class="docutils literal"><span class="pre">numpy.float64</span></code> with the shape <code class="docutils literal"><span class="pre">(len(ref),</span>
+<span class="pre">len(conf))</span></code> is provided in <em>result</em> then this preallocated array is
+filled. This can speed up calculations.</p>
+<p>d = distance_array(ref,conf[,box[,result=d]])</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<dt><em>ref</em></dt>
+<dd><p class="first last">reference coordinate array</p>
+</dd>
+<dt><em>conf</em></dt>
+<dd><p class="first last">configuration coordinate array</p>
+</dd>
+<dt><em>box</em></dt>
+<dd><p class="first last">cell dimensions (minimum image convention is applied)
+or None [<code class="docutils literal"><span class="pre">None</span></code>]</p>
+</dd>
+<dt><em>result</em></dt>
+<dd><p class="first last">optional preallocated result array which must have the
+shape (len(ref), len(conf)) and dtype=numpy.float64.
+Avoids creating the array which saves time when the function
+is called repeatedly. [<code class="docutils literal"><span class="pre">None</span></code>]</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>d</em></dt>
+<dd><p class="first last">(len(ref),len(conf)) numpy array with the distances d[i,j]
+between ref coordinates i and conf coordinates j</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This method is slower than it could be because internally we need to
+make copies of the ref and conf arrays.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descclassname">MDAnalysis.core.distances.</code><code class="descname">self_distance_array</code><span class="sig-paren">(</span><em>reference</em>, <em>box=None</em>, <em>result=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/distances.html#self_distance_array"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Calculate all distances within a configuration <em>reference</em>.</p>
+<p>If a <em>box</em> is supplied then a minimum image convention is used before
+calculating distances.</p>
+<p>If a 1D numpy array of dtype <code class="docutils literal"><span class="pre">numpy.float64</span></code> with the shape
+<code class="docutils literal"><span class="pre">(N*(N-1)/2)</span></code> is provided in <em>result</em> then this preallocated array
+is filled. This can speed up calculations.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<dt><em>ref</em></dt>
+<dd><p class="first last">reference coordinate array with N=len(ref) coordinates</p>
+</dd>
+<dt><em>box</em></dt>
+<dd><p class="first last">cell dimensions (minimum image convention is applied)
+or None [<code class="docutils literal"><span class="pre">None</span></code>]</p>
+</dd>
+<dt><em>result</em></dt>
+<dd><p class="first last">optional preallocated result array which must have the shape
+(N*(N-1)/2,) and dtype <code class="docutils literal"><span class="pre">numpy.float64</span></code>. Avoids creating
+the array which saves time when the function is called
+repeatedly. [<code class="docutils literal"><span class="pre">None</span></code>]</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>d</em></dt>
+<dd><p class="first">N*(N-1)/2 numpy 1D array with the distances dist[i,j] between ref
+coordinates i and j at position d[k]. Loop through d:</p>
+<div class="last highlight-python"><div class="highlight"><pre><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">N</span><span class="p">):</span>
+        <span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">dist</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This method is slower than it could be because internally we need to
+make copies of the coordinate arrays.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descclassname">MDAnalysis.core.distances.</code><code class="descname">transform_RtoS</code><span class="sig-paren">(</span><em>inputcoords</em>, <em>box</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/distances.html#transform_RtoS"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Transform an array of coordinates from real space to S space (aka lambda space)</p>
+<p>S space represents fractional space within the unit cell for this system</p>
+<p>Reciprocal operation to <a class="reference internal" href="#MDAnalysis.core.distances.transform_StoR" title="MDAnalysis.core.distances.transform_StoR"><code class="xref py py-meth docutils literal"><span class="pre">transform_StoR()</span></code></a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<dt><em>inputcoords</em></dt>
+<dd><p class="first last">An n x 3 array of coordinate data, of type np.float32</p>
+</dd>
+<dt><em>box</em></dt>
+<dd><p class="first last">The unitcell dimesions for this system</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>outcoords</em></dt>
+<dd><p class="first last">An n x 3 array of fractional coordiantes</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descclassname">MDAnalysis.core.distances.</code><code class="descname">transform_StoR</code><span class="sig-paren">(</span><em>inputcoords</em>, <em>box</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/distances.html#transform_StoR"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>Transform an array of coordinates from S space into real space.</p>
 <p>S space represents fractional space within the unit cell for this system</p>
 <p>Reciprocal operation to <a class="reference internal" href="#MDAnalysis.core.distances.transform_RtoS" title="MDAnalysis.core.distances.transform_RtoS"><code class="xref py py-meth docutils literal"><span class="pre">transform_RtoS()</span></code></a></p>
@@ -454,7 +883,7 @@ array and dtype=numpy.float64.</p>
         <li class="right" >
           <a href="Timeseries.html" title="7.4. Compute observable timeseries from trajectories — MDAnalysis.core.Timeseries"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.9.3-dev documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.10.0-dev documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../core_modules.html" >7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -464,8 +893,8 @@ array and dtype=numpy.float64.</p>
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
-    Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
-    Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
+    Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
+    Paul Rigor, Andy Somogyi, Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>

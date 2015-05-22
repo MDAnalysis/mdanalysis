@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>3.1.3. Distance analysis — MDAnalysis.analysis.distances &mdash; MDAnalysis 0.9.3-dev documentation</title>
+    <title>3.1.3. Distance analysis — MDAnalysis.analysis.distances &mdash; MDAnalysis 0.10.0-dev documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.9.3-dev',
+        VERSION:     '0.10.0-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.9.3-dev documentation"
+          title="Search within MDAnalysis 0.10.0-dev documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.9.3-dev documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.10.0-dev documentation" href="../../index.html" />
     <link rel="up" title="3. Analysis modules" href="../analysis_modules.html" />
     <link rel="next" title="3.1.4. Calculating root mean square quantities — MDAnalysis.analysis.rms" href="rms.html" />
     <link rel="prev" title="3.1.2. Native contacts analysis — MDAnalysis.analysis.contacts" href="contacts.html" /> 
@@ -49,7 +49,7 @@
         <li class="right" >
           <a href="contacts.html" title="3.1.2. Native contacts analysis — MDAnalysis.analysis.contacts"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.9.3-dev documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.10.0-dev documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../analysis_modules.html" accesskey="U">3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -104,8 +104,15 @@ have to be from the same <a class="reference internal" href="../core/AtomGroup.h
 </div>
 <dl class="function">
 <dt id="MDAnalysis.analysis.distances.distance_array">
-<code class="descclassname">MDAnalysis.analysis.distances.</code><code class="descname">distance_array</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.distances.distance_array" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.analysis.distances.</code><code class="descname">distance_array</code><span class="sig-paren">(</span><em>reference</em>, <em>configuration</em>, <em>box=None</em>, <em>result=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/distances.html#distance_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.distances.distance_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate all distances between a reference set and another configuration.</p>
+<p>Calculate all distances d_ij between the coordinates ref[i] and
+conf[j] in the numpy arrays <em>ref</em> and <em>conf</em>. If an orthorhombic
+<em>box</em> is supplied then a minimum image convention is used before
+calculating distances.</p>
+<p>If a 2D numpy array of dtype <code class="docutils literal"><span class="pre">numpy.float64</span></code> with the shape <code class="docutils literal"><span class="pre">(len(ref),</span>
+<span class="pre">len(conf))</span></code> is provided in <em>result</em> then this preallocated array is
+filled. This can speed up calculations.</p>
 <p>d = distance_array(ref,conf[,box[,result=d]])</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -119,19 +126,21 @@ have to be from the same <a class="reference internal" href="../core/AtomGroup.h
 <dd><p class="first last">configuration coordinate array</p>
 </dd>
 <dt><em>box</em></dt>
-<dd><p class="first last">cell dimensions (minimum image convention is applied) or None [None]</p>
+<dd><p class="first last">cell dimensions (minimum image convention is applied)
+or None [<code class="docutils literal"><span class="pre">None</span></code>]</p>
 </dd>
 <dt><em>result</em></dt>
-<dd><p class="first last">optional preallocated result array which must have the shape (len(ref),
-len(conf)) and dtype=numpy.float64. Avoids creating the              
-array which saves time when the function is called repeatedly. [None]</p>
+<dd><p class="first last">optional preallocated result array which must have the
+shape (len(ref), len(conf)) and dtype=numpy.float64.
+Avoids creating the array which saves time when the function
+is called repeatedly. [<code class="docutils literal"><span class="pre">None</span></code>]</p>
 </dd>
 </dl>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>d</em></dt>
-<dd><p class="first last">(len(ref),len(conf)) numpy array with the distances d[i,j] 
+<dd><p class="first last">(len(ref),len(conf)) numpy array with the distances d[i,j]
 between ref coordinates i and conf coordinates j</p>
 </dd>
 </dl>
@@ -148,9 +157,13 @@ make copies of the ref and conf arrays.</p>
 
 <dl class="function">
 <dt id="MDAnalysis.analysis.distances.self_distance_array">
-<code class="descclassname">MDAnalysis.analysis.distances.</code><code class="descname">self_distance_array</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.distances.self_distance_array" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate all distances d_ij between atoms i and j within a configuration <em>ref</em>.</p>
-<p>d = self_distance_array(ref[,box[,result=d]])</p>
+<code class="descclassname">MDAnalysis.analysis.distances.</code><code class="descname">self_distance_array</code><span class="sig-paren">(</span><em>reference</em>, <em>box=None</em>, <em>result=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/distances.html#self_distance_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.distances.self_distance_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate all distances within a configuration <em>reference</em>.</p>
+<p>If a <em>box</em> is supplied then a minimum image convention is used before
+calculating distances.</p>
+<p>If a 1D numpy array of dtype <code class="docutils literal"><span class="pre">numpy.float64</span></code> with the shape
+<code class="docutils literal"><span class="pre">(N*(N-1)/2)</span></code> is provided in <em>result</em> then this preallocated array
+is filled. This can speed up calculations.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -160,32 +173,28 @@ make copies of the ref and conf arrays.</p>
 <dd><p class="first last">reference coordinate array with N=len(ref) coordinates</p>
 </dd>
 <dt><em>box</em></dt>
-<dd><p class="first last">cell dimensions (minimum image convention is applied) or None [None]</p>
+<dd><p class="first last">cell dimensions (minimum image convention is applied)
+or None [<code class="docutils literal"><span class="pre">None</span></code>]</p>
 </dd>
 <dt><em>result</em></dt>
-<dd><dl class="first last docutils">
-<dt>optional preallocated result array which must have the shape</dt>
-<dd><p class="first last">(N*(N-1)/2,) and dtype <code class="docutils literal"><span class="pre">numpy.float64</span></code>. Avoids creating
-the array which saves time when the function is called repeatedly. [None]</p>
-</dd>
-</dl>
+<dd><p class="first last">optional preallocated result array which must have the shape
+(N*(N-1)/2,) and dtype <code class="docutils literal"><span class="pre">numpy.float64</span></code>. Avoids creating
+the array which saves time when the function is called
+repeatedly. [<code class="docutils literal"><span class="pre">None</span></code>]</p>
 </dd>
 </dl>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>d</em></dt>
-<dd><dl class="first last docutils">
-<dt>N*(N-1)/2 numpy 1D array with the distances dist[i,j] between ref</dt>
-<dd><p class="first">coordinates i and j at position d[k]. Loop through d:</p>
+<dd><p class="first">N*(N-1)/2 numpy 1D array with the distances dist[i,j] between ref
+coordinates i and j at position d[k]. Loop through d:</p>
 <div class="last highlight-python"><div class="highlight"><pre><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
-   <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">N</span><span class="p">):</span>
-       <span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span>
-       <span class="n">dist</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">N</span><span class="p">):</span>
+        <span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">dist</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
 </pre></div>
 </div>
-</dd>
-</dl>
 </dd>
 </dl>
 </td>
@@ -279,7 +288,7 @@ offset is added to each resid.</p>
         <li class="right" >
           <a href="contacts.html" title="3.1.2. Native contacts analysis — MDAnalysis.analysis.contacts"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.9.3-dev documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.10.0-dev documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../analysis_modules.html" >3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -289,8 +298,8 @@ offset is added to each resid.</p>
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
-    Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
-    Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
+    Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
+    Paul Rigor, Andy Somogyi, Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>

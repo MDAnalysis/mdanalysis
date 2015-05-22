@@ -25,7 +25,7 @@ Calculating path similarity --- :mod:`MDAnalysis.analysis.psa`
 .. versionadded:: 0.10.0
 
 The module contains code to calculate the geometric similarity of
-trajectories using path metrics such as the Hausdorff or Frechet
+trajectories using path metrics such as the Hausdorff or Fréchet
 distances. The path metrics are functions of two paths and return a
 nonnegative number, i.e., a distance. Two paths are identical if their distance
 is zero, and large distances indicate dissimilarity. Each path metric
@@ -43,12 +43,13 @@ one must select a suitable reference structure to which all paths (each
 conformer in each path) will be universally aligned using the rotations
 determined by the best-fit rmsds. Distances between paths and their structures
 are then computed directly with no further alignment. This pre-processing step
-is necessary to preserve the metric properties of the Hausdorff and Frechet
+is necessary to preserve the metric properties of the Hausdorff and Fréchet
 metrics; using the best-fit rmsd on a pairwise basis does not generally
 preserve the triangle inequality.
 
-The `PSA tutorial`_ shows how to do the individual steps
-manually and explains the intermediate steps.
+`PSAnalysisTutorial`_ outlines a typical application of PSA to a set of
+trajectories, including doing proper alignment, performing distance comparisons,
+and generating heat map-dendrogram plots from hierarchical clustering.
 
 .. SeeAlso::
 
@@ -56,7 +57,7 @@ manually and explains the intermediate steps.
         contains functions to align a set of paths and compute clustered
         (Hausdorff or Fréchet) distance matrices
 
-.. _`PSA tutorial`: https://github.com/Becksteinlab/[something here]
+.. _`PSAnalysisTutorial`: https://github.com/Becksteinlab/PSAnalysisTutorial
 
 Helper functions and variables
 ------------------------------

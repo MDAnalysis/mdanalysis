@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>4.7. Primitive PDB topology parser &mdash; MDAnalysis 0.9.3-dev documentation</title>
+    <title>4.7. Primitive PDB topology parser &mdash; MDAnalysis 0.10.0-dev documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.9.3-dev',
+        VERSION:     '0.10.0-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.9.3-dev documentation"
+          title="Search within MDAnalysis 0.10.0-dev documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.9.3-dev documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.10.0-dev documentation" href="../../index.html" />
     <link rel="up" title="4. Topology modules" href="../topology_modules.html" />
     <link rel="next" title="4.8. Extended PDB topology parser" href="ExtendedPDBParser.html" />
     <link rel="prev" title="4.6. PDB topology parser" href="PDBParser.html" /> 
@@ -49,7 +49,7 @@
         <li class="right" >
           <a href="PDBParser.html" title="4.6. PDB topology parser"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.9.3-dev documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.10.0-dev documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../topology_modules.html" accesskey="U">4. Topology modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -113,9 +113,7 @@ numbers up to 99,999.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">The parser processes atoms and their names. Masses are guessed and set to 0
-if unknown. Partial charges are not set. Bond connectivity can be guessed if
-the <code class="docutils literal"><span class="pre">bonds=True</span></code> keyword is set for
-<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><code class="xref py py-class docutils literal"><span class="pre">Universe</span></code></a>.</p>
+if unknown. Partial charges are not set.</p>
 </div>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
@@ -129,11 +127,41 @@ the <code class="docutils literal"><span class="pre">bonds=True</span></code> ke
 <h2>4.7.1. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.topology.PrimitivePDBParser.PrimitivePDBParser">
-<em class="property">class </em><code class="descclassname">MDAnalysis.topology.PrimitivePDBParser.</code><code class="descname">PrimitivePDBParser</code><span class="sig-paren">(</span><em>filename</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/PrimitivePDBParser.html#PrimitivePDBParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.PrimitivePDBParser.PrimitivePDBParser" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.topology.PrimitivePDBParser.</code><code class="descname">PrimitivePDBParser</code><span class="sig-paren">(</span><em>filename</em>, <em>universe=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/PrimitivePDBParser.html#PrimitivePDBParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.PrimitivePDBParser.PrimitivePDBParser" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parser that obtains a list of atoms from a standard PDB file.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="../coordinates/PDB.html#MDAnalysis.coordinates.PDB.PrimitivePDBReader" title="MDAnalysis.coordinates.PDB.PrimitivePDBReader"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.coordinates.PDB.PrimitivePDBReader</span></code></a></p>
+</div>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.8.</span></p>
 </div>
+<p>Standard arguments for a TopologyReader:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<dt><em>filename</em></dt>
+<dd><p class="first last">name of the topology file</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>universe</em></dt>
+<dd><p class="first last">Supply a Universe to the Parser.  This then passes it to the
+atom instances that are created within parsers.</p>
+</dd>
+<dt><em>kwargs</em></dt>
+<dd><p class="first last">Other keyword arguments that can vary with the specific format.
+These are stored as self.kwargs</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="MDAnalysis.topology.PrimitivePDBParser.PrimitivePDBParser.close">
 <code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.PrimitivePDBParser.PrimitivePDBParser.close" title="Permalink to this definition">¶</a></dt>
@@ -291,7 +319,7 @@ read with
         <li class="right" >
           <a href="PDBParser.html" title="4.6. PDB topology parser"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.9.3-dev documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.10.0-dev documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../topology_modules.html" >4. Topology modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -301,8 +329,8 @@ read with
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
-    Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
-    Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
+    Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
+    Paul Rigor, Andy Somogyi, Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>

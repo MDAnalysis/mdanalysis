@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>7.2. Fundamental building blocks — MDAnalysis.core.AtomGroup &mdash; MDAnalysis 0.9.3-dev documentation</title>
+    <title>7.2. Fundamental building blocks — MDAnalysis.core.AtomGroup &mdash; MDAnalysis 0.10.0-dev documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.9.3-dev',
+        VERSION:     '0.10.0-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.9.3-dev documentation"
+          title="Search within MDAnalysis 0.10.0-dev documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.9.3-dev documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.10.0-dev documentation" href="../../index.html" />
     <link rel="up" title="7. Core modules" href="../core_modules.html" />
     <link rel="next" title="7.3. Atom selection Hierarchy — MDAnalysis.core.Selection" href="Selection.html" />
     <link rel="prev" title="7.1. Core functions of MDAnalysis" href="init.html" /> 
@@ -49,7 +49,7 @@
         <li class="right" >
           <a href="init.html" title="7.1. Core functions of MDAnalysis"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.9.3-dev documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.10.0-dev documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../core_modules.html" accesskey="U">7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -63,12 +63,13 @@
 <li><a class="reference internal" href="#">7.2. Fundamental building blocks &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.core.AtomGroup</span></code></a><ul>
 <li><a class="reference internal" href="#class-hierarchy">7.2.1. Class Hierarchy</a></li>
 <li><a class="reference internal" href="#manipulating-atoms-residues-and-segments">7.2.2. Manipulating atoms, residues, and segments</a></li>
-<li><a class="reference internal" href="#combining-objects-system-building">7.2.3. Combining objects: system building</a><ul>
-<li><a class="reference internal" href="#merging">7.2.3.1. Merging</a></li>
-<li><a class="reference internal" href="#replicating">7.2.3.2. Replicating</a></li>
+<li><a class="reference internal" href="#working-with-topologies">7.2.3. Working with Topologies</a></li>
+<li><a class="reference internal" href="#combining-objects-system-building">7.2.4. Combining objects: system building</a><ul>
+<li><a class="reference internal" href="#merging">7.2.4.1. Merging</a></li>
+<li><a class="reference internal" href="#replicating">7.2.4.2. Replicating</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#classes-and-functions">7.2.4. Classes and functions</a></li>
+<li><a class="reference internal" href="#classes-and-functions">7.2.5. Classes and functions</a></li>
 </ul>
 </li>
 </ul>
@@ -213,15 +214,70 @@ the canonical residue id 42 (instead of <code class="docutils literal"><span cla
 </pre></div>
 </div>
 </div>
+<div class="section" id="working-with-topologies">
+<h2>7.2.3. Working with Topologies<a class="headerlink" href="#working-with-topologies" title="Permalink to this headline">¶</a></h2>
+<p>If the topology file given to the Universe had bonding information then this
+will have been loaded into the Universe as <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Universe.bonds" title="MDAnalysis.core.AtomGroup.Universe.bonds"><code class="xref py py-attr docutils literal"><span class="pre">Universe.bonds</span></code></a>
+<a class="reference internal" href="#MDAnalysis.core.AtomGroup.Universe.angles" title="MDAnalysis.core.AtomGroup.Universe.angles"><code class="xref py py-attr docutils literal"><span class="pre">Universe.angles</span></code></a> <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Universe.torsions" title="MDAnalysis.core.AtomGroup.Universe.torsions"><code class="xref py py-attr docutils literal"><span class="pre">Universe.torsions</span></code></a> and <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Universe.impropers" title="MDAnalysis.core.AtomGroup.Universe.impropers"><code class="xref py py-attr docutils literal"><span class="pre">Universe.impropers</span></code></a>.</p>
+<p>If your topology file does not have this information, it is still possible
+to construct it based on the positions of the atoms and assumed vdw radii
+for these atoms.  See <code class="xref py py-meth docutils literal"><span class="pre">MDAnalysis.AtomGroup.guess_bonds()</span></code> and
+<a class="reference internal" href="../topology/core.html#MDAnalysis.topology.core.guess_bonds" title="MDAnalysis.topology.core.guess_bonds"><code class="xref py py-func docutils literal"><span class="pre">MDAnalysis.topology.core.guess_bonds()</span></code></a> for details.</p>
+<p>This Topology information is stored in <a class="reference internal" href="../topology/core.html#MDAnalysis.topology.core.TopologyGroup" title="MDAnalysis.topology.core.TopologyGroup"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.topology.core.TopologyGroup</span></code></a>
+objects.  These are designed to be analogous to the AtomGroup container for Atoms.</p>
+<p>For examples working with a box of ethanol:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="kn">as</span> <span class="nn">mda</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="s">&#39;ethanol.gro&#39;</span><span class="p">,</span> <span class="n">guess_bonds</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">bonds</span>
+<span class="go">&lt;TopologyGroup containing 11784 Bonds&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">bonds</span><span class="o">.</span><span class="n">types</span><span class="p">()</span>  <span class="c"># view available types</span>
+<span class="go">[(&#39;O&#39;, &#39;H&#39;), (&#39;C&#39;, &#39;O&#39;), (&#39;C&#39;, &#39;H&#39;), (&#39;C&#39;, &#39;C&#39;)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">bonds</span><span class="o">.</span><span class="n">selectBonds</span><span class="p">((</span><span class="s">&#39;C&#39;</span><span class="p">,</span> <span class="s">&#39;O&#39;</span><span class="p">))</span>  <span class="c"># return all C-O bonds from the group</span>
+<span class="go">&lt;TopologyGroup containing 1473 Bonds&gt;</span>
+</pre></div>
+</div>
+<p>Bonds are categorised based on the types of atoms.  This is done in a way
+so that type (a, b, c) is equivalent to (c, b, a) ie. bonds are reversible.
+For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">angles</span><span class="o">.</span><span class="n">types</span><span class="p">()</span>
+<span class="go">[(&#39;C&#39;, &#39;C&#39;, &#39;H&#39;),</span>
+<span class="go"> (&#39;H&#39;, &#39;C&#39;, &#39;H&#39;),</span>
+<span class="go"> (&#39;C&#39;, &#39;O&#39;, &#39;H&#39;),</span>
+<span class="go"> (&#39;C&#39;, &#39;C&#39;, &#39;O&#39;),</span>
+<span class="go"> (&#39;H&#39;, &#39;C&#39;, &#39;O&#39;)]</span>
+</pre></div>
+</div>
+<p>There is only C-C-H bonds and no H-C-C bonds.  Selection however is
+aware that sometimes types are reversed:</p>
+<div class="highlight-python"><div class="highlight"><pre>u.angles.selectBonds((&#39;H&#39;, &#39;C&#39;, &#39;C&#39;))  # note reversal of type
+&gt;&gt;&gt; &lt;TopologyGroup containing 7365 Angles&gt;
+</pre></div>
+</div>
+<p>TopologyGroups can be combined and indexed:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">tg</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">angles</span><span class="o">.</span><span class="n">selectBonds</span><span class="p">((</span><span class="s">&#39;C&#39;</span><span class="p">,</span> <span class="s">&#39;C&#39;</span><span class="p">,</span> <span class="s">&#39;O&#39;</span><span class="p">))</span> <span class="o">+</span> <span class="n">u</span><span class="o">.</span><span class="n">angles</span><span class="o">.</span><span class="n">selectBonds</span><span class="p">((</span><span class="s">&#39;C&#39;</span><span class="p">,</span> <span class="s">&#39;O&#39;</span><span class="p">,</span> <span class="s">&#39;H&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tg</span><span class="o">.</span><span class="n">types</span><span class="p">()</span>
+<span class="go">[(&#39;C&#39;, &#39;O&#39;, &#39;H&#39;), (&#39;C&#39;, &#39;C&#39;, &#39;O&#39;)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tg</span><span class="p">[:</span><span class="mi">100</span><span class="p">]</span>
+<span class="go">&lt;TopologyGroup containing 100 Angles&gt;</span>
+</pre></div>
+</div>
+<p>Finally, TopologyGroups are linked to some fast Cython calculation methods to
+determine bond lengths and angle sizes:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">tg</span><span class="o">.</span><span class="n">angles</span><span class="p">()</span>
+<span class="go">array([ 1.88042373,  1.95928987,  1.74770012, ...,  1.79306789,</span>
+<span class="go">        1.95522678,  1.88881045])</span>
+</pre></div>
+</div>
+</div>
 <div class="section" id="combining-objects-system-building">
-<h2>7.2.3. Combining objects: system building<a class="headerlink" href="#combining-objects-system-building" title="Permalink to this headline">¶</a></h2>
+<h2>7.2.4. Combining objects: system building<a class="headerlink" href="#combining-objects-system-building" title="Permalink to this headline">¶</a></h2>
 <p>It is often convenient to combined multiple groups of atoms into a single
 object. If they are contained in a single <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><code class="xref py py-class docutils literal"><span class="pre">Universe</span></code></a> then the methods
 described above (especially manipulating the segments) might be
 useful. However, if the atoms reside in different universes, the <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Merge" title="MDAnalysis.core.AtomGroup.Merge"><code class="xref py py-func docutils literal"><span class="pre">Merge()</span></code></a>
 function can be used.</p>
 <div class="section" id="merging">
-<h3>7.2.3.1. Merging<a class="headerlink" href="#merging" title="Permalink to this headline">¶</a></h3>
+<h3>7.2.4.1. Merging<a class="headerlink" href="#merging" title="Permalink to this headline">¶</a></h3>
 <p>In the following example for <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Merge" title="MDAnalysis.core.AtomGroup.Merge"><code class="xref py py-func docutils literal"><span class="pre">Merge()</span></code></a>, protein, ligand, and solvent were
 externally prepared in three different PDB files. They are loaded into separate
 <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><code class="xref py py-class docutils literal"><span class="pre">Universe</span></code></a> objects (where they could be further manipulated,
@@ -238,7 +294,7 @@ combine all of them together:</p>
 <p>The complete system is then written out to a new PDB file.</p>
 </div>
 <div class="section" id="replicating">
-<h3>7.2.3.2. Replicating<a class="headerlink" href="#replicating" title="Permalink to this headline">¶</a></h3>
+<h3>7.2.4.2. Replicating<a class="headerlink" href="#replicating" title="Permalink to this headline">¶</a></h3>
 <p>It is also possible to replicate a molecule to build a system with
 multiple copies of the same molecule. In the example, we replicate an
 AdK molecule and then translate and rotate the second copy:</p>
@@ -277,14 +333,14 @@ in the new merged universe.</p>
 </div>
 </div>
 <div class="section" id="classes-and-functions">
-<h2>7.2.4. Classes and functions<a class="headerlink" href="#classes-and-functions" title="Permalink to this headline">¶</a></h2>
+<h2>7.2.5. Classes and functions<a class="headerlink" href="#classes-and-functions" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.core.AtomGroup.Universe">
 <em class="property">class </em><code class="descclassname">MDAnalysis.core.AtomGroup.</code><code class="descname">Universe</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#Universe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Universe" title="Permalink to this definition">¶</a></dt>
 <dd><p>The MDAnalysis Universe contains all the information describing the system.</p>
 <p>The system always requires a <em>topology</em> file &#8212; in the simplest case just
 a list of atoms. This can be a CHARMM/NAMD PSF file or a simple coordinate
-file with atom informations such as PDB, Gromacs GRO, or CHARMM CRD. See
+file with atom informations such as XYZ, PDB, Gromacs GRO, or CHARMM CRD. See
 <a class="reference internal" href="../topology/init.html#supported-topology-formats"><span>Table of Supported Topology Formats</span></a> for what kind of topologies can be read.</p>
 <p>A trajectory provides coordinates; the coordinates have to be ordered in
 the same way as the list of atoms in the topology. A trajectory can be a
@@ -292,7 +348,7 @@ single frame such as a PDB, CRD, or GRO file, or it can be a MD trajectory
 (in CHARMM/NAMD/LAMMPS DCD, Gromacs XTC/TRR, or generic XYZ format).  See
 <a class="reference internal" href="../coordinates/init.html#id1"><span>Table of supported coordinate formats</span></a> for what can be read as a
 &#8220;trajectory&#8221;.</p>
-<p>As a special case, when the topology is a PDB, GRO or CRD file
+<p>As a special case, when the topology is a XYZ, PDB, GRO or CRD file
 then the coordinates are immediately loaded from the &#8220;topology&#8221;
 file unless a trajectory is supplied.</p>
 <p>Examples for setting up a universe:</p>
@@ -317,7 +373,8 @@ file unless a trajectory is supplied.</p>
 <code class="xref py py-attr docutils literal"><span class="pre">Universe.trajectory.ts</span></code> is the current time step</li>
 <li><a class="reference internal" href="#MDAnalysis.core.AtomGroup.Universe.dimensions" title="MDAnalysis.core.AtomGroup.Universe.dimensions"><code class="xref py py-attr docutils literal"><span class="pre">Universe.dimensions</span></code></a>: current system dimensions (simulation unit cell, if
 set in the trajectory)</li>
-<li>bonds, angles, dihedrals, impropers
+<li><a class="reference internal" href="#MDAnalysis.core.AtomGroup.Universe.bonds" title="MDAnalysis.core.AtomGroup.Universe.bonds"><code class="xref py py-attr docutils literal"><span class="pre">Universe.bonds</span></code></a>: TopologyGroup of bonds in Universe, also
+<a class="reference internal" href="#MDAnalysis.core.AtomGroup.Universe.angles" title="MDAnalysis.core.AtomGroup.Universe.angles"><code class="xref py py-attr docutils literal"><span class="pre">Universe.angles</span></code></a>, <code class="xref py py-attr docutils literal"><span class="pre">Universe.dihedrals</span></code>, and <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Universe.impropers" title="MDAnalysis.core.AtomGroup.Universe.impropers"><code class="xref py py-attr docutils literal"><span class="pre">Universe.impropers</span></code></a>
 (low level access through <code class="xref py py-attr docutils literal"><span class="pre">Universe._topology</span></code>)</li>
 </ul>
 <div class="admonition note">
@@ -327,8 +384,7 @@ provided in the topology file then MDAnalysis tries to guess them (see
 <a class="reference internal" href="../topology/tables.html#module-MDAnalysis.topology.tables" title="MDAnalysis.topology.tables"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.tables</span></code></a>). This does not always work and if you
 require correct values (e.g. because you want to calculate the center of
 mass) then you need to make sure that MDAnalysis gets all the
-information needed. Furthermore, the list of bonds is only constructed
-when provided in the topology and never guessed (see <cite>Issue 23</cite>).</p>
+information needed.</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.7.5: </span>Can also read multi-frame PDB files with the
@@ -390,18 +446,14 @@ individual list member. [<code class="docutils literal"><span class="pre">None</
 Can also pass a subclass of <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Reader" title="MDAnalysis.coordinates.base.Reader"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.coordinates.base.Reader</span></code></a>
 to define a custom reader to be used on the trajectory file.</p>
 </dd>
-<dt><em>bonds</em></dt>
-<dd><p class="first">bond handling for PDB files. The default is to read and store the
-CONECT records only. When set to <code class="docutils literal"><span class="pre">True</span></code> it will attempt to guess
-connectivity between all atoms in the Universe.
-Each bond knows if it was guessed or was a CONECT record, so when
-saving out one can specify which ones to write out by</p>
-<div class="last highlight-python"><div class="highlight"><pre><span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="s">&quot;example.pdb&quot;</span><span class="p">)</span>
-<span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;output.pdb&quot;</span><span class="p">,</span> <span class="n">bonds</span><span class="o">=</span><span class="s">&quot;conect&quot;</span><span class="p">)</span> <span class="c"># default, only CONECT</span>
-<span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;output.pdb&quot;</span><span class="p">,</span> <span class="n">bonds</span><span class="o">=</span><span class="s">&quot;all&quot;</span><span class="p">)</span>
-<span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;output.pdb&quot;</span><span class="p">,</span> <span class="n">bonds</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
-</pre></div>
-</div>
+<dt><em>guess_bonds</em></dt>
+<dd><p class="first last">Once Universe has been loaded, attempt to guess the connectivity
+between atoms.  This will populate the .bonds .angles and
+.torsions attributes of the Universe.</p>
+</dd>
+<dt><em>vdwradii</em></dt>
+<dd><p class="first last">For use with <em>guess_bonds</em>. Supply a dict giving a vdwradii for each atom type
+which are used in guessing bonds.</p>
 </dd>
 </dl>
 </td>
@@ -432,20 +484,35 @@ can be explicitly set with the <em>topology_format</em> keyword.</p>
 <p><span class="versionmodified">Changed in version 0.7.4: </span>New <em>topology_format</em> and <em>format</em> parameters to override the file
 format detection.</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.10.0: </span>Added <code class="docutils literal"><span class="pre">'guess_bonds'</span></code> keyword to cause topology to be guessed on
+Universe creation.
+Deprecated <code class="docutils literal"><span class="pre">'bonds'</span></code> keyword, use <code class="docutils literal"><span class="pre">'guess_bonds'</span></code> instead.</p>
+</div>
 <dl class="attribute">
 <dt id="MDAnalysis.core.AtomGroup.Universe.angles">
 <code class="descname">angles</code><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Universe.angles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a <a class="reference internal" href="../topology/core.html#MDAnalysis.topology.core.TopologyGroup" title="MDAnalysis.topology.core.TopologyGroup"><code class="xref py py-class docutils literal"><span class="pre">TopologyGroup</span></code></a>
 of all angles in the Universe</p>
-<p>If none are found, returns <code class="docutils literal"><span class="pre">None</span></code></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.9.0.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.9.2: </span>Now can return empty TopologyGroup</p>
+</div>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="MDAnalysis.core.AtomGroup.Universe.bonds">
 <code class="descname">bonds</code><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Universe.bonds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a <a class="reference internal" href="../topology/core.html#MDAnalysis.topology.core.TopologyGroup" title="MDAnalysis.topology.core.TopologyGroup"><code class="xref py py-class docutils literal"><span class="pre">TopologyGroup</span></code></a> of all
-bonds in the Universe.
-If none are found, returns <code class="docutils literal"><span class="pre">None</span></code></p>
+bonds in the Universe.</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.9.0: </span>Now a lazily built <a class="reference internal" href="../topology/core.html#MDAnalysis.topology.core.TopologyGroup" title="MDAnalysis.topology.core.TopologyGroup"><code class="xref py py-class docutils literal"><span class="pre">TopologyGroup</span></code></a></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.9.2: </span>Now can return empty TopologyGroup</p>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -491,7 +558,12 @@ of the Universe as a numpy array:
 <code class="descname">impropers</code><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Universe.impropers" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a <a class="reference internal" href="../topology/core.html#MDAnalysis.topology.core.TopologyGroup" title="MDAnalysis.topology.core.TopologyGroup"><code class="xref py py-class docutils literal"><span class="pre">TopologyGroup</span></code></a>
 of all improper torsions in the Universe</p>
-<p>If none are found, returns <code class="docutils literal"><span class="pre">None</span></code></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.9.0.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.9.2: </span>Now can return empty TopologyGroup</p>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -701,7 +773,12 @@ called from.</dd>
 <code class="descname">torsions</code><a class="headerlink" href="#MDAnalysis.core.AtomGroup.Universe.torsions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a <a class="reference internal" href="../topology/core.html#MDAnalysis.topology.core.TopologyGroup" title="MDAnalysis.topology.core.TopologyGroup"><code class="xref py py-class docutils literal"><span class="pre">TopologyGroup</span></code></a>
 of all torsions in the Universe</p>
-<p>If none are found, returns <code class="docutils literal"><span class="pre">None</span></code></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.9.0.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.9.2: </span>Now can return empty TopologyGroup</p>
+</div>
 </dd></dl>
 
 <dl class="attribute">
@@ -950,6 +1027,12 @@ i.e. <em>axis</em> = 0) with the z-axis:</p>
 <p>Note that these angles might extend out of the AtomGroup, to select
 only angles which are entirely contained by the AtomGroup use
 u.angles.atomgroup_intersection(ag, strict=True)</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.9.0.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.10.0: </span>Now always returns a (possibly empty) TopologyGroup</p>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -1085,6 +1168,12 @@ flag to be used by default.</p>
 <p>Note that these bonds might extend out of the AtomGroup, to select
 only bonds which are entirely contained by the AtomGroup use
 u.bonds.atomgroup_intersection(ag, strict=True)</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.9.0.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.10.0: </span>Now always returns a (possibly empty) TopologyGroup</p>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -1380,6 +1469,32 @@ differently for symmetry with with <a class="reference internal" href="#MDAnalys
 </dd></dl>
 
 <dl class="method">
+<dt id="MDAnalysis.core.AtomGroup.AtomGroup.guess_bonds">
+<code class="descname">guess_bonds</code><span class="sig-paren">(</span><em>vdwradii=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.guess_bonds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.guess_bonds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Guess all the bonds that exist within this AtomGroup and add to Universe.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>vdwradii</em></dt>
+<dd><p class="first last">Pass a dict relating atom types to vdwradii.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="../topology/core.html#MDAnalysis.topology.core.guess_bonds" title="MDAnalysis.topology.core.guess_bonds"><code class="xref py py-func docutils literal"><span class="pre">MDAnalysis.topology.core.guess_bonds()</span></code></a></p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.10.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="method">
 <dt id="MDAnalysis.core.AtomGroup.AtomGroup.improper">
 <code class="descname">improper</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/AtomGroup.html#AtomGroup.improper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.AtomGroup.AtomGroup.improper" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the improper dihedral between 4 atoms.</p>
@@ -1405,6 +1520,12 @@ selection of atoms and thus the user input!</p>
 <p>Note that these improper torsions might extend out of the AtomGroup,
 to select only torsions which are entirely contained by the AtomGroup use
 u.impropers.atomgroup_intersection(ag, strict=True)</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.9.0.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.10.0: </span>Now always returns a (possibly empty) TopologyGroup</p>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -2171,6 +2292,12 @@ flag to be used by default.</p>
 <p>Note that these torsions might extend out of the AtomGroup, to select
 only torsions which are entirely contained by the AtomGroup use
 u.torsions.atomgroup_intersection(ag, strict=True)</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.9.0.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.10.0: </span>Now always returns a (possibly empty) TopologyGroup</p>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -3127,7 +3254,7 @@ asUniverse(*args, **kwargs) --&gt; Universe(*args, **kwargs)
         <li class="right" >
           <a href="init.html" title="7.1. Core functions of MDAnalysis"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.9.3-dev documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.10.0-dev documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../core_modules.html" >7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -3137,8 +3264,8 @@ asUniverse(*args, **kwargs) --&gt; Universe(*args, **kwargs)
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
-    Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
-    Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
+    Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
+    Paul Rigor, Andy Somogyi, Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>

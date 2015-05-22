@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.7. LAMMPS DCD trajectory I/O — MDAnalysis.coordinates.LAMMPS &mdash; MDAnalysis 0.9.3-dev documentation</title>
+    <title>5.8. LAMMPS DCD trajectory I/O — MDAnalysis.coordinates.LAMMPS &mdash; MDAnalysis 0.10.0-dev documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.9.3-dev',
+        VERSION:     '0.10.0-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,13 +25,13 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.9.3-dev documentation"
+          title="Search within MDAnalysis 0.10.0-dev documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.9.3-dev documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.10.0-dev documentation" href="../../index.html" />
     <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
-    <link rel="next" title="5.8. MOL2 file format — MDAnalysis.coordinates.MOL2" href="MOL2.html" />
-    <link rel="prev" title="5.6. GRO file format — MDAnalysis.coordinates.GRO" href="GRO.html" /> 
+    <link rel="next" title="5.9. MOL2 file format — MDAnalysis.coordinates.MOL2" href="MOL2.html" />
+    <link rel="prev" title="5.7. INPCRD structure files in MDAnalysis — MDAnalysis.coordinates.INPCRD" href="INPCRD.html" /> 
   </head>
   <body role="document">
     <div class="related" role="navigation" aria-label="related navigation">
@@ -44,12 +44,12 @@
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="MOL2.html" title="5.8. MOL2 file format — MDAnalysis.coordinates.MOL2"
+          <a href="MOL2.html" title="5.9. MOL2 file format — MDAnalysis.coordinates.MOL2"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="GRO.html" title="5.6. GRO file format — MDAnalysis.coordinates.GRO"
+          <a href="INPCRD.html" title="5.7. INPCRD structure files in MDAnalysis — MDAnalysis.coordinates.INPCRD"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.9.3-dev documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.10.0-dev documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -60,18 +60,18 @@
             </a></p>
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">5.7. LAMMPS DCD trajectory I/O  &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.LAMMPS</span></code></a><ul>
-<li><a class="reference internal" href="#classes">5.7.1. Classes</a></li>
+<li><a class="reference internal" href="#">5.8. LAMMPS DCD trajectory I/O  &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.LAMMPS</span></code></a><ul>
+<li><a class="reference internal" href="#classes">5.8.1. Classes</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="GRO.html"
-                        title="previous chapter">5.6. GRO file format &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.GRO</span></code></a></p>
+  <p class="topless"><a href="INPCRD.html"
+                        title="previous chapter">5.7. INPCRD structure files in MDAnalysis &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.INPCRD</span></code></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="MOL2.html"
-                        title="next chapter">5.8. MOL2 file format &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.MOL2</span></code></a></p>
+                        title="next chapter">5.9. MOL2 file format &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.MOL2</span></code></a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -101,7 +101,7 @@
           <div class="body" role="main">
             
   <span class="target" id="module-MDAnalysis.coordinates.LAMMPS"></span><div class="section" id="lammps-dcd-trajectory-i-o-mdanalysis-coordinates-lammps">
-<h1>5.7. LAMMPS DCD trajectory I/O  &#8212; <a class="reference internal" href="#module-MDAnalysis.coordinates.LAMMPS" title="MDAnalysis.coordinates.LAMMPS"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.LAMMPS</span></code></a><a class="headerlink" href="#lammps-dcd-trajectory-i-o-mdanalysis-coordinates-lammps" title="Permalink to this headline">¶</a></h1>
+<h1>5.8. LAMMPS DCD trajectory I/O  &#8212; <a class="reference internal" href="#module-MDAnalysis.coordinates.LAMMPS" title="MDAnalysis.coordinates.LAMMPS"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.LAMMPS</span></code></a><a class="headerlink" href="#lammps-dcd-trajectory-i-o-mdanalysis-coordinates-lammps" title="Permalink to this headline">¶</a></h1>
 <p>Classes to read and write <a class="reference external" href="http://lammps.sandia.gov/">LAMMPS</a> DCD binary
 trajectories. Trajectories can be read regardless of system-endianness
 as this is auto-detected.</p>
@@ -128,84 +128,7 @@ keywords <em>timeunit</em> and/or <em>lengthunit</em> to <a class="reference int
 <p class="last">For further discussion follow the reports for <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/issues/84">Issue 84</a> and <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/issues/64">Issue 64</a>.</p>
 </div>
 <div class="section" id="classes">
-<h2>5.7.1. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="MDAnalysis.coordinates.LAMMPS.Timestep">
-<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.LAMMPS.</code><code class="descname">Timestep</code><span class="sig-paren">(</span><em>arg</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/LAMMPS.html#Timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.Timestep" title="Permalink to this definition">¶</a></dt>
-<dd><p>LAMMPS trajectory time step</p>
-<dl class="method">
-<dt id="MDAnalysis.coordinates.LAMMPS.Timestep.copy">
-<code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Timestep.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.Timestep.copy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Make an independent (&#8220;deep&#8221;) copy of the whole <a class="reference internal" href="#MDAnalysis.coordinates.LAMMPS.Timestep" title="MDAnalysis.coordinates.LAMMPS.Timestep"><code class="xref py py-class docutils literal"><span class="pre">Timestep</span></code></a>.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="MDAnalysis.coordinates.LAMMPS.Timestep.copy_slice">
-<code class="descname">copy_slice</code><span class="sig-paren">(</span><em>sel</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Timestep.copy_slice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.Timestep.copy_slice" title="Permalink to this definition">¶</a></dt>
-<dd><p>Make a new Timestep containing a subset of the original Timestep.</p>
-<p><code class="docutils literal"><span class="pre">ts.copy_slice(slice(start,</span> <span class="pre">stop,</span> <span class="pre">skip))</span></code>
-<code class="docutils literal"><span class="pre">ts.copy_slice([list</span> <span class="pre">of</span> <span class="pre">indices])</span></code></p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A Timestep object of the same type containing all header information and all atom information
-relevent to the selection.</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The selection must be a 0 based slice or array of the atom indices in this Timestep</p>
-</div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.8.</span></p>
-</div>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="MDAnalysis.coordinates.LAMMPS.Timestep.dimensions">
-<code class="descname">dimensions</code><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.Timestep.dimensions" title="Permalink to this definition">¶</a></dt>
-<dd><p>unitcell dimensions (<em>A</em>, <em>B</em>, <em>C</em>, <em>alpha</em>, <em>beta</em>, <em>gamma</em>)</p>
-<p>lengths <em>A</em>, <em>B</em>, <em>C</em> are in the MDAnalysis length unit (Å), and
-angles are in degrees.</p>
-<p><a class="reference internal" href="#MDAnalysis.coordinates.LAMMPS.Timestep.dimensions" title="MDAnalysis.coordinates.LAMMPS.Timestep.dimensions"><code class="xref py py-attr docutils literal"><span class="pre">dimensions</span></code></a> is read-only because it transforms the actual format
-of the unitcell (which differs between different trajectory formats) to
-the representation described here, which is used everywhere in
-MDAnalysis.</p>
-<p>The ordering of the angles in the unitcell is the same as in recent
-versions of VMD&#8217;s <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/plugins/doxygen/dcdplugin_8c-source.html#l00947">DCDplugin</a> (2013), namely the <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/dcdplugin.html">X-PLOR DCD format</a>:
-The original unitcell is read as <code class="docutils literal"><span class="pre">[A,</span> <span class="pre">gamma,</span> <span class="pre">B,</span> <span class="pre">beta,</span> <span class="pre">alpha,</span> <span class="pre">C]</span></code> from
-the DCD file (actually, the direction cosines are stored instead of the
-angles but the underlying C code already does this conversion); if any
-of these values are &lt; 0 or if any of the angles are &gt; 180 degrees then
-it is assumed it is a new-style CHARMM unitcell (at least since c36b2)
-in which box vectors were recorded.</p>
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">The DCD format is not well defined. Check your unit cell
-dimensions carefully, especially when using triclinic
-boxes. Different software packages implement different conventions
-and MDAnalysis is currently implementing the newer NAMD/VMD convention
-and tries to guess the new CHARMM one. Old CHARMM trajectories might
-give wrong unitcell values. For more details see <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/issues/187">Issue 187</a>.</p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.9.0: </span>Unitcell is now interpreted in the newer NAMD DCD format as <code class="docutils literal"><span class="pre">[A,</span>
-<span class="pre">gamma,</span> <span class="pre">B,</span> <span class="pre">beta,</span> <span class="pre">alpha,</span> <span class="pre">C]</span></code> instead of the old MDAnalysis/CHARMM
-ordering <code class="docutils literal"><span class="pre">[A,</span> <span class="pre">alpha,</span> <span class="pre">B,</span> <span class="pre">beta,</span> <span class="pre">gamma,</span> <span class="pre">C]</span></code>. We attempt to detect the
-new CHARMM DCD unitcell format (see <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/issues/187">Issue 187</a> for a discussion).</p>
-</div>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="MDAnalysis.coordinates.LAMMPS.Timestep.volume">
-<code class="descname">volume</code><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.Timestep.volume" title="Permalink to this definition">¶</a></dt>
-<dd><p>volume of the unitcell</p>
-</dd></dl>
-
-</dd></dl>
-
+<h2>5.8.1. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.LAMMPS.DCDReader">
 <em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.LAMMPS.</code><code class="descname">DCDReader</code><span class="sig-paren">(</span><em>dcdfilename</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/LAMMPS.html#DCDReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDReader" title="Permalink to this definition">¶</a></dt>
@@ -504,7 +427,7 @@ values.</p>
 <dd><p>Read dimensions from timestep <em>ts</em> and return appropriate native unitcell.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#MDAnalysis.coordinates.LAMMPS.Timestep.dimensions" title="MDAnalysis.coordinates.LAMMPS.Timestep.dimensions"><code class="xref py py-attr docutils literal"><span class="pre">Timestep.dimensions</span></code></a></p>
+<p class="last"><code class="xref py py-attr docutils literal"><span class="pre">Timestep.dimensions</span></code></p>
 </div>
 </dd></dl>
 
@@ -639,7 +562,7 @@ returned.</p>
 <code class="descname">write</code><span class="sig-paren">(</span><em>obj</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDWriter.write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write current timestep, using the supplied <em>obj</em>.</p>
 <p>The argument should be a <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></code></a> or
-a <code class="xref py py-class docutils literal"><span class="pre">Universe</span></code> or a <a class="reference internal" href="#MDAnalysis.coordinates.LAMMPS.Timestep" title="MDAnalysis.coordinates.LAMMPS.Timestep"><code class="xref py py-class docutils literal"><span class="pre">Timestep</span></code></a> instance.</p>
+a <code class="xref py py-class docutils literal"><span class="pre">Universe</span></code> or a <code class="xref py py-class docutils literal"><span class="pre">Timestep</span></code> instance.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">The size of the <em>obj</em> must be the same as the number of atom
@@ -663,7 +586,7 @@ if no coordinates to be written.</p>
 
 <dl class="class">
 <dt id="MDAnalysis.coordinates.LAMMPS.DATAReader">
-<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.LAMMPS.</code><code class="descname">DATAReader</code><span class="sig-paren">(</span><em>pdbfilename</em>, <em>numatoms=None</em>, <em>convert_units=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/LAMMPS.html#DATAReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DATAReader" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.LAMMPS.</code><code class="descname">DATAReader</code><span class="sig-paren">(</span><em>filename</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/LAMMPS.html#DATAReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DATAReader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads a single frame of coordinate information from a LAMMPS DATA file.</p>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.9.0.</span></p>
@@ -684,12 +607,6 @@ available). <em>numatoms</em> is always set from <code class="xref py py-attr do
 <dt id="MDAnalysis.coordinates.LAMMPS.DATAReader.Writer">
 <code class="descname">Writer</code><span class="sig-paren">(</span><em>filename</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DATAReader.Writer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a trajectory writer with the same properties as this trajectory.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="MDAnalysis.coordinates.LAMMPS.DATAReader.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DATAReader.close" title="Permalink to this definition">¶</a></dt>
-<dd><p>Close the trajectory file.</p>
 </dd></dl>
 
 <dl class="method">
@@ -810,12 +727,6 @@ returned.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.LAMMPS.DATAReader.next">
-<code class="descname">next</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DATAReader.next" title="Permalink to this definition">¶</a></dt>
-<dd><p>Forward one step to next frame.</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="MDAnalysis.coordinates.LAMMPS.DATAReader.rewind">
 <code class="descname">rewind</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DATAReader.rewind" title="Permalink to this definition">¶</a></dt>
 <dd><p>Position at beginning of trajectory</p>
@@ -855,12 +766,12 @@ returned.</p>
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="MOL2.html" title="5.8. MOL2 file format — MDAnalysis.coordinates.MOL2"
+          <a href="MOL2.html" title="5.9. MOL2 file format — MDAnalysis.coordinates.MOL2"
              >next</a> |</li>
         <li class="right" >
-          <a href="GRO.html" title="5.6. GRO file format — MDAnalysis.coordinates.GRO"
+          <a href="INPCRD.html" title="5.7. INPCRD structure files in MDAnalysis — MDAnalysis.coordinates.INPCRD"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.9.3-dev documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.10.0-dev documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -870,8 +781,8 @@ returned.</p>
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
-    Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
-    Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
+    Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
+    Paul Rigor, Andy Somogyi, Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>
