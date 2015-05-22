@@ -55,8 +55,8 @@ preserve the triangle inequality.
 .. Rubric:: References
 
 .. [Seyler2015] Sean L. Seyler, Avishek Kumar, Michael F. Thorpe, Oliver Beckstein.
-   _Path Similarity Analysis: a Method for Quantifying Macromolecular
-   Pathways_. ` arXiv:1505.04807`_ (2015).
+   *Path Similarity Analysis: a Method for Quantifying Macromolecular
+   Pathways.* `arXiv:1505.04807`_ (2015).
 
 .. _`arXiv:1505.04807`: http://arxiv.org/abs/1505.04807
 .. _`PSAnalysisTutorial`: https://github.com/Becksteinlab/PSAnalysisTutorial
@@ -197,7 +197,7 @@ def get_path_metric_func(name):
 
 
 def hausdorff(P,Q, N=None):
-    """Calculate the Hausdorff distance between two paths.
+    r"""Calculate the Hausdorff distance between two paths.
 
     .. |3Dp| replace:: :math:`N_p \times N \times 3`
     .. |2Dp| replace:: :math:`N_p \times (3N)`
@@ -207,7 +207,7 @@ def hausdorff(P,Q, N=None):
     *P* (*Q*) is a :class:`numpy.ndarray` of :math:`N_p` (:math:`N_q`) time
     steps, :math:`N` atoms, and :math:`3N` coordinates (e.g.,
     :meth:`MDAnalysis.core.AtomGroup.AtomGroup.coordinates`). *P* (*Q*) has
-    either shape |3Dp| (|3Dq|), or :|2Dp| (|2Dq|) in flattened form.
+    either shape |3Dp| (|3Dq|), or |2Dp| (|2Dq|) in flattened form.
 
     :Arguments:
       *P*
@@ -242,12 +242,12 @@ def hausdorff(P,Q, N=None):
     else:
         axis = 1
     d = numpy.array([sqnorm(p - Q, axis) for p in P])
-    return ( max( numpy.amax(numpy.amin(d, axis=0)),                            \
+    return ( max( numpy.amax(numpy.amin(d, axis=0)),             \
                   numpy.amax(numpy.amin(d, axis=1)) ) / N  )**0.5
 
 
 def discrete_frechet(P,Q, N=None):
-    """Calculate the discrete Frechet distance between two paths.
+    r"""Calculate the discrete Frechet distance between two paths.
 
     .. |3Dp| replace:: :math:`N_p\times N\times 3`
     .. |2Dp| replace:: :math:`N_p\times(3N)`
@@ -456,7 +456,7 @@ class Path(object):
 
 
     def to_path(self, fitted=False, select=None, flat=False):
-        """Generates a coordinate time series from the fitted universe
+        r"""Generates a coordinate time series from the fitted universe
         trajectory.
 
         .. |Np| replace:: :math:`N_p`
@@ -510,7 +510,7 @@ class Path(object):
     def run(self, align=False, filename=None, postfix='_fit', rmsdfile=None,
             targetdir=os.path.curdir, mass_weighted=False, tol_mass=0.1,
             flat=False):
-        """Generate a path from a trajectory and reference structure, aligning
+        r"""Generate a path from a trajectory and reference structure, aligning
         to a reference structure if specified.
 
         .. |3D| replace:: :math:`N_p\times N\times 3`
@@ -683,7 +683,7 @@ class PSA(object):
 
 
     def generate_paths(self, **kwargs):
-        """Generate paths, aligning each to reference structure if necessary.
+        r"""Generate paths, aligning each to reference structure if necessary.
 
         .. |3D| replace:: :math:`N_p\times N\times 3`
         .. |2D| replace:: :math:`N_p\times 3N`
