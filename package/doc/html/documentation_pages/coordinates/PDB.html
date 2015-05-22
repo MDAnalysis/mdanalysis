@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.9. PDB structure files in MDAnalysis — MDAnalysis.coordinates.PDB &mdash; MDAnalysis 0.9.3-dev documentation</title>
+    <title>5.10. PDB structure files in MDAnalysis — MDAnalysis.coordinates.PDB &mdash; MDAnalysis 0.10.0-dev documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.9.3-dev',
+        VERSION:     '0.10.0-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,13 +25,13 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.9.3-dev documentation"
+          title="Search within MDAnalysis 0.10.0-dev documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.9.3-dev documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.10.0-dev documentation" href="../../index.html" />
     <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
-    <link rel="next" title="5.10. PDBQT structure files in MDAnalysis — MDAnalysis.coordinates.PDBQT" href="PDBQT.html" />
-    <link rel="prev" title="5.8. MOL2 file format — MDAnalysis.coordinates.MOL2" href="MOL2.html" /> 
+    <link rel="next" title="5.11. PDBQT structure files in MDAnalysis — MDAnalysis.coordinates.PDBQT" href="PDBQT.html" />
+    <link rel="prev" title="5.9. MOL2 file format — MDAnalysis.coordinates.MOL2" href="MOL2.html" /> 
   </head>
   <body role="document">
     <div class="related" role="navigation" aria-label="related navigation">
@@ -44,12 +44,12 @@
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="PDBQT.html" title="5.10. PDBQT structure files in MDAnalysis — MDAnalysis.coordinates.PDBQT"
+          <a href="PDBQT.html" title="5.11. PDBQT structure files in MDAnalysis — MDAnalysis.coordinates.PDBQT"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="MOL2.html" title="5.8. MOL2 file format — MDAnalysis.coordinates.MOL2"
+          <a href="MOL2.html" title="5.9. MOL2 file format — MDAnalysis.coordinates.MOL2"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.9.3-dev documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.10.0-dev documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -60,28 +60,28 @@
             </a></p>
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">5.9. PDB structure files in MDAnalysis &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.PDB</span></code></a><ul>
-<li><a class="reference internal" href="#implementations">5.9.1. Implementations</a></li>
-<li><a class="reference internal" href="#simple-permissive-pdb-reader-and-writer">5.9.2. Simple (permissive) PDB Reader and Writer</a><ul>
-<li><a class="reference internal" href="#examples">5.9.2.1. Examples</a></li>
-<li><a class="reference internal" href="#classes">5.9.2.2. Classes</a></li>
+<li><a class="reference internal" href="#">5.10. PDB structure files in MDAnalysis &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.PDB</span></code></a><ul>
+<li><a class="reference internal" href="#implementations">5.10.1. Implementations</a></li>
+<li><a class="reference internal" href="#simple-permissive-pdb-reader-and-writer">5.10.2. Simple (permissive) PDB Reader and Writer</a><ul>
+<li><a class="reference internal" href="#examples">5.10.2.1. Examples</a></li>
+<li><a class="reference internal" href="#classes">5.10.2.2. Classes</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#biopython-strict-pdb-reader-and-writer">5.9.3. Biopython (strict) PDB Reader and Writer</a><ul>
-<li><a class="reference internal" href="#id18">5.9.3.1. Classes</a></li>
+<li><a class="reference internal" href="#biopython-strict-pdb-reader-and-writer">5.10.3. Biopython (strict) PDB Reader and Writer</a><ul>
+<li><a class="reference internal" href="#id18">5.10.3.1. Classes</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#references">5.9.4. References</a></li>
+<li><a class="reference internal" href="#references">5.10.4. References</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="MOL2.html"
-                        title="previous chapter">5.8. MOL2 file format &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.MOL2</span></code></a></p>
+                        title="previous chapter">5.9. MOL2 file format &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.MOL2</span></code></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="PDBQT.html"
-                        title="next chapter">5.10. PDBQT structure files in MDAnalysis &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.PDBQT</span></code></a></p>
+                        title="next chapter">5.11. PDBQT structure files in MDAnalysis &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.PDBQT</span></code></a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -111,7 +111,7 @@
           <div class="body" role="main">
             
   <span class="target" id="module-MDAnalysis.coordinates.PDB"></span><div class="section" id="pdb-structure-files-in-mdanalysis-mdanalysis-coordinates-pdb">
-<h1>5.9. PDB structure files in MDAnalysis &#8212; <a class="reference internal" href="#module-MDAnalysis.coordinates.PDB" title="MDAnalysis.coordinates.PDB"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.PDB</span></code></a><a class="headerlink" href="#pdb-structure-files-in-mdanalysis-mdanalysis-coordinates-pdb" title="Permalink to this headline">¶</a></h1>
+<h1>5.10. PDB structure files in MDAnalysis &#8212; <a class="reference internal" href="#module-MDAnalysis.coordinates.PDB" title="MDAnalysis.coordinates.PDB"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.PDB</span></code></a><a class="headerlink" href="#pdb-structure-files-in-mdanalysis-mdanalysis-coordinates-pdb" title="Permalink to this headline">¶</a></h1>
 <p>MDAnalysis reads coordinates from PDB files and additional optional
 data such as B-factors. It is also possible to substitute a PDB file
 instead of PSF file in order to define the list of atoms (but no
@@ -143,7 +143,7 @@ trajectory, while writing each frame:</p>
 step is the final <a class="reference external" href="http://www.wwpdb.org/documentation/format32/sect11.html#END">END</a> record written, which is required by the <a class="reference external" href="http://www.wwpdb.org/documentation/format32/v3.2.html">PDB
 standard</a>.</p>
 <div class="section" id="implementations">
-<h2>5.9.1. Implementations<a class="headerlink" href="#implementations" title="Permalink to this headline">¶</a></h2>
+<h2>5.10.1. Implementations<a class="headerlink" href="#implementations" title="Permalink to this headline">¶</a></h2>
 <p>Two different implementations of PDB I/O are available: the &#8220;<a class="reference internal" href="#permissive"><span>permissive</span></a>&#8221;
 and the &#8220;<a class="reference internal" href="#strict"><span>strict</span></a>&#8221; Reader/Writers. The default are the &#8220;permissive&#8221; ones
 but this can be changed by setting the flag &#8220;permissive_pdb_reader&#8221; in
@@ -164,28 +164,9 @@ but this can be changed by setting the flag &#8220;permissive_pdb_reader&#8221; 
 </div>
 <p>would select <a class="reference internal" href="#MDAnalysis.coordinates.PDB.PDBReader" title="MDAnalysis.coordinates.PDB.PDBReader"><code class="xref py py-class docutils literal"><span class="pre">PDBReader</span></code></a> instead of the default
 <a class="reference internal" href="#MDAnalysis.coordinates.PDB.PrimitivePDBReader" title="MDAnalysis.coordinates.PDB.PrimitivePDBReader"><code class="xref py py-class docutils literal"><span class="pre">PrimitivePDBReader</span></code></a>.</p>
-<p>All classes make use of the <a class="reference internal" href="#MDAnalysis.coordinates.PDB.Timestep" title="MDAnalysis.coordinates.PDB.Timestep"><code class="xref py py-class docutils literal"><span class="pre">Timestep</span></code></a> class, which represents the
-current timestep.</p>
-<dl class="class">
-<dt id="MDAnalysis.coordinates.PDB.Timestep">
-<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.PDB.</code><code class="descname">Timestep</code><span class="sig-paren">(</span><em>arg</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#Timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.Timestep" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="attribute">
-<dt id="MDAnalysis.coordinates.PDB.Timestep.dimensions">
-<code class="descname">dimensions</code><a class="headerlink" href="#MDAnalysis.coordinates.PDB.Timestep.dimensions" title="Permalink to this definition">¶</a></dt>
-<dd><p>unitcell dimensions (<cite>A, B, C, alpha, beta, gamma</cite>)</p>
-<ul class="simple">
-<li><cite>A, B, C</cite> are the lengths of the primitive cell vectors <cite>e1, e2, e3</cite></li>
-<li><cite>alpha</cite> = angle(<cite>e1, e2</cite>)</li>
-<li><cite>beta</cite> = angle(<cite>e1, e3</cite>)</li>
-<li><cite>gamma</cite> = angle(<cite>e2, e3</cite>)</li>
-</ul>
-</dd></dl>
-
-</dd></dl>
-
 </div>
 <div class="section" id="simple-permissive-pdb-reader-and-writer">
-<span id="permissive"></span><h2>5.9.2. Simple (permissive) PDB Reader and Writer<a class="headerlink" href="#simple-permissive-pdb-reader-and-writer" title="Permalink to this headline">¶</a></h2>
+<span id="permissive"></span><h2>5.10.2. Simple (permissive) PDB Reader and Writer<a class="headerlink" href="#simple-permissive-pdb-reader-and-writer" title="Permalink to this headline">¶</a></h2>
 <p>A pure-Python implementation for PDB files commonly encountered in MD
 simulations comes under the names <a class="reference internal" href="#MDAnalysis.coordinates.PDB.PrimitivePDBReader" title="MDAnalysis.coordinates.PDB.PrimitivePDBReader"><code class="xref py py-class docutils literal"><span class="pre">PrimitivePDBReader</span></code></a> and
 <a class="reference internal" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter" title="MDAnalysis.coordinates.PDB.PrimitivePDBWriter"><code class="xref py py-class docutils literal"><span class="pre">PrimitivePDBWriter</span></code></a>. It only implements a subset of the <a class="reference external" href="http://www.wwpdb.org/documentation/format32/v3.2.html">PDB standard</a>
@@ -201,7 +182,7 @@ writes single frames. On the other hand, the <a class="reference internal" href=
 to write a PDB trajectory by default (equivalent to using <em>multiframe</em> =
 <code class="docutils literal"><span class="pre">True</span></code>).</p>
 <div class="section" id="examples">
-<h3>5.9.2.1. Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
+<h3>5.10.2.1. Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
 <p>In order to write a <strong>multi-frame PDB trajectory</strong> from a universe <em>u</em> one can
 do the following:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">pdb</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Writer</span><span class="p">(</span><span class="s">&quot;all.pdb&quot;</span><span class="p">,</span> <span class="n">multiframe</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
@@ -235,7 +216,7 @@ do the following:</p>
 </div>
 </div>
 <div class="section" id="classes">
-<h3>5.9.2.2. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h3>
+<h3>5.10.2.2. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.PDB.PrimitivePDBReader">
 <em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.PDB.</code><code class="descname">PrimitivePDBReader</code><span class="sig-paren">(</span><em>filename</em>, <em>convert_units=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PrimitivePDBReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBReader" title="Permalink to this definition">¶</a></dt>
@@ -416,21 +397,9 @@ of integers (typically starting at 1 or 0).</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.coordinates.PDB.PrimitivePDBReader.get_bfactors">
-<code class="descname">get_bfactors</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PrimitivePDBReader.get_bfactors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBReader.get_bfactors" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return an array of bfactors (tempFactor) in atom order.</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="MDAnalysis.coordinates.PDB.PrimitivePDBReader.get_occupancy">
 <code class="descname">get_occupancy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PrimitivePDBReader.get_occupancy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBReader.get_occupancy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an array of occupancies in atom order.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="MDAnalysis.coordinates.PDB.PrimitivePDBReader.next">
-<code class="descname">next</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PrimitivePDBReader.next"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBReader.next" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read the next time step.</p>
 </dd></dl>
 
 </dd></dl>
@@ -718,7 +687,7 @@ constructor). Thus, if <em>u</em> is a Universe then</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>ts</em></dt>
-<dd><p class="first last"><a class="reference internal" href="#MDAnalysis.coordinates.PDB.Timestep" title="MDAnalysis.coordinates.PDB.Timestep"><code class="xref py py-class docutils literal"><span class="pre">Timestep</span></code></a> object containing coordinates to be written to trajectory file;
+<dd><p class="first last"><code class="xref py py-class docutils literal"><span class="pre">base.Timestep</span></code> object containing coordinates to be written to trajectory file;
 if <code class="docutils literal"><span class="pre">None</span></code> then <code class="xref py py-attr docutils literal"><span class="pre">PrimitivePDBWriter.ts`</span></code> is tried.</p>
 </dd>
 <dt><em>multiframe</em></dt>
@@ -731,7 +700,7 @@ if <code class="docutils literal"><span class="pre">None</span></code> then <cod
 </table>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Before using this method with another <a class="reference internal" href="#MDAnalysis.coordinates.PDB.Timestep" title="MDAnalysis.coordinates.PDB.Timestep"><code class="xref py py-class docutils literal"><span class="pre">Timestep</span></code></a> in the <em>ts</em>
+<p class="last">Before using this method with another <code class="xref py py-class docutils literal"><span class="pre">base.Timestep</span></code> in the <em>ts</em>
 argument, <a class="reference internal" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter._update_frame" title="MDAnalysis.coordinates.PDB.PrimitivePDBWriter._update_frame"><code class="xref py py-meth docutils literal"><span class="pre">PrimitivePDBWriter._update_frame()</span></code></a> <em>must</em> be called
 with the <code class="xref py py-class docutils literal"><span class="pre">Universe</span></code> as
 its argument so that topology information can be gathered.</p>
@@ -810,7 +779,7 @@ records. If <code class="docutils literal"><span class="pre">None</span></code>,
 </div>
 </div>
 <div class="section" id="biopython-strict-pdb-reader-and-writer">
-<span id="strict"></span><h2>5.9.3. Biopython (strict) PDB Reader and Writer<a class="headerlink" href="#biopython-strict-pdb-reader-and-writer" title="Permalink to this headline">¶</a></h2>
+<span id="strict"></span><h2>5.10.3. Biopython (strict) PDB Reader and Writer<a class="headerlink" href="#biopython-strict-pdb-reader-and-writer" title="Permalink to this headline">¶</a></h2>
 <p>The <code class="xref py py-mod docutils literal"><span class="pre">PDB</span></code> module can make use of Biopython&#8217;s <code class="xref py py-mod docutils literal"><span class="pre">Bio.PDB</span></code>
 <a class="reference internal" href="#hamelryck2003" id="id17">[Hamelryck2003]</a> but replaces the standard PDB file parser with one that uses
 the <a class="reference internal" href="pdbextensions.html#MDAnalysis.coordinates.pdb.extensions.SloppyStructureBuilder" title="MDAnalysis.coordinates.pdb.extensions.SloppyStructureBuilder"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.coordinates.pdb.extensions.SloppyStructureBuilder</span></code></a> to
@@ -829,10 +798,10 @@ missing element names with a
 are generally harmless and therefore are filtered (and ignored) by MDAnalysis
 with the help of <a class="reference external" href="http://docs.python.org/library/warnings.html#warnings.filterwarnings" title="(in Python v2.7)"><code class="xref py py-func docutils literal"><span class="pre">warnings.filterwarnings()</span></code></a>.</p>
 <div class="section" id="id18">
-<h3>5.9.3.1. Classes<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h3>
+<h3>5.10.3.1. Classes<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.PDB.PDBReader">
-<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.PDB.</code><code class="descname">PDBReader</code><span class="sig-paren">(</span><em>pdbfilename</em>, <em>convert_units=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PDBReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PDBReader" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.PDB.</code><code class="descname">PDBReader</code><span class="sig-paren">(</span><em>filename</em>, <em>convert_units=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PDBReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PDBReader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read a pdb file into a BioPython pdb structure.</p>
 <p>The coordinates are also supplied as one numpy array and wrapped
 into a Timestep object; attributes are set so that the PDBReader
@@ -865,7 +834,7 @@ record and hence the unitcell dimensions are not set.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">This <a class="reference internal" href="#MDAnalysis.coordinates.PDB.PDBWriter" title="MDAnalysis.coordinates.PDB.PDBWriter"><code class="xref py py-class docutils literal"><span class="pre">PDBWriter</span></code></a> &#8216;s <a class="reference internal" href="#MDAnalysis.coordinates.PDB.PDBWriter.write" title="MDAnalysis.coordinates.PDB.PDBWriter.write"><code class="xref py py-meth docutils literal"><span class="pre">write()</span></code></a> method
-always requires a <a class="reference internal" href="#MDAnalysis.coordinates.PDB.Timestep" title="MDAnalysis.coordinates.PDB.Timestep"><code class="xref py py-class docutils literal"><span class="pre">Timestep</span></code></a> as an argument (it is
+always requires a <code class="xref py py-class docutils literal"><span class="pre">base.Timestep</span></code> as an argument (it is
 not optional anymore when the Writer is obtained through
 this method of <a class="reference internal" href="#MDAnalysis.coordinates.PDB.PDBReader" title="MDAnalysis.coordinates.PDB.PDBReader"><code class="xref py py-class docutils literal"><span class="pre">PDBReader</span></code></a> .)</p>
 </div>
@@ -929,7 +898,7 @@ which happens automatically when the
 </div>
 </div>
 <div class="section" id="references">
-<h2>5.9.4. References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
+<h2>5.10.4. References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
 <table class="docutils citation" frame="void" id="hamelryck2003" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
@@ -956,12 +925,12 @@ implemented in Python. Bioinformatics, 19, 2308-2310. <a class="reference extern
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="PDBQT.html" title="5.10. PDBQT structure files in MDAnalysis — MDAnalysis.coordinates.PDBQT"
+          <a href="PDBQT.html" title="5.11. PDBQT structure files in MDAnalysis — MDAnalysis.coordinates.PDBQT"
              >next</a> |</li>
         <li class="right" >
-          <a href="MOL2.html" title="5.8. MOL2 file format — MDAnalysis.coordinates.MOL2"
+          <a href="MOL2.html" title="5.9. MOL2 file format — MDAnalysis.coordinates.MOL2"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.9.3-dev documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.10.0-dev documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -971,8 +940,8 @@ implemented in Python. Bioinformatics, 19, 2308-2310. <a class="reference extern
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
-    Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
-    Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
+    Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
+    Paul Rigor, Andy Somogyi, Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>
