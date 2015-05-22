@@ -18,6 +18,7 @@ import MDAnalysis
 import MDAnalysis as mda
 import MDAnalysis.coordinates
 import MDAnalysis.coordinates.core
+from MDAnalysis.coordinates.base import Timestep
 
 import numpy as np
 import cPickle
@@ -30,7 +31,8 @@ from .datafiles import PSF, DCD, DCD_empty, PDB_small, XPDB_small, PDB_closed, P
     XYZ, XYZ_bz2, XYZ_psf, PRM, TRJ, TRJ_bz2, PRMpbc, TRJpbc_bz2, PRMncdf, NCDF, PQR, \
     PDB_sub_dry, TRR_sub_sol, PDB_sub_sol, TRZ, TRZ_psf, LAMMPSdata, LAMMPSdata_mini, \
     PSF_TRICLINIC, DCD_TRICLINIC, PSF_NAMD_TRICLINIC, DCD_NAMD_TRICLINIC, \
-    GMS_ASYMOPT, GMS_SYMOPT, GMS_ASYMSURF
+    GMS_ASYMOPT, GMS_SYMOPT, GMS_ASYMSURF, XYZ_mini, PFncdf_Top, PFncdf_Trj, \
+    INPCRD, XYZ_five
 
 
 
@@ -147,7 +149,7 @@ class TestXYZReader(TestCase, Ref2r9r):
 
     def test_slice_raises_TypeError(self):
         def trj_iter():
-            return self.universe.trajectory[::2]
+            return list(self.universe.trajectory[::2])
 
         assert_raises(TypeError, trj_iter)
 
@@ -191,7 +193,7 @@ class TestCompressedXYZReader(TestCase, Ref2r9r):
 
     def test_slice_raises_TypeError(self):
         def trj_iter():
-            return self.universe.trajectory[::2]
+            return list(self.universe.trajectory[::2])
 
         assert_raises(TypeError, trj_iter)
 
@@ -368,7 +370,7 @@ class TestTRJReader(_TRJReaderTest, RefACHE):
 
     def test_slice_raises_TypeError(self):
         def trj_iter():
-            return self.universe.trajectory[::2]
+            return list(self.universe.trajectory[::2])
 
         assert_raises(TypeError, trj_iter)
 
@@ -378,12 +380,6 @@ class TestBzippedTRJReader(TestTRJReader):
         self.universe = mda.Universe(PRM, TRJ_bz2)
         self.prec = 3
 
-    def test_slice_raises_TypeError(self):
-        def trj_iter():
-            return self.universe.trajectory[::2]
-
-        assert_raises(TypeError, trj_iter)
-
 
 class TestBzippedTRJReaderPBC(_TRJReaderTest, RefCappedAla):
     def setUp(self):
@@ -392,7 +388,7 @@ class TestBzippedTRJReaderPBC(_TRJReaderTest, RefCappedAla):
 
     def test_slice_raises_TypeError(self):
         def trj_iter():
-            return self.universe.trajectory[::2]
+            return list(self.universe.trajectory[::2])
 
         assert_raises(TypeError, trj_iter)
 
@@ -412,6 +408,61 @@ class TestNCDFReader(_TRJReaderTest, RefVGV):
         data = self.universe.trajectory.trjfile
         assert_equal(data.Conventions, 'AMBER')
         assert_equal(data.ConventionVersion, '1.0')
+
+class TestNCDFReader2(TestCase):
+    """NCDF Trajectory with positions and forces.
+
+    Contributed by Albert Solernou
+    """
+    def setUp(self):
+        self.u = mda.Universe(PFncdf_Top, PFncdf_Trj)
+        self.prec = 3
+
+    def tearDown(self):
+        self.u.trajectory.close()
+        del self.u
+
+    def test_positions_1(self):
+        """Check positions on first frame"""
+        self.u.trajectory[0]
+        ref_1 = np.array([[ -0.11980818,  18.70524979,  11.6477766 ],
+                          [ -0.44717646,  18.61727142,  12.59919548],
+                          [ -0.60952115,  19.47885513,  11.22137547]], dtype=np.float32)
+        assert_array_almost_equal(ref_1, self.u.atoms.positions[:3], self.prec)
+
+    def test_positions_2(self):
+        """Check positions on second frame"""
+        self.u.trajectory[1]
+        ref_2= np.array([[ -0.13042036,  18.6671524 ,  11.69647026],
+                         [ -0.46643803,  18.60186768,  12.646698  ],
+                         [ -0.46567637,  19.49173927,  11.21922874]], dtype=np.float32)
+        assert_array_almost_equal(ref_2, self.u.atoms.positions[:3], self.prec)
+
+    def test_forces_1(self):
+        """Check forces on first frame"""
+        self.u.trajectory[0]
+        ref_1 = np.array([[ 49.23017883, -97.05565643, -86.09863281],
+                          [  2.97547197,  29.84169388,  11.12069607],
+                          [-15.93093777,  14.43616867,  30.25889015]], dtype=np.float32)
+        assert_array_almost_equal(ref_1, self.u.atoms.forces[:3], self.prec)
+
+    def test_forces_2(self):
+        """Check forces on second frame"""
+        self.u.trajectory[1]
+        ref_2 = np.array([[ 116.39096832, -145.44448853, -151.3155365 ],
+                          [ -18.90058327,   27.20145798,    1.95245135],
+                          [ -31.08556366,   14.95863628,   41.10367966]], dtype=np.float32)
+        assert_array_almost_equal(ref_2, self.u.atoms.forces[:3], self.prec)
+
+    def test_time_1(self):
+        """Check time on first frame"""
+        ref = 35.02
+        assert_almost_equal(ref, self.u.trajectory[0].time, self.prec)
+
+    def test_time_2(self):
+        """Check time on second frame"""
+        ref = 35.04
+        assert_almost_equal(ref, self.u.trajectory[1].time, self.prec)
 
 
 class TestNCDFWriter(TestCase, RefVGV):
@@ -466,7 +517,7 @@ class TestNCDFWriter(TestCase, RefVGV):
     @attr('slow')
     def test_TRR2NCDF(self):
         trr = MDAnalysis.Universe(GRO, TRR)
-        W = self.Writer(self.outfile, trr.trajectory.numatoms)
+        W = self.Writer(self.outfile, trr.trajectory.numatoms, velocities=True)
         for ts in trr.trajectory:
             W.write_next_timestep(ts)
         W.close()
@@ -510,6 +561,107 @@ class TestNCDFWriter(TestCase, RefVGV):
                                 err_msg="Time for step {0} are not the same.".format(orig_ts.frame))
             assert_array_almost_equal(written_ts.dimensions, orig_ts.dimensions, self.prec,
                                       err_msg="unitcells are not identical")
+
+
+class TestINPCRDReader(TestCase):
+    """Test reading Amber restart coordinate files"""
+    def _check_ts(self, ts):
+        # Check a ts has the right values in
+        ref_pos = np.array([[6.6528795, 6.6711416, -8.5963255],
+                        [7.3133773, 5.8359736, -8.8294175],
+                        [8.3254058, 6.2227613, -8.7098593],
+                        [7.0833200, 5.5038197, -9.8417650],
+                        [7.1129439, 4.6170351, -7.9729560]])
+        for ref, val in itertools.izip(ref_pos, ts._pos):
+            assert_allclose(ref, val)
+    
+    def test_reader(self):
+        from MDAnalysis.coordinates.INPCRD import INPReader
+
+        r = INPReader(INPCRD)
+
+        assert_equal(r.numatoms, 5)
+        self._check_ts(r.ts)
+
+    def test_universe_inpcrd(self):
+        u = MDAnalysis.Universe(XYZ_five, INPCRD)
+
+        self._check_ts(u.trajectory.ts)
+
+    def test_universe_restrt(self):
+        u = MDAnalysis.Universe(XYZ_five, INPCRD, format='RESTRT')
+
+        self._check_ts(u.trajectory.ts)
+
+
+class TestNCDFWriterVelsForces(TestCase):
+    """Test writing NCDF trajectories with a mixture of options"""
+    def setUp(self):
+        fd, self.outfile = tempfile.mkstemp(suffix='.ncdf')
+        os.close(fd)
+        self.prec = 3
+        self.top = XYZ_mini
+        self.numatoms = 3
+
+        self.ts1 = MDAnalysis.coordinates.TRJ.Timestep(self.numatoms, velocities=True, forces=True)
+        self.ts1._pos[:] = np.arange(self.numatoms * 3).reshape(self.numatoms, 3)
+        self.ts1._velocities[:] = np.arange(self.numatoms * 3).reshape(self.numatoms, 3) + 100
+        self.ts1._forces[:] = np.arange(self.numatoms * 3).reshape(self.numatoms, 3) + 200
+
+        self.ts2 = MDAnalysis.coordinates.TRJ.Timestep(self.numatoms, velocities=True, forces=True)
+        self.ts2._pos[:] = np.arange(self.numatoms * 3).reshape(self.numatoms, 3) + 300
+        self.ts2._velocities[:] = np.arange(self.numatoms * 3).reshape(self.numatoms, 3) + 400
+        self.ts2._forces[:] = np.arange(self.numatoms * 3).reshape(self.numatoms, 3) + 500
+
+    def tearDown(self):
+        try:
+            os.unlink(self.outfile)
+        except:
+            pass
+
+        del self.numatoms
+        del self.ts1
+        del self.ts2
+
+    def _write_ts(self, pos, vel, force):
+        """Write the two reference timesteps, then open them up and check values
+
+        pos vel and force are bools which define whether these properties should
+        be in TS
+        """
+        with MDAnalysis.Writer(self.outfile, numatoms=self.numatoms,
+                               velocities=vel, forces=force) as w:
+            w.write(self.ts1)
+            w.write(self.ts2)
+
+        u = MDAnalysis.Universe(self.top, self.outfile)
+        for ts, ref_ts in itertools.izip(u.trajectory, [self.ts1, self.ts2]):
+            if pos:
+                assert_almost_equal(ts._pos, ref_ts._pos, self.prec)
+            else:
+                assert_raises(AttributeError, getattr, ts, '_pos')
+            if vel:
+                assert_almost_equal(ts._velocities, ref_ts._velocities, self.prec)
+            else:
+                assert_raises(AttributeError, getattr, ts, '_velocities')
+            if force:
+                assert_almost_equal(ts._forces, ref_ts._forces, self.prec)
+            else:
+                assert_raises(AttributeError, getattr, ts, 'forces')
+
+        u.trajectory.close()
+
+    def test_pos(self):
+        self._write_ts(True, False, False)
+
+    def test_pos_vel(self):
+        self._write_ts(True, True, False)
+
+    def test_pos_force(self):
+        self._write_ts(True, False, True)
+
+    def test_pos_vel_force(self):
+        self._write_ts(True, True, True)
 
 
 class _SingleFrameReader(TestCase, RefAdKSmall):
@@ -625,6 +777,16 @@ class TestPrimitivePDBReader(_SingleFrameReader):
     def setUp(self):
         self.universe = mda.Universe(PDB_small, permissive=True)
         self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
+
+    def test_missing_natoms(self):
+        from MDAnalysis.coordinates.PDB import PrimitivePDBReader
+
+        assert_raises(ValueError, PrimitivePDBReader, 'something.pdb')
+
+    def test_wrong_natoms(self):
+        from MDAnalysis.coordinates.PDB import PrimitivePDBReader
+
+        assert_raises(ValueError, PrimitivePDBReader, PDB_small, numatoms=4000)
 
 
 class TestExtendedPDBReader(_SingleFrameReader):
@@ -775,9 +937,9 @@ class TestGMSReader(TestCase):
 
 class TestMultiPDBReader(TestCase):
     def setUp(self):
-        self.multiverse = mda.Universe(PDB_multiframe, permissive=True, bonds=True)
+        self.multiverse = mda.Universe(PDB_multiframe, permissive=True, guess_bonds=True)
         self.multiverse.build_topology()
-        self.conect = mda.Universe(CONECT, bonds=True)
+        self.conect = mda.Universe(CONECT, guess_bonds=True)
         self.conect.build_topology()
 
     def tearDown(self):
@@ -826,8 +988,8 @@ class TestMultiPDBReader(TestCase):
         u = self.multiverse
         frames = []
         for ts in u.trajectory[4:-2:4]:
-            frames.append(ts)
-        assert_equal(np.array([ts.frame - 1 for ts in frames]),
+            frames.append(ts.frame - 1)
+        assert_equal(np.array(frames),
                      np.arange(u.trajectory.numframes)[4:-2:4],
                      err_msg="slicing did not produce the expected frames")
 
@@ -841,7 +1003,7 @@ class TestMultiPDBReader(TestCase):
             fd, outfile = tempfile.mkstemp(suffix=".pdb")
             os.close(fd)
             self.conect.atoms.write(outfile, bonds="conect")
-            u1 = mda.Universe(outfile, bonds=True)
+            u1 = mda.Universe(outfile, guess_bonds=True)
         finally:
             os.unlink(outfile)
         assert_equal(len(u1.atoms), 1890)
@@ -857,7 +1019,7 @@ class TestMultiPDBReader(TestCase):
             fd, outfile = tempfile.mkstemp(suffix=".pdb")
             os.close(fd)
             self.conect.atoms.write(outfile, bonds="all")
-            u2 = mda.Universe(outfile, bonds=True)
+            u2 = mda.Universe(outfile, guess_bonds=True)
         finally:
             os.unlink(outfile)
         assert_equal(len(u2.atoms), 1890)
@@ -927,14 +1089,14 @@ class TestMultiPDBReader(TestCase):
         assert_equal(conect, desired,
                      err_msg="The bond list does not match the test reference; len(actual) is %d, len(desired) is %d "
                              "" % (
-                     len(u._psf['_bonds']), len(desired)))
+                     len(u._topology['bonds']), len(desired)))
 
 
 class TestMultiPDBWriter(TestCase):
     def setUp(self):
-        self.universe = mda.Universe(PSF, PDB_small, permissive=True, bonds=True)
-        self.multiverse = mda.Universe(PDB_multiframe, permissive=True, bonds=True)
-        self.universe2 = mda.Universe(PSF, DCD, permissive=True, bonds=True)
+        self.universe = mda.Universe(PSF, PDB_small, permissive=True)
+        self.multiverse = mda.Universe(PDB_multiframe, permissive=True)
+        self.universe2 = mda.Universe(PSF, DCD, permissive=True)
         self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
         ext = ".pdb"
         fd, self.outfile = tempfile.mkstemp(suffix=ext)
@@ -1644,7 +1806,7 @@ class _TestDCDReader_TriclinicUnitcell(TestCase):
         """test reading of triclinic unitcell (Issue 187) for NAMD or new CHARMM format (at least since c36b2)"""
         for ts, box in itertools.izip(self.u.trajectory, self.ref_dimensions[:, 1:]):
             assert_array_almost_equal(ts.dimensions, box, 4,
-                                     err_msg="box dimensions A,B,C,alpha,beta,gamma not identical at frame {}".format(ts.frame))
+                                      err_msg="box dimensions A,B,C,alpha,beta,gamma not identical at frame {0}".format(ts.frame))
     @attr('issue')
     def test_write_triclinic(self):
         """test writing of triclinic unitcell (Issue 187) for NAMD or new CHARMM format (at least since c36b2)"""
@@ -1654,7 +1816,7 @@ class _TestDCDReader_TriclinicUnitcell(TestCase):
         w = MDAnalysis.Universe(self.topology, self.dcd)
         for ts_orig, ts_copy in itertools.izip(self.u.trajectory, w.trajectory):
             assert_almost_equal(ts_orig.dimensions, ts_copy.dimensions, 4,
-                                err_msg="DCD->DCD: unit cell dimensions wrong at frame {}".format(ts_orig.frame))
+                                err_msg="DCD->DCD: unit cell dimensions wrong at frame {0}".format(ts_orig.frame))
         del w
 
 class TestDCDReader_CHARMM_Unitcell(_TestDCDReader_TriclinicUnitcell, RefCHARMMtriclinicDCD):
@@ -2201,36 +2363,36 @@ class _GromacsReader_offsets(TestCase):
 
     @dec.slow
     def test_offsets(self):
-        if self.trajectory._TrjReader__offsets is None:
+        if self.trajectory._offsets is None:
             self.trajectory.numframes
-        assert_array_almost_equal(self.trajectory._TrjReader__offsets, self.ref_offsets,
+        assert_array_almost_equal(self.trajectory._offsets, self.ref_offsets,
                                   err_msg="wrong frame offsets")
 
         # Saving
         self.trajectory.save_offsets(self.outfile_offsets)
         with open(self.outfile_offsets, 'rb') as f:
             saved_offsets = cPickle.load(f)
-        assert_array_almost_equal(self.trajectory._TrjReader__offsets, saved_offsets['offsets'],
+        assert_array_almost_equal(self.trajectory._offsets, saved_offsets['offsets'],
                                   err_msg="error saving frame offsets")
         assert_array_almost_equal(self.ref_offsets, saved_offsets['offsets'],
                                   err_msg="saved frame offsets don't match the known ones")
 
         # Loading
         self.trajectory.load_offsets(self.outfile_offsets)
-        assert_array_almost_equal(self.trajectory._TrjReader__offsets, self.ref_offsets,
+        assert_array_almost_equal(self.trajectory._offsets, self.ref_offsets,
                                   err_msg="error loading frame offsets")
 
     @dec.slow
     def test_persistent_offsets_new(self):
         # check that offsets will be newly generated and not loaded from stored
         # offsets
-        assert_equal(self.trajectory._TrjReader__offsets, None)
+        assert_equal(self.trajectory._offsets, None)
 
     @dec.slow
     def test_persistent_offsets_stored(self):
         # build offsets
         self.trajectory.numframes
-        assert_equal((self.trajectory._TrjReader__offsets is None), False)
+        assert_equal((self.trajectory._offsets is None), False)
     
         # check that stored offsets present
         assert_equal(os.path.exists(self.trajectory._offset_filename()), True)
@@ -2264,7 +2426,7 @@ class _GromacsReader_offsets(TestCase):
 
         # check that stored offsets are loaded for new universe
         u = mda.Universe(self.top, self.traj)
-        assert_equal((u.trajectory._TrjReader__offsets is not None), True)
+        assert_equal((u.trajectory._offsets is not None), True)
 
     @dec.slow
     def test_persistent_offsets_ctime_mismatch(self):
@@ -2282,7 +2444,7 @@ class _GromacsReader_offsets(TestCase):
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")  # Drop the warnings silently
             u = mda.Universe(self.top, self.traj)
-            assert_equal((u.trajectory._TrjReader__offsets is None), True)
+            assert_equal((u.trajectory._offsets is None), True)
         
     @dec.slow
     def test_persistent_offsets_size_mismatch(self):
@@ -2298,7 +2460,7 @@ class _GromacsReader_offsets(TestCase):
             cPickle.dump(saved_offsets, f)
 
         u = mda.Universe(self.top, self.traj)
-        assert_equal((u.trajectory._TrjReader__offsets is None), True)
+        assert_equal((u.trajectory._offsets is None), True)
         
     @dec.slow
     def test_persistent_offsets_last_frame_wrong(self):
@@ -2316,7 +2478,7 @@ class _GromacsReader_offsets(TestCase):
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")  # Drop the warnings silently
             u = mda.Universe(self.top, self.traj)
-            assert_equal((u.trajectory._TrjReader__offsets is None), True)
+            assert_equal((u.trajectory._offsets is None), True)
 
     @dec.slow
     def test_persistent_offsets_readonly(self):
@@ -2342,7 +2504,7 @@ class _GromacsReader_offsets(TestCase):
         # check that the *refresh_offsets* keyword ensures stored offsets
         # aren't retrieved
         u = mda.Universe(self.top, self.traj, refresh_offsets=True)
-        assert_equal((u.trajectory._TrjReader__offsets is None), True)
+        assert_equal((u.trajectory._offsets is None), True)
 
     @dec.slow
     def test_persistent_offsets_refreshFalse(self):
@@ -2351,7 +2513,7 @@ class _GromacsReader_offsets(TestCase):
 
         # check that the *refresh_offsets* keyword as False grabs offsets
         u = mda.Universe(self.top, self.traj, refresh_offsets=False)
-        assert_equal((u.trajectory._TrjReader__offsets is None), False)
+        assert_equal((u.trajectory._offsets is None), False)
 
 
 class TestXTCReader_offsets(_GromacsReader_offsets):
@@ -2969,7 +3131,7 @@ class _TestLammpsData_Coords(TestCase):
 
     def test_seek_2(self):
         ts = self.u.trajectory[0]
-        assert_equal(type(ts), MDAnalysis.coordinates.LAMMPS.DATATimestep)
+        assert_equal(type(ts), MDAnalysis.coordinates.base.Timestep)
 
     def test_iter(self):
         # Check that iterating works, but only gives a single frame
@@ -3040,35 +3202,6 @@ class _GROTimestep(_BaseTimestep):
             0., 0., 0.,
             0., 0., 0.
         ])
-
-
-class _LAMMPSTimestep(_DCDTimestep):  # LAMMPS Timestep is a subclass of DCD Timestep
-    Timestep = MDAnalysis.coordinates.LAMMPS.Timestep
-    name = "LAMMPS"
-
-
-class _LAMMPSDataTimestep(_BaseTimestep):
-    Timestep = MDAnalysis.coordinates.LAMMPS.DATATimestep
-    name = "LAMMPSData"
-    has_box = True
-    set_box = True
-    unitcell = np.array([10., 11., 12., 90., 90., 90.])
-
-
-class _PDBTimestep(_BaseTimestep):
-    Timestep = MDAnalysis.coordinates.PDB.Timestep
-    name = "PDB"
-    has_box = True
-    set_box = True
-    unitcell = np.array([10., 11., 12., 90., 90., 90.])
-
-
-class _PDBQTTimestep(_BaseTimestep):
-    Timestep = MDAnalysis.coordinates.PDBQT.Timestep
-    name = "PDBQT"
-    has_box = True
-    set_box = True
-    unitcell = np.array([10., 11., 12., 90., 90., 90.])
 
 
 class _TRJTimestep(_BaseTimestep):
@@ -3285,22 +3418,6 @@ class TestGROTimestep(_TestTimestep, _GROTimestep):
         assert_array_almost_equal(self.ts._unitcell, ref, decimal=2)
 
         self.ts._unitcell = old
-
-
-class TestLAMMPSTimestep(_TestTimestep, _LAMMPSTimestep):
-    pass
-
-
-class TestLAMMPSDataTimestep(_TestTimestep, _LAMMPSDataTimestep):
-    pass
-
-
-class TestPDBTimestep(_TestTimestep, _PDBTimestep):
-    pass
-
-
-class TestPDBQTTimestep(_TestTimestep, _PDBQTTimestep):
-    pass
 
 
 class TestTRJTimestep(_TestTimestep, _TRJTimestep):

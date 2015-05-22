@@ -42,10 +42,10 @@ Classes
    :inherited-members:
 
 """
+from __future__ import absolute_import
 
-import MDAnalysis.coordinates.PDBQT
-from MDAnalysis.core.AtomGroup import Atom
-from MDAnalysis.topology.core import guess_atom_type, guess_atom_mass, guess_atom_charge
+from ..core.AtomGroup import Atom
+from .core import guess_atom_type, guess_atom_mass, guess_atom_charge
 from .base import TopologyReader
 
 
@@ -62,14 +62,16 @@ class PDBQTParser(TopologyReader):
                      is read with
                      :class:`MDAnalysis.coordinates.PDBQT.PDBQTReader`.
         """
-        structure = {}
-        pdb = MDAnalysis.coordinates.PDBQT.PDBQTReader(self.filename)
+        atoms = self._parseatoms()
 
-        structure['_atoms'] = self._parseatoms_(pdb)
+        structure = {'atoms': atoms}
 
         return structure
 
-    def _parseatoms_(self, pdb):
+    def _parseatoms(self):
+        from ..coordinates.PDBQT import PDBQTReader
+        pdb = PDBQTReader(self.filename)
+
         atoms = []
         # translate list of atoms to MDAnalysis Atom.
         for iatom, atom in enumerate(pdb._atoms):
@@ -84,5 +86,5 @@ class PDBQTParser(TopologyReader):
             bfactor = atom.tempFactor
             # occupancy = atom.occupancy
             atoms.append(Atom(iatom, atomname, atomtype, resname, resid, segid,
-                              mass, charge, bfactor=bfactor))
+                              mass, charge, bfactor=bfactor, universe=self._u))
         return atoms

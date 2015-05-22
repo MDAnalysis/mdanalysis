@@ -34,12 +34,13 @@ Classes
    :inherited-members:
 
 """
+from __future__ import absolute_import
 
 import logging
 from math import ceil
 
-from MDAnalysis.core.AtomGroup import Atom
-from MDAnalysis.core.util import openany
+from ..core.AtomGroup import Atom
+from ..core.util import openany
 from .base import TopologyReader
 
 logger = logging.getLogger("MDAnalysis.topology.PSF")
@@ -60,7 +61,7 @@ class PSFParser(TopologyReader):
         with openany(self.filename, 'r') as psffile:
             header = psffile.next()
             if header[:3] != "PSF":
-                err = ("{} is not valid PSF file (header = {})"
+                err = ("{0} is not valid PSF file (header = {1})"
                        "".format(self.filename, header))
                 logger.error(err)
                 raise ValueError(err)
@@ -76,25 +77,25 @@ class PSFParser(TopologyReader):
             psffile.next()
             title = psffile.next().split()
             if not (title[1] == "!NTITLE"):
-                err = "{} is not a valid PSF file".format(psffile.name)
+                err = "{0} is not a valid PSF file".format(psffile.name)
                 logger.error(err)
                 raise ValueError(err)
             # psfremarks = [psffile.next() for i in range(int(title[0]))]
             for _ in range(int(title[0])):
                 psffile.next()
-            logger.debug("PSF file {}: format {}"
+            logger.debug("PSF file {0}: format {1}"
                          "".format(psffile.name, self._format))
 
             structure = {}
 
             sections = (
-                ("_atoms", ("NATOM", 1, 1, self._parseatoms)),
-                ("_bonds", ("NBOND", 2, 4, self._parsesection)),
-                ("_angles", ("NTHETA", 3, 3, self._parsesection)),
-                ("_dihe", ("NPHI", 4, 2, self._parsesection)),
-                ("_impr", ("NIMPHI", 4, 2, self._parsesection)),
-                ("_donors", ("NDON", 2, 4, self._parsesection)),
-                ("_acceptors", ("NACC", 2, 4, self._parsesection))
+                ("atoms", ("NATOM", 1, 1, self._parseatoms)),
+                ("bonds", ("NBOND", 2, 4, self._parsesection)),
+                ("angles", ("NTHETA", 3, 3, self._parsesection)),
+                ("torsions", ("NPHI", 4, 2, self._parsesection)),
+                ("impropers", ("NIMPHI", 4, 2, self._parsesection)),
+                ("donors", ("NDON", 2, 4, self._parsesection)),
+                ("acceptors", ("NACC", 2, 4, self._parsesection))
             )
 
             try:
@@ -103,7 +104,7 @@ class PSFParser(TopologyReader):
                     structure[attr] = self._parse_sec(psffile, info)
             except StopIteration:
                 # Reached the end of the file before we expected
-                if "_atoms" not in structure:
+                if "atoms" not in structure:
                     err = ("The PSF file didn't contain the required"
                            " section of NATOM")
                     logger.error(err)
@@ -123,7 +124,7 @@ class PSFParser(TopologyReader):
         sect_type = header[1].strip('!:')
         # Make sure the section type matches the desc
         if not sect_type == desc:
-            err = "Expected section {} but found {}".format(desc, sect_type)
+            err = "Expected section {0} but found {1}".format(desc, sect_type)
             logger.error(err)
             raise ValueError(err)
         # Now figure out how many lines to read
@@ -223,10 +224,10 @@ class PSFParser(TopologyReader):
                 iatom, segid, resid, resname, atomname, atomtype, charge, mass = set_type(atom_parser(line))
                 logger.warn("Guessing that this is actually a NAMD-type PSF file..."
                             " continuing with fingers crossed!")
-                logger.debug("First NAMD-type line: {}: {}".format(i, line.rstrip()))
+                logger.debug("First NAMD-type line: {0}: {1}".format(i, line.rstrip()))
 
             atoms[i] = Atom(iatom, atomname, atomtype, resname, resid,
-                            segid, mass, charge)
+                            segid, mass, charge, universe=self._u)
         return atoms
 
     def _parsesection(self, lines, atoms_per, numlines):

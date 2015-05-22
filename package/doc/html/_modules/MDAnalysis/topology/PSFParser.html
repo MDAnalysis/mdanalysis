@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.topology.PSFParser &mdash; MDAnalysis 0.9.2-dev documentation</title>
+    <title>MDAnalysis.topology.PSFParser &mdash; MDAnalysis 0.10.0-dev documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.9.2-dev',
+        VERSION:     '0.10.0-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,14 +25,14 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.9.2-dev documentation"
+          title="Search within MDAnalysis 0.10.0-dev documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.9.2-dev documentation" href="../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.10.0-dev documentation" href="../../../index.html" />
     <link rel="up" title="MDAnalysis" href="../../MDAnalysis.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -41,17 +41,17 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.9.2-dev documentation</a> &raquo;</li>
-          <li><a href="../../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.10.0-dev documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../../index.html">
               <img class="logo" src="../../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
             </a></p>
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../../search.html" method="get">
       <input type="text" name="q" />
@@ -70,7 +70,7 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <h1>Source code for MDAnalysis.topology.PSFParser</h1><div class="highlight"><pre>
 <span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
@@ -109,12 +109,13 @@
 <span class="sd">   :inherited-members:</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
 
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">ceil</span>
 
-<span class="kn">from</span> <span class="nn">MDAnalysis.core.AtomGroup</span> <span class="kn">import</span> <span class="n">Atom</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.core.util</span> <span class="kn">import</span> <span class="n">openany</span>
+<span class="kn">from</span> <span class="nn">..core.AtomGroup</span> <span class="kn">import</span> <span class="n">Atom</span>
+<span class="kn">from</span> <span class="nn">..core.util</span> <span class="kn">import</span> <span class="n">openany</span>
 <span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">TopologyReader</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&quot;MDAnalysis.topology.PSF&quot;</span><span class="p">)</span>
@@ -135,7 +136,7 @@
         <span class="k">with</span> <span class="n">openany</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">psffile</span><span class="p">:</span>
             <span class="n">header</span> <span class="o">=</span> <span class="n">psffile</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">header</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">!=</span> <span class="s">&quot;PSF&quot;</span><span class="p">:</span>
-                <span class="n">err</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;{} is not valid PSF file (header = {})&quot;</span>
+                <span class="n">err</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;{0} is not valid PSF file (header = {1})&quot;</span>
                        <span class="s">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">header</span><span class="p">))</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
@@ -151,25 +152,25 @@
             <span class="n">psffile</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
             <span class="n">title</span> <span class="o">=</span> <span class="n">psffile</span><span class="o">.</span><span class="n">next</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">title</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s">&quot;!NTITLE&quot;</span><span class="p">):</span>
-                <span class="n">err</span> <span class="o">=</span> <span class="s">&quot;{} is not a valid PSF file&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">psffile</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                <span class="n">err</span> <span class="o">=</span> <span class="s">&quot;{0} is not a valid PSF file&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">psffile</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
             <span class="c"># psfremarks = [psffile.next() for i in range(int(title[0]))]</span>
             <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">title</span><span class="p">[</span><span class="mi">0</span><span class="p">])):</span>
                 <span class="n">psffile</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;PSF file {}: format {}&quot;</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;PSF file {0}: format {1}&quot;</span>
                          <span class="s">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">psffile</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format</span><span class="p">))</span>
 
             <span class="n">structure</span> <span class="o">=</span> <span class="p">{}</span>
 
             <span class="n">sections</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="p">(</span><span class="s">&quot;_atoms&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s">&quot;NATOM&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parseatoms</span><span class="p">)),</span>
-                <span class="p">(</span><span class="s">&quot;_bonds&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s">&quot;NBOND&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parsesection</span><span class="p">)),</span>
-                <span class="p">(</span><span class="s">&quot;_angles&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s">&quot;NTHETA&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parsesection</span><span class="p">)),</span>
-                <span class="p">(</span><span class="s">&quot;_dihe&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s">&quot;NPHI&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parsesection</span><span class="p">)),</span>
-                <span class="p">(</span><span class="s">&quot;_impr&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s">&quot;NIMPHI&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parsesection</span><span class="p">)),</span>
-                <span class="p">(</span><span class="s">&quot;_donors&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s">&quot;NDON&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parsesection</span><span class="p">)),</span>
-                <span class="p">(</span><span class="s">&quot;_acceptors&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s">&quot;NACC&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parsesection</span><span class="p">))</span>
+                <span class="p">(</span><span class="s">&quot;atoms&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s">&quot;NATOM&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parseatoms</span><span class="p">)),</span>
+                <span class="p">(</span><span class="s">&quot;bonds&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s">&quot;NBOND&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parsesection</span><span class="p">)),</span>
+                <span class="p">(</span><span class="s">&quot;angles&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s">&quot;NTHETA&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parsesection</span><span class="p">)),</span>
+                <span class="p">(</span><span class="s">&quot;torsions&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s">&quot;NPHI&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parsesection</span><span class="p">)),</span>
+                <span class="p">(</span><span class="s">&quot;impropers&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s">&quot;NIMPHI&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parsesection</span><span class="p">)),</span>
+                <span class="p">(</span><span class="s">&quot;donors&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s">&quot;NDON&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parsesection</span><span class="p">)),</span>
+                <span class="p">(</span><span class="s">&quot;acceptors&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s">&quot;NACC&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parsesection</span><span class="p">))</span>
             <span class="p">)</span>
 
             <span class="k">try</span><span class="p">:</span>
@@ -178,7 +179,7 @@
                     <span class="n">structure</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_sec</span><span class="p">(</span><span class="n">psffile</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
                 <span class="c"># Reached the end of the file before we expected</span>
-                <span class="k">if</span> <span class="s">&quot;_atoms&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">structure</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s">&quot;atoms&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">structure</span><span class="p">:</span>
                     <span class="n">err</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;The PSF file didn&#39;t contain the required&quot;</span>
                            <span class="s">&quot; section of NATOM&quot;</span><span class="p">)</span>
                     <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
@@ -198,7 +199,7 @@
         <span class="n">sect_type</span> <span class="o">=</span> <span class="n">header</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39;!:&#39;</span><span class="p">)</span>
         <span class="c"># Make sure the section type matches the desc</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">sect_type</span> <span class="o">==</span> <span class="n">desc</span><span class="p">:</span>
-            <span class="n">err</span> <span class="o">=</span> <span class="s">&quot;Expected section {} but found {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">desc</span><span class="p">,</span> <span class="n">sect_type</span><span class="p">)</span>
+            <span class="n">err</span> <span class="o">=</span> <span class="s">&quot;Expected section {0} but found {1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">desc</span><span class="p">,</span> <span class="n">sect_type</span><span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
         <span class="c"># Now figure out how many lines to read</span>
@@ -298,10 +299,10 @@
                 <span class="n">iatom</span><span class="p">,</span> <span class="n">segid</span><span class="p">,</span> <span class="n">resid</span><span class="p">,</span> <span class="n">resname</span><span class="p">,</span> <span class="n">atomname</span><span class="p">,</span> <span class="n">atomtype</span><span class="p">,</span> <span class="n">charge</span><span class="p">,</span> <span class="n">mass</span> <span class="o">=</span> <span class="n">set_type</span><span class="p">(</span><span class="n">atom_parser</span><span class="p">(</span><span class="n">line</span><span class="p">))</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;Guessing that this is actually a NAMD-type PSF file...&quot;</span>
                             <span class="s">&quot; continuing with fingers crossed!&quot;</span><span class="p">)</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;First NAMD-type line: {}: {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()))</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;First NAMD-type line: {0}: {1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()))</span>
 
             <span class="n">atoms</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Atom</span><span class="p">(</span><span class="n">iatom</span><span class="p">,</span> <span class="n">atomname</span><span class="p">,</span> <span class="n">atomtype</span><span class="p">,</span> <span class="n">resname</span><span class="p">,</span> <span class="n">resid</span><span class="p">,</span>
-                            <span class="n">segid</span><span class="p">,</span> <span class="n">mass</span><span class="p">,</span> <span class="n">charge</span><span class="p">)</span>
+                            <span class="n">segid</span><span class="p">,</span> <span class="n">mass</span><span class="p">,</span> <span class="n">charge</span><span class="p">,</span> <span class="n">universe</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_u</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">atoms</span>
 
     <span class="k">def</span> <span class="nf">_parsesection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lines</span><span class="p">,</span> <span class="n">atoms_per</span><span class="p">,</span> <span class="n">numlines</span><span class="p">):</span>
@@ -320,7 +321,7 @@
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -329,20 +330,20 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.9.2-dev documentation</a> &raquo;</li>
-          <li><a href="../../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.10.0-dev documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
+    <div class="footer" role="contentinfo">
         &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
-    Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
-    Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
+    Paul Rigor, Andy Somogyi, Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>
 </html>

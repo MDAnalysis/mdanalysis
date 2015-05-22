@@ -10,7 +10,47 @@ The rules for this file:
     use tabs but use spaces for formatting
 
 ------------------------------------------------------------------------------
-??/??/15  richardjgowers, orbeckst
+??/??/15  richardjgowers, caio s. souza, manuel.nuno.melo, orbeckst, 
+          sseyler
+  * 0.10.0
+
+  Enhancements
+
+  * Improved performance of PDB Reading.  Up to 3x faster. (Issue #212)
+  * Added the 'same ... as' selection keyword (Issue #217)
+  * Added guess_bonds keyword argument to Universe creation.  This will attempt to
+    guess all topology information on Universe creation. (Issue #245)
+  * Added guess_bonds method to AtomGroup. (Issue #245)
+  * All TopologyObjects (Bond, Angle etc) now have is_guessed attribute
+  * TopologyGroup now has alternate constructor method, .from_indices()
+  * Added TopologyObject.indices property
+  * Amber netCDF4 Reader will now read Forces (Issue #257)
+  * Amber netCDF4 Writer will now write Velocities and Forces
+  * Added Amber coordinate/restart file reader (Issue #262)
+  * Structural superpositions (MDAnalysis.analysis.align) can work
+    with partial matches of atoms.
+  * new path similarity analysis module MDAnalysis.analysis.psa
+
+  Changes
+
+  * TopologyGroup can now have zero length, and will evaluate to False
+    when empty.
+  * Renamed TopologyGroup.dump_contents to "to_indices"
+  * Deprecated 'bonds' keyword from Universe and replaced with 'guess_bonds'
+  * PrimitivePDBReader now requires the numatoms keyword
+  * Structural superpositions (MDAnalysis.analysis.align) use partial
+    matches of atoms by default (use strict=True for old behavior)
+
+  Fixes
+
+  * bynum selections now work from AtomGroup instances (Issue #275)
+  * Cylinder selections now work from AtomGroup instances and honor
+    PBC (Issue #274)
+  * NetCDFWriter previously always wrote velocities/forces if found
+    in timestep, rather than following how the Writer was created.
+
+
+04/20/15  tyler.je.reddy, richardjgowers, orbeckst
   * 0.9.2
 
   Enhancements
@@ -18,6 +58,8 @@ The rules for this file:
   * Can now set velocity from Atom object. (Issue 221)
   * Atom object now has force attribute for getting/setting forces (requires a
     trajectory with forces) (Issue 221)
+  * Added wrap method. Wrap allows the centers of groups of atoms to be
+    moved within the primary unit cell without breaking up the group. (Issue 190)
 
   Changes
 
@@ -27,8 +69,13 @@ The rules for this file:
   * "applications" were removed from the mdanalysis source code
     repository and now exist as independent repositories under
     https://github.com/MDAnalysis/
+  * Using a non-existent atom name as an instant selector now raises
+    AttributeError instead of SelectionError (Issue 220)
 
   Fixes
+
+  * trajectory objects are now properly closed in unit tests (Issue 256)
+
 
 03/27/15  manuel.nuno.melo, richardjgowers, comconadin
   * 0.9.1

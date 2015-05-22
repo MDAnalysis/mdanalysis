@@ -32,4 +32,4 @@ modern multi-core processors.
 
 """
 
-import distances
+from . import distances

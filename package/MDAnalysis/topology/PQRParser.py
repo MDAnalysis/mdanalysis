@@ -35,10 +35,10 @@ Classes
    :inherited-members:
 
 """
+from __future__ import absolute_import
 
-from MDAnalysis.core.AtomGroup import Atom
-import MDAnalysis.coordinates.PQR
-from MDAnalysis.topology.core import guess_atom_type, guess_atom_mass
+from ..core.AtomGroup import Atom
+from .core import guess_atom_type, guess_atom_mass
 from .base import TopologyReader
 
 
@@ -64,10 +64,11 @@ class PQRParser(TopologyReader):
                      :class:`~MDAnalysis.coordinates.PQR.PQRReader` is used to read
                      the PQR file.
         """
-        structure = {}
-        pqr = MDAnalysis.coordinates.PQR.PQRReader(self.filename)
+        from ..coordinates.PQR import PQRReader
+        pqr = PQRReader(self.filename)
 
-        structure['_atoms'] = self._parseatoms(pqr)
+        atoms = self._parseatoms(pqr)
+        structure = {'atoms': atoms}
 
         return structure
 
@@ -88,5 +89,5 @@ class PQRParser(TopologyReader):
             radius = atom.radius
 
             atoms.append(Atom(iatom, atomname, atomtype, resname, resid,
-                              segid, mass, charge, radius=radius))
+                              segid, mass, charge, radius=radius, universe=self._u))
         return atoms

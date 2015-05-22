@@ -304,52 +304,7 @@ class SphericalZoneSelection(Selection):
         return "<'SphericalZoneSelection' radius " + repr(self.cutoff) + " centered in " + repr(self.sel) + ">"
 
 
-class CylindricalLayerSelection(Selection):
-    def __init__(self, sel, inRadius, exRadius, zmax, zmin, periodic=None):
-        Selection.__init__(self)
-        self.sel = sel
-        self.inRadius = inRadius
-        self.exRadius = exRadius
-        self.inRadiusSq = inRadius * inRadius
-        self.exRadiusSq = exRadius * exRadius
-        self.zmax = zmax
-        self.zmin = zmin
-        self.periodic = flags['use_periodic_selections']
-
-    def _apply(self, group):
-        #KDTree function not implementable
-        return self._apply_distmat(group)
-
-    def _apply_distmat(self, group):
-        sel_atoms = self.sel._apply(group)
-        sel_CoG = AtomGroup(sel_atoms).centerOfGeometry()
-        x = Selection.coord._x
-        y = Selection.coord._y
-        z = Selection.coord._z
-        sel_CoG_Zone = (x - sel_CoG[0]) * (x - sel_CoG[0]) + (y - sel_CoG[1]) * (y - sel_CoG[1])
-        sel_CoG_Zone_array = numpy.array([[i] for i in sel_CoG_Zone])
-        Selection.coord._znp = numpy.array([[i] for i in z])
-        res_atomsA = [i for i in numpy.any(numpy.logical_and(sel_CoG_Zone_array <= self.exRadiusSq,
-                                                             sel_CoG_Zone_array >= self.inRadiusSq),
-                      axis=1).nonzero()[0]]
-        res_atomsB = [i for i in numpy.any(numpy.logical_and(Selection.coord._znp > self.zmin,
-                                                             Selection.coord._znp < self.zmax),
-                      axis=1).nonzero()[0]]
-        intersectionAB = numpy.intersect1d(res_atomsA, res_atomsB)
-        res_atoms = [self._group_atoms_list[i] for i in intersectionAB]
-        res_atoms = set(res_atoms)
-        if self.periodic:
-            box = group.dimensions[:3]
-        else:
-            box = None
-        return set(res_atoms)
-
-    def __repr__(self):
-        return "<'CylindricalLayerSelection' inner radius " + repr(self.inRadius) + ", external radius " + repr(
-            self.exRadius) + ", zmax " + repr(self.zmax) + ", zmin " + repr(self.zmin) + ">"
-
-
-class CylindricalZoneSelection(Selection):
+class _CylindricalSelection(Selection):
     def __init__(self, sel, exRadius, zmax, zmin, periodic=None):
         Selection.__init__(self)
         self.sel = sel
@@ -366,28 +321,80 @@ class CylindricalZoneSelection(Selection):
     def _apply_distmat(self, group):
         sel_atoms = self.sel._apply(group)
         sel_CoG = AtomGroup(sel_atoms).centerOfGeometry()
-        x = Selection.coord._x
-        y = Selection.coord._y
-        z = Selection.coord._z
-        sel_CoG_exRad = (x - sel_CoG[0]) * (x - sel_CoG[0]) + (y - sel_CoG[1]) * (y - sel_CoG[1])
-        sel_CoG_exRad_array = numpy.array([[i] for i in sel_CoG_exRad])
-        Selection.coord._znp = numpy.array([[i] for i in z])
-        res_atomsA = [i for i in numpy.any(sel_CoG_exRad_array <= self.exRadiusSq, axis=1).nonzero()[0]]
-        res_atomsB = [i for i in numpy.any(numpy.logical_and(Selection.coord._znp > self.zmin,
-                                                             Selection.coord._znp < self.zmax),
-                      axis=1).nonzero()[0]]
-        intersectionAB = numpy.intersect1d(res_atomsA, res_atomsB)
-        res_atoms = [self._group_atoms_list[i] for i in intersectionAB]
-        res_atoms = set(res_atoms)
-        if self.periodic:
-            box = group.dimensions[:3]
+        coords = AtomGroup(Selection._group_atoms_list).positions
+
+        if self.periodic and not numpy.any(Selection.coord.dimensions[:3]==0):
+            from ..core import distances
+            if not numpy.allclose(Selection.coord.dimensions[3:],(90.,90.,90.)):
+                is_triclinic = True
+                from ..coordinates.core import triclinic_vectors
+                box = triclinic_vectors(Selection.coord.dimensions).diagonal()
+            else:
+                is_triclinic = False
+                box = Selection.coord.dimensions[:3]
+
+            cyl_z_hheight = (self.zmax-self.zmin)/2
+
+            if 2*self.exRadius > box[0]:
+                raise NotImplementedError("The diameter of the cylinder selection (%.3f) is larger than the unit cell's x dimension (%.3f). Can only do selections where it is smaller or equal." % (2*self.exRadius, box[0])) 
+            if 2*self.exRadius > box[1]:
+                raise NotImplementedError("The diameter of the cylinder selection (%.3f) is larger than the unit cell's y dimension (%.3f). Can only do selections where it is smaller or equal." % (2*self.exRadius, box[1]))
+            if 2*cyl_z_hheight > box[2]:
+                raise NotImplementedError("The total length of the cylinder selection in z (%.3f) is larger than the unit cell's z dimension (%.3f). Can only do selections where it is smaller or equal." % (2*cyl_z_hheight, box[2]))
+            #how off-center in z is our CoG relative to the cylinder's center
+            cyl_center = sel_CoG + [0,0,(self.zmax+self.zmin)/2]
+            coords += box/2 - cyl_center 
+            coords = distances.applyPBC(coords, box=Selection.coord.dimensions)
+            if is_triclinic:
+                coords = distances.applyPBC(coords, box=box)
+            sel_CoG = box/2
+            zmin = -cyl_z_hheight
+            zmax = cyl_z_hheight
         else:
-            box = None
-        return set(res_atoms)
+            zmin = self.zmin
+            zmax = self.zmax
+
+        # For performance we first do the selection of the atoms in the
+        # rectangular parallelepiped that contains the cylinder.
+        lim_min = sel_CoG - [self.exRadius, self.exRadius, -zmin]
+        lim_max = sel_CoG + [self.exRadius, self.exRadius, zmax]
+        mask_sel = numpy.all((coords >= lim_min) * (coords <= lim_max), axis=1)
+        mask_ndxs = numpy.where(mask_sel)[0]
+        # Now we do the circular part
+        xy_vecs = coords[mask_ndxs,:2] - sel_CoG[:2]
+        xy_norms = numpy.sum(xy_vecs**2, axis=1)
+        try: # Generic for both 'Layer' and 'Zone' cases
+            circ_sel = (xy_norms <= self.exRadiusSq) * (xy_norms >= self.inRadiusSq)
+        except AttributeError:
+            circ_sel = (xy_norms <= self.exRadiusSq)
+        mask_sel[mask_ndxs] = circ_sel
+        ndxs = numpy.where(mask_sel)[0]
+        res_atoms = set(Selection._group_atoms_list[ndx] for ndx in ndxs)
+        return res_atoms
+
+    def __repr__(self):
+        return "<'CylindricalSelection' radius " + repr(self.exRadius) + ", zmax " + repr(
+            self.zmax) + ", zmin " + repr(self.zmin) + ">"
+
+class CylindricalZoneSelection(_CylindricalSelection):
+    def __init__(self, sel, exRadius, zmax, zmin, periodic=None):
+        Selection.__init__(self)
+        _CylindricalSelection.__init__(self, sel, exRadius, zmax, zmin, periodic) 
 
     def __repr__(self):
         return "<'CylindricalZoneSelection' radius " + repr(self.exRadius) + ", zmax " + repr(
             self.zmax) + ", zmin " + repr(self.zmin) + ">"
+
+class CylindricalLayerSelection(_CylindricalSelection):
+    def __init__(self, sel, inRadius, exRadius, zmax, zmin, periodic=None):
+        Selection.__init__(self)
+        _CylindricalSelection.__init__(self, sel, exRadius, zmax, zmin, periodic) 
+        self.inRadius = inRadius
+        self.inRadiusSq = inRadius * inRadius
+
+    def __repr__(self):
+        return "<'CylindricalLayerSelection' inner radius " + repr(self.inRadius) + ", external radius " + repr(
+            self.exRadius) + ", zmax " + repr(self.zmax) + ", zmin " + repr(self.zmin) + ">"
 
 
 class PointSelection(Selection):
@@ -611,9 +618,9 @@ class ByNumSelection(_RangeSelection):
         if self.upper is not None:
             # In this case we'll use 1 indexing since that's what the user will be
             # familiar with
-            return set(group.atoms[self.lower - 1:self.upper])
+            return set([a for a in group.atoms if (self.lower <= (a.number+1) <= self.upper)])
         else:
-            return set(group.atoms[self.lower - 1:self.lower])
+            return set([a for a in group.atoms if (a.number+1) == self.lower])
 
 
 class ProteinSelection(Selection):
@@ -815,6 +822,39 @@ class PropertySelection(Selection):
         return "<'PropertySelection' " + abs_str + repr(self.prop) + " " + repr(self.operator.__name__) + " " + repr(
             self.value) + ">"
 
+class SameSelection(Selection):
+    # When adding new keywords here don't forget to also add them to the
+    #  case statement under the SAME op, where they are first checked.
+    def __init__(self, sel, prop):
+        Selection.__init__(self)
+        self.sel = sel
+        self.prop = prop
+    def _apply(self, group):
+        res = self.sel._apply(group)
+        if not res:
+            return set([])
+        if self.prop in ("residue", "fragment", "segment"):
+            atoms = set([])
+            for a in res:
+                if a not in atoms:
+                # This shortcut assumes consistency that all atoms in a residue/fragment/segment
+                # belong to the exact same residue/fragment/segment.
+                    atoms |= set(getattr(a, self.prop).atoms)
+            return Selection._group_atoms & atoms
+        elif self.prop in ("name", "type", "resname", "resid", "segid", "mass", "charge", "radius", "bfactor", "resnum"):
+            props = [getattr(a, self.prop) for a in res]
+            result_set = (a for a in Selection._group_atoms if getattr(a, self.prop) in props)
+        elif self.prop in ("x", "y", "z"):
+            p = getattr(Selection.coord, "_"+self.prop)
+            res_indices = numpy.array([a.number for a in res])
+            sel_indices = numpy.array([a.number for a in Selection._group_atoms])
+            result_set = group.atoms[numpy.where(numpy.in1d(p[sel_indices], p[res_indices]))[0]]._atoms
+        else:
+            self.__error(self.prop, expected=False)
+        return set(result_set)
+    def __repr__(self):
+        return "<'SameSelection' of "+ repr(self.prop)+" >"
+
 
 class ParseError(Exception):
     pass
@@ -872,6 +912,7 @@ class SelectionParser:
     NBB = 'nucleicbackbone'
     BASE = 'nucleicbase'
     SUGAR = 'nucleicsugar'
+    SAME = 'same'
     EOF = 'EOF'
     GT = '>'
     LT = '<'
@@ -894,11 +935,12 @@ class SelectionParser:
         (BB, BackboneSelection), (NBB, NucleicBackboneSelection),
         (BASE, BaseSelection), (SUGAR, NucleicSugarSelection),
         #(BONDED, BondedSelection), not supported yet, need a better way to walk the bond lists
-        (ATOM, AtomSelection), (SELGROUP, SelgroupSelection), (FULLSELGROUP, FullSelgroupSelection)])
+        (ATOM, AtomSelection), (SELGROUP, SelgroupSelection), (FULLSELGROUP, FullSelgroupSelection),
+        (SAME, SameSelection)])
     associativity = dict([(AND, "left"), (OR, "left")])
     precedence = dict(
         [(AROUND, 1), (SPHLAYER, 1), (SPHZONE, 1), (CYLAYER, 1), (CYZONE, 1), (POINT, 1), (BYRES, 1), (BONDED, 1),
-            (AND, 3), (OR, 3), (NOT, 5)])
+            (SAME, 1), (AND, 3), (OR, 3), (NOT, 5)])
 
     # Borg pattern: http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/66531
     _shared_state = {}
@@ -916,9 +958,12 @@ class SelectionParser:
         """Pops off the next token in our token stream."""
         return self.tokens.pop(0)
 
-    def __error(self, token):
-        """Stops parsing and reports and error."""
-        raise ParseError("Parsing error- '" + self.selectstr + "'\n" + repr(token) + " expected")
+    def __error(self, token, expected=True):
+        """Stops parsing and reports an error."""
+        if expected:
+            raise ParseError("Parsing error- '" + self.selectstr + "'\n" + repr(token) + " expected")
+        else:
+            raise ParseError("Parsing error- '" + self.selectstr + "'\n" + repr(token) + " unexpected")
 
     def __expect(self, token):
         if self.__peek_token() == token:
@@ -1049,6 +1094,15 @@ class SelectionParser:
             resid = int(self.__consume_token())
             name = self.__consume_token()
             return self.classdict[op](name, resid, segid)
+        elif op == self.SAME:
+            prop = self.__consume_token()
+            self.__expect("as")
+            if prop in ("name", "type", "resname", "resid", "segid", "mass", "charge", "radius", "bfactor",
+                        "resnum", "residue", "segment", "fragment", "x", "y", "z"):
+                exp = self.__parse_expression(self.precedence[op])
+                return self.classdict[op](exp, prop)
+            else:
+                self.__error(prop, expected=False)
         else:
             self.__error(op)
 

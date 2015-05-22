@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.coordinates.xdrfile.core &mdash; MDAnalysis 0.9.2-dev documentation</title>
+    <title>MDAnalysis.coordinates.xdrfile.core &mdash; MDAnalysis 0.10.0-dev documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '0.9.2-dev',
+        VERSION:     '0.10.0-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,14 +25,14 @@
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.9.2-dev documentation"
+          title="Search within MDAnalysis 0.10.0-dev documentation"
           href="../../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.9.2-dev documentation" href="../../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.10.0-dev documentation" href="../../../../index.html" />
     <link rel="up" title="MDAnalysis" href="../../../MDAnalysis.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -41,17 +41,17 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">MDAnalysis 0.9.2-dev documentation</a> &raquo;</li>
-          <li><a href="../../../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">MDAnalysis 0.10.0-dev documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../../../index.html">
               <img class="logo" src="../../../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
             </a></p>
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../../../search.html" method="get">
       <input type="text" name="q" />
@@ -70,7 +70,7 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <h1>Source code for MDAnalysis.coordinates.xdrfile.core</h1><div class="highlight"><pre>
 <span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
@@ -146,15 +146,14 @@
 <span class="kn">import</span> <span class="nn">cPickle</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 
-<span class="kn">import</span> <span class="nn">libxdrfile2</span>
-<span class="kn">import</span> <span class="nn">statno</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">libxdrfile2</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.coordinates</span> <span class="kn">import</span> <span class="n">base</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.coordinates.core</span> <span class="kn">import</span> <span class="n">triclinic_box</span><span class="p">,</span> <span class="n">triclinic_vectors</span>
 <span class="kn">import</span> <span class="nn">MDAnalysis.core</span>
 
 
 <span class="c"># This is the XTC class. The TRR overrides with it&#39;s own.</span>
-<div class="viewcode-block" id="Timestep"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/core.html#MDAnalysis.coordinates.xdrfile.core.Timestep">[docs]</a><span class="k">class</span> <span class="nc">Timestep</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">Timestep</span><span class="p">):</span>
+<div class="viewcode-block" id="Timestep"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/core.html#MDAnalysis.coordinates.TRR.Timestep">[docs]</a><span class="k">class</span> <span class="nc">Timestep</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">Timestep</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Timestep for a Gromacs trajectory.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -221,11 +220,11 @@
         <span class="k">return</span> <span class="n">triclinic_box</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
 
     <span class="nd">@dimensions.setter</span>
-<div class="viewcode-block" id="Timestep.dimensions"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/core.html#MDAnalysis.coordinates.xdrfile.core.Timestep.dimensions">[docs]</a>    <span class="k">def</span> <span class="nf">dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span> <span class="o">=</span> <span class="n">triclinic_vectors</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
 
-</div></div>
-<div class="viewcode-block" id="TrjWriter"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/core.html#MDAnalysis.coordinates.xdrfile.core.TrjWriter">[docs]</a><span class="k">class</span> <span class="nc">TrjWriter</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">Writer</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="TrjWriter"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/core.html#MDAnalysis.coordinates.TRR.TrjWriter">[docs]</a><span class="k">class</span> <span class="nc">TrjWriter</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">Writer</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Writes to a Gromacs trajectory file</span>
 
 <span class="sd">    (Base class)</span>
@@ -299,7 +298,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span> <span class="o">==</span> <span class="s">&#39;TRR&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_emptyarr</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
-<div class="viewcode-block" id="TrjWriter.write_next_timestep"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/core.html#MDAnalysis.coordinates.xdrfile.core.TrjWriter.write_next_timestep">[docs]</a>    <span class="k">def</span> <span class="nf">write_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="TrjWriter.write_next_timestep"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/core.html#MDAnalysis.coordinates.TRR.TrjWriter.write_next_timestep">[docs]</a>    <span class="k">def</span> <span class="nf">write_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; write a new timestep to the trj file</span>
 
 <span class="sd">        *ts* is a :class:`Timestep` instance containing coordinates to</span>
@@ -412,12 +411,12 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">xdrfile</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">return</span> <span class="n">status</span>
 
-<div class="viewcode-block" id="TrjWriter.convert_dimensions_to_unitcell"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/core.html#MDAnalysis.coordinates.xdrfile.core.TrjWriter.convert_dimensions_to_unitcell">[docs]</a>    <span class="k">def</span> <span class="nf">convert_dimensions_to_unitcell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
+<div class="viewcode-block" id="TrjWriter.convert_dimensions_to_unitcell"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/core.html#MDAnalysis.coordinates.TRR.TrjWriter.convert_dimensions_to_unitcell">[docs]</a>    <span class="k">def</span> <span class="nf">convert_dimensions_to_unitcell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Read dimensions from timestep *ts* and return Gromacs box vectors&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_to_native</span><span class="p">(</span><span class="n">triclinic_vectors</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span><span class="p">))</span>
 
 </div></div>
-<div class="viewcode-block" id="TrjReader"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/core.html#MDAnalysis.coordinates.xdrfile.core.TrjReader">[docs]</a><span class="k">class</span> <span class="nc">TrjReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">Reader</span><span class="p">):</span>
+<div class="viewcode-block" id="TrjReader"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/core.html#MDAnalysis.coordinates.TRR.TrjReader">[docs]</a><span class="k">class</span> <span class="nc">TrjReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">Reader</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Generic base class for reading Gromacs trajectories inside MDAnalysis.</span>
 
 <span class="sd">    Derive classes and set :attr:`TrjReader.format`, :attr:`TrjReader._read_trj` and :attr:`TrjReader._read_trj_atoms`.</span>
@@ -475,17 +474,17 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span> <span class="o">=</span> <span class="n">convert_units</span>  <span class="c"># convert length and time to base units on the fly?</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">xdrfile</span> <span class="o">=</span> <span class="bp">None</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">__numframes</span> <span class="o">=</span> <span class="bp">None</span>  <span class="c"># takes a long time, avoid accessing self.numframes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_numframes</span> <span class="o">=</span> <span class="bp">None</span>  <span class="c"># takes a long time, avoid accessing self.numframes</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">skip_timestep</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c"># always 1 for xdr files</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__delta</span> <span class="o">=</span> <span class="bp">None</span>  <span class="c"># compute from time in first two frames!</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_delta</span> <span class="o">=</span> <span class="bp">None</span>  <span class="c"># compute from time in first two frames!</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fixed</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c"># not relevant for Gromacs xtc/trr</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__offsets</span> <span class="o">=</span> <span class="bp">None</span>  <span class="c"># storage of offsets in the file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_offsets</span> <span class="o">=</span> <span class="bp">None</span>  <span class="c"># storage of offsets in the file</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">skip</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span> <span class="o">=</span> <span class="bp">False</span>
 
         <span class="c"># actual number of atoms in the trr file</span>
         <span class="c"># first time file is opened, exception should be thrown if bad file</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__trr_numatoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_trj_natoms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_trr_numatoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_trj_natoms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
 
         <span class="c"># logic for handling sub sections of trr:</span>
         <span class="c"># this class has some tmp buffers into which the libxdrfile2 functions read the</span>
@@ -497,36 +496,28 @@
             <span class="c"># only valid type</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sub</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">sub</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">sub</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="o">!=</span> <span class="s">&#39;i&#39;</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;sub MUST be a single dimensional numpy array of integers&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sub</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">__trr_numatoms</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;sub MUST be less than or equal to the number of actual trr atoms, {} in this case&quot;</span><span class="o">.</span>
-                                 <span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__trr_numatoms</span><span class="p">))</span>
-            <span class="k">if</span> <span class="n">numpy</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">sub</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__trr_numatoms</span> <span class="ow">or</span> <span class="n">numpy</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">sub</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sub</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trr_numatoms</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;sub MUST be less than or equal to the number of actual trr atoms,&quot;</span>
+                                 <span class="s">&quot; {0} in this case&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_trr_numatoms</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">numpy</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">sub</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trr_numatoms</span> <span class="ow">or</span> <span class="n">numpy</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">sub</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s">&quot;sub contains out-of-range elements for the given trajectory&quot;</span><span class="p">)</span>
             <span class="c"># sub appears to be valid</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__sub</span> <span class="o">=</span> <span class="n">sub</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sub</span> <span class="o">=</span> <span class="n">sub</span>
 
             <span class="c"># make tmp buffers</span>
             <span class="c"># C floats and C-order for arrays (see libxdrfile2.i)</span>
             <span class="n">DIM</span> <span class="o">=</span> <span class="n">libxdrfile2</span><span class="o">.</span><span class="n">DIM</span>  <span class="c"># compiled-in dimension (most likely 3)</span>
-            <span class="c"># both xdr and trr have positions</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__pos_buf</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">__trr_numatoms</span><span class="p">,</span> <span class="n">DIM</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s">&#39;C&#39;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span> <span class="o">==</span> <span class="s">&quot;TRR&quot;</span><span class="p">:</span>
-                <span class="c"># only trr has velocities and forces</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">__velocities_buf</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">__trr_numatoms</span><span class="p">,</span> <span class="n">DIM</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s">&#39;C&#39;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">__forces_buf</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">__trr_numatoms</span><span class="p">,</span> <span class="n">DIM</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s">&#39;C&#39;</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="c"># xdr does not have vel or forces.</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">__velocities_buf</span> <span class="o">=</span> <span class="bp">None</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">__forces_buf</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="c"># XTC and TRR allocate different things, so call this</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_allocate_sub</span><span class="p">(</span><span class="n">DIM</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__sub</span> <span class="o">=</span> <span class="bp">None</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__pos_buf</span> <span class="o">=</span> <span class="bp">None</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__velocities_buf</span> <span class="o">=</span> <span class="bp">None</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__forces_buf</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sub</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pos_buf</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_velocities_buf</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_forces_buf</span> <span class="o">=</span> <span class="bp">None</span>
 
         <span class="c"># make the timestep, this is ALWAYS the used the public number of atoms</span>
         <span class="c"># (same as the calling Universe)</span>
-        <span class="c"># at this time, __trr_numatoms and __sub are set, so self.numatoms has all it needs</span>
+        <span class="c"># at this time, _trr_numatoms and _sub are set, so self.numatoms has all it needs</span>
         <span class="c"># to determine number of atoms.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Timestep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span><span class="p">)</span>
 
@@ -538,7 +529,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_retrieve_offsets</span><span class="p">()</span>
 
     <span class="nd">@property</span>
-<div class="viewcode-block" id="TrjReader.numatoms"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/core.html#MDAnalysis.coordinates.xdrfile.core.TrjReader.numatoms">[docs]</a>    <span class="k">def</span> <span class="nf">numatoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">numatoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;The number of publically available atoms that this reader will store in the timestep.</span>
 
 <span class="sd">        If &#39;sub&#39; was not given in the ctor, then this value will just be the actual</span>
@@ -547,10 +538,10 @@
 
 <span class="sd">        If for any reason the trajectory cannot be read then a negative value is returned.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__sub</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__sub</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">__trr_numatoms</span>
-</div>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sub</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sub</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trr_numatoms</span>
+
     <span class="nd">@property</span>
-<div class="viewcode-block" id="TrjReader.numframes"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/core.html#MDAnalysis.coordinates.xdrfile.core.TrjReader.numframes">[docs]</a>    <span class="k">def</span> <span class="nf">numframes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">numframes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Read the number of frames from the trajectory.</span>
 
 <span class="sd">        The result is cached. If for any reason the trajectory cannot</span>
@@ -563,74 +554,52 @@
 
 <span class="sd">        .. SeeAlso:: :meth:`TrjReader.load_offsets` and :meth:`TrjReader.save_offsets`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__numframes</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>  <span class="c"># return cached value</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__numframes</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_numframes</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>  <span class="c"># return cached value</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_numframes</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_read_trj_numframes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__numframes</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_numframes</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="k">return</span> <span class="mi">0</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__numframes</span>
-</div>
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">offsets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__offsets</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__offsets</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_read_trj_numframes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__offsets</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">return</span> <span class="mi">0</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__offsets</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_numframes</span>
 
     <span class="nd">@property</span>
-<div class="viewcode-block" id="TrjReader.delta"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/core.html#MDAnalysis.coordinates.xdrfile.core.TrjReader.delta">[docs]</a>    <span class="k">def</span> <span class="nf">delta</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">offsets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_offsets</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_offsets</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_read_trj_numframes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_offsets</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_offsets</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">delta</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Time step length in ps.</span>
 
 <span class="sd">        The result is computed from the trajectory and cached. If for</span>
 <span class="sd">        any reason the trajectory cannot be read then 0 is returned.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c"># no need for conversion: it&#39;s alread in our base unit ps</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__delta</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>  <span class="c"># return cached value</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__delta</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delta</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>  <span class="c"># return cached value</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delta</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">t0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">time</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
             <span class="n">t1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">time</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__delta</span> <span class="o">=</span> <span class="n">t1</span> <span class="o">-</span> <span class="n">t0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_delta</span> <span class="o">=</span> <span class="n">t1</span> <span class="o">-</span> <span class="n">t0</span>
         <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
             <span class="k">return</span> <span class="mi">0</span>
         <span class="k">finally</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">rewind</span><span class="p">()</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__delta</span>
-</div>
-    <span class="k">def</span> <span class="nf">_read_trj_natoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Generic number-of-atoms extractor with minimum intelligence. Override if necessary.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span> <span class="o">==</span> <span class="s">&#39;XTC&#39;</span><span class="p">:</span>
-            <span class="n">numatoms</span> <span class="o">=</span> <span class="n">libxdrfile2</span><span class="o">.</span><span class="n">read_xtc_natoms</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span> <span class="o">==</span> <span class="s">&#39;TRR&#39;</span><span class="p">:</span>
-            <span class="n">numatoms</span> <span class="o">=</span> <span class="n">libxdrfile2</span><span class="o">.</span><span class="n">read_trr_natoms</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&quot;Gromacs trajectory format </span><span class="si">%s</span><span class="s"> not known.&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">numatoms</span>
-
-    <span class="k">def</span> <span class="nf">_read_trj_numframes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Number-of-frames extractor/indexer for XTC and TRR.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span> <span class="o">==</span> <span class="s">&#39;XTC&#39;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__numframes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__offsets</span> <span class="o">=</span> <span class="n">libxdrfile2</span><span class="o">.</span><span class="n">read_xtc_numframes</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_store_offsets</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span> <span class="o">==</span> <span class="s">&#39;TRR&#39;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__numframes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__offsets</span> <span class="o">=</span> <span class="n">libxdrfile2</span><span class="o">.</span><span class="n">read_trr_numframes</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_store_offsets</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&quot;Gromacs trajectory format </span><span class="si">%s</span><span class="s"> not known.&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span><span class="p">)</span>
-        <span class="k">return</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delta</span>
 
     <span class="k">def</span> <span class="nf">_offset_filename</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">head</span><span class="p">,</span> <span class="n">tail</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">head</span><span class="p">,</span> <span class="s">&#39;.{}_offsets.pkl&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tail</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">head</span><span class="p">,</span> <span class="s">&#39;.{0}_offsets.pkl&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tail</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">_store_offsets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Stores offsets for trajectory as a hidden file in the same directory</span>
@@ -655,7 +624,7 @@
         <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;Offsets could not be retrieved; they will be rebuilt instead.&quot;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="TrjReader.save_offsets"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/core.html#MDAnalysis.coordinates.xdrfile.core.TrjReader.save_offsets">[docs]</a>    <span class="k">def</span> <span class="nf">save_offsets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+<div class="viewcode-block" id="TrjReader.save_offsets"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/core.html#MDAnalysis.coordinates.TRR.TrjReader.save_offsets">[docs]</a>    <span class="k">def</span> <span class="nf">save_offsets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Saves current trajectory offsets into *filename*, as a pickled object.</span>
 
 <span class="sd">        Along with the offsets themselves, the ctime and file size of the</span>
@@ -682,17 +651,17 @@
 <span class="sd">           can no longer be loaded.</span>
 <span class="sd">            </span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__offsets</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_offsets</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_read_trj_numframes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
 
         <span class="n">output</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;ctime&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getctime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">),</span>
                   <span class="s">&#39;size&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">),</span>
-                  <span class="s">&#39;offsets&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__offsets</span><span class="p">}</span>
+                  <span class="s">&#39;offsets&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_offsets</span><span class="p">}</span>
 
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">cPickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="TrjReader.load_offsets"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/core.html#MDAnalysis.coordinates.xdrfile.core.TrjReader.load_offsets">[docs]</a>    <span class="k">def</span> <span class="nf">load_offsets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+<div class="viewcode-block" id="TrjReader.load_offsets"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/core.html#MDAnalysis.coordinates.TRR.TrjReader.load_offsets">[docs]</a>    <span class="k">def</span> <span class="nf">load_offsets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Loads current trajectory offsets from pickled *filename*. </span>
 
 <span class="sd">        Checks if ctime and size of trajectory file matches that stored in</span>
@@ -744,7 +713,7 @@
                 <span class="n">key</span> <span class="o">=</span> <span class="s">&#39;size&#39;</span>
                 <span class="n">conditions</span> <span class="o">=</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span> <span class="o">==</span> <span class="n">offsets</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="ow">and</span> <span class="n">conditions</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;Offsets in file &#39;{}&#39; not suitable; missing {}.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">key</span><span class="p">))</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;Offsets in file &#39;{0}&#39; not suitable; missing {1}.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">key</span><span class="p">))</span>
                 <span class="k">return</span>
 
             <span class="c"># if conditions not met, abort immediately</span>
@@ -754,11 +723,11 @@
 
         <span class="c"># try to load offsets</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__offsets</span> <span class="o">=</span> <span class="n">offsets</span><span class="p">[</span><span class="s">&#39;offsets&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_offsets</span> <span class="o">=</span> <span class="n">offsets</span><span class="p">[</span><span class="s">&#39;offsets&#39;</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;Missing key &#39;offsets&#39; in file &#39;{}&#39;; aborting load of offsets.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;Missing key &#39;offsets&#39; in file &#39;{0}&#39;; aborting load of offsets.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
             <span class="k">return</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__numframes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__offsets</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_numframes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_offsets</span><span class="p">)</span>
 
         <span class="c"># finally, check that loaded offsets appear to work by trying</span>
         <span class="c"># to load last frame; otherwise, dump them so they get regenerated</span>
@@ -772,10 +741,10 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">__getitem__</span><span class="p">(</span><span class="n">frame</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">IndexError</span><span class="p">,</span> <span class="ne">IOError</span><span class="p">):</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;Could not access last frame with loaded offsets; will rebuild offsets instead.&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__offsets</span> <span class="o">=</span> <span class="bp">None</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__numframes</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_offsets</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_numframes</span> <span class="o">=</span> <span class="bp">None</span>
 </div>
-<div class="viewcode-block" id="TrjReader.open_trajectory"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/core.html#MDAnalysis.coordinates.xdrfile.core.TrjReader.open_trajectory">[docs]</a>    <span class="k">def</span> <span class="nf">open_trajectory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TrjReader.open_trajectory"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/core.html#MDAnalysis.coordinates.TRR.TrjReader.open_trajectory">[docs]</a>    <span class="k">def</span> <span class="nf">open_trajectory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Open xdr trajectory file.</span>
 
 <span class="sd">        :Returns: pointer to XDRFILE (and sets self.xdrfile)</span>
@@ -800,14 +769,14 @@
         <span class="n">ts</span><span class="o">.</span><span class="n">lmbda</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">xdrfile</span>
 </div>
-<div class="viewcode-block" id="TrjReader.close"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/core.html#MDAnalysis.coordinates.xdrfile.core.TrjReader.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TrjReader.close"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/core.html#MDAnalysis.coordinates.TRR.TrjReader.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Close xdr trajectory file if it was open.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">xdrfile</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="n">libxdrfile2</span><span class="o">.</span><span class="n">xdrfile_close</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xdrfile</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">xdrfile</span> <span class="o">=</span> <span class="bp">None</span>  <span class="c"># guard against  crashing with a double-free pointer</span>
 </div>
-<div class="viewcode-block" id="TrjReader.Writer"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/core.html#MDAnalysis.coordinates.xdrfile.core.TrjReader.Writer">[docs]</a>    <span class="k">def</span> <span class="nf">Writer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="TrjReader.Writer"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/core.html#MDAnalysis.coordinates.TRR.TrjReader.Writer">[docs]</a>    <span class="k">def</span> <span class="nf">Writer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns a Gromacs TrjWriter for *filename* with the same parameters as this trajectory.</span>
 
 <span class="sd">        All values can be changed through keyword arguments.</span>
@@ -858,68 +827,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">yield</span> <span class="n">ts</span>
 
-    <span class="k">def</span> <span class="nf">_read_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Generic ts reader with minimum intelligence. Override if necessary.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">ts</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span> <span class="o">==</span> <span class="s">&#39;TRR&#39;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span>
-                                                  <span class="s">&#39;_tpos&#39;</span><span class="p">):</span>  <span class="c"># If a foreign Timestep is passed as the receptacle of</span>
-                                                  <span class="c"># the data</span>
-            <span class="n">ts</span> <span class="o">=</span> <span class="n">TRR</span><span class="o">.</span><span class="n">Timestep</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>  <span class="c"># we must make sure the access-checking stuff gets set up.</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">xdrfile</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">open_trajectory</span><span class="p">()</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span> <span class="o">==</span> <span class="s">&#39;XTC&#39;</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__sub</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-                <span class="n">ts</span><span class="o">.</span><span class="n">status</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">step</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">prec</span> <span class="o">=</span> <span class="n">libxdrfile2</span><span class="o">.</span><span class="n">read_xtc</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xdrfile</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">ts</span><span class="o">.</span><span class="n">status</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">step</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">prec</span> <span class="o">=</span> <span class="n">libxdrfile2</span><span class="o">.</span><span class="n">read_xtc</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xdrfile</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__pos_buf</span><span class="p">)</span>
-                <span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__pos_buf</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__sub</span><span class="p">]</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span> <span class="o">==</span> <span class="s">&#39;TRR&#39;</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__sub</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-                <span class="n">ts</span><span class="o">.</span><span class="n">status</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">step</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">lmbda</span><span class="p">,</span>\
-                    <span class="n">ts</span><span class="o">.</span><span class="n">has_x</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">has_v</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">has_f</span> <span class="o">=</span> <span class="n">libxdrfile2</span><span class="o">.</span><span class="n">read_trr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xdrfile</span><span class="p">,</span>
-                                                                        <span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">,</span>
-                                                                        <span class="n">ts</span><span class="o">.</span><span class="n">_tpos</span><span class="p">,</span>
-                                                                        <span class="n">ts</span><span class="o">.</span><span class="n">_tvelocities</span><span class="p">,</span>
-                                                                        <span class="n">ts</span><span class="o">.</span><span class="n">_tforces</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">ts</span><span class="o">.</span><span class="n">status</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">step</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">lmbda</span><span class="p">,</span>\
-                    <span class="n">ts</span><span class="o">.</span><span class="n">has_x</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">has_v</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">has_f</span> <span class="o">=</span> <span class="n">libxdrfile2</span><span class="o">.</span><span class="n">read_trr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xdrfile</span><span class="p">,</span>
-                                                                        <span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">,</span>
-                                                                        <span class="bp">self</span><span class="o">.</span><span class="n">__pos_buf</span><span class="p">,</span>
-                                                                        <span class="bp">self</span><span class="o">.</span><span class="n">__velocities_buf</span><span class="p">,</span>
-                                                                        <span class="bp">self</span><span class="o">.</span><span class="n">__forces_buf</span><span class="p">)</span>
-                <span class="n">ts</span><span class="o">.</span><span class="n">_tpos</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__pos_buf</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__sub</span><span class="p">]</span>
-                <span class="n">ts</span><span class="o">.</span><span class="n">_tvelocities</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__velocities_buf</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__sub</span><span class="p">]</span>
-                <span class="n">ts</span><span class="o">.</span><span class="n">_tforces</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__forces_buf</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__sub</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&quot;Gromacs trajectory format </span><span class="si">%s</span><span class="s"> not known.&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">libxdrfile2</span><span class="o">.</span><span class="n">exdrENDOFFILE</span><span class="p">)</span> <span class="ow">or</span> \
-                <span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">libxdrfile2</span><span class="o">.</span><span class="n">exdrINT</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span> <span class="o">==</span> <span class="s">&#39;TRR&#39;</span><span class="p">):</span>
-            <span class="c"># seems that trr files can get a exdrINT when reaching EOF (??)</span>
-            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="n">errno</span><span class="o">.</span><span class="n">EIO</span><span class="p">,</span> <span class="s">&quot;End of file reached for </span><span class="si">%s</span><span class="s"> file&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span><span class="p">,</span>
-                          <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="ow">not</span> <span class="n">ts</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">libxdrfile2</span><span class="o">.</span><span class="n">exdrOK</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="n">errno</span><span class="o">.</span><span class="n">EBADF</span><span class="p">,</span> <span class="s">&quot;Problem with </span><span class="si">%s</span><span class="s"> file, status </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span>
-                                       <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">format</span><span class="p">,</span> <span class="n">statno</span><span class="o">.</span><span class="n">errorcode</span><span class="p">[</span><span class="n">ts</span><span class="o">.</span><span class="n">status</span><span class="p">]),</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span><span class="p">:</span>
-            <span class="c"># TRRs have the annoying possibility of frames without coordinates/velocities/forces...</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span> <span class="o">==</span> <span class="s">&#39;XTC&#39;</span> <span class="ow">or</span> <span class="n">ts</span><span class="o">.</span><span class="n">has_x</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_from_native</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">)</span>  <span class="c"># in-place !</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_from_native</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">)</span>  <span class="c"># in-place ! (note: xtc/trr contain unit vecs!)</span>
-            <span class="n">ts</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_time_from_native</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>  <span class="c"># in-place does not work with scalars</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span> <span class="o">==</span> <span class="s">&#39;TRR&#39;</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">ts</span><span class="o">.</span><span class="n">has_v</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">convert_velocities_from_native</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">_velocities</span><span class="p">)</span>  <span class="c"># in-place</span>
-                <span class="k">if</span> <span class="n">ts</span><span class="o">.</span><span class="n">has_f</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">convert_forces_from_native</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">_forces</span><span class="p">)</span>  <span class="c"># in-place</span>
-        <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="k">return</span> <span class="n">ts</span>
-
-<div class="viewcode-block" id="TrjReader.rewind"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/core.html#MDAnalysis.coordinates.xdrfile.core.TrjReader.rewind">[docs]</a>    <span class="k">def</span> <span class="nf">rewind</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TrjReader.rewind"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/core.html#MDAnalysis.coordinates.TRR.TrjReader.rewind">[docs]</a>    <span class="k">def</span> <span class="nf">rewind</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Position at beginning of trajectory&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reopen</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>  <span class="c"># read first frame</span>
@@ -928,118 +836,65 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">open_trajectory</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">_goto_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_read_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Fast, index-based, random frame access</span>
 
 <span class="sd">        :TODO: Should we treat frame as 0-based or 1-based??  Right</span>
 <span class="sd">               now: 0-based (which is inconsistent) but analogous to</span>
 <span class="sd">               DCDReader</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__offsets</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_offsets</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_read_trj_numframes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_seek</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__offsets</span><span class="p">[</span><span class="n">frame</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_seek</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_offsets</span><span class="p">[</span><span class="n">frame</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_timestep</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">frame</span> <span class="o">+</span> <span class="mi">1</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span>
 
-    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">frame</span><span class="p">))</span> <span class="o">!=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="nb">int</span><span class="p">))</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">slice</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span>
-        <span class="k">if</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">frame</span><span class="p">))</span> <span class="o">==</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="nb">int</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">frame</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="c"># Interpret similar to a sequence</span>
-                <span class="n">frame</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">frame</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">frame</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)):</span>
-                <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s">&quot;0 &lt;= frame &lt; len(traj) is outside of trajectory boundaries&quot;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_goto_frame</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span> <span class="o">==</span> <span class="nb">slice</span><span class="p">:</span>  <span class="c"># if frame is a slice object</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="p">(((</span><span class="nb">type</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">start</span><span class="p">)</span> <span class="o">==</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">start</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">))</span> <span class="ow">and</span>
-               <span class="p">((</span><span class="nb">type</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">stop</span><span class="p">)</span> <span class="o">==</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">stop</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">))</span> <span class="ow">and</span>
-               <span class="p">((</span><span class="nb">type</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">step</span><span class="p">)</span> <span class="o">==</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">step</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">))):</span>
-                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;Slice indices are not integers&quot;</span><span class="p">)</span>
+    <span class="c"># Renamed this once upon a time.</span>
+    <span class="n">_goto_frame</span> <span class="o">=</span> <span class="n">_read_frame</span>
 
-            <span class="k">def</span> <span class="nf">_iter</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">frame</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="n">frame</span><span class="o">.</span><span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">frame</span><span class="o">.</span><span class="n">step</span><span class="p">):</span>
-                <span class="c"># check_slices implicitly calls len(self), thus setting numframes</span>
-                <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_slice_indices</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">step</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                    <span class="n">rng</span> <span class="o">=</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">start</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
-                    <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">_goto_frame</span><span class="p">(</span><span class="n">start</span><span class="p">)</span>
-                    <span class="k">for</span> <span class="n">framenr</span> <span class="ow">in</span> <span class="n">rng</span><span class="p">:</span>
-                        <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_timestep</span><span class="p">()</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">rng</span> <span class="o">=</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
-                    <span class="k">for</span> <span class="n">framenr</span> <span class="ow">in</span> <span class="n">rng</span><span class="p">:</span>
-                        <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">_goto_frame</span><span class="p">(</span><span class="n">framenr</span><span class="p">)</span>
-
-            <span class="k">return</span> <span class="n">_iter</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">_check_slice_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">step</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">step</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">start</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="n">start</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">start</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">stop</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="n">stop</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">stop</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">step</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-                <span class="n">start</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="k">if</span> <span class="n">stop</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-                <span class="n">stop</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>  <span class="c"># Fixes reverse iteration with default slice. (eg. trajectory[::-1])</span>
-            <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-                <span class="n">start</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
-            <span class="k">if</span> <span class="n">stop</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-                <span class="n">stop</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
-        <span class="k">if</span> <span class="n">stop</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-            <span class="n">stop</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">step</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">stop</span> <span class="o">&lt;=</span> <span class="n">start</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s">&quot;Stop frame is lower than start frame&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">step</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s">&quot;Iteration step 0.&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">start</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s">&quot;Frame start outside of the range of the trajectory.&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span>
-
+    <span class="k">def</span> <span class="nf">_sliced_iter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">_iter</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">step</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">rng</span> <span class="o">=</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">start</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+                <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_frame</span><span class="p">(</span><span class="n">start</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">framenr</span> <span class="ow">in</span> <span class="n">rng</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_frame</span><span class="p">(</span><span class="n">framenr</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">rng</span> <span class="o">=</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">framenr</span> <span class="ow">in</span> <span class="n">rng</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_frame</span><span class="p">(</span><span class="n">framenr</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_iter</span><span class="p">()</span>
+        
     <span class="k">def</span> <span class="nf">timeseries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">asel</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">stop</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">skip</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&#39;afc&#39;</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&quot;timeseries not available for Gromacs trajectories&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">correl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeseries</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">stop</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">skip</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&quot;correl not available for Gromacs trajectories&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-
     <span class="k">def</span> <span class="nf">_seek</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">rel</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Traj seeker&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span> <span class="o">==</span> <span class="s">&#39;XTC&#39;</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span> <span class="o">==</span> <span class="s">&#39;TRR&#39;</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">rel</span><span class="p">:</span>
-                <span class="n">status</span> <span class="o">=</span> <span class="n">libxdrfile2</span><span class="o">.</span><span class="n">xdr_seek</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xdrfile</span><span class="p">,</span> <span class="nb">long</span><span class="p">(</span><span class="n">pos</span><span class="p">),</span> <span class="n">libxdrfile2</span><span class="o">.</span><span class="n">SEEK_CUR</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">status</span> <span class="o">=</span> <span class="n">libxdrfile2</span><span class="o">.</span><span class="n">xdr_seek</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xdrfile</span><span class="p">,</span> <span class="nb">long</span><span class="p">(</span><span class="n">pos</span><span class="p">),</span> <span class="n">libxdrfile2</span><span class="o">.</span><span class="n">SEEK_SET</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">status</span> <span class="o">!=</span> <span class="n">libxdrfile2</span><span class="o">.</span><span class="n">exdrOK</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="n">errno</span><span class="o">.</span><span class="n">EIO</span><span class="p">,</span>
-                              <span class="s">&quot;Problem seeking to offset </span><span class="si">%d</span><span class="s"> (relative to current = </span><span class="si">%s</span><span class="s">) on file </span><span class="si">%s</span><span class="s">, status </span><span class="si">%s</span><span class="s">.</span><span class="se">\n</span><span class="s">&quot;</span>
-                              <span class="s">&quot;Perhaps you are trying to read a file &gt;2GB and your system does not have large file&quot;</span>
-                              <span class="s">&quot;support?&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">rel</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">status</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">rel</span><span class="p">:</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="n">libxdrfile2</span><span class="o">.</span><span class="n">xdr_seek</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xdrfile</span><span class="p">,</span> <span class="nb">long</span><span class="p">(</span><span class="n">pos</span><span class="p">),</span> <span class="n">libxdrfile2</span><span class="o">.</span><span class="n">SEEK_CUR</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&quot;Gromacs trajectory format </span><span class="si">%s</span><span class="s"> not known.&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span><span class="p">)</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="n">libxdrfile2</span><span class="o">.</span><span class="n">xdr_seek</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xdrfile</span><span class="p">,</span> <span class="nb">long</span><span class="p">(</span><span class="n">pos</span><span class="p">),</span> <span class="n">libxdrfile2</span><span class="o">.</span><span class="n">SEEK_SET</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">status</span> <span class="o">!=</span> <span class="n">libxdrfile2</span><span class="o">.</span><span class="n">exdrOK</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="n">errno</span><span class="o">.</span><span class="n">EIO</span><span class="p">,</span>
+                          <span class="s">&quot;Problem seeking to offset </span><span class="si">%d</span><span class="s"> (relative to current = </span><span class="si">%s</span><span class="s">) on file </span><span class="si">%s</span><span class="s">, status </span><span class="si">%s</span><span class="s">.</span><span class="se">\n</span><span class="s">&quot;</span>
+                          <span class="s">&quot;Perhaps you are trying to read a file &gt;2GB and your system does not have large file&quot;</span>
+                          <span class="s">&quot;support?&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">rel</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">status</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">_tell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Traj pos getter&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span> <span class="o">==</span> <span class="s">&#39;XTC&#39;</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span> <span class="o">==</span> <span class="s">&#39;TRR&#39;</span><span class="p">:</span>
-            <span class="n">offset</span> <span class="o">=</span> <span class="n">libxdrfile2</span><span class="o">.</span><span class="n">xdr_tell</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xdrfile</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&quot;Gromacs trajectory format </span><span class="si">%s</span><span class="s"> not known.&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">offset</span></div>
-</pre></div>
+        <span class="k">return</span> <span class="n">libxdrfile2</span><span class="o">.</span><span class="n">xdr_tell</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xdrfile</span><span class="p">)</span>
+</pre></div></div>
 
           </div>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -1048,20 +903,20 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">MDAnalysis 0.9.2-dev documentation</a> &raquo;</li>
-          <li><a href="../../../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">MDAnalysis 0.10.0-dev documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
+    <div class="footer" role="contentinfo">
         &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
-    Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
-    Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
+    Paul Rigor, Andy Somogyi, Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>
 </html>

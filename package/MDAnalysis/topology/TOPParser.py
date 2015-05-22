@@ -41,13 +41,14 @@ Classes
    :inherited-members:
 
 """
+from __future__ import absolute_import
 
 from math import ceil
 
-from MDAnalysis.core.AtomGroup import Atom
-from MDAnalysis.core.units import convert
-from MDAnalysis.core.util import openany, FORTRANReader
-from MDAnalysis.core import flags
+from ..core.AtomGroup import Atom
+from ..core.units import convert
+from ..core.util import openany, FORTRANReader
+from ..core import flags
 from .base import TopologyReader
 
 
@@ -142,10 +143,10 @@ class TOPParser(TopologyReader):
             next_line = topfile.next
             header = next_line()
             if header[:3] != "%VE":
-                raise ValueError("{} is not a valid TOP file. %VE Missing in header".format(topfile))
+                raise ValueError("{0} is not a valid TOP file. %VE Missing in header".format(topfile))
             title = next_line().split()
             if not (title[1] == "TITLE"):
-                raise ValueError("{} is not a valid TOP file. 'TITLE' missing in header".format(topfile))
+                raise ValueError("{0} is not a valid TOP file. 'TITLE' missing in header".format(topfile))
             while header[:14] != '%FLAG POINTERS':
                 header = next_line()
             header = next_line()
@@ -187,8 +188,9 @@ class TOPParser(TopologyReader):
             atomname = structure["_name"][i]
             #segid = 'SYSTEM'  # does not exist in Amber
 
-            atoms[i] = Atom(i, atomname, atomtype, resname, resid, segid, mass, charge)
-        final_structure["_atoms"] = atoms
+            atoms[i] = Atom(i, atomname, atomtype, resname, resid,
+                            segid, mass, charge, universe=self._u)
+        final_structure["atoms"] = atoms
         final_structure["_numatoms"] = sys_info[0]
         return final_structure
 

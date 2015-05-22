@@ -352,6 +352,7 @@ _flags = [
         {
             'kJ/(mol*Angstrom)': 'kJ/(mol*Angstrom)', 'kJ/(mol*A)': 'kJ/(mol*Angstrom)',
             'kJ/(mol*nm)': 'kJ/(mol*nm)',
+            'kcal/(mol*Angstrom)': 'kcal/(mol*Angstrom)', 'kcal/(mol*A)': 'kcal/(mol*Angstrom)'
         },
         """
            Base unit for forces (in particular forces in trajectories)

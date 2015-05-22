@@ -36,12 +36,11 @@ Helper functions:
 
 """
 import os.path
+import numpy
+from numpy import sin, cos, sqrt
+
 import MDAnalysis.coordinates
 import MDAnalysis.core.util
-
-import numpy
-
-from numpy import sin, cos, sqrt
 
 try:
     from numpy import rad2deg, deg2rad  # numpy 1.3+
@@ -60,8 +59,8 @@ def get_reader_for(filename, permissive=False, format=None):
     provided.
     """
     format = guess_format(filename, format=format)
-    if permissive:
-        return MDAnalysis.coordinates._trajectory_readers_permissive[format]
+    if permissive and format == 'PDB':
+        return MDAnalysis.coordinates._trajectory_readers['Permissive_PDB']
     return MDAnalysis.coordinates._trajectory_readers[format]
 
 
@@ -71,8 +70,8 @@ def reader(filename, **kwargs):
     This function guesses the file format from the extension of *filename* and
     it will throw a :exc:`TypeError` if the extension is not recognized.
 
-    In most cases, no special keyword arguments are necessary. For some readers
-    (such as PDB) it might be useful to set the *permissive* = ``True`` flag to
+    In most cases, no special keyword arguments are necessary. For PDB readers
+    it might be useful to set the *permissive* = ``True`` flag to
     select a simpler but faster reader.
 
     All other keywords are passed on to the underlying Reader classes; see
@@ -207,7 +206,11 @@ def format_from_filename_extension(filename):
     try:
         root, ext = get_ext(filename)
     except:
-        raise TypeError("Cannot determine file format for %r" % filename)
+        raise TypeError(
+            "Cannot determine coordinate file format for file '{0}'.\n"
+            "           You can set the format explicitly with "
+            "'Universe(..., format=FORMAT)'.".format(filename))
+            #TypeError: ...."
     format = ext.upper()
     format = check_compressed_format(root, ext)
     return format
@@ -230,9 +233,9 @@ def guess_format(filename, format=None):
             try:
                 format = format_from_filename_extension(filename.name)
             except AttributeError:
-                pass
-            if format is None:
-                raise ValueError("guess_format requires an explicit format specifier for stream {}".format(filename))
+                # format is None so we need to complain:
+                raise ValueError("guess_format requires an explicit format specifier "
+                                 "for stream {0}".format(filename))
         else:
             # iterator, list, filename: simple extension checking... something more
             # complicated is left for the ambitious.
@@ -248,8 +251,16 @@ def guess_format(filename, format=None):
 
     # sanity check
     if format != 'CHAIN' and not format in MDAnalysis.coordinates._trajectory_readers:
-        raise TypeError("Unknown coordinate trajectory format %r for %r; only %r are implemented in MDAnalysis." %
-                        (format, filename, MDAnalysis.coordinates._trajectory_readers.keys()))
+        raise TypeError(
+            "Unknown coordinate trajectory format '{0}' for '{1}'. The FORMATs \n"
+            "           {2}\n"
+            "           are implemented in MDAnalysis.\n"
+            "           See http://docs.mdanalysis.org/documentation_pages/coordinates/init.html#id1\n"
+            "           Use the format keyword to explicitly set the format: 'Universe(...,format=FORMAT)'\n"
+            "           For missing formats, raise an issue at "
+            "http://issues.mdanalysis.org".format(
+                format, filename, MDAnalysis.coordinates._trajectory_readers.keys()))
+            #TypeError: ...."
     return format
 
 
@@ -262,9 +273,9 @@ def check_compressed_format(root, ext):
         try:
             root, ext = get_ext(root)
         except:
-            raise TypeError("Cannot determine coordinate format for %r" % filename)
+            raise TypeError("Cannot determine coordinate format for '{0}'".format(filename))
         if not ext.upper() in MDAnalysis.coordinates._compressed_formats:
-            raise TypeError("Cannot handle %r in compressed format" % filename)
+            raise TypeError("Cannot handle coordinates '{0}' in compressed format".format(filename))
     return ext.upper()
 
 

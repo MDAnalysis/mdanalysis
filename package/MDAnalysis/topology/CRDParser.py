@@ -29,10 +29,11 @@ Classes
    :inherited-members:
 
 """
+from __future__ import absolute_import
 
-from MDAnalysis.core.AtomGroup import Atom
-from MDAnalysis.core.util import openany, FORTRANReader
-from MDAnalysis.topology.core import guess_atom_type, guess_atom_mass, guess_atom_charge
+from ..core.AtomGroup import Atom
+from ..core.util import openany, FORTRANReader
+from .core import guess_atom_type, guess_atom_mass, guess_atom_charge
 from .base import TopologyReader
 
 
@@ -69,16 +70,17 @@ class CRDParser(TopologyReader):
                 try:
                     serial, TotRes, resName, name, x, y, z, chainID, resSeq, tempFactor = r.read(line)
                 except:
-                    raise ValueError("Check CRD format at line {}: {}".format(
-                        linenum, line.rstrip()))
+                    raise ValueError("Check CRD format at line {0}: {1}"
+                                     "".format(linenum, line.rstrip()))
 
                 atomtype = guess_atom_type(name)
                 mass = guess_atom_mass(name)
                 charge = guess_atom_charge(name)
-                atoms.append(Atom(atom_serial, name, atomtype, resName, TotRes, chainID, mass, charge))
+                atoms.append(Atom(atom_serial, name, atomtype, resName,
+                                  TotRes, chainID, mass, charge, universe=self._u))
                 atom_serial += 1
 
         structure = {}
-        structure["_atoms"] = atoms
+        structure['atoms'] = atoms
 
         return structure

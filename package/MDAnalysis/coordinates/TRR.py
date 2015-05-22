@@ -124,4 +124,4 @@ Module reference
    :inherited-members:
 """
 
-from xdrfile.TRR import TRRReader, TRRWriter, Timestep
+from .xdrfile.TRR import TRRReader, TRRWriter, Timestep

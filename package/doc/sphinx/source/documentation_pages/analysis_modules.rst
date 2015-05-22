@@ -42,6 +42,7 @@ Distances and contacts
    analysis/contacts
    analysis/distances
    analysis/rms
+   analysis/psa
 
 Hydrogen bonding
 ================

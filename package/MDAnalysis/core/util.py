@@ -302,7 +302,8 @@ def anyopen(datasource, mode='r', reset=True):
                     try:
                         stream.seek(0L)
                     except (AttributeError, IOError):
-                        warnings.warn("Stream {}: not guaranteed to be at the beginning.".format(filename),
+                        warnings.warn("Stream {0}: not guaranteed to be at the beginning."
+                                      "".format(filename),
                                       category=StreamWarning)
         else:
             stream = None
@@ -543,7 +544,8 @@ class NamedStream(io.IOBase, basestring):
             try:
                 self.stream.seek(0L)  # typical file objects
             except (AttributeError, IOError):
-                warnings.warn("NamedStream {}: not guaranteed to be at the beginning.".format(self.name),
+                warnings.warn("NamedStream {0}: not guaranteed to be at the beginning."
+                              "".format(self.name),
                               category=StreamWarning)
 
     # access the stream

@@ -82,7 +82,7 @@ try:
     import numpy
 except ImportError:
     print("*** package 'numpy' not found ***")
-    print("MDAnalysis requires a version of NumPy (>=1.0.3), even for setup.")
+    print("MDAnalysis requires a version of NumPy (>=1.4.0), even for setup.")
     print("Please get it from http://numpy.scipy.org/ or install it through your package manager.")
     sys.exit(-1)
 
@@ -172,7 +172,7 @@ def detect_openmp():
 
 
 if __name__ == '__main__':
-    RELEASE = "0.9.2-dev"  # NOTE: keep in sync with MDAnalysis.version in __init__.py
+    RELEASE = "0.10.0-dev"  # NOTE: keep in sync with MDAnalysis.version in __init__.py
     with open("SUMMARY.txt") as summary:
         LONG_DESCRIPTION = summary.read()
     CLASSIFIERS = [
@@ -219,7 +219,7 @@ if __name__ == '__main__':
                   include_dirs=include_dirs + ['src/dcd/include'],
                   define_macros=define_macros,
                   extra_compile_args=extra_compile_args),
-        Extension('core.distances', ['src/numtools/distances.%s' % ("pyx" if use_cython else "c")],
+        Extension('lib._distances', ['src/numtools/distances.%s' % ("pyx" if use_cython else "c")],
                   include_dirs=include_dirs + ['src/numtools'],
                   libraries=['m'],
                   define_macros=define_macros,
@@ -268,19 +268,20 @@ if __name__ == '__main__':
           provides=['MDAnalysis'],
           license='GPL 2',
           packages=['MDAnalysis',
-              'MDAnalysis.core',
-              'MDAnalysis.core.parallel',
-              'MDAnalysis.topology',
-              'MDAnalysis.topology.tpr',
-              'MDAnalysis.selections',
-              'MDAnalysis.coordinates',
-              'MDAnalysis.coordinates.xdrfile',
-              'MDAnalysis.coordinates.pdb',
-              'MDAnalysis.KDTree',
-              'MDAnalysis.analysis',
-              'MDAnalysis.analysis.hbonds',
-              'MDAnalysis.tests',
-              'MDAnalysis.visualization'],
+                    'MDAnalysis.analysis',
+                    'MDAnalysis.analysis.hbonds',
+                    'MDAnalysis.coordinates',
+                    'MDAnalysis.coordinates.xdrfile',
+                    'MDAnalysis.coordinates.pdb',
+                    'MDAnalysis.core',
+                    'MDAnalysis.core.parallel',
+                    'MDAnalysis.KDTree',
+                    'MDAnalysis.lib',
+                    'MDAnalysis.selections',
+                    'MDAnalysis.topology',
+                    'MDAnalysis.topology.tpr',
+                    'MDAnalysis.tests',
+                    'MDAnalysis.visualization'],
           package_dir={'MDAnalysis': 'MDAnalysis'},
           ext_package='MDAnalysis',
           ext_modules=extensions,
@@ -290,7 +291,7 @@ if __name__ == '__main__':
           # all standard requirements are available through PyPi and
           # typically can be installed without difficulties through setuptools
           install_requires=[
-              'numpy>=1.0.3',  # currently not useful because without numpy we don't get here
+              'numpy>=1.4.0',  # currently not useful because without numpy we don't get here
               'biopython>=1.59',  # required for standard PDB reader and sequence alignment
               'networkx>=1.0',  # LeafletFinder
               'GridDataFormats>=0.2.2',  # volumes and densities

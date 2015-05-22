@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.analysis.align &mdash; MDAnalysis 0.9.2-dev documentation</title>
+    <title>MDAnalysis.analysis.align &mdash; MDAnalysis 0.10.0-dev documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.9.2-dev',
+        VERSION:     '0.10.0-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,14 +25,14 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.9.2-dev documentation"
+          title="Search within MDAnalysis 0.10.0-dev documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.9.2-dev documentation" href="../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.10.0-dev documentation" href="../../../index.html" />
     <link rel="up" title="MDAnalysis" href="../../MDAnalysis.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -41,17 +41,17 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.9.2-dev documentation</a> &raquo;</li>
-          <li><a href="../../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.10.0-dev documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../../index.html">
               <img class="logo" src="../../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
             </a></p>
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../../search.html" method="get">
       <input type="text" name="q" />
@@ -70,7 +70,7 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <h1>Source code for MDAnalysis.analysis.align</h1><div class="highlight"><pre>
 <span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
@@ -224,20 +224,20 @@
 <span class="sd">normal users.</span>
 
 <span class="sd">.. autofunction:: fasta2select</span>
-<span class="sd">.. autofunction:: check_same_atoms</span>
+<span class="sd">.. autofunction:: get_matching_atoms</span>
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os.path</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span>
-<span class="kn">import</span> <span class="nn">MDAnalysis.core.qcprot</span> <span class="kn">as</span> <span class="nn">qcp</span>
 
-<span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">SelectionError</span>
+<span class="kn">import</span> <span class="nn">MDAnalysis.core.qcprot</span> <span class="kn">as</span> <span class="nn">qcp</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">SelectionError</span><span class="p">,</span> <span class="n">SelectionWarning</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.core.log</span> <span class="kn">import</span> <span class="n">ProgressMeter</span>
 
-<span class="c"># from MDAnalysis.core.util import asiterable # unused</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.rms</span> <span class="kn">import</span> <span class="n">rmsd</span><span class="p">,</span> <span class="n">_process_selection</span>
+<span class="kn">import</span> <span class="nn">MDAnalysis.analysis.rms</span> <span class="kn">as</span> <span class="nn">rms</span>
 
-<span class="kn">import</span> <span class="nn">os.path</span>
-
+<span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&#39;MDAnalysis.analysis.align&#39;</span><span class="p">)</span>
@@ -292,7 +292,7 @@
 
 </div>
 <div class="viewcode-block" id="alignto"><a class="viewcode-back" href="../../../documentation_pages/analysis/align.html#MDAnalysis.analysis.align.alignto">[docs]</a><span class="k">def</span> <span class="nf">alignto</span><span class="p">(</span><span class="n">mobile</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s">&quot;all&quot;</span><span class="p">,</span> <span class="n">mass_weighted</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-            <span class="n">subselection</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">tol_mass</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+            <span class="n">subselection</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">tol_mass</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Spatially align *mobile* to *reference* by doing a RMSD fit on *select* atoms.</span>
 
 <span class="sd">    The superposition is done in the following way:</span>
@@ -345,6 +345,14 @@
 <span class="sd">      *tol_mass*</span>
 <span class="sd">         Reject match if the atomic masses for matched atoms differ by more than</span>
 <span class="sd">         *tol_mass* [0.1]</span>
+<span class="sd">      *strict*</span>
+<span class="sd">         ``True``</span>
+<span class="sd">             Will raise :exc:`SelectioError` if a single atom does not</span>
+<span class="sd">             match between the two selections.</span>
+<span class="sd">         ``False`` [default]</span>
+<span class="sd">             Will try to prepare a matching selection by dropping</span>
+<span class="sd">             residues with non-matching atoms. See :func:`get_matching_atoms`</span>
+<span class="sd">             for details.</span>
 <span class="sd">      *subselection*</span>
 <span class="sd">         Apply the transformation only to this selection.</span>
 
@@ -365,6 +373,11 @@
 <span class="sd">    .. versionchanged:: 0.8</span>
 <span class="sd">       Added check that the two groups describe the same atoms including</span>
 <span class="sd">       the new *tol_mass* keyword.</span>
+
+<span class="sd">    .. versionchanged:: 0.10.0</span>
+<span class="sd">       Uses :func:`get_matching_atoms` to work with incomplete selections</span>
+<span class="sd">       and new *strict* keyword. The new default is to be lenient whereas</span>
+<span class="sd">       the old behavior was the equivalent of *strict* = ``True``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">select</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;all&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">):</span>
         <span class="c"># keep the EXACT order in the input AtomGroups; selectAtoms(&#39;all&#39;)</span>
@@ -373,11 +386,12 @@
         <span class="n">mobile_atoms</span> <span class="o">=</span> <span class="n">mobile</span><span class="o">.</span><span class="n">atoms</span>
         <span class="n">ref_atoms</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">atoms</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">select</span> <span class="o">=</span> <span class="n">_process_selection</span><span class="p">(</span><span class="n">select</span><span class="p">)</span>
+        <span class="n">select</span> <span class="o">=</span> <span class="n">rms</span><span class="o">.</span><span class="n">_process_selection</span><span class="p">(</span><span class="n">select</span><span class="p">)</span>
         <span class="n">mobile_atoms</span> <span class="o">=</span> <span class="n">mobile</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="o">*</span><span class="n">select</span><span class="p">[</span><span class="s">&#39;mobile&#39;</span><span class="p">])</span>
         <span class="n">ref_atoms</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="o">*</span><span class="n">select</span><span class="p">[</span><span class="s">&#39;reference&#39;</span><span class="p">])</span>
 
-    <span class="n">check_same_atoms</span><span class="p">(</span><span class="n">ref_atoms</span><span class="p">,</span> <span class="n">mobile_atoms</span><span class="p">,</span> <span class="n">tol_mass</span><span class="o">=</span><span class="n">tol_mass</span><span class="p">)</span>
+    <span class="n">ref_atoms</span><span class="p">,</span> <span class="n">mobile_atoms</span> <span class="o">=</span> <span class="n">get_matching_atoms</span><span class="p">(</span><span class="n">ref_atoms</span><span class="p">,</span> <span class="n">mobile_atoms</span><span class="p">,</span>
+                                                 <span class="n">tol_mass</span><span class="o">=</span><span class="n">tol_mass</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="n">strict</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">mass_weighted</span><span class="p">:</span>
         <span class="n">weights</span> <span class="o">=</span> <span class="n">ref_atoms</span><span class="o">.</span><span class="n">masses</span><span class="p">()</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">ref_atoms</span><span class="o">.</span><span class="n">masses</span><span class="p">())</span>
@@ -391,7 +405,7 @@
     <span class="n">ref_coordinates</span> <span class="o">=</span> <span class="n">ref_atoms</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span> <span class="o">-</span> <span class="n">ref_com</span>
     <span class="n">mobile_coordinates</span> <span class="o">=</span> <span class="n">mobile_atoms</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span> <span class="o">-</span> <span class="n">mobile_com</span>
 
-    <span class="n">old_rmsd</span> <span class="o">=</span> <span class="n">rmsd</span><span class="p">(</span><span class="n">mobile_atoms</span><span class="o">.</span><span class="n">coordinates</span><span class="p">(),</span> <span class="n">ref_atoms</span><span class="o">.</span><span class="n">coordinates</span><span class="p">())</span>
+    <span class="n">old_rmsd</span> <span class="o">=</span> <span class="n">rms</span><span class="o">.</span><span class="n">rmsd</span><span class="p">(</span><span class="n">mobile_atoms</span><span class="o">.</span><span class="n">coordinates</span><span class="p">(),</span> <span class="n">ref_atoms</span><span class="o">.</span><span class="n">coordinates</span><span class="p">())</span>
 
     <span class="n">R</span><span class="p">,</span> <span class="n">new_rmsd</span> <span class="o">=</span> <span class="n">rotation_matrix</span><span class="p">(</span><span class="n">mobile_coordinates</span><span class="p">,</span> <span class="n">ref_coordinates</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span>
 
@@ -413,7 +427,7 @@
 
 </div>
 <div class="viewcode-block" id="rms_fit_trj"><a class="viewcode-back" href="../../../documentation_pages/analysis/align.html#MDAnalysis.analysis.align.rms_fit_trj">[docs]</a><span class="k">def</span> <span class="nf">rms_fit_trj</span><span class="p">(</span><span class="n">traj</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s">&#39;all&#39;</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">rmsdfile</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s">&#39;rmsfit_&#39;</span><span class="p">,</span>
-                <span class="n">mass_weighted</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">tol_mass</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                <span class="n">mass_weighted</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">tol_mass</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;RMS-fit trajectory to a reference structure using a selection.</span>
 
 <span class="sd">    Both reference *ref* and trajectory *traj* must be</span>
@@ -452,6 +466,13 @@
 <span class="sd">      *tol_mass*</span>
 <span class="sd">         Reject match if the atomic masses for matched atoms differ by more than</span>
 <span class="sd">         *tol_mass* [0.1]</span>
+<span class="sd">      *strict*</span>
+<span class="sd">         Default: ``False``</span>
+<span class="sd">         - ``True``: Will raise :exc:`SelectioError` if a single atom does not</span>
+<span class="sd">           match between the two selections.</span>
+<span class="sd">         - ``False``: Will try to prepare a matching selection by dropping</span>
+<span class="sd">           residues with non-matching atoms. See :func:`get_matching_atoms`</span>
+<span class="sd">           for details.</span>
 <span class="sd">      *force*</span>
 <span class="sd">         - ``True``: Overwrite an existing output trajectory (default)</span>
 <span class="sd">         - ``False``: simply return if the file already exists</span>
@@ -477,6 +498,12 @@
 <span class="sd">    .. versionchanged:: 0.8</span>
 <span class="sd">       Added *kwargs* to be passed to the trajectory :class:`~MDAnalysis.coordinates.base.Writer` and</span>
 <span class="sd">       *filename* is returned.</span>
+
+<span class="sd">    .. versionchanged:: 0.10.0</span>
+<span class="sd">       Uses :func:`get_matching_atoms` to work with incomplete selections</span>
+<span class="sd">       and new *strict* keyword. The new default is to be lenient whereas</span>
+<span class="sd">       the old behavior was the equivalent of *strict* = ``True``.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">frames</span> <span class="o">=</span> <span class="n">traj</span><span class="o">.</span><span class="n">trajectory</span>
     <span class="k">if</span> <span class="n">quiet</span><span class="p">:</span>
@@ -496,12 +523,13 @@
     <span class="n">writer</span> <span class="o">=</span> <span class="n">_Writer</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="k">del</span> <span class="n">_Writer</span>
 
-    <span class="n">select</span> <span class="o">=</span> <span class="n">_process_selection</span><span class="p">(</span><span class="n">select</span><span class="p">)</span>
+    <span class="n">select</span> <span class="o">=</span> <span class="n">rms</span><span class="o">.</span><span class="n">_process_selection</span><span class="p">(</span><span class="n">select</span><span class="p">)</span>
     <span class="n">ref_atoms</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="o">*</span><span class="n">select</span><span class="p">[</span><span class="s">&#39;reference&#39;</span><span class="p">])</span>
     <span class="n">traj_atoms</span> <span class="o">=</span> <span class="n">traj</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="o">*</span><span class="n">select</span><span class="p">[</span><span class="s">&#39;mobile&#39;</span><span class="p">])</span>
     <span class="n">natoms</span> <span class="o">=</span> <span class="n">traj_atoms</span><span class="o">.</span><span class="n">numberOfAtoms</span><span class="p">()</span>
 
-    <span class="n">check_same_atoms</span><span class="p">(</span><span class="n">ref_atoms</span><span class="p">,</span> <span class="n">traj_atoms</span><span class="p">,</span> <span class="n">tol_mass</span><span class="o">=</span><span class="n">tol_mass</span><span class="p">)</span>
+    <span class="n">ref_atoms</span><span class="p">,</span> <span class="n">traj_atoms</span> <span class="o">=</span> <span class="n">get_matching_atoms</span><span class="p">(</span><span class="n">ref_atoms</span><span class="p">,</span> <span class="n">traj_atoms</span><span class="p">,</span>
+                                                 <span class="n">tol_mass</span><span class="o">=</span><span class="n">tol_mass</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="n">strict</span><span class="p">)</span>
 
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;RMS-fitting on </span><span class="si">%d</span><span class="s"> atoms.&quot;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">ref_atoms</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">mass_weighted</span><span class="p">:</span>
@@ -566,8 +594,50 @@
         <span class="n">logging</span><span class="o">.</span><span class="n">disable</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">NOTSET</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">filename</span>
-
 </div>
+<span class="k">def</span> <span class="nf">sequence_alignment</span><span class="p">(</span><span class="n">mobile</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generate a global sequence alignment between residues in *reference* and *mobile*.</span>
+
+<span class="sd">    The global alignment uses the Needleman-Wunsch algorith as</span>
+<span class="sd">    implemented in :mod:`Bio.pairwise2`. The parameters of the dynamic</span>
+<span class="sd">    programming algorithm can be tuned with the keywords. The defaults</span>
+<span class="sd">    should be suitable for two similar sequences. For sequences with</span>
+<span class="sd">    low sequence identity, more specialized tools such as clustalw,</span>
+<span class="sd">    muscle, tcoffee, or similar should be used.</span>
+
+<span class="sd">    :Arguments:</span>
+<span class="sd">       *mobile*</span>
+<span class="sd">          protein atom group</span>
+<span class="sd">       *reference*</span>
+<span class="sd">          protein atom group</span>
+
+<span class="sd">    :Keywords:</span>
+<span class="sd">      *match_score*</span>
+<span class="sd">         score for matching residues [2]</span>
+<span class="sd">      *mismatch_penalty*</span>
+<span class="sd">         penalty for residues that do not match [-1]</span>
+<span class="sd">      *gap_penalty*</span>
+<span class="sd">         penalty for opening a gap; the high default value creates compact</span>
+<span class="sd">         alignments for highly identical sequences but might not be suitable</span>
+<span class="sd">         for sequences with low identity [-2]</span>
+<span class="sd">      *gapextension_penalty*</span>
+<span class="sd">         penalty for extending a gap [-0.1]</span>
+
+<span class="sd">    .. versionadded:: 0.10.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span> <span class="nn">Bio.pairwise2</span>
+    <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s">&#39;match_score&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s">&#39;mismatch_penalty&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s">&#39;gap_penalty&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s">&#39;gapextension_penalty&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.1</span><span class="p">)</span>
+
+    <span class="n">aln</span> <span class="o">=</span> <span class="n">Bio</span><span class="o">.</span><span class="n">pairwise2</span><span class="o">.</span><span class="n">align</span><span class="o">.</span><span class="n">globalms</span><span class="p">(</span>
+        <span class="n">reference</span><span class="o">.</span><span class="n">sequence</span><span class="p">(</span><span class="n">format</span><span class="o">=</span><span class="s">&quot;string&quot;</span><span class="p">),</span> <span class="n">mobile</span><span class="o">.</span><span class="n">sequence</span><span class="p">(</span><span class="n">format</span><span class="o">=</span><span class="s">&quot;string&quot;</span><span class="p">),</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;match_score&#39;</span><span class="p">],</span> <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;mismatch_penalty&#39;</span><span class="p">],</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;gap_penalty&#39;</span><span class="p">],</span> <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;gapextension_penalty&#39;</span><span class="p">])</span>
+    <span class="c"># choose top alignment</span>
+    <span class="k">return</span> <span class="n">aln</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
 <div class="viewcode-block" id="fasta2select"><a class="viewcode-back" href="../../../documentation_pages/analysis/align.html#MDAnalysis.analysis.align.fasta2select">[docs]</a><span class="k">def</span> <span class="nf">fasta2select</span><span class="p">(</span><span class="n">fastafilename</span><span class="p">,</span> <span class="n">is_aligned</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
                  <span class="n">ref_resids</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">target_resids</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="n">ref_offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">target_offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">verbosity</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
@@ -762,14 +832,24 @@
     <span class="k">return</span> <span class="p">{</span><span class="s">&#39;reference&#39;</span><span class="p">:</span> <span class="n">ref_selection</span><span class="p">,</span> <span class="s">&#39;mobile&#39;</span><span class="p">:</span> <span class="n">target_selection</span><span class="p">}</span>
 
 </div>
-<div class="viewcode-block" id="check_same_atoms"><a class="viewcode-back" href="../../../documentation_pages/analysis/align.html#MDAnalysis.analysis.align.check_same_atoms">[docs]</a><span class="k">def</span> <span class="nf">check_same_atoms</span><span class="p">(</span><span class="n">ag1</span><span class="p">,</span> <span class="n">ag2</span><span class="p">,</span> <span class="n">tol_mass</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Test if the two :class:`~MDAnalysis.core.AtomGroup.AtomGroup` *ag1* and *ag2* consist of the same atoms.</span>
+<div class="viewcode-block" id="get_matching_atoms"><a class="viewcode-back" href="../../../documentation_pages/analysis/align.html#MDAnalysis.analysis.align.get_matching_atoms">[docs]</a><span class="k">def</span> <span class="nf">get_matching_atoms</span><span class="p">(</span><span class="n">ag1</span><span class="p">,</span> <span class="n">ag2</span><span class="p">,</span> <span class="n">tol_mass</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return two atom groups with one-to-one matched atoms.</span>
 
-<span class="sd">    Two tests are performed:</span>
+<span class="sd">    The function takes two :class:`~MDAnalysis.core.AtomGroup.AtomGroup`</span>
+<span class="sd">    instances *ag1* and *ag2* and returns two atom groups *g1* and *g2* that</span>
+<span class="sd">    consist of atoms so that the mass of atom ``g1[0]`` is the same as the mass</span>
+<span class="sd">    of atom ``g2[0]``, ``g1[1]`` and ``g2[1]`` etc.</span>
 
-<span class="sd">    1. The two groups must contain the same number of atoms.</span>
-<span class="sd">    2. The masses of corresponding atoms are compared and if any masses differ by more</span>
-<span class="sd">       than *tol_mass* the test is considered failed.</span>
+<span class="sd">    The current implementation is very simplistic and works on a per-residue basis:</span>
+
+<span class="sd">    1. The two groups must contain the same number of residues.</span>
+<span class="sd">    2. Any residues in each group that have differing number of atoms are discarded.</span>
+<span class="sd">    3. The masses of corresponding atoms are compared. and if any masses differ</span>
+<span class="sd">       by more than *tol_mass* the test is considered failed and a</span>
+<span class="sd">       :exc:`SelectionError` is raised.</span>
+
+<span class="sd">    The log file (see :func:`MDAnalysis.start_logging`) will contain detailed</span>
+<span class="sd">    information about mismatches.</span>
 
 <span class="sd">    :Arguments:</span>
 <span class="sd">      *ag1*, *ag2*</span>
@@ -778,37 +858,147 @@
 <span class="sd">      *tol_mass*</span>
 <span class="sd">         Reject if the atomic masses for matched atoms differ by more than</span>
 <span class="sd">         *tol_mass* [0.1]</span>
+<span class="sd">      *strict*</span>
+<span class="sd">         ``True``</span>
+<span class="sd">             Will raise :exc:`SelectioError` if a single atom does not</span>
+<span class="sd">             match between the two selections.</span>
+<span class="sd">         ``False`` [default]</span>
+<span class="sd">             Will try to prepare a matching selection by dropping</span>
+<span class="sd">             residues with non-matching atoms. See :func:`get_matching_atoms`</span>
+<span class="sd">             for details.</span>
 
-<span class="sd">    :Raises: :exc:`SelectionError` if any of the tests fails.</span>
+<span class="sd">    :Returns: Tuple ``(g1, g2)`` with :class:`~MDAnalysis.core.AtomGroup.AtomGroup` instances</span>
+<span class="sd">              that match, atom by atom. The groups are either the original groups if all matches</span>
+<span class="sd">              or slices of the original groups.</span>
+
+<span class="sd">    :Raises: :exc:`SelectionError` if the number of residues does not match or if in the final</span>
+<span class="sd">             matching masses differ by more than *tol*.</span>
+
+<span class="sd">    The algorithm could be improved by using e.g. the Needleman-Wunsch</span>
+<span class="sd">    algorithm in :mod:`Bio.profile2` to align atoms in each residue (doing a</span>
+<span class="sd">    global alignment is too expensive).</span>
 
 <span class="sd">    .. versionadded:: 0.8</span>
+
+<span class="sd">    .. versionchanged:: 0.10.0</span>
+<span class="sd">       Renamed from :func:`check_same_atoms` to :func:`get_matching_atoms` and now returns</span>
+<span class="sd">       matching atomgroups (possibly with residues removed)</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ag1</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ag2</span><span class="p">):</span>
-        <span class="n">data1</span><span class="p">,</span> <span class="n">data2</span> <span class="o">=</span> <span class="n">ag1</span><span class="o">.</span><span class="n">resids</span><span class="p">(),</span> <span class="n">ag2</span><span class="o">.</span><span class="n">resids</span><span class="p">()</span>
-        <span class="n">errmsg</span> <span class="o">=</span> <span class="s">&quot;Reference and trajectory atom selections do not contain &quot;</span> \
-                 <span class="s">&quot;the same number of atoms: N_ref={0}, N_traj={1}&quot;</span> \
-                 <span class="s">&quot;nResids_ref ={2}</span><span class="se">\n</span><span class="s">Resids_traj={3}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ag1</span><span class="p">),</span>
-                                                            <span class="nb">len</span><span class="p">(</span><span class="n">ag2</span><span class="p">),</span>
-                                                            <span class="nb">repr</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">ag1</span><span class="o">.</span><span class="n">resids</span><span class="p">())),</span>
-                                                            <span class="nb">repr</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">ag2</span><span class="o">.</span><span class="n">resids</span><span class="p">())))</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="n">SelectionError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ag1</span><span class="o">.</span><span class="n">numberOfAtoms</span><span class="p">()</span> <span class="o">!=</span> <span class="n">ag2</span><span class="o">.</span><span class="n">numberOfAtoms</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">ag1</span><span class="o">.</span><span class="n">numberOfResidues</span><span class="p">()</span> <span class="o">!=</span> <span class="n">ag2</span><span class="o">.</span><span class="n">numberOfResidues</span><span class="p">():</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="s">&quot;Reference and trajectory atom selections do not contain &quot;</span>
+            <span class="s">&quot;the same number of atoms: </span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;atoms:    N_ref={0}, N_traj={1}</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;and also not the same number of residues:</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;residues: N_ref={2}, N_traj={3}</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;(More details can be found in the log file &quot;</span>
+            <span class="s">&quot;which can be enabled with &#39;MDAnalysis.start_logging()&#39;)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">ag1</span><span class="o">.</span><span class="n">numberOfAtoms</span><span class="p">(),</span> <span class="n">ag2</span><span class="o">.</span><span class="n">numberOfAtoms</span><span class="p">(),</span>
+                <span class="n">ag1</span><span class="o">.</span><span class="n">numberOfResidues</span><span class="p">(),</span> <span class="n">ag2</span><span class="o">.</span><span class="n">numberOfResidues</span><span class="p">())</span>
+            <span class="n">dbgmsg</span> <span class="o">=</span> <span class="s">&quot;mismatched residue numbers</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">+</span> \
+                <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s">&quot;{0} | {1}&quot;</span>  <span class="k">for</span> <span class="n">r1</span><span class="p">,</span> <span class="n">r2</span> <span class="ow">in</span>
+                           <span class="n">itertools</span><span class="o">.</span><span class="n">izip_longest</span><span class="p">(</span><span class="n">ag1</span><span class="o">.</span><span class="n">resids</span><span class="p">(),</span> <span class="n">ag2</span><span class="o">.</span><span class="n">resids</span><span class="p">())])</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">dbgmsg</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">SelectionError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;Reference and trajectory atom selections do not contain &quot;</span>
+                   <span class="s">&quot;the same number of atoms: </span><span class="se">\n</span><span class="s">&quot;</span>
+                   <span class="s">&quot;atoms:    N_ref={0}, N_traj={1}&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">ag1</span><span class="o">.</span><span class="n">numberOfAtoms</span><span class="p">(),</span> <span class="n">ag2</span><span class="o">.</span><span class="n">numberOfAtoms</span><span class="p">())</span>
+            <span class="k">if</span> <span class="n">strict</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">SelectionError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+            <span class="c"># continue with trying to creating a valid selection</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">but we attempt to create a valid selection.&quot;</span><span class="p">,</span>
+                          <span class="n">category</span><span class="o">=</span><span class="n">SelectionWarning</span><span class="p">)</span>
+
+        <span class="c"># continue with trying to salvage the selection:</span>
+        <span class="c"># - number of atoms is different</span>
+        <span class="c"># - number of residues is the same</span>
+        <span class="c"># We will remove residues with mismatching number of atoms (e.g. not resolved</span>
+        <span class="c"># in an X-ray structure)</span>
+        <span class="k">assert</span> <span class="n">ag1</span><span class="o">.</span><span class="n">numberOfResidues</span><span class="p">()</span> <span class="o">==</span> <span class="n">ag2</span><span class="o">.</span><span class="n">numberOfResidues</span><span class="p">()</span>
+
+        <span class="c"># Alternatively, we could align all atoms but Needleman-Wunsch</span>
+        <span class="c"># pairwise2 consumes too much memory for thousands of characters in</span>
+        <span class="c"># each sequence. Perhaps a solution would be pairwise alignment per residue.</span>
+        <span class="c">#</span>
+        <span class="c"># aln_elem = Bio.pairwise2.align.globalms(&quot;&quot;.join([MDAnalysis.topology.core.guess_atom_element(n) for n in gref.atoms.names()]),</span>
+        <span class="c">#    &quot;&quot;.join([MDAnalysis.topology.core.guess_atom_element(n) for n in models[0].atoms.names()]),</span>
+        <span class="c">#                               2, -1, -1, -0.1,</span>
+        <span class="c">#                               one_alignment_only=True)</span>
+
+        <span class="c"># For now, just remove the residues that don&#39;t have matching numbers</span>
+        <span class="n">rsize1</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">r</span><span class="o">.</span><span class="n">numberOfAtoms</span><span class="p">()</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">ag1</span><span class="o">.</span><span class="n">residues</span><span class="p">])</span>
+        <span class="n">rsize2</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">r</span><span class="o">.</span><span class="n">numberOfAtoms</span><span class="p">()</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">ag2</span><span class="o">.</span><span class="n">residues</span><span class="p">])</span>
+        <span class="n">rsize_mismatches</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">rsize1</span> <span class="o">-</span> <span class="n">rsize2</span><span class="p">)</span>
+        <span class="n">mismatch_mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">rsize_mismatches</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">numpy</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mismatch_mask</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">strict</span><span class="p">:</span>
+                <span class="c"># diagnostics</span>
+                <span class="n">mismatch_resindex</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">ag1</span><span class="o">.</span><span class="n">numberOfResidues</span><span class="p">())[</span><span class="n">mismatch_mask</span><span class="p">]</span>
+                <span class="k">def</span> <span class="nf">log_mismatch</span><span class="p">(</span><span class="n">number</span><span class="p">,</span> <span class="n">ag</span><span class="p">,</span> <span class="n">rsize</span><span class="p">,</span> <span class="n">mismatch_resindex</span><span class="o">=</span><span class="n">mismatch_resindex</span><span class="p">):</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;Offending residues: group {0}: {1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">number</span><span class="p">,</span>
+                            <span class="s">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s">&quot;{0[0]}{0[1]} ({0[2]})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span>
+                                       <span class="n">itertools</span><span class="o">.</span><span class="n">izip</span><span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">resnames</span><span class="p">()[</span><span class="n">mismatch_resindex</span><span class="p">],</span>
+                                                      <span class="n">ag</span><span class="o">.</span><span class="n">resids</span><span class="p">()[</span><span class="n">mismatch_resindex</span><span class="p">],</span>
+                                                      <span class="n">rsize</span><span class="p">[</span><span class="n">mismatch_resindex</span><span class="p">]</span>
+                                                      <span class="p">)])))</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;Found {0} residues with non-matching numbers of atoms (#)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">mismatch_mask</span><span class="o">.</span><span class="n">sum</span><span class="p">()))</span>
+                <span class="n">log_mismatch</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">ag1</span><span class="p">,</span> <span class="n">rsize1</span><span class="p">)</span>
+                <span class="n">log_mismatch</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">ag2</span><span class="p">,</span> <span class="n">rsize2</span><span class="p">)</span>
+
+                <span class="k">raise</span> <span class="n">SelectionError</span><span class="p">(</span><span class="s">&quot;Different number of atoms in some residues. &quot;</span>
+                                     <span class="s">&quot;(Use strict=False to attempt using matching atoms only.)&quot;</span><span class="p">)</span>
+
+            <span class="k">def</span> <span class="nf">get_atoms_byres</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">match_mask</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">mismatch_mask</span><span class="p">)):</span>
+                <span class="c"># not pretty... but need to do things on a per-atom basis in order</span>
+                <span class="c"># to preserve original selection</span>
+                <span class="n">ag</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">atoms</span>
+                <span class="n">good</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">resids</span><span class="p">()[</span><span class="n">match_mask</span><span class="p">]</span>
+                <span class="n">resids</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">resid</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">ag</span><span class="p">])</span>  <span class="c"># resid for each atom</span>
+                <span class="n">ix_good</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">resids</span><span class="p">,</span> <span class="n">good</span><span class="p">)</span>   <span class="c"># boolean array for all matching atoms</span>
+                <span class="k">return</span> <span class="n">ag</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ag</span><span class="p">))[</span><span class="n">ix_good</span><span class="p">]]</span>   <span class="c"># workaround for missing boolean indexing</span>
+            <span class="n">_ag1</span> <span class="o">=</span> <span class="n">get_atoms_byres</span><span class="p">(</span><span class="n">ag1</span><span class="p">)</span>
+            <span class="n">_ag2</span> <span class="o">=</span> <span class="n">get_atoms_byres</span><span class="p">(</span><span class="n">ag2</span><span class="p">)</span>
+
+            <span class="c"># diagnostics</span>
+            <span class="c"># (ugly workaround for missing boolean indexing of AtomGroup)</span>
+            <span class="c"># note: ag[arange(len(ag))[boolean]] is ~2x faster than ag[where[boolean]]</span>
+            <span class="n">mismatch_resindex</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">ag1</span><span class="o">.</span><span class="n">numberOfResidues</span><span class="p">())[</span><span class="n">mismatch_mask</span><span class="p">]</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;Removed {0} residues with non-matching numbers of atoms&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">mismatch_mask</span><span class="o">.</span><span class="n">sum</span><span class="p">()))</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;Removed residue ids: group 1: {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ag1</span><span class="o">.</span><span class="n">resids</span><span class="p">()[</span><span class="n">mismatch_resindex</span><span class="p">]))</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;Removed residue ids: group 2: {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ag2</span><span class="o">.</span><span class="n">resids</span><span class="p">()[</span><span class="n">mismatch_resindex</span><span class="p">]))</span>
+            <span class="c"># replace after logging (still need old ag1 and ag2 for diagnostics)</span>
+            <span class="n">ag1</span> <span class="o">=</span> <span class="n">_ag1</span>
+            <span class="n">ag2</span> <span class="o">=</span> <span class="n">_ag2</span>
+            <span class="k">del</span> <span class="n">_ag1</span><span class="p">,</span> <span class="n">_ag2</span>
+
     <span class="n">mass_mismatches</span> <span class="o">=</span> <span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">ag1</span><span class="o">.</span><span class="n">masses</span><span class="p">()</span> <span class="o">-</span> <span class="n">ag2</span><span class="o">.</span><span class="n">masses</span><span class="p">())</span> <span class="o">&gt;</span> <span class="n">tol_mass</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">numpy</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mass_mismatches</span><span class="p">):</span>
         <span class="c"># Test 2 failed.</span>
         <span class="c"># diagnostic output:</span>
+        <span class="c"># (ugly workaround because boolean indexing is not yet working for atomgroups)</span>
+        <span class="k">assert</span> <span class="n">ag1</span><span class="o">.</span><span class="n">numberOfAtoms</span><span class="p">()</span> <span class="o">==</span> <span class="n">ag2</span><span class="o">.</span><span class="n">numberOfAtoms</span><span class="p">()</span>
+        <span class="n">mismatch_atomindex</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">ag1</span><span class="o">.</span><span class="n">numberOfAtoms</span><span class="p">())[</span><span class="n">mass_mismatches</span><span class="p">]</span>
+
         <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;Atoms: reference | trajectory&quot;</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">ar</span><span class="p">,</span> <span class="n">at</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ag1</span><span class="p">,</span> <span class="n">ag2</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">ar</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="n">at</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%4s</span><span class="s"> </span><span class="si">%3d</span><span class="s"> </span><span class="si">%3s</span><span class="s"> </span><span class="si">%3s</span><span class="s"> </span><span class="si">%6.3f</span><span class="s">  |  </span><span class="si">%4s</span><span class="s"> </span><span class="si">%3d</span><span class="s"> </span><span class="si">%3s</span><span class="s"> </span><span class="si">%3s</span><span class="s"> </span><span class="si">%6.3f</span><span class="s">&quot;</span> <span class="o">%</span>
-                             <span class="p">(</span><span class="n">ar</span><span class="o">.</span><span class="n">segid</span><span class="p">,</span> <span class="n">ar</span><span class="o">.</span><span class="n">resid</span><span class="p">,</span> <span class="n">ar</span><span class="o">.</span><span class="n">resname</span><span class="p">,</span> <span class="n">ar</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">ar</span><span class="o">.</span><span class="n">mass</span><span class="p">,</span>
-                             <span class="n">at</span><span class="o">.</span><span class="n">segid</span><span class="p">,</span> <span class="n">at</span><span class="o">.</span><span class="n">resid</span><span class="p">,</span> <span class="n">at</span><span class="o">.</span><span class="n">resname</span><span class="p">,</span> <span class="n">at</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">at</span><span class="o">.</span><span class="n">mass</span><span class="p">,))</span>
-        <span class="n">errmsg</span> <span class="o">=</span> <span class="s">&quot;Inconsistent selections, masses differ by more than {0}; mis-matching atoms are shown above.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-            <span class="n">tol_mass</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">ar</span><span class="p">,</span> <span class="n">at</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">izip</span><span class="p">(</span><span class="n">ag1</span><span class="p">[</span><span class="n">mismatch_atomindex</span><span class="p">],</span> <span class="n">ag2</span><span class="p">[</span><span class="n">mismatch_atomindex</span><span class="p">]):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%4s</span><span class="s"> </span><span class="si">%3d</span><span class="s"> </span><span class="si">%3s</span><span class="s"> </span><span class="si">%3s</span><span class="s"> </span><span class="si">%6.3f</span><span class="s">  |  </span><span class="si">%4s</span><span class="s"> </span><span class="si">%3d</span><span class="s"> </span><span class="si">%3s</span><span class="s"> </span><span class="si">%3s</span><span class="s"> </span><span class="si">%6.3f</span><span class="s">&quot;</span> <span class="o">%</span>
+                         <span class="p">(</span><span class="n">ar</span><span class="o">.</span><span class="n">segid</span><span class="p">,</span> <span class="n">ar</span><span class="o">.</span><span class="n">resid</span><span class="p">,</span> <span class="n">ar</span><span class="o">.</span><span class="n">resname</span><span class="p">,</span> <span class="n">ar</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">ar</span><span class="o">.</span><span class="n">mass</span><span class="p">,</span>
+                          <span class="n">at</span><span class="o">.</span><span class="n">segid</span><span class="p">,</span> <span class="n">at</span><span class="o">.</span><span class="n">resid</span><span class="p">,</span> <span class="n">at</span><span class="o">.</span><span class="n">resname</span><span class="p">,</span> <span class="n">at</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">at</span><span class="o">.</span><span class="n">mass</span><span class="p">,))</span>
+        <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;Inconsistent selections, masses differ by more than {0}; &quot;</span> <span class="o">+</span> \
+            <span class="s">&quot;mis-matching atoms are shown above.&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tol_mass</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
         <span class="k">raise</span> <span class="n">SelectionError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
-    <span class="k">return</span> <span class="bp">True</span></div>
+    <span class="k">return</span> <span class="n">ag1</span><span class="p">,</span> <span class="n">ag2</span></div>
 </pre></div>
 
           </div>
@@ -816,7 +1006,7 @@
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -825,20 +1015,20 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.9.2-dev documentation</a> &raquo;</li>
-          <li><a href="../../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.10.0-dev documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
+    <div class="footer" role="contentinfo">
         &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
-    Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
-    Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
+    Paul Rigor, Andy Somogyi, Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>
 </html>

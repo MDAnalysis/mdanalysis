@@ -128,6 +128,9 @@ also recognized when they are compressed with :program:`gzip` or
    |               | mdcrd     |       | periodic box is autodetected (*experimental*).       |
    |               |           |       | Module :mod:`MDAnalysis.coordinates.TRJ`             |
    +---------------+-----------+-------+------------------------------------------------------+
+   | AMBER         | inpcrd    | r     | formatted (ASCII) coordinate/restart file            |
+   |               | restrt    |       | Module :mod:`MDAnalysis.coordinates.INPCRD`          |
+   +---------------+-----------+-------+------------------------------------------------------+
    | AMBER         | ncdf      |  r/w  | binary (NetCDF) trajectories are fully supported with|
    |               |           |       | optional `netcdf4-python`_ module (coordinates and   |
    |               |           |       | velocities). Module :mod:`MDAnalysis.coordinates.TRJ`|
@@ -608,7 +611,6 @@ PDB). In theses cases, the kind of writer is selected with the
 
 .. autodata:: _trajectory_readers
 .. autodata:: _topology_coordinates_readers
-.. autodata:: _trajectory_readers_permissive
 .. autodata:: _compressed_formats
 .. autodata:: _frame_writers
 .. autodata:: _trajectory_writers
@@ -617,24 +619,24 @@ PDB). In theses cases, the kind of writer is selected with the
 
 __all__ = ['reader', 'writer']
 
-import PDB
-import PQR
-import DCD
-import CRD
-import XTC
-import TRR
-import GRO
-import XYZ
-import TRJ
-import PDBQT
-import LAMMPS
-import DMS
-import TRZ
-import MOL2
-import GMS
-import base
-from core import reader, writer
-
+from . import base
+from .core import reader, writer
+from . import CRD
+from . import DCD
+from . import DMS
+from . import GMS
+from . import GRO
+from . import INPCRD
+from . import LAMMPS
+from . import MOL2
+from . import PDB
+from . import PDBQT
+from . import PQR
+from . import TRJ
+from . import TRR
+from . import TRZ
+from . import XTC
+from . import XYZ
 
 #: standard trajectory readers (dict with identifier as key and reader class as value)
 _trajectory_readers = {
@@ -643,6 +645,7 @@ _trajectory_readers = {
     'XTC': XTC.XTCReader,
     'XYZ': XYZ.XYZReader,
     'TRR': TRR.TRRReader,
+    'Permissive_PDB': PDB.PrimitivePDBReader,
     'PDB': PDB.PDBReader,
     'XPDB': PDB.ExtendedPDBReader,
     'PDBQT': PDBQT.PDBQTReader,
@@ -652,6 +655,9 @@ _trajectory_readers = {
     'TRJ': TRJ.TRJReader,  # AMBER text
     'MDCRD': TRJ.TRJReader,  # AMBER text
     'NCDF': TRJ.NCDFReader,  # AMBER netcdf
+    'NC': TRJ.NCDFReader,
+    'INPCRD': INPCRD.INPReader,
+    'RESTRT': INPCRD.INPReader,
     'PQR': PQR.PQRReader,
     'LAMMPS': LAMMPS.DCDReader,
     'CHAIN': base.ChainReader,
@@ -678,13 +684,6 @@ _topology_coordinates_readers = {
     'DATA': LAMMPS.DATAReader,
     'GMS': GMS.GMSReader,
 }
-
-#: hack: readers that ignore most errors (permissive=True); at the moment
-#: the same as :data:`_trajectory_readers` with the exception of the
-#: the PDB reader (:class:`~MDAnalysis.coordinates.PDB.PDBReader` is replaced by
-# :class:`~MDAnalysis.coordinates.PDB.PrimitivePDBReader`).
-_trajectory_readers_permissive = _trajectory_readers.copy()
-_trajectory_readers_permissive['PDB'] = PDB.PrimitivePDBReader
 
 #: frame writers: export to single frame formats such as PDB, gro, crd
 #: Signature::

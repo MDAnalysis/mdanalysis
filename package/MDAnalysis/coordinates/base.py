@@ -93,14 +93,12 @@ module. The derived classes must follow the Trajectory API in
 import itertools
 import os.path
 import warnings
-
 import bisect
 import numpy
 
-import MDAnalysis.core
 from MDAnalysis.core import units, flags
-from MDAnalysis.core.util import iterable, asiterable
-import core
+from MDAnalysis.core.util import asiterable
+from . import core
 
 
 class Timestep(object):
@@ -292,7 +290,7 @@ class IObase(object):
            returned.
 
         """
-        f = units.get_conversion_factor('length', self.units['length'], MDAnalysis.core.flags['length_unit'])
+        f = units.get_conversion_factor('length', self.units['length'], flags['length_unit'])
         if f == 1.:
             return x
         if not inplace:
@@ -307,7 +305,7 @@ class IObase(object):
 
         .. versionadded:: 0.7.5
         """
-        f = units.get_conversion_factor('speed', self.units['velocity'], MDAnalysis.core.flags['speed_unit'])
+        f = units.get_conversion_factor('speed', self.units['velocity'], flags['speed_unit'])
         if f == 1.:
             return v
         if not inplace:
@@ -322,7 +320,7 @@ class IObase(object):
 
         .. versionadded:: 0.7.7
         """
-        f = units.get_conversion_factor('force', self.units['force'], MDAnalysis.core.flags['force_unit'])
+        f = units.get_conversion_factor('force', self.units['force'], flags['force_unit'])
         if f == 1.:
             return force
         if not inplace:
@@ -345,7 +343,7 @@ class IObase(object):
            returned.
 
         """
-        f = units.get_conversion_factor('time', self.units['time'], MDAnalysis.core.flags['time_unit'])
+        f = units.get_conversion_factor('time', self.units['time'], flags['time_unit'])
         if f == 1.:
             return t
         if not inplace:
@@ -365,7 +363,7 @@ class IObase(object):
            returned.
 
         """
-        f = units.get_conversion_factor('length', MDAnalysis.core.flags['length_unit'], self.units['length'])
+        f = units.get_conversion_factor('length', flags['length_unit'], self.units['length'])
         if f == 1.:
             return x
         if not inplace:
@@ -380,7 +378,7 @@ class IObase(object):
 
         .. versionadded:: 0.7.5
         """
-        f = units.get_conversion_factor('speed', MDAnalysis.core.flags['speed_unit'], self.units['velocity'])
+        f = units.get_conversion_factor('speed', flags['speed_unit'], self.units['velocity'])
         if f == 1.:
             return v
         if not inplace:
@@ -395,7 +393,7 @@ class IObase(object):
 
         .. versionadded:: 0.7.7
         """
-        f = units.get_conversion_factor('force', MDAnalysis.core.flags['force_unit'], self.units['force'])
+        f = units.get_conversion_factor('force', flags['force_unit'], self.units['force'])
         if f == 1.:
             return force
         if not inplace:
@@ -418,7 +416,7 @@ class IObase(object):
            returned.
 
         """
-        f = units.get_conversion_factor('time', MDAnalysis.core.flags['time_unit'], self.units['time'])
+        f = units.get_conversion_factor('time', flags['time_unit'], self.units['time'])
         if f == 1.:
             return t
         if not inplace:
@@ -533,7 +531,7 @@ class Reader(IObase):
         raise NotImplementedError("BUG: Override _read_next_timestep() in the trajectory reader!")
 
     def __del__(self):
-        pass
+        self.close()
 
     def __iter__(self):
         raise NotImplementedError("BUG: Override __iter__() in the trajectory reader (%s)!" % type(self))
@@ -559,69 +557,77 @@ class Reader(IObase):
                 raise IndexError("Index %d exceeds length of trajectory (%d)." % (frame, len(self)))
             return self._read_frame(frame)  # REPLACE WITH APPROPRIATE IMPLEMENTATION
         elif type(frame) == slice:  # if frame is a slice object
-            if not (((type(frame.start) == int) or (frame.start is None)) and
-               ((type(frame.stop) == int) or (frame.stop is None)) and
-               ((type(frame.step) == int) or (frame.step is None))):
-                raise TypeError("Slice indices are not integers")
-            return self._sliced_iter(frame)
+            start, stop, step = self._check_slice_indices(frame.start, frame.stop, frame.step)
+            if start == 0 and stop == len(self) and step == 1:
+                return self.__iter__()
+            else:            
+                return self._sliced_iter(start, stop, step)
 
     def _read_frame(self, frame):
         """Move to *frame* and fill timestep with data."""
-        raise TypeError("Reader does not support direct frame indexing.""")
+        raise TypeError("{0} does not support direct frame indexing."
+                        "".format(self.__class__.__name__))
         # Example implementation in the DCDReader:
         #self._jump_to_frame(frame)
         #ts = self.ts
         #ts.frame = self._read_next_frame(ts._x, ts._y, ts._z, ts._unitcell, 1) # XXX required!!
         #return ts
 
-    def _sliced_iter(self, frames):
+    def _sliced_iter(self, start, stop, step):
         """Generator for slicing a trajectory.
 
-        *frames* must be a :class:`slice` object or behave like one.
+        *start* *stop* and *step* are 3 integers describing the slice.
+        Error checking is not done past this point.
 
-        If *frames* corresponds to the whole trajectory then the
-        standard iterator is used; this should work for any trajectory
-        reader. A :exc:`TypeError` is raised if random access to
+        A :exc:`NotImplementedError` is raised if random access to
         frames is not implemented.
         """
         # override with an appropriate implementation e.g. using self[i] might
         # be much slower than skipping steps in a next() loop
-        start, stop, step = self._check_slice_indices(frames.start, frames.stop, frames.step)
-        if start == 0 and stop == len(self) and step == 1:
-            # standard iterator (always implemented)
-            _iter = self.__iter__
-        else:
-            # real slicing
+        def _iter(start=start, stop=stop, step=step):
             try:
-                # Test if the iterator will work: need to do this here so that code can
-                # immediately know if slicing works, even before running through the iterator.
-                self[0]  # should raise TypeError if it cannot do random access
-            except TypeError:
-                raise TypeError("Reader does not support slicing.")
-
-            def _iter(start=start, stop=stop, step=step):
                 for i in xrange(start, stop, step):
                     yield self[i]
+            except TypeError:  # if _read_frame not implemented
+                raise TypeError("{0} does not support slicing."
+                                "".format(self.__class__.__name__))
         return _iter()
 
     def _check_slice_indices(self, start, stop, step):
-        if start is None:
-            start = 0
-        if stop is None:
-            stop = len(self)
-        if step is None:
-            step = 1
-        if (start < 0):
-            start += len(self)
-        if (stop < 0):
-            stop += len(self)
-        elif (stop > len(self)):
-            stop = len(self)
+        """Unpack the slice object and do checks
+
+        Return the start stop and step indices
+        """
+        if not (((type(start) == int) or (start is None)) and
+                ((type(stop) == int) or (stop is None)) and
+                ((type(step) == int) or (step is None))):
+            raise TypeError("Slice indices are not integers")
+        if step == 0:
+            raise ValueError("Step size is zero")
+
+        n = len(self)
+        step = step or 1
+
+        if start:
+            if start < 0:
+                start += n
+        else:
+            start = 0 if step > 0 else n - 1
+
+        if stop:
+            if stop < 0:
+                stop += n
+            elif stop > n:
+                stop = n
+        else:
+            stop = n if step > 0 else -1
+        
         if step > 0 and stop <= start:
             raise IndexError("Stop frame is lower than start frame")
-        if ((start < 0) or (start >= len(self)) or (stop < 0) or (stop > len(self))):
+        if ((start < 0) or (start >= n) or (stop > n)):
             raise IndexError("Frame start/stop outside of the range of the trajectory.")
-        return (start, stop, step)
+
+        return start, stop, step
 
     def __repr__(self):
         return "< %s %r with %d frames of %d atoms (%d fixed) >" % \
@@ -984,3 +990,53 @@ class Writer(IObase):
         return numpy.all(criteria["min"] < x) and numpy.all(x <= criteria["max"])
 
         # def write_next_timestep(self, ts=None)
+
+class SingleFrameReader(Reader):
+    """Base class for Readers that only have one frame.
+
+    .. versionadded:: 0.10.0
+    """
+    _err = "{0} only contains a single frame"
+
+    def __init__(self, filename, convert_units=None, **kwargs):
+        self.filename = filename
+        if convert_units is None:
+            convert_units = flags['convert_lengths']
+        self.convert_units = convert_units
+
+        self.numframes = 1
+        self.fixed = 0
+        self.skip = 1
+        self.periodic = False
+        self.delta = 0
+        self.skip_timestep = 1
+
+        self._read_first_frame()
+
+    def _read_first_frame(self):
+        # Override this in subclasses to create and fill a Timestep
+        pass
+
+    def next(self):
+        raise IOError(self._err.format(self.__class__.__name__))
+
+    def __iter__(self):
+        yield self.ts
+        raise StopIteration
+
+    def _read_frame(self, frame):
+        if frame != 0:
+            raise IndexError(self._err.format(self.__class__.__name__))
+
+        return self.ts
+
+    def read_next_timestep(self):
+        raise IOError(self._err.format(self.__class__.__name__))
+                             
+    def close(self):
+        # all single frame readers should use context managers to access
+        # self.filename
+        pass
+
+    def __del__(self):
+        self.close()

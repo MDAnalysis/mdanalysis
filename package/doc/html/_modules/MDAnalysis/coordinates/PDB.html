@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.coordinates.PDB &mdash; MDAnalysis 0.9.2-dev documentation</title>
+    <title>MDAnalysis.coordinates.PDB &mdash; MDAnalysis 0.10.0-dev documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.9.2-dev',
+        VERSION:     '0.10.0-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,14 +25,14 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.9.2-dev documentation"
+          title="Search within MDAnalysis 0.10.0-dev documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.9.2-dev documentation" href="../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.10.0-dev documentation" href="../../../index.html" />
     <link rel="up" title="MDAnalysis" href="../../MDAnalysis.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -41,17 +41,17 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.9.2-dev documentation</a> &raquo;</li>
-          <li><a href="../../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.10.0-dev documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../../index.html">
               <img class="logo" src="../../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
             </a></p>
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../../search.html" method="get">
       <input type="text" name="q" />
@@ -70,7 +70,7 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <h1>Source code for MDAnalysis.coordinates.PDB</h1><div class="highlight"><pre>
 <span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
@@ -152,12 +152,6 @@
 
 <span class="sd">would select :class:`PDBReader` instead of the default</span>
 <span class="sd">:class:`PrimitivePDBReader`.</span>
-
-<span class="sd">All classes make use of the :class:`Timestep` class, which represents the</span>
-<span class="sd">current timestep.</span>
-
-<span class="sd">.. autoclass:: Timestep</span>
-<span class="sd">   :members:</span>
 
 <span class="sd">.. _permissive:</span>
 
@@ -295,39 +289,20 @@
 <span class="kn">import</span> <span class="nn">textwrap</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">logging</span>
-
 <span class="kn">import</span> <span class="nn">numpy</span>
 
 <span class="kn">import</span> <span class="nn">MDAnalysis.core</span>
 <span class="kn">import</span> <span class="nn">MDAnalysis.core.util</span> <span class="kn">as</span> <span class="nn">util</span>
-<span class="kn">import</span> <span class="nn">base</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">base</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.topology.core</span> <span class="kn">import</span> <span class="n">guess_atom_element</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.core.AtomGroup</span> <span class="kn">import</span> <span class="n">Universe</span><span class="p">,</span> <span class="n">AtomGroup</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.core.AtomGroup</span> <span class="kn">import</span> <span class="n">Universe</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">NoDataError</span>
 
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&quot;MDAnalysis.coordinates.PBD&quot;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="Timestep"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.Timestep">[docs]</a><span class="k">class</span> <span class="nc">Timestep</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">Timestep</span><span class="p">):</span>
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;unitcell dimensions (`A, B, C, alpha, beta, gamma`)</span>
-
-<span class="sd">        - `A, B, C` are the lengths of the primitive cell vectors `e1, e2, e3`</span>
-<span class="sd">        - `alpha` = angle(`e1, e2`)</span>
-<span class="sd">        - `beta` = angle(`e1, e3`)</span>
-<span class="sd">        - `gamma` = angle(`e2, e3`)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c"># Layout of unitcell is [A,B,C,90,90,90] with the primitive cell vectors</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span>
-
-    <span class="nd">@dimensions.setter</span>
-<div class="viewcode-block" id="Timestep.dimensions"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.Timestep.dimensions">[docs]</a>    <span class="k">def</span> <span class="nf">dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span> <span class="o">=</span> <span class="n">box</span>
-
-</div></div>
-<div class="viewcode-block" id="PDBReader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.PDBReader">[docs]</a><span class="k">class</span> <span class="nc">PDBReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">Reader</span><span class="p">):</span>
+<div class="viewcode-block" id="PDBReader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.PDBReader">[docs]</a><span class="k">class</span> <span class="nc">PDBReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">SingleFrameReader</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Read a pdb file into a BioPython pdb structure.</span>
 
 <span class="sd">    The coordinates are also supplied as one numpy array and wrapped</span>
@@ -339,25 +314,13 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">format</span> <span class="o">=</span> <span class="s">&#39;PDB&#39;</span>
     <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;time&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span> <span class="s">&#39;length&#39;</span><span class="p">:</span> <span class="s">&#39;Angstrom&#39;</span><span class="p">}</span>
-    <span class="n">_Timestep</span> <span class="o">=</span> <span class="n">Timestep</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pdbfilename</span><span class="p">,</span> <span class="n">convert_units</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pdbfilename</span> <span class="o">=</span> <span class="n">pdbfilename</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pdbfilename</span>
-        <span class="k">if</span> <span class="n">convert_units</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">convert_units</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s">&#39;convert_lengths&#39;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span> <span class="o">=</span> <span class="n">convert_units</span>  <span class="c"># convert length and time to base units</span>
-
+    <span class="k">def</span> <span class="nf">_read_first_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">pdb_id</span> <span class="o">=</span> <span class="s">&quot;0UNK&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pdb</span> <span class="o">=</span> <span class="n">pdb</span><span class="o">.</span><span class="n">extensions</span><span class="o">.</span><span class="n">get_structure</span><span class="p">(</span><span class="n">pdbfilename</span><span class="p">,</span> <span class="n">pdb_id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pdb</span> <span class="o">=</span> <span class="n">pdb</span><span class="o">.</span><span class="n">extensions</span><span class="o">.</span><span class="n">get_structure</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">pdb_id</span><span class="p">)</span>
         <span class="n">pos</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">atom</span><span class="o">.</span><span class="n">coord</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pdb</span><span class="o">.</span><span class="n">get_atoms</span><span class="p">()])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span> <span class="o">=</span> <span class="n">pos</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">numframes</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fixed</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c"># parse B field for fixed atoms?</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">skip</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span> <span class="o">=</span> <span class="bp">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">delta</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">skip_timestep</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="c">#self.ts._unitcell[:] = ??? , from CRYST1? --- not implemented in Biopython.PDB</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Timestep</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="mi">1</span>
@@ -384,7 +347,7 @@
 <span class="sd">        .. Note::</span>
 
 <span class="sd">           This :class:`PDBWriter` &#39;s :meth:`~PDBWriter.write` method</span>
-<span class="sd">           always requires a :class:`Timestep` as an argument (it is</span>
+<span class="sd">           always requires a :class:`base.Timestep` as an argument (it is</span>
 <span class="sd">           not optional anymore when the Writer is obtained through</span>
 <span class="sd">           this method of :class:`PDBReader` .)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -395,21 +358,8 @@
         <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;BioPDBstructure&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pdb</span>  <span class="c"># make sure that this Writer is</span>
         <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;universe&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>  <span class="c"># always linked to this reader, don&#39;t bother with Universe</span>
         <span class="k">return</span> <span class="n">PDBWriter</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</div>
-    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span>  <span class="c"># just a single frame available</span>
-        <span class="k">raise</span> <span class="ne">StopIteration</span>
 
-    <span class="k">def</span> <span class="nf">_read_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">frame</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s">&quot;CRD only contains a single frame at frame index 0&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span>
-
-    <span class="k">def</span> <span class="nf">_read_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c"># PDB file only contains a single frame</span>
-        <span class="k">raise</span> <span class="ne">IOError</span>
-
-</div>
+</div></div>
 <div class="viewcode-block" id="PDBWriter"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.PDBWriter">[docs]</a><span class="k">class</span> <span class="nc">PDBWriter</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">Writer</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Write out the current time step as a pdb file.</span>
 
@@ -552,7 +502,6 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">format</span> <span class="o">=</span> <span class="s">&#39;PDB&#39;</span>
     <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;time&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span> <span class="s">&#39;length&#39;</span><span class="p">:</span> <span class="s">&#39;Angstrom&#39;</span><span class="p">}</span>
-    <span class="n">_Timestep</span> <span class="o">=</span> <span class="n">Timestep</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">convert_units</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Read coordinates from *filename*.</span>
@@ -568,6 +517,11 @@
         <span class="k">if</span> <span class="n">convert_units</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">convert_units</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s">&#39;convert_lengths&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span> <span class="o">=</span> <span class="n">convert_units</span>  <span class="c"># convert length and time to base units</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_numatoms</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;numatoms&#39;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;PrimitivePDBReader requires the numatoms keyword&quot;</span><span class="p">)</span>
 
         <span class="c"># = NOTE to clear up confusion over 0-based vs 1-based frame numbering =</span>
         <span class="c"># self.frame is 1-based for this Reader, which matches the behavior of</span>
@@ -585,15 +539,11 @@
         <span class="n">remarks</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="n">frames</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">coords</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">atoms</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="n">unitcell</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-
-        <span class="k">class</span> <span class="nc">Struct</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-            <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">entries</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">entries</span><span class="p">)</span>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Timestep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_numatoms</span><span class="p">)</span>
+        
+        <span class="n">pos</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c"># atom position for filling coordinates array</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_occupancy</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">with</span> <span class="n">util</span><span class="o">.</span><span class="n">openany</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">pdbfile</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pdbfile</span><span class="p">):</span>
                 <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>  <span class="c"># Remove extra spaces</span>
@@ -601,15 +551,12 @@
                     <span class="k">continue</span>
                 <span class="n">record</span> <span class="o">=</span> <span class="n">line</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 
-                <span class="k">def</span> <span class="nf">_c</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">typeclass</span><span class="o">=</span><span class="nb">float</span><span class="p">):</span>
-                    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_col</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">typeclass</span><span class="o">=</span><span class="n">typeclass</span><span class="p">)</span>
-
                 <span class="k">if</span> <span class="n">record</span> <span class="o">==</span> <span class="s">&#39;END&#39;</span><span class="p">:</span>
                     <span class="k">break</span>
                 <span class="k">elif</span> <span class="n">record</span> <span class="o">==</span> <span class="s">&#39;CRYST1&#39;</span><span class="p">:</span>
-                    <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">_c</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">15</span><span class="p">),</span> <span class="n">_c</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">24</span><span class="p">),</span> <span class="n">_c</span><span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="mi">33</span><span class="p">)</span>
-                    <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span> <span class="o">=</span> <span class="n">_c</span><span class="p">(</span><span class="mi">34</span><span class="p">,</span> <span class="mi">40</span><span class="p">),</span> <span class="n">_c</span><span class="p">(</span><span class="mi">41</span><span class="p">,</span> <span class="mi">47</span><span class="p">),</span> <span class="n">_c</span><span class="p">(</span><span class="mi">48</span><span class="p">,</span> <span class="mi">54</span><span class="p">)</span>
-                    <span class="n">unitcell</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span>
+                    <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="p">[</span><span class="n">line</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="mi">15</span><span class="p">],</span> <span class="n">line</span><span class="p">[</span><span class="mi">15</span><span class="p">:</span><span class="mi">24</span><span class="p">],</span> <span class="n">line</span><span class="p">[</span><span class="mi">24</span><span class="p">:</span><span class="mi">33</span><span class="p">]])</span>
+                    <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="p">[</span><span class="n">line</span><span class="p">[</span><span class="mi">33</span><span class="p">:</span><span class="mi">40</span><span class="p">],</span> <span class="n">line</span><span class="p">[</span><span class="mi">40</span><span class="p">:</span><span class="mi">47</span><span class="p">],</span> <span class="n">line</span><span class="p">[</span><span class="mi">47</span><span class="p">:</span><span class="mi">54</span><span class="p">]])</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span>
                     <span class="k">continue</span>
                 <span class="k">elif</span> <span class="n">record</span> <span class="o">==</span> <span class="s">&#39;HEADER&#39;</span><span class="p">:</span>
                     <span class="n">header</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
@@ -624,44 +571,28 @@
                 <span class="k">elif</span> <span class="n">record</span> <span class="o">==</span> <span class="s">&#39;MODEL&#39;</span><span class="p">:</span>
                     <span class="n">frames</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">frames</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>  <span class="c"># 1-based indexing</span>
                 <span class="k">elif</span> <span class="n">line</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;ATOM  &#39;</span><span class="p">,</span> <span class="s">&#39;HETATM&#39;</span><span class="p">):</span>
-                    <span class="c"># skip atom/hetatm for frames other than the first - they will be read in when next() is called</span>
+                    <span class="c"># skip atom/hetatm for frames other than the first</span>
+                    <span class="c"># they will be read in when next() is called</span>
                     <span class="c"># on the trajectory reader</span>
                     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">frames</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
                         <span class="k">continue</span>
-                    <span class="c"># directly use COLUMNS from PDB spec</span>
-                    <span class="n">serial</span> <span class="o">=</span> <span class="n">_c</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
-                    <span class="n">name</span> <span class="o">=</span> <span class="n">_c</span><span class="p">(</span><span class="mi">13</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-                    <span class="n">altLoc</span> <span class="o">=</span> <span class="n">_c</span><span class="p">(</span><span class="mi">17</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-                    <span class="n">resName</span> <span class="o">=</span> <span class="n">_c</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-                    <span class="n">chainID</span> <span class="o">=</span> <span class="n">_c</span><span class="p">(</span><span class="mi">22</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>  <span class="c"># empty chainID is a single space &#39; &#39;!</span>
-                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span> <span class="o">==</span> <span class="s">&quot;XPDB&quot;</span><span class="p">:</span>
-                        <span class="n">resSeq</span> <span class="o">=</span> <span class="n">_c</span><span class="p">(</span><span class="mi">23</span><span class="p">,</span> <span class="mi">27</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>  <span class="c"># extended non-standard format used by VMD</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span> <span class="o">==</span> <span class="s">&quot;PDB&quot;</span>
-                        <span class="n">resSeq</span> <span class="o">=</span> <span class="n">_c</span><span class="p">(</span><span class="mi">23</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
-                        <span class="n">insertCode</span> <span class="o">=</span> <span class="n">_c</span><span class="p">(</span><span class="mi">27</span><span class="p">,</span> <span class="mi">27</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>  <span class="c"># not used</span>
-                    <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">_c</span><span class="p">(</span><span class="mi">31</span><span class="p">,</span> <span class="mi">38</span><span class="p">),</span> <span class="n">_c</span><span class="p">(</span><span class="mi">39</span><span class="p">,</span> <span class="mi">46</span><span class="p">),</span> <span class="n">_c</span><span class="p">(</span><span class="mi">47</span><span class="p">,</span> <span class="mi">54</span><span class="p">)</span>
-                    <span class="n">occupancy</span> <span class="o">=</span> <span class="n">_c</span><span class="p">(</span><span class="mi">55</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
-                    <span class="n">tempFactor</span> <span class="o">=</span> <span class="n">_c</span><span class="p">(</span><span class="mi">61</span><span class="p">,</span> <span class="mi">66</span><span class="p">)</span>
-                    <span class="n">segID</span> <span class="o">=</span> <span class="n">_c</span><span class="p">(</span><span class="mi">67</span><span class="p">,</span> <span class="mi">76</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-                    <span class="n">element</span> <span class="o">=</span> <span class="n">_c</span><span class="p">(</span><span class="mi">77</span><span class="p">,</span> <span class="mi">78</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-                    <span class="n">coords</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">))</span>
-
-                    <span class="n">atom</span> <span class="o">=</span> <span class="n">Struct</span><span class="p">(</span><span class="o">**</span><span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span>
-                        <span class="p">(</span>
-                            <span class="s">&quot;serial&quot;</span><span class="p">,</span> <span class="s">&quot;name&quot;</span><span class="p">,</span> <span class="s">&quot;altLoc&quot;</span><span class="p">,</span> <span class="s">&quot;resName&quot;</span><span class="p">,</span> <span class="s">&quot;chainID&quot;</span><span class="p">,</span> <span class="s">&quot;resSeq&quot;</span><span class="p">,</span>
-                            <span class="s">&quot;occupancy&quot;</span><span class="p">,</span> <span class="s">&quot;tempFactor&quot;</span><span class="p">,</span> <span class="s">&quot;segID&quot;</span><span class="p">,</span> <span class="s">&quot;element&quot;</span><span class="p">),</span>
-                        <span class="p">(</span><span class="n">serial</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">altLoc</span><span class="p">,</span> <span class="n">resName</span><span class="p">,</span> <span class="n">chainID</span><span class="p">,</span> <span class="n">resSeq</span><span class="p">,</span> <span class="n">occupancy</span><span class="p">,</span> <span class="n">tempFactor</span><span class="p">,</span> <span class="n">segID</span><span class="p">,</span> <span class="n">element</span><span class="p">)</span>
-                    <span class="p">)))</span>
-                    <span class="n">atoms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="p">[</span><span class="n">line</span><span class="p">[</span><span class="mi">30</span><span class="p">:</span><span class="mi">38</span><span class="p">],</span> <span class="n">line</span><span class="p">[</span><span class="mi">38</span><span class="p">:</span><span class="mi">46</span><span class="p">],</span> <span class="n">line</span><span class="p">[</span><span class="mi">46</span><span class="p">:</span><span class="mi">54</span><span class="p">]])</span>
+                    <span class="n">pos</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="n">occupancy</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">54</span><span class="p">:</span><span class="mi">60</span><span class="p">])</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_occupancy</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">occupancy</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">header</span> <span class="o">=</span> <span class="n">header</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">compound</span> <span class="o">=</span> <span class="n">compound</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">remarks</span> <span class="o">=</span> <span class="n">remarks</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Timestep</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">pos</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_numatoms</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Read an incorrect number of atoms</span><span class="se">\n</span><span class="s">&quot;</span>
+                             <span class="s">&quot;Expected {expected} got {actual}&quot;</span>
+                             <span class="s">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">expected</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_numatoms</span><span class="p">,</span> <span class="n">actual</span><span class="o">=</span><span class="n">pos</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span> <span class="o">=</span> <span class="n">pos</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c"># 1-based frame number as starting frame</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">unitcell</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_from_native</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">)</span>  <span class="c"># in-place !</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_from_native</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>  <span class="c"># in-place ! (only lengths)</span>
@@ -678,33 +609,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">delta</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">skip_timestep</span> <span class="o">=</span> <span class="mi">1</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span> <span class="o">=</span> <span class="n">atoms</span>
-
-    <span class="k">def</span> <span class="nf">_col</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">typeclass</span><span class="o">=</span><span class="nb">float</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Pick out and convert the columns start-stop.</span>
-
-<span class="sd">        Numbering starts at column 1 with *start* and includes *stop*;</span>
-<span class="sd">        this is the convention used in FORTRAN (and also in the PDB format).</span>
-
-<span class="sd">        :Returns: ``typeclass(line[start-1:stop])`` or</span>
-<span class="sd">                  ``typeclass(0)`` if conversion fails</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="n">start</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span><span class="n">stop</span><span class="p">]</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">typeclass</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">typeclass</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-
-<div class="viewcode-block" id="PrimitivePDBReader.get_bfactors"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.PrimitivePDBReader.get_bfactors">[docs]</a>    <span class="k">def</span> <span class="nf">get_bfactors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return an array of bfactors (tempFactor) in atom order.&quot;&quot;&quot;</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;get_bfactors() will be removed in MDAnalysis 0.8; &quot;</span>
-                      <span class="s">&quot;use AtomGroup.bfactors [which will become AtomGroup.bfactors()]&quot;</span><span class="p">,</span>
-                      <span class="ne">DeprecationWarning</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="o">.</span><span class="n">tempFactor</span>
-</div>
 <div class="viewcode-block" id="PrimitivePDBReader.get_occupancy"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.PrimitivePDBReader.get_occupancy">[docs]</a>    <span class="k">def</span> <span class="nf">get_occupancy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return an array of occupancies in atom order.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="o">.</span><span class="n">occupancy</span>
+        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_occupancy</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="PrimitivePDBReader.Writer"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.PrimitivePDBReader.Writer">[docs]</a>    <span class="k">def</span> <span class="nf">Writer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns a permissive (simple) PDBWriter for *filename*.</span>
@@ -719,24 +626,12 @@
         <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s">&#39;multiframe&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">numframes</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">PrimitivePDBWriter</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </div>
-    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">pass</span>
-
-    <span class="n">__del__</span> <span class="o">=</span> <span class="n">close</span>
-
-<div class="viewcode-block" id="PrimitivePDBReader.next"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.PrimitivePDBReader.next">[docs]</a>    <span class="k">def</span> <span class="nf">next</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Read the next time step.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_timestep</span><span class="p">()</span>
-</div>
     <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">numframes</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_frame</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">StopIteration</span>
-
-    <span class="c">#def __getitem__(self,frame):</span>
-    <span class="c">#    return self._read_frame(frame+1)</span>
 
     <span class="k">def</span> <span class="nf">_read_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">ts</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
@@ -764,15 +659,10 @@
             <span class="c"># single frame file, we already have the timestep</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span>
 
-        <span class="n">coords</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">atoms</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">unitcell</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-
-        <span class="k">def</span> <span class="nf">_c</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">typeclass</span><span class="o">=</span><span class="nb">float</span><span class="p">):</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_col</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">typeclass</span><span class="o">=</span><span class="n">typeclass</span><span class="p">)</span>
-
         <span class="c"># TODO: only open file once and leave the file open; then seek back and forth;</span>
         <span class="c">#       should improve performance substantially</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_occupancy</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">with</span> <span class="n">util</span><span class="o">.</span><span class="n">openany</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
                 <span class="n">f</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>  <span class="c"># forward to frame</span>
@@ -782,27 +672,25 @@
                 <span class="c"># NOTE - CRYST1 line won&#39;t be found if it comes before the MODEL line,</span>
                 <span class="c"># which is sometimes the case, e.g. output from gromacs trjconv</span>
                 <span class="k">elif</span> <span class="n">line</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;CRYST1&#39;</span><span class="p">:</span>
-                    <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">_c</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">15</span><span class="p">),</span> <span class="n">_c</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">24</span><span class="p">),</span> <span class="n">_c</span><span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="mi">33</span><span class="p">)</span>
-                    <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span> <span class="o">=</span> <span class="n">_c</span><span class="p">(</span><span class="mi">34</span><span class="p">,</span> <span class="mi">40</span><span class="p">),</span> <span class="n">_c</span><span class="p">(</span><span class="mi">41</span><span class="p">,</span> <span class="mi">47</span><span class="p">),</span> <span class="n">_c</span><span class="p">(</span><span class="mi">48</span><span class="p">,</span> <span class="mi">54</span><span class="p">)</span>
-                    <span class="n">unitcell</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span>
+                    <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="p">[</span><span class="n">line</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="mi">15</span><span class="p">],</span> <span class="n">line</span><span class="p">[</span><span class="mi">15</span><span class="p">:</span><span class="mi">24</span><span class="p">],</span> <span class="n">line</span><span class="p">[</span><span class="mi">24</span><span class="p">:</span><span class="mi">33</span><span class="p">]])</span>
+                    <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="p">[</span><span class="n">line</span><span class="p">[</span><span class="mi">33</span><span class="p">:</span><span class="mi">40</span><span class="p">],</span> <span class="n">line</span><span class="p">[</span><span class="mi">40</span><span class="p">:</span><span class="mi">47</span><span class="p">],</span> <span class="n">line</span><span class="p">[</span><span class="mi">47</span><span class="p">:</span><span class="mi">54</span><span class="p">]])</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span>
                     <span class="k">continue</span>
                 <span class="k">elif</span> <span class="n">line</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;ATOM  &#39;</span><span class="p">,</span> <span class="s">&#39;HETATM&#39;</span><span class="p">):</span>
                     <span class="c"># we only care about coordinates</span>
-                    <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">_c</span><span class="p">(</span><span class="mi">31</span><span class="p">,</span> <span class="mi">38</span><span class="p">),</span> <span class="n">_c</span><span class="p">(</span><span class="mi">39</span><span class="p">,</span> <span class="mi">46</span><span class="p">),</span> <span class="n">_c</span><span class="p">(</span><span class="mi">47</span><span class="p">,</span> <span class="mi">54</span><span class="p">)</span>
-                    <span class="c"># TODO import occupancy, bfactors - might these change?</span>
-                    <span class="c"># OB: possibly, at least that would be a useful feature of a PDB trajectory</span>
-                    <span class="n">coords</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">))</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="p">[</span><span class="n">line</span><span class="p">[</span><span class="mi">30</span><span class="p">:</span><span class="mi">38</span><span class="p">],</span> <span class="n">line</span><span class="p">[</span><span class="mi">38</span><span class="p">:</span><span class="mi">46</span><span class="p">],</span> <span class="n">line</span><span class="p">[</span><span class="mi">46</span><span class="p">:</span><span class="mi">54</span><span class="p">]])</span>
+                    <span class="n">pos</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="c"># TODO import bfactors - might these change?</span>
+                    <span class="n">occupancy</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">54</span><span class="p">:</span><span class="mi">60</span><span class="p">])</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_occupancy</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">occupancy</span><span class="p">)</span>
                     <span class="k">continue</span>
 
         <span class="c"># check if atom number changed</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s">&quot;PrimitivePDBReader assumes that the number of atoms remains unchanged between frames; the current &quot;</span>
-                <span class="s">&quot;frame has </span><span class="si">%d</span><span class="s">, the next frame has </span><span class="si">%d</span><span class="s"> atoms&quot;</span> <span class="o">%</span> <span class="p">(</span>
-                    <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="p">)))</span>
+        <span class="k">if</span> <span class="n">pos</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_numatoms</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Read an incorrect number of atoms</span><span class="se">\n</span><span class="s">&quot;</span>
+                             <span class="s">&quot;Expected {expected} got {actual}&quot;</span>
+                             <span class="s">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">expected</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_numatoms</span><span class="p">,</span> <span class="n">actual</span><span class="o">=</span><span class="n">pos</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Timestep</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">unitcell</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_from_native</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">)</span>  <span class="c"># in-place !</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_from_native</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>  <span class="c"># in-place ! (only lengths)</span>
@@ -954,8 +842,6 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">pdbfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pdbfile</span> <span class="o">=</span> <span class="bp">None</span>
 </div>
-    <span class="n">__del__</span> <span class="o">=</span> <span class="n">close</span>
-
     <span class="k">def</span> <span class="nf">_write_pdb_title</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">multiframe</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">TITLE</span><span class="p">(</span><span class="s">&quot;MDANALYSIS FRAMES FROM </span><span class="si">%d</span><span class="s">, SKIP </span><span class="si">%d</span><span class="s">: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">remarks</span><span class="p">))</span>
@@ -1104,7 +990,7 @@
 <span class="sd">        current frame.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">Timestep</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">base</span><span class="o">.</span><span class="n">Timestep</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
                 <span class="s">&quot;PrimitivePDBWriter cannot write Timestep objects directly, since they lack topology information (&quot;</span>
                 <span class="s">&quot;atom names and types) required in PDB files&quot;</span><span class="p">)</span>
@@ -1203,14 +1089,14 @@
 
 <span class="sd">        :Keywords:</span>
 <span class="sd">          *ts*</span>
-<span class="sd">             :class:`Timestep` object containing coordinates to be written to trajectory file;</span>
+<span class="sd">             :class:`base.Timestep` object containing coordinates to be written to trajectory file;</span>
 <span class="sd">             if ``None`` then :attr:`PrimitivePDBWriter.ts`` is tried.</span>
 <span class="sd">          *multiframe*</span>
 <span class="sd">             ``False``: write a single frame (default); ``True`` behave as a trajectory writer</span>
 
 <span class="sd">        .. Note::</span>
 
-<span class="sd">           Before using this method with another :class:`Timestep` in the *ts*</span>
+<span class="sd">           Before using this method with another :class:`base.Timestep` in the *ts*</span>
 <span class="sd">           argument, :meth:`PrimitivePDBWriter._update_frame` *must* be called</span>
 <span class="sd">           with the :class:`~MDAnalysis.core.AtomGroup.AtomGroup.Universe` as</span>
 <span class="sd">           its argument so that topology information can be gathered.</span>
@@ -1490,7 +1376,7 @@
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -1499,20 +1385,20 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.9.2-dev documentation</a> &raquo;</li>
-          <li><a href="../../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.10.0-dev documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
+    <div class="footer" role="contentinfo">
         &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
-    Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
-    Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
+    Paul Rigor, Andy Somogyi, Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>
 </html>

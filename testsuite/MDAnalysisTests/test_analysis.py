@@ -19,6 +19,7 @@ import MDAnalysis.analysis.distances
 import MDAnalysis.analysis.align
 import MDAnalysis.analysis.hbonds
 import MDAnalysis.analysis.helanal
+import MDAnalysis.analysis.rms
 from MDAnalysis import SelectionError, FinishTimeException
 
 from numpy.testing import *
@@ -96,12 +97,12 @@ class TestAlign(TestCase):
         A = bb.coordinates(copy=True)  # coordinates of first frame (copy=True just in case)
         self.universe.trajectory[-1]  # forward to last frame
         B = bb.coordinates()  # coordinates of last frame
-        rmsd = MDAnalysis.analysis.align.rmsd(A, B)
-        assert_almost_equal(MDAnalysis.analysis.align.rmsd(A, A), 0.0, 5,
+        rmsd = MDAnalysis.analysis.rms.rmsd(A, B)
+        assert_almost_equal(MDAnalysis.analysis.rms.rmsd(A, A), 0.0, 5,
                             err_msg="error: rmsd(X,X) should be 0")
         # rmsd(A,B) = rmsd(B,A)  should be exact but spurious failures in the 9th decimal have been
         # observed (see Issue 57 comment #1) so we relax the test to 6 decimals.
-        assert_almost_equal(MDAnalysis.analysis.align.rmsd(B, A), rmsd, 6,
+        assert_almost_equal(MDAnalysis.analysis.rms.rmsd(B, A), rmsd, 6,
                             err_msg="error: rmsd() is not symmetric")
         assert_almost_equal(rmsd, 6.8342494129169804, 5,
                             err_msg="RMSD calculation between 1st and last AdK frame gave wrong answer")
@@ -123,7 +124,7 @@ class TestAlign(TestCase):
 
     def _assert_rmsd(self, fitted, frame, desired):
         fitted.trajectory[frame]
-        rmsd = MDAnalysis.analysis.align.rmsd(self.reference.atoms.coordinates(), fitted.atoms.coordinates())
+        rmsd = MDAnalysis.analysis.rms.rmsd(self.reference.atoms.coordinates(), fitted.atoms.coordinates())
         assert_almost_equal(rmsd, desired, decimal=5,
                             err_msg="frame %d of fit does not have expected RMSD" % frame)
 
@@ -354,8 +355,12 @@ class Test_Helanal(TestCase):
         """Check for sustained resolution of Issue 188."""
         u = self.universe
         sel = self.selection
-        with assert_raises(FinishTimeException):
-            try:
-                MDAnalysis.analysis.helanal.helanal_trajectory(u, selection=sel, finish=5)
-            except IndexError:
-                self.fail("IndexError consistent with Issue 188.")
+
+
+        assert_raises(FinishTimeException, MDAnalysis.analysis.helanal.helanal_trajectory,
+                      u, selection=sel, finish=5)
+        #with assert_raises(FinishTimeException):
+        #    try:
+        #        MDAnalysis.analysis.helanal.helanal_trajectory(u, selection=sel, finish=5)
+         #   except IndexError:
+         #       self.fail("IndexError consistent with Issue 188.")

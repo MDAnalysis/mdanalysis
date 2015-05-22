@@ -23,42 +23,20 @@ Read and write coordinates in CHARMM CARD coordinate format (suffix
 
 """
 
-import MDAnalysis
-import MDAnalysis.core.util as util
-import base
-from MDAnalysis import FormatError
 import numpy
-import base
+
+import MDAnalysis.core.util as util
+from . import base
+from MDAnalysis import FormatError
 
 
-class Timestep(base.Timestep):
-    @property
-    def dimensions(self):
-        """unitcell dimensions (*A*, *B*, *C*, *alpha*, *beta*, *gamma*)
-
-        CRD files do not contain unitcell information but in order to
-        allow interoperability (and give the use a chance to set the
-        simulation box themselves for e.g. writing out to different
-        formats) we add an empty unit cell, i.e. when reading a CRD
-        file this will only contain zeros.
-
-        lengths *a*, *b*, *c* are in the MDAnalysis length unit (Å), and
-        angles are in degrees.
-        """
-        return self._unitcell
-
-    @dimensions.setter
-    def dimensions(self, box):
-        self._unitcell[:] = box
-
-class CRDReader(base.Reader):
+class CRDReader(base.SingleFrameReader):
     """CRD reader that implements the standard and extended CRD coordinate formats
     """
     format = 'CRD'
     units = {'time': None, 'length': 'Angstrom'}
-    _Timestep = Timestep
 
-    def __init__(self, crdfilename, convert_units=None, **kwargs):
+    def _read_first_frame(self):
         # EXT:
         #      (i10,2x,a)  natoms,'EXT'
         #      (2I10,2X,A8,2X,A8,3F20.10,2X,A8,2X,A8,F20.10)
@@ -67,15 +45,8 @@ class CRDReader(base.Reader):
         #      (i5) natoms
         #      (2I5,1X,A4,1X,A4,3F10.5,1X,A4,1X,A4,F10.5)
         #      iatom,ires,resn,typr,x,y,z,segid,orig_resid,wmain
-
-        self.crdfilename = crdfilename
-        self.filename = self.crdfilename
-        if convert_units is None:
-            # Note: not used at the moment in CRDReader/Writer
-            convert_units = MDAnalysis.core.flags['convert_lengths']
-        self.convert_units = convert_units  # convert length and time to base units
         coords_list = []
-        with util.openany(crdfilename, 'r') as crdfile:
+        with util.openany(self.filename, 'r') as crdfile:
             extended = False
             natoms = 0
             for linenum, line in enumerate(crdfile):
@@ -97,12 +68,7 @@ class CRDReader(base.Reader):
                     raise FormatError("Check CRD format at line %d: %s" % (linenum, line.rstrip()))
 
         self.numatoms = len(coords_list)
-        self.numframes = 1
-        self.fixed = 0  # parse wmain field for fixed atoms?
-        self.skip = 1
-        self.periodic = False
-        self.delta = 0
-        self.skip_timestep = 1
+
         self.ts = self._Timestep(numpy.array(coords_list))
         self.ts.frame = 1  # 1-based frame number
         # if self.convert_units:
@@ -124,19 +90,6 @@ class CRDReader(base.Reader):
 
         """
         return CRDWriter(filename, **kwargs)
-
-    def __iter__(self):
-        yield self.ts  # Just a single frame
-        raise StopIteration
-
-    def _read_frame(self, frame):
-        if frame != 0:
-            raise IndexError("CRD only contains a single frame at frame index 0")
-        return self.ts
-
-    def _read_next_timestep(self):
-        # CRD files only contain a single frame
-        raise IOError
 
 
 class CRDWriter(base.Writer):

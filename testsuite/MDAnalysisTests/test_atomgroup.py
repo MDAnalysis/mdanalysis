@@ -18,7 +18,7 @@ import MDAnalysis
 from MDAnalysis.tests.datafiles import PSF, DCD, PDB_small, GRO, TRR, \
     merge_protein, merge_water, merge_ligand, \
     TRZ, TRZ_psf, PSF_notop, PSF_BAD, unordered_res, \
-    XYZ_mini
+    XYZ_mini, two_water_gro, two_water_gro_nonames
 import MDAnalysis.core.AtomGroup
 from MDAnalysis.core.AtomGroup import Atom, AtomGroup, asUniverse
 from MDAnalysis import NoDataError
@@ -368,7 +368,6 @@ class TestAtomGroup(TestCase):
     def test_badd_add_AG(self):
         def bad_add():
             return self.ag + [1, 2, 3]
-
         assert_raises(TypeError, bad_add)
 
     def test_repr(self):
@@ -650,12 +649,10 @@ class TestAtomGroup(TestCase):
         # should work
         assert_almost_equal(ag.coordinates(), pos,
                             err_msg="failed to update atoms 12:42 position to new position")
-
         def set_badarr(pos=pos):
             # create wrong size array
             badarr = numpy.random.random((pos.shape[0] - 1, pos.shape[1] - 1))
             ag.positions = badarr
-
         assert_raises(ValueError, set_badarr)
 
     def test_set_positions(self):
@@ -668,26 +665,22 @@ class TestAtomGroup(TestCase):
     def test_no_velocities_raises_NoDataError(self):
         def get_vel(ag=self.universe.selectAtoms("bynum 12:42")):
             v = ag.get_velocities()
-
         # trj has no velocities
         assert_raises(NoDataError, get_vel)
 
     def test_set_velocities_NoData(self):
         def set_vel():
             return self.universe.atoms[:2].set_velocities([0.2])
-
         assert_raises(NoDataError, set_vel)
 
     def test_get_forces_NoData(self):
         def get_for():
             return self.universe.atoms[:2].get_forces()
-
         assert_raises(NoDataError, get_for)
 
     def test_set_forces_NoData(self):
         def set_for():
             return self.universe.atoms[:2].set_forces([0.2])
-
         assert_raises(NoDataError, set_for)
 
     def test_set_resid(self):
@@ -753,16 +746,13 @@ class TestAtomGroup(TestCase):
 
     def test_pickle_raises_NotImplementedError(self):
         import cPickle
-
         ag = self.universe.selectAtoms("bynum 12:42 and name H*")
         assert_raises(NotImplementedError, cPickle.dumps, ag, protocol=cPickle.HIGHEST_PROTOCOL)
 
-    def test_unpickle_raises_NotImp(self):
+    def test_unpickle_raises_NotImplementedError(self):
         ag = self.universe.atoms[:3]
-
         def ag_setstate(ag):
             return ag.__setstate__('a')
-
         assert_raises(NotImplementedError, ag_setstate, ag)
 
     def test_wronglen_set(self):
@@ -799,6 +789,12 @@ class TestAtomGroup(TestCase):
             for atom in g:
                 assert_equal(atom.segid, ref_segname)
 
+    # instant selectors
+    @attr("issue")
+    def test_nonexistent_instantselector_raises_AttributeError(self):
+        def access_nonexistent_instantselector():
+            self.universe.atoms.NO_SUCH_ATOM
+        assert_raises(AttributeError, access_nonexistent_instantselector)
 
 class TestAtomGroupNoTop(TestCase):
     def setUp(self):
@@ -810,16 +806,16 @@ class TestAtomGroupNoTop(TestCase):
         del self.ag
 
     def test_nobonds(self):
-        assert_equal(self.ag.bonds, None)
+        assert_equal(self.ag.bonds, [])
 
     def test_noangles(self):
-        assert_equal(self.ag.angles, None)
+        assert_equal(self.ag.angles, [])
 
     def test_notorsions(self):
-        assert_equal(self.ag.torsions, None)
+        assert_equal(self.ag.torsions, [])
 
     def test_noimps(self):
-        assert_equal(self.ag.impropers, None)
+        assert_equal(self.ag.impropers, [])
 
     # Because I'm messing with atom info, I've put these here separated from other tests
     def test_clear_cache(self):
@@ -906,7 +902,7 @@ class TestUniverseSetTopology(TestCase):
 
         self.u.bonds = []
 
-        assert_equal(self.u.bonds, None)
+        assert_equal(len(self.u.bonds), 0)
         assert_equal(len(self.u.atoms[0].bonds), 0)
 
     def test_set_angles(self):
@@ -915,7 +911,7 @@ class TestUniverseSetTopology(TestCase):
 
         self.u.angles = []
 
-        assert_equal(self.u.angles, None)
+        assert_equal(len(self.u.angles), 0)
         assert_equal(len(self.u.atoms[0].angles), 0)
 
     def test_set_torsions(self):
@@ -924,7 +920,7 @@ class TestUniverseSetTopology(TestCase):
 
         self.u.torsions = []
 
-        assert_equal(self.u.torsions, None)
+        assert_equal(len(self.u.torsions), 0)
         assert_equal(len(self.u.atoms[0].torsions), 0)
 
     def test_set_impropers(self):
@@ -933,7 +929,7 @@ class TestUniverseSetTopology(TestCase):
 
         self.u.impropers = []
 
-        assert_equal(self.u.impropers, None)
+        assert_equal(len(self.u.impropers), 0)
         assert_equal(len(self.u.atoms[4].impropers), 0)
 
 
@@ -1597,13 +1593,13 @@ class TestFragments(TestCase):
     def setUp(self):
         self.u = MDAnalysis.Universe(PSF, DCD)
         # To create a fragment with only one atom in, remove a bond
-        self.u._psf['_bonds'].remove((2, 0))
+        self.u._topology['bonds'].remove((2, 0))
 
     def tearDown(self):
         del self.u
 
     def test_nobondsfail(self):
-        u2 = MDAnalysis.Universe(TRZ_psf, TRZ)
+        u2 = MDAnalysis.Universe(XYZ_mini)
 
         def query_frag(u):
             return u.fragments
@@ -1736,3 +1732,155 @@ class TestCustomReaders(TestCase):
         u = MDAnalysis.Universe(TRZ_psf, TRZ, format=MDAnalysis.coordinates.TRZ.TRZReader,
                                 topology_format=MDAnalysis.topology.PSFParser.PSFParser)
         assert_equal(len(u.atoms), 8184)
+
+class TestWrap(TestCase):
+    def setUp(self):
+        self.u = MDAnalysis.Universe(TRZ_psf, TRZ)
+        self.ag = self.u.atoms[:100]
+
+    def tearDown(self):
+        del self.u
+        del self.ag
+
+    def test_wrap_comp_fail(self):
+        assert_raises(ValueError, self.ag.wrap, compound='strawberries')
+
+    def test_wrap_cent_fail(self):
+        assert_raises(ValueError, self.ag.wrap, compound='residues', center='avacado')
+
+    def test_wrap_box_fail(self):
+        assert_raises(ValueError, self.ag.wrap, box=numpy.array([0, 1]))
+
+    def _in_box(self, coords):
+        """Check that a set of coordinates are 0.0 <= r <= box"""
+        box = self.u.dimensions[:3]
+
+        return (coords >= 0.0).all() and (coords <= box).all()
+
+    def test_wrap_atoms(self):
+        ag = self.u.atoms[100:200]
+        ag.wrap(compound='atoms')
+
+        assert_equal(self._in_box(ag.positions), True)
+
+    def test_wrap_group(self):
+        ag = self.u.atoms[:100]
+        ag.wrap(compound='group')
+
+        cen = ag.centerOfMass()
+
+        assert_equal(self._in_box(cen), True)
+
+    def test_wrap_residues(self):
+        ag = self.u.atoms[300:400]
+        ag.wrap(compound='residues')
+
+        cen = numpy.vstack([r.centerOfMass() for r in ag.residues])
+
+        assert_equal(self._in_box(cen), True)
+
+    def test_wrap_segments(self):
+        ag = self.u.atoms[1000:1200]
+        ag.wrap(compound='segments')
+
+        cen = numpy.vstack([s.centerOfMass() for s in ag.segments])
+
+        assert_equal(self._in_box(cen), True)
+
+    def test_wrap_fragments(self):
+        ag = self.u.atoms[:250]
+        ag.wrap(compound='fragments')
+
+        cen = numpy.vstack([f.centerOfMass() for f in ag.fragments])
+
+        assert_equal(self._in_box(cen), True)
+
+
+class TestGuessBonds(TestCase):
+    """Test the AtomGroup methed guess_bonds
+
+    This needs to be done both from Universe creation (via kwarg) and AtomGroup
+
+    It needs to:
+     - work if all atoms are in vdwradii table
+     - fail properly if not
+     - work again if vdwradii are passed.
+    """
+    def setUp(self):
+        self.vdw = {'A':1.05, 'B':0.4}
+
+    def tearDown(self):
+        del self.vdw
+
+    def _check_universe(self, u):
+        """Verify that the Universe is created correctly"""
+        assert_equal(len(u.bonds), 4)
+        assert_equal(len(u.angles), 2)
+        assert_equal(len(u.torsions), 0)
+        assert_equal(len(u.atoms[0].bonds), 2)
+        assert_equal(len(u.atoms[1].bonds), 1)
+        assert_equal(len(u.atoms[2].bonds), 1)
+        assert_equal(len(u.atoms[3].bonds), 2)
+        assert_equal(len(u.atoms[4].bonds), 1)
+        assert_equal(len(u.atoms[5].bonds), 1)
+
+    def test_universe_guess_bonds(self):
+        """Test that making a Universe with guess_bonds works"""
+        u = MDAnalysis.Universe(two_water_gro, guess_bonds=True)
+        self._check_universe(u)
+
+    def test_universe_guess_bonds_no_vdwradii(self):
+        """Make a Universe that has atoms with unknown vdwradii."""
+        assert_raises(ValueError, MDAnalysis.Universe, two_water_gro_nonames, guess_bonds=True)
+
+    def test_universe_guess_bonds_with_vdwradii(self):
+        """Unknown atom types, but with vdw radii here to save the day"""
+        u = MDAnalysis.Universe(two_water_gro_nonames, guess_bonds=True,
+                                vdwradii=self.vdw)
+        self._check_universe(u)
+
+    def test_universe_guess_bonds_off(self):
+        u = MDAnalysis.Universe(two_water_gro_nonames, guess_bonds=False)
+
+        assert_equal(len(u.bonds), 0)
+        assert_equal(len(u.angles), 0)
+        assert_equal(len(u.torsions), 0)
+
+    def _check_atomgroup(self, ag, u):
+        """Verify that the AtomGroup made bonds correctly,
+        and that the Universe got all this info
+        """
+        assert_equal(len(ag.bonds), 2)
+        assert_equal(len(ag.angles), 1)
+        assert_equal(len(ag.torsions), 0)
+        assert_equal(len(u.bonds), 2)
+        assert_equal(len(u.angles), 1)
+        assert_equal(len(u.torsions), 0)
+        assert_equal(len(u.atoms[0].bonds), 2)
+        assert_equal(len(u.atoms[1].bonds), 1)
+        assert_equal(len(u.atoms[2].bonds), 1)
+        assert_equal(len(u.atoms[3].bonds), 0)
+        assert_equal(len(u.atoms[4].bonds), 0)
+        assert_equal(len(u.atoms[5].bonds), 0)
+
+    def test_atomgroup_guess_bonds(self):
+        """Test an atomgroup doing guess bonds"""
+        u = MDAnalysis.Universe(two_water_gro)
+
+        ag = u.atoms[:3]
+        ag.guess_bonds()
+        self._check_atomgroup(ag, u)
+
+    def test_atomgroup_guess_bonds_no_vdwradii(self):
+        u = MDAnalysis.Universe(two_water_gro_nonames)
+
+        ag = u.atoms[:3]
+        assert_raises(ValueError, ag.guess_bonds)
+
+    def test_atomgroup_guess_bonds_with_vdwradii(self):
+        u = MDAnalysis.Universe(two_water_gro_nonames)
+
+        ag = u.atoms[:3]
+        ag.guess_bonds(vdwradii=self.vdw)
+        self._check_atomgroup(ag, u)
+

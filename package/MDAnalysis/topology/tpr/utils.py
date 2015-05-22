@@ -41,7 +41,7 @@ The module also contains the :func:`do_inputrec` to read the TPR header with.
 """
 from __future__ import absolute_import
 
-from MDAnalysis.core.AtomGroup import Atom
+from ...core.AtomGroup import Atom
 from . import obj
 from . import setting as S
 
@@ -146,7 +146,7 @@ def extract_box_info(data, fver):
     return obj.Box(box, box_rel, box_v)
 
 
-def do_mtop(data, fver):
+def do_mtop(data, fver, u):
     # mtop: the topology of the whole system
     symtab = do_symtab(data)
     do_symstr(data, symtab)  # system_name
@@ -182,7 +182,8 @@ def do_mtop(data, fver):
                                        atomkind.resid + res_start_ndx,
                                        segid,
                                        atomkind.mass,
-                                       atomkind.charge))
+                                       atomkind.charge,
+                                       universe=u))
             # remap_ method returns [blah, blah, ..] or []
             ttop.bonds.extend(mt.remap_bonds(atom_start_ndx))
             ttop.angles.extend(mt.remap_angles(atom_start_ndx))
@@ -499,7 +500,7 @@ def do_moltype(data, symtab, fver):
 
             # the following if..elif..else statement needs to be updated as new
             # type of interactions become interested
-            if ik_obj.name in ['LJ14']:
+            if ik_obj.name in ['LJ14', 'BONDS']:
                 bonds = list(ik_obj.process(ias))
             elif ik_obj.name in ['ANGLES']:
                 angles = list(ik_obj.process(ias))

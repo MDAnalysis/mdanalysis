@@ -113,6 +113,7 @@ Contents
    ./documentation_pages/core_modules
    ./documentation_pages/KDTree_modules
    ./documentation_pages/visualization_modules
+   ./documentation_pages/lib_modules
 
 	
 

@@ -87,12 +87,10 @@ import numpy
 
 import MDAnalysis.core
 import MDAnalysis.core.util as util
-import base
-from base import Timestep
-import pdb.extensions
+from . import base
 
 
-class PQRReader(base.Reader):
+class PQRReader(base.SingleFrameReader):
     """Read a PQR_ file into MDAnalysis.
 
     The :mod:`~MDAnalysis.topology.PQRParser` takes charges from the
@@ -101,29 +99,19 @@ class PQRReader(base.Reader):
     accessible through the :meth:`get_radii` method of the reader, the
     :meth:`MDAnalysis.core.AtomGroup.AtomGroup.radii` method and the
     :attr:`MDAnalysis.core.AtomGroup.Atom.radius` attribute.
+
+    .. _PQR:
+        http://www.poissonboltzmann.org/file-formats/biomolecular-structurw/pqr
     """
     format = 'PQR'
     units = {'time': None, 'length': 'Angstrom'}
-    _Timestep = Timestep
 
-    def __init__(self, filename, convert_units=None, **kwargs):
-        """Read coordinates from *filename*.
-
-        *filename* can be a gzipped or bzip2ed compressed PQR_ file.
-
-        .. _PQR:
-           http://www.poissonboltzmann.org/file-formats/biomolecular-structurw/pqr
-        """
-        self.filename = filename
-        if convert_units is None:
-            convert_units = MDAnalysis.core.flags['convert_lengths']
-        self.convert_units = convert_units  # convert length and time to base units
-
+    def _read_first_frame(self):
         coords = []
         atoms = []
         unitcell = numpy.zeros(6, dtype=numpy.float32)
         segID = ''  # use empty string (not in PQR), PQRParsers sets it to SYSTEM
-        with util.openany(filename, 'r') as pqrfile:
+        with util.openany(self.filename, 'r') as pqrfile:
             for line in pqrfile:
                 if line[:6] in ('ATOM  ', 'HETATM'):
                     fields = line.split()
@@ -143,12 +131,7 @@ class PQRReader(base.Reader):
         if self.convert_units:
             self.convert_pos_from_native(self.ts._pos)  # in-place !
             self.convert_pos_from_native(self.ts._unitcell[:3])  # in-place ! (only lengths)
-        self.numframes = 1
-        self.fixed = 0
-        self.skip = 1
-        self.periodic = False
-        self.delta = 0
-        self.skip_timestep = 1
+
         # hack for PQRParser:
         self._atoms = numpy.rec.fromrecords(atoms, names="serial,name,resName,chainID,resSeq,charge,radius,segID")
 
@@ -170,19 +153,6 @@ class PQRReader(base.Reader):
         :Returns: :class:`PQRWriter`
         """
         return PQRWriter(filename, **kwargs)
-
-    def __iter__(self):
-        yield self.ts  # Just a single frame
-        raise StopIteration
-
-    def _read_frame(self, frame):
-        if frame != 0:
-            raise IndexError("PQR only contains a single frame at frame index 0")
-        return self.ts
-
-    def _read_next_timestep(self):
-        # PQR file only contains a single frame
-        raise IOError
 
 
 class PQRWriter(base.Writer):

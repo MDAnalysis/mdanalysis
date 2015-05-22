@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.topology.PrimitivePDBParser &mdash; MDAnalysis 0.9.2-dev documentation</title>
+    <title>MDAnalysis.topology.PrimitivePDBParser &mdash; MDAnalysis 0.10.0-dev documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.9.2-dev',
+        VERSION:     '0.10.0-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,14 +25,14 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.9.2-dev documentation"
+          title="Search within MDAnalysis 0.10.0-dev documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.9.2-dev documentation" href="../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.10.0-dev documentation" href="../../../index.html" />
     <link rel="up" title="MDAnalysis" href="../../MDAnalysis.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -41,17 +41,17 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.9.2-dev documentation</a> &raquo;</li>
-          <li><a href="../../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.10.0-dev documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../../index.html">
               <img class="logo" src="../../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
             </a></p>
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../../search.html" method="get">
       <input type="text" name="q" />
@@ -70,7 +70,7 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <h1>Source code for MDAnalysis.topology.PrimitivePDBParser</h1><div class="highlight"><pre>
 <span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
@@ -105,9 +105,7 @@
 <span class="sd">.. Note::</span>
 
 <span class="sd">   The parser processes atoms and their names. Masses are guessed and set to 0</span>
-<span class="sd">   if unknown. Partial charges are not set. Bond connectivity can be guessed if</span>
-<span class="sd">   the ``bonds=True`` keyword is set for</span>
-<span class="sd">   :class:`~MDAnalysis.core.AtomGroup.Universe`.</span>
+<span class="sd">   if unknown. Partial charges are not set.</span>
 
 <span class="sd">.. SeeAlso::</span>
 
@@ -123,27 +121,24 @@
 <span class="sd">   :inherited-members:</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-
-<span class="kn">from</span> <span class="nn">MDAnalysis.core.AtomGroup</span> <span class="kn">import</span> <span class="n">Atom</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.topology.core</span> <span class="kn">import</span> <span class="p">(</span><span class="n">guess_atom_type</span><span class="p">,</span> <span class="n">guess_atom_mass</span><span class="p">,</span>
-                                      <span class="n">guess_atom_charge</span><span class="p">,</span> <span class="n">guess_bonds</span><span class="p">)</span>
-<span class="kn">import</span> <span class="nn">MDAnalysis.coordinates.PDB</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.core.util</span> <span class="kn">import</span> <span class="n">openany</span>
+<span class="kn">from</span> <span class="nn">..core.AtomGroup</span> <span class="kn">import</span> <span class="n">Atom</span>
+<span class="kn">from</span> <span class="nn">.core</span> <span class="kn">import</span> <span class="n">get_atom_mass</span><span class="p">,</span> <span class="n">guess_atom_element</span>
+<span class="kn">from</span> <span class="nn">..core.util</span> <span class="kn">import</span> <span class="n">openany</span>
 <span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">TopologyReader</span>
 
 
-<div class="viewcode-block" id="PrimitivePDBParser"><a class="viewcode-back" href="../../../documentation_pages/topology/PrimitivePDBParser.html#MDAnalysis.topology.PrimitivePDBParser.PrimitivePDBParser">[docs]</a><span class="k">class</span> <span class="nc">PrimitivePDBParser</span><span class="p">(</span><span class="n">TopologyReader</span><span class="p">):</span>
+<div class="viewcode-block" id="PrimitivePDBParser"><a class="viewcode-back" href="../../../documentation_pages/topology/PrimitivePDBParser.html#MDAnalysis.topology.ExtendedPDBParser.PrimitivePDBParser">[docs]</a><span class="k">class</span> <span class="nc">PrimitivePDBParser</span><span class="p">(</span><span class="n">TopologyReader</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Parser that obtains a list of atoms from a standard PDB file.</span>
+
+<span class="sd">    .. seealso:: :class:`MDAnalysis.coordinates.PDB.PrimitivePDBReader`</span>
 
 <span class="sd">    .. versionadded:: 0.8</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">PrimitivePDBParser</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">PDBReader</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">PDB</span><span class="o">.</span><span class="n">PrimitivePDBReader</span>
+    <span class="n">format</span> <span class="o">=</span> <span class="s">&#39;PDB&#39;</span>
 
-<div class="viewcode-block" id="PrimitivePDBParser.parse"><a class="viewcode-back" href="../../../documentation_pages/topology/PrimitivePDBParser.html#MDAnalysis.topology.PrimitivePDBParser.PrimitivePDBParser.parse">[docs]</a>    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="PrimitivePDBParser.parse"><a class="viewcode-back" href="../../../documentation_pages/topology/PrimitivePDBParser.html#MDAnalysis.topology.ExtendedPDBParser.PrimitivePDBParser.parse">[docs]</a>    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Parse atom information from PDB file *filename*.</span>
 
 <span class="sd">        :Returns: MDAnalysis internal *structure* dict</span>
@@ -153,68 +148,87 @@
 <span class="sd">                     read with</span>
 <span class="sd">                     :class:`MDAnalysis.coordinates.PDB.PrimitivePDBReader`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">structure</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">pdb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">PDBReader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s">&quot;Failed to open and read PDB file&quot;</span><span class="p">)</span>
+        <span class="n">structure</span> <span class="o">=</span> <span class="p">{}</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_parseatoms</span><span class="p">(</span><span class="n">pdb</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_parsebonds</span><span class="p">(</span><span class="n">pdb</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">structure</span>
+        <span class="n">atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parseatoms</span><span class="p">()</span>
+        <span class="n">structure</span><span class="p">[</span><span class="s">&#39;atoms&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">atoms</span>
+
+        <span class="n">bonds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parsebonds</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span>
+        <span class="n">structure</span><span class="p">[</span><span class="s">&#39;bonds&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bonds</span>
+
+        <span class="k">return</span> <span class="n">structure</span>
 </div>
-    <span class="k">def</span> <span class="nf">_parseatoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pdb</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_parseatoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">iatom</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">atoms</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="k">with</span> <span class="n">openany</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>  <span class="c"># Remove extra spaces</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>  <span class="c"># Skip line if empty</span>
+                    <span class="k">continue</span>
+                <span class="n">record</span> <span class="o">=</span> <span class="n">line</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 
-        <span class="c"># translate list of atoms to MDAnalysis Atom.</span>
-        <span class="k">for</span> <span class="n">iatom</span><span class="p">,</span> <span class="n">atom</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pdb</span><span class="o">.</span><span class="n">_atoms</span><span class="p">):</span>
-            <span class="c"># ATOM</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">__dict__</span><span class="p">)</span> <span class="o">==</span> <span class="mi">10</span><span class="p">:</span>
-                <span class="n">atomname</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">name</span>
-                <span class="n">atomtype</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">element</span> <span class="ow">or</span> <span class="n">guess_atom_type</span><span class="p">(</span><span class="n">atomname</span><span class="p">)</span>
-                <span class="n">resname</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">resName</span>
-                <span class="n">resid</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">resSeq</span><span class="p">)</span>
-                <span class="n">chain</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">chainID</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-                <span class="c"># no empty segids (or Universe throws IndexError)</span>
-                <span class="n">segid</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">segID</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">or</span> <span class="n">chain</span> <span class="ow">or</span> <span class="s">&quot;SYSTEM&quot;</span>
-                <span class="n">mass</span> <span class="o">=</span> <span class="n">guess_atom_mass</span><span class="p">(</span><span class="n">atomname</span><span class="p">)</span>
-                <span class="n">charge</span> <span class="o">=</span> <span class="n">guess_atom_charge</span><span class="p">(</span><span class="n">atomname</span><span class="p">)</span>
-                <span class="n">bfactor</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">tempFactor</span>
-                <span class="c"># occupancy = atom.occupancy</span>
-                <span class="n">altLoc</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">altLoc</span>
+                <span class="k">if</span> <span class="n">record</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;END&#39;</span><span class="p">):</span>
+                    <span class="k">break</span>
+                <span class="k">elif</span> <span class="n">line</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;ATOM  &#39;</span><span class="p">,</span> <span class="s">&#39;HETATM&#39;</span><span class="p">):</span>
+                    <span class="n">serial</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="mi">11</span><span class="p">])</span>
+                    <span class="n">name</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">12</span><span class="p">:</span><span class="mi">16</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                    <span class="n">altLoc</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">16</span><span class="p">:</span><span class="mi">17</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                    <span class="n">resName</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">17</span><span class="p">:</span><span class="mi">21</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                    <span class="n">chainID</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">21</span><span class="p">:</span><span class="mi">22</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>  <span class="c"># empty chainID is a single space &#39; &#39;!</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span> <span class="o">==</span> <span class="s">&quot;XPDB&quot;</span><span class="p">:</span>  <span class="c"># fugly but keeps code DRY</span>
+                        <span class="n">resSeq</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">22</span><span class="p">:</span><span class="mi">27</span><span class="p">])</span>  <span class="c"># extended non-standard format used by VMD</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">resSeq</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">22</span><span class="p">:</span><span class="mi">26</span><span class="p">])</span>
+                        <span class="c"># insertCode = _c(27, 27, str)  # not used</span>
+                        <span class="c"># occupancy = float(line[54:60])</span>
+                    <span class="n">tempFactor</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">60</span><span class="p">:</span><span class="mi">66</span><span class="p">])</span>
+                    <span class="n">segID</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">66</span><span class="p">:</span><span class="mi">76</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                    <span class="n">element</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">76</span><span class="p">:</span><span class="mi">78</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 
-                <span class="n">atoms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Atom</span><span class="p">(</span><span class="n">iatom</span><span class="p">,</span> <span class="n">atomname</span><span class="p">,</span> <span class="n">atomtype</span><span class="p">,</span> <span class="n">resname</span><span class="p">,</span> <span class="n">resid</span><span class="p">,</span>
-                                  <span class="n">segid</span><span class="p">,</span> <span class="n">mass</span><span class="p">,</span> <span class="n">charge</span><span class="p">,</span>
-                                  <span class="n">bfactor</span><span class="o">=</span><span class="n">bfactor</span><span class="p">,</span> <span class="n">serial</span><span class="o">=</span><span class="n">atom</span><span class="o">.</span><span class="n">serial</span><span class="p">,</span>
-                                  <span class="n">altLoc</span><span class="o">=</span><span class="n">altLoc</span><span class="p">))</span>
-            <span class="c"># TER atoms</span>
-            <span class="c">#elif len(atom.__dict__) == 5:</span>
-            <span class="c">#    pass</span>
-            <span class="c">#    #atoms.append(None)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">[</span><span class="s">&quot;_atoms&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">atoms</span>
+                    <span class="n">segid</span> <span class="o">=</span> <span class="n">segID</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">or</span> <span class="n">chainID</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">or</span> <span class="s">&quot;SYSTEM&quot;</span>
 
-    <span class="k">def</span> <span class="nf">_parsebonds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">primitive_pdb_reader</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_bonds_mode</span><span class="p">:</span>
-            <span class="n">guessed_bonds</span> <span class="o">=</span> <span class="n">guess_bonds</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">[</span><span class="s">&quot;_atoms&quot;</span><span class="p">],</span>
-                                        <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">primitive_pdb_reader</span><span class="o">.</span><span class="n">ts</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">[</span><span class="s">&quot;_guessed_bonds&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">guessed_bonds</span>
+                    <span class="n">elem</span> <span class="o">=</span> <span class="n">guess_atom_element</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+                    
+                    <span class="n">atomtype</span> <span class="o">=</span> <span class="n">element</span> <span class="ow">or</span> <span class="n">elem</span>
+                    <span class="n">mass</span> <span class="o">=</span> <span class="n">get_atom_mass</span><span class="p">(</span><span class="n">elem</span><span class="p">)</span>
+                    <span class="c"># charge = guess_atom_charge(name)</span>
+                    <span class="n">charge</span> <span class="o">=</span> <span class="mf">0.0</span>
+                    
+                    <span class="n">atom</span> <span class="o">=</span> <span class="n">Atom</span><span class="p">(</span><span class="n">iatom</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">atomtype</span><span class="p">,</span> <span class="n">resName</span><span class="p">,</span> <span class="n">resSeq</span><span class="p">,</span>
+                                <span class="n">segid</span><span class="p">,</span> <span class="n">mass</span><span class="p">,</span> <span class="n">charge</span><span class="p">,</span>
+                                <span class="n">bfactor</span><span class="o">=</span><span class="n">tempFactor</span><span class="p">,</span> <span class="n">serial</span><span class="o">=</span><span class="n">serial</span><span class="p">,</span>
+                                <span class="n">altLoc</span><span class="o">=</span><span class="n">altLoc</span><span class="p">,</span> <span class="n">universe</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_u</span><span class="p">)</span>
+                    <span class="n">iatom</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="n">atoms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">atoms</span>
+
+    <span class="k">def</span> <span class="nf">_parsebonds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">):</span>
+        <span class="c"># Could optimise this by saving lines in the main loop</span>
+        <span class="c"># then doing post processing after all Atoms have been read</span>
+        <span class="c"># ie do one pass through the file only        </span>
+        <span class="c"># Problem is that in multiframe PDB, the CONECT is at end of file,</span>
+        <span class="c"># so the &quot;break&quot; call happens before bonds are reached.</span>
 
         <span class="c"># Mapping between the atom array indicies a.number and atom ids</span>
         <span class="c"># (serial) in the original PDB file</span>
-
-        <span class="n">mapping</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="n">a</span><span class="o">.</span><span class="n">serial</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">number</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">[</span><span class="s">&quot;_atoms&quot;</span><span class="p">])</span>
+        <span class="n">mapping</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="n">a</span><span class="o">.</span><span class="n">serial</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">number</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">atoms</span><span class="p">)</span>
 
         <span class="n">bonds</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-        <span class="k">with</span> <span class="n">openany</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fname</span><span class="p">:</span>
-            <span class="n">lines</span> <span class="o">=</span> <span class="p">((</span><span class="n">num</span><span class="p">,</span> <span class="n">line</span><span class="p">[</span><span class="mi">6</span><span class="p">:]</span><span class="o">.</span><span class="n">split</span><span class="p">())</span> <span class="k">for</span> <span class="n">num</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">openany</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">6</span><span class="p">:]</span><span class="o">.</span><span class="n">split</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span>
                      <span class="k">if</span> <span class="n">line</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span> <span class="o">==</span> <span class="s">&quot;CONECT&quot;</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">num</span><span class="p">,</span> <span class="n">bond</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">bond</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
                 <span class="n">atom</span><span class="p">,</span> <span class="n">atoms</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">bond</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">bond</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
                 <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">atoms</span><span class="p">:</span>
                     <span class="n">bond</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">mapping</span><span class="p">[</span><span class="n">atom</span><span class="p">],</span> <span class="n">mapping</span><span class="p">[</span><span class="n">a</span><span class="p">]])</span>
                     <span class="n">bonds</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">bond</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">structure</span><span class="p">[</span><span class="s">&quot;_bonds&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">bonds</span><span class="p">)</span></div>
+        <span class="n">bonds</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">bonds</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">bonds</span></div>
 </pre></div>
 
           </div>
@@ -222,7 +236,7 @@
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -231,20 +245,20 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.9.2-dev documentation</a> &raquo;</li>
-          <li><a href="../../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.10.0-dev documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
+    <div class="footer" role="contentinfo">
         &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
-    Manuel Nuno Melo, Danny Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Andy Somogyi,
-    Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
+    Paul Rigor, Andy Somogyi, Lukas Stelzl, Zhuyi Xue, and Oliver Beckstein.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>
 </html>

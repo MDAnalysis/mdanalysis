@@ -33,9 +33,7 @@ handle such residue numbers.
 .. Note::
 
    The parser processes atoms and their names. Masses are guessed and set to 0
-   if unknown. Partial charges are not set. Bond connectivity can be guessed if
-   the ``bonds=True`` keyword is set for
-   :class:`~MDAnalysis.core.AtomGroup.Universe`.
+   if unknown. Partial charges are not set.
 
 .. SeeAlso::
 
@@ -51,9 +49,9 @@ Classes
    :inherited-members:
 
 """
+from __future__ import absolute_import
 
-import MDAnalysis.coordinates.PDB
-import PrimitivePDBParser
+from . import PrimitivePDBParser
 
 
 class ExtendedPDBParser(PrimitivePDBParser.PrimitivePDBParser):
@@ -67,6 +65,4 @@ class ExtendedPDBParser(PrimitivePDBParser.PrimitivePDBParser):
 
     .. versionadded:: 0.8
     """
-    def __init__(self, filename, **kwargs):
-        super(ExtendedPDBParser, self).__init__(filename, **kwargs)
-        self.PDBReader = MDAnalysis.coordinates.PDB.ExtendedPDBReader
+    format = 'XPDB'
