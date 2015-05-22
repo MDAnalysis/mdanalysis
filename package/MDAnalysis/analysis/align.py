@@ -60,6 +60,7 @@ examples execute first ::
 
    >>> from MDAnalysis import *
    >>> from MDAnalysis.analysis.align import *
+   >>> from MDAnalysis.analysis.rms import rmsd
    >>> from MDAnalysis.tests.datafiles import PSF, DCD, PDB_small
 
 
@@ -136,10 +137,14 @@ function and then feed the resulting dictionary to :func:`rms_fit_trj`::
 Functions
 ---------
 
-.. autofunction:: rmsd
 .. autofunction:: alignto
 .. autofunction:: rms_fit_trj
 .. autofunction:: rotation_matrix
+
+.. versionchanged:: 0.10.0
+   Function :func:`~MDAnalysis.analysis.rms.rmsd` was removed from
+   this module and is now exclusively accessible as
+   :func:`~MDAnalysis.analysis.rms.rmsd`.
 
 Helper functions
 ----------------

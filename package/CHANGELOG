@@ -40,6 +40,8 @@ The rules for this file:
   * PrimitivePDBReader now requires the numatoms keyword
   * Structural superpositions (MDAnalysis.analysis.align) use partial
     matches of atoms by default (use strict=True for old behavior)
+  * Function rmsd() was removed from MDAnalysis.analysis.align name
+    space and should be accessed as MDAnalysis.analysis.rms.rmsd()
 
   Fixes
 

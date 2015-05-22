@@ -24,17 +24,16 @@ Calculating path similarity --- :mod:`MDAnalysis.analysis.psa`
 
 .. versionadded:: 0.10.0
 
-The module contains code to calculate the geometric similarity of
-trajectories using path metrics such as the Hausdorff or Fréchet
-distances. The path metrics are functions of two paths and return a
+The module contains code to calculate the geometric similarity of trajectories
+using path metrics such as the Hausdorff or Fréchet distances
+[Seyler2015]_. The path metrics are functions of two paths and return a
 nonnegative number, i.e., a distance. Two paths are identical if their distance
-is zero, and large distances indicate dissimilarity. Each path metric
-is a function of the individual points (e.g., coordinate snapshots)
-that comprise each path and, loosely speaking, identify the two points,
-one per path of a pair of paths, where the paths deviate the most.
-The distance between these points of maximal deviation is measured by
-the root mean square deviation (RMSD), i.e., to compute structural
-similarity.
+is zero, and large distances indicate dissimilarity. Each path metric is a
+function of the individual points (e.g., coordinate snapshots) that comprise
+each path and, loosely speaking, identify the two points, one per path of a
+pair of paths, where the paths deviate the most.  The distance between these
+points of maximal deviation is measured by the root mean square deviation
+(RMSD), i.e., to compute structural similarity.
 
 One typically computes the pairwise similarity for an ensemble of paths to
 produce a symmetric distance matrix, which can be clustered to, at a glance,
@@ -47,17 +46,21 @@ is necessary to preserve the metric properties of the Hausdorff and Fréchet
 metrics; using the best-fit rmsd on a pairwise basis does not generally
 preserve the triangle inequality.
 
-`PSAnalysisTutorial`_ outlines a typical application of PSA to a set of
-trajectories, including doing proper alignment, performing distance comparisons,
-and generating heat map-dendrogram plots from hierarchical clustering.
+.. SeeAlso:: The `PSAnalysisTutorial`_ outlines a typical application of PSA to
+             a set of trajectories, including doing proper alignment,
+             performing distance comparisons, and generating heat
+             map-dendrogram plots from hierarchical clustering.
 
-.. SeeAlso::
 
-   :mod:`MDAnalysis.analysis.psa`
-        contains functions to align a set of paths and compute clustered
-        (Hausdorff or Fréchet) distance matrices
+.. Rubric:: References
 
+.. [Seyler2015] Sean L. Seyler, Avishek Kumar, Michael F. Thorpe, Oliver Beckstein.
+   _Path Similarity Analysis: a Method for Quantifying Macromolecular
+   Pathways_. ` arXiv:1505.04807`_ (2015).
+
+.. _`arXiv:1505.04807`: http://arxiv.org/abs/1505.04807
 .. _`PSAnalysisTutorial`: https://github.com/Becksteinlab/PSAnalysisTutorial
+
 
 Helper functions and variables
 ------------------------------
@@ -65,8 +68,8 @@ Helper functions and variables
 The following global variables are used by the functions and classes in this
 module.
 
-   hausdorff_names
-   frechet_names
+.. data::   hausdorff_names
+.. data::   frechet_names
 
 The following functions are used by the other functions in this module.
 
@@ -78,7 +81,7 @@ Classes, methods, and functions
 
 .. autofunction:: get_path_metric_func
 .. autofunction:: hausdorff
-.. autofunction:: frechet
+.. autofunction:: discrete_frechet
 
 .. autoclass:: Path
    :members:
@@ -196,10 +199,10 @@ def get_path_metric_func(name):
 def hausdorff(P,Q, N=None):
     """Calculate the Hausdorff distance between two paths.
 
-    .. |3Dp| replace:: :math:`N_p\times N\times 3`
-    .. |2Dp| replace:: :math:`N_p\times(3N)`
-    .. |3Dq| replace:: :math:`N_q\times N\times 3`
-    .. |2Dq| replace:: :math:`N_q\times(3N)`
+    .. |3Dp| replace:: :math:`N_p \times N \times 3`
+    .. |2Dp| replace:: :math:`N_p \times (3N)`
+    .. |3Dq| replace:: :math:`N_q \times N \times 3`
+    .. |2Dq| replace:: :math:`N_q \times (3N)`
 
     *P* (*Q*) is a :class:`numpy.ndarray` of :math:`N_p` (:math:`N_q`) time
     steps, :math:`N` atoms, and :math:`3N` coordinates (e.g.,
