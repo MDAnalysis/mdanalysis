@@ -162,7 +162,6 @@ Classes, methods, and functions
 """
 
 import numpy
-import scipy.spatial.distance as sp
 
 import MDAnalysis
 import MDAnalysis.analysis.align
