@@ -63,7 +63,7 @@ def test_reflection_from_matrix():
 def test_rotation_matrix():
     R = t.rotation_matrix(np.pi/2.0, [0, 0, 1], [1, 0, 0])
     assert_allclose(np.dot(R, [0, 0, 0, 1]), [ 1., -1.,  0.,  1.])
-    angle = (np.random.random(1) - 0.5) * (2*np.pi)
+    angle = (random.random() - 0.5) * (2*np.pi)
     direc = np.random.random(3) - 0.5
     point = np.random.random(3) - 0.5
     R0 = t.rotation_matrix(angle, direc, point)
@@ -77,7 +77,7 @@ def test_rotation_matrix():
     assert_allclose(2., np.trace(t.rotation_matrix(np.pi/2, direc, point)))
 
 def test_rotation_from_matrix():
-    angle = (np.random.random(1) - 0.5) * (2*np.pi)
+    angle = (random.random() - 0.5) * (2*np.pi)
     direc = np.random.random(3) - 0.5
     point = np.random.random(3) - 0.5
     R0 = t.rotation_matrix(angle, direc, point)
@@ -92,7 +92,7 @@ def test_scale_matrix():
     assert_allclose(np.dot(S, v)[:3], -1.234*v[:3])
 
 def test_scale_from_matrix():
-    factor = np.random.random(1) * 10 - 5
+    factor = random.random() * 10 - 5
     origin = np.random.random(3) - 0.5
     direct = np.random.random(3) - 0.5
     S0 = t.scale_matrix(factor, origin)
@@ -189,7 +189,7 @@ class TestClipMatrix(TestCase):
                         np.array([ 1.,  1., -1.,  1.]))
 
 def test_shear_matrix():
-    angle = (np.random.random(1) - 0.5) * 4*np.pi
+    angle = (random.random() - 0.5) * 4*np.pi
     direct = np.random.random(3) - 0.5
     point = np.random.random(3) - 0.5
     normal = np.cross(direct, np.random.random(3))
@@ -197,7 +197,7 @@ def test_shear_matrix():
     assert_allclose(1.0, np.linalg.det(S))
 
 def test_shear_from_matrix():
-    angle = (np.random.random(1) - 0.5) * 4*np.pi
+    angle = (random.random() - 0.5) * 4*math.pi
     direct = np.random.random(3) - 0.5
     point = np.random.random(3) - 0.5
     normal = np.cross(direct, np.random.random(3))
@@ -247,19 +247,19 @@ def test_orthogonalization_matrix_2():
 def test_superimposition_matrix():
     v0 = np.random.rand(3, 10)
     M = t.superimposition_matrix(v0, v0)
-    assert_allclose(M, np.identity(4))
+    assert_allclose(M, np.identity(4), atol=_ATOL)
 
     R = t.random_rotation_matrix(np.random.random(3))
     v0 = ((1,0,0), (0,1,0), (0,0,1), (1,1,1))
     v1 = np.dot(R, v0)
     M = t.superimposition_matrix(v0, v1)
-    assert_allclose(v1, np.dot(M, v0))
+    assert_allclose(v1, np.dot(M, v0), atol=_ATOL)
 
     v0 = (np.random.rand(4, 100) - 0.5) * 20.0
     v0[3] = 1.0
     v1 = np.dot(R, v0)
     M = t.superimposition_matrix(v0, v1)
-    assert_allclose(v1, np.dot(M, v0))
+    assert_allclose(v1, np.dot(M, v0), atol=_ATOL)
 
     S = t.scale_matrix(random.random())
     T = t.translation_matrix(np.random.random(3)-0.5)
@@ -267,15 +267,15 @@ def test_superimposition_matrix():
     v1 = np.dot(M, v0)
     v0[:3] += np.random.normal(0.0, 1e-9, 300).reshape(3, -1)
     M = t.superimposition_matrix(v0, v1, scaling=True)
-    assert_allclose(v1, np.dot(M, v0))
+    assert_allclose(v1, np.dot(M, v0), atol=_ATOL)
 
     M = t.superimposition_matrix(v0, v1, scaling=True, usesvd=False)
-    assert_allclose(v1, np.dot(M, v0))
+    assert_allclose(v1, np.dot(M, v0), atol=_ATOL)
 
     v = np.empty((4, 100, 3), dtype=np.float64)
     v[:, :, 0] = v0
     M = t.superimposition_matrix(v0, v1, scaling=True, usesvd=False)
-    assert_allclose(v1, np.dot(M, v[:, :, 0]))
+    assert_allclose(v1, np.dot(M, v[:, :, 0]), atol=_ATOL)
 
 
 class TestEulerMatrix(TestCase):
