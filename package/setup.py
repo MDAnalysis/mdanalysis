@@ -269,7 +269,7 @@ if __name__ == '__main__':
           author='Naveen Michaud-Agrawal',
           author_email='naveen.michaudagrawal@gmail.com',
           url='http://www.mdanalysis.org',
-          requires=['numpy (>=1.0.3)', 'biopython',
+          requires=['numpy (>=1.4.0)', 'biopython',
               'networkx (>=1.0)', 'scipy',
               'GridDataFormats'],
           provides=['MDAnalysis'],
