@@ -514,6 +514,23 @@ class TestAtomGroup(TestCase):
                 "advanced slicing does not produce a AtomGroup")
         assert_equal(ag[1], ag[-1], "advanced slicing does not preserve order")
 
+    def test_boolean_indexing(self):
+        # index an array with a sequence of bools
+        # issue #282
+        sel = numpy.array([True, False, True])
+        ag = self.universe.atoms[10:13]
+        ag2 = ag[sel]
+        assert_equal(len(ag2), 2)
+        for at in [ag[0], ag[2]]:
+            assert_equal(at in ag2, True)
+
+    def test_bool_IE(self):
+        # indexing with empty list doesn't run foul of bool check
+        sel = []
+        ag = self.universe.atoms[10:30]
+        ag2 = ag[sel]
+        assert_equal(len(ag2), 0)
+            
     def test_phi_selection(self):
         phisel = self.universe.s4AKE.r10.phi_selection()
         assert_equal(phisel.names(), ['C', 'N', 'CA', 'C'])
@@ -1333,7 +1350,6 @@ class _WriteAtoms(TestCase):
         assert_equal(len(u2.atoms), len(U.atoms), "written 4AKE universe does not match original universe in size")
         assert_almost_equal(u2.atoms.coordinates(), U.atoms.coordinates(), self.precision,
                             err_msg="written universe 4AKE coordinates do not agree with original")
-
 
 class TestWritePDB(_WriteAtoms):
     ext = "pdb"
