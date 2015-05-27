@@ -458,18 +458,24 @@ class TestQuaternionAboutAxisCy(_QuaternionAboutAxis):
     f = staticmethod(t.quaternion_about_axis)
 
 
-class TestQuaternionMatrix(TestCase):
+class _QuaternionMatrix(object):
     def test_quaternion_matrix_1(self):
-        M = t.quaternion_matrix([0.99810947, 0.06146124, 0, 0])
+        M = self.f([0.99810947, 0.06146124, 0, 0])
         assert_allclose(M, t.rotation_matrix(0.123, (1, 0, 0)), atol=_ATOL)
 
     def test_quaternion_matrix_2(self):
-        M = t.quaternion_matrix([1, 0, 0, 0])
+        M = self.f([1, 0, 0, 0])
         assert_allclose(M, t.identity_matrix(), atol=_ATOL)
 
     def test_quaternion_matrix_3(self):
-        M = t.quaternion_matrix([0, 1, 0, 0])
+        M = self.f([0, 1, 0, 0])
         assert_allclose(M, np.diag([1, -1, -1, 1]), atol=_ATOL)
+
+class TestQuaternionMatrixNP(_QuaternionMatrix):
+    f = staticmethod(t._py_quaternion_matrix)
+
+class TestQuaternionMatrixCy(_QuaternionMatrix):
+    f = staticmethod(t.quaternion_matrix)
 
 
 class _QuaternionFromMatrix(object):
@@ -734,3 +740,22 @@ class TestVectorNormNP(_VectorNorm):
 class TestVectorNormCy(_VectorNorm):
     f = staticmethod(t.vector_norm)
 
+class TestArcBall(object):
+    def test_arcball_1(self):
+        ball = t.Arcball()
+        ball = t.Arcball(initial=np.identity(4))
+        ball.place([320, 320], 320)
+        ball.down([500, 250])
+        ball.drag([475, 275])
+        R = ball.matrix()
+        assert_allclose(np.sum(R), 3.90583455, atol=_ATOL)
+
+    def test_arcball_2(self):
+        ball = t.Arcball(initial=[1, 0, 0, 0])
+        ball.place([320, 320], 320)
+        ball.setaxes([1,1,0], [-1, 1, 0])
+        ball.setconstrain(True)
+        ball.down([400, 200])
+        ball.drag([200, 400])
+        R = ball.matrix()
+        assert_allclose(np.sum(R), 0.2055924)
