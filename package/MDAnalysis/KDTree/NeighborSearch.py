@@ -47,13 +47,10 @@ Example::
 """
 
 import numpy
+
 from KDTree import KDTree
 from MDAnalysis.core.AtomGroup import AtomGroup
 
-try:
-    set([])
-except NameError:
-    from sets import Set as set
 
 entity_levels = ('A', 'R', 'S')
 
