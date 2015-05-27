@@ -3,7 +3,10 @@ branch = True
 source = MDAnalysis
 exclude_lines =
     pragma: no cover
-omit = */analysis/*
+omit =
+    */analysis/*
+    */visualization/*
+
 
 [report]
 exclude_lines =
