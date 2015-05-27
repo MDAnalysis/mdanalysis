@@ -25,6 +25,7 @@ from MDAnalysis.tests.datafiles import PRMpbc, PRM12, PSF, PSF_NAMD, PSF_nosegid
 
 from numpy.testing import *
 from nose.plugins.attrib import attr
+import numpy as np
 
 
 def check_atom_type(atype, aname):
@@ -694,6 +695,21 @@ class TestTopologyGroup(TestCase):
         manual = TopologyGroup([tg[i] for i in [1, 4, 5]])
 
         assert_equal(list(tg2), list(manual))
+
+    def test_TG_getitem_bool(self):
+        # Issue #282
+        sel = np.array([True, False, True])
+        tg = self.universe.bonds[10:30]
+        tg2 = tg[sel]
+        assert_equal(len(tg2), 2)
+        for b in [tg[0], tg[2]]:
+            assert_equal(b in tg2, True)
+
+    def test_TG_getitem_bool_IE(self):
+        sel = []
+        tg = self.universe.bonds[10:13]
+        tg2 = tg[sel]
+        assert_equal(len(tg2), 0)
 
     def test_TG_dumpconts(self):
         """

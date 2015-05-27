@@ -30,6 +30,8 @@ The rules for this file:
   * Structural superpositions (MDAnalysis.analysis.align) can work
     with partial matches of atoms.
   * new path similarity analysis module MDAnalysis.analysis.psa
+  * AtomGroup and TopologyGroup can now be indexed by numpy boolean arrays
+    works identically to numpy masks. (Issue #282)
 
   Changes
 
