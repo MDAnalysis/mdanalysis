@@ -26,12 +26,20 @@ from nose.plugins.attrib import attr
 
 from . import knownfailure
 
-import MDAnalysis
+import MDAnalysis as mda
+
+from .datafiles import PSF, DCD, DCD_empty, PDB_small, XPDB_small, PDB_closed, PDB_multiframe, \
+    PDB, CRD, XTC, TRR, GRO, DMS, CONECT, \
+    XYZ, XYZ_bz2, XYZ_psf, PRM, TRJ, TRJ_bz2, PRMpbc, TRJpbc_bz2, PRMncdf, NCDF, PQR, \
+    PDB_sub_dry, TRR_sub_sol, PDB_sub_sol, TRZ, TRZ_psf, LAMMPSdata, LAMMPSdata_mini, \
+    PSF_TRICLINIC, DCD_TRICLINIC, PSF_NAMD_TRICLINIC, DCD_NAMD_TRICLINIC, \
+    GMS_ASYMOPT, GMS_SYMOPT, GMS_ASYMSURF, XYZ_mini, PFncdf_Top, PFncdf_Trj, \
+    INPCRD, XYZ_five
 
 
 # Subclass this and change values where necessary for each format's Timestep.
 class _BaseTimestep(object):
-    Timestep = MDAnalysis.coordinates.base.Timestep  # define the class made in test
+    Timestep = mda.coordinates.base.Timestep  # define the class made in test
     name = "base"  # for error messages only
     size = 10  # size of arrays, 10 is enough to allow slicing etc
     refpos = np.arange(size * 3, dtype=np.float32).reshape(size, 3)  # each coord is unique
@@ -44,7 +52,7 @@ class _BaseTimestep(object):
 
 
 class _TRZTimestep(_BaseTimestep):
-    Timestep = MDAnalysis.coordinates.TRZ.Timestep
+    Timestep = mda.coordinates.TRZ.Timestep
     name = "TRZ"
     has_box = True
     set_box = True
@@ -54,7 +62,7 @@ class _TRZTimestep(_BaseTimestep):
 
 
 class _DCDTimestep(_BaseTimestep):
-    Timestep = MDAnalysis.coordinates.DCD.Timestep
+    Timestep = mda.coordinates.DCD.Timestep
     name = "DCD"
     has_box = True
     set_box = True
@@ -63,7 +71,7 @@ class _DCDTimestep(_BaseTimestep):
 
 
 class _DMSTimestep(_BaseTimestep):
-    Timestep = MDAnalysis.coordinates.DMS.Timestep
+    Timestep = mda.coordinates.DMS.Timestep
     name = "DMS"
     has_box = True
     unitcell = {'x':np.array([10., 0, 0]),
@@ -72,7 +80,7 @@ class _DMSTimestep(_BaseTimestep):
 
 
 class _GROTimestep(_BaseTimestep):
-    Timestep = MDAnalysis.coordinates.GRO.Timestep
+    Timestep = mda.coordinates.GRO.Timestep
     name = "GRO"
     has_box = True
     set_box = True
@@ -82,7 +90,7 @@ class _GROTimestep(_BaseTimestep):
 
 
 class _TRJTimestep(_BaseTimestep):
-    Timestep = MDAnalysis.coordinates.TRJ.Timestep
+    Timestep = mda.coordinates.TRJ.Timestep
     name = "TRJ"
     has_box = True
     set_box = True
@@ -90,7 +98,7 @@ class _TRJTimestep(_BaseTimestep):
 
 
 class _xdrCoreTimestep(_BaseTimestep):
-    Timestep = MDAnalysis.coordinates.xdrfile.core.Timestep
+    Timestep = mda.coordinates.xdrfile.core.Timestep
     name = "xdrCore"
     has_box = True
     set_box = True
@@ -100,12 +108,12 @@ class _xdrCoreTimestep(_BaseTimestep):
 
 
 class _TRRTimestep(_xdrCoreTimestep):
-    Timestep = MDAnalysis.coordinates.TRR.Timestep
+    Timestep = mda.coordinates.TRR.Timestep
     name = "TRR"
 
 
 class _XTCTimestep(_xdrCoreTimestep):
-    Timestep = MDAnalysis.coordinates.XTC.Timestep
+    Timestep = mda.coordinates.XTC.Timestep
     name = "XTC"
 
 
@@ -117,7 +125,7 @@ class _TestTimestep(TestCase):
 
     def setUp(self):
         self.ts = self.Timestep(self.size)
-        self.ts._pos[:] = self.refpos
+        self.ts.positions = self.refpos
 
     def tearDown(self):
         del self.ts
@@ -168,9 +176,8 @@ class _TestTimestep(TestCase):
         assert_equal(self.ts is ts2, False)
 
     def _test_TS_slice(self, ref_TS, TS2, sel):
-        per_atom = ['_x', '_y', '_z', '_pos', '_velocities', '_forces',
-                    '_tpos', '_tvelocities', '_tforces']
-        ignore = ['numatoms']
+        per_atom = ['_x', '_y', '_z', '_pos', '_velocities', '_forces']
+        ignore = ['numatoms', '_numatoms']
 
         for att in ref_TS.__dict__:
             try:
@@ -304,3 +311,125 @@ class TestXTCTimestep(_TestTimestep, _XTCTimestep):
 
 class TestTRRTimestep(_TestTimestep, _TRRTimestep):
     pass
+
+class TestTimestep_Copy(TestCase):
+    """
+    Timestep.copy() method seems to be broken, (Issue 164).  The base.Timestep .copy() method returns a TS of
+    class base.Timestep rather than the appropriate subclass.
+
+    This class makes a TS object of the first frame, .copy()'s this as a new object and compares the content
+    of the two resulting objects.
+
+    This test class is then subclassed below to try and test all Timestep classes that exist within MDA.
+    """
+
+    def setUp(self):
+        self.universe = mda.Universe(PSF, DCD)
+        self.name = 'DCD (base)'
+
+    def tearDown(self):
+        del self.universe
+        del self.name
+
+    def test_TS_copy(self):
+        """
+        Checks equality between two Timesteps
+
+        Will check that TS2 has all the same attributes and values for these attributes as ref_TS.
+        """
+        ref_TS = self.universe.trajectory.ts
+        TS2 = ref_TS.copy()
+
+        err_msg = ("Timestep copy failed for format {form}"
+                   " on attribute {att}") 
+        
+        for att in ref_TS.__dict__:
+            ref = ref_TS.__dict__[att]
+
+            try:
+                if isinstance(ref, np.ndarray):
+                    assert_array_almost_equal(ref, TS2.__dict__[att], prec=4, err_msg=err_msg.format(form=self.name, att=att))
+                else:
+                    assert_equal(ref, TS2.__dict__[att], err_msg=err_msg.format(form=self.name, att=att))
+            except KeyError:
+                self.fail(err_msg.format(form=self.name, att=att))
+
+    def test_TS_slice(self):
+        ref_TS = self.universe.trajectory.ts
+
+        sel = slice(0, 100, 4)
+        TS2 = ref_TS.copy_slice(sel)
+
+        self._test_TS_slice(ref_TS, TS2, sel)
+
+    def test_TS_indices(self):
+        ref_TS = self.universe.trajectory.ts
+
+        sel = [0, 1, 2, 3, 5, 8, 13, 21, 34, 55]
+        TS2 = ref_TS.copy_slice(sel)
+
+        self._test_TS_slice(ref_TS, TS2, sel)
+
+    def _test_TS_slice(self, ref_TS, TS2, sel):
+        per_atom = [
+            '_x', '_y', '_z', '_pos', '_velocities', '_forces',
+            '_tpos', '_tvelocities', '_tforces']
+        ignore = ['numatoms', '_numatoms']
+
+        for att in ref_TS.__dict__:
+            try:
+                if att in per_atom:
+                    assert_equal(ref_TS.__dict__[att][sel], TS2.__dict__[att],
+                                 err_msg="Timestep slice failed for format: '%s' on attribute: '%s'"
+                                         % (self.name, att))
+                elif not att in ignore:
+                    assert_equal(ref_TS.__dict__[att], TS2.__dict__[att],
+                                 err_msg="Timestep slice failed for format: '%s' on attribute: '%s'"
+                                         % (self.name, att))
+            except KeyError:
+                self.fail("Timestep copy failed for format: '%s' on attribute: '%s'"
+                          % (self.name, att))
+
+
+class TestTimestep_Copy_DMS(TestTimestep_Copy):
+    def setUp(self):
+        self.universe = mda.Universe(DMS)
+        self.name = 'DMS'
+
+
+class TestTimestep_Copy_GRO(TestTimestep_Copy):
+    def setUp(self):
+        self.universe = mda.Universe(GRO)
+        self.name = 'GRO'
+
+
+class TestTimestep_Copy_PDB(TestTimestep_Copy):
+    def setUp(self):
+        self.universe = mda.Universe(PDB_small)
+        self.name = 'PDB'
+
+
+class TestTimestep_Copy_TRJ(TestTimestep_Copy):
+    def setUp(self):
+        self.universe = mda.Universe(PRM, TRJ)
+        self.name = 'TRJ'
+
+
+class TestTimestep_Copy_TRR(TestTimestep_Copy):
+    def setUp(self):
+        self.universe = mda.Universe(GRO, TRR)
+        self.name = 'TRR'
+
+
+class TestTimestep_Copy_TRZ(TestTimestep_Copy):
+    def setUp(self):
+        self.universe = mda.Universe(TRZ_psf, TRZ)
+        self.name = 'TRZ'
+
+
+class TestTimestep_Copy_XTC(TestTimestep_Copy):
+    def setUp(self):
+        self.universe = mda.Universe(PDB, XTC)
+        self.name = 'XTC'
+
+

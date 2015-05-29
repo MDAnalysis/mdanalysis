@@ -54,7 +54,6 @@ class GMSReader(base.Reader):
           on the fly
     """
 
-    # this will be overidden when an instance is created and the file extension checked
     format = "GMS"
 
     # these are assumed!

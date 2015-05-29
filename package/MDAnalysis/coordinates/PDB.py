@@ -247,7 +247,7 @@ class PDBReader(base.SingleFrameReader):
         self.numatoms = pos.shape[0]
         self.fixed = 0  # parse B field for fixed atoms?
         #self.ts._unitcell[:] = ??? , from CRYST1? --- not implemented in Biopython.PDB
-        self.ts = self._Timestep(pos)
+        self.ts = self._Timestep.from_coordinates(pos)
         self.ts.frame = 1
         del pos
         if self.convert_units:

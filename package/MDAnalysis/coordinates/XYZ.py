@@ -69,7 +69,7 @@ the `VMD xyzplugin`_ from whence the definition was taken)::
 
 import os
 import errno
-import numpy
+import numpy as np
 import itertools
 
 import MDAnalysis
@@ -135,7 +135,7 @@ class XYZWriter(base.Writer):
         except AttributeError:
             pass
         # list or string (can be a single atom name... deal with this in write_next_timestep() once we know numatoms)
-        return numpy.asarray(util.asiterable(atoms))
+        return np.asarray(util.asiterable(atoms))
 
     def close(self):
         """Close the trajectory file and finalize the writing"""
@@ -195,7 +195,7 @@ class XYZWriter(base.Writer):
                 ts = self.ts
 
         if len(self.atomnames) != ts.numatoms:
-            self.atomnames = numpy.array([self.atomnames[0]] * ts.numatoms)
+            self.atomnames = np.array([self.atomnames[0]] * ts.numatoms)
 
         if self.convert_units:
             coordinates = self.convert_pos_to_native(ts._pos, inplace=False)
@@ -250,11 +250,11 @@ class XYZReader(base.Reader):
         self.xyzfile = util.anyopen(self.filename, "r")
         self.compression = ext[1:] if ext[1:] != "xyz" else None
 
-        # note that, like for xtc and trr files, __numatoms and __numframes are used quasi-private variables
+        # note that, like for xtc and trr files, _numatoms and _numframes are used quasi-private variables
         # to prevent the properties being recalculated
         # this is because there is no indexing so the way it measures the number of frames is to read the whole file!
-        self.__numatoms = None
-        self.__numframes = None
+        self._numatoms = None
+        self._numframes = None
 
         self.fixed = 0
         self.skip = 1
@@ -273,14 +273,14 @@ class XYZReader(base.Reader):
     @property
     def numatoms(self):
         """number of atoms in a frame"""
-        if not self.__numatoms is None:  # return cached value
-            return self.__numatoms
+        if not self._numatoms is None:  # return cached value
+            return self._numatoms
         try:
-            self.__numatoms = self._read_xyz_natoms(self.filename)
+            self._numatoms = self._read_xyz_natoms(self.filename)
         except IOError:
             return 0
         else:
-            return self.__numatoms
+            return self._numatoms
 
     def _read_xyz_natoms(self, filename):
         # this assumes that this is only called once at startup and that the filestream is already open
@@ -292,14 +292,14 @@ class XYZReader(base.Reader):
 
     @property
     def numframes(self):
-        if not self.__numframes is None:  # return cached value
-            return self.__numframes
+        if not self._numframes is None:  # return cached value
+            return self._numframes
         try:
-            self.__numframes = self._read_xyz_numframes(self.filename)
+            self._numframes = self._read_xyz_numframes(self.filename)
         except IOError:
             return 0
         else:
-            return self.__numframes
+            return self._numframes
 
     def _read_xyz_numframes(self, filename):
         self._reopen()
@@ -350,7 +350,7 @@ class XYZReader(base.Reader):
 
             # stop when the cursor has reached the end of that block
             if counter == self.numatoms:
-                ts._unitcell = numpy.zeros((6), numpy.float32)
+                ts._unitcell = np.zeros((6), np.float32)
                 ts._x[:] = x  # more efficient to do it this way to avoid re-creating the numpy arrays
                 ts._y[:] = y
                 ts._z[:] = z

@@ -26,18 +26,18 @@ coordinate files (as used by the Desmond_ MD package).
 .. _DMS: http://www.deshawresearch.com/Desmond_Users_Guide-0.7.pdf
 """
 
-import numpy
+import numpy as np
 import sqlite3
 
 from . import base
-from MDAnalysis.coordinates.core import triclinic_box, triclinic_vectors
+from .core import triclinic_box, triclinic_vectors
 
 
 class Timestep(base.Timestep):
     def _init_unitcell(self):
-        return {'x': numpy.zeros(3),
-                'y': numpy.zeros(3),
-                'z': numpy.zeros(3)}
+        return {'x': np.zeros(3),
+                'y': np.zeros(3),
+                'z': np.zeros(3)}
 
     @property
     def dimensions(self):
@@ -84,7 +84,6 @@ class DMSReader(base.SingleFrameReader):
     def _read_first_frame(self):
         coords_list = None
         velocities_list = None
-        con = sqlite3.connect(self.filename)
 
         def dict_factory(cursor, row):
             d = {}
@@ -92,26 +91,30 @@ class DMSReader(base.SingleFrameReader):
                 d[col[0]] = row[idx]
             return d
 
-        with con:
+        with sqlite3.connect(self.filename) as con:
             # This will return dictionaries instead of tuples, when calling cur.fetch() or fetchall()
             con.row_factory = dict_factory
             cur = con.cursor()
             coords_list = self.get_coordinates(cur)
             velocities_list = self.get_particle_by_columns(cur, columns=['vx', 'vy', 'vz'])
             unitcell = self.get_global_cell(cur)
-        assert coords_list
+
+        if not coords_list:
+            raise IOError("Found not coordinates")
         self.numatoms = len(coords_list)
-        coords_list = numpy.array(coords_list)
-        self.ts = self._Timestep(coords_list)
+
+        velocities = np.array(velocities_list, dtype=np.float32)
+        if not velocities.any():
+            velocities = None
+
+        self.ts = self._Timestep.from_coordinates(
+            np.array(coords_list, dtype=np.float32), velocities=velocities)
         self.ts.frame = 1  # 1-based frame number
-        if velocities_list:
-            # TODO: use a Timestep that knows about velocities such as TRR.Timestep or better, TRJ.Timestep
-            velocities_arr = numpy.array(velocities_list, dtype=numpy.float32)
-            if numpy.any(velocities_arr):
-                self.ts._velocities = velocities_arr
-                self.convert_velocities_from_native(self.ts._velocities)  # converts nm/ps to A/ps units
-        # ts._unitcell layout is format dependent; Timestep.dimensions does the conversion
+
         self.ts._unitcell = unitcell
         if self.convert_units:
             self.convert_pos_from_native(self.ts._pos)  # in-place !
             self.convert_pos_from_native(self.ts._unitcell)  # in-place ! (all are lengths)
+            if self.ts.has_velocities:
+                # converts nm/ps to A/ps units
+                self.convert_velocities_from_native(self.ts._velocities)

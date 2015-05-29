@@ -23,11 +23,10 @@ Read and write coordinates in CHARMM CARD coordinate format (suffix
 
 """
 
-import numpy
+import numpy as np
 
 import MDAnalysis.core.util as util
 from . import base
-from MDAnalysis import FormatError
 
 
 class CRDReader(base.SingleFrameReader):
@@ -61,22 +60,22 @@ class CRDReader(base.SingleFrameReader):
                 # process coordinates
                 try:
                     if extended:
-                        coords_list.append(numpy.array(map(float, line[45:100].split()[0:3])))
+                        coords_list.append(np.array(map(float, line[45:100].split()[0:3])))
                     else:
-                        coords_list.append(numpy.array(map(float, line[20:50].split()[0:3])))
+                        coords_list.append(np.array(map(float, line[20:50].split()[0:3])))
                 except:
                     raise FormatError("Check CRD format at line %d: %s" % (linenum, line.rstrip()))
 
         self.numatoms = len(coords_list)
 
-        self.ts = self._Timestep(numpy.array(coords_list))
+        self.ts = self._Timestep.from_coordinates(np.array(coords_list))
         self.ts.frame = 1  # 1-based frame number
         # if self.convert_units:
         #    self.convert_pos_from_native(self.ts._pos)             # in-place !
 
         # sanity check
         if self.numatoms != natoms:
-            raise FormatError("Found %d coordinates in %r but the header claims that there "
+            raise ValueError("Found %d coordinates in %r but the header claims that there "
                               "should be %d coordinates." % (self.numatoms, self.filename, natoms))
 
     def Writer(self, filename, **kwargs):

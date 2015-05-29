@@ -18,6 +18,7 @@ import MDAnalysis
 import MDAnalysis as mda
 import MDAnalysis.coordinates
 import MDAnalysis.coordinates.core
+from MDAnalysis import NoDataError
 
 import numpy as np
 import cPickle
@@ -638,15 +639,15 @@ class TestNCDFWriterVelsForces(TestCase):
             if pos:
                 assert_almost_equal(ts._pos, ref_ts._pos, self.prec)
             else:
-                assert_raises(AttributeError, getattr, ts, '_pos')
+                assert_raises(NoDataError, getattr, ts, 'positions')
             if vel:
                 assert_almost_equal(ts._velocities, ref_ts._velocities, self.prec)
             else:
-                assert_raises(AttributeError, getattr, ts, '_velocities')
+                assert_raises(NoDataError, getattr, ts, 'velocities')
             if force:
                 assert_almost_equal(ts._forces, ref_ts._forces, self.prec)
             else:
-                assert_raises(AttributeError, getattr, ts, 'forces')
+                assert_raises(NoDataError, getattr, ts, 'forces')
 
         u.trajectory.close()
 
@@ -2658,36 +2659,24 @@ class TestTRRWriter(_GromacsWriter):
 
         uw = mda.Universe(GRO, self.outfile)
 
-        # check that the velocities are identical for each time step, except for the gaps (that we must make sure to
-        # raise exceptions on).
+        # check that the velocities are identical for each time step, except for the gaps
+        # (that we must make sure to raise exceptions on).
         for orig_ts, written_ts in itertools.izip(self.universe.trajectory, uw.trajectory):
-            try:
-                assert_array_almost_equal(written_ts._pos, orig_ts._pos, 3,
+            if ts.frame % 4:
+                assert_array_almost_equal(written_ts.positions, orig_ts.positions, 3,
                                           err_msg="coordinates mismatch between original and written trajectory at "
-                                                  "frame %d (orig) vs %d (written)" % (
-                                          orig_ts.frame, written_ts.frame))
-            except mda.NoDataError:
-                assert_(not orig_ts.frame % 4,
-                        msg="failed to read coordinates from TRR with gaps between original and written (with gaps) "
-                            "trajectory at frame %d (orig) vs %d (written)" % (
-                        orig_ts.frame, written_ts.frame))
+                                                  "frame {0} (orig) vs {1} (written)".format(
+                                                      orig_ts.frame, written_ts.frame))
             else:
-                assert_(orig_ts.frame % 4,
-                        msg="failed to flag gap in coordinates from TRR at frame %d." % (written_ts.frame))
+                assert_raises(NoDataError, getattr, written_ts, 'positions')
 
-            try:
-                assert_array_almost_equal(written_ts._velocities, orig_ts._velocities, 3,
+            if ts.frame % 2:
+                assert_array_almost_equal(written_ts.velocities, orig_ts.velocities, 3,
                                           err_msg="velocities mismatch between original and written trajectory at "
-                                                  "frame %d (orig) vs %d (written)" % (
-                                          orig_ts.frame, written_ts.frame))
-            except mda.NoDataError:
-                assert_(not orig_ts.frame % 2,
-                        msg="failed to read velocities from TRR with gaps between original and written (with gaps) "
-                            "trajectory at frame %d (orig) vs %d (written)" % (
-                        orig_ts.frame, written_ts.frame))
+                                                  "frame {0} (orig) vs {1} (written)".format(
+                                                      orig_ts.frame, written_ts.frame))
             else:
-                assert_(orig_ts.frame % 2,
-                        msg="failed to flag gap in velocities from TRR at frame %d." % (written_ts.frame))
+                assert_raises(NoDataError, getattr, written_ts, 'velocities')
 
 
 class _GromacsWriterIssue101(TestCase):
@@ -2960,120 +2949,6 @@ class TestWrite_Partial_Timestep(TestCase):
 
         assert_array_almost_equal(self.ag.coordinates(), u_ag.atoms.coordinates(), self.prec,
                                   err_msg="Writing AtomGroup timestep failed.")
-
-
-class TestTimestep_Copy(TestCase):
-    """
-    Timestep.copy() method seems to be broken, (Issue 164).  The base.Timestep .copy() method returns a TS of
-    class base.Timestep rather than the appropriate subclass.
-
-    This class makes a TS object of the first frame, .copy()'s this as a new object and compares the content
-    of the two resulting objects.
-
-    This test class is then subclassed below to try and test all Timestep classes that exist within MDA.
-    """
-
-    def setUp(self):
-        self.universe = mda.Universe(PSF, DCD)
-        self.name = 'DCD (base)'
-
-    def tearDown(self):
-        del self.universe
-        del self.name
-
-    def test_TS_copy(self):
-        """
-        Checks equality between two Timesteps
-
-        Will check that TS2 has all the same attributes and values for these attributes as ref_TS.
-        """
-        ref_TS = self.universe.trajectory.ts
-        TS2 = ref_TS.copy()
-
-        for att in ref_TS.__dict__:
-            try:
-                assert_equal(ref_TS.__dict__[att], TS2.__dict__[att],
-                             err_msg="Timestep copy failed for format: '%s' on attribute: '%s'" % (self.name, att))
-            except KeyError:
-                self.fail("Timestep copy failed for format: '%s' on attribute: '%s'" % (self.name, att))
-
-    def test_TS_slice(self):
-        ref_TS = self.universe.trajectory.ts
-
-        sel = slice(0, 100, 4)
-        TS2 = ref_TS.copy_slice(sel)
-
-        self._test_TS_slice(ref_TS, TS2, sel)
-
-    def test_TS_indices(self):
-        ref_TS = self.universe.trajectory.ts
-
-        sel = [0, 1, 2, 3, 5, 8, 13, 21, 34, 55]
-        TS2 = ref_TS.copy_slice(sel)
-
-        self._test_TS_slice(ref_TS, TS2, sel)
-
-    def _test_TS_slice(self, ref_TS, TS2, sel):
-        per_atom = [
-            '_x', '_y', '_z', '_pos', '_velocities', '_forces',
-            '_tpos', '_tvelocities', '_tforces']
-        ignore = ['numatoms']
-
-        for att in ref_TS.__dict__:
-            try:
-                if att in per_atom:
-                    assert_equal(ref_TS.__dict__[att][sel], TS2.__dict__[att],
-                                 err_msg="Timestep slice failed for format: '%s' on attribute: '%s'"
-                                         % (self.name, att))
-                elif not att in ignore:
-                    assert_equal(ref_TS.__dict__[att], TS2.__dict__[att],
-                                 err_msg="Timestep slice failed for format: '%s' on attribute: '%s'"
-                                         % (self.name, att))
-            except KeyError:
-                self.fail("Timestep copy failed for format: '%s' on attribute: '%s'"
-                          % (self.name, att))
-
-
-class TestTimestep_Copy_DMS(TestTimestep_Copy):
-    def setUp(self):
-        self.universe = mda.Universe(DMS)
-        self.name = 'DMS'
-
-
-class TestTimestep_Copy_GRO(TestTimestep_Copy):
-    def setUp(self):
-        self.universe = mda.Universe(GRO)
-        self.name = 'GRO'
-
-
-class TestTimestep_Copy_PDB(TestTimestep_Copy):
-    def setUp(self):
-        self.universe = mda.Universe(PDB_small)
-        self.name = 'PDB'
-
-
-class TestTimestep_Copy_TRJ(TestTimestep_Copy):
-    def setUp(self):
-        self.universe = mda.Universe(PRM, TRJ)
-        self.name = 'TRJ'
-
-
-class TestTimestep_Copy_TRR(TestTimestep_Copy):
-    def setUp(self):
-        self.universe = mda.Universe(GRO, TRR)
-        self.name = 'TRR'
-
-
-class TestTimestep_Copy_TRZ(TestTimestep_Copy):
-    def setUp(self):
-        self.universe = mda.Universe(TRZ_psf, TRZ)
-        self.name = 'TRZ'
-
-
-class TestTimestep_Copy_XTC(TestTimestep_Copy):
-    def setUp(self):
-        self.universe = mda.Universe(PDB, XTC)
-        self.name = 'XTC'
 
 
 class RefLAMMPSData(object):
