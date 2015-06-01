@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>8. KDTree module &mdash; MDAnalysis 0.10.0-dev documentation</title>
+    <title>8. KDTree module &mdash; MDAnalysis 0.10.0 documentation</title>
     
     <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -16,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.10.0-dev',
+        VERSION:     '0.10.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,15 +25,15 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.10.0-dev documentation"
+          title="Search within MDAnalysis 0.10.0 documentation"
           href="../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.10.0-dev documentation" href="../index.html" />
+    <link rel="top" title="MDAnalysis 0.10.0 documentation" href="../index.html" />
     <link rel="next" title="8.1. KDTree — MDAnalysis.KDTree.KDTree" href="KDTree/KDTree.html" />
     <link rel="prev" title="7.11. Parallel algorithms for MDAnalysis" href="core/parallel.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -50,10 +48,10 @@
         <li class="right" >
           <a href="core/parallel.html" title="7.11. Parallel algorithms for MDAnalysis"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">MDAnalysis 0.10.0-dev documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">MDAnalysis 0.10.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../index.html">
               <img class="logo" src="../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
@@ -63,13 +61,15 @@
                         title="previous chapter">7.11. Parallel algorithms for MDAnalysis</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="KDTree/KDTree.html"
-                        title="next chapter">8.1. KDTree &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.KDTree.KDTree</span></tt></a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="../_sources/documentation_pages/KDTree_modules.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
+                        title="next chapter">8.1. KDTree &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.KDTree.KDTree</span></code></a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/documentation_pages/KDTree_modules.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
       <input type="text" name="q" />
@@ -88,7 +88,7 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="kdtree-module">
 <h1>8. KDTree module<a class="headerlink" href="#kdtree-module" title="Permalink to this headline">¶</a></h1>
@@ -110,10 +110,10 @@ within a radius of a given point) or finding all point pairs in a set
 that are within a certain radius of each other.</p>
 <p>MDAnalysis uses <a class="reference external" href="http://biopython.org">Biopython</a>&#8216;s KDTree module for distance selections
 between atoms but its use goes far beyond this narrow application.</p>
-<div class="admonition-see-also admonition seealso">
+<div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last">The algorithms are based on <a class="reference internal" href="#deberg2000">[deBerg2000]</a> with improvements
-suggested by <a class="reference internal" href="#bentley1990">[Bentley1990]</a>. See the documentation of the
+<p class="last">The algorithms are based on <a class="reference internal" href="#deberg2000" id="id1">[deBerg2000]</a> with improvements
+suggested by <a class="reference internal" href="#bentley1990" id="id2">[Bentley1990]</a>. See the documentation of the
 individual classes for details.</p>
 </div>
 <p class="rubric">References</p>
@@ -137,8 +137,8 @@ Francisco, 1990</td></tr>
 <p class="rubric">Contents</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="KDTree/KDTree.html">8.1. KDTree &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.KDTree.KDTree</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="KDTree/NeighborSearch.html">8.2. Fast atom neighbor lookup using a KD tree (implemented in C++) &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.KDTree.NeighborSearch</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="KDTree/KDTree.html">8.1. KDTree &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.KDTree.KDTree</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="KDTree/NeighborSearch.html">8.2. Fast atom neighbor lookup using a KD tree (implemented in C++) &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.KDTree.NeighborSearch</span></code></a></li>
 </ul>
 </div>
 </div>
@@ -149,7 +149,7 @@ Francisco, 1990</td></tr>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -164,10 +164,10 @@ Francisco, 1990</td></tr>
         <li class="right" >
           <a href="core/parallel.html" title="7.11. Parallel algorithms for MDAnalysis"
              >previous</a> |</li>
-        <li><a href="../index.html">MDAnalysis 0.10.0-dev documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">MDAnalysis 0.10.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
+    <div class="footer" role="contentinfo">
         &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
@@ -176,7 +176,7 @@ Francisco, 1990</td></tr>
     Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
     Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
     and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>
 </html>

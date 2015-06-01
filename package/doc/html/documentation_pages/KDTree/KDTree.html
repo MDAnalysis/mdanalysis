@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>8.1. KDTree — MDAnalysis.KDTree.KDTree &mdash; MDAnalysis 0.10.0-dev documentation</title>
+    <title>8.1. KDTree — MDAnalysis.KDTree.KDTree &mdash; MDAnalysis 0.10.0 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.10.0-dev',
+        VERSION:     '0.10.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,16 +25,16 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.10.0-dev documentation"
+          title="Search within MDAnalysis 0.10.0 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.10.0-dev documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.10.0 documentation" href="../../index.html" />
     <link rel="up" title="8. KDTree module" href="../KDTree_modules.html" />
     <link rel="next" title="8.2. Fast atom neighbor lookup using a KD tree (implemented in C++) — MDAnalysis.KDTree.NeighborSearch" href="NeighborSearch.html" />
     <link rel="prev" title="8. KDTree module" href="../KDTree_modules.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -51,11 +49,11 @@
         <li class="right" >
           <a href="../KDTree_modules.html" title="8. KDTree module"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.10.0-dev documentation</a> &raquo;</li>
-          <li><a href="../KDTree_modules.html" accesskey="U">8. KDTree module</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.10.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../KDTree_modules.html" accesskey="U">8. KDTree module</a> &raquo;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../index.html">
               <img class="logo" src="../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
@@ -65,13 +63,15 @@
                         title="previous chapter">8. KDTree module</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="NeighborSearch.html"
-                        title="next chapter">8.2. Fast atom neighbor lookup using a KD tree (implemented in C++) &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.KDTree.NeighborSearch</span></tt></a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="../../_sources/documentation_pages/KDTree/KDTree.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
+                        title="next chapter">8.2. Fast atom neighbor lookup using a KD tree (implemented in C++) &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.KDTree.NeighborSearch</span></code></a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/documentation_pages/KDTree/KDTree.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
       <input type="text" name="q" />
@@ -90,10 +90,10 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <span class="target" id="module-MDAnalysis.KDTree.KDTree"></span><div class="section" id="kdtree-mdanalysis-kdtree-kdtree">
-<h1>8.1. KDTree &#8212; <a class="reference internal" href="#module-MDAnalysis.KDTree.KDTree" title="MDAnalysis.KDTree.KDTree"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.KDTree.KDTree</span></tt></a><a class="headerlink" href="#kdtree-mdanalysis-kdtree-kdtree" title="Permalink to this headline">¶</a></h1>
+<h1>8.1. KDTree &#8212; <a class="reference internal" href="#module-MDAnalysis.KDTree.KDTree" title="MDAnalysis.KDTree.KDTree"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.KDTree.KDTree</span></code></a><a class="headerlink" href="#kdtree-mdanalysis-kdtree-kdtree" title="Permalink to this headline">¶</a></h1>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -111,10 +111,10 @@ involve N-dimensional vectors, e.g.  neighbor searches (find all points
 within a radius of a given point) or finding all point pairs in a set
 that are within a certain radius of each other. See &#8220;Computational Geometry:
 Algorithms and Applications&#8221; (Mark de Berg, Marc van Kreveld, Mark Overmars,
-Otfried Schwarzkopf) <a class="reference internal" href="../KDTree_modules.html#deberg2000">[deBerg2000]</a>.</p>
+Otfried Schwarzkopf) <a class="reference internal" href="../KDTree_modules.html#deberg2000" id="id1">[deBerg2000]</a>.</p>
 <dl class="class">
 <dt id="MDAnalysis.KDTree.KDTree.KDTree">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.KDTree.KDTree.</tt><tt class="descname">KDTree</tt><big>(</big><em>dim</em>, <em>bucket_size=10</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/KDTree/KDTree.html#KDTree"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.KDTree.KDTree.KDTree" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.KDTree.KDTree.</code><code class="descname">KDTree</code><span class="sig-paren">(</span><em>dim</em>, <em>bucket_size=10</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/KDTree/KDTree.html#KDTree"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.KDTree.KDTree.KDTree" title="Permalink to this definition">¶</a></dt>
 <dd><p>KD tree implementation (C++, SWIG python wrapper)</p>
 <p>The KD tree data structure can be used for all kinds of searches that
 involve N-dimensional vectors, e.g.  neighbor searches (find all points
@@ -127,8 +127,8 @@ Mark de Berg, Marc van Kreveld, Mark Overmars, Otfried Schwarzkopf
 published by Springer-Verlag
 2nd rev. ed. 2000.
 ISBN: 3-540-65620-0</p>
-<p>The KD tree data structure is described in chapter 5, pg. 99 of <a class="reference internal" href="../KDTree_modules.html#deberg2000">[deBerg2000]</a>.</p>
-<p>The following article <a class="reference internal" href="../KDTree_modules.html#bentley1990">[Bentley1990]</a> made clear to me that the nodes should
+<p>The KD tree data structure is described in chapter 5, pg. 99 of <a class="reference internal" href="../KDTree_modules.html#deberg2000" id="id2">[deBerg2000]</a>.</p>
+<p>The following article <a class="reference internal" href="../KDTree_modules.html#bentley1990" id="id3">[Bentley1990]</a> made clear to me that the nodes should
 contain more than one point (this leads to dramatic speed
 improvements for the &#8220;all fixed radius neighbor search&#8221;, see
 below):</p>
@@ -144,7 +144,7 @@ MDAnalysis, use a value such as bucket_size=10; for the
 classical KD-tree use 1.</p>
 <dl class="method">
 <dt id="MDAnalysis.KDTree.KDTree.KDTree.all_get_indices">
-<tt class="descname">all_get_indices</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/KDTree/KDTree.html#KDTree.all_get_indices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.KDTree.KDTree.KDTree.all_get_indices" title="Permalink to this definition">¶</a></dt>
+<code class="descname">all_get_indices</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/KDTree/KDTree.html#KDTree.all_get_indices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.KDTree.KDTree.KDTree.all_get_indices" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return All Fixed Neighbor Search results.</p>
 <p>Return a Nx2 dim Numeric array containing the indices of the point
 pairs, where N is the number of neighbor pairs.</p>
@@ -152,7 +152,7 @@ pairs, where N is the number of neighbor pairs.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.KDTree.KDTree.KDTree.all_get_radii">
-<tt class="descname">all_get_radii</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/KDTree/KDTree.html#KDTree.all_get_radii"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.KDTree.KDTree.KDTree.all_get_radii" title="Permalink to this definition">¶</a></dt>
+<code class="descname">all_get_radii</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/KDTree/KDTree.html#KDTree.all_get_radii"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.KDTree.KDTree.KDTree.all_get_radii" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return All Fixed Neighbor Search results.</p>
 <p>Return an N-dim array containing the distances of all the point
 pairs, where N is the number of neighbor pairs.</p>
@@ -160,7 +160,7 @@ pairs, where N is the number of neighbor pairs.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.KDTree.KDTree.KDTree.all_search">
-<tt class="descname">all_search</tt><big>(</big><em>radius</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/KDTree/KDTree.html#KDTree.all_search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.KDTree.KDTree.KDTree.all_search" title="Permalink to this definition">¶</a></dt>
+<code class="descname">all_search</code><span class="sig-paren">(</span><em>radius</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/KDTree/KDTree.html#KDTree.all_search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.KDTree.KDTree.KDTree.all_search" title="Permalink to this definition">¶</a></dt>
 <dd><p>All fixed neighbor search.</p>
 <p>Search all point pairs that are within radius.</p>
 <p>o radius - float (&gt;0)</p>
@@ -168,7 +168,7 @@ pairs, where N is the number of neighbor pairs.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.KDTree.KDTree.KDTree.get_indices">
-<tt class="descname">get_indices</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/KDTree/KDTree.html#KDTree.get_indices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.KDTree.KDTree.KDTree.get_indices" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_indices</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/KDTree/KDTree.html#KDTree.get_indices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.KDTree.KDTree.KDTree.get_indices" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the list of indices.</p>
 <p>Return the list of indices after a neighbor search.  The indices
 refer to the original coords numpy array. The coordinates with
@@ -178,20 +178,20 @@ these indices were within radius of center.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.KDTree.KDTree.KDTree.get_radii">
-<tt class="descname">get_radii</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/KDTree/KDTree.html#KDTree.get_radii"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.KDTree.KDTree.KDTree.get_radii" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_radii</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/KDTree/KDTree.html#KDTree.get_radii"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.KDTree.KDTree.KDTree.get_radii" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return radii.</p>
 <p>Return the list of distances from center after a neighbor search.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.KDTree.KDTree.KDTree.list_search">
-<tt class="descname">list_search</tt><big>(</big><em>centers</em>, <em>radius</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/KDTree/KDTree.html#KDTree.list_search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.KDTree.KDTree.KDTree.list_search" title="Permalink to this definition">¶</a></dt>
+<code class="descname">list_search</code><span class="sig-paren">(</span><em>centers</em>, <em>radius</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/KDTree/KDTree.html#KDTree.list_search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.KDTree.KDTree.KDTree.list_search" title="Permalink to this definition">¶</a></dt>
 <dd><p>Search all points within radius of any center (radii NOT available).</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.KDTree.KDTree.KDTree.search">
-<tt class="descname">search</tt><big>(</big><em>center</em>, <em>radius</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/KDTree/KDTree.html#KDTree.search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.KDTree.KDTree.KDTree.search" title="Permalink to this definition">¶</a></dt>
+<code class="descname">search</code><span class="sig-paren">(</span><em>center</em>, <em>radius</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/KDTree/KDTree.html#KDTree.search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.KDTree.KDTree.KDTree.search" title="Permalink to this definition">¶</a></dt>
 <dd><p>Search all points within radius of center.</p>
 <p>o center - one dimensional numpy array. E.g. if the
 points have dimensionality D, the center array should have length D.
@@ -201,7 +201,7 @@ o radius - float&gt;0</p>
 
 <dl class="method">
 <dt id="MDAnalysis.KDTree.KDTree.KDTree.set_coords">
-<tt class="descname">set_coords</tt><big>(</big><em>coords</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/KDTree/KDTree.html#KDTree.set_coords"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.KDTree.KDTree.KDTree.set_coords" title="Permalink to this definition">¶</a></dt>
+<code class="descname">set_coords</code><span class="sig-paren">(</span><em>coords</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/KDTree/KDTree.html#KDTree.set_coords"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.KDTree.KDTree.KDTree.set_coords" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add the coordinates of the points.</p>
 <p>o coords - two dimensional numpy array. E.g. if the
 points have dimensionality D and there are N points, the coords
@@ -219,7 +219,7 @@ array should be NxD dimensional.</p>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -234,11 +234,11 @@ array should be NxD dimensional.</p>
         <li class="right" >
           <a href="../KDTree_modules.html" title="8. KDTree module"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.10.0-dev documentation</a> &raquo;</li>
-          <li><a href="../KDTree_modules.html" >8. KDTree module</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.10.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../KDTree_modules.html" >8. KDTree module</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
+    <div class="footer" role="contentinfo">
         &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
@@ -247,7 +247,7 @@ array should be NxD dimensional.</p>
     Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
     Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
     and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>
 </html>

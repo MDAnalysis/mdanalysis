@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.analysis.psa &mdash; MDAnalysis 0.10.0-dev documentation</title>
+    <title>MDAnalysis.analysis.psa &mdash; MDAnalysis 0.10.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -16,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.10.0-dev',
+        VERSION:     '0.10.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,14 +25,14 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.10.0-dev documentation"
+          title="Search within MDAnalysis 0.10.0 documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.10.0-dev documentation" href="../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.10.0 documentation" href="../../../index.html" />
     <link rel="up" title="MDAnalysis" href="../../MDAnalysis.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -43,17 +41,17 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.10.0-dev documentation</a> &raquo;</li>
-          <li><a href="../../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.10.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../../index.html">
               <img class="logo" src="../../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
             </a></p>
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../../search.html" method="get">
       <input type="text" name="q" />
@@ -72,7 +70,7 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <h1>Source code for MDAnalysis.analysis.psa</h1><div class="highlight"><pre>
 <span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
@@ -101,17 +99,16 @@
 
 <span class="sd">.. versionadded:: 0.10.0</span>
 
-<span class="sd">The module contains code to calculate the geometric similarity of</span>
-<span class="sd">trajectories using path metrics such as the Hausdorff or Fréchet</span>
-<span class="sd">distances. The path metrics are functions of two paths and return a</span>
+<span class="sd">The module contains code to calculate the geometric similarity of trajectories</span>
+<span class="sd">using path metrics such as the Hausdorff or Fréchet distances</span>
+<span class="sd">[Seyler2015]_. The path metrics are functions of two paths and return a</span>
 <span class="sd">nonnegative number, i.e., a distance. Two paths are identical if their distance</span>
-<span class="sd">is zero, and large distances indicate dissimilarity. Each path metric</span>
-<span class="sd">is a function of the individual points (e.g., coordinate snapshots)</span>
-<span class="sd">that comprise each path and, loosely speaking, identify the two points,</span>
-<span class="sd">one per path of a pair of paths, where the paths deviate the most.</span>
-<span class="sd">The distance between these points of maximal deviation is measured by</span>
-<span class="sd">the root mean square deviation (RMSD), i.e., to compute structural</span>
-<span class="sd">similarity.</span>
+<span class="sd">is zero, and large distances indicate dissimilarity. Each path metric is a</span>
+<span class="sd">function of the individual points (e.g., coordinate snapshots) that comprise</span>
+<span class="sd">each path and, loosely speaking, identify the two points, one per path of a</span>
+<span class="sd">pair of paths, where the paths deviate the most.  The distance between these</span>
+<span class="sd">points of maximal deviation is measured by the root mean square deviation</span>
+<span class="sd">(RMSD), i.e., to compute structural similarity.</span>
 
 <span class="sd">One typically computes the pairwise similarity for an ensemble of paths to</span>
 <span class="sd">produce a symmetric distance matrix, which can be clustered to, at a glance,</span>
@@ -124,17 +121,21 @@
 <span class="sd">metrics; using the best-fit rmsd on a pairwise basis does not generally</span>
 <span class="sd">preserve the triangle inequality.</span>
 
-<span class="sd">`PSAnalysisTutorial`_ outlines a typical application of PSA to a set of</span>
-<span class="sd">trajectories, including doing proper alignment, performing distance comparisons,</span>
-<span class="sd">and generating heat map-dendrogram plots from hierarchical clustering.</span>
+<span class="sd">.. SeeAlso:: The `PSAnalysisTutorial`_ outlines a typical application of PSA to</span>
+<span class="sd">             a set of trajectories, including doing proper alignment,</span>
+<span class="sd">             performing distance comparisons, and generating heat</span>
+<span class="sd">             map-dendrogram plots from hierarchical clustering.</span>
 
-<span class="sd">.. SeeAlso::</span>
 
-<span class="sd">   :mod:`MDAnalysis.analysis.psa`</span>
-<span class="sd">        contains functions to align a set of paths and compute clustered</span>
-<span class="sd">        (Hausdorff or Fréchet) distance matrices</span>
+<span class="sd">.. Rubric:: References</span>
 
+<span class="sd">.. [Seyler2015] Sean L. Seyler, Avishek Kumar, Michael F. Thorpe, Oliver Beckstein.</span>
+<span class="sd">   *Path Similarity Analysis: a Method for Quantifying Macromolecular</span>
+<span class="sd">   Pathways.* `arXiv:1505.04807`_ (2015).</span>
+
+<span class="sd">.. _`arXiv:1505.04807`: http://arxiv.org/abs/1505.04807</span>
 <span class="sd">.. _`PSAnalysisTutorial`: https://github.com/Becksteinlab/PSAnalysisTutorial</span>
+
 
 <span class="sd">Helper functions and variables</span>
 <span class="sd">------------------------------</span>
@@ -142,8 +143,8 @@
 <span class="sd">The following global variables are used by the functions and classes in this</span>
 <span class="sd">module.</span>
 
-<span class="sd">   hausdorff_names</span>
-<span class="sd">   frechet_names</span>
+<span class="sd">.. data::   hausdorff_names</span>
+<span class="sd">.. data::   frechet_names</span>
 
 <span class="sd">The following functions are used by the other functions in this module.</span>
 
@@ -155,7 +156,7 @@
 
 <span class="sd">.. autofunction:: get_path_metric_func</span>
 <span class="sd">.. autofunction:: hausdorff</span>
-<span class="sd">.. autofunction:: frechet</span>
+<span class="sd">.. autofunction:: discrete_frechet</span>
 
 <span class="sd">.. autoclass:: Path</span>
 <span class="sd">   :members:</span>
@@ -236,7 +237,6 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span>
-<span class="kn">import</span> <span class="nn">scipy.spatial.distance</span> <span class="kn">as</span> <span class="nn">sp</span>
 
 <span class="kn">import</span> <span class="nn">MDAnalysis</span>
 <span class="kn">import</span> <span class="nn">MDAnalysis.analysis.align</span>
@@ -271,17 +271,17 @@
 
 </div>
 <div class="viewcode-block" id="hausdorff"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.hausdorff">[docs]</a><span class="k">def</span> <span class="nf">hausdorff</span><span class="p">(</span><span class="n">P</span><span class="p">,</span><span class="n">Q</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Calculate the Hausdorff distance between two paths.</span>
+    <span class="sd">r&quot;&quot;&quot;Calculate the Hausdorff distance between two paths.</span>
 
-<span class="sd">    .. |3Dp| replace:: :math:`N_p\times N\times 3`</span>
-<span class="sd">    .. |2Dp| replace:: :math:`N_p\times(3N)`</span>
-<span class="sd">    .. |3Dq| replace:: :math:`N_q\times N\times 3`</span>
-<span class="sd">    .. |2Dq| replace:: :math:`N_q\times(3N)`</span>
+<span class="sd">    .. |3Dp| replace:: :math:`N_p \times N \times 3`</span>
+<span class="sd">    .. |2Dp| replace:: :math:`N_p \times (3N)`</span>
+<span class="sd">    .. |3Dq| replace:: :math:`N_q \times N \times 3`</span>
+<span class="sd">    .. |2Dq| replace:: :math:`N_q \times (3N)`</span>
 
 <span class="sd">    *P* (*Q*) is a :class:`numpy.ndarray` of :math:`N_p` (:math:`N_q`) time</span>
 <span class="sd">    steps, :math:`N` atoms, and :math:`3N` coordinates (e.g.,</span>
 <span class="sd">    :meth:`MDAnalysis.core.AtomGroup.AtomGroup.coordinates`). *P* (*Q*) has</span>
-<span class="sd">    either shape |3Dp| (|3Dq|), or :|2Dp| (|2Dq|) in flattened form.</span>
+<span class="sd">    either shape |3Dp| (|3Dq|), or |2Dp| (|2Dq|) in flattened form.</span>
 
 <span class="sd">    :Arguments:</span>
 <span class="sd">      *P*</span>
@@ -316,12 +316,12 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="n">d</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">sqnorm</span><span class="p">(</span><span class="n">p</span> <span class="o">-</span> <span class="n">Q</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">P</span><span class="p">])</span>
-    <span class="k">return</span> <span class="p">(</span> <span class="nb">max</span><span class="p">(</span> <span class="n">numpy</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">amin</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)),</span>                            \
+    <span class="k">return</span> <span class="p">(</span> <span class="nb">max</span><span class="p">(</span> <span class="n">numpy</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">amin</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)),</span>             \
                   <span class="n">numpy</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">amin</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span> <span class="p">)</span> <span class="o">/</span> <span class="n">N</span>  <span class="p">)</span><span class="o">**</span><span class="mf">0.5</span>
 
 </div>
 <div class="viewcode-block" id="discrete_frechet"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.discrete_frechet">[docs]</a><span class="k">def</span> <span class="nf">discrete_frechet</span><span class="p">(</span><span class="n">P</span><span class="p">,</span><span class="n">Q</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Calculate the discrete Frechet distance between two paths.</span>
+    <span class="sd">r&quot;&quot;&quot;Calculate the discrete Frechet distance between two paths.</span>
 
 <span class="sd">    .. |3Dp| replace:: :math:`N_p\times N\times 3`</span>
 <span class="sd">    .. |2Dp| replace:: :math:`N_p\times(3N)`</span>
@@ -530,7 +530,7 @@
 
 </div>
 <div class="viewcode-block" id="Path.to_path"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.Path.to_path">[docs]</a>    <span class="k">def</span> <span class="nf">to_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fitted</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">flat</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Generates a coordinate time series from the fitted universe</span>
+        <span class="sd">r&quot;&quot;&quot;Generates a coordinate time series from the fitted universe</span>
 <span class="sd">        trajectory.</span>
 
 <span class="sd">        .. |Np| replace:: :math:`N_p`</span>
@@ -584,7 +584,7 @@
 <div class="viewcode-block" id="Path.run"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.Path.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">postfix</span><span class="o">=</span><span class="s">&#39;_fit&#39;</span><span class="p">,</span> <span class="n">rmsdfile</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
             <span class="n">targetdir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">curdir</span><span class="p">,</span> <span class="n">mass_weighted</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">tol_mass</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
             <span class="n">flat</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Generate a path from a trajectory and reference structure, aligning</span>
+        <span class="sd">r&quot;&quot;&quot;Generate a path from a trajectory and reference structure, aligning</span>
 <span class="sd">        to a reference structure if specified.</span>
 
 <span class="sd">        .. |3D| replace:: :math:`N_p\times N\times 3`</span>
@@ -757,7 +757,7 @@
 
 
 <div class="viewcode-block" id="PSA.generate_paths"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.PSA.generate_paths">[docs]</a>    <span class="k">def</span> <span class="nf">generate_paths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Generate paths, aligning each to reference structure if necessary.</span>
+        <span class="sd">r&quot;&quot;&quot;Generate paths, aligning each to reference structure if necessary.</span>
 
 <span class="sd">        .. |3D| replace:: :math:`N_p\times N\times 3`</span>
 <span class="sd">        .. |2D| replace:: :math:`N_p\times 3N`</span>
@@ -1096,7 +1096,7 @@
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -1105,12 +1105,12 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.10.0-dev documentation</a> &raquo;</li>
-          <li><a href="../../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.10.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
+    <div class="footer" role="contentinfo">
         &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
@@ -1119,7 +1119,7 @@
     Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
     Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
     and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>
 </html>

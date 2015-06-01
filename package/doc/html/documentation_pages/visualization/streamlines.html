@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>9.1.1. 2D Streamplot &mdash; MDAnalysis 0.10.0-dev documentation</title>
+    <title>9.1.1. 2D Streamplot &mdash; MDAnalysis 0.10.0 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.10.0-dev',
+        VERSION:     '0.10.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,16 +25,16 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.10.0-dev documentation"
+          title="Search within MDAnalysis 0.10.0 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.10.0-dev documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.10.0 documentation" href="../../index.html" />
     <link rel="up" title="9. Visualization modules" href="../visualization_modules.html" />
     <link rel="next" title="9.1.2. 3D Streamplot" href="streamlines_3D.html" />
     <link rel="prev" title="9. Visualization modules" href="../visualization_modules.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -51,11 +49,11 @@
         <li class="right" >
           <a href="../visualization_modules.html" title="9. Visualization modules"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.10.0-dev documentation</a> &raquo;</li>
-          <li><a href="../visualization_modules.html" accesskey="U">9. Visualization modules</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.10.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../visualization_modules.html" accesskey="U">9. Visualization modules</a> &raquo;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../index.html">
               <img class="logo" src="../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
@@ -66,12 +64,14 @@
   <h4>Next topic</h4>
   <p class="topless"><a href="streamlines_3D.html"
                         title="next chapter">9.1.2. 3D Streamplot</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="../../_sources/documentation_pages/visualization/streamlines.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/documentation_pages/visualization/streamlines.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
       <input type="text" name="q" />
@@ -90,13 +90,13 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="d-streamplot">
 <h1>9.1.1. 2D Streamplot<a class="headerlink" href="#d-streamplot" title="Permalink to this headline">¶</a></h1>
 <blockquote>
 <div><span class="target" id="module-MDAnalysis.visualization.streamlines"></span><div class="section" id="multicore-2d-streamplot-python-library-for-mdanalysis-mdanalysis-visualization-streamlines">
-<h2>9.1.1. Multicore 2D streamplot Python library for MDAnalysis &#8212; <a class="reference internal" href="#module-MDAnalysis.visualization.streamlines" title="MDAnalysis.visualization.streamlines"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.visualization.streamlines</span></tt></a><a class="headerlink" href="#multicore-2d-streamplot-python-library-for-mdanalysis-mdanalysis-visualization-streamlines" title="Permalink to this headline">¶</a></h2>
+<h2>9.1.1. Multicore 2D streamplot Python library for MDAnalysis &#8212; <a class="reference internal" href="#module-MDAnalysis.visualization.streamlines" title="MDAnalysis.visualization.streamlines"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.visualization.streamlines</span></code></a><a class="headerlink" href="#multicore-2d-streamplot-python-library-for-mdanalysis-mdanalysis-visualization-streamlines" title="Permalink to this headline">¶</a></h2>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -107,25 +107,25 @@
 </tr>
 <tr class="field-odd field"><th class="field-name">Copyright:</th><td class="field-body">GNU Public License v3</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Citation:</th><td class="field-body"><a class="reference internal" href="#chavent2014">[Chavent2014]</a></td>
+<tr class="field-even field"><th class="field-name">Citation:</th><td class="field-body"><a class="reference internal" href="#chavent2014" id="id1">[Chavent2014]</a></td>
 </tr>
 </tbody>
 </table>
 <dl class="function">
 <dt id="MDAnalysis.visualization.streamlines.generate_streamlines">
-<tt class="descclassname">MDAnalysis.visualization.streamlines.</tt><tt class="descname">generate_streamlines</tt><big>(</big><em>coordinate_file_path</em>, <em>trajectory_file_path</em>, <em>grid_spacing</em>, <em>MDA_selection</em>, <em>start_frame</em>, <em>end_frame</em>, <em>xmin</em>, <em>xmax</em>, <em>ymin</em>, <em>ymax</em>, <em>maximum_delta_magnitude</em>, <em>num_cores='maximum'</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/visualization/streamlines.html#generate_streamlines"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.visualization.streamlines.generate_streamlines" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.visualization.streamlines.</code><code class="descname">generate_streamlines</code><span class="sig-paren">(</span><em>coordinate_file_path</em>, <em>trajectory_file_path</em>, <em>grid_spacing</em>, <em>MDA_selection</em>, <em>start_frame</em>, <em>end_frame</em>, <em>xmin</em>, <em>xmax</em>, <em>ymin</em>, <em>ymax</em>, <em>maximum_delta_magnitude</em>, <em>num_cores='maximum'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/visualization/streamlines.html#generate_streamlines"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.visualization.streamlines.generate_streamlines" title="Permalink to this definition">¶</a></dt>
 <dd><p>Produce the x and y components of a 2D streamplot data set.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
 <dt><strong>coordinate_file_path</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
 <dd><p class="first last">Absolute path to the coordinate file</p>
 </dd>
 <dt><strong>trajectory_file_path</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
 <dd><p class="first last">Absolute path to the trajectory file. It will normally be desirable to filter the trajectory with a tool
-such as GROMACS g_filter (see <a class="reference internal" href="#chavent2014">[Chavent2014]</a>)</p>
+such as GROMACS g_filter (see <a class="reference internal" href="#chavent2014" id="id2">[Chavent2014]</a>)</p>
 </dd>
 <dt><strong>grid_spacing</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
 <dd><p class="first last">The spacing between grid lines (angstroms)</p>
@@ -162,7 +162,7 @@ displacements crossing the periodic boundary)</p>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first docutils">
 <dt><strong>dx_array</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array of floats</span></dt>
 <dd><p class="first last">An array object containing the displacements in the x direction</p>
 </dd>
@@ -178,25 +178,26 @@ displacements crossing the periodic boundary)</p>
 </dl>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Examples :</th><td class="field-body"></td>
+<tr class="field-odd field"><th class="field-name">Examples:</th><td class="field-body"></td>
 </tr>
 </tbody>
 </table>
-<div class="highlight-python"><pre>import matplotlib, matplotlib.pyplot, numpy
+<div class="highlight-python"><div class="highlight"><pre>import matplotlib, matplotlib.pyplot, numpy
 import MDAnalysis, MDAnalysis.visualization.streamlines
 u1, v1, average_displacement,standard_deviation_of_displacement =
-MDAnalysis.visualization.streamlines.generate_streamlines('testing.gro','testing_filtered.xtc',grid_spacing =
-20, MDA_selection = 'name PO4',start_frame=2,end_frame=3,xmin=-8.73000049591,xmax= 1225.96008301,
+MDAnalysis.visualization.streamlines.generate_streamlines(&#39;testing.gro&#39;,&#39;testing_filtered.xtc&#39;,grid_spacing =
+20, MDA_selection = &#39;name PO4&#39;,start_frame=2,end_frame=3,xmin=-8.73000049591,xmax= 1225.96008301,
 ymin= -12.5799999237, ymax=1224.34008789,maximum_delta_magnitude = 1.0,num_cores=16)
 x = numpy.linspace(0,1200,61)
 y = numpy.linspace(0,1200,61)
 speed = numpy.sqrt(u1*u1 + v1*v1)
 fig = matplotlib.pyplot.figure()
-ax = fig.add_subplot(111,aspect='equal')
-ax.set_xlabel('x ($\AA$)')
-ax.set_ylabel('y ($\AA$)')
+ax = fig.add_subplot(111,aspect=&#39;equal&#39;)
+ax.set_xlabel(&#39;x ($\AA$)&#39;)
+ax.set_ylabel(&#39;y ($\AA$)&#39;)
 ax.streamplot(x,y,u1,v1,density=(10,10),color=speed,linewidth=3*speed/speed.max())
-fig.savefig('testing_streamline.png',dpi=300)</pre>
+fig.savefig(&#39;testing_streamline.png&#39;,dpi=300)
+</pre></div>
 </div>
 <img alt="../../_images/testing_streamline.png" src="../../_images/testing_streamline.png" />
 <table class="docutils citation" frame="void" id="chavent2014" rules="none">
@@ -219,7 +220,7 @@ fig.savefig('testing_streamline.png',dpi=300)</pre>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -234,11 +235,11 @@ fig.savefig('testing_streamline.png',dpi=300)</pre>
         <li class="right" >
           <a href="../visualization_modules.html" title="9. Visualization modules"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.10.0-dev documentation</a> &raquo;</li>
-          <li><a href="../visualization_modules.html" >9. Visualization modules</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.10.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../visualization_modules.html" >9. Visualization modules</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
+    <div class="footer" role="contentinfo">
         &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
@@ -247,7 +248,7 @@ fig.savefig('testing_streamline.png',dpi=300)</pre>
     Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
     Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
     and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>
 </html>

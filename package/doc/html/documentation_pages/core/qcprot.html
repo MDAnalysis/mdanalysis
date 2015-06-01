@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>7.7. Fast QCP RMSD structure alignment — MDAnalysis.core.qcprot &mdash; MDAnalysis 0.10.0-dev documentation</title>
+    <title>7.7. Fast QCP RMSD structure alignment — MDAnalysis.core.qcprot &mdash; MDAnalysis 0.10.0 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.10.0-dev',
+        VERSION:     '0.10.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,16 +25,16 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.10.0-dev documentation"
+          title="Search within MDAnalysis 0.10.0 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.10.0-dev documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.10.0 documentation" href="../../index.html" />
     <link rel="up" title="7. Core modules" href="../core_modules.html" />
     <link rel="next" title="7.8. Constants and unit conversion — MDAnalysis.core.units" href="units.html" />
     <link rel="prev" title="7.6. Homogeneous Transformation Matrices and Quaternions — MDAnalysis.core.transformations" href="transformations.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -51,18 +49,18 @@
         <li class="right" >
           <a href="transformations.html" title="7.6. Homogeneous Transformation Matrices and Quaternions — MDAnalysis.core.transformations"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.10.0-dev documentation</a> &raquo;</li>
-          <li><a href="../core_modules.html" accesskey="U">7. Core modules</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.10.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../core_modules.html" accesskey="U">7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../index.html">
               <img class="logo" src="../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
             </a></p>
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">7.7. Fast QCP RMSD structure alignment &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.qcprot</span></tt></a><ul>
+<li><a class="reference internal" href="#">7.7. Fast QCP RMSD structure alignment &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.core.qcprot</span></code></a><ul>
 <li><a class="reference internal" href="#references">7.7.1. References</a></li>
 <li><a class="reference internal" href="#functions">7.7.2. Functions</a></li>
 </ul>
@@ -71,16 +69,18 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="transformations.html"
-                        title="previous chapter">7.6. Homogeneous Transformation Matrices and Quaternions &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.core.transformations</span></tt></a></p>
+                        title="previous chapter">7.6. Homogeneous Transformation Matrices and Quaternions &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.core.transformations</span></code></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="units.html"
-                        title="next chapter">7.8. Constants and unit conversion &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.units</span></tt></a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="../../_sources/documentation_pages/core/qcprot.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
+                        title="next chapter">7.8. Constants and unit conversion &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.core.units</span></code></a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/documentation_pages/core/qcprot.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
       <input type="text" name="q" />
@@ -99,10 +99,10 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <span class="target" id="module-MDAnalysis.core.qcprot"></span><div class="section" id="fast-qcp-rmsd-structure-alignment-mdanalysis-core-qcprot">
-<h1>7.7. Fast QCP RMSD structure alignment &#8212; <a class="reference internal" href="#module-MDAnalysis.core.qcprot" title="MDAnalysis.core.qcprot"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.core.qcprot</span></tt></a><a class="headerlink" href="#fast-qcp-rmsd-structure-alignment-mdanalysis-core-qcprot" title="Permalink to this headline">¶</a></h1>
+<h1>7.7. Fast QCP RMSD structure alignment &#8212; <a class="reference internal" href="#module-MDAnalysis.core.qcprot" title="MDAnalysis.core.qcprot"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.core.qcprot</span></code></a><a class="headerlink" href="#fast-qcp-rmsd-structure-alignment-mdanalysis-core-qcprot" title="Permalink to this headline">¶</a></h1>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -119,15 +119,15 @@
 </table>
 <p><a class="reference external" href="https://github.com/synapticarbors/pyqcprot">PyQCPROT</a> is a python/cython implementation of Douglas Theobald&#8217;s QCP
 method for calculating the minimum RMSD between two structures
-<a class="reference internal" href="#theobald2005">[Theobald2005]</a> and determining the optimal least-squares rotation
-matrix <a class="reference internal" href="#liu2010">[Liu2010]</a>.</p>
+<a class="reference internal" href="#theobald2005" id="id1">[Theobald2005]</a> and determining the optimal least-squares rotation
+matrix <a class="reference internal" href="#liu2010" id="id2">[Liu2010]</a>.</p>
 <p>A full description of the method, along with the original C implementation can
 be found at <a class="reference external" href="http://theobald.brandeis.edu/qcp/">http://theobald.brandeis.edu/qcp/</a></p>
-<div class="admonition-see-also admonition seealso">
+<div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last">The <a class="reference internal" href="#MDAnalysis.core.qcprot.CalcRMSDRotationalMatrix" title="MDAnalysis.core.qcprot.CalcRMSDRotationalMatrix"><tt class="xref py py-func docutils literal"><span class="pre">CalcRMSDRotationalMatrix()</span></tt></a> function is used in
-<a class="reference internal" href="../analysis/align.html#module-MDAnalysis.analysis.align" title="MDAnalysis.analysis.align"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.align</span></tt></a> and
-<tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.rmsd</span></tt>.</p>
+<p class="last">The <a class="reference internal" href="#MDAnalysis.core.qcprot.CalcRMSDRotationalMatrix" title="MDAnalysis.core.qcprot.CalcRMSDRotationalMatrix"><code class="xref py py-func docutils literal"><span class="pre">CalcRMSDRotationalMatrix()</span></code></a> function is used in
+<a class="reference internal" href="../analysis/align.html#module-MDAnalysis.analysis.align" title="MDAnalysis.analysis.align"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.align</span></code></a> and
+<code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.rmsd</span></code>.</p>
 </div>
 <div class="section" id="references">
 <h2>7.7.1. References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
@@ -152,10 +152,10 @@ superpositions.&#8221;  J. Comput. Chem. 31, 1561-1563.</td></tr>
 </div>
 <div class="section" id="functions">
 <h2>7.7.2. Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
-<p>Users will typically use the <a class="reference internal" href="#MDAnalysis.core.qcprot.CalcRMSDRotationalMatrix" title="MDAnalysis.core.qcprot.CalcRMSDRotationalMatrix"><tt class="xref py py-func docutils literal"><span class="pre">CalcRMSDRotationalMatrix()</span></tt></a> function.</p>
+<p>Users will typically use the <a class="reference internal" href="#MDAnalysis.core.qcprot.CalcRMSDRotationalMatrix" title="MDAnalysis.core.qcprot.CalcRMSDRotationalMatrix"><code class="xref py py-func docutils literal"><span class="pre">CalcRMSDRotationalMatrix()</span></code></a> function.</p>
 <dl class="function">
 <dt id="MDAnalysis.core.qcprot.CalcRMSDRotationalMatrix">
-<tt class="descclassname">MDAnalysis.core.qcprot.</tt><tt class="descname">CalcRMSDRotationalMatrix</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.qcprot.CalcRMSDRotationalMatrix" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.core.qcprot.</code><code class="descname">CalcRMSDRotationalMatrix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.qcprot.CalcRMSDRotationalMatrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the RMSD &amp; rotational matrix.</p>
 <dl class="docutils">
 <dt>CalcRMSDRotationalMatrix(ref, conf, N, rot, weights):</dt>
@@ -194,10 +194,10 @@ superpositions.&#8221;  J. Comput. Chem. 31, 1561-1563.</td></tr>
 
 <dl class="function">
 <dt id="MDAnalysis.core.qcprot.InnerProduct">
-<tt class="descclassname">MDAnalysis.core.qcprot.</tt><tt class="descname">InnerProduct</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.qcprot.InnerProduct" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.core.qcprot.</code><code class="descname">InnerProduct</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.qcprot.InnerProduct" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the inner product of two structures.</p>
 <p>InnerProduct(A, coords1, coords2, N, weight) &#8211;&gt; (G1+G2)/2</p>
-<p>If weight array is not <tt class="docutils literal"><span class="pre">None</span></tt>, calculate the weighted inner product.</p>
+<p>If weight array is not <code class="docutils literal"><span class="pre">None</span></code>, calculate the weighted inner product.</p>
 <blockquote>
 <div><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -218,7 +218,7 @@ superpositions.&#8221;  J. Comput. Chem. 31, 1561-1563.</td></tr>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><ul class="first last simple">
-<li>(G1 + G2) * 0.5; used as E0 in function <a class="reference internal" href="#MDAnalysis.core.qcprot.FastCalcRMSDAndRotation" title="MDAnalysis.core.qcprot.FastCalcRMSDAndRotation"><tt class="xref py py-func docutils literal"><span class="pre">FastCalcRMSDAndRotation()</span></tt></a></li>
+<li>(G1 + G2) * 0.5; used as E0 in function <a class="reference internal" href="#MDAnalysis.core.qcprot.FastCalcRMSDAndRotation" title="MDAnalysis.core.qcprot.FastCalcRMSDAndRotation"><code class="xref py py-func docutils literal"><span class="pre">FastCalcRMSDAndRotation()</span></code></a></li>
 </ul>
 </td>
 </tr>
@@ -232,8 +232,9 @@ superpositions.&#8221;  J. Comput. Chem. 31, 1561-1563.</td></tr>
 <li><p class="first">Please note how the structure coordinates are stored as 3xN arrays,
 not Nx3 arrays as is also commonly used. The difference is
 something like this for storage of a structure with 8 atoms:</p>
-<div class="highlight-python"><pre>Nx3: xyzxyzxyzxyzxyzxyzxyzxyz
-3xN: xxxxxxxxyyyyyyyyzzzzzzzz</pre>
+<div class="highlight-python"><div class="highlight"><pre>Nx3: xyzxyzxyzxyzxyzxyzxyzxyz
+3xN: xxxxxxxxyyyyyyyyzzzzzzzz
+</pre></div>
 </div>
 </li>
 </ol>
@@ -243,7 +244,7 @@ something like this for storage of a structure with 8 atoms:</p>
 
 <dl class="function">
 <dt id="MDAnalysis.core.qcprot.FastCalcRMSDAndRotation">
-<tt class="descclassname">MDAnalysis.core.qcprot.</tt><tt class="descname">FastCalcRMSDAndRotation</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.core.qcprot.FastCalcRMSDAndRotation" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.core.qcprot.</code><code class="descname">FastCalcRMSDAndRotation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.qcprot.FastCalcRMSDAndRotation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the RMSD, and/or the optimal rotation matrix.</p>
 <p>FastCalcRMSDAndRotation(rot, A, E0, N)</p>
 <blockquote>
@@ -285,7 +286,7 @@ something like this for storage of a structure with 8 atoms:</p>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -300,11 +301,11 @@ something like this for storage of a structure with 8 atoms:</p>
         <li class="right" >
           <a href="transformations.html" title="7.6. Homogeneous Transformation Matrices and Quaternions — MDAnalysis.core.transformations"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.10.0-dev documentation</a> &raquo;</li>
-          <li><a href="../core_modules.html" >7. Core modules</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.10.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../core_modules.html" >7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
+    <div class="footer" role="contentinfo">
         &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
@@ -313,7 +314,7 @@ something like this for storage of a structure with 8 atoms:</p>
     Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
     Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
     and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>
 </html>

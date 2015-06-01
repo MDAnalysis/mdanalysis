@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.coordinates.xdrfile.core &mdash; MDAnalysis 0.10.0-dev documentation</title>
+    <title>MDAnalysis.coordinates.xdrfile.core &mdash; MDAnalysis 0.10.0 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -16,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '0.10.0-dev',
+        VERSION:     '0.10.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,14 +25,14 @@
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.10.0-dev documentation"
+          title="Search within MDAnalysis 0.10.0 documentation"
           href="../../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.10.0-dev documentation" href="../../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.10.0 documentation" href="../../../../index.html" />
     <link rel="up" title="MDAnalysis" href="../../../MDAnalysis.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -43,17 +41,17 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">MDAnalysis 0.10.0-dev documentation</a> &raquo;</li>
-          <li><a href="../../../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">MDAnalysis 0.10.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../../../index.html">
               <img class="logo" src="../../../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
             </a></p>
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../../../search.html" method="get">
       <input type="text" name="q" />
@@ -72,7 +70,7 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <h1>Source code for MDAnalysis.coordinates.xdrfile.core</h1><div class="highlight"><pre>
 <span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
@@ -155,7 +153,7 @@
 
 
 <span class="c"># This is the XTC class. The TRR overrides with it&#39;s own.</span>
-<div class="viewcode-block" id="Timestep"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/core.html#MDAnalysis.coordinates.xdrfile.core.Timestep">[docs]</a><span class="k">class</span> <span class="nc">Timestep</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">Timestep</span><span class="p">):</span>
+<div class="viewcode-block" id="Timestep"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/core.html#MDAnalysis.coordinates.TRR.Timestep">[docs]</a><span class="k">class</span> <span class="nc">Timestep</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">Timestep</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Timestep for a Gromacs trajectory.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -222,11 +220,11 @@
         <span class="k">return</span> <span class="n">triclinic_box</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
 
     <span class="nd">@dimensions.setter</span>
-<div class="viewcode-block" id="Timestep.dimensions"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/core.html#MDAnalysis.coordinates.xdrfile.core.Timestep.dimensions">[docs]</a>    <span class="k">def</span> <span class="nf">dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span> <span class="o">=</span> <span class="n">triclinic_vectors</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
 
-</div></div>
-<div class="viewcode-block" id="TrjWriter"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/core.html#MDAnalysis.coordinates.xdrfile.core.TrjWriter">[docs]</a><span class="k">class</span> <span class="nc">TrjWriter</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">Writer</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="TrjWriter"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/core.html#MDAnalysis.coordinates.TRR.TrjWriter">[docs]</a><span class="k">class</span> <span class="nc">TrjWriter</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">Writer</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Writes to a Gromacs trajectory file</span>
 
 <span class="sd">    (Base class)</span>
@@ -300,7 +298,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span> <span class="o">==</span> <span class="s">&#39;TRR&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_emptyarr</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
-<div class="viewcode-block" id="TrjWriter.write_next_timestep"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/core.html#MDAnalysis.coordinates.xdrfile.core.TrjWriter.write_next_timestep">[docs]</a>    <span class="k">def</span> <span class="nf">write_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="TrjWriter.write_next_timestep"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/core.html#MDAnalysis.coordinates.TRR.TrjWriter.write_next_timestep">[docs]</a>    <span class="k">def</span> <span class="nf">write_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; write a new timestep to the trj file</span>
 
 <span class="sd">        *ts* is a :class:`Timestep` instance containing coordinates to</span>
@@ -413,12 +411,12 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">xdrfile</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">return</span> <span class="n">status</span>
 
-<div class="viewcode-block" id="TrjWriter.convert_dimensions_to_unitcell"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/core.html#MDAnalysis.coordinates.xdrfile.core.TrjWriter.convert_dimensions_to_unitcell">[docs]</a>    <span class="k">def</span> <span class="nf">convert_dimensions_to_unitcell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
+<div class="viewcode-block" id="TrjWriter.convert_dimensions_to_unitcell"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/core.html#MDAnalysis.coordinates.TRR.TrjWriter.convert_dimensions_to_unitcell">[docs]</a>    <span class="k">def</span> <span class="nf">convert_dimensions_to_unitcell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Read dimensions from timestep *ts* and return Gromacs box vectors&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_to_native</span><span class="p">(</span><span class="n">triclinic_vectors</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span><span class="p">))</span>
 
 </div></div>
-<div class="viewcode-block" id="TrjReader"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/core.html#MDAnalysis.coordinates.xdrfile.core.TrjReader">[docs]</a><span class="k">class</span> <span class="nc">TrjReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">Reader</span><span class="p">):</span>
+<div class="viewcode-block" id="TrjReader"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/core.html#MDAnalysis.coordinates.TRR.TrjReader">[docs]</a><span class="k">class</span> <span class="nc">TrjReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">Reader</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Generic base class for reading Gromacs trajectories inside MDAnalysis.</span>
 
 <span class="sd">    Derive classes and set :attr:`TrjReader.format`, :attr:`TrjReader._read_trj` and :attr:`TrjReader._read_trj_atoms`.</span>
@@ -531,7 +529,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_retrieve_offsets</span><span class="p">()</span>
 
     <span class="nd">@property</span>
-<div class="viewcode-block" id="TrjReader.numatoms"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/core.html#MDAnalysis.coordinates.xdrfile.core.TrjReader.numatoms">[docs]</a>    <span class="k">def</span> <span class="nf">numatoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">numatoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;The number of publically available atoms that this reader will store in the timestep.</span>
 
 <span class="sd">        If &#39;sub&#39; was not given in the ctor, then this value will just be the actual</span>
@@ -541,9 +539,9 @@
 <span class="sd">        If for any reason the trajectory cannot be read then a negative value is returned.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sub</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sub</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trr_numatoms</span>
-</div>
+
     <span class="nd">@property</span>
-<div class="viewcode-block" id="TrjReader.numframes"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/core.html#MDAnalysis.coordinates.xdrfile.core.TrjReader.numframes">[docs]</a>    <span class="k">def</span> <span class="nf">numframes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">numframes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Read the number of frames from the trajectory.</span>
 
 <span class="sd">        The result is cached. If for any reason the trajectory cannot</span>
@@ -565,7 +563,7 @@
             <span class="k">return</span> <span class="mi">0</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_numframes</span>
-</div>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">offsets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_offsets</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
@@ -579,7 +577,7 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_offsets</span>
 
     <span class="nd">@property</span>
-<div class="viewcode-block" id="TrjReader.delta"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/core.html#MDAnalysis.coordinates.xdrfile.core.TrjReader.delta">[docs]</a>    <span class="k">def</span> <span class="nf">delta</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">delta</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Time step length in ps.</span>
 
 <span class="sd">        The result is computed from the trajectory and cached. If for</span>
@@ -598,7 +596,7 @@
         <span class="k">finally</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">rewind</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delta</span>
-</div>
+
     <span class="k">def</span> <span class="nf">_offset_filename</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">head</span><span class="p">,</span> <span class="n">tail</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">head</span><span class="p">,</span> <span class="s">&#39;.{0}_offsets.pkl&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tail</span><span class="p">))</span>
@@ -626,7 +624,7 @@
         <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;Offsets could not be retrieved; they will be rebuilt instead.&quot;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="TrjReader.save_offsets"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/core.html#MDAnalysis.coordinates.xdrfile.core.TrjReader.save_offsets">[docs]</a>    <span class="k">def</span> <span class="nf">save_offsets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+<div class="viewcode-block" id="TrjReader.save_offsets"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/core.html#MDAnalysis.coordinates.TRR.TrjReader.save_offsets">[docs]</a>    <span class="k">def</span> <span class="nf">save_offsets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Saves current trajectory offsets into *filename*, as a pickled object.</span>
 
 <span class="sd">        Along with the offsets themselves, the ctime and file size of the</span>
@@ -663,7 +661,7 @@
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">cPickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="TrjReader.load_offsets"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/core.html#MDAnalysis.coordinates.xdrfile.core.TrjReader.load_offsets">[docs]</a>    <span class="k">def</span> <span class="nf">load_offsets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+<div class="viewcode-block" id="TrjReader.load_offsets"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/core.html#MDAnalysis.coordinates.TRR.TrjReader.load_offsets">[docs]</a>    <span class="k">def</span> <span class="nf">load_offsets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Loads current trajectory offsets from pickled *filename*. </span>
 
 <span class="sd">        Checks if ctime and size of trajectory file matches that stored in</span>
@@ -746,7 +744,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_offsets</span> <span class="o">=</span> <span class="bp">None</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_numframes</span> <span class="o">=</span> <span class="bp">None</span>
 </div>
-<div class="viewcode-block" id="TrjReader.open_trajectory"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/core.html#MDAnalysis.coordinates.xdrfile.core.TrjReader.open_trajectory">[docs]</a>    <span class="k">def</span> <span class="nf">open_trajectory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TrjReader.open_trajectory"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/core.html#MDAnalysis.coordinates.TRR.TrjReader.open_trajectory">[docs]</a>    <span class="k">def</span> <span class="nf">open_trajectory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Open xdr trajectory file.</span>
 
 <span class="sd">        :Returns: pointer to XDRFILE (and sets self.xdrfile)</span>
@@ -771,14 +769,14 @@
         <span class="n">ts</span><span class="o">.</span><span class="n">lmbda</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">xdrfile</span>
 </div>
-<div class="viewcode-block" id="TrjReader.close"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/core.html#MDAnalysis.coordinates.xdrfile.core.TrjReader.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TrjReader.close"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/core.html#MDAnalysis.coordinates.TRR.TrjReader.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Close xdr trajectory file if it was open.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">xdrfile</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="n">libxdrfile2</span><span class="o">.</span><span class="n">xdrfile_close</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xdrfile</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">xdrfile</span> <span class="o">=</span> <span class="bp">None</span>  <span class="c"># guard against  crashing with a double-free pointer</span>
 </div>
-<div class="viewcode-block" id="TrjReader.Writer"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/core.html#MDAnalysis.coordinates.xdrfile.core.TrjReader.Writer">[docs]</a>    <span class="k">def</span> <span class="nf">Writer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="TrjReader.Writer"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/core.html#MDAnalysis.coordinates.TRR.TrjReader.Writer">[docs]</a>    <span class="k">def</span> <span class="nf">Writer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns a Gromacs TrjWriter for *filename* with the same parameters as this trajectory.</span>
 
 <span class="sd">        All values can be changed through keyword arguments.</span>
@@ -829,7 +827,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">yield</span> <span class="n">ts</span>
 
-<div class="viewcode-block" id="TrjReader.rewind"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/core.html#MDAnalysis.coordinates.xdrfile.core.TrjReader.rewind">[docs]</a>    <span class="k">def</span> <span class="nf">rewind</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TrjReader.rewind"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/core.html#MDAnalysis.coordinates.TRR.TrjReader.rewind">[docs]</a>    <span class="k">def</span> <span class="nf">rewind</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Position at beginning of trajectory&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reopen</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>  <span class="c"># read first frame</span>
@@ -896,7 +894,7 @@
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -905,12 +903,12 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">MDAnalysis 0.10.0-dev documentation</a> &raquo;</li>
-          <li><a href="../../../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">MDAnalysis 0.10.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
+    <div class="footer" role="contentinfo">
         &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
@@ -919,7 +917,7 @@
     Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
     Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
     and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>
 </html>
