@@ -348,7 +348,7 @@ class TestTimestep_Copy(TestCase):
 
             try:
                 if isinstance(ref, np.ndarray):
-                    assert_array_almost_equal(ref, TS2.__dict__[att], prec=4, err_msg=err_msg.format(form=self.name, att=att))
+                    assert_array_almost_equal(ref, TS2.__dict__[att], decimal=4, err_msg=err_msg.format(form=self.name, att=att))
                 else:
                     assert_equal(ref, TS2.__dict__[att], err_msg=err_msg.format(form=self.name, att=att))
             except KeyError:
