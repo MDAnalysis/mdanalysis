@@ -23,7 +23,7 @@ import numpy as np
 from numpy.testing import (TestCase, assert_raises, assert_equal, assert_allclose,
                            assert_array_almost_equal)
 from nose.plugins.attrib import attr
-
+from nose.tools import assert_not_equal
 from . import knownfailure
 
 import MDAnalysis as mda
@@ -433,3 +433,142 @@ class TestTimestep_Copy_XTC(TestTimestep_Copy):
         self.name = 'XTC'
 
 
+class TestTimestepEquality(object):  # using test generator, don't change to TestCase
+    def test_check_equal(self):
+        ts1 = mda.coordinates.base.Timestep(10)
+        ts1.positions = np.arange(30).reshape(10, 3)
+
+        ts2 = mda.coordinates.base.Timestep(10)
+        ts2.positions = np.arange(30).reshape(10, 3)
+
+        assert_equal(ts1, ts2)
+        assert_equal(ts2, ts1)
+
+    def _check_ts(self, a, b, err_msg):
+        assert_equal(a, b, err_msg=err_msg)
+        assert_equal(b, a, err_msg=err_msg)
+
+    def test_other_timestep(self):
+        # use a subclass to base.Timestep to check it works
+        ts1 = mda.coordinates.base.Timestep(10)
+        ts1.positions = np.arange(30).reshape(10, 3)
+
+        # can't do TRR Timestep here as it always has vels and forces
+        # so isn't actually equal to a position only timestep
+        for otherTS in [mda.coordinates.DCD.Timestep, mda.coordinates.TRJ.Timestep,
+                        mda.coordinates.DMS.Timestep, mda.coordinates.GRO.Timestep,
+                        mda.coordinates.TRZ.Timestep, mda.coordinates.XTC.Timestep]:
+            ts2 = otherTS(10)
+            ts2.positions = np.arange(30).reshape(10, 3)
+            yield self._check_ts, ts1, ts2, "Failed on {0}".format(otherTS)
+
+    def test_trr_timestep(self):
+        ts1 = mda.coordinates.base.Timestep(10, velocities=True, forces=True)
+        ts1.positions = np.arange(30).reshape(10, 3)
+        ts1.velocities = np.arange(30).reshape(10, 3) + 10.0
+        ts1.forces = np.arange(30).reshape(10, 3) + 100.0
+
+        ts2 = mda.coordinates.TRR.Timestep(10)
+        ts2.positions = np.arange(30).reshape(10, 3)
+        ts2.velocities = np.arange(30).reshape(10, 3) + 10.0
+        ts2.forces = np.arange(30).reshape(10, 3) + 100.0
+
+        self._check_ts(ts1, ts2, "Failed on TRR Timestep")
+
+
+    def test_wrong_class(self):
+        ts1 = mda.coordinates.base.Timestep(10)
+        ts1.positions = np.arange(30).reshape(10, 3)
+
+        b = tuple([0, 1, 2, 3])
+
+        assert_not_equal(ts1, b)
+        assert_not_equal(b, ts1)
+
+    def test_wrong_frame(self):
+        ts1 = mda.coordinates.base.Timestep(10)
+        ts1.positions = np.arange(30).reshape(10, 3)
+
+        ts2 = mda.coordinates.base.Timestep(10)
+        ts2.positions = np.arange(30).reshape(10, 3)
+        ts2.frame = 987
+
+        assert_not_equal(ts1, ts2)
+        assert_not_equal(ts2, ts1)
+
+    def test_wrong_numatoms(self):
+        ts1 = mda.coordinates.base.Timestep(10)
+        ts1.positions = np.arange(30).reshape(10, 3)
+
+        ts3 = mda.coordinates.base.Timestep(20)
+
+        assert_not_equal(ts1, ts3)
+        assert_not_equal(ts3, ts1)
+
+    def test_wrong_pos(self):
+        ts1 = mda.coordinates.base.Timestep(10)
+        ts1.positions = np.arange(30).reshape(10, 3)
+
+        ts2 = mda.coordinates.base.Timestep(10)
+        ts2.positions = np.arange(30).reshape(10, 3) + 1.0
+
+        assert_not_equal(ts1, ts2)
+        assert_not_equal(ts2, ts1)
+
+    def test_check_vels(self):
+        ts1 = mda.coordinates.base.Timestep(10, velocities=True)
+        ts2 = mda.coordinates.base.Timestep(10, velocities=True)
+
+        ts1.velocities = np.arange(30).reshape(10, 3)
+        ts2.velocities = np.arange(30).reshape(10, 3)
+
+        assert_equal(ts1, ts2)
+        assert_equal(ts2, ts1)
+
+    def test_check_mismatched_vels(self):
+        ts1 = mda.coordinates.base.Timestep(10, velocities=True)
+        ts2 = mda.coordinates.base.Timestep(10, velocities=False)
+
+        ts1.velocities = np.arange(30).reshape(10, 3)
+
+        assert_not_equal(ts1, ts2)
+        assert_not_equal(ts2, ts1)
+
+    def test_check_wrong_vels(self):
+        ts1 = mda.coordinates.base.Timestep(10, velocities=True)
+        ts2 = mda.coordinates.base.Timestep(10, velocities=True)
+
+        ts1.velocities = np.arange(30).reshape(10, 3)
+        ts2.velocities = np.arange(30).reshape(10, 3) + 1.0
+
+        assert_not_equal(ts1, ts2)
+        assert_not_equal(ts2, ts1)
+
+    def test_check_forces(self):
+        ts1 = mda.coordinates.base.Timestep(10, forces=True)
+        ts2 = mda.coordinates.base.Timestep(10, forces=True)
+
+        ts1.forces = np.arange(30).reshape(10, 3)
+        ts2.forces = np.arange(30).reshape(10, 3)
+
+        assert_equal(ts1, ts2)
+        assert_equal(ts2, ts1)
+
+    def test_check_mismatched_forces(self):
+        ts1 = mda.coordinates.base.Timestep(10, forces=True)
+        ts2 = mda.coordinates.base.Timestep(10, forces=False)
+
+        ts1.forces = np.arange(30).reshape(10, 3)
+
+        assert_not_equal(ts1, ts2)
+        assert_not_equal(ts2, ts1)
+
+    def test_check_wrong_forces(self):
+        ts1 = mda.coordinates.base.Timestep(10, forces=True)
+        ts2 = mda.coordinates.base.Timestep(10, forces=True)
+
+        ts1.forces = np.arange(30).reshape(10, 3)
+        ts2.forces = np.arange(30).reshape(10, 3) + 1.0
+
+        assert_not_equal(ts1, ts2)
+        assert_not_equal(ts2, ts1)

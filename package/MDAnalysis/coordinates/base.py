@@ -198,6 +198,32 @@ class Timestep(object):
         # override for other Timesteps
         return np.zeros((6), np.float32)
 
+    def __eq__(self, other):
+        if not isinstance(other, Timestep):
+            return False
+
+        if not self.frame == other.frame:
+            return False
+
+        if not self.numatoms == other.numatoms:
+            return False
+
+        # Check contents of np arrays last (probably slow)
+        if not (self.positions == other.positions).all():
+            return False
+        if not self.has_velocities == other.has_velocities:
+            return False
+        if self.has_velocities:
+            if not (self.velocities == other.velocities).all():
+                return False
+        if not self.has_forces == other.has_forces:
+            return False
+        if self.has_forces:
+            if not (self.forces == other.forces).all():
+                return False
+
+        return True
+
     def __getitem__(self, atoms):
         if np.dtype(type(atoms)) == np.dtype(int):
             if (atoms < 0):

@@ -164,7 +164,7 @@ class Timestep(core.Timestep):
     @forces.setter
     def forces(self, new):
         self._forces[:] = new
-        self._for_source == self.frame
+        self._for_source = self.frame
 
 
 class TRRWriter(core.TrjWriter):
