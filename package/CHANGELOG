@@ -10,6 +10,23 @@ The rules for this file:
     use tabs but use spaces for formatting
 
 ------------------------------------------------------------------------------
+??/??/15  richardjgowers
+
+  * 0.10.1
+
+  Enhancements
+  * Timestep objects now have __eq__ method
+  * coordinates.base.Timestep now can handle velocities and forces
+
+  Changes
+  * Timestep can now only init using an integer argument (which
+    represents the number of atoms)
+  * Added from_timestep and from_coordinates construction methods
+    to base.Timestep
+
+  Fixes
+
+
 06/01/15  richardjgowers, caio s. souza, manuel.nuno.melo, orbeckst, 
           sseyler
   * 0.10.0

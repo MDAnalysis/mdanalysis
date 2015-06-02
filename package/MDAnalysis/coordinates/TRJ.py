@@ -158,17 +158,9 @@ except ImportError:
 class Timestep(base.Timestep):
     """AMBER trajectory Timestep.
 
-    The Timestep can be initialized with *arg* being
-
-    1. an integer (the number of atoms) and an optional keyword argument *velocities* to allocate
-       space for both coordinates and velocities;
-    2. another :class:`Timestep` instance, in which case a copy is made (If the copied Timestep
-       does not contain velocities but *velocities* = ``True`` is provided, then space for
-       velocities is allocated);
-    3. a :class:`numpy.ndarray` of shape ``(numatoms, 3)`` (for positions only) or
-       ``(numatoms, 6)`` (for positions and velocities): ``positions = arg[:,:3]``,
-       ``velocities = arg[:,3:6]``.
-
+    The Timestep can be initialized with *arg* being an integer
+    (the number of atoms) and an optional keyword argument *velocities* to
+    allocate space for both coordinates and velocities;
 
     .. versionchanged:: 0.10.0
        Added ability to contain Forces

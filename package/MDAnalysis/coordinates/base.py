@@ -109,8 +109,7 @@ class Timestep(object):
 
       ``ts = Timestep(numatoms)``
 
-         create a timestep object with space for numatoms (done
-         automatically)
+         create a timestep object with space for numatoms
 
       ``ts[i]``
 
@@ -126,8 +125,7 @@ class Timestep(object):
 
          iterate of the coordinates, atom by atom
 
-    .. versionchanged:: 0.10.0
-       Updated API (See Issue #250)
+    .. versionchanged:: 0.10.1
        Added :meth:`from_timestep` and :meth:`from_coordinates` constructor
        methods.
        Timestep init now only accepts integer creation
@@ -136,6 +134,18 @@ class Timestep(object):
     order = 'F'
 
     def __init__(self, numatoms, **kwargs):
+        """Create a Timestep, representing a frame of a trajectory
+
+        :Arguments:
+          *numatoms*
+            The total number of atoms this Timestep describes
+
+        :Keywords:
+          *velocities*
+            Whether this Timestep has velocity information [``False``]
+          *forces*
+            Whether this Timestep has force information [``False``]
+        """
         self.frame = 0
         self._numatoms = numatoms
 
@@ -158,7 +168,10 @@ class Timestep(object):
 
     @classmethod
     def from_timestep(cls, other):
-        # This makes a deepcopy of the timestep
+        """Create a copy of another Timestep, in the format of this Timestep
+
+        .. versionadded:: 0.10.1
+        """
         ts = cls(other.numatoms, velocities=other.has_velocities,
                  forces=other.has_forces)
         ts.frame = other.frame
@@ -181,6 +194,10 @@ class Timestep(object):
 
     @classmethod
     def from_coordinates(cls, positions, velocities=None, forces=None):
+        """Create an instance of this Timestep, from coordinate data
+
+        .. versionadded:: 0.10.1
+        """
         has_velocities = velocities is not None
         has_forces = forces is not None
 
@@ -199,6 +216,10 @@ class Timestep(object):
         return np.zeros((6), np.float32)
 
     def __eq__(self, other):
+        """Compare with another Timestep
+
+        .. versionadded:: 0.11.0
+        """
         if not isinstance(other, Timestep):
             return False
 
