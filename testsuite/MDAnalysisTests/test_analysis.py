@@ -19,6 +19,7 @@ import MDAnalysis.analysis.distances
 import MDAnalysis.analysis.align
 import MDAnalysis.analysis.hbonds
 import MDAnalysis.analysis.helanal
+import MDAnalysis.analysis.waterdynamics
 from MDAnalysis import SelectionError, FinishTimeException
 
 from numpy.testing import *
@@ -28,7 +29,7 @@ import os
 import errno
 import tempfile
 
-from MDAnalysis.tests.datafiles import PSF, DCD, FASTA, PDB_helix, PDB_HOLE, XTC_HOLE, GRO, XTC
+from MDAnalysis.tests.datafiles import PSF, DCD, FASTA, PDB_helix, PDB_HOLE, XTC_HOLE, GRO, XTC, waterDCD, waterPSF
 from . import executable_not_found_runtime
 
 
@@ -359,3 +360,38 @@ class Test_Helanal(TestCase):
                 MDAnalysis.analysis.helanal.helanal_trajectory(u, selection=sel, finish=5)
             except IndexError:
                 self.fail("IndexError consistent with Issue 188.")
+
+
+class TestWaterdynamics(TestCase):
+    def setUp(self):
+        self.universe = MDAnalysis.Universe(waterPSF, waterDCD)
+        self.selection1 = "byres name OH2" 
+        self.selection2 = self.selection1        
+       
+    def test_HBL(self):
+        hbl = MDAnalysis.analysis.waterdynamics.HBL(self.universe, self.selection1, self.selection2, 0, 5, 3) 
+        hbl.run()
+        assert_equal(round(hbl.timeseries[2][1],5), 0.75)
+        
+    def test_WOR(self):
+        wor = MDAnalysis.analysis.waterdynamics.WOR(self.universe, self.selection1, 0, 5, 2)
+        wor.run()
+        assert_equal(round(wor.timeseries[1][2],5), 0.35887)
+
+    def test_AD(self):
+        ad = MDAnalysis.analysis.waterdynamics.AD(self.universe,self.selection1,40)
+        ad.run()
+        #debo arreglar la salida del AD
+        #must fix AD output
+        assert_equal(str(ad.graph[0][39]), str("0.951172947884 0.48313682125") )
+        
+    def test_MSD(self):
+        msd = MDAnalysis.analysis.waterdynamics.MSD(self.universe, self.selection1, 0, 10, 2)
+        msd.run()
+        assert_equal(round(msd.timeseries[1],5), 0.03984)
+        
+    def test_SP(self):
+        sp = MDAnalysis.analysis.waterdynamics.SP(self.universe, self.selection1, 0, 6, 3)
+        sp.run()
+        assert_equal(round(sp.timeseries[1],5), 1.0)
+

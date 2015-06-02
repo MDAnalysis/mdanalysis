@@ -78,6 +78,7 @@ __all__ = [
     "GMS_SYMOPT",   # GAMESS D4h optimization
     "GMS_ASYMSURF", # GAMESS C1  surface
     "two_water_gro", "two_water_gro_nonames",  # for bond guessing, 2 water molecules, one with weird names
+    "waterPSF","waterDCD",
 ]
 
 from pkg_resources import resource_filename
@@ -208,3 +209,6 @@ GMS_ASYMSURF      = resource_filename(__name__, "data/gms/surf2wat.gms")
 
 two_water_gro = resource_filename(__name__, "data/two_water_gro.gro")
 two_water_gro_nonames = resource_filename(__name__, "data/two_water_gro_nonames.gro")
+
+waterPSF = resource_filename(__name__, 'data/watdyn.psf')
+waterDCD = resource_filename(__name__, 'data/watdyn.dcd')
