@@ -104,7 +104,7 @@ especially as we are directly using this framework (imported from numpy).
 __version__ = "0.11.0-dev"  # keep in sync with RELEASE in setup.py
 
 try:
-    from numpy.testing import Tester
+    from numpy.testing import Tester, assert_equal
 
     test = Tester().test
 except ImportError:
@@ -114,7 +114,7 @@ except ImportError:
 try:
     import nose
 except ImportError:
-    raise ImportError("""nose is requires to run the test suite. Please install it first. """
+    raise ImportError("""nose is required to run the test suite. Please install it first. """
                       """(For example, try "easy_install nose").""")
 
 try:
@@ -171,3 +171,9 @@ def executable_not_found_runtime(*args):
       ...
     """
     return lambda: executable_not_found(*args)
+
+def teardown_package():
+    import gc
+    gc.collect()
+    assert_equal(len(gc.garbage), 0, "Garbage collector can't collect the following: %r" % gc.garbage)
+

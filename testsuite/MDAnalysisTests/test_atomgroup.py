@@ -771,17 +771,6 @@ class TestAtomGroup(TestCase):
         assert_equal(u.atoms.segids(), ["CORE", "NMP", "CORE", "LID", "CORE"],
                      err_msg="failed to change segids = {0}".format(u.atoms.segids()))
 
-    def test_pickle_raises_NotImplementedError(self):
-        import cPickle
-        ag = self.universe.selectAtoms("bynum 12:42 and name H*")
-        assert_raises(NotImplementedError, cPickle.dumps, ag, protocol=cPickle.HIGHEST_PROTOCOL)
-
-    def test_unpickle_raises_NotImplementedError(self):
-        ag = self.universe.atoms[:3]
-        def ag_setstate(ag):
-            return ag.__setstate__('a')
-        assert_raises(NotImplementedError, ag_setstate, ag)
-
     def test_wronglen_set(self):
         """Give the setter function a list of wrong length"""
         assert_raises(ValueError, self.ag.set_mass, [0.1, 0.2])
@@ -1287,10 +1276,9 @@ class TestAtomGroupTimestep(TestCase):
 
 
 def test_empty_AtomGroup():
-    """Test that a empty AtomGroup can be constructed (Issue 12)"""
+    """Test that an empty AtomGroup can be constructed (Issue 12)"""
     ag = MDAnalysis.core.AtomGroup.AtomGroup([])
     assert_equal(len(ag), 0)
-
 
 class _WriteAtoms(TestCase):
     """Set up the standard AdK system in implicit solvent."""
@@ -1486,7 +1474,6 @@ class TestUniverse(TestCase):
         box = numpy.array([10, 11, 12, 90, 90, 90])
         u.dimensions = numpy.array([10, 11, 12, 90, 90, 90])
         assert_allclose(u.dimensions, box)
-
 
 class TestPBCFlag(TestCase):
     def setUp(self):

@@ -10,11 +10,15 @@ The rules for this file:
     use tabs but use spaces for formatting
 
 ------------------------------------------------------------------------------
-??/??/15  tyler.je.reddy, richardjgowers, alejob, orbeckst, dotsdl
+??/??/15  tyler.je.reddy, richardjgowers, alejob, orbeckst, dotsdl,
+        manuel.nuno.melo
 
   * 0.11.0
 
   Enhancements
+  * AtomGroups can now be pickled/unpickled (Issue #293)
+  * Universes can have a __del__ method (not actually added) without
+    leaking (Issue #297)
   * Added reading of DL_Poly format CONFIG and HISTORY files (Issue #298)
     These can both act as both Topology and Coordinate information
   * Timestep objects now have __eq__ method
@@ -26,6 +30,13 @@ The rules for this file:
   * ProgressMeter now outputs every *interval* number of ``update`` calls
 
   Changes
+  * Tests now cover memory leaks, but can only be run in serial (Issue #312).
+  * A ProtoReader class intermediate between IObase and Reader was added so
+    specific Readers can be subclassed without __del__ (the ChainReader and
+    SingleFrameReader), thus preventing memleaks (Issue #312).
+  * Atoms (and all container classes thereof) are now bound to Universes
+    only via weakrefs. If Universes are not explicitly kept in scope Atoms
+    will become orphaned.
   * Timestep can now only init using an integer argument (which
     represents the number of atoms)
   * Added from_timestep and from_coordinates construction methods
@@ -40,6 +51,7 @@ The rules for this file:
   * __iter__ removed from many Readers (now use base.Reader implementation)
 
   Fixes
+  * ChainReaders no longer leak (Issue #312)
   * analysis.hbonds.HydrogenBondAnalysis performs a sanity check for
     static selections (Issue #296)
   * Fixed TRZWriter failing when passed a non TRZTimestep (Issue #302)
