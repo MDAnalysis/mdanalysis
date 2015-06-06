@@ -90,7 +90,12 @@ The following table lists the currently supported topology formats.
    GAMESS [#a]_      gms,        GAMESS output parser. Read only atoms of assembly
                      log         section (atom, elems and coords) and construct topology.
                                  :mod:`MDAnalysis.topology.GMSParser`
-   ================= ==========  =====================================================
+
+   DL_Poly [#a]_     config      DL_Poly config file.  Reads only the atom names.
+                                 If atoms are written out of order, will correct the 
+                                 order.
+                                 :mod:`MDAnalysis.topology.DLPolyParser`
+   ================= ==========  ========================================================
 
 .. [#a] This format can also be used to provide *coordinates* so that
    it is possible to create a full
