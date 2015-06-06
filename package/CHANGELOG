@@ -10,6 +10,18 @@ The rules for this file:
     use tabs but use spaces for formatting
 
 ------------------------------------------------------------------------------
+??/??/15  richardjgowers
+
+  * 0.10.1
+
+  Enhancements
+  * Added reading of DL_Poly format CONFIG files (Issue #298)
+
+  Changes
+
+  Fixes
+
+
 06/01/15  richardjgowers, caio s. souza, manuel.nuno.melo, orbeckst, 
           sseyler
   * 0.10.0

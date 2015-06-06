@@ -34,6 +34,7 @@ topology file format in the *topology_format* keyword argument to
    topology/ExtendedPDBParser
    topology/PDBQTParser
    topology/PQRParser
+   topology/DLPolyParser
    topology/DMSParser
    topology/TPRParser
    topology/MOL2Parser

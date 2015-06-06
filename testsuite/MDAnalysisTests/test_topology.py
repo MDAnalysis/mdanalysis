@@ -16,12 +16,16 @@
 import MDAnalysis
 from MDAnalysis.core.AtomGroup import AtomGroup
 from MDAnalysis.core.distances import calc_bonds, calc_angles, calc_torsions
-from MDAnalysis.topology.core import guess_atom_type, guess_atom_element, get_atom_mass, \
-    guess_format, guess_bonds, guess_angles, guess_torsions, guess_improper_torsions, \
-    get_parser_for
-from MDAnalysis.topology.core import Bond, Angle, Torsion, Improper_Torsion, TopologyGroup, TopologyObject, TopologyDict
-from MDAnalysis.tests.datafiles import PRMpbc, PRM12, PSF, PSF_NAMD, PSF_nosegid, DMS, PDB_small, DCD, \
-    LAMMPSdata, trz4data, TPR, PDB, XYZ_mini, GMS_SYMOPT, GMS_ASYMSURF
+from MDAnalysis.topology.core import (
+    guess_atom_type, guess_atom_element, get_atom_mass, guess_format,
+    guess_bonds, guess_angles, guess_torsions, guess_improper_torsions,
+    get_parser_for,
+    Bond, Angle, Torsion, Improper_Torsion,
+    TopologyGroup, TopologyObject, TopologyDict)
+from MDAnalysis.tests.datafiles import (
+    PRMpbc, PRM12, PSF, PSF_NAMD, PSF_nosegid, DMS, PDB_small, DCD,
+    LAMMPSdata, trz4data, TPR, PDB, XYZ_mini, GMS_SYMOPT, GMS_ASYMSURF,
+    DLP_CONFIG)
 
 from numpy.testing import *
 from nose.plugins.attrib import attr
@@ -1145,3 +1149,25 @@ class RefGMSasym(object):
 class TestGMS_noSymmetry(_TestTopology, RefGMSasym):
     """Testing GAMESS output file format"""
 
+class TestDLPolyParser(object):
+    def setUp(self):
+        self.p = MDAnalysis.topology.DLPolyParser.ConfigParser
+
+    def tearDown(self):
+        del self.p
+
+    def test_usage(self):
+        with self.p(DLP_CONFIG) as parser:
+            struc = parser.parse()
+
+        assert 'atoms' in struc
+        assert len(struc['atoms']) == 216
+
+    def test_names(self):
+        with self.p(DLP_CONFIG) as parser:
+            struc = parser.parse()
+
+        atoms = struc['atoms']
+
+        assert atoms[0].name == 'K+'
+        assert atoms[4].name == 'Cl-'

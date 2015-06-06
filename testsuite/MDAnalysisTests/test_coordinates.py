@@ -26,13 +26,14 @@ from numpy.testing import *
 from nose.plugins.attrib import attr
 import warnings
 
-from .datafiles import PSF, DCD, DCD_empty, PDB_small, XPDB_small, PDB_closed, PDB_multiframe, \
-    PDB, CRD, XTC, TRR, GRO, DMS, CONECT, \
-    XYZ, XYZ_bz2, XYZ_psf, PRM, TRJ, TRJ_bz2, PRMpbc, TRJpbc_bz2, PRMncdf, NCDF, PQR, \
-    PDB_sub_dry, TRR_sub_sol, PDB_sub_sol, TRZ, TRZ_psf, LAMMPSdata, LAMMPSdata_mini, \
-    PSF_TRICLINIC, DCD_TRICLINIC, PSF_NAMD_TRICLINIC, DCD_NAMD_TRICLINIC, \
-    GMS_ASYMOPT, GMS_SYMOPT, GMS_ASYMSURF, XYZ_mini, PFncdf_Top, PFncdf_Trj, \
-    INPCRD, XYZ_five
+from .datafiles import (
+    PSF, DCD, DCD_empty, PDB_small, XPDB_small, PDB_closed, PDB_multiframe,
+    PDB, CRD, XTC, TRR, GRO, DMS, CONECT,
+    XYZ, XYZ_bz2, XYZ_psf, PRM, TRJ, TRJ_bz2, PRMpbc, TRJpbc_bz2, PRMncdf, NCDF, PQR,
+    PDB_sub_dry, TRR_sub_sol, PDB_sub_sol, TRZ, TRZ_psf, LAMMPSdata, LAMMPSdata_mini,
+    PSF_TRICLINIC, DCD_TRICLINIC, PSF_NAMD_TRICLINIC, DCD_NAMD_TRICLINIC,
+    GMS_ASYMOPT, GMS_SYMOPT, GMS_ASYMSURF, XYZ_mini, PFncdf_Top, PFncdf_Trj,
+    INPCRD, XYZ_five, DLP_CONFIG, DLP_CONFIG_order)
 
 
 
@@ -3146,6 +3147,73 @@ class TestLammpsDataMini_Coords(_TestLammpsData_Coords, RefLAMMPSDataMini):
     pass
 
 
+class TestConfigReader(object):
+    def setUp(self):
+        self.r = MDAnalysis.coordinates.DLPoly.ConfigReader
+        rd = self.rd = self.r(DLP_CONFIG)
+        self.ts = rd.ts
+
+    def tearDown(self):
+        del self.r
+        del self.rd
+        del self.ts
+
+    def test_read(self):
+        assert self.rd.title == "DL_POLY: Potassium Chloride Test Case"
+
+    def test_read_unitcell(self):
+        ref = np.array([[18.6960000000, 0.0000000000, 0.0000000000],
+                        [0.0000000000, 18.6960000000, 0.0000000000],
+                        [0.0000000000, 0.0000000000, 18.6960000000]])
+        assert_allclose(self.ts._unitcell, ref)
+
+    def test_positions(self):
+        ref = np.array([-7.608595309, -7.897790000, -7.892053559])
+        assert_allclose(self.ts._pos[0], ref)
+        ref2 = np.array([7.884680948, 7.796531996, 7.897428916])
+        assert_allclose(self.ts._pos[-1], ref2)
+
+    def test_velocities(self):
+        ref = np.array([1.056610291, -1.218664448, 3.345828610])
+        assert_allclose(self.ts._velocities[0], ref)
+        ref2 = np.array([1.809671303, -2.718627100, -1.106206505])
+        assert_allclose(self.ts._velocities[-1], ref2)
+
+    def test_forces(self):
+        ref = np.array([-1979.558687, 739.7961625, 1027.996603])
+        assert_allclose(self.ts._forces[0], ref)
+        ref2 = np.array([-1649.311865, 708.6150231, -191.5957509])
+        assert_allclose(self.ts._forces[-1], ref2)
+
+
+class TestConfigReader2(object):
+    def setUp(self):
+        self.u = mda.Universe(DLP_CONFIG_order, format='CONFIG')
+
+    def tearDown(self):
+        del self.u
+
+    def test_names(self):
+        ref = ['C', 'B', 'A']
+        assert_equal([a.name for a in self.u.atoms], ref)
+
+    def test_pos(self):
+        ref = np.array([-7.821414265, -4.635443539, -4.732164540])
+        assert_allclose(self.u.atoms[0].pos, ref)
+
+    def test_vel(self):
+        ref = np.array([2.637614561, 0.5778767520E-01, -1.704765568])
+        assert_allclose(self.u.atoms[0].velocity, ref)
+
+    def test_for(self):
+        ref = np.array([150.3309776, -812.6932914, 1429.413120])
+        assert_allclose(self.u.atoms[0].force, ref)
+
+    def test_number(self):
+        ref = [0, 1, 2]
+        assert_equal([a.number for a in self.u.atoms], ref)
+
+
 # Subclass this and change values where necessary for each format's Timestep.
 class _BaseTimestep(object):
     Timestep = MDAnalysis.coordinates.base.Timestep  # define the class made in test
@@ -3234,6 +3302,10 @@ class _XTCTimestep(_xdrCoreTimestep):
     Timestep = MDAnalysis.coordinates.XTC.Timestep
     name = "XTC"
 
+class _DLPolyTimestep(_xdrCoreTimestep):
+    Timestep = MDAnalysis.coordinates.DLPoly.Timestep
+    name = 'DLPoly'
+    
 
 class _TestTimestep(TestCase):
     """Test all the base functionality of a Timestep
@@ -3433,4 +3505,7 @@ class TestXTCTimestep(_TestTimestep, _XTCTimestep):
 
 
 class TestTRRTimestep(_TestTimestep, _TRRTimestep):
+    pass
+
+class TestDLPolyTimestep(_TestTimestep, _DLPolyTimestep):
     pass

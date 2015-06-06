@@ -230,24 +230,25 @@ tuple contains four atom numbers.
 
 __all__ = ['core', 'PSFParser', 'PDBParser', 'PQRParser', 'GROParser',
            'CRDParser', 'TOPParser', 'PDBQTParser', 'TPRParser',
-           'LAMMPSParser', 'XYZParser', 'GMSParser']
+           'LAMMPSParser', 'XYZParser', 'GMSParser', 'DLPolyParser']
 
-import core
-import PSFParser
-import TOPParser
-import PDBParser
-import PrimitivePDBParser
-import ExtendedPDBParser
-import PQRParser
-import GROParser
-import CRDParser
-import PDBQTParser
-import DMSParser
-import TPRParser
-import MOL2Parser
-import LAMMPSParser
-import XYZParser
-import GMSParser
+from . import core
+from . import PSFParser
+from . import TOPParser
+from . import PDBParser
+from . import PrimitivePDBParser
+from . import ExtendedPDBParser
+from . import PQRParser
+from . import GROParser
+from . import CRDParser
+from . import PDBQTParser
+from . import DMSParser
+from . import TPRParser
+from . import MOL2Parser
+from . import LAMMPSParser
+from . import XYZParser
+from . import GMSParser
+from . import DLPolyParser
 
 
 # dictionary of known file formats and the corresponding file parser
@@ -270,4 +271,5 @@ _topology_parsers = {'PSF': PSFParser.PSFParser,
                      'DATA': LAMMPSParser.DATAParser,
                      'XYZ': XYZParser.XYZParser,
                      'GMS': GMSParser.GMSParser,
+                     'CONFIG': DLPolyParser.ConfigParser,
                      }

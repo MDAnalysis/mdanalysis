@@ -171,6 +171,9 @@ also recognized when they are compressed with :program:`gzip` or
    | MOL2          | mol2      |  r/w  | Text-based Tripos molecular structure format         |
    |               |           |       | :mod:`MDAnalysis.coordinates.MOL2`                   |
    +---------------+-----------+-------+------------------------------------------------------+
+   | DL_Poly [#a]_ | config    |  r    | DL_Poly ascii config file                            |
+   |               |           |       | :mod:`MDAnalysis.coordinates.DLPOLY`                 |
+   +---------------+-----------+-------+------------------------------------------------------+
 
 .. [#a] This format can also be used to provide basic *topology*
    information (i.e. the list of atoms); it is possible to create a
@@ -623,6 +626,7 @@ from . import base
 from .core import reader, writer
 from . import CRD
 from . import DCD
+from . import DLPoly
 from . import DMS
 from . import GMS
 from . import GRO
@@ -642,6 +646,7 @@ from . import XYZ
 _trajectory_readers = {
     'DCD': DCD.DCDReader,
     # 'TRJ': DCD.DCDReader, #commented out because overridden by TRJ.TRJReader
+    'CONFIG': DLPoly.ConfigReader,
     'XTC': XTC.XTCReader,
     'XYZ': XYZ.XYZReader,
     'TRR': TRR.TRRReader,
@@ -678,6 +683,7 @@ _topology_coordinates_readers = {
     'PDBQT': PDBQT.PDBQTReader,
     'GRO': GRO.GROReader,
     'CRD': CRD.CRDReader,
+    'CONFIG': DLPoly.ConfigReader,
     'PQR': PQR.PQRReader,
     'DMS': DMS.DMSReader,
     'MOL2': MOL2.MOL2Reader,
