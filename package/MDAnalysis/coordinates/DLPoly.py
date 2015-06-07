@@ -25,8 +25,12 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import numpy as np
 
+import MDAnalysis
 from . import base
 from . import core
+
+_DLPOLY_UNITS = {'length': 'Angstrom', 'velocity': 'Angstrom/ps'}
+
 
 class Timestep(base.Timestep):
     def _init_unitcell(self):
@@ -47,7 +51,7 @@ class ConfigReader(base.SingleFrameReader):
     .. versionadded:: 0.10.1
     """
     format = 'DL_Config'
-    units = {'length': 'Angstrom', 'velocity': 'Angstrom/ps'}
+    units = _DLPOLY_UNITS
     _Timestep = Timestep
 
     def _read_first_frame(self):
@@ -123,3 +127,141 @@ class ConfigReader(base.SingleFrameReader):
             ts._unitcell[0][:] = cellx
             ts._unitcell[1][:] = celly
             ts._unitcell[2][:] = cellz
+
+
+class HistoryReader(base.Reader):
+    """Reads DLPoly format HISTORY files
+
+    .. versionadded:: 0.10.1
+    """
+    format = 'HISTORY'
+    units = _DLPOLY_UNITS
+    _Timestep = Timestep
+
+    def __init__(self, filename, convert_units=None, **kwargs):
+        if convert_units is None:
+            convert_units = MDAnalysis.core.flags['convert_lengths']
+        self.convert_units = convert_units
+
+        self.filename = filename
+
+        self.fixed = False
+        self.periodic = True
+        self.skip = 1
+        self._delta = None
+        self._dt = None
+        self._skip_timestep = None
+
+        # "private" file handle
+        self._file = open(self.filename, 'r')
+        self.title = self._file.readline()
+        self._levcfg, self._imcon, self.numatoms = map(int, self._file.readline().split()[:3])
+        
+        # TODO: Replace with new style Timestep
+        self.ts = self._Timestep(self.numatoms)
+        if self._levcfg > 0:
+            self.ts._velocities = np.zeros((self.numatoms, 3), dtype=np.float32, order='F')
+        if self._levcfg == 2:
+            self.ts._forces = np.zeros((self.numatoms, 3), dtype=np.float32, order='F')
+        self._read_next_timestep()
+
+    def _read_next_timestep(self, ts=None):
+        if ts is None:
+            ts = self.ts
+
+        line = self._file.readline()  # timestep line
+        if not line.startswith('timestep'):
+            raise IOError
+        if not self._imcon == 0:
+            ts._unitcell[0] = map(float, self._file.readline().split())
+            ts._unitcell[1] = map(float, self._file.readline().split())
+            ts._unitcell[2] = map(float, self._file.readline().split())
+
+        # If ids are given, put them in here
+        # and later sort by them
+        ids = []
+
+        for i in range(self.numatoms):
+            line = self._file.readline().strip()  # atom info line
+            try:
+                idx = int(line.split()[1])
+            except IndexError:
+                pass
+            else:
+                ids.append(idx)
+
+            # Read in this order for now, then later reorder in place
+            ts._pos[i] = map(float, self._file.readline().split())
+            if self._levcfg > 0:
+                ts._velocities[i] = map(float, self._file.readline().split())
+            if self._levcfg == 2:
+                ts._forces[i] = map(float, self._file.readline().split())
+
+        if ids:
+            ids = np.array(ids)
+            # if ids aren't strictly sequential
+            if not all(ids == (np.arange(self.numatoms) + 1)):
+                order = np.argsort(ids)
+                ts._pos[:] = ts._pos[order]
+                if self._levcfg > 0:
+                    ts._velocities[:] = ts._velocities[order]
+                if self._levcfg == 2:
+                    ts._forces[:] = ts._forces[order]
+
+        ts.frame += 1
+        return ts
+
+    @property
+    def numframes(self):
+        try:
+            return self._numframes
+        except AttributeError:
+            self._numframes = self._read_numframes()
+            return self._numframes
+
+    def _read_numframes(self):
+        with open(self.filename, 'r') as f:
+            numframes = 0
+
+            f.readline()
+            f.readline()
+            line = f.readline()
+            while line.startswith('timestep'):
+                numframes += 1
+                if not self._imcon == 0:  # box info
+                    f.readline()
+                    f.readline()
+                    f.readline()
+                for _ in range(self.numatoms):
+                    f.readline()
+                    f.readline()
+                    if self._levcfg > 0:  # vels
+                        f.readline()
+                    if self._levcfg == 2:  # forces
+                        f.readline()
+                line = f.readline()
+
+        return numframes
+                
+    def __iter__(self):
+        self._reopen()
+        while True:
+            try:
+                yield self._read_next_timestep()
+            except IOError:
+                self.rewind()
+                raise StopIteration
+
+    def rewind(self):
+        self._reopen()
+        self.next()
+
+    def _reopen(self):
+        self.close()
+        self._file = open(self.filename, 'r')
+        self._file.readline()  # header is 2 lines
+        self._file.readline()
+        self.ts.frame = 0
+
+    def close(self):
+        self._file.close()

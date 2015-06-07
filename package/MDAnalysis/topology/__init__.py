@@ -277,4 +277,5 @@ _topology_parsers = {'PSF': PSFParser.PSFParser,
                      'XYZ': XYZParser.XYZParser,
                      'GMS': GMSParser.GMSParser,
                      'CONFIG': DLPolyParser.ConfigParser,
+                     'HISTORY': DLPolyParser.HistoryParser,
                      }

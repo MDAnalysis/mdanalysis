@@ -97,3 +97,67 @@ class ConfigParser(base.TopologyReader):
         structure = {'atoms': atoms}
 
         return structure
+
+
+class HistoryParser(base.TopologyReader):
+    """DL_Poly History file parser
+
+    .. versionadded:: 0.10.1
+    """
+    def parse(self):
+        with openany(self.filename, 'r') as inf:
+            inf.readline()
+            levcfg, imcon, megatm = map(int, inf.readline().split()[:3])
+            inf.readline()
+            if not imcon == 0:
+                inf.readline()
+                inf.readline()
+                inf.readline()
+
+            names = []
+            ids = []
+
+            line = inf.readline()
+            while not (line.startswith('timestep') or line == ""):
+                name = line[:8].strip()
+                names.append(name)
+                try:
+                    idx = int(line.split()[1])
+                except ValueError:
+                    pass
+                else:
+                    ids.append(idx)
+
+                inf.readline()
+                if levcfg > 0:
+                    inf.readline()
+                if levcfg == 2:
+                    inf.readline()
+
+                line = inf.readline()
+
+        if ids:
+            ids = np.array(ids)
+            names = np.array(names)
+            order = np.argsort(ids)
+            ids = ids[order]
+            names = names[order]
+        else:
+            ids = np.arange(len(names))
+
+        segid = "SYSTEM"
+        resname = "SYSTEM"
+        resid = 1
+        atoms = []
+
+        for i, (name, num) in enumerate(itertools.izip(names, ids)):
+            elem = core.guess_atom_element(name)
+            mass = core.get_atom_mass(elem)
+            charge = core.guess_atom_charge(name)
+            atoms.append(Atom(i, name, elem, resname, resid,
+                              segid, mass, charge,
+                              resnum=num, universe=self._u))
+
+        structure = {'atoms': atoms}
+
+        return structure

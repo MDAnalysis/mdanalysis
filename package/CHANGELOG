@@ -15,7 +15,8 @@ The rules for this file:
   * 0.10.1
 
   Enhancements
-  * Added reading of DL_Poly format CONFIG files (Issue #298)
+  * Added reading of DL_Poly format CONFIG and HISTORY files (Issue #298)
+    These can both act as both Topology and Coordinate information
 
   Changes
 

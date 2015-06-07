@@ -174,6 +174,9 @@ also recognized when they are compressed with :program:`gzip` or
    | DL_Poly [#a]_ | config    |  r    | DL_Poly ascii config file                            |
    |               |           |       | :mod:`MDAnalysis.coordinates.DLPOLY`                 |
    +---------------+-----------+-------+------------------------------------------------------+
+   | DL_Poly [#a]_ | history   |  r    | DL_Poly ascii history file                           |
+   |               |           |       | :mod:`MDAnalysis.coordinates.DLPOLY`                 |
+   +---------------+-----------+-------+------------------------------------------------------+
 
 .. [#a] This format can also be used to provide basic *topology*
    information (i.e. the list of atoms); it is possible to create a
@@ -647,6 +650,7 @@ _trajectory_readers = {
     'DCD': DCD.DCDReader,
     # 'TRJ': DCD.DCDReader, #commented out because overridden by TRJ.TRJReader
     'CONFIG': DLPoly.ConfigReader,
+    'HISTORY': DLPoly.HistoryReader,
     'XTC': XTC.XTCReader,
     'XYZ': XYZ.XYZReader,
     'TRR': TRR.TRRReader,
@@ -684,6 +688,7 @@ _topology_coordinates_readers = {
     'GRO': GRO.GROReader,
     'CRD': CRD.CRDReader,
     'CONFIG': DLPoly.ConfigReader,
+    'HISTORY': DLPoly.HistoryReader,
     'PQR': PQR.PQRReader,
     'DMS': DMS.DMSReader,
     'MOL2': MOL2.MOL2Reader,
