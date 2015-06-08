@@ -78,7 +78,7 @@ class ConfigReader(base.SingleFrameReader):
 
             line = inf.readline().strip()
             # Read records infinitely
-            while not line == "":
+            while line:
                 try:
                     idx = int(line[8:])
                 except ValueError:  # dl_poly classic doesn't have this
@@ -211,6 +211,12 @@ class HistoryReader(base.Reader):
         ts.frame += 1
         return ts
 
+    def _read_frame(self, frame):
+        """frame is 0 based, error checking is done in base.getitem"""
+        self._file.seek(self._offsets[frame])
+        self.ts.frame = frame  # gets +1'd in read_next_frame
+        return self._read_next_timestep()
+
     @property
     def numframes(self):
         try:
@@ -220,13 +226,22 @@ class HistoryReader(base.Reader):
             return self._numframes
 
     def _read_numframes(self):
+        """Read the number of frames, and the offset for each frame
+
+        offset[i] - returns the offset in bytes to seek into the file to be just before
+                    the frame starts
+        """
+        offsets = self._offsets = []
+
         with open(self.filename, 'r') as f:
             numframes = 0
 
             f.readline()
             f.readline()
+            position = f.tell()
             line = f.readline()
             while line.startswith('timestep'):
+                offsets.append(position)
                 numframes += 1
                 if not self._imcon == 0:  # box info
                     f.readline()
@@ -239,6 +254,7 @@ class HistoryReader(base.Reader):
                         f.readline()
                     if self._levcfg == 2:  # forces
                         f.readline()
+                position = f.tell()
                 line = f.readline()
 
         return numframes

@@ -49,27 +49,24 @@ class ConfigParser(base.TopologyReader):
             names = []
             ids = []
 
-            while True:
+            line = inf.readline().strip()
+            while line:
+                name = line[:8].strip()
+                names.append(name)
                 try:
-                    line = inf.readline().strip()
-                    if line == "":
-                        break
-                    name = line[:8].strip()
-                    names.append(name)
-                    try:
-                        idx = int(line[8:])
-                    except ValueError:
-                        pass
-                    else:
-                        ids.append(idx)
+                    idx = int(line[8:])
+                except ValueError:
+                    pass
+                else:
+                    ids.append(idx)
 
+                inf.readline()
+                if levcfg > 0:
                     inf.readline()
-                    if levcfg > 0:
-                        inf.readline()
-                    if levcfg == 2:
-                        inf.readline()
-                except IOError:
-                    break
+                if levcfg == 2:
+                    inf.readline()
+
+                line = inf.readline()
 
         if ids:
             ids = np.array(ids)
@@ -118,7 +115,7 @@ class HistoryParser(base.TopologyReader):
             ids = []
 
             line = inf.readline()
-            while not (line.startswith('timestep') or line == ""):
+            while line and not line.startswith('timestep'):
                 name = line[:8].strip()
                 names.append(name)
                 try:
