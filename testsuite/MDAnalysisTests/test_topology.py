@@ -25,7 +25,8 @@ from MDAnalysis.topology.core import (
 from MDAnalysis.tests.datafiles import (
     PRMpbc, PRM12, PSF, PSF_NAMD, PSF_nosegid, DMS, PDB_small, DCD,
     LAMMPSdata, trz4data, TPR, PDB, XYZ_mini, GMS_SYMOPT, GMS_ASYMSURF,
-    DLP_CONFIG, DLP_CONFIG_order, DLP_HISTORY)
+    DLP_CONFIG, DLP_CONFIG_order, DLP_CONFIG_minimal,
+    DLP_HISTORY, DLP_HISTORY_order, DLP_HISTORY_minimal)
 
 from numpy.testing import *
 from nose.plugins.attrib import attr
@@ -1150,6 +1151,7 @@ class TestGMS_noSymmetry(_TestTopology, RefGMSasym):
     """Testing GAMESS output file format"""
 
 class _DLPolyParser(object):
+    """Test of real data"""
     def tearDown(self):
         del self.p
         del self.f
@@ -1175,11 +1177,14 @@ class TestDLPolyConfigParser(_DLPolyParser):
         self.p = MDAnalysis.topology.DLPolyParser.ConfigParser
         self.f = DLP_CONFIG
 
-class TestDLPolyConfigParser2(object):
+class TestDLPolyHistoryParser(_DLPolyParser):
     def setUp(self):
-        self.p = MDAnalysis.topology.DLPolyParser.ConfigParser
-        self.f = DLP_CONFIG_order
+        self.p = MDAnalysis.topology.DLPolyParser.HistoryParser
+        self.f = DLP_HISTORY
 
+
+# Artificial DL_Poly data for testing limits
+class _DLPoly(object):
     def tearDown(self):
         del self.p
         del self.f
@@ -1201,8 +1206,22 @@ class TestDLPolyConfigParser2(object):
         assert_equal(atoms[1].name, 'B')
         assert_equal(atoms[2].name, 'A')
 
+class TestDLPolyConfigOrder(_DLPoly):
+    def setUp(self):
+        self.p = MDAnalysis.topology.DLPolyParser.ConfigParser
+        self.f = DLP_CONFIG_order
 
-class TestDLPolyHistoryParser(_DLPolyParser):
+class TestDLPolyConfigMinimal(_DLPoly):
+    def setUp(self):
+        self.p = MDAnalysis.topology.DLPolyParser.ConfigParser
+        self.f = DLP_CONFIG_minimal
+
+class TestDLPolyHistoryOrder(_DLPoly):
     def setUp(self):
         self.p = MDAnalysis.topology.DLPolyParser.HistoryParser
-        self.f = DLP_HISTORY
+        self.f = DLP_HISTORY_order
+
+class TestDLPolyHistoryMinimal(_DLPoly):
+    def setUp(self):
+        self.p = MDAnalysis.topology.DLPolyParser.HistoryParser
+        self.f = DLP_HISTORY_minimal

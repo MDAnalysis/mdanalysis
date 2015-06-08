@@ -50,7 +50,7 @@ class ConfigReader(base.SingleFrameReader):
 
     .. versionadded:: 0.10.1
     """
-    format = 'DL_Config'
+    format = 'CONFIG'
     units = _DLPOLY_UNITS
     _Timestep = Timestep
 
@@ -66,41 +66,41 @@ class ConfigReader(base.SingleFrameReader):
             ids = []
             coords = []
             if levcfg > 0:
+                has_vels = True
                 velocities = []
+            else:
+                has_vels = False
             if levcfg == 2:
+                has_forces = True
                 forces = []
+            else:
+                has_forces = False
 
+            line = inf.readline().strip()
             # Read records infinitely
-            while True:
+            while not line == "":
                 try:
-                    line = inf.readline().strip()
-                    if line == "":
-                        break
+                    idx = int(line[8:])
+                except ValueError:  # dl_poly classic doesn't have this
+                    pass
+                else:
+                    ids.append(idx)
 
-                    try:
-                        idx = int(line[8:])
-                    except ValueError:  # dl_poly classic doesn't have this
-                        pass
-                    else:
-                        ids.append(idx)
+                xyz = map(float, inf.readline().split())
+                coords.append(xyz)
+                if has_vels:
+                    vxyz = map(float, inf.readline().split())
+                    velocities.append(vxyz)
+                if has_forces:
+                    fxyz = map(float, inf.readline().split())
+                    forces.append(fxyz)
 
-                    xyz = map(float, inf.readline().split())
-                    coords.append(xyz)
-                    if levcfg > 0:
-                        vxyz = map(float, inf.readline().split())
-                        velocities.append(vxyz)
-                    if levcfg == 2:
-                        fxyz = map(float, inf.readline().split())
-                        forces.append(fxyz)
-                except IOError:
-                    break
+                line = inf.readline().strip()
 
         coords = np.array(coords, dtype=np.float32, order='F')
-        if velocities:
-            has_vels = True
+        if has_vels:
             velocities = np.array(velocities, dtype=np.float32, order='F')
-        if forces:
-            has_forces = True
+        if has_forces:
             forces = np.array(forces, dtype=np.float32, order='F')    
         self.numatoms = len(coords)
 
@@ -154,7 +154,7 @@ class HistoryReader(base.Reader):
 
         # "private" file handle
         self._file = open(self.filename, 'r')
-        self.title = self._file.readline()
+        self.title = self._file.readline().strip()
         self._levcfg, self._imcon, self.numatoms = map(int, self._file.readline().split()[:3])
         
         # TODO: Replace with new style Timestep
