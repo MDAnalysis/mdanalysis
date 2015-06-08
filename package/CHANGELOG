@@ -10,6 +10,19 @@ The rules for this file:
     use tabs but use spaces for formatting
 
 ------------------------------------------------------------------------------
+??/??/15  richardjgowers
+
+  * 0.10.1
+
+  Enhancements
+  * Added reading of DL_Poly format CONFIG and HISTORY files (Issue #298)
+    These can both act as both Topology and Coordinate information
+
+  Changes
+
+  Fixes
+
+
 06/01/15  richardjgowers, caio s. souza, manuel.nuno.melo, orbeckst, 
           sseyler
   * 0.10.0
