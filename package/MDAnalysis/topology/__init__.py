@@ -91,7 +91,12 @@ The following table lists the currently supported topology formats.
                      log         section (atom, elems and coords) and construct topology.
                                  :mod:`MDAnalysis.topology.GMSParser`
 
-   DL_Poly [#a]_     config      DL_Poly config file.  Reads only the atom names.
+   DL_Poly [#a]_     config      DL_Poly CONFIG file.  Reads only the atom names.
+                                 If atoms are written out of order, will correct the 
+                                 order.
+                                 :mod:`MDAnalysis.topology.DLPolyParser`
+
+   DL_Poly [#a]_     history     DL_Poly HISTORY file.  Reads only the atom names.
                                  If atoms are written out of order, will correct the 
                                  order.
                                  :mod:`MDAnalysis.topology.DLPolyParser`
