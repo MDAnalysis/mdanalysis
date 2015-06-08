@@ -21,7 +21,8 @@ Read DL Poly_ format coordinate files
 
 .. _Poly: http://www.stfc.ac.uk/SCD/research/app/ccg/software/DL_POLY/44516.aspx
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
 
 import numpy as np
 
@@ -38,7 +39,7 @@ class Timestep(base.Timestep):
 
     @property
     def dimensions(self):
-        return core.triclinic_box(self._unitcell[0], self._unitcell[1], self._unitcell[2])
+        return core.triclinic_box(*self._unitcell)
 
     @dimensions.setter
     def dimensions(self, new):
@@ -101,7 +102,7 @@ class ConfigReader(base.SingleFrameReader):
         if has_vels:
             velocities = np.array(velocities, dtype=np.float32, order='F')
         if has_forces:
-            forces = np.array(forces, dtype=np.float32, order='F')    
+            forces = np.array(forces, dtype=np.float32, order='F')
         self.numatoms = len(coords)
 
         if ids:
@@ -113,7 +114,7 @@ class ConfigReader(base.SingleFrameReader):
             if has_vels:
                 velocities = velocities[order]
             if has_forces:
-                forces = forces[order]    
+                forces = forces[order]
 
         # TODO: Merge with "new" style Timestep when finished
         ts = self.ts = self._Timestep(self.numatoms)
@@ -156,7 +157,7 @@ class HistoryReader(base.Reader):
         self._file = open(self.filename, 'r')
         self.title = self._file.readline().strip()
         self._levcfg, self._imcon, self.numatoms = map(int, self._file.readline().split()[:3])
-        
+
         # TODO: Replace with new style Timestep
         self.ts = self._Timestep(self.numatoms)
         if self._levcfg > 0:
@@ -228,8 +229,8 @@ class HistoryReader(base.Reader):
     def _read_numframes(self):
         """Read the number of frames, and the offset for each frame
 
-        offset[i] - returns the offset in bytes to seek into the file to be just before
-                    the frame starts
+        offset[i] - returns the offset in bytes to seek into the file to be
+                    just before the frame starts
         """
         offsets = self._offsets = []
 
@@ -258,7 +259,7 @@ class HistoryReader(base.Reader):
                 line = f.readline()
 
         return numframes
-                
+
     def __iter__(self):
         self._reopen()
         while True:

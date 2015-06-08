@@ -21,7 +21,8 @@ Read DL Poly_ format topology files
 
 .. _Poly: http://www.stfc.ac.uk/SCD/research/app/ccg/software/DL_POLY/44516.aspx
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
 
 import numpy as np
 import itertools
@@ -77,12 +78,11 @@ class ConfigParser(base.TopologyReader):
         else:
             ids = np.arange(len(names))
 
-
         segid = "SYSTEM"
         resname = "SYSTEM"
         resid = 1
         atoms = []
-        
+
         for i, (name, num) in enumerate(itertools.izip(names, ids)):
             elem = core.guess_atom_element(name)
             mass = core.get_atom_mass(elem)
