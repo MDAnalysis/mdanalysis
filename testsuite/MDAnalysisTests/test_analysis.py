@@ -356,8 +356,6 @@ class Test_Helanal(TestCase):
         """Check for sustained resolution of Issue 188."""
         u = self.universe
         sel = self.selection
-<<<<<<< HEAD
-
 
         assert_raises(FinishTimeException, MDAnalysis.analysis.helanal.helanal_trajectory,
                       u, selection=sel, finish=5)
@@ -366,13 +364,6 @@ class Test_Helanal(TestCase):
         #        MDAnalysis.analysis.helanal.helanal_trajectory(u, selection=sel, finish=5)
          #   except IndexError:
          #       self.fail("IndexError consistent with Issue 188.")
-=======
-        with assert_raises(FinishTimeException):
-            try:
-                MDAnalysis.analysis.helanal.helanal_trajectory(u, selection=sel, finish=5)
-            except IndexError:
-                self.fail("IndexError consistent with Issue 188.")
-
 
 class TestWaterdynamics(TestCase):
     def setUp(self):
@@ -405,4 +396,3 @@ class TestWaterdynamics(TestCase):
         sp.run()
         assert_equal(round(sp.timeseries[1],5), 1.0)
 
->>>>>>> feature-watdyn
