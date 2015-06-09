@@ -12,9 +12,11 @@ The rules for this file:
 ------------------------------------------------------------------------------
 ??/??/15  richardjgowers
 
-  * 0.10.1
+  * 0.11.0
 
   Enhancements
+  * Added reading of DL_Poly format CONFIG and HISTORY files (Issue #298)
+    These can both act as both Topology and Coordinate information
   * Timestep objects now have __eq__ method
   * coordinates.base.Timestep now can handle velocities and forces
 

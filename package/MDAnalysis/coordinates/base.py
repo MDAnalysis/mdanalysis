@@ -53,7 +53,7 @@ module. The derived classes must follow the Trajectory API in
       .. Note::
 
          Normally velocities are accessed through the
-         :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.velocities()`
+         :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.velocities`
          method of an :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
          but this attribute is documented as there can be occasions
          when it is required (e.g. in order to *change* velocities) or
@@ -125,7 +125,7 @@ class Timestep(object):
 
          iterate of the coordinates, atom by atom
 
-    .. versionchanged:: 0.10.1
+    .. versionchanged:: 0.11.0
        Added :meth:`from_timestep` and :meth:`from_coordinates` constructor
        methods.
        Timestep init now only accepts integer creation
@@ -145,6 +145,9 @@ class Timestep(object):
             Whether this Timestep has velocity information [``False``]
           *forces*
             Whether this Timestep has force information [``False``]
+
+        .. versionchanged:: 0.11.0
+           Added keywords for velocities and forces
         """
         self.frame = 0
         self._numatoms = numatoms
@@ -170,7 +173,7 @@ class Timestep(object):
     def from_timestep(cls, other):
         """Create a copy of another Timestep, in the format of this Timestep
 
-        .. versionadded:: 0.10.1
+        .. versionadded:: 0.11.0
         """
         ts = cls(other.numatoms, velocities=other.has_velocities,
                  forces=other.has_forces)
@@ -196,7 +199,7 @@ class Timestep(object):
     def from_coordinates(cls, positions, velocities=None, forces=None):
         """Create an instance of this Timestep, from coordinate data
 
-        .. versionadded:: 0.10.1
+        .. versionadded:: 0.11.0
         """
         has_velocities = velocities is not None
         has_forces = forces is not None

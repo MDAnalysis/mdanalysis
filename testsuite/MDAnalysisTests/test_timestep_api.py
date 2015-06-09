@@ -116,6 +116,10 @@ class _XTCTimestep(_xdrCoreTimestep):
     Timestep = mda.coordinates.XTC.Timestep
     name = "XTC"
 
+class _DLPolyTimestep(_xdrCoreTimestep):
+    Timestep = mda.coordinates.DLPoly.Timestep
+    name = "DLPoly"
+
 
 class _TestTimestep(TestCase):
     """Test all the base functionality of a Timestep
@@ -310,6 +314,9 @@ class TestXTCTimestep(_TestTimestep, _XTCTimestep):
 
 
 class TestTRRTimestep(_TestTimestep, _TRRTimestep):
+    pass
+
+class TestDLPolyTimestep(_TestTimestep, _DLPolyTimestep):
     pass
 
 class TestTimestep_Copy(TestCase):
