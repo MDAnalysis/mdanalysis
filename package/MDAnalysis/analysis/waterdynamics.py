@@ -1,18 +1,17 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; encoding: utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
-# MDAnalysis --- http://mdanalysis.googlecode.com
-# Copyright (c) 2006-2012 Naveen Michaud-Agrawal,
-#               Elizabeth J. Denning, Oliver Beckstein,
-#               and contributors (see website for details)
+# MDAnalysis --- http://www.MDAnalysis.org
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
 # Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
-#     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
-#     O. Beckstein. MDAnalysis: A Toolkit for the Analysis of
-#     Molecular Dynamics Simulations. J. Comput. Chem. 32 (2011), 2319--2327,
-#     doi:10.1002/jcc.21787
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
 """
@@ -21,7 +20,7 @@ Water dynamics analysis --- :mod:`MDAnalysis.analysis.waterdynamics`
 
 :Author: Alejandro Bernardin
 :Year: 2014-2015
-:Copyright: GNU Public License v2
+:Copyright: GNU Public License v3
 
 This module provides functions to analize water dynamics trajectories and water interactions with other molecules.
 The functions in this module are: water orientational relaxation (WOR) [Yeh1999]_, hydrogen bond lifetimes (HBL) [Rapaport1983]_,
@@ -48,9 +47,9 @@ For more information about this type of analysis please refer to [Araya-Secchi20
 .. [Brodka1994] Aleksander Brodka (1994). Diffusion in restricted volume, Molecular Physics, 1994, Vol. 
                 82, No. 5, 1075-1078.
 
-.. [Araya-Secchi2014] Raul Araya-Secchi, Seung-gu Kang, Tien Huynh, Alejandro Bernardin, 
-                      Agustin D. Martinez, Juan C. Saez, Tomas Perez-Acle, Ruhong Zhou. Characterization of a 
-                      novel water pocket inside the human Cx26 hemi-channel structure.
+.. [Araya-Secchi2014] Araya-Secchi, R., Tomas Perez-Acle, Seung-gu Kang, Tien Huynh, Alejandro Bernardin, Yerko Escalona, Jose-Antonio Garate, Agustin D. Martinez, 
+                     Isaac E. Garcia, Juan C. Saez, Ruhong Zhou (2014). Characterization of a novel water pocket inside the human Cx26 hemichannel structure. Biophysical journal, 107(3), 599-612.
+                      
 .. [Milischuk2011] Anatoli A. Milischuk and Branka M. Ladanyi. Structure and dynamics of water confined 
                     in silica nanopores. J. Chem. Phys. 135, 174709 (2011); doi: 10.1063/1.3657408
 
@@ -61,16 +60,16 @@ For more information about this type of analysis please refer to [Araya-Secchi20
 Examples
 --------
 
-HBL
-~~~~
+Hydrogen bond lifetimes
+~~~~~~~~~~~~~~~~~~~~~~~
 
-Analyzing hydrogen bond lifetimes :class:`HBL`, both continuos and intermittent. In this case we are analyzing
+Analyzing hydrogen bond lifetimes (HBL) :class:`HydrogenBondLifetimes`, both continuos and intermittent. In this case we are analyzing
 how residue 38 interact with a water sphere of radius 6.0 centered on the geometric center of protein and 
-residue 42. If the HBL are very stable, we can assume that residue 38 is hydrophilic, on the other 
-hand, if the HBL are very unstable, we can assume that residue 38 is hydrophobic::
+residue 42. If the hydrogen bond lifetimes are very stable, we can assume that residue 38 is hydrophilic, on the other 
+hand, if the  are very unstable, we can assume that residue 38 is hydrophobic::
 
   import MDAnalysis 
-  from MDAnalysis.analysis.waterdynamics import HBL
+  from MDAnalysis.analysis.waterdynamics import HydrogenBondLifetimes as HBL
 
   u = MDAnalysis.Universe(pdb, trajectory)
   selection1 = "byres name OH2 and sphzone 6.0 protein and resid 42"
@@ -84,17 +83,17 @@ hand, if the HBL are very unstable, we can assume that residue 38 is hydrophobic
         print i +" "+ HBLc +" "+ i +" "+ HBLi
         i+=1
 
-where HBLc is the value for the continuos hydrogen bond lifetime and HBLi is the value for the intermittent
+where HBLc is the value for the continuos hydrogen bond lifetimes and HBLi is the value for the intermittent
 hydrogen bond lifetime, t0 = 0, tf = 2000 and dtmax = 30. In this way we create 30 windows timestep
-(30 values in x axis). The continuos hydrogen bond lifetime should decay faster than intermittent.
+(30 values in x axis). The continuos hydrogen bond lifetimes should decay faster than intermittent.
 
-WOR
-~~~
+WaterOrientationalRelaxation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Analyzing water orientational relaxation :class:`WOR`. In this case we are analyzing "how fast" water molecules are rotating/changin direction. If  WOR is very stable we can assume that water molecules are rotating/changing direction very slow, on the other hand, if WOR decay very fast, we can assume that water molecules are rotating/changing direction very fast::
+Analyzing water orientational relaxation (WOR) :class:`WaterOrientationalRelaxation`. In this case we are analyzing "how fast" water molecules are rotating/changing direction. If WOR is very stable we can assume that water molecules are rotating/changing direction very slow, on the other hand, if WOR decay very fast, we can assume that water molecules are rotating/changing direction very fast::
 
   import MDAnalysis 
-  from MDAnalysis.analysis.waterdynamics import WOR   
+  from MDAnalysis.analysis.waterdynamics import WaterOrientationalRelaxation as WOR   
 
   u = MDAnalysis.Universe(pdb, trajectory)
   selection = "byres name OH2 and sphzone 6.0 protein and resid 42"
@@ -110,17 +109,17 @@ where t0 = 0, tf = 1000 and dtmax = 20. In this way we create 20 windows timeste
 the first window is created with 1000 timestep average (1000/1), the second window is created with 500
 timestep average(1000/2), the third window is created with 333 timestep average (1000/3) and so on. 
 
-AD
-~~
+AngularDistribution
+~~~~~~~~~~~~~~~~~~~
 
-Analyzing angular distribution :class:`AD` for OH vector, HH vector and dipole vector. It returns
+Analyzing angular distribution (AD) :class:`AngularDistribution` for OH vector, HH vector and dipole vector. It returns
 a line histogram with vector orientation preference. A straight line in the output graphic means no preferential
 orientation in water molecules. In this case we are analyzing if water molecules have some orientational
 preference, in this way we can see if water molecules are under an electric field or if they are interacting
 with something (residue, protein, etc)::
 
   import MDAnalysis
-  from MDAnalysis.analysis.waterdynamics import AD
+  from MDAnalysis.analysis.waterdynamics import AngularDistribution as AD
 
   u = MDAnalysis.Universe(pdb, trajectory)
   selection = "byres name OH2 and sphzone 6.0 (protein and (resid 42 or resid 26) )"
@@ -135,14 +134,14 @@ with something (residue, protein, etc)::
 
 where P(cos(theta)) is the angular distribution or angular probabilities.
 
-MSD
-~~~
-Analyzing mean square displacement :class:`MSD` for water molecules. In this case we are analyzing the average distance
+MeanSquareDisplacement
+~~~~~~~~~~~~~~~~~~~~~~
+Analyzing mean square displacement (MSD):class:`MeanSquareDisplacement` for water molecules. In this case we are analyzing the average distance
 that water molecules travels inside protein in XYZ direction (cylindric zone of radius 11[nm], Zmax 4.0[nm] and Zmin -8.0[nm]). A strong
 rise mean a fast movement of water molecules, a weak rise mean slow movement of particles::
   
   import MDAnalysis
-  from MDAnalysis.analysis.waterdynamics import MSD
+  from MDAnalysis.analysis.waterdynamics import MeanSquareDisplacement as MSD
 
   u = MDAnalysis.Universe(pdb, trajectory)
   selection = "byres name OH2 and cyzone 11.0 4.0 -8.0 protein"
@@ -156,15 +155,15 @@ rise mean a fast movement of water molecules, a weak rise mean slow movement of 
         i += 1
 
 
-SP
-~~
-Analyzing survival probability :class:`SP` for water molecules. In this case we are analyzing how long water
+SurvivalProbability
+~~~~~~~~~~~~~~~~~~~
+Analyzing survival probability (SP) :class:`SurvivalProbability` for water molecules. In this case we are analyzing how long water
 molecules remain in a sphere of radius 12.3 centered in the geometrical center of resid 42, 26, 34 and 80. 
 A slow decay of SP means a long permanence time of water molecules in the zone, on the 
 other hand, a fast decay means a short permanence time::
 
   import MDAnalysis
-  from MDAnalysis.analysis.waterdynamics import SP
+  from MDAnalysis.analysis.waterdynamics import SurvivalProbability as SP
 
   u = MDAnalysis.Universe(pdb, trajectory)
   selection = "byres name OH2 and sphzone 12.3 (resid 42 or resid 26 or resid 34 or resid 80) "
@@ -182,10 +181,10 @@ other hand, a fast decay means a short permanence time::
 Output
 ------
 
-HBL
-~~~
-Hydrogen bond lifetime data is returned per window timestep, which is stored in
-:attr:`HBL.timeseries` (in all the following descriptions, # indicates comments that are not part of the output)::
+HydrogenBondLifetimes
+~~~~~~~~~~~~~~~~~~~~~
+Hydrogen bond lifetimes (HBL) data is returned per window timestep, which is stored in
+:attr:`HydrogenBondLifetimes.timeseries` (in all the following descriptions, # indicates comments that are not part of the output)::
 
     results = [
         [ # time t0
@@ -197,10 +196,10 @@ Hydrogen bond lifetime data is returned per window timestep, which is stored in
         ...
      ]
 
-WOR
-~~~
-Water orientational relaxation data is returned per window timestep, which is stored in
-:attr:`WOR.timeseries`::
+WaterOrientationalRelaxation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Water orientational relaxation (WOR) data is returned per window timestep, which is stored in
+:attr:`WaterOrientationalRelaxation.timeseries`::
 
     results = [
         [ # time t0
@@ -212,10 +211,10 @@ Water orientational relaxation data is returned per window timestep, which is st
         ...
      ]
 
-AD
-~~~
-Angular distribution data is returned per vector, which is stored in
-:attr:`AD.graph`. In fact, AD returns a histogram::
+AngularDistribution
+~~~~~~~~~~~~~~~~~~~
+Angular distribution (AD) data is returned per vector, which is stored in
+:attr:`AngularDistribution.graph`. In fact, AngularDistribution returns a histogram::
 
     results = [
         [ # OH vector values
@@ -230,20 +229,20 @@ Angular distribution data is returned per vector, which is stored in
         ],
      ]
 
-MSD
-~~~
-Mean Square Displacement data is returned in a list, which each element represents a MSD value in its respective
-window timestep. Data is stored in :attr:`MSD.timeseries`::
+MeanSquareDisplacement
+~~~~~~~~~~~~~~~~~~~~~~
+Mean Square Displacement (MSD) data is returned in a list, which each element represents a MSD value in its respective
+window timestep. Data is stored in :attr:`MeanSquareDisplacement.timeseries`::
 
     results = [
          #MSD values orders by window timestep 
             <MSD_t0>, <MSD_t1>, ...        
      ]
 
-SP
-~~
-Survival Probability data is returned in a list, which each element represents a MSD value in its respective
-window timestep. Data is stored in :attr:`SP.timeseries`::
+SurvivalProbability
+~~~~~~~~~~~~~~~~~~~
+Survival Probability (SP) data is returned in a list, which each element represents a SP value in its respective
+window timestep. Data is stored in :attr:`SurvivalProbability.timeseries`::
 
     results = [
          # SP values order by window timestep
@@ -255,41 +254,37 @@ window timestep. Data is stored in :attr:`SP.timeseries`::
 Classes
 --------
 
-.. autoclass:: HBL
+.. autoclass:: HydrogenBondLifetimes
    :members:
    :inherited-members:
 
-.. autoclass:: WOR
+.. autoclass:: WaterOrientationalRelaxation
    :members:
    :inherited-members:
    
-.. autoclass:: AD
+.. autoclass:: AngularDistribution
    :members:
    :inherited-members:
 
-.. autoclass:: MSD
+.. autoclass:: MeanSquareDisplacement
    :members:
    :inherited-members:
 
-.. autoclass:: SP
+.. autoclass:: SurvivalProbability
    :members:
    :inherited-members:
 
 
 """
-from MDAnalysis import *
+
 import MDAnalysis.analysis.hbonds
-import MDAnalysis.core.Selection
 import numpy
-import argparse
-import sys
 import multiprocessing
-import time
 import itertools
 
-class HBL:
+class HydrogenBondLifetimes:
     r"""
-    This is a autocorrelation function that gives the "Hydrogen Bond Lifetimes" proposed by D.C. Rapaport [Rapaport1983]_. From this 
+    This is a autocorrelation function that gives the "Hydrogen Bond Lifetimes" (HBL) proposed by D.C. Rapaport [Rapaport1983]_. From this 
     function we can obtain the continuos and intermittent behavior of hydrogen bonds in time. A 
     fast decay in these parameters indicate a fast change in HBs connectivity. A slow decay
     indicate very stables hydrogen bonds, like in ice. The HBL is also know as "Hydrogen Bond Population 
@@ -510,10 +505,10 @@ class HBL:
             h_list.run()
             self.timeseries = self._getGraphics( h_list.timeseries , self.t0 , self.tf , self.dtmax )
             
-class  WOR:
+class  WaterOrientationalRelaxation:
     r"""
     Function to evaluate the Water Orientational Relaxation proposed by Yu-ling Yeh 
-    and Chung-Yuan Mou [Yeh1999_]. WOR indicates "how fast" water molecules are rotating 
+    and Chung-Yuan Mou [Yeh1999_]. WaterOrientationalRelaxation indicates "how fast" water molecules are rotating 
     or changing direction. This is a time correlation function given by:
     
     .. math:: 
@@ -546,10 +541,10 @@ class  WOR:
         self.nproc = nproc
         self.timeseries = None
 
-    def _repitedIndex(self,selection,dt,totalFrames): 
+    def _repeatedIndex(self,selection,dt,totalFrames): 
         """
         Indicate the comparation between all the t+dt.
-        The results is a list of list with all the repited index per frame (or time).
+        The results is a list of list with all the repeated index per frame (or time).
         Ex: dt=1, so compare frames (1,2),(2,3),(3,4)...
         Ex: dt=2, so compare frames (1,3),(3,5),(5,7)...
         Ex: dt=3, so compare frames (1,4),(4,7),(7,10)... 
@@ -560,12 +555,12 @@ class  WOR:
                 rep.append(self._sameMolecTandDT(selection,dt*i,(dt*i)+dt))    
         return rep
 
-    def _getOneDeltaCOHPoint(self,universe, repInd, i ,t0, dt): 
+    def _getOneDeltaPoint(self,universe, repInd, i ,t0, dt): 
         """
         Give one point to promediate and get one point of the graphic  C_vect vs t
         Ex: t0=1 and tau=1 so calculate the t0-tau=1-2 intervale.
         Ex: t0=5 and tau=3 so calcultate the t0-tau=5-8 intervale.
-        i = come from getMeanOneCOHPoint (named j) (int)
+        i = come from getMeanOnePoint (named j) (int)
         """
         valOH = 0
         valHH = 0
@@ -613,13 +608,13 @@ class  WOR:
         valdip = valdip/n
         return (valOH,valHH,valdip)
 
-    def _getMeanOneCOHPoint(self,universe,selection1,selection_str,dt,totalFrames):
+    def _getMeanOnePoint(self,universe,selection1,selection_str,dt,totalFrames):
         """
         This function get one point of the graphic C_OH vs t. It uses the
-        _getOneDeltaCOHPoint() function to calculate the average.
+        _getOneDeltaPoint() function to calculate the average.
         
         """
-        repInd = self._repitedIndex(selection1,dt,totalFrames) 
+        repInd = self._repeatedIndex(selection1,dt,totalFrames) 
         sumsdt = 0
         n = 0.0
         sumDeltaOH = 0.0
@@ -630,7 +625,7 @@ class  WOR:
         valdipList = []
       
         for j in range(totalFrames/dt-1):  
-            a = self._getOneDeltaCOHPoint(universe,repInd,j,sumsdt,dt)
+            a = self._getOneDeltaPoint(universe,repInd,j,sumsdt,dt)
             sumDeltaOH += a[0]
             sumDeltaHH += a[1]
             sumDeltadip += a[2]
@@ -644,7 +639,7 @@ class  WOR:
     def _sameMolecTandDT(self,selection,t0d,tf):
         """
         Compare the molecules in the t0d selection and the t0d+dt selection and
-        select only the particles that are repited in both frame. This is to consider
+        select only the particles that are repeated in both frame. This is to consider
         only the molecules that remains in the selection after the dt time has elapsed.
         The result is a list with the indexs of the atoms.
         """ 
@@ -677,12 +672,12 @@ class  WOR:
             selection_out = self._selection_serial(self.universe,self.selection)
         self.timeseries = []
         for dt in list(range(1,self.dtmax+1)):
-            output = self._getMeanOneCOHPoint(self.universe,selection_out,self.selection,dt,self.tf)
+            output = self._getMeanOnePoint(self.universe,selection_out,self.selection,dt,self.tf)
             self.timeseries.append(output)
 
     
        
-class  AD:
+class  AngularDistribution:
     r"""
     The angular distribution function (AD) is defined as the distribution
     probability of the cosine of the :math:`\theta` angle formed by the OH vector, HH vector
@@ -717,45 +712,42 @@ class  AD:
         valOH = []
         valHH = []
         valdip= []
+        
         i = 0        
         while i <= (len(selection)-1):        
             universe.trajectory[i]
             line = selection[ i ].positions
-            j=0
-            while j < len(line):
-                Ot0 = numpy.array(line[j])
-                H1t0 = numpy.array(line[j+1])
-                H2t0 = numpy.array(line[j+2])
-
-                OHVector0 = H1t0 - Ot0
-                HHVector0 = H1t0 - H2t0
-                dipVector0 = (H1t0 + H2t0)*0.5 - Ot0
                         
-                normOHVector0 = numpy.linalg.norm(OHVector0)
-                normHHVector0 = numpy.linalg.norm(HHVector0)
-                normdipVector0 = numpy.linalg.norm(dipVector0)
-                
-                unitOHVector0 = [OHVector0[0]/normOHVector0,OHVector0[1]/normOHVector0,OHVector0[2]/normOHVector0]
-                unitHHVector0 = [HHVector0[0]/normHHVector0,HHVector0[1]/normHHVector0,HHVector0[2]/normHHVector0]
-                unitdipVector0 = [dipVector0[0]/normdipVector0,dipVector0[1]/normdipVector0,dipVector0[2]/normdipVector0]
-                
+            Ot0 = line[::3]
+            H1t0 = line[1::3]
+            H2t0 = line[2::3]
+            
+            OHVector0 = H1t0 - Ot0
+            HHVector0 = H1t0 - H2t0
+            dipVector0 = (H1t0 + H2t0)*0.5 - Ot0
+            
+            unitOHVector0 = OHVector0/numpy.linalg.norm(OHVector0, axis = 1)[:,None]
+            unitHHVector0 = HHVector0/numpy.linalg.norm(HHVector0, axis = 1)[:,None]
+            unitdipVector0 = dipVector0/numpy.linalg.norm(dipVector0, axis = 1)[:,None]
+            
+            j=0
+            while j < len(line)/3:
                 if axis == "z":
-                    valOH.append(numpy.dot(unitOHVector0,[0,0,1]))
-                    valHH.append(numpy.dot(unitHHVector0,[0,0,1]))
-                    valdip.append(numpy.dot(unitdipVector0,[0,0,1]))        
+                    valOH.append(unitOHVector0[j][2])
+                    valHH.append(unitHHVector0[j][2])
+                    valdip.append(unitdipVector0[j][2])
                     
                 elif axis == "x":
-                    valOH.append(numpy.dot(unitOHVector0,[1,0,0]))
-                    valHH.append(numpy.dot(unitHHVector0,[1,0,0]))
-                    valdip.append(numpy.dot(unitdipVector0,[1,0,0]))        
+                    valOH.append(unitOHVector0[j][0])
+                    valHH.append(unitHHVector0[j][0])
+                    valdip.append(unitdipVector0[j][0])        
 
                 elif axis == "y":
-                    valOH.append(numpy.dot(unitOHVector0,[0,1,0]))
-                    valHH.append(numpy.dot(unitHHVector0,[0,1,0]))
-                    valdip.append(numpy.dot(unitdipVector0,[0,1,0]))        
-
-
-                j += 3
+                    valOH.append(unitOHVector0[j][1])
+                    valHH.append(unitHHVector0[j][1])
+                    valdip.append(unitdipVector0[j][1])
+            
+                j += 1
             i += 1      
         return (valOH,valHH,valdip)
 
@@ -819,7 +811,7 @@ class  AD:
         return selection
 
 
-class  MSD:
+class  MeanSquareDisplacement:
     r"""
     Function to evaluate the Mean Square Displacement (MSD_). The MSD gives the average distance that
     particles travels. The MSD is given by:
@@ -856,10 +848,10 @@ class  MSD:
         self.nproc = nproc
         self.timeseries = None
 
-    def _repitedIndex(self,selection,dt,totalFrames): 
+    def _repeatedIndex(self,selection,dt,totalFrames): 
         """
         Indicate the comparation between all the t+dt.
-        The results is a list of list with all the repited index per frame (or time).
+        The results is a list of list with all the repeated index per frame (or time).
         Ex: dt=1, so compare frames (1,2),(2,3),(3,4)...
         Ex: dt=2, so compare frames (1,3),(3,5),(5,7)...
         Ex: dt=3, so compare frames (1,4),(4,7),(7,10)... 
@@ -870,12 +862,12 @@ class  MSD:
                 rep.append(self._sameMolecTandDT(selection,dt*i,(dt*i)+dt))    
         return rep
 
-    def _getOneDeltaCOHPoint(self,universe, repInd, i ,t0, dt): 
+    def _getOneDeltaPoint(self,universe, repInd, i ,t0, dt): 
         """
         Give one point to promediate and get one point of the grapic  C_vect vs t
         Ex: t0=1 and dt=1 so calculate the t0-dt=1-2 intervale.
         Ex: t0=5 and dt=3 so calcultate the t0-dt=5-8 intervale
-        i = come from getMeanOneCOHPoint (named j) (int)
+        i = come from getMeanOnePoint (named j) (int)
         """
         valO = 0
         n = 0
@@ -891,26 +883,26 @@ class  MSD:
             
             #position oxygen
             OVector = Ot0 - Otp
-            #here it is the difference with waterdynamics.WOR
+            #here it is the difference with waterdynamics.WaterOrientationalRelaxation
             valO += numpy.dot(OVector, OVector)
             n += 1
         valO = valO/n
         return (valO)
         
-    def _getMeanOneCOHPoint(self,universe,selection1,selection_str,dt,totalFrames):
+    def _getMeanOnePoint(self,universe,selection1,selection_str,dt,totalFrames):
         """
         This function get one point of the graphic C_OH vs t. It's uses the
-        _getOneDeltaCOHPoint() function to calculate the average.
+        _getOneDeltaPoint() function to calculate the average.
         
         """
-        repInd = self._repitedIndex(selection1,dt,totalFrames) 
+        repInd = self._repeatedIndex(selection1,dt,totalFrames) 
         sumsdt = 0
         n = 0.0
         sumDeltaO = 0.0
         valOList = []
               
         for j in range(totalFrames/dt-1):  
-            a = self._getOneDeltaCOHPoint(universe,repInd,j,sumsdt,dt)
+            a = self._getOneDeltaPoint(universe,repInd,j,sumsdt,dt)
             print "a=",a
             sumDeltaO += a
             valOList.append(a)
@@ -921,7 +913,7 @@ class  MSD:
     def _sameMolecTandDT(self,selection,t0d,tf):
         """
         Compare the molecules in the t0d selection and the t0d+dt selection and
-        select only the particles that are repited in both frame. This is to consider
+        select only the particles that are repeated in both frame. This is to consider
         only the molecules that remains in the selection after the dt time has elapsed.
         The result is a list with the indexs of the atoms.
         """ 
@@ -951,31 +943,34 @@ class  MSD:
             selection_out = self._selection_serial(self.universe,self.selection)
         self.timeseries = []
         for dt in list(range(1,self.dtmax+1)):
-            output = self._getMeanOneCOHPoint(self.universe,selection_out,self.selection,dt,self.tf)
+            output = self._getMeanOnePoint(self.universe,selection_out,self.selection,dt,self.tf)
             self.timeseries.append(output)
 
 
-class  SP:
+class  SurvivalProbability:
     r"""
     Function to evaluate the Survival Probability (SP). The SP gives the probability 
     for a group of particles to remain in certain region. The SP is given by:
-    SP = equation
 
     .. math:: 
         P(\tau) = \frac1T \sum_{t=1}^T \frac{N(t,t+\tau)}{N(t)}
 
+    where :math:`T` is the maximum time of simulation, :math:`\tau` is the timestep and
+    :math:`N` the number of particles in certain time.
+
+
     :Arguments:
-      *universe*
-         Universe object
-      *selection* 
-         Selection string, any selection is allowed, with this selection you define the region/zone where
-         to analize, i.e.: "selection_a" and "zone" (see SP examples_ )
-      *t0*
-         Time where analysis begin
-      *tf*
-         Time where analysis end
-      *dtmax*
-         Maximum dt size window, dtmax < tf or it will crash
+     *universe*
+        Universe object
+     *selection* 
+      Selection string, any selection is allowed, with this selection you define the region/zone where
+      to analize, i.e.: "selection_a" and "zone" (see SP examples_ )
+     *t0*
+      Time where analysis begin
+     *tf*
+      Time where analysis end
+     *dtmax*
+      Maximum dt size window, dtmax < tf or it will crash
           
     """
 
@@ -988,7 +983,7 @@ class  SP:
         self.nproc = nproc
         self.timeseries = None
  
-    def _getOneDeltaCOHPoint(self,selection, totalFrames, t0, tau):
+    def _getOneDeltaPoint(self,selection, totalFrames, t0, tau):
         """
         Give one point to promediate and get one point of the graphic  C_vect vs t
         Ex: t0=1 and tau=1 so calculate the t0-tau=1-2 intervale.
@@ -999,17 +994,16 @@ class  SP:
         
         return Ntau/Nt
     
-    def _getMeanOneCOHPoint(self,universe,selection1,selection_str,wint,totalFrames):
+    def _getMeanOnePoint(self,universe,selection1,selection_str,wint,totalFrames):
         """
         This function get one point of the graphic P(t) vs t. It uses the
-        _getOneDeltaCOHPoint() function to calculate the average.
+        _getOneDeltaPoint() function to calculate the average.
         
         """
         n = 0.0
         sumDeltaP = 0.0
-        valPList = []
         for frame in range(totalFrames-wint):  
-            a = self._getOneDeltaCOHPoint(selection1,totalFrames ,frame, wint)
+            a = self._getOneDeltaPoint(selection1,totalFrames ,frame, wint)
             sumDeltaP += a
             n += 1
         
@@ -1046,12 +1040,12 @@ class  SP:
                 
         #All the selection to an array, this way is faster than selecting later.
         if self.nproc==1:
-            selection_out = self._selection_serial(self.universe,self.selection)
+            selection_out = self._selection_serial(self.universe, self.selection)
         else:
             #selection = selection_parallel(universe,selection_str,nproc)
             #parallel selection to be implemented
-            selection_out = self._selection_serial(self.universe,self.selection)
+            selection_out = self._selection_serial(self.universe, self.selection)
         self.timeseries = []
         for dt in list(range(1,self.dtmax+1)):
-            output = self._getMeanOneCOHPoint(self.universe,selection_out,self.selection,dt,self.tf)
+            output = self._getMeanOnePoint(self.universe, selection_out, self.selection, dt, self.tf)
             self.timeseries.append(output)
