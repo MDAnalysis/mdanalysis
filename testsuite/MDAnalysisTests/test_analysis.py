@@ -20,6 +20,7 @@ import MDAnalysis.analysis.align
 import MDAnalysis.analysis.hbonds
 import MDAnalysis.analysis.helanal
 import MDAnalysis.analysis.rms
+import MDAnalysis.analysis.waterdynamics
 from MDAnalysis import SelectionError, FinishTimeException
 
 from numpy.testing import *
@@ -29,7 +30,7 @@ import os
 import errno
 import tempfile
 
-from MDAnalysis.tests.datafiles import PSF, DCD, FASTA, PDB_helix, PDB_HOLE, XTC_HOLE, GRO, XTC
+from MDAnalysis.tests.datafiles import PSF, DCD, FASTA, PDB_helix, PDB_HOLE, XTC_HOLE, GRO, XTC, waterDCD, waterPSF
 from . import executable_not_found_runtime
 
 
@@ -355,6 +356,7 @@ class Test_Helanal(TestCase):
         """Check for sustained resolution of Issue 188."""
         u = self.universe
         sel = self.selection
+<<<<<<< HEAD
 
 
         assert_raises(FinishTimeException, MDAnalysis.analysis.helanal.helanal_trajectory,
@@ -364,3 +366,43 @@ class Test_Helanal(TestCase):
         #        MDAnalysis.analysis.helanal.helanal_trajectory(u, selection=sel, finish=5)
          #   except IndexError:
          #       self.fail("IndexError consistent with Issue 188.")
+=======
+        with assert_raises(FinishTimeException):
+            try:
+                MDAnalysis.analysis.helanal.helanal_trajectory(u, selection=sel, finish=5)
+            except IndexError:
+                self.fail("IndexError consistent with Issue 188.")
+
+
+class TestWaterdynamics(TestCase):
+    def setUp(self):
+        self.universe = MDAnalysis.Universe(waterPSF, waterDCD)
+        self.selection1 = "byres name OH2" 
+        self.selection2 = self.selection1        
+       
+    def test_HydrogenBondLifetimes(self):
+        hbl = MDAnalysis.analysis.waterdynamics.HydrogenBondLifetimes(self.universe, self.selection1, self.selection2, 0, 5, 3) 
+        hbl.run()
+        assert_equal(round(hbl.timeseries[2][1],5), 0.75)
+        
+    def test_WaterOrientationalRelaxation(self):
+        wor = MDAnalysis.analysis.waterdynamics.WaterOrientationalRelaxation(self.universe, self.selection1, 0, 5, 2)
+        wor.run()
+        assert_equal(round(wor.timeseries[1][2],5), 0.35887)
+
+    def test_AngularDistribution(self):
+        ad = MDAnalysis.analysis.waterdynamics.AngularDistribution(self.universe,self.selection1,40)
+        ad.run()
+        assert_equal(str(ad.graph[0][39]), str("0.951172947884 0.48313682125") )
+        
+    def test_MeanSquareDisplacement(self):
+        msd = MDAnalysis.analysis.waterdynamics.MeanSquareDisplacement(self.universe, self.selection1, 0, 10, 2)
+        msd.run()
+        assert_equal(round(msd.timeseries[1],5), 0.03984)
+        
+    def test_SurvivalProbability(self):
+        sp = MDAnalysis.analysis.waterdynamics.SurvivalProbability(self.universe, self.selection1, 0, 6, 3)
+        sp.run()
+        assert_equal(round(sp.timeseries[1],5), 1.0)
+
+>>>>>>> feature-watdyn

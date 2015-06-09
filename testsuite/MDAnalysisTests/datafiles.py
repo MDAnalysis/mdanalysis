@@ -80,6 +80,7 @@ __all__ = [
     "two_water_gro", "two_water_gro_nonames",  # for bond guessing, 2 water molecules, one with weird names
     "DLP_CONFIG", "DLP_CONFIG_order", "DLP_CONFIG_minimal",  # dl_poly 4 config file
     "DLP_HISTORY", "DLP_HISTORY_order", "DLP_HISTORY_minimal"  # dl_poly 4 history file
+    "waterPSF","waterDCD",
 ]
 
 from pkg_resources import resource_filename
@@ -211,9 +212,14 @@ GMS_ASYMSURF      = resource_filename(__name__, "data/gms/surf2wat.gms")
 two_water_gro = resource_filename(__name__, "data/two_water_gro.gro")
 two_water_gro_nonames = resource_filename(__name__, "data/two_water_gro_nonames.gro")
 
+<<<<<<< HEAD
 DLP_CONFIG = resource_filename(__name__, "data/dlpoly/CONFIG")
 DLP_CONFIG_order = resource_filename(__name__, "data/dlpoly/CONFIG_order")
 DLP_CONFIG_minimal = resource_filename(__name__, "data/dlpoly/CONFIG_minimal")
 DLP_HISTORY = resource_filename(__name__, "data/dlpoly/HISTORY")
 DLP_HISTORY_order = resource_filename(__name__, "data/dlpoly/HISTORY_order")
 DLP_HISTORY_minimal = resource_filename(__name__, "data/dlpoly/HISTORY_minimal")
+=======
+waterPSF = resource_filename(__name__, 'data/watdyn.psf')
+waterDCD = resource_filename(__name__, 'data/watdyn.dcd')
+>>>>>>> feature-watdyn
