@@ -327,6 +327,7 @@ class Timestep(object):
 
     @property
     def positions(self):
+        """A record of the positions of all atoms in this Timestep"""
         return self._pos
 
     @positions.setter
@@ -335,6 +336,14 @@ class Timestep(object):
 
     @property
     def velocities(self):
+        """A record of the velocities of all atoms in this Timestep
+
+        :Raises:
+           :class:`MDAnalysis.NoDataError`
+              When the Timestep does not contain velocity information
+
+        .. versionadded:: 0.11.0
+        """
         try:
             return self._velocities
         except AttributeError:
@@ -349,6 +358,14 @@ class Timestep(object):
 
     @property
     def forces(self):
+        """A record of the forces of all atoms in this Timestep
+
+        :Raises:
+           :class:`MDAnalysis.NoDataError`
+              When the Timestep does not contain force information
+
+        .. versionadded:: 0.11.0
+        """
         try:
             return self._forces
         except AttributeError:

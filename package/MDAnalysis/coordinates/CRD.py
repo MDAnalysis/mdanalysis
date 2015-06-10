@@ -31,6 +31,9 @@ from . import base
 
 class CRDReader(base.SingleFrameReader):
     """CRD reader that implements the standard and extended CRD coordinate formats
+
+    .. versionchanged:: 0.11.0
+       Now returns a ValueError instead of FormatError
     """
     format = 'CRD'
     units = {'time': None, 'length': 'Angstrom'}
@@ -64,7 +67,8 @@ class CRDReader(base.SingleFrameReader):
                     else:
                         coords_list.append(np.array(map(float, line[20:50].split()[0:3])))
                 except:
-                    raise FormatError("Check CRD format at line %d: %s" % (linenum, line.rstrip()))
+                    raise ValueError("Check CRD format at line {0}: {1}"
+                                     "".format(linenum, line.rstrip()))
 
         self.numatoms = len(coords_list)
 

@@ -25,6 +25,7 @@ The rules for this file:
     represents the number of atoms)
   * Added from_timestep and from_coordinates construction methods
     to base.Timestep
+  * Removed FormatError, now replaced by ValueError
 
   Fixes
 
