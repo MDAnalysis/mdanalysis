@@ -10,6 +10,20 @@ The rules for this file:
     use tabs but use spaces for formatting
 
 ------------------------------------------------------------------------------
+??/??/15  alejob
+
+  * 0.11.0
+
+  Enhancements
+  * Waterdynamics analysis module added, including five analysis classes: Hydrogen Bond
+    Lifetimes, Water Orientational Relaxation, Angular Distribution, Mean Square 
+    Displacement and Survival Probability. Documentation and test are included.
+
+  Changes
+
+  Fixes
+
+
 ??/??/15  richardjgowers
 
   * 0.10.1
