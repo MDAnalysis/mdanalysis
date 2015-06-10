@@ -22,6 +22,8 @@ Water dynamics analysis --- :mod:`MDAnalysis.analysis.waterdynamics`
 :Year: 2014-2015
 :Copyright: GNU Public License v3
 
+.. versionadded:: 0.11.0
+
 This module provides functions to analize water dynamics trajectories and water interactions with other molecules.
 The functions in this module are: water orientational relaxation (WOR) [Yeh1999]_, hydrogen bond lifetimes (HBL) [Rapaport1983]_,
 angular distribution (AD) [Grigera1995]_, mean square displacement (MSD) [Brodka1994]_ and survival probability (SP) [Liu2004]_.
@@ -86,6 +88,7 @@ hand, if the  are very unstable, we can assume that residue 38 is hydrophobic::
 where HBLc is the value for the continuos hydrogen bond lifetimes and HBLi is the value for the intermittent
 hydrogen bond lifetime, t0 = 0, tf = 2000 and dtmax = 30. In this way we create 30 windows timestep
 (30 values in x axis). The continuos hydrogen bond lifetimes should decay faster than intermittent.
+
 
 WaterOrientationalRelaxation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -302,6 +305,8 @@ class HydrogenBondLifetimes:
 
     where :math:`h_{ij}(t_0+\tau)=1` if there is a H-bond between a pair :math:`ij` at time
     :math:`t_0+\tau` (intermittent) and :math:`h_{ij}(t_0+\tau)=0` otherwise.
+
+    .. versionadded:: 0.11.0
     
     :Arguments: 
      *universe*
@@ -517,6 +522,7 @@ class  WaterOrientationalRelaxation:
     where :math:`P_2=(3x^2-1)/2` is the second-order Legendre polynomial and :math:`\hat{u}` is 
     a unit vector along HH, OH or dipole vector.
 
+    .. versionadded:: 0.11.0
 
     :Arguments:
       *universe*
@@ -685,6 +691,8 @@ class  AngularDistribution:
     (z is the default value). The cosine is define as :math:`\cos \theta = \hat u \cdot \hat n`, where :math:`\hat u` is OH, HH or dipole vector. 
     It creates a histogram and returns a list of lists, see Output_. The AD is also know as Angular Probability (AP).
         
+    .. versionadded:: 0.11.0
+
     :Arguments:
          *universe*
              Universe object
@@ -825,6 +833,8 @@ class  MeanSquareDisplacement:
 
     .. _MSD: http://en.wikipedia.org/wiki/Mean_squared_displacement
 
+    .. versionadded:: 0.11.0
+
     :Arguments:
       *universe*
          Universe object
@@ -958,6 +968,7 @@ class  SurvivalProbability:
     where :math:`T` is the maximum time of simulation, :math:`\tau` is the timestep and
     :math:`N` the number of particles in certain time.
 
+    .. versionadded:: 0.11.0
 
     :Arguments:
      *universe*
