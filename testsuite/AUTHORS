@@ -9,9 +9,9 @@ MDAnalysis was originally written by Naveen Michaud-Agrawal.
 Oliver Beckstein and Elizabeth J. Denning are maintaining the project
 and contributing to the development.
 
-Also see this file and the project page
-http://code.google.com/p/mdanalysis/people/list for a list of people
-directly involved.
+All contributing authors are listed in this file below. The repository
+history at https://github.com/MDAnalysis/mdanalysis and the CHANGELOG
+show individual code contributions.
 
 
 Chronological list of authors
@@ -52,6 +52,12 @@ Chronological list of authors
 2014
   - Matthieu Chavent
   - Joe Jordan
+2015
+  - Alex Nesterenko
+  - Caio S. Souza
+  - Sean L. Seyler
+  - David L. Dotson
+
 
 External code
 -------------
