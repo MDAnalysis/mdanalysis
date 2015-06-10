@@ -904,6 +904,8 @@ class AtomGroup(object):
         .. versionchanged:: 0.9.0
            This method now used by all subclasses.  These subclasses override
            :attr:`_cls` to define the returned class.
+        .. versionchanged:: 0.10.0
+           Now supports indexing via boolean numpy arrays
         """
         container = self._container
         cls = self._cls
@@ -915,6 +917,11 @@ class AtomGroup(object):
             return cls(container[item])
         elif isinstance(item, (numpy.ndarray, list)):
             # advanced slicing, requires array or list
+            try:
+                if isinstance(item[0], numpy.bool_):
+                    item = numpy.arange(len(item))[item]
+            except IndexError:  # zero length item
+                pass
             return cls([container[i] for i in item])
         elif type(item) == str:
             return self._get_named_atom(item)

@@ -1,14 +1,19 @@
 [run]
 branch = True
 source = MDAnalysis
-
 exclude_lines =
     pragma: no cover
+omit =
+    */analysis/*
+    */visualization/*
+
 
 [report]
 exclude_lines =
     pragma: no cover
-
     def __repr__
     raise NotImplementedError
-    if __name__ == .__main__.: 
+    if __name__ == .__main__.:
+
+
+

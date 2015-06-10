@@ -24,13 +24,8 @@ These objects are constructed and applied to the group
 Currently all atom arrays are handled internally as sets, but returned as AtomGroups
 
 """
+
 import re
-
-try:
-    set([])
-except NameError:
-    from sets import Set as set
-
 import numpy
 
 from AtomGroup import AtomGroup, Universe

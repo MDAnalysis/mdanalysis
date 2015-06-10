@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.12. PQR file format — MDAnalysis.coordinates.PQR &mdash; MDAnalysis 0.10.0-dev documentation</title>
+    <title>5.12. PQR file format — MDAnalysis.coordinates.PQR &mdash; MDAnalysis 0.11.0-dev documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.10.0-dev',
+        VERSION:     '0.11.0-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,16 +25,16 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.10.0-dev documentation"
+          title="Search within MDAnalysis 0.11.0-dev documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.10.0-dev documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.11.0-dev documentation" href="../../index.html" />
     <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
     <link rel="next" title="5.13. AMBER trajectories — MDAnalysis.coordinates.TRJ" href="TRJ.html" />
     <link rel="prev" title="5.11. PDBQT structure files in MDAnalysis — MDAnalysis.coordinates.PDBQT" href="PDBQT.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -51,27 +49,29 @@
         <li class="right" >
           <a href="PDBQT.html" title="5.11. PDBQT structure files in MDAnalysis — MDAnalysis.coordinates.PDBQT"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.10.0-dev documentation</a> &raquo;</li>
-          <li><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../index.html">
               <img class="logo" src="../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
             </a></p>
   <h4>Previous topic</h4>
   <p class="topless"><a href="PDBQT.html"
-                        title="previous chapter">5.11. PDBQT structure files in MDAnalysis &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.coordinates.PDBQT</span></tt></a></p>
+                        title="previous chapter">5.11. PDBQT structure files in MDAnalysis &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.PDBQT</span></code></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="TRJ.html"
-                        title="next chapter">5.13. AMBER trajectories &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.TRJ</span></tt></a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="../../_sources/documentation_pages/coordinates/PQR.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
+                        title="next chapter">5.13. AMBER trajectories &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.TRJ</span></code></a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/documentation_pages/coordinates/PQR.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
       <input type="text" name="q" />
@@ -90,10 +90,10 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <span class="target" id="module-MDAnalysis.coordinates.PQR"></span><div class="section" id="pqr-file-format-mdanalysis-coordinates-pqr">
-<h1>5.12. PQR file format &#8212; <a class="reference internal" href="#module-MDAnalysis.coordinates.PQR" title="MDAnalysis.coordinates.PQR"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.PQR</span></tt></a><a class="headerlink" href="#pqr-file-format-mdanalysis-coordinates-pqr" title="Permalink to this headline">¶</a></h1>
+<h1>5.12. PQR file format &#8212; <a class="reference internal" href="#module-MDAnalysis.coordinates.PQR" title="MDAnalysis.coordinates.PQR"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.PQR</span></code></a><a class="headerlink" href="#pqr-file-format-mdanalysis-coordinates-pqr" title="Permalink to this headline">¶</a></h1>
 <p>Read atoms with charges from a <a class="reference external" href="http://www.poissonboltzmann.org/file-formats/biomolecular-structurw/pqr">PQR</a> file (as written by <a class="reference external" href="http://www.poissonboltzmann.org/pdb2pqr">PDB2PQR</a>). The
 following is adopted from the description of the <a class="reference external" href="http://www.poissonboltzmann.org/file-formats/biomolecular-structurw/pqr">PQR</a> format as used by <a class="reference external" href="http://www.poissonboltzmann.org/apbs">APBS</a>:</p>
 <p><em>MDAnalysis</em> reads very loosely-formatted PQR files: all fields are
@@ -101,13 +101,15 @@ following is adopted from the description of the <a class="reference external" h
 by the <a class="reference external" href="http://www.rcsb.org/pdb/info.html#File_Formats_and_Standards">PDB</a> format. This more liberal formatting allows coordinates
 which are larger/smaller than ±999 Å.</p>
 <p>MDAnalysis reads data on a per-line basis from PQR files using the following format:</p>
-<div class="highlight-python"><pre>recordName serial atomName residueName chainID residueNumber X Y Z charge radius</pre>
+<div class="highlight-python"><div class="highlight"><pre>recordName serial atomName residueName chainID residueNumber X Y Z charge radius
+</pre></div>
 </div>
 <p>If this fails it is assumed that the <em>chainID</em> was omitted and the shorter
 format is read:</p>
-<div class="highlight-python"><pre>recordName serial atomName residueName residueNumber X Y Z charge radius</pre>
+<div class="highlight-python"><div class="highlight"><pre>recordName serial atomName residueName residueNumber X Y Z charge radius
+</pre></div>
 </div>
-<p>Anything else will raise a <tt class="xref py py-exc docutils literal"><span class="pre">ValueError</span></tt>.</p>
+<p>Anything else will raise a <code class="xref py py-exc docutils literal"><span class="pre">ValueError</span></code>.</p>
 <p>The whitespace is the most important feature of this format: fields
 <em>must</em> be separated by at least one space or tab character. The fields
 are:</p>
@@ -145,34 +147,35 @@ converting PDB files into PQR files using simple scripts.</p>
 </div>
 <p>For example, PQR files created with <a class="reference external" href="http://www.poissonboltzmann.org/pdb2pqr">PDB2PQR</a> and the <cite>&#8211;whitespace</cite>
 option are guaranteed to conform to the above format:</p>
-<div class="highlight-python"><pre>pdb2pqr --ff=charmm --whitespace 4ake.pdb 4ake.pqr</pre>
+<div class="highlight-python"><div class="highlight"><pre>pdb2pqr --ff=charmm --whitespace 4ake.pdb 4ake.pqr
+</pre></div>
 </div>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.PQR.PQRReader">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.PQR.</tt><tt class="descname">PQRReader</tt><big>(</big><em>filename</em>, <em>convert_units=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PQR.html#PQRReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PQR.PQRReader" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.PQR.</code><code class="descname">PQRReader</code><span class="sig-paren">(</span><em>filename</em>, <em>convert_units=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PQR.html#PQRReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PQR.PQRReader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read a <a class="reference external" href="http://www.poissonboltzmann.org/file-formats/biomolecular-structurw/pqr">PQR</a> file into MDAnalysis.</p>
-<p>The <a class="reference internal" href="../topology/PQRParser.html#module-MDAnalysis.topology.PQRParser" title="MDAnalysis.topology.PQRParser"><tt class="xref py py-mod docutils literal"><span class="pre">PQRParser</span></tt></a> takes charges from the
+<p>The <a class="reference internal" href="../topology/PQRParser.html#module-MDAnalysis.topology.PQRParser" title="MDAnalysis.topology.PQRParser"><code class="xref py py-mod docutils literal"><span class="pre">PQRParser</span></code></a> takes charges from the
 PQR file in order to populate the
-<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom.charge" title="MDAnalysis.core.AtomGroup.Atom.charge"><tt class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.Atom.charge</span></tt></a> attribute. Radii are
-accessible through the <a class="reference internal" href="#MDAnalysis.coordinates.PQR.PQRReader.get_radii" title="MDAnalysis.coordinates.PQR.PQRReader.get_radii"><tt class="xref py py-meth docutils literal"><span class="pre">get_radii()</span></tt></a> method of the reader, the
-<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.radii" title="MDAnalysis.core.AtomGroup.AtomGroup.radii"><tt class="xref py py-meth docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.AtomGroup.radii()</span></tt></a> method and the
-<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom.radius" title="MDAnalysis.core.AtomGroup.Atom.radius"><tt class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.Atom.radius</span></tt></a> attribute.</p>
+<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom.charge" title="MDAnalysis.core.AtomGroup.Atom.charge"><code class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.Atom.charge</span></code></a> attribute. Radii are
+accessible through the <a class="reference internal" href="#MDAnalysis.coordinates.PQR.PQRReader.get_radii" title="MDAnalysis.coordinates.PQR.PQRReader.get_radii"><code class="xref py py-meth docutils literal"><span class="pre">get_radii()</span></code></a> method of the reader, the
+<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.radii" title="MDAnalysis.core.AtomGroup.AtomGroup.radii"><code class="xref py py-meth docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.AtomGroup.radii()</span></code></a> method and the
+<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom.radius" title="MDAnalysis.core.AtomGroup.Atom.radius"><code class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.Atom.radius</span></code></a> attribute.</p>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PQR.PQRReader.Writer">
-<tt class="descname">Writer</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PQR.html#PQRReader.Writer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PQR.PQRReader.Writer" title="Permalink to this definition">¶</a></dt>
+<code class="descname">Writer</code><span class="sig-paren">(</span><em>filename</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PQR.html#PQRReader.Writer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PQR.PQRReader.Writer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a PQRWriter for <em>filename</em>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
 <dt><em>filename</em></dt>
 <dd><p class="first last">filename of the output PQR file</p>
 </dd>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last"><a class="reference internal" href="#MDAnalysis.coordinates.PQR.PQRWriter" title="MDAnalysis.coordinates.PQR.PQRWriter"><tt class="xref py py-class docutils literal"><span class="pre">PQRWriter</span></tt></a></p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#MDAnalysis.coordinates.PQR.PQRWriter" title="MDAnalysis.coordinates.PQR.PQRWriter"><code class="xref py py-class docutils literal"><span class="pre">PQRWriter</span></code></a></p>
 </td>
 </tr>
 </tbody>
@@ -181,13 +184,13 @@ accessible through the <a class="reference internal" href="#MDAnalysis.coordinat
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PQR.PQRReader.get_charges">
-<tt class="descname">get_charges</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PQR.html#PQRReader.get_charges"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PQR.PQRReader.get_charges" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_charges</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PQR.html#PQRReader.get_charges"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PQR.PQRReader.get_charges" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an array of charges in atom order.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PQR.PQRReader.get_radii">
-<tt class="descname">get_radii</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PQR.html#PQRReader.get_radii"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PQR.PQRReader.get_radii" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_radii</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PQR.html#PQRReader.get_radii"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PQR.PQRReader.get_radii" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an array of atom radii in atom order.</p>
 </dd></dl>
 
@@ -195,27 +198,28 @@ accessible through the <a class="reference internal" href="#MDAnalysis.coordinat
 
 <dl class="class">
 <dt id="MDAnalysis.coordinates.PQR.PQRWriter">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.PQR.</tt><tt class="descname">PQRWriter</tt><big>(</big><em>filename</em>, <em>convert_units=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PQR.html#PQRWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PQR.PQRWriter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.PQR.</code><code class="descname">PQRWriter</code><span class="sig-paren">(</span><em>filename</em>, <em>convert_units=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PQR.html#PQRWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PQR.PQRWriter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write a single coordinate frame in whitespace-separated PQR format.</p>
 <p>Charges (&#8220;Q&#8221;) are taken from the
-<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom.charge" title="MDAnalysis.core.AtomGroup.Atom.charge"><tt class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.Atom.charge</span></tt></a> attribute while
+<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom.charge" title="MDAnalysis.core.AtomGroup.Atom.charge"><code class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.Atom.charge</span></code></a> attribute while
 radii are obtaine from the
-<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom.radius" title="MDAnalysis.core.AtomGroup.Atom.radius"><tt class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.Atom.radius</span></tt></a> attribute.</p>
+<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom.radius" title="MDAnalysis.core.AtomGroup.Atom.radius"><code class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.Atom.radius</span></code></a> attribute.</p>
 <ul class="simple">
 <li>If the segid is &#8216;SYSTEM&#8217; then it will be set to the empty
 string. Otherwise the first letter will be used as the chain ID.</li>
 <li>The serial number always starts at 1 and increments sequentially
 for the atoms.</li>
 </ul>
-<p>The output format is similar to <tt class="docutils literal"><span class="pre">pdb2pqr</span> <span class="pre">--whitespace</span></tt>.</p>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.9.0.</span></p>
+<p>The output format is similar to <code class="docutils literal"><span class="pre">pdb2pqr</span> <span class="pre">--whitespace</span></code>.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.9.0.</span></p>
+</div>
 <p>Set up a PQRWriter with full whitespace separation.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>filename</em></dt>
 <dd><p class="first last">output filename</p>
 </dd>
@@ -230,13 +234,13 @@ top of the PQR file</p>
 </table>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PQR.PQRWriter.write">
-<tt class="descname">write</tt><big>(</big><em>selection</em>, <em>frame=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PQR.html#PQRWriter.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PQR.PQRWriter.write" title="Permalink to this definition">¶</a></dt>
+<code class="descname">write</code><span class="sig-paren">(</span><em>selection</em>, <em>frame=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PQR.html#PQRWriter.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PQR.PQRWriter.write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write selection at current trajectory frame to file.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><blockquote class="first">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><blockquote class="first">
 <div><dl class="docutils">
 <dt><em>selection</em></dt>
 <dd><p class="first last">MDAnalysis AtomGroup (selection or Universe.atoms)
@@ -273,7 +277,7 @@ or also Universe</p>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -288,11 +292,11 @@ or also Universe</p>
         <li class="right" >
           <a href="PDBQT.html" title="5.11. PDBQT structure files in MDAnalysis — MDAnalysis.coordinates.PDBQT"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.10.0-dev documentation</a> &raquo;</li>
-          <li><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
+    <div class="footer" role="contentinfo">
         &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
@@ -301,7 +305,7 @@ or also Universe</p>
     Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
     Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
     and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>
 </html>

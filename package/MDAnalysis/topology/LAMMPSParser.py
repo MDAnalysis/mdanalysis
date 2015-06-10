@@ -367,7 +367,7 @@ class DATAParser(TopologyReader):
         return nitems, ntypes, box
 
 
-class LAMMPSAtom(object):
+class LAMMPSAtom(object):  # pragma: no cover
     __slots__ = ("index", "name", "type", "chainid", "charge", "mass", "_positions")
 
     def __init__(self, index, name, type, chain_id, charge=0, mass=1):
@@ -402,7 +402,7 @@ class LAMMPSAtom(object):
         return iter((self.index + 1, self.chainid, self.type, self.charge, self.mass, pos[0], pos[1], pos[2]))
 
 
-class LAMMPSDataConverter(object):
+class LAMMPSDataConverter(object):  # pragma: no cover
     """Class to parse a LAMMPS_ DATA file and convert it to PSF/PDB.
 
     The DATA file contains both topology and coordinate information.

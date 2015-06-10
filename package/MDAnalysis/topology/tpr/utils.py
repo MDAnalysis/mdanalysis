@@ -639,7 +639,7 @@ def do_blocka(data):
 
 ##############UTILS FOR INFORMATION NOT INTERESTED AT THE MOMENT###############
 
-def do_grps(data):
+def do_grps(data):  # pragma: no cover
     grps_nr = []
     myngrps = ngrps = S.egcNR  # remind of version inconsistency
     for j in xrange(ngrps):
@@ -650,7 +650,7 @@ def do_grps(data):
     return grps_nr
 
 
-def do_groups(data, symtab):
+def do_groups(data, symtab):  # pragma: no cover
     do_grps(data)
 
     ngrpname = data.unpack_int()
@@ -675,7 +675,7 @@ def do_groups(data, symtab):
     return
 
 
-def do_atomtypes(data):
+def do_atomtypes(data):  # pragma: no cover
     at_nr = data.unpack_int()  # at: atomtype
     at_radius = ndo_real(data, at_nr)
     at_vol = ndo_real(data, at_nr)
@@ -684,7 +684,7 @@ def do_atomtypes(data):
     return at_radius, at_vol, at_surftens, at_atomnumber
 
 
-def do_inputrec(data):
+def do_inputrec(data):  # pragma: no cover
     """Read through header information from TPR file *data* structure.
 
     Note that this function does not return any useful data itself. If

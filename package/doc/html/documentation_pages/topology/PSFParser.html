@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>4.2. PSF topology parser &mdash; MDAnalysis 0.10.0-dev documentation</title>
+    <title>4.2. PSF topology parser &mdash; MDAnalysis 0.11.0-dev documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.10.0-dev',
+        VERSION:     '0.11.0-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,16 +25,16 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.10.0-dev documentation"
+          title="Search within MDAnalysis 0.11.0-dev documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.10.0-dev documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.11.0-dev documentation" href="../../index.html" />
     <link rel="up" title="4. Topology modules" href="../topology_modules.html" />
     <link rel="next" title="4.3. AMBER PRMTOP topology parser" href="TOPParser.html" />
     <link rel="prev" title="4.1. Topology readers — MDAnalysis.topology" href="init.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -51,11 +49,11 @@
         <li class="right" >
           <a href="init.html" title="4.1. Topology readers — MDAnalysis.topology"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.10.0-dev documentation</a> &raquo;</li>
-          <li><a href="../topology_modules.html" accesskey="U">4. Topology modules</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../topology_modules.html" accesskey="U">4. Topology modules</a> &raquo;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../index.html">
               <img class="logo" src="../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
@@ -70,16 +68,18 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="init.html"
-                        title="previous chapter">4.1. Topology readers &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.topology</span></tt></a></p>
+                        title="previous chapter">4.1. Topology readers &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.topology</span></code></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="TOPParser.html"
                         title="next chapter">4.3. AMBER PRMTOP topology parser</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="../../_sources/documentation_pages/topology/PSFParser.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/documentation_pages/topology/PSFParser.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
       <input type="text" name="q" />
@@ -98,7 +98,7 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <span class="target" id="module-MDAnalysis.topology.PSFParser"></span><div class="section" id="psf-topology-parser">
 <h1>4.2. PSF topology parser<a class="headerlink" href="#psf-topology-parser" title="Permalink to this headline">¶</a></h1>
@@ -111,21 +111,21 @@ space-separated &#8220;PSF&#8221; file variants.</p>
 <h2>4.2.1. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.topology.PSFParser.PSFParser">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.topology.PSFParser.</tt><tt class="descname">PSFParser</tt><big>(</big><em>filename</em>, <em>universe=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/PSFParser.html#PSFParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.PSFParser.PSFParser" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.topology.PSFParser.</code><code class="descname">PSFParser</code><span class="sig-paren">(</span><em>filename</em>, <em>universe=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/PSFParser.html#PSFParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.PSFParser.PSFParser" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read topology information from a CHARMM/NAMD/XPLOR <a class="reference external" href="http://www.charmm.org/documentation/c35b1/struct.html">PSF</a> file.</p>
 <p>Standard arguments for a TopologyReader:</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
 <dt><em>filename</em></dt>
 <dd><p class="first last">name of the topology file</p>
 </dd>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>universe</em></dt>
 <dd><p class="first last">Supply a Universe to the Parser.  This then passes it to the
 atom instances that are created within parsers.</p>
@@ -141,115 +141,123 @@ These are stored as self.kwargs</p>
 </table>
 <dl class="method">
 <dt id="MDAnalysis.topology.PSFParser.PSFParser.close">
-<tt class="descname">close</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.topology.PSFParser.PSFParser.close" title="Permalink to this definition">¶</a></dt>
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.PSFParser.PSFParser.close" title="Permalink to this definition">¶</a></dt>
 <dd><p>Close the trajectory file.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.topology.PSFParser.PSFParser.close_trajectory">
-<tt class="descname">close_trajectory</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.topology.PSFParser.PSFParser.close_trajectory" title="Permalink to this definition">¶</a></dt>
+<code class="descname">close_trajectory</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.PSFParser.PSFParser.close_trajectory" title="Permalink to this definition">¶</a></dt>
 <dd><p>Specific implementation of trajectory closing.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.topology.PSFParser.PSFParser.convert_forces_from_native">
-<tt class="descname">convert_forces_from_native</tt><big>(</big><em>force</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.topology.PSFParser.PSFParser.convert_forces_from_native" title="Permalink to this definition">¶</a></dt>
+<code class="descname">convert_forces_from_native</code><span class="sig-paren">(</span><em>force</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.PSFParser.PSFParser.convert_forces_from_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>In-place conversion of forces array <em>force</em> from native units to base units.</p>
 <p>By default, the input <em>force</em> is modified in place and also returned.</p>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.7.7.</span></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.7.</span></p>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.topology.PSFParser.PSFParser.convert_forces_to_native">
-<tt class="descname">convert_forces_to_native</tt><big>(</big><em>force</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.topology.PSFParser.PSFParser.convert_forces_to_native" title="Permalink to this definition">¶</a></dt>
+<code class="descname">convert_forces_to_native</code><span class="sig-paren">(</span><em>force</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.PSFParser.PSFParser.convert_forces_to_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>In-place conversion of force array <em>force</em> from base units to native units.</p>
 <p>By default, the input <em>force</em> is modified in place and also returned.</p>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.7.7.</span></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.7.</span></p>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.topology.PSFParser.PSFParser.convert_pos_from_native">
-<tt class="descname">convert_pos_from_native</tt><big>(</big><em>x</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.topology.PSFParser.PSFParser.convert_pos_from_native" title="Permalink to this definition">¶</a></dt>
+<code class="descname">convert_pos_from_native</code><span class="sig-paren">(</span><em>x</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.PSFParser.PSFParser.convert_pos_from_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>In-place conversion of coordinate array x from native units to base units.</p>
 <p>By default, the input <em>x</em> is modified in place and also returned.</p>
-<p class="versionchanged">
-<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <code class="docutils literal"><span class="pre">False</span></code> so that a
 modified copy is returned <em>unless</em> no conversion takes
 place, in which case the reference to the unmodified <em>x</em> is
 returned.</p>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.topology.PSFParser.PSFParser.convert_pos_to_native">
-<tt class="descname">convert_pos_to_native</tt><big>(</big><em>x</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.topology.PSFParser.PSFParser.convert_pos_to_native" title="Permalink to this definition">¶</a></dt>
+<code class="descname">convert_pos_to_native</code><span class="sig-paren">(</span><em>x</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.PSFParser.PSFParser.convert_pos_to_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>Conversion of coordinate array x from base units to native units.</p>
 <p>By default, the input <em>x</em> is modified in place and also returned.</p>
-<p class="versionchanged">
-<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <code class="docutils literal"><span class="pre">False</span></code> so that a
 modified copy is returned <em>unless</em> no conversion takes
 place, in which case the reference to the unmodified <em>x</em> is
 returned.</p>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.topology.PSFParser.PSFParser.convert_time_from_native">
-<tt class="descname">convert_time_from_native</tt><big>(</big><em>t</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.topology.PSFParser.PSFParser.convert_time_from_native" title="Permalink to this definition">¶</a></dt>
+<code class="descname">convert_time_from_native</code><span class="sig-paren">(</span><em>t</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.PSFParser.PSFParser.convert_time_from_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert time <em>t</em> from native units to base units.</p>
 <p>By default, the input <em>t</em> is modified in place and also
 returned (although note that scalar values <em>t</em> are passed by
 value in Python and hence an in-place modification has no
 effect on the caller.)</p>
-<p class="versionchanged">
-<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <code class="docutils literal"><span class="pre">False</span></code> so that a
 modified copy is returned <em>unless</em> no conversion takes
 place, in which case the reference to the unmodified <em>x</em> is
 returned.</p>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.topology.PSFParser.PSFParser.convert_time_to_native">
-<tt class="descname">convert_time_to_native</tt><big>(</big><em>t</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.topology.PSFParser.PSFParser.convert_time_to_native" title="Permalink to this definition">¶</a></dt>
+<code class="descname">convert_time_to_native</code><span class="sig-paren">(</span><em>t</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.PSFParser.PSFParser.convert_time_to_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert time <em>t</em> from base units to native units.</p>
 <p>By default, the input <em>t</em> is modified in place and also
 returned. (Also note that scalar values <em>t</em> are passed by
 value in Python and hence an in-place modification has no
 effect on the caller.)</p>
-<p class="versionchanged">
-<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <code class="docutils literal"><span class="pre">False</span></code> so that a
 modified copy is returned <em>unless</em> no conversion takes
 place, in which case the reference to the unmodified <em>x</em> is
 returned.</p>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.topology.PSFParser.PSFParser.convert_velocities_from_native">
-<tt class="descname">convert_velocities_from_native</tt><big>(</big><em>v</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.topology.PSFParser.PSFParser.convert_velocities_from_native" title="Permalink to this definition">¶</a></dt>
+<code class="descname">convert_velocities_from_native</code><span class="sig-paren">(</span><em>v</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.PSFParser.PSFParser.convert_velocities_from_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>In-place conversion of velocities array <em>v</em> from native units to base units.</p>
 <p>By default, the input <em>v</em> is modified in place and also returned.</p>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.7.5.</span></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.5.</span></p>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.topology.PSFParser.PSFParser.convert_velocities_to_native">
-<tt class="descname">convert_velocities_to_native</tt><big>(</big><em>v</em>, <em>inplace=True</em><big>)</big><a class="headerlink" href="#MDAnalysis.topology.PSFParser.PSFParser.convert_velocities_to_native" title="Permalink to this definition">¶</a></dt>
+<code class="descname">convert_velocities_to_native</code><span class="sig-paren">(</span><em>v</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.PSFParser.PSFParser.convert_velocities_to_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>In-place conversion of coordinate array <em>v</em> from base units to native units.</p>
 <p>By default, the input <em>v</em> is modified in place and also returned.</p>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.7.5.</span></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.5.</span></p>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.topology.PSFParser.PSFParser.parse">
-<tt class="descname">parse</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/topology/PSFParser.html#PSFParser.parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.PSFParser.PSFParser.parse" title="Permalink to this definition">¶</a></dt>
+<code class="descname">parse</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/PSFParser.html#PSFParser.parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.PSFParser.PSFParser.parse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse PSF file <em>filename</em>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body">MDAnalysis internal <em>structure</em> dict as defined here.</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">MDAnalysis internal <em>structure</em> dict as defined here.</td>
 </tr>
 </tbody>
 </table>
@@ -266,7 +274,7 @@ returned.</p>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -281,11 +289,11 @@ returned.</p>
         <li class="right" >
           <a href="init.html" title="4.1. Topology readers — MDAnalysis.topology"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.10.0-dev documentation</a> &raquo;</li>
-          <li><a href="../topology_modules.html" >4. Topology modules</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../topology_modules.html" >4. Topology modules</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
+    <div class="footer" role="contentinfo">
         &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
@@ -294,7 +302,7 @@ returned.</p>
     Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
     Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
     and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>
 </html>

@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>3.4.2. Generation and Analysis of X3DNA helicoidal parameter profiles — MDAnalysis.analysis.x3dna &mdash; MDAnalysis 0.10.0-dev documentation</title>
+    <title>3.4.2. Generation and Analysis of X3DNA helicoidal parameter profiles — MDAnalysis.analysis.x3dna &mdash; MDAnalysis 0.11.0-dev documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.10.0-dev',
+        VERSION:     '0.11.0-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,16 +25,16 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.10.0-dev documentation"
+          title="Search within MDAnalysis 0.11.0-dev documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.10.0-dev documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.11.0-dev documentation" href="../../index.html" />
     <link rel="up" title="3. Analysis modules" href="../analysis_modules.html" />
     <link rel="next" title="3.5.1. Elastic network analysis of MD trajectories — MDAnalysis.analysis.gnm" href="gnm.html" />
     <link rel="prev" title="3.4.1. Nucleic acid analysis — MDAnalysis.analysis.nuclinfo" href="nuclinfo.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -51,18 +49,18 @@
         <li class="right" >
           <a href="nuclinfo.html" title="3.4.1. Nucleic acid analysis — MDAnalysis.analysis.nuclinfo"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.10.0-dev documentation</a> &raquo;</li>
-          <li><a href="../analysis_modules.html" accesskey="U">3. Analysis modules</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../analysis_modules.html" accesskey="U">3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../index.html">
               <img class="logo" src="../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
             </a></p>
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">3.4.2. Generation and Analysis of X3DNA helicoidal parameter profiles &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.x3dna</span></tt></a><ul>
+<li><a class="reference internal" href="#">3.4.2. Generation and Analysis of X3DNA helicoidal parameter profiles &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.analysis.x3dna</span></code></a><ul>
 <li><a class="reference internal" href="#examples">3.4.2.1. Examples</a><ul>
 <li><a class="reference internal" href="#single-structure">3.4.2.1.1. Single structure</a></li>
 <li><a class="reference internal" href="#trajectory">3.4.2.1.2. Trajectory</a></li>
@@ -76,16 +74,18 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="nuclinfo.html"
-                        title="previous chapter">3.4.1. Nucleic acid analysis &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.analysis.nuclinfo</span></tt></a></p>
+                        title="previous chapter">3.4.1. Nucleic acid analysis &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.analysis.nuclinfo</span></code></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="gnm.html"
-                        title="next chapter">3.5.1. Elastic network analysis of MD trajectories &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.analysis.gnm</span></tt></a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="../../_sources/documentation_pages/analysis/x3dna.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
+                        title="next chapter">3.5.1. Elastic network analysis of MD trajectories &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.analysis.gnm</span></code></a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/documentation_pages/analysis/x3dna.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
       <input type="text" name="q" />
@@ -104,10 +104,10 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <span class="target" id="module-MDAnalysis.analysis.x3dna"></span><div class="section" id="generation-and-analysis-of-x3dna-helicoidal-parameter-profiles-mdanalysis-analysis-x3dna">
-<h1>3.4.2. Generation and Analysis of X3DNA helicoidal parameter profiles &#8212; <a class="reference internal" href="#module-MDAnalysis.analysis.x3dna" title="MDAnalysis.analysis.x3dna"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.x3dna</span></tt></a><a class="headerlink" href="#generation-and-analysis-of-x3dna-helicoidal-parameter-profiles-mdanalysis-analysis-x3dna" title="Permalink to this headline">¶</a></h1>
+<h1>3.4.2. Generation and Analysis of X3DNA helicoidal parameter profiles &#8212; <a class="reference internal" href="#module-MDAnalysis.analysis.x3dna" title="MDAnalysis.analysis.x3dna"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.x3dna</span></code></a><a class="headerlink" href="#generation-and-analysis-of-x3dna-helicoidal-parameter-profiles-mdanalysis-analysis-x3dna" title="Permalink to this headline">¶</a></h1>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -121,7 +121,7 @@
 </tbody>
 </table>
 <p>With the help of this module, <a class="reference external" href="http://x3dna.org/">X3DNA</a> can be run on frames in a trajectory. Data
-can be combined and analyzed. <a class="reference external" href="http://x3dna.org/">X3DNA</a> <a class="reference internal" href="#lu2003">[Lu2003]</a> <a class="reference internal" href="#lu2008">[Lu2008]</a> must be installed
+can be combined and analyzed. <a class="reference external" href="http://x3dna.org/">X3DNA</a> <a class="reference internal" href="#lu2003" id="id1">[Lu2003]</a> <a class="reference internal" href="#lu2008" id="id2">[Lu2008]</a> must be installed
 separately.</p>
 <p class="rubric">References</p>
 <table class="docutils citation" frame="void" id="lu2003" rules="none">
@@ -168,8 +168,8 @@ Nat Protoc. 3(7), 1213-27.</td></tr>
 <span class="n">H</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>The profiles are available as the attribute <a class="reference internal" href="#MDAnalysis.analysis.x3dna.X3DNAtraj.profiles" title="MDAnalysis.analysis.x3dna.X3DNAtraj.profiles"><tt class="xref py py-attr docutils literal"><span class="pre">X3DNAtraj.profiles</span></tt></a>
-(<tt class="docutils literal"><span class="pre">H.profiles</span></tt> in the example) and are indexed by frame number but
+<p>The profiles are available as the attribute <a class="reference internal" href="#MDAnalysis.analysis.x3dna.X3DNAtraj.profiles" title="MDAnalysis.analysis.x3dna.X3DNAtraj.profiles"><code class="xref py py-attr docutils literal"><span class="pre">X3DNAtraj.profiles</span></code></a>
+(<code class="docutils literal"><span class="pre">H.profiles</span></code> in the example) and are indexed by frame number but
 can also be indexed by an arbitrary order parameter as shown in the
 next example.</p>
 </div>
@@ -178,28 +178,29 @@ next example.</p>
 <h2>3.4.2.2. Analysis<a class="headerlink" href="#analysis" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.analysis.x3dna.X3DNA">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.x3dna.</tt><tt class="descname">X3DNA</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/x3dna.html#X3DNA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.x3dna.X3DNA" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.x3dna.</code><code class="descname">X3DNA</code><span class="sig-paren">(</span><em>filename</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/x3dna.html#X3DNA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.x3dna.X3DNA" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run <a class="reference external" href="http://x3dna.org/">X3DNA</a> on a single frame or a DCD trajectory.</p>
 <p>Only a subset of all X3DNA control parameters is supported and can be set
 with keyword arguments. For further details on <a class="reference external" href="http://x3dna.org/">X3DNA</a> see the <a class="reference external" href="http://forum.x3dna.org/">X3DNA docs</a>.</p>
-<p>Running X3DNA with the <a class="reference internal" href="#MDAnalysis.analysis.x3dna.X3DNA" title="MDAnalysis.analysis.x3dna.X3DNA"><tt class="xref py py-class docutils literal"><span class="pre">X3DNA</span></tt></a> class is a 3-step process:</p>
+<p>Running X3DNA with the <a class="reference internal" href="#MDAnalysis.analysis.x3dna.X3DNA" title="MDAnalysis.analysis.x3dna.X3DNA"><code class="xref py py-class docutils literal"><span class="pre">X3DNA</span></code></a> class is a 3-step process:</p>
 <blockquote>
 <div><ol class="arabic simple">
 <li>set up the class with all desired parameters</li>
-<li>run X3DNA with <a class="reference internal" href="#MDAnalysis.analysis.x3dna.X3DNA.run" title="MDAnalysis.analysis.x3dna.X3DNA.run"><tt class="xref py py-meth docutils literal"><span class="pre">X3DNA.run()</span></tt></a></li>
-<li>collect the data from the output file with <a class="reference internal" href="#MDAnalysis.analysis.x3dna.X3DNA.collect" title="MDAnalysis.analysis.x3dna.X3DNA.collect"><tt class="xref py py-meth docutils literal"><span class="pre">X3DNA.collect()</span></tt></a></li>
+<li>run X3DNA with <a class="reference internal" href="#MDAnalysis.analysis.x3dna.X3DNA.run" title="MDAnalysis.analysis.x3dna.X3DNA.run"><code class="xref py py-meth docutils literal"><span class="pre">X3DNA.run()</span></code></a></li>
+<li>collect the data from the output file with <a class="reference internal" href="#MDAnalysis.analysis.x3dna.X3DNA.collect" title="MDAnalysis.analysis.x3dna.X3DNA.collect"><code class="xref py py-meth docutils literal"><span class="pre">X3DNA.collect()</span></code></a></li>
 </ol>
 </div></blockquote>
 <p>The class also provides some simple plotting functions of the collected
-data such as <a class="reference internal" href="#MDAnalysis.analysis.x3dna.X3DNA.plot" title="MDAnalysis.analysis.x3dna.X3DNA.plot"><tt class="xref py py-meth docutils literal"><span class="pre">X3DNA.plot()</span></tt></a> or <tt class="xref py py-meth docutils literal"><span class="pre">X3DNA.plot3D()</span></tt>.</p>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.8.</span></p>
+data such as <a class="reference internal" href="#MDAnalysis.analysis.x3dna.X3DNA.plot" title="MDAnalysis.analysis.x3dna.X3DNA.plot"><code class="xref py py-meth docutils literal"><span class="pre">X3DNA.plot()</span></code></a> or <code class="xref py py-meth docutils literal"><span class="pre">X3DNA.plot3D()</span></code>.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.8.</span></p>
+</div>
 <p>Set up parameters to run <a class="reference external" href="http://x3dna.org/">X3DNA</a> on PDB <em>filename</em>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><p class="first"><em>filename</em></p>
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><p class="first"><em>filename</em></p>
 <blockquote>
 <div><p>The <em>filename</em> is used as input for X3DNA in the &#8220;xdna_ensemble&#8221;
 command.  It specifies the name of a PDB coordinate file
@@ -211,10 +212,10 @@ of the <em>ignore_residues</em> keyword.</p>
 </div></blockquote>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Keywords :</th><td class="field-body"><p class="first"><em>executable</em></p>
+<tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><p class="first"><em>executable</em></p>
 <blockquote>
 <div><p>Path to the <strong class="program">xdna_ensemble</strong> executable directories
-(e.g. <tt class="docutils literal"><span class="pre">/opt/x3dna/2.1</span> <span class="pre">and</span> <span class="pre">/opt/x3dna/2.1/bin</span></tt>) must be set
+(e.g. <code class="docutils literal"><span class="pre">/opt/x3dna/2.1</span> <span class="pre">and</span> <span class="pre">/opt/x3dna/2.1/bin</span></code>) must be set
 and then added to export in bashrc file. See X3DNA
 documentation for set-up instructions.</p>
 </div></blockquote>
@@ -231,35 +232,35 @@ parameters will be analyzed.</p>
 </table>
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.x3dna.X3DNA.profiles">
-<tt class="descname">profiles</tt><a class="headerlink" href="#MDAnalysis.analysis.x3dna.X3DNA.profiles" title="Permalink to this definition">¶</a></dt>
-<dd><p><tt class="docutils literal"><span class="pre">x3dna_ensemble</span> <span class="pre">analyze</span> <span class="pre">-b</span> <span class="pre">355d.bps</span> <span class="pre">-p</span> <span class="pre">pdbfile</span> <span class="pre">attribute</span></tt>:
-After running <a class="reference internal" href="#MDAnalysis.analysis.x3dna.X3DNA.collect" title="MDAnalysis.analysis.x3dna.X3DNA.collect"><tt class="xref py py-meth docutils literal"><span class="pre">X3DNA.collect()</span></tt></a>, this dict contains all the
+<code class="descname">profiles</code><a class="headerlink" href="#MDAnalysis.analysis.x3dna.X3DNA.profiles" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="docutils literal"><span class="pre">x3dna_ensemble</span> <span class="pre">analyze</span> <span class="pre">-b</span> <span class="pre">355d.bps</span> <span class="pre">-p</span> <span class="pre">pdbfile</span> <span class="pre">attribute</span></code>:
+After running <a class="reference internal" href="#MDAnalysis.analysis.x3dna.X3DNA.collect" title="MDAnalysis.analysis.x3dna.X3DNA.collect"><code class="xref py py-meth docutils literal"><span class="pre">X3DNA.collect()</span></code></a>, this dict contains all the
 X3DNA profiles, indexed by the frame number. If only a single
-frame was analyzed then this will be <tt class="docutils literal"><span class="pre">X3DNA.profiles[0]</span></tt>. Note
+frame was analyzed then this will be <code class="docutils literal"><span class="pre">X3DNA.profiles[0]</span></code>. Note
 that the order is random; one needs to sort the keys first.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.x3dna.X3DNA.collect">
-<tt class="descname">collect</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/x3dna.html#X3DNA.collect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.x3dna.X3DNA.collect" title="Permalink to this definition">¶</a></dt>
+<code class="descname">collect</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/x3dna.html#X3DNA.collect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.x3dna.X3DNA.collect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse the output from a X3DNA run into numpy recarrays.</p>
 <p>Can deal with outputs containing multiple frames. Output format:</p>
-<p>The method saves the result as <a class="reference internal" href="#MDAnalysis.analysis.x3dna.X3DNA.profiles" title="MDAnalysis.analysis.x3dna.X3DNA.profiles"><tt class="xref py py-attr docutils literal"><span class="pre">X3DNA.profiles</span></tt></a>, a dictionary
+<p>The method saves the result as <a class="reference internal" href="#MDAnalysis.analysis.x3dna.X3DNA.profiles" title="MDAnalysis.analysis.x3dna.X3DNA.profiles"><code class="xref py py-attr docutils literal"><span class="pre">X3DNA.profiles</span></code></a>, a dictionary
 indexed by the frame number. Each entry is a
-<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v1.9)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></tt></a>.</p>
+<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></code></a>.</p>
 <p>If the keyword <em>outdir</em> is supplied (e.g. &#8221;.&#8221;) then each profile is
 saved to a gzipped data file.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>run</em></dt>
 <dd><p class="first last">identifier, free form [1]</p>
 </dd>
 <dt><em>outdir</em></dt>
 <dd><p class="first last">save output data under <em>outdir</em>/<em>run</em> if set to any other
-value but <tt class="docutils literal"><span class="pre">None</span></tt> [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
+value but <code class="docutils literal"><span class="pre">None</span></code> [<code class="docutils literal"><span class="pre">None</span></code>]</p>
 </dd>
 </dl>
 </td>
@@ -270,28 +271,30 @@ value but <tt class="docutils literal"><span class="pre">None</span></tt> [<tt c
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.x3dna.X3DNA.mean">
-<tt class="descname">mean</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.x3dna.X3DNA.mean" title="Permalink to this definition">¶</a></dt>
+<code class="descname">mean</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.x3dna.X3DNA.mean" title="Permalink to this definition">¶</a></dt>
 <dd><p>H.mean() returns the mean value for the base parameters (order of base parameters:Shear,Stretch,Stagger,
 Buckle,Propeller,Opening,Shift,Slide,Rise,Tilt,Roll,Twist) for each nucleic acid pair.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.x3dna.X3DNA.mean_std">
-<tt class="descname">mean_std</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.x3dna.X3DNA.mean_std" title="Permalink to this definition">¶</a></dt>
+<code class="descname">mean_std</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.x3dna.X3DNA.mean_std" title="Permalink to this definition">¶</a></dt>
 <dd><p>H.mean_std() returns the mean and standard deviation of base parameters (order of base parameters:Shear,
 Stretch,Stagger,Buckle,Propeller,Opening,Shift,Slide,Rise,Tilt,Roll,Twist) for each nucleic acid pair.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.x3dna.X3DNA.plot">
-<tt class="descname">plot</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.x3dna.X3DNA.plot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot base parameter profiles  in a 1D graph
-(plotting of the mean and standard deviation parameter value for each individual base pair).</p>
+<code class="descname">plot</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.x3dna.X3DNA.plot" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Plot base parameter profiles  in a 1D graph</dt>
+<dd>(plotting of the mean and standard deviation parameter value for each individual base pair).</dd>
+</dl>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Keywords :</th><td class="field-body"><em>Not available at this time</em></td>
+<tr class="field-odd field"><th class="field-name">Keywords:</th><td class="field-body"><em>Not available at this time</em></td>
 </tr>
 </tbody>
 </table>
@@ -299,14 +302,14 @@ Stretch,Stagger,Buckle,Propeller,Opening,Shift,Slide,Rise,Tilt,Roll,Twist) for e
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.x3dna.X3DNA.run">
-<tt class="descname">run</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/x3dna.html#X3DNA.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.x3dna.X3DNA.run" title="Permalink to this definition">¶</a></dt>
+<code class="descname">run</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/x3dna.html#X3DNA.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.x3dna.X3DNA.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run X3DNA on the input file.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.x3dna.X3DNA.save">
-<tt class="descname">save</tt><big>(</big><em>filename='x3dna.pickle'</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.x3dna.X3DNA.save" title="Permalink to this definition">¶</a></dt>
-<dd><p>Save <a class="reference internal" href="#MDAnalysis.analysis.x3dna.X3DNA.profiles" title="MDAnalysis.analysis.x3dna.X3DNA.profiles"><tt class="xref py py-attr docutils literal"><span class="pre">profiles</span></tt></a> as a Python pickle file <em>filename</em>.</p>
+<code class="descname">save</code><span class="sig-paren">(</span><em>filename='x3dna.pickle'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.x3dna.X3DNA.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save <a class="reference internal" href="#MDAnalysis.analysis.x3dna.X3DNA.profiles" title="MDAnalysis.analysis.x3dna.X3DNA.profiles"><code class="xref py py-attr docutils literal"><span class="pre">profiles</span></code></a> as a Python pickle file <em>filename</em>.</p>
 <p>Load profiles dictionary with</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">cPickle</span>
 <span class="n">profiles</span> <span class="o">=</span> <span class="n">cPickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
@@ -316,14 +319,14 @@ Stretch,Stagger,Buckle,Propeller,Opening,Shift,Slide,Rise,Tilt,Roll,Twist) for e
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.x3dna.X3DNA.sorted_profiles_iter">
-<tt class="descname">sorted_profiles_iter</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.x3dna.X3DNA.sorted_profiles_iter" title="Permalink to this definition">¶</a></dt>
+<code class="descname">sorted_profiles_iter</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.x3dna.X3DNA.sorted_profiles_iter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an iterator over profiles sorted by frame/order parameter <em>q</em>.</p>
-<p>The iterator produces tuples <tt class="docutils literal"><span class="pre">(q,</span> <span class="pre">profile)</span></tt>.</p>
+<p>The iterator produces tuples <code class="docutils literal"><span class="pre">(q,</span> <span class="pre">profile)</span></code>.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.x3dna.X3DNA.std">
-<tt class="descname">std</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.x3dna.X3DNA.std" title="Permalink to this definition">¶</a></dt>
+<code class="descname">std</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.x3dna.X3DNA.std" title="Permalink to this definition">¶</a></dt>
 <dd><p>H.std() returns the standard deviation of base parameters (order of base parameters:Shear,Stretch,Stagger,
 Buckle,Propeller,Opening,Shift,Slide,Rise,Tilt,Roll,Twist) for each nucleic acid pair.</p>
 </dd></dl>
@@ -332,9 +335,9 @@ Buckle,Propeller,Opening,Shift,Slide,Rise,Tilt,Roll,Twist) for each nucleic acid
 
 <dl class="class">
 <dt id="MDAnalysis.analysis.x3dna.X3DNAtraj">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.x3dna.</tt><tt class="descname">X3DNAtraj</tt><big>(</big><em>universe</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/x3dna.html#X3DNAtraj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.x3dna.X3DNAtraj" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.x3dna.</code><code class="descname">X3DNAtraj</code><span class="sig-paren">(</span><em>universe</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/x3dna.html#X3DNAtraj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.x3dna.X3DNAtraj" title="Permalink to this definition">¶</a></dt>
 <dd><p>Analyze all frames in a trajectory.</p>
-<p>The <a class="reference internal" href="#MDAnalysis.analysis.x3dna.X3DNA" title="MDAnalysis.analysis.x3dna.X3DNA"><tt class="xref py py-class docutils literal"><span class="pre">X3DNA</span></tt></a> class provides a direct interface to X3DNA. X3DNA itself
+<p>The <a class="reference internal" href="#MDAnalysis.analysis.x3dna.X3DNA" title="MDAnalysis.analysis.x3dna.X3DNA"><code class="xref py py-class docutils literal"><span class="pre">X3DNA</span></code></a> class provides a direct interface to X3DNA. X3DNA itself
 has limited support for analysing trajectories but cannot deal with all the
 trajectory formats understood by MDAnalysis. This class can take any
 universe and feed it to X3DNA. By default it sequentially creates a PDB for
@@ -344,17 +347,17 @@ each frame and runs X3DNA on the frame.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>universe</em></dt>
 <dd><p class="first last">The input trajectory as part of a
-<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a>. trajectory is
+<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><code class="xref py py-class docutils literal"><span class="pre">Universe</span></code></a>. trajectory is
 converted to a sequence of PDB files and X3DNA is run on each
 individual file. (Use the <em>start</em>, <em>stop</em>, and <em>step</em> keywords
 to slice the trajectory.)</p>
 </dd>
 <dt><em>start</em>, <em>stop</em>, <em>step</em></dt>
 <dd><p class="first last">frame indices to slice the trajectory as
-<tt class="docutils literal"><span class="pre">universe.trajectory[start,</span> <span class="pre">stop,</span> <span class="pre">step]</span></tt></p>
+<code class="docutils literal"><span class="pre">universe.trajectory[start,</span> <span class="pre">stop,</span> <span class="pre">step]</span></code></p>
 </dd>
 <dt><em>x3dna_param</em></dt>
 <dd><p class="first last">indicates whether stacked bases or stacked base-pairs will be
@@ -362,7 +365,7 @@ analyzed. True is bases or False is stacked base-pairs [Default
 is True].</p>
 </dd>
 <dt><em>kwargs</em></dt>
-<dd><p class="first last">All other keywords are passed on to <a class="reference internal" href="#MDAnalysis.analysis.x3dna.X3DNA" title="MDAnalysis.analysis.x3dna.X3DNA"><tt class="xref py py-class docutils literal"><span class="pre">X3DNA</span></tt></a> (see there for description).</p>
+<dd><p class="first last">All other keywords are passed on to <a class="reference internal" href="#MDAnalysis.analysis.x3dna.X3DNA" title="MDAnalysis.analysis.x3dna.X3DNA"><code class="xref py py-class docutils literal"><span class="pre">X3DNA</span></code></a> (see there for description).</p>
 </dd>
 </dl>
 </td>
@@ -371,35 +374,37 @@ is True].</p>
 </table>
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.x3dna.X3DNAtraj.profiles">
-<tt class="descname">profiles</tt><a class="headerlink" href="#MDAnalysis.analysis.x3dna.X3DNAtraj.profiles" title="Permalink to this definition">¶</a></dt>
-<dd><p>After running <a class="reference internal" href="#MDAnalysis.analysis.x3dna.X3DNA.collect" title="MDAnalysis.analysis.x3dna.X3DNA.collect"><tt class="xref py py-meth docutils literal"><span class="pre">X3DNA.collect()</span></tt></a>, this dict contains all the
+<code class="descname">profiles</code><a class="headerlink" href="#MDAnalysis.analysis.x3dna.X3DNAtraj.profiles" title="Permalink to this definition">¶</a></dt>
+<dd><p>After running <a class="reference internal" href="#MDAnalysis.analysis.x3dna.X3DNA.collect" title="MDAnalysis.analysis.x3dna.X3DNA.collect"><code class="xref py py-meth docutils literal"><span class="pre">X3DNA.collect()</span></code></a>, this dict contains all the
 X3DNA profiles, indexed by the frame number.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.x3dna.X3DNAtraj.mean">
-<tt class="descname">mean</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.x3dna.X3DNAtraj.mean" title="Permalink to this definition">¶</a></dt>
+<code class="descname">mean</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.x3dna.X3DNAtraj.mean" title="Permalink to this definition">¶</a></dt>
 <dd><p>H.mean() returns the mean value for the base parameters (order of base parameters:Shear,Stretch,Stagger,
 Buckle,Propeller,Opening,Shift,Slide,Rise,Tilt,Roll,Twist) for each nucleic acid pair.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.x3dna.X3DNAtraj.mean_std">
-<tt class="descname">mean_std</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.x3dna.X3DNAtraj.mean_std" title="Permalink to this definition">¶</a></dt>
+<code class="descname">mean_std</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.x3dna.X3DNAtraj.mean_std" title="Permalink to this definition">¶</a></dt>
 <dd><p>H.mean_std() returns the mean and standard deviation of base parameters (order of base parameters:Shear,
 Stretch,Stagger,Buckle,Propeller,Opening,Shift,Slide,Rise,Tilt,Roll,Twist) for each nucleic acid pair.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.x3dna.X3DNAtraj.plot">
-<tt class="descname">plot</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.x3dna.X3DNAtraj.plot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot base parameter profiles  in a 1D graph
-(plotting of the mean and standard deviation parameter value for each individual base pair).</p>
+<code class="descname">plot</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.x3dna.X3DNAtraj.plot" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Plot base parameter profiles  in a 1D graph</dt>
+<dd>(plotting of the mean and standard deviation parameter value for each individual base pair).</dd>
+</dl>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Keywords :</th><td class="field-body"><em>Not available at this time</em></td>
+<tr class="field-odd field"><th class="field-name">Keywords:</th><td class="field-body"><em>Not available at this time</em></td>
 </tr>
 </tbody>
 </table>
@@ -407,7 +412,7 @@ Stretch,Stagger,Buckle,Propeller,Opening,Shift,Slide,Rise,Tilt,Roll,Twist) for e
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.x3dna.X3DNAtraj.run">
-<tt class="descname">run</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/x3dna.html#X3DNAtraj.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.x3dna.X3DNAtraj.run" title="Permalink to this definition">¶</a></dt>
+<code class="descname">run</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/x3dna.html#X3DNAtraj.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.x3dna.X3DNAtraj.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run X3DNA on the whole trajectory and collect profiles.</p>
 <p>Keyword arguments <em>start</em>, <em>stop</em>, and <em>step</em> can be used to only
 analyse part of the trajectory.</p>
@@ -415,14 +420,14 @@ analyse part of the trajectory.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.x3dna.X3DNAtraj.run_x3dna">
-<tt class="descname">run_x3dna</tt><big>(</big><em>pdbfile</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/x3dna.html#X3DNAtraj.run_x3dna"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.x3dna.X3DNAtraj.run_x3dna" title="Permalink to this definition">¶</a></dt>
+<code class="descname">run_x3dna</code><span class="sig-paren">(</span><em>pdbfile</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/x3dna.html#X3DNAtraj.run_x3dna"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.x3dna.X3DNAtraj.run_x3dna" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run X3DNA on a single PDB file <em>pdbfile</em>.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.x3dna.X3DNAtraj.save">
-<tt class="descname">save</tt><big>(</big><em>filename='x3dna.pickle'</em><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.x3dna.X3DNAtraj.save" title="Permalink to this definition">¶</a></dt>
-<dd><p>Save <a class="reference internal" href="#MDAnalysis.analysis.x3dna.X3DNAtraj.profiles" title="MDAnalysis.analysis.x3dna.X3DNAtraj.profiles"><tt class="xref py py-attr docutils literal"><span class="pre">profiles</span></tt></a> as a Python pickle file <em>filename</em>.</p>
+<code class="descname">save</code><span class="sig-paren">(</span><em>filename='x3dna.pickle'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.x3dna.X3DNAtraj.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save <a class="reference internal" href="#MDAnalysis.analysis.x3dna.X3DNAtraj.profiles" title="MDAnalysis.analysis.x3dna.X3DNAtraj.profiles"><code class="xref py py-attr docutils literal"><span class="pre">profiles</span></code></a> as a Python pickle file <em>filename</em>.</p>
 <p>Load profiles dictionary with</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">cPickle</span>
 <span class="n">profiles</span> <span class="o">=</span> <span class="n">cPickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
@@ -432,14 +437,14 @@ analyse part of the trajectory.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.x3dna.X3DNAtraj.sorted_profiles_iter">
-<tt class="descname">sorted_profiles_iter</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.x3dna.X3DNAtraj.sorted_profiles_iter" title="Permalink to this definition">¶</a></dt>
+<code class="descname">sorted_profiles_iter</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.x3dna.X3DNAtraj.sorted_profiles_iter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an iterator over profiles sorted by frame/order parameter <em>q</em>.</p>
-<p>The iterator produces tuples <tt class="docutils literal"><span class="pre">(q,</span> <span class="pre">profile)</span></tt>.</p>
+<p>The iterator produces tuples <code class="docutils literal"><span class="pre">(q,</span> <span class="pre">profile)</span></code>.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.x3dna.X3DNAtraj.std">
-<tt class="descname">std</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.analysis.x3dna.X3DNAtraj.std" title="Permalink to this definition">¶</a></dt>
+<code class="descname">std</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.x3dna.X3DNAtraj.std" title="Permalink to this definition">¶</a></dt>
 <dd><p>H.std() returns the standard deviation of base parameters (order of base parameters:Shear,Stretch,Stagger,
 Buckle,Propeller,Opening,Shift,Slide,Rise,Tilt,Roll,Twist) for each nucleic acid pair.</p>
 </dd></dl>
@@ -451,11 +456,12 @@ Buckle,Propeller,Opening,Shift,Slide,Rise,Tilt,Roll,Twist) for each nucleic acid
 <h2>3.4.2.3. Utilities<a class="headerlink" href="#utilities" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.analysis.x3dna.ApplicationError">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.analysis.x3dna.</tt><tt class="descname">ApplicationError</tt><a class="headerlink" href="#MDAnalysis.analysis.x3dna.ApplicationError" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.x3dna.</code><code class="descname">ApplicationError</code><a class="reference internal" href="../../_modules/MDAnalysis.html#ApplicationError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.x3dna.ApplicationError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Raised when an external application failed.</p>
 <p>The error code is specific for the application.</p>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.7.7.</span></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.7.</span></p>
+</div>
 </dd></dl>
 
 </div>
@@ -467,7 +473,7 @@ Buckle,Propeller,Opening,Shift,Slide,Rise,Tilt,Roll,Twist) for each nucleic acid
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -482,11 +488,11 @@ Buckle,Propeller,Opening,Shift,Slide,Rise,Tilt,Roll,Twist) for each nucleic acid
         <li class="right" >
           <a href="nuclinfo.html" title="3.4.1. Nucleic acid analysis — MDAnalysis.analysis.nuclinfo"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.10.0-dev documentation</a> &raquo;</li>
-          <li><a href="../analysis_modules.html" >3. Analysis modules</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../analysis_modules.html" >3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
+    <div class="footer" role="contentinfo">
         &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
@@ -495,7 +501,7 @@ Buckle,Propeller,Opening,Shift,Slide,Rise,Tilt,Roll,Twist) for each nucleic acid
     Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
     Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
     and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>
 </html>

@@ -16,15 +16,21 @@
 import MDAnalysis
 from MDAnalysis.core.AtomGroup import AtomGroup
 from MDAnalysis.core.distances import calc_bonds, calc_angles, calc_torsions
-from MDAnalysis.topology.core import guess_atom_type, guess_atom_element, get_atom_mass, \
-    guess_format, guess_bonds, guess_angles, guess_torsions, guess_improper_torsions, \
-    get_parser_for
-from MDAnalysis.topology.core import Bond, Angle, Torsion, Improper_Torsion, TopologyGroup, TopologyObject, TopologyDict
-from MDAnalysis.tests.datafiles import PRMpbc, PRM12, PSF, PSF_NAMD, PSF_nosegid, DMS, PDB_small, DCD, \
-    LAMMPSdata, trz4data, TPR, PDB, XYZ_mini, GMS_SYMOPT, GMS_ASYMSURF
+from MDAnalysis.topology.core import (
+    guess_atom_type, guess_atom_element, get_atom_mass, guess_format,
+    guess_bonds, guess_angles, guess_torsions, guess_improper_torsions,
+    get_parser_for,
+    Bond, Angle, Torsion, Improper_Torsion,
+    TopologyGroup, TopologyObject, TopologyDict)
+from MDAnalysis.tests.datafiles import (
+    PRMpbc, PRM12, PSF, PSF_NAMD, PSF_nosegid, DMS, PDB_small, DCD,
+    LAMMPSdata, trz4data, TPR, PDB, XYZ_mini, GMS_SYMOPT, GMS_ASYMSURF,
+    DLP_CONFIG, DLP_CONFIG_order, DLP_CONFIG_minimal,
+    DLP_HISTORY, DLP_HISTORY_order, DLP_HISTORY_minimal)
 
 from numpy.testing import *
 from nose.plugins.attrib import attr
+import numpy as np
 
 
 def check_atom_type(atype, aname):
@@ -695,6 +701,21 @@ class TestTopologyGroup(TestCase):
 
         assert_equal(list(tg2), list(manual))
 
+    def test_TG_getitem_bool(self):
+        # Issue #282
+        sel = np.array([True, False, True])
+        tg = self.universe.bonds[10:30]
+        tg2 = tg[sel]
+        assert_equal(len(tg2), 2)
+        for b in [tg[0], tg[2]]:
+            assert_equal(b in tg2, True)
+
+    def test_TG_getitem_bool_IE(self):
+        sel = []
+        tg = self.universe.bonds[10:13]
+        tg2 = tg[sel]
+        assert_equal(len(tg2), 0)
+
     def test_TG_dumpconts(self):
         """
         this function tries to spit back out the tuple of tuples that made it
@@ -1129,3 +1150,78 @@ class RefGMSasym(object):
 class TestGMS_noSymmetry(_TestTopology, RefGMSasym):
     """Testing GAMESS output file format"""
 
+class _DLPolyParser(object):
+    """Test of real data"""
+    def tearDown(self):
+        del self.p
+        del self.f
+
+    def test_usage(self):
+        with self.p(self.f) as parser:
+            struc = parser.parse()
+
+        assert_equal('atoms' in struc, True)
+        assert_equal(len(struc['atoms']), 216)
+
+    def test_names(self):
+        with self.p(self.f) as parser:
+            struc = parser.parse()
+
+        atoms = struc['atoms']
+
+        assert_equal(atoms[0].name, 'K+')
+        assert_equal(atoms[4].name, 'Cl-')
+
+class TestDLPolyConfigParser(_DLPolyParser):
+    def setUp(self):
+        self.p = MDAnalysis.topology.DLPolyParser.ConfigParser
+        self.f = DLP_CONFIG
+
+class TestDLPolyHistoryParser(_DLPolyParser):
+    def setUp(self):
+        self.p = MDAnalysis.topology.DLPolyParser.HistoryParser
+        self.f = DLP_HISTORY
+
+
+# Artificial DL_Poly data for testing limits
+class _DLPoly(object):
+    def tearDown(self):
+        del self.p
+        del self.f
+
+    def test_usage(self):
+        with self.p(self.f) as parser:
+            struc = parser.parse()
+
+        assert_equal('atoms' in struc, True)
+        assert_equal(len(struc['atoms']), 3)
+
+    def test_names(self):
+        with self.p(self.f) as parser:
+            struc = parser.parse()
+
+        atoms = struc['atoms']
+
+        assert_equal(atoms[0].name, 'C')
+        assert_equal(atoms[1].name, 'B')
+        assert_equal(atoms[2].name, 'A')
+
+class TestDLPolyConfigOrder(_DLPoly):
+    def setUp(self):
+        self.p = MDAnalysis.topology.DLPolyParser.ConfigParser
+        self.f = DLP_CONFIG_order
+
+class TestDLPolyConfigMinimal(_DLPoly):
+    def setUp(self):
+        self.p = MDAnalysis.topology.DLPolyParser.ConfigParser
+        self.f = DLP_CONFIG_minimal
+
+class TestDLPolyHistoryOrder(_DLPoly):
+    def setUp(self):
+        self.p = MDAnalysis.topology.DLPolyParser.HistoryParser
+        self.f = DLP_HISTORY_order
+
+class TestDLPolyHistoryMinimal(_DLPoly):
+    def setUp(self):
+        self.p = MDAnalysis.topology.DLPolyParser.HistoryParser
+        self.f = DLP_HISTORY_minimal

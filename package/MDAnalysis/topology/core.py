@@ -1159,12 +1159,20 @@ class TopologyGroup(object):
     def __getitem__(self, item):
         """Returns a particular bond as single object or a subset of
         this TopologyGroup as another TopologyGroup
+
+        .. versionchanged:: 0.10.0
+           Allows indexing via boolean numpy array
         """
         if numpy.dtype(type(item)) == numpy.dtype(int):
             return self.bondlist[item]  # single TopObj
         elif isinstance(item, slice):
             return TopologyGroup(self.bondlist[item])  # new TG
         elif isinstance(item, (numpy.ndarray, list)):
+            try:
+                if isinstance(item[0], numpy.bool_):
+                    item = numpy.arange(len(item))[item]
+            except IndexError:  # zero length item
+                pass
             return TopologyGroup([self.bondlist[i] for i in item])
 
     def __iter__(self):
