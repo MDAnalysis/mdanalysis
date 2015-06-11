@@ -80,7 +80,7 @@ import errno
 from . import base
 import MDAnalysis.core
 import MDAnalysis.core.util as util
-from MDAnalysis.coordinates.core import triclinic_box
+from MDAnalysis.coordinates.core import triclinic_box, triclinic_vectors
 
 
 class Timestep(base.Timestep):
@@ -160,12 +160,7 @@ class Timestep(base.Timestep):
 
         .. versionadded:: 0.9.0
         """
-        if len(box) == 3 or len(box) == 6:
-            self._unitcell[0] = box[0]
-            self._unitcell[4] = box[1]
-            self._unitcell[8] = box[2]
-        else:
-            raise ValueError("Must set using MDAnalysis format box")
+        self._unitcell[:] = triclinic_vectors(box).reshape(9)
 
 
 class TRZReader(base.Reader):
@@ -585,13 +580,15 @@ class TRZWriter(base.Writer):
         if not ts.numatoms == self.numatoms:
             raise ValueError("Number of atoms in ts different to initialisation")
 
+        unitcell = triclinic_vectors(ts.dimensions).reshape(9)
+        
         out = numpy.zeros((), dtype=self.frameDtype)
         out['p1a'], out['p1b'] = 20, 20
         out['nframe'] = ts.frame
         out['ntrj'] = ts.step
         out['treal'] = ts.time
         out['p2a'], out['p2b'] = 72, 72
-        out['box'] = self.convert_pos_to_native(ts._unitcell, inplace=False)
+        out['box'] = self.convert_pos_to_native(unitcell, inplace=False)
         out['p3a'], out['p3b'] = 56, 56
         out['pressure'] = ts.pressure
         out['ptensor'] = ts.pressure_tensor
