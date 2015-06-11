@@ -68,9 +68,23 @@ module. The derived classes must follow the Trajectory API in
 
       .. versionadded:: 0.7.5
 
+   .. attribute:: _forces
+
+      :class:`numpy.ndarray` of dtype :class:`~numpy.float32`. of shape
+      (*numatoms*, 3), holding the forces
+
+      :attr:`~Timestep._forces` only exists if the Timestep was
+      created with the `forces = True` keyword.
+
+      .. versionadded:: 0.11.0
+         Added as optional to :class:`Timestep`
+
    .. attribute:: numatoms
 
       number of atoms
+
+      .. versionchanged:: 0.11.0
+         Became read only managed property
 
    .. attribute::`frame`
 
@@ -128,8 +142,8 @@ class Timestep(object):
     .. versionchanged:: 0.11.0
        Added :meth:`from_timestep` and :meth:`from_coordinates` constructor
        methods.
-       Timestep init now only accepts integer creation
-       numatoms now a read only property
+       :class:`Timestep` init now only accepts integer creation
+       :attr:`numatoms` now a read only property
     """
     order = 'F'
 
@@ -255,7 +269,7 @@ class Timestep(object):
             if (atoms < 0) or (atoms >= self.numatoms):
                 raise IndexError
             return self._pos[atoms]
-        elif type(atoms) == slice or type(atoms) == np.ndarray:
+        elif isinstance(atoms, (slice, np.ndarray)):
             return self._pos[atoms]
         else:
             raise TypeError
@@ -292,7 +306,7 @@ class Timestep(object):
         ``ts.copy_slice([list of indices])``
 
         :Returns: A Timestep object of the same type containing all header
-                  information and all atom information relevent to the selection.
+                  information and all atom information relevant to the selection.
 
         .. Note:: The selection must be a 0 based slice or array of the atom indices
                   in this Timestep

@@ -100,7 +100,7 @@ class DMSReader(base.SingleFrameReader):
             unitcell = self.get_global_cell(cur)
 
         if not coords_list:
-            raise IOError("Found not coordinates")
+            raise IOError("Found no coordinates")
         self.numatoms = len(coords_list)
 
         velocities = np.array(velocities_list, dtype=np.float32)

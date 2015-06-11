@@ -59,35 +59,37 @@ class Timestep(core.Timestep):
     """Timestep for a Gromacs_ TRR trajectory.
 
     TRR Timestep always has positions, velocities and forces allocated, meaning
-    that `_pos`, `_velocities` and `_forces` will always exist.
+    that the `_pos`, `_velocities` and `_forces` attributes will always exist.
     Whether or not this data is valid for the current frame is determined by the
     private attributes, `_pos_source`, `_vel_source` and `_for_source`.
     When accessing the `.positions` attribute, this will only be returned if
     `_pos_source` matches the current `frame`, otherwise a :class:`~MDAnalysis.NoDataError`
-    will be raised.
-
-    TRR :class:`Timestep` objects are now fully aware of the existence or not of
-    coordinate/velocity/force information in frames, reflected in the
-    :attr:`~Timestep.has_x`, :attr:`~Timestep.has_velocities`, and :attr:`~Timestep.has_forces` flags.
+    will be raised.  This scheme applies to both velocities and forces.
 
     When doing low-level writing to :attr:`~Timestep._pos`, :attr:`~Timestep._velocities`,
-    or :attr:`~Timestep._forces:attr:, the corresponding flags must be set beforehand. The
-    TRR :class:`Timestep` constructor allows for the named boolean arguments *has_x*,
-    *has_velocities*, and *has_forces* to be passed for automatic setting of the corresponding flag.
+    or :attr:`~Timestep._forces:attr:, the corresponding `_source` flag must be updated
+    to reflect the source of the data.
+
     An exception to this is assignment to the full property array thus::
 
         ts = MDAnalysis.coordinates.TRR.Timestep(N)     # N being the number of atoms
-        ts._velocities = vel_array   # Where vel_array is an existing array of shape (N, DIM)
-                                     #  This will also automatically set 'has_velocities' to True.
+        ts.velocities = vel_array   # Where vel_array is an existing array of shape (N, DIM)
+                                    #  This will also automatically set the `_vel_source` flag
 
     Attempting to populate the array instead will, however, raise a NoDataError exception::
 
         ts = MDAnalysis.coordinates.TRR.Timestep(N)     # N being the number of atoms
-        ts._velocities[:] = vel_array   #  This will fail if 'has_velocities' hasn't been set to True.
+        ts._velocities[:] = vel_array   #  This will fail if '_vel_source` hasn't been set.
 
     .. versionchanged:: 0.8.0
        TRR :class:`Timestep` objects are now fully aware of the existence or
        not of coordinate/velocity/force information in frames.
+    .. versionchanged:: 0.11.0
+       Management of frames redone to use `_pos_source`, `_vel_source` and `_for_source`
+       attributes to check against current frame.
+       Velocities and forces can now be directly accessed via the `velocities` and
+       `forces` attributes, with a :class:`~MDAnalysis.NoDataError` being raised
+       if no data was given for that frame.
 
     .. _Gromacs: http://www.gromacs.org
     """
@@ -168,6 +170,8 @@ class TRRReader(core.TrjReader):
        flags reflecting whether coordinates/velocities/forces were read.
        Attempting to access such data when the corresponding flag is set to ``False``
        will raise a :exc:`NoDataError`.
+    .. versionchanged:: 0.11.0
+       Returned Timesteps will always be a :class:`Timestep` instance.
 
     .. _Gromacs: http://www.gromacs.org
     """
