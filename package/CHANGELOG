@@ -10,7 +10,7 @@ The rules for this file:
     use tabs but use spaces for formatting
 
 ------------------------------------------------------------------------------
-??/??/15  richardjgowers
+??/??/15  richardjgowers, alejob
 
   * 0.11.0
 
@@ -19,6 +19,9 @@ The rules for this file:
     These can both act as both Topology and Coordinate information
   * Timestep objects now have __eq__ method
   * coordinates.base.Timestep now can handle velocities and forces
+  * Waterdynamics analysis module added, including five analysis classes: Hydrogen Bond
+    Lifetimes, Water Orientational Relaxation, Angular Distribution, Mean Square 
+    Displacement and Survival Probability. Documentation and test are included.
 
   Changes
   * Timestep can now only init using an integer argument (which

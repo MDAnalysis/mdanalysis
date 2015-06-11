@@ -9,7 +9,23 @@ The rules for this file:
   * keep the format consistent (79 char width, M/D/Y date format) and do not
     use tabs but use spaces for formatting	 
 
+Also see https://github.com/MDAnalysis/mdanalysis/wiki/MDAnalysisTests
+and https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
+
 ------------------------------------------------------------------------------
+02/11/2012 orbeckst, seb-buch
+
+  * 0.7.5
+
+    - test package is now called 'MDAnalysisTests'
+    - tests AND data are now bundled together in MDAnalysisTests
+    - MDAnalysis and MDAnalysisTests packages MUST have the same
+      release number (they need to stay in sync); MDAnalysisTests
+      will NOT run if a release mismatch is detected
+    - see Issue #87 and 
+      https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
+
+
 09/07/2011 orbeckst
 
   * 0.7.4

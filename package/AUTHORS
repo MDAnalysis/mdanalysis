@@ -1,4 +1,4 @@
-		       .. -*- coding: utf-8 -*-
+.. -*- coding: utf-8 -*-
 
 =======================
  Authors of MDAnalysis
@@ -56,6 +56,8 @@ Chronological list of authors
   - Alex Nesterenko
   - Caio S. Souza
   - Sean L. Seyler
+  - David L. Dotson
+
 
 External code
 -------------
