@@ -58,34 +58,17 @@ from MDAnalysis import NoDataError
 class Timestep(core.Timestep):
     """Timestep for a Gromacs_ TRR trajectory.
 
-    The constructor also takes the named arguments *has_x*, *has_velocities*, and
-    *has_forces*, which are used to set the :class:`Timestep` flags
-    :attr:`~Timestep.has_x`, :attr:`~Timestep.has_velocities`, and
-    :attr:`~Timestep.has_forces`, described below.  Depending on the *arg* use-case
-    above, the defaults set for these flags will vary:
-
-      1. when *arg* is an integer :attr:`~Timestep.has_x` defaults to ``True``
-         and :attr:`~Timestep.has_velocities` and :attr:`~Timestep.has_forces` to ``False``.
-
-      2. when *arg* is another :class:`Timestep` instance the flags will
-         default to being copied from the passed :class:`Timestep`. If that
-         instance has no 'has_*' flags the behavior is to assign them to
-         ``True`` depending on the existence of :attr:`~Timestep._velocities`
-         and :attr:`~Timestep._forces` (:attr:`~Timestep._pos` is assumed to
-         always be there, so in this case :attr:`~Timestep.has_x` defaults to
-         ``True``).
-
-      3. when *arg* is a numpy array, the default flags will reflect what
-         information is passed in the array.
+    TRR Timestep always has positions, velocities and forces allocated, meaning
+    that `_pos`, `_velocities` and `_forces` will always exist.
+    Whether or not this data is valid for the current frame is determined by the
+    private attributes, `_pos_source`, `_vel_source` and `_for_source`.
+    When accessing the `.positions` attribute, this will only be returned if
+    `_pos_source` matches the current `frame`, otherwise a :class:`~MDAnalysis.NoDataError`
+    will be raised.
 
     TRR :class:`Timestep` objects are now fully aware of the existence or not of
     coordinate/velocity/force information in frames, reflected in the
     :attr:`~Timestep.has_x`, :attr:`~Timestep.has_velocities`, and :attr:`~Timestep.has_forces` flags.
-    Accessing either kind of information while the corresponding flag is set to ``False``
-    wil raise a :exc:`NoDataError`. Internally, however, the arrays are always populated,
-    even when the flags are ``False``; upon creation of a :class:`Timestep` they are
-    zero-filled, but this might not always be the case later on for properties flagged as
-    ``False`` if the same :class:`Timestep` instance is used to read from a TRR frame.
 
     When doing low-level writing to :attr:`~Timestep._pos`, :attr:`~Timestep._velocities`,
     or :attr:`~Timestep._forces:attr:, the corresponding flags must be set beforehand. The
