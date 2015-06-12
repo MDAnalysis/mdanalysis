@@ -10,6 +10,26 @@ The rules for this file:
     use tabs but use spaces for formatting
 
 ------------------------------------------------------------------------------
+??/??/15  richardjgowers, alejob, orbeckst
+
+  * 0.11.0
+
+  Enhancements
+  * Added reading of DL_Poly format CONFIG and HISTORY files (Issue #298)
+    These can both act as both Topology and Coordinate information
+  * Waterdynamics analysis module added, including five analysis classes: Hydrogen Bond
+    Lifetimes, Water Orientational Relaxation, Angular Distribution, Mean Square 
+    Displacement and Survival Probability. Documentation and test are included.
+
+  Changes
+  * distances.contact_matrix(): changed keyword 'suppress_progmet' to
+    'quiet'
+
+  Fixes
+  * analysis.hbonds.HydrogenBondAnalysis performs a sanity check for
+    static selections (Issue #296)
+
+
 06/01/15  richardjgowers, caio s. souza, manuel.nuno.melo, orbeckst, 
           sseyler
   * 0.10.0

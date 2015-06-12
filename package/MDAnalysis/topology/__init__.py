@@ -90,7 +90,17 @@ The following table lists the currently supported topology formats.
    GAMESS [#a]_      gms,        GAMESS output parser. Read only atoms of assembly
                      log         section (atom, elems and coords) and construct topology.
                                  :mod:`MDAnalysis.topology.GMSParser`
-   ================= ==========  =====================================================
+
+   DL_Poly [#a]_     config      DL_Poly CONFIG file.  Reads only the atom names.
+                                 If atoms are written out of order, will correct the 
+                                 order.
+                                 :mod:`MDAnalysis.topology.DLPolyParser`
+
+   DL_Poly [#a]_     history     DL_Poly HISTORY file.  Reads only the atom names.
+                                 If atoms are written out of order, will correct the 
+                                 order.
+                                 :mod:`MDAnalysis.topology.DLPolyParser`
+   ================= ==========  ========================================================
 
 .. [#a] This format can also be used to provide *coordinates* so that
    it is possible to create a full
@@ -230,24 +240,25 @@ tuple contains four atom numbers.
 
 __all__ = ['core', 'PSFParser', 'PDBParser', 'PQRParser', 'GROParser',
            'CRDParser', 'TOPParser', 'PDBQTParser', 'TPRParser',
-           'LAMMPSParser', 'XYZParser', 'GMSParser']
+           'LAMMPSParser', 'XYZParser', 'GMSParser', 'DLPolyParser']
 
-import core
-import PSFParser
-import TOPParser
-import PDBParser
-import PrimitivePDBParser
-import ExtendedPDBParser
-import PQRParser
-import GROParser
-import CRDParser
-import PDBQTParser
-import DMSParser
-import TPRParser
-import MOL2Parser
-import LAMMPSParser
-import XYZParser
-import GMSParser
+from . import core
+from . import PSFParser
+from . import TOPParser
+from . import PDBParser
+from . import PrimitivePDBParser
+from . import ExtendedPDBParser
+from . import PQRParser
+from . import GROParser
+from . import CRDParser
+from . import PDBQTParser
+from . import DMSParser
+from . import TPRParser
+from . import MOL2Parser
+from . import LAMMPSParser
+from . import XYZParser
+from . import GMSParser
+from . import DLPolyParser
 
 
 # dictionary of known file formats and the corresponding file parser
@@ -270,4 +281,6 @@ _topology_parsers = {'PSF': PSFParser.PSFParser,
                      'DATA': LAMMPSParser.DATAParser,
                      'XYZ': XYZParser.XYZParser,
                      'GMS': GMSParser.GMSParser,
+                     'CONFIG': DLPolyParser.ConfigParser,
+                     'HISTORY': DLPolyParser.HistoryParser,
                      }

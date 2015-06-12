@@ -89,5 +89,6 @@ Volumetric analysis
    :maxdepth: 1
 
    analysis/density
+   analysis/waterdynamics
 
 

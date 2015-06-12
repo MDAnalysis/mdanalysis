@@ -21,6 +21,7 @@ provide the format in the keyword argument *format* to
    coordinates/init
    coordinates/CRD
    coordinates/DCD
+   coordinates/DLPoly
    coordinates/DMS
    coordinates/GMS
    coordinates/GRO

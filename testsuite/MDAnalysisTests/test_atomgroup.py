@@ -365,10 +365,20 @@ class TestAtomGroup(TestCase):
         ag = AtomGroup([at1, at2])
         assert_equal(ag.universe, None)
 
-    def test_badd_add_AG(self):
+    def test_bad_add_AG(self):
         def bad_add():
             return self.ag + [1, 2, 3]
         assert_raises(TypeError, bad_add)
+
+    def test_bool_false(self):
+        # Issue #304
+        ag = AtomGroup([])
+        assert_equal(bool(ag), False)
+
+    def test_bool_true(self):
+        # Issue #304
+        ag = self.universe.atoms[:3]
+        assert_equal(bool(ag), True)
 
     def test_repr(self):
         # Should make sure that the user facing info stays as expected
