@@ -612,7 +612,7 @@ class HydrogenBondAnalysis(object):
         # horrible data organization:  _s1_donors, _s2_acceptors, etc, update_selection1, ...
         atoms = getattr(self, "_s{0}_{1}".format(selection, htype))
         update = getattr(self, "update_selection{0}".format(selection))
-        if len(atoms) == 0:
+        if not atoms:
             errmsg = "No {1} found in selection {0}. " \
                 "You might have to specify a custom '{1}' keyword.".format(
                 selection, htype)
@@ -724,7 +724,7 @@ class HydrogenBondAnalysis(object):
     def _update_selection_1(self):
         self._s1 = self.u.selectAtoms(self.selection1)
         self.logger_debug("Size of selection 1: {0} atoms".format(len(self._s1)))
-        if len(self._s1) == 0:
+        if not self._s1:
             logger.warn("Selection 1 '{0}' did not select any atoms.".format(str(self.selection1)[:80]))
         self._s1_donors = {}
         self._s1_donors_h = {}
@@ -749,7 +749,7 @@ class HydrogenBondAnalysis(object):
             ns_selection_2 = NS.AtomNeighborSearch(self._s2)
             self._s2 = ns_selection_2.search_list(self._s1, 3. * self.distance)
         self.logger_debug("Size of selection 2: {0} atoms".format(len(self._s2)))
-        if len(self._s2) == 0:
+        if not self._s2:
              logger.warn("Selection 2 '{0}' did not select any atoms.".format(str(self.selection2)[:80]))
         self._s2_donors = {}
         self._s2_donors_h = {}
