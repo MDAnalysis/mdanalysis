@@ -80,7 +80,7 @@ __all__ = [
     "two_water_gro", "two_water_gro_nonames",  # for bond guessing, 2 water molecules, one with weird names
     "DLP_CONFIG", "DLP_CONFIG_order", "DLP_CONFIG_minimal",  # dl_poly 4 config file
     "DLP_HISTORY", "DLP_HISTORY_order", "DLP_HISTORY_minimal",  # dl_poly 4 history file
-    "waterPSF","waterDCD",
+    "waterPSF","waterDCD","rmsfArray",
 ]
 
 from pkg_resources import resource_filename
@@ -221,3 +221,5 @@ DLP_HISTORY_minimal = resource_filename(__name__, "data/dlpoly/HISTORY_minimal")
 
 waterPSF = resource_filename(__name__, 'data/watdyn.psf')
 waterDCD = resource_filename(__name__, 'data/watdyn.dcd')
+
+rmsfArray = resource_filename(__name__, 'data/adk_oplsaa_CA_rmsf.npy')

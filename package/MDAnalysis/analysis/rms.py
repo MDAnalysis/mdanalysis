@@ -17,14 +17,15 @@
 Calculating root mean square quantities --- :mod:`MDAnalysis.analysis.rms`
 ==========================================================================
 
-:Author: Oliver Beckstein
+:Author: Oliver Beckstein, David L. Dotson
 :Year: 2012
 :Copyright: GNU Public License v2
 
 .. versionadded:: 0.7.7
+.. versionchanged:: 0.11.0
 
 The module contains code to analyze root mean square quantities such
-as the RMSD or RMSF (not implemented yet).
+as the RMSD or RMSF.
 
 This module uses the fast QCP algorithm [Theobald2005]_ to calculate
 the root mean square distance (RMSD) between two coordinate sets (as
@@ -109,6 +110,14 @@ Analysis classes
 
       Results are stored in this N×3 :class:`numpy.ndarray` array,
       (frame, time (ps), RMSD (Å)).
+
+.. autoclass:: RMSF
+   :members:
+
+   .. attribute:: rmsf
+
+      Results are stored in this N-length :class:`numpy.ndarray` array,
+      giving RMSFs for each of the given atoms.
 
 """
 
@@ -485,7 +494,85 @@ class RMSD(object):
 
 
 class RMSF(object):
-    """Calculate root mean square fluctuations"""
+    """Class to perform RMSF analysis on a set of atoms across a trajectory.
 
-    def __init__(self, *args, **kwargs):
-        raise NotImplementedError
+    Run the analysis with :meth:`RMSF.run`, which stores the results
+    in the array :attr:`RMSF.rmsf`.
+
+    This class performs no coordinate transforms; RMSFs are obtained from atom
+    coordinates as-is.
+
+    .. versionadded:: 0.11.0
+    """
+
+    def __init__(self, atomgroup):
+        """Calculate RMSF of given atoms across a trajectory.
+    
+        :Arguments:
+            *atomgroup*
+                AtomGroup to obtain RMSF for
+   
+        """
+        self.atomgroup = atomgroup
+        self._rmsf = None
+
+    def run(self, start=0, stop=-1, step=1, progout=10, quiet=False):
+        """Calculate RMSF of given atoms across a trajectory.
+
+        This method implements an algorithm for computing sums of squares while
+        avoiding overflows and underflows; please reference:
+    
+        .. [Welford1962] B. P. Welford (1962)
+           "Note on a Method for Calculating Corrected Sums of Squares and 
+                Products." Technometrics  4(3):419-420.
+    
+        :Keywords:
+            *start*
+                starting frame [0]
+            *stop*
+                stopping frame [-1]
+            *step*
+                step between frames [1]
+            *progout*
+                number of frames to iterate through between updates to progress
+                output; ``None`` for no updates [10]
+            *quiet*
+                if ``True``, supress all output (implies *progout*=``None``)
+                [``False``]
+    
+        """
+        sumsquares = numpy.zeros((self.atomgroup.numberOfAtoms(), 3))
+        means = numpy.array(sumsquares)
+
+        if quiet:
+            progout = None
+    
+        # set up progress output
+        if progout:
+            percentage = ProgressMeter(self.atomgroup.universe.trajectory.numframes, 
+                                       interval=progout)
+        else:
+            percentage = ProgressMeter(self.atomgroup.universe.trajectory.numframes, 
+                                       quiet=True)
+    
+        for k, ts in enumerate(self.atomgroup.universe.trajectory[start:stop:step]):
+            sumsquares += (k/(k + 1.0)) * (self.atomgroup.positions - means)**2
+            means = (k * means + self.atomgroup.positions)/(k + 1)
+    
+            percentage.echo(ts.frame)
+    
+        rmsf = numpy.sqrt(sumsquares.sum(axis=1)/(k + 1))
+    
+        if not (rmsf >= 0).all():
+            raise ValueError("Some RMSF values negative; overflow " +
+                             "or underflow occurred")
+    
+        self._rmsf = rmsf
+
+    @property
+    def rmsf(self):
+        """RMSF data; only available after using :meth:`RMSF.run`
+    
+        """
+        return self._rmsf
+
