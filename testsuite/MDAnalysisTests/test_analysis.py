@@ -167,7 +167,7 @@ class TestHydrogenBondAnalysis(TestCase):
         kw = self.kwargs.copy()
         kw.update(kwargs)
         h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(self.universe, **kw)
-        h.run()
+        h.run(quiet=True)
         return h
 
     def test_helix_backbone(self):
@@ -217,7 +217,7 @@ class TestHydrogenBondAnalysisHeavyFail(TestHydrogenBondAnalysisHeavy):
         self.num_bb_hbonds = 0  # no H-bonds with a D-A distance < 3.0 A (they start at 3.05 A)
 
 class TestHydrogenBondAnalysisChecking(object):
-    def setUp(self):
+    def _setUp(self):
         self.universe = u = MDAnalysis.Universe(PDB_helix)
         self.kwargs = {
             'selection1': 'protein',
@@ -227,40 +227,45 @@ class TestHydrogenBondAnalysisChecking(object):
             'angle': 150.0,
         }
 
-    def tearDown(self):
+    def _tearDown(self):
         del self.universe
 
     def _run(self, **kwargs):
         kw = self.kwargs.copy()
         kw.update(kwargs)
         h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(self.universe, **kw)
-        h.run()
+        h.run(quiet=True)
         return h
 
     def test_check_static_selections(self):
-        self.setUp()  # manually set up (because with yield cannot use TestCase)
-        def run_HBA(s1, s2, s1type):
-            # no donors/acceptors; only raises error if no updates
-            return self._run(selection1=s1, selection2=s2,
-                             update_selection1=False, update_selection2=False,
-                             selection1_type=s1type,
-                             )
-        protein = "protein"
-        nothing = "resname ALA and not backbone"
-        for s1, s2, s1type in itertools.product((protein, nothing), (protein, nothing), ("donor", "acceptor", "both")):
-            if s1 == s2 == protein:
-                def runOK():
-                    try:
-                        h = run_HBA(s1, s2, s1type)
-                    except:
-                        return False
-                    else:
-                        return True
-                yield runOK
-            else:
-                yield assert_raises, MDAnalysis.SelectionError, run_HBA, s1, s2, s1type
-
-        self.tearDown() # manually tear down (because with yield cannot use TestCase)
+        self._setUp()  # manually set up (because with yield cannot use TestCase)
+        try:
+            def run_HBA(s1, s2, s1type):
+                """test that HydrogenBondAnalysis() raises SelectionError for missing donors/acceptors"""
+                # no donors/acceptors; only raises error if no updates
+                return self._run(selection1=s1, selection2=s2,
+                                 update_selection1=False, update_selection2=False,
+                                 selection1_type=s1type,
+                                 )
+            protein = "protein"
+            nothing = "resname ALA and not backbone"
+            for s1, s2, s1type in itertools.product((protein, nothing),
+                                                    (protein, nothing),
+                                                    ("donor", "acceptor", "both")):
+                if s1 == s2 == protein:
+                    def runOK():
+                        """test that HydrogenBondAnalysis() works for protein/protein"""
+                        try:
+                            h = run_HBA(s1, s2, s1type)
+                        except:
+                            raise AssertionError("HydrogenBondAnalysis protein/protein failed")
+                        else:
+                            return True
+                    yield runOK
+                else:
+                    yield assert_raises, MDAnalysis.SelectionError, run_HBA, s1, s2, s1type
+        finally:
+            self._tearDown() # manually tear down (because with yield cannot use TestCase)
 
 class TestAlignmentProcessing(TestCase):
     def setUp(self):

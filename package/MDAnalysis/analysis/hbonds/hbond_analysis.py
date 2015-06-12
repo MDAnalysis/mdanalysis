@@ -774,9 +774,14 @@ class HydrogenBondAnalysis(object):
     def run(self, **kwargs):
         """Analyze trajectory and produce timeseries.
 
-        Stores the hydrogen bond data per frame
-        as :attr:`HydrogenBondAnalysis.timeseries` (see there for
-        output format).
+        Stores the hydrogen bond data per frame as
+        :attr:`HydrogenBondAnalysis.timeseries` (see there for output
+        format).
+
+        The method accepts a number of keywords, amongst them *quiet* (default
+        ``False``), which silences the porgress output (see
+        :class:`~MDAnalysis.core.log.ProgressMeter`) and *verbose* (which can
+        be used to change the value provided with the class constructor).
 
         .. SeeAlso:: :meth:`HydrogenBondAnalysis.generate_table` for processing
                      the data into a different format.
@@ -787,6 +792,9 @@ class HydrogenBondAnalysis(object):
            are removed from output (can be suppressed with *remove_duplicates* =
            ``False``)
 
+        .. versionchanged:: 0.11.0
+           Accept *quiet* keyword.
+
         """
         logger.info("HBond analysis: starting")
         logger.debug("HBond analysis: donors    %r", self.donors)
@@ -796,8 +804,8 @@ class HydrogenBondAnalysis(object):
         if not remove_duplicates:
             logger.warn("Hidden feature remove_duplicates=False activated: you will probably get duplicate H-bonds.")
 
-        verbose = kwargs.pop('verbose', False)
-        if verbose != self.verbose:
+        verbose = kwargs.pop('verbose', None)
+        if verbose is not None and verbose != self.verbose:
             self.verbose = verbose
             logger.debug("Toggling verbose to %r", self.verbose)
         if not self.verbose:
@@ -814,7 +822,8 @@ class HydrogenBondAnalysis(object):
             logger.exception()
             raise
         pm = ProgressMeter(len(frames),
-                           format="HBonds frame %(step)5d/%(numsteps)d [%(percentage)5.1f%%]\r")
+                           format="HBonds frame %(step)5d/%(numsteps)d [%(percentage)5.1f%%]\r",
+                           quiet=kwargs.get('quiet', False))
 
         try:
             self.u.trajectory.time
