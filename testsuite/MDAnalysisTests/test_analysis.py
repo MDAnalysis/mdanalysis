@@ -29,6 +29,7 @@ from nose.plugins.attrib import attr
 import os
 import errno
 import tempfile
+import itertools
 
 from MDAnalysis.tests.datafiles import PSF, DCD, FASTA, PDB_helix, PDB_HOLE, XTC_HOLE, GRO, XTC, waterDCD, waterPSF
 from . import executable_not_found_runtime
@@ -153,6 +154,8 @@ class TestHydrogenBondAnalysis(TestCase):
     def setUp(self):
         self.universe = u = MDAnalysis.Universe(PDB_helix)
         self.kwargs = {
+            'selection1': 'protein',
+            'selection2': 'protein',
             'detect_hydrogens': "distance",
             'distance': 3.0,
             'angle': 150.0,
@@ -160,8 +163,10 @@ class TestHydrogenBondAnalysis(TestCase):
         # ideal helix with 1 proline:
         self.num_bb_hbonds = u.atoms.numberOfResidues() - u.SYSTEM.PRO.numberOfResidues() - 4
 
-    def _run(self):
-        h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(self.universe, 'protein', 'protein', **self.kwargs)
+    def _run(self, **kwargs):
+        kw = self.kwargs.copy()
+        kw.update(kwargs)
+        h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(self.universe, **kw)
         h.run()
         return h
 
@@ -211,6 +216,51 @@ class TestHydrogenBondAnalysisHeavyFail(TestHydrogenBondAnalysisHeavy):
         self.kwargs["distance"] = 3.0
         self.num_bb_hbonds = 0  # no H-bonds with a D-A distance < 3.0 A (they start at 3.05 A)
 
+class TestHydrogenBondAnalysisChecking(object):
+    def setUp(self):
+        self.universe = u = MDAnalysis.Universe(PDB_helix)
+        self.kwargs = {
+            'selection1': 'protein',
+            'selection2': 'protein',
+            'detect_hydrogens': "distance",
+            'distance': 3.0,
+            'angle': 150.0,
+        }
+
+    def tearDown(self):
+        del self.universe
+
+    def _run(self, **kwargs):
+        kw = self.kwargs.copy()
+        kw.update(kwargs)
+        h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(self.universe, **kw)
+        h.run()
+        return h
+
+    def test_check_static_selections(self):
+        self.setUp()  # manually set up (because with yield cannot use TestCase)
+        def run_HBA(s1, s2, s1type):
+            # no donors/acceptors; only raises error if no updates
+            return self._run(selection1=s1, selection2=s2,
+                             update_selection1=False, update_selection2=False,
+                             selection1_type=s1type,
+                             )
+        protein = "protein"
+        nothing = "resname ALA and not backbone"
+        for s1, s2, s1type in itertools.product((protein, nothing), (protein, nothing), ("donor", "acceptor", "both")):
+            if s1 == s2 == protein:
+                def runOK():
+                    try:
+                        h = run_HBA(s1, s2, s1type)
+                    except:
+                        return False
+                    else:
+                        return True
+                yield runOK
+            else:
+                yield assert_raises, MDAnalysis.SelectionError, run_HBA, s1, s2, s1type
+
+        self.tearDown() # manually tear down (because with yield cannot use TestCase)
 
 class TestAlignmentProcessing(TestCase):
     def setUp(self):
@@ -368,14 +418,14 @@ class Test_Helanal(TestCase):
 class TestWaterdynamics(TestCase):
     def setUp(self):
         self.universe = MDAnalysis.Universe(waterPSF, waterDCD)
-        self.selection1 = "byres name OH2" 
-        self.selection2 = self.selection1        
-       
+        self.selection1 = "byres name OH2"
+        self.selection2 = self.selection1
+
     def test_HydrogenBondLifetimes(self):
-        hbl = MDAnalysis.analysis.waterdynamics.HydrogenBondLifetimes(self.universe, self.selection1, self.selection2, 0, 5, 3) 
+        hbl = MDAnalysis.analysis.waterdynamics.HydrogenBondLifetimes(self.universe, self.selection1, self.selection2, 0, 5, 3)
         hbl.run()
         assert_equal(round(hbl.timeseries[2][1],5), 0.75)
-        
+
     def test_WaterOrientationalRelaxation(self):
         wor = MDAnalysis.analysis.waterdynamics.WaterOrientationalRelaxation(self.universe, self.selection1, 0, 5, 2)
         wor.run()
@@ -385,12 +435,12 @@ class TestWaterdynamics(TestCase):
         ad = MDAnalysis.analysis.waterdynamics.AngularDistribution(self.universe,self.selection1,40)
         ad.run()
         assert_equal(str(ad.graph[0][39]), str("0.951172947884 0.48313682125") )
-        
+
     def test_MeanSquareDisplacement(self):
         msd = MDAnalysis.analysis.waterdynamics.MeanSquareDisplacement(self.universe, self.selection1, 0, 10, 2)
         msd.run()
         assert_equal(round(msd.timeseries[1],5), 0.03984)
-        
+
     def test_SurvivalProbability(self):
         sp = MDAnalysis.analysis.waterdynamics.SurvivalProbability(self.universe, self.selection1, 0, 6, 3)
         sp.run()

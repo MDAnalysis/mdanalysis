@@ -313,7 +313,7 @@ Classes
 from collections import defaultdict
 import numpy
 
-from MDAnalysis import MissingDataWarning, NoDataError
+from MDAnalysis import MissingDataWarning, NoDataError, SelectionError
 from MDAnalysis.core.AtomGroup import AtomGroup
 import MDAnalysis.KDTree.NeighborSearch as NS
 from MDAnalysis.core.util import norm, angle, parse_residue
@@ -395,6 +395,23 @@ class HydrogenBondAnalysis(object):
                  verbose=False, detect_hydrogens='distance'):
         """Set up calculation of hydrogen bonds between two selections in a universe.
 
+        The timeseries is accessible as the attribute :attr:`HydrogenBondAnalysis.timeseries`.
+
+        Some initial checks are performed. If there are no atoms selected by
+        *selection1* or *selection2* or if no donor hydrogens or acceptor atoms
+        are found then a :exc:`SelectionError` is raised for any selection that
+        does *not* update (*update_selection1* and *update_selection2*
+        keywords). For selections that are set to update, only a warning is
+        logged because it is assumed that the selection might contain atoms at
+        a later frame (e.g. for distance based selections).
+
+        If no hydrogen bonds are detected or if the initial check fails, look
+        at the log output (enable with :func:`MDAnalysis.start_logging` and set
+        *verbose* = ``True``). It is likely that the default names for donors
+        and acceptors are not suitable (especially for non-standard
+        ligands). In this case, either change the *forcefield* or use
+        customized *donors* and/or *acceptors*.
+
         .. Note::
 
            In order to speed up processing, atoms are filtered by a coarse
@@ -405,7 +422,7 @@ class HydrogenBondAnalysis(object):
            at each step: this is now the default.
 
            If your selections will essentially remain the same for all time
-           steps (i.e. residues are not moving farther than 3 *distance*), for
+           steps (i.e. residues are not moving farther than 3 x *distance*), for
            instance, if no water or large conformational changes are involved
            or if the optimization is disabled (*filter_first* = ``False``) then
            you can improve performance by setting the *update_selection*
@@ -419,7 +436,12 @@ class HydrogenBondAnalysis(object):
           *selection2*
             Selection string for second selection ['all']
           *selection1_type*
-            Selection 1 can be 'donor', 'acceptor' or 'both' ['both']
+            Selection 1 can be 'donor', 'acceptor' or 'both'. Note that the
+            value for *selection1_type* automatically determines how
+            *selection2* handles donors and acceptors: If *selection1* contains
+            'both' then *selection2* will also contain *both*. If *selection1*
+            is set to 'donor' then *selection2* is 'acceptor' (and vice versa).
+            ['both'].
           *update_selection1*
             Update selection 1 at each frame? [``False``]
           *update_selection2*
@@ -475,7 +497,8 @@ class HydrogenBondAnalysis(object):
             atom ("hydrogen"). If using "heavy" then one should set the *distance*
             cutoff to a higher value such as 3.5 Å. ["hydrogen"]
 
-        The timeseries is accessible as the attribute :attr:`HydrogenBondAnalysis.timeseries`.
+        :Raises: :exc:`SelectionError` is raised for each static selection without
+                 the required donors and/or acceptors.
 
         .. versionchanged:: 0.7.6
            New *verbose* keyword (and per-frame debug logging disabled by
@@ -500,6 +523,9 @@ class HydrogenBondAnalysis(object):
            New keyword *distance_type* to select between calculation between
            heavy atoms or hydrogen-acceptor. It defaults to the previous
            behavior (i.e. "hydrogen").
+
+        .. versionchanged:: 0.11.0
+           Initial checks for selections that potentially raise :exc:`SelectionError`.
 
         .. _`Issue 138`: https://github.com/MDAnalysis/mdanalysis/issues/138
         """
@@ -551,6 +577,52 @@ class HydrogenBondAnalysis(object):
         self.verbose = verbose  # per-frame debugging output?
 
         self._log_parameters()
+
+        if self.selection1_type == 'donor':
+            self._sanity_check(1, 'donors')
+            self._sanity_check(2, 'acceptors')
+        elif self.selection1_type == 'acceptor':
+            self._sanity_check(1, 'acceptors')
+            self._sanity_check(2, 'donors')
+        else:  # both
+            self._sanity_check(1, 'donors')
+            self._sanity_check(1, 'acceptors')
+            self._sanity_check(2, 'acceptors')
+            self._sanity_check(2, 'donors')
+        logger.info("HBond analysis: initial checks passed.")
+
+
+    def _sanity_check(self, selection, htype):
+        """sanity check the selections 1 and 2
+
+        *selection* is 1 or 2, *htype* is "donors" or "acceptors"
+
+        If selections do not update and the required donor and acceptor
+        selections are empty then a :exc:`SelectionError` is immediately
+        raised.
+
+        If selections update dynamically then it is possible that the selection
+        will yield donors/acceptors at a later step and we only issue a
+        warning.
+
+        .. versionadded:: 0.11.0
+        """
+        assert selection in (1, 2)
+        assert htype in ("donors", "acceptors")
+        # horrible data organization:  _s1_donors, _s2_acceptors, etc, update_selection1, ...
+        atoms = getattr(self, "_s{0}_{1}".format(selection, htype))
+        update = getattr(self, "update_selection{0}".format(selection))
+        if len(atoms) == 0:
+            errmsg = "No {1} found in selection {0}. " \
+                "You might have to specify a custom '{1}' keyword.".format(
+                selection, htype)
+            if not update:
+                logger.error(errmsg)
+                raise SelectionError(errmsg)
+            else:
+                errmsg += " Selection will update so continuing with fingers crossed."
+                warnings.warn(errmsg)
+                logger.warn(errmsg)
 
     def _log_parameters(self):
         """Log important parameters to the logfile."""
@@ -643,40 +715,42 @@ class HydrogenBondAnalysis(object):
         try:
             hydrogens = [
                 a for a in self.u.atoms[atom.number + 1:atom.number + 4]
-                if
-                a.name.startswith(('H', '1H', '2H', '3H'))
-                and self.calc_eucl_distance(atom, a) < self.r_cov[atom.name[0]]]
+                if a.name.startswith(('H', '1H', '2H', '3H')) \
+                    and self.calc_eucl_distance(atom, a) < self.r_cov[atom.name[0]]]
         except IndexError:
             hydrogens = []  # weird corner case that atom is the last one in universe
         return hydrogens
 
     def _update_selection_1(self):
         self._s1 = self.u.selectAtoms(self.selection1)
-        self.logger_debug("Size of selection 1: %d atoms" % len(self._s1))
+        self.logger_debug("Size of selection 1: {0} atoms".format(len(self._s1)))
+        if len(self._s1) == 0:
+            logger.warn("Selection 1 '{0}' did not select any atoms.".format(str(self.selection1)[:80]))
         self._s1_donors = {}
         self._s1_donors_h = {}
         self._s1_acceptors = {}
         if self.selection1_type in ('donor', 'both'):
-            self._s1_donors = self._s1.selectAtoms(' or '.join(['name %s' % i for i in self.donors]))
+            self._s1_donors = self._s1.selectAtoms(' or '.join(['name {0}'.format(name) for name in self.donors]))
             self._s1_donors_h = {}
             for i, d in enumerate(self._s1_donors):
                 tmp = self._get_bonded_hydrogens(d)
                 if tmp:
                     self._s1_donors_h[i] = tmp
-            self.logger_debug("Selection 1 donors: %d" % len(self._s1_donors))
-            self.logger_debug("Selection 1 donor hydrogens: %d" % len(self._s1_donors_h))
+            self.logger_debug("Selection 1 donors: {0}".format(len(self._s1_donors)))
+            self.logger_debug("Selection 1 donor hydrogens: {0}".format(len(self._s1_donors_h)))
         if self.selection1_type in ('acceptor', 'both'):
-            self._s1_acceptors = self._s1.selectAtoms(' or '.join(['name %s' % i for i in self.acceptors]))
-            self.logger_debug("Selection 1 acceptors: %d" % len(self._s1_acceptors))
+            self._s1_acceptors = self._s1.selectAtoms(' or '.join(['name {0}'.format(name) for name in self.acceptors]))
+            self.logger_debug("Selection 1 acceptors: {0}".format(len(self._s1_acceptors)))
 
     def _update_selection_2(self):
         self._s2 = self.u.selectAtoms(self.selection2)
-        if self.filter_first:
-            self.logger_debug("Size of selection 2 before filtering: %d atoms" % len(self._s2))
+        if self.filter_first and len(self._s2) > 0:
+            self.logger_debug("Size of selection 2 before filtering: {0} atoms".format(len(self._s2)))
             ns_selection_2 = NS.AtomNeighborSearch(self._s2)
             self._s2 = ns_selection_2.search_list(self._s1, 3. * self.distance)
-        self.logger_debug("Size of selection 2: %d atoms" % len(self._s2))
-
+        self.logger_debug("Size of selection 2: {0} atoms".format(len(self._s2)))
+        if len(self._s2) == 0:
+             logger.warn("Selection 2 '{0}' did not select any atoms.".format(str(self.selection2)[:80]))
         self._s2_donors = {}
         self._s2_donors_h = {}
         self._s2_acceptors = {}
@@ -720,7 +794,7 @@ class HydrogenBondAnalysis(object):
 
         remove_duplicates = kwargs.pop('remove_duplicates', True)  # False: old behaviour
         if not remove_duplicates:
-            logger.warn("Hidden feature remove_duplicates = True activated: you will probably get duplicate H-bonds.")
+            logger.warn("Hidden feature remove_duplicates=False activated: you will probably get duplicate H-bonds.")
 
         verbose = kwargs.pop('verbose', False)
         if verbose != self.verbose:

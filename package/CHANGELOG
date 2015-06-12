@@ -10,7 +10,7 @@ The rules for this file:
     use tabs but use spaces for formatting
 
 ------------------------------------------------------------------------------
-??/??/15  richardjgowers, alejob
+??/??/15  richardjgowers, alejob, orbeckst
 
   * 0.11.0
 
@@ -24,6 +24,9 @@ The rules for this file:
   Changes
 
   Fixes
+  * analysis.hbonds.HydrogenBondAnalysis performs a sanity check for
+    static selections (Issue #296)
+  
 
 
 06/01/15  richardjgowers, caio s. souza, manuel.nuno.melo, orbeckst, 
