@@ -313,7 +313,7 @@ Classes
 from collections import defaultdict
 import numpy
 
-from MDAnalysis import MissingDataWarning, NoDataError, SelectionError
+from MDAnalysis import MissingDataWarning, NoDataError, SelectionError, SelectionWarning
 from MDAnalysis.core.AtomGroup import AtomGroup
 import MDAnalysis.KDTree.NeighborSearch as NS
 from MDAnalysis.core.util import norm, angle, parse_residue
@@ -621,7 +621,7 @@ class HydrogenBondAnalysis(object):
                 raise SelectionError(errmsg)
             else:
                 errmsg += " Selection will update so continuing with fingers crossed."
-                warnings.warn(errmsg)
+                warnings.warn(errmsg, category=SelectionWarning)
                 logger.warn(errmsg)
 
     def _log_parameters(self):
@@ -793,7 +793,8 @@ class HydrogenBondAnalysis(object):
            ``False``)
 
         .. versionchanged:: 0.11.0
-           Accept *quiet* keyword.
+           Accept *quiet* keyword. Analysis will now proceed through frames even if
+           no donors or acceptors were found in a particular frame.
 
         """
         logger.info("HBond analysis: starting")
@@ -861,7 +862,7 @@ class HydrogenBondAnalysis(object):
             if self.update_selection2:
                 self._update_selection_2()
 
-            if self.selection1_type in ('donor', 'both'):
+            if self.selection1_type in ('donor', 'both') and len(self._s2_acceptors) > 0:
                 self.logger_debug("Selection 1 Donors <-> Acceptors")
                 ns_acceptors = NS.AtomNeighborSearch(self._s2_acceptors)
                 for i, donor_h_set in self._s1_donors_h.items():
@@ -880,7 +881,7 @@ class HydrogenBondAnalysis(object):
                                     [h.number + 1, a.number + 1, '%s%s:%s' % (h.resname, repr(h.resid), h.name),
                                         '%s%s:%s' % (a.resname, repr(a.resid), a.name), dist, angle])
                                 already_found[(h.number + 1, a.number + 1)] = True
-            if self.selection1_type in ('acceptor', 'both'):
+            if self.selection1_type in ('acceptor', 'both') and len(self._s1_acceptors) > 0:
                 self.logger_debug("Selection 1 Acceptors <-> Donors")
                 ns_acceptors = NS.AtomNeighborSearch(self._s1_acceptors)
                 for i, donor_h_set in self._s2_donors_h.items():

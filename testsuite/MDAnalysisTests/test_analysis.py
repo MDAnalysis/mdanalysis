@@ -21,7 +21,7 @@ import MDAnalysis.analysis.hbonds
 import MDAnalysis.analysis.helanal
 import MDAnalysis.analysis.rms
 import MDAnalysis.analysis.waterdynamics
-from MDAnalysis import SelectionError, FinishTimeException
+from MDAnalysis import SelectionError, SelectionWarning, FinishTimeException
 
 from numpy.testing import *
 from nose.plugins.attrib import attr
@@ -30,6 +30,7 @@ import os
 import errno
 import tempfile
 import itertools
+import warnings
 
 from MDAnalysis.tests.datafiles import PSF, DCD, FASTA, PDB_helix, PDB_HOLE, XTC_HOLE, GRO, XTC, waterDCD, waterPSF
 from . import executable_not_found_runtime
@@ -233,8 +234,11 @@ class TestHydrogenBondAnalysisChecking(object):
     def _run(self, **kwargs):
         kw = self.kwargs.copy()
         kw.update(kwargs)
-        h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(self.universe, **kw)
-        h.run(quiet=True)
+        with warnings.catch_warnings():
+            # ignore SelectionWarning
+            warnings.simplefilter("ignore")
+            h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(self.universe, **kw)
+            h.run(quiet=True)
         return h
 
     def test_check_static_selections(self):
@@ -263,7 +267,33 @@ class TestHydrogenBondAnalysisChecking(object):
                             return True
                     yield runOK
                 else:
-                    yield assert_raises, MDAnalysis.SelectionError, run_HBA, s1, s2, s1type
+                    yield assert_raises, SelectionError, run_HBA, s1, s2, s1type
+        finally:
+            self._tearDown() # manually tear down (because with yield cannot use TestCase)
+
+
+    def test_run_empty_selections(self):
+        self._setUp()  # manually set up (because with yield cannot use TestCase)
+        try:
+            def run_HBA(s1, s2, s1type):
+                # no donors/acceptors; should not raise error because updates=True
+                return self._run(selection1=s1, selection2=s2,
+                                 update_selection1=True, update_selection2=True,
+                                 selection1_type=s1type,
+                                 )
+            protein = "protein"
+            nothing = "resname ALA and not backbone"
+            for s1, s2, s1type in itertools.product((protein, nothing),
+                                                    (protein, nothing),
+                                                    ("donor", "acceptor", "both")):
+                def run_HBA_dynamic_selections(*args):
+                    try:
+                        h = run_HBA(*args)
+                    except:
+                        raise AssertionError("HydrogenBondAnalysis with update=True failed")
+                    else:
+                        return True
+                yield run_HBA_dynamic_selections, s1, s2, s1type
         finally:
             self._tearDown() # manually tear down (because with yield cannot use TestCase)
 
