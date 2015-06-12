@@ -71,7 +71,7 @@ class TestContactMatrix(TestCase):
         # small cutoff value as the input file is a protein
         # High progress_meter_freq so progress meter is not printed during test
         contacts = MDAnalysis.analysis.distances.contact_matrix(selection.coordinates(), cutoff=1.07,
-                                                                returntype="sparse", suppress_progmet=True)
+                                                                returntype="sparse", quiet=True)
         assert_equal(contacts.shape, (50, 50), "wrong shape (should be (50,50))")
         assert_equal(contacts[0, 0], False, "entry (0,0) should be a non-contact")
         assert_equal(contacts[0, 2], True, "entry (0,2) should be a contact")

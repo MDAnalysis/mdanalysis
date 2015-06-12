@@ -22,11 +22,12 @@ The rules for this file:
     Displacement and Survival Probability. Documentation and test are included.
 
   Changes
+  * distances.contact_matrix(): changed keyword 'suppress_progmet' to
+    'quiet'
 
   Fixes
   * analysis.hbonds.HydrogenBondAnalysis performs a sanity check for
     static selections (Issue #296)
-  
 
 
 06/01/15  richardjgowers, caio s. souza, manuel.nuno.melo, orbeckst, 
