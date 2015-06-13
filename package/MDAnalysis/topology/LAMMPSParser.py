@@ -38,7 +38,7 @@ Deprecated classes
 """
 from __future__ import absolute_import
 
-import numpy
+import numpy as np
 import logging
 import string
 
@@ -158,7 +158,7 @@ class DATAParser(TopologyReader):
 
             return structure
 
-    def read_DATA_timestep(self, ts):
+    def read_DATA_timestep(self, numatoms, TS_class):
         """Read a DATA file and try and extract x, v, box.
 
         - positions
@@ -169,8 +169,9 @@ class DATAParser(TopologyReader):
 
         .. versionadded:: 0.9.0
         """
-        read_atoms = False
+        read_coords = False
         read_velocities = False
+        velocities = None
 
         with openany(self.filename, 'r') as datafile:
             nitems, ntypes, box = self._parse_header(datafile)
@@ -180,10 +181,11 @@ class DATAParser(TopologyReader):
             ly = box[3] - box[2]
             lz = box[5] - box[4]
             # mda unitcell: A alpha B beta gamma C
-            ts._unitcell[[0, 1, 2]] = lx, ly, lz
-            ts._unitcell[[3, 4, 5]] = 90.0
+            unitcell = np.zeros(6, dtype=np.float32)
+            unitcell[[0, 1, 2]] = lx, ly, lz
+            unitcell[[3, 4, 5]] = 90.0
 
-            while not (read_atoms & read_velocities):
+            while not (read_coords & read_velocities):
                 try:
                     section = datafile.next().strip().split()[0]
                 except IndexError:  # blank lines don't split
@@ -192,21 +194,26 @@ class DATAParser(TopologyReader):
                     break
 
                 if section == 'Atoms':
-                    self._parse_pos(datafile, ts._pos)
-                    read_atoms = True
+                    positions = np.zeros((numatoms, 3),
+                                         dtype=np.float32, order='F')
+                    self._parse_pos(datafile, positions)
+                    read_coords = True
                 elif section == 'Velocities':
-                    ts._velocities = numpy.zeros((ts.numatoms, 3),
-                                                 dtype=numpy.float32, order='F')
-                    self._parse_vel(datafile, ts._velocities)
+                    velocities = np.zeros((numatoms, 3),
+                                          dtype=np.float32, order='F')
+                    self._parse_vel(datafile, velocities)
                     read_velocities = True
                 elif len(section) > 0:
                     self._skip_section(datafile)
                 else:
                     continue
 
-        if not read_atoms:  # Reaches here if StopIteration hit
+        if not read_coords:  # Reaches here if StopIteration hit
             raise IOError("Position information not found")
 
+        ts = TS_class.from_coordinates(positions, velocities=velocities)
+        ts._unitcell = unitcell
+        
         return ts
 
     def _parse_pos(self, datafile, pos):
@@ -358,7 +365,7 @@ class DATAParser(TopologyReader):
             line = datafile.next().strip()
 
         # Read box information next
-        box = numpy.zeros(6, dtype=numpy.float64)
+        box = np.zeros(6, dtype=np.float64)
         box[0:2] = datafile.next().split()[:2]
         box[2:4] = datafile.next().split()[:2]
         box[4:6] = datafile.next().split()[:2]
@@ -482,7 +489,7 @@ class LAMMPSDataConverter(object):  # pragma: no cover
             with openany(filename, 'r') as file:
                 file_iter = file.xreadlines()
                 # Create coordinate array
-                positions = numpy.zeros((headers['atoms'], 3), numpy.float64)
+                positions = np.zeros((headers['atoms'], 3), np.float64)
                 sections = self.sections
                 for l in file_iter:
                     line = l.strip()
@@ -516,7 +523,7 @@ class LAMMPSDataConverter(object):  # pragma: no cover
                                            charge=float(fields[3]))
                             a._positions = positions
                             data.append(a)
-                            positions[index] = numpy.array([float(fields[4]), float(fields[5]), float(fields[6])])
+                            positions[index] = np.array([float(fields[4]), float(fields[5]), float(fields[6])])
                         sections[line] = data
                     elif line == "Masses":
                         file_iter.next()

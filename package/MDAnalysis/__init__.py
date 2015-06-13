@@ -206,10 +206,6 @@ class NoDataError(ValueError):
     """Raised when empty input is not allowed or required data are missing."""
 
 
-class FormatError(EnvironmentError):
-    """Raised when there appears to be a problem with format of input files."""
-
-
 class ApplicationError(OSError):
     """Raised when an external application failed.
 

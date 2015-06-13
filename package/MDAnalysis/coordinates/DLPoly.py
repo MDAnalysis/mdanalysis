@@ -49,7 +49,7 @@ class Timestep(base.Timestep):
 class ConfigReader(base.SingleFrameReader):
     """DLPoly Config file Reader
 
-    .. versionadded:: 0.10.1
+    .. versionadded:: 0.11.0
     """
     format = 'CONFIG'
     units = _DLPOLY_UNITS
@@ -116,8 +116,9 @@ class ConfigReader(base.SingleFrameReader):
             if has_forces:
                 forces = forces[order]
 
-        # TODO: Merge with "new" style Timestep when finished
-        ts = self.ts = self._Timestep(self.numatoms)
+        ts = self.ts = self._Timestep(self.numatoms,
+                                      velocities=has_vels,
+                                      forces=has_forces)
         ts._pos = coords
         if has_vels:
             ts._velocities = velocities
@@ -133,7 +134,7 @@ class ConfigReader(base.SingleFrameReader):
 class HistoryReader(base.Reader):
     """Reads DLPoly format HISTORY files
 
-    .. versionadded:: 0.10.1
+    .. versionadded:: 0.11.0
     """
     format = 'HISTORY'
     units = _DLPOLY_UNITS
@@ -157,13 +158,12 @@ class HistoryReader(base.Reader):
         self._file = open(self.filename, 'r')
         self.title = self._file.readline().strip()
         self._levcfg, self._imcon, self.numatoms = map(int, self._file.readline().split()[:3])
+        self._has_vels = True if self._levcfg > 0 else False
+        self._has_forces = True if self._levcfg == 2 else False
 
-        # TODO: Replace with new style Timestep
-        self.ts = self._Timestep(self.numatoms)
-        if self._levcfg > 0:
-            self.ts._velocities = np.zeros((self.numatoms, 3), dtype=np.float32, order='F')
-        if self._levcfg == 2:
-            self.ts._forces = np.zeros((self.numatoms, 3), dtype=np.float32, order='F')
+        self.ts = self._Timestep(self.numatoms,
+                                 velocities=self._has_vels,
+                                 forces=self._has_forces)
         self._read_next_timestep()
 
     def _read_next_timestep(self, ts=None):
@@ -193,9 +193,9 @@ class HistoryReader(base.Reader):
 
             # Read in this order for now, then later reorder in place
             ts._pos[i] = map(float, self._file.readline().split())
-            if self._levcfg > 0:
+            if self._has_vels:
                 ts._velocities[i] = map(float, self._file.readline().split())
-            if self._levcfg == 2:
+            if self._has_forces:
                 ts._forces[i] = map(float, self._file.readline().split())
 
         if ids:
@@ -204,9 +204,9 @@ class HistoryReader(base.Reader):
             if not all(ids == (np.arange(self.numatoms) + 1)):
                 order = np.argsort(ids)
                 ts._pos[:] = ts._pos[order]
-                if self._levcfg > 0:
+                if self._has_vels:
                     ts._velocities[:] = ts._velocities[order]
-                if self._levcfg == 2:
+                if self._has_forces:
                     ts._forces[:] = ts._forces[order]
 
         ts.frame += 1
@@ -251,9 +251,9 @@ class HistoryReader(base.Reader):
                 for _ in range(self.numatoms):
                     f.readline()
                     f.readline()
-                    if self._levcfg > 0:  # vels
+                    if self._has_vels:
                         f.readline()
-                    if self._levcfg == 2:  # forces
+                    if self._has_forces:
                         f.readline()
                 position = f.tell()
                 line = f.readline()

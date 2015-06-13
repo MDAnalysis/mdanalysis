@@ -17,11 +17,18 @@ The rules for this file:
   Enhancements
   * Added reading of DL_Poly format CONFIG and HISTORY files (Issue #298)
     These can both act as both Topology and Coordinate information
+  * Timestep objects now have __eq__ method
+  * coordinates.base.Timestep now can handle velocities and forces
   * Waterdynamics analysis module added, including five analysis classes: Hydrogen Bond
     Lifetimes, Water Orientational Relaxation, Angular Distribution, Mean Square 
     Displacement and Survival Probability. Documentation and test are included.
 
   Changes
+  * Timestep can now only init using an integer argument (which
+    represents the number of atoms)
+  * Added from_timestep and from_coordinates construction methods
+    to base.Timestep
+  * Removed FormatError, now replaced by ValueError
   * distances.contact_matrix(): changed keyword 'suppress_progmet' to
     'quiet'
 

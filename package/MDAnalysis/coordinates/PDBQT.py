@@ -33,7 +33,7 @@ available in this case).
 
 import os
 import errno
-import numpy
+import numpy as np
 import warnings
 
 import MDAnalysis.core.util as util
@@ -146,7 +146,7 @@ class PDBQTReader(base.SingleFrameReader):
 
         coords = []
         atoms = []
-        unitcell = numpy.zeros(6, dtype=numpy.float32)
+        unitcell = np.zeros(6, dtype=np.float32)
         with util.openany(self.filename, 'r') as pdbfile:
             for line in pdbfile:
                 if line[:4] == 'END\n':  # Should only break at the 'END' of a model definition not
@@ -172,7 +172,7 @@ class PDBQTReader(base.SingleFrameReader):
                     atoms.append(
                         (serial, name, resName, chainID, resSeq, occupancy, tempFactor, partialCharge, atomtype))
         self.numatoms = len(coords)
-        self.ts = self._Timestep(numpy.array(coords, dtype=numpy.float32))
+        self.ts = self._Timestep.from_coordinates(np.array(coords, dtype=np.float32))
         self.ts._unitcell[:] = unitcell
         self.ts.frame = 1  # 1-based frame number
         if self.convert_units:
@@ -185,9 +185,9 @@ class PDBQTReader(base.SingleFrameReader):
         self.delta = 0
         self.skip_timestep = 1
         # hack for PDBQTParser:
-        self._atoms = numpy.rec.fromrecords(atoms,
-                                            names="serial,name,resName,chainID,resSeq,occupancy,tempFactor,"
-                                                  "partialCharge,type")
+        self._atoms = np.rec.fromrecords(atoms,
+                                         names="serial,name,resName,chainID,resSeq,occupancy,tempFactor,"
+                                         "partialCharge,type")
 
     def _col(self, line, start, stop, typeclass=float):
         """Pick out and convert the columns start-stop.

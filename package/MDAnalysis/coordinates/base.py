@@ -53,7 +53,7 @@ module. The derived classes must follow the Trajectory API in
       .. Note::
 
          Normally velocities are accessed through the
-         :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.velocities()`
+         :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.velocities`
          method of an :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
          but this attribute is documented as there can be occasions
          when it is required (e.g. in order to *change* velocities) or
@@ -68,9 +68,23 @@ module. The derived classes must follow the Trajectory API in
 
       .. versionadded:: 0.7.5
 
+   .. attribute:: _forces
+
+      :class:`numpy.ndarray` of dtype :class:`~numpy.float32`. of shape
+      (*numatoms*, 3), holding the forces
+
+      :attr:`~Timestep._forces` only exists if the Timestep was
+      created with the `forces = True` keyword.
+
+      .. versionadded:: 0.11.0
+         Added as optional to :class:`Timestep`
+
    .. attribute:: numatoms
 
       number of atoms
+
+      .. versionchanged:: 0.11.0
+         Became read only managed property
 
    .. attribute::`frame`
 
@@ -94,11 +108,12 @@ import itertools
 import os.path
 import warnings
 import bisect
-import numpy
+import numpy as np
 
 from MDAnalysis.core import units, flags
 from MDAnalysis.core.util import asiterable
 from . import core
+from .. import NoDataError
 
 
 class Timestep(object):
@@ -108,8 +123,7 @@ class Timestep(object):
 
       ``ts = Timestep(numatoms)``
 
-         create a timestep object with space for numatoms (done
-         automatically)
+         create a timestep object with space for numatoms
 
       ``ts[i]``
 
@@ -124,53 +138,138 @@ class Timestep(object):
       ``for x in ts``
 
          iterate of the coordinates, atom by atom
-    """
 
-    def __init__(self, arg, **kwargs):
-        if numpy.dtype(type(arg)) == numpy.dtype(int):
-            self.frame = 0
-            self.numatoms = arg
-            self._pos = numpy.zeros((self.numatoms, 3), dtype=numpy.float32, order='F')
-            #self._pos = numpy.zeros((3, self.numatoms), numpy.float32)
-            self._unitcell = self._init_unitcell()
-        elif isinstance(arg, Timestep):  # Copy constructor
-            # This makes a deepcopy of the timestep
-            self.frame = arg.frame
-            self.numatoms = arg.numatoms
-            self._unitcell = numpy.array(arg._unitcell)
-            self._pos = numpy.array(arg._pos, order='F')
-        elif isinstance(arg, numpy.ndarray):  # Init using a 3N coordinate array
-            if len(arg.shape) != 2:
-                raise ValueError("numpy array can only have 2 dimensions")
-            self._unitcell = numpy.zeros((6), numpy.float32)
-            self.frame = 0
-            if arg.shape[1] == 3:
-                self.numatoms = arg.shape[0]
-            else:
-                self.numatoms = arg.shape[0]
-                # Or should an exception be raised if coordinate
-                # structure is not 3-dimensional? Maybe velocities
-                # could be read one day... [DP]
-            self._pos = arg.astype(numpy.float32).copy('Fortran', )
-        else:
-            raise ValueError("Cannot create an empty Timestep")
+    .. versionchanged:: 0.11.0
+       Added :meth:`from_timestep` and :meth:`from_coordinates` constructor
+       methods.
+       :class:`Timestep` init now only accepts integer creation
+       :attr:`numatoms` now a read only property
+    """
+    order = 'F'
+
+    def __init__(self, numatoms, **kwargs):
+        """Create a Timestep, representing a frame of a trajectory
+
+        :Arguments:
+          *numatoms*
+            The total number of atoms this Timestep describes
+
+        :Keywords:
+          *velocities*
+            Whether this Timestep has velocity information [``False``]
+          *forces*
+            Whether this Timestep has force information [``False``]
+
+        .. versionchanged:: 0.11.0
+           Added keywords for velocities and forces
+        """
+        self.frame = 0
+        self._numatoms = numatoms
+
+        self._pos = np.zeros((numatoms, 3), dtype=np.float32, order=self.order)
+
+        self.has_velocities = kwargs.get('velocities', False)
+        if self.has_velocities:
+            self._velocities = np.zeros((numatoms, 3),
+                                        dtype=np.float32, order=self.order)
+        self.has_forces = kwargs.get('forces', False)
+        if self.has_forces:
+            self._forces = np.zeros((numatoms, 3),
+                                    dtype=np.float32, order=self.order)
+        
+        self._unitcell = self._init_unitcell()
+
         self._x = self._pos[:, 0]
         self._y = self._pos[:, 1]
         self._z = self._pos[:, 2]
 
+    @classmethod
+    def from_timestep(cls, other):
+        """Create a copy of another Timestep, in the format of this Timestep
+
+        .. versionadded:: 0.11.0
+        """
+        ts = cls(other.numatoms, velocities=other.has_velocities,
+                 forces=other.has_forces)
+        ts.frame = other.frame
+        ts.dimensions = other.dimensions
+        ts.positions = other.positions.copy()
+        try:
+            ts.velocities = other.velocities.copy()
+        except NoDataError:
+            pass
+        try:
+            ts.forces = other.forces.copy()
+        except NoDataError:
+            pass
+
+        for attr in other.__dict__:
+            if not attr.startswith('_'):
+                setattr(ts, attr, getattr(other, attr))
+
+        return ts
+
+    @classmethod
+    def from_coordinates(cls, positions, velocities=None, forces=None):
+        """Create an instance of this Timestep, from coordinate data
+
+        .. versionadded:: 0.11.0
+        """
+        has_velocities = velocities is not None
+        has_forces = forces is not None
+
+        ts = cls(len(positions), velocities=has_velocities, forces=has_forces)
+        ts.positions = positions
+        if has_velocities:
+            ts.velocities = velocities
+        if has_forces:
+            ts.forces = forces
+
+        return ts
+
     def _init_unitcell(self):
         """Create custom datastructure for :attr:`_unitcell`."""
         # override for other Timesteps
-        return numpy.zeros((6), numpy.float32)
+        return np.zeros((6), np.float32)
+
+    def __eq__(self, other):
+        """Compare with another Timestep
+
+        .. versionadded:: 0.11.0
+        """
+        if not isinstance(other, Timestep):
+            return False
+
+        if not self.frame == other.frame:
+            return False
+
+        if not self.numatoms == other.numatoms:
+            return False
+
+        # Check contents of np arrays last (probably slow)
+        if not (self.positions == other.positions).all():
+            return False
+        if not self.has_velocities == other.has_velocities:
+            return False
+        if self.has_velocities:
+            if not (self.velocities == other.velocities).all():
+                return False
+        if not self.has_forces == other.has_forces:
+            return False
+        if self.has_forces:
+            if not (self.forces == other.forces).all():
+                return False
+
+        return True
 
     def __getitem__(self, atoms):
-        if numpy.dtype(type(atoms)) == numpy.dtype(int):
+        if np.dtype(type(atoms)) == np.dtype(int):
             if (atoms < 0):
                 atoms = self.numatoms + atoms
             if (atoms < 0) or (atoms >= self.numatoms):
                 raise IndexError
             return self._pos[atoms]
-        elif type(atoms) == slice or type(atoms) == numpy.ndarray:
+        elif isinstance(atoms, (slice, np.ndarray)):
             return self._pos[atoms]
         else:
             raise TypeError
@@ -198,8 +297,7 @@ class Timestep(object):
         return self.__deepcopy__()
 
     def __deepcopy__(self):
-        # Is this the best way?
-        return self.__class__(self)
+        return self.from_timestep(self)
 
     def copy_slice(self, sel):
         """Make a new Timestep containing a subset of the original Timestep.
@@ -207,24 +305,25 @@ class Timestep(object):
         ``ts.copy_slice(slice(start, stop, skip))``
         ``ts.copy_slice([list of indices])``
 
-        :Returns: A Timestep object of the same type containing all header information and all atom information
-                  relevent to the selection.
+        :Returns: A Timestep object of the same type containing all header
+                  information and all atom information relevant to the selection.
 
-        .. Note:: The selection must be a 0 based slice or array of the atom indices in this Timestep
+        .. Note:: The selection must be a 0 based slice or array of the atom indices
+                  in this Timestep
 
         .. versionadded:: 0.8
         """
         # Detect the size of the Timestep by doing a dummy slice
         try:
-            new_numatoms = len(self._x[sel])
+            new_numatoms = len(self._pos[sel])
         except:
-            raise TypeError("Selection type must be compatible with slicing the coordinates")
-        new_TS = self.__class__(new_numatoms)  # Make a mostly empty TS of same type of reduced size
+            raise TypeError("Selection type must be compatible with slicing"
+                            " the coordinates")
+        # Make a mostly empty TS of same type of reduced size
+        new_TS = self.__class__(new_numatoms)
 
         # List of attributes which will require slicing if present
-        per_atom = [
-            '_x', '_y', '_z', '_pos', '_velocities', '_forces',
-            '_tpos', '_tvelocities', '_tforces']
+        per_atom = ['_pos', '_velocities', '_forces', '_x', '_y', '_z']
 
         for attr in self.__dict__:
             if not attr in per_atom:  # Header type information
@@ -232,10 +331,67 @@ class Timestep(object):
             else:  # Per atom information, ie. anything that can be sliced
                 new_TS.__setattr__(attr, self.__dict__[attr][sel])
 
-        new_TS.numatoms = new_numatoms  # This will have been overwritten, so fix here
+        new_TS._numatoms = new_numatoms
 
         return new_TS
 
+    @property
+    def numatoms(self):
+        return self._numatoms
+
+    @property
+    def positions(self):
+        """A record of the positions of all atoms in this Timestep"""
+        return self._pos
+
+    @positions.setter
+    def positions(self, new):
+        self._pos[:] = new
+
+    @property
+    def velocities(self):
+        """A record of the velocities of all atoms in this Timestep
+
+        :Raises:
+           :class:`MDAnalysis.NoDataError`
+              When the Timestep does not contain velocity information
+
+        .. versionadded:: 0.11.0
+        """
+        try:
+            return self._velocities
+        except AttributeError:
+            raise NoDataError("This Timestep has no velocities")
+
+    @velocities.setter
+    def velocities(self, new):
+        try:
+            self._velocities[:] = new
+        except AttributeError:
+            raise NoDataError("This Timestep has no velocities")
+
+    @property
+    def forces(self):
+        """A record of the forces of all atoms in this Timestep
+
+        :Raises:
+           :class:`MDAnalysis.NoDataError`
+              When the Timestep does not contain force information
+
+        .. versionadded:: 0.11.0
+        """
+        try:
+            return self._forces
+        except AttributeError:
+            raise NoDataError("This Timestep has no forces")
+
+    @forces.setter
+    def forces(self, new):
+        try:
+            self._forces[:] = new
+        except AttributeError:
+            raise NoDataError("This Timestep has no forces")
+    
     @property
     def dimensions(self):
         """unitcell dimensions (*A*, *B*, *C*, *alpha*, *beta*, *gamma*)
@@ -253,7 +409,6 @@ class Timestep(object):
         # the box edges and angles or the 6 unique components of the
         # box matrix or the full box matrix.
         return self._unitcell
-
 
     @dimensions.setter
     def dimensions(self, box):
@@ -547,9 +702,9 @@ class Reader(IObase):
 
         .. Note:: *frame* is a 0-based frame index.
         """
-        if (numpy.dtype(type(frame)) != numpy.dtype(int)) and (type(frame) != slice):
+        if (np.dtype(type(frame)) != np.dtype(int)) and (type(frame) != slice):
             raise TypeError("The frame index (0-based) must be either an integer or a slice")
-        if (numpy.dtype(type(frame)) == numpy.dtype(int)):
+        if (np.dtype(type(frame)) == np.dtype(int)):
             if (frame < 0):
                 # Interpret similar to a sequence
                 frame = len(self) + frame
@@ -710,9 +865,9 @@ class ChainReader(Reader):
         numframes = self._get('numframes')
         # [0]: frames are 0-indexed internally
         # (see Timestep._check_slice_indices())
-        self.__start_frames = numpy.cumsum([0] + numframes)
+        self.__start_frames = np.cumsum([0] + numframes)
 
-        self.numframes = numpy.sum(numframes)
+        self.numframes = np.sum(numframes)
 
         #: source for trajectories frame (fakes trajectory)
         self.__chained_trajectories_iter = None
@@ -829,10 +984,10 @@ class ChainReader(Reader):
         :Returns: common value of the attribute
         :Raises: :Exc:`ValueError` if not all readers have the same value
         """
-        values = numpy.array(self._get(attr))
+        values = np.array(self._get(attr))
         value = values[0]
-        if not numpy.all(values == value):
-            bad_traj = numpy.array([self.get_flname(fn) for fn in self.filenames])[values != value]
+        if not np.all(values == value):
+            bad_traj = np.array([self.get_flname(fn) for fn in self.filenames])[values != value]
             raise ValueError("The following trajectories do not have the correct %s "
                              " (%d):\n%r" % (attr, value, bad_traj))
         return value
@@ -936,7 +1091,7 @@ class Writer(IObase):
         # override if the native trajectory format does NOT use [A,B,C,alpha,beta,gamma]
         lengths, angles = ts.dimensions[:3], ts.dimensions[3:]
         self.convert_pos_to_native(lengths)
-        return numpy.concatenate([lengths, angles])
+        return np.concatenate([lengths, angles])
 
     def write(self, obj):
         """Write current timestep, using the supplied *obj*.
@@ -983,11 +1138,11 @@ class Writer(IObase):
             *criteria*
                dictionary containing the *max* and *min* values in native units
             *x*
-               :class:`numpy.ndarray` of ``(x, y, z)`` coordinates of atoms selected to be written out.
+               :class:`np.ndarray` of ``(x, y, z)`` coordinates of atoms selected to be written out.
         :Returns: boolean
         """
-        x = numpy.ravel(x)
-        return numpy.all(criteria["min"] < x) and numpy.all(x <= criteria["max"])
+        x = np.ravel(x)
+        return np.all(criteria["min"] < x) and np.all(x <= criteria["max"])
 
         # def write_next_timestep(self, ts=None)
 

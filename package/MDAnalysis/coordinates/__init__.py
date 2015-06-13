@@ -219,6 +219,7 @@ History
 - 2012-06-04 missing implementations of Reader.__getitem__ should raise :exc:`TypeError`
 - 2013-08-02 Readers/Writers must conform to the Python `Context Manager`_ API
 - 2015-01-15 Timestep._init_unitcell() method added
+- 2015-06-11 Reworked Timestep init.  Base Timestep now does Vels & Forces
 
 .. _Issue 49: https://github.com/MDAnalysis/mdanalysis/issues/49
 .. _Context Manager: http://docs.python.org/2/reference/datamodel.html#context-managers
@@ -254,19 +255,11 @@ implementation example (and used directly for the DCDReader).
 Methods
 .......
 
-  ``__init__(arg)``
-      depending on the type of *arg*, Timestep instances are created in
-      different ways:
-
-        ``int``
-            empty Timestep for *arg* atoms (allocate arrays etc)
-        :class:`Timestep`
-            makes a deep copy of the *arg*
-        :class:`numpy.ndarray`
-            update the Timesteps positions array with the contents of *arg*
-
-      Anything else raises an exception; in particular it is not possible to
-      create a "empty" :class:`~MDAnalysis.coordinates.base.Timestep` instance.
+  ``__init__(numatoms, velocities=False, forces=False)``
+      Define the number of atoms this Timestep will hold and whether or not
+      it will have velocity and force information
+  ``__eq__``
+      Compares a Timestep with another
   ``__getitem__(atoms)``
       position(s) of atoms; can be a slice or numpy array and then returns
       coordinate array
@@ -300,6 +293,14 @@ Attributes
       in :attr:`Timestep._unitcell`.
   ``volume``
       system box volume (derived as the determinant of the box vectors of ``dimensions``)
+  ``positions``
+      A numpy array of all positions in this Timestep.
+  ``velocities``
+      If present, returns a numpy array of velocities, otherwise raises a 
+      :class:`~MDAnalysis.NoDataError`
+  ``forces``
+      If present, returns a numpy array of forces, otherwise raises a 
+      :class:`~MDAnalysis.NoDataError`
 
 Private attributes
 ..................
@@ -329,6 +330,8 @@ code should handle this gracefully.
   ``_velocities``
       raw velocities, a :class:`numpy.float32` array containing velocities
       (similar to ``_pos``)
+  ``_forces``
+      forces, similar to velocities above.
 
 
 Trajectory Reader class

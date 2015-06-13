@@ -68,7 +68,7 @@ Classes
 """
 import os
 import errno
-import numpy
+import numpy as np
 import struct
 
 from . import base
@@ -131,15 +131,15 @@ class Timestep(base.Timestep):
         # override for other formats; this strange ordering is kept for historical reasons
         # (the user should not need concern themselves with this)
         ## orig MDAnalysis 0.8.1/dcd.c (~2004)
-        ##return numpy.take(self._unitcell, [0,2,5,1,3,4])
+        ##return np.take(self._unitcell, [0,2,5,1,3,4])
 
         # MDAnalysis 0.9.0 with recent dcd.c (based on 2013 molfile
         # DCD plugin, which implements the ordering of recent NAMD
         # (>2.5?)). See Issue 187.
-        uc = numpy.take(self._unitcell, self._ts_order)
+        uc = np.take(self._unitcell, self._ts_order)
         # heuristic sanity check: uc = A,B,C,alpha,beta,gamma
         # XXX: should we worry about these comparisons with floats?
-        if numpy.any(uc < 0.) or numpy.any(uc[3:] > 180.):
+        if np.any(uc < 0.) or np.any(uc[3:] > 180.):
             # might be new CHARMM: box matrix vectors
             H = self._unitcell
             e1, e2, e3 = H[[0,1,3]],  H[[1,2,4]], H[[3,4,5]]
@@ -153,7 +153,7 @@ class Timestep(base.Timestep):
         .. versionadded:: 0.9.0
         """
         # note that we can re-use self._ts_order with put!
-        numpy.put(self._unitcell, self._ts_order, box)
+        np.put(self._unitcell, self._ts_order, box)
 
 
 class DCDWriter(base.Writer):
@@ -311,9 +311,9 @@ class DCDWriter(base.Writer):
                 ts = self.ts
         elif not ts.numatoms == self.numatoms:
             raise ValueError("DCDWriter: Timestep does not have the correct number of atoms")
-        unitcell = self.convert_dimensions_to_unitcell(ts).astype(numpy.float32)  # must be float32 (!)
+        unitcell = self.convert_dimensions_to_unitcell(ts).astype(np.float32)  # must be float32 (!)
         if not ts._pos.flags.f_contiguous:  # Not in fortran format
-            ts = Timestep(ts)  # wrap in a new fortran formatted Timestep
+            ts = Timestep.from_timestep(ts)  # wrap in a new fortran formatted Timestep
         if self.convert_units:
             pos = self.convert_pos_to_native(ts._pos,
                                              inplace=False)  # possibly make a copy to avoid changing the trajectory
@@ -337,7 +337,7 @@ class DCDWriter(base.Writer):
         # unitcell is A,B,C,alpha,beta,gamma - convert to order expected by low level DCD routines
         lengths, angles = ts.dimensions[:3], ts.dimensions[3:]
         self.convert_pos_to_native(lengths)
-        unitcell = numpy.zeros_like(ts.dimensions)
+        unitcell = np.zeros_like(ts.dimensions)
         # __write_DCD_frame() wants uc_array = [A, gamma, B, beta, alpha, C] and
         # will write the lengths and the angle cosines to the DCD. NOTE: It
         # will NOT write CHARMM36+ box matrix vectors. When round-tripping a
@@ -345,9 +345,9 @@ class DCDWriter(base.Writer):
         # itself will not detect this because the DCDReader contains the
         # heuristic to deal with either lengths/angles or box matrix on the fly.
         #
-        # use numpy.put so that we can re-use ts_order (otherwise we
+        # use np.put so that we can re-use ts_order (otherwise we
         # would need a ts_reverse_order such as _ts_reverse_order = [0, 5, 1, 4, 3, 2])
-        numpy.put(unitcell, _ts_order, numpy.concatenate([lengths, angles]))
+        np.put(unitcell, _ts_order, np.concatenate([lengths, angles]))
         return unitcell
 
     def close(self):
@@ -485,7 +485,7 @@ class DCDReader(base.Reader):
     def _read_frame(self, frame):
         self._jump_to_frame(frame)
         ts = self.ts
-        ts.frame = self._read_next_frame(ts._x, ts._y, ts._z, ts._unitcell, 1)  # XXX required!!
+        ts.frame = self._read_next_frame(ts._x, ts._y, ts._z, ts._unitcell, 1)
         return ts
 
     def timeseries(self, asel, start=0, stop=-1, skip=1, format='afc'):

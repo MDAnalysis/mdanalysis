@@ -441,7 +441,7 @@ class Atom(object):
     __slots__ = (
         "number", "id", "name", "type", "resname", "resid", "segid",
         "mass", "charge", "residue", "segment",
-        "__universe",
+        "_universe",
         "radius", "bfactor", "resnum", "serial", "altLoc")
 
     def __init__(self, number, name, type, resname, resid, segid, mass, charge,
@@ -462,7 +462,7 @@ class Atom(object):
         self.radius = radius
         self.bfactor = bfactor
         self.serial = serial
-        self.__universe = universe
+        self._universe = universe
 
     def __repr__(self):
         return ("<Atom {idx}: {name} of type {t} of resname {rname}, "
@@ -509,7 +509,7 @@ class Atom(object):
 
         :Returns: a (3,) shape numpy array
         """
-        return self.universe.coord[self.number]  # internal numbering starts at 0
+        return self.universe.coord.positions[self.number]  # internal numbering starts at 0
 
     @position.setter
     def position(self, coords):
@@ -518,7 +518,7 @@ class Atom(object):
         @param coords: a 1x3 numpy array of {x,y,z} coordinates, or optionally
             a single scalar if you should want to set all coordinates to the same value.
         """
-        self.universe.coord._pos[self.number, :] = coords  # internal numbering starts at 0
+        self.universe.coord.positions[self.number, :] = coords  # internal numbering starts at 0
 
     @property
     def velocity(self):
@@ -534,9 +534,8 @@ class Atom(object):
         # TODO: Remove error checking here (and all similar below)
         # and add to Timestep
         try:
-            return numpy.array(self.universe.coord._velocities[self.number],
-                               dtype=numpy.float32)
-        except AttributeError:
+            return self.universe.coord.velocities[self.number]
+        except (AttributeError, NoDataError):
             raise NoDataError("Timestep does not contain velocities")
 
     @velocity.setter
@@ -549,8 +548,8 @@ class Atom(object):
         .. versionadded:: 0.9.2
         """
         try:
-            self.universe.coord._velocities[self.number] = vals
-        except AttributeError:
+            self.universe.coord.velocities[self.number] = vals
+        except (AttributeError, NoDataError):
             raise NoDataError("Timestep does not contain velocities")
 
     @property
@@ -565,8 +564,8 @@ class Atom(object):
         .. versionadded:: 0.9.2
         """
         try:
-            return self.universe.coord._forces[self.number]
-        except AttributeError:
+            return self.universe.coord.forces[self.number]
+        except (AttributeError, NoDataError):
             raise NoDataError("Timestep does not contain forces")
 
     @force.setter
@@ -576,8 +575,8 @@ class Atom(object):
         .. versionadded:: 0.9.2
         """
         try:
-            self.universe.coord._forces[self.number] = vals
-        except AttributeError:
+            self.universe.coord.forces[self.number] = vals
+        except (AttributeError, NoDataError):
             raise NoDataError("Timestep does not contain forces")
 
     def centroid(self):
@@ -588,15 +587,15 @@ class Atom(object):
     @property
     def universe(self):
         """a pointer back to the Universe"""
-        if not self.__universe is None:
-            return self.__universe
+        if not self._universe is None:
+            return self._universe
         else:
             raise AttributeError(
                 "Atom {0} is not assigned to a Universe".format(self.number))
 
     @universe.setter
     def universe(self, universe):
-        self.__universe = universe
+        self._universe = universe
 
     @property
     def bonded_atoms(self):
@@ -806,11 +805,8 @@ class AtomGroup(object):
             self._cache['atoms'] = dict(((x, None) for x in self.__atoms))
 
         # Delete preexisting cache if exists
-        for att in \
-                [
-                    'indices', 'residues', 'segments', 'masses',
-                    'bonds', 'angles', 'torsions', 'impropers'
-                ]:
+        for att in ['indices', 'residues', 'segments', 'masses',
+                    'bonds', 'angles', 'torsions', 'impropers']:
             try:
                 del self._cache[att]
             except KeyError:
@@ -1986,7 +1982,7 @@ class AtomGroup(object):
         """
         if ts is None:
             ts = self.universe.trajectory.ts
-        return numpy.array(ts[self.indices()], copy=copy, dtype=dtype)
+        return numpy.array(ts.positions[self.indices()], copy=copy, dtype=dtype)
 
     coordinates = get_positions
     """NumPy array of the coordinates.
@@ -2026,8 +2022,9 @@ class AtomGroup(object):
         """
         if ts is None:
             ts = self.universe.trajectory.ts
-        if hasattr(ts, 'has_x'):  # TRR handling must be told frame now holds valid coord info.
+        if hasattr(ts, '_pos_source'):  # TRR handling must be told frame now holds valid coord info.
             ts.has_x = True
+            ts._pos_source = ts.frame
         ts._pos[self.indices(), :] = coords
 
     positions = property(get_positions, set_positions,
@@ -2059,8 +2056,8 @@ class AtomGroup(object):
         if ts is None:
             ts = self.universe.trajectory.ts
         try:
-            return numpy.array(ts._velocities[self.indices()], copy=copy, dtype=dtype)
-        except AttributeError:
+            return numpy.array(ts.velocities[self.indices()], copy=copy, dtype=dtype)
+        except (AttributeError, NoDataError):
             raise NoDataError("Timestep does not contain velocities")
 
     def set_velocities(self, v, ts=None):
@@ -2078,8 +2075,9 @@ class AtomGroup(object):
         if ts is None:
             ts = self.universe.trajectory.ts
         try:
-            if hasattr(ts, 'has_v'):  # TRR handling must be told frame now holds valid velocity info.
-                ts.has_v = True
+            if hasattr(ts, '_vel_source'):  # TRR handling must be told frame now holds valid velocity info.
+                ts._vel_source = ts.frame
+                ts.has_velocities = True
             ts._velocities[self.indices(), :] = v
         except AttributeError:
             raise NoDataError("Timestep does not contain velocities")
@@ -2132,8 +2130,8 @@ class AtomGroup(object):
         if ts is None:
             ts = self.universe.trajectory.ts
         try:
-            return numpy.array(ts._forces[self.indices()], copy=copy, dtype=dtype)
-        except AttributeError:
+            return numpy.array(ts.forces[self.indices()], copy=copy, dtype=dtype)
+        except (AttributeError, NoDataError):
             raise NoDataError("Timestep does not contain forces")
 
     def set_forces(self, forces, ts=None):
@@ -2164,8 +2162,9 @@ class AtomGroup(object):
         if ts is None:
             ts = self.universe.trajectory.ts
         try:
-            if hasattr(ts, 'has_f'):  # TRR handling must be told frame now holds valid force info.
-                ts.has_f = True
+            if hasattr(ts, '_for_source'):  # TRR handling must be told frame now holds valid force info.
+                ts._for_source = ts.frame
+                ts.has_forces = True
             ts._forces[self.indices(), :] = forces
         except AttributeError:
             raise NoDataError("Timestep does not contain forces")
@@ -4179,7 +4178,7 @@ def Merge(*args):
 
     coords = numpy.vstack([a.coordinates() for a in args])
     trajectory = MDAnalysis.coordinates.base.Reader()
-    ts = MDAnalysis.coordinates.base.Timestep(coords)
+    ts = MDAnalysis.coordinates.base.Timestep.from_coordinates(coords)
     setattr(trajectory, "ts", ts)
     trajectory.numframes = 1
 
