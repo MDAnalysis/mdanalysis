@@ -33,7 +33,7 @@ import itertools
 import warnings
 
 from MDAnalysis.tests.datafiles import PSF, DCD, FASTA, PDB_helix, PDB_HOLE, XTC_HOLE, GRO, XTC, waterDCD, waterPSF
-from . import executable_not_found_runtime
+from MDAnalysisTests import executable_not_found_runtime
 
 
 class TestContactMatrix(TestCase):
