@@ -113,7 +113,7 @@ class Timestep(base.Timestep):
             raise ValueError("Must set using MDAnalysis format box")
 
 
-class TRZReader(base.Reader):
+class TRZReader(base.MultiframeReader):
     """ Reads an IBIsCO or YASP trajectory file
 
     :Data:
@@ -136,11 +136,11 @@ class TRZReader(base.Reader):
 
     units = {'time': 'ps', 'length': 'nm', 'velocity': 'nm/ps'}
 
-    def __init__(self, trzfilename, numatoms=None, convert_units=None, **kwargs):
+    def __init__(self, filename, numatoms=None, convert_units=None, **kwargs):
         """Creates a TRZ Reader
 
         :Arguments:
-          *trzfilename*
+          *filename*
             name of input file
           *numatoms*
             number of atoms in trajectory, must taken from topology file!
@@ -154,8 +154,7 @@ class TRZReader(base.Reader):
             convert_units = MDAnalysis.core.flags['convert_lengths']
         self.convert_units = convert_units
 
-        self.filename = trzfilename
-        self.trzfile = util.anyopen(self.filename, 'rb')
+        self.filename = filename
 
         self._numatoms = numatoms
         self.fixed = False
@@ -166,7 +165,7 @@ class TRZReader(base.Reader):
         self._dt = None
         self._skip_timestep = None
 
-        self._read_trz_header()
+        self._read_header()
         self.ts = Timestep(self.numatoms, velocities=True, forces=self.has_force)
 
         # structured dtype of a single trajectory frame
@@ -212,31 +211,36 @@ class TRZReader(base.Reader):
                 ('pad10', 'i4')]
         self._dtype = np.dtype(frame_contents)
 
-        self._read_next_timestep()
+        self.next()
 
-    def _read_trz_header(self):
+    def _read_header(self):
         """Reads the header of the trz trajectory"""
-        self._headerdtype = np.dtype([
-            ('p1', 'i4'),
-            ('title', '80c'),
-            ('p2', '2i4'),
-            ('force', 'i4'),
-            ('p3', 'i4')])
-        data = np.fromfile(self.trzfile, dtype=self._headerdtype, count=1)
+        with open(self.filename, 'rb') as f:
+            self._headerdtype = np.dtype([
+                ('p1', 'i4'),
+                ('title', '80c'),
+                ('p2', '2i4'),
+                ('force', 'i4'),
+                ('p3', 'i4')])
+            data = np.fromfile(f, dtype=self._headerdtype, count=1)
+            self._start_pos = self._previous_pos = f.tell()
         self.title = ''.join(data['title'][0])
+
+
+
         if data['force'] == 10:
             self.has_force = False
         elif data['force'] == 20:
             self.has_force = True
         else:
-            raise IOError
+            raise ValueError("Unrecognised value, possibly not a TRZ")
 
     def _read_next_timestep(self, ts=None):
         if ts is None:
             ts = self.ts
 
         try:
-            data = np.fromfile(self.trzfile, dtype=self._dtype, count=1)
+            data = np.fromfile(self._f, dtype=self._dtype, count=1)
             ts.frame = data['nframe'][0]
             ts.step = data['ntrj'][0]
             ts.time = data['treal'][0]
@@ -279,22 +283,24 @@ class TRZReader(base.Reader):
         if not self._numframes is None:
             return self._numframes
         try:
-            self._numframes = self._read_trz_numframes(self.trzfile)
+            self._numframes = self._read_trz_numframes()
         except IOError:
             return 0
         else:
             return self._numframes
 
-    def _read_trz_numframes(self, trzfile):
+    def _read_trz_numframes(self):
         """Uses size of file and dtype information to determine how many frames exist
 
         .. versionchanged:: 0.9.0
            Now is based on filesize rather than reading entire file
         """
-        fsize = os.fstat(trzfile.fileno()).st_size  # size of file in bytes
+        # size of file in bytes
+        with open(self.filename, 'rb') as f:
+            fsize = os.fstat(f.fileno()).st_size
 
-        if not (fsize - self._headerdtype.itemsize) % self._dtype.itemsize == 0:
-            raise IOError("Trajectory has incomplete frames")  # check that division is sane
+        if (fsize - self._headerdtype.itemsize) % self._dtype.itemsize:
+            raise IOError("Trajectory has incomplete frames")
 
         nframes = int((fsize - self._headerdtype.itemsize) / self._dtype.itemsize)  # returns long int otherwise
 
@@ -345,88 +351,27 @@ class TRZReader(base.Reader):
             self.rewind()
         return self._skip_timestep
 
-    def __iter__(self):
-        self._reopen()
-        while True:
-            try:
-                yield self._read_next_timestep()
-            except IOError:
-                self.rewind()
-                raise StopIteration
-
-    # can use base.Reader __getitem__ implementation
     def _read_frame(self, frame):
-        """Move to *frame* and fill timestep with data."""
-        move = frame - (self.ts.frame - 1)  # difference from current frame to desired frame
-        if move is not 0:
-            self._seek(move - 1)
-            self.next()
-        return self.ts
-
-    def _seek(self, nframes):
-        """Move *nframes* in the trajectory
-
-        Note that this doens't read the trajectory (ts remains unchanged)
-
-        .. versionadded:: 0.9.0
-        """
-        if (np.dtype(type(nframes)) != np.dtype(int)):
-            raise ValueError("TRZfile seek requires an integer number of frames got %r" % type(nframes))
-
-        maxi_l = long(maxint)
-
-        framesize = long(self._dtype.itemsize)
-        seeksize = framesize * nframes
-
-        if seeksize > maxi_l:
-            # Workaround for seek not liking long ints
-            framesize = long(framesize)
-            seeksize = framesize * nframes
-
-            nreps = int(seeksize / maxi_l)  # number of max seeks we'll have to do
-            rem = int(seeksize % maxi_l)  # amount leftover to do once max seeks done
-
-            for _ in range(nreps):
-                self.trzfile.seek(maxint, 1)
-            self.trzfile.seek(rem, 1)
-        else:
-            seeksize = int(seeksize)
-
-            self.trzfile.seek(seeksize, 1)
+        """Move to *frame* and return that Timestep."""
+        newpos = self._headerdtype.itemsize 
+        newpos += frame * self._dtype.itemsize
+        self._previous_pos = newpos
+        return self.next()
 
     def _reopen(self):
         self.close()
-        self.open_trajectory()
-        self._read_trz_header()  # Moves to start of first frame
-
-    def open_trajectory(self):
-        """Open the trajectory file"""
-        if not self.trzfile is None:
-            raise IOError(errno.EALREADY, 'TRZ file already opened', self.filename)
-        if not os.path.exists(self.filename):
-            raise IOError(errno.ENOENT, 'TRZ file not found', self.filename)
-
-        self.trzfile = util.anyopen(self.filename, 'rb')
-
-        #Reset ts
+        self._previous_pos = self._start_pos
         ts = self.ts
         ts.status = 1
         ts.frame = 0
         ts.step = 0
         ts.time = 0
-        return self.trzfile
 
     def Writer(self, filename, numatoms=None):
         if numatoms is None:
             # guess that they want to write the whole timestep unless told otherwise?
             numatoms = self.ts.numatoms
         return TRZWriter(filename, numatoms)
-
-    def close(self):
-        """Close trz file if it was open"""
-        if self.trzfile is not None:
-            self.trzfile.close()
-            self.trzfile = None
 
 
 class TRZWriter(base.Writer):

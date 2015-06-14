@@ -131,7 +131,7 @@ class ConfigReader(base.SingleFrameReader):
             ts._unitcell[2][:] = cellz
 
 
-class HistoryReader(base.Reader):
+class HistoryReader(base.MultiframeReader):
     """Reads DLPoly format HISTORY files
 
     .. versionadded:: 0.11.0
@@ -154,49 +154,59 @@ class HistoryReader(base.Reader):
         self._dt = None
         self._skip_timestep = None
 
-        # "private" file handle
-        self._file = open(self.filename, 'r')
-        self.title = self._file.readline().strip()
-        self._levcfg, self._imcon, self.numatoms = map(int, self._file.readline().split()[:3])
-        self._has_vels = True if self._levcfg > 0 else False
-        self._has_forces = True if self._levcfg == 2 else False
+        self._read_header()
 
         self.ts = self._Timestep(self.numatoms,
                                  velocities=self._has_vels,
                                  forces=self._has_forces)
-        self._read_next_timestep()
+        self.next()
+
+    def _read_header(self):
+        """Reads header, fills in _start_pos and _previous_pos"""
+        with open(self.filename, 'r') as f:
+            self.title = f.readline().strip()
+            self._levcfg, self._imcon, self.numatoms = map(int, f.readline().split()[:3])
+            self._start_pos = self._previous_pos = f.tell()
+
+        self._has_vels = True if self._levcfg > 0 else False
+        self._has_forces = True if self._levcfg == 2 else False
 
     def _read_next_timestep(self, ts=None):
+        """Return the next Timestep
+
+        assumes self._f is already positioned correctly
+        """
         if ts is None:
             ts = self.ts
 
-        line = self._file.readline()  # timestep line
+        f = self._f
+
+        line = f.readline()  # timestep line
         if not line.startswith('timestep'):
             raise IOError
         if not self._imcon == 0:
-            ts._unitcell[0] = map(float, self._file.readline().split())
-            ts._unitcell[1] = map(float, self._file.readline().split())
-            ts._unitcell[2] = map(float, self._file.readline().split())
+            ts._unitcell[0] = map(float, f.readline().split())
+            ts._unitcell[1] = map(float, f.readline().split())
+            ts._unitcell[2] = map(float, f.readline().split())
 
         # If ids are given, put them in here
         # and later sort by them
         ids = []
 
         for i in range(self.numatoms):
-            line = self._file.readline().strip()  # atom info line
+            line = f.readline().strip()  # atom info line
             try:
                 idx = int(line.split()[1])
             except IndexError:
                 pass
             else:
                 ids.append(idx)
-
             # Read in this order for now, then later reorder in place
-            ts._pos[i] = map(float, self._file.readline().split())
+            ts._pos[i] = map(float, f.readline().split())
             if self._has_vels:
-                ts._velocities[i] = map(float, self._file.readline().split())
+                ts._velocities[i] = map(float, f.readline().split())
             if self._has_forces:
-                ts._forces[i] = map(float, self._file.readline().split())
+                ts._forces[i] = map(float, f.readline().split())
 
         if ids:
             ids = np.array(ids)
@@ -213,8 +223,13 @@ class HistoryReader(base.Reader):
         return ts
 
     def _read_frame(self, frame):
-        """frame is 0 based, error checking is done in base.getitem"""
-        self._file.seek(self._offsets[frame])
+        """return a single frame
+
+        requires that self._f is already open
+
+        frame is 0 based, error checking is done in base.getitem
+        """
+        self._f.seek(self._offsets[frame])
         self.ts.frame = frame  # gets +1'd in read_next_frame
         return self._read_next_timestep()
 
@@ -260,25 +275,14 @@ class HistoryReader(base.Reader):
 
         return numframes
 
-    def __iter__(self):
-        self._reopen()
-        while True:
-            try:
-                yield self._read_next_timestep()
-            except IOError:
-                self.rewind()
-                raise StopIteration
-
     def rewind(self):
         self._reopen()
         self.next()
 
     def _reopen(self):
-        self.close()
-        self._file = open(self.filename, 'r')
-        self._file.readline()  # header is 2 lines
-        self._file.readline()
+        """Change last_pos to just after the header,
+        this makes from_previous_position decorator think the file has just
+        been opened
+        """
+        self._previous_pos = self._start_pos
         self.ts.frame = 0
-
-    def close(self):
-        self._file.close()

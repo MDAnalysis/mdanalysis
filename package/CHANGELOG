@@ -22,6 +22,7 @@ The rules for this file:
   * Waterdynamics analysis module added, including five analysis classes: Hydrogen Bond
     Lifetimes, Water Orientational Relaxation, Angular Distribution, Mean Square 
     Displacement and Survival Probability. Documentation and test are included.
+  * XYZReader now supports trajectory slicing and random frame access
 
   Changes
   * Timestep can now only init using an integer argument (which

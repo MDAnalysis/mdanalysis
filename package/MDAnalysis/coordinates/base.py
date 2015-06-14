@@ -109,8 +109,9 @@ import os.path
 import warnings
 import bisect
 import numpy as np
+import functools
 
-from MDAnalysis.core import units, flags
+from MDAnalysis.core import units, flags, util
 from MDAnalysis.core.util import asiterable
 from . import core
 from .. import NoDataError
@@ -702,21 +703,21 @@ class Reader(IObase):
 
         .. Note:: *frame* is a 0-based frame index.
         """
-        if (np.dtype(type(frame)) != np.dtype(int)) and (type(frame) != slice):
-            raise TypeError("The frame index (0-based) must be either an integer or a slice")
-        if (np.dtype(type(frame)) == np.dtype(int)):
+        if isinstance(frame, int):
             if (frame < 0):
                 # Interpret similar to a sequence
                 frame = len(self) + frame
             if (frame < 0) or (frame >= len(self)):
                 raise IndexError("Index %d exceeds length of trajectory (%d)." % (frame, len(self)))
-            return self._read_frame(frame)  # REPLACE WITH APPROPRIATE IMPLEMENTATION
-        elif type(frame) == slice:  # if frame is a slice object
+            return self._read_frame(frame)
+        elif isinstance(frame, slice):
             start, stop, step = self._check_slice_indices(frame.start, frame.stop, frame.step)
             if start == 0 and stop == len(self) and step == 1:
                 return self.__iter__()
             else:            
                 return self._sliced_iter(start, stop, step)
+        else:
+            raise TypeError("The frame index (0-based) must be either an integer or a slice")
 
     def _read_frame(self, frame):
         """Move to *frame* and fill timestep with data."""
@@ -737,16 +738,12 @@ class Reader(IObase):
         A :exc:`NotImplementedError` is raised if random access to
         frames is not implemented.
         """
-        # override with an appropriate implementation e.g. using self[i] might
-        # be much slower than skipping steps in a next() loop
-        def _iter(start=start, stop=stop, step=step):
-            try:
-                for i in xrange(start, stop, step):
-                    yield self[i]
-            except TypeError:  # if _read_frame not implemented
-                raise TypeError("{0} does not support slicing."
-                                "".format(self.__class__.__name__))
-        return _iter()
+        try:
+            for i in xrange(start, stop, step):
+                yield self._read_frame(i)
+        except TypeError:  # if _read_frame not implemented
+            raise TypeError("{0} does not support slicing."
+                            "".format(self.__class__.__name__))
 
     def _check_slice_indices(self, start, stop, step):
         """Unpack the slice object and do checks
@@ -1195,3 +1192,101 @@ class SingleFrameReader(Reader):
 
     def __del__(self):
         self.close()
+
+# Two decorators which manage file handles
+def from_previous_position(func):
+    """Seeks to the last known position of the
+    reader and provides a handle to it.
+
+    Afterwards, saves the new last known position
+    """
+    @functools.wraps(func)
+    def wrapper(self, *args, **kwargs):
+        with util.anyopen(self.filename, 'r') as self._f:
+            self._f.seek(self._previous_pos)
+            ret = func(self, *args, **kwargs)
+            self._previous_pos = self._f.tell()
+        return ret
+    return wrapper
+
+def from_first_frame(func):
+    """Provides a file handle which starts just
+    after the header
+    """
+    @functools.wraps(func)
+    def wrapper(self, *args, **kwargs):
+        with util.anyopen(self.filename, 'r') as self._f:
+            self._f.seek(self._start_pos)
+            ret = func(self, *args, **kwargs)
+            return ret
+    return wrapper
+        
+class MultiframeReader(Reader):
+    """Designed to not require an open file handle at all times
+
+    @from_previous_position decorator opens the file handle at the last known
+    position and saves the last known position when done
+    """
+    @from_previous_position
+    def next(self):
+        return self._read_next_timestep()
+
+    def __iter__(self):
+        with util.anyopen(self.filename, 'r') as self._f:
+            self._reopen()
+            while True:
+                try:
+                    yield self._read_next_timestep()
+                except IOError:
+                    self.rewind()
+                    raise StopIteration
+
+    def _sliced_iter(self, start, stop, step):
+        """Generator for slicing a trajectory.
+
+        *start* *stop* and *step* are 3 integers describing the slice.
+        Error checking is not done past this point.
+
+        A :exc:`NotImplementedError` is raised if random access to
+        frames is not implemented.
+        """
+        with util.anyopen(self.filename, 'r') as self._f:
+            for i in xrange(start, stop, step):
+                yield self._read_frame(i)
+
+    @from_first_frame
+    def __getitem__(self, frame):
+        """Return the Timestep corresponding to *frame*.
+
+        If *frame* is a integer then the corresponding frame is
+        returned. Negative numbers are counted from the end.
+
+        If frame is a :class:`slice` then an iterator is returned that
+        allows iteration over that part of the trajectory.
+
+        .. Note:: *frame* is a 0-based frame index.
+        """
+        if isinstance(frame, int):
+            if (frame < 0):
+                # Interpret similar to a sequence
+                frame = len(self) + frame
+            if (frame < 0) or (frame >= len(self)):
+                raise IndexError("Index %d exceeds length of trajectory (%d)." % (frame, len(self)))
+            return self._read_frame(frame)
+        elif isinstance(frame, slice):
+            start, stop, step = self._check_slice_indices(frame.start, frame.stop, frame.step)
+            return self._sliced_iter(start, stop, step)
+        else:
+            raise TypeError("The frame index (0-based) must be either an integer or a slice")
+
+    def close(self):
+        """There are never any file handles left open to close"""
+        pass
+
+    def __getstate__(self):
+        result = self.__dict__.copy()
+        del result['_f']  # closed file handle
+        return result
+
+    def __setstate__(self, d):
+        self.__dict__ = d

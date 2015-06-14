@@ -66,9 +66,9 @@ the `VMD xyzplugin`_ from whence the definition was taken)::
 .. _`VMD xyzplugin`: http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html
 
 """
+from __future__ import print_function
 
 import os
-import errno
 import numpy as np
 import itertools
 
@@ -208,7 +208,7 @@ class XYZWriter(base.Writer):
             self.xyz.write("%8s  %10.5f %10.5f %10.5f\n" % (atom, x, y, z))
 
 
-class XYZReader(base.Reader):
+class XYZReader(base.MultiframeReader):
     """Reads from an XYZ file
 
     :Data:
@@ -247,7 +247,6 @@ class XYZReader(base.Reader):
         # the filename has been parsed to be either be foo.xyz or foo.xyz.bz2 by coordinates::core.py
         # so the last file extension will tell us if it is bzipped or not
         root, ext = os.path.splitext(self.filename)
-        self.xyzfile = util.anyopen(self.filename, "r")
         self.compression = ext[1:] if ext[1:] != "xyz" else None
 
         # note that, like for xtc and trr files, _numatoms and _numframes are used quasi-private variables
@@ -261,14 +260,16 @@ class XYZReader(base.Reader):
         self.periodic = False
         self.delta = kwargs.pop("delta", 1.0)  # can set delta manually, default is 1ps (taken from TRJReader)
         self.skip_timestep = 1
+        # numatoms has sideeffects: read trajectory... (FRAGILE)
+        self.ts = self._Timestep(self.numatoms)
 
-        self.ts = self._Timestep(self.numatoms)  # numatoms has sideeffects: read trajectory... (FRAGILE)
+        self._read_header()
 
-        # Read in the first timestep (FRAGILE);
-        # FIXME: Positions on frame 0 (whatever that means) instead of 1 (as all other readers do).
-        #        Haven't quite figured out where to start with all the self._reopen() etc.
-        #        (Also cannot just use seek() or reset() because that would break with urllib2.urlopen() streams)
-        self._read_next_timestep()
+        self.next()
+
+    def _read_header(self):
+        # XYZ Files have no header
+        self._start_pos = self._previous_pos = 0
 
     @property
     def numatoms(self):
@@ -276,112 +277,88 @@ class XYZReader(base.Reader):
         if not self._numatoms is None:  # return cached value
             return self._numatoms
         try:
-            self._numatoms = self._read_xyz_natoms(self.filename)
+            self._numatoms = self._read_xyz_natoms()
         except IOError:
             return 0
         else:
             return self._numatoms
 
-    def _read_xyz_natoms(self, filename):
-        # this assumes that this is only called once at startup and that the filestream is already open
-        # (FRAGILE)
-        n = self.xyzfile.readline()
-        self.close()
-        # need to check type of n
-        return int(n)
+    def _read_xyz_natoms(self):
+        with util.anyopen(self.filename, 'r') as f:
+            n = int(f.readline())
+        return n
 
     @property
     def numframes(self):
         if not self._numframes is None:  # return cached value
             return self._numframes
         try:
-            self._numframes = self._read_xyz_numframes(self.filename)
+            self._numframes = self._read_xyz_numframes()
         except IOError:
             return 0
         else:
             return self._numframes
 
-    def _read_xyz_numframes(self, filename):
-        self._reopen()
-        # the number of lines in the XYZ file will be 2 greater than the number of atoms
-        linesPerFrame = self.numatoms + 2
-        counter = 0
-        # step through the file (assuming xyzfile has an iterator)
-        for i in self.xyzfile:
-            counter = counter + 1
-        self.close()
+    def _read_xyz_numframes(self):
+        """Read number of frames and offset in bytes for each"""
+        self._offsets = offsets = []
+        # TODO: Add figuring out frame offsets here
+        # when I've gone linesPerFrame, do a tell() on file and save
+        with util.anyopen(self.filename, 'r') as f:
+            position = f.tell()
+            line = f.readline().strip()
+            while line:
+                offsets.append(position)
+                # We've read 1 of the header lines,
+                # read all others in this frame
+                for _ in xrange(self.numatoms + 1):
+                    f.readline()
+                # This should be the end of the frame
+                position = f.tell()
+                line = f.readline().strip()
 
         # need to check this is an integer!
-        numframes = int(counter / linesPerFrame)
+        numframes = len(offsets)
         return numframes
 
-    def __iter__(self):
-        self.ts.frame = 0  # start at 0 so that the first frame becomes 1
-        self._reopen()
-        while True:
-            try:
-                yield self._read_next_timestep()
-            except EOFError:
-                self.close()
-                raise StopIteration
+    def _read_frame(self, frame):
+        self._f.seek(self._offsets[frame])
+        # This is 1 based!
+        self.ts.frame = frame
+        return self._read_next_timestep()
 
     def _read_next_timestep(self, ts=None):
-        # check that the timestep object exists
         if ts is None:
             ts = self.ts
-        # check that the xyzfile object exists; if not reopen the trajectory
-        if self.xyzfile is None:
-            self.open_trajectory()
-        x = []
-        y = []
-        z = []
 
         # we assume that there are only two header lines per frame
-        counter = -2
-        for line in self.xyzfile:
-            counter += 1
-            if counter > 0:
-                # assume the XYZ file is space delimited rather than being fixed format
-                # (this could lead to problems where there is no gap e.g 9.768-23.4567)
-                words = line.split()
-                x.append(float(words[1]))
-                y.append(float(words[2]))
-                z.append(float(words[3]))
+        self._f.readline()
+        self._f.readline()
+        # Check there is a frame to read
+        try:
+            for i in range(self.numatoms):
+                line = self._f.readline()
+                ts._pos[i] = map(float, line.split()[1:4])
+        except ValueError:
+            # VE gets raised when filling np array with nothing
+            raise IOError
 
-            # stop when the cursor has reached the end of that block
-            if counter == self.numatoms:
-                ts._unitcell = np.zeros((6), np.float32)
-                ts._x[:] = x  # more efficient to do it this way to avoid re-creating the numpy arrays
-                ts._y[:] = y
-                ts._z[:] = z
-                ts.frame += 1
-                return ts
-
-        raise EOFError
+        ts._unitcell = np.zeros((6), np.float32)
+        ts.frame += 1
+        return ts
 
     def rewind(self):
         """reposition on first frame"""
         self._reopen()
-        # the next method is inherited from the Reader Class and calls _read_next_timestep
         self.next()
 
     def _reopen(self):
-        self.close()
-        self.open_trajectory()
-
-    def open_trajectory(self):
-        if self.xyzfile is not None:
-            raise IOError(errno.EALREADY, 'XYZ file already opened', self.filename)
-
-        self.xyzfile = util.anyopen(self.filename, "r")
-
-        # reset ts
+        self._previous_pos = self._start_pos
         ts = self.ts
         ts.status = 1
         ts.frame = 0
         ts.step = 0
         ts.time = 0
-        return self.xyzfile
 
     def Writer(self, filename, **kwargs):
         """Returns a XYZWriter for *filename* with the same parameters as this XYZ.
@@ -399,9 +376,3 @@ class XYZReader(base.Reader):
         """
         return XYZWriter(filename, **kwargs)
 
-    def close(self):
-        """Close xyz trajectory file if it was open."""
-        if self.xyzfile is None:
-            return
-        self.xyzfile.close()
-        self.xyzfile = None

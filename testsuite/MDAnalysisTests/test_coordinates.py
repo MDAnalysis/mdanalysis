@@ -116,88 +116,63 @@ class Ref2r9r(object):
     ref_numframes = 10
 
 
-class TestXYZReader(TestCase, Ref2r9r):
+class _TestXYZ(TestCase):
+    def tearDown(self):
+        del self.universe
+
+    def test_load_xyz(self):
+        U = self.universe
+        assert_equal(len(U.atoms), self.ref_numatoms,
+                     "load Universe from PSF and XYZ")
+
+    def test_numatoms(self):
+        assert_equal(self.universe.trajectory.numatoms, self.ref_numatoms,
+                     "wrong number of atoms")
+
+    def test_numframes(self):
+        assert_equal(self.universe.trajectory.numframes, self.ref_numframes,
+                     "wrong number of frames in xyz")
+
+    def test_sum_centres_of_geometry(self):
+        centreOfGeometry = 0
+
+        for i in self.universe.trajectory:
+            sel = self.universe.selectAtoms("all")
+            centreOfGeometry += sum(sel.centerOfGeometry())
+
+        assert_almost_equal(centreOfGeometry, self.ref_sum_centre_of_geometry, self.prec,
+                            err_msg="sum of centers of geometry over the trajectory do not match")
+
+    def test_full_slice(self):
+        trj_iter = self.universe.trajectory[:]
+        frames = [ts.frame - 1 for ts in trj_iter]
+        assert_equal(frames, np.arange(self.universe.trajectory.numframes))
+
+    def test_slice(self):
+        frames = [ts.frame-1 for ts in self.universe.trajectory[::2]]
+        assert_equal(frames, np.arange(self.universe.trajectory.numframes, step=2))
+
+    def test_getitem(self):
+        u = self.universe
+        pos = u.atoms[0].pos.copy()
+        u.trajectory[4]
+        ref = np.array([1.104, 16.824, 16.459])
+        assert_almost_equal(u.atoms[0].pos, ref, self.prec)
+
+        u.trajectory[0]
+        assert_almost_equal(pos, u.atoms[0].pos, self.prec)
+
+
+class TestXYZReader(_TestXYZ, Ref2r9r):
     def setUp(self):
         self.universe = mda.Universe(XYZ_psf, XYZ)
         self.prec = 3  # 4 decimals in xyz file
 
-    def tearDown(self):
-        del self.universe
 
-    def test_load_xyz(self):
-        U = self.universe
-        assert_equal(len(U.atoms), self.ref_numatoms, "load Universe from PSF and XYZ")
-
-    def test_numatoms(self):
-        assert_equal(self.universe.trajectory.numatoms, self.ref_numatoms, "wrong number of atoms")
-
-    def test_numframes(self):
-        assert_equal(self.universe.trajectory.numframes, self.ref_numframes, "wrong number of frames in xyz")
-
-    def test_sum_centres_of_geometry(self):
-        centreOfGeometry = 0
-
-        for i in self.universe.trajectory:
-            sel = self.universe.selectAtoms("all")
-            centreOfGeometry += sum(sel.centerOfGeometry())
-
-        assert_almost_equal(centreOfGeometry, self.ref_sum_centre_of_geometry, self.prec,
-                            err_msg="sum of centers of geometry over the trajectory do not match")
-
-    def test_full_slice(self):
-        trj_iter = self.universe.trajectory[:]
-        frames = [ts.frame - 1 for ts in trj_iter]
-        assert_equal(frames, np.arange(self.universe.trajectory.numframes))
-
-    def test_slice_raises_TypeError(self):
-        def trj_iter():
-            return list(self.universe.trajectory[::2])
-
-        assert_raises(TypeError, trj_iter)
-
-        # for whenever full slicing is implemented ...
-        #frames = [ts.frame-1 for ts in trj_iter()]
-        #assert_equal(frames, np.arange(self.universe.trajectory.numframes, step=2))
-
-
-class TestCompressedXYZReader(TestCase, Ref2r9r):
+class TestCompressedXYZReader(_TestXYZ, Ref2r9r):
     def setUp(self):
         self.universe = mda.Universe(XYZ_psf, XYZ_bz2)
         self.prec = 3  # 4 decimals in xyz file
-
-    def tearDown(self):
-        del self.universe
-
-    def test_load_xyz(self):
-        U = self.universe
-        assert_equal(len(U.atoms), self.ref_numatoms, "load Universe from PSF and XYZ")
-
-    def test_numatoms(self):
-        assert_equal(self.universe.trajectory.numatoms, self.ref_numatoms, "wrong number of atoms")
-
-    def test_numframes(self):
-        assert_equal(self.universe.trajectory.numframes, self.ref_numframes, "wrong number of frames in xyz")
-
-    def test_sum_centres_of_geometry(self):
-        centreOfGeometry = 0
-
-        for i in self.universe.trajectory:
-            sel = self.universe.selectAtoms("all")
-            centreOfGeometry += sum(sel.centerOfGeometry())
-
-        assert_almost_equal(centreOfGeometry, self.ref_sum_centre_of_geometry, self.prec,
-                            err_msg="sum of centers of geometry over the trajectory do not match")
-
-    def test_full_slice(self):
-        trj_iter = self.universe.trajectory[:]
-        frames = [ts.frame - 1 for ts in trj_iter]
-        assert_equal(frames, np.arange(self.universe.trajectory.numframes))
-
-    def test_slice_raises_TypeError(self):
-        def trj_iter():
-            return list(self.universe.trajectory[::2])
-
-        assert_raises(TypeError, trj_iter)
 
 
 class TestXYZWriter(TestCase, Ref2r9r):
