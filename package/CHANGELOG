@@ -23,6 +23,7 @@ The rules for this file:
     Lifetimes, Water Orientational Relaxation, Angular Distribution, Mean Square 
     Displacement and Survival Probability. Documentation and test are included.
   * RMSF class added to rms analysis module
+  * ProgressMeter now outputs every *interval* number of ``update`` calls
 
   Changes
   * Timestep can now only init using an integer argument (which
