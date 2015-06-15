@@ -24,11 +24,11 @@ from numpy.testing import (TestCase, assert_raises, assert_equal, assert_allclos
                            assert_array_almost_equal)
 from nose.plugins.attrib import attr
 from nose.tools import assert_not_equal
-from . import knownfailure
+from MDAnalysisTests import knownfailure
 
 import MDAnalysis as mda
 
-from .datafiles import PSF, DCD, DCD_empty, PDB_small, XPDB_small, PDB_closed, PDB_multiframe, \
+from MDAnalysisTests.datafiles import PSF, DCD, DCD_empty, PDB_small, XPDB_small, PDB_closed, PDB_multiframe, \
     PDB, CRD, XTC, TRR, GRO, DMS, CONECT, \
     XYZ, XYZ_bz2, XYZ_psf, PRM, TRJ, TRJ_bz2, PRMpbc, TRJpbc_bz2, PRMncdf, NCDF, PQR, \
     PDB_sub_dry, TRR_sub_sol, PDB_sub_sol, TRZ, TRZ_psf, LAMMPSdata, LAMMPSdata_mini, \

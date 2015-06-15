@@ -17,7 +17,7 @@ import tempfile
 import os
 from numpy.testing import *
 
-from .datafiles import mol2_molecules, mol2_molecule, mol2_broken_molecule
+from MDAnalysisTests.datafiles import mol2_molecules, mol2_molecule, mol2_broken_molecule
 from MDAnalysis import Universe
 
 
