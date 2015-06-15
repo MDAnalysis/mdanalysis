@@ -24,6 +24,8 @@ import MDAnalysis.analysis.waterdynamics
 from MDAnalysis import SelectionError, SelectionWarning, FinishTimeException
 
 from numpy.testing import *
+import numpy
+import nose
 from nose.plugins.attrib import attr
 
 import os
@@ -32,7 +34,7 @@ import tempfile
 import itertools
 import warnings
 
-from MDAnalysisTests.datafiles import PSF, DCD, FASTA, PDB_helix, PDB_HOLE, XTC_HOLE, GRO, XTC, waterDCD, waterPSF
+from MDAnalysisTests.datafiles import PSF, DCD, FASTA, PDB_helix, PDB_HOLE, XTC_HOLE, GRO, XTC, waterDCD, waterPSF, rmsfArray
 from MDAnalysisTests import executable_not_found_runtime
 
 
@@ -149,6 +151,50 @@ class TestAlign(TestCase):
             return MDAnalysis.analysis.align.alignto(a, b)
 
         assert_raises(SelectionError, different_atoms)
+
+
+class TestRMSF(TestCase):
+    def setUp(self):
+        self.universe = MDAnalysis.Universe(GRO, XTC)
+        fd, self.outfile = tempfile.mkstemp(suffix=".xtc")  # output is always same as input (=XTC)
+        os.close(fd)
+
+    def tearDown(self):
+        try:
+            os.unlink(self.outfile)
+        except OSError:
+            pass
+
+        del self.universe
+
+    def test_rmsf(self):
+        rmsfs = MDAnalysis.analysis.rms.RMSF(self.universe.selectAtoms('name CA'))
+        rmsfs.run(quiet=True)
+        test_rmsfs = numpy.load(rmsfArray)
+
+        assert_almost_equal(rmsfs.rmsf, test_rmsfs, 5,
+                            err_msg="error: rmsf profile should match test " +
+                            "values")
+
+    def test_rmsf_single_frame(self):
+        rmsfs = MDAnalysis.analysis.rms.RMSF(self.universe.selectAtoms('name CA'))
+        rmsfs.run(start=5, stop=6, quiet=True)
+
+        assert_almost_equal(rmsfs.rmsf, 0, 5,
+                            err_msg="error: rmsfs should all be zero")
+
+    def test_rmsf_identical_frames(self):
+        # write a dummy trajectory of all the same frame
+        with MDAnalysis.Writer(self.outfile, self.universe.atoms.numberOfAtoms()) as W:
+            for i in xrange(self.universe.trajectory.numframes):
+                W.write(self.universe)
+
+        self.universe = MDAnalysis.Universe(GRO, self.outfile)
+        rmsfs = MDAnalysis.analysis.rms.RMSF(self.universe.selectAtoms('name CA'))
+        rmsfs.run(quiet=True)
+
+        assert_almost_equal(rmsfs.rmsf, 0, 5,
+                            err_msg="error: rmsfs should all be 0")
 
 
 class TestHydrogenBondAnalysis(TestCase):
