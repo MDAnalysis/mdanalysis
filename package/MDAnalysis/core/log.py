@@ -224,6 +224,7 @@ class ProgressMeter(object):
         self.numsteps = numsteps
         self.interval = int(interval)
         self.offset = int(offset)
+        self.numouts = -1
         self.quiet = quiet
         if format is None:
             format = "Step %(step)5d/%(numsteps)d [%(percentage)5.1f%%]\r"
@@ -247,6 +248,8 @@ class ProgressMeter(object):
         self.percentage = 100. * self.step / self.numsteps
         for k, v in kwargs.items():
             setattr(self, k, v)
+
+        self.numouts += 1
 
     def echo(self, step, **kwargs):
         """Print the state to stderr, but only every *interval* steps.
@@ -273,7 +276,7 @@ class ProgressMeter(object):
         if self.step == self.numsteps:
             if self.last_newline:
                 format = self.format[:-1] + self.last_newline
-        elif self.step % self.interval == 0:
+        elif self.numouts % self.interval == 0:
             pass
         else:
             return
