@@ -73,7 +73,8 @@ Reads coordinates, velocities and more (see attributes of the
 """
 
 from sys import maxint
-import numpy
+import warnings
+import numpy as np
 import os
 import errno
 
@@ -88,22 +89,22 @@ class Timestep(base.Timestep):
 
     def __init__(self, arg, **kwargs):
         self.has_force = kwargs.pop('has_force', False)
-        if numpy.dtype(type(arg)) == numpy.dtype(int):
+        if np.dtype(type(arg)) == np.dtype(int):
             self.frame = 0
             self.step = 0
             self.numatoms = arg
             self.time = 0.0
             self.pressure = 0.0
-            self.pressure_tensor = numpy.zeros((6), dtype=numpy.float64)
+            self.pressure_tensor = np.zeros((6), dtype=np.float64)
             self.total_energy = 0.0
             self.potential_energy = 0.0
             self.kinetic_energy = 0.0
             self.temperature = 0.0
-            self._pos = numpy.zeros((self.numatoms, 3), dtype=numpy.float32, order='F')
-            self._velocities = numpy.zeros((self.numatoms, 3), dtype=numpy.float32, order='F')
+            self._pos = np.zeros((self.numatoms, 3), dtype=np.float32, order='F')
+            self._velocities = np.zeros((self.numatoms, 3), dtype=np.float32, order='F')
             if self.has_force:
-                self._forces = numpy.zeros((self.numatoms, 3), dtype=numpy.float32, order='F')
-            self._unitcell = numpy.zeros((9), dtype=numpy.float64, order='F')
+                self._forces = np.zeros((self.numatoms, 3), dtype=np.float32, order='F')
+            self._unitcell = np.zeros((9), dtype=np.float64, order='F')
         elif isinstance(arg, Timestep):  # Copy constructor
             # This makes a deepcopy of the timestep
             self.frame = arg.frame
@@ -111,32 +112,32 @@ class Timestep(base.Timestep):
             self.numatoms = arg.numatoms
             self.time = arg.time
             self.pressure = arg.pressure
-            self.pressure_tensor = numpy.array(arg.pressure_tensor)
+            self.pressure_tensor = np.array(arg.pressure_tensor)
             self.total_energy = arg.total_energy
             self.potential_energy = arg.potential_energy
             self.kinetic_energy = arg.kinetic_energy
             self.temperature = arg.temperature
-            self._unitcell = numpy.array(arg._unitcell)
-            self._pos = numpy.array(arg._pos, order='F')
-            self._velocities = numpy.array(arg._velocities, order='F')
+            self._unitcell = np.array(arg._unitcell)
+            self._pos = np.array(arg._pos, order='F')
+            self._velocities = np.array(arg._velocities, order='F')
             if self.has_force:
-                self._forces = numpy.array(arg._forces, order='F')
-        elif isinstance(arg, numpy.ndarray):
+                self._forces = np.array(arg._forces, order='F')
+        elif isinstance(arg, np.ndarray):
             if len(arg.shape) != 2:
                 raise ValueError("numpy array can only have 2 dimensions")
-            self._unitcell = numpy.zeros((9), dtype=numpy.float64)
+            self._unitcell = np.zeros((9), dtype=np.float64)
             self.frame = 0
             self.step = 0
             self.numatoms = arg.shape[0]
             self.time = 0.0
             self.pressure = 0.0
-            self.pressure_tensor = numpy.zeros((6), dtype=numpy.float64)
+            self.pressure_tensor = np.zeros((6), dtype=np.float64)
             self.total_energy = 0.0
             self.potential_energy = 0.0
             self.kinetic_energy = 0.0
             self.temperature = 0.0  # Temperature in Kelvin
-            self._velocities = numpy.zeros((self.numatoms, 3), dtype=numpy.float32, order='F')
-            self._pos = arg.astype(numpy.float32).copy('Fortran', )
+            self._velocities = np.zeros((self.numatoms, 3), dtype=np.float32, order='F')
+            self._pos = arg.astype(np.float32).copy('Fortran', )
         else:
             raise ValueError("Cannot create an empty Timestep")
         self._x = self._pos[:, 0]
@@ -260,19 +261,19 @@ class TRZReader(base.Reader):
                 ('pad9', '2i4'),
                 ('fz', readarg),
                 ('pad10', 'i4')]
-        self._dtype = numpy.dtype(frame_contents)
+        self._dtype = np.dtype(frame_contents)
 
         self._read_next_timestep()
 
     def _read_trz_header(self):
         """Reads the header of the trz trajectory"""
-        self._headerdtype = numpy.dtype([
+        self._headerdtype = np.dtype([
             ('p1', 'i4'),
             ('title', '80c'),
             ('p2', '2i4'),
             ('force', 'i4'),
             ('p3', 'i4')])
-        data = numpy.fromfile(self.trzfile, dtype=self._headerdtype, count=1)
+        data = np.fromfile(self.trzfile, dtype=self._headerdtype, count=1)
         self.title = ''.join(data['title'][0])
         if data['force'] == 10:
             self.has_force = False
@@ -286,7 +287,7 @@ class TRZReader(base.Reader):
             ts = self.ts
 
         try:
-            data = numpy.fromfile(self.trzfile, dtype=self._dtype, count=1)
+            data = np.fromfile(self.trzfile, dtype=self._dtype, count=1)
             ts.frame = data['nframe'][0]
             ts.step = data['ntrj'][0]
             ts.time = data['treal'][0]
@@ -420,7 +421,7 @@ class TRZReader(base.Reader):
 
         .. versionadded:: 0.9.0
         """
-        if (numpy.dtype(type(nframes)) != numpy.dtype(int)):
+        if (np.dtype(type(nframes)) != np.dtype(int)):
             raise ValueError("TRZfile seek requires an integer number of frames got %r" % type(nframes))
 
         maxi_l = long(maxint)
@@ -523,7 +524,7 @@ class TRZWriter(base.Writer):
         self._writeheader(title)
 
         floatsize = str(numatoms) + 'f4'
-        self.frameDtype = numpy.dtype([
+        self.frameDtype = np.dtype([
             ('p1a', 'i4'),
             ('nframe', 'i4'),
             ('ntrj', 'i4'),
@@ -565,10 +566,10 @@ class TRZWriter(base.Writer):
             ('p10b', 'i4')])
 
     def _writeheader(self, title):
-        hdt = numpy.dtype([
+        hdt = np.dtype([
             ('pad1', 'i4'), ('title', '80c'), ('pad2', 'i4'),
             ('pad3', 'i4'), ('nrec', 'i4'), ('pad4', 'i4')])
-        out = numpy.zeros((), dtype=hdt)
+        out = np.zeros((), dtype=hdt)
         out['pad1'], out['pad2'] = 80, 80
         out['title'] = title
         out['pad3'], out['pad4'] = 4, 4
@@ -580,24 +581,53 @@ class TRZWriter(base.Writer):
         if not ts.numatoms == self.numatoms:
             raise ValueError("Number of atoms in ts different to initialisation")
 
+        # Gather data, faking it when unavailable
+        data = {}
+        faked_attrs = []
+        for att in ['pressure', 'pressure_tensor', 'total_energy', 'potential_energy',
+                    'kinetic_energy', 'temperature', 'step', 'time']:
+            try:
+                data[att] = getattr(ts, att)
+            except AttributeError:
+                if att == 'pressure_tensor':
+                    data[att] = np.zeros(6, dtype=np.float64)
+                elif att == 'step':
+                    data[att] = ts.frame
+                elif att == 'time':
+                    data[att] = float(ts.frame)
+                else:
+                    data[att] = 0.0
+                faked_attrs.append(att)
+        if faked_attrs:
+            warnings.warn("Timestep didn't have the following attributes: '{0}', "
+                          "these will be set to 0 in the output trajectory"
+                          "".format(", ".join(faked_attrs)))
+
+        # Convert other stuff into our format
         unitcell = triclinic_vectors(ts.dimensions).reshape(9)
-        
-        out = numpy.zeros((), dtype=self.frameDtype)
+        try:
+            vels = ts._velocities
+        except AttributeError:
+            vels = np.zeros((self.numatoms, 3), dtype=np.float32, order='F')
+            warnings.warn("Timestep didn't have velocity information, "
+                          "this will be set to zero in output trajectory. ")
+
+        out = np.zeros((), dtype=self.frameDtype)
         out['p1a'], out['p1b'] = 20, 20
         out['nframe'] = ts.frame
-        out['ntrj'] = ts.step
-        out['treal'] = ts.time
+        out['ntrj'] = data['step']
+        out['treal'] = data['time']
         out['p2a'], out['p2b'] = 72, 72
         out['box'] = self.convert_pos_to_native(unitcell, inplace=False)
         out['p3a'], out['p3b'] = 56, 56
-        out['pressure'] = ts.pressure
-        out['ptensor'] = ts.pressure_tensor
+        out['pressure'] = data['pressure']
+        out['ptensor'] = data['pressure_tensor']
         out['p4a'], out['p4b'] = 60, 60
         out['six'] = 6
-        out['etot'] = ts.total_energy
-        out['ptot'] = ts.potential_energy
-        out['ek'] = ts.kinetic_energy
-        out['T'] = ts.temperature
+        out['etot'] = data['total_energy']
+        out['ptot'] = data['potential_energy']
+        out['ek'] = data['kinetic_energy']
+        out['T'] = data['temperature']
         out['blanks'] = 0.0, 0.0
         size = ts.numatoms * 4  # size of float for vels & coords
         out['p5a'], out['p5b'] = size, size
@@ -607,11 +637,11 @@ class TRZWriter(base.Writer):
         out['p7a'], out['p7b'] = size, size
         out['rz'] = self.convert_pos_to_native(ts._z, inplace=False)
         out['p8a'], out['p8b'] = size, size
-        out['vx'] = self.convert_velocities_to_native(ts._velocities[:, 0], inplace=False)
+        out['vx'] = self.convert_velocities_to_native(vels[:, 0], inplace=False)
         out['p9a'], out['p9b'] = size, size
-        out['vy'] = self.convert_velocities_to_native(ts._velocities[:, 1], inplace=False)
+        out['vy'] = self.convert_velocities_to_native(vels[:, 1], inplace=False)
         out['p10a'], out['p10b'] = size, size
-        out['vz'] = self.convert_velocities_to_native(ts._velocities[:, 2], inplace=False)
+        out['vz'] = self.convert_velocities_to_native(vels[:, 2], inplace=False)
         out.tofile(self.trzfile)
 
     def close(self):

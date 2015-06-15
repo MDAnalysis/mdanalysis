@@ -28,6 +28,7 @@ The rules for this file:
   Fixes
   * analysis.hbonds.HydrogenBondAnalysis performs a sanity check for
     static selections (Issue #296)
+  * Fixed TRZWriter failing when passed a non TRZTimestep (Issue #302)
 
 
 06/01/15  richardjgowers, caio s. souza, manuel.nuno.melo, orbeckst, 
