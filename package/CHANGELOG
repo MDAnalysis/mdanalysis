@@ -10,7 +10,7 @@ The rules for this file:
     use tabs but use spaces for formatting
 
 ------------------------------------------------------------------------------
-??/??/15  richardjgowers, alejob, orbeckst
+??/??/15  tyler.je.reddy, richardjgowers, alejob, orbeckst
 
   * 0.11.0
 
@@ -35,6 +35,8 @@ The rules for this file:
   Fixes
   * analysis.hbonds.HydrogenBondAnalysis performs a sanity check for
     static selections (Issue #296)
+  * relative imports are now banned in unit testing modules
+    (Issue #189)
 
 
 06/01/15  richardjgowers, caio s. souza, manuel.nuno.melo, orbeckst, 
