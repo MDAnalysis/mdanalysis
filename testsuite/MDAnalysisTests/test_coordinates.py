@@ -27,7 +27,7 @@ from numpy.testing import *
 from nose.plugins.attrib import attr
 import warnings
 
-from .datafiles import (
+from MDAnalysisTests.datafiles import (
     PSF, DCD, DCD_empty, PDB_small, XPDB_small, PDB_closed, PDB_multiframe,
     PDB, CRD, XTC, TRR, GRO, DMS, CONECT,
     XYZ, XYZ_bz2, XYZ_psf, PRM, TRJ, TRJ_bz2, PRMpbc, TRJpbc_bz2, PRMncdf, NCDF, PQR,
@@ -38,7 +38,7 @@ from .datafiles import (
     DLP_CONFIG, DLP_CONFIG_order, DLP_CONFIG_minimal,
     DLP_HISTORY, DLP_HISTORY_order, DLP_HISTORY_minimal)
 
-from . import knownfailure
+from MDAnalysisTests import knownfailure
 
 import os
 import shutil
@@ -2978,7 +2978,7 @@ def test_datareader_VE():
 class _TestLammpsData_Coords(TestCase):
     """Tests using a .data file for loading single frame.
 
-    All topology loading from .data is done in test_topology
+    All topology loading from MDAnalysisTests.data is done in test_topology
     """
 
     def setUp(self):

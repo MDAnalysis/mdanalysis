@@ -17,7 +17,7 @@ from MDAnalysis import Universe
 import tempfile
 import os
 from numpy.testing import *
-from .datafiles import altloc
+from MDAnalysisTests.datafiles import altloc
 
 
 class TestAltloc(TestCase):

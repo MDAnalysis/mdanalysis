@@ -32,7 +32,7 @@ import os
 import tempfile
 import itertools
 
-from . import knownfailure
+from MDAnalysisTests import knownfailure
 
 try:
     from numpy.testing import assert_

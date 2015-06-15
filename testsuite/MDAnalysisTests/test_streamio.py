@@ -19,8 +19,8 @@ from numpy.testing import *
 import MDAnalysis
 import MDAnalysis.core.util as util
 import MDAnalysis.tests.datafiles as datafiles
-from .test_coordinates import RefAdKSmall
-from . import knownfailure
+from MDAnalysisTests.test_coordinates import RefAdKSmall
+from MDAnalysisTests import knownfailure
 
 import StringIO
 import cStringIO
