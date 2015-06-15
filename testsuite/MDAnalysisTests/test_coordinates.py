@@ -34,7 +34,7 @@ from MDAnalysisTests.datafiles import (
     PDB_sub_dry, TRR_sub_sol, PDB_sub_sol, TRZ, TRZ_psf, LAMMPSdata, LAMMPSdata_mini,
     PSF_TRICLINIC, DCD_TRICLINIC, PSF_NAMD_TRICLINIC, DCD_NAMD_TRICLINIC,
     GMS_ASYMOPT, GMS_SYMOPT, GMS_ASYMSURF, XYZ_mini, PFncdf_Top, PFncdf_Trj,
-    INPCRD, XYZ_five,
+    INPCRD, XYZ_five, two_water_gro,
     DLP_CONFIG, DLP_CONFIG_order, DLP_CONFIG_minimal,
     DLP_HISTORY, DLP_HISTORY_order, DLP_HISTORY_minimal)
 
@@ -2870,12 +2870,37 @@ class TestTRZReader(TestCase, RefTRZ):
     def test_delta(self):
         assert_almost_equal(self.trz.delta, self.ref_delta, self.prec, "wrong time delta in trz")
 
+    def test_delta_2(self):
+        self.trz._delta = newref = 4.00
+        assert_almost_equal(self.trz.delta, newref, self.prec, "couldn't inject to delta")
+
     def test_time(self):
         self.trz.rewind()
         assert_almost_equal(self.trz.time, self.ref_time, self.prec, "wrong time value in trz")
 
+    def test_get_writer(self):
+        fd, self.outfile = tempfile.mkstemp(suffix='.trz')
+        os.close(fd)
+        W = self.trz.Writer(self.outfile)
+        assert_equal(isinstance(W, MDAnalysis.coordinates.TRZ.TRZWriter), True)
+        assert_equal(W.numatoms, self.trz.numatoms)
+        try:
+            os.unlink(self.outfile)
+        except OSError:
+            pass
 
-class TRZWriter(TestCase, RefTRZ):
+    def test_get_writer_2(self):
+        fd, self.outfile = tempfile.mkstemp(suffix='.trz')
+        os.close(fd)
+        W = self.trz.Writer(self.outfile, numatoms=100)
+        assert_equal(isinstance(W, MDAnalysis.coordinates.TRZ.TRZWriter), True)
+        assert_equal(W.numatoms, 100)
+        try:
+            os.unlink(self.outfile)
+        except OSError:
+            pass
+
+class TestTRZWriter(TestCase, RefTRZ):
     def setUp(self):
         self.universe = mda.Universe(TRZ_psf, TRZ)
         self.prec = 3
@@ -2916,6 +2941,29 @@ class TRZWriter(TestCase, RefTRZ):
             for att in orig_ts.__dict__.keys():
                 assert_array_almost_equal(orig_ts.__getattribute__(att), written_ts.__getattribute__(att), self.prec,
                                           err_msg="TS equal failed for %s" % att)
+
+class TestTRZWriter2(object):
+    def setUp(self):
+        self.u = mda.Universe(two_water_gro)
+
+    def tearDown(self):
+        del self.u
+        try:
+            os.unlink(self.outfile)
+        except OSError:
+            pass
+
+    def test_writer_trz_from_other(self):
+        fd, self.outfile = tempfile.mkstemp(suffix='.trz')
+        os.close(fd)
+        W = MDAnalysis.coordinates.TRZ.TRZWriter(self.outfile, numatoms=len(self.u.atoms))
+
+        W.write(self.u.trajectory.ts)
+        W.close()
+
+        u2 = mda.Universe(two_water_gro, self.outfile)
+
+        assert_array_almost_equal(self.u.atoms.positions, u2.atoms.positions, 3)
 
 
 class TestWrite_Partial_Timestep(TestCase):

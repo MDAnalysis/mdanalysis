@@ -73,6 +73,7 @@ Reads coordinates, velocities and more (see attributes of the
 """
 
 from sys import maxint
+import warnings
 import numpy as np
 import os
 import errno
@@ -80,7 +81,7 @@ import errno
 from . import base
 import MDAnalysis.core
 import MDAnalysis.core.util as util
-from .core import triclinic_box
+from .core import triclinic_box, triclinic_vectors
 
 
 class Timestep(base.Timestep):
@@ -105,12 +106,7 @@ class Timestep(base.Timestep):
 
         .. versionadded:: 0.9.0
         """
-        if len(box) == 3 or len(box) == 6:
-            self._unitcell[0] = box[0]
-            self._unitcell[4] = box[1]
-            self._unitcell[8] = box[2]
-        else:
-            raise ValueError("Must set using MDAnalysis format box")
+        self._unitcell[:] = triclinic_vectors(box).reshape(9)
 
 
 class TRZReader(base.Reader):
@@ -530,22 +526,53 @@ class TRZWriter(base.Writer):
         if not ts.numatoms == self.numatoms:
             raise ValueError("Number of atoms in ts different to initialisation")
 
+        # Gather data, faking it when unavailable
+        data = {}
+        faked_attrs = []
+        for att in ['pressure', 'pressure_tensor', 'total_energy', 'potential_energy',
+                    'kinetic_energy', 'temperature', 'step', 'time']:
+            try:
+                data[att] = getattr(ts, att)
+            except AttributeError:
+                if att == 'pressure_tensor':
+                    data[att] = np.zeros(6, dtype=np.float64)
+                elif att == 'step':
+                    data[att] = ts.frame
+                elif att == 'time':
+                    data[att] = float(ts.frame)
+                else:
+                    data[att] = 0.0
+                faked_attrs.append(att)
+        if faked_attrs:
+            warnings.warn("Timestep didn't have the following attributes: '{0}', "
+                          "these will be set to 0 in the output trajectory"
+                          "".format(", ".join(faked_attrs)))
+
+        # Convert other stuff into our format
+        unitcell = triclinic_vectors(ts.dimensions).reshape(9)
+        try:
+            vels = ts._velocities
+        except AttributeError:
+            vels = np.zeros((self.numatoms, 3), dtype=np.float32, order='F')
+            warnings.warn("Timestep didn't have velocity information, "
+                          "this will be set to zero in output trajectory. ")
+
         out = np.zeros((), dtype=self.frameDtype)
         out['p1a'], out['p1b'] = 20, 20
         out['nframe'] = ts.frame
-        out['ntrj'] = ts.step
-        out['treal'] = ts.time
+        out['ntrj'] = data['step']
+        out['treal'] = data['time']
         out['p2a'], out['p2b'] = 72, 72
-        out['box'] = self.convert_pos_to_native(ts._unitcell, inplace=False)
+        out['box'] = self.convert_pos_to_native(unitcell, inplace=False)
         out['p3a'], out['p3b'] = 56, 56
-        out['pressure'] = ts.pressure
-        out['ptensor'] = ts.pressure_tensor
+        out['pressure'] = data['pressure']
+        out['ptensor'] = data['pressure_tensor']
         out['p4a'], out['p4b'] = 60, 60
         out['six'] = 6
-        out['etot'] = ts.total_energy
-        out['ptot'] = ts.potential_energy
-        out['ek'] = ts.kinetic_energy
-        out['T'] = ts.temperature
+        out['etot'] = data['total_energy']
+        out['ptot'] = data['potential_energy']
+        out['ek'] = data['kinetic_energy']
+        out['T'] = data['temperature']
         out['blanks'] = 0.0, 0.0
         size = ts.numatoms * 4  # size of float for vels & coords
         out['p5a'], out['p5b'] = size, size
@@ -555,11 +582,11 @@ class TRZWriter(base.Writer):
         out['p7a'], out['p7b'] = size, size
         out['rz'] = self.convert_pos_to_native(ts._z, inplace=False)
         out['p8a'], out['p8b'] = size, size
-        out['vx'] = self.convert_velocities_to_native(ts._velocities[:, 0], inplace=False)
+        out['vx'] = self.convert_velocities_to_native(vels[:, 0], inplace=False)
         out['p9a'], out['p9b'] = size, size
-        out['vy'] = self.convert_velocities_to_native(ts._velocities[:, 1], inplace=False)
+        out['vy'] = self.convert_velocities_to_native(vels[:, 1], inplace=False)
         out['p10a'], out['p10b'] = size, size
-        out['vz'] = self.convert_velocities_to_native(ts._velocities[:, 2], inplace=False)
+        out['vz'] = self.convert_velocities_to_native(vels[:, 2], inplace=False)
         out.tofile(self.trzfile)
 
     def close(self):
