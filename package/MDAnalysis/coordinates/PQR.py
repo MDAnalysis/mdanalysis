@@ -83,7 +83,7 @@ option are guaranteed to conform to the above format::
 .. _PDB:     http://www.rcsb.org/pdb/info.html#File_Formats_and_Standards
 """
 
-import numpy
+import numpy as np
 
 import MDAnalysis.core
 import MDAnalysis.core.util as util
@@ -109,7 +109,7 @@ class PQRReader(base.SingleFrameReader):
     def _read_first_frame(self):
         coords = []
         atoms = []
-        unitcell = numpy.zeros(6, dtype=numpy.float32)
+        unitcell = np.zeros(6, dtype=np.float32)
         segID = ''  # use empty string (not in PQR), PQRParsers sets it to SYSTEM
         with util.openany(self.filename, 'r') as pqrfile:
             for line in pqrfile:
@@ -125,7 +125,7 @@ class PQRReader(base.SingleFrameReader):
                     atoms.append(
                         (int(serial), name, resName, chainID, int(resSeq), float(charge), float(radius), segID))
         self.numatoms = len(coords)
-        self.ts = self._Timestep(numpy.array(coords, dtype=numpy.float32))
+        self.ts = self._Timestep.from_coordinates(np.array(coords, dtype=np.float32))
         self.ts._unitcell[:] = unitcell
         self.ts.frame = 1  # 1-based frame number
         if self.convert_units:
@@ -133,7 +133,7 @@ class PQRReader(base.SingleFrameReader):
             self.convert_pos_from_native(self.ts._unitcell[:3])  # in-place ! (only lengths)
 
         # hack for PQRParser:
-        self._atoms = numpy.rec.fromrecords(atoms, names="serial,name,resName,chainID,resSeq,charge,radius,segID")
+        self._atoms = np.rec.fromrecords(atoms, names="serial,name,resName,chainID,resSeq,charge,radius,segID")
 
     def get_radii(self):
         """Return an array of atom radii in atom order."""

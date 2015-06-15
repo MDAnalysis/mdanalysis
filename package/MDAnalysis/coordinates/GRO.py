@@ -27,12 +27,12 @@ Classes to read and write Gromacs_ GRO_ coordinate files; see the notes on the
 """
 
 import warnings
-import numpy
+import numpy as np
 
 import MDAnalysis
 from . import base
 import MDAnalysis.core.util as util
-from MDAnalysis.coordinates.core import triclinic_box, triclinic_vectors
+from .core import triclinic_box, triclinic_vectors
 
 
 class Timestep(base.Timestep):
@@ -41,7 +41,7 @@ class Timestep(base.Timestep):
     _ts_order_z = [7, 8, 2]
 
     def _init_unitcell(self):
-        return numpy.zeros(9, dtype=numpy.float32)
+        return np.zeros(9, dtype=np.float32)
 
     @property
     def dimensions(self):
@@ -73,9 +73,9 @@ class Timestep(base.Timestep):
     @dimensions.setter
     def dimensions(self, box):
         x, y, z = triclinic_vectors(box)
-        numpy.put(self._unitcell, self._ts_order_x, x)
-        numpy.put(self._unitcell, self._ts_order_y, y)
-        numpy.put(self._unitcell, self._ts_order_z, z)
+        np.put(self._unitcell, self._ts_order_x, x)
+        np.put(self._unitcell, self._ts_order_y, y)
+        np.put(self._unitcell, self._ts_order_z, z)
 
 
 class GROReader(base.SingleFrameReader):
@@ -92,38 +92,37 @@ class GROReader(base.SingleFrameReader):
             # Read first two lines to get number of atoms
             grofile.readline()
             total_atnums = int(grofile.readline())
-            # and the third line to get the spacing between coords (cs) (dependent upon the GRO file precision)
+            # and the third line to get the spacing between coords (cs)
+            # (dependent upon the GRO file precision)
             cs = grofile.readline()[25:].find('.') + 1
             grofile.seek(0)
             for linenum, line in enumerate(grofile):
                 # Should work with any precision
                 if linenum not in (0, 1, total_atnums + 2):
                     coords_list.append(
-                        numpy.array((
+                        np.array((
                             float(line[20:20 + cs]),
                             float(line[20 + cs:20 + (cs * 2)]),
                             float(line[20 + (cs * 2):20 + (cs * 3)]))))
-                    if line[20:].count('.') > 3:  # if there are enough decimals to indicate the presence of velocities
+                    # if there are enough decimals to indicate the presence of velocities
+                    if line[20:].count('.') > 3:
                         velocities_list.append(
-                            numpy.array((
+                            np.array((
                                 float(line[20 + (cs * 3):20 + (cs * 4)]),
                                 float(line[20 + (cs * 4):20 + (cs * 5)]),
                                 float(line[20 + (cs * 5):20 + (cs * 6)]))))
                 # Unit cell footer
                 elif linenum == total_atnums + 2:
-                    unitcell = numpy.array(map(float, line.split()))
+                    unitcell = np.array(map(float, line.split()))
 
         self.numatoms = len(coords_list)
-        coords_list = numpy.array(coords_list)
-        self.ts = self._Timestep(coords_list)
+
+        self.ts = self._Timestep.from_coordinates(
+            np.array(coords_list),
+            velocities=np.array(velocities_list, dtype=np.float32) if velocities_list else None)
+
         self.ts.frame = 1  # 1-based frame number
-        if velocities_list:  # perform this operation only if velocities are present in coord file
-            # TODO: use a Timestep that knows about velocities such as TRR.Timestep or better, TRJ.Timestep
-            self.ts._velocities = numpy.array(velocities_list, dtype=numpy.float32)
-            self.convert_velocities_from_native(self.ts._velocities)  # converts nm/ps to A/ps units
-        # ts._unitcell layout is format dependent; Timestep.dimensions does the conversion
-        # behind the scene
-        self.ts._unitcell = numpy.zeros(9, dtype=numpy.float32)  # GRO has 9 entries
+
         if len(unitcell) == 3:
             # special case: a b c --> (a 0 0) (b 0 0) (c 0 0)
             # see Timestep.dimensions() above for format (!)
@@ -136,7 +135,9 @@ class GROReader(base.SingleFrameReader):
         if self.convert_units:
             self.convert_pos_from_native(self.ts._pos)  # in-place !
             self.convert_pos_from_native(self.ts._unitcell)  # in-place ! (all are lengths)
-
+            if self.ts.has_velocities:
+                # converts nm/ps to A/ps units
+                self.convert_velocities_from_native(self.ts._velocities)
     def Writer(self, filename, **kwargs):
         """Returns a CRDWriter for *filename*.
 
@@ -249,7 +250,7 @@ class GROWriter(base.Writer):
 
             # Footer: box dimensions
             box = self.convert_dimensions_to_unitcell(u.trajectory.ts)
-            if numpy.all(u.trajectory.ts.dimensions[3:] == [90., 90., 90.]):
+            if np.all(u.trajectory.ts.dimensions[3:] == [90., 90., 90.]):
                 # orthorhombic cell, only lengths along axes needed in gro
                 output_gro.write(self.fmt['box_orthorhombic'] % (box[0, 0], box[1, 1], box[2, 2]))
             else:

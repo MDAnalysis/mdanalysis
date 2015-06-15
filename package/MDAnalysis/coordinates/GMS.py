@@ -30,7 +30,6 @@ will need to tweak this Class.
 import os
 import errno
 import re
-import numpy
 
 from . import base
 import MDAnalysis.core.util as util
@@ -54,7 +53,6 @@ class GMSReader(base.Reader):
           on the fly
     """
 
-    # this will be overidden when an instance is created and the file extension checked
     format = "GMS"
 
     # these are assumed!
@@ -228,7 +226,6 @@ class GMSReader(base.Reader):
 
             # stop when the cursor has reached the end of that block
             if counter == self._numatoms:
-                ts._unitcell = numpy.zeros((6), numpy.float)
                 ts._x[:] = x # more efficient to do it this way to avoid re-creating the numpy arrays
                 ts._y[:] = y
                 ts._z[:] = z

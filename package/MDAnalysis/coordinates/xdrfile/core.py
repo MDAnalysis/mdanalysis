@@ -66,7 +66,7 @@ for the XTC and TRR format.
 
 import os
 import errno
-import numpy
+import numpy as np
 import sys
 import cPickle
 import warnings
@@ -80,54 +80,17 @@ import MDAnalysis.core
 # This is the XTC class. The TRR overrides with it's own.
 class Timestep(base.Timestep):
     """Timestep for a Gromacs trajectory."""
+    order = 'C'
 
-    def __init__(self, arg, **kwargs):
-        DIM = libxdrfile2.DIM  # compiled-in dimension (most likely 3)
-        if numpy.dtype(type(arg)) == numpy.dtype(int):
-            self.frame = 0
-            self.numatoms = arg
-            # C floats and C-order for arrays (see libxdrfile2.i)
-            self._pos = numpy.zeros((self.numatoms, DIM), dtype=numpy.float32, order='C')
-            self._unitcell = numpy.zeros((DIM, DIM), dtype=numpy.float32)
-            # additional data for xtc
-            self.status = libxdrfile2.exdrOK
-            self.step = 0
-            self.time = 0
-            self.prec = 0
-        elif isinstance(arg, Timestep):  # Copy constructor
-            # This makes a deepcopy of the timestep
-            self.frame = arg.frame
-            self.numatoms = arg.numatoms
-            self._unitcell = numpy.array(arg._unitcell)
-            try:
-                self._pos = numpy.array(arg._pos, dtype=numpy.float32)
-            except ValueError as err:
-                raise ValueError("Attempted to create a Timestep with invalid coordinate data: " + err.message)
-            for attr in ('status', 'step', 'time', 'prec', 'lmbda'):
-                if hasattr(arg, attr):
-                    self.__setattr__(attr, arg.__getattribute__(attr))
-        elif isinstance(arg, numpy.ndarray):
-            if len(arg.shape) != 2:
-                raise ValueError("numpy array can only have 2 dimensions")
-            self._unitcell = numpy.zeros((DIM, DIM), dtype=numpy.float32)
-            self.frame = 0
-            if arg.shape[0] == DIM and arg.shape[1] != DIM:  # wrong order (need to exclude natoms == DIM!)
-                raise ValueError("Coordinate array must have shape (natoms, %(DIM)d)" % vars())
-            if arg.shape[1] == DIM:
-                self.numatoms = arg.shape[0]
-            else:
-                raise ValueError("XDR timestep has not second dimension 3: shape=%r" % (arg.shape,))
-            self._pos = arg.astype(numpy.float32).copy('C')  # C-order
-            # additional data for xtc
-            self.status = libxdrfile2.exdrOK
-            self.step = 0
-            self.time = 0
-            self.prec = 0
-        else:
-            raise ValueError("Cannot create an empty Timestep")
-        self._x = self._pos[:, 0]
-        self._y = self._pos[:, 1]
-        self._z = self._pos[:, 2]
+    def __init__(self, numatoms, **kwargs):
+        super(Timestep, self).__init__(numatoms, **kwargs)
+        self.status = libxdrfile2.exdrOK
+        self.step = 0
+        self.time = 0
+        self.prec = 0
+
+    def _init_unitcell(self):
+        return np.zeros((3, 3), dtype=np.float32)
 
     @property
     def dimensions(self):
@@ -221,7 +184,7 @@ class TrjWriter(base.Writer):
         # To flag empty properties to be skipped when writing a TRR it suffices to pass an empty 2D array with shape(
         # natoms,0)
         if self.format == 'TRR':
-            self._emptyarr = numpy.array([], dtype=numpy.float32).reshape(self.numatoms, 0)
+            self._emptyarr = np.array([], dtype=np.float32).reshape(self.numatoms, 0)
 
     def write_next_timestep(self, ts=None):
         """ write a new timestep to the trj file
@@ -269,7 +232,7 @@ class TrjWriter(base.Writer):
         if not hasattr(ts, 'step'):
             # bogus, should be actual MD step number, i.e. frame * delta/dt
             ts.step = ts.frame
-        unitcell = self.convert_dimensions_to_unitcell(ts).astype(numpy.float32)  # must be float32 (!)
+        unitcell = self.convert_dimensions_to_unitcell(ts).astype(np.float32)  # must be float32 (!)
 
         # make a copy of the scaled positions so that the in-memory
         # timestep is not changed (would have lead to wrong results if
@@ -419,12 +382,12 @@ class TrjReader(base.Reader):
         # check to make sure sub is valid (if given)
         if sub is not None:
             # only valid type
-            if not isinstance(sub, numpy.ndarray) or len(sub.shape) != 1 or sub.dtype.kind != 'i':
+            if not isinstance(sub, np.ndarray) or len(sub.shape) != 1 or sub.dtype.kind != 'i':
                 raise TypeError("sub MUST be a single dimensional numpy array of integers")
             if len(sub) > self._trr_numatoms:
                 raise ValueError("sub MUST be less than or equal to the number of actual trr atoms,"
                                  " {0} in this case".format(self._trr_numatoms))
-            if numpy.max(sub) >= self._trr_numatoms or numpy.min(sub) < 0:
+            if np.max(sub) >= self._trr_numatoms or np.min(sub) < 0:
                 raise IndexError("sub contains out-of-range elements for the given trajectory")
             # sub appears to be valid
             self._sub = sub
@@ -638,7 +601,8 @@ class TrjReader(base.Reader):
                 key = 'size'
                 conditions = (os.path.getsize(self.filename) == offsets[key]) and conditions
             except KeyError:
-                warnings.warn("Offsets in file '{0}' not suitable; missing {1}.".format(filename, key))
+                warnings.warn("Offsets in file '{0}' not suitable;"
+                              " missing {1}.".format(filename, key))
                 return
 
             # if conditions not met, abort immediately
@@ -650,7 +614,8 @@ class TrjReader(base.Reader):
         try:
             self._offsets = offsets['offsets']
         except KeyError:
-            warnings.warn("Missing key 'offsets' in file '{0}'; aborting load of offsets.".format(filename))
+            warnings.warn("Missing key 'offsets' in file '{0}';"
+                          " aborting load of offsets.".format(filename))
             return
         self._numframes = len(self._offsets)
 
@@ -665,7 +630,8 @@ class TrjReader(base.Reader):
             # ensure we return to the frame we started with
             self.__getitem__(frame - 1)
         except (IndexError, IOError):
-            warnings.warn("Could not access last frame with loaded offsets; will rebuild offsets instead.")
+            warnings.warn("Could not access last frame with loaded offsets;"
+                          " will rebuild offsets instead.")
             self._offsets = None
             self._numframes = None
 
@@ -771,8 +737,8 @@ class TrjReader(base.Reader):
         if self._offsets is None:
             self._read_trj_numframes(self.filename)
         self._seek(self._offsets[frame])
+        self.ts.frame = frame  # frame gets +1'd in _read_next_timestep   
         self._read_next_timestep()
-        self.ts.frame = frame + 1
         return self.ts
 
     # Renamed this once upon a time.

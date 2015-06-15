@@ -132,9 +132,8 @@ class DATAReader(base.SingleFrameReader):
         super(DATAReader, self).__init__(filename, **kwargs)
 
     def _read_first_frame(self):
-        self.ts = self._Timestep(self.numatoms)
         with DATAParser(self.filename) as p:
-            p.read_DATA_timestep(self.ts)
+            self.ts = p.read_DATA_timestep(self.numatoms, self._Timestep)
 
         self.ts.frame = 1
         if self.convert_units:

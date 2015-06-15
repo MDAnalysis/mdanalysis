@@ -79,7 +79,7 @@ class MOL2Reader(base.Reader):
         sections, coords = self.parse_block(block)
 
         self.numatoms = len(coords)
-        self.ts = self._Timestep(np.array(coords, dtype=np.float32))
+        self.ts = self._Timestep.from_coordinates(np.array(coords, dtype=np.float32))
         self.ts.frame = 1  # 1-based frame number as starting frame
 
         if self.convert_units:
@@ -162,7 +162,7 @@ class MOL2Reader(base.Reader):
                 "frame has %d, the next frame has %d atoms" % (
                 len(self.ts._pos), len(coords)))
 
-        self.ts = self._Timestep(np.array(coords, dtype=np.float32))
+        self.ts = self._Timestep.from_coordinates(np.array(coords, dtype=np.float32))
         self.ts._unitcell[:] = unitcell
         if self.convert_units:
             self.convert_pos_from_native(self.ts._pos)  # in-place !

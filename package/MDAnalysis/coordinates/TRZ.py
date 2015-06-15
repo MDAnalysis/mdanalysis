@@ -81,68 +81,13 @@ import errno
 from . import base
 import MDAnalysis.core
 import MDAnalysis.core.util as util
-from MDAnalysis.coordinates.core import triclinic_box, triclinic_vectors
+from .core import triclinic_box, triclinic_vectors
 
 
 class Timestep(base.Timestep):
     """ TRZ custom Timestep"""
-
-    def __init__(self, arg, **kwargs):
-        self.has_force = kwargs.pop('has_force', False)
-        if np.dtype(type(arg)) == np.dtype(int):
-            self.frame = 0
-            self.step = 0
-            self.numatoms = arg
-            self.time = 0.0
-            self.pressure = 0.0
-            self.pressure_tensor = np.zeros((6), dtype=np.float64)
-            self.total_energy = 0.0
-            self.potential_energy = 0.0
-            self.kinetic_energy = 0.0
-            self.temperature = 0.0
-            self._pos = np.zeros((self.numatoms, 3), dtype=np.float32, order='F')
-            self._velocities = np.zeros((self.numatoms, 3), dtype=np.float32, order='F')
-            if self.has_force:
-                self._forces = np.zeros((self.numatoms, 3), dtype=np.float32, order='F')
-            self._unitcell = np.zeros((9), dtype=np.float64, order='F')
-        elif isinstance(arg, Timestep):  # Copy constructor
-            # This makes a deepcopy of the timestep
-            self.frame = arg.frame
-            self.step = arg.step
-            self.numatoms = arg.numatoms
-            self.time = arg.time
-            self.pressure = arg.pressure
-            self.pressure_tensor = np.array(arg.pressure_tensor)
-            self.total_energy = arg.total_energy
-            self.potential_energy = arg.potential_energy
-            self.kinetic_energy = arg.kinetic_energy
-            self.temperature = arg.temperature
-            self._unitcell = np.array(arg._unitcell)
-            self._pos = np.array(arg._pos, order='F')
-            self._velocities = np.array(arg._velocities, order='F')
-            if self.has_force:
-                self._forces = np.array(arg._forces, order='F')
-        elif isinstance(arg, np.ndarray):
-            if len(arg.shape) != 2:
-                raise ValueError("numpy array can only have 2 dimensions")
-            self._unitcell = np.zeros((9), dtype=np.float64)
-            self.frame = 0
-            self.step = 0
-            self.numatoms = arg.shape[0]
-            self.time = 0.0
-            self.pressure = 0.0
-            self.pressure_tensor = np.zeros((6), dtype=np.float64)
-            self.total_energy = 0.0
-            self.potential_energy = 0.0
-            self.kinetic_energy = 0.0
-            self.temperature = 0.0  # Temperature in Kelvin
-            self._velocities = np.zeros((self.numatoms, 3), dtype=np.float32, order='F')
-            self._pos = arg.astype(np.float32).copy('Fortran', )
-        else:
-            raise ValueError("Cannot create an empty Timestep")
-        self._x = self._pos[:, 0]
-        self._y = self._pos[:, 1]
-        self._z = self._pos[:, 2]
+    def _init_unitcell(self):
+        return np.zeros(9)
 
     @property
     def dimensions(self):
@@ -181,7 +126,7 @@ class TRZReader(base.Reader):
         iterate through a trajectory using slicing
       ``trz[i]``
         random access of a trajectory frame
-"""
+    """
 
     format = "TRZ"
 
@@ -218,7 +163,7 @@ class TRZReader(base.Reader):
         self._skip_timestep = None
 
         self._read_trz_header()
-        self.ts = Timestep(self.numatoms, has_force=self.has_force)
+        self.ts = Timestep(self.numatoms, velocities=True, forces=self.has_force)
 
         # structured dtype of a single trajectory frame
         readarg = str(numatoms) + 'f4'
@@ -282,7 +227,7 @@ class TRZReader(base.Reader):
         else:
             raise IOError
 
-    def _read_next_timestep(self, ts=None):  # self.next() is from base Reader class and calls this
+    def _read_next_timestep(self, ts=None):
         if ts is None:
             ts = self.ts
 
@@ -293,7 +238,7 @@ class TRZReader(base.Reader):
             ts.time = data['treal'][0]
             ts._unitcell[:] = data['box']
             ts.pressure = data['pressure']
-            ts.pressure_tensor[:] = data['ptensor']
+            ts.pressure_tensor = data['ptensor']
             ts.total_energy = data['etot']
             ts.potential_energy = data['ptot']
             ts.kinetic_energy = data['ek']

@@ -48,7 +48,7 @@ class INPReader(base.SingleFrameReader):
             for p in xrange(self.numatoms // 2):
                 line = inf.readline()
                 # each float is f12.7, 6 floats a line
-                for i, dest in enumerate([(2*p, 0), (2*p,1), (2*p,2),
+                for i, dest in enumerate([(2*p, 0), (2*p, 1), (2*p, 2),
                                           (2*p + 1, 0), (2*p + 1, 1), (2*p + 1, 2)]):
                     self.ts._pos[dest] = float(line[i*12:(i+1)*12])
             # Read last coordinate if necessary            
