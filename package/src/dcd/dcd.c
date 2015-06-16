@@ -686,11 +686,11 @@ __read_next_frame(PyObject *self, PyObject *args)
 			dcd->reverse, dcd->charmm);
       dcd->first = 0;
       if (rc < 0) {
-	// return an exception
-	PyErr_SetString(PyExc_IOError, "Error reading first frame from DCD file");
-	//fprintf(stderr, "read_dcdstep returned %d\n", rc);
-	return NULL;
-	//return MOLFILE_ERROR;
+        // return an exception
+        PyErr_SetString(PyExc_IOError, "Error reading first frame from DCD file");
+        //fprintf(stderr, "read_dcdstep returned %d\n", rc);
+        return NULL;
+        //return MOLFILE_ERROR;
       }
       dcd->setsread++;
       temp = Py_BuildValue("i", dcd->setsread);

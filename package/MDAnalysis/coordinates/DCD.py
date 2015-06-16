@@ -32,7 +32,7 @@ within MDAnalysis will work seamlessly but if you process those
 trajectories with other tools you might need to watch out that time
 and unitcell dimensions are correctly interpreted.
 
-.. Note:: 
+.. Note::
 
    The DCD file format is not well defined. In particular, NAMD and
    CHARMM use it differently. Currently, MDAnalysis tries to guess the
@@ -82,11 +82,6 @@ class Timestep(base.Timestep):
     #: C]``, provided by the :class:`DCDReader` C code) to pull out
     #: ``[A, B, C, alpha, beta, gamma]``.
     _ts_order = [0, 2, 5, 4, 3, 1]
-
-    #: indices into :attr:`Timestep._unitcell`` to pull out
-    #: ``[A, B, C, alpha, beta, gamma]``.
-    ### old (MDAnalysis 0.8.1)
-    ###_ts_order = [0, 2, 5, 4, 3, 1]
 
     @property
     def dimensions(self):
@@ -320,15 +315,6 @@ class DCDWriter(base.Writer):
         self._write_next_frame(pos[:, 0], pos[:, 1], pos[:, 2], unitcell)
         self.frames_written += 1
 
-#     def convert_dimensions_to_unitcell(self, ts, _ts_order=Timestep._ts_order):
-#         """Read dimensions from timestep *ts* and return appropriate unitcell.
-
-#         .. SeeAlso:: :class:`Timestep`
-#         """
-#         unitcell = super(DCDWriter, self).convert_dimensions_to_unitcell(ts)
-#         # unitcell is A,B,C,alpha,beta,gamma - convert to order expected by low level
-#         # DCD routines
-
     def convert_dimensions_to_unitcell(self, ts, _ts_order=Timestep._ts_order):
         """Read dimensions from timestep *ts* and return appropriate native unitcell.
 
@@ -381,7 +367,7 @@ class DCDReader(base.Reader):
         ``data = dcd.correl(...)``
            populate a :class:`MDAnalysis.core.Timeseries.Collection` object with computed timeseries
 
-    .. Note:: 
+    .. Note::
 
        The DCD file format is not well defined. In particular, NAMD
        and CHARMM use it differently. Currently, MDAnalysis tries to
