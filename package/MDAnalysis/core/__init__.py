@@ -273,7 +273,7 @@ _flags = [
 
            The preset value for MDAnalysis is %(default)r.
 
-           :mod:`MDAnalysis.KDTree` routines are significantly faster for some distance
+           :mod:`MDAnalysis.lib.KDTree` routines are significantly faster for some distance
            selections. However, they cannot deal with periodic boxes and thus ignore
            periodicity; if periodicity is crucial, disable KDTree routines with
 

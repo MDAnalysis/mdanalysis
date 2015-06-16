@@ -33,6 +33,7 @@ The rules for this file:
   * Removed FormatError, now replaced by ValueError
   * distances.contact_matrix(): changed keyword 'suppress_progmet' to
     'quiet'
+  * Moved MDAnalysis.KDTree to MDAnalysis.lib.KDTree (Issue #287)
 
   Fixes
   * analysis.hbonds.HydrogenBondAnalysis performs a sanity check for

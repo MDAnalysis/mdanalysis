@@ -12,4 +12,5 @@ Versions of these routines with error checking are available in
 .. toctree::
    :maxdepth: 1
 
-   lib/_distances
+   ./lib/KDTree_modules
+   ./lib/_distances

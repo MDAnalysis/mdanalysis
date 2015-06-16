@@ -16,7 +16,7 @@
 
 import MDAnalysis
 from MDAnalysis.tests.datafiles import PDBQT_input, PDBQT_querypdb
-import MDAnalysis.KDTree.NeighborSearch as kdNS
+import MDAnalysis.lib.KDTree.NeighborSearch as kdNS
 
 from numpy.testing import *
 from nose.plugins.attrib import attr

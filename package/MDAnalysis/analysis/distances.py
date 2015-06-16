@@ -36,6 +36,7 @@ from scipy import weave
 from scipy.weave import converters
 
 from MDAnalysis.core.distances import distance_array, self_distance_array
+from MDAnalysis.lib.KDTree.NeighborSearch import AtomNeighborSearch
 
 import logging
 
@@ -242,11 +243,10 @@ def between(group, A, B, distance):
 
     Similar to "*group* and (AROUND *A* *distance* and AROUND *B* *distance*)".
 
-    .. SeeAlso:: Makes use of :mod:`MDAnalysis.KDTree.NeighborSearch`.
+    .. SeeAlso:: Makes use of :mod:`MDAnalysis.lib.KDTree.NeighborSearch`.
 
     .. versionadded: 0.7.5
     """
-    from MDAnalysis.KDTree.NeighborSearch import AtomNeighborSearch
     from MDAnalysis.core.AtomGroup import AtomGroup
 
     ns_group = AtomNeighborSearch(group)

@@ -18,7 +18,7 @@
 # [Copyright (C) 2002, Thomas Hamelryck (thamelry@binf.ku.dk)]
 # used under the terms of the Biopython license (see LICENCE for details)
 
-"""Fast atom neighbor lookup using a KD tree (implemented in C++) --- :mod:`MDAnalysis.KDTree.NeighborSearch`
+"""Fast atom neighbor lookup using a KD tree (implemented in C++) --- :mod:`MDAnalysis.lib.KDTree.NeighborSearch`
 ==================================================================================================================
 
 One can use KD-Trees to speed up searches. MDAnalysis uses Thomas
@@ -32,7 +32,7 @@ selections.
 
 Example::
 
-  import MDAnalysis.KDTree.NeighborSearch as NS
+  import MDAnalysis.lib.KDTree.NeighborSearch as NS
 
   u = Universe(psf,dcd)
   water = u.selectAtoms('name OH2')
@@ -314,23 +314,3 @@ def _test(x, y, z, R):
     return found_indices, numpy.sqrt(numpy.sum(diff * diff, axis=1))
 
 
-if __name__ == "__main__":
-    import numpy
-
-    class Atom:
-        def __init__(self):
-            self.coord = 100 * numpy.random.random(3)
-
-        def coordinates(self):
-            return self.coord
-
-    class AtomGroup(list):
-        def coordinates(self):
-            return numpy.array([atom.coordinates() for atom in self])
-
-    for i in range(0, 20):
-        al = AtomGroup([Atom() for i in range(0, 1000)])
-
-        ns = AtomNeighborSearch(al)
-
-        print "Found ", len(ns.search_all(5.0))

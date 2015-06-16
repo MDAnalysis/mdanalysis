@@ -13,8 +13,8 @@
 # Added the modified NeighborSearch module to the KDTree package
 
 """
-.. KDTree distance searches --- :mod:`MDAnalysis.KDTree`
-.. =====================================================
+.. KDTree distance searches --- :mod:`MDAnalysis.lib.KDTree`
+.. =========================================================
 
 :Author: Thomas Hamelryck
 :Year:   2002
