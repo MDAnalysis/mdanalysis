@@ -134,7 +134,8 @@ class PDBQTReader(base.SingleFrameReader):
          TORSDOF 3
          123456789.123456789.123456789.123456789.123456789.123456789.123456789.123456789. (column reference)
 
-
+    .. versionchanged:: 0.11.0
+       Frames now 0-based instead of 1-based
     """
     format = 'PDBQT'
     units = {'time': None, 'length': 'Angstrom'}
@@ -174,7 +175,7 @@ class PDBQTReader(base.SingleFrameReader):
         self.numatoms = len(coords)
         self.ts = self._Timestep.from_coordinates(np.array(coords, dtype=np.float32))
         self.ts._unitcell[:] = unitcell
-        self.ts.frame = 1  # 1-based frame number
+        self.ts.frame = 0  # 0-based frame number
         if self.convert_units:
             self.convert_pos_from_native(self.ts._pos)  # in-place !
             self.convert_pos_from_native(self.ts._unitcell[:3])  # in-place ! (only lengths)
@@ -284,6 +285,9 @@ class PDBQTWriter(base.Writer):
            The first letter of the
            :attr:`~MDAnalysis.core.AtomGroup.Atom.segid` is used as the PDB
            chainID.
+
+        .. versionchanged:: 0.11.0
+           Frames now 0-based instead of 1-based
         """
         u = selection.universe
         if frame is not None:
@@ -292,7 +296,7 @@ class PDBQTWriter(base.Writer):
             try:
                 frame = u.trajectory.ts.frame
             except AttributeError:
-                frame = 1  # should catch cases when we are analyzing a single PDB (?)
+                frame = 0  # should catch cases when we are analyzing a single PDB (?)
 
         self.TITLE("FRAME " + str(frame) + " FROM " + str(u.trajectory.filename))
         self.CRYST1(self.convert_dimensions_to_unitcell(u.trajectory.ts))

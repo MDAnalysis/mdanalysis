@@ -102,6 +102,9 @@ class PQRReader(base.SingleFrameReader):
 
     .. _PQR:
         http://www.poissonboltzmann.org/file-formats/biomolecular-structurw/pqr
+
+    .. versionchanged:: 0.11.0
+       Frames now 0-based instead of 1-based
     """
     format = 'PQR'
     units = {'time': None, 'length': 'Angstrom'}
@@ -127,7 +130,7 @@ class PQRReader(base.SingleFrameReader):
         self.numatoms = len(coords)
         self.ts = self._Timestep.from_coordinates(np.array(coords, dtype=np.float32))
         self.ts._unitcell[:] = unitcell
-        self.ts.frame = 1  # 1-based frame number
+        self.ts.frame = 0  # 0-based frame number
         if self.convert_units:
             self.convert_pos_from_native(self.ts._pos)  # in-place !
             self.convert_pos_from_native(self.ts._unitcell[:3])  # in-place ! (only lengths)
@@ -212,6 +215,9 @@ class PQRWriter(base.Writer):
          :Keywords:
              *frame*
                 optionally move to frame number *frame*
+
+        .. versionchanged:: 0.11.0
+           Frames now 0-based instead of 1-based
         """
         # write() method that complies with the Trajectory API
         u = selection.universe
@@ -221,7 +227,7 @@ class PQRWriter(base.Writer):
             try:
                 frame = u.trajectory.ts.frame
             except AttributeError:
-                frame = 1  # should catch cases when we are analyzing a single frame(?)
+                frame = 0  # should catch cases when we are analyzing a single frame(?)
 
         atoms = selection.atoms  # make sure to use atoms (Issue 46)
         coordinates = atoms.coordinates()  # can write from selection == Universe (Issue 49)

@@ -503,6 +503,7 @@ class Test_Helanal(TestCase):
         """Check for sustained resolution of Issue 188."""
         u = self.universe
         sel = self.selection
+        u.trajectory[1]
 
         assert_raises(FinishTimeException, MDAnalysis.analysis.helanal.helanal_trajectory,
                       u, selection=sel, finish=5)

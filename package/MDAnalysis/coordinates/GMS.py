@@ -51,6 +51,9 @@ class GMSReader(base.Reader):
     .. Note: this can read both compressed (foo.out) and compressed
           (foo.out.bz2 or foo.out.gz) files; uncompression is handled
           on the fly
+
+    .. versionchanged:: 0.11.0
+       Frames now 0-based instead of 1-based
     """
 
     format = "GMS"
@@ -247,7 +250,7 @@ class GMSReader(base.Reader):
         # reset ts
         ts = self.ts
         ts.status = 1
-        ts.frame = 0
+        ts.frame = -1 
         ts.step = 0
         ts.time = 0
         return self.outfile

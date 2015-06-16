@@ -281,7 +281,7 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
     trajectory = universe.trajectory
 
     if finish is not None:
-        if trajectory.time > finish:  # you'd be starting with a finish time (in ps) that has already passed or not
+        if trajectory.ts.time > finish:  # you'd be starting with a finish time (in ps) that has already passed or not
         # available
             raise FinishTimeException(
                 'The input finish time ({finish} ps) precedes the current trajectory time of {traj_time} ps.'.format(

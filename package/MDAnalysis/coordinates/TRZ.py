@@ -126,6 +126,9 @@ class TRZReader(base.Reader):
         iterate through a trajectory using slicing
       ``trz[i]``
         random access of a trajectory frame
+
+    .. versionchanged:: 0.11.0
+       Frames now 0-based instead of 1-based
     """
 
     format = "TRZ"
@@ -233,7 +236,7 @@ class TRZReader(base.Reader):
 
         try:
             data = np.fromfile(self.trzfile, dtype=self._dtype, count=1)
-            ts.frame = data['nframe'][0]
+            ts.frame = data['nframe'][0] - 1  # 0 based for MDA
             ts.step = data['ntrj'][0]
             ts.time = data['treal'][0]
             ts._unitcell[:] = data['box']
@@ -297,6 +300,10 @@ class TRZReader(base.Reader):
         return nframes
 
     @property
+    def time(self):
+        return self.ts.time
+
+    @property
     def dt(self):
         """The amount of time between frames in ps
 
@@ -341,13 +348,16 @@ class TRZReader(base.Reader):
             self.rewind()
         return self._skip_timestep
 
-    # can use base.Reader __getitem__ implementation
     def _read_frame(self, frame):
-        """Move to *frame* and fill timestep with data."""
-        move = frame - (self.ts.frame - 1)  # difference from current frame to desired frame
-        if move is not 0:
-            self._seek(move - 1)
-            self.next()
+        """Move to *frame* and fill timestep with data.
+        
+        .. versionchanged:: 0.11.0
+           Frames now 0-based instead of 1-based
+        """
+        move = frame - self.ts.frame
+
+        self._seek(move - 1)
+        self._read_next_timestep()
         return self.ts
 
     def _seek(self, nframes):
@@ -357,9 +367,6 @@ class TRZReader(base.Reader):
 
         .. versionadded:: 0.9.0
         """
-        if (np.dtype(type(nframes)) != np.dtype(int)):
-            raise ValueError("TRZfile seek requires an integer number of frames got %r" % type(nframes))
-
         maxi_l = long(maxint)
 
         framesize = long(self._dtype.itemsize)
@@ -398,7 +405,7 @@ class TRZReader(base.Reader):
         #Reset ts
         ts = self.ts
         ts.status = 1
-        ts.frame = 0
+        ts.frame = -1 
         ts.step = 0
         ts.time = 0
         return self.trzfile
@@ -550,7 +557,7 @@ class TRZWriter(base.Writer):
 
         out = np.zeros((), dtype=self.frameDtype)
         out['p1a'], out['p1b'] = 20, 20
-        out['nframe'] = ts.frame
+        out['nframe'] = ts.frame + 1  # TRZ wants 1 based
         out['ntrj'] = data['step']
         out['treal'] = data['time']
         out['p2a'], out['p2b'] = 72, 72

@@ -35,8 +35,9 @@ class AmazingMultiFrameReader(Reader):
         self.delta = 1.0
         self.skip_timestep = 1
         # ts isn't a real timestep, but just an integer
-        # whose value represents the frame number (1 based)
+        # whose value represents the frame number (0 based)
         self.ts = Timestep(self.numatoms)
+        self.ts.frame = -1
         self._read_next_timestep()
 
     def __iter__(self):
@@ -49,18 +50,18 @@ class AmazingMultiFrameReader(Reader):
 
     def _read_next_timestep(self):
         self.ts.frame += 1
-        if self.ts.frame > self.numframes:
+        if (self.ts.frame + 1) > self.numframes:
             raise IOError
         else:
             return self.ts
         
     def _read_frame(self, frame):
-        self.ts.frame = frame + 1
+        self.ts.frame = frame
 
         return self.ts
 
     def _reopen(self):
-        self.ts.frame = 0
+        self.ts.frame = -1
 
 
 class AmazingReader(SingleFrameReader):
@@ -69,7 +70,7 @@ class AmazingReader(SingleFrameReader):
     def _read_first_frame(self):
         self.numatoms = 10
         self.ts = Timestep(self.numatoms)
-        self.ts.frame = 1
+        self.ts.frame = 0
 
 
 class _TestReader(TestCase):
@@ -101,13 +102,13 @@ class _TestReader(TestCase):
         ret = self.reader.rewind()
 
         assert_equal(ret, None)
-        assert_equal(self.reader.ts.frame, 1)
+        assert_equal(self.reader.ts.frame, 0)
 
     def test_context(self):
         with self.readerclass('text.txt') as sfr:
             l = sfr.ts.frame
 
-        assert_equal(l, 1)
+        assert_equal(l, 0)
 
     def test_len(self):
         l = len(self.reader)
@@ -119,7 +120,7 @@ class _Multi(object):
     numframes = 10
     numatoms = 10
     readerclass = AmazingMultiFrameReader
-    reference = [i+1 for i in range(10)]
+    reference = [i for i in range(10)]
     
 class TestMultiFrameReader(_Multi, _TestReader):
     def _check_slice(self, sl):
