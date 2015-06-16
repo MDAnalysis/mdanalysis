@@ -718,11 +718,6 @@ class TrjReader(base.Reader):
             else:
                 yield ts
 
-    def rewind(self):
-        """Position at beginning of trajectory"""
-        self._reopen()
-        self.next()  # read first frame
-
     def _reopen(self):
         self.close()
         self.open_trajectory()
@@ -744,19 +739,6 @@ class TrjReader(base.Reader):
     # Renamed this once upon a time.
     _goto_frame = _read_frame
 
-    def _sliced_iter(self, start, stop, step):
-        def _iter(start=start, stop=stop, step=step):
-            if step == 1:
-                rng = xrange(start + 1, stop, step)
-                yield self._read_frame(start)
-                for framenr in rng:
-                    yield self._read_frame(framenr)
-            else:
-                rng = xrange(start, stop, step)
-                for framenr in rng:
-                    yield self._read_frame(framenr)
-        return _iter()
-        
     def timeseries(self, asel, start=0, stop=-1, skip=1, format='afc'):
         raise NotImplementedError("timeseries not available for Gromacs trajectories")
 

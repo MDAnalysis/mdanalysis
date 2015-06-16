@@ -260,15 +260,6 @@ class HistoryReader(base.Reader):
 
         return numframes
 
-    def __iter__(self):
-        self._reopen()
-        while True:
-            try:
-                yield self._read_next_timestep()
-            except IOError:
-                self.rewind()
-                raise StopIteration
-
     def rewind(self):
         self._reopen()
         self.next()

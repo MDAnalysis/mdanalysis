@@ -96,13 +96,6 @@ class MOL2Reader(base.Reader):
         self.delta = 0
         self.skip_timestep = 1
 
-    def __iter__(self):
-        for i in xrange(0, self.numframes):
-            try:
-                yield self._read_frame(i)
-            except IOError:
-                raise StopIteration
-
     def parse_block(self, block):
         sections = {}
         cursor = None
