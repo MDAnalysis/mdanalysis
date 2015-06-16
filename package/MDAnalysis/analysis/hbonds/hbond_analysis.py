@@ -311,6 +311,7 @@ Classes
 """
 
 from collections import defaultdict
+import itertools
 import numpy
 
 from MDAnalysis import MissingDataWarning, NoDataError, SelectionError, SelectionWarning
@@ -942,8 +943,6 @@ class HydrogenBondAnalysis(object):
 
         .. _recsql: http://pypi.python.org/pypi/RecSQL
         """
-        from itertools import izip
-
         if self.timeseries is None:
             msg = "No timeseries computed, do run() first."
             warnings.warn(msg, category=MissingDataWarning)
@@ -951,31 +950,23 @@ class HydrogenBondAnalysis(object):
             return
 
         num_records = numpy.sum([len(hframe) for hframe in self.timeseries])
+        # build empty output table
         dtype = [
             ("time", float), ("donor_idx", int), ("acceptor_idx", int),
             ("donor_resnm", "|S4"), ("donor_resid", int), ("donor_atom", "|S4"),
             ("acceptor_resnm", "|S4"), ("acceptor_resid", int), ("acceptor_atom", "|S4"),
             ("distance", float), ("angle", float)]
-        self.table = numpy.recarray((num_records,), dtype=dtype)
-
         # according to Lukas' notes below, using a recarray at this stage is ineffective
-        # and speedups of ~x10 could be achieved by filling a standard array
-        # (perhaps at the cost of less clarity... but that might just be my code ;-) -- orbeckst)
+        # and speedups of ~x10 can be achieved by filling a standard array, like this:
+        out = numpy.empty((num_records,), dtype=dtype)
         cursor = 0  # current row
-        for t, hframe in izip(self.timesteps, self.timeseries):
-            if len(hframe) == 0:
-                continue  # not really necessary, should also work without
-            self.table[cursor:cursor + len(hframe)].time = t
+        for t, hframe in itertools.izip(self.timesteps, self.timeseries):
             for donor_idx, acceptor_idx, donor, acceptor, distance, angle in hframe:
-                r = self.table[cursor]
-                r.donor_idx = donor_idx
-                r.donor_resnm, r.donor_resid, r.donor_atom = parse_residue(donor)
-                r.acceptor_idx = acceptor_idx
-                r.acceptor_resnm, r.acceptor_resid, r.acceptor_atom = parse_residue(acceptor)
-                r.distance = distance
-                r.angle = angle
+                out[cursor] = (t, donor_idx, acceptor_idx) + parse_residue(donor) + \
+                    parse_residue(acceptor) + (distance, angle)
                 cursor += 1
         assert cursor == num_records, "Internal Error: Not all HB records stored"
+        self.table = out.view(numpy.recarray)
         logger.debug("HBond: Stored results as table with %(num_records)d entries.", vars())
 
     def save_table(self, filename="hbond_table.pickle"):
@@ -999,7 +990,6 @@ class HydrogenBondAnalysis(object):
 
         :Returns: a class:`numpy.recarray`
         """
-        from itertools import izip, imap
 
         if self.timeseries is None:
             msg = "No timeseries computed, do run() first."
@@ -1008,7 +998,8 @@ class HydrogenBondAnalysis(object):
             return
 
         out = numpy.empty((len(self.timesteps),), dtype=[('time', float), ('count', int)])
-        for cursor, time_count in enumerate(izip(self.timesteps, imap(len, self.timeseries))):
+        for cursor, time_count in enumerate(itertools.izip(self.timesteps,
+                                                           itertools.imap(len, self.timeseries))):
             out[cursor] = time_count
         return out.view(numpy.recarray)
 
@@ -1079,7 +1070,6 @@ class HydrogenBondAnalysis(object):
 
         :Returns: a class:`numpy.recarray`
         """
-        from itertools import izip
 
         if self.timeseries is None:
             msg = "No timeseries computed, do run() first."
@@ -1088,7 +1078,7 @@ class HydrogenBondAnalysis(object):
             return
 
         hbonds = defaultdict(list)
-        for (t, hframe) in izip(self.timesteps, self.timeseries):
+        for (t, hframe) in itertools.izip(self.timesteps, self.timeseries):
             for donor_idx, acceptor_idx, donor, acceptor, distance, angle in hframe:
                 donor_resnm, donor_resid, donor_atom = parse_residue(donor)
                 acceptor_resnm, acceptor_resid, acceptor_atom = parse_residue(acceptor)

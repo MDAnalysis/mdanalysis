@@ -208,7 +208,11 @@ class TestHydrogenBondAnalysis(TestCase):
             'angle': 150.0,
         }
         # ideal helix with 1 proline:
-        self.num_bb_hbonds = u.atoms.numberOfResidues() - u.SYSTEM.PRO.numberOfResidues() - 4
+        self.values = {
+            'num_bb_hbonds':  u.atoms.numberOfResidues() - u.SYSTEM.PRO.numberOfResidues() - 4,
+            'donor_resid': numpy.array([5,  6,  8,  9, 10, 11, 12, 13]),
+            'acceptor_resnm': numpy.array(['ALA', 'ALA', 'ALA', 'ALA', 'ALA', 'PRO', 'ALA', 'ALA']),
+            }
 
     def _run(self, **kwargs):
         kw = self.kwargs.copy()
@@ -219,8 +223,18 @@ class TestHydrogenBondAnalysis(TestCase):
 
     def test_helix_backbone(self):
         h = self._run()
-        assert_equal(len(h.timeseries[0]), self.num_bb_hbonds, "wrong number of backbone hydrogen bonds")
+        assert_equal(len(h.timeseries[0]),
+                     self.values['num_bb_hbonds'], "wrong number of backbone hydrogen bonds")
         assert_equal(h.timesteps, [0.0])
+
+    def test_generate_table(self):
+        h = self._run()
+        h.generate_table()
+        assert_equal(len(h.table),
+                     self.values['num_bb_hbonds'], "wrong number of backbone hydrogen bonds in table")
+        assert_(isinstance(h.table, numpy.core.records.recarray))
+        assert_array_equal(h.table.donor_resid, self.values['donor_resid'])
+        assert_array_equal(h.table.acceptor_resnm, self.values['acceptor_resnm'])
 
     # TODO: Expand tests because the following ones are a bit superficial
     #       because we should really run them on a trajectory
@@ -228,17 +242,17 @@ class TestHydrogenBondAnalysis(TestCase):
     def test_count_by_time(self):
         h = self._run()
         c = h.count_by_time()
-        assert_equal(c.tolist(), [(0.0, self.num_bb_hbonds)])
+        assert_equal(c.tolist(), [(0.0, self.values['num_bb_hbonds'])])
 
     def test_count_by_type(self):
         h = self._run()
         c = h.count_by_type()
-        assert_equal(c.frequency, self.num_bb_hbonds * [1.0])
+        assert_equal(c.frequency, self.values['num_bb_hbonds'] * [1.0])
 
     def test_count_by_type(self):
         h = self._run()
         t = h.timesteps_by_type()
-        assert_equal(t.time, self.num_bb_hbonds * [0.0])
+        assert_equal(t.time, self.values['num_bb_hbonds'] * [0.0])
 
     def tearDown(self):
         del self.universe
@@ -261,7 +275,9 @@ class TestHydrogenBondAnalysisHeavyFail(TestHydrogenBondAnalysisHeavy):
     def setUp(self):
         super(TestHydrogenBondAnalysisHeavyFail, self).setUp()
         self.kwargs["distance"] = 3.0
-        self.num_bb_hbonds = 0  # no H-bonds with a D-A distance < 3.0 A (they start at 3.05 A)
+        self.values['num_bb_hbonds'] = 0  # no H-bonds with a D-A distance < 3.0 A (they start at 3.05 A)
+        self.values['donor_resid'] = numpy.array([])
+        self.values['acceptor_resnm'] = numpy.array([], dtype="|S3")
 
 class TestHydrogenBondAnalysisChecking(object):
     def _setUp(self):
