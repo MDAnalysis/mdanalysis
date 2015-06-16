@@ -43,14 +43,14 @@ MDAnalysis issue tracker.)
 
 .. [*] **build**: Unit testing is for the whole package; **coverage** is shown for the core library 
        modules (which excludes `MDAnalysis.analysis`_ and `MDAnalysis.visualization`_ at
-       at the moment). For more details and discussion see issue `#286`_.
+       the moment). For more details and discussion see issue `#286`_.
 
 .. _Issue 87: https://github.com/MDAnalysis/mdanalysis/issues/87
 .. _MDAnalysis: http://www.MDAnalysis.org
 .. _LICENSE: https://github.com/MDAnalysis/mdanalysis/blob/master/LICENSE
 .. _`#286`: https://github.com/MDAnalysis/mdanalysis/issues/286
 .. _`MDAnalysis.analysis`: http://docs.mdanalysis.org/documentation_pages/analysis_modules.html
-.. _`MDAnalysis.visualization`: https://docs.mdanalysis.org/documentation_pages/visualization_modules.html
+.. _`MDAnalysis.visualization`: http://docs.mdanalysis.org/documentation_pages/visualization_modules.html
 
 .. |usergroup| image:: https://img.shields.io/badge/-User%20Google%20Group-lightgrey.svg
    :alt: User Google Group
