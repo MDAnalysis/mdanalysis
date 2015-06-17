@@ -448,19 +448,8 @@ class DCDReader(base.Reader):
             'charmm', 'first', 'with_unitcell']
         return dict(zip(desc, struct.unpack("LLiiiiidiPPiiii", self._dcd_C_str)))
 
-    def __iter__(self):
-        # Reset the trajectory file, read from the start
-        # usage is "from ts in dcd:" where dcd does not have indexes
+    def _reopen(self):
         self._reset_dcd_read()
-
-        def iterDCD():
-            for i in xrange(0, self.numframes, self.skip):  # FIXME: skip is not working!!!
-                try:
-                    yield self._read_next_timestep()
-                except IOError:
-                    raise StopIteration
-
-        return iterDCD()
 
     def _read_next_timestep(self, ts=None):
         if ts is None:

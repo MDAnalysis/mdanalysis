@@ -341,15 +341,6 @@ class TRZReader(base.Reader):
             self.rewind()
         return self._skip_timestep
 
-    def __iter__(self):
-        self._reopen()
-        while True:
-            try:
-                yield self._read_next_timestep()
-            except IOError:
-                self.rewind()
-                raise StopIteration
-
     # can use base.Reader __getitem__ implementation
     def _read_frame(self, frame):
         """Move to *frame* and fill timestep with data."""
