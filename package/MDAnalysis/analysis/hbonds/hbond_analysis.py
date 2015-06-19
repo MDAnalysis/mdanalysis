@@ -316,7 +316,7 @@ import numpy
 
 from MDAnalysis import MissingDataWarning, NoDataError, SelectionError, SelectionWarning
 from MDAnalysis.core.AtomGroup import AtomGroup
-import MDAnalysis.KDTree.NeighborSearch as NS
+import MDAnalysis.lib.KDTree.NeighborSearch as NS
 from MDAnalysis.core.util import norm, angle, parse_residue
 from MDAnalysis.core.log import ProgressMeter
 

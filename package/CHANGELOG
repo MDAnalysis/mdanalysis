@@ -33,6 +33,7 @@ The rules for this file:
   * Removed FormatError, now replaced by ValueError
   * distances.contact_matrix(): changed keyword 'suppress_progmet' to
     'quiet'
+  * Moved MDAnalysis.KDTree to MDAnalysis.lib.KDTree (Issue #287)
   * base.Reader now defines __iter__
   * __iter__ removed from many Readers (now use base.Reader implementation)
 

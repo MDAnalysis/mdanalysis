@@ -16,7 +16,10 @@
 
 
 """
-:mod:`MDAnalysis.lib` --- Low level access to math routines
+:mod:`MDAnalysis.lib` --- Access to lower level routines
 ================================================================
 """
 
+__all__ = ['KDTree']
+
+from . import KDTree
