@@ -294,23 +294,3 @@ class AtomNeighborSearch(CoordinateNeighborSearch):
         return [tuple(s) for s in unique_pairs]  # return as list of 2-tuples
 
 
-def _test(x, y, z, R):
-    """Find points of a 2x2 square (+origin) within R of x,y,z."""
-    import numpy
-
-    coords = numpy.array(
-        [
-            [0, 0, 0],
-            [1, 1, 0],
-            [-1, 1, 0],
-            [-1, -1, 0],
-            [1, -1, 0]],
-        dtype=numpy.float32)
-    CNS = CoordinateNeighborSearch(coords)
-    center = numpy.array([x, y, z])
-    found_indices = CNS.search(center, R)
-    # check manually
-    diff = coords[found_indices] - center[numpy.newaxis, :]
-    return found_indices, numpy.sqrt(numpy.sum(diff * diff, axis=1))
-
-
