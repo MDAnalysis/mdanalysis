@@ -159,6 +159,20 @@ class TestXYZReader(TestCase, Ref2r9r):
         #frames = [ts.frame-1 for ts in trj_iter()]
         #assert_equal(frames, np.arange(self.universe.trajectory.numframes, step=2))
 
+class TestXYZReaderAsTopology(object):
+    """Test that an XYZ file can act as its own topology"""
+    def setUp(self):
+        self.u = mda.Universe(XYZ_mini)
+
+    def tearDown(self):
+        del self.u
+
+    def test_coords(self):
+        ref = np.array([[0.0, 0.0, 0.0],
+                        [1.0, 1.0, 1.0],
+                        [2.0, 2.0, 2.0]],
+                       dtype=np.float32)
+        assert_array_almost_equal(self.u.atoms.positions, ref)
 
 class TestCompressedXYZReader(TestCase, Ref2r9r):
     def setUp(self):
