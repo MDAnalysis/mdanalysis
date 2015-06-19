@@ -13,8 +13,8 @@
 # Added the modified NeighborSearch module to the KDTree package
 
 """
-.. KDTree distance searches --- :mod:`MDAnalysis.KDTree`
-.. =====================================================
+.. KDTree distance searches --- :mod:`MDAnalysis.lib.KDTree`
+.. =========================================================
 
 :Author: Thomas Hamelryck
 :Year:   2002
@@ -26,6 +26,9 @@ within a radius of a given point) or finding all point pairs in a set
 that are within a certain radius of each other. See "Computational Geometry:
 Algorithms and Applications" (Mark de Berg, Marc van Kreveld, Mark Overmars,
 Otfried Schwarzkopf) [deBerg2000].
+
+.. versionchanged:: 0.11.0
+   The MDAnalysis.KDTree module was moved to MDAnalysis.lib.KDTree
 """
 __all__ = ['KDTree', 'NeighborSearch']
 

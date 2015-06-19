@@ -111,7 +111,6 @@ Contents
    ./documentation_pages/coordinates_modules
    ./documentation_pages/selections_modules
    ./documentation_pages/core_modules
-   ./documentation_pages/KDTree_modules
    ./documentation_pages/visualization_modules
    ./documentation_pages/lib_modules
 

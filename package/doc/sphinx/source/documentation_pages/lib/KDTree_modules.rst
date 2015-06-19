@@ -1,4 +1,4 @@
-.. Contains the formatted docstrings from the KDTree modules located in 'mdanalysis/MDAnalysis/KDTree'
+.. Contains the formatted docstrings from the KDTree modules located in 'mdanalysis/MDAnalysis/lib/KDTree'
 
 **************************
 KDTree module
@@ -40,6 +40,6 @@ between atoms but its use goes far beyond this narrow application.
 .. toctree::
    :maxdepth: 1
 
-   KDTree/KDTree
-   KDTree/NeighborSearch
+   ./KDTree/KDTree
+   ./KDTree/NeighborSearch
 

@@ -30,6 +30,7 @@ import numpy
 
 from AtomGroup import AtomGroup, Universe
 from MDAnalysis.core import flags
+from MDAnalysis.lib.KDTree.NeighborSearch import CoordinateNeighborSearch
 
 
 class Selection:
@@ -157,7 +158,6 @@ class AroundSelection(Selection):
         sys_indices = numpy.array([a.number for a in sys_atoms_list], dtype=int)
         sel_coor = Selection.coord[sel_indices]
         sys_coor = Selection.coord[sys_indices]
-        from MDAnalysis.KDTree.NeighborSearch import CoordinateNeighborSearch
         # Can we optimize search by using the larger set for the tree?
         CNS = CoordinateNeighborSearch(sys_coor)  # cache the KDTree for this selection/frame?
         found_indices = CNS.search_list(sel_coor, self.cutoff)
@@ -214,7 +214,6 @@ class SphericalLayerSelection(Selection):
         self.ref = numpy.array((sel_CoG[0], sel_CoG[1], sel_CoG[2]))
         if self.periodic:
             pass  # or warn? -- no periodic functionality with KDTree search
-        from MDAnalysis.KDTree.NeighborSearch import CoordinateNeighborSearch
 
         CNS = CoordinateNeighborSearch(sys_coor)  # cache the KDTree for this selection/frame?
         found_ExtIndices = CNS.search(self.ref, self.exRadius)
@@ -273,7 +272,6 @@ class SphericalZoneSelection(Selection):
         self.ref = numpy.array((sel_CoG[0], sel_CoG[1], sel_CoG[2]))
         if self.periodic:
             pass  # or warn? -- no periodic functionality with KDTree search
-        from MDAnalysis.KDTree.NeighborSearch import CoordinateNeighborSearch
 
         CNS = CoordinateNeighborSearch(sys_coor)  # cache the KDTree for this selection/frame?
         found_indices = CNS.search(self.ref, self.cutoff)
@@ -416,7 +414,6 @@ class PointSelection(Selection):
         sys_coor = Selection.coord[sys_indices]
         if self.periodic:
             pass  # or warn? -- no periodic functionality with KDTree search
-        from MDAnalysis.KDTree.NeighborSearch import CoordinateNeighborSearch
 
         CNS = CoordinateNeighborSearch(sys_coor)  # cache the KDTree for this selection/frame?
         found_indices = CNS.search(self.ref, self.cutoff)

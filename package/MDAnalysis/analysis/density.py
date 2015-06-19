@@ -578,7 +578,7 @@ def notwithin_coordinates_factory(universe, sel1, sel2, cutoff, not_within=True,
     protein = universe.selectAtoms(sel2)
     if use_kdtree:
         # using faster hand-coded 'not within' selection with kd-tree
-        import MDAnalysis.KDTree.NeighborSearch as NS
+        import MDAnalysis.lib.KDTree.NeighborSearch as NS
         import MDAnalysis.core.AtomGroup
 
         set_solvent = set(solvent)  # need sets to do bulk = allsolvent - selection
