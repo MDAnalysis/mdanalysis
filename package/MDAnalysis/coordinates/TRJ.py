@@ -109,9 +109,6 @@ those and will raise a :exc:`NotImplementedError` if anything else is detected.
 .. autoclass:: NCDFReader
    :members:
 
-   .. automethod:: __getitem__
-   .. automethod:: __iter__
-
 .. autoclass:: NCDFWriter
    :members:
 
@@ -369,15 +366,6 @@ class TRJReader(base.Reader):
         self._reopen()
         self.next()
 
-    def __iter__(self):
-        self._reopen()
-        while True:
-            try:
-                yield self._read_next_timestep()
-            except EOFError:
-                self.rewind()
-                raise StopIteration
-
 
 class NCDFReader(base.Reader):
     """Reader for `AMBER NETCDF format`_ (version 1.0).
@@ -536,6 +524,9 @@ class NCDFReader(base.Reader):
         self._current_frame = frame
         return ts
 
+    def _reopen(self):
+        self._current_frame = -1
+
     def _read_next_timestep(self, ts=None):
         if ts is None:
             ts = self.ts
@@ -543,21 +534,6 @@ class NCDFReader(base.Reader):
             return self._read_frame(self._current_frame + 1)
         except IndexError:
             raise IOError
-
-    def _sliced_iter(self, start, stop, step):
-        def iterNETCDF(start=start, stop=stop, step=step):
-            for i in xrange(start, stop, step):
-                yield self._read_frame(i)
-
-        return iterNETCDF() 
-    
-    def __iter__(self):
-        """Iterate over the whole trajectory"""
-        for i in xrange(0, self.numframes):
-            try:
-                yield self._read_frame(i)
-            except IndexError:
-                raise StopIteration
 
     def close(self):
         """Close trajectory; any further access will raise an :exc:`IOError`"""

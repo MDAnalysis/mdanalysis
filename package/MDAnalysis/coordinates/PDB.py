@@ -551,12 +551,13 @@ class PrimitivePDBReader(base.Reader):
         kwargs.setdefault('multiframe', self.numframes > 1)
         return PrimitivePDBWriter(filename, **kwargs)
 
-    def __iter__(self):
-        for i in xrange(0, self.numframes):
-            try:
-                yield self._read_frame(i)
-            except IOError:
-                raise StopIteration
+    def rewind(self):
+        self._read_frame(0)
+
+    def _reopen(self):
+        # Pretend the current TS is 0 (in 1 based) so "next" is the
+        # first frame
+        self.ts.frame = 0
 
     def _read_next_timestep(self, ts=None):
         if ts is None:
@@ -571,8 +572,6 @@ class PrimitivePDBReader(base.Reader):
         return self._read_frame(frame)
 
     def _read_frame(self, frame):
-        if numpy.dtype(type(frame)) != numpy.dtype(int):
-            raise TypeError("frame must be a integer")
         # Assume _read_frame is passed a 0-based frame number. Convert this to
         # 1-based.
         frame += 1

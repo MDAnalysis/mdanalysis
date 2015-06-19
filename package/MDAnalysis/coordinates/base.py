@@ -622,7 +622,8 @@ class Reader(IObase):
 
     def rewind(self):
         """Position at beginning of trajectory"""
-        self[0]
+        self._reopen()
+        self.next()
 
     @property
     def dt(self):
@@ -689,7 +690,20 @@ class Reader(IObase):
         self.close()
 
     def __iter__(self):
-        raise NotImplementedError("BUG: Override __iter__() in the trajectory reader (%s)!" % type(self))
+        self._reopen()
+        while True:
+            try:
+                yield self._read_next_timestep()
+            except (EOFError, IOError):
+                self.rewind()
+                raise StopIteration
+
+    def _reopen(self):
+        """Should position Reader to just before first frame
+        
+        Calling next after this should return the first frame
+        """
+        pass
 
     def __getitem__(self, frame):
         """Return the Timestep corresponding to *frame*.
@@ -742,7 +756,7 @@ class Reader(IObase):
         def _iter(start=start, stop=stop, step=step):
             try:
                 for i in xrange(start, stop, step):
-                    yield self[i]
+                    yield self._read_frame(i)
             except TypeError:  # if _read_frame not implemented
                 raise TypeError("{0} does not support slicing."
                                 "".format(self.__class__.__name__))
@@ -1170,6 +1184,12 @@ class SingleFrameReader(Reader):
 
     def _read_first_frame(self):
         # Override this in subclasses to create and fill a Timestep
+        pass
+
+    def rewind(self):
+        pass
+
+    def _reopen(self):
         pass
 
     def next(self):

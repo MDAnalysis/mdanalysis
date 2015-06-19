@@ -165,16 +165,6 @@ class GMSReader(base.Reader):
         self.close()
         return int(counter)
 
-    def __iter__(self):
-        self.ts.frame = 0  # start at 0 so that the first frame becomes 1
-        self._reopen()
-        while True:
-            try:
-                yield self._read_next_timestep()
-            except EOFError:
-                self.close()
-                raise StopIteration
-
     def _read_next_timestep(self, ts=None):
         # check that the timestep object exists
         if ts is None:
