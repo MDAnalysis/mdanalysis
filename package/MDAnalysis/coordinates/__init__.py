@@ -697,6 +697,7 @@ _topology_coordinates_readers = {
     'MOL2': MOL2.MOL2Reader,
     'DATA': LAMMPS.DATAReader,
     'GMS': GMS.GMSReader,
+    'XYZ': XYZ.XYZReader,
 }
 
 #: frame writers: export to single frame formats such as PDB, gro, crd
