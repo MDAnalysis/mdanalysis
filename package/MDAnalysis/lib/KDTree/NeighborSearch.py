@@ -48,7 +48,7 @@ Example::
 
 import numpy
 
-from KDTree import KDTree
+from .KDTree import KDTree
 from MDAnalysis.core.AtomGroup import AtomGroup
 
 

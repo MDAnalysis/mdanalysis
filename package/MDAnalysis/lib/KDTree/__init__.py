@@ -32,4 +32,4 @@ Otfried Schwarzkopf) [deBerg2000].
 """
 __all__ = ['KDTree', 'NeighborSearch']
 
-from KDTree import KDTree
+from .KDTree import KDTree
