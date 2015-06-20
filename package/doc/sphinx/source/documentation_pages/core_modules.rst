@@ -20,7 +20,6 @@ parsing in :mod:`MDAnalysis.core.Selection`.
    core/Selection
    core/Timeseries
    core/distances
-   core/transformations
    core/qcprot
    core/units
    core/util

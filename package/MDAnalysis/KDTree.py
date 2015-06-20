@@ -1,4 +1,5 @@
 # Placeholder because KDTree moved
+# Remove this in version 1.0
 __all__ = ['KDTree', 'NeighborSearch']
 
 import warnings

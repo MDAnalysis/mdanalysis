@@ -413,7 +413,7 @@ import MDAnalysis
 from .. import SelectionError, NoDataError, SelectionWarning
 from . import util
 from .util import cached
-from .transformations import rotation_matrix, vecangle, rotaxis
+from ..lib.transformations import rotation_matrix, vecangle, rotaxis
 
 
 logger = logging.getLogger("MDAnalysis.core.AtomGroup")
