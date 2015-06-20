@@ -240,7 +240,7 @@ if __name__ == '__main__':
         Extension('core.qcprot', ['src/pyqcprot/pyqcprot.%s' % ("pyx" if use_cython else "c")],
                   include_dirs=include_dirs,
                   extra_compile_args=["-O3", "-ffast-math"]),
-        Extension('core._transformations', ['src/transformations/transformations.c'],
+        Extension('lib._transformations', ['src/transformations/transformations.c'],
                   libraries=['m'],
                   define_macros=define_macros,
                   include_dirs=include_dirs,

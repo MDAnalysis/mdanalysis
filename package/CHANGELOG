@@ -34,6 +34,8 @@ The rules for this file:
   * distances.contact_matrix(): changed keyword 'suppress_progmet' to
     'quiet'
   * Moved MDAnalysis.KDTree to MDAnalysis.lib.KDTree (Issue #287)
+  * Moved MDAnalysis.core.transformations to MDAnalysis.lib.transformations
+    (Issue #287)
   * base.Reader now defines __iter__
   * __iter__ removed from many Readers (now use base.Reader implementation)
 

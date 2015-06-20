@@ -19,7 +19,7 @@ from numpy.testing import assert_allclose, assert_equal, TestCase
 import math
 import random
 
-from MDAnalysis.core import transformations as t
+from MDAnalysis.lib import transformations as t
 
 """
 Testing transformations is weird because there are 2 versions of many of
@@ -41,10 +41,10 @@ class _ClipMatrix(object):
         assert_awesome(me)
 
 class TestClipMatrixNP(_ClipMatrix):
-    f = staticmethod(MDAnalysis.core.transformations._py_clip_matrix)
+    f = staticmethod(MDAnalysis.lib.transformations._py_clip_matrix)
 
 class TestClipMatrixCY(_ClipMatrix):
-    f = staticmethod(MDAnalysis.core.transformations.clip_matrix)
+    f = staticmethod(MDAnalysis.lib.transformations.clip_matrix)
 
 Note that the function to be tested needs to be defined as a static method!
 
@@ -759,3 +759,13 @@ class TestArcBall(object):
         ball.drag([200, 400])
         R = ball.matrix()
         assert_allclose(np.sum(R), 0.2055924)
+
+
+def test_transformations_old_module():
+    """test that MDAnalysis.core.transformations is still importable (deprecated for 1.0)"""
+    try:
+        import MDAnalysis.core.transformations
+    except (ImportError, NameError):
+        raise AssertionError("MDAnalysis.core.transformations not importable. Only remove for 1.0")
+
+    # NOTE: removed this test with release 1.0 when we remove the stub

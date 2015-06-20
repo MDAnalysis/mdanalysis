@@ -20,6 +20,7 @@
 ================================================================
 """
 
-__all__ = ['KDTree']
+__all__ = ['KDTree', 'transformations']
 
 from . import KDTree
+from . import transformations
