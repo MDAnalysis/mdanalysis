@@ -1063,10 +1063,13 @@ def convert_aa_code(x):
     .. SeeAlso:: Data are defined in :data:`amino_acid_codes` and :data:`inverse_aa_codes`.
     """
     if len(x) == 1:
-        return amino_acid_codes[x.upper()]
-    elif len(x) > 1:
-        return inverse_aa_codes[x.upper()]
+        d = amino_acid_codes
     else:
+        d = inverse_aa_codes
+
+    try:
+        return d[x.upper()]
+    except KeyError:
         raise ValueError("No conversion for {0} found (1 letter -> 3 letter or 3/4 letter -> 1 letter)".format(x))
 
 

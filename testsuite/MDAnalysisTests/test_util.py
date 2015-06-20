@@ -30,7 +30,6 @@ import tempfile
 def check_parse_residue(rstring, residue):
     assert_equal(util.parse_residue(rstring), residue)
 
-
 def check_convert_aa_3to1(resname3, resname1):
     assert_equal(util.convert_aa_code(resname3), resname1)
 
@@ -60,9 +59,12 @@ class TestStringFunctions(object):
         ("M1:CA", ("MET", 1, "CA")),
     ]
 
-    def testParse_residue(self):
+    def test_parse_residue(self):
         for rstring, residue in self.residues:
             yield check_parse_residue, rstring, residue
+
+    def test_parse_residue_VE(self):
+        assert_raises(ValueError, util.parse_residue, 'ZZZ')
 
     def test_convert_aa_code_long(self):
         for resname1, strings in self.aa:
@@ -72,6 +74,12 @@ class TestStringFunctions(object):
     def test_convert_aa_code_short(self):
         for resname1, strings in self.aa:
             yield check_convert_aa_1to3, resname1, strings[0]
+
+    def test_VE_1(self):
+        assert_raises(ValueError, util.convert_aa_code, 'XYZXYZ')
+
+    def test_VE_2(self):
+        assert_raises(ValueError, util.convert_aa_code, '£')
 
 
 class TestIterable(TestCase):
@@ -344,3 +352,45 @@ class TestCachedDecorator(TestCase):
         assert_equal(self.obj.val5(5, s='abc'), 5 * 'abc')
 
         assert_equal(self.obj.val5(5, s='!!!'), 5 * 'abc')
+
+
+class TestConvFloat(object):
+    def test_float_1(self):
+        assert_equal(util.conv_float('0.45'), 0.45)
+
+    def test_float_2(self):
+        assert_equal(util.conv_float('.45'), 0.45)
+
+    def test_str(self):
+        assert_equal(util.conv_float('a.b'), 'a.b')
+
+    def test_map_1(self):
+        ret = map(util.conv_float, ['0.45', '0.56', '6.7'])
+        assert_equal(ret, [0.45, 0.56, 6.7])
+
+    def test_map_2(self):
+        ret = map(util.conv_float, ['0.45', 'a.b', '!!'])
+        assert_equal(ret, [0.45, 'a.b', '!!'])
+
+class TestFixedwidthBins(object):
+    def test_keys(self):
+        ret = util.fixedwidth_bins(0.5, 1.0, 2.0)
+        for k in ['Nbins', 'delta', 'min', 'max']:
+            assert k in ret
+
+    def test_VE(self):
+        assert_raises(ValueError, util.fixedwidth_bins, 0.1, 5.0, 4.0)
+
+    def test_usage_1(self):
+        ret = util.fixedwidth_bins(0.1, 4.0, 5.0)
+        assert ret['Nbins'] == 10
+        assert ret['delta'] == 0.1
+        assert ret['min'] == 4.0
+        assert ret['max'] == 5.0
+
+    def test_usage_2(self):
+        ret = util.fixedwidth_bins(0.4, 4.0, 5.0)
+        assert ret['Nbins'] == 3
+        assert ret['delta'] == 0.4
+        assert_almost_equal(ret['min'], 3.9)
+        assert_almost_equal(ret['max'], 5.1)
