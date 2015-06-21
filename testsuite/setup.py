@@ -115,6 +115,8 @@ For details see the report for `Issue 87`_.
                   'data/*.data',
                   'data/gms/*.xyz', 'data/gms/*.gms', 'data/gms/*.gms.gz',
                   'data/*.inpcrd',
+                  'data/dlpoly/CONFIG*',
+                  'data/dlpoly/HISTORY*'
               ],
           },
           classifiers=CLASSIFIERS,
