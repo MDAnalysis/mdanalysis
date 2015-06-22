@@ -382,7 +382,7 @@ The following methods must be implemented in a Reader class.
    trajectory is properly closed. However, certain types of Reader can ignore
    this requirement. These include the :class:`SingleFrameReader` (file reading
    is done within a context manager and needs no closing by hand) and the :class:`ChainReader`
-   (it is a colllection of Readers, each already with its own ``__del__`` method).
+   (it is a collection of Readers, each already with its own ``__del__`` method).
 
 **Optional methods**
 

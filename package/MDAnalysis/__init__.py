@@ -247,4 +247,5 @@ from coordinates.core import writer as Writer
 collection = Timeseries.TimeseriesCollection()
 import weakref
 _anchor_universes = weakref.WeakSet()
+_named_anchor_universes = weakref.WeakSet()
 del weakref

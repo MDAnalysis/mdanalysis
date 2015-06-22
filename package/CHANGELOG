@@ -30,7 +30,6 @@ The rules for this file:
   * ProgressMeter now outputs every *interval* number of ``update`` calls
 
   Changes
-  * Tests now cover memory leaks, but can only be run in serial (Issue #312).
   * A ProtoReader class intermediate between IObase and Reader was added so
     specific Readers can be subclassed without __del__ (the ChainReader and
     SingleFrameReader), thus preventing memleaks (Issue #312).

@@ -112,6 +112,25 @@ except ImportError:
                       """(For example, try "easy_install 'numpy>=1.3'").""")
 
 try:
+    from numpy.testing import assert_
+except ImportError:
+    # missing in numpy 1.2 but needed here:
+    # copied code from numpy.testing 1.5
+    def assert_(val, msg=''):
+        """
+        Assert that works in release mode.
+
+        The Python built-in ``assert`` does not work when executing code in
+        optimized mode (the ``-O`` flag) - no byte-code is generated for it.
+
+        For documentation on usage, refer to the Python documentation.
+
+        (Code taken from numpy.testing 1.4)
+        """
+        if not val:
+            raise AssertionError(msg)
+
+try:
     import nose
 except ImportError:
     raise ImportError("""nose is required to run the test suite. Please install it first. """
@@ -171,9 +190,4 @@ def executable_not_found_runtime(*args):
       ...
     """
     return lambda: executable_not_found(*args)
-
-def teardown_package():
-    import gc
-    gc.collect()
-    assert_equal(len(gc.garbage), 0, "Garbage collector can't collect the following: %r" % gc.garbage)
 
