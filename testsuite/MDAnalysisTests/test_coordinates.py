@@ -162,26 +162,21 @@ class TestXYZReader(TestCase, Ref2r9r):
 class TestXYZReaderAsTopology(object):
     """Test that an XYZ file can act as its own topology"""
     def setUp(self):
-        self.u = mda.Universe(XYZ_mini)
+        self.universe = mda.Universe(XYZ_mini)
 
     def tearDown(self):
-        del self.u
+        del self.universe
 
     def test_coords(self):
         ref = np.array([[0.0, 0.0, 0.0],
                         [1.0, 1.0, 1.0],
                         [2.0, 2.0, 2.0]],
                        dtype=np.float32)
-        assert_array_almost_equal(self.u.atoms.positions, ref)
+        assert_array_almost_equal(self.universe.atoms.positions, ref)
 
     def test_rewind(self):
         self.universe.trajectory.rewind()
         assert_equal(self.universe.trajectory.ts.frame, 0, "rewinding to frame 0")
-
-    def test_next(self):
-        self.universe.trajectory.rewind()
-        self.universe.trajectory.next()
-        assert_equal(self.universe.trajectory.ts.frame, 1, "loading frame 1")
 
     def test_dt(self):
         assert_almost_equal(self.universe.trajectory.dt, 1.0, 4,
