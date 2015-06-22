@@ -931,6 +931,59 @@ class TestUniverseSetTopology(TestCase):
         assert_equal(len(self.u.impropers), 0)
         assert_equal(len(self.u.atoms[4].impropers), 0)
 
+    # Test deleting topology information
+    # In general, access it to make sure it's built
+    # Assert it's in cache
+    # Delete
+    # Assert it's not in cache
+    def test_bonds_delete(self):
+        bg = self.u.bonds
+        abg = self.u.atoms[0].bonds
+
+        assert_equal('bonds' in self.u._cache, True)
+        assert_equal('bondDict' in self.u._cache, True)
+
+        del self.u.bonds
+
+        assert_equal('bonds' in self.u._cache, False)
+        assert_equal('bondDict' in self.u._cache, False)
+
+    def test_angles_delete(self):
+        bg = self.u.angles
+        abg = self.u.atoms[0].angles
+
+        assert_equal('angles' in self.u._cache, True)
+        assert_equal('angleDict' in self.u._cache, True)
+
+        del self.u.angles
+
+        assert_equal('angles' in self.u._cache, False)
+        assert_equal('angleDict' in self.u._cache, False)
+
+    def test_torsions_delete(self):
+        bg = self.u.torsions
+        abg = self.u.atoms[0].torsions
+
+        assert_equal('torsions' in self.u._cache, True)
+        assert_equal('torsionDict' in self.u._cache, True)
+
+        del self.u.torsions
+
+        assert_equal('torsions' in self.u._cache, False)
+        assert_equal('torsionDict' in self.u._cache, False)
+
+    def test_impropers_delete(self):
+        bg = self.u.impropers
+        abg = self.u.atoms[0].impropers
+
+        assert_equal('impropers' in self.u._cache, True)
+        assert_equal('improperDict' in self.u._cache, True)
+
+        del self.u.impropers
+
+        assert_equal('impropers' in self.u._cache, False)
+        assert_equal('improperDict' in self.u._cache, False)
+
 
 class TestResidue(TestCase):
     def setUp(self):
