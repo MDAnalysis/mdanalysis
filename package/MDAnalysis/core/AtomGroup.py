@@ -407,6 +407,7 @@ from collections import defaultdict
 import copy
 import logging
 import os.path
+import weakref
 
 # Local imports
 import MDAnalysis
@@ -433,9 +434,16 @@ class Atom(object):
     are included (and thus it is not possible to add attributes "on
     the fly"; they have to be included in the class definition).
 
+    An :class:`Atom` is bound to a particular :class:`Universe`, but
+    via a weak reference only. This means that the :class:`Atom`, and
+    any :class:`AtomGroup` it is in, are only relevant while the
+    originating :class:`Universe` is in scope.
+
     .. versionchanged 0.9.0
        Added fragment managed property.
        Changed bonds angles torsions impropers to be a managed property
+    .. versionchanged 0.11.0
+       Changed references to :class:`Universe` to be weak.
     """
 
     __slots__ = (
@@ -462,7 +470,12 @@ class Atom(object):
         self.radius = radius
         self.bfactor = bfactor
         self.serial = serial
-        self._universe = universe
+        # Beware: Atoms hold only weakrefs to the universe, enforced
+        #  throught the Atom.universe setter.
+        if universe is None:
+            self._universe = None
+        else:
+            self.universe = universe
 
     def __repr__(self):
         return ("<Atom {idx}: {name} of type {t} of resname {rname}, "
@@ -587,15 +600,17 @@ class Atom(object):
     @property
     def universe(self):
         """a pointer back to the Universe"""
-        if not self._universe is None:
-            return self._universe
+        # Beware: Atoms hold only weakrefs to the universe. We call them to get hard references.
+        if self._universe is not None and self._universe() is not None:
+            return self._universe()
         else:
             raise AttributeError(
                 "Atom {0} is not assigned to a Universe".format(self.number))
 
     @universe.setter
     def universe(self, universe):
-        self._universe = universe
+        # Beware: Atoms hold only weakrefs to the universe
+        self._universe = weakref.ref(universe)
 
     @property
     def bonded_atoms(self):
@@ -718,6 +733,20 @@ class AtomGroup(object):
        difficult to use the feature consistently in scripts but it is
        much better for interactive work.
 
+    AtomGroup instances are bound to a :class:`Universe`, but only through the
+    weak reference :class:`Atom` has. The connection is lost as soon as the
+    :class:`Universe` goes out of scope.
+
+    AtomGroups can also be pickled and unpickled. When pickling, the Atom
+    indices are serialized alongside the Universe number-of-atoms, and topology
+    and trajectory filenames. When unpickling, all built Universes will be
+    searched for one with matching number-of-atoms and filenames. Finer control
+    over which :class:`Universe` gets chosen to base the unpickling on can
+    be exerted using the *is_anchor* and *anchor_name* flags upon Universe creation
+    or the methods/attributes :meth:`Universe.make_anchor`, :meth:`Universe.remove_anchor`,
+    and :attr:`Universe.anchor_name`.
+
+
     .. rubric:: References for analysis methods
 
     .. [Dima2004] Dima, R. I., & Thirumalai, D. (2004). Asymmetry in the
@@ -728,6 +757,7 @@ class AtomGroup(object):
     .. _10.1021/jp037128y: http://dx.doi.org/10.1021/jp037128y
 
 
+    .. SeeAlso:: :class:`Universe`
     .. versionchanged:: 0.7.6
        An empty AtomGroup can be created and no longer raises a
        :exc:`NoDataError`.
@@ -735,6 +765,9 @@ class AtomGroup(object):
        The size at which cache is used for atom lookup is now stored as variable
        _atomcache_size within the class.
        Added fragments manged property. Is a lazily built, cached entry, similar to residues.
+    .. versionchanged:: 0.11.0
+       AtomGroups can now be picled and unpickled provided compatible Universes
+       are available.
     """
     # for generalized __getitem__ __iter__ and __len__
     # (override _containername for ResidueGroup and SegmentGroup)
@@ -881,7 +914,7 @@ class AtomGroup(object):
         """The universe to which the atoms belong (read-only)."""
         try:
             return self._atoms[0].universe
-        except AttributeError:
+        except (AttributeError, IndexError):
             return None
 
     def __len__(self):
@@ -972,10 +1005,32 @@ class AtomGroup(object):
             natoms=len(self))
 
     def __getstate__(self):
-        raise NotImplementedError
+        if self.universe is None:
+            return None, None, None, None, None
+        try: # We want to get the ChainReader case, where the trajectory has multiple filenames
+            fname = self.universe.trajectory.filenames
+        except AttributeError:
+            fname = self.universe.trajectory.filename
+        return (self.indices(), self.universe.anchor_name, len(self.universe.atoms),
+                self.universe.filename, fname)
 
     def __setstate__(self, state):
-        raise NotImplementedError
+        indices, anchor_name, universe_natoms = state[:3]
+        if indices is None:
+            self.__init__([])
+            return
+        if numpy.max(indices) >= universe_natoms:
+            raise ValueError("Trying to unpickle an inconsistent AtomGroup")
+        lookup_set = MDAnalysis._anchor_universes if anchor_name is None else MDAnalysis._named_anchor_universes
+        for test_universe in lookup_set:
+            if test_universe._matches_unpickling(*state[1:]):
+                self.__init__(test_universe.atoms[indices]._atoms)
+                return
+        raise RuntimeError(("Couldn't find a suitable Universe to unpickle AtomGroup "
+                "onto. (needed a universe with {}{} atoms, topology filename: {}, and "
+                "trajectory filename: {}").format(
+                        "anchor_name: {}, ".format(anchor_name) if anchor_name is not None else "",
+                        *state[2:]))
 
     def numberOfAtoms(self):
         """Total number of atoms in the group"""
@@ -3216,6 +3271,10 @@ class Universe(object):
        Changed .bonds attribute to be a :class:`~MDAnalysis.topology.core.TopologyGroup`
        Added .angles and .torsions attribute as :class:`~MDAnalysis.topology.core.TopologyGroup`
        Added fragments to Universe cache
+    .. versionchanged:: 0.11.0
+       :meth:`make_anchor`, :meth:`remove_anchor`, :attr:`is_anchor`, and
+       :attr:`anchor_name` were added to support the pickling/unpickling of
+       :class:`AtomGroup`.
     """
 
     def __init__(self, *args, **kwargs):
@@ -3264,6 +3323,16 @@ class Universe(object):
           *vdwradii*
               For use with *guess_bonds*. Supply a dict giving a vdwradii for each atom type
               which are used in guessing bonds.
+          *is_anchor*
+              When unpickling instances of :class:`MDAnalysis.core.AtomGroup.AtomGroup`
+              existing Universes are searched for one where to anchor those atoms. Set
+              to ``False`` to prevent this Universe from being considered. [``True``]
+          *anchor_name*
+              Setting to other than ``None`` will cause :class:`MDAnalysis.core.AtomGroup.AtomGroup`
+              instances pickled from the Universe to only unpickle if a compatible
+              Universe with matching *anchor_name* is found. *is_anchor* will be ignored in
+              this case but will still be honored when unpickling :class:`MDAnalysis.core.AtomGroup.AtomGroup`
+              instances pickled with *anchor_name*==``None``. [``None``]
 
 
         This routine tries to do the right thing:
@@ -3291,7 +3360,11 @@ class Universe(object):
            Added ``'guess_bonds'`` keyword to cause topology to be guessed on
            Universe creation.
            Deprecated ``'bonds'`` keyword, use ``'guess_bonds'`` instead.
+        .. versionchanged:: 0.11.0
+           Added the *is_anchor* and *anchor_name* keywords for finer behavior
+           control when unpickling instances of :class:`MDAnalysis.core.AtomGroup.AtomGroup`.
         """
+
         from ..topology.core import get_parser_for, guess_format
         from ..topology.base import TopologyReader
 
@@ -3373,6 +3446,11 @@ class Universe(object):
         if kwargs.get('guess_bonds', False):
             self.atoms.guess_bonds(vdwradii=kwargs.get('vdwradii',None))
 
+        # For control of AtomGroup unpickling
+        if kwargs.get('is_anchor', True):
+            self.make_anchor()
+        self.anchor_name = kwargs.get('anchor_name')
+
     def _clear_caches(self, *args):
         """Clear cache for all *args*.
 
@@ -3431,7 +3509,6 @@ class Universe(object):
         # create memory problems?
         self.segments = self.atoms.segments
         self.residues = self.atoms.residues
-        self.universe = self  # for Writer.write(universe), see Issue 49
 
     def _init_top(self, cat, Top):
         """Initiate a generic form of topology.
@@ -3581,6 +3658,13 @@ class Universe(object):
         frags = tuple([AtomGroup(list(a.ats)) for a in set(f.values())])
 
         return frags
+
+    @property
+    def universe(self):
+        # for Writer.write(universe), see Issue 49
+        # Encapsulation in an accessor prevents the Universe from having to keep a reference to itself,
+        #  which might be undesirable if it has a __del__ method. It is also cleaner than a weakref.
+        return self
 
     @property
     @cached('fragments')
@@ -4096,10 +4180,54 @@ class Universe(object):
         del self.__trajectory  # guarantees that files are closed (?)
         self.__trajectory = value
 
-    # NOTE: DO NOT ADD A __del__() method: it somehow keeps the Universe
-    #       alive during unit tests and the unit tests run out of memory!
-    #### def __del__(self): <------ do not add this! [orbeckst]
+    def make_anchor(self):
+        """Add this Universe to the list where anchors are searched for when unpickling
+        :class:`MDAnalysis.core.AtomGroup.AtomGroup` instances. Silently proceeds if it
+        is already on the list."""
+        MDAnalysis._anchor_universes.add(self)
 
+    def remove_anchor(self):
+        """Remove this Universe from the list where anchors are searched for when unpickling
+        :class:`MDAnalysis.core.AtomGroup.AtomGroup` instances. Silently proceeds if it
+        is already not on the list."""
+        MDAnalysis._anchor_universes.discard(self)
+
+    @property
+    def is_anchor(self):
+        """Whether this Universe will be checked for anchoring when unpickling
+        :class:`MDAnalysis.core.AtomGroup.AtomGroup` instances"""
+        return self in MDAnalysis._anchor_universes
+
+    @property
+    def anchor_name(self):
+        return self._anchor_name
+
+    @anchor_name.setter
+    def anchor_name(self, name):
+        """Setting this attribute to anything other than ``None`` causes this Universe to
+        be added to the list where named anchors are searched for when unpickling
+        :class:`MDAnalysis.core.AtomGroup.AtomGroup` instances (silently proceeding if
+        it already is on the list). Setting to ``None`` causes the removal from said list."""
+        self._anchor_name = name
+        if name is None:
+            MDAnalysis._named_anchor_universes.discard(self)
+        else:
+            MDAnalysis._named_anchor_universes.add(self)
+
+    def _matches_unpickling(self, anchor_name, natoms, fname, trajname):
+        if anchor_name is None or anchor_name == self.anchor_name:
+            try:
+                return len(self.atoms)==natoms and self.filename==fname and self.trajectory.filenames==trajname 
+            except AttributeError: # Only ChainReaders have filenames (plural)
+                return len(self.atoms)==natoms and self.filename==fname and self.trajectory.filename==trajname 
+        else:
+            return False
+
+    # A __del__ method can be added to the Universe, but bear in mind that for
+    # that to work objects under Universe that hold backreferences to it can
+    # only do so using weakrefs. (Issue #297) 
+    #def __del__(self):
+    #    pass
 
 def asUniverse(*args, **kwargs):
     """Return a universe from the input arguments.

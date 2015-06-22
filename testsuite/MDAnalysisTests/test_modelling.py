@@ -25,30 +25,13 @@ from MDAnalysis import NoDataError
 
 import numpy
 from numpy.testing import *
+from . import assert_
 from numpy import array, float32, rad2deg
 from nose.plugins.attrib import attr
 
 import os
 import tempfile
 import itertools
-
-try:
-    from numpy.testing import assert_
-except ImportError:
-    # missing in numpy 1.2 but needed here:
-    # copied code from numpy.testing 1.5
-    def assert_(val, msg=''):
-        """
-        Assert that works in release mode.
-
-        The Python built-in ``assert`` does not work when executing code in
-        optimized mode (the ``-O`` flag) - no byte-code is generated for it.
-
-        For documentation on usage, refer to the Python documentation.
-
-        """
-        if not val:
-            raise AssertionError(msg)
 
 from MDAnalysis import Universe, Merge
 from MDAnalysis.analysis.align import alignto

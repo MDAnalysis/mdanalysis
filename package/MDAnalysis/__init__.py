@@ -159,7 +159,6 @@ __all__ = ['Timeseries', 'Universe', 'asUniverse', 'Writer', 'collection']
 
 import logging
 
-
 # see the advice on logging and libraries in
 # http://docs.python.org/library/logging.html?#configuring-logging-for-a-library
 class NullHandler(logging.Handler):
@@ -246,3 +245,7 @@ from core.AtomGroup import Universe, asUniverse, Merge
 from coordinates.core import writer as Writer
 
 collection = Timeseries.TimeseriesCollection()
+import weakref
+_anchor_universes = weakref.WeakSet()
+_named_anchor_universes = weakref.WeakSet()
+del weakref
