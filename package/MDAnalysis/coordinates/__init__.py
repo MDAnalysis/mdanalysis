@@ -367,8 +367,6 @@ The following methods must be implemented in a Reader class.
 
  ``close()``
      close the file and cease I/O
- ``__del__()``
-     ensure that the trajectory is closed
  ``next()``
      advance to next time step or raise :exc:`IOError` when moving
      past the last frame
@@ -379,6 +377,12 @@ The following methods must be implemented in a Reader class.
  ``__exit__()``
      exit method of a `Context Manager`_, should call ``close()``.
 
+.. Note::
+   a ``__del__()`` method should also be present to ensure that the
+   trajectory is properly closed. However, certain types of Reader can ignore
+   this requirement. These include the :class:`SingleFrameReader` (file reading
+   is done within a context manager and needs no closing by hand) and the :class:`ChainReader`
+   (it is a collection of Readers, each already with its own ``__del__`` method).
 
 **Optional methods**
 

@@ -602,13 +602,19 @@ class IObase(object):
         return False  # do not suppress exceptions
 
 
-class Reader(IObase):
-    """Base class for trajectory readers.
+class ProtoReader(IObase):
+    """Base class for Readers, without a :meth:`__del__` method.
+
+    Extends :class:`IObase` with most attributes and methods of a generic Reader,
+    with the exception of a :meth:`__del__` method. It should be used as base for Readers
+    that do not need :meth:`__del__`, especially since having even an empty :meth:`__del__`
+    might lead to memory leaks.
 
     See the :ref:`Trajectory API` definition in
     :mod:`MDAnalysis.coordinates.__init__` for the required attributes and methods.
+    .. versionadded:: 0.11.0
+    .. SeeAlso:: :class:`Reader`
     """
-
     #: The appropriate Timestep class, e.g.
     #: :class:`MDAnalysis.coordinates.xdrfile.XTC.Timestep` for XTC.
     _Timestep = Timestep
@@ -685,9 +691,6 @@ class Reader(IObase):
         #     ts.frame = self._read_next_frame(ts._x, ts._y, ts._z, ts._unitcell, self.skip)
         #     return ts
         raise NotImplementedError("BUG: Override _read_next_timestep() in the trajectory reader!")
-
-    def __del__(self):
-        self.close()
 
     def __iter__(self):
         self._reopen()
@@ -802,8 +805,24 @@ class Reader(IObase):
         return "< %s %r with %d frames of %d atoms (%d fixed) >" % \
                (self.__class__.__name__, self.filename, self.numframes, self.numatoms, self.fixed)
 
+class Reader(ProtoReader):
+    """Base class for trajectory readers that extends :class:`ProtoReader` with a :meth:`__del__` method.
 
-class ChainReader(Reader):
+    New Readers should subclass :class:`Reader` and properly implement a :meth:`close`
+    method, to ensure proper release of resources (mainly file handles). Readers that
+    are inherently safe in this regard should subclass :class:`ProtoReader` instead.
+
+    See the :ref:`Trajectory API` definition in
+    :mod:`MDAnalysis.coordinates.__init__` for the required attributes and methods.
+    .. SeeAlso:: :class:`ProtoReader`
+    .. versionchanged:: 0.11.0
+       Most of the base Reader class definitions were offloaded to :class:`ProtoReader`
+       so as to allow the subclassing of Readers without a :meth:`__del__` method.
+    """
+    def __del__(self):
+        self.close()
+
+class ChainReader(ProtoReader):
     """Reader that concatenates multiple trajectories on the fly.
 
     **Known issues**
@@ -1160,7 +1179,7 @@ class Writer(IObase):
 
         # def write_next_timestep(self, ts=None)
 
-class SingleFrameReader(Reader):
+class SingleFrameReader(ProtoReader):
     """Base class for Readers that only have one frame.
 
     .. versionadded:: 0.10.0
@@ -1207,11 +1226,9 @@ class SingleFrameReader(Reader):
 
     def read_next_timestep(self):
         raise IOError(self._err.format(self.__class__.__name__))
-                             
+
     def close(self):
         # all single frame readers should use context managers to access
-        # self.filename
+        # self.filename. Explicitly setting it to the null action in case
+        # the IObase.close method is ever changed from that.
         pass
-
-    def __del__(self):
-        self.close()
