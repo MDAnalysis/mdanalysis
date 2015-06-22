@@ -16,6 +16,7 @@ The rules for this file:
   * 0.11.0
 
   Enhancements
+  * Tests can now detect memleaks on a per-test basis (Issue #323)
   * AtomGroups can now be pickled/unpickled (Issue #293)
   * Universes can have a __del__ method (not actually added) without
     leaking (Issue #297)
