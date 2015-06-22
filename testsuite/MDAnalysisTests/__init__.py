@@ -196,21 +196,33 @@ def executable_not_found_runtime(*args):
     """
     return lambda: executable_not_found(*args)
 
+import gc
+
 class MemleakTest(TestCase):
     @classmethod
     def setUpClass(cls):
         cls.leakedobjs = set()
-        try:
-            cls._tearDown = cls.tearDown
-        except AttributeError:
-            pass
+        cls.initobjs = set()
+        if hasattr(cls, "setUp"):
+            cls._mlt_setUp = cls.setUp
+        if hasattr(cls, "tearDown"):
+            cls._mlt_tearDown = cls.tearDown
+
+        # These setUp and tearDown are going to wrap and replace
+        #  the ones we just assigned to the private _mlt_ variables.
+        def setUp(self):
+            # We just record what attributes we have before setup
+            self.initobjs.update(self.__dict__.keys())
+            if hasattr(self, '_mlt_setUp'):
+                self._mlt_setUp()
 
         def tearDown(self):
-            import gc
-            try:
-                self._tearDown()
-            except AttributeError:
-                pass
+            if hasattr(self, '_mlt_tearDown'):
+                self._mlt_tearDown()
+            # We now specifically delete all remaining attributes that
+            #  tearDown didn't take care of (we leave private ones be).
+            for obj in set(self.__dict__.keys()).difference(self.initobjs):
+                if not obj.startswith("_"): delattr(self, obj)
             gc.collect()
             # We have to keep track of previously seen leaks, otherwise
             # we report them multiple times per test class.

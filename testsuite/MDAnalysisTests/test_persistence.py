@@ -118,5 +118,5 @@ class TestMemleak(MemleakTest):
                 self.s = self
             def __del__(self):
                 pass
-        a = A()
+        self.a = A()
 
