@@ -121,6 +121,8 @@ class DATAReader(base.SingleFrameReader):
     """Reads a single frame of coordinate information from a LAMMPS DATA file.
 
     .. versionadded:: 0.9.0
+    .. versionchanged:: 0.11.0
+       Frames now 0-based instead of 1-based
     """
     format = 'DATA'
     units = {'time': None, 'length': 'Angstrom'}
@@ -135,6 +137,6 @@ class DATAReader(base.SingleFrameReader):
         with DATAParser(self.filename) as p:
             self.ts = p.read_DATA_timestep(self.numatoms, self._Timestep)
 
-        self.ts.frame = 1
+        self.ts.frame = 0
         if self.convert_units:
             self.convert_pos_from_native(self.ts._pos)  # in-place !

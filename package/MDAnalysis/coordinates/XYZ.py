@@ -83,8 +83,9 @@ class XYZWriter(base.Writer):
     """Writes an XYZ file
 
     The XYZ file format is not formally defined. This writer follows
-    the implement
-    http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html .
+    the vmd implementation. See:
+
+    http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html
     """
 
     format = 'XYZ'
@@ -233,6 +234,8 @@ class XYZReader(base.Reader):
     exact agreement (measured to 3DP). bzipped and gzipped versions of
     the XYZ file were also tested
 
+    .. versionchanged:: 0.11.0
+       Frames now 0-based instead of 1-based
     """
 
     # this will be overidden when an instance is created and the file extension checked
@@ -263,6 +266,7 @@ class XYZReader(base.Reader):
         self.skip_timestep = 1
 
         self.ts = self._Timestep(self.numatoms)  # numatoms has sideeffects: read trajectory... (FRAGILE)
+        self.ts.frame = -1
 
         # Read in the first timestep (FRAGILE);
         # FIXME: Positions on frame 0 (whatever that means) instead of 1 (as all other readers do).
@@ -302,14 +306,14 @@ class XYZReader(base.Reader):
             return self._numframes
 
     def _read_xyz_numframes(self, filename):
-        self._reopen()
         # the number of lines in the XYZ file will be 2 greater than the number of atoms
         linesPerFrame = self.numatoms + 2
         counter = 0
         # step through the file (assuming xyzfile has an iterator)
-        for i in self.xyzfile:
+        f = util.anyopen(self.filename, 'r')
+        for i in f:
             counter = counter + 1
-        self.close()
+        f.close()
 
         # need to check this is an integer!
         numframes = int(counter / linesPerFrame)
@@ -368,7 +372,7 @@ class XYZReader(base.Reader):
         # reset ts
         ts = self.ts
         ts.status = 1
-        ts.frame = 0
+        ts.frame = -1
         ts.step = 0
         ts.time = 0
         return self.xyzfile

@@ -88,7 +88,10 @@ module. The derived classes must follow the Trajectory API in
 
    .. attribute::`frame`
 
-      frame number
+      frame number (0-based)
+
+      .. versionchanged:: 0.11.0
+         Frames now 0-based; was 1-based
 
 .. autoclass:: IObase
    :members:
@@ -144,6 +147,7 @@ class Timestep(object):
        methods.
        :class:`Timestep` init now only accepts integer creation
        :attr:`numatoms` now a read only property
+       :attr:`frame` now 0-based instead of 1-based
     """
     order = 'F'
 
@@ -163,7 +167,9 @@ class Timestep(object):
         .. versionchanged:: 0.11.0
            Added keywords for velocities and forces
         """
-        self.frame = 0
+        # readers call Reader._read_next_timestep() on init, incrementing
+        # self.frame to 0
+        self.frame = -1
         self._numatoms = numatoms
 
         self._pos = np.zeros((numatoms, 3), dtype=np.float32, order=self.order)
@@ -612,9 +618,13 @@ class ProtoReader(IObase):
 
     See the :ref:`Trajectory API` definition in
     :mod:`MDAnalysis.coordinates.__init__` for the required attributes and methods.
-    .. versionadded:: 0.11.0
+
+    .. versionchanged:: 0.11.0
+       Frames now 0-based instead of 1-based
+
     .. SeeAlso:: :class:`Reader`
     """
+
     #: The appropriate Timestep class, e.g.
     #: :class:`MDAnalysis.coordinates.xdrfile.XTC.Timestep` for XTC.
     _Timestep = Timestep
@@ -677,7 +687,7 @@ class ProtoReader(IObase):
         .. SeeAlso:: :meth:`Reader.Writer` and :func:`MDAnalysis.Writer`
         """
         kwargs['numatoms'] = self.numatoms  # essential
-        kwargs.setdefault('start', self.frame - 1)  # -1 should be correct... [orbeckst] ?!?
+        kwargs.setdefault('start', self.frame)  
         kwargs.setdefault('step', self.skip_timestep)
         try:
             kwargs.setdefault('delta', self.dt)
@@ -837,6 +847,9 @@ class ChainReader(ProtoReader):
     - :attr:`time` will not necessarily return the true time but just
       number of frames times a provided time between frames (from the
       keyword *delta*)
+
+    .. versionchanged:: 0.11.0
+       Frames now 0-based instead of 1-based
     """
     format = 'CHAIN'
 
@@ -982,15 +995,7 @@ class ChainReader(ProtoReader):
 
     @property
     def frame(self):
-        """Cumulative frame number of the current time step.
-
-        .. Note::
-
-           The frame number is 1-based, i.e. the first frame has frame number
-           1. However, frame indices (used for indexing and slicing with the
-           `trajectory[frame_index]` notation use a 0-based index, i.e. *frame*
-           - 1.
-        """
+        """Cumulative frame number of the current time step."""
         return self.ts.frame
 
     @property
@@ -1057,7 +1062,7 @@ class ChainReader(ProtoReader):
         self.active_reader[f]  # rely on reader to implement __getitem__()
         # update Timestep
         self.ts = self.active_reader.ts
-        self.ts.frame = frame + 1  # continuous frames, 1-based
+        self.ts.frame = frame  # continuous frames, 0-based
         return self.ts
 
     def _chained_iterator(self):
@@ -1065,7 +1070,7 @@ class ChainReader(ProtoReader):
         self._rewind()  # must rewind all readers
         readers = itertools.chain(*self.readers)
         for frame, ts in enumerate(readers):
-            ts.frame = frame + 1  # fake continuous frames, 1-based
+            ts.frame = frame  # fake continuous frames, 0-based
             self.ts = ts
             # make sure that the active reader is in sync
             i, f = self._get_local_frame(frame)  # uses 0-based frames!
@@ -1226,7 +1231,7 @@ class SingleFrameReader(ProtoReader):
 
     def read_next_timestep(self):
         raise IOError(self._err.format(self.__class__.__name__))
-
+                             
     def close(self):
         # all single frame readers should use context managers to access
         # self.filename. Explicitly setting it to the null action in case

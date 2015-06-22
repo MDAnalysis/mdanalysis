@@ -76,3 +76,13 @@ class TestPDBQT(TestCase):
         assert_equal(uA.atoms._atoms, self.universe.A.atoms._atoms,
                      "Writing and reading of chain A does not recover same atoms")
         del uA
+
+    def test_numframes(self):
+        assert_equal(self.universe.trajectory.numframes, 1, "wrong number of frames in pdb")
+
+    def test_time(self):
+        assert_equal(self.universe.trajectory.time, 0.0, "wrong time of the frame")
+
+    def test_frame(self):
+        assert_equal(self.universe.trajectory.frame, 0,
+                     "wrong frame number (0-based, should be 0 for single frame readers)")

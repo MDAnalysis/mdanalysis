@@ -34,6 +34,7 @@ class CRDReader(base.SingleFrameReader):
 
     .. versionchanged:: 0.11.0
        Now returns a ValueError instead of FormatError
+       Frames now 0-based instead of 1-based
     """
     format = 'CRD'
     units = {'time': None, 'length': 'Angstrom'}
@@ -73,7 +74,7 @@ class CRDReader(base.SingleFrameReader):
         self.numatoms = len(coords_list)
 
         self.ts = self._Timestep.from_coordinates(np.array(coords_list))
-        self.ts.frame = 1  # 1-based frame number
+        self.ts.frame = 0  # 0-based frame number
         # if self.convert_units:
         #    self.convert_pos_from_native(self.ts._pos)             # in-place !
 
@@ -100,6 +101,9 @@ class CRDWriter(base.Writer):
 
     It automatically writes the CHARMM EXT extended format if there
     are more than 99,999 atoms.
+
+    .. versionchanged:: 0.11.0
+       Frames now 0-based instead of 1-based
     """
     format = 'CRD'
     units = {'time': None, 'length': 'Angstrom'}
@@ -137,7 +141,7 @@ class CRDWriter(base.Writer):
             try:
                 frame = u.trajectory.ts.frame
             except AttributeError:
-                frame = 1  # should catch cases when we are analyzing a single PDB (?)
+                frame = 0  # should catch cases when we are analyzing a single PDB (?)
 
         atoms = selection.atoms  # make sure to use atoms (Issue 46)
         coor = atoms.coordinates()  # can write from selection == Universe (Issue 49)

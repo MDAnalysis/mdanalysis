@@ -68,3 +68,43 @@ class TestMol2(TestCase):
         #    u = Universe(mol2_broken_molecule)
         #self.assertEqual("The mol2 block (BrokenMolecule.mol2:0) has no atoms" in context.exception.message,
         # True)
+
+class TestMol2_traj(TestCase):
+    def setUp(self):
+        self.universe = Universe(mol2_molecules)
+        self.traj = self.universe.trajectory
+        self.ts = self.universe.coord
+
+    def tearDown(self):
+        del self.universe
+        del self.traj
+        del self.ts
+
+    def test_rewind_traj(self):
+        self.traj.rewind()
+        assert_equal(self.ts.frame, 0, "rewinding to frame 0")
+
+    def test_next_traj(self):
+        self.traj.rewind()
+        self.traj.next()
+        assert_equal(self.ts.frame, 1, "loading frame 1")
+
+    def test_jump_traj(self):
+        self.traj[15]  # index is 0-based and frames are 0-based
+        assert_equal(self.ts.frame, 15, "jumping to frame 15")
+
+    def test_jump_lastframe_traj(self):
+        self.traj[-1]
+        assert_equal(self.ts.frame, 199, "indexing last frame with traj[-1]")
+
+    def test_slice_traj(self):
+        frames = [ts.frame for ts in self.traj[5:17:3]]
+        assert_equal(frames, [5, 8, 11, 14], "slicing traj [5:17:3]")
+
+    def test_reverse_traj(self):
+        frames = [ts.frame for ts in self.traj[20:5:-1]]
+        assert_equal(frames, range(20, 5, -1), "reversing traj [20:5:-1]")
+
+    def test_numframes(self):
+        assert_equal(self.universe.trajectory.numframes, 200, "wrong number of frames in traj")
+

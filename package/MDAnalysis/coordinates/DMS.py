@@ -57,6 +57,9 @@ class Timestep(base.Timestep):
 class DMSReader(base.SingleFrameReader):
     """
     Reads both coordinates and velocities.
+
+    .. versionchanged:: 0.11.0
+       Frames now 0-based instead of 1-based
     """
     format = 'DMS'
     units = {'time': None, 'length': 'A', 'velocity': 'A/ps'}
@@ -109,7 +112,7 @@ class DMSReader(base.SingleFrameReader):
 
         self.ts = self._Timestep.from_coordinates(
             np.array(coords_list, dtype=np.float32), velocities=velocities)
-        self.ts.frame = 1  # 1-based frame number
+        self.ts.frame = 0  # 0-based frame number
 
         self.ts._unitcell = unitcell
         if self.convert_units:

@@ -183,6 +183,9 @@ class TRJReader(base.Reader):
     trajectory.
 
     .. _AMBER TRJ format: http://ambermd.org/formats.html#trajectory
+
+    .. versionchanged:: 0.11.0
+       Frames now 0-based instead of 1-based
     """
     format = 'TRJ'
     units = {'time': 'ps', 'length': 'Angstrom'}
@@ -349,7 +352,7 @@ class TRJReader(base.Reader):
         # reset ts
         ts = self.ts
         ts.status = 1
-        ts.frame = 0
+        ts.frame = -1 
         ts.step = 0
         ts.time = 0
         return self.trjfile
@@ -401,6 +404,8 @@ class NCDFReader(base.Reader):
     .. versionadded: 0.7.6
     .. versionchanged:: 0.10.0
        Added ability to read Forces
+    .. versionchanged:: 0.11.0
+       Frame labels now 0-based instead of 1-based
     """
 
     format = 'NCDF'
@@ -520,7 +525,7 @@ class NCDFReader(base.Reader):
                 self.convert_forces_from_native(ts._forces, inplace=True)
             if self.periodic:
                 self.convert_pos_from_native(ts._unitcell[:3])  # in-place ! (only lengths)
-        ts.frame = frame + 1  # frame labels are 1-based
+        ts.frame = frame # frame labels are 0-based
         self._current_frame = frame
         return ts
 
