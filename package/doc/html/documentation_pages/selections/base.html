@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -33,8 +35,8 @@
     <link rel="next" title="7. Core modules" href="../core_modules.html" />
     <link rel="prev" title="6.4. CHARMM selections" href="charmm.html" /> 
   </head>
-  <body role="document">
-    <div class="related" role="navigation" aria-label="related navigation">
+  <body>
+    <div class="related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -49,11 +51,11 @@
         <li class="right" >
           <a href="charmm.html" title="6.4. CHARMM selections"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="../selections_modules.html" accesskey="U">6. Selection exporters</a> &raquo;</li> 
+        <li><a href="../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
+          <li><a href="../selections_modules.html" accesskey="U">6. Selection exporters</a> &raquo;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../index.html">
               <img class="logo" src="../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
@@ -64,14 +66,12 @@
   <h4>Next topic</h4>
   <p class="topless"><a href="../core_modules.html"
                         title="next chapter">7. Core modules</a></p>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="../../_sources/documentation_pages/selections/base.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/documentation_pages/selections/base.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
       <input type="text" name="q" />
@@ -90,23 +90,23 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body" role="main">
+          <div class="body">
             
   <span class="target" id="module-MDAnalysis.selections.base"></span><div class="section" id="base-classes-for-the-selection-writers">
 <h1>6.5. Base classes for the selection writers<a class="headerlink" href="#base-classes-for-the-selection-writers" title="Permalink to this headline">¶</a></h1>
 <p>Specialized SelectionWriters are derived from
-<a class="reference internal" href="#MDAnalysis.selections.base.SelectionWriter" title="MDAnalysis.selections.base.SelectionWriter"><code class="xref py py-class docutils literal"><span class="pre">SelectionWriter</span></code></a>. Override the <a class="reference internal" href="#MDAnalysis.selections.base.SelectionWriter._write_head" title="MDAnalysis.selections.base.SelectionWriter._write_head"><code class="xref py py-meth docutils literal"><span class="pre">_write_head()</span></code></a>,
-<a class="reference internal" href="#MDAnalysis.selections.base.SelectionWriter._translate" title="MDAnalysis.selections.base.SelectionWriter._translate"><code class="xref py py-meth docutils literal"><span class="pre">_translate()</span></code></a>, and <a class="reference internal" href="#MDAnalysis.selections.base.SelectionWriter._write_tail" title="MDAnalysis.selections.base.SelectionWriter._write_tail"><code class="xref py py-meth docutils literal"><span class="pre">_write_tail()</span></code></a>
+<a class="reference internal" href="#MDAnalysis.selections.base.SelectionWriter" title="MDAnalysis.selections.base.SelectionWriter"><tt class="xref py py-class docutils literal"><span class="pre">SelectionWriter</span></tt></a>. Override the <a class="reference internal" href="#MDAnalysis.selections.base.SelectionWriter._write_head" title="MDAnalysis.selections.base.SelectionWriter._write_head"><tt class="xref py py-meth docutils literal"><span class="pre">_write_head()</span></tt></a>,
+<a class="reference internal" href="#MDAnalysis.selections.base.SelectionWriter._translate" title="MDAnalysis.selections.base.SelectionWriter._translate"><tt class="xref py py-meth docutils literal"><span class="pre">_translate()</span></tt></a>, and <a class="reference internal" href="#MDAnalysis.selections.base.SelectionWriter._write_tail" title="MDAnalysis.selections.base.SelectionWriter._write_tail"><tt class="xref py py-meth docutils literal"><span class="pre">_write_tail()</span></tt></a>
 methods.</p>
 <dl class="class">
 <dt id="MDAnalysis.selections.base.SelectionWriter">
-<em class="property">class </em><code class="descclassname">MDAnalysis.selections.base.</code><code class="descname">SelectionWriter</code><span class="sig-paren">(</span><em>filename</em>, <em>mode='wa'</em>, <em>numterms=None</em>, <em>preamble=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/selections/base.html#SelectionWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.selections.base.SelectionWriter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.selections.base.</tt><tt class="descname">SelectionWriter</tt><big>(</big><em>filename</em>, <em>mode='wa'</em>, <em>numterms=None</em>, <em>preamble=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/selections/base.html#SelectionWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.selections.base.SelectionWriter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Export a selection in MDAnalysis to a format usable in an external package.</p>
-<p>The <a class="reference internal" href="#MDAnalysis.selections.base.SelectionWriter" title="MDAnalysis.selections.base.SelectionWriter"><code class="xref py py-class docutils literal"><span class="pre">SelectionWriter</span></code></a> writes a selection string to a file
+<p>The <a class="reference internal" href="#MDAnalysis.selections.base.SelectionWriter" title="MDAnalysis.selections.base.SelectionWriter"><tt class="xref py py-class docutils literal"><span class="pre">SelectionWriter</span></tt></a> writes a selection string to a file
 that can be used in another package such as <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a>, <a class="reference external" href="http://www.pymol.org/">PyMOL</a>,
 <a class="reference external" href="http://www.gromacs.org/">Gromacs</a> or <a class="reference external" href="http://www.charmm.org/">CHARMM</a>. In this way, analysis and visualization
 can be done with the best or most convenient tools at hand.</p>
-<p><a class="reference internal" href="#MDAnalysis.selections.base.SelectionWriter" title="MDAnalysis.selections.base.SelectionWriter"><code class="xref py py-class docutils literal"><span class="pre">SelectionWriter</span></code></a> is a base class and child classes are
+<p><a class="reference internal" href="#MDAnalysis.selections.base.SelectionWriter" title="MDAnalysis.selections.base.SelectionWriter"><tt class="xref py py-class docutils literal"><span class="pre">SelectionWriter</span></tt></a> is a base class and child classes are
 derived with the appropriate customizations for the package file
 format.</p>
 <p>Set up for writing to <em>filename</em>.</p>
@@ -114,7 +114,7 @@ format.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>filename</em></dt>
 <dd><p class="first last">output file</p>
 </dd>
@@ -125,13 +125,13 @@ file, or overwrite an existing file and then append (&#8220;wa&#8221;) [&#8220;w
 <dt><em>numterms</em></dt>
 <dd><p class="first last">number of individual index numbers per line for output
 formats that write multiple entries in one line. If set
-to 0 or <code class="docutils literal"><span class="pre">False</span></code> then no special formatting is done  [8]</p>
+to 0 or <tt class="docutils literal"><span class="pre">False</span></tt> then no special formatting is done  [8]</p>
 </dd>
 <dt><em>preamble</em></dt>
 <dd><p class="first last">string that is written as a comment at the top of the file []</p>
 </dd>
 <dt><em>kwargs</em></dt>
-<dd><p class="first last">use as defaults for <a class="reference internal" href="#MDAnalysis.selections.base.SelectionWriter.write" title="MDAnalysis.selections.base.SelectionWriter.write"><code class="xref py py-meth docutils literal"><span class="pre">write()</span></code></a></p>
+<dd><p class="first last">use as defaults for <a class="reference internal" href="#MDAnalysis.selections.base.SelectionWriter.write" title="MDAnalysis.selections.base.SelectionWriter.write"><tt class="xref py py-meth docutils literal"><span class="pre">write()</span></tt></a></p>
 </dd>
 </dl>
 </td>
@@ -140,13 +140,13 @@ to 0 or <code class="docutils literal"><span class="pre">False</span></code> the
 </table>
 <dl class="method">
 <dt id="MDAnalysis.selections.base.SelectionWriter.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>filename</em>, <em>mode='wa'</em>, <em>numterms=None</em>, <em>preamble=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/selections/base.html#SelectionWriter.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.selections.base.SelectionWriter.__init__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__init__</tt><big>(</big><em>filename</em>, <em>mode='wa'</em>, <em>numterms=None</em>, <em>preamble=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/selections/base.html#SelectionWriter.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.selections.base.SelectionWriter.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set up for writing to <em>filename</em>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>filename</em></dt>
 <dd><p class="first last">output file</p>
 </dd>
@@ -157,13 +157,45 @@ file, or overwrite an existing file and then append (&#8220;wa&#8221;) [&#8220;w
 <dt><em>numterms</em></dt>
 <dd><p class="first last">number of individual index numbers per line for output
 formats that write multiple entries in one line. If set
-to 0 or <code class="docutils literal"><span class="pre">False</span></code> then no special formatting is done  [8]</p>
+to 0 or <tt class="docutils literal"><span class="pre">False</span></tt> then no special formatting is done  [8]</p>
 </dd>
 <dt><em>preamble</em></dt>
 <dd><p class="first last">string that is written as a comment at the top of the file []</p>
 </dd>
 <dt><em>kwargs</em></dt>
-<dd><p class="first last">use as defaults for <a class="reference internal" href="#MDAnalysis.selections.base.SelectionWriter.write" title="MDAnalysis.selections.base.SelectionWriter.write"><code class="xref py py-meth docutils literal"><span class="pre">write()</span></code></a></p>
+<dd><p class="first last">use as defaults for <a class="reference internal" href="#MDAnalysis.selections.base.SelectionWriter.write" title="MDAnalysis.selections.base.SelectionWriter.write"><tt class="xref py py-meth docutils literal"><span class="pre">write()</span></tt></a></p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.selections.base.SelectionWriter.write">
+<tt class="descname">write</tt><big>(</big><em>selection</em>, <em>number=None</em>, <em>name=None</em>, <em>frame=None</em>, <em>mode=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/selections/base.html#SelectionWriter.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.selections.base.SelectionWriter.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write selection to the output file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<dt><em>selection</em></dt>
+<dd><p class="first last">a <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.AtomGroup</span></tt></a></p>
+</dd>
+<dt><em>number</em></dt>
+<dd><p class="first last">selection will be named &#8220;mdanalysis&lt;number&gt;&#8221;
+(<tt class="docutils literal"><span class="pre">None</span></tt> auto increments between writes; useful
+when appending) [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
+</dd>
+<dt><em>name</em></dt>
+<dd><p class="first last">selection will be named <em>name</em> (instead of numbered)
+[<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
+</dd>
+<dt><em>frame</em></dt>
+<dd><p class="first last">write selection of this frame (or the current one if
+<tt class="docutils literal"><span class="pre">None</span></tt> [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
 </dd>
 </dl>
 </td>
@@ -174,11 +206,11 @@ to 0 or <code class="docutils literal"><span class="pre">False</span></code> the
 
 <dl class="method">
 <dt id="MDAnalysis.selections.base.SelectionWriter._translate">
-<code class="descname">_translate</code><span class="sig-paren">(</span><em>atoms</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/selections/base.html#SelectionWriter._translate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.selections.base.SelectionWriter._translate" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_translate</tt><big>(</big><em>atoms</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/selections/base.html#SelectionWriter._translate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.selections.base.SelectionWriter._translate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Translate atoms into a list of native selection terms.</p>
 <ul>
 <li><p class="first">build list of ALL selection terms as if this was a single line, e.g.
-<code class="docutils literal"><span class="pre">['index</span> <span class="pre">12</span> <span class="pre">|',</span> <span class="pre">'index</span> <span class="pre">22</span> <span class="pre">|',</span> <span class="pre">'index</span> <span class="pre">33']</span></code></p>
+<tt class="docutils literal"><span class="pre">['index</span> <span class="pre">12</span> <span class="pre">|',</span> <span class="pre">'index</span> <span class="pre">22</span> <span class="pre">|',</span> <span class="pre">'index</span> <span class="pre">33']</span></tt></p>
 </li>
 <li><p class="first">only one term per atom!!</p>
 </li>
@@ -196,63 +228,31 @@ to 0 or <code class="docutils literal"><span class="pre">False</span></code> the
 
 <dl class="method">
 <dt id="MDAnalysis.selections.base.SelectionWriter._write_head">
-<code class="descname">_write_head</code><span class="sig-paren">(</span><em>out</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/selections/base.html#SelectionWriter._write_head"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.selections.base.SelectionWriter._write_head" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_write_head</tt><big>(</big><em>out</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/selections/base.html#SelectionWriter._write_head"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.selections.base.SelectionWriter._write_head" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initial output to open file object <em>out</em>.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.selections.base.SelectionWriter._write_tail">
-<code class="descname">_write_tail</code><span class="sig-paren">(</span><em>out</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/selections/base.html#SelectionWriter._write_tail"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.selections.base.SelectionWriter._write_tail" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">_write_tail</tt><big>(</big><em>out</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/selections/base.html#SelectionWriter._write_tail"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.selections.base.SelectionWriter._write_tail" title="Permalink to this definition">¶</a></dt>
 <dd><p>Last output to open file object <em>out</em>.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.selections.base.SelectionWriter.comment">
-<code class="descname">comment</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/selections/base.html#SelectionWriter.comment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.selections.base.SelectionWriter.comment" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">comment</tt><big>(</big><em>s</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/selections/base.html#SelectionWriter.comment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.selections.base.SelectionWriter.comment" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return string <em>s</em> interpolated into the comment format string.</p>
-<p>If no <code class="xref py py-attr docutils literal"><span class="pre">SelectionWriter.commentfmt</span></code> is defined (None) then the
+<p>If no <tt class="xref py py-attr docutils literal"><span class="pre">SelectionWriter.commentfmt</span></tt> is defined (None) then the
 empty string is returned because presumably there is no way to enter
 comments into the file.</p>
 <p>A newline is appended to non-empty strings.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="MDAnalysis.selections.base.SelectionWriter.write">
-<code class="descname">write</code><span class="sig-paren">(</span><em>selection</em>, <em>number=None</em>, <em>name=None</em>, <em>frame=None</em>, <em>mode=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/selections/base.html#SelectionWriter.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.selections.base.SelectionWriter.write" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write selection to the output file.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
-<dt><em>selection</em></dt>
-<dd><p class="first last">a <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.AtomGroup</span></code></a></p>
-</dd>
-<dt><em>number</em></dt>
-<dd><p class="first last">selection will be named &#8220;mdanalysis&lt;number&gt;&#8221;
-(<code class="docutils literal"><span class="pre">None</span></code> auto increments between writes; useful
-when appending) [<code class="docutils literal"><span class="pre">None</span></code>]</p>
-</dd>
-<dt><em>name</em></dt>
-<dd><p class="first last">selection will be named <em>name</em> (instead of numbered)
-[<code class="docutils literal"><span class="pre">None</span></code>]</p>
-</dd>
-<dt><em>frame</em></dt>
-<dd><p class="first last">write selection of this frame (or the current one if
-<code class="docutils literal"><span class="pre">None</span></code> [<code class="docutils literal"><span class="pre">None</span></code>]</p>
-</dd>
-</dl>
-</td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="function">
 <dt id="MDAnalysis.selections.base.join">
-<code class="descclassname">MDAnalysis.selections.base.</code><code class="descname">join</code><span class="sig-paren">(</span><em>seq</em>, <em>string=''</em>, <em>func=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/selections/base.html#join"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.selections.base.join" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.selections.base.</tt><tt class="descname">join</tt><big>(</big><em>seq</em>, <em>string=''</em>, <em>func=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/selections/base.html#join"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.selections.base.join" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a list from sequence.</p>
 <p><em>string</em> is appended to each element but the last.</p>
 <p><em>func</em> is applied to every element before appending <em>string</em>.</p>
@@ -260,8 +260,8 @@ when appending) [<code class="docutils literal"><span class="pre">None</span></c
 
 <dl class="function">
 <dt id="MDAnalysis.selections.base.get_writer">
-<code class="descclassname">MDAnalysis.selections.base.</code><code class="descname">get_writer</code><span class="sig-paren">(</span><em>filename</em>, <em>defaultformat</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/selections/base.html#get_writer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.selections.base.get_writer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a <a class="reference internal" href="#MDAnalysis.selections.base.SelectionWriter" title="MDAnalysis.selections.base.SelectionWriter"><code class="xref py py-class docutils literal"><span class="pre">SelectionWriter</span></code></a> for <em>filename</em> or a <em>defaultformat</em>.</p>
+<tt class="descclassname">MDAnalysis.selections.base.</tt><tt class="descname">get_writer</tt><big>(</big><em>filename</em>, <em>defaultformat</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/selections/base.html#get_writer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.selections.base.get_writer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a <a class="reference internal" href="#MDAnalysis.selections.base.SelectionWriter" title="MDAnalysis.selections.base.SelectionWriter"><tt class="xref py py-class docutils literal"><span class="pre">SelectionWriter</span></tt></a> for <em>filename</em> or a <em>defaultformat</em>.</p>
 </dd></dl>
 
 </div>
@@ -272,7 +272,7 @@ when appending) [<code class="docutils literal"><span class="pre">None</span></c
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -287,11 +287,11 @@ when appending) [<code class="docutils literal"><span class="pre">None</span></c
         <li class="right" >
           <a href="charmm.html" title="6.4. CHARMM selections"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="../selections_modules.html" >6. Selection exporters</a> &raquo;</li> 
+        <li><a href="../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
+          <li><a href="../selections_modules.html" >6. Selection exporters</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer" role="contentinfo">
+    <div class="footer">
         &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
@@ -300,7 +300,7 @@ when appending) [<code class="docutils literal"><span class="pre">None</span></c
     Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
     Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
     and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

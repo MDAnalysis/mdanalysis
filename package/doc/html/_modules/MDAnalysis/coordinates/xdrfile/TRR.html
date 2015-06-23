@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -31,8 +33,8 @@
     <link rel="top" title="MDAnalysis 0.11.0-dev documentation" href="../../../../index.html" />
     <link rel="up" title="MDAnalysis" href="../../../MDAnalysis.html" /> 
   </head>
-  <body role="document">
-    <div class="related" role="navigation" aria-label="related navigation">
+  <body>
+    <div class="related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -41,17 +43,17 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &raquo;</li>
-          <li class="nav-item nav-item-2"><a href="../../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
+        <li><a href="../../../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../../../index.html">
               <img class="logo" src="../../../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
             </a></p>
-<div id="searchbox" style="display: none" role="search">
+<div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../../../search.html" method="get">
       <input type="text" name="q" />
@@ -70,7 +72,7 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body" role="main">
+          <div class="body">
             
   <h1>Source code for MDAnalysis.coordinates.xdrfile.TRR</h1><div class="highlight"><pre>
 <span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
@@ -121,7 +123,7 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">errno</span>
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">statno</span>
@@ -130,282 +132,104 @@
 <span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">NoDataError</span>
 
 
-<div class="viewcode-block" id="Timestep"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/TRR.html#MDAnalysis.coordinates.TRR.Timestep">[docs]</a><span class="k">class</span> <span class="nc">Timestep</span><span class="p">(</span><span class="n">core</span><span class="o">.</span><span class="n">Timestep</span><span class="p">):</span>
+<div class="viewcode-block" id="Timestep"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/TRR.html#MDAnalysis.coordinates.xdrfile.TRR.Timestep">[docs]</a><span class="k">class</span> <span class="nc">Timestep</span><span class="p">(</span><span class="n">core</span><span class="o">.</span><span class="n">Timestep</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Timestep for a Gromacs_ TRR trajectory.</span>
 
-<span class="sd">    The Timestep can be initialized with *arg* being</span>
-
-<span class="sd">      1. an integer (the number of atoms)</span>
-<span class="sd">      2. another :class:`Timestep` instance, in which case a copy is made; attention:</span>
-<span class="sd">         loss of attributes that do not exist within the TRR :class:`Timestep` may occur;</span>
-<span class="sd">      3. a :class:`numpy.ndarray` of shape ``(numatoms, 3)`` (for positions only) or</span>
-<span class="sd">         ``(numatoms, 9)`` (for positions, velocities, and forces): ``positions = arg[:,:3]``,</span>
-<span class="sd">         ``velocities = arg[:,3:6]``, and ``forces = arg[:,6:]``.</span>
-
-<span class="sd">    The constructor also takes the named arguments *has_x*, *has_v*, and</span>
-<span class="sd">    *has_f*, which are used to set the :class:`Timestep` flags</span>
-<span class="sd">    :attr:`~Timestep.has_x`, :attr:`~Timestep.has_v`, and</span>
-<span class="sd">    :attr:`~Timestep.has_f`, described below.  Depending on the *arg* use-case</span>
-<span class="sd">    above, the defaults set for these flags will vary:</span>
-
-<span class="sd">      1. when *arg* is an integer :attr:`~Timestep.has_x` defaults to ``True``</span>
-<span class="sd">         and :attr:`~Timestep.has_v` and :attr:`~Timestep.has_f` to ``False``.</span>
-
-<span class="sd">      2. when *arg* is another :class:`Timestep` instance the flags will</span>
-<span class="sd">         default to being copied from the passed :class:`Timestep`. If that</span>
-<span class="sd">         instance has no &#39;has_*&#39; flags the behavior is to assign them to</span>
-<span class="sd">         ``True`` depending on the existence of :attr:`~Timestep._velocities`</span>
-<span class="sd">         and :attr:`~Timestep._forces` (:attr:`~Timestep._pos` is assumed to</span>
-<span class="sd">         always be there, so in this case :attr:`~Timestep.has_x` defaults to</span>
-<span class="sd">         ``True``).</span>
-
-<span class="sd">      3. when *arg* is a numpy array, the default flags will reflect what</span>
-<span class="sd">         information is passed in the array.</span>
-
-<span class="sd">    TRR :class:`Timestep` objects are now fully aware of the existence or not of</span>
-<span class="sd">    coordinate/velocity/force information in frames, reflected in the</span>
-<span class="sd">    :attr:`~Timestep.has_x`, :attr:`~Timestep.has_v`, and :attr:`~Timestep.has_f` flags.</span>
-<span class="sd">    Accessing either kind of information while the corresponding flag is set to ``False``</span>
-<span class="sd">    wil raise a :exc:`NoDataError`. Internally, however, the arrays are always populated,</span>
-<span class="sd">    even when the flags are ``False``; upon creation of a :class:`Timestep` they are</span>
-<span class="sd">    zero-filled, but this might not always be the case later on for properties flagged as</span>
-<span class="sd">    ``False`` if the same :class:`Timestep` instance is used to read from a TRR frame.</span>
+<span class="sd">    TRR Timestep always has positions, velocities and forces allocated, meaning</span>
+<span class="sd">    that the `_pos`, `_velocities` and `_forces` attributes will always exist.</span>
+<span class="sd">    Whether or not this data is valid for the current frame is determined by the</span>
+<span class="sd">    private attributes, `_pos_source`, `_vel_source` and `_for_source`.</span>
+<span class="sd">    When accessing the `.positions` attribute, this will only be returned if</span>
+<span class="sd">    `_pos_source` matches the current `frame`, otherwise a :class:`~MDAnalysis.NoDataError`</span>
+<span class="sd">    will be raised.  This scheme applies to both velocities and forces.</span>
 
 <span class="sd">    When doing low-level writing to :attr:`~Timestep._pos`, :attr:`~Timestep._velocities`,</span>
-<span class="sd">    or :attr:`~Timestep._forces:attr:, the corresponding flags must be set beforehand. The</span>
-<span class="sd">    TRR :class:`Timestep` constructor allows for the named boolean arguments *has_x*,</span>
-<span class="sd">    *has_v*, and *has_f* to be passed for automatic setting of the corresponding flag.</span>
+<span class="sd">    or :attr:`~Timestep._forces:attr:, the corresponding `_source` flag must be updated</span>
+<span class="sd">    to reflect the source of the data.</span>
+
 <span class="sd">    An exception to this is assignment to the full property array thus::</span>
 
 <span class="sd">        ts = MDAnalysis.coordinates.TRR.Timestep(N)     # N being the number of atoms</span>
-<span class="sd">        ts._velocities = vel_array   # Where vel_array is an existing array of shape (N, DIM)</span>
-<span class="sd">                                     #  This will also automatically set &#39;has_v&#39; to True.</span>
+<span class="sd">        ts.velocities = vel_array   # Where vel_array is an existing array of shape (N, DIM)</span>
+<span class="sd">                                    #  This will also automatically set the `_vel_source` flag</span>
 
 <span class="sd">    Attempting to populate the array instead will, however, raise a NoDataError exception::</span>
 
 <span class="sd">        ts = MDAnalysis.coordinates.TRR.Timestep(N)     # N being the number of atoms</span>
-<span class="sd">        ts._velocities[:] = vel_array   #  This will fail if &#39;has_v&#39; hasn&#39;t been set to True.</span>
+<span class="sd">        ts._velocities[:] = vel_array   #  This will fail if &#39;_vel_source` hasn&#39;t been set.</span>
 
 <span class="sd">    .. versionchanged:: 0.8.0</span>
 <span class="sd">       TRR :class:`Timestep` objects are now fully aware of the existence or</span>
 <span class="sd">       not of coordinate/velocity/force information in frames.</span>
+<span class="sd">    .. versionchanged:: 0.11.0</span>
+<span class="sd">       Management of frames redone to use `_pos_source`, `_vel_source` and `_for_source`</span>
+<span class="sd">       attributes to check against current frame.</span>
+<span class="sd">       Velocities and forces can now be directly accessed via the `velocities` and</span>
+<span class="sd">       `forces` attributes, with a :class:`~MDAnalysis.NoDataError` being raised</span>
+<span class="sd">       if no data was given for that frame.</span>
 
 <span class="sd">    .. _Gromacs: http://www.gromacs.org</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># The exception error</span>
-    <span class="n">_nodataerr</span> <span class="o">=</span> <span class="s">&quot;You are accessing the </span><span class="si">%s</span><span class="s"> of a Timestep but there are none in this frame. </span><span class="se">\</span>
-<span class="s">It might be the case that your trajectory doesn&#39;t have </span><span class="si">%s</span><span class="s">, or not every frame. In the latter case you can </span><span class="se">\</span>
-<span class="s">(1) get rid of </span><span class="si">%s</span><span class="s">-less frames before passing the trajectory to MDAnalysis, or </span><span class="se">\</span>
-<span class="s">(2) reflow your code to not access </span><span class="si">%s</span><span class="s"> when they&#39;re not there, by making use of the &#39;</span><span class="si">%s</span><span class="s">&#39; flag of Timestep objects.&quot;</span>
+    <span class="n">_nodataerr</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;You are accessing the {attrs} of a Timestep but there are none in&quot;</span>
+                  <span class="s">&quot; this frame. It might be the case that your trajectory doesn&#39;t&quot;</span>
+                  <span class="s">&quot; have {attrs}, or not every frame. In the latter case you can &quot;</span>
+                  <span class="s">&quot;(1) get rid of {attr}-less frames before passing the trajectory&quot;</span>
+                  <span class="s">&quot; to MDAnalysis, or &quot;</span>
+                  <span class="s">&quot;(2) reflow your code to not access {attrs} when they&#39;re not there,&quot;</span>
+                  <span class="s">&quot; by making use of the &#39;{flag}&#39; flag of Timestep objects.&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">DIM</span> <span class="o">=</span> <span class="n">libxdrfile2</span><span class="o">.</span><span class="n">DIM</span>  <span class="c"># compiled-in dimension (most likely 3)</span>
-        <span class="c"># These flags control which attributes were actually initialized in this Timestep. Due to the possibility of TRR</span>
-        <span class="c">#  frames with no coords/vels/forces, and the way reading is handled, the _tpos, _tvelocities and _tforces</span>
-        <span class="c"># arrays</span>
-        <span class="c">#  may end up containing data from different frames when the relevant attribute is missing in the trajectory.</span>
-        <span class="c">#  This is flagged and exceptions can be raised whenever there is an attempt to read flagged data.</span>
-        <span class="k">if</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">arg</span><span class="p">))</span> <span class="o">==</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="nb">int</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">has_x</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;has_x&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">has_v</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;has_v&#39;</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">has_f</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;has_f&#39;</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span> <span class="o">=</span> <span class="n">arg</span>
-            <span class="c"># C floats and C-order for arrays (see libxdrfile2.i)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tpos</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span><span class="p">,</span> <span class="n">DIM</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s">&#39;C&#39;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tvelocities</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span><span class="p">,</span> <span class="n">DIM</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s">&#39;C&#39;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tforces</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span><span class="p">,</span> <span class="n">DIM</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s">&#39;C&#39;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">DIM</span><span class="p">,</span> <span class="n">DIM</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-            <span class="c"># additional data for xtc</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">libxdrfile2</span><span class="o">.</span><span class="n">exdrOK</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">lmbda</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">Timestep</span><span class="p">):</span>  <span class="c"># Copy constructor</span>
-            <span class="c"># This makes a deepcopy of the timestep</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">arg</span><span class="o">.</span><span class="n">frame</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span> <span class="o">=</span> <span class="n">arg</span><span class="o">.</span><span class="n">numatoms</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">arg</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">)</span>
-            <span class="c"># The &#39;has_&#39; flags are set to True if the passed ts has them set to True OR if there is no such flag</span>
-            <span class="c">#  and the attributes are there. This is overriden by the has_ named arguments passed to the constructor.</span>
-            <span class="c"># has_x is an exception because we can assume that, if the flag doesn&#39;t exist, the _pos attribute will</span>
-            <span class="c"># always be there.</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">has_x</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;has_x&#39;</span><span class="p">,</span> <span class="n">arg</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;has_x&quot;</span><span class="p">,</span> <span class="bp">True</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">has_v</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;has_v&#39;</span><span class="p">,</span> <span class="n">arg</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;has_v&quot;</span><span class="p">,</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="s">&quot;_velocities&quot;</span><span class="p">)))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">has_f</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;has_f&#39;</span><span class="p">,</span> <span class="n">arg</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;has_f&quot;</span><span class="p">,</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="s">&quot;_forces&quot;</span><span class="p">)))</span>
-            <span class="c"># We now either copy the properties or initialize a zeros array, depending on whether the passed ts</span>
-            <span class="c">#  has the appropriate &#39;has_&#39; flags set or has the attribute. If the attribute is there but the &#39;has_&#39;</span>
-            <span class="c">#  flag is False we initialize to zeros (it&#39;s just as slow and it makes no sense to copy data from</span>
-            <span class="c">#  undefined behavior).</span>
-            <span class="c">#</span>
-            <span class="c"># Copies are done using the casted numpy.array function, which serves to early identify invalid input data.</span>
-            <span class="c"># COORDINATES:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_x</span><span class="p">:</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_tpos</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">arg</span><span class="o">.</span><span class="n">_pos</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-                <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Attempted to create a Timestep with invalid coordinate data: &quot;</span> <span class="o">+</span> <span class="n">err</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_tpos</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span><span class="p">,</span> <span class="n">DIM</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s">&#39;C&#39;</span><span class="p">)</span>
-            <span class="c"># VELOCITIES:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_v</span><span class="p">:</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_tvelocities</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">arg</span><span class="o">.</span><span class="n">_velocities</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-                <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Attempted to create a Timestep with invalid velocity data: &quot;</span> <span class="o">+</span> <span class="n">err</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
-                <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
-                        <span class="s">&quot;Attempted to create a new Timestep from inconsistent Timestep data (the passed Timestep &quot;</span>
-                        <span class="s">&quot;object has the &#39;has_v&#39; flag set, but the &#39;_velocities&#39; attribute is missing.)&quot;</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_tvelocities</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span><span class="p">,</span> <span class="n">DIM</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s">&#39;C&#39;</span><span class="p">)</span>
-            <span class="c"># FORCES:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_f</span><span class="p">:</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_tforces</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">arg</span><span class="o">.</span><span class="n">_forces</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-                <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Attempted to create a Timestep with invalid force data: &quot;</span> <span class="o">+</span> <span class="n">err</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
-                <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
-                        <span class="s">&quot;Attempted to create a new Timestep from inconsistent Timestep data (the passed Timestep &quot;</span>
-                        <span class="s">&quot;object has the &#39;has_f&#39; flag set, but the &#39;_forces&#39; attribute is missing.)&quot;</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_tforces</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span><span class="p">,</span> <span class="n">DIM</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s">&#39;C&#39;</span><span class="p">)</span>
-            <span class="c">##</span>
-            <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;status&#39;</span><span class="p">,</span> <span class="s">&#39;step&#39;</span><span class="p">,</span> <span class="s">&#39;time&#39;</span><span class="p">,</span> <span class="s">&#39;lmbda&#39;</span><span class="p">,</span> <span class="s">&#39;prec&#39;</span><span class="p">):</span>
-                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">__setattr__</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">arg</span><span class="o">.</span><span class="n">__getattribute__</span><span class="p">(</span><span class="n">attr</span><span class="p">))</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-            <span class="c"># provide packed array shape == (natoms, 3*DIM)</span>
-            <span class="c"># which contains pos = arg[:,0:3], v = arg[:,3:6], f = arg[:, 6:9]</span>
-            <span class="c"># or just positions: pos = arg[:,0:3] == arg</span>
-            <span class="c">#</span>
-            <span class="c"># The &#39;has_&#39; flags are set from the named arguments passed to the constructor,</span>
-            <span class="c"># but default to what fields are available from the input array.</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">has_x</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;has_x&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">has_v</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;has_v&#39;</span><span class="p">,</span> <span class="n">arg</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">DIM</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">has_f</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;has_f&#39;</span><span class="p">,</span> <span class="n">arg</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">DIM</span><span class="p">)</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">arg</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;packed numpy array (x,v,f) can only have 2 dimensions&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">DIM</span><span class="p">,</span> <span class="n">DIM</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">arg</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">DIM</span> <span class="ow">and</span> <span class="n">arg</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">DIM</span><span class="p">)</span> <span class="ow">or</span> \
-                    <span class="p">(</span><span class="n">arg</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">DIM</span> <span class="ow">and</span> <span class="n">arg</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">DIM</span><span class="p">):</span>
-                <span class="c"># wrong order (but need to exclude case where natoms == DIM or natoms == 3*DIM!)</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;TRR timestep is to be initialized from an array with dimensions (natoms, &quot;</span>
-                                 <span class="s">&quot;3*</span><span class="si">%d</span><span class="s">) or (natoms, </span><span class="si">%d</span><span class="s">). </span><span class="se">\</span>
-<span class="s">If you wish to skip a property set the corresponding &#39;has_&#39; flag to False on construction.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">DIM</span><span class="p">,</span> <span class="n">DIM</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span> <span class="o">=</span> <span class="n">arg</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">arg</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">DIM</span> <span class="ow">and</span> <span class="n">arg</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">DIM</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s">&quot;TRR timestep doesn&#39;t have second dimension </span><span class="si">%d</span><span class="s"> or 3*</span><span class="si">%d</span><span class="s">: shape=</span><span class="si">%r</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">DIM</span><span class="p">,</span> <span class="n">DIM</span><span class="p">,</span> <span class="n">arg</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
-            <span class="c"># COORDINATES</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tpos</span> <span class="o">=</span> <span class="n">arg</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">:</span><span class="n">DIM</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="s">&#39;C&#39;</span><span class="p">)</span>  <span class="c"># C-order</span>
-            <span class="c"># Velocities and forces, if the array seems to have them.</span>
-            <span class="c"># VELOCITIES</span>
-            <span class="k">if</span> <span class="n">arg</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">DIM</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_tvelocities</span> <span class="o">=</span> <span class="n">arg</span><span class="p">[:,</span> <span class="n">DIM</span><span class="p">:</span><span class="mi">2</span> <span class="o">*</span> <span class="n">DIM</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="s">&#39;C&#39;</span><span class="p">)</span>  <span class="c"># C-order</span>
-                <span class="c"># FORCES</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_tforces</span> <span class="o">=</span> <span class="n">arg</span><span class="p">[:,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">DIM</span><span class="p">:</span><span class="mi">3</span> <span class="o">*</span> <span class="n">DIM</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="s">&#39;C&#39;</span><span class="p">)</span>  <span class="c"># C-order</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_tvelocities</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span><span class="p">,</span> <span class="n">DIM</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s">&#39;C&#39;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_tforces</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span><span class="p">,</span> <span class="n">DIM</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s">&#39;C&#39;</span><span class="p">)</span>
-
-            <span class="c"># additional data for trr</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">libxdrfile2</span><span class="o">.</span><span class="n">exdrOK</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">lmbda</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Cannot create an empty Timestep&quot;</span><span class="p">)</span>
-
-        <span class="c"># The entire coordinate/velocity/force information is now hidden behind</span>
-        <span class="c">#  existence-checking decorated functions.</span>
-
-    <span class="c"># COORDINATES</span>
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">_pos</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_x</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tpos</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nodataerr</span> <span class="o">%</span> <span class="p">(</span><span class="s">&quot;coordinates&quot;</span><span class="p">,</span> <span class="s">&quot;coordinates&quot;</span><span class="p">,</span> <span class="s">&quot;coordinate&quot;</span><span class="p">,</span> <span class="s">&quot;coordinates&quot;</span><span class="p">,</span> <span class="s">&quot;has_x&quot;</span><span class="p">))</span>
-
-    <span class="nd">@_pos.setter</span>
-    <span class="k">def</span> <span class="nf">_pos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span><span class="p">,</span> <span class="n">libxdrfile2</span><span class="o">.</span><span class="n">DIM</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tpos</span> <span class="o">=</span> <span class="n">x</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">has_x</span> <span class="o">=</span> <span class="bp">True</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;You are attempting to set the positions array of a Timestep with an array </span><span class="se">\</span>
-<span class="s">that doesn&#39;t have the same number of atoms or the same number of dimensions. The Timestep </span><span class="se">\</span>
-<span class="s">has number-of-atoms,dimensions </span><span class="si">%r</span><span class="s">, and you supplied an array of shape </span><span class="si">%r</span><span class="s">.&quot;</span> <span class="o">%</span>
-                             <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span><span class="p">,</span> <span class="n">libxdrfile2</span><span class="o">.</span><span class="n">DIM</span><span class="p">),</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
-
-    <span class="c">#</span>
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">_x</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
-
-    <span class="nd">@_x.setter</span>
-    <span class="k">def</span> <span class="nf">_x</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tpos</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">numatoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Timestep</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">numatoms</span><span class="p">,</span> <span class="n">velocities</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">forces</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="c"># Set initial sources to -1, so they are never valid</span>
+        <span class="c"># _source is compared against current frame when accessing</span>
+        <span class="c"># if they do not match, then the Timestep returns _nodataerr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pos_source</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_vel_source</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_for_source</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lmbda</span> <span class="o">=</span> <span class="mi">0</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">_y</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="k">def</span> <span class="nf">positions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pos_source</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nodataerr</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">attr</span><span class="o">=</span><span class="s">&#39;position&#39;</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="s">&#39;positions&#39;</span><span class="p">,</span> <span class="n">flag</span><span class="o">=</span><span class="s">&#39;has_x&#39;</span><span class="p">))</span>
 
-    <span class="nd">@_y.setter</span>
-    <span class="k">def</span> <span class="nf">_y</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tpos</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span>
+    <span class="nd">@positions.setter</span>
+    <span class="k">def</span> <span class="nf">positions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">new</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pos_source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">_z</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span>
+    <span class="k">def</span> <span class="nf">velocities</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vel_source</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_velocities</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nodataerr</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">attr</span><span class="o">=</span><span class="s">&#39;velocity&#39;</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="s">&#39;velocities&#39;</span><span class="p">,</span> <span class="n">flag</span><span class="o">=</span><span class="s">&#39;has_velocities&#39;</span><span class="p">))</span>
 
-    <span class="nd">@_z.setter</span>
-    <span class="k">def</span> <span class="nf">_z</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tpos</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">z</span>
+    <span class="nd">@velocities.setter</span>
+    <span class="k">def</span> <span class="nf">velocities</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_velocities</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">new</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_vel_source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame</span>
 
-    <span class="c"># VELOCITIES</span>
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">_velocities</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_v</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tvelocities</span>
+    <span class="k">def</span> <span class="nf">forces</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_for_source</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_forces</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nodataerr</span> <span class="o">%</span> <span class="p">(</span><span class="s">&quot;velocities&quot;</span><span class="p">,</span> <span class="s">&quot;velocities&quot;</span><span class="p">,</span> <span class="s">&quot;velocity&quot;</span><span class="p">,</span> <span class="s">&quot;velocities&quot;</span><span class="p">,</span> <span class="s">&quot;has_v&quot;</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nodataerr</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">attr</span><span class="o">=</span><span class="s">&#39;force&#39;</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="s">&#39;forces&#39;</span><span class="p">,</span> <span class="n">flag</span><span class="o">=</span><span class="s">&#39;has_forces&#39;</span><span class="p">))</span>
 
-    <span class="nd">@_velocities.setter</span>
-    <span class="k">def</span> <span class="nf">_velocities</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span><span class="p">,</span> <span class="n">libxdrfile2</span><span class="o">.</span><span class="n">DIM</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tvelocities</span> <span class="o">=</span> <span class="n">v</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">has_v</span> <span class="o">=</span> <span class="bp">True</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;You are attempting to set the velocities array of a Timestep with an array </span><span class="se">\</span>
-<span class="s">that doesn&#39;t have the same number of atoms or the same number of dimensions. The Timestep </span><span class="se">\</span>
-<span class="s">has number-of-atoms,dimensions </span><span class="si">%r</span><span class="s">, and you supplied an array of shape </span><span class="si">%r</span><span class="s">.&quot;</span> <span class="o">%</span>
-                             <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span><span class="p">,</span> <span class="n">libxdrfile2</span><span class="o">.</span><span class="n">DIM</span><span class="p">),</span> <span class="n">v</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
-
-    <span class="c">#FORCES</span>
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">_forces</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_f</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tforces</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nodataerr</span> <span class="o">%</span> <span class="p">(</span><span class="s">&quot;forces&quot;</span><span class="p">,</span> <span class="s">&quot;forces&quot;</span><span class="p">,</span> <span class="s">&quot;force&quot;</span><span class="p">,</span> <span class="s">&quot;forces&quot;</span><span class="p">,</span> <span class="s">&quot;has_f&quot;</span><span class="p">))</span>
-
-    <span class="nd">@_forces.setter</span>
-    <span class="k">def</span> <span class="nf">_forces</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span><span class="p">,</span> <span class="n">libxdrfile2</span><span class="o">.</span><span class="n">DIM</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tforces</span> <span class="o">=</span> <span class="n">f</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">has_f</span> <span class="o">=</span> <span class="bp">True</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;You are attempting to set the forces array of a Timestep with an array </span><span class="se">\</span>
-<span class="s">that doesn&#39;t have the same number of atoms or the same number of dimensions. The Timestep </span><span class="se">\</span>
-<span class="s">has number-of-atoms,dimensions </span><span class="si">%r</span><span class="s">, and you supplied an array of shape </span><span class="si">%r</span><span class="s">.&quot;</span> <span class="o">%</span>
-                             <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span><span class="p">,</span> <span class="n">libxdrfile2</span><span class="o">.</span><span class="n">DIM</span><span class="p">),</span> <span class="n">f</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+    <span class="nd">@forces.setter</span>
+    <span class="k">def</span> <span class="nf">forces</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_forces</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">new</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_for_source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame</span>
 
 </div>
-<div class="viewcode-block" id="TRRWriter"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/TRR.html#MDAnalysis.coordinates.TRR.TRRWriter">[docs]</a><span class="k">class</span> <span class="nc">TRRWriter</span><span class="p">(</span><span class="n">core</span><span class="o">.</span><span class="n">TrjWriter</span><span class="p">):</span>
+<div class="viewcode-block" id="TRRWriter"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/TRR.html#MDAnalysis.coordinates.xdrfile.TRR.TRRWriter">[docs]</a><span class="k">class</span> <span class="nc">TRRWriter</span><span class="p">(</span><span class="n">core</span><span class="o">.</span><span class="n">TrjWriter</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Write a Gromacs_ TRR trajectory.</span>
 
 <span class="sd">    .. _Gromacs: http://www.gromacs.org</span>
@@ -414,15 +238,17 @@
     <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;time&#39;</span><span class="p">:</span> <span class="s">&#39;ps&#39;</span><span class="p">,</span> <span class="s">&#39;length&#39;</span><span class="p">:</span> <span class="s">&#39;nm&#39;</span><span class="p">,</span> <span class="s">&#39;velocity&#39;</span><span class="p">:</span> <span class="s">&#39;nm/ps&#39;</span><span class="p">,</span> <span class="s">&#39;force&#39;</span><span class="p">:</span> <span class="s">&#39;kJ/(mol*nm)&#39;</span><span class="p">}</span>
 
 </div>
-<div class="viewcode-block" id="TRRReader"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/TRR.html#MDAnalysis.coordinates.TRR.TRRReader">[docs]</a><span class="k">class</span> <span class="nc">TRRReader</span><span class="p">(</span><span class="n">core</span><span class="o">.</span><span class="n">TrjReader</span><span class="p">):</span>
+<div class="viewcode-block" id="TRRReader"><a class="viewcode-back" href="../../../../documentation_pages/coordinates/xdrfile/TRR.html#MDAnalysis.coordinates.xdrfile.TRR.TRRReader">[docs]</a><span class="k">class</span> <span class="nc">TRRReader</span><span class="p">(</span><span class="n">core</span><span class="o">.</span><span class="n">TrjReader</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Read a Gromacs_ TRR trajectory.</span>
 
 <span class="sd">    .. versionchanged:: 0.8.0</span>
 <span class="sd">       :class:`Timestep` objects returned from TRR files now have</span>
-<span class="sd">       :attr:`~Timestep.has_x`, :attr:`~Timestep.has_v`, and :attr:`~Timestep.has_f`</span>
+<span class="sd">       :attr:`~Timestep.has_x`, :attr:`~Timestep.has_velocities`, and :attr:`~Timestep.has_forces`</span>
 <span class="sd">       flags reflecting whether coordinates/velocities/forces were read.</span>
 <span class="sd">       Attempting to access such data when the corresponding flag is set to ``False``</span>
 <span class="sd">       will raise a :exc:`NoDataError`.</span>
+<span class="sd">    .. versionchanged:: 0.11.0</span>
+<span class="sd">       Returned Timesteps will always be a :class:`Timestep` instance.</span>
 
 <span class="sd">    .. _Gromacs: http://www.gromacs.org</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -432,9 +258,9 @@
     <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;time&#39;</span><span class="p">:</span> <span class="s">&#39;ps&#39;</span><span class="p">,</span> <span class="s">&#39;length&#39;</span><span class="p">:</span> <span class="s">&#39;nm&#39;</span><span class="p">,</span> <span class="s">&#39;velocity&#39;</span><span class="p">:</span> <span class="s">&#39;nm/ps&#39;</span><span class="p">,</span> <span class="s">&#39;force&#39;</span><span class="p">:</span> <span class="s">&#39;kJ/(mol*nm)&#39;</span><span class="p">}</span>
 
     <span class="k">def</span> <span class="nf">_allocate_sub</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">DIM</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_pos_buf</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_trr_numatoms</span><span class="p">,</span> <span class="n">DIM</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s">&#39;C&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_velocities_buf</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_trr_numatoms</span><span class="p">,</span> <span class="n">DIM</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s">&#39;C&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_forces_buf</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_trr_numatoms</span><span class="p">,</span> <span class="n">DIM</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s">&#39;C&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pos_buf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_trr_numatoms</span><span class="p">,</span> <span class="n">DIM</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s">&#39;C&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_velocities_buf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_trr_numatoms</span><span class="p">,</span> <span class="n">DIM</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s">&#39;C&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_forces_buf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_trr_numatoms</span><span class="p">,</span> <span class="n">DIM</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s">&#39;C&#39;</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="nf">_read_trj_natoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">libxdrfile2</span><span class="o">.</span><span class="n">read_trr_natoms</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
@@ -446,32 +272,38 @@
     <span class="k">def</span> <span class="nf">_read_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">ts</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span>
-        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="s">&#39;_tpos&#39;</span><span class="p">):</span>  <span class="c"># If a foreign Timestep is passed as the receptacle of the data</span>
-            <span class="n">ts</span> <span class="o">=</span> <span class="n">Timestep</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>  <span class="c"># we must make sure the access-checking stuff gets set up.</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">Timestep</span><span class="p">):</span>
+            <span class="c"># Requires using a TRR Timestep</span>
+            <span class="n">ts</span> <span class="o">=</span> <span class="n">Timestep</span><span class="o">.</span><span class="n">from_timestep</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">xdrfile</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">open_trajectory</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sub</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">ts</span><span class="o">.</span><span class="n">status</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">step</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">lmbda</span><span class="p">,</span>\
-                <span class="n">ts</span><span class="o">.</span><span class="n">has_x</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">has_v</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">has_f</span> <span class="o">=</span> <span class="n">libxdrfile2</span><span class="o">.</span><span class="n">read_trr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xdrfile</span><span class="p">,</span>
-                                                                    <span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">,</span>
-                                                                    <span class="n">ts</span><span class="o">.</span><span class="n">_tpos</span><span class="p">,</span>
-                                                                    <span class="n">ts</span><span class="o">.</span><span class="n">_tvelocities</span><span class="p">,</span>
-                                                                    <span class="n">ts</span><span class="o">.</span><span class="n">_tforces</span><span class="p">)</span>
+                <span class="n">ts</span><span class="o">.</span><span class="n">has_x</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">has_v</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">has_f</span> <span class="o">=</span> <span class="n">libxdrfile2</span><span class="o">.</span><span class="n">read_trr</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">xdrfile</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">_velocities</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">_forces</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">ts</span><span class="o">.</span><span class="n">status</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">step</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">lmbda</span><span class="p">,</span>\
-                <span class="n">ts</span><span class="o">.</span><span class="n">has_x</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">has_v</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">has_f</span> <span class="o">=</span> <span class="n">libxdrfile2</span><span class="o">.</span><span class="n">read_trr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xdrfile</span><span class="p">,</span>
-                                                                    <span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">,</span>
-                                                                    <span class="bp">self</span><span class="o">.</span><span class="n">_pos_buf</span><span class="p">,</span>
-                                                                    <span class="bp">self</span><span class="o">.</span><span class="n">_velocities_buf</span><span class="p">,</span>
-                                                                    <span class="bp">self</span><span class="o">.</span><span class="n">_forces_buf</span><span class="p">)</span>
-            <span class="n">ts</span><span class="o">.</span><span class="n">_tpos</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pos_buf</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_sub</span><span class="p">]</span>
-            <span class="n">ts</span><span class="o">.</span><span class="n">_tvelocities</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_velocities_buf</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_sub</span><span class="p">]</span>
-            <span class="n">ts</span><span class="o">.</span><span class="n">_tforces</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_forces_buf</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_sub</span><span class="p">]</span>
+                <span class="n">ts</span><span class="o">.</span><span class="n">has_x</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">has_v</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">has_f</span> <span class="o">=</span> <span class="n">libxdrfile2</span><span class="o">.</span><span class="n">read_trr</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">xdrfile</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pos_buf</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_velocities_buf</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_forces_buf</span><span class="p">)</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pos_buf</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_sub</span><span class="p">]</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">_velocities</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_velocities_buf</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_sub</span><span class="p">]</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">_forces</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_forces_buf</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_sub</span><span class="p">]</span>
 
-        <span class="k">if</span> <span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">libxdrfile2</span><span class="o">.</span><span class="n">exdrENDOFFILE</span><span class="p">)</span> <span class="ow">or</span> \
-           <span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">libxdrfile2</span><span class="o">.</span><span class="n">exdrINT</span><span class="p">):</span>
+        <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="c"># Update the sources of data</span>
+        <span class="k">if</span> <span class="n">ts</span><span class="o">.</span><span class="n">has_x</span><span class="p">:</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">_pos_source</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span>
+        <span class="k">if</span> <span class="n">ts</span><span class="o">.</span><span class="n">has_v</span><span class="p">:</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">has_velocities</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">_vel_source</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span>
+        <span class="k">if</span> <span class="n">ts</span><span class="o">.</span><span class="n">has_f</span><span class="p">:</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">has_forces</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">_for_source</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span>
+
+        <span class="k">if</span> <span class="p">((</span><span class="n">ts</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">libxdrfile2</span><span class="o">.</span><span class="n">exdrENDOFFILE</span><span class="p">)</span> <span class="ow">or</span> 
+            <span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">libxdrfile2</span><span class="o">.</span><span class="n">exdrINT</span><span class="p">)):</span>
             <span class="c"># seems that trr files can get a exdrINT when reaching EOF (??)</span>
             <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="n">errno</span><span class="o">.</span><span class="n">EIO</span><span class="p">,</span> <span class="s">&quot;End of file reached for </span><span class="si">%s</span><span class="s"> file&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span><span class="p">,</span>
                           <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
@@ -485,12 +317,12 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_from_native</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">)</span>  <span class="c"># in-place !</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_from_native</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">)</span>  <span class="c"># in-place ! (note: trr contain unit vecs!)</span>
             <span class="n">ts</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_time_from_native</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>  <span class="c"># in-place does not work with scalars</span>
-            <span class="k">if</span> <span class="n">ts</span><span class="o">.</span><span class="n">has_v</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ts</span><span class="o">.</span><span class="n">has_velocities</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">convert_velocities_from_native</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">_velocities</span><span class="p">)</span>  <span class="c"># in-place</span>
-            <span class="k">if</span> <span class="n">ts</span><span class="o">.</span><span class="n">has_f</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ts</span><span class="o">.</span><span class="n">has_forces</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">convert_forces_from_native</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">_forces</span><span class="p">)</span>  <span class="c"># in-place</span>
-        <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="k">return</span> <span class="n">ts</span>        </div>
+
+        <span class="k">return</span> <span class="n">ts</span></div>
 </pre></div>
 
           </div>
@@ -498,7 +330,7 @@
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -507,12 +339,12 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &raquo;</li>
-          <li class="nav-item nav-item-2"><a href="../../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
+        <li><a href="../../../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer" role="contentinfo">
+    <div class="footer">
         &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
@@ -521,7 +353,7 @@
     Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
     Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
     and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -31,8 +33,8 @@
     <link rel="top" title="MDAnalysis 0.11.0-dev documentation" href="../../../index.html" />
     <link rel="up" title="MDAnalysis" href="../../MDAnalysis.html" /> 
   </head>
-  <body role="document">
-    <div class="related" role="navigation" aria-label="related navigation">
+  <body>
+    <div class="related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -41,17 +43,17 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
-          <li class="nav-item nav-item-2"><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
+        <li><a href="../../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../../index.html">
               <img class="logo" src="../../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
             </a></p>
-<div id="searchbox" style="display: none" role="search">
+<div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../../search.html" method="get">
       <input type="text" name="q" />
@@ -70,7 +72,7 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body" role="main">
+          <div class="body">
             
   <h1>Source code for MDAnalysis.coordinates.DCD</h1><div class="highlight"><pre>
 <span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
@@ -94,7 +96,7 @@
 <span class="sd">============================================================</span>
 
 <span class="sd">Classes to read and write DCD binary trajectories, the format used by</span>
-<span class="sd">CHARMM, NAMD but also LAMMPS. Trajectories can be read regardless of</span>
+<span class="sd">CHARMM, NAMD, and also LAMMPS. Trajectories can be read regardless of</span>
 <span class="sd">system-endianness as this is auto-detected.</span>
 
 <span class="sd">Generally, DCD trajectories produced by any code can be read (with the</span>
@@ -107,7 +109,7 @@
 <span class="sd">trajectories with other tools you might need to watch out that time</span>
 <span class="sd">and unitcell dimensions are correctly interpreted.</span>
 
-<span class="sd">.. Note:: </span>
+<span class="sd">.. Note::</span>
 
 <span class="sd">   The DCD file format is not well defined. In particular, NAMD and</span>
 <span class="sd">   CHARMM use it differently. Currently, MDAnalysis tries to guess the</span>
@@ -143,7 +145,7 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">errno</span>
-<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">struct</span>
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">base</span>
@@ -157,11 +159,6 @@
     <span class="c">#: C]``, provided by the :class:`DCDReader` C code) to pull out</span>
     <span class="c">#: ``[A, B, C, alpha, beta, gamma]``.</span>
     <span class="n">_ts_order</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-
-    <span class="c">#: indices into :attr:`Timestep._unitcell`` to pull out</span>
-    <span class="c">#: ``[A, B, C, alpha, beta, gamma]``.</span>
-    <span class="c">### old (MDAnalysis 0.8.1)</span>
-    <span class="c">###_ts_order = [0, 2, 5, 4, 3, 1]</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -206,15 +203,15 @@
         <span class="c"># override for other formats; this strange ordering is kept for historical reasons</span>
         <span class="c"># (the user should not need concern themselves with this)</span>
         <span class="c">## orig MDAnalysis 0.8.1/dcd.c (~2004)</span>
-        <span class="c">##return numpy.take(self._unitcell, [0,2,5,1,3,4])</span>
+        <span class="c">##return np.take(self._unitcell, [0,2,5,1,3,4])</span>
 
         <span class="c"># MDAnalysis 0.9.0 with recent dcd.c (based on 2013 molfile</span>
         <span class="c"># DCD plugin, which implements the ordering of recent NAMD</span>
         <span class="c"># (&gt;2.5?)). See Issue 187.</span>
-        <span class="n">uc</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ts_order</span><span class="p">)</span>
+        <span class="n">uc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ts_order</span><span class="p">)</span>
         <span class="c"># heuristic sanity check: uc = A,B,C,alpha,beta,gamma</span>
         <span class="c"># XXX: should we worry about these comparisons with floats?</span>
-        <span class="k">if</span> <span class="n">numpy</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">uc</span> <span class="o">&lt;</span> <span class="mf">0.</span><span class="p">)</span> <span class="ow">or</span> <span class="n">numpy</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">uc</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span> <span class="o">&gt;</span> <span class="mf">180.</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">uc</span> <span class="o">&lt;</span> <span class="mf">0.</span><span class="p">)</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">uc</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span> <span class="o">&gt;</span> <span class="mf">180.</span><span class="p">):</span>
             <span class="c"># might be new CHARMM: box matrix vectors</span>
             <span class="n">H</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span>
             <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="n">e3</span> <span class="o">=</span> <span class="n">H</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">]],</span>  <span class="n">H</span><span class="p">[[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">]],</span> <span class="n">H</span><span class="p">[[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]]</span>
@@ -222,15 +219,15 @@
         <span class="k">return</span> <span class="n">uc</span>
 
     <span class="nd">@dimensions.setter</span>
-    <span class="k">def</span> <span class="nf">dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box</span><span class="p">):</span>
+<div class="viewcode-block" id="Timestep.dimensions"><a class="viewcode-back" href="../../../documentation_pages/coordinates/DCD.html#MDAnalysis.coordinates.DCD.Timestep.dimensions">[docs]</a>    <span class="k">def</span> <span class="nf">dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set unitcell with (*A*, *B*, *C*, *alpha*, *beta*, *gamma*)</span>
 
 <span class="sd">        .. versionadded:: 0.9.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c"># note that we can re-use self._ts_order with put!</span>
-        <span class="n">numpy</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ts_order</span><span class="p">,</span> <span class="n">box</span><span class="p">)</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ts_order</span><span class="p">,</span> <span class="n">box</span><span class="p">)</span>
 
-</div>
+</div></div>
 <div class="viewcode-block" id="DCDWriter"><a class="viewcode-back" href="../../../documentation_pages/coordinates/DCD.html#MDAnalysis.coordinates.DCD.DCDWriter">[docs]</a><span class="k">class</span> <span class="nc">DCDWriter</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">Writer</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Writes to a DCD file</span>
 
@@ -369,7 +366,7 @@
             <span class="s">&#39;reverse&#39;</span><span class="p">,</span> <span class="s">&#39;charmm&#39;</span><span class="p">,</span> <span class="s">&#39;first&#39;</span><span class="p">,</span> <span class="s">&#39;with_unitcell&#39;</span><span class="p">]</span>
         <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">desc</span><span class="p">,</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s">&quot;LLiiiiidiPPiiii&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dcd_C_str</span><span class="p">)))</span>
 
-<div class="viewcode-block" id="DCDWriter.write_next_timestep"><a class="viewcode-back" href="../../../documentation_pages/coordinates/LAMMPS.html#MDAnalysis.coordinates.DCD.DCDWriter.write_next_timestep">[docs]</a>    <span class="k">def</span> <span class="nf">write_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="DCDWriter.write_next_timestep"><a class="viewcode-back" href="../../../documentation_pages/coordinates/DCD.html#MDAnalysis.coordinates.DCD.DCDWriter.write_next_timestep">[docs]</a>    <span class="k">def</span> <span class="nf">write_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39; write a new timestep to the dcd file</span>
 
 <span class="sd">        *ts* - timestep object containing coordinates to be written to dcd file</span>
@@ -386,25 +383,16 @@
                 <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span>
         <span class="k">elif</span> <span class="ow">not</span> <span class="n">ts</span><span class="o">.</span><span class="n">numatoms</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;DCDWriter: Timestep does not have the correct number of atoms&quot;</span><span class="p">)</span>
-        <span class="n">unitcell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_dimensions_to_unitcell</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>  <span class="c"># must be float32 (!)</span>
+        <span class="n">unitcell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_dimensions_to_unitcell</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>  <span class="c"># must be float32 (!)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="o">.</span><span class="n">flags</span><span class="o">.</span><span class="n">f_contiguous</span><span class="p">:</span>  <span class="c"># Not in fortran format</span>
-            <span class="n">ts</span> <span class="o">=</span> <span class="n">Timestep</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>  <span class="c"># wrap in a new fortran formatted Timestep</span>
+            <span class="n">ts</span> <span class="o">=</span> <span class="n">Timestep</span><span class="o">.</span><span class="n">from_timestep</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>  <span class="c"># wrap in a new fortran formatted Timestep</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span><span class="p">:</span>
             <span class="n">pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_to_native</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">,</span>
                                              <span class="n">inplace</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>  <span class="c"># possibly make a copy to avoid changing the trajectory</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_write_next_frame</span><span class="p">(</span><span class="n">pos</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">pos</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">pos</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">unitcell</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">frames_written</span> <span class="o">+=</span> <span class="mi">1</span>
-
-<span class="c">#     def convert_dimensions_to_unitcell(self, ts, _ts_order=Timestep._ts_order):</span>
-<span class="c">#         &quot;&quot;&quot;Read dimensions from timestep *ts* and return appropriate unitcell.</span>
-
-<span class="c">#         .. SeeAlso:: :class:`Timestep`</span>
-<span class="c">#         &quot;&quot;&quot;</span>
-<span class="c">#         unitcell = super(DCDWriter, self).convert_dimensions_to_unitcell(ts)</span>
-<span class="c">#         # unitcell is A,B,C,alpha,beta,gamma - convert to order expected by low level</span>
-<span class="c">#         # DCD routines</span>
 </div>
-<div class="viewcode-block" id="DCDWriter.convert_dimensions_to_unitcell"><a class="viewcode-back" href="../../../documentation_pages/coordinates/LAMMPS.html#MDAnalysis.coordinates.DCD.DCDWriter.convert_dimensions_to_unitcell">[docs]</a>    <span class="k">def</span> <span class="nf">convert_dimensions_to_unitcell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">,</span> <span class="n">_ts_order</span><span class="o">=</span><span class="n">Timestep</span><span class="o">.</span><span class="n">_ts_order</span><span class="p">):</span>
+<div class="viewcode-block" id="DCDWriter.convert_dimensions_to_unitcell"><a class="viewcode-back" href="../../../documentation_pages/coordinates/DCD.html#MDAnalysis.coordinates.DCD.DCDWriter.convert_dimensions_to_unitcell">[docs]</a>    <span class="k">def</span> <span class="nf">convert_dimensions_to_unitcell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">,</span> <span class="n">_ts_order</span><span class="o">=</span><span class="n">Timestep</span><span class="o">.</span><span class="n">_ts_order</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Read dimensions from timestep *ts* and return appropriate native unitcell.</span>
 
 <span class="sd">        .. SeeAlso:: :attr:`Timestep.dimensions`</span>
@@ -412,7 +400,7 @@
         <span class="c"># unitcell is A,B,C,alpha,beta,gamma - convert to order expected by low level DCD routines</span>
         <span class="n">lengths</span><span class="p">,</span> <span class="n">angles</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[:</span><span class="mi">3</span><span class="p">],</span> <span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_to_native</span><span class="p">(</span><span class="n">lengths</span><span class="p">)</span>
-        <span class="n">unitcell</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
+        <span class="n">unitcell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
         <span class="c"># __write_DCD_frame() wants uc_array = [A, gamma, B, beta, alpha, C] and</span>
         <span class="c"># will write the lengths and the angle cosines to the DCD. NOTE: It</span>
         <span class="c"># will NOT write CHARMM36+ box matrix vectors. When round-tripping a</span>
@@ -420,12 +408,12 @@
         <span class="c"># itself will not detect this because the DCDReader contains the</span>
         <span class="c"># heuristic to deal with either lengths/angles or box matrix on the fly.</span>
         <span class="c">#</span>
-        <span class="c"># use numpy.put so that we can re-use ts_order (otherwise we</span>
+        <span class="c"># use np.put so that we can re-use ts_order (otherwise we</span>
         <span class="c"># would need a ts_reverse_order such as _ts_reverse_order = [0, 5, 1, 4, 3, 2])</span>
-        <span class="n">numpy</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">unitcell</span><span class="p">,</span> <span class="n">_ts_order</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">lengths</span><span class="p">,</span> <span class="n">angles</span><span class="p">]))</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">unitcell</span><span class="p">,</span> <span class="n">_ts_order</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">lengths</span><span class="p">,</span> <span class="n">angles</span><span class="p">]))</span>
         <span class="k">return</span> <span class="n">unitcell</span>
 </div>
-<div class="viewcode-block" id="DCDWriter.close"><a class="viewcode-back" href="../../../documentation_pages/coordinates/LAMMPS.html#MDAnalysis.coordinates.DCD.DCDWriter.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="DCDWriter.close"><a class="viewcode-back" href="../../../documentation_pages/coordinates/DCD.html#MDAnalysis.coordinates.DCD.DCDWriter.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Close trajectory and flush buffers.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;dcdfile&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">dcdfile</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_finish_dcd_write</span><span class="p">()</span>
@@ -456,7 +444,7 @@
 <span class="sd">        ``data = dcd.correl(...)``</span>
 <span class="sd">           populate a :class:`MDAnalysis.core.Timeseries.Collection` object with computed timeseries</span>
 
-<span class="sd">    .. Note:: </span>
+<span class="sd">    .. Note::</span>
 
 <span class="sd">       The DCD file format is not well defined. In particular, NAMD</span>
 <span class="sd">       and CHARMM use it differently. Currently, MDAnalysis tries to</span>
@@ -473,6 +461,9 @@
 <span class="sd">       sin(alpha)]``. See `Issue 187`_ for further details.</span>
 
 <span class="sd">    .. _Issue 187: https://github.com/MDAnalysis/mdanalysis/issues/187</span>
+
+<span class="sd">    .. versionchanged:: 0.11.0</span>
+<span class="sd">       Frames now 0-based instead of 1-based</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">format</span> <span class="o">=</span> <span class="s">&#39;DCD&#39;</span>
@@ -537,33 +528,26 @@
             <span class="s">&#39;charmm&#39;</span><span class="p">,</span> <span class="s">&#39;first&#39;</span><span class="p">,</span> <span class="s">&#39;with_unitcell&#39;</span><span class="p">]</span>
         <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">desc</span><span class="p">,</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s">&quot;LLiiiiidiPPiiii&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dcd_C_str</span><span class="p">)))</span>
 
-    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c"># Reset the trajectory file, read from the start</span>
-        <span class="c"># usage is &quot;from ts in dcd:&quot; where dcd does not have indexes</span>
+    <span class="k">def</span> <span class="nf">_reopen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reset_dcd_read</span><span class="p">()</span>
-
-        <span class="k">def</span> <span class="nf">iterDCD</span><span class="p">():</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">numframes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">skip</span><span class="p">):</span>  <span class="c"># FIXME: skip is not working!!!</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_timestep</span><span class="p">()</span>
-                <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">StopIteration</span>
-
-        <span class="k">return</span> <span class="n">iterDCD</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_read_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">ts</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span>
         <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_frame</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">_x</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">_y</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">_z</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">skip</span><span class="p">)</span>
+        <span class="c"># dcd.c gives 1 based, we want 0 based</span>
+        <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">-=</span> <span class="mi">1</span>
         <span class="k">return</span> <span class="n">ts</span>
 
     <span class="k">def</span> <span class="nf">_read_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_jump_to_frame</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
         <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span>
-        <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_frame</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">_x</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">_y</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">_z</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c"># XXX required!!</span>
+        <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_frame</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">_x</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">_y</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">_z</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="c"># dcd.c gives 1 basead, we want 0 based</span>
+        <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">-=</span> <span class="mi">1</span>
         <span class="k">return</span> <span class="n">ts</span>
 
-<div class="viewcode-block" id="DCDReader.timeseries"><a class="viewcode-back" href="../../../documentation_pages/coordinates/LAMMPS.html#MDAnalysis.coordinates.DCD.DCDReader.timeseries">[docs]</a>    <span class="k">def</span> <span class="nf">timeseries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">asel</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">stop</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">skip</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&#39;afc&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="DCDReader.timeseries"><a class="viewcode-back" href="../../../documentation_pages/coordinates/DCD.html#MDAnalysis.coordinates.DCD.DCDReader.timeseries">[docs]</a>    <span class="k">def</span> <span class="nf">timeseries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">asel</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">stop</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">skip</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&#39;afc&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a subset of coordinate data for an AtomGroup</span>
 
 <span class="sd">        :Arguments:</span>
@@ -589,7 +573,7 @@
         <span class="c"># XXX needs to be implemented</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_timeseries</span><span class="p">(</span><span class="n">atom_numbers</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">skip</span><span class="p">,</span> <span class="n">format</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="DCDReader.correl"><a class="viewcode-back" href="../../../documentation_pages/coordinates/LAMMPS.html#MDAnalysis.coordinates.DCD.DCDReader.correl">[docs]</a>    <span class="k">def</span> <span class="nf">correl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeseries</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">stop</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">skip</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="DCDReader.correl"><a class="viewcode-back" href="../../../documentation_pages/coordinates/DCD.html#MDAnalysis.coordinates.DCD.DCDReader.correl">[docs]</a>    <span class="k">def</span> <span class="nf">correl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeseries</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">stop</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">skip</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Populate a TimeseriesCollection object with timeseries computed from the trajectory</span>
 
 <span class="sd">        :Arguments:</span>
@@ -614,7 +598,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">dcdfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">dcdfile</span> <span class="o">=</span> <span class="bp">None</span>
 
-<div class="viewcode-block" id="DCDReader.Writer"><a class="viewcode-back" href="../../../documentation_pages/coordinates/LAMMPS.html#MDAnalysis.coordinates.DCD.DCDReader.Writer">[docs]</a>    <span class="k">def</span> <span class="nf">Writer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="DCDReader.Writer"><a class="viewcode-back" href="../../../documentation_pages/coordinates/DCD.html#MDAnalysis.coordinates.DCD.DCDReader.Writer">[docs]</a>    <span class="k">def</span> <span class="nf">Writer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns a DCDWriter for *filename* with the same parameters as this DCD.</span>
 
 <span class="sd">        All values can be changed through keyword arguments.</span>
@@ -685,7 +669,7 @@
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -694,12 +678,12 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
-          <li class="nav-item nav-item-2"><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
+        <li><a href="../../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer" role="contentinfo">
+    <div class="footer">
         &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
@@ -708,7 +692,7 @@
     Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
     Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
     and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

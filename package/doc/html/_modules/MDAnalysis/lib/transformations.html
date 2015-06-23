@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -6,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.core.transformations &mdash; MDAnalysis 0.11.0-dev documentation</title>
+    <title>MDAnalysis.lib.transformations &mdash; MDAnalysis 0.11.0-dev documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -31,8 +33,8 @@
     <link rel="top" title="MDAnalysis 0.11.0-dev documentation" href="../../../index.html" />
     <link rel="up" title="MDAnalysis" href="../../MDAnalysis.html" /> 
   </head>
-  <body role="document">
-    <div class="related" role="navigation" aria-label="related navigation">
+  <body>
+    <div class="related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -41,17 +43,17 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
-          <li class="nav-item nav-item-2"><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
+        <li><a href="../../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../../index.html">
               <img class="logo" src="../../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
             </a></p>
-<div id="searchbox" style="display: none" role="search">
+<div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../../search.html" method="get">
       <input type="text" name="q" />
@@ -70,9 +72,9 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body" role="main">
+          <div class="body">
             
-  <h1>Source code for MDAnalysis.core.transformations</h1><div class="highlight"><pre>
+  <h1>Source code for MDAnalysis.lib.transformations</h1><div class="highlight"><pre>
 <span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-</span>
 <span class="c"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
 
@@ -107,7 +109,7 @@
 <span class="c"># POSSIBILITY OF SUCH DAMAGE.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Homogeneous Transformation Matrices and Quaternions --- :mod:`MDAnalysis.core.transformations`</span>
+<span class="sd">Homogeneous Transformation Matrices and Quaternions --- :mod:`MDAnalysis.lib.transformations`</span>
 <span class="sd">==============================================================================================</span>
 
 <span class="sd">A library for calculating 4x4 matrices for translating, rotating, reflecting,</span>
@@ -254,8 +256,13 @@
 <span class="sd">Functions</span>
 <span class="sd">---------</span>
 
-<span class="sd">.. See `help(MDAnalysis.core.transformations)` for a listing of functions or</span>
+<span class="sd">.. See `help(MDAnalysis.lib.transformations)` for a listing of functions or</span>
 <span class="sd">.. the online help.</span>
+
+
+<span class="sd">.. versionchanged:: 0.11.0</span>
+<span class="sd">   Transformations library moved from MDAnalysis.core.transformations to</span>
+<span class="sd">   MDAnalysis.lib.transformations</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
@@ -267,7 +274,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span>
 <span class="kn">from</span> <span class="nn">numpy.linalg</span> <span class="kn">import</span> <span class="n">norm</span>
 
-<span class="kn">from</span> <span class="nn">.util</span> <span class="kn">import</span> <span class="n">angle</span> <span class="k">as</span> <span class="n">vecangle</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.core.util</span> <span class="kn">import</span> <span class="n">angle</span> <span class="k">as</span> <span class="n">vecangle</span>
 
 <span class="k">def</span> <span class="nf">identity_matrix</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Return 4x4 identity/unit matrix.</span>
@@ -297,7 +304,7 @@
     <span class="k">return</span> <span class="n">M</span>
 
 
-<div class="viewcode-block" id="translation_from_matrix"><a class="viewcode-back" href="../../../documentation_pages/core/transformations.html#MDAnalysis.core.transformations.translation_from_matrix">[docs]</a><span class="k">def</span> <span class="nf">translation_from_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">):</span>
+<div class="viewcode-block" id="translation_from_matrix"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.translation_from_matrix">[docs]</a><span class="k">def</span> <span class="nf">translation_from_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return translation vector from translation matrix.</span>
 
 <span class="sd">    &gt;&gt;&gt; v0 = numpy.random.random(3) - 0.5</span>
@@ -335,7 +342,7 @@
     <span class="k">return</span> <span class="n">M</span>
 
 
-<div class="viewcode-block" id="reflection_from_matrix"><a class="viewcode-back" href="../../../documentation_pages/core/transformations.html#MDAnalysis.core.transformations.reflection_from_matrix">[docs]</a><span class="k">def</span> <span class="nf">reflection_from_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">):</span>
+<div class="viewcode-block" id="reflection_from_matrix"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.reflection_from_matrix">[docs]</a><span class="k">def</span> <span class="nf">reflection_from_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return mirror plane point and normal vector from reflection matrix.</span>
 
 <span class="sd">    &gt;&gt;&gt; v0 = numpy.random.random(3) - 0.5</span>
@@ -413,7 +420,7 @@
     <span class="k">return</span> <span class="n">M</span>
 
 
-<div class="viewcode-block" id="rotation_from_matrix"><a class="viewcode-back" href="../../../documentation_pages/core/transformations.html#MDAnalysis.core.transformations.rotation_from_matrix">[docs]</a><span class="k">def</span> <span class="nf">rotation_from_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">):</span>
+<div class="viewcode-block" id="rotation_from_matrix"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.rotation_from_matrix">[docs]</a><span class="k">def</span> <span class="nf">rotation_from_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return rotation angle and axis from rotation matrix.</span>
 
 <span class="sd">    &gt;&gt;&gt; angle = (random.random() - 0.5) * (2*math.pi)</span>
@@ -491,7 +498,7 @@
     <span class="k">return</span> <span class="n">M</span>
 
 
-<div class="viewcode-block" id="scale_from_matrix"><a class="viewcode-back" href="../../../documentation_pages/core/transformations.html#MDAnalysis.core.transformations.scale_from_matrix">[docs]</a><span class="k">def</span> <span class="nf">scale_from_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">):</span>
+<div class="viewcode-block" id="scale_from_matrix"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.scale_from_matrix">[docs]</a><span class="k">def</span> <span class="nf">scale_from_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return scaling factor, origin and direction from scaling matrix.</span>
 
 <span class="sd">    &gt;&gt;&gt; factor = random.random() * 10 - 5</span>
@@ -594,7 +601,7 @@
     <span class="k">return</span> <span class="n">M</span>
 
 
-<div class="viewcode-block" id="projection_from_matrix"><a class="viewcode-back" href="../../../documentation_pages/core/transformations.html#MDAnalysis.core.transformations.projection_from_matrix">[docs]</a><span class="k">def</span> <span class="nf">projection_from_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">pseudo</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+<div class="viewcode-block" id="projection_from_matrix"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.projection_from_matrix">[docs]</a><span class="k">def</span> <span class="nf">projection_from_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">pseudo</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return projection plane and perspective point from projection matrix.</span>
 
 <span class="sd">    Return values are same as arguments for projection_matrix function:</span>
@@ -752,7 +759,7 @@
     <span class="k">return</span> <span class="n">M</span>
 
 
-<div class="viewcode-block" id="shear_from_matrix"><a class="viewcode-back" href="../../../documentation_pages/core/transformations.html#MDAnalysis.core.transformations.shear_from_matrix">[docs]</a><span class="k">def</span> <span class="nf">shear_from_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">):</span>
+<div class="viewcode-block" id="shear_from_matrix"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.shear_from_matrix">[docs]</a><span class="k">def</span> <span class="nf">shear_from_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return shear angle, direction and plane from shear matrix.</span>
 
 <span class="sd">    &gt;&gt;&gt; angle = (random.random() - 0.5) * 4*math.pi</span>
@@ -797,7 +804,7 @@
     <span class="k">return</span> <span class="n">angle</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="n">point</span><span class="p">,</span> <span class="n">normal</span>
 
 </div>
-<div class="viewcode-block" id="decompose_matrix"><a class="viewcode-back" href="../../../documentation_pages/core/transformations.html#MDAnalysis.core.transformations.decompose_matrix">[docs]</a><span class="k">def</span> <span class="nf">decompose_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">):</span>
+<div class="viewcode-block" id="decompose_matrix"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.decompose_matrix">[docs]</a><span class="k">def</span> <span class="nf">decompose_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return sequence of transformations from transformation matrix.</span>
 
 <span class="sd">    matrix : array_like</span>
@@ -882,7 +889,7 @@
     <span class="k">return</span> <span class="n">scale</span><span class="p">,</span> <span class="n">shear</span><span class="p">,</span> <span class="n">angles</span><span class="p">,</span> <span class="n">translate</span><span class="p">,</span> <span class="n">perspective</span>
 
 </div>
-<div class="viewcode-block" id="compose_matrix"><a class="viewcode-back" href="../../../documentation_pages/core/transformations.html#MDAnalysis.core.transformations.compose_matrix">[docs]</a><span class="k">def</span> <span class="nf">compose_matrix</span><span class="p">(</span><span class="n">scale</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">shear</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">angles</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">translate</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+<div class="viewcode-block" id="compose_matrix"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.compose_matrix">[docs]</a><span class="k">def</span> <span class="nf">compose_matrix</span><span class="p">(</span><span class="n">scale</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">shear</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">angles</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">translate</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                    <span class="n">perspective</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return transformation matrix from sequence of transformations.</span>
 
@@ -1187,7 +1194,7 @@
     <span class="k">return</span> <span class="n">ax</span><span class="p">,</span> <span class="n">ay</span><span class="p">,</span> <span class="n">az</span>
 
 
-<div class="viewcode-block" id="euler_from_quaternion"><a class="viewcode-back" href="../../../documentation_pages/core/transformations.html#MDAnalysis.core.transformations.euler_from_quaternion">[docs]</a><span class="k">def</span> <span class="nf">euler_from_quaternion</span><span class="p">(</span><span class="n">quaternion</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="s">&#39;sxyz&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="euler_from_quaternion"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.euler_from_quaternion">[docs]</a><span class="k">def</span> <span class="nf">euler_from_quaternion</span><span class="p">(</span><span class="n">quaternion</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="s">&#39;sxyz&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return Euler angles from quaternion for specified axis sequence.</span>
 
 <span class="sd">    &gt;&gt;&gt; angles = euler_from_quaternion([0.99810947, 0.06146124, 0, 0])</span>
@@ -1427,7 +1434,7 @@
     <span class="k">return</span> <span class="n">quaternion_conjugate</span><span class="p">(</span><span class="n">quaternion</span><span class="p">)</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">quaternion</span><span class="p">,</span> <span class="n">quaternion</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="quaternion_real"><a class="viewcode-back" href="../../../documentation_pages/core/transformations.html#MDAnalysis.core.transformations.quaternion_real">[docs]</a><span class="k">def</span> <span class="nf">quaternion_real</span><span class="p">(</span><span class="n">quaternion</span><span class="p">):</span>
+<div class="viewcode-block" id="quaternion_real"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.quaternion_real">[docs]</a><span class="k">def</span> <span class="nf">quaternion_real</span><span class="p">(</span><span class="n">quaternion</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return real part of quaternion.</span>
 
 <span class="sd">    &gt;&gt;&gt; quaternion_real([3.0, 0.0, 1.0, 2.0])</span>
@@ -1437,7 +1444,7 @@
     <span class="k">return</span> <span class="n">quaternion</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
 </div>
-<div class="viewcode-block" id="quaternion_imag"><a class="viewcode-back" href="../../../documentation_pages/core/transformations.html#MDAnalysis.core.transformations.quaternion_imag">[docs]</a><span class="k">def</span> <span class="nf">quaternion_imag</span><span class="p">(</span><span class="n">quaternion</span><span class="p">):</span>
+<div class="viewcode-block" id="quaternion_imag"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.quaternion_imag">[docs]</a><span class="k">def</span> <span class="nf">quaternion_imag</span><span class="p">(</span><span class="n">quaternion</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return imaginary part of quaternion.</span>
 
 <span class="sd">    &gt;&gt;&gt; quaternion_imag([3.0, 0.0, 1.0, 2.0])</span>
@@ -1535,7 +1542,7 @@
     <span class="k">return</span> <span class="n">quaternion_matrix</span><span class="p">(</span><span class="n">random_quaternion</span><span class="p">(</span><span class="n">rand</span><span class="p">))</span>
 
 
-<div class="viewcode-block" id="Arcball"><a class="viewcode-back" href="../../../documentation_pages/core/transformations.html#MDAnalysis.core.transformations.Arcball">[docs]</a><span class="k">class</span> <span class="nc">Arcball</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="Arcball"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.Arcball">[docs]</a><span class="k">class</span> <span class="nc">Arcball</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Virtual Trackball Control.</span>
 
 <span class="sd">    &gt;&gt;&gt; ball = Arcball()</span>
@@ -1586,7 +1593,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_qnow</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qpre</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qdown</span>
 
-<div class="viewcode-block" id="Arcball.place"><a class="viewcode-back" href="../../../documentation_pages/core/transformations.html#MDAnalysis.core.transformations.Arcball.place">[docs]</a>    <span class="k">def</span> <span class="nf">place</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
+<div class="viewcode-block" id="Arcball.place"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.Arcball.place">[docs]</a>    <span class="k">def</span> <span class="nf">place</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Place Arcball, e.g. when window size changes.</span>
 
 <span class="sd">        center : sequence[2]</span>
@@ -1599,22 +1606,22 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_center</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 </div>
-<div class="viewcode-block" id="Arcball.setaxes"><a class="viewcode-back" href="../../../documentation_pages/core/transformations.html#MDAnalysis.core.transformations.Arcball.setaxes">[docs]</a>    <span class="k">def</span> <span class="nf">setaxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">axes</span><span class="p">):</span>
+<div class="viewcode-block" id="Arcball.setaxes"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.Arcball.setaxes">[docs]</a>    <span class="k">def</span> <span class="nf">setaxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">axes</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set axes to constrain rotations.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">axes</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span> <span class="o">=</span> <span class="p">[</span><span class="n">unit_vector</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span> <span class="k">for</span> <span class="n">axis</span> <span class="ow">in</span> <span class="n">axes</span><span class="p">]</span>
 </div>
-<div class="viewcode-block" id="Arcball.setconstrain"><a class="viewcode-back" href="../../../documentation_pages/core/transformations.html#MDAnalysis.core.transformations.Arcball.setconstrain">[docs]</a>    <span class="k">def</span> <span class="nf">setconstrain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">constrain</span><span class="p">):</span>
+<div class="viewcode-block" id="Arcball.setconstrain"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.Arcball.setconstrain">[docs]</a>    <span class="k">def</span> <span class="nf">setconstrain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">constrain</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set state of constrain to axis mode.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_constrain</span> <span class="o">=</span> <span class="n">constrain</span> <span class="ow">is</span> <span class="bp">True</span>
 </div>
-<div class="viewcode-block" id="Arcball.getconstrain"><a class="viewcode-back" href="../../../documentation_pages/core/transformations.html#MDAnalysis.core.transformations.Arcball.getconstrain">[docs]</a>    <span class="k">def</span> <span class="nf">getconstrain</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Arcball.getconstrain"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.Arcball.getconstrain">[docs]</a>    <span class="k">def</span> <span class="nf">getconstrain</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return state of constrain to axis mode.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_constrain</span>
 </div>
-<div class="viewcode-block" id="Arcball.down"><a class="viewcode-back" href="../../../documentation_pages/core/transformations.html#MDAnalysis.core.transformations.Arcball.down">[docs]</a>    <span class="k">def</span> <span class="nf">down</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">):</span>
+<div class="viewcode-block" id="Arcball.down"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.Arcball.down">[docs]</a>    <span class="k">def</span> <span class="nf">down</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set initial cursor window coordinates and pick constrain-axis.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_vdown</span> <span class="o">=</span> <span class="n">arcball_map_to_sphere</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_center</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_radius</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_qdown</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qpre</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qnow</span>
@@ -1625,7 +1632,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_axis</span> <span class="o">=</span> <span class="bp">None</span>
 </div>
-<div class="viewcode-block" id="Arcball.drag"><a class="viewcode-back" href="../../../documentation_pages/core/transformations.html#MDAnalysis.core.transformations.Arcball.drag">[docs]</a>    <span class="k">def</span> <span class="nf">drag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">):</span>
+<div class="viewcode-block" id="Arcball.drag"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.Arcball.drag">[docs]</a>    <span class="k">def</span> <span class="nf">drag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Update current cursor window coordinates.&quot;&quot;&quot;</span>
         <span class="n">vnow</span> <span class="o">=</span> <span class="n">arcball_map_to_sphere</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_center</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_radius</span><span class="p">)</span>
 
@@ -1641,12 +1648,12 @@
             <span class="n">q</span> <span class="o">=</span> <span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vdown</span><span class="p">,</span> <span class="n">vnow</span><span class="p">),</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">t</span><span class="p">[</span><span class="mi">2</span><span class="p">]]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_qnow</span> <span class="o">=</span> <span class="n">quaternion_multiply</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qdown</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="Arcball.next"><a class="viewcode-back" href="../../../documentation_pages/core/transformations.html#MDAnalysis.core.transformations.Arcball.next">[docs]</a>    <span class="k">def</span> <span class="nf">next</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">acceleration</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
+<div class="viewcode-block" id="Arcball.next"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.Arcball.next">[docs]</a>    <span class="k">def</span> <span class="nf">next</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">acceleration</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Continue rotation in direction of last drag.&quot;&quot;&quot;</span>
         <span class="n">q</span> <span class="o">=</span> <span class="n">quaternion_slerp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_qpre</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qnow</span><span class="p">,</span> <span class="mf">2.0</span> <span class="o">+</span> <span class="n">acceleration</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_qpre</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qnow</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_qnow</span><span class="p">,</span> <span class="n">q</span>
 </div>
-<div class="viewcode-block" id="Arcball.matrix"><a class="viewcode-back" href="../../../documentation_pages/core/transformations.html#MDAnalysis.core.transformations.Arcball.matrix">[docs]</a>    <span class="k">def</span> <span class="nf">matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Arcball.matrix"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.Arcball.matrix">[docs]</a>    <span class="k">def</span> <span class="nf">matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return homogeneous rotation matrix.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">quaternion_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_qnow</span><span class="p">)</span>
 
@@ -1684,7 +1691,7 @@
     <span class="k">return</span> <span class="n">unit_vector</span><span class="p">([</span><span class="o">-</span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">])</span>
 
 
-<div class="viewcode-block" id="arcball_nearest_axis"><a class="viewcode-back" href="../../../documentation_pages/core/transformations.html#MDAnalysis.core.transformations.arcball_nearest_axis">[docs]</a><span class="k">def</span> <span class="nf">arcball_nearest_axis</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">axes</span><span class="p">):</span>
+<div class="viewcode-block" id="arcball_nearest_axis"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.arcball_nearest_axis">[docs]</a><span class="k">def</span> <span class="nf">arcball_nearest_axis</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">axes</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return axis, which arc is nearest to point.&quot;&quot;&quot;</span>
     <span class="n">point</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
     <span class="n">nearest</span> <span class="o">=</span> <span class="bp">None</span>
@@ -1831,7 +1838,7 @@
     <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">matrix</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="concatenate_matrices"><a class="viewcode-back" href="../../../documentation_pages/core/transformations.html#MDAnalysis.core.transformations.concatenate_matrices">[docs]</a><span class="k">def</span> <span class="nf">concatenate_matrices</span><span class="p">(</span><span class="o">*</span><span class="n">matrices</span><span class="p">):</span>
+<div class="viewcode-block" id="concatenate_matrices"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.concatenate_matrices">[docs]</a><span class="k">def</span> <span class="nf">concatenate_matrices</span><span class="p">(</span><span class="o">*</span><span class="n">matrices</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return concatenation of series of transformation matrices.</span>
 
 <span class="sd">    &gt;&gt;&gt; M = numpy.random.rand(16).reshape((4, 4)) - 0.5</span>
@@ -1895,7 +1902,7 @@
 
 <span class="c"># orbeckst --- some simple geometry</span>
 
-<div class="viewcode-block" id="rotaxis"><a class="viewcode-back" href="../../../documentation_pages/core/transformations.html#MDAnalysis.core.transformations.rotaxis">[docs]</a><span class="k">def</span> <span class="nf">rotaxis</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+<div class="viewcode-block" id="rotaxis"><a class="viewcode-back" href="../../../documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.rotaxis">[docs]</a><span class="k">def</span> <span class="nf">rotaxis</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return the rotation axis to rotate vector a into b.&quot;&quot;&quot;</span>
     <span class="n">c</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">c</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
@@ -1905,13 +1912,6 @@
 
 <span class="c"># Documentation in HTML format can be generated with Epydoc</span>
 <span class="n">__docformat__</span> <span class="o">=</span> <span class="s">&quot;restructuredtext en&quot;</span>
-
-<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">doctest</span>
-    <span class="kn">import</span> <span class="nn">random</span>
-
-    <span class="n">numpy</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">suppress</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">()</span>
 </pre></div>
 
           </div>
@@ -1919,7 +1919,7 @@
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -1928,12 +1928,12 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
-          <li class="nav-item nav-item-2"><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
+        <li><a href="../../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer" role="contentinfo">
+    <div class="footer">
         &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
@@ -1942,7 +1942,7 @@
     Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
     Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
     and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

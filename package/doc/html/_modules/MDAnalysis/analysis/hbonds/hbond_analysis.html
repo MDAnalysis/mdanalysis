@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -31,8 +33,8 @@
     <link rel="top" title="MDAnalysis 0.11.0-dev documentation" href="../../../../index.html" />
     <link rel="up" title="MDAnalysis" href="../../../MDAnalysis.html" /> 
   </head>
-  <body role="document">
-    <div class="related" role="navigation" aria-label="related navigation">
+  <body>
+    <div class="related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -41,17 +43,17 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &raquo;</li>
-          <li class="nav-item nav-item-2"><a href="../../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
+        <li><a href="../../../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../../../index.html">
               <img class="logo" src="../../../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
             </a></p>
-<div id="searchbox" style="display: none" role="search">
+<div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../../../search.html" method="get">
       <input type="text" name="q" />
@@ -70,7 +72,7 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body" role="main">
+          <div class="body">
             
   <h1>Source code for MDAnalysis.analysis.hbonds.hbond_analysis</h1><div class="highlight"><pre>
 <span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
@@ -386,11 +388,12 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
 <span class="kn">import</span> <span class="nn">numpy</span>
 
-<span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">MissingDataWarning</span><span class="p">,</span> <span class="n">NoDataError</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">MissingDataWarning</span><span class="p">,</span> <span class="n">NoDataError</span><span class="p">,</span> <span class="n">SelectionError</span><span class="p">,</span> <span class="n">SelectionWarning</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.core.AtomGroup</span> <span class="kn">import</span> <span class="n">AtomGroup</span>
-<span class="kn">import</span> <span class="nn">MDAnalysis.KDTree.NeighborSearch</span> <span class="kn">as</span> <span class="nn">NS</span>
+<span class="kn">import</span> <span class="nn">MDAnalysis.lib.KDTree.NeighborSearch</span> <span class="kn">as</span> <span class="nn">NS</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.core.util</span> <span class="kn">import</span> <span class="n">norm</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="n">parse_residue</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.core.log</span> <span class="kn">import</span> <span class="n">ProgressMeter</span>
 
@@ -470,6 +473,23 @@
                  <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">detect_hydrogens</span><span class="o">=</span><span class="s">&#39;distance&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set up calculation of hydrogen bonds between two selections in a universe.</span>
 
+<span class="sd">        The timeseries is accessible as the attribute :attr:`HydrogenBondAnalysis.timeseries`.</span>
+
+<span class="sd">        Some initial checks are performed. If there are no atoms selected by</span>
+<span class="sd">        *selection1* or *selection2* or if no donor hydrogens or acceptor atoms</span>
+<span class="sd">        are found then a :exc:`SelectionError` is raised for any selection that</span>
+<span class="sd">        does *not* update (*update_selection1* and *update_selection2*</span>
+<span class="sd">        keywords). For selections that are set to update, only a warning is</span>
+<span class="sd">        logged because it is assumed that the selection might contain atoms at</span>
+<span class="sd">        a later frame (e.g. for distance based selections).</span>
+
+<span class="sd">        If no hydrogen bonds are detected or if the initial check fails, look</span>
+<span class="sd">        at the log output (enable with :func:`MDAnalysis.start_logging` and set</span>
+<span class="sd">        *verbose* = ``True``). It is likely that the default names for donors</span>
+<span class="sd">        and acceptors are not suitable (especially for non-standard</span>
+<span class="sd">        ligands). In this case, either change the *forcefield* or use</span>
+<span class="sd">        customized *donors* and/or *acceptors*.</span>
+
 <span class="sd">        .. Note::</span>
 
 <span class="sd">           In order to speed up processing, atoms are filtered by a coarse</span>
@@ -480,7 +500,7 @@
 <span class="sd">           at each step: this is now the default.</span>
 
 <span class="sd">           If your selections will essentially remain the same for all time</span>
-<span class="sd">           steps (i.e. residues are not moving farther than 3 *distance*), for</span>
+<span class="sd">           steps (i.e. residues are not moving farther than 3 x *distance*), for</span>
 <span class="sd">           instance, if no water or large conformational changes are involved</span>
 <span class="sd">           or if the optimization is disabled (*filter_first* = ``False``) then</span>
 <span class="sd">           you can improve performance by setting the *update_selection*</span>
@@ -494,7 +514,12 @@
 <span class="sd">          *selection2*</span>
 <span class="sd">            Selection string for second selection [&#39;all&#39;]</span>
 <span class="sd">          *selection1_type*</span>
-<span class="sd">            Selection 1 can be &#39;donor&#39;, &#39;acceptor&#39; or &#39;both&#39; [&#39;both&#39;]</span>
+<span class="sd">            Selection 1 can be &#39;donor&#39;, &#39;acceptor&#39; or &#39;both&#39;. Note that the</span>
+<span class="sd">            value for *selection1_type* automatically determines how</span>
+<span class="sd">            *selection2* handles donors and acceptors: If *selection1* contains</span>
+<span class="sd">            &#39;both&#39; then *selection2* will also contain *both*. If *selection1*</span>
+<span class="sd">            is set to &#39;donor&#39; then *selection2* is &#39;acceptor&#39; (and vice versa).</span>
+<span class="sd">            [&#39;both&#39;].</span>
 <span class="sd">          *update_selection1*</span>
 <span class="sd">            Update selection 1 at each frame? [``False``]</span>
 <span class="sd">          *update_selection2*</span>
@@ -550,7 +575,8 @@
 <span class="sd">            atom (&quot;hydrogen&quot;). If using &quot;heavy&quot; then one should set the *distance*</span>
 <span class="sd">            cutoff to a higher value such as 3.5 Å. [&quot;hydrogen&quot;]</span>
 
-<span class="sd">        The timeseries is accessible as the attribute :attr:`HydrogenBondAnalysis.timeseries`.</span>
+<span class="sd">        :Raises: :exc:`SelectionError` is raised for each static selection without</span>
+<span class="sd">                 the required donors and/or acceptors.</span>
 
 <span class="sd">        .. versionchanged:: 0.7.6</span>
 <span class="sd">           New *verbose* keyword (and per-frame debug logging disabled by</span>
@@ -575,6 +601,9 @@
 <span class="sd">           New keyword *distance_type* to select between calculation between</span>
 <span class="sd">           heavy atoms or hydrogen-acceptor. It defaults to the previous</span>
 <span class="sd">           behavior (i.e. &quot;hydrogen&quot;).</span>
+
+<span class="sd">        .. versionchanged:: 0.11.0</span>
+<span class="sd">           Initial checks for selections that potentially raise :exc:`SelectionError`.</span>
 
 <span class="sd">        .. _`Issue 138`: https://github.com/MDAnalysis/mdanalysis/issues/138</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -626,6 +655,52 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>  <span class="c"># per-frame debugging output?</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_log_parameters</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection1_type</span> <span class="o">==</span> <span class="s">&#39;donor&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sanity_check</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;donors&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sanity_check</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s">&#39;acceptors&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection1_type</span> <span class="o">==</span> <span class="s">&#39;acceptor&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sanity_check</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;acceptors&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sanity_check</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s">&#39;donors&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c"># both</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sanity_check</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;donors&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sanity_check</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;acceptors&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sanity_check</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s">&#39;acceptors&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sanity_check</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s">&#39;donors&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;HBond analysis: initial checks passed.&quot;</span><span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="nf">_sanity_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="n">htype</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;sanity check the selections 1 and 2</span>
+
+<span class="sd">        *selection* is 1 or 2, *htype* is &quot;donors&quot; or &quot;acceptors&quot;</span>
+
+<span class="sd">        If selections do not update and the required donor and acceptor</span>
+<span class="sd">        selections are empty then a :exc:`SelectionError` is immediately</span>
+<span class="sd">        raised.</span>
+
+<span class="sd">        If selections update dynamically then it is possible that the selection</span>
+<span class="sd">        will yield donors/acceptors at a later step and we only issue a</span>
+<span class="sd">        warning.</span>
+
+<span class="sd">        .. versionadded:: 0.11.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="n">selection</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">htype</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&quot;donors&quot;</span><span class="p">,</span> <span class="s">&quot;acceptors&quot;</span><span class="p">)</span>
+        <span class="c"># horrible data organization:  _s1_donors, _s2_acceptors, etc, update_selection1, ...</span>
+        <span class="n">atoms</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&quot;_s{0}_{1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">selection</span><span class="p">,</span> <span class="n">htype</span><span class="p">))</span>
+        <span class="n">update</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&quot;update_selection{0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">selection</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">atoms</span><span class="p">:</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="s">&quot;No {1} found in selection {0}. &quot;</span> \
+                <span class="s">&quot;You might have to specify a custom &#39;{1}&#39; keyword.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">selection</span><span class="p">,</span> <span class="n">htype</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">update</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">SelectionError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">errmsg</span> <span class="o">+=</span> <span class="s">&quot; Selection will update so continuing with fingers crossed.&quot;</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">errmsg</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">SelectionWarning</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_log_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Log important parameters to the logfile.&quot;&quot;&quot;</span>
@@ -718,40 +793,42 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">hydrogens</span> <span class="o">=</span> <span class="p">[</span>
                 <span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">atom</span><span class="o">.</span><span class="n">number</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span><span class="n">atom</span><span class="o">.</span><span class="n">number</span> <span class="o">+</span> <span class="mi">4</span><span class="p">]</span>
-                <span class="k">if</span>
-                <span class="n">a</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">((</span><span class="s">&#39;H&#39;</span><span class="p">,</span> <span class="s">&#39;1H&#39;</span><span class="p">,</span> <span class="s">&#39;2H&#39;</span><span class="p">,</span> <span class="s">&#39;3H&#39;</span><span class="p">))</span>
-                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_eucl_distance</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">r_cov</span><span class="p">[</span><span class="n">atom</span><span class="o">.</span><span class="n">name</span><span class="p">[</span><span class="mi">0</span><span class="p">]]]</span>
+                <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">((</span><span class="s">&#39;H&#39;</span><span class="p">,</span> <span class="s">&#39;1H&#39;</span><span class="p">,</span> <span class="s">&#39;2H&#39;</span><span class="p">,</span> <span class="s">&#39;3H&#39;</span><span class="p">))</span> \
+                    <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_eucl_distance</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">r_cov</span><span class="p">[</span><span class="n">atom</span><span class="o">.</span><span class="n">name</span><span class="p">[</span><span class="mi">0</span><span class="p">]]]</span>
         <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
             <span class="n">hydrogens</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c"># weird corner case that atom is the last one in universe</span>
         <span class="k">return</span> <span class="n">hydrogens</span>
 </div>
     <span class="k">def</span> <span class="nf">_update_selection_1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_s1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selection1</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s">&quot;Size of selection 1: </span><span class="si">%d</span><span class="s"> atoms&quot;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s1</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s">&quot;Size of selection 1: {0} atoms&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s1</span><span class="p">)))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s1</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;Selection 1 &#39;{0}&#39; did not select any atoms.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selection1</span><span class="p">)[:</span><span class="mi">80</span><span class="p">]))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_s1_donors</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_s1_donors_h</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_s1_acceptors</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection1_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;donor&#39;</span><span class="p">,</span> <span class="s">&#39;both&#39;</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_s1_donors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s1</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="s">&#39; or &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s">&#39;name </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">donors</span><span class="p">]))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_s1_donors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s1</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="s">&#39; or &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s">&#39;name {0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">donors</span><span class="p">]))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_s1_donors_h</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s1_donors</span><span class="p">):</span>
                 <span class="n">tmp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_bonded_hydrogens</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">tmp</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_s1_donors_h</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s">&quot;Selection 1 donors: </span><span class="si">%d</span><span class="s">&quot;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s1_donors</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s">&quot;Selection 1 donor hydrogens: </span><span class="si">%d</span><span class="s">&quot;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s1_donors_h</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s">&quot;Selection 1 donors: {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s1_donors</span><span class="p">)))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s">&quot;Selection 1 donor hydrogens: {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s1_donors_h</span><span class="p">)))</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection1_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;acceptor&#39;</span><span class="p">,</span> <span class="s">&#39;both&#39;</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_s1_acceptors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s1</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="s">&#39; or &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s">&#39;name </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">acceptors</span><span class="p">]))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s">&quot;Selection 1 acceptors: </span><span class="si">%d</span><span class="s">&quot;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s1_acceptors</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_s1_acceptors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s1</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="s">&#39; or &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s">&#39;name {0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">acceptors</span><span class="p">]))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s">&quot;Selection 1 acceptors: {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s1_acceptors</span><span class="p">)))</span>
 
     <span class="k">def</span> <span class="nf">_update_selection_2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_s2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selection2</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter_first</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s">&quot;Size of selection 2 before filtering: </span><span class="si">%d</span><span class="s"> atoms&quot;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s2</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter_first</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s2</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s">&quot;Size of selection 2 before filtering: {0} atoms&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s2</span><span class="p">)))</span>
             <span class="n">ns_selection_2</span> <span class="o">=</span> <span class="n">NS</span><span class="o">.</span><span class="n">AtomNeighborSearch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s2</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_s2</span> <span class="o">=</span> <span class="n">ns_selection_2</span><span class="o">.</span><span class="n">search_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s1</span><span class="p">,</span> <span class="mf">3.</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">distance</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s">&quot;Size of selection 2: </span><span class="si">%d</span><span class="s"> atoms&quot;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s2</span><span class="p">))</span>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s">&quot;Size of selection 2: {0} atoms&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s2</span><span class="p">)))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s2</span><span class="p">:</span>
+             <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;Selection 2 &#39;{0}&#39; did not select any atoms.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selection2</span><span class="p">)[:</span><span class="mi">80</span><span class="p">]))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_s2_donors</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_s2_donors_h</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_s2_acceptors</span> <span class="o">=</span> <span class="p">{}</span>
@@ -775,9 +852,14 @@
 <div class="viewcode-block" id="HydrogenBondAnalysis.run"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hbond_analysis.html#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Analyze trajectory and produce timeseries.</span>
 
-<span class="sd">        Stores the hydrogen bond data per frame</span>
-<span class="sd">        as :attr:`HydrogenBondAnalysis.timeseries` (see there for</span>
-<span class="sd">        output format).</span>
+<span class="sd">        Stores the hydrogen bond data per frame as</span>
+<span class="sd">        :attr:`HydrogenBondAnalysis.timeseries` (see there for output</span>
+<span class="sd">        format).</span>
+
+<span class="sd">        The method accepts a number of keywords, amongst them *quiet* (default</span>
+<span class="sd">        ``False``), which silences the porgress output (see</span>
+<span class="sd">        :class:`~MDAnalysis.core.log.ProgressMeter`) and *verbose* (which can</span>
+<span class="sd">        be used to change the value provided with the class constructor).</span>
 
 <span class="sd">        .. SeeAlso:: :meth:`HydrogenBondAnalysis.generate_table` for processing</span>
 <span class="sd">                     the data into a different format.</span>
@@ -788,6 +870,10 @@
 <span class="sd">           are removed from output (can be suppressed with *remove_duplicates* =</span>
 <span class="sd">           ``False``)</span>
 
+<span class="sd">        .. versionchanged:: 0.11.0</span>
+<span class="sd">           Accept *quiet* keyword. Analysis will now proceed through frames even if</span>
+<span class="sd">           no donors or acceptors were found in a particular frame.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;HBond analysis: starting&quot;</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;HBond analysis: donors    </span><span class="si">%r</span><span class="s">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">donors</span><span class="p">)</span>
@@ -795,10 +881,10 @@
 
         <span class="n">remove_duplicates</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;remove_duplicates&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>  <span class="c"># False: old behaviour</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">remove_duplicates</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;Hidden feature remove_duplicates = True activated: you will probably get duplicate H-bonds.&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;Hidden feature remove_duplicates=False activated: you will probably get duplicate H-bonds.&quot;</span><span class="p">)</span>
 
-        <span class="n">verbose</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;verbose&#39;</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">verbose</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+        <span class="n">verbose</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;verbose&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">verbose</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">verbose</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;Toggling verbose to </span><span class="si">%r</span><span class="s">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
@@ -815,7 +901,8 @@
             <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">()</span>
             <span class="k">raise</span>
         <span class="n">pm</span> <span class="o">=</span> <span class="n">ProgressMeter</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">frames</span><span class="p">),</span>
-                           <span class="n">format</span><span class="o">=</span><span class="s">&quot;HBonds frame </span><span class="si">%(step)5d</span><span class="s">/</span><span class="si">%(numsteps)d</span><span class="s"> [</span><span class="si">%(percentage)5.1f%%</span><span class="s">]</span><span class="se">\r</span><span class="s">&quot;</span><span class="p">)</span>
+                           <span class="n">format</span><span class="o">=</span><span class="s">&quot;HBonds frame </span><span class="si">%(step)5d</span><span class="s">/</span><span class="si">%(numsteps)d</span><span class="s"> [</span><span class="si">%(percentage)5.1f%%</span><span class="s">]</span><span class="se">\r</span><span class="s">&quot;</span><span class="p">,</span>
+                           <span class="n">quiet</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;quiet&#39;</span><span class="p">,</span> <span class="bp">False</span><span class="p">))</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">time</span>
@@ -853,7 +940,7 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_selection2</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_update_selection_2</span><span class="p">()</span>
 
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection1_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;donor&#39;</span><span class="p">,</span> <span class="s">&#39;both&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection1_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;donor&#39;</span><span class="p">,</span> <span class="s">&#39;both&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s2_acceptors</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s">&quot;Selection 1 Donors &lt;-&gt; Acceptors&quot;</span><span class="p">)</span>
                 <span class="n">ns_acceptors</span> <span class="o">=</span> <span class="n">NS</span><span class="o">.</span><span class="n">AtomNeighborSearch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s2_acceptors</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">donor_h_set</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s1_donors_h</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -872,7 +959,7 @@
                                     <span class="p">[</span><span class="n">h</span><span class="o">.</span><span class="n">number</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">number</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="s">&#39;</span><span class="si">%s%s</span><span class="s">:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">h</span><span class="o">.</span><span class="n">resname</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="n">h</span><span class="o">.</span><span class="n">resid</span><span class="p">),</span> <span class="n">h</span><span class="o">.</span><span class="n">name</span><span class="p">),</span>
                                         <span class="s">&#39;</span><span class="si">%s%s</span><span class="s">:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">resname</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">resid</span><span class="p">),</span> <span class="n">a</span><span class="o">.</span><span class="n">name</span><span class="p">),</span> <span class="n">dist</span><span class="p">,</span> <span class="n">angle</span><span class="p">])</span>
                                 <span class="n">already_found</span><span class="p">[(</span><span class="n">h</span><span class="o">.</span><span class="n">number</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">number</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> <span class="bp">True</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection1_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;acceptor&#39;</span><span class="p">,</span> <span class="s">&#39;both&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection1_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;acceptor&#39;</span><span class="p">,</span> <span class="s">&#39;both&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s1_acceptors</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s">&quot;Selection 1 Acceptors &lt;-&gt; Donors&quot;</span><span class="p">)</span>
                 <span class="n">ns_acceptors</span> <span class="o">=</span> <span class="n">NS</span><span class="o">.</span><span class="n">AtomNeighborSearch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s1_acceptors</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">donor_h_set</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s2_donors_h</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -933,8 +1020,6 @@
 
 <span class="sd">        .. _recsql: http://pypi.python.org/pypi/RecSQL</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">izip</span>
-
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;No timeseries computed, do run() first.&quot;</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">MissingDataWarning</span><span class="p">)</span>
@@ -942,31 +1027,23 @@
             <span class="k">return</span>
 
         <span class="n">num_records</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">hframe</span><span class="p">)</span> <span class="k">for</span> <span class="n">hframe</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span><span class="p">])</span>
+        <span class="c"># build empty output table</span>
         <span class="n">dtype</span> <span class="o">=</span> <span class="p">[</span>
             <span class="p">(</span><span class="s">&quot;time&quot;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span> <span class="p">(</span><span class="s">&quot;donor_idx&quot;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> <span class="p">(</span><span class="s">&quot;acceptor_idx&quot;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
             <span class="p">(</span><span class="s">&quot;donor_resnm&quot;</span><span class="p">,</span> <span class="s">&quot;|S4&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s">&quot;donor_resid&quot;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> <span class="p">(</span><span class="s">&quot;donor_atom&quot;</span><span class="p">,</span> <span class="s">&quot;|S4&quot;</span><span class="p">),</span>
             <span class="p">(</span><span class="s">&quot;acceptor_resnm&quot;</span><span class="p">,</span> <span class="s">&quot;|S4&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s">&quot;acceptor_resid&quot;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> <span class="p">(</span><span class="s">&quot;acceptor_atom&quot;</span><span class="p">,</span> <span class="s">&quot;|S4&quot;</span><span class="p">),</span>
             <span class="p">(</span><span class="s">&quot;distance&quot;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span> <span class="p">(</span><span class="s">&quot;angle&quot;</span><span class="p">,</span> <span class="nb">float</span><span class="p">)]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">table</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">recarray</span><span class="p">((</span><span class="n">num_records</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
-
         <span class="c"># according to Lukas&#39; notes below, using a recarray at this stage is ineffective</span>
-        <span class="c"># and speedups of ~x10 could be achieved by filling a standard array</span>
-        <span class="c"># (perhaps at the cost of less clarity... but that might just be my code ;-) -- orbeckst)</span>
+        <span class="c"># and speedups of ~x10 can be achieved by filling a standard array, like this:</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">num_records</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
         <span class="n">cursor</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c"># current row</span>
-        <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">hframe</span> <span class="ow">in</span> <span class="n">izip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timesteps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span><span class="p">):</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">hframe</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="k">continue</span>  <span class="c"># not really necessary, should also work without</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">table</span><span class="p">[</span><span class="n">cursor</span><span class="p">:</span><span class="n">cursor</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">hframe</span><span class="p">)]</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">t</span>
+        <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">hframe</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">izip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timesteps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">donor_idx</span><span class="p">,</span> <span class="n">acceptor_idx</span><span class="p">,</span> <span class="n">donor</span><span class="p">,</span> <span class="n">acceptor</span><span class="p">,</span> <span class="n">distance</span><span class="p">,</span> <span class="n">angle</span> <span class="ow">in</span> <span class="n">hframe</span><span class="p">:</span>
-                <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">table</span><span class="p">[</span><span class="n">cursor</span><span class="p">]</span>
-                <span class="n">r</span><span class="o">.</span><span class="n">donor_idx</span> <span class="o">=</span> <span class="n">donor_idx</span>
-                <span class="n">r</span><span class="o">.</span><span class="n">donor_resnm</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">donor_resid</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">donor_atom</span> <span class="o">=</span> <span class="n">parse_residue</span><span class="p">(</span><span class="n">donor</span><span class="p">)</span>
-                <span class="n">r</span><span class="o">.</span><span class="n">acceptor_idx</span> <span class="o">=</span> <span class="n">acceptor_idx</span>
-                <span class="n">r</span><span class="o">.</span><span class="n">acceptor_resnm</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">acceptor_resid</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">acceptor_atom</span> <span class="o">=</span> <span class="n">parse_residue</span><span class="p">(</span><span class="n">acceptor</span><span class="p">)</span>
-                <span class="n">r</span><span class="o">.</span><span class="n">distance</span> <span class="o">=</span> <span class="n">distance</span>
-                <span class="n">r</span><span class="o">.</span><span class="n">angle</span> <span class="o">=</span> <span class="n">angle</span>
+                <span class="n">out</span><span class="p">[</span><span class="n">cursor</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">donor_idx</span><span class="p">,</span> <span class="n">acceptor_idx</span><span class="p">)</span> <span class="o">+</span> <span class="n">parse_residue</span><span class="p">(</span><span class="n">donor</span><span class="p">)</span> <span class="o">+</span> \
+                    <span class="n">parse_residue</span><span class="p">(</span><span class="n">acceptor</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">distance</span><span class="p">,</span> <span class="n">angle</span><span class="p">)</span>
                 <span class="n">cursor</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="k">assert</span> <span class="n">cursor</span> <span class="o">==</span> <span class="n">num_records</span><span class="p">,</span> <span class="s">&quot;Internal Error: Not all HB records stored&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">table</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">recarray</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;HBond: Stored results as table with </span><span class="si">%(num_records)d</span><span class="s"> entries.&quot;</span><span class="p">,</span> <span class="nb">vars</span><span class="p">())</span>
 </div>
 <div class="viewcode-block" id="HydrogenBondAnalysis.save_table"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hbond_analysis.html#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.save_table">[docs]</a>    <span class="k">def</span> <span class="nf">save_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s">&quot;hbond_table.pickle&quot;</span><span class="p">):</span>
@@ -990,7 +1067,6 @@
 
 <span class="sd">        :Returns: a class:`numpy.recarray`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">izip</span><span class="p">,</span> <span class="n">imap</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;No timeseries computed, do run() first.&quot;</span>
@@ -999,7 +1075,8 @@
             <span class="k">return</span>
 
         <span class="n">out</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timesteps</span><span class="p">),),</span> <span class="n">dtype</span><span class="o">=</span><span class="p">[(</span><span class="s">&#39;time&#39;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span> <span class="p">(</span><span class="s">&#39;count&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">)])</span>
-        <span class="k">for</span> <span class="n">cursor</span><span class="p">,</span> <span class="n">time_count</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">izip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timesteps</span><span class="p">,</span> <span class="n">imap</span><span class="p">(</span><span class="nb">len</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span><span class="p">))):</span>
+        <span class="k">for</span> <span class="n">cursor</span><span class="p">,</span> <span class="n">time_count</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">izip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timesteps</span><span class="p">,</span>
+                                                           <span class="n">itertools</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="nb">len</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span><span class="p">))):</span>
             <span class="n">out</span><span class="p">[</span><span class="n">cursor</span><span class="p">]</span> <span class="o">=</span> <span class="n">time_count</span>
         <span class="k">return</span> <span class="n">out</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">recarray</span><span class="p">)</span>
 </div>
@@ -1070,7 +1147,6 @@
 
 <span class="sd">        :Returns: a class:`numpy.recarray`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">izip</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;No timeseries computed, do run() first.&quot;</span>
@@ -1079,7 +1155,7 @@
             <span class="k">return</span>
 
         <span class="n">hbonds</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
-        <span class="k">for</span> <span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">hframe</span><span class="p">)</span> <span class="ow">in</span> <span class="n">izip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timesteps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span><span class="p">):</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">hframe</span><span class="p">)</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">izip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timesteps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">donor_idx</span><span class="p">,</span> <span class="n">acceptor_idx</span><span class="p">,</span> <span class="n">donor</span><span class="p">,</span> <span class="n">acceptor</span><span class="p">,</span> <span class="n">distance</span><span class="p">,</span> <span class="n">angle</span> <span class="ow">in</span> <span class="n">hframe</span><span class="p">:</span>
                 <span class="n">donor_resnm</span><span class="p">,</span> <span class="n">donor_resid</span><span class="p">,</span> <span class="n">donor_atom</span> <span class="o">=</span> <span class="n">parse_residue</span><span class="p">(</span><span class="n">donor</span><span class="p">)</span>
                 <span class="n">acceptor_resnm</span><span class="p">,</span> <span class="n">acceptor_resid</span><span class="p">,</span> <span class="n">acceptor_atom</span> <span class="o">=</span> <span class="n">parse_residue</span><span class="p">(</span><span class="n">acceptor</span><span class="p">)</span>
@@ -1208,7 +1284,7 @@
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -1217,12 +1293,12 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &raquo;</li>
-          <li class="nav-item nav-item-2"><a href="../../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
+        <li><a href="../../../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer" role="contentinfo">
+    <div class="footer">
         &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
@@ -1231,7 +1307,7 @@
     Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
     Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
     and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

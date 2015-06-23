@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -6,54 +8,54 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.KDTree.KDTree &mdash; MDAnalysis 0.11.0-dev documentation</title>
+    <title>MDAnalysis.lib.KDTree.KDTree &mdash; MDAnalysis 0.11.0-dev documentation</title>
     
-    <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
-    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../../../',
+        URL_ROOT:    '../../../../',
         VERSION:     '0.11.0-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
       };
     </script>
-    <script type="text/javascript" src="../../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 0.11.0-dev documentation"
-          href="../../../_static/opensearch.xml"/>
-    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.11.0-dev documentation" href="../../../index.html" />
-    <link rel="up" title="MDAnalysis" href="../../MDAnalysis.html" /> 
+          href="../../../../_static/opensearch.xml"/>
+    <link rel="shortcut icon" href="../../../../_static/mdanalysis-logo.ico"/>
+    <link rel="top" title="MDAnalysis 0.11.0-dev documentation" href="../../../../index.html" />
+    <link rel="up" title="MDAnalysis" href="../../../MDAnalysis.html" /> 
   </head>
-  <body role="document">
-    <div class="related" role="navigation" aria-label="related navigation">
+  <body>
+    <div class="related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="../../../genindex.html" title="General Index"
+          <a href="../../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="../../../py-modindex.html" title="Python Module Index"
+          <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
-          <li class="nav-item nav-item-2"><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
+        <li><a href="../../../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-            <p class="logo"><a href="../../../index.html">
-              <img class="logo" src="../../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
+            <p class="logo"><a href="../../../../index.html">
+              <img class="logo" src="../../../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
             </a></p>
-<div id="searchbox" style="display: none" role="search">
+<div id="searchbox" style="display: none">
   <h3>Quick search</h3>
-    <form class="search" action="../../../search.html" method="get">
+    <form class="search" action="../../../../search.html" method="get">
       <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
@@ -70,9 +72,9 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body" role="main">
+          <div class="body">
             
-  <h1>Source code for MDAnalysis.KDTree.KDTree</h1><div class="highlight"><pre>
+  <h1>Source code for MDAnalysis.lib.KDTree.KDTree</h1><div class="highlight"><pre>
 <span class="c"># coding=utf-8</span>
 <span class="c"># KDTree.py was originally written by Thomas Hamelryck as part of</span>
 <span class="c"># the Biopython package:</span>
@@ -110,7 +112,7 @@
 <span class="kn">import</span> <span class="nn">CKDTree</span>
 
 
-<div class="viewcode-block" id="KDTree"><a class="viewcode-back" href="../../../documentation_pages/KDTree/KDTree.html#MDAnalysis.KDTree.KDTree.KDTree">[docs]</a><span class="k">class</span> <span class="nc">KDTree</span><span class="p">:</span>
+<div class="viewcode-block" id="KDTree"><a class="viewcode-back" href="../../../../documentation_pages/lib/KDTree/KDTree.html#MDAnalysis.lib.KDTree.KDTree.KDTree">[docs]</a><span class="k">class</span> <span class="nc">KDTree</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    KD tree implementation (C++, SWIG python wrapper)</span>
 
@@ -160,7 +162,7 @@
 
     <span class="c"># Set data</span>
 
-<div class="viewcode-block" id="KDTree.set_coords"><a class="viewcode-back" href="../../../documentation_pages/KDTree/KDTree.html#MDAnalysis.KDTree.KDTree.KDTree.set_coords">[docs]</a>    <span class="k">def</span> <span class="nf">set_coords</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coords</span><span class="p">):</span>
+<div class="viewcode-block" id="KDTree.set_coords"><a class="viewcode-back" href="../../../../documentation_pages/lib/KDTree/KDTree.html#MDAnalysis.lib.KDTree.KDTree.KDTree.set_coords">[docs]</a>    <span class="k">def</span> <span class="nf">set_coords</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coords</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Add the coordinates of the points.</span>
 
 <span class="sd">        o coords - two dimensional numpy array. E.g. if the</span>
@@ -179,7 +181,7 @@
 
     <span class="c"># Fixed radius search for a point</span>
 </div>
-<div class="viewcode-block" id="KDTree.search"><a class="viewcode-back" href="../../../documentation_pages/KDTree/KDTree.html#MDAnalysis.KDTree.KDTree.KDTree.search">[docs]</a>    <span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
+<div class="viewcode-block" id="KDTree.search"><a class="viewcode-back" href="../../../../documentation_pages/lib/KDTree/KDTree.html#MDAnalysis.lib.KDTree.KDTree.KDTree.search">[docs]</a>    <span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Search all points within radius of center.</span>
 
 <span class="sd">        o center - one dimensional numpy array. E.g. if the</span>
@@ -197,7 +199,7 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Expected a </span><span class="si">%i</span><span class="s">-dimensional Numeric array&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">kdt</span><span class="o">.</span><span class="n">search_center_radius</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">radius</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="KDTree.get_radii"><a class="viewcode-back" href="../../../documentation_pages/KDTree/KDTree.html#MDAnalysis.KDTree.KDTree.KDTree.get_radii">[docs]</a>    <span class="k">def</span> <span class="nf">get_radii</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="KDTree.get_radii"><a class="viewcode-back" href="../../../../documentation_pages/lib/KDTree/KDTree.html#MDAnalysis.lib.KDTree.KDTree.KDTree.get_radii">[docs]</a>    <span class="k">def</span> <span class="nf">get_radii</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return radii.</span>
 
 <span class="sd">        Return the list of distances from center after a neighbor search.</span>
@@ -207,7 +209,7 @@
             <span class="k">return</span> <span class="p">[]</span>
         <span class="k">return</span> <span class="n">a</span>
 </div>
-<div class="viewcode-block" id="KDTree.get_indices"><a class="viewcode-back" href="../../../documentation_pages/KDTree/KDTree.html#MDAnalysis.KDTree.KDTree.KDTree.get_indices">[docs]</a>    <span class="k">def</span> <span class="nf">get_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="KDTree.get_indices"><a class="viewcode-back" href="../../../../documentation_pages/lib/KDTree/KDTree.html#MDAnalysis.lib.KDTree.KDTree.KDTree.get_indices">[docs]</a>    <span class="k">def</span> <span class="nf">get_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the list of indices.</span>
 
 <span class="sd">        Return the list of indices after a neighbor search.  The indices</span>
@@ -223,7 +225,7 @@
 
     <span class="c"># Fixed radius search for all points</span>
 </div>
-<div class="viewcode-block" id="KDTree.all_search"><a class="viewcode-back" href="../../../documentation_pages/KDTree/KDTree.html#MDAnalysis.KDTree.KDTree.KDTree.all_search">[docs]</a>    <span class="k">def</span> <span class="nf">all_search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
+<div class="viewcode-block" id="KDTree.all_search"><a class="viewcode-back" href="../../../../documentation_pages/lib/KDTree/KDTree.html#MDAnalysis.lib.KDTree.KDTree.KDTree.all_search">[docs]</a>    <span class="k">def</span> <span class="nf">all_search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;All fixed neighbor search.</span>
 
 <span class="sd">        Search all point pairs that are within radius.</span>
@@ -236,7 +238,7 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;No point set specified, use KDTree.set_coords().&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">kdt</span><span class="o">.</span><span class="n">neighbor_search</span><span class="p">(</span><span class="n">radius</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="KDTree.all_get_indices"><a class="viewcode-back" href="../../../documentation_pages/KDTree/KDTree.html#MDAnalysis.KDTree.KDTree.KDTree.all_get_indices">[docs]</a>    <span class="k">def</span> <span class="nf">all_get_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="KDTree.all_get_indices"><a class="viewcode-back" href="../../../../documentation_pages/lib/KDTree/KDTree.html#MDAnalysis.lib.KDTree.KDTree.KDTree.all_get_indices">[docs]</a>    <span class="k">def</span> <span class="nf">all_get_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return All Fixed Neighbor Search results.</span>
 
 <span class="sd">        Return a Nx2 dim Numeric array containing the indices of the point</span>
@@ -249,7 +251,7 @@
         <span class="c"># is number of neighbor pairs.</span>
         <span class="k">return</span> <span class="n">a</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
 </div>
-<div class="viewcode-block" id="KDTree.all_get_radii"><a class="viewcode-back" href="../../../documentation_pages/KDTree/KDTree.html#MDAnalysis.KDTree.KDTree.KDTree.all_get_radii">[docs]</a>    <span class="k">def</span> <span class="nf">all_get_radii</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="KDTree.all_get_radii"><a class="viewcode-back" href="../../../../documentation_pages/lib/KDTree/KDTree.html#MDAnalysis.lib.KDTree.KDTree.KDTree.all_get_radii">[docs]</a>    <span class="k">def</span> <span class="nf">all_get_radii</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return All Fixed Neighbor Search results.</span>
 
 <span class="sd">        Return an N-dim array containing the distances of all the point</span>
@@ -263,7 +265,7 @@
     <span class="c"># Search another list of centers against the tree</span>
     <span class="c"># (currently only implemented in python)</span>
 </div>
-<div class="viewcode-block" id="KDTree.list_search"><a class="viewcode-back" href="../../../documentation_pages/KDTree/KDTree.html#MDAnalysis.KDTree.KDTree.KDTree.list_search">[docs]</a>    <span class="k">def</span> <span class="nf">list_search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">centers</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
+<div class="viewcode-block" id="KDTree.list_search"><a class="viewcode-back" href="../../../../documentation_pages/lib/KDTree/KDTree.html#MDAnalysis.lib.KDTree.KDTree.KDTree.list_search">[docs]</a>    <span class="k">def</span> <span class="nf">list_search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">centers</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Search all points within radius of any center (radii NOT available).&quot;&quot;&quot;</span>
         <span class="c"># test implementation; may add this to the C++ implementation</span>
         <span class="n">centers</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">centers</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s">&#39;C&#39;</span><span class="p">)</span>  <span class="c"># required for C++ code</span>
@@ -287,146 +289,28 @@
 
     <span class="k">def</span> <span class="nf">list_get_radii</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
-
-</div>
-<span class="k">def</span> <span class="nf">_dist</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
-    <span class="n">diff</span> <span class="o">=</span> <span class="n">p</span> <span class="o">-</span> <span class="n">q</span>
-    <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">diff</span> <span class="o">*</span> <span class="n">diff</span><span class="p">))</span>
-
-
-<span class="k">def</span> <span class="nf">_neighbor_test</span><span class="p">(</span><span class="n">nr_points</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">bucket_size</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Test all fixed radius neighbor search.</span>
-
-<span class="sd">    Test all fixed radius neighbor search using the</span>
-<span class="sd">    KD tree C module.</span>
-
-<span class="sd">    o nr_points - number of points used in test</span>
-<span class="sd">    o dim - dimension of coords</span>
-<span class="sd">    o bucket_size - nr of points per tree node</span>
-<span class="sd">    o radius - radius of search (typically 0.05 or so)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c"># KD tree search</span>
-    <span class="n">kdt</span> <span class="o">=</span> <span class="n">CKDTree</span><span class="o">.</span><span class="n">KDTree</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">bucket_size</span><span class="p">)</span>
-    <span class="n">coords</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="n">nr_points</span><span class="p">,</span> <span class="n">dim</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s">&quot;f&quot;</span><span class="p">)</span>
-    <span class="n">kdt</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">nr_points</span><span class="p">)</span>
-    <span class="n">kdt</span><span class="o">.</span><span class="n">neighbor_search</span><span class="p">(</span><span class="n">radius</span><span class="p">)</span>
-    <span class="n">r</span> <span class="o">=</span> <span class="n">kdt</span><span class="o">.</span><span class="n">neighbor_get_radii</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">r</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="n">l1</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">l1</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
-    <span class="c"># now do a slow search to compare results</span>
-    <span class="n">kdt</span><span class="o">.</span><span class="n">neighbor_simple_search</span><span class="p">(</span><span class="n">radius</span><span class="p">)</span>
-    <span class="n">r</span> <span class="o">=</span> <span class="n">kdt</span><span class="o">.</span><span class="n">neighbor_get_radii</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">r</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="n">l2</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">l2</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">l1</span> <span class="o">==</span> <span class="n">l2</span><span class="p">:</span>
-        <span class="k">print</span> <span class="s">&quot;Passed.&quot;</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">print</span> <span class="s">&quot;Not passed: </span><span class="si">%i</span><span class="s"> &lt;&gt; </span><span class="si">%i</span><span class="s">.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">)</span>
-
-
-<span class="k">def</span> <span class="nf">_test</span><span class="p">(</span><span class="n">nr_points</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">bucket_size</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Test neighbor search.</span>
-
-<span class="sd">    Test neighbor search using the KD tree C module.</span>
-
-<span class="sd">    o nr_points - number of points used in test</span>
-<span class="sd">    o dim - dimension of coords</span>
-<span class="sd">    o bucket_size - nr of points per tree node</span>
-<span class="sd">    o radius - radius of search (typically 0.05 or so)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c"># kd tree search</span>
-    <span class="n">kdt</span> <span class="o">=</span> <span class="n">CKDTree</span><span class="o">.</span><span class="n">KDTree</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">bucket_size</span><span class="p">)</span>
-    <span class="n">coords</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="n">nr_points</span><span class="p">,</span> <span class="n">dim</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-    <span class="n">center</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">kdt</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">nr_points</span><span class="p">)</span>
-    <span class="n">kdt</span><span class="o">.</span><span class="n">search_center_radius</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">radius</span><span class="p">)</span>
-    <span class="n">r</span> <span class="o">=</span> <span class="n">kdt</span><span class="o">.</span><span class="n">get_indices</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">r</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="n">l1</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">l1</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
-    <span class="n">l2</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="c"># now do a manual search to compare results</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">nr_points</span><span class="p">):</span>
-        <span class="n">p</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">_dist</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">center</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">radius</span><span class="p">:</span>
-            <span class="n">l2</span> <span class="o">=</span> <span class="n">l2</span> <span class="o">+</span> <span class="mi">1</span>
-    <span class="k">if</span> <span class="n">l1</span> <span class="o">==</span> <span class="n">l2</span><span class="p">:</span>
-        <span class="k">print</span> <span class="s">&quot;Passed.&quot;</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">print</span> <span class="s">&quot;Not passed: </span><span class="si">%i</span><span class="s"> &lt;&gt; </span><span class="si">%i</span><span class="s">.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">)</span>
-
-
-<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">KDTree_test_run</span><span class="p">():</span>
-        <span class="n">nr_points</span> <span class="o">=</span> <span class="mi">100000</span>
-        <span class="n">dim</span> <span class="o">=</span> <span class="mi">3</span>
-        <span class="n">bucket_size</span> <span class="o">=</span> <span class="mi">10</span>
-        <span class="n">query_radius</span> <span class="o">=</span> <span class="mi">10</span>
-
-        <span class="n">coords</span> <span class="o">=</span> <span class="mi">200</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="n">nr_points</span><span class="p">,</span> <span class="n">dim</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-
-        <span class="n">kdtree</span> <span class="o">=</span> <span class="n">KDTree</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">bucket_size</span><span class="p">)</span>
-
-        <span class="c"># enter coords</span>
-        <span class="n">kdtree</span><span class="o">.</span><span class="n">set_coords</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
-
-        <span class="c"># Find all point pairs within radius</span>
-
-        <span class="n">kdtree</span><span class="o">.</span><span class="n">all_search</span><span class="p">(</span><span class="n">query_radius</span><span class="p">)</span>
-
-        <span class="c"># get indices &amp; radii of points</span>
-
-        <span class="c"># indices is a list of tuples. Each tuple contains the</span>
-        <span class="c"># two indices of a point pair within query_radius of</span>
-        <span class="c"># each other.</span>
-        <span class="n">indices</span> <span class="o">=</span> <span class="n">kdtree</span><span class="o">.</span><span class="n">all_get_indices</span><span class="p">()</span>
-        <span class="n">radii</span> <span class="o">=</span> <span class="n">kdtree</span><span class="o">.</span><span class="n">all_get_radii</span><span class="p">()</span>
-
-        <span class="k">print</span> <span class="s">&quot;Found </span><span class="si">%i</span><span class="s"> point pairs within radius </span><span class="si">%f</span><span class="s">.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">indices</span><span class="p">),</span> <span class="n">query_radius</span><span class="p">)</span>
-
-        <span class="c"># Do 10 individual queries</span>
-
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">):</span>
-            <span class="c"># pick a random center</span>
-            <span class="n">center</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-
-            <span class="c"># search neighbors</span>
-            <span class="n">kdtree</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">query_radius</span><span class="p">)</span>
-
-            <span class="c"># get indices &amp; radii of points</span>
-            <span class="n">indices</span> <span class="o">=</span> <span class="n">kdtree</span><span class="o">.</span><span class="n">get_indices</span><span class="p">()</span>
-            <span class="n">radii</span> <span class="o">=</span> <span class="n">kdtree</span><span class="o">.</span><span class="n">get_radii</span><span class="p">()</span>
-
-            <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">center</span>
-            <span class="k">print</span> <span class="s">&quot;Found </span><span class="si">%i</span><span class="s"> points in radius </span><span class="si">%f</span><span class="s"> around center (</span><span class="si">%.2f</span><span class="s">, </span><span class="si">%.2f</span><span class="s">, </span><span class="si">%.2f</span><span class="s">).&quot;</span> <span class="o">%</span> \
-                  <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">indices</span><span class="p">),</span> <span class="n">query_radius</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
-</pre></div>
+</pre></div></div>
 
           </div>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="../../../genindex.html" title="General Index"
+          <a href="../../../../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="../../../py-modindex.html" title="Python Module Index"
+          <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
-          <li class="nav-item nav-item-2"><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
+        <li><a href="../../../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer" role="contentinfo">
+    <div class="footer">
         &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
@@ -435,7 +319,7 @@
     Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
     Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
     and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>
