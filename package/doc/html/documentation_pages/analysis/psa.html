@@ -71,10 +71,10 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="rms.html"
-                        title="previous chapter">3.1.4. Calculating root mean square quantities &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.rms</span></tt></a></p>
+                        title="previous chapter">3.1.4. Calculating root mean square quantities &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.analysis.rms</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="hbond_analysis.html"
-                        title="next chapter">3.2.1. Hydrogen Bond analysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.hbonds.hbond_analysis</span></tt></a></p>
+                        title="next chapter">3.2.1. Hydrogen Bond analysis &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.analysis.hbonds.hbond_analysis</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/analysis/psa.txt"
@@ -228,7 +228,7 @@ be negative, in which case it counts from the last to the first axis.</p>
 <p><em>P</em> (<em>Q</em>) is a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of <span class="math">\(N_p\)</span> (<span class="math">\(N_q\)</span>) time
 steps, <span class="math">\(N\)</span> atoms, and <span class="math">\(3N\)</span> coordinates (e.g.,
 <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.coordinates" title="MDAnalysis.core.AtomGroup.AtomGroup.coordinates"><tt class="xref py py-meth docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.AtomGroup.coordinates()</span></tt></a>). <em>P</em> (<em>Q</em>) has
-either shape <span class="math">\(N_p   imes N  imes 3\)</span> (<span class="math">\(N_q   imes N  imes 3\)</span>), or <span class="math">\(N_p   imes (3N)\)</span> (<span class="math">\(N_q   imes (3N)\)</span>) in flattened form.</p>
+either shape <span class="math">\(N_p \times N \times 3\)</span> (<span class="math">\(N_q \times N \times 3\)</span>), or <span class="math">\(N_p \times (3N)\)</span> (<span class="math">\(N_q \times (3N)\)</span>) in flattened form.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -280,7 +280,7 @@ be a 3D <a class="reference external" href="http://docs.scipy.org/doc/numpy/refe
 <p><em>P</em> (<em>Q</em>) is a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of <span class="math">\(N_p\)</span> (<span class="math">\(N_q\)</span>) time
 steps, <span class="math">\(N\)</span> atoms, and <span class="math">\(3N\)</span> coordinates (e.g.,
 <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.coordinates" title="MDAnalysis.core.AtomGroup.AtomGroup.coordinates"><tt class="xref py py-meth docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.AtomGroup.coordinates()</span></tt></a>). <em>P</em> (<em>Q</em>) has
-either shape <span class="math">\(N_p   imes N  imes 3\)</span> (<span class="math">\(N_q   imes N  imes 3\)</span>), or :<span class="math">\(N_p   imes (3N)\)</span> (<span class="math">\(N_q   imes (3N)\)</span>) in flattened form.</p>
+either shape <span class="math">\(N_p \times N \times 3\)</span> (<span class="math">\(N_q \times N \times 3\)</span>), or :<span class="math">\(N_p \times (3N)\)</span> (<span class="math">\(N_q \times (3N)\)</span>) in flattened form.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -507,8 +507,8 @@ original trajectory filename (from <a class="reference internal" href="#MDAnalys
 than <em>tol_mass</em> [0.1]</p>
 </dd>
 <dt><em>flat</em></dt>
-<dd><p class="first last">represent <a class="reference internal" href="#MDAnalysis.analysis.psa.Path.path" title="MDAnalysis.analysis.psa.Path.path"><tt class="xref py py-attr docutils literal"><span class="pre">Path.path</span></tt></a> with a 2D (<span class="math">\(N_p    imes 3N\)</span>) <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a>;
-if <tt class="docutils literal"><span class="pre">False</span></tt> then <a class="reference internal" href="#MDAnalysis.analysis.psa.Path.path" title="MDAnalysis.analysis.psa.Path.path"><tt class="xref py py-attr docutils literal"><span class="pre">Path.path</span></tt></a> is a 3D (<span class="math">\(N_p    imes N  imes 3\)</span>)
+<dd><p class="first last">represent <a class="reference internal" href="#MDAnalysis.analysis.psa.Path.path" title="MDAnalysis.analysis.psa.Path.path"><tt class="xref py py-attr docutils literal"><span class="pre">Path.path</span></tt></a> with a 2D (<span class="math">\(N_p\times 3N\)</span>) <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a>;
+if <tt class="docutils literal"><span class="pre">False</span></tt> then <a class="reference internal" href="#MDAnalysis.analysis.psa.Path.path" title="MDAnalysis.analysis.psa.Path.path"><tt class="xref py py-attr docutils literal"><span class="pre">Path.path</span></tt></a> is a 3D (<span class="math">\(N_p\times N\times 3\)</span>)
 <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> [<tt class="docutils literal"><span class="pre">False</span></tt>]</p>
 </dd>
 </dl>
@@ -530,7 +530,7 @@ trajectory.</p>
 each frame in the fitted universe (<a class="reference internal" href="#MDAnalysis.analysis.psa.Path.u_fitted" title="MDAnalysis.analysis.psa.Path.u_fitted"><tt class="xref py py-attr docutils literal"><span class="pre">Path.u_fitted</span></tt></a>) trajectory
 (with <span class="math">\(N_p\)</span> total frames) are appended sequentially to form a 3D or 2D
 (if <em>flat</em> is <tt class="docutils literal"><span class="pre">True</span></tt>) <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> representation of the
-fitted trajectory (with dimensions <span class="math">\(N_p    imes N  imes 3\)</span> or <span class="math">\(N_p    imes 3N\)</span>, respectively).</p>
+fitted trajectory (with dimensions <span class="math">\(N_p\times N\times 3\)</span> or <span class="math">\(N_p\times 3N\)</span>, respectively).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -547,8 +547,8 @@ the trajectory from <a class="reference internal" href="#MDAnalysis.analysis.psa
 is used, else it is overridden by <em>select</em> [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
 </dd>
 <dt><em>flat</em></dt>
-<dd><p class="first last">represent <a class="reference internal" href="#MDAnalysis.analysis.psa.Path.path" title="MDAnalysis.analysis.psa.Path.path"><tt class="xref py py-attr docutils literal"><span class="pre">Path.path</span></tt></a> as a 2D (<span class="math">\(N_p    imes 3N\)</span>) <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a>; if
-<tt class="docutils literal"><span class="pre">False</span></tt> then <a class="reference internal" href="#MDAnalysis.analysis.psa.Path.path" title="MDAnalysis.analysis.psa.Path.path"><tt class="xref py py-attr docutils literal"><span class="pre">Path.path</span></tt></a> is a 3D (<span class="math">\(N_p    imes N  imes 3\)</span>)
+<dd><p class="first last">represent <a class="reference internal" href="#MDAnalysis.analysis.psa.Path.path" title="MDAnalysis.analysis.psa.Path.path"><tt class="xref py py-attr docutils literal"><span class="pre">Path.path</span></tt></a> as a 2D (<span class="math">\(N_p\times 3N\)</span>) <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a>; if
+<tt class="docutils literal"><span class="pre">False</span></tt> then <a class="reference internal" href="#MDAnalysis.analysis.psa.Path.path" title="MDAnalysis.analysis.psa.Path.path"><tt class="xref py py-attr docutils literal"><span class="pre">Path.path</span></tt></a> is a 3D (<span class="math">\(N_p\times N\times 3\)</span>)
 <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> [<tt class="docutils literal"><span class="pre">False</span></tt>]</p>
 </dd>
 </dl>
@@ -757,8 +757,8 @@ than <em>tol_mass</em></p>
 <dd><p class="first last">frame index to select frame from <em>reference</em></p>
 </dd>
 <dt><em>flat</em></dt>
-<dd><p class="first last">represent <a class="reference internal" href="#MDAnalysis.analysis.psa.Path.path" title="MDAnalysis.analysis.psa.Path.path"><tt class="xref py py-attr docutils literal"><span class="pre">Path.path</span></tt></a> as a 2D (<span class="math">\(N_p    imes 3N\)</span>) <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a>; if
-<tt class="docutils literal"><span class="pre">False</span></tt> then <a class="reference internal" href="#MDAnalysis.analysis.psa.Path.path" title="MDAnalysis.analysis.psa.Path.path"><tt class="xref py py-attr docutils literal"><span class="pre">Path.path</span></tt></a> is a 3D (<span class="math">\(N_p    imes N  imes 3\)</span>)
+<dd><p class="first last">represent <a class="reference internal" href="#MDAnalysis.analysis.psa.Path.path" title="MDAnalysis.analysis.psa.Path.path"><tt class="xref py py-attr docutils literal"><span class="pre">Path.path</span></tt></a> as a 2D (<span class="math">\(N_p\times 3N\)</span>) <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a>; if
+<tt class="docutils literal"><span class="pre">False</span></tt> then <a class="reference internal" href="#MDAnalysis.analysis.psa.Path.path" title="MDAnalysis.analysis.psa.Path.path"><tt class="xref py py-attr docutils literal"><span class="pre">Path.path</span></tt></a> is a 3D (<span class="math">\(N_p\times N\times 3\)</span>)
 <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> [<tt class="docutils literal"><span class="pre">False</span></tt>]</p>
 </dd>
 <dt><em>save</em></dt>
