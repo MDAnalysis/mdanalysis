@@ -20,8 +20,8 @@ import MDAnalysis.core.AtomGroup
 from MDAnalysis.core.AtomGroup import AtomGroup
 
 import numpy
-from numpy.testing import *
-from . import assert_, MemleakTest
+from numpy.testing import assert_, assert_equal, assert_array_equal, assert_raises
+from MDAnalysisTests import MemleakTest
 
 import cPickle
 

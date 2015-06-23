@@ -82,7 +82,7 @@ try:
     import numpy
 except ImportError:
     print("*** package 'numpy' not found ***")
-    print("MDAnalysis requires a version of NumPy (>=1.4.0), even for setup.")
+    print("MDAnalysis requires a version of NumPy (>=1.5.0), even for setup.")
     print("Please get it from http://numpy.scipy.org/ or install it through your package manager.")
     sys.exit(-1)
 
@@ -298,7 +298,7 @@ if __name__ == '__main__':
           # all standard requirements are available through PyPi and
           # typically can be installed without difficulties through setuptools
           install_requires=[
-              'numpy>=1.4.0',  # currently not useful because without numpy we don't get here
+              'numpy>=1.5.0',  # currently not useful because without numpy we don't get here
               'biopython>=1.59',  # required for standard PDB reader and sequence alignment
               'networkx>=1.0',  # LeafletFinder
               'GridDataFormats>=0.2.2',  # volumes and densities

@@ -123,7 +123,7 @@ For details see the report for `Issue 87`_.
           long_description=LONG_DESCRIPTION,
           install_requires=[
               'MDAnalysis==%s' % RELEASE,  # same as this release!
-              'numpy>=1.4',
+              'numpy>=1.5',
               'nose>=0.10',
           ],
           zip_safe=False,  # had 'KeyError' as zipped egg (2MB savings are not worth the trouble)

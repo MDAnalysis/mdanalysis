@@ -109,46 +109,27 @@ especially as we are directly using this framework (imported from numpy).
 __version__ = "0.11.0-dev"  # keep in sync with RELEASE in setup.py
 
 try:
-    from numpy.testing import Tester, assert_equal, TestCase
-
+    from numpy.testing import Tester, assert_, assert_equal, TestCase
     test = Tester().test
 except ImportError:
-    raise ImportError("""numpy>=1.3  is required to run the test suite. Please install it first. """
-                      """(For example, try "easy_install 'numpy>=1.3'").""")
-
-try:
-    from numpy.testing import assert_
-except ImportError:
-    # missing in numpy 1.2 but needed here:
-    # copied code from numpy.testing 1.5
-    def assert_(val, msg=''):
-        """
-        Assert that works in release mode.
-
-        The Python built-in ``assert`` does not work when executing code in
-        optimized mode (the ``-O`` flag) - no byte-code is generated for it.
-
-        For documentation on usage, refer to the Python documentation.
-
-        (Code taken from numpy.testing 1.4)
-        """
-        if not val:
-            raise AssertionError(msg)
+    raise ImportError("""numpy>=1.5  is required to run the test suite. Please install it first. """
+                      """(For example, try "easy_install 'numpy>=1.5'").""")
 
 try:
     import nose
 except ImportError:
-    raise ImportError("""nose is required to run the test suite. Please install it first. """
-                      """(For example, try "easy_install nose").""")
+    raise ImportError('nose is required to run the test suite. Please install it first. '
+                      '(For example, try "pip install nose").')
 
 try:
     import MDAnalysis
-
-    if MDAnalysis.__version__ != __version__:
-        raise ImportError
 except ImportError:
-    raise ImportError("MDAnalysis release %s must be installed to run the tests, not %s" %
-                      (__version__, MDAnalysis.__version__))
+    raise ImportError('Install MDAnalysis first to run the tests, '
+                      'e.g. "pip install mdanalysis"')
+
+if MDAnalysis.__version__ != __version__:
+    raise ImportError("MDAnalysis release {0} must be installed to run the tests, not {1}".format(
+            __version__, MDAnalysis.__version__))
 
 import MDAnalysis.core.util
 

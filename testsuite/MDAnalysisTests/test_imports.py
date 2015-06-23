@@ -14,32 +14,20 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import print_function
-import MDAnalysis
 
-from numpy.testing import *
-from nose.plugins.attrib import attr
+from numpy.testing import TestCase, assert_equal
 
-#import os
-#import errno
-#import tempfile
-#import itertools
-#import warnings
+import os
 import glob
-
-from MDAnalysis.tests.datafiles import PSF, DCD, FASTA, PDB_helix, PDB_HOLE, XTC_HOLE, GRO, XTC, waterDCD, waterPSF
-
 
 class TestRelativeImports(TestCase):
     '''Relative imports are banned in unit testing modules (Issue #189), so run tests to enforce this policy.'''
 
     def setUp(self):
-        self.path_to_testing_modules = './'
-
-    def tearDown(self):
-        del self.path_to_testing_modules
+        self.path_to_testing_modules = os.curdir
 
     def test_relative_imports(self):
-        list_testing_modules = glob.glob(self.path_to_testing_modules + '*.py')
+        list_testing_modules = glob.glob(os.path.join(self.path_to_testing_modules, '*.py'))
         for testing_module in list_testing_modules:
             relative_import_counts = 0
             with open(testing_module, 'r') as test_module_file_object:

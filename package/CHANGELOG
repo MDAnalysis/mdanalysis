@@ -49,6 +49,7 @@ The rules for this file:
     (Issue #287)
   * base.Reader now defines __iter__
   * __iter__ removed from many Readers (now use base.Reader implementation)
+  * numpy >= 1.5 required
 
   Fixes
   * ChainReaders no longer leak (Issue #312)

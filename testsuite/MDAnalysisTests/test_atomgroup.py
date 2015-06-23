@@ -25,7 +25,6 @@ from MDAnalysis import NoDataError
 
 import numpy
 from numpy.testing import *
-from . import assert_
 from numpy import array, float32, rad2deg
 from nose.plugins.attrib import attr
 
@@ -523,7 +522,7 @@ class TestAtomGroup(TestCase):
         ag = self.universe.atoms[10:30]
         ag2 = ag[sel]
         assert_equal(len(ag2), 0)
-            
+
     def test_phi_selection(self):
         phisel = self.universe.s4AKE.r10.phi_selection()
         assert_equal(phisel.names(), ['C', 'N', 'CA', 'C'])
@@ -1267,7 +1266,7 @@ class TestAtomGroupVelocities(TestCase):
 
     def test_vel_src(self):
         assert_equal(self.universe.trajectory.ts._vel_source, 0)
-        
+
     @dec.slow
     def test_velocities(self):
         ag = self.universe.atoms[42:45]

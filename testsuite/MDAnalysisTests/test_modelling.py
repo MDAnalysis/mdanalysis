@@ -25,7 +25,6 @@ from MDAnalysis import NoDataError
 
 import numpy
 from numpy.testing import *
-from . import assert_
 from numpy import array, float32, rad2deg
 from nose.plugins.attrib import attr
 

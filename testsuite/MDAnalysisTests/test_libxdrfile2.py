@@ -14,13 +14,10 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-from numpy.testing import TestCase, assert_equal, assert_array_almost_equal
+from numpy.testing import TestCase, assert_, assert_equal, assert_array_almost_equal
 
 from MDAnalysis.tests.datafiles import XTC, TRR
 import MDAnalysis.coordinates.xdrfile.libxdrfile2 as xdr
-
-# FIXES: test_xdropen: error because assert_ not found in numpy < 1.3
-from . import assert_
 
 class TestLib(TestCase):
     def test_constants(self):
