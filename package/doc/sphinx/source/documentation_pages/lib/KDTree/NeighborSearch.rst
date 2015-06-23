@@ -1,3 +1,3 @@
-.. automodule:: MDAnalysis.KDTree.NeighborSearch
+.. automodule:: MDAnalysis.lib.KDTree.NeighborSearch
    :members:
 

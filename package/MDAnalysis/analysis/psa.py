@@ -159,6 +159,18 @@ Classes, methods, and functions
 
       string, name of file to store calculated distance matrix (:attr:`PSA.D`)
 
+
+.. Markup definitions
+.. ------------------
+..
+.. |3Dp| replace:: :math:`N_p \times N \times 3`
+.. |2Dp| replace:: :math:`N_p \times (3N)`
+.. |3Dq| replace:: :math:`N_q \times N \times 3`
+.. |2Dq| replace:: :math:`N_q \times (3N)`
+.. |3D| replace:: :math:`N_p\times N\times 3`
+.. |2D| replace:: :math:`N_p\times 3N`
+.. |Np| replace:: :math:`N_p`
+
 """
 
 import numpy
@@ -197,11 +209,6 @@ def get_path_metric_func(name):
 
 def hausdorff(P,Q, N=None):
     r"""Calculate the Hausdorff distance between two paths.
-
-    .. |3Dp| replace:: :math:`N_p \times N \times 3`
-    .. |2Dp| replace:: :math:`N_p \times (3N)`
-    .. |3Dq| replace:: :math:`N_q \times N \times 3`
-    .. |2Dq| replace:: :math:`N_q \times (3N)`
 
     *P* (*Q*) is a :class:`numpy.ndarray` of :math:`N_p` (:math:`N_q`) time
     steps, :math:`N` atoms, and :math:`3N` coordinates (e.g.,
@@ -247,11 +254,6 @@ def hausdorff(P,Q, N=None):
 
 def discrete_frechet(P,Q, N=None):
     r"""Calculate the discrete Frechet distance between two paths.
-
-    .. |3Dp| replace:: :math:`N_p\times N\times 3`
-    .. |2Dp| replace:: :math:`N_p\times(3N)`
-    .. |3Dq| replace:: :math:`N_q\times N\times 3`
-    .. |2Dq| replace:: :math:`N_q\times(3N)`
 
     *P* (*Q*) is a :class:`numpy.ndarray` of :math:`N_p` (:math:`N_q`) time
     steps, :math:`N` atoms, and :math:`3N` coordinates (e.g.,
@@ -404,6 +406,10 @@ class Path(object):
           *path_select*
              atom selection composing coordinates of (fitted) path; if ``None``
              then *path_select* is set to *ref_select* [``None``]
+
+        .. _ClustalW: http://www.clustal.org/
+        .. _STAMP: http://www.compbio.dundee.ac.uk/manuals/stamp.4.2/
+
         """
         self.u_original = universe
         self.u_reference = reference
@@ -458,10 +464,6 @@ class Path(object):
         r"""Generates a coordinate time series from the fitted universe
         trajectory.
 
-        .. |Np| replace:: :math:`N_p`
-        .. |3D| replace:: :math:`N_p\times N\times 3`
-        .. |2D| replace:: :math:`N_p\times 3N`
-
         Given a selection of *N* atoms from *select*, the atomic positions for
         each frame in the fitted universe (:attr:`Path.u_fitted`) trajectory
         (with |Np| total frames) are appended sequentially to form a 3D or 2D
@@ -511,9 +513,6 @@ class Path(object):
             flat=False):
         r"""Generate a path from a trajectory and reference structure, aligning
         to a reference structure if specified.
-
-        .. |3D| replace:: :math:`N_p\times N\times 3`
-        .. |2D| replace:: :math:`N_p\times 3N`
 
         This is a convenience method to generate a fitted trajectory from an
         inputted universe (:attr:`Path.u_original`) and reference structure
@@ -683,9 +682,6 @@ class PSA(object):
 
     def generate_paths(self, **kwargs):
         r"""Generate paths, aligning each to reference structure if necessary.
-
-        .. |3D| replace:: :math:`N_p\times N\times 3`
-        .. |2D| replace:: :math:`N_p\times 3N`
 
         :Keywords:
           *align*

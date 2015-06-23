@@ -1,3 +1,3 @@
-.. automodule:: MDAnalysis.KDTree.KDTree
+.. automodule:: MDAnalysis.lib.KDTree.KDTree
    :members:
 

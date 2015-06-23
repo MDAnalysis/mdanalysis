@@ -1,2 +1,2 @@
-.. automodule:: MDAnalysis.core.transformations
+.. automodule:: MDAnalysis.lib.transformations
    :members:

@@ -23,9 +23,11 @@ Calculating root mean square quantities --- :mod:`MDAnalysis.analysis.rms`
 
 .. versionadded:: 0.7.7
 .. versionchanged:: 0.11.0
+   Added :class:`RMSF` analysis.
 
 The module contains code to analyze root mean square quantities such
-as the RMSD or RMSF.
+as the coordinat root mean square distance (:class:`RMSD`) or the
+per-residue root mean square fluctuations (:class:`RMSF`).
 
 This module uses the fast QCP algorithm [Theobald2005]_ to calculate
 the root mean square distance (RMSD) between two coordinate sets (as
@@ -507,11 +509,11 @@ class RMSF(object):
 
     def __init__(self, atomgroup):
         """Calculate RMSF of given atoms across a trajectory.
-    
+
         :Arguments:
             *atomgroup*
                 AtomGroup to obtain RMSF for
-   
+
         """
         self.atomgroup = atomgroup
         self._rmsf = None
@@ -521,11 +523,11 @@ class RMSF(object):
 
         This method implements an algorithm for computing sums of squares while
         avoiding overflows and underflows; please reference:
-    
-        .. [Welford1962] B. P. Welford (1962)
-           "Note on a Method for Calculating Corrected Sums of Squares and 
-                Products." Technometrics  4(3):419-420.
-    
+
+        .. [Welford1962] B. P. Welford (1962). "Note on a Method for
+           Calculating Corrected Sums of Squares and Products."  Technometrics
+           4(3):419-420.
+
         :Keywords:
             *start*
                 starting frame [0]
@@ -537,42 +539,42 @@ class RMSF(object):
                 number of frames to iterate through between updates to progress
                 output; ``None`` for no updates [10]
             *quiet*
-                if ``True``, supress all output (implies *progout*=``None``)
+                if ``True``, suppress all output (implies *progout* = ``None``)
                 [``False``]
-    
+
         """
         sumsquares = numpy.zeros((self.atomgroup.numberOfAtoms(), 3))
         means = numpy.array(sumsquares)
 
         if quiet:
             progout = None
-    
+
         # set up progress output
         if progout:
-            percentage = ProgressMeter(self.atomgroup.universe.trajectory.numframes, 
+            percentage = ProgressMeter(self.atomgroup.universe.trajectory.numframes,
                                        interval=progout)
         else:
-            percentage = ProgressMeter(self.atomgroup.universe.trajectory.numframes, 
+            percentage = ProgressMeter(self.atomgroup.universe.trajectory.numframes,
                                        quiet=True)
-    
+
         for k, ts in enumerate(self.atomgroup.universe.trajectory[start:stop:step]):
             sumsquares += (k/(k + 1.0)) * (self.atomgroup.positions - means)**2
             means = (k * means + self.atomgroup.positions)/(k + 1)
-    
+
             percentage.echo(ts.frame)
-    
+
         rmsf = numpy.sqrt(sumsquares.sum(axis=1)/(k + 1))
-    
+
         if not (rmsf >= 0).all():
             raise ValueError("Some RMSF values negative; overflow " +
                              "or underflow occurred")
-    
+
         self._rmsf = rmsf
 
     @property
     def rmsf(self):
         """RMSF data; only available after using :meth:`RMSF.run`
-    
+
         """
         return self._rmsf
 
