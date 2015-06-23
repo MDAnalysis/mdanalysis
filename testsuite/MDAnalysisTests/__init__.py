@@ -87,6 +87,11 @@ Writing test cases
 The unittests use the :mod:`unittest` module together with nose_. See the
 examples in the ``MDAnalysisTests`` directory.
 
+Memory leak detection can be enabled for a class of tests by having it inherit
+:class:`MemleakTest` instead of :class:`TestCase` or just :class:`object`.
+This approach makes use of a `@classmethod` :meth:`setUpClass` in the
+:class:`MemleakTest` class, which should not be overridden in a test class.
+
 The `SciPy testing guidelines`_ are a good howto for writing test cases,
 especially as we are directly using this framework (imported from numpy).
 
@@ -104,7 +109,7 @@ especially as we are directly using this framework (imported from numpy).
 __version__ = "0.11.0-dev"  # keep in sync with RELEASE in setup.py
 
 try:
-    from numpy.testing import Tester, assert_equal
+    from numpy.testing import Tester, assert_equal, TestCase
 
     test = Tester().test
 except ImportError:
@@ -191,3 +196,49 @@ def executable_not_found_runtime(*args):
     """
     return lambda: executable_not_found(*args)
 
+import gc
+
+class MemleakTest(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.leakedobjs = set()
+        cls.initobjs = set()
+        if hasattr(cls, "setUp"):
+            cls._mlt_setUp = cls.setUp
+        if hasattr(cls, "tearDown"):
+            cls._mlt_tearDown = cls.tearDown
+
+        # These setUp and tearDown are going to wrap and replace
+        #  the ones we just assigned to the private _mlt_ variables.
+        def setUp(self):
+            # We just record what attributes we have before setup
+            self.initobjs.update(self.__dict__.keys())
+            if hasattr(self, '_mlt_setUp'):
+                self._mlt_setUp()
+
+        def tearDown(self):
+            if hasattr(self, '_mlt_tearDown'):
+                self._mlt_tearDown()
+            # We now specifically delete all remaining attributes that
+            #  tearDown didn't take care of (we leave private ones be).
+            for obj in set(self.__dict__.keys()).difference(self.initobjs):
+                if not obj.startswith("_"): delattr(self, obj)
+            gc.collect()
+            # We have to keep track of previously seen leaks, otherwise
+            # we report them multiple times per test class.
+            latest_leaks = [ obj for obj in gc.garbage if obj not in self.leakedobjs ]
+            self.leakedobjs.update(gc.garbage)
+            if self._testMethodName == "test_that_memleaks":
+                # This one is actually supposed to leak
+                assert_(latest_leaks, "Failed to detect a memleak")
+                # Let's clean it up:
+                # this should resolve the circular reference and clear the uncollectable list
+                gc.garbage[0].s = None
+                gc.garbage[:] = []
+                gc.collect()
+                latest_leaks = [ obj for obj in gc.garbage if obj not in self.leakedobjs or obj in latest_leaks ]
+                assert_(not latest_leaks, "Failed to clean the memleak we created for testing purposes")
+            else:
+                assert_(not latest_leaks, "Memleak: GC failed to collect the following: {}".format(latest_leaks))
+
+        cls.tearDown = tearDown

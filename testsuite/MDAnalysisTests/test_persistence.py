@@ -21,12 +21,11 @@ from MDAnalysis.core.AtomGroup import AtomGroup
 
 import numpy
 from numpy.testing import *
-from . import assert_
+from . import assert_, MemleakTest
 
 import cPickle
 
-class TestAtomGroupPickle(TestCase):
-
+class TestAtomGroupPickle(MemleakTest):
     def setUp(self):
         """Set up hopefully unique universes."""
         # _n marks named universes/atomgroups/pickled strings
@@ -107,4 +106,17 @@ def test_pickle_unpickle_empty():
     pickle_str = cPickle.dumps(ag, protocol=cPickle.HIGHEST_PROTOCOL)
     newag = cPickle.loads(pickle_str)
     assert_equal(len(newag), 0)
+
+class TestMemleak(MemleakTest):
+    def test_that_memleaks(self):
+        """Test that memleaks (Issue 323)"""
+        #This is a small leak that won't break anything
+        # just to check that MemleakTest is working fine.
+        # We actually clean up after ourselves there.
+        class A():
+            def __init__(self):
+                self.s = self
+            def __del__(self):
+                pass
+        self.a = A()
 
