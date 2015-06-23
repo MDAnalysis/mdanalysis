@@ -589,15 +589,6 @@ class IObase(object):
         """Close the trajectory file."""
         pass
 
-    def close_trajectory(self):
-        """Specific implementation of trajectory closing."""
-        # close_trajectory() was the pre-0.7.0 way of closing a
-        # trajectory; it is being kept around but user code should
-        # use close() and not rely on close_trajectory()
-        warnings.warn("close_trajectory() will be removed in MDAnalysis 0.8. "
-                      "Use close() instead.", DeprecationWarning)
-        self.close()
-
     # experimental:  context manager protocol
     def __enter__(self):
         return self
@@ -1187,6 +1178,10 @@ class Writer(IObase):
 class SingleFrameReader(ProtoReader):
     """Base class for Readers that only have one frame.
 
+    To use this base class, define the method :meth:`_read_first_frame` to
+    read from file `self.filename`.  This should populate the attribute
+    `self.ts` with a :class:`Timestep` object.
+
     .. versionadded:: 0.10.0
     """
     _err = "{0} only contains a single frame"
@@ -1206,7 +1201,7 @@ class SingleFrameReader(ProtoReader):
 
         self._read_first_frame()
 
-    def _read_first_frame(self):
+    def _read_first_frame(self):  # pragma: no cover
         # Override this in subclasses to create and fill a Timestep
         pass
 
@@ -1229,9 +1224,6 @@ class SingleFrameReader(ProtoReader):
 
         return self.ts
 
-    def read_next_timestep(self):
-        raise IOError(self._err.format(self.__class__.__name__))
-                             
     def close(self):
         # all single frame readers should use context managers to access
         # self.filename. Explicitly setting it to the null action in case

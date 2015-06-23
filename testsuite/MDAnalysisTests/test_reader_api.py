@@ -220,3 +220,15 @@ class TestSingleFrameReader(_Single, _TestReader):
     def test_slice_2(self):
         l = list(self.reader[::-1])
         self._check_get_results(l)
+
+    def test_reopen(self):
+        self.reader._reopen()
+        assert_equal(self.ts.frame, 0)
+
+    def test_rewind(self):
+        self.reader.rewind()
+        assert_equal(self.ts.frame, 0)
+
+    def test_read_frame(self):
+        assert_raises(IndexError, self.reader._read_frame, 1)
+
