@@ -32,7 +32,7 @@ import os
 import tempfile
 import itertools
 
-from MDAnalysisTests import knownfailure
+from MDAnalysisTests.plugins.knownfailure import knownfailure
 
 
 class TestAtom(TestCase):
@@ -367,7 +367,7 @@ class TestAtomGroup(TestCase):
         assert_equal(repr(self.ag), "<AtomGroup with 3341 atoms>")
 
     ## Issue 202 following 4 tests
-    @knownfailure
+    @knownfailure()
     def test_set_resnum_single(self):
         ag = self.universe.atoms[:3]
         new = 5
@@ -376,7 +376,7 @@ class TestAtomGroup(TestCase):
             assert_equal(at.resnum, new)
         assert_equal(all(ag.resnums() == new), True)
 
-    @knownfailure
+    @knownfailure()
     def test_set_resnum_many(self):
         ag = self.universe.atoms[:3]
         new = [22, 23, 24]
@@ -385,7 +385,6 @@ class TestAtomGroup(TestCase):
             assert_equal(at.resnum, v)
         assert_equal(all(ag.resnums() == new), True)
 
-    @knownfailure
     def test_set_resname_single(self):
         ag = self.universe.atoms[:3]
         new = 'abc'
@@ -394,7 +393,7 @@ class TestAtomGroup(TestCase):
             assert_equal(at.resname, new)
         assert_equal(all(ag.resnames() == new), True)
 
-    @knownfailure
+    @knownfailure()
     def test_set_resname_many(self):
         ag = self.universe.atoms[:3]
         new = ['aa', 'bb', 'cc']
