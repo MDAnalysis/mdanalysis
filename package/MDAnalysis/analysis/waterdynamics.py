@@ -1022,7 +1022,10 @@ class SurvivalProbability(object):
         n = 0.0
         sumDeltaP = 0.0
         for frame in range(totalFrames-wint):
-            a = self._getOneDeltaPoint(selection1,totalFrames ,frame, wint)
+            try:
+                a = self._getOneDeltaPoint(selection1,totalFrames ,frame, wint)
+            except ZeroDivisionError:
+                continue
             sumDeltaP += a
             n += 1
 
