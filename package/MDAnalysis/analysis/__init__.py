@@ -52,6 +52,14 @@ Available analysis modules
 :mod:`~MDAnalysis.analysis.helanal`
     Analysis of helices with the HELANAL_ algorithm.
 
+:mod:`~MDAnalysis.analysis.hole`
+    Run and process output from the :program:`HOLE` program
+    to analyze pores, tunnels and cavities in proteins.
+
+:mod:`~MDAnalysis.analysis.gnm`
+    Gaussian normal mode analysis of MD trajectories with the
+    help of an elastic network.
+
 :mod:`~MDAnalysis.analysis.leaflet`
     Find lipids in the upper and lower (or inner and outer) leaflet of
     a bilayer; the algorithm can deal with any deformations as long as
@@ -70,6 +78,9 @@ Available analysis modules
 :mod:`~MDAnalysis.analysis.rms`
     Calculation of RMSD and RMSF.
 
+:mod:`~MDAnalysis.analysis.waterdynamics`
+    Analysis of water.
+
 :mod:`~MDAnalysis.analysis.x3dna`
     Analysis of helicoidal parameters driven by X3DNA_.
 
@@ -85,7 +96,8 @@ Available analysis modules
 
 __all__ = [
     'align', 'contacts', 'density', 'distances',
-    'hbonds', 'helanal', 'leaflet', 'nuclinfo',
-    'rms', 'x3dna',
+    'gnm', 'hbonds', 'helanal', 'hole', 'leaflet',
+    'nuclinfo', 'psa', 'rms', 'waterdynamics',
+    'x3dna',
 ]
 
