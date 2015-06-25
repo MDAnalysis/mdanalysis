@@ -1022,7 +1022,12 @@ class SurvivalProbability(object):
         n = 0.0
         sumDeltaP = 0.0
         for frame in range(totalFrames-wint):
-            a = self._getOneDeltaPoint(selection1,totalFrames ,frame, wint)
+            #This "try" is to avoid a division by zero when there is no particles in time t0,
+            #this happens in very small selection regions.
+            try:
+                a = self._getOneDeltaPoint(selection1,totalFrames ,frame, wint)
+            except ZeroDivisionError:
+                continue
             sumDeltaP += a
             n += 1
 
