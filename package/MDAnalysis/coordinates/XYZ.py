@@ -75,7 +75,7 @@ import itertools
 import MDAnalysis
 from . import base
 from ..core import flags
-import MDAnalysis.core.util as util
+import MDAnalysis.lib.util as util
 from MDAnalysis import NoDataError
 
 
@@ -225,7 +225,7 @@ class XYZReader(base.Reader):
     .. Note: this can read both compressed (foo.xyz) and compressed
           (foo.xyz.bz2 or foo.xyz.gz) files; uncompression is handled
           on the fly and also reads streams via
-          :class:`~MDAnalysis.core.util.NamedStream`.
+          :class:`~MDAnalysis.lib.util.NamedStream`.
 
     File format: http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html
 

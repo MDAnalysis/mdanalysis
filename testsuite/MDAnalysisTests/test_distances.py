@@ -23,7 +23,7 @@ del test
 from nose.plugins.attrib import attr
 
 from MDAnalysis.tests.datafiles import PSF, DCD, TRIC
-
+from MDAnalysis.lib import util
 
 class TestDistanceArray(TestCase):
     def setUp(self):
@@ -466,14 +466,14 @@ class TestCythonFunctions(TestCase):
         angles = MDAnalysis.core.distances.calc_angles(self.a, self.b, self.c)
         torsions = MDAnalysis.core.distances.calc_torsions(self.a, self.b, self.c, self.d)
 
-        bonds_numpy = np.array([MDAnalysis.core.util.norm(y - x) for x, y in zip(self.a, self.b)])
+        bonds_numpy = np.array([util.norm(y - x) for x, y in zip(self.a, self.b)])
         vec1 = self.a - self.b
         vec2 = self.c - self.b
-        angles_numpy = np.array([MDAnalysis.core.util.angle(x, y) for x, y in zip(vec1, vec2)])
+        angles_numpy = np.array([util.angle(x, y) for x, y in zip(vec1, vec2)])
         ab = self.b - self.a
         bc = self.c - self.b
         cd = self.d - self.c
-        torsions_numpy = np.array([MDAnalysis.core.util.dihedral(x, y, z) for x, y, z in zip(ab, bc, cd)])
+        torsions_numpy = np.array([util.dihedral(x, y, z) for x, y, z in zip(ab, bc, cd)])
 
         assert_almost_equal(bonds, bonds_numpy, self.prec,
                             err_msg="Cython bonds didn't match numpy calculations")

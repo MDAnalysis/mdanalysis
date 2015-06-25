@@ -40,7 +40,7 @@ import logging
 from math import ceil
 
 from ..core.AtomGroup import Atom
-from ..core.util import openany
+from ..lib.util import openany
 from .base import TopologyReader
 
 logger = logging.getLogger("MDAnalysis.topology.PSF")

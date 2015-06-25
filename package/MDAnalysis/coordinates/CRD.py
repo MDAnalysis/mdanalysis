@@ -25,7 +25,7 @@ Read and write coordinates in CHARMM CARD coordinate format (suffix
 
 import numpy as np
 
-import MDAnalysis.core.util as util
+import MDAnalysis.lib.util as util
 from . import base
 
 

@@ -99,9 +99,11 @@ Dihedral angles
 
 """
 
-from MDAnalysis.core.util import norm
 import numpy
 from math import pi, sin, cos, atan2, sqrt, pow
+
+from MDAnalysis.lib.util import norm
+from MDAnalysis.lib import util
 
 
 def wc_pair(universe, i, bp, seg1="SYSTEM", seg2="SYSTEM"):
@@ -591,9 +593,6 @@ def pseudo_dihe_baseflip(universe, bp1, bp2, i, seg1="SYSTEM", seg2="SYSTEM", se
 
     .. versionadded:: 0.8.0
     """
-    from MDAnalysis.core import util
-    import numpy
-
     bf1 = universe.selectAtoms(
         " ( segid %s and resid %s and nucleicbase ) or ( segid %s and resid %s and nucleicbase ) " % (
         seg1, bp1, seg2, bp2))

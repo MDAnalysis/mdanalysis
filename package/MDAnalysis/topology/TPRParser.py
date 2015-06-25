@@ -112,7 +112,7 @@ __copyright__ = "GNU Public Licence, v2"
 
 import xdrlib
 
-from ..core.util import anyopen
+from ..lib.util import anyopen
 from .tpr import utils as U
 from .base import TopologyReader
 

@@ -35,8 +35,8 @@ from itertools import izip
 # Local imports
 from . import tables
 from ..core import distances
-from ..core.util import norm, dihedral, cached
-from ..core.util import angle as slowang
+from ..lib.util import norm, dihedral, cached
+from ..lib.util import angle as slowang
 from ..core import AtomGroup
 
 

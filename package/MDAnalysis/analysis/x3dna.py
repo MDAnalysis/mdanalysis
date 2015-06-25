@@ -113,16 +113,12 @@ Utilities
 
 
 """
-from __future__ import with_statement
-
-import numpy
 
 import glob
 import os
 import errno
 import shutil
 import warnings
-
 import numpy as np
 import os.path
 import subprocess
@@ -130,7 +126,7 @@ import tempfile
 import textwrap
 
 from MDAnalysis import ApplicationError
-from MDAnalysis.core.util import which, realpath, asiterable
+from MDAnalysis.lib.util import which, realpath, asiterable
 
 import logging
 
@@ -163,21 +159,21 @@ def mean_std_from_x3dnaPickle(profile):
             bp_roll.append(profile.values()[i].Roll)
             bp_twist.append(profile.values()[i].Twist)
         bp_shear, bp_stretch, bp_stagger, bp_rise, bp_shift, bp_slide, bp_buckle, bp_prop, bp_open, bp_tilt, bp_roll,\
-            bp_twist = numpy.array(bp_shear), numpy.array(bp_stretch), numpy.array(bp_stagger), numpy.array(bp_rise),\
-            numpy.array(bp_shift), numpy.array(bp_slide), numpy.array(bp_buckle), numpy.array(bp_prop), \
-            numpy.array(bp_open), numpy.array(bp_tilt), numpy.array(bp_roll), numpy.array(bp_twist)
+            bp_twist = np.array(bp_shear), np.array(bp_stretch), np.array(bp_stagger), np.array(bp_rise),\
+            np.array(bp_shift), np.array(bp_slide), np.array(bp_buckle), np.array(bp_prop), \
+            np.array(bp_open), np.array(bp_tilt), np.array(bp_roll), np.array(bp_twist)
         na_avg, na_std = [], []
         for j in range(len(bp_shear[0])):
             na_avg.append([
-                numpy.mean(bp_shear[:, j]), numpy.mean(bp_stretch[:, j]), numpy.mean(bp_stagger[:, j]),
-                numpy.mean(bp_buckle[:, j]), numpy.mean(bp_prop[:, j]), numpy.mean(bp_open[:, j]),
-                numpy.mean(bp_shift[:, j]), numpy.mean(bp_slide[:, j]), numpy.mean(bp_rise[:, j]),
-                numpy.mean(bp_tilt[:, j]), numpy.mean(bp_roll[:, j]), numpy.mean(bp_twist[:, j])])
+                np.mean(bp_shear[:, j]), np.mean(bp_stretch[:, j]), np.mean(bp_stagger[:, j]),
+                np.mean(bp_buckle[:, j]), np.mean(bp_prop[:, j]), np.mean(bp_open[:, j]),
+                np.mean(bp_shift[:, j]), np.mean(bp_slide[:, j]), np.mean(bp_rise[:, j]),
+                np.mean(bp_tilt[:, j]), np.mean(bp_roll[:, j]), np.mean(bp_twist[:, j])])
             na_std.append([
-                numpy.std(bp_shear[:, j]), numpy.std(bp_stretch[:, j]), numpy.std(bp_stagger[:, j]),
-                numpy.std(bp_buckle[:, j]), numpy.std(bp_prop[:, j]), numpy.std(bp_open[:, j]),
-                numpy.std(bp_shift[:, j]), numpy.std(bp_slide[:, j]), numpy.std(bp_rise[:, j]),
-                numpy.std(bp_tilt[:, j]), numpy.std(bp_roll[:, j]), numpy.std(bp_twist[:, j])])
+                np.std(bp_shear[:, j]), np.std(bp_stretch[:, j]), np.std(bp_stagger[:, j]),
+                np.std(bp_buckle[:, j]), np.std(bp_prop[:, j]), np.std(bp_open[:, j]),
+                np.std(bp_shift[:, j]), np.std(bp_slide[:, j]), np.std(bp_rise[:, j]),
+                np.std(bp_tilt[:, j]), np.std(bp_roll[:, j]), np.std(bp_twist[:, j])])
     else:
         bp_rise, bp_shift, bp_slide, bp_tilt, bp_roll, bp_twist = [], [], [], [], [], [], [], [], [], [], [], []
         for i in range(len(profile)):
@@ -188,20 +184,20 @@ def mean_std_from_x3dnaPickle(profile):
             bp_tilt.append(profile.values()[i].Tilt)
             bp_roll.append(profile.values()[i].Roll)
             bp_twist.append(profile.values()[i].Twist)
-        bp_rise, bp_shift, bp_slide, bp_tilt, bp_roll, bp_twist = numpy.array(bp_shear),numpy.array(bp_stretch),\
-            numpy.array(bp_stagger), numpy.array(bp_rise), numpy.array(bp_shift), numpy.array(bp_slide),\
-            numpy.array(bp_buckle), numpy.array(bp_prop), numpy.array(bp_open), numpy.array(bp_tilt),\
-            numpy.array(bp_roll), numpy.array(bp_twist)
+        bp_rise, bp_shift, bp_slide, bp_tilt, bp_roll, bp_twist = np.array(bp_shear),np.array(bp_stretch),\
+            np.array(bp_stagger), np.array(bp_rise), np.array(bp_shift), np.array(bp_slide),\
+            np.array(bp_buckle), np.array(bp_prop), np.array(bp_open), np.array(bp_tilt),\
+            np.array(bp_roll), np.array(bp_twist)
         na_avg, na_std = [], []
         for j in range(len(bp_shift[0])):
             na_avg.append([
-                numpy.mean(bp_shift[:, j]), numpy.mean(bp_slide[:, j]), numpy.mean(bp_rise[:, j]),
-                numpy.mean(bp_tilt[:, j]), numpy.mean(bp_roll[:, j]), numpy.mean(bp_twist[:, j])])
+                np.mean(bp_shift[:, j]), np.mean(bp_slide[:, j]), np.mean(bp_rise[:, j]),
+                np.mean(bp_tilt[:, j]), np.mean(bp_roll[:, j]), np.mean(bp_twist[:, j])])
             na_std.append([
-                numpy.std(bp_shift[:, j]), numpy.std(bp_slide[:, j]), numpy.std(bp_rise[:, j]),
-                numpy.std(bp_tilt[:, j]), numpy.std(bp_roll[:, j]), numpy.std(bp_twist[:, j])])
+                np.std(bp_shift[:, j]), np.std(bp_slide[:, j]), np.std(bp_rise[:, j]),
+                np.std(bp_tilt[:, j]), np.std(bp_roll[:, j]), np.std(bp_twist[:, j])])
 
-    na_avg, na_std = numpy.array(na_avg), numpy.array(na_std)
+    na_avg, na_std = np.array(na_avg), np.array(na_std)
     return na_avg, na_std
 
 
@@ -247,22 +243,22 @@ class BaseX3DNA(object):
             bp_roll.append(self.profiles.values()[i].Roll)
             bp_twist.append(self.profiles.values()[i].Twist)
         bp_shear, bp_stretch, bp_stagger, bp_rise, bp_shift, bp_slide, bp_buckle, bp_prop, bp_open, bp_tilt, bp_roll,\
-            bp_twist = numpy.array(bp_shear), numpy.array(bp_stretch), numpy.array(bp_stagger), numpy.array(bp_rise),\
-            numpy.array(bp_shift), numpy.array(bp_slide), numpy.array(bp_buckle), numpy.array(bp_prop),\
-            numpy.array(bp_open), numpy.array(bp_tilt), numpy.array(bp_roll), numpy.array(bp_twist)
+            bp_twist = np.array(bp_shear), np.array(bp_stretch), np.array(bp_stagger), np.array(bp_rise),\
+            np.array(bp_shift), np.array(bp_slide), np.array(bp_buckle), np.array(bp_prop),\
+            np.array(bp_open), np.array(bp_tilt), np.array(bp_roll), np.array(bp_twist)
         na_avg, na_std = [], []
         for j in range(len(bp_shear[0])):
             na_avg.append([
-                numpy.mean(bp_shear[:, j]), numpy.mean(bp_stretch[:, j]), numpy.mean(bp_stagger[:, j]),
-                numpy.mean(bp_buckle[:, j]), numpy.mean(bp_prop[:, j]), numpy.mean(bp_open[:, j]),
-                numpy.mean(bp_shift[:, j]), numpy.mean(bp_slide[:, j]), numpy.mean(bp_rise[:, j]),
-                numpy.mean(bp_tilt[:, j]), numpy.mean(bp_roll[:, j]), numpy.mean(bp_twist[:, j])])
+                np.mean(bp_shear[:, j]), np.mean(bp_stretch[:, j]), np.mean(bp_stagger[:, j]),
+                np.mean(bp_buckle[:, j]), np.mean(bp_prop[:, j]), np.mean(bp_open[:, j]),
+                np.mean(bp_shift[:, j]), np.mean(bp_slide[:, j]), np.mean(bp_rise[:, j]),
+                np.mean(bp_tilt[:, j]), np.mean(bp_roll[:, j]), np.mean(bp_twist[:, j])])
             na_std.append([
-                numpy.std(bp_shear[:, j]), numpy.std(bp_stretch[:, j]), numpy.std(bp_stagger[:, j]),
-                numpy.std(bp_buckle[:, j]), numpy.std(bp_prop[:, j]), numpy.std(bp_open[:, j]),
-                numpy.std(bp_shift[:, j]), numpy.std(bp_slide[:, j]), numpy.std(bp_rise[:, j]),
-                numpy.std(bp_tilt[:, j]), numpy.std(bp_roll[:, j]), numpy.std(bp_twist[:, j])])
-        na_avg, na_std = numpy.array(na_avg), numpy.array(na_std)
+                np.std(bp_shear[:, j]), np.std(bp_stretch[:, j]), np.std(bp_stagger[:, j]),
+                np.std(bp_buckle[:, j]), np.std(bp_prop[:, j]), np.std(bp_open[:, j]),
+                np.std(bp_shift[:, j]), np.std(bp_slide[:, j]), np.std(bp_rise[:, j]),
+                np.std(bp_tilt[:, j]), np.std(bp_roll[:, j]), np.std(bp_twist[:, j])])
+        na_avg, na_std = np.array(na_avg), np.array(na_std)
         return na_avg, na_std
 
     def mean(self):
@@ -286,18 +282,18 @@ class BaseX3DNA(object):
             bp_roll.append(self.profiles.values()[i].Roll)
             bp_twist.append(self.profiles.values()[i].Twist)
         bp_shear, bp_stretch, bp_stagger, bp_rise, bp_shift, bp_slide, bp_buckle, bp_prop, bp_open, bp_tilt, bp_roll,\
-            bp_twist = numpy.array(bp_shear), numpy.array(bp_stretch), numpy.array(bp_stagger), numpy.array(bp_rise),\
-            numpy.array(bp_shift), numpy.array(bp_slide), numpy.array(bp_buckle), numpy.array(bp_prop),\
-            numpy.array(bp_open), numpy.array(bp_tilt), numpy.array(bp_roll), numpy.array(bp_twist)
+            bp_twist = np.array(bp_shear), np.array(bp_stretch), np.array(bp_stagger), np.array(bp_rise),\
+            np.array(bp_shift), np.array(bp_slide), np.array(bp_buckle), np.array(bp_prop),\
+            np.array(bp_open), np.array(bp_tilt), np.array(bp_roll), np.array(bp_twist)
 
         na_avg = []
         for j in range(len(bp_shear[0])):
             na_avg.append([
-                numpy.mean(bp_shear[:, j]), numpy.mean(bp_stretch[:, j]), numpy.mean(bp_stagger[:, j]),
-                numpy.mean(bp_buckle[:j]), numpy.mean(bp_prop[:, j]), numpy.mean(bp_open[:, j]),
-                numpy.mean(bp_shift[:, j]), numpy.mean(bp_slide[:, j]), numpy.mean(bp_rise[:, j]),
-                numpy.mean(bp_tilt[:, j]), numpy.mean(bp_roll[:, j]), numpy.mean(bp_twist[:, j])])
-        na_avg = numpy.array(na_avg)
+                np.mean(bp_shear[:, j]), np.mean(bp_stretch[:, j]), np.mean(bp_stagger[:, j]),
+                np.mean(bp_buckle[:j]), np.mean(bp_prop[:, j]), np.mean(bp_open[:, j]),
+                np.mean(bp_shift[:, j]), np.mean(bp_slide[:, j]), np.mean(bp_rise[:, j]),
+                np.mean(bp_tilt[:, j]), np.mean(bp_roll[:, j]), np.mean(bp_twist[:, j])])
+        na_avg = np.array(na_avg)
         return na_avg
 
     def std(self):
@@ -322,18 +318,18 @@ class BaseX3DNA(object):
             bp_roll.append(self.profiles.values()[i].Roll)
             bp_twist.append(self.profiles.values()[i].Twist)
         bp_shear, bp_stretch, bp_stagger, bp_rise, bp_shift, bp_slide, bp_buckle, bp_prop, bp_open, bp_tilt, bp_roll,\
-            bp_twist = numpy.array(bp_shear), numpy.array(bp_stretch), numpy.array(bp_stagger), numpy.array(bp_rise),\
-            numpy.array(bp_shift), numpy.array(bp_slide), numpy.array(bp_buckle), numpy.array(bp_prop),\
-            numpy.array(bp_open), numpy.array(bp_tilt), numpy.array(bp_roll), numpy.array(bp_twist)
+            bp_twist = np.array(bp_shear), np.array(bp_stretch), np.array(bp_stagger), np.array(bp_rise),\
+            np.array(bp_shift), np.array(bp_slide), np.array(bp_buckle), np.array(bp_prop),\
+            np.array(bp_open), np.array(bp_tilt), np.array(bp_roll), np.array(bp_twist)
 
         na_std = []
         for j in range(len(bp_shear[0])):
             na_std.append([
-                numpy.std(bp_shear[:, j]), numpy.std(bp_stretch[:, j]), numpy.std(bp_stagger[:, j]),
-                numpy.std(bp_buckle[:j]), numpy.std(bp_prop[:, j]), numpy.std(bp_open[:, j]), numpy.std(bp_shift[:, j]),
-                numpy.std(bp_slide[:, j]), numpy.std(bp_rise[:, j]), numpy.std(bp_tilt[:, j]), numpy.std(bp_roll[:, j]),
-                numpy.std(bp_twist[:, j])])
-        na_std = numpy.array(na_std)
+                np.std(bp_shear[:, j]), np.std(bp_stretch[:, j]), np.std(bp_stagger[:, j]),
+                np.std(bp_buckle[:j]), np.std(bp_prop[:, j]), np.std(bp_open[:, j]), np.std(bp_shift[:, j]),
+                np.std(bp_slide[:, j]), np.std(bp_rise[:, j]), np.std(bp_tilt[:, j]), np.std(bp_roll[:, j]),
+                np.std(bp_twist[:, j])])
+        na_std = np.array(na_std)
         return na_std
 
     def plot(self, **kwargs):
@@ -499,7 +495,7 @@ class X3DNA(BaseX3DNA):
 
         The method saves the result as :attr:`X3DNA.profiles`, a dictionary
         indexed by the frame number. Each entry is a
-        :class:`numpy.recarray`.
+        :class:`np.recarray`.
 
         If the keyword *outdir* is supplied (e.g. ".") then each profile is
         saved to a gzipped data file.
@@ -599,11 +595,11 @@ class X3DNA(BaseX3DNA):
                             # end of records (empty line)
                             read_data = False
             if self.x3dna_param is False:
-                frame_x3dna_output = numpy.rec.fromrecords(records, formats="f8,f8,f8,f8,f8,f8,f8,f8,f8,f8,f8,f8",
+                frame_x3dna_output = np.rec.fromrecords(records, formats="f8,f8,f8,f8,f8,f8,f8,f8,f8,f8,f8,f8",
                                                            names="Shear,Stretch,Stagger,Buckle,Propeller,Opening,"
                                                                  "Shift,Slide,Rise,Tilt,Roll,Twist")
             else:
-                frame_x3dna_output = numpy.rec.fromrecords(records, formats="f8,f8,f8,f8,f8,f8",
+                frame_x3dna_output = np.rec.fromrecords(records, formats="f8,f8,f8,f8,f8,f8",
                                                            names="Shift,Slide,Rise,Tilt,Roll,Twist")
             # store the profile
             self.profiles[x3dna_profile_no] = frame_x3dna_output
@@ -617,7 +613,7 @@ class X3DNA(BaseX3DNA):
                 if not os.path.exists(rundir):
                     os.makedirs(rundir)
                 frame_x3dna_txt = os.path.join(rundir, "bp_step_%s_%04d.dat.gz" % (run, x3dna_profile_no))
-                numpy.savetxt(frame_x3dna_txt, frame_x3dna_output)
+                np.savetxt(frame_x3dna_txt, frame_x3dna_output)
                 logger.debug("Finished with frame %d, saved as %r", x3dna_profile_no, frame_x3dna_txt)
                 # if we get here then we haven't found anything interesting
         if len(self.profiles) == length:

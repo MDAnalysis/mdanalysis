@@ -40,7 +40,7 @@ import numpy
 from numpy import sin, cos, sqrt
 
 import MDAnalysis.coordinates
-import MDAnalysis.core.util
+import MDAnalysis.lib.util
 
 try:
     from numpy import rad2deg, deg2rad  # numpy 1.3+
@@ -228,7 +228,7 @@ def guess_format(filename, format=None):
     If *format* is supplied then it overrides the auto detection.
     """
     if format is None:
-        if MDAnalysis.core.util.isstream(filename):
+        if MDAnalysis.lib.util.isstream(filename):
             # perhaps StringIO or open stream
             try:
                 format = format_from_filename_extension(filename.name)
@@ -241,11 +241,11 @@ def guess_format(filename, format=None):
             # complicated is left for the ambitious.
             # Note: at the moment the upper-case extension *is* the format specifier
             # and list of filenames is handled by ChainReader
-            format = format_from_filename_extension(filename) if not MDAnalysis.core.util.iterable(
+            format = format_from_filename_extension(filename) if not MDAnalysis.lib.util.iterable(
                 filename) else 'CHAIN'
     else:
         # format was set; but a list of filenames is always handled by ChainReader
-        format = format if not MDAnalysis.core.util.iterable(filename) else 'CHAIN'
+        format = format if not MDAnalysis.lib.util.iterable(filename) else 'CHAIN'
 
     format = str(format).upper()
 

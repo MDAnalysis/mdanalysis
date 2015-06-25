@@ -235,7 +235,7 @@ class StreamWarning(Warning):
 
     :exc:`StreamWarning` is used when streams are substituted for simple access
     by filename (see in particular
-    :class:`~MDAnalysis.core.util.NamedStream`). This does not work everywhere
+    :class:`~MDAnalysis.lib.util.NamedStream`). This does not work everywhere
     in MDAnalysis (yet).
     """
 

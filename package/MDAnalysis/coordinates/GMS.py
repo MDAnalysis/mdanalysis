@@ -32,7 +32,7 @@ import errno
 import re
 
 from . import base
-import MDAnalysis.core.util as util
+import MDAnalysis.lib.util as util
 
 
 class GMSReader(base.Reader):

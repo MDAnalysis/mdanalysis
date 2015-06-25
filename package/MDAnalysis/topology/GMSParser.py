@@ -42,7 +42,7 @@ from __future__ import absolute_import
 import re
 
 from ..core.AtomGroup import Atom
-from ..core.util import openany
+from ..lib.util import openany
 from .core import get_atom_mass, guess_atom_charge, guess_atom_element
 from .base import TopologyReader
 

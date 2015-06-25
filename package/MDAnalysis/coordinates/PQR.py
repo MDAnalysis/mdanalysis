@@ -86,7 +86,7 @@ option are guaranteed to conform to the above format::
 import numpy as np
 
 import MDAnalysis.core
-import MDAnalysis.core.util as util
+import MDAnalysis.lib.util as util
 from . import base
 
 

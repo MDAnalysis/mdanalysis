@@ -43,7 +43,7 @@ import logging
 import string
 
 from ..core.AtomGroup import Atom
-from ..core.util import openany, conv_float
+from ..lib.util import openany, conv_float
 from .base import TopologyReader
 from .core import guess_atom_mass, guess_atom_charge
 

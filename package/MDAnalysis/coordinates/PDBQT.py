@@ -36,7 +36,7 @@ import errno
 import numpy as np
 import warnings
 
-import MDAnalysis.core.util as util
+import MDAnalysis.lib.util as util
 from . import base
 
 # PDBQTReader and Writer classes will subclass PrimitiveReader/Writer from PDB module

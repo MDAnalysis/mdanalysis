@@ -82,7 +82,9 @@ Classes and Functions
    :inherited-members:
 
 """
-import numpy  # need v >= 1.0.3
+from __future__ import print_function
+
+import numpy
 import sys
 import os
 import os.path
@@ -93,24 +95,25 @@ import warnings
 try:
     from gridData import Grid  # http://github.com/orbeckst/GridDataFormats
 except ImportError:
-    print """ERROR --- The GridDataFormats package can not be found!
+    raise ImportError(
+        """ERROR --- The GridDataFormats package can not be found!
 
-The 'gridData' module from GridDataFormats could not be
-imported. Please install it first.  You can try installing with
-setuptools directly from the internet:
+        The 'gridData' module from GridDataFormats could not be
+        imported. Please install it first.  You can try installing with
+        setuptools directly from the internet:
+    
+          easy_install GridDataFormats
 
-    easy_install GridDataFormats
+        Alternatively, download the package from
 
-Alternatively, download the package from
+          http://pypi.python.org/pypi/GridDataFormats/
 
-    http://pypi.python.org/pypi/GridDataFormats/
-
-and install in the usual manner.
-"""
-    raise
+        and install in the usual manner.
+        """
+    )
 
 import MDAnalysis
-from MDAnalysis.core.util import fixedwidth_bins, iterable, asiterable
+from MDAnalysis.lib.util import fixedwidth_bins, iterable, asiterable
 from MDAnalysis import NoDataError, MissingDataWarning
 
 import logging
@@ -504,14 +507,14 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
     h = grid.copy()
 
     for ts in u.trajectory:
-        print "Histograming %6d atoms in frame %5d/%d  [%5.1f%%]\r" % \
-              (len(coord), ts.frame, u.trajectory.numframes, 100.0 * ts.frame / u.trajectory.numframes),
+        print("Histograming %6d atoms in frame %5d/%d  [%5.1f%%]\r" % \
+              (len(coord), ts.frame, u.trajectory.numframes, 100.0 * ts.frame / u.trajectory.numframes),)
         coord = current_coordinates()
         if len(coord) == 0:
             continue
         h[:], edges[:] = numpy.histogramdd(coord, bins=bins, range=arange, normed=False)
         grid += h  # accumulate average histogram
-    print
+    print("")
     numframes = u.trajectory.numframes / u.trajectory.skip
     grid /= float(numframes)
 
@@ -814,8 +817,8 @@ class BfactorDensityCreator(object):
         for iwat in xrange(len(pos[0])):  # super-ugly loop
             p = tuple([wp[iwat] for wp in pos])
             g += grid[p] * numpy.fromfunction(self._gaussian, grid.shape, dtype=numpy.int, p=p, sigma=sigma)
-            print "Smearing out atom position %4d/%5d with RMSF %4.2f A\r" % \
-                  (iwat + 1, len(pos[0]), sigma),
+            print("Smearing out atom position %4d/%5d with RMSF %4.2f A\r" % \
+                  (iwat + 1, len(pos[0]), sigma),)
         return g
 
     def _smear_rmsf(self, coordinates, grid, edges, rmsf):
@@ -828,8 +831,8 @@ class BfactorDensityCreator(object):
                 continue
             g += numpy.fromfunction(self._gaussian_cartesian, grid.shape, dtype=numpy.int,
                                     c=coord, sigma=rmsf[iwat])
-            print "Smearing out atom position %4d/%5d with RMSF %4.2f A\r" % \
-                  (iwat + 1, N, rmsf[iwat]),
+            print("Smearing out atom position %4d/%5d with RMSF %4.2f A\r" % \
+                  (iwat + 1, N, rmsf[iwat]),)
         return g
 
     def _gaussian(self, i, j, k, p, sigma):

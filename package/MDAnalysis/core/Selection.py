@@ -627,7 +627,7 @@ class ProteinSelection(Selection):
 
       * still missing: Amber N- and C-terminal residue names
 
-    .. SeeAlso:: :func:`MDAnalysis.core.util.convert_aa_code`
+    .. SeeAlso:: :func:`MDAnalysis.lib.util.convert_aa_code`
     """
     #: Dictionary of recognized residue names (3- or 4-letter).
     prot_res = dict([(x, None) for x in [

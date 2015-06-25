@@ -41,7 +41,7 @@ import numpy as np
 
 from . import base
 from .. import core
-from ..core import util
+from ..lib import util
 
 
 class MOL2Reader(base.Reader):

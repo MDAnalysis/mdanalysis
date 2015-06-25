@@ -47,7 +47,7 @@ from math import ceil
 
 from ..core.AtomGroup import Atom
 from ..core.units import convert
-from ..core.util import openany, FORTRANReader
+from ..lib.util import openany, FORTRANReader
 from ..core import flags
 from .base import TopologyReader
 
