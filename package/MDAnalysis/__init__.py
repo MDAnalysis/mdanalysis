@@ -160,88 +160,24 @@ __all__ = ['Timeseries', 'Universe', 'asUniverse', 'Writer', 'collection']
 import logging
 
 from .lib import log
-
-
-
-class NullHandler(logging.Handler):
-    def emit(self, record):
-        pass
-
+from .lib.log import NullHandler, start_logging, stop_logging
 
 h = log.NullHandler()
 logging.getLogger("MDAnalysis").addHandler(h)
 del h
-
-
-def start_logging(logfile="MDAnalysis.log"):
-    """Start logging of messages to file and console.
-
-    The default logfile is named `MDAnalysis.log` and messages are
-    logged with the tag *MDAnalysis*.
-    """
-    log.create("MDAnalysis", logfile=logfile)
-    logging.getLogger("MDAnalysis").info("MDAnalysis %s STARTED logging to %r", __version__, logfile)
-
-
-def stop_logging():
-    """Stop logging to logfile and console."""
-    logger = logging.getLogger("MDAnalysis")
-    logger.info("MDAnalysis STOPPED logging")
-    log.clear_handlers(logger)  # this _should_ do the job...
-
+del logging
 
 # custom exceptions and warnings
-class SelectionError(Exception):
-    """Raised when a atom selection failed."""
-
-
-class FinishTimeException(Exception):
-    """For Issue 188."""
-
-
-class NoDataError(ValueError):
-    """Raised when empty input is not allowed or required data are missing."""
-
-
-class ApplicationError(OSError):
-    """Raised when an external application failed.
-
-    The error code is specific for the application.
-
-    .. versionadded:: 0.7.7
-    """
-
-
-class SelectionWarning(Warning):
-    """Warning indicating a possible problem with a selection."""
-
-
-class MissingDataWarning(Warning):
-    """Warning indicating is that required data are missing."""
-
-
-class ConversionWarning(Warning):
-    """Warning indicating a problem with converting between units."""
-
-
-class FileFormatWarning(Warning):
-    """Warning indicating possible problems with a file format."""
-
-
-class StreamWarning(Warning):
-    """Warning indicating a possible problem with a stream.
-
-    :exc:`StreamWarning` is used when streams are substituted for simple access
-    by filename (see in particular
-    :class:`~MDAnalysis.lib.util.NamedStream`). This does not work everywhere
-    in MDAnalysis (yet).
-    """
-
+from .exceptions import (
+    SelectionError, FinishTimeException, NoDataError, ApplicationError,
+    SelectionWarning, MissingDataWarning, ConversionWarning, FileFormatWarning,
+    StreamWarning
+)
 
 # Bring some often used objects into the current namespace
-from core import Timeseries
-from core.AtomGroup import Universe, asUniverse, Merge
-from coordinates.core import writer as Writer
+from .core import Timeseries
+from .core.AtomGroup import Universe, asUniverse, Merge
+from .coordinates.core import writer as Writer
 
 collection = Timeseries.TimeseriesCollection()
 import weakref

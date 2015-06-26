@@ -77,6 +77,25 @@ import sys
 import logging
 
 
+
+def start_logging(logfile="MDAnalysis.log"):
+    """Start logging of messages to file and console.
+
+    The default logfile is named `MDAnalysis.log` and messages are
+    logged with the tag *MDAnalysis*.
+    """
+    log.create("MDAnalysis", logfile=logfile)
+    logging.getLogger("MDAnalysis").info("MDAnalysis %s STARTED logging to %r", __version__, logfile)
+
+
+def stop_logging():
+    """Stop logging to logfile and console."""
+    logger = logging.getLogger("MDAnalysis")
+    logger.info("MDAnalysis STOPPED logging")
+    log.clear_handlers(logger)  # this _should_ do the job...
+
+
+
 def create(logger_name="MDAnalysis", logfile="MDAnalysis.log"):
     """Create a top level logger.
 

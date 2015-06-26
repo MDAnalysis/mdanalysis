@@ -20,8 +20,9 @@
 ================================================================
 """
 
-__all__ = ['KDTree', 'transformations', 'util']
+__all__ = ['KDTree', 'log', 'transformations', 'util']
 
 from . import KDTree
+from . import log
 from . import transformations
 from . import util
