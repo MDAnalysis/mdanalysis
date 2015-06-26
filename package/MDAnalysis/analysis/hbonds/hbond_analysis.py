@@ -318,7 +318,7 @@ from MDAnalysis import MissingDataWarning, NoDataError, SelectionError, Selectio
 from MDAnalysis.core.AtomGroup import AtomGroup
 import MDAnalysis.lib.KDTree.NeighborSearch as NS
 from MDAnalysis.lib.util import norm, angle, parse_residue
-from MDAnalysis.core.log import ProgressMeter
+from MDAnalysis.lib.log import ProgressMeter
 
 import warnings
 import logging
@@ -781,7 +781,7 @@ class HydrogenBondAnalysis(object):
 
         The method accepts a number of keywords, amongst them *quiet* (default
         ``False``), which silences the porgress output (see
-        :class:`~MDAnalysis.core.log.ProgressMeter`) and *verbose* (which can
+        :class:`~MDAnalysis.lib.log.ProgressMeter`) and *verbose* (which can
         be used to change the value provided with the class constructor).
 
         .. SeeAlso:: :meth:`HydrogenBondAnalysis.generate_table` for processing

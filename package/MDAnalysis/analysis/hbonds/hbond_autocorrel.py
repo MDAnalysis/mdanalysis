@@ -144,7 +144,7 @@ from numpy import exp
 import warnings
 from itertools import izip
 
-from MDAnalysis.core.log import ProgressMeter
+from MDAnalysis.lib.log import ProgressMeter
 from MDAnalysis.core.distances import distance_array, calc_angles, calc_bonds
 
 

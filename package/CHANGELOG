@@ -48,6 +48,7 @@ The rules for this file:
   * Moved MDAnalysis.core.transformations to MDAnalysis.lib.transformations
     (Issue #287)
   * Moved MDAnalysis.core.util to MDAnalysis.lib.util (Issue #287)
+  * Moved MDAnalysis.core.log to MDAnalysis.lib.log (Issue #287)
   * base.Reader now defines __iter__
   * __iter__ removed from many Readers (now use base.Reader implementation)
   * numpy >= 1.5 required

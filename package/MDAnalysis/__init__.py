@@ -159,14 +159,16 @@ __all__ = ['Timeseries', 'Universe', 'asUniverse', 'Writer', 'collection']
 
 import logging
 
-# see the advice on logging and libraries in
-# http://docs.python.org/library/logging.html?#configuring-logging-for-a-library
+from .lib import log
+
+
+
 class NullHandler(logging.Handler):
     def emit(self, record):
         pass
 
 
-h = NullHandler()
+h = log.NullHandler()
 logging.getLogger("MDAnalysis").addHandler(h)
 del h
 
@@ -177,19 +179,15 @@ def start_logging(logfile="MDAnalysis.log"):
     The default logfile is named `MDAnalysis.log` and messages are
     logged with the tag *MDAnalysis*.
     """
-    import core.log
-
-    core.log.create("MDAnalysis", logfile=logfile)
+    log.create("MDAnalysis", logfile=logfile)
     logging.getLogger("MDAnalysis").info("MDAnalysis %s STARTED logging to %r", __version__, logfile)
 
 
 def stop_logging():
     """Stop logging to logfile and console."""
-    import core.log
-
     logger = logging.getLogger("MDAnalysis")
     logger.info("MDAnalysis STOPPED logging")
-    core.log.clear_handlers(logger)  # this _should_ do the job...
+    log.clear_handlers(logger)  # this _should_ do the job...
 
 
 # custom exceptions and warnings
@@ -238,6 +236,7 @@ class StreamWarning(Warning):
     :class:`~MDAnalysis.lib.util.NamedStream`). This does not work everywhere
     in MDAnalysis (yet).
     """
+
 
 # Bring some often used objects into the current namespace
 from core import Timeseries

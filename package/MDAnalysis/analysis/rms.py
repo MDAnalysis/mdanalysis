@@ -129,7 +129,7 @@ import numpy
 import MDAnalysis
 import MDAnalysis.core.qcprot as qcp
 from MDAnalysis import SelectionError, NoDataError
-from MDAnalysis.core.log import ProgressMeter
+from MDAnalysis.lib.log import ProgressMeter
 from MDAnalysis.lib.util import asiterable
 
 import logging

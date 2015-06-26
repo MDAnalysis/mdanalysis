@@ -163,7 +163,7 @@ import numpy
 
 import MDAnalysis.core.qcprot as qcp
 from MDAnalysis import SelectionError, SelectionWarning
-from MDAnalysis.core.log import ProgressMeter
+from MDAnalysis.lib.log import ProgressMeter
 
 import MDAnalysis.analysis.rms as rms
 

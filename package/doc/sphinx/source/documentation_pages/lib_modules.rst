@@ -19,5 +19,6 @@ and mathematical utility functions.
 
    ./lib/_distances
    ./lib/KDTree_modules
+   ./lib/log
    ./lib/transformations
    ./lib/util

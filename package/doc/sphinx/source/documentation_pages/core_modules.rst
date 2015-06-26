@@ -22,5 +22,4 @@ parsing in :mod:`MDAnalysis.core.Selection`.
    core/distances
    core/qcprot
    core/units
-   core/log
    core/parallel
