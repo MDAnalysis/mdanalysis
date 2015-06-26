@@ -54,7 +54,7 @@ The positions of all water oxygens are histogrammed on a grid with spacing
 :meth:`Density.convert_density` method, the units of measurement are
 changed. In the example we are now measuring the density relative to the
 literature value of the TIP3P water model at ambient conditions (see the values
-in :data:`MDAnalysis.core.units.water` for details). Finally, the density is
+in :data:`MDAnalysis.units.water` for details). Finally, the density is
 writte as an OpenDX_ compatible file that can be read in VMD_ or PyMOL_.
 
 See :class:`Density` for details. In particular, the density is stored
@@ -115,6 +115,7 @@ except ImportError:
 import MDAnalysis
 from MDAnalysis.lib.util import fixedwidth_bins, iterable, asiterable
 from MDAnalysis import NoDataError, MissingDataWarning
+from .. import units
 
 import logging
 
@@ -268,7 +269,7 @@ class Density(Grid):
                     self.units[unit_type] = None
                     continue
                 try:
-                    MDAnalysis.core.units.conversion_factor[unit_type][value]
+                    units.conversion_factor[unit_type][value]
                     self.units[unit_type] = value
                 except KeyError:
                     raise ValueError('Unit ' + str(value) + ' of type ' + str(unit_type) + ' is not recognized.')
@@ -308,7 +309,7 @@ class Density(Grid):
             shape[i] = len(dedges[i])
             self.grid /= dedges[i].reshape(shape)
         self.parameters['isDensity'] = True
-        self.units['density'] = self.units['length'] + "^{-3}"  # see core.units.densityUnit_factor
+        self.units['density'] = self.units['length'] + "^{-3}"  # see units.densityUnit_factor
 
     def convert_length(self, unit='Angstrom'):
         """Convert Grid object to the new *unit*.
@@ -327,7 +328,7 @@ class Density(Grid):
         """
         if unit == self.units['length']:
             return
-        cvnfact = MDAnalysis.core.units.get_conversion_factor('length', self.units['length'], unit)
+        cvnfact = units.get_conversion_factor('length', self.units['length'], unit)
         self.edges = [x * cvnfact for x in self.edges]
         self.units['length'] = unit
         self._update()  # needed to recalculate midpoints and origin
@@ -345,8 +346,8 @@ class Density(Grid):
         Angstrom^{-3}  particles/A**3
         nm^{-3}        particles/nm**3
         SPC            density of SPC water at standard conditions
-        TIP3P          ... see :data:`MDAnalysis.core.units.water`
-        TIP4P          ... see :data:`MDAnalysis.core.units.water`
+        TIP3P          ... see :data:`MDAnalysis.units.water`
+        TIP4P          ... see :data:`MDAnalysis.units.water`
         water          density of real water at standard conditions (0.997 g/cm**3)
         Molar          mol/l
         =============  ===============================================================
@@ -366,10 +367,10 @@ class Density(Grid):
         if unit == self.units['density']:
             return
         try:
-            self.grid *= MDAnalysis.core.units.get_conversion_factor('density', self.units['density'], unit)
+            self.grid *= units.get_conversion_factor('density', self.units['density'], unit)
         except KeyError:
             raise ValueError("The name of the unit (%r supplied) must be one of:\n%r" %
-                             (unit, MDAnalysis.core.units.conversion_factor['density'].keys()))
+                             (unit, units.conversion_factor['density'].keys()))
         self.units['density'] = unit
 
     def __repr__(self):

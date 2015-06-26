@@ -46,7 +46,7 @@ from __future__ import absolute_import
 from math import ceil
 
 from ..core.AtomGroup import Atom
-from ..core.units import convert
+from ..units import convert
 from ..lib.util import openany, FORTRANReader
 from ..core import flags
 from .base import TopologyReader

@@ -40,7 +40,7 @@ keywords *timeunit* and/or *lengthunit* to :class:`DCDWriter` and
 .. Note::
 
    Lennard-Jones units are not implemented. See
-   :mod:`MDAnalysis.core.units` for other recognized values.
+   :mod:`MDAnalysis.units` for other recognized values.
 
 .. SeeAlso:: For further discussion follow the reports for `Issue 84`_ and `Issue 64`_.
 
@@ -66,7 +66,7 @@ Classes
 """
 
 from . import DCD
-from ..core import units
+from .. import units
 from ..topology.LAMMPSParser import DATAParser
 from . import base
 
@@ -76,7 +76,7 @@ class DCDWriter(DCD.DCDWriter):
 
     The units can be set from the constructor with the keyword
     arguments *timeunit* and *lengthunit*. The defaults are "ps" and
-    "Angstrom". See :mod:`MDAnalysis.core.units` for other recognized
+    "Angstrom". See :mod:`MDAnalysis.units` for other recognized
     values.
     """
     format = "DCD"

@@ -21,5 +21,4 @@ parsing in :mod:`MDAnalysis.core.Selection`.
    core/Timeseries
    core/distances
    core/qcprot
-   core/units
    core/parallel
