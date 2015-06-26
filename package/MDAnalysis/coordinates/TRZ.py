@@ -80,7 +80,7 @@ import errno
 
 from . import base
 import MDAnalysis.core
-import MDAnalysis.core.util as util
+import MDAnalysis.lib.util as util
 from .core import triclinic_box, triclinic_vectors
 
 

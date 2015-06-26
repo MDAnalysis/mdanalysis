@@ -29,7 +29,7 @@ import itertools
 
 from . import base
 from . import core
-from ..core.util import openany
+from ..lib.util import openany
 from ..core.AtomGroup import Atom
 
 

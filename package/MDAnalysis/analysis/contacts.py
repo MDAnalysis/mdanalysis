@@ -146,11 +146,12 @@ import warnings
 import bz2
 from itertools import izip
 import numpy
+import logging
+
 import MDAnalysis
 import MDAnalysis.core.distances
-from MDAnalysis.core.util import openany
+from MDAnalysis.lib.util import openany
 
-import logging
 
 logger = logging.getLogger("MDAnalysis.analysis.contacts")
 
@@ -378,8 +379,6 @@ class ContactAnalysis(object):
 
     def load(self, filename):
         """Load the data file."""
-        from MDAnalysis.core.util import openany
-
         records = []
         with openany(filename) as data:
             for line in data:
@@ -675,8 +674,6 @@ class ContactAnalysis1(object):
 
     def load(self, filename):
         """Load the data file."""
-        from MDAnalysis.core.util import openany
-
         records = []
         with openany(filename) as data:
             for line in data:

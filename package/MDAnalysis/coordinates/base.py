@@ -114,7 +114,7 @@ import bisect
 import numpy as np
 
 from MDAnalysis.core import units, flags
-from MDAnalysis.core.util import asiterable
+from MDAnalysis.lib.util import asiterable
 from . import core
 from .. import NoDataError
 

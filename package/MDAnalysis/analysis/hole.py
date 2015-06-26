@@ -186,7 +186,8 @@ import tempfile
 import textwrap
 
 from MDAnalysis import ApplicationError
-from MDAnalysis.core.util import which, realpath, asiterable
+from MDAnalysis.lib.util import which, realpath, asiterable
+from MDAnalysis.lib.util import FORTRANReader
 
 import logging
 
@@ -893,7 +894,6 @@ class HOLE(BaseHOLE):
               value but ``None`` [``None``]
 
         """
-        from MDAnalysis.core.util import FORTRANReader
         # cenxyz.cvec      radius  cen_line_D sum{s/(area point sourc
         #0123456789.0123456789.0123456789.0123456789.0123456789.0123456789.
         #            11          22          33          44

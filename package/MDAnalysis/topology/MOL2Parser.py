@@ -37,7 +37,7 @@ from __future__ import absolute_import
 
 import os
 
-from ..core.util import openany
+from ..lib.util import openany
 from ..core.AtomGroup import Atom
 from .core import guess_atom_type, guess_atom_mass, guess_atom_charge
 from .base import TopologyReader

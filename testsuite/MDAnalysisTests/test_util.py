@@ -18,8 +18,8 @@ import numpy.random
 from numpy.testing import *
 from numpy import pi, sin, cos
 
-import MDAnalysis.core.util as util
-from MDAnalysis.core.util import cached
+import MDAnalysis.lib.util as util
+from MDAnalysis.lib.util import cached
 from MDAnalysis.tests.datafiles import PSF
 
 import cStringIO

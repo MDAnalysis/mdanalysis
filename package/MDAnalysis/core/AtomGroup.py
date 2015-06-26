@@ -412,8 +412,8 @@ import weakref
 # Local imports
 import MDAnalysis
 from .. import SelectionError, NoDataError, SelectionWarning
-from . import util
-from .util import cached
+from ..lib import util
+from ..lib.util import cached
 from ..lib.transformations import rotation_matrix, vecangle, rotaxis
 
 

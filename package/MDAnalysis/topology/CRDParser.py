@@ -32,7 +32,7 @@ Classes
 from __future__ import absolute_import
 
 from ..core.AtomGroup import Atom
-from ..core.util import openany, FORTRANReader
+from ..lib.util import openany, FORTRANReader
 from .core import guess_atom_type, guess_atom_mass, guess_atom_charge
 from .base import TopologyReader
 

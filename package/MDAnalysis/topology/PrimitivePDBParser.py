@@ -50,7 +50,7 @@ from __future__ import absolute_import
 
 from ..core.AtomGroup import Atom
 from .core import get_atom_mass, guess_atom_element
-from ..core.util import openany
+from ..lib.util import openany
 from .base import TopologyReader
 
 

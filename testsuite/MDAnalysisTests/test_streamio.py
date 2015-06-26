@@ -17,7 +17,7 @@ import numpy
 from numpy.testing import *
 
 import MDAnalysis
-import MDAnalysis.core.util as util
+import MDAnalysis.lib.util as util
 import MDAnalysis.tests.datafiles as datafiles
 from MDAnalysisTests.test_coordinates import RefAdKSmall
 from MDAnalysisTests import knownfailure

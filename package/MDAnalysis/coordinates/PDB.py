@@ -217,7 +217,7 @@ import logging
 import numpy
 
 import MDAnalysis.core
-import MDAnalysis.core.util as util
+import MDAnalysis.lib.util as util
 from . import base
 from MDAnalysis.topology.core import guess_atom_element
 from MDAnalysis.core.AtomGroup import Universe

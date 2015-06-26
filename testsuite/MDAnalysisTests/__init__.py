@@ -131,7 +131,7 @@ if MDAnalysis.__version__ != __version__:
     raise ImportError("MDAnalysis release {0} must be installed to run the tests, not {1}".format(
             __version__, MDAnalysis.__version__))
 
-import MDAnalysis.core.util
+import MDAnalysis.lib.util
 
 
 def knownfailure(msg="Test skipped due to expected failure", exc_type=AssertionError, mightpass=False):
@@ -158,7 +158,7 @@ def executable_not_found(*args):
     ``False`` otherwise (i.e. at least one was found).
     """
     for name in args:
-        found = MDAnalysis.core.util.which(name) is not None
+        found = MDAnalysis.lib.util.which(name) is not None
         if found:
             break
     return not found

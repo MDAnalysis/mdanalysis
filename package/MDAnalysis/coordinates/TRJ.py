@@ -136,7 +136,7 @@ import logging
 import MDAnalysis
 from ..core import flags
 from . import base
-import MDAnalysis.core.util as util
+import MDAnalysis.lib.util as util
 
 
 logger = logging.getLogger("MDAnalysis.coordinates.AMBER")

@@ -13,7 +13,7 @@ different trajectory formats.
 # from MDAnalysis.tests.datafiles import PRMpbc,TRJpbc_bz2
 from MDAnalysis.tests.datafiles import PRM, TRJ_bz2
 from MDAnalysis import Universe, Writer
-from MDAnalysis.core.util import greedy_splitext
+from MDAnalysis.lib.util import greedy_splitext
 
 import os.path
 

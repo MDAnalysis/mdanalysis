@@ -33,7 +33,8 @@ methods.
 """
 
 import os.path
-import MDAnalysis.core.util as util
+
+import MDAnalysis.lib.util as util
 import MDAnalysis.selections
 
 
