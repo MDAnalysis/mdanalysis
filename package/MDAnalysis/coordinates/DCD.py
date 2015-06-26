@@ -73,7 +73,7 @@ import struct
 
 from . import base
 import MDAnalysis.core
-from .. import units
+from .. import units as mdaunits
 from MDAnalysis import NoDataError
 
 
@@ -187,7 +187,7 @@ class DCDWriter(base.Writer):
     units = {'time': 'AKMA', 'length': 'Angstrom'}
 
     def __init__(self, filename, numatoms, start=0, step=1,
-                 delta=units.convert(1., 'ps', 'AKMA'), dt=None,
+                 delta=mdaunits.convert(1., 'ps', 'AKMA'), dt=None,
                  remarks="Created by DCDWriter", convert_units=None):
         """Create a new DCDWriter
 
@@ -243,7 +243,7 @@ class DCDWriter(base.Writer):
             if dt > 0:
                 # ignore step and delta
                 self.step = 1
-                self.delta = units.convert(dt, 'ps', 'AKMA')
+                self.delta = mdaunits.convert(dt, 'ps', 'AKMA')
             else:
                 raise ValueError("DCDWriter: dt must be > 0, not {0}".format(dt))
         else:

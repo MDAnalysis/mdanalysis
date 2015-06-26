@@ -99,7 +99,7 @@ class DCDReader(DCD.DCDReader):
 
     The units can be set from the constructor with the keyword
     arguments *timeunit* and *lengthunit*. The defaults are "ps" and
-    "Angstrom". See :mod:`MDAnalysis.core.units` for other recognized
+    "Angstrom". See :mod:`MDAnalysis.units` for other recognized
     values.
     """
     format = "DCD"

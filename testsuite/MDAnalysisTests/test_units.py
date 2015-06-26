@@ -18,7 +18,7 @@ from __future__ import unicode_literals
 import numpy as np
 from numpy.testing import *
 
-import MDAnalysis.core.units as units
+from MDAnalysis import units
 from MDAnalysis.core import flags
 
 

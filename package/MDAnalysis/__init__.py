@@ -174,6 +174,9 @@ from .exceptions import (
     StreamWarning
 )
 
+
+from . import units
+
 # Bring some often used objects into the current namespace
 from .core import Timeseries
 from .core.AtomGroup import Universe, asUniverse, Merge

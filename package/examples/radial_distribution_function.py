@@ -22,7 +22,7 @@ import numpy
 
 from MDAnalysis import *
 from MDAnalysis.core.distances import *  # #distance_array
-import MDAnalysis.core.units  # for bulk water density
+import MDAnalysis.units  # for bulk water density
 
 try:
     import matplotlib
@@ -84,8 +84,8 @@ vol = (4. / 3.) * numpy.pi * (numpy.power(edges[1:], 3) - numpy.power(edges[:-1]
 density = n / boxvolume
 # This is inaccurate when solutes take up substantial amount
 # of space. In this case you might want to use
-## import MDAnalysis.core.units
-## density = MDAnalysis.core.units.convert(1.0, 'water', 'Angstrom^{-3}')
+## import MDAnalysis.units
+## density = MDAnalysis.units.convert(1.0, 'water', 'Angstrom^{-3}')
 norm = density * (n - 1) / 2 * numframes
 rdf /= norm * vol
 

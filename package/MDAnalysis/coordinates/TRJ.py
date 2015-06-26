@@ -462,7 +462,7 @@ class NCDFReader(base.Reader):
         # - application           AMBER
         #
 
-        # checks for not-implemented features (other units would need to be hacked into core.units)
+        # checks for not-implemented features (other units would need to be hacked into MDAnalysis.units)
         if self.trjfile.variables['time'].units != "picosecond":
             raise NotImplementedError(
                 "NETCDFReader currently assumes that the trajectory was written with a time unit of picoseconds and "
