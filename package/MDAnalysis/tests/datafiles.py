@@ -27,7 +27,7 @@ Real MD simulation data, used for examples and the unit tests::
 
    The actual files are contained in the separate
    :mod:`MDAnalysisTests` package which must be downloaded from
-   http://code.google.com/p/mdanalysis/downloads/list and installed.
+   http://pypi.python.org/pypi/MDAnalysisTests and installed.
 """
 
 try:
@@ -38,9 +38,9 @@ except ImportError:
     print "MDAnalysisTestData package (which has been separated from the "
     print "library code itself since release 0.7.4). Go to "
     print
-    print "     http://code.google.com/p/mdanalysis/downloads/list"
+    print "     http://pypi.python.org/pypi/MDAnalysisTests"
     print
-    print "and download and install the `MDAnalysisTestData-x.y.z.tar.gz'"
-    print "which matches your MDAnalysis release or is smaller."
+    print "and download and install the `MDAnalysisTests-x.y.z.tar.gz'"
+    print "that matches your MDAnalysis release."
     raise ImportError("MDAnalysisTests package not installed.")
 

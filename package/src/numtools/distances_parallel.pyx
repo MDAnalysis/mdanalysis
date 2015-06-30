@@ -1,7 +1,7 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
-# MDAnalysis --- http://mdanalysis.googlecode.com
+# MDAnalysis --- http://www.mdanalysis.org
 # Copyright (c) 2006-2014 Naveen Michaud-Agrawal,
 #               Elizabeth J. Denning, Oliver Beckstein,
 #               and contributors (see AUTHORS for the full list)
@@ -29,7 +29,7 @@ A fast, parallel :func:`distance_array` function as a substitute for
 `Issue 80`_.
 
 .. _Cython Parallelism: http://docs.cython.org/src/userguide/parallelism.html
-.. _Issue 80: https://code.google.com/p/mdanalysis/issues/detail?id=80
+.. _Issue 80: http://issues.mdanalysis.org/80
 
 Load the module with ::
 

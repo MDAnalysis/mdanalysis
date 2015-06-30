@@ -35,7 +35,7 @@ list`_.
 
 In order to run the `Unit Tests`_ it is also necessary to install a
 separate package MDAnalysisTests_ containing the test and test
-data. As it contains about 18 MB of molecular dynamics trajectories
+data. As it contains about 20 MB of molecular dynamics trajectories
 and simulation system structures it is not included with the library
 itself.
 
@@ -50,22 +50,26 @@ When using MDAnalysis in published work, please cite
     Dynamics Simulations. *J. Comput. Chem.* **32** (2011), 2319--2327.
     doi:`10.1002/jcc.21787`_
 
+For citations of included algorithms and sub-modules please see the references_.
+
 
 .. Links
 
+.. _MDAnalysis: http://www.mdanalysis.org
 .. _`10.1002/jcc.21787`: http://dx.doi.org/10.1002/jcc.21787
+.. _references: http://docs.mdanalysis.org/documentation_pages/references.html
 .. _GNU Public Licence, version 2: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
-.. _Issue Tracker: http://code.google.com/p/mdanalysis/issues/list
+.. _Issue Tracker: http://issues.mdanalysis.org
 .. _`mdnalysis-discussion mailing list`:
    http://groups.google.com/group/mdnalysis-discussion
 .. _`online documentation`:
-   http://pythonhosted.org//MDAnalysis/
+   http://docs.mdanalysis.org
 .. _`Table of Supported Coordinate Formats`:
-   http://pythonhosted.org//MDAnalysis/documentation_pages/coordinates/init.html#id1
+   http://docs.mdanalysis.org/documentation_pages/coordinates/init.html#id1
 .. _`atom selection commands`:
-   http://pythonhosted.org//MDAnalysis/documentation_pages/selections.html#selection-commands
+   http://docs.mdanalysis.org/documentation_pages/selections.html#selection-commands
 .. _`Selection exporters`:
-   http://pythonhosted.org//MDAnalysis/documentation_pages/selections_modules.html#selection-exporters
+   http://docs.mdanalysis.org/documentation_pages/selections_modules.html#selection-exporters
 .. _NumPy: http://numpy.scipy.org
 .. _CHARMM:  http://www.charmm.org/
 .. _Amber:   http://ambermd.org/
@@ -77,8 +81,8 @@ When using MDAnalysis in published work, please cite
 .. _PDB: http://www.rcsb.org/pdb/static.do?p=file_formats/pdb/index.html
 .. _XYZ format: http://openbabel.org/wiki/XYZ_%28format%29
 
-.. _Unit Tests: https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
-.. _MDAnalysisTests: https://github.com/MDAnalysis/mdanalysis/wiki/MDAnalysisTests
+.. _Unit Tests: http://wiki.mdanalysis.org/UnitTests
+.. _MDAnalysisTests: http://wiki.mdanalysis.org/MDAnalysisTests
 
 .. _`easy_install`: http://packages.python.org/distribute/easy_install.html
 .. _`pip`: http://www.pip-installer.org/en/latest/index.html
