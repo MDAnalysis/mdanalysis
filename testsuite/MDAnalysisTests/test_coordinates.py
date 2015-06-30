@@ -28,7 +28,7 @@ from nose.plugins.attrib import attr
 import warnings
 
 from MDAnalysisTests.datafiles import (
-    PSF, DCD, DCD_empty, PDB_small, XPDB_small, PDB_closed, PDB_multiframe,
+    PSF, DCD, DCD_empty, PDB_small, XPDB_small, PDB_closed, PDB_multiframe, PDB_full,
     PDB, CRD, XTC, TRR, GRO, DMS, CONECT,
     XYZ, XYZ_bz2, XYZ_psf, PRM, TRJ, TRJ_bz2, PRMpbc, TRJpbc_bz2, PRMncdf, NCDF, PQR,
     PDB_sub_dry, TRR_sub_sol, PDB_sub_sol, TRZ, TRZ_psf, LAMMPSdata, LAMMPSdata_mini,
@@ -115,6 +115,33 @@ class Ref2r9r(object):
     ref_sum_centre_of_geometry = -98.24146
     ref_numframes = 10
 
+class Ref4e43(object):
+    """Mixin class for a clean Protein Databank PDB file"""
+    filename = PDB_full
+    header = "HYDROLASE                               11-MAR-12   4E43"
+    title = ["HIV PROTEASE (PR) DIMER WITH ACETATE IN EXO SITE AND PEPTIDE IN ACTIVE",
+             "2 SITE"]
+    compnd = ["MOL_ID: 1;",
+              "2 MOLECULE: PROTEASE;",
+              "3 CHAIN: A, B;",                                                    
+              "4 ENGINEERED: YES;",
+              "5 MUTATION: YES;",
+              "6 MOL_ID: 2;",                                      
+              "7 MOLECULE: RANDOM PEPTIDE;",
+              "8 CHAIN: C;",                                   
+              "9 ENGINEERED: YES;",
+              "10 OTHER_DETAILS: UNKNOWN IMPURITY",
+        ]
+    num_remarks = 333
+    # only first 5 remarks for comparison
+    nmax_remarks = 5
+    remarks = [
+        "2",
+        "2 RESOLUTION.    1.54 ANGSTROMS.",
+        "3",
+        "3 REFINEMENT.",
+        "3   PROGRAM     : REFMAC 5.5.0110",
+    ]
 
 class TestXYZReader(TestCase, Ref2r9r):
     def setUp(self):
@@ -790,6 +817,62 @@ class TestPDBReader(_SingleFrameReader):
                             self.prec,
                             "Biopython reader failed to get unitcell dimensions from CRYST1")
 
+class _PDBMetadata(TestCase, Ref4e43):
+    permissive = True
+
+    def setUp(self):
+        self.universe = mda.Universe(self.filename, permissive=self.permissive)
+        
+    def tearDown(self):
+        del self.universe
+
+    def test_HEADER(self):
+        assert_equal(self.universe.trajectory.header, self.header,
+                     err_msg="HEADER record not correctly parsed")
+
+    def test_TITLE(self):
+        try:
+            title = self.universe.trajectory.title
+        except AttributeError:
+            raise AssertionError("Reader does not have a 'title' attribute.")
+        assert_equal(len(title), len(self.title),
+                     err_msg="TITLE does not contain same number of lines")
+        for lineno, (parsed, reference) in enumerate(zip(title, self.title), start=1):
+            assert_equal(parsed, reference,
+                         err_msg="TITLE line {0} do not match".format(lineno))
+
+    def test_COMPND(self):
+        try:
+            compound = self.universe.trajectory.compound
+        except AttributeError:
+            raise AssertionError("Reader does not have a 'compound' attribute.")
+        assert_equal(len(compound), len(self.compnd),
+                     err_msg="COMPND does not contain same number of lines")
+        for lineno, (parsed, reference) in enumerate(zip(compound, self.compnd), start=1):
+            assert_equal(parsed, reference,
+                         err_msg="COMPND line {0} do not match".format(lineno))
+
+    def test_REMARK(self):
+        try:
+            remarks = self.universe.trajectory.remarks
+        except AttributeError:
+            raise AssertionError("Reader does not have a 'remarks' attribute.")
+        assert_equal(len(remarks), self.num_remarks,
+                     err_msg="REMARK does not contain same number of lines")
+        # only look at the first 5 entries
+        for lineno, (parsed, reference) in enumerate(
+                zip(remarks[:self.nmax_remarks], self.remarks[:self.nmax_remarks]), start=1):
+            assert_equal(parsed, reference,
+                         err_msg="REMARK line {0} do not match".format(lineno))
+
+class TestPrimitivePDBReader_Metadata(_PDBMetadata):
+    permissive = True
+
+### Does not implement Reader.remarks, Reader.header, Reader.title, Reader.compounds
+### because the PDB header data in trajectory.metadata are already parsed; should perhaps
+### update the PrimitivePDBReader to do the same. [orbeckst]
+#class TestPDBReader_Metadata(_PDBMetadata):
+#    permissive = False
 
 class TestPSF_CRDReader(_SingleFrameReader):
     def setUp(self):
