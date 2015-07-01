@@ -26,7 +26,7 @@ from MDAnalysis.tests.datafiles import (
     PRMpbc, PRM12, PSF, PSF_NAMD, PSF_nosegid, DMS, PDB_small, DCD,
     LAMMPSdata, trz4data, TPR, PDB, XYZ_mini, GMS_SYMOPT, GMS_ASYMSURF,
     DLP_CONFIG, DLP_CONFIG_order, DLP_CONFIG_minimal,
-    DLP_HISTORY, DLP_HISTORY_order, DLP_HISTORY_minimal)
+    DLP_HISTORY, DLP_HISTORY_order, DLP_HISTORY_minimal, HoomdXMLdata)
 
 from numpy.testing import *
 from nose.plugins.attrib import attr
@@ -215,6 +215,16 @@ class RefNAMD_CGENFF(object):
     ref_numatoms = 130
     ref_numresidues = 6
 
+class RefHoomdXML(object):
+    """Hoomd XML test data and answers
+    """
+    topology = HoomdXMLdata
+    parser = MDAnalysis.topology.HoomdXMLParser.HoomdXMLParser
+    ref_numatoms = 769
+    ref_numresidues = 1
+
+class TestHoomdXML(_TestTopology, RefHoomdXML):
+    """Testing Hoomd XML file"""
 
 class TestPSF_NAMD_CGENFF(_TestTopology, RefNAMD_CGENFF):
     """Testing NAMD PSF file (with CGENFF atom types, Issue 107)"""

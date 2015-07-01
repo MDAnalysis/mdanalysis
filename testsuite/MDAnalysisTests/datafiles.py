@@ -42,7 +42,6 @@ __all__ = [
     "PDB_multiframe",
     "PDB_helix",
     "XPDB_small",
-    "PDB_full",   # PDB 4E43 (full HEADER, TITLE, COMPND, REMARK, altloc)
     "NUCL",  # nucleic acid (PDB)
     "PDB", "GRO", "XTC", "TRR", "TPR", "GRO_velocity",  # Gromacs (AdK)
     "PDB_xvf", "TPR_xvf", "TRR_xvf",  # Gromacs coords/veloc/forces (cobrotoxin, OPLS-AA, Gromacs 4.5.5 tpr)
@@ -72,6 +71,7 @@ __all__ = [
     "merge_protein", "merge_ligand", "merge_water",
     "mol2_molecules", "mol2_molecule", "mol2_broken_molecule",
     "capping_input", "capping_output", "capping_ace", "capping_nma",
+    "altloc",
     "LAMMPSdata", "trz4data", "LAMMPSdata_mini",
     "unordered_res",  # pdb file with resids non sequential
     "GMS_ASYMOPT",  # GAMESS C1  optimization
@@ -81,6 +81,7 @@ __all__ = [
     "DLP_CONFIG", "DLP_CONFIG_order", "DLP_CONFIG_minimal",  # dl_poly 4 config file
     "DLP_HISTORY", "DLP_HISTORY_order", "DLP_HISTORY_minimal",  # dl_poly 4 history file
     "waterPSF","waterDCD","rmsfArray",
+    "HoomdXMLdata",
 ]
 
 from pkg_resources import resource_filename
@@ -184,7 +185,7 @@ TRZ_psf = resource_filename(__name__, 'data/trz_psf.psf')
 
 TRIC = resource_filename(__name__, 'data/dppc_vesicle_hg.gro')
 
-PDB_full = resource_filename(__name__, "data/4E43.pdb")
+altloc = resource_filename(__name__, "data/4E43.pdb")
 
 merge_protein = resource_filename(__name__, "data/merge/2zmm/protein.pdb")
 merge_ligand = resource_filename(__name__, "data/merge/2zmm/ligand.pdb")
@@ -223,3 +224,5 @@ waterPSF = resource_filename(__name__, 'data/watdyn.psf')
 waterDCD = resource_filename(__name__, 'data/watdyn.dcd')
 
 rmsfArray = resource_filename(__name__, 'data/adk_oplsaa_CA_rmsf.npy')
+
+HoomdXMLdata = resource_filename(__name__, 'data/C12x64.xml')
