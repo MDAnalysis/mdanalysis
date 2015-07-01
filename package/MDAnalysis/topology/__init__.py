@@ -101,7 +101,9 @@ The following table lists the currently supported topology formats.
                                  order.
                                  :mod:`MDAnalysis.topology.DLPolyParser`
 
-   Hoomd XML [#a]_   xml         HOOMD XML Topology file;
+   Hoomd XML         xml         `HOOMD XML`_ topology file.  Reads atom types, masses, and
+                                 charges if possible. Also reads bonds, angles, and dihedrals.
+                                 
                                  :mod:`MDAnalysis.topology.HOOMDXMLarser`
 
    ================= ==========  =====================================================
@@ -119,6 +121,7 @@ The following table lists the currently supported topology formats.
 
 .. SeeAlso:: :ref:`Coordinates` with the :ref:`Supported coordinate formats`
 
+.. _HOOMD XML: http://codeblue.umich.edu/hoomd-blue/doc/page_xml_file_format.html
 
 Developer Notes
 ---------------

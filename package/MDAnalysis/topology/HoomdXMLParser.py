@@ -13,9 +13,18 @@
 """
 HOOMD XML topology parser
 ========================
-Read a list of atoms from a HOOMD XML file to build a basic topology.
+The :class:`HoomdXMLParser` generates a topology from files for the HOOMD_ code.
 
-Atom atypes, masses, and charges are guessed if not present in the XML file.
+Read a list of atoms from a `HOOMD XML`_ file to build a basic topology.
+Atom names are set to atom type if not present (which they probably aren't).
+Elements are guessed based on atom types.
+Masses and charges are set to zero if not present in the XML file.
+Hoomd XML does not identify molecules or residues, so placeholder values
+are used for residue numbers and residue names.
+Bonds and angles are read if present.
+
+.. _HOOMD: http://codeblue.umich.edu/hoomd-blue/index.html
+.. _HOOMD XML: http://codeblue.umich.edu/hoomd-blue/doc/page_xml_file_format.html
 
 Classes
 -------
@@ -25,8 +34,9 @@ Classes
    :inherited-members:
 """
 from __future__ import absolute_import
+from ..lib.util import openany
 from ..core.AtomGroup import Atom
-from .core import get_atom_mass, guess_atom_charge, guess_atom_element
+from .core import guess_atom_element
 from .base import TopologyReader
 import xml.etree.ElementTree as ET
 
@@ -34,20 +44,24 @@ class HoomdXMLParser(TopologyReader):
     def parse(self):
         """Parse Hoomd XML file *filename* and return the dict `structure`.
             
-            Hoomd XML format does not contain a node for names. The parser will
-            look for a name node anyway, and if it doesn't find one, it will use
-            the atom types as names. If the Hoomd XML file doesn't contain a type
-            node (it should), then all atom types will be \'none\'. Similar to the
-            names, the parser will try to read element, mass, and charge from the XML
-            file, but it will guess if they are not present.
+           Hoomd XML format does not contain a node for names. The parser will
+           look for a name node anyway, and if it doesn't find one, it will use
+           the atom types as names. If the Hoomd XML file doesn't contain a type
+           node (it should), then all atom types will be \'none\'. Similar to the
+           names, the parser will try to read element, mass, and charge from the XML
+           file, but it will use placeholder values if they are not present.
 
-            :Returns: MDAnalysis internal *structure* dict
+           Because Hoomd uses unitless mass, charge, etc., if they are not present
+           they will not be guessed - they will be set to zero.
 
-            .. SeeAlso:: The *structure* dict is defined in
-            :func:`MDAnalysis.topology.base`.
+           :Returns: MDAnalysis internal *structure* dict
+
+           .. SeeAlso:: The *structure* dict is defined in
+           :func:`MDAnalysis.topology.base`.
 
         """
-        tree = ET.parse(self.filename)
+        with openany(self.filename) as stream:
+            tree = ET.parse(stream)
         root = tree.getroot()
         configuration = root.find('configuration')
         natoms = int(configuration.get('natoms'))
@@ -60,49 +74,89 @@ class HoomdXMLParser(TopologyReader):
         resid = 0
         segid = "SYSTEM"
 
-        try:
-            atype = configuration.find('type')
-            atypes = atype.text.strip().split('\n')
-            if len(atypes) != 0 and len(atypes) != natoms:
-                raise IOError("Number of types is neither zero nor natoms")
-        except:
-            atypes = ['none']*natoms
+        atype = configuration.find('type')
+        atypes = atype.text.strip().split('\n')
+        if len(atypes) != natoms:
+            raise IOError("Number of types does not equal natoms.")
+
         try:
             name = configuration.find('name')
             names = name.text.strip().split('\n')
-            if len(names) != 0 and len(names) != natoms:
-                raise IOError("Number of types is neither zero nor natoms")
         except:
             names = [atype for atype in atypes]
+        if len(names) != natoms:
+            raise IOError("Number of names does not equal natoms.")
+
         try:
             elem = configuration.find('element')
             elems = elem.text.strip().split('\n')
-            if len(elems) != 0 and len(elems) != natoms:
-                raise IOError("Number of elements is neither zero nor natoms")
         except:
             for atype in atypes:
                 elems.append(guess_atom_element(atype))
+        if len(elems) != natoms:
+            raise IOError("Number of elements does not equal natoms.")
+
         try:
             mass = configuration.find('mass')
             masses = [float(x) for x in mass.text.strip().split('\n')]
-            if len(masses) != 0 and len(masses) != natoms:
-                raise IOError("Number of masses is neither zero nor natoms")
         except:
-            for elem in elems:
-                masses.append(get_atom_mass(elem))
+            masses = [0]*natoms
+        if len(masses) != natoms:
+            raise IOError("Number of masses does not equal natoms.")
 
         try:
             charge = configuration.find('charge')
             charges = [float(x) for x in charge.text.strip().split('\n')]
-            if len(charges) != 0 and len(charges) != natoms:
-                raise IOError("Number of charges is neither zero nor natoms")
         except:
-            for name in names:
-                charges.append(guess_atom_charge(name))
+            charges = [0]*natoms
+        if len(charges) != natoms:
+            raise IOError("Number of charges does not equal natoms.")
 
         atoms = []
+        bonds = []
+        angles = []
+        torsions = []
+        impropers = []
+
         for i in range(natoms):
             atoms.append(Atom(i, names[i], atypes[i], resname, resid, segid, masses[i], charges[i], universe=self._u))
-        structure = {'atoms': atoms}
 
+        try:
+            bond = configuration.find('bond')
+            bondlines = bond.text.strip().split('\n')
+            for bondline in bondlines:
+                bondwords = bondline.split()
+                bonds.append((int(bondwords[1]),int(bondwords[2])))
+        except:
+            bonds = []
+
+        try:
+            angle = configuration.find('angle')
+            anglelines = angle.text.strip().split('\n')
+            for angleline in anglelines:
+                anglewords = angleline.split()
+                angles.append((int(anglewords[1]),int(anglewords[2]),int(anglewords[3])))
+        except:
+            angles = []
+
+        try:
+            torsion = configuration.find('dihedral')
+            torsionlines = torsion.text.strip().split('\n')
+            for torsionline in torsionlines:
+                torsionwords = torsionline.split()
+                torsions.append((int(torsionwords[1]),int(torsionwords[2]),int(torsionwords[3]),int(torsionwords[4])))
+        except:
+            torsions = []
+
+        try:
+            improper = configuration.find('improper')
+            improperlines = improper.text.strip().split('\n')
+            for improperline in improperlines:
+                improperwords = improperline.split()
+                impropers.append((int(improperwords[1]),int(improperwords[2]),int(improperwords[3]),int(improperwords[4])))
+        except:
+            impropers = []
+
+
+        structure = {'atoms': atoms, 'bonds': bonds, 'angles': angles, 'torsions': torsions, 'impropers': impropers}
         return structure

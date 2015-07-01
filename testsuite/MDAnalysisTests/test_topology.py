@@ -27,6 +27,7 @@ from MDAnalysis.tests.datafiles import (
     LAMMPSdata, trz4data, TPR, PDB, XYZ_mini, GMS_SYMOPT, GMS_ASYMSURF,
     DLP_CONFIG, DLP_CONFIG_order, DLP_CONFIG_minimal,
     DLP_HISTORY, DLP_HISTORY_order, DLP_HISTORY_minimal, HoomdXMLdata)
+from MDAnalysisTests import knownfailure
 
 from numpy.testing import *
 from nose.plugins.attrib import attr
@@ -225,6 +226,12 @@ class RefHoomdXML(object):
 
 class TestHoomdXML(_TestTopology, RefHoomdXML):
     """Testing Hoomd XML file"""
+    def setUp(self):
+        self.universe = MDAnalysis.Universe(self.topology,topology_format='XML')
+
+    @knownfailure
+    def test_correct_parser(self):
+        super(TestHoomdXML, self).test_correct_parser()
 
 class TestPSF_NAMD_CGENFF(_TestTopology, RefNAMD_CGENFF):
     """Testing NAMD PSF file (with CGENFF atom types, Issue 107)"""
