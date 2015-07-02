@@ -131,7 +131,7 @@
 <span class="sd">:meth:`Density.convert_density` method, the units of measurement are</span>
 <span class="sd">changed. In the example we are now measuring the density relative to the</span>
 <span class="sd">literature value of the TIP3P water model at ambient conditions (see the values</span>
-<span class="sd">in :data:`MDAnalysis.core.units.water` for details). Finally, the density is</span>
+<span class="sd">in :data:`MDAnalysis.units.water` for details). Finally, the density is</span>
 <span class="sd">writte as an OpenDX_ compatible file that can be read in VMD_ or PyMOL_.</span>
 
 <span class="sd">See :class:`Density` for details. In particular, the density is stored</span>
@@ -159,7 +159,9 @@
 <span class="sd">   :inherited-members:</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">numpy</span>  <span class="c"># need v &gt;= 1.0.3</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">os.path</span>
@@ -170,25 +172,27 @@
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">gridData</span> <span class="kn">import</span> <span class="n">Grid</span>  <span class="c"># http://github.com/orbeckst/GridDataFormats</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="k">print</span> <span class="s">&quot;&quot;&quot;ERROR --- The GridDataFormats package can not be found!</span>
+    <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
+        <span class="sd">&quot;&quot;&quot;ERROR --- The GridDataFormats package can not be found!</span>
 
-<span class="s">The &#39;gridData&#39; module from GridDataFormats could not be</span>
-<span class="s">imported. Please install it first.  You can try installing with</span>
-<span class="s">setuptools directly from the internet:</span>
+<span class="sd">        The &#39;gridData&#39; module from GridDataFormats could not be</span>
+<span class="sd">        imported. Please install it first.  You can try installing with</span>
+<span class="sd">        setuptools directly from the internet:</span>
+<span class="sd">    </span>
+<span class="sd">          easy_install GridDataFormats</span>
 
-<span class="s">    easy_install GridDataFormats</span>
+<span class="sd">        Alternatively, download the package from</span>
 
-<span class="s">Alternatively, download the package from</span>
+<span class="sd">          http://pypi.python.org/pypi/GridDataFormats/</span>
 
-<span class="s">    http://pypi.python.org/pypi/GridDataFormats/</span>
-
-<span class="s">and install in the usual manner.</span>
-<span class="s">&quot;&quot;&quot;</span>
-    <span class="k">raise</span>
+<span class="sd">        and install in the usual manner.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="p">)</span>
 
 <span class="kn">import</span> <span class="nn">MDAnalysis</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.core.util</span> <span class="kn">import</span> <span class="n">fixedwidth_bins</span><span class="p">,</span> <span class="n">iterable</span><span class="p">,</span> <span class="n">asiterable</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.lib.util</span> <span class="kn">import</span> <span class="n">fixedwidth_bins</span><span class="p">,</span> <span class="n">iterable</span><span class="p">,</span> <span class="n">asiterable</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">NoDataError</span><span class="p">,</span> <span class="n">MissingDataWarning</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">units</span>
 
 <span class="kn">import</span> <span class="nn">logging</span>
 
@@ -342,7 +346,7 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="n">unit_type</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
                     <span class="k">continue</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">conversion_factor</span><span class="p">[</span><span class="n">unit_type</span><span class="p">][</span><span class="n">value</span><span class="p">]</span>
+                    <span class="n">units</span><span class="o">.</span><span class="n">conversion_factor</span><span class="p">[</span><span class="n">unit_type</span><span class="p">][</span><span class="n">value</span><span class="p">]</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="n">unit_type</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
                 <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;Unit &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39; of type &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">unit_type</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39; is not recognized.&#39;</span><span class="p">)</span>
@@ -382,7 +386,7 @@
             <span class="n">shape</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dedges</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">/=</span> <span class="n">dedges</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s">&#39;isDensity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">True</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s">&#39;density&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s">&#39;length&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s">&quot;^{-3}&quot;</span>  <span class="c"># see core.units.densityUnit_factor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s">&#39;density&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s">&#39;length&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s">&quot;^{-3}&quot;</span>  <span class="c"># see units.densityUnit_factor</span>
 </div>
 <div class="viewcode-block" id="Density.convert_length"><a class="viewcode-back" href="../../../documentation_pages/analysis/density.html#MDAnalysis.analysis.density.Density.convert_length">[docs]</a>    <span class="k">def</span> <span class="nf">convert_length</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s">&#39;Angstrom&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Convert Grid object to the new *unit*.</span>
@@ -401,7 +405,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">unit</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s">&#39;length&#39;</span><span class="p">]:</span>
             <span class="k">return</span>
-        <span class="n">cvnfact</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">get_conversion_factor</span><span class="p">(</span><span class="s">&#39;length&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s">&#39;length&#39;</span><span class="p">],</span> <span class="n">unit</span><span class="p">)</span>
+        <span class="n">cvnfact</span> <span class="o">=</span> <span class="n">units</span><span class="o">.</span><span class="n">get_conversion_factor</span><span class="p">(</span><span class="s">&#39;length&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s">&#39;length&#39;</span><span class="p">],</span> <span class="n">unit</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">edges</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="o">*</span> <span class="n">cvnfact</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s">&#39;length&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">unit</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update</span><span class="p">()</span>  <span class="c"># needed to recalculate midpoints and origin</span>
@@ -419,8 +423,8 @@
 <span class="sd">        Angstrom^{-3}  particles/A**3</span>
 <span class="sd">        nm^{-3}        particles/nm**3</span>
 <span class="sd">        SPC            density of SPC water at standard conditions</span>
-<span class="sd">        TIP3P          ... see :data:`MDAnalysis.core.units.water`</span>
-<span class="sd">        TIP4P          ... see :data:`MDAnalysis.core.units.water`</span>
+<span class="sd">        TIP3P          ... see :data:`MDAnalysis.units.water`</span>
+<span class="sd">        TIP4P          ... see :data:`MDAnalysis.units.water`</span>
 <span class="sd">        water          density of real water at standard conditions (0.997 g/cm**3)</span>
 <span class="sd">        Molar          mol/l</span>
 <span class="sd">        =============  ===============================================================</span>
@@ -440,10 +444,10 @@
         <span class="k">if</span> <span class="n">unit</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s">&#39;density&#39;</span><span class="p">]:</span>
             <span class="k">return</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">*=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">get_conversion_factor</span><span class="p">(</span><span class="s">&#39;density&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s">&#39;density&#39;</span><span class="p">],</span> <span class="n">unit</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">*=</span> <span class="n">units</span><span class="o">.</span><span class="n">get_conversion_factor</span><span class="p">(</span><span class="s">&#39;density&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s">&#39;density&#39;</span><span class="p">],</span> <span class="n">unit</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;The name of the unit (</span><span class="si">%r</span><span class="s"> supplied) must be one of:</span><span class="se">\n</span><span class="si">%r</span><span class="s">&quot;</span> <span class="o">%</span>
-                             <span class="p">(</span><span class="n">unit</span><span class="p">,</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">conversion_factor</span><span class="p">[</span><span class="s">&#39;density&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+                             <span class="p">(</span><span class="n">unit</span><span class="p">,</span> <span class="n">units</span><span class="o">.</span><span class="n">conversion_factor</span><span class="p">[</span><span class="s">&#39;density&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s">&#39;density&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">unit</span>
 </div>
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -581,14 +585,14 @@
     <span class="n">h</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
     <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">:</span>
-        <span class="k">print</span> <span class="s">&quot;Histograming </span><span class="si">%6d</span><span class="s"> atoms in frame </span><span class="si">%5d</span><span class="s">/</span><span class="si">%d</span><span class="s">  [</span><span class="si">%5.1f%%</span><span class="s">]</span><span class="se">\r</span><span class="s">&quot;</span> <span class="o">%</span> \
-              <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">coord</span><span class="p">),</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">numframes</span><span class="p">,</span> <span class="mf">100.0</span> <span class="o">*</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">/</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">numframes</span><span class="p">),</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;Histograming </span><span class="si">%6d</span><span class="s"> atoms in frame </span><span class="si">%5d</span><span class="s">/</span><span class="si">%d</span><span class="s">  [</span><span class="si">%5.1f%%</span><span class="s">]</span><span class="se">\r</span><span class="s">&quot;</span> <span class="o">%</span> \
+              <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">coord</span><span class="p">),</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">numframes</span><span class="p">,</span> <span class="mf">100.0</span> <span class="o">*</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">/</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">numframes</span><span class="p">),)</span>
         <span class="n">coord</span> <span class="o">=</span> <span class="n">current_coordinates</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">coord</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">continue</span>
         <span class="n">h</span><span class="p">[:],</span> <span class="n">edges</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">histogramdd</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="n">arange</span><span class="p">,</span> <span class="n">normed</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
         <span class="n">grid</span> <span class="o">+=</span> <span class="n">h</span>  <span class="c"># accumulate average histogram</span>
-    <span class="k">print</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">)</span>
     <span class="n">numframes</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">numframes</span> <span class="o">/</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">skip</span>
     <span class="n">grid</span> <span class="o">/=</span> <span class="nb">float</span><span class="p">(</span><span class="n">numframes</span><span class="p">)</span>
 
@@ -891,8 +895,8 @@
         <span class="k">for</span> <span class="n">iwat</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">])):</span>  <span class="c"># super-ugly loop</span>
             <span class="n">p</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">wp</span><span class="p">[</span><span class="n">iwat</span><span class="p">]</span> <span class="k">for</span> <span class="n">wp</span> <span class="ow">in</span> <span class="n">pos</span><span class="p">])</span>
             <span class="n">g</span> <span class="o">+=</span> <span class="n">grid</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">fromfunction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_gaussian</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">int</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="n">sigma</span><span class="p">)</span>
-            <span class="k">print</span> <span class="s">&quot;Smearing out atom position </span><span class="si">%4d</span><span class="s">/</span><span class="si">%5d</span><span class="s"> with RMSF </span><span class="si">%4.2f</span><span class="s"> A</span><span class="se">\r</span><span class="s">&quot;</span> <span class="o">%</span> \
-                  <span class="p">(</span><span class="n">iwat</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">sigma</span><span class="p">),</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&quot;Smearing out atom position </span><span class="si">%4d</span><span class="s">/</span><span class="si">%5d</span><span class="s"> with RMSF </span><span class="si">%4.2f</span><span class="s"> A</span><span class="se">\r</span><span class="s">&quot;</span> <span class="o">%</span> \
+                  <span class="p">(</span><span class="n">iwat</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">sigma</span><span class="p">),)</span>
         <span class="k">return</span> <span class="n">g</span>
 
     <span class="k">def</span> <span class="nf">_smear_rmsf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">rmsf</span><span class="p">):</span>
@@ -905,8 +909,8 @@
                 <span class="k">continue</span>
             <span class="n">g</span> <span class="o">+=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">fromfunction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_gaussian_cartesian</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">int</span><span class="p">,</span>
                                     <span class="n">c</span><span class="o">=</span><span class="n">coord</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="n">rmsf</span><span class="p">[</span><span class="n">iwat</span><span class="p">])</span>
-            <span class="k">print</span> <span class="s">&quot;Smearing out atom position </span><span class="si">%4d</span><span class="s">/</span><span class="si">%5d</span><span class="s"> with RMSF </span><span class="si">%4.2f</span><span class="s"> A</span><span class="se">\r</span><span class="s">&quot;</span> <span class="o">%</span> \
-                  <span class="p">(</span><span class="n">iwat</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">rmsf</span><span class="p">[</span><span class="n">iwat</span><span class="p">]),</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&quot;Smearing out atom position </span><span class="si">%4d</span><span class="s">/</span><span class="si">%5d</span><span class="s"> with RMSF </span><span class="si">%4.2f</span><span class="s"> A</span><span class="se">\r</span><span class="s">&quot;</span> <span class="o">%</span> \
+                  <span class="p">(</span><span class="n">iwat</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">rmsf</span><span class="p">[</span><span class="n">iwat</span><span class="p">]),)</span>
         <span class="k">return</span> <span class="n">g</span>
 
     <span class="k">def</span> <span class="nf">_gaussian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">sigma</span><span class="p">):</span>
@@ -952,7 +956,7 @@
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
-    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
+    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Zhuyi Xue, Carlos Yáñez S.,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

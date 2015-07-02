@@ -1099,7 +1099,12 @@
         <span class="n">n</span> <span class="o">=</span> <span class="mf">0.0</span>
         <span class="n">sumDeltaP</span> <span class="o">=</span> <span class="mf">0.0</span>
         <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">totalFrames</span><span class="o">-</span><span class="n">wint</span><span class="p">):</span>
-            <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getOneDeltaPoint</span><span class="p">(</span><span class="n">selection1</span><span class="p">,</span><span class="n">totalFrames</span> <span class="p">,</span><span class="n">frame</span><span class="p">,</span> <span class="n">wint</span><span class="p">)</span>
+            <span class="c">#This &quot;try&quot; is to avoid a division by zero when there is no particles in time t0,</span>
+            <span class="c">#this happens in very small selection regions.</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getOneDeltaPoint</span><span class="p">(</span><span class="n">selection1</span><span class="p">,</span><span class="n">totalFrames</span> <span class="p">,</span><span class="n">frame</span><span class="p">,</span> <span class="n">wint</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ZeroDivisionError</span><span class="p">:</span>
+                <span class="k">continue</span>
             <span class="n">sumDeltaP</span> <span class="o">+=</span> <span class="n">a</span>
             <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
 
@@ -1173,7 +1178,7 @@
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
-    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
+    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Zhuyi Xue, Carlos Yáñez S.,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

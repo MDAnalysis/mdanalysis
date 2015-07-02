@@ -117,7 +117,7 @@
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">sin</span><span class="p">,</span> <span class="n">cos</span><span class="p">,</span> <span class="n">sqrt</span>
 
 <span class="kn">import</span> <span class="nn">MDAnalysis.coordinates</span>
-<span class="kn">import</span> <span class="nn">MDAnalysis.core.util</span>
+<span class="kn">import</span> <span class="nn">MDAnalysis.lib.util</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">rad2deg</span><span class="p">,</span> <span class="n">deg2rad</span>  <span class="c"># numpy 1.3+</span>
@@ -305,7 +305,7 @@
 <span class="sd">    If *format* is supplied then it overrides the auto detection.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">format</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">isstream</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">lib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">isstream</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
             <span class="c"># perhaps StringIO or open stream</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">format</span> <span class="o">=</span> <span class="n">format_from_filename_extension</span><span class="p">(</span><span class="n">filename</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
@@ -318,11 +318,11 @@
             <span class="c"># complicated is left for the ambitious.</span>
             <span class="c"># Note: at the moment the upper-case extension *is* the format specifier</span>
             <span class="c"># and list of filenames is handled by ChainReader</span>
-            <span class="n">format</span> <span class="o">=</span> <span class="n">format_from_filename_extension</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">iterable</span><span class="p">(</span>
+            <span class="n">format</span> <span class="o">=</span> <span class="n">format_from_filename_extension</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">lib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">iterable</span><span class="p">(</span>
                 <span class="n">filename</span><span class="p">)</span> <span class="k">else</span> <span class="s">&#39;CHAIN&#39;</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="c"># format was set; but a list of filenames is always handled by ChainReader</span>
-        <span class="n">format</span> <span class="o">=</span> <span class="n">format</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">iterable</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">else</span> <span class="s">&#39;CHAIN&#39;</span>
+        <span class="n">format</span> <span class="o">=</span> <span class="n">format</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">lib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">iterable</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">else</span> <span class="s">&#39;CHAIN&#39;</span>
 
     <span class="n">format</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">format</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
 
@@ -485,7 +485,7 @@
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
-    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
+    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Zhuyi Xue, Carlos Yáñez S.,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

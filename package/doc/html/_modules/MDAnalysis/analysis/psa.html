@@ -91,7 +91,7 @@
 <span class="c"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c">#</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">r&quot;&quot;&quot;</span>
 <span class="sd">Calculating path similarity --- :mod:`MDAnalysis.analysis.psa`</span>
 <span class="sd">==========================================================================</span>
 
@@ -236,6 +236,18 @@
 
 <span class="sd">      string, name of file to store calculated distance matrix (:attr:`PSA.D`)</span>
 
+
+<span class="sd">.. Markup definitions</span>
+<span class="sd">.. ------------------</span>
+<span class="sd">..</span>
+<span class="sd">.. |3Dp| replace:: :math:`N_p \times N \times 3`</span>
+<span class="sd">.. |2Dp| replace:: :math:`N_p \times (3N)`</span>
+<span class="sd">.. |3Dq| replace:: :math:`N_q \times N \times 3`</span>
+<span class="sd">.. |2Dq| replace:: :math:`N_q \times (3N)`</span>
+<span class="sd">.. |3D| replace:: :math:`N_p\times N\times 3`</span>
+<span class="sd">.. |2D| replace:: :math:`N_p\times 3N`</span>
+<span class="sd">.. |Np| replace:: :math:`N_p`</span>
+
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span>
@@ -274,11 +286,6 @@
 </div>
 <div class="viewcode-block" id="hausdorff"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.hausdorff">[docs]</a><span class="k">def</span> <span class="nf">hausdorff</span><span class="p">(</span><span class="n">P</span><span class="p">,</span><span class="n">Q</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">r&quot;&quot;&quot;Calculate the Hausdorff distance between two paths.</span>
-
-<span class="sd">    .. |3Dp| replace:: :math:`N_p \times N \times 3`</span>
-<span class="sd">    .. |2Dp| replace:: :math:`N_p \times (3N)`</span>
-<span class="sd">    .. |3Dq| replace:: :math:`N_q \times N \times 3`</span>
-<span class="sd">    .. |2Dq| replace:: :math:`N_q \times (3N)`</span>
 
 <span class="sd">    *P* (*Q*) is a :class:`numpy.ndarray` of :math:`N_p` (:math:`N_q`) time</span>
 <span class="sd">    steps, :math:`N` atoms, and :math:`3N` coordinates (e.g.,</span>
@@ -324,11 +331,6 @@
 </div>
 <div class="viewcode-block" id="discrete_frechet"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.discrete_frechet">[docs]</a><span class="k">def</span> <span class="nf">discrete_frechet</span><span class="p">(</span><span class="n">P</span><span class="p">,</span><span class="n">Q</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">r&quot;&quot;&quot;Calculate the discrete Frechet distance between two paths.</span>
-
-<span class="sd">    .. |3Dp| replace:: :math:`N_p\times N\times 3`</span>
-<span class="sd">    .. |2Dp| replace:: :math:`N_p\times(3N)`</span>
-<span class="sd">    .. |3Dq| replace:: :math:`N_q\times N\times 3`</span>
-<span class="sd">    .. |2Dq| replace:: :math:`N_q\times(3N)`</span>
 
 <span class="sd">    *P* (*Q*) is a :class:`numpy.ndarray` of :math:`N_p` (:math:`N_q`) time</span>
 <span class="sd">    steps, :math:`N` atoms, and :math:`3N` coordinates (e.g.,</span>
@@ -481,6 +483,10 @@
 <span class="sd">          *path_select*</span>
 <span class="sd">             atom selection composing coordinates of (fitted) path; if ``None``</span>
 <span class="sd">             then *path_select* is set to *ref_select* [``None``]</span>
+
+<span class="sd">        .. _ClustalW: http://www.clustal.org/</span>
+<span class="sd">        .. _STAMP: http://www.compbio.dundee.ac.uk/manuals/stamp.4.2/</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">u_original</span> <span class="o">=</span> <span class="n">universe</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">u_reference</span> <span class="o">=</span> <span class="n">reference</span>
@@ -535,10 +541,6 @@
         <span class="sd">r&quot;&quot;&quot;Generates a coordinate time series from the fitted universe</span>
 <span class="sd">        trajectory.</span>
 
-<span class="sd">        .. |Np| replace:: :math:`N_p`</span>
-<span class="sd">        .. |3D| replace:: :math:`N_p\times N\times 3`</span>
-<span class="sd">        .. |2D| replace:: :math:`N_p\times 3N`</span>
-
 <span class="sd">        Given a selection of *N* atoms from *select*, the atomic positions for</span>
 <span class="sd">        each frame in the fitted universe (:attr:`Path.u_fitted`) trajectory</span>
 <span class="sd">        (with |Np| total frames) are appended sequentially to form a 3D or 2D</span>
@@ -588,9 +590,6 @@
             <span class="n">flat</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="sd">r&quot;&quot;&quot;Generate a path from a trajectory and reference structure, aligning</span>
 <span class="sd">        to a reference structure if specified.</span>
-
-<span class="sd">        .. |3D| replace:: :math:`N_p\times N\times 3`</span>
-<span class="sd">        .. |2D| replace:: :math:`N_p\times 3N`</span>
 
 <span class="sd">        This is a convenience method to generate a fitted trajectory from an</span>
 <span class="sd">        inputted universe (:attr:`Path.u_original`) and reference structure</span>
@@ -760,9 +759,6 @@
 
 <div class="viewcode-block" id="PSA.generate_paths"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.PSA.generate_paths">[docs]</a>    <span class="k">def</span> <span class="nf">generate_paths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">r&quot;&quot;&quot;Generate paths, aligning each to reference structure if necessary.</span>
-
-<span class="sd">        .. |3D| replace:: :math:`N_p\times N\times 3`</span>
-<span class="sd">        .. |2D| replace:: :math:`N_p\times 3N`</span>
 
 <span class="sd">        :Keywords:</span>
 <span class="sd">          *align*</span>
@@ -1119,7 +1115,7 @@
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
-    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
+    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Zhuyi Xue, Carlos Yáñez S.,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

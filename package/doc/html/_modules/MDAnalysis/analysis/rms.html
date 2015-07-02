@@ -100,9 +100,11 @@
 
 <span class="sd">.. versionadded:: 0.7.7</span>
 <span class="sd">.. versionchanged:: 0.11.0</span>
+<span class="sd">   Added :class:`RMSF` analysis.</span>
 
 <span class="sd">The module contains code to analyze root mean square quantities such</span>
-<span class="sd">as the RMSD or RMSF.</span>
+<span class="sd">as the coordinat root mean square distance (:class:`RMSD`) or the</span>
+<span class="sd">per-residue root mean square fluctuations (:class:`RMSF`).</span>
 
 <span class="sd">This module uses the fast QCP algorithm [Theobald2005]_ to calculate</span>
 <span class="sd">the root mean square distance (RMSD) between two coordinate sets (as</span>
@@ -204,11 +206,8 @@
 <span class="kn">import</span> <span class="nn">MDAnalysis</span>
 <span class="kn">import</span> <span class="nn">MDAnalysis.core.qcprot</span> <span class="kn">as</span> <span class="nn">qcp</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">SelectionError</span><span class="p">,</span> <span class="n">NoDataError</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.core.log</span> <span class="kn">import</span> <span class="n">ProgressMeter</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.core.util</span> <span class="kn">import</span> <span class="n">asiterable</span>
-
-<span class="c"># import os.path #unused</span>
-
+<span class="kn">from</span> <span class="nn">MDAnalysis.lib.log</span> <span class="kn">import</span> <span class="n">ProgressMeter</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.lib.util</span> <span class="kn">import</span> <span class="n">asiterable</span>
 
 <span class="kn">import</span> <span class="nn">logging</span>
 
@@ -584,11 +583,11 @@
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atomgroup</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Calculate RMSF of given atoms across a trajectory.</span>
-<span class="sd">    </span>
+
 <span class="sd">        :Arguments:</span>
 <span class="sd">            *atomgroup*</span>
 <span class="sd">                AtomGroup to obtain RMSF for</span>
-<span class="sd">   </span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">atomgroup</span> <span class="o">=</span> <span class="n">atomgroup</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_rmsf</span> <span class="o">=</span> <span class="bp">None</span>
@@ -598,11 +597,11 @@
 
 <span class="sd">        This method implements an algorithm for computing sums of squares while</span>
 <span class="sd">        avoiding overflows and underflows; please reference:</span>
-<span class="sd">    </span>
-<span class="sd">        .. [Welford1962] B. P. Welford (1962)</span>
-<span class="sd">           &quot;Note on a Method for Calculating Corrected Sums of Squares and </span>
-<span class="sd">                Products.&quot; Technometrics  4(3):419-420.</span>
-<span class="sd">    </span>
+
+<span class="sd">        .. [Welford1962] B. P. Welford (1962). &quot;Note on a Method for</span>
+<span class="sd">           Calculating Corrected Sums of Squares and Products.&quot;  Technometrics</span>
+<span class="sd">           4(3):419-420.</span>
+
 <span class="sd">        :Keywords:</span>
 <span class="sd">            *start*</span>
 <span class="sd">                starting frame [0]</span>
@@ -614,42 +613,42 @@
 <span class="sd">                number of frames to iterate through between updates to progress</span>
 <span class="sd">                output; ``None`` for no updates [10]</span>
 <span class="sd">            *quiet*</span>
-<span class="sd">                if ``True``, supress all output (implies *progout*=``None``)</span>
+<span class="sd">                if ``True``, suppress all output (implies *progout* = ``None``)</span>
 <span class="sd">                [``False``]</span>
-<span class="sd">    </span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">sumsquares</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">numberOfAtoms</span><span class="p">(),</span> <span class="mi">3</span><span class="p">))</span>
         <span class="n">means</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sumsquares</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">quiet</span><span class="p">:</span>
             <span class="n">progout</span> <span class="o">=</span> <span class="bp">None</span>
-    
+
         <span class="c"># set up progress output</span>
         <span class="k">if</span> <span class="n">progout</span><span class="p">:</span>
-            <span class="n">percentage</span> <span class="o">=</span> <span class="n">ProgressMeter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">numframes</span><span class="p">,</span> 
+            <span class="n">percentage</span> <span class="o">=</span> <span class="n">ProgressMeter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">numframes</span><span class="p">,</span>
                                        <span class="n">interval</span><span class="o">=</span><span class="n">progout</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">percentage</span> <span class="o">=</span> <span class="n">ProgressMeter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">numframes</span><span class="p">,</span> 
+            <span class="n">percentage</span> <span class="o">=</span> <span class="n">ProgressMeter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">numframes</span><span class="p">,</span>
                                        <span class="n">quiet</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-    
+
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">ts</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">:</span><span class="n">step</span><span class="p">]):</span>
             <span class="n">sumsquares</span> <span class="o">+=</span> <span class="p">(</span><span class="n">k</span><span class="o">/</span><span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">positions</span> <span class="o">-</span> <span class="n">means</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
             <span class="n">means</span> <span class="o">=</span> <span class="p">(</span><span class="n">k</span> <span class="o">*</span> <span class="n">means</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">positions</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-    
+
             <span class="n">percentage</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
-    
+
         <span class="n">rmsf</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">sumsquares</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
-    
+
         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">rmsf</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Some RMSF values negative; overflow &quot;</span> <span class="o">+</span>
                              <span class="s">&quot;or underflow occurred&quot;</span><span class="p">)</span>
-    
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_rmsf</span> <span class="o">=</span> <span class="n">rmsf</span>
 </div>
     <span class="nd">@property</span>
 <div class="viewcode-block" id="RMSF.rmsf"><a class="viewcode-back" href="../../../documentation_pages/analysis/rms.html#MDAnalysis.analysis.rms.RMSF.rmsf">[docs]</a>    <span class="k">def</span> <span class="nf">rmsf</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;RMSF data; only available after using :meth:`RMSF.run`</span>
-<span class="sd">    </span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rmsf</span>
 </pre></div></div></div>
@@ -680,7 +679,7 @@
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
-    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
+    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Zhuyi Xue, Carlos Yáñez S.,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

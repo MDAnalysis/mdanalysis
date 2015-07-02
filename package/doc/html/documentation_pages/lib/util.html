@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>7.8. Helper functions — MDAnalysis.core.util &mdash; MDAnalysis 0.11.0-dev documentation</title>
+    <title>9.5. Helper functions — MDAnalysis.lib.util &mdash; MDAnalysis 0.11.0-dev documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -31,9 +31,9 @@
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
     <link rel="top" title="MDAnalysis 0.11.0-dev documentation" href="../../index.html" />
-    <link rel="up" title="7. Core modules" href="../core_modules.html" />
-    <link rel="next" title="7.9. Setting up logging — MDAnalysis.core.log" href="log.html" />
-    <link rel="prev" title="7.7. Constants and unit conversion — MDAnalysis.core.units" href="units.html" /> 
+    <link rel="up" title="9. MDAnalysis library" href="../lib_modules.html" />
+    <link rel="next" title="10. Constants and unit conversion — MDAnalysis.units" href="../units.html" />
+    <link rel="prev" title="9.4. Homogeneous Transformation Matrices and Quaternions — MDAnalysis.lib.transformations" href="transformations.html" /> 
   </head>
   <body>
     <div class="related">
@@ -46,13 +46,13 @@
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="log.html" title="7.9. Setting up logging — MDAnalysis.core.log"
+          <a href="../units.html" title="10. Constants and unit conversion — MDAnalysis.units"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="units.html" title="7.7. Constants and unit conversion — MDAnalysis.core.units"
+          <a href="transformations.html" title="9.4. Homogeneous Transformation Matrices and Quaternions — MDAnalysis.lib.transformations"
              accesskey="P">previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
-          <li><a href="../core_modules.html" accesskey="U">7. Core modules</a> &raquo;</li> 
+          <li><a href="../lib_modules.html" accesskey="U">9. MDAnalysis library</a> &raquo;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar">
@@ -62,28 +62,28 @@
             </a></p>
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">7.8. Helper functions &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.util</span></tt></a><ul>
-<li><a class="reference internal" href="#files-and-directories">7.8.1. Files and directories</a></li>
-<li><a class="reference internal" href="#streams">7.8.2. Streams</a></li>
-<li><a class="reference internal" href="#containers-and-lists">7.8.3. Containers and lists</a></li>
-<li><a class="reference internal" href="#file-parsing">7.8.4. File parsing</a></li>
-<li><a class="reference internal" href="#data-manipulation-and-handling">7.8.5. Data manipulation and handling</a></li>
-<li><a class="reference internal" href="#strings">7.8.6. Strings</a></li>
-<li><a class="reference internal" href="#mathematics-and-geometry">7.8.7. Mathematics and Geometry</a></li>
-<li><a class="reference internal" href="#class-decorators">7.8.8. Class decorators</a></li>
+<li><a class="reference internal" href="#">9.5. Helper functions &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.lib.util</span></tt></a><ul>
+<li><a class="reference internal" href="#files-and-directories">9.5.1. Files and directories</a></li>
+<li><a class="reference internal" href="#streams">9.5.2. Streams</a></li>
+<li><a class="reference internal" href="#containers-and-lists">9.5.3. Containers and lists</a></li>
+<li><a class="reference internal" href="#file-parsing">9.5.4. File parsing</a></li>
+<li><a class="reference internal" href="#data-manipulation-and-handling">9.5.5. Data manipulation and handling</a></li>
+<li><a class="reference internal" href="#strings">9.5.6. Strings</a></li>
+<li><a class="reference internal" href="#mathematics-and-geometry">9.5.7. Mathematics and Geometry</a></li>
+<li><a class="reference internal" href="#class-decorators">9.5.8. Class decorators</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="units.html"
-                        title="previous chapter">7.7. Constants and unit conversion &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.units</span></tt></a></p>
+  <p class="topless"><a href="transformations.html"
+                        title="previous chapter">9.4. Homogeneous Transformation Matrices and Quaternions &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.lib.transformations</span></tt></a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="log.html"
-                        title="next chapter">7.9. Setting up logging &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.core.log</span></tt></a></p>
+  <p class="topless"><a href="../units.html"
+                        title="next chapter">10. Constants and unit conversion &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.units</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
-    <li><a href="../../_sources/documentation_pages/core/util.txt"
+    <li><a href="../../_sources/documentation_pages/lib/util.txt"
            rel="nofollow">Show Source</a></li>
   </ul>
 <div id="searchbox" style="display: none">
@@ -107,14 +107,14 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <span class="target" id="module-MDAnalysis.core.util"></span><div class="section" id="helper-functions-mdanalysis-core-util">
-<h1>7.8. Helper functions &#8212; <a class="reference internal" href="#module-MDAnalysis.core.util" title="MDAnalysis.core.util"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.core.util</span></tt></a><a class="headerlink" href="#helper-functions-mdanalysis-core-util" title="Permalink to this headline">¶</a></h1>
+  <span class="target" id="module-MDAnalysis.lib.util"></span><div class="section" id="helper-functions-mdanalysis-lib-util">
+<h1>9.5. Helper functions &#8212; <a class="reference internal" href="#module-MDAnalysis.lib.util" title="MDAnalysis.lib.util"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.lib.util</span></tt></a><a class="headerlink" href="#helper-functions-mdanalysis-lib-util" title="Permalink to this headline">¶</a></h1>
 <p>Small helper functions that don&#8217;t fit anywhere else.</p>
 <div class="section" id="files-and-directories">
-<h2>7.8.1. Files and directories<a class="headerlink" href="#files-and-directories" title="Permalink to this headline">¶</a></h2>
+<h2>9.5.1. Files and directories<a class="headerlink" href="#files-and-directories" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="MDAnalysis.core.util.filename">
-<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">filename</tt><big>(</big><em>name</em>, <em>ext=None</em>, <em>keep=False</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#filename"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.filename" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.lib.util.filename">
+<tt class="descclassname">MDAnalysis.lib.util.</tt><tt class="descname">filename</tt><big>(</big><em>name</em>, <em>ext=None</em>, <em>keep=False</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#filename"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.filename" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a new name that has suffix attached; replaces other extensions.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -123,7 +123,7 @@
 <tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>name</em></dt>
 <dd><p class="first last">filename; extension is replaced unless keep=True;
-<em>name</em> can also be a <a class="reference internal" href="#MDAnalysis.core.util.NamedStream" title="MDAnalysis.core.util.NamedStream"><tt class="xref py py-class docutils literal"><span class="pre">NamedStream</span></tt></a> (and its
+<em>name</em> can also be a <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><tt class="xref py py-class docutils literal"><span class="pre">NamedStream</span></tt></a> (and its
 <tt class="xref py py-attr docutils literal"><span class="pre">NamedStream.name</span></tt> will be changed accordingly)</p>
 </dd>
 <dt><em>ext</em></dt>
@@ -141,21 +141,21 @@
 </tbody>
 </table>
 <p class="versionchanged">
-<span class="versionmodified">Changed in version 0.9.0: </span>Also permits <a class="reference internal" href="#MDAnalysis.core.util.NamedStream" title="MDAnalysis.core.util.NamedStream"><tt class="xref py py-class docutils literal"><span class="pre">NamedStream</span></tt></a> to pass through.</p>
+<span class="versionmodified">Changed in version 0.9.0: </span>Also permits <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><tt class="xref py py-class docutils literal"><span class="pre">NamedStream</span></tt></a> to pass through.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="MDAnalysis.core.util.openany">
-<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">openany</tt><big>(</big><em>directory</em><span class="optional">[</span>, <em>mode='r'</em><span class="optional">]</span><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#openany"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.openany" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.lib.util.openany">
+<tt class="descclassname">MDAnalysis.lib.util.</tt><tt class="descname">openany</tt><big>(</big><em>directory</em><span class="optional">[</span>, <em>mode='r'</em><span class="optional">]</span><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#openany"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.openany" title="Permalink to this definition">¶</a></dt>
 <dd><p>Context manager to open a compressed (bzip2, gzip) or plain file
-(uses <a class="reference internal" href="#MDAnalysis.core.util.anyopen" title="MDAnalysis.core.util.anyopen"><tt class="xref py py-func docutils literal"><span class="pre">anyopen()</span></tt></a>).</p>
+(uses <a class="reference internal" href="#MDAnalysis.lib.util.anyopen" title="MDAnalysis.lib.util.anyopen"><tt class="xref py py-func docutils literal"><span class="pre">anyopen()</span></tt></a>).</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="MDAnalysis.core.util.anyopen">
-<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">anyopen</tt><big>(</big><em>datasource</em>, <em>mode='r'</em>, <em>reset=True</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#anyopen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.anyopen" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.lib.util.anyopen">
+<tt class="descclassname">MDAnalysis.lib.util.</tt><tt class="descname">anyopen</tt><big>(</big><em>datasource</em>, <em>mode='r'</em>, <em>reset=True</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#anyopen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.anyopen" title="Permalink to this definition">¶</a></dt>
 <dd><p>Open datasource (gzipped, bzipped, uncompressed) and return a stream.</p>
-<p><em>datasource</em> can be a filename or a stream (see <a class="reference internal" href="#MDAnalysis.core.util.isstream" title="MDAnalysis.core.util.isstream"><tt class="xref py py-func docutils literal"><span class="pre">isstream()</span></tt></a>). By
+<p><em>datasource</em> can be a filename or a stream (see <a class="reference internal" href="#MDAnalysis.lib.util.isstream" title="MDAnalysis.lib.util.isstream"><tt class="xref py py-func docutils literal"><span class="pre">isstream()</span></tt></a>). By
 default, a stream is reset to its start if possible (via
 <a class="reference external" href="http://docs.python.org/library/io.html#io.IOBase.seek" title="(in Python v2.7)"><tt class="xref py py-meth docutils literal"><span class="pre">seek()</span></tt></a> or <tt class="xref py py-meth docutils literal"><span class="pre">reset()</span></tt>).</p>
 <p>If possible, the attribute <tt class="docutils literal"><span class="pre">stream.name</span></tt> is set to the filename or
@@ -186,7 +186,7 @@ only the first letter is looked at) [<tt class="docutils literal"><span class="p
 </table>
 <div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#MDAnalysis.core.util.openany" title="MDAnalysis.core.util.openany"><tt class="xref py py-func docutils literal"><span class="pre">openany()</span></tt></a> to be used with the <a class="reference external" href="http://docs.python.org/reference/compound_stmts.html#with" title="(in Python v2.7)"><tt class="xref std std-keyword docutils literal"><span class="pre">with</span></tt></a> statement.</p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.lib.util.openany" title="MDAnalysis.lib.util.openany"><tt class="xref py py-func docutils literal"><span class="pre">openany()</span></tt></a> to be used with the <a class="reference external" href="http://docs.python.org/reference/compound_stmts.html#with" title="(in Python v2.7)"><tt class="xref std std-keyword docutils literal"><span class="pre">with</span></tt></a> statement.</p>
 </div>
 <p class="versionchanged">
 <span class="versionmodified">Changed in version 0.9.0: </span>Only returns the <tt class="docutils literal"><span class="pre">stream</span></tt> and tries to set <tt class="docutils literal"><span class="pre">stream.name</span> <span class="pre">=</span> <span class="pre">filename</span></tt> instead of the previous
@@ -194,21 +194,21 @@ behavior to return a tuple <tt class="docutils literal"><span class="pre">(strea
 </dd></dl>
 
 <dl class="function">
-<dt id="MDAnalysis.core.util.greedy_splitext">
-<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">greedy_splitext</tt><big>(</big><em>p</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#greedy_splitext"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.greedy_splitext" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.lib.util.greedy_splitext">
+<tt class="descclassname">MDAnalysis.lib.util.</tt><tt class="descname">greedy_splitext</tt><big>(</big><em>p</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#greedy_splitext"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.greedy_splitext" title="Permalink to this definition">¶</a></dt>
 <dd><p>Split extension in path <em>p</em> at the left-most separator.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="MDAnalysis.core.util.which">
-<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">which</tt><big>(</big><em>program</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#which"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.which" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.lib.util.which">
+<tt class="descclassname">MDAnalysis.lib.util.</tt><tt class="descname">which</tt><big>(</big><em>program</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#which"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.which" title="Permalink to this definition">¶</a></dt>
 <dd><p>Determine full path of executable <em>program</em> on <span class="target" id="index-0"></span><a class="reference external" href="http://matplotlib.org/faq/environment_variables_faq.html#envvar-PATH" title="(in Matplotlib v1.4.3)"><tt class="xref std std-envvar docutils literal"><span class="pre">PATH</span></tt></a>.</p>
 <p>(Jay at <a class="reference external" href="http://stackoverflow.com/questions/377017/test-if-executable-exists-in-python">http://stackoverflow.com/questions/377017/test-if-executable-exists-in-python</a>)</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="MDAnalysis.core.util.realpath">
-<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">realpath</tt><big>(</big><em>*args</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#realpath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.realpath" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.lib.util.realpath">
+<tt class="descclassname">MDAnalysis.lib.util.</tt><tt class="descname">realpath</tt><big>(</big><em>*args</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#realpath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.realpath" title="Permalink to this definition">¶</a></dt>
 <dd><p>Join all args and return the real path, rooted at /.</p>
 <p>Expands &#8216;~&#8217;, &#8216;~user&#8217;, and environment variables such as :envvar`$HOME`.</p>
 <p>Returns <tt class="docutils literal"><span class="pre">None</span></tt> if any of the args is <tt class="docutils literal"><span class="pre">None</span></tt>.</p>
@@ -216,19 +216,19 @@ behavior to return a tuple <tt class="docutils literal"><span class="pre">(strea
 
 </div>
 <div class="section" id="streams">
-<h2>7.8.2. Streams<a class="headerlink" href="#streams" title="Permalink to this headline">¶</a></h2>
+<h2>9.5.2. Streams<a class="headerlink" href="#streams" title="Permalink to this headline">¶</a></h2>
 <p>Many of the readers are not restricted to just reading files. They can
 also use gzip-compressed or bzip2-compressed files (through the
-internal use of <a class="reference internal" href="#MDAnalysis.core.util.openany" title="MDAnalysis.core.util.openany"><tt class="xref py py-func docutils literal"><span class="pre">openany()</span></tt></a>). It is also possible to provide more
+internal use of <a class="reference internal" href="#MDAnalysis.lib.util.openany" title="MDAnalysis.lib.util.openany"><tt class="xref py py-func docutils literal"><span class="pre">openany()</span></tt></a>). It is also possible to provide more
 general streams as inputs, such as a <a class="reference external" href="http://docs.python.org/library/stringio.html#cStringIO.StringIO" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">cStringIO.StringIO()</span></tt></a>
 instances (essentially, a memory buffer) by wrapping these instances
-into a <a class="reference internal" href="#MDAnalysis.core.util.NamedStream" title="MDAnalysis.core.util.NamedStream"><tt class="xref py py-class docutils literal"><span class="pre">NamedStream</span></tt></a>. This <a class="reference internal" href="#MDAnalysis.core.util.NamedStream" title="MDAnalysis.core.util.NamedStream"><tt class="xref py py-class docutils literal"><span class="pre">NamedStream</span></tt></a> can then be
+into a <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><tt class="xref py py-class docutils literal"><span class="pre">NamedStream</span></tt></a>. This <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><tt class="xref py py-class docutils literal"><span class="pre">NamedStream</span></tt></a> can then be
 used in place of an ordinary file name (typically, with a
 class:<cite>~MDAnalysis.core.AtomGroup.Universe</cite> but it is also possible to
 <em>write</em> to such a stream using <tt class="xref py py-func docutils literal"><span class="pre">MDAnalysis.Writer()</span></tt>).</p>
 <p>In the following example, we use a PDB stored as a string <tt class="docutils literal"><span class="pre">pdb_s</span></tt>:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">MDAnalysis</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.core.util</span> <span class="kn">import</span> <span class="n">NamedStream</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.lib.util</span> <span class="kn">import</span> <span class="n">NamedStream</span>
 <span class="kn">import</span> <span class="nn">cStringIO</span>
 
 <span class="n">pdb_s</span> <span class="o">=</span> <span class="s">&quot;TITLE     Lonely Ion</span><span class="se">\n</span><span class="s">ATOM      1  NA  NA+     1      81.260  64.982  10.926  1.00  0.00</span><span class="se">\n</span><span class="s">&quot;</span>
@@ -240,10 +240,10 @@ class:<cite>~MDAnalysis.core.AtomGroup.Universe</cite> but it is also possible t
 </pre></div>
 </div>
 <p>It is important to provide a proper pseudo file name with the correct extension
-(&#8221;.pdb&#8221;) to <a class="reference internal" href="#MDAnalysis.core.util.NamedStream" title="MDAnalysis.core.util.NamedStream"><tt class="xref py py-class docutils literal"><span class="pre">NamedStream</span></tt></a> because the file type recognition uses the
+(&#8221;.pdb&#8221;) to <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><tt class="xref py py-class docutils literal"><span class="pre">NamedStream</span></tt></a> because the file type recognition uses the
 extension of the file name to determine the file format or alternatively
 provide the <tt class="docutils literal"><span class="pre">format=&quot;pdb&quot;</span></tt> keyword argument to the
-<a class="reference internal" href="AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a>.</p>
+<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a>.</p>
 <p>The use of streams becomes more interesting when MDAnalysis is used as glue
 between different analysis packages and when one can arrange things so that
 intermediate frames (typically in the PDB format) are not written to disk but
@@ -254,17 +254,17 @@ remain in memory via e.g. <a class="reference external" href="http://docs.python
 and therefore will often not work as an input. But try it...</p>
 </div>
 <dl class="class">
-<dt id="MDAnalysis.core.util.NamedStream">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">NamedStream</tt><big>(</big><em>stream</em>, <em>filename</em>, <em>reset=True</em>, <em>close=False</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#NamedStream"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.NamedStream" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.lib.util.NamedStream">
+<em class="property">class </em><tt class="descclassname">MDAnalysis.lib.util.</tt><tt class="descname">NamedStream</tt><big>(</big><em>stream</em>, <em>filename</em>, <em>reset=True</em>, <em>close=False</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#NamedStream"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream" title="Permalink to this definition">¶</a></dt>
 <dd><p>Stream that also provides a (fake) name.</p>
 <p>By wrapping a stream <em>stream</em> in this class, it can be passed to
 code that uses inspection of the filename to make decisions. For
 instance. <a class="reference external" href="http://docs.python.org/library/os.path.html#os.path.split" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">os.path.split()</span></tt></a> will work correctly on a
-<a class="reference internal" href="#MDAnalysis.core.util.NamedStream" title="MDAnalysis.core.util.NamedStream"><tt class="xref py py-class docutils literal"><span class="pre">NamedStream</span></tt></a>.</p>
+<a class="reference internal" href="#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><tt class="xref py py-class docutils literal"><span class="pre">NamedStream</span></tt></a>.</p>
 <p>The class can be used as a context manager.</p>
-<p><a class="reference internal" href="#MDAnalysis.core.util.NamedStream" title="MDAnalysis.core.util.NamedStream"><tt class="xref py py-class docutils literal"><span class="pre">NamedStream</span></tt></a> is derived from <a class="reference external" href="http://docs.python.org/library/io.html#io.IOBase" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">io.IOBase</span></tt></a> (to indicate that
+<p><a class="reference internal" href="#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><tt class="xref py py-class docutils literal"><span class="pre">NamedStream</span></tt></a> is derived from <a class="reference external" href="http://docs.python.org/library/io.html#io.IOBase" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">io.IOBase</span></tt></a> (to indicate that
 it is a stream) <em>and</em> <tt class="xref py py-class docutils literal"><span class="pre">basestring</span></tt> (that one can use
-<a class="reference internal" href="#MDAnalysis.core.util.iterable" title="MDAnalysis.core.util.iterable"><tt class="xref py py-func docutils literal"><span class="pre">iterable()</span></tt></a> in the same way as for strings).</p>
+<a class="reference internal" href="#MDAnalysis.lib.util.iterable" title="MDAnalysis.lib.util.iterable"><tt class="xref py py-func docutils literal"><span class="pre">iterable()</span></tt></a> in the same way as for strings).</p>
 <p class="rubric">Example</p>
 <p>Wrap a <a class="reference external" href="http://docs.python.org/library/stringio.html#cStringIO.StringIO" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">cStringIO.StringIO()</span></tt></a> instance to write to:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">cStringIO</span>
@@ -296,19 +296,19 @@ class should not be used.</p>
 </div>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
-<p class="last">By default, <a class="reference internal" href="#MDAnalysis.core.util.NamedStream.close" title="MDAnalysis.core.util.NamedStream.close"><tt class="xref py py-meth docutils literal"><span class="pre">NamedStream.close()</span></tt></a> will <strong>not close the
-stream</strong> but instead <a class="reference internal" href="#MDAnalysis.core.util.NamedStream.reset" title="MDAnalysis.core.util.NamedStream.reset"><tt class="xref py py-meth docutils literal"><span class="pre">reset()</span></tt></a> it to the
+<p class="last">By default, <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.close" title="MDAnalysis.lib.util.NamedStream.close"><tt class="xref py py-meth docutils literal"><span class="pre">NamedStream.close()</span></tt></a> will <strong>not close the
+stream</strong> but instead <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.reset" title="MDAnalysis.lib.util.NamedStream.reset"><tt class="xref py py-meth docutils literal"><span class="pre">reset()</span></tt></a> it to the
 beginning. <a class="footnote-reference" href="#namedstreamclose" id="id1">[1]</a> Provide the <tt class="docutils literal"><span class="pre">force=True</span></tt> keyword
-to <a class="reference internal" href="#MDAnalysis.core.util.NamedStream.close" title="MDAnalysis.core.util.NamedStream.close"><tt class="xref py py-meth docutils literal"><span class="pre">NamedStream.close()</span></tt></a> to always close the stream.</p>
+to <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.close" title="MDAnalysis.lib.util.NamedStream.close"><tt class="xref py py-meth docutils literal"><span class="pre">NamedStream.close()</span></tt></a> to always close the stream.</p>
 </div>
-<p>Initialize the <a class="reference internal" href="#MDAnalysis.core.util.NamedStream" title="MDAnalysis.core.util.NamedStream"><tt class="xref py py-class docutils literal"><span class="pre">NamedStream</span></tt></a> from a <em>stream</em> and give it a <em>name</em>.</p>
+<p>Initialize the <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><tt class="xref py py-class docutils literal"><span class="pre">NamedStream</span></tt></a> from a <em>stream</em> and give it a <em>name</em>.</p>
 <p>The constructor attempts to rewind the stream to the beginning unless
 the keyword <em>reset</em> is set to <tt class="docutils literal"><span class="pre">False</span></tt>. If rewinding fails, a
 <tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.StreamWarning</span></tt> is issued.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">By default, this stream will <em>not</em> be closed by <a class="reference external" href="http://docs.python.org/reference/compound_stmts.html#with" title="(in Python v2.7)"><tt class="xref std std-keyword docutils literal"><span class="pre">with</span></tt></a> and
-<a class="reference internal" href="#MDAnalysis.core.util.NamedStream.close" title="MDAnalysis.core.util.NamedStream.close"><tt class="xref py py-meth docutils literal"><span class="pre">close()</span></tt></a> (see there) unless the <em>close</em> keyword is set to
+<a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.close" title="MDAnalysis.lib.util.NamedStream.close"><tt class="xref py py-meth docutils literal"><span class="pre">close()</span></tt></a> (see there) unless the <em>close</em> keyword is set to
 <tt class="docutils literal"><span class="pre">True</span></tt>.</p>
 </div>
 <table class="docutils field-list" frame="void" rules="none">
@@ -327,12 +327,12 @@ the keyword <em>reset</em> is set to <tt class="docutils literal"><span class="p
 </tr>
 <tr class="field-even field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>reset</em></dt>
-<dd><p class="first last">start the stream from the beginning (either <a class="reference internal" href="#MDAnalysis.core.util.NamedStream.reset" title="MDAnalysis.core.util.NamedStream.reset"><tt class="xref py py-meth docutils literal"><span class="pre">reset()</span></tt></a> or <a class="reference internal" href="#MDAnalysis.core.util.NamedStream.seek" title="MDAnalysis.core.util.NamedStream.seek"><tt class="xref py py-meth docutils literal"><span class="pre">seek()</span></tt></a>)
+<dd><p class="first last">start the stream from the beginning (either <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.reset" title="MDAnalysis.lib.util.NamedStream.reset"><tt class="xref py py-meth docutils literal"><span class="pre">reset()</span></tt></a> or <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.seek" title="MDAnalysis.lib.util.NamedStream.seek"><tt class="xref py py-meth docutils literal"><span class="pre">seek()</span></tt></a>)
 when the class instance is constructed [<tt class="docutils literal"><span class="pre">True</span></tt>]</p>
 </dd>
 <dt><em>close</em></dt>
 <dd><p class="first last">close the stream when a <a class="reference external" href="http://docs.python.org/reference/compound_stmts.html#with" title="(in Python v2.7)"><tt class="xref std std-keyword docutils literal"><span class="pre">with</span></tt></a> block exits or when
-<a class="reference internal" href="#MDAnalysis.core.util.NamedStream.close" title="MDAnalysis.core.util.NamedStream.close"><tt class="xref py py-meth docutils literal"><span class="pre">close()</span></tt></a> is called; note that the default is <strong>not to close
+<a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.close" title="MDAnalysis.lib.util.NamedStream.close"><tt class="xref py py-meth docutils literal"><span class="pre">close()</span></tt></a> is called; note that the default is <strong>not to close
 the stream</strong> [<tt class="docutils literal"><span class="pre">False</span></tt>]</p>
 </dd>
 </dl>
@@ -343,11 +343,11 @@ the stream</strong> [<tt class="docutils literal"><span class="pre">False</span>
 <p class="versionadded">
 <span class="versionmodified">New in version 0.9.0.</span></p>
 <dl class="method">
-<dt id="MDAnalysis.core.util.NamedStream.close">
-<tt class="descname">close</tt><big>(</big><em>force=False</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#NamedStream.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.NamedStream.close" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.lib.util.NamedStream.close">
+<tt class="descname">close</tt><big>(</big><em>force=False</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#NamedStream.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream.close" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reset or close the stream.</p>
 <p>If <tt class="xref py py-attr docutils literal"><span class="pre">NamedStream.close_stream</span></tt> is set to <tt class="docutils literal"><span class="pre">False</span></tt> (the default)
-then this method will <em>not close the stream</em> and only <a class="reference internal" href="#MDAnalysis.core.util.NamedStream.reset" title="MDAnalysis.core.util.NamedStream.reset"><tt class="xref py py-meth docutils literal"><span class="pre">reset()</span></tt></a> it.</p>
+then this method will <em>not close the stream</em> and only <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.reset" title="MDAnalysis.lib.util.NamedStream.reset"><tt class="xref py py-meth docutils literal"><span class="pre">reset()</span></tt></a> it.</p>
 <p>If the <em>force</em> = <tt class="docutils literal"><span class="pre">True</span></tt> keyword is provided, the stream will be
 closed.</p>
 <div class="admonition note">
@@ -358,21 +358,21 @@ always closes the underlying stream.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="MDAnalysis.core.util.NamedStream.closed">
-<tt class="descname">closed</tt><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#NamedStream.closed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.NamedStream.closed" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.lib.util.NamedStream.closed">
+<tt class="descname">closed</tt><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#NamedStream.closed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream.closed" title="Permalink to this definition">¶</a></dt>
 <dd><p><tt class="docutils literal"><span class="pre">True</span></tt> if stream is closed.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.core.util.NamedStream.fileno">
-<tt class="descname">fileno</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#NamedStream.fileno"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.NamedStream.fileno" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.lib.util.NamedStream.fileno">
+<tt class="descname">fileno</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#NamedStream.fileno"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream.fileno" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the underlying file descriptor (an integer) of the stream if it exists.</p>
 <p>An <tt class="xref py py-exc docutils literal"><span class="pre">IOError</span></tt> is raised if the IO object does not use a file descriptor.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.core.util.NamedStream.flush">
-<tt class="descname">flush</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#NamedStream.flush"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.NamedStream.flush" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.lib.util.NamedStream.flush">
+<tt class="descname">flush</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#NamedStream.flush"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream.flush" title="Permalink to this definition">¶</a></dt>
 <dd><p>Flush the write buffers of the stream if applicable.</p>
 <p>This does nothing for read-only and non-blocking streams. For file
 objects one also needs to call <a class="reference external" href="http://docs.python.org/library/os.html#os.fsync" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">os.fsync()</span></tt></a> to write contents to
@@ -380,21 +380,21 @@ disk.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.core.util.NamedStream.readable">
-<tt class="descname">readable</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#NamedStream.readable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.NamedStream.readable" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.lib.util.NamedStream.readable">
+<tt class="descname">readable</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#NamedStream.readable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream.readable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return <tt class="docutils literal"><span class="pre">True</span></tt> if the stream can be read from.</p>
 <p>If <tt class="docutils literal"><span class="pre">False</span></tt>, <tt class="xref py py-meth docutils literal"><span class="pre">read()</span></tt> will raise <tt class="xref py py-exc docutils literal"><span class="pre">IOError</span></tt>.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.core.util.NamedStream.reset">
-<tt class="descname">reset</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#NamedStream.reset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.NamedStream.reset" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.lib.util.NamedStream.reset">
+<tt class="descname">reset</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#NamedStream.reset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream.reset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Move to the beginning of the stream</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.core.util.NamedStream.seek">
-<tt class="descname">seek</tt><big>(</big><em>offset</em>, <em>whence=0</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#NamedStream.seek"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.NamedStream.seek" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.lib.util.NamedStream.seek">
+<tt class="descname">seek</tt><big>(</big><em>offset</em>, <em>whence=0</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#NamedStream.seek"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream.seek" title="Permalink to this definition">¶</a></dt>
 <dd><p>Change the stream position to the given byte <em>offset</em> .</p>
 <p><em>offset</em> is interpreted relative to the position indicated by
 <em>whence</em>. Values for <em>whence</em> are:</p>
@@ -417,29 +417,29 @@ negative</li>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.core.util.NamedStream.seekable">
-<tt class="descname">seekable</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#NamedStream.seekable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.NamedStream.seekable" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.lib.util.NamedStream.seekable">
+<tt class="descname">seekable</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#NamedStream.seekable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream.seekable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return <tt class="docutils literal"><span class="pre">True</span></tt> if the stream supports random access.</p>
-<p>If <tt class="docutils literal"><span class="pre">False</span></tt>, <a class="reference internal" href="#MDAnalysis.core.util.NamedStream.seek" title="MDAnalysis.core.util.NamedStream.seek"><tt class="xref py py-meth docutils literal"><span class="pre">seek()</span></tt></a>, <a class="reference internal" href="#MDAnalysis.core.util.NamedStream.tell" title="MDAnalysis.core.util.NamedStream.tell"><tt class="xref py py-meth docutils literal"><span class="pre">tell()</span></tt></a> and <a class="reference internal" href="#MDAnalysis.core.util.NamedStream.truncate" title="MDAnalysis.core.util.NamedStream.truncate"><tt class="xref py py-meth docutils literal"><span class="pre">truncate()</span></tt></a> will raise <tt class="xref py py-exc docutils literal"><span class="pre">IOError</span></tt>.</p>
+<p>If <tt class="docutils literal"><span class="pre">False</span></tt>, <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.seek" title="MDAnalysis.lib.util.NamedStream.seek"><tt class="xref py py-meth docutils literal"><span class="pre">seek()</span></tt></a>, <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.tell" title="MDAnalysis.lib.util.NamedStream.tell"><tt class="xref py py-meth docutils literal"><span class="pre">tell()</span></tt></a> and <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.truncate" title="MDAnalysis.lib.util.NamedStream.truncate"><tt class="xref py py-meth docutils literal"><span class="pre">truncate()</span></tt></a> will raise <tt class="xref py py-exc docutils literal"><span class="pre">IOError</span></tt>.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.core.util.NamedStream.tell">
-<tt class="descname">tell</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#NamedStream.tell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.NamedStream.tell" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.lib.util.NamedStream.tell">
+<tt class="descname">tell</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#NamedStream.tell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream.tell" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the current stream position.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.core.util.NamedStream.truncate">
-<tt class="descname">truncate</tt><big>(</big><em>*size</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#NamedStream.truncate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.NamedStream.truncate" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.lib.util.NamedStream.truncate">
+<tt class="descname">truncate</tt><big>(</big><em>*size</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#NamedStream.truncate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream.truncate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Truncate the stream&#8217;s size to <em>size</em>.</p>
 <p>The size defaults to the current position (if no <em>size</em> argument is
 supplied). The current file position is not changed.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.core.util.NamedStream.writable">
-<tt class="descname">writable</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#NamedStream.writable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.NamedStream.writable" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.lib.util.NamedStream.writable">
+<tt class="descname">writable</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#NamedStream.writable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream.writable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return <tt class="docutils literal"><span class="pre">True</span></tt> if the stream can be written to.</p>
 <p>If <tt class="docutils literal"><span class="pre">False</span></tt>, <tt class="xref py py-meth docutils literal"><span class="pre">write()</span></tt> will raise <tt class="xref py py-exc docutils literal"><span class="pre">IOError</span></tt>.</p>
 </dd></dl>
@@ -447,8 +447,8 @@ supplied). The current file position is not changed.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="MDAnalysis.core.util.isstream">
-<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">isstream</tt><big>(</big><em>obj</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#isstream"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.isstream" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.lib.util.isstream">
+<tt class="descclassname">MDAnalysis.lib.util.</tt><tt class="descname">isstream</tt><big>(</big><em>obj</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#isstream"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.isstream" title="Permalink to this definition">¶</a></dt>
 <dd><p>Detect if <em>obj</em> is a stream.</p>
 <p>We consider anything a stream that has the methods</p>
 <ul class="simple">
@@ -485,31 +485,31 @@ supplied). The current file position is not changed.</p>
 
 </div>
 <div class="section" id="containers-and-lists">
-<h2>7.8.3. Containers and lists<a class="headerlink" href="#containers-and-lists" title="Permalink to this headline">¶</a></h2>
+<h2>9.5.3. Containers and lists<a class="headerlink" href="#containers-and-lists" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="MDAnalysis.core.util.iterable">
-<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">iterable</tt><big>(</big><em>obj</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#iterable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.iterable" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.lib.util.iterable">
+<tt class="descclassname">MDAnalysis.lib.util.</tt><tt class="descname">iterable</tt><big>(</big><em>obj</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#iterable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.iterable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns <tt class="docutils literal"><span class="pre">True</span></tt> if <em>obj</em> can be iterated over and is <em>not</em> a  string.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="MDAnalysis.core.util.asiterable">
-<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">asiterable</tt><big>(</big><em>obj</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#asiterable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.asiterable" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.lib.util.asiterable">
+<tt class="descclassname">MDAnalysis.lib.util.</tt><tt class="descname">asiterable</tt><big>(</big><em>obj</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#asiterable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.asiterable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns obj so that it can be iterated over; a string is <em>not</em> treated as iterable</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="MDAnalysis.core.util.hasmethod">
-<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">hasmethod</tt><big>(</big><em>obj</em>, <em>m</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#hasmethod"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.hasmethod" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.lib.util.hasmethod">
+<tt class="descclassname">MDAnalysis.lib.util.</tt><tt class="descname">hasmethod</tt><big>(</big><em>obj</em>, <em>m</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#hasmethod"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.hasmethod" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return <tt class="docutils literal"><span class="pre">True</span></tt> if object <em>obj</em> contains the method <em>m</em>.</p>
 </dd></dl>
 
 </div>
 <div class="section" id="file-parsing">
-<h2>7.8.4. File parsing<a class="headerlink" href="#file-parsing" title="Permalink to this headline">¶</a></h2>
+<h2>9.5.4. File parsing<a class="headerlink" href="#file-parsing" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="MDAnalysis.core.util.FORTRANReader">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">FORTRANReader</tt><big>(</big><em>fmt</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#FORTRANReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.FORTRANReader" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.lib.util.FORTRANReader">
+<em class="property">class </em><tt class="descclassname">MDAnalysis.lib.util.</tt><tt class="descname">FORTRANReader</tt><big>(</big><em>fmt</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#FORTRANReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.FORTRANReader" title="Permalink to this definition">¶</a></dt>
 <dd><p>FORTRANReader provides a method to parse FORTRAN formatted lines in a file.</p>
 <p>Usage:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">atomformat</span> <span class="o">=</span> <span class="n">FORTRANReader</span><span class="p">(</span><span class="s">&#39;2I10,2X,A8,2X,A8,3F20.10,2X,A8,2X,A8,F20.10&#39;</span><span class="p">)</span>
@@ -519,19 +519,19 @@ supplied). The current file position is not changed.</p>
 </div>
 <p>Fortran format edit descriptors; see <a class="reference external" href="http://www.webcitation.org/5xbaWMV2x">Fortran Formats</a> for the syntax.</p>
 <p>Only simple one-character specifiers supported here: <em>I F E A X</em> (see
-<a class="reference internal" href="#MDAnalysis.core.util.FORTRAN_format_regex" title="MDAnalysis.core.util.FORTRAN_format_regex"><tt class="xref py py-data docutils literal"><span class="pre">FORTRAN_format_regex</span></tt></a>).</p>
+<a class="reference internal" href="#MDAnalysis.lib.util.FORTRAN_format_regex" title="MDAnalysis.lib.util.FORTRAN_format_regex"><tt class="xref py py-data docutils literal"><span class="pre">FORTRAN_format_regex</span></tt></a>).</p>
 <p>Strings are stripped of leading and trailing white space.</p>
 <p>Set up the reader with the FORTRAN format string.</p>
 <p>The string <em>fmt</em> should look like &#8216;2I10,2X,A8,2X,A8,3F20.10,2X,A8,2X,A8,F20.10&#8217;.</p>
 <dl class="method">
-<dt id="MDAnalysis.core.util.FORTRANReader.number_of_matches">
-<tt class="descname">number_of_matches</tt><big>(</big><em>line</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#FORTRANReader.number_of_matches"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.FORTRANReader.number_of_matches" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.lib.util.FORTRANReader.number_of_matches">
+<tt class="descname">number_of_matches</tt><big>(</big><em>line</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#FORTRANReader.number_of_matches"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.FORTRANReader.number_of_matches" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return how many format entries could be populated with legal values.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.core.util.FORTRANReader.parse_FORTRAN_format">
-<tt class="descname">parse_FORTRAN_format</tt><big>(</big><em>edit_descriptor</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#FORTRANReader.parse_FORTRAN_format"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.FORTRANReader.parse_FORTRAN_format" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.lib.util.FORTRANReader.parse_FORTRAN_format">
+<tt class="descname">parse_FORTRAN_format</tt><big>(</big><em>edit_descriptor</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#FORTRANReader.parse_FORTRAN_format"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.FORTRANReader.parse_FORTRAN_format" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse the descriptor.</p>
 <blockquote>
 <div>parse_FORTRAN_format(edit_descriptor) &#8211;&gt; dict</div></blockquote>
@@ -556,8 +556,8 @@ forms.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.core.util.FORTRANReader.read">
-<tt class="descname">read</tt><big>(</big><em>line</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#FORTRANReader.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.FORTRANReader.read" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.lib.util.FORTRANReader.read">
+<tt class="descname">read</tt><big>(</big><em>line</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#FORTRANReader.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.FORTRANReader.read" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse <em>line</em> according to the format string and return list of values.</p>
 <p>Values are converted to Python types according to the format specifier.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -573,25 +573,25 @@ forms.</p>
 </table>
 <div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#MDAnalysis.core.util.FORTRANReader.number_of_matches" title="MDAnalysis.core.util.FORTRANReader.number_of_matches"><tt class="xref py py-meth docutils literal"><span class="pre">FORTRANReader.number_of_matches()</span></tt></a></p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.lib.util.FORTRANReader.number_of_matches" title="MDAnalysis.lib.util.FORTRANReader.number_of_matches"><tt class="xref py py-meth docutils literal"><span class="pre">FORTRANReader.number_of_matches()</span></tt></a></p>
 </div>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="data">
-<dt id="MDAnalysis.core.util.FORTRAN_format_regex">
-<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">FORTRAN_format_regex</tt><em class="property"> = '(?P&lt;repeat&gt;\\d+?)(?P&lt;format&gt;[IFEAX])(?P&lt;numfmt&gt;(?P&lt;length&gt;\\d+)(\\.(?P&lt;decimals&gt;\\d+))?)?'</em><a class="headerlink" href="#MDAnalysis.core.util.FORTRAN_format_regex" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.lib.util.FORTRAN_format_regex">
+<tt class="descclassname">MDAnalysis.lib.util.</tt><tt class="descname">FORTRAN_format_regex</tt><em class="property"> = '(?P&lt;repeat&gt;\\d+?)(?P&lt;format&gt;[IFEAX])(?P&lt;numfmt&gt;(?P&lt;length&gt;\\d+)(\\.(?P&lt;decimals&gt;\\d+))?)?'</em><a class="headerlink" href="#MDAnalysis.lib.util.FORTRAN_format_regex" title="Permalink to this definition">¶</a></dt>
 <dd><p>Regular expresssion (see <a class="reference external" href="http://docs.python.org/library/re.html#module-re" title="(in Python v2.7)"><tt class="xref py py-mod docutils literal"><span class="pre">re</span></tt></a>) to parse a simple <a class="reference external" href="http://www.cs.mtu.edu/~shene/COURSES/cs201/NOTES/chap05/format.html">FORTRAN edit descriptor</a>.
 <tt class="docutils literal"><span class="pre">(?P&lt;repeat&gt;\d?)(?P&lt;format&gt;[IFELAX])(?P&lt;numfmt&gt;(?P&lt;length&gt;\d+)(\.(?P&lt;decimals&gt;\d+))?)?</span></tt></p>
 </dd></dl>
 
 </div>
 <div class="section" id="data-manipulation-and-handling">
-<h2>7.8.5. Data manipulation and handling<a class="headerlink" href="#data-manipulation-and-handling" title="Permalink to this headline">¶</a></h2>
+<h2>9.5.5. Data manipulation and handling<a class="headerlink" href="#data-manipulation-and-handling" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="MDAnalysis.core.util.fixedwidth_bins">
-<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">fixedwidth_bins</tt><big>(</big><em>delta</em>, <em>xmin</em>, <em>xmax</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#fixedwidth_bins"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.fixedwidth_bins" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.lib.util.fixedwidth_bins">
+<tt class="descclassname">MDAnalysis.lib.util.</tt><tt class="descname">fixedwidth_bins</tt><big>(</big><em>delta</em>, <em>xmin</em>, <em>xmax</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#fixedwidth_bins"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.fixedwidth_bins" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return bins of width delta that cover xmin,xmax (or a larger range).</p>
 <p>dict = fixedwidth_bins(delta,xmin,xmax)</p>
 <p>The dict contains &#8216;Nbins&#8217;, &#8216;delta&#8217;, &#8216;min&#8217;, and &#8216;max&#8217;.</p>
@@ -599,10 +599,10 @@ forms.</p>
 
 </div>
 <div class="section" id="strings">
-<h2>7.8.6. Strings<a class="headerlink" href="#strings" title="Permalink to this headline">¶</a></h2>
+<h2>9.5.6. Strings<a class="headerlink" href="#strings" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="MDAnalysis.core.util.convert_aa_code">
-<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">convert_aa_code</tt><big>(</big><em>x</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#convert_aa_code"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.convert_aa_code" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.lib.util.convert_aa_code">
+<tt class="descclassname">MDAnalysis.lib.util.</tt><tt class="descname">convert_aa_code</tt><big>(</big><em>x</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#convert_aa_code"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.convert_aa_code" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts between 3-letter and 1-letter amino acid codes.</p>
 <div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
@@ -611,8 +611,8 @@ forms.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="MDAnalysis.core.util.parse_residue">
-<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">parse_residue</tt><big>(</big><em>residue</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#parse_residue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.parse_residue" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.lib.util.parse_residue">
+<tt class="descclassname">MDAnalysis.lib.util.</tt><tt class="descname">parse_residue</tt><big>(</big><em>residue</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#parse_residue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.parse_residue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process residue string.</p>
 <dl class="docutils">
 <dt>Examples:</dt>
@@ -643,8 +643,8 @@ aa codes are converted to 3-letter codes</td>
 </dd></dl>
 
 <dl class="function">
-<dt id="MDAnalysis.core.util.conv_float">
-<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">conv_float</tt><big>(</big><em>s</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#conv_float"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.conv_float" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.lib.util.conv_float">
+<tt class="descclassname">MDAnalysis.lib.util.</tt><tt class="descname">conv_float</tt><big>(</big><em>s</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#conv_float"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.conv_float" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert an object <em>s</em> to float if possible.</p>
 <p>Function to be passed into <a class="reference external" href="http://docs.python.org/library/functions.html#map" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">map()</span></tt></a> or a list comprehension. If
 the argument can be interpreted as a float it is converted,
@@ -653,10 +653,10 @@ otherwise the original object is passed back.</p>
 
 </div>
 <div class="section" id="mathematics-and-geometry">
-<h2>7.8.7. Mathematics and Geometry<a class="headerlink" href="#mathematics-and-geometry" title="Permalink to this headline">¶</a></h2>
+<h2>9.5.7. Mathematics and Geometry<a class="headerlink" href="#mathematics-and-geometry" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="MDAnalysis.core.util.normal">
-<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">normal</tt><big>(</big><em>vec1</em>, <em>vec2</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#normal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.normal" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.lib.util.normal">
+<tt class="descclassname">MDAnalysis.lib.util.</tt><tt class="descname">normal</tt><big>(</big><em>vec1</em>, <em>vec2</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#normal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.normal" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the unit vector normal to two vectors.</p>
 <div class="math">
 \[\hat{\mathbf{n}} = \frac{\mathbf{v}_1 \times \mathbf{v}_2}{|\mathbf{v}_1 \times \mathbf{v}_2|}\]</div>
@@ -664,8 +664,8 @@ otherwise the original object is passed back.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="MDAnalysis.core.util.norm">
-<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">norm</tt><big>(</big><em>v</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#norm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.norm" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.lib.util.norm">
+<tt class="descclassname">MDAnalysis.lib.util.</tt><tt class="descname">norm</tt><big>(</big><em>v</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#norm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.norm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the length of a vector, <tt class="docutils literal"><span class="pre">sqrt(v.v)</span></tt>.</p>
 <div class="math">
 \[v = \sqrt{\mathbf{v}\cdot\mathbf{v}}\]</div>
@@ -673,14 +673,14 @@ otherwise the original object is passed back.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="MDAnalysis.core.util.angle">
-<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">angle</tt><big>(</big><em>a</em>, <em>b</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#angle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.angle" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.lib.util.angle">
+<tt class="descclassname">MDAnalysis.lib.util.</tt><tt class="descname">angle</tt><big>(</big><em>a</em>, <em>b</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#angle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.angle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the angle between two vectors in radians</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="MDAnalysis.core.util.dihedral">
-<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">dihedral</tt><big>(</big><em>ab</em>, <em>bc</em>, <em>cd</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#dihedral"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.dihedral" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.lib.util.dihedral">
+<tt class="descclassname">MDAnalysis.lib.util.</tt><tt class="descname">dihedral</tt><big>(</big><em>ab</em>, <em>bc</em>, <em>cd</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#dihedral"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.dihedral" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the dihedral angle in radians between vectors connecting A,B,C,D.</p>
 <p>The dihedral measures the rotation around bc:</p>
 <div class="highlight-python"><pre>  ab
@@ -696,8 +696,8 @@ A----&gt;B
 </dd></dl>
 
 <dl class="function">
-<dt id="MDAnalysis.core.util.stp">
-<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">stp</tt><big>(</big><em>vec1</em>, <em>vec2</em>, <em>vec3</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#stp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.stp" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.lib.util.stp">
+<tt class="descclassname">MDAnalysis.lib.util.</tt><tt class="descname">stp</tt><big>(</big><em>vec1</em>, <em>vec2</em>, <em>vec3</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#stp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.stp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Takes the scalar triple product of three vectors.</p>
 <p>Returns the volume <em>V</em> of the parallel epiped spanned by the three
 vectors</p>
@@ -707,10 +707,10 @@ vectors</p>
 
 </div>
 <div class="section" id="class-decorators">
-<h2>7.8.8. Class decorators<a class="headerlink" href="#class-decorators" title="Permalink to this headline">¶</a></h2>
+<h2>9.5.8. Class decorators<a class="headerlink" href="#class-decorators" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="MDAnalysis.core.util.cached">
-<tt class="descclassname">MDAnalysis.core.util.</tt><tt class="descname">cached</tt><big>(</big><em>key</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/core/util.html#cached"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.util.cached" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.lib.util.cached">
+<tt class="descclassname">MDAnalysis.lib.util.</tt><tt class="descname">cached</tt><big>(</big><em>key</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#cached"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.cached" title="Permalink to this definition">¶</a></dt>
 <dd><p>Cache a property within a class</p>
 <p>Requires the Class to have a cache dict called &#8220;_cache&#8221;</p>
 <p>Usage:</p>
@@ -738,14 +738,14 @@ size = 10.0</div></blockquote>
 <table class="docutils footnote" frame="void" id="namedstreamclose" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>The reason why <a class="reference internal" href="#MDAnalysis.core.util.NamedStream.close" title="MDAnalysis.core.util.NamedStream.close"><tt class="xref py py-meth docutils literal"><span class="pre">NamedStream.close()</span></tt></a> does
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>The reason why <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.close" title="MDAnalysis.lib.util.NamedStream.close"><tt class="xref py py-meth docutils literal"><span class="pre">NamedStream.close()</span></tt></a> does
 not close a stream by default (but just rewinds it to the
-beginning) is so that one can use the class <a class="reference internal" href="#MDAnalysis.core.util.NamedStream" title="MDAnalysis.core.util.NamedStream"><tt class="xref py py-class docutils literal"><span class="pre">NamedStream</span></tt></a> as
+beginning) is so that one can use the class <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><tt class="xref py py-class docutils literal"><span class="pre">NamedStream</span></tt></a> as
 a drop-in replacement for file names, which are often re-opened
 (e.g. when the same file is used as a topology and coordinate file
 or when repeatedly iterating through a trajectory in some
 implementations). The <tt class="docutils literal"><span class="pre">close=True</span></tt> keyword can be supplied in
-order to make <a class="reference internal" href="#MDAnalysis.core.util.NamedStream.close" title="MDAnalysis.core.util.NamedStream.close"><tt class="xref py py-meth docutils literal"><span class="pre">NamedStream.close()</span></tt></a> actually close the
+order to make <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.close" title="MDAnalysis.lib.util.NamedStream.close"><tt class="xref py py-meth docutils literal"><span class="pre">NamedStream.close()</span></tt></a> actually close the
 underlying stream and <tt class="docutils literal"><span class="pre">NamedStream.close(force=True)</span></tt> will also
 close it.</td></tr>
 </tbody>
@@ -769,13 +769,13 @@ close it.</td></tr>
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="log.html" title="7.9. Setting up logging — MDAnalysis.core.log"
+          <a href="../units.html" title="10. Constants and unit conversion — MDAnalysis.units"
              >next</a> |</li>
         <li class="right" >
-          <a href="units.html" title="7.7. Constants and unit conversion — MDAnalysis.core.units"
+          <a href="transformations.html" title="9.4. Homogeneous Transformation Matrices and Quaternions — MDAnalysis.lib.transformations"
              >previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
-          <li><a href="../core_modules.html" >7. Core modules</a> &raquo;</li> 
+          <li><a href="../lib_modules.html" >9. MDAnalysis library</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
@@ -785,7 +785,7 @@ close it.</td></tr>
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
-    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Zhuyi Xue,
+    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Zhuyi Xue, Carlos Yáñez S.,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
