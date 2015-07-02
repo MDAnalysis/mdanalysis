@@ -71,10 +71,12 @@ import errno
 import numpy as np
 import struct
 
-from . import base
 import MDAnalysis.core
-from .. import units as mdaunits
-from MDAnalysis import NoDataError
+from .. import units as mdaunits       # use mdaunits instead of units to avoid a clash
+from ..exceptions import NoDataError
+
+from . import base
+from . import core
 
 
 class Timestep(base.Timestep):
@@ -138,7 +140,7 @@ class Timestep(base.Timestep):
             # might be new CHARMM: box matrix vectors
             H = self._unitcell
             e1, e2, e3 = H[[0,1,3]],  H[[1,2,4]], H[[3,4,5]]
-            uc = MDAnalysis.coordinates.core.triclinic_box(e1, e2, e3)
+            uc = core.triclinic_box(e1, e2, e3)
         return uc
 
     @dimensions.setter

@@ -113,8 +113,9 @@ import warnings
 import bisect
 import numpy as np
 
-from MDAnalysis.core import units, flags
-from MDAnalysis.lib.util import asiterable
+from ..core import flags
+from .. import units
+from ..lib.util import asiterable
 from . import core
 from .. import NoDataError
 
@@ -182,7 +183,7 @@ class Timestep(object):
         if self.has_forces:
             self._forces = np.zeros((numatoms, 3),
                                     dtype=np.float32, order=self.order)
-        
+
         self._unitcell = self._init_unitcell()
 
         self._x = self._pos[:, 0]
@@ -397,7 +398,7 @@ class Timestep(object):
             self._forces[:] = new
         except AttributeError:
             raise NoDataError("This Timestep has no forces")
-    
+
     @property
     def dimensions(self):
         """unitcell dimensions (*A*, *B*, *C*, *alpha*, *beta*, *gamma*)
@@ -678,7 +679,7 @@ class ProtoReader(IObase):
         .. SeeAlso:: :meth:`Reader.Writer` and :func:`MDAnalysis.Writer`
         """
         kwargs['numatoms'] = self.numatoms  # essential
-        kwargs.setdefault('start', self.frame)  
+        kwargs.setdefault('start', self.frame)
         kwargs.setdefault('step', self.skip_timestep)
         try:
             kwargs.setdefault('delta', self.dt)
@@ -704,7 +705,7 @@ class ProtoReader(IObase):
 
     def _reopen(self):
         """Should position Reader to just before first frame
-        
+
         Calling next after this should return the first frame
         """
         pass
@@ -733,7 +734,7 @@ class ProtoReader(IObase):
             start, stop, step = self._check_slice_indices(frame.start, frame.stop, frame.step)
             if start == 0 and stop == len(self) and step == 1:
                 return self.__iter__()
-            else:            
+            else:
                 return self._sliced_iter(start, stop, step)
 
     def _read_frame(self, frame):
@@ -794,7 +795,7 @@ class ProtoReader(IObase):
                 stop = n
         else:
             stop = n if step > 0 else -1
-        
+
         if step > 0 and stop <= start:
             raise IndexError("Stop frame is lower than start frame")
         if ((start < 0) or (start >= n) or (stop > n)):
