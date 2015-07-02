@@ -228,17 +228,21 @@ logger = logging.getLogger("MDAnalysis.coordinates.PBD")
 
 
 class PDBReader(base.SingleFrameReader):
-    """Read a pdb file into a BioPython pdb structure.
+    """Read a pdb file into a :mod:`BioPython.PDB` structure.
 
     The coordinates are also supplied as one numpy array and wrapped
-    into a Timestep object; attributes are set so that the PDBReader
-    object superficially resembles the DCDReader object.
+    into a Timestep object.
 
     .. Note:: The Biopython.PDB reader does not parse the ``CRYST1``
               record and hence the unitcell dimensions are not set.
+              Use the :class:`PrimitivePDBReader` instead (i.e.  use
+              the ``primitive=True`` keyword for :class:`Universe`).
 
     .. versionchanged:: 0.11.0
-       Frames now 0-based instead of 1-based
+       * Frames now 0-based instead of 1-based. 
+       * All PDB header metadata parsed by the reader is available in
+         the dict :attr:`metadata`.
+
     """
     format = 'PDB'
     units = {'time': None, 'length': 'Angstrom'}
@@ -255,6 +259,8 @@ class PDBReader(base.SingleFrameReader):
         del pos
         if self.convert_units:
             self.convert_pos_from_native(self.ts._pos)  # in-place !
+        # metadata
+        self.metadata = self.pdb.header
 
     def get_bfactors(self):
         """Return an array of bfactors (tempFactor) in atom order."""
@@ -341,7 +347,8 @@ class PDBWriter(base.Writer):
         self.multi = multi
         if self.multi:
             raise NotImplementedError('Sorry, multi=True does not work yet.')
-        if self.PDBstructure is not None and not isinstance(self.PDBstructure, Bio.PDB.Structure.Structure):
+        if self.PDBstructure is not None \
+           and not isinstance(self.PDBstructure, Bio.PDB.Structure.Structure):
             raise TypeError('If defined, PDBstructure must be a Bio.PDB.Structure.Structure, eg '
                             'Universe.trajectory.pdb.')
 
@@ -382,18 +389,24 @@ class PDBWriter(base.Writer):
 
 
 class PrimitivePDBReader(base.Reader):
-    """PDBReader that reads a PDB-formatted file, no frills.
+    """PDBReader that reads a `PDB-formatted`_ file, no frills.
 
-    The following PDB records are parsed (see `PDB coordinate section`_ for details):
-     - CRYST1 for unitcell A,B,C, alpha,beta,gamma
-     - ATOM or HETATM for serial,name,resName,chainID,resSeq,x,y,z,occupancy,tempFactor
-     - HEADER, TITLE, COMPND
+    The following *PDB records* are parsed (see `PDB coordinate section`_ for details):
+
+     - *CRYST1* for unitcell A,B,C, alpha,beta,gamma
+     - *ATOM* or *HETATM* for serial,name,resName,chainID,resSeq,x,y,z,occupancy,tempFactor
+     - *HEADER* (:attr:`header`), *TITLE* (:attr:`title`), *COMPND*
+       (:attr:`compound`), *REMARK* (:attr:`remarks`) 
      - all other lines are ignored
 
     Reads multi-`MODEL`_ PDB files as trajectories.
 
-    .. _PDB coordinate section: http://www.wwpdb.org/documentation/format32/sect9.html
-    .. _MODEL: http://www.wwpdb.org/documentation/format32/sect9.html#MODEL
+    .. _PDB-formatted: 
+       http://www.wwpdb.org/documentation/file-format-content/format33/v3.3.html
+    .. _PDB coordinate section: 
+       http://www.wwpdb.org/documentation/format32/sect9.html
+    .. _MODEL: 
+       http://www.wwpdb.org/documentation/format32/sect9.html#MODEL
 
     =============  ============  ===========  =============================================
     COLUMNS        DATA  TYPE    FIELD        DEFINITION
@@ -425,10 +438,13 @@ class PrimitivePDBReader(base.Reader):
     =============  ============  ===========  =============================================
 
 
-    .. SeeAlso:: :class:`PrimitivePDBWriter`
+    .. SeeAlso:: :class:`PrimitivePDBWriter`; :class:`PDBReader`
+                 implements a larger subset of the header records,
+                 which are accessible as :attr:`PDBReader.metadata`.
 
     .. versionchanged:: 0.11.0
-       Frames now 0-based instead of 1-based
+       * Frames now 0-based instead of 1-based
+       * New :attr:`title` (list with all TITLE lines).
 
     """
     format = 'PDB'
@@ -457,6 +473,7 @@ class PrimitivePDBReader(base.Reader):
         self.model_offset = kwargs.pop("model_offset", 0)
 
         header = ""
+        title = []
         compound = []
         remarks = []
 
@@ -481,14 +498,21 @@ class PrimitivePDBReader(base.Reader):
                     self.ts._unitcell[:] = A, B, C, alpha, beta, gamma
                     continue
                 elif record == 'HEADER':
-                    header = line[6:-1]
+                    # classification = line[10:50]
+                    # date = line[50:59]
+                    # idCode = line[62:66]
+                    header = line[10:66] 
+                    continue
+                elif record == 'TITLE':
+                    l = line[8:80].strip()
+                    title.append(l)
                     continue
                 elif record == 'COMPND':
-                    l = line[6:-1]
+                    l = line[7:80].strip()
                     compound.append(l)
                     continue
                 elif record == 'REMARK':
-                    content = line[6:-1]
+                    content = line[6:].strip()
                     remarks.append(content)
                 elif record == 'MODEL':
                     frames[len(frames)] = i  # 0-based indexing
@@ -504,8 +528,9 @@ class PrimitivePDBReader(base.Reader):
                     self._occupancy.append(occupancy)
 
         self.header = header
+        self.title = title
         self.compound = compound
-        self.remarks = remarks
+        self.remarks = remarks        
 
         if pos != self._numatoms:
             raise ValueError("Read an incorrect number of atoms\n"

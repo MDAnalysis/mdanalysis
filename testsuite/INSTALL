@@ -4,7 +4,7 @@ Installing MDAnalysisTests
 
 The MDAnalysisTests package contains trajectories and structures
 that are used in the test suite of the MDAnalysis package
-http://code.google.com/p/mdanalysis. They should be installed together
+http://www.mdanalysis.org. They should be installed together
 with MDAnalysis.
 
 However, the test files change less frequently, take up almost 20 GB

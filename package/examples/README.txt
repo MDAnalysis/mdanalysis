@@ -15,7 +15,7 @@ scripts.
 Please discuss these scripts on the mailing list
 http://groups.google.com/group/mdnalysis-discussion or file bugs
 through the issue tracker
-http://code.google.com/p/mdanalysis/issues/list
+http://issues.mdanalysis.org
 
 
 .. Note:: If you try to run example scripts from the top level

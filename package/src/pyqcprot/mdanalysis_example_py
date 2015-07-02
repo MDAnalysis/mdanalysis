@@ -2,8 +2,7 @@
 Example code to demonstrate aligning a trajectory to a reference file and
 calculating the rmsd using PyQCPROT
 
-Requires MDAnalysis
-http://code.google.com/p/mdanalysis
+Requires MDAnalysis http://www.mdanalysis.org
 
 """
 

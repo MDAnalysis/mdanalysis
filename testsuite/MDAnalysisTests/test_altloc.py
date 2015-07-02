@@ -17,12 +17,13 @@ from MDAnalysis import Universe
 import tempfile
 import os
 from numpy.testing import *
-from MDAnalysisTests.datafiles import altloc
+from MDAnalysisTests.datafiles import PDB_full
 
 
 class TestAltloc(TestCase):
     def setUp(self):
-        fd, self.outfile = tempfile.mkstemp(suffix=".pdb")  # output is always same as input (=DCD)
+        self.filename = PDB_full
+        fd, self.outfile = tempfile.mkstemp(suffix=".pdb")  # output is always same as input
         os.close(fd)
 
     def tearDown(self):
@@ -32,7 +33,7 @@ class TestAltloc(TestCase):
             pass
 
     def test_atomgroups(self):
-        u = Universe(altloc)
+        u = Universe(self.filename)
         segidB0 = len(u.selectAtoms("segid B and (not altloc B)"))
         segidB1 = len(u.selectAtoms("segid B and (not altloc A)"))
         assert_equal(segidB0, segidB1)
@@ -43,7 +44,7 @@ class TestAltloc(TestCase):
         assert_equal(sum, segidB0 + altlocB0)
 
     def test_bonds(self):
-        u = Universe(altloc, guess_bonds=True)
+        u = Universe(self.filename, guess_bonds=True)
         # need to force topology to load before querying individual atom bonds
         u.build_topology()
         bonds0 = u.selectAtoms("segid B and (altloc A)")[0].bonds
@@ -51,7 +52,7 @@ class TestAltloc(TestCase):
         assert_equal(len(bonds0), len(bonds1))
 
     def test_write_read(self):
-        u = Universe(altloc)
+        u = Universe(self.filename)
         u.selectAtoms("all").write(self.outfile)
         u2 = Universe(self.outfile)
         assert_equal(len(u.atoms), len(u2.atoms))

@@ -15,13 +15,14 @@
 #
 
 
-"""
-=========================
+"""=========================
 Test cases for MDAnalysis
 =========================
 
 Test cases are stored in a separate packacge (:mod:`MDAnalysisTests`)
-that has to be installed separately from http://www.MDAnalysis.org
+that has to be installed separately from
+http://www.mdanalysis.org. For more details on the tests see
+http://wiki.mdanalysis.org/UnitTests .
 
 We are using the NumPy_ testing frame work; thus, numpy *must* be
 installed for the tests to run at all.
@@ -72,10 +73,10 @@ The simulation data used in some tests are from [Beckstein2009]_ (``adk.psf``,
       TIP4P water model. The simulation was run with Gromacs_ 4.0.2.
 
 
-[Beckstein2009] O. Beckstein, E.J. Denning, J.R. Perilla and T.B. Woolf,
-                Zipping and Unzipping of Adenylate Kinase: Atomistic Insights
-                into the Ensemble of Open ↔ Closed Transitions. J Mol Biol 394
-                (2009), 160–176, doi:10.1016/j.jmb.2009.09.009
+.. [Beckstein2009] O. Beckstein, E.J. Denning, J.R. Perilla and
+   T.B. Woolf, Zipping and Unzipping of Adenylate Kinase: Atomistic
+   Insights into the Ensemble of Open ↔ Closed Transitions. J Mol Biol
+   394 (2009), 160–176, doi:10.1016/j.jmb.2009.09.009
 
 
 Writing test cases
@@ -96,11 +97,12 @@ especially as we are directly using this framework (imported from numpy).
    http://projects.scipy.org/numpy/wiki/TestingGuidelines#id11
 .. _Charmm: http://www.charmm.org
 .. _Gromacs: http://www.gromacs.org
+
 """
 
 try:
     from MDAnalysisTests import test
 except ImportError:
     print("Install MDAnalysisTests first. The source package is available from")
-    print("http://code.google.com/p/mdanalysis/downloads/list")
+    print("http://pypi.python.org/pypi/MDAnalysisTests")
     raise ImportError("Package MDAnalysisTests required!")

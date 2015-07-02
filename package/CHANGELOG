@@ -61,11 +61,11 @@ The rules for this file:
   * Fixed TRZWriter failing when passed a non TRZTimestep (Issue #302)
   * relative imports are now banned in unit testing modules
     (Issue #189)
-  * Fixed bug and added DivisionByZero exception in analysis/waterdinamics.py 
+  * Fixed bug and added DivisionByZero exception in analysis/waterdinamics.py
     in SurvivalProbability.
+  * Fixed parsing of PDB header data for PrimitivePDBReader (Issue #332)
 
-
-06/01/15  richardjgowers, caio s. souza, manuel.nuno.melo, orbeckst, 
+06/01/15  richardjgowers, caio s. souza, manuel.nuno.melo, orbeckst,
           sseyler
   * 0.10.0
 
