@@ -130,6 +130,8 @@ class ConfigReader(base.SingleFrameReader):
             ts._unitcell[1][:] = celly
             ts._unitcell[2][:] = cellz
 
+        ts.frame = 0
+
 
 class HistoryReader(base.Reader):
     """Reads DLPoly format HISTORY files

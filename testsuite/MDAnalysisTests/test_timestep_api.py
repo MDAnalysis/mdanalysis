@@ -28,13 +28,16 @@ from MDAnalysisTests import knownfailure
 
 import MDAnalysis as mda
 
-from MDAnalysisTests.datafiles import PSF, DCD, DCD_empty, PDB_small, XPDB_small, PDB_closed, PDB_multiframe, \
-    PDB, CRD, XTC, TRR, GRO, DMS, CONECT, \
-    XYZ, XYZ_bz2, XYZ_psf, PRM, TRJ, TRJ_bz2, PRMpbc, TRJpbc_bz2, PRMncdf, NCDF, PQR, \
-    PDB_sub_dry, TRR_sub_sol, PDB_sub_sol, TRZ, TRZ_psf, LAMMPSdata, LAMMPSdata_mini, \
-    PSF_TRICLINIC, DCD_TRICLINIC, PSF_NAMD_TRICLINIC, DCD_NAMD_TRICLINIC, \
-    GMS_ASYMOPT, GMS_SYMOPT, GMS_ASYMSURF, XYZ_mini, PFncdf_Top, PFncdf_Trj, \
-    INPCRD, XYZ_five
+from MDAnalysisTests.datafiles import (
+    PSF, DCD, DCD_empty, PDB_small, XPDB_small, PDB_closed, PDB_multiframe,
+    PDB, CRD, XTC, TRR, GRO, DMS, CONECT, PDBQT_input,
+    XYZ, XYZ_bz2, XYZ_psf, PRM, TRJ, TRJ_bz2, PRMpbc, TRJpbc_bz2, PRMncdf, NCDF, PQR,
+    PDB_sub_dry, TRR_sub_sol, PDB_sub_sol, TRZ, TRZ_psf, LAMMPSdata, LAMMPSdata_mini,
+    PSF_TRICLINIC, DCD_TRICLINIC, PSF_NAMD_TRICLINIC, DCD_NAMD_TRICLINIC,
+    GMS_ASYMOPT, GMS_SYMOPT, GMS_ASYMSURF, XYZ_mini, PFncdf_Top, PFncdf_Trj,
+    INPCRD, XYZ_five, mol2_molecules,
+    DLP_CONFIG, DLP_HISTORY
+    )
 
 
 # Subclass this and change values where necessary for each format's Timestep.
@@ -125,6 +128,9 @@ class _TestTimestep(TestCase):
     """Test all the base functionality of a Timestep
 
     All Timesteps must pass these tests!
+
+    These test the Timestep independent of the Reader which it
+    comes into contact with.  Failures here are the Timesteps fault.
     """
 
     def setUp(self):
@@ -579,3 +585,116 @@ class TestTimestepEquality(object):  # using test generator, don't change to Tes
 
         assert_not_equal(ts1, ts2)
         assert_not_equal(ts2, ts1)
+
+
+class _TestTimestepInterface(object):
+    """Test the Timesteps created by Readers
+
+    This checks that Readers are creating correct Timestep objects.
+
+    Failures here are the Reader's fault
+
+    See Issue #250 for discussion
+    """
+    def tearDown(self):
+        del self.ts
+        del self.u
+
+    def test_frame(self):
+        assert_equal(self.ts.frame, 0)
+
+
+class TestCRD(_TestTimestepInterface):
+    def setUp(self):
+        u = self.u = mda.Universe(XYZ_five, INPCRD)
+        self.ts = u.trajectory.ts
+
+class TestDCD(_TestTimestepInterface):
+    def setUp(self):
+        u = self.u = mda.Universe(PSF, DCD)
+        self.ts = u.trajectory.ts
+
+class TestDLPConfig(_TestTimestepInterface):
+    def setUp(self):
+        u = self.u = mda.Universe(DLP_CONFIG, format='CONFIG')
+        self.ts = u.trajectory.ts
+
+class TestDLPHistory(_TestTimestepInterface):
+    def setUp(self):
+        u = self.u = mda.Universe(DLP_HISTORY, format='HISTORY')
+        self.ts = u.trajectory.ts
+
+class TestDMS(_TestTimestepInterface):
+    def setUp(self):
+        u = self.u = mda.Universe(DMS)
+        self.ts = u.trajectory.ts
+
+class TestGMS(_TestTimestepInterface):
+    def setUp(self):
+        u = self.u = mda.Universe(GMS_ASYMOPT, GMS_ASYMOPT, format='GMS', topology_format='GMS')
+        self.ts = u.trajectory.ts
+
+class TestGRO(_TestTimestepInterface):
+    def setUp(self):
+        u = self.u = mda.Universe(GRO)
+        self.ts = u.trajectory.ts
+
+class TestINPCRD(_TestTimestepInterface):
+    def setUp(self):
+        u = self.u = mda.Universe(XYZ_five, INPCRD)
+        self.ts = u.trajectory.ts
+
+class TestLAMMPS(_TestTimestepInterface):
+    def setUp(self):
+        u = self.u = mda.Universe(LAMMPSdata)
+        self.ts = u.trajectory.ts
+
+class TestMOL2(_TestTimestepInterface):
+    def setUp(self):
+        u = self.u = mda.Universe(mol2_molecules)
+        self.ts = u.trajectory.ts
+
+class TestPDB(_TestTimestepInterface):
+    def setUp(self):
+        u = self.u = mda.Universe(PDB_small)
+        self.ts = u.trajectory.ts
+
+class TestPDBQT(_TestTimestepInterface):
+    def setUp(self):
+        u = self.u = mda.Universe(PDBQT_input)
+        self.ts = u.trajectory.ts
+
+class TestPQR(_TestTimestepInterface):
+    def setUp(self):
+        u = self.u = mda.Universe(PQR)
+        self.ts = u.trajectory.ts
+
+class TestTRJ(_TestTimestepInterface):
+    def setUp(self):
+        u = self.u = mda.Universe(PRM, TRJ)
+        self.ts = u.trajectory.ts
+
+class TestNCDF(_TestTimestepInterface):
+    def setUp(self):
+        u = self.u = mda.Universe(PRMncdf, NCDF)
+        self.ts = u.trajectory.ts
+
+class TestTRR(_TestTimestepInterface):
+    def setUp(self):
+        u = self.u = mda.Universe(GRO, TRR)
+        self.ts = u.trajectory.ts
+
+class TestTRZ(_TestTimestepInterface):
+    def setUp(self):
+        u = self.u = mda.Universe(TRZ_psf, TRZ)
+        self.ts = u.trajectory.ts
+
+class TestXTC(_TestTimestepInterface):
+    def setUp(self):
+        u = self.u = mda.Universe(GRO, XTC)
+        self.ts = u.trajectory.ts
+
+class TestXYZ(_TestTimestepInterface):
+    def setUp(self):
+        u = self.u = mda.Universe(XYZ_mini)
+        self.ts = u.trajectory.ts

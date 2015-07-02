@@ -44,6 +44,7 @@ class INPReader(base.SingleFrameReader):
 
             self.ts = self._Timestep(self.numatoms)
             self.ts.time = time
+            self.ts.frame = 0
 
             for p in xrange(self.numatoms // 2):
                 line = inf.readline()
