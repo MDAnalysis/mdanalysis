@@ -36,13 +36,8 @@ import errno
 import numpy as np
 import warnings
 
-import MDAnalysis.lib.util as util
+from ..lib import util
 from . import base
-
-# PDBQTReader and Writer classes will subclass PrimitiveReader/Writer from PDB module
-#from MDAnalysis.coordinates.PDB import PrimitivePDBReader
-#from MDAnalysis.coordinates.PDB import PrimitivePDBWriter
-#from MDAnalysis.coordinates.PDB import Timestep
 
 
 class PDBQTReader(base.SingleFrameReader):

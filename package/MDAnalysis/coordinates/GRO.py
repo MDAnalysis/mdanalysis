@@ -29,9 +29,9 @@ Classes to read and write Gromacs_ GRO_ coordinate files; see the notes on the
 import warnings
 import numpy as np
 
-import MDAnalysis
+from ..core import flags
 from . import base
-import MDAnalysis.lib.util as util
+from ..lib import util
 from .core import triclinic_box, triclinic_vectors
 
 
@@ -194,7 +194,7 @@ class GROWriter(base.Writer):
         self.filename = util.filename(filename, ext='gro')
 
         if convert_units is None:
-            convert_units = MDAnalysis.core.flags['convert_lengths']
+            convert_units = flags['convert_lengths']
         self.convert_units = convert_units  # convert length and time to base units
 
     def convert_dimensions_to_unitcell(self, ts):

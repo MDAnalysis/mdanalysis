@@ -79,8 +79,8 @@ import os
 import errno
 
 from . import base
-import MDAnalysis.core
-import MDAnalysis.lib.util as util
+from ..core import flags
+from ..lib import util
 from .core import triclinic_box, triclinic_vectors
 
 
@@ -150,7 +150,7 @@ class TRZReader(base.Reader):
             raise ValueError('TRZReader requires the numatoms keyword')
 
         if convert_units is None:
-            convert_units = MDAnalysis.core.flags['convert_lengths']
+            convert_units = flags['convert_lengths']
         self.convert_units = convert_units
 
         self.filename = trzfilename
@@ -237,15 +237,15 @@ class TRZReader(base.Reader):
         try:
             data = np.fromfile(self.trzfile, dtype=self._dtype, count=1)
             ts.frame = data['nframe'][0] - 1  # 0 based for MDA
-            ts.step = data['ntrj'][0]
+            ts._frame = data['ntrj'][0]
             ts.time = data['treal'][0]
             ts._unitcell[:] = data['box']
-            ts.pressure = data['pressure']
-            ts.pressure_tensor = data['ptensor']
-            ts.total_energy = data['etot']
-            ts.potential_energy = data['ptot']
-            ts.kinetic_energy = data['ek']
-            ts.temperature = data['T']
+            ts.data['pressure'] = data['pressure']
+            ts.data['pressure_tensor'] = data['ptensor']
+            ts.data['total_energy'] = data['etot']
+            ts.data['potential_energy'] = data['ptot']
+            ts.data['kinetic_energy'] = data['ek']
+            ts.data['temperature'] = data['T']
             ts._x[:] = data['rx']
             ts._y[:] = data['ry']
             ts._z[:] = data['rz']
@@ -338,9 +338,9 @@ class TRZReader(base.Reader):
         if not self._skip_timestep is None:
             return self._skip_timestep
         try:
-            t0 = self.ts.step
+            t0 = self.ts._frame
             self.next()
-            t1 = self.ts.step
+            t1 = self.ts._frame
             self._skip_timestep = t1 - t0
         except IOError:
             return 0
@@ -404,9 +404,7 @@ class TRZReader(base.Reader):
 
         #Reset ts
         ts = self.ts
-        ts.status = 1
         ts.frame = -1 
-        ts.step = 0
         ts.time = 0
         return self.trzfile
 
@@ -459,7 +457,7 @@ class TRZWriter(base.Writer):
         self.numatoms = numatoms
 
         if convert_units is None:
-            convert_units = MDAnalysis.core.flags['convert_lengths']
+            convert_units = flags['convert_lengths']
         self.convert_units = convert_units
 
         self.trzfile = util.anyopen(self.filename, 'wb')
@@ -528,19 +526,25 @@ class TRZWriter(base.Writer):
         data = {}
         faked_attrs = []
         for att in ['pressure', 'pressure_tensor', 'total_energy', 'potential_energy',
-                    'kinetic_energy', 'temperature', 'step', 'time']:
+                    'kinetic_energy', 'temperature']:
             try:
-                data[att] = getattr(ts, att)
-            except AttributeError:
+                data[att] = ts.data[att]
+            except KeyError:
                 if att == 'pressure_tensor':
                     data[att] = np.zeros(6, dtype=np.float64)
-                elif att == 'step':
-                    data[att] = ts.frame
-                elif att == 'time':
-                    data[att] = float(ts.frame)
                 else:
                     data[att] = 0.0
                 faked_attrs.append(att)
+        try:
+            data['step'] = ts._frame
+        except AttributeError:
+            data['step'] = ts.frame
+            faked_attrs.append('step')
+        try:
+            data['time'] = ts.time
+        except AttributeError:
+            data['time'] = float(ts.frame)
+            faked_attrs.append('time')
         if faked_attrs:
             warnings.warn("Timestep didn't have the following attributes: '{0}', "
                           "these will be set to 0 in the output trajectory"

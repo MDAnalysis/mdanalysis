@@ -203,11 +203,11 @@ class TRRReader(core.TrjReader):
             self.open_trajectory()
 
         if self._sub is None:
-            ts.status, ts.step, ts.time, ts.lmbda,\
+            ts.data['status'], ts._frame, ts.time, ts.data['lmbda'],\
                 ts.has_x, ts.has_v, ts.has_f = libxdrfile2.read_trr(
                     self.xdrfile, ts._unitcell, ts._pos, ts._velocities, ts._forces)
         else:
-            ts.status, ts.step, ts.time, ts.lmbda,\
+            ts.data['status'], ts._frame, ts.time, ts.data['lmbda'],\
                 ts.has_x, ts.has_v, ts.has_f = libxdrfile2.read_trr(
                     self.xdrfile, ts._unitcell, self._pos_buf, self._velocities_buf, self._forces_buf)
             ts._pos[:] = self._pos_buf[self._sub]
@@ -225,14 +225,14 @@ class TRRReader(core.TrjReader):
             ts.has_forces = True
             ts._for_source = ts.frame
 
-        if ((ts.status == libxdrfile2.exdrENDOFFILE) or 
-            (ts.status == libxdrfile2.exdrINT)):
+        if ((ts.data['status'] == libxdrfile2.exdrENDOFFILE) or 
+            (ts.data['status'] == libxdrfile2.exdrINT)):
             # seems that trr files can get a exdrINT when reaching EOF (??)
-            raise IOError(errno.EIO, "End of file reached for %s file" % self.format,
+            raise IOError(errno.EIO, "End of file reached for {0} file".format(self.format),
                           self.filename)
-        elif not ts.status == libxdrfile2.exdrOK:
-            raise IOError(errno.EBADF, "Problem with %s file, status %s" %
-                                       (self.format, statno.ERRORCODE[ts.status]), self.filename)
+        elif not ts.data['status'] == libxdrfile2.exdrOK:
+            raise IOError(errno.EBADF,("Problem with {0} file, status {1}"
+                                       "".format((self.format, statno.ERRORCODE[ts.data['status']]), self.filename)))
 
         if self.convert_units:
             # TRRs have the annoying possibility of frames without coordinates/velocities/forces...

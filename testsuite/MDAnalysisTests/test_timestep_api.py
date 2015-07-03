@@ -14,8 +14,13 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-"""Tests for the API definition of Timestep, followed by checks for each subclass
+"""Tests for the API definition of Timestep
 
+These come in 2 parts
+
+_TestTimestep tests the functionality of a Timestep in isolation
+
+_TestTimestepInterface tests the Readers are correctly using Timesteps
 """
 
 import itertools
@@ -100,9 +105,9 @@ class _TRJTimestep(_BaseTimestep):
     unitcell = np.array([10., 11., 12., 90., 90., 90.])
 
 
-class _xdrCoreTimestep(_BaseTimestep):
+class _XTCTimestep(_BaseTimestep):
     Timestep = mda.coordinates.xdrfile.core.Timestep
-    name = "xdrCore"
+    name = "XTC"
     has_box = True
     set_box = True
     unitcell = np.array([[10., 0., 0.],
@@ -110,16 +115,12 @@ class _xdrCoreTimestep(_BaseTimestep):
                          [0., 0., 12.]])
 
 
-class _TRRTimestep(_xdrCoreTimestep):
+class _TRRTimestep(_XTCTimestep):
     Timestep = mda.coordinates.TRR.Timestep
     name = "TRR"
 
 
-class _XTCTimestep(_xdrCoreTimestep):
-    Timestep = mda.coordinates.XTC.Timestep
-    name = "XTC"
-
-class _DLPolyTimestep(_xdrCoreTimestep):
+class _DLPolyTimestep(_XTCTimestep):
     Timestep = mda.coordinates.DLPoly.Timestep
     name = "DLPoly"
 
@@ -263,6 +264,25 @@ class _TestTimestep(TestCase):
             assert_allclose(getattr(self.ts, coordinate), random_positions)
             assert_allclose(self.ts._pos[:,idx], random_positions)
 
+    # numatoms should be a read only property
+    # all Timesteps require this attribute
+    def test_numatoms(self):
+        assert_equal(self.ts.numatoms, self.ts._numatoms)
+
+    def test_numatoms_readonly(self):
+        assert_raises(AttributeError, self.ts.__setattr__, 'numatoms', 20)
+
+    def test_numatoms_presence(self):
+        assert_equal(hasattr(self.ts, '_numatoms'), True)
+
+    def test_unitcell_presence(self):
+        assert_equal(hasattr(self.ts, '_unitcell'), True)
+
+    def test_data_presence(self):
+        assert_equal(hasattr(self.ts, 'data'), True)
+        assert_equal(isinstance(self.ts.data, dict), True)
+
+
 # Can add in custom tests for a given Timestep here!
 class TestBaseTimestep(_TestTimestep, _BaseTimestep):
     #    def test_nothing(self):
@@ -311,10 +331,6 @@ class TestTRJTimestep(_TestTimestep, _TRJTimestep):
     pass
 
 
-class TestxdrCoreTimestep(_TestTimestep, _xdrCoreTimestep):
-    pass
-
-
 class TestXTCTimestep(_TestTimestep, _XTCTimestep):
     pass
 
@@ -322,8 +338,10 @@ class TestXTCTimestep(_TestTimestep, _XTCTimestep):
 class TestTRRTimestep(_TestTimestep, _TRRTimestep):
     pass
 
+
 class TestDLPolyTimestep(_TestTimestep, _DLPolyTimestep):
     pass
+
 
 class TestTimestep_Copy(TestCase):
     """
@@ -590,7 +608,8 @@ class TestTimestepEquality(object):  # using test generator, don't change to Tes
 class _TestTimestepInterface(object):
     """Test the Timesteps created by Readers
 
-    This checks that Readers are creating correct Timestep objects.
+    This checks that Readers are creating correct Timestep objects,
+    ensuring a consistent interface when using Timestep objects.
 
     Failures here are the Reader's fault
 

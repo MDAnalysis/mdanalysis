@@ -791,7 +791,7 @@ class AtomGroup(object):
             self.__atoms = []
 
         # managed timestep object
-        self.__ts = None
+        self._ts = None
 
         # caches:
         # - built on the fly when they are needed
@@ -2730,10 +2730,11 @@ class AtomGroup(object):
         :attr:`AtomGroup.ts` attribute; change attributes of the object.
         """
         trj_ts = self.universe.trajectory.ts  # original time step
-        if self.__ts is None or self.__ts.frame != trj_ts.frame:
+
+        if self._ts is None or self._ts.frame != trj_ts.frame:
             # create a timestep of same type as the underlying trajectory
-            self.__ts = trj_ts.copy_slice(self.indices())
-        return self.__ts
+            self._ts = trj_ts.copy_slice(self.indices())
+        return self._ts
 
 
 class Residue(AtomGroup):

@@ -85,8 +85,8 @@ option are guaranteed to conform to the above format::
 
 import numpy as np
 
-import MDAnalysis.core
-import MDAnalysis.lib.util as util
+from ..core import flags
+from ..lib import util
 from . import base
 
 
@@ -200,7 +200,7 @@ class PQRWriter(base.Writer):
         self.filename = util.filename(filename, ext='pqr')
 
         if convert_units is None:
-            convert_units = MDAnalysis.core.flags['convert_lengths']
+            convert_units = flags['convert_lengths']
         self.convert_units = convert_units  # convert length and time to base units
 
         self.remarks = kwargs.pop('remarks', "PQR file written by MDAnalysis")

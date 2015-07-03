@@ -70,13 +70,17 @@ import os
 import errno
 import numpy as np
 import struct
+import new
 
-import MDAnalysis.core
-from .. import units as mdaunits       # use mdaunits instead of units to avoid a clash
+from ..core import flags
+from .. import units as mdaunits  # use mdaunits instead of units to avoid a clash
 from ..exceptions import NoDataError
-
 from . import base
 from . import core
+# Add the c functions to their respective classes so they act as class methods
+from . import _dcdmodule
+# dcdtimeseries is implemented with Pyrex - hopefully all dcd reading functionality can move to pyrex
+from . import dcdtimeseries
 
 
 class Timestep(base.Timestep):
@@ -235,7 +239,7 @@ class DCDWriter(base.Writer):
                              "For example: numatoms=universe.atoms.numberOfAtoms()")
         self.filename = filename
         # convert length and time to base units on the fly?
-        self.convert_units = MDAnalysis.core.flags['convert_lengths'] if convert_units is None \
+        self.convert_units = flags['convert_lengths'] if convert_units is None \
             else convert_units
         self.numatoms = numatoms
 
@@ -454,22 +458,23 @@ class DCDReader(base.Reader):
         return dict(zip(desc, struct.unpack("LLiiiiidiPPiiii", self._dcd_C_str)))
 
     def _reopen(self):
+        self.ts.frame = -1
         self._reset_dcd_read()
 
     def _read_next_timestep(self, ts=None):
         if ts is None:
             ts = self.ts
-        ts.frame = self._read_next_frame(ts._x, ts._y, ts._z, ts._unitcell, self.skip)
-        # dcd.c gives 1 based, we want 0 based
-        ts.frame -= 1
+        ts._frame = self._read_next_frame(ts._x, ts._y, ts._z, ts._unitcell, self.skip)
+
+        ts.frame += 1
         return ts
 
     def _read_frame(self, frame):
         self._jump_to_frame(frame)
         ts = self.ts
-        ts.frame = self._read_next_frame(ts._x, ts._y, ts._z, ts._unitcell, 1)
-        # dcd.c gives 1 basead, we want 0 based
-        ts.frame -= 1
+        ts._frame = self._read_next_frame(ts._x, ts._y, ts._z, ts._unitcell, 1)
+
+        ts.frame = frame
         return ts
 
     def timeseries(self, asel, start=0, stop=-1, skip=1, format='afc'):
@@ -565,9 +570,6 @@ class DCDReader(base.Reader):
         # dt keyword is simply passed through if provided
         return DCDWriter(filename, numatoms, **kwargs)
 
-# Add the c functions to their respective classes so they act as class methods
-import _dcdmodule
-import new
 
 DCDReader._read_dcd_header = new.instancemethod(_dcdmodule.__read_dcd_header, None, DCDReader)
 DCDReader._read_next_frame = new.instancemethod(_dcdmodule.__read_next_frame, None, DCDReader)
@@ -581,8 +583,6 @@ DCDWriter._write_next_frame = new.instancemethod(_dcdmodule.__write_next_frame, 
 DCDWriter._finish_dcd_write = new.instancemethod(_dcdmodule.__finish_dcd_write, None, DCDWriter)
 del (_dcdmodule)
 
-# dcdtimeseries is implemented with Pyrex - hopefully all dcd reading functionality can move to pyrex
-import dcdtimeseries
 #DCDReader._read_timeseries = new.instancemethod(dcdtimeseries.__read_timeseries, None, DCDReader)
 DCDReader._read_timecorrel = new.instancemethod(dcdtimeseries.__read_timecorrel, None, DCDReader)
 del (dcdtimeseries)

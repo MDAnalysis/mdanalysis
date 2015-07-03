@@ -40,7 +40,7 @@ To open a mol2, remove all hydrogens and save as a new file, use the following::
 import numpy as np
 
 from . import base
-from .. import core
+from ..core import flags
 from ..lib import util
 
 
@@ -62,7 +62,7 @@ class MOL2Reader(base.Reader):
         """
         self.filename = filename
         if convert_units is None:
-            convert_units = core.flags['convert_lengths']
+            convert_units = flags['convert_lengths']
         self.convert_units = convert_units  # convert length and time to base units
 
         blocks = []
@@ -239,7 +239,7 @@ class MOL2Writer(base.Writer):
         """
         self.filename = filename
         if convert_units is None:
-            convert_units = core.flags['convert_lengths']
+            convert_units = flags['convert_lengths']
         self.convert_units = convert_units  # convert length and time to base units
 
         self.frames_written = 0

@@ -112,6 +112,7 @@ import os.path
 import warnings
 import bisect
 import numpy as np
+import copy
 
 from ..core import flags
 from .. import units
@@ -172,7 +173,7 @@ class Timestep(object):
         # self.frame to 0
         self.frame = -1
         self._numatoms = numatoms
-
+        self.time = 0.0
         self._pos = np.zeros((numatoms, 3), dtype=np.float32, order=self.order)
 
         self.has_velocities = kwargs.get('velocities', False)
@@ -185,6 +186,8 @@ class Timestep(object):
                                     dtype=np.float32, order=self.order)
 
         self._unitcell = self._init_unitcell()
+
+        self.data = {}
 
         self._x = self._pos[:, 0]
         self._y = self._pos[:, 1]
@@ -210,8 +213,10 @@ class Timestep(object):
         except NoDataError:
             pass
 
+        ts.data = copy.deepcopy(other.data)
+
         for attr in other.__dict__:
-            if not attr.startswith('_'):
+            if not attr.startswith('data'):
                 setattr(ts, attr, getattr(other, attr))
 
         return ts
@@ -319,6 +324,9 @@ class Timestep(object):
                   in this Timestep
 
         .. versionadded:: 0.8
+        .. versionchanged:: 0.11.0
+           Reworked to follow new Timestep API.  Now will strictly only
+           copy official attributes of the Timestep.
         """
         # Detect the size of the Timestep by doing a dummy slice
         try:
@@ -327,18 +335,24 @@ class Timestep(object):
             raise TypeError("Selection type must be compatible with slicing"
                             " the coordinates")
         # Make a mostly empty TS of same type of reduced size
-        new_TS = self.__class__(new_numatoms)
+        new_TS = self.__class__(new_numatoms, velocities=self.has_velocities,
+                                forces=self.has_forces)
 
-        # List of attributes which will require slicing if present
-        per_atom = ['_pos', '_velocities', '_forces', '_x', '_y', '_z']
+        new_TS.positions = self.positions[sel]
+        if self.has_velocities:
+            new_TS.velocities = self.velocities[sel]
+        if self.has_forces:
+            new_TS.forces = self.forces[sel]
+        new_TS._unitcell = self._unitcell.copy()
 
-        for attr in self.__dict__:
-            if not attr in per_atom:  # Header type information
-                new_TS.__setattr__(attr, self.__dict__[attr])
-            else:  # Per atom information, ie. anything that can be sliced
-                new_TS.__setattr__(attr, self.__dict__[attr][sel])
-
-        new_TS._numatoms = new_numatoms
+        new_TS.time = self.time
+        new_TS.frame = self.frame
+        try:
+            new_TS._frame = self._frame
+        except AttributeError:
+            pass
+        
+        new_TS.data = copy.deepcopy(self.data)
 
         return new_TS
 
