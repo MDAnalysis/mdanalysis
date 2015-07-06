@@ -66,18 +66,23 @@ Classes
    :inherited-members:
 
 """
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import os
 import errno
 import numpy as np
 import struct
+import new  # TODO: Remove this, deprecated in 3.0+
 
-import MDAnalysis.core
+from ..core import flags
 from .. import units as mdaunits       # use mdaunits instead of units to avoid a clash
 from ..exceptions import NoDataError
-
 from . import base
 from . import core
-
+# Add the c functions to their respective classes so they act as class methods
+from . import _dcdmodule
+# dcdtimeseries is implemented with Pyrex - hopefully all dcd reading functionality can move to pyrex
+from . import dcdtimeseries
 
 class Timestep(base.Timestep):
     #: Indices into :attr:`Timestep._unitcell` (``[A, gamma, B, beta, alpha,
@@ -235,7 +240,7 @@ class DCDWriter(base.Writer):
                              "For example: numatoms=universe.atoms.numberOfAtoms()")
         self.filename = filename
         # convert length and time to base units on the fly?
-        self.convert_units = MDAnalysis.core.flags['convert_lengths'] if convert_units is None \
+        self.convert_units = flags['convert_lengths'] if convert_units is None \
             else convert_units
         self.numatoms = numatoms
 
@@ -565,9 +570,6 @@ class DCDReader(base.Reader):
         # dt keyword is simply passed through if provided
         return DCDWriter(filename, numatoms, **kwargs)
 
-# Add the c functions to their respective classes so they act as class methods
-import _dcdmodule
-import new
 
 DCDReader._read_dcd_header = new.instancemethod(_dcdmodule.__read_dcd_header, None, DCDReader)
 DCDReader._read_next_frame = new.instancemethod(_dcdmodule.__read_next_frame, None, DCDReader)
@@ -579,11 +581,8 @@ DCDReader._read_timeseries = new.instancemethod(_dcdmodule.__read_timeseries, No
 DCDWriter._write_dcd_header = new.instancemethod(_dcdmodule.__write_dcd_header, None, DCDWriter)
 DCDWriter._write_next_frame = new.instancemethod(_dcdmodule.__write_next_frame, None, DCDWriter)
 DCDWriter._finish_dcd_write = new.instancemethod(_dcdmodule.__finish_dcd_write, None, DCDWriter)
-del (_dcdmodule)
 
-# dcdtimeseries is implemented with Pyrex - hopefully all dcd reading functionality can move to pyrex
-import dcdtimeseries
+
 #DCDReader._read_timeseries = new.instancemethod(dcdtimeseries.__read_timeseries, None, DCDReader)
 DCDReader._read_timecorrel = new.instancemethod(dcdtimeseries.__read_timecorrel, None, DCDReader)
-del (dcdtimeseries)
-del (new)
+
