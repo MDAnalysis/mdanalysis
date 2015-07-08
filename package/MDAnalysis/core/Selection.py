@@ -28,9 +28,11 @@ Currently all atom arrays are handled internally as sets, but returned as AtomGr
 import re
 import numpy
 
-from AtomGroup import AtomGroup, Universe
+from .AtomGroup import AtomGroup, Universe
 from MDAnalysis.core import flags
-from MDAnalysis.lib.KDTree.NeighborSearch import CoordinateNeighborSearch
+from ..lib.KDTree.NeighborSearch import CoordinateNeighborSearch
+from ..lib import distances
+from ..lib.mdamath import triclinic_vectors
 
 
 class Selection:
@@ -175,7 +177,6 @@ class AroundSelection(Selection):
             box = group.dimensions[:3]  # ignored with KDTree
         else:
             box = None
-        import distances
 
         dist = distances.distance_array(sys_coor, sel_coor, box)
         res_atoms = [
@@ -317,10 +318,8 @@ class _CylindricalSelection(Selection):
         coords = AtomGroup(Selection._group_atoms_list).positions
 
         if self.periodic and not numpy.any(Selection.coord.dimensions[:3]==0):
-            from ..core import distances
             if not numpy.allclose(Selection.coord.dimensions[3:],(90.,90.,90.)):
                 is_triclinic = True
-                from ..coordinates.core import triclinic_vectors
                 box = triclinic_vectors(Selection.coord.dimensions).diagonal()
             else:
                 is_triclinic = False
@@ -432,7 +431,6 @@ class PointSelection(Selection):
             box = group.dimensions[:3]
         else:
             box = None
-        import distances
 
         dist = distances.distance_array(sys_coor, ref_coor, box)
         res_atoms = [self._group_atoms_list[i] for i in numpy.any(dist <= self.cutoff, axis=1).nonzero()[0]]

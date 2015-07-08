@@ -14,7 +14,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import MDAnalysis
-import MDAnalysis.core.distances
+import MDAnalysis.lib.distances
 
 import numpy as np
 from numpy.testing import *
@@ -46,11 +46,11 @@ class TestDistanceArray(TestCase):
         return np.sqrt(np.dot(r, r))
 
     def test_noPBC(self):
-        d = MDAnalysis.core.distances.distance_array(self.ref, self.points)
+        d = MDAnalysis.lib.distances.distance_array(self.ref, self.points)
         assert_almost_equal(d, np.array([[self._dist(0), self._dist(1), self._dist(2), self._dist(3)]]))
 
     def test_PBC(self):
-        d = MDAnalysis.core.distances.distance_array(self.ref, self.points, box=self.box)
+        d = MDAnalysis.lib.distances.distance_array(self.ref, self.points, box=self.box)
         assert_almost_equal(d, np.array([[0., 0., 0., self._dist(3, ref=[1, 1, 2])]]))
 
     def test_PBC2(self):
@@ -63,7 +63,7 @@ class TestDistanceArray(TestCase):
             return np.linalg.norm(x - np.rint(x / box) * box)
 
         ref = mindist(a, b, box)
-        val = MDAnalysis.core.distances.distance_array(np.array([a]), np.array([b]), box)[0, 0]
+        val = MDAnalysis.lib.distances.distance_array(np.array([a]), np.array([b]), box)[0, 0]
 
         assert_almost_equal(val, ref, decimal=6, err_msg="Issue 151 not correct (PBC in distance array)")
 
@@ -93,7 +93,7 @@ class TestDistanceArrayDCD(TestCase):
         x0 = U.atoms.coordinates(copy=True)
         self.trajectory[10]
         x1 = U.atoms.coordinates(copy=True)
-        d = MDAnalysis.core.distances.distance_array(x0, x1)
+        d = MDAnalysis.lib.distances.distance_array(x0, x1)
         assert_equal(d.shape, (3341, 3341), "wrong shape (should be (Natoms,Natoms))")
         assert_almost_equal(d.min(), 0.11981228170520701, self.prec,
                             err_msg="wrong minimum distance value")
@@ -108,7 +108,7 @@ class TestDistanceArrayDCD(TestCase):
         x1 = U.atoms.coordinates(copy=True)
         natoms = len(U.atoms)
         d = np.zeros((natoms, natoms), np.float64)
-        MDAnalysis.core.distances.distance_array(x0, x1, result=d)
+        MDAnalysis.lib.distances.distance_array(x0, x1, result=d)
         assert_equal(d.shape, (natoms, natoms), "wrong shape, shoud be  (Natoms,Natoms) entries")
         assert_almost_equal(d.min(), 0.11981228170520701, self.prec,
                             err_msg="wrong minimum distance value")
@@ -122,7 +122,7 @@ class TestDistanceArrayDCD(TestCase):
         x0 = U.atoms.coordinates(copy=True)
         self.trajectory[10]
         x1 = U.atoms.coordinates(copy=True)
-        d = MDAnalysis.core.distances.distance_array(x0, x1, box=U.coord.dimensions)
+        d = MDAnalysis.lib.distances.distance_array(x0, x1, box=U.coord.dimensions)
         assert_equal(d.shape, (3341, 3341), "should be square matrix with Natoms entries")
         assert_almost_equal(d.min(), 0.11981228170520701, self.prec,
                             err_msg="wrong minimum distance value with PBC")
@@ -147,7 +147,7 @@ class TestSelfDistanceArrayDCD(TestCase):
         U = self.universe
         self.trajectory.rewind()
         x0 = U.atoms.coordinates(copy=True)
-        d = MDAnalysis.core.distances.self_distance_array(x0)
+        d = MDAnalysis.lib.distances.self_distance_array(x0)
         N = 3341 * (3341 - 1) / 2
         assert_equal(d.shape, (N,), "wrong shape (should be (Natoms*(Natoms-1)/2,))")
         assert_almost_equal(d.min(), 0.92905562402529318, self.prec,
@@ -162,7 +162,7 @@ class TestSelfDistanceArrayDCD(TestCase):
         natoms = len(U.atoms)
         N = natoms * (natoms - 1) / 2
         d = np.zeros((N,), np.float64)
-        MDAnalysis.core.distances.self_distance_array(x0, result=d)
+        MDAnalysis.lib.distances.self_distance_array(x0, result=d)
         assert_equal(d.shape, (N,), "wrong shape (should be (Natoms*(Natoms-1)/2,))")
         assert_almost_equal(d.min(), 0.92905562402529318, self.prec,
                             err_msg="wrong minimum distance value")
@@ -176,7 +176,7 @@ class TestSelfDistanceArrayDCD(TestCase):
         x0 = U.atoms.coordinates(copy=True)
         natoms = len(U.atoms)
         N = natoms * (natoms - 1) / 2
-        d = MDAnalysis.core.distances.self_distance_array(x0, box=U.coord.dimensions)
+        d = MDAnalysis.lib.distances.self_distance_array(x0, box=U.coord.dimensions)
         assert_equal(d.shape, (N,), "wrong shape (should be (Natoms*(Natoms-1)/2,))")
         assert_almost_equal(d.min(), 0.92905562402529318, self.prec,
                             err_msg="wrong minimum distance value with PBC")
@@ -188,11 +188,11 @@ class TestTriclinicDistances(TestCase):
     """Unit tests for the Triclinic PBC functions.
     Tests:
       # transforming to and form S space (fractional coords)
-      mda.core.distances.transform_StoR
-      mda.core.distances.transform_RtoS
+      mda.lib.distances.transform_StoR
+      mda.lib.distances.transform_RtoS
       # distance calculations with PBC 
-      mda.core.distances.self_distance_array
-      mda.core.distances.distance_array
+      mda.lib.distances.self_distance_array
+      mda.lib.distances.distance_array
     """
 
     def setUp(self):
@@ -214,7 +214,7 @@ class TestTriclinicDistances(TestCase):
         del self.prec
 
     def test_transforms(self):
-        from MDAnalysis.core.distances import transform_StoR, transform_RtoS
+        from MDAnalysis.lib.distances import transform_StoR, transform_RtoS
         # To check the cython coordinate transform, the same operation is done in numpy
         # Is a matrix multiplication of Coords x Box = NewCoords, so can use np.dot
 
@@ -237,8 +237,8 @@ class TestTriclinicDistances(TestCase):
         assert_almost_equal(S_test2, self.S_mol2, self.prec, err_msg="Round trip failed in transform")
 
     def test_selfdist(self):
-        from MDAnalysis.core.distances import self_distance_array
-        from MDAnalysis.core.distances import transform_RtoS, transform_StoR
+        from MDAnalysis.lib.distances import self_distance_array
+        from MDAnalysis.lib.distances import transform_RtoS, transform_StoR
 
         R_coords = transform_StoR(self.S_mol1, self.box)
         # Transform functions are tested elsewhere so taken as working here
@@ -281,8 +281,8 @@ class TestTriclinicDistances(TestCase):
                             err_msg="self_distance_array failed with input 2")
 
     def test_distarray(self):
-        from MDAnalysis.core.distances import distance_array
-        from MDAnalysis.core.distances import transform_StoR, transform_RtoS
+        from MDAnalysis.lib.distances import distance_array
+        from MDAnalysis.lib.distances import transform_StoR, transform_RtoS
 
         R_mol1 = transform_StoR(self.S_mol1, self.box)
         R_mol2 = transform_StoR(self.S_mol2, self.box)
@@ -309,7 +309,7 @@ class TestTriclinicDistances(TestCase):
                             err_msg="distance_array failed with boxV")
 
     def test_pbc_dist(self):
-        from MDAnalysis.core.distances import distance_array
+        from MDAnalysis.lib.distances import distance_array
 
         results = np.array([[37.629944]])
 
@@ -320,7 +320,7 @@ class TestTriclinicDistances(TestCase):
 
 
 class TestCythonFunctions(TestCase):
-    # Unit tests for calc_bonds calc_angles and calc_torsions in core.distances
+    # Unit tests for calc_bonds calc_angles and calc_torsions in lib.distances
     # Tests both numerical results as well as input types as Cython will silently 
     # produce nonsensical results if given wrong data types otherwise.
     def setUp(self):
@@ -349,9 +349,9 @@ class TestCythonFunctions(TestCase):
         del self.wronglength
 
     def test_bonds(self):
-        dists = MDAnalysis.core.distances.calc_bonds(self.a, self.b)
+        dists = MDAnalysis.lib.distances.calc_bonds(self.a, self.b)
         assert_equal(len(dists), 4, err_msg="calc_bonds results have wrong length")
-        dists_pbc = MDAnalysis.core.distances.calc_bonds(self.a, self.b, box=self.box)
+        dists_pbc = MDAnalysis.lib.distances.calc_bonds(self.a, self.b, box=self.box)
         #tests 0 length
         assert_almost_equal(dists[0], 0.0, self.prec, err_msg="Zero length calc_bonds fail")
         assert_almost_equal(dists[1], 1.7320508075688772, self.prec,
@@ -367,32 +367,32 @@ class TestCythonFunctions(TestCase):
                             err_msg="PBC check #w with box")
         #Bad input checking
     def test_bonds_wrongtype(self):
-        assert_raises(TypeError, MDAnalysis.core.distances.calc_bonds, self.a, self.wrongtype)
-        assert_raises(TypeError, MDAnalysis.core.distances.calc_bonds, self.wrongtype, self.b)
-        assert_raises(ValueError, MDAnalysis.core.distances.calc_bonds, self.a, self.wronglength)
-        assert_raises(ValueError, MDAnalysis.core.distances.calc_bonds, self.wronglength, self.b)
+        assert_raises(TypeError, MDAnalysis.lib.distances.calc_bonds, self.a, self.wrongtype)
+        assert_raises(TypeError, MDAnalysis.lib.distances.calc_bonds, self.wrongtype, self.b)
+        assert_raises(ValueError, MDAnalysis.lib.distances.calc_bonds, self.a, self.wronglength)
+        assert_raises(ValueError, MDAnalysis.lib.distances.calc_bonds, self.wronglength, self.b)
 
     def test_bonds_badbox(self):
         badboxtype = np.array([10., 10., 10.], dtype=np.float64)
         badboxsize = np.array([[10., 10.], [10., 10., ]], dtype=np.float32)
 
-        assert_raises(ValueError, MDAnalysis.core.distances.calc_bonds, self.a, self.b,
+        assert_raises(ValueError, MDAnalysis.lib.distances.calc_bonds, self.a, self.b,
                       box=badboxsize)  # Bad box data
-        assert_raises(TypeError, MDAnalysis.core.distances.calc_bonds, self.a, self.b,
+        assert_raises(TypeError, MDAnalysis.lib.distances.calc_bonds, self.a, self.b,
                       box=badboxtype)  # Bad box type
 
     def test_bonds_badresult(self):
         badresult = np.zeros(len(self.a) - 1)
-        assert_raises(ValueError, MDAnalysis.core.distances.calc_bonds, self.a, self.b,
+        assert_raises(ValueError, MDAnalysis.lib.distances.calc_bonds, self.a, self.b,
                       result=badresult)  # Bad result array
 
     def test_bonds_triclinic(self):
-        dists = MDAnalysis.core.distances.calc_bonds(self.a, self.b, box=self.box2)
+        dists = MDAnalysis.lib.distances.calc_bonds(self.a, self.b, box=self.box2)
         reference = np.array([0.0, 1.7320508, 1.4142136, 2.82842712])
         assert_almost_equal(dists, reference, self.prec, err_msg="calc_bonds with triclinic box failed")
 
     def test_angles(self):
-        angles = MDAnalysis.core.distances.calc_angles(self.a, self.b, self.c)
+        angles = MDAnalysis.lib.distances.calc_angles(self.a, self.b, self.c)
         # Check calculated values
         assert_equal(len(angles), 4, err_msg="calc_angles results have wrong length")
         #        assert_almost_equal(angles[0], 0.0, self.prec,
@@ -406,26 +406,26 @@ class TestCythonFunctions(TestCase):
 
     # Check data type checks
     def test_angles_wrongtype(self):
-        assert_raises(TypeError, MDAnalysis.core.distances.calc_angles,
+        assert_raises(TypeError, MDAnalysis.lib.distances.calc_angles,
                       self.a, self.wrongtype, self.c)  # try inputting float64 values
-        assert_raises(TypeError, MDAnalysis.core.distances.calc_angles,
+        assert_raises(TypeError, MDAnalysis.lib.distances.calc_angles,
                       self.wrongtype, self.b, self.c)
-        assert_raises(TypeError, MDAnalysis.core.distances.calc_angles,
+        assert_raises(TypeError, MDAnalysis.lib.distances.calc_angles,
                       self.a, self.b, self.wrongtype)
-        assert_raises(ValueError, MDAnalysis.core.distances.calc_angles,
+        assert_raises(ValueError, MDAnalysis.lib.distances.calc_angles,
                       self.a, self.wronglength, self.c)  # try inputting arrays of different length
-        assert_raises(ValueError, MDAnalysis.core.distances.calc_angles,
+        assert_raises(ValueError, MDAnalysis.lib.distances.calc_angles,
                       self.wronglength, self.b, self.c)
-        assert_raises(ValueError, MDAnalysis.core.distances.calc_angles,
+        assert_raises(ValueError, MDAnalysis.lib.distances.calc_angles,
                       self.a, self.b, self.wronglength)
 
     def test_angles_bad_result(self):
         badresult = np.zeros(len(self.a) - 1)
-        assert_raises(ValueError, MDAnalysis.core.distances.calc_angles,
+        assert_raises(ValueError, MDAnalysis.lib.distances.calc_angles,
                       self.a, self.b, self.c, result=badresult)  # Bad result array
 
     def test_torsions(self):
-        torsions = MDAnalysis.core.distances.calc_torsions(self.a, self.b, self.c, self.d)
+        torsions = MDAnalysis.lib.distances.calc_torsions(self.a, self.b, self.c, self.d)
         # Check calculated values
         assert_equal(len(torsions), 4, err_msg="calc_torsions results have wrong length")
         #        assert_almost_equal(torsions[0], 0.0, self.prec, err_msg="Zero length torsion failed")
@@ -435,36 +435,36 @@ class TestCythonFunctions(TestCase):
                             err_msg="arbitrary torsion angle failed")
     # Check data type checks
     def test_torsions_wrongtype(self):
-        assert_raises(TypeError, MDAnalysis.core.distances.calc_torsions,
+        assert_raises(TypeError, MDAnalysis.lib.distances.calc_torsions,
                       self.a, self.wrongtype, self.c, self.d)  # try inputting float64 values
-        assert_raises(TypeError, MDAnalysis.core.distances.calc_torsions,
+        assert_raises(TypeError, MDAnalysis.lib.distances.calc_torsions,
                       self.wrongtype, self.b, self.c, self.d)
-        assert_raises(TypeError, MDAnalysis.core.distances.calc_torsions,
+        assert_raises(TypeError, MDAnalysis.lib.distances.calc_torsions,
                       self.a, self.b, self.wrongtype, self.d)
-        assert_raises(TypeError, MDAnalysis.core.distances.calc_torsions,
+        assert_raises(TypeError, MDAnalysis.lib.distances.calc_torsions,
                       self.a, self.b, self.c, self.wrongtype)
 
     def test_torsions_wronglength(self):
-        assert_raises(ValueError, MDAnalysis.core.distances.calc_torsions,
+        assert_raises(ValueError, MDAnalysis.lib.distances.calc_torsions,
                       self.a, self.wronglength, self.c, self.d)
-        assert_raises(ValueError, MDAnalysis.core.distances.calc_torsions,
+        assert_raises(ValueError, MDAnalysis.lib.distances.calc_torsions,
                       self.wronglength, self.b, self.c, self.d)
-        assert_raises(ValueError, MDAnalysis.core.distances.calc_torsions,
+        assert_raises(ValueError, MDAnalysis.lib.distances.calc_torsions,
                       self.a, self.b, self.wronglength, self.d)
-        assert_raises(ValueError, MDAnalysis.core.distances.calc_torsions,
+        assert_raises(ValueError, MDAnalysis.lib.distances.calc_torsions,
                       self.a, self.b, self.c, self.wronglength)
 
     def test_torsions_bad_result(self):
         badresult = np.zeros(len(self.a) - 1)
 
-        assert_raises(ValueError, MDAnalysis.core.distances.calc_torsions,
+        assert_raises(ValueError, MDAnalysis.lib.distances.calc_torsions,
                       self.a, self.b, self.c, self.d, result=badresult)  # Bad result array
 
     def test_numpy_compliance(self):
         # Checks that the cython functions give identical results to the numpy versions
-        bonds = MDAnalysis.core.distances.calc_bonds(self.a, self.b)
-        angles = MDAnalysis.core.distances.calc_angles(self.a, self.b, self.c)
-        torsions = MDAnalysis.core.distances.calc_torsions(self.a, self.b, self.c, self.d)
+        bonds = MDAnalysis.lib.distances.calc_bonds(self.a, self.b)
+        angles = MDAnalysis.lib.distances.calc_angles(self.a, self.b, self.c)
+        torsions = MDAnalysis.lib.distances.calc_torsions(self.a, self.b, self.c, self.d)
 
         bonds_numpy = np.array([util.norm(y - x) for x, y in zip(self.a, self.b)])
         vec1 = self.a - self.b
@@ -493,7 +493,7 @@ class test_apply_PBC(TestCase):
         del self.prec
 
     def test_ortho_PBC(self):
-        from MDAnalysis.core.distances import applyPBC
+        from MDAnalysis.lib.distances import applyPBC
 
         U = MDAnalysis.Universe(PSF, DCD)
         atoms = U.atoms.coordinates()
@@ -508,7 +508,7 @@ class test_apply_PBC(TestCase):
         assert_almost_equal(cyth2, reference, self.prec, err_msg="Ortho applyPBC #2 failed comparison with np")
 
     def test_tric_PBC(self):
-        from MDAnalysis.core.distances import applyPBC
+        from MDAnalysis.lib.distances import applyPBC
 
         U = MDAnalysis.Universe(TRIC)
         atoms = U.atoms.coordinates()
@@ -555,7 +555,7 @@ class TestPeriodicAngles(TestCase):
         del self.box
 
     def test_angles(self):
-        from MDAnalysis.core.distances import calc_angles
+        from MDAnalysis.lib.distances import calc_angles
         # Shift atom coordinates a few box lengths in random directions and see if we still get same results
         a2 = (self.a + self.box * (-1, 0, 0)).astype(np.float32)  # seem to get converted to float64 otherwise
         b2 = (self.b + self.box * (1, 0, 1)).astype(np.float32)
@@ -572,7 +572,7 @@ class TestPeriodicAngles(TestCase):
             assert_almost_equal(ref, val, self.prec, err_msg="Min image in angle calculation failed")
 
     def test_torsions(self):
-        from MDAnalysis.core.distances import calc_torsions
+        from MDAnalysis.lib.distances import calc_torsions
 
         a2 = (self.a + self.box * (-1, 0, 0)).astype(np.float32)
         b2 = (self.b + self.box * (1, 0, 1)).astype(np.float32)

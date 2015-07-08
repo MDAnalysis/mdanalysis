@@ -34,7 +34,7 @@ from itertools import izip
 
 # Local imports
 from . import tables
-from ..core import distances
+from ..lib import distances
 from ..lib.util import norm, dihedral, cached
 from ..lib.util import angle as slowang
 from ..core import AtomGroup
@@ -857,7 +857,7 @@ class TopologyGroup(object):
 
     The :meth:`bonds`, :meth:`angles` and :meth:`torsions` methods offer
     a "shortcut" to the Cython distance calculation functions in
-    :class:`MDAnalysis.core.distances`.
+    :class:`MDAnalysis.lib.distances`.
 
     TopologyGroups can be combined with TopologyGroups of the same bond
     type (ie can combine two angle containing TopologyGroups).

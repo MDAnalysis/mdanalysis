@@ -21,7 +21,7 @@ from itertools import izip
 import numpy
 
 from MDAnalysis import *
-from MDAnalysis.core.distances import *  # #distance_array
+from MDAnalysis.lib.distances import *  # #distance_array
 import MDAnalysis.units  # for bulk water density
 
 try:

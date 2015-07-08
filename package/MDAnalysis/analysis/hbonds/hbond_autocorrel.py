@@ -145,7 +145,7 @@ import warnings
 from itertools import izip
 
 from MDAnalysis.lib.log import ProgressMeter
-from MDAnalysis.core.distances import distance_array, calc_angles, calc_bonds
+from MDAnalysis.lib.distances import distance_array, calc_angles, calc_bonds
 
 
 class HydrogenBondAutoCorrel(object):
