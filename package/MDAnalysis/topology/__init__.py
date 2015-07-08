@@ -100,6 +100,12 @@ The following table lists the currently supported topology formats.
                                  If atoms are written out of order, will correct the
                                  order.
                                  :mod:`MDAnalysis.topology.DLPolyParser`
+
+   Hoomd XML         xml         `HOOMD XML`_ topology file.  Reads atom types, masses, and
+                                 charges if possible. Also reads bonds, angles, and dihedrals.
+                                 
+                                 :mod:`MDAnalysis.topology.HOOMDXMLarser`
+
    ================= ==========  =====================================================
 
 .. [#a] This format can also be used to provide *coordinates* so that
@@ -115,6 +121,7 @@ The following table lists the currently supported topology formats.
 
 .. SeeAlso:: :ref:`Coordinates` with the :ref:`Supported coordinate formats`
 
+.. _HOOMD XML: http://codeblue.umich.edu/hoomd-blue/doc/page_xml_file_format.html
 
 Developer Notes
 ---------------
@@ -240,7 +247,8 @@ tuple contains four atom numbers.
 
 __all__ = ['core', 'PSFParser', 'PDBParser', 'PQRParser', 'GROParser',
            'CRDParser', 'TOPParser', 'PDBQTParser', 'TPRParser',
-           'LAMMPSParser', 'XYZParser', 'GMSParser', 'DLPolyParser']
+           'LAMMPSParser', 'XYZParser', 'GMSParser', 'DLPolyParser',
+           'HoomdXMLParser']
 
 from . import core
 from . import PSFParser
@@ -259,6 +267,7 @@ from . import LAMMPSParser
 from . import XYZParser
 from . import GMSParser
 from . import DLPolyParser
+from . import HoomdXMLParser
 
 
 # dictionary of known file formats and the corresponding file parser
@@ -283,4 +292,5 @@ _topology_parsers = {'PSF': PSFParser.PSFParser,
                      'GMS': GMSParser.GMSParser,
                      'CONFIG': DLPolyParser.ConfigParser,
                      'HISTORY': DLPolyParser.HistoryParser,
+                     'XML': HoomdXMLParser.HoomdXMLParser,
                      }
