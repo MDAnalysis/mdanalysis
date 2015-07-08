@@ -22,6 +22,7 @@ from MDAnalysis.tests.datafiles import PSF, DCD, PDB_small, GRO, TRR, \
 import MDAnalysis.core.AtomGroup
 from MDAnalysis.core.AtomGroup import Atom, AtomGroup, asUniverse
 from MDAnalysis import NoDataError
+from MDAnalysisTests import MemleakTest
 
 import numpy
 from numpy.testing import *
@@ -35,7 +36,7 @@ import itertools
 from MDAnalysisTests import knownfailure
 
 
-class TestAtom(TestCase):
+class TestAtom(MemleakTest):
     """Tests of Atom."""
 
     def setUp(self):
@@ -118,7 +119,7 @@ class TestAtom(TestCase):
         assert_equal(ref, list(at.bonded_atoms))
 
 
-class TestAtomNoForceNoVel(TestCase):
+class TestAtomNoForceNoVel(MemleakTest):
     def setUp(self):
         self.u = MDAnalysis.Universe(XYZ_mini)
         self.a = self.u.atoms[0]
@@ -139,7 +140,7 @@ class TestAtomNoForceNoVel(TestCase):
         assert_raises(NoDataError, setattr, self.a, 'force', [1.0, 1.0, 1.0])
 
 
-class TestAtomGroup(TestCase):
+class TestAtomGroup(MemleakTest):
     """Tests of AtomGroup; selections are tested separately."""
     # all tests are done with the AdK system (PSF and DCD)
     # sequence: http://www.uniprot.org/uniprot/P69441.fasta
@@ -794,7 +795,7 @@ class TestAtomGroup(TestCase):
             self.universe.atoms.NO_SUCH_ATOM
         assert_raises(AttributeError, access_nonexistent_instantselector)
 
-class TestAtomGroupNoTop(TestCase):
+class TestAtomGroupNoTop(MemleakTest):
     def setUp(self):
         self.u = MDAnalysis.Universe(PSF_notop, DCD)
         self.ag = self.u.atoms[:10]
@@ -885,7 +886,7 @@ class TestAtomGroupNoTop(TestCase):
         assert_allclose(u.atoms.dimensions, box)
 
 
-class TestUniverseSetTopology(TestCase):
+class TestUniverseSetTopology(MemleakTest):
     """Tests setting of bonds/angles/torsions/impropers from Universe."""
 
     def setUp(self):
@@ -984,7 +985,7 @@ class TestUniverseSetTopology(TestCase):
         assert_equal('improperDict' in self.u._cache, False)
 
 
-class TestResidue(TestCase):
+class TestResidue(MemleakTest):
     def setUp(self):
         self.universe = MDAnalysis.Universe(PSF, DCD)
         self.res = self.universe.residues[100]
@@ -1013,7 +1014,7 @@ class TestResidue(TestCase):
         assert_equal(atoms.names(), ["N", "CA", "C", "O"])
 
 
-class TestResidueGroup(TestCase):
+class TestResidueGroup(MemleakTest):
     def setUp(self):
         """Set up the standard AdK system in implicit solvent."""
         self.universe = MDAnalysis.Universe(PSF, DCD)
@@ -1149,7 +1150,7 @@ class TestResidueGroup(TestCase):
                      err_msg="failed to set_mass H* atoms in resid 12:42 to {0}".format(mass))
 
 
-class TestSegment(TestCase):
+class TestSegment(MemleakTest):
     def setUp(self):
         self.universe = MDAnalysis.Universe(PSF, DCD)
         self.universe.residues[:100].set_segid("A")  # make up some segments
@@ -1187,7 +1188,7 @@ class TestSegment(TestCase):
             assert_equal(val, new)
 
 
-class TestSegmentGroup(TestCase):
+class TestSegmentGroup(MemleakTest):
     def setUp(self):
         """Set up the standard AdK system in implicit solvent."""
         self.universe = MDAnalysis.Universe(PSF, DCD)
@@ -1251,7 +1252,7 @@ class TestSegmentGroup(TestCase):
         assert_raises(ValueError, self.g.set_resid, [1, 2, 3, 4])
 
 
-class TestAtomGroupVelocities(TestCase):
+class TestAtomGroupVelocities(MemleakTest):
     """Tests of velocity-related functions in AtomGroup"""
 
     def setUp(self):
@@ -1286,7 +1287,7 @@ class TestAtomGroupVelocities(TestCase):
                             err_msg="messages were not set to new value")
 
 
-class TestAtomGroupTimestep(TestCase):
+class TestAtomGroupTimestep(MemleakTest):
     """Tests the AtomGroup.ts attribute (partial timestep)"""
 
     def setUp(self):
@@ -1315,7 +1316,7 @@ def test_empty_AtomGroup():
     ag = MDAnalysis.core.AtomGroup.AtomGroup([])
     assert_equal(len(ag), 0)
 
-class _WriteAtoms(TestCase):
+class _WriteAtoms(MemleakTest):
     """Set up the standard AdK system in implicit solvent."""
     ext = None  # override to test various output writers
     precision = 3
@@ -1440,7 +1441,7 @@ def test_instantselection_termini():
     del universe
 
 
-class TestUniverse(TestCase):
+class TestUniverse(MemleakTest):
     def test_load(self):
         # Universe(top, trj)
         u = MDAnalysis.Universe(PSF, PDB_small)
@@ -1510,7 +1511,7 @@ class TestUniverse(TestCase):
         u.dimensions = numpy.array([10, 11, 12, 90, 90, 90])
         assert_allclose(u.dimensions, box)
 
-class TestPBCFlag(TestCase):
+class TestPBCFlag(MemleakTest):
     def setUp(self):
         self.prec = 3
         self.universe = MDAnalysis.Universe(TRZ_psf, TRZ)
@@ -1619,7 +1620,7 @@ class TestPBCFlag(TestCase):
         MDAnalysis.core.flags['use_pbc'] = False
 
 
-class TestAsUniverse(TestCase):
+class TestAsUniverse(MemleakTest):
     def setUp(self):
         self.u = MDAnalysis.Universe(PSF_notop, DCD)
 
@@ -1641,7 +1642,7 @@ class TestAsUniverse(TestCase):
         assert_equal(set(returnval.atoms), set(self.u.atoms))
 
 
-class TestFragments(TestCase):
+class TestFragments(MemleakTest):
     def setUp(self):
         self.u = MDAnalysis.Universe(PSF, DCD)
         # To create a fragment with only one atom in, remove a bond
@@ -1694,7 +1695,7 @@ class TestFragments(TestCase):
         assert_equal(len(ag.fragments), 1)
 
 
-class TestUniverseCache(TestCase):
+class TestUniverseCache(MemleakTest):
     def setUp(self):
         self.u = MDAnalysis.Universe()  # not using atoms so just blank universe
         self.fill = [1, 2, 3]
@@ -1748,7 +1749,7 @@ class TestUniverseCache(TestCase):
         assert_equal(self.u._cache, dict())
 
 
-class TestUnorderedResidues(TestCase):
+class TestUnorderedResidues(MemleakTest):
     """
     This pdb file has resids that are non sequential
 
@@ -1765,7 +1766,7 @@ class TestUnorderedResidues(TestCase):
     def test_build_residues(self):
         assert_equal(len(self.u.residues), 35)
 
-class TestCustomReaders(TestCase):
+class TestCustomReaders(MemleakTest):
     """
     Can pass a reader as kwarg on Universe creation
     """
@@ -1785,7 +1786,7 @@ class TestCustomReaders(TestCase):
                                 topology_format=MDAnalysis.topology.PSFParser.PSFParser)
         assert_equal(len(u.atoms), 8184)
 
-class TestWrap(TestCase):
+class TestWrap(MemleakTest):
     def setUp(self):
         self.u = MDAnalysis.Universe(TRZ_psf, TRZ)
         self.ag = self.u.atoms[:100]
@@ -1848,7 +1849,7 @@ class TestWrap(TestCase):
         assert_equal(self._in_box(cen), True)
 
 
-class TestGuessBonds(TestCase):
+class TestGuessBonds(MemleakTest):
     """Test the AtomGroup methed guess_bonds
 
     This needs to be done both from Universe creation (via kwarg) and AtomGroup

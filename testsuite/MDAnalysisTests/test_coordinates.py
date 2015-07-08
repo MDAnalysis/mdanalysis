@@ -25,7 +25,6 @@ import numpy as np
 import cPickle
 from numpy.testing import *
 from nose.plugins.attrib import attr
-import warnings
 
 from MDAnalysisTests.datafiles import (
     PSF, DCD, DCD_empty, PDB_small, XPDB_small, PDB_closed, PDB_multiframe, PDB_full,
@@ -38,10 +37,9 @@ from MDAnalysisTests.datafiles import (
     DLP_CONFIG, DLP_CONFIG_order, DLP_CONFIG_minimal,
     DLP_HISTORY, DLP_HISTORY_order, DLP_HISTORY_minimal)
 
-from MDAnalysisTests import knownfailure
+from MDAnalysisTests import knownfailure, MemleakTest
 
 import os
-import shutil
 import errno
 import tempfile
 import itertools
@@ -143,7 +141,7 @@ class Ref4e43(object):
         "3   PROGRAM     : REFMAC 5.5.0110",
     ]
 
-class TestXYZReader(TestCase, Ref2r9r):
+class TestXYZReader(MemleakTest, Ref2r9r):
     def setUp(self):
         self.universe = mda.Universe(XYZ_psf, XYZ)
         self.prec = 3  # 4 decimals in xyz file
@@ -209,7 +207,7 @@ class TestXYZReaderAsTopology(object):
         assert_almost_equal(self.universe.trajectory.dt, 1.0, 4,
                             err_msg="wrong timestep dt")
 
-class TestCompressedXYZReader(TestCase, Ref2r9r):
+class TestCompressedXYZReader(MemleakTest, Ref2r9r):
     def setUp(self):
         self.universe = mda.Universe(XYZ_psf, XYZ_bz2)
         self.prec = 3  # 4 decimals in xyz file
@@ -262,7 +260,7 @@ class TestCompressedXYZReader(TestCase, Ref2r9r):
                             err_msg="wrong timestep dt")
 
 
-class TestXYZWriter(TestCase, Ref2r9r):
+class TestXYZWriter(MemleakTest, Ref2r9r):
     def setUp(self):
         self.universe = mda.Universe(XYZ_psf, XYZ_bz2)
         self.prec = 3  # 4 decimals in xyz file
@@ -374,7 +372,7 @@ class RefVGV(object):
     ref_periodic = True
 
 
-class _TRJReaderTest(TestCase):
+class _TRJReaderTest(MemleakTest):
     # use as a base class (override setUp()) and mixin a reference
     def tearDown(self):
         del self.universe
@@ -473,7 +471,7 @@ class TestNCDFReader(_TRJReaderTest, RefVGV):
         assert_equal(data.Conventions, 'AMBER')
         assert_equal(data.ConventionVersion, '1.0')
 
-class TestNCDFReader2(TestCase):
+class TestNCDFReader2(MemleakTest):
     """NCDF Trajectory with positions and forces.
 
     Contributed by Albert Solernou
@@ -529,7 +527,7 @@ class TestNCDFReader2(TestCase):
         assert_almost_equal(ref, self.u.trajectory[1].time, self.prec)
 
 
-class TestNCDFWriter(TestCase, RefVGV):
+class TestNCDFWriter(MemleakTest, RefVGV):
     def setUp(self):
         self.universe = mda.Universe(PRMncdf, NCDF)
         self.prec = 6
@@ -627,7 +625,7 @@ class TestNCDFWriter(TestCase, RefVGV):
                                       err_msg="unitcells are not identical")
 
 
-class TestINPCRDReader(TestCase):
+class TestINPCRDReader(MemleakTest):
     """Test reading Amber restart coordinate files"""
     def _check_ts(self, ts):
         # Check a ts has the right values in
@@ -657,7 +655,7 @@ class TestINPCRDReader(TestCase):
         self._check_ts(u.trajectory.ts)
 
 
-class TestNCDFWriterVelsForces(TestCase):
+class TestNCDFWriterVelsForces(MemleakTest):
     """Test writing NCDF trajectories with a mixture of options"""
     def setUp(self):
         fd, self.outfile = tempfile.mkstemp(suffix='.ncdf')
@@ -727,7 +725,7 @@ class TestNCDFWriterVelsForces(TestCase):
         self._write_ts(True, True, True)
 
 
-class _SingleFrameReader(TestCase, RefAdKSmall):
+class _SingleFrameReader(MemleakTest, RefAdKSmall):
     # see TestPDBReader how to set up!
 
     def tearDown(self):
@@ -931,7 +929,7 @@ class TestPSF_PrimitivePDBReader(TestPrimitivePDBReader):
                             "Primitive PDB reader failed to get unitcell dimensions from CRYST1")
 
 
-class TestPrimitivePDBWriter(TestCase):
+class TestPrimitivePDBWriter(MemleakTest):
     def setUp(self):
         self.universe = mda.Universe(PSF, PDB_small, permissive=True)
         self.universe2 = mda.Universe(PSF, DCD, permissive=True)
@@ -996,7 +994,7 @@ class TestPrimitivePDBWriter(TestCase):
         del u
 
 
-class TestGMSReader(TestCase):
+class TestGMSReader(MemleakTest):
     ''' Test cases for GAMESS output log-files '''
 
     def setUp(self):
@@ -1065,7 +1063,7 @@ class TestGMSReader(TestCase):
         del self.u_ass
 
 
-class TestMultiPDBReader(TestCase):
+class TestMultiPDBReader(MemleakTest):
     def setUp(self):
         self.multiverse = mda.Universe(PDB_multiframe, permissive=True, guess_bonds=True)
         self.multiverse.build_topology()
@@ -1222,7 +1220,7 @@ class TestMultiPDBReader(TestCase):
                      len(u._topology['bonds']), len(desired)))
 
 
-class TestMultiPDBWriter(TestCase):
+class TestMultiPDBWriter(MemleakTest):
     def setUp(self):
         self.universe = mda.Universe(PSF, PDB_small, permissive=True)
         self.multiverse = mda.Universe(PDB_multiframe, permissive=True)
@@ -1326,7 +1324,7 @@ class TestPQRReader(_SingleFrameReader):
                             "Charges for N atoms in Pro residues do not match.")
 
 
-class TestPQRWriter(TestCase, RefAdKSmall):
+class TestPQRWriter(MemleakTest, RefAdKSmall):
     def setUp(self):
         self.universe = mda.Universe(PQR)
         self.prec = 3
@@ -1379,7 +1377,7 @@ class TestPQRWriter(TestCase, RefAdKSmall):
                             "Total charge (in CHARMM) does not match expected value.")
 
 
-class TestGROReader(TestCase, RefAdK):
+class TestGROReader(MemleakTest, RefAdK):
     def setUp(self):
         self.universe = mda.Universe(GRO)
         self.ts = self.universe.trajectory.ts
@@ -1448,7 +1446,7 @@ class TestGROReader(TestCase, RefAdK):
         assert_equal(frames, np.arange(self.universe.trajectory.numframes))
 
 
-class TestDMSReader(TestCase):
+class TestDMSReader(MemleakTest):
     def setUp(self):
         self.universe = mda.Universe(DMS)
         self.ts = self.universe.trajectory.ts
@@ -1493,7 +1491,7 @@ class TestDMSReader(TestCase):
 
         assert_raises(IndexError, go_to_2)
 
-class TestGROReaderNoConversion(TestCase, RefAdK):
+class TestGROReaderNoConversion(MemleakTest, RefAdK):
     def setUp(self):
         self.universe = mda.Universe(GRO, convert_units=False)
         self.ts = self.universe.trajectory.ts
@@ -1539,7 +1537,7 @@ class TestGROReaderNoConversion(TestCase, RefAdK):
                             err_msg="wrong volume for unitcell (rhombic dodecahedron)")
 
 
-class TestGROWriter(TestCase):
+class TestGROWriter(MemleakTest):
     def setUp(self):
         self.universe = mda.Universe(GRO)
         self.prec = 2  # 3 decimals in file in nm but MDAnalysis is in A
@@ -1604,7 +1602,7 @@ class TestGROWriter(TestCase):
         del u
 
 
-class TestPDBReaderBig(TestCase, RefAdK):
+class TestPDBReaderBig(MemleakTest, RefAdK):
     def setUp(self):
         self.universe = mda.Universe(PDB)
         self.prec = 6
@@ -1682,7 +1680,7 @@ def TestDCD_Issue32():
     assert_raises(IOError, mda.Universe, PSF, DCD_empty)
 
 
-class _TestDCD(TestCase):
+class _TestDCD(MemleakTest):
     def setUp(self):
         self.universe = mda.Universe(PSF, DCD)
         self.dcd = self.universe.trajectory
@@ -1694,7 +1692,7 @@ class _TestDCD(TestCase):
         del self.ts
 
 
-class TestDCDReaderClass(TestCase):
+class TestDCDReaderClass(MemleakTest):
     def test_with_statement(self):
         from MDAnalysis.coordinates.DCD import DCDReader
 
@@ -1765,7 +1763,7 @@ class TestDCDReader(_TestDCD):
                             err_msg="wrong volume for unitcell (no unitcell in DCD so this should be 0)")
 
 
-class TestDCDWriter(TestCase):
+class TestDCDWriter(MemleakTest):
     def setUp(self):
         self.universe = mda.Universe(PSF, DCD)
         ext = ".dcd"
@@ -1851,7 +1849,7 @@ class TestDCDWriter(TestCase):
                             err_msg="with_statement: coordinates do not match")
 
 
-class TestDCDWriter_Issue59(TestCase):
+class TestDCDWriter_Issue59(MemleakTest):
     def setUp(self):
         """Generate input xtc."""
         self.u = MDAnalysis.Universe(PSF, DCD)
@@ -1937,7 +1935,7 @@ class RefNAMDtriclinicDCD(object):
             [1., 38.426594, 38.393101, 44.759800, 90.000000, 90.000000, 60.028915],
             ])
 
-class _TestDCDReader_TriclinicUnitcell(TestCase):
+class _TestDCDReader_TriclinicUnitcell(MemleakTest):
     def setUp(self):
         self.u = MDAnalysis.Universe(self.topology, self.trajectory)
         fd, self.dcd = tempfile.mkstemp(suffix='.dcd')
@@ -1975,7 +1973,7 @@ class TestDCDReader_NAMD_Unitcell(_TestDCDReader_TriclinicUnitcell, RefNAMDtricl
     pass
 
 
-class TestNCDF2DCD(TestCase):
+class TestNCDF2DCD(MemleakTest):
     def setUp(self):
         self.u = MDAnalysis.Universe(PRMncdf, NCDF)
         # create the DCD
@@ -2131,7 +2129,7 @@ def compute_correl_references():
     return results
 
 
-class TestChainReader(TestCase):
+class TestChainReader(MemleakTest):
     def setUp(self):
         self.universe = mda.Universe(PSF, [DCD, CRD, DCD, CRD, DCD, CRD, CRD])
         self.trajectory = self.universe.trajectory
@@ -2212,7 +2210,7 @@ class TestChainReader(TestCase):
                                 err_msg="Coordinates disagree at frame %d" % ts_orig.frame)
 
 
-class TestChainReaderFormats(TestCase):
+class TestChainReaderFormats(MemleakTest):
     """Test of ChainReader with explicit formats (Issue 76)."""
 
     @attr('issue')
@@ -2231,7 +2229,7 @@ class TestChainReaderFormats(TestCase):
         assert_equal(universe.trajectory.numframes, 2)
 
 
-class TestTRRReader_Sub(TestCase):
+class TestTRRReader_Sub(MemleakTest):
     def setUp(self):
         """
         grab values from selected atoms from full solvated traj,
@@ -2267,13 +2265,11 @@ class TestTRRReader_Sub(TestCase):
                                   err_msg="positions differ")
 
 
-class _GromacsReader(TestCase):
+class _GromacsReader(MemleakTest):
     # This base class assumes same lengths and dt for XTC and TRR test cases!
     filename = None
     ref_unitcell = np.array([80.017, 80.017, 80.017, 60., 60., 90.], dtype=np.float32)
     ref_volume = 362270.0  # computed with Gromacs: 362.26999999999998 nm**3 * 1000 A**3/nm**3
-    ref_offsets = None
-    ref_offset_file = None
 
     def setUp(self):
         # loading from GRO is 4x faster than the PDB reader
@@ -2285,13 +2281,10 @@ class _GromacsReader(TestCase):
         ext = os.path.splitext(self.filename)[1]
         fd, self.outfile = tempfile.mkstemp(suffix=ext)
         os.close(fd)
-        fd, self.outfile_offsets = tempfile.mkstemp(suffix='.npy')
-        os.close(fd)
 
     def tearDown(self):
         try:
             os.unlink(self.outfile)
-            os.unlink(self.outfile_offsets)
         except:
             pass
         del self.universe
@@ -2425,7 +2418,7 @@ class TestXTCReader(_GromacsReader):
     filename = XTC
 
 
-class TestXTCReaderClass(TestCase):
+class TestXTCReaderClass(MemleakTest):
     def test_with_statement(self):
         from MDAnalysis.coordinates.XTC import XTCReader
 
@@ -2469,213 +2462,7 @@ class TestTRRReader(_GromacsReader):
             assert_array_almost_equal(self.universe.atoms[index].velocity, v_known, self.prec,
                                       err_msg="atom[%d].velocity does not match known values" % index)
 
-
-class _GromacsReader_offsets(TestCase):
-    # This base class assumes same lengths and dt for XTC and TRR test cases!
-    filename = None
-    ref_unitcell = np.array([80.017, 80.017, 80.017, 60., 60., 90.], dtype=np.float32)
-    ref_volume = 362270.0  # computed with Gromacs: 362.26999999999998 nm**3 * 1000 A**3/nm**3
-    ref_offsets = None
-
-    def setUp(self):
-        # since offsets are automatically generated in the same directory
-        # as the trajectory, we do everything from a temporary directory
-
-        self.tmpdir = tempfile.mkdtemp()
-        # loading from GRO is 4x faster than the PDB reader
-        shutil.copy(GRO, self.tmpdir)
-        shutil.copy(self.filename, self.tmpdir)
-
-        self.top = os.path.join(self.tmpdir, os.path.basename(GRO))
-        self.traj = os.path.join(self.tmpdir, os.path.basename(self.filename))
-
-        self.universe = mda.Universe(self.top, self.traj, convert_units=True)
-        self.trajectory = self.universe.trajectory
-        self.prec = 3
-        self.ts = self.universe.coord
-        
-        # dummy output file
-        ext = os.path.splitext(self.filename)[1]
-        fd, self.outfile = tempfile.mkstemp(suffix=ext)
-        os.close(fd)
-        fd, self.outfile_offsets = tempfile.mkstemp(suffix='.pkl')
-        os.close(fd)
-
-    def tearDown(self):
-        try:
-            os.unlink(self.outfile)
-            os.unlink(self.outfile_offsets)
-            shutil.rmtree(self.tmpdir)
-        except:
-            pass
-        del self.universe
-
-    @dec.slow
-    def test_offsets(self):
-        if self.trajectory._offsets is None:
-            self.trajectory.numframes
-        assert_array_almost_equal(self.trajectory._offsets, self.ref_offsets,
-                                  err_msg="wrong frame offsets")
-
-        # Saving
-        self.trajectory.save_offsets(self.outfile_offsets)
-        with open(self.outfile_offsets, 'rb') as f:
-            saved_offsets = cPickle.load(f)
-        assert_array_almost_equal(self.trajectory._offsets, saved_offsets['offsets'],
-                                  err_msg="error saving frame offsets")
-        assert_array_almost_equal(self.ref_offsets, saved_offsets['offsets'],
-                                  err_msg="saved frame offsets don't match the known ones")
-
-        # Loading
-        self.trajectory.load_offsets(self.outfile_offsets)
-        assert_array_almost_equal(self.trajectory._offsets, self.ref_offsets,
-                                  err_msg="error loading frame offsets")
-
-    @dec.slow
-    def test_persistent_offsets_new(self):
-        # check that offsets will be newly generated and not loaded from stored
-        # offsets
-        assert_equal(self.trajectory._offsets, None)
-
-    @dec.slow
-    def test_persistent_offsets_stored(self):
-        # build offsets
-        self.trajectory.numframes
-        assert_equal((self.trajectory._offsets is None), False)
-    
-        # check that stored offsets present
-        assert_equal(os.path.exists(self.trajectory._offset_filename()), True)
-
-    @dec.slow
-    def test_persistent_offsets_ctime_match(self):
-        # build offsets
-        self.trajectory.numframes
-
-        with open(self.trajectory._offset_filename(), 'rb') as f:
-            saved_offsets = cPickle.load(f)
-
-        # check that stored offsets ctime matches that of trajectory file
-        assert_equal(saved_offsets['ctime'], os.path.getctime(self.traj))
-    
-    @dec.slow
-    def test_persistent_offsets_size_match(self):
-        # build offsets
-        self.trajectory.numframes
-
-        with open(self.trajectory._offset_filename(), 'rb') as f:
-            saved_offsets = cPickle.load(f)
-
-        # check that stored offsets size matches that of trajectory file
-        assert_equal(saved_offsets['size'], os.path.getsize(self.traj))
-
-    @dec.slow
-    def test_persistent_offsets_autoload(self):
-        # build offsets
-        self.trajectory.numframes
-
-        # check that stored offsets are loaded for new universe
-        u = mda.Universe(self.top, self.traj)
-        assert_equal((u.trajectory._offsets is not None), True)
-
-    @dec.slow
-    def test_persistent_offsets_ctime_mismatch(self):
-        # build offsets
-        self.trajectory.numframes
-
-        # check that stored offsets are not loaded when trajectory ctime
-        # differs from stored ctime
-        with open(self.trajectory._offset_filename(), 'rb') as f:
-            saved_offsets = cPickle.load(f)
-        saved_offsets['ctime'] = saved_offsets['ctime'] - 1
-        with open(self.trajectory._offset_filename(), 'wb') as f:
-            cPickle.dump(saved_offsets, f)
-
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")  # Drop the warnings silently
-            u = mda.Universe(self.top, self.traj)
-            assert_equal((u.trajectory._offsets is None), True)
-        
-    @dec.slow
-    def test_persistent_offsets_size_mismatch(self):
-        # build offsets
-        self.trajectory.numframes
-
-        # check that stored offsets are not loaded when trajectory size differs
-        # from stored size
-        with open(self.trajectory._offset_filename(), 'rb') as f:
-            saved_offsets = cPickle.load(f)
-        saved_offsets['size'] += 1
-        with open(self.trajectory._offset_filename(), 'wb') as f:
-            cPickle.dump(saved_offsets, f)
-
-        u = mda.Universe(self.top, self.traj)
-        assert_equal((u.trajectory._offsets is None), True)
-        
-    @dec.slow
-    def test_persistent_offsets_last_frame_wrong(self):
-        # build offsets
-        self.trajectory.numframes
-
-        # check that stored offsets are not loaded when the offsets themselves
-        # appear to be wrong
-        with open(self.trajectory._offset_filename(), 'rb') as f:
-            saved_offsets = cPickle.load(f)
-        saved_offsets['offsets'] += 1
-        with open(self.trajectory._offset_filename(), 'wb') as f:
-            cPickle.dump(saved_offsets, f)
-
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")  # Drop the warnings silently
-            u = mda.Universe(self.top, self.traj)
-            assert_equal((u.trajectory._offsets is None), True)
-
-    @dec.slow
-    def test_persistent_offsets_readonly(self):
-        # build offsets
-        self.trajectory.numframes
-
-        # check that if directory is read-only offsets aren't stored
-        os.unlink(self.trajectory._offset_filename())
-        for root, dirs, files in os.walk(self.tmpdir, topdown=False):  
-            for item in dirs:  
-                os.chmod(os.path.join(root, item), 0444)
-            for item in files:
-                os.chmod(os.path.join(root, item), 0444)
-
-        u = mda.Universe(self.top, self.traj)
-        assert_equal(os.path.exists(self.trajectory._offset_filename()), False)
-
-    @dec.slow
-    def test_persistent_offsets_refreshTrue(self):
-        # build offsets
-        self.trajectory.numframes
-
-        # check that the *refresh_offsets* keyword ensures stored offsets
-        # aren't retrieved
-        u = mda.Universe(self.top, self.traj, refresh_offsets=True)
-        assert_equal((u.trajectory._offsets is None), True)
-
-    @dec.slow
-    def test_persistent_offsets_refreshFalse(self):
-        # build offsets
-        self.trajectory.numframes
-
-        # check that the *refresh_offsets* keyword as False grabs offsets
-        u = mda.Universe(self.top, self.traj, refresh_offsets=False)
-        assert_equal((u.trajectory._offsets is None), False)
-
-
-class TestXTCReader_offsets(_GromacsReader_offsets):
-    filename = XTC
-    ref_offsets = np.array([0,  165188,  330364,  495520,  660708,  825872,  991044, 1156212,
-                            1321384, 1486544])
-
-class TestTRRReader_offsets(_GromacsReader_offsets):
-    filename = TRR
-    ref_offsets = np.array([0,  1144464,  2288928,  3433392,  4577856,  5722320,
-                       6866784,  8011248,  9155712, 10300176])
-
-class _XDRNoConversion(TestCase):
+class _XDRNoConversion(MemleakTest):
     filename = None
 
     def setUp(self):
@@ -2711,7 +2498,7 @@ class TestTRRNoConversion(_XDRNoConversion):
     filename = TRR
 
 
-class _GromacsWriter(TestCase):
+class _GromacsWriter(MemleakTest):
     infilename = None  # XTC or TRR
     Writers = {
         '.trr': MDAnalysis.coordinates.TRR.TRRWriter,
@@ -2828,7 +2615,7 @@ class TestTRRWriter(_GromacsWriter):
                 assert_raises(NoDataError, getattr, written_ts, 'velocities')
 
 
-class _GromacsWriterIssue101(TestCase):
+class _GromacsWriterIssue101(MemleakTest):
     Writers = {
         '.trr': MDAnalysis.coordinates.TRR.TRRWriter,
         '.xtc': MDAnalysis.coordinates.XTC.XTCWriter,
@@ -2881,7 +2668,7 @@ class TestTRRWriterSingleFrame(_GromacsWriterIssue101):
     ext = ".trr"
 
 
-class _GromacsWriterIssue117(TestCase):
+class _GromacsWriterIssue117(MemleakTest):
     """Issue 117: Cannot write XTC or TRR from AMBER NCDF"""
     ext = None
     prec = 5
@@ -2953,7 +2740,7 @@ class RefTRZ(object):
     ref_time = 0.01
 
 
-class TestTRZReader(TestCase, RefTRZ):
+class TestTRZReader(MemleakTest, RefTRZ):
     def setUp(self):
         self.universe = mda.Universe(TRZ_psf, TRZ)
         self.trz = self.universe.trajectory
@@ -3049,7 +2836,7 @@ class TestTRZReader(TestCase, RefTRZ):
         except OSError:
             pass
 
-class TestTRZWriter(TestCase, RefTRZ):
+class TestTRZWriter(MemleakTest, RefTRZ):
     def setUp(self):
         self.universe = mda.Universe(TRZ_psf, TRZ)
         self.prec = 3
@@ -3115,7 +2902,7 @@ class TestTRZWriter2(object):
         assert_array_almost_equal(self.u.atoms.positions, u2.atoms.positions, 3)
 
 
-class TestWrite_Partial_Timestep(TestCase):
+class TestWrite_Partial_Timestep(MemleakTest):
     """Test writing a partial timestep made by passing only an atomgroup to Writer. (Issue 163)
 
     The contents of the AtomGroup.ts are checked in test_atomgroup, this test just checks that Writer
@@ -3172,7 +2959,7 @@ def test_datareader_VE():
     assert_raises(ValueError, DATAReader, 'filename')
 
 
-class _TestLammpsData_Coords(TestCase):
+class _TestLammpsData_Coords(MemleakTest):
     """Tests using a .data file for loading single frame.
 
     All topology loading from MDAnalysisTests.data is done in test_topology
