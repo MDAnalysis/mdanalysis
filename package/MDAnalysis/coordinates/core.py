@@ -30,26 +30,15 @@ Helper functions:
 .. autofunction:: get_writer_for
 .. autofunction:: guess_format
 
-.. autofunction:: triclinic_box
-.. autofunction:: triclinic_vectors
-.. autofunction:: box_volume
-
 """
 import os.path
 import numpy
 from numpy import sin, cos, sqrt
+from numpy import rad2deg, deg2rad
 
 import MDAnalysis.coordinates
 import MDAnalysis.lib.util
-
-try:
-    from numpy import rad2deg, deg2rad  # numpy 1.3+
-except ImportError:
-    def rad2deg(x):  # no need for the numpy out=[] argument
-        return 180.0 * x / numpy.pi
-
-    def deg2rad(x):  # no need for the numpy out=[] argument
-        return x * numpy.pi / 180.0
+from ..lib.mdamath import triclinic_box, triclinic_vectors, box_volume
 
 
 def get_reader_for(filename, permissive=False, format=None):
@@ -279,104 +268,3 @@ def check_compressed_format(root, ext):
     return ext.upper()
 
 
-def _veclength(v):
-    """Length of vector *v*."""
-    # note: this is 3 times faster than numpy.linalg.norm
-    return numpy.sqrt(numpy.dot(v, v))
-
-
-def _angle(a, b):
-    """Angle between two vectors *a* and *b* in degrees.
-
-    If one of the lengths is 0 then the angle is returned as 0
-    (instead of `nan`).
-    """
-    angle = numpy.arccos(numpy.dot(a, b) / (_veclength(a) * _veclength(b)))
-    if numpy.isnan(angle):
-        return 0.0
-    return rad2deg(angle)
-
-
-def triclinic_box(x, y, z):
-    """Convert the three triclinic box vectors to [A,B,C,alpha,beta,gamma].
-
-    Angles are in degrees.
-
-    * alpha  = angle(y,z)
-    * beta   = angle(x,z)
-    * gamma  = angle(x,y)
-
-    .. SeeAlso:: Definition of angles: http://en.wikipedia.org/wiki/Lattice_constant
-    """
-    A, B, C = [_veclength(v) for v in x, y, z]
-    alpha = _angle(y, z)
-    beta = _angle(x, z)
-    gamma = _angle(x, y)
-    return numpy.array([A, B, C, alpha, beta, gamma], dtype=numpy.float32)
-
-
-def triclinic_vectors(dimensions):
-    """Convert `[A,B,C,alpha,beta,gamma]` to a triclinic box representation.
-
-    Original `code by Tsjerk Wassenaar`_ posted on the Gromacs mailinglist.
-
-    If *dimensions* indicates a non-periodic system (i.e. all lengths
-    0) then null-vectors are returned.
-
-    .. _code by Tsjerk Wassenaar:
-       http://www.mail-archive.com/gmx-users@gromacs.org/msg28032.html
-
-    :Arguments:
-      *dimensions*
-        list of box lengths and angles (in degrees) such as
-        [A,B,C,alpha,beta,gamma]
-
-    :Returns: numpy 3x3 array B, with B[0] = first box vector,
-              B[1] = second vector, B[2] third box vector.
-
-    .. note::
-
-       The first vector is always pointing along the X-axis
-       i.e. parallel to (1,0,0).
-
-    .. versionchanged:: 0.7.6
-       Null-vectors are returned for non-periodic (or missing) unit cell.
-
-    """
-    B = numpy.zeros((3, 3), dtype=numpy.float32)
-    x, y, z, a, b, c = dimensions[:6]
-
-    if numpy.all(dimensions[:3] == 0):
-        return B
-
-    B[0][0] = x
-    if a == 90. and b == 90. and c == 90.:
-        B[1][1] = y
-        B[2][2] = z
-    else:
-        a = deg2rad(a)
-        b = deg2rad(b)
-        c = deg2rad(c)
-        B[1][0] = y * cos(c)
-        B[1][1] = y * sin(c)
-        B[2][0] = z * cos(b)
-        B[2][1] = z * (cos(a) - cos(b) * cos(c)) / sin(c)
-        B[2][2] = sqrt(z * z - B[2][0] ** 2 - B[2][1] ** 2)
-    return B
-
-
-def box_volume(dimensions):
-    """Return the volume of the unitcell described by *dimensions*.
-
-    The volume is computed as `det(x1,x2,x2)` where the xi are the
-    triclinic box vectors from :func:`triclinic_vectors`.
-
-    :Arguments:
-       *dimensions*
-          list of box lengths and angles (in degrees) such as
-          [A,B,C,alpha,beta,gamma]
-
-    :Returns: numpy 3x3 array B, with B[0] = first box vector,
-              B[1] = second vector, B[2] third box vector.
-    """
-    return numpy.linalg.det(triclinic_vectors(dimensions))

@@ -18,7 +18,7 @@
 Parallel algorithms for MDAnalysis
 ==================================
 
-The :mod:`MDAnalysis.core.parallel` module contains implementations of
+The :mod:`MDAnalysis.lib.parallel` module contains implementations of
 standard functions that can make use of parallelization available on
 modern multi-core processors.
 
@@ -28,7 +28,7 @@ modern multi-core processors.
    it is possible that the parallel code has some bugs or
    incompatibilities or less features than the serial code.
 
-.. automodule:: MDAnalysis.core.parallel.distances
+.. automodule:: MDAnalysis.lib.parallel.distances
 
 """
 

@@ -25,7 +25,7 @@ atoms or groups of atoms.
 :func:`dist` and :func:`between` can take atom groups that do not even
 have to be from the same :class:`~MDAnalysis.core.AtomGroup.Universe`.
 
-.. SeeAlso:: :mod:`MDAnalysis.core.distances` and :mod:`MDAnalysis.core.parallel.distances`
+.. SeeAlso:: :mod:`MDAnalysis.lib.distances` and :mod:`MDAnalysis.lib.parallel.distances`
 """
 
 __all__ = ['distance_array', 'self_distance_array', 'contact_matrix', 'dist']
@@ -35,7 +35,7 @@ from scipy import sparse
 from scipy import weave
 from scipy.weave import converters
 
-from MDAnalysis.core.distances import distance_array, self_distance_array
+from MDAnalysis.lib.distances import distance_array, self_distance_array
 from MDAnalysis.lib.KDTree.NeighborSearch import AtomNeighborSearch
 
 import logging

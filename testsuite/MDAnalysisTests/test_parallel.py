@@ -13,8 +13,8 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from MDAnalysis.core.parallel.distances import distance_array, distance_array_serial
-from MDAnalysis.core.distances import distance_array as distance_array_reference
+from MDAnalysis.lib.parallel.distances import distance_array, distance_array_serial
+from MDAnalysis.lib.distances import distance_array as distance_array_reference
 
 import numpy as np
 from numpy.testing import *
@@ -39,7 +39,7 @@ except ImportError:
 class TestDistances(TestCase):
     """
     Test if cython (serial and parallel) distance matrices are the same as
-    MDAnalysis.core.distances.distance_array
+    MDAnalysis.lib.distances.distance_array
     """
 
     def setUp(self):

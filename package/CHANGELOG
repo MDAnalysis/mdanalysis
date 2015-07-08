@@ -31,6 +31,7 @@ The rules for this file:
     Displacement and Survival Probability. Documentation and test are included.
   * RMSF class added to rms analysis module
   * ProgressMeter now outputs every *interval* number of ``update`` calls
+  * Created lib.mdamath for common mathematical functions.
 
   Changes
   * A ProtoReader class intermediate between IObase and Reader was added so
@@ -52,6 +53,8 @@ The rules for this file:
   * Moved MDAnalysis.core.util to MDAnalysis.lib.util (Issue #287)
   * Moved MDAnalysis.core.log to MDAnalysis.lib.log (Issue #287)
   * Moved MDAnalysis.core.units to MDAnalysis.units (Issue #287)
+  * Moved MDAnalysis.core.distances to MDAnalysis.lib.distances (Issue #287)
+  * Moved MDAnalysis.core.parallel to MDAnalysis.lib.parallel (Issue #287)
   * base.Reader now defines __iter__
   * __iter__ removed from many Readers (now use base.Reader implementation)
   * numpy >= 1.5 required
