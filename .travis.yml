@@ -1,6 +1,9 @@
 language: python
 python:
   - "2.7"
+env:
+  - TEST_RUN="FULL"
+  - TEST_RUN="COVER"
 # command to install dependencies
 before_install:
   - sudo apt-get update -qq
@@ -17,8 +20,10 @@ install:
   - pip install package/
   - pip install testsuite/
   - pip install coveralls
+  - chmod +x testsuite/MDAnalysisTests/mda_nosetests
 # command to run tests
 script:
-  - nosetests --with-coverage --cover-package MDAnalysis
+  - if [[ $TEST_RUN == "FULL" ]]; then ./testsuite/MDAnalysisTests/mda_nosetests -v --with-memleak --processes=2 --process-timeout=120; fi
+  - if [[ $TEST_RUN == "COVER" ]]; then nosetests -v --with-coverage --cover-package MDAnalysis; fi
 after_success:
-  - coveralls
+  - if [[ $TEST_RUN == "COVER" ]]; then coveralls; fi
