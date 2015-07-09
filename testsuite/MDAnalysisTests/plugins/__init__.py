@@ -13,11 +13,17 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+# Plugin management written by Manuel Nuno Melo, 2015
 
 """
 ===========================
 Nose plugins for MDAnalysis
 ===========================
+
+:Author: Manuel Nuno Melo
+:Year: 2015
+
+.. versionadded:: 0.11.0
 
 Writing plugins
 ===============
@@ -26,8 +32,8 @@ Nose plugins can be written to expose several hooks along the nose execution
 chain. This allows very fine control of testing.
 
 The `nose plugin guidelines`_, and examples therein, are a good starting point
-on how to accomplish this. You can also base your plugins in the ones here or
-in the `nose` suite. Finally, the API specification can be found `here`_.
+on how to accomplish this, with more details available in the `API specification`_.
+You can also base your plugins in the ones here or in the `nose` suite.
 
 This module will take care of registering all plugins with nose. If you write a
 plugin all you need to do in `__init__.py` is to import it and add its name
@@ -37,9 +43,13 @@ the plugin class, or list of plugin classes, that you are implementing (it must
 come up after the class definition, otherwise the name will be undefined). Again,
 see the existing modules for examples.
 
+Beware that command-line invocation of nose via the `nosetests` script will
+bypass the loading of these plugins. If you have any code that depends on that,
+have it use the `:func:_check_plugins_loaded` function to act accordingly.
+
 .. _nose plugin guidelines:
    http://nose.readthedocs.org/en/latest/plugins/writing.html
-.. _here:
+.. _API specification:
    http://nose.readthedocs.org/en/latest/plugins/interface.html
 """
 
