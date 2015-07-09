@@ -20,6 +20,6 @@ install:
   - chmod +x testsuite/MDAnalysisTests/mda_nosetests
 # command to run tests
 script:
-  - ./testsuite/MDAnalysisTests/mda_nosetests --with-coverage --cover-package MDAnalysis
+    - ./testsuite/MDAnalysisTests/mda_nosetests -v --with-coverage --cover-package MDAnalysis
 after_success:
   - coveralls

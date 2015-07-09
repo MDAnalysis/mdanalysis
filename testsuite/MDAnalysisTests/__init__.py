@@ -162,7 +162,7 @@ def run(*args, **kwargs):
         kwargs['addplugins'] = loaded_plugins.values()
     # By default, test our testsuite
     kwargs['defaultTest'] = dirname(__file__)
-    return nose.main(*args, **kwargs)
+    return nose.run_exit(*args, **kwargs)
 # to keep compatibility with MDAnalysis.tests.test()
 test = run # if we define the function directly as 'test' nose picks it up as a test to be run and recurses.
 
