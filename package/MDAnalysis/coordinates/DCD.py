@@ -308,11 +308,11 @@ class DCDWriter(base.Writer):
            if no coordinates to be written.
         '''
         if ts is None:
-            if not hasattr(self, "ts"):
-                raise NoDataError("DCDWriter: no coordinate data to write to trajectory file")
-            else:
+            try:
                 ts = self.ts
-        elif not ts.numatoms == self.numatoms:
+            except AttributeError:
+                raise NoDataError("DCDWriter: no coordinate data to write to trajectory file")
+        if not ts.numatoms == self.numatoms:
             raise ValueError("DCDWriter: Timestep does not have the correct number of atoms")
         unitcell = self.convert_dimensions_to_unitcell(ts).astype(np.float32)  # must be float32 (!)
         if not ts._pos.flags.f_contiguous:  # Not in fortran format

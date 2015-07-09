@@ -174,6 +174,11 @@ class Timestep(object):
         self.frame = -1
         self._numatoms = numatoms
         self.time = 0.0
+
+        self.data = {}
+
+        # For compat with TRR
+        self.has_positions = True
         self._pos = np.zeros((numatoms, 3), dtype=np.float32, order=self.order)
 
         self.has_velocities = kwargs.get('velocities', False)
@@ -186,8 +191,6 @@ class Timestep(object):
                                     dtype=np.float32, order=self.order)
 
         self._unitcell = self._init_unitcell()
-
-        self.data = {}
 
         self._x = self._pos[:, 0]
         self._y = self._pos[:, 1]
@@ -203,21 +206,27 @@ class Timestep(object):
                  forces=other.has_forces)
         ts.frame = other.frame
         ts.dimensions = other.dimensions
-        ts.positions = other.positions.copy()
         try:
-            ts.velocities = other.velocities.copy()
+            ts.positions = other.positions.copy(order=cls.order)
         except NoDataError:
             pass
         try:
-            ts.forces = other.forces.copy()
+            ts.velocities = other.velocities.copy(order=cls.order)
+        except NoDataError:
+            pass
+        try:
+            ts.forces = other.forces.copy(order=cls.order)
         except NoDataError:
             pass
 
+        for att in ('_frame', '_time'):
+            try:
+                setattr(ts, att, getattr(other, att))
+            except AttributeError:
+                pass
+
+        ts.time = other.time
         ts.data = copy.deepcopy(other.data)
-
-        for attr in other.__dict__:
-            if not attr.startswith('data'):
-                setattr(ts, attr, getattr(other, attr))
 
         return ts
 
@@ -338,7 +347,8 @@ class Timestep(object):
         new_TS = self.__class__(new_numatoms, velocities=self.has_velocities,
                                 forces=self.has_forces)
 
-        new_TS.positions = self.positions[sel]
+        if self.has_positions:
+            new_TS.positions = self.positions[sel]
         if self.has_velocities:
             new_TS.velocities = self.velocities[sel]
         if self.has_forces:
@@ -347,11 +357,13 @@ class Timestep(object):
 
         new_TS.time = self.time
         new_TS.frame = self.frame
-        try:
-            new_TS._frame = self._frame
-        except AttributeError:
-            pass
-        
+
+        for att in ('_frame', '_time'):
+            try:
+                setattr(new_TS, att, getattr(self, att))
+            except AttributeError:
+                pass
+
         new_TS.data = copy.deepcopy(self.data)
 
         return new_TS

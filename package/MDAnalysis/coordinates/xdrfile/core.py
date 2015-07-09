@@ -262,13 +262,9 @@ class TrjWriter(base.Writer):
                 lmbda = ts.data['lmbda']
             except KeyError:
                 lmbda = 1.0
-            # Same assignment logic as for TRR Timestep creation (because we might be getting here frames from
-            #  other formats' Timesteps that don't have 'has_' flags).
-            has_x = ts.__dict__.get("has_x", True)
-            has_v = ts.__dict__.get("has_v", hasattr(ts, "_velocities"))
-            has_f = ts.__dict__.get("has_f", hasattr(ts, "_forces"))
+
             # COORDINATES
-            if has_x:
+            if ts.has_positions:
                 if self.convert_units:
                     pos = self.convert_pos_to_native(ts._pos, inplace=False)
                 else:
@@ -276,7 +272,7 @@ class TrjWriter(base.Writer):
             else:
                 pos = self._emptyarr
             #VELOCITIES
-            if has_v:
+            if ts.has_velocities:
                 if self.convert_units:
                     velocities = self.convert_velocities_to_native(ts._velocities, inplace=False)
                 else:
@@ -284,7 +280,7 @@ class TrjWriter(base.Writer):
             else:
                 velocities = self._emptyarr
             # FORCES
-            if has_f:
+            if ts.has_forces:
                 if self.convert_units:
                     forces = self.convert_forces_to_native(ts._forces, inplace=False)
                 else:
