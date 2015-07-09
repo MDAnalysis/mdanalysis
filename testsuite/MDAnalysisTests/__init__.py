@@ -90,7 +90,7 @@ examples in the ``MDAnalysisTests`` directory.
 The `SciPy testing guidelines`_ are a good howto for writing test cases,
 especially as we are directly using this framework (imported from numpy).
 
-A number of plugins external to nose are automatically loaded. the `knownfailure`
+A number of plugins external to nose are automatically loaded. The `knownfailure`
 plugin provides the `@knownfailure()` decorator, which can be used to mark tests
 that are expected to fail. Beware that even if used with default arguments the
 parentheses must be included.
@@ -149,9 +149,10 @@ def run(*args, **kwargs):
     except KeyError:
         kwargs['argv'] = sys.argv
     # We emulate numpy's treament of the 'fast' label.
-    label = kwargs.get("label", None)
-    if label == "fast":
-        kwargs['argv'].extend(['-A','not slow'])
+    if 'label' in kwargs:
+        label = kwargs.pop('label')
+        if label == 'fast':
+            kwargs['argv'].extend(['-A','not slow'])
     # We keep accepting numpy's 'extra_argv'
     if 'extra_argv' in kwargs:
         kwargs['argv'].extend(kwargs.pop('extra_argv'))
@@ -165,7 +166,7 @@ def run(*args, **kwargs):
 # to keep compatibility with MDAnalysis.tests.test()
 test = run # if we define the function directly as 'test' nose picks it up as a test to be run and recurses.
 
-import MDAnalysis.core.util
+import MDAnalysis.lib.util
 def executable_not_found(*args):
     """Return ``True`` if not at least one of the executables in args can be found.
 
