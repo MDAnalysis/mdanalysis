@@ -27,7 +27,7 @@ from MDAnalysis.tests.datafiles import (
     LAMMPSdata, trz4data, TPR, PDB, XYZ_mini, GMS_SYMOPT, GMS_ASYMSURF,
     DLP_CONFIG, DLP_CONFIG_order, DLP_CONFIG_minimal,
     DLP_HISTORY, DLP_HISTORY_order, DLP_HISTORY_minimal, HoomdXMLdata)
-from MDAnalysisTests import knownfailure
+from MDAnalysisTests.plugins.knownfailure import knownfailure
 
 from numpy.testing import *
 from nose.plugins.attrib import attr
