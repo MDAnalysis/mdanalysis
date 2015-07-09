@@ -96,8 +96,9 @@ For details see the report for `Issue 87`_.
           author_email='naveen.michaudagrawal@gmail.com',
           url='http://www.mdanalysis.org',
           license='GPL 2',
-          packages=['MDAnalysisTests'],
-          package_dir={'MDAnalysisTests': 'MDAnalysisTests'},
+          packages=['MDAnalysisTests', 'MDAnalysisTests.plugins'],
+          package_dir={'MDAnalysisTests': 'MDAnalysisTests',
+                       'MDAnalysisTests.plugins': 'MDAnalysisTests/plugins'},
           package_data={'MDAnalysisTests':
               [
                   'data/*.psf', 'data/*.dcd', 'data/*.pdb',
@@ -116,7 +117,8 @@ For details see the report for `Issue 87`_.
                   'data/gms/*.xyz', 'data/gms/*.gms', 'data/gms/*.gms.gz',
                   'data/*.inpcrd',
                   'data/dlpoly/CONFIG*',
-                  'data/dlpoly/HISTORY*'
+                  'data/dlpoly/HISTORY*',
+                  'data/*.xml',
               ],
           },
           classifiers=CLASSIFIERS,

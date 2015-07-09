@@ -16,7 +16,7 @@
 #
 
 """
-Fast parallel distance array computation --- :mod:`MDAnalysis.core.parallel.distances`
+Fast parallel distance array computation --- :mod:`MDAnalysis.lib.parallel.distances`
 ======================================================================================
 
 :Author:  Jan Domański
@@ -24,7 +24,7 @@ Fast parallel distance array computation --- :mod:`MDAnalysis.core.parallel.dist
 :Licence: GPL
 
 A fast, parallel :func:`distance_array` function as a substitute for
-:func:`MDAnalysis.core.distances.distance_array`; implemented with
+:func:`MDAnalysis.lib.distances.distance_array`; implemented with
 `Cython Parallelism`_. For development notes see the comments for
 `Issue 80`_.
 
@@ -33,7 +33,7 @@ A fast, parallel :func:`distance_array` function as a substitute for
 
 Load the module with ::
 
-  import MDAnalysis.core.parallel.distances
+  import MDAnalysis.lib.parallel.distances
 
 
 .. function:: distance_array(ref, conf[, box[, result]])
@@ -69,7 +69,7 @@ Load the module with ::
 
    Serial version (to check the parallel version). This version is
    slightly slower than the regular serial (pure C)
-   :func:`MDAnalysis.core.distances.distance_array` function.
+   :func:`MDAnalysis.lib.distances.distance_array` function.
 
    .. warning::
       Only orthorhombic boxes are supported for *box*, anything else will
@@ -110,7 +110,7 @@ def distance_array_serial(np.ndarray[DTYPE_t, ndim=2] coordA, \
 
     Serial version (to check the parallel version). This version is
     slightly slower than the regular serial (pure C)
-    :func:`MDAnalysis.core.distances.distance_array` function.
+    :func:`MDAnalysis.lib.distances.distance_array` function.
 
     .. warning::
        Only orthorhombic boxes are supported, anything else will

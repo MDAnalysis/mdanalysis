@@ -413,6 +413,7 @@ import weakref
 import MDAnalysis
 from .. import SelectionError, NoDataError, SelectionWarning
 from ..lib import util
+from ..lib import distances
 from ..lib.util import cached
 from ..lib.transformations import rotation_matrix, vecangle, rotaxis
 
@@ -1893,8 +1894,6 @@ class AtomGroup(object):
         .. versionadded:: 0.7.3
         .. versionchanged:: 0.8 Added *pbc* keyword
         """
-        from ..core import distances
-
         if len(self) != 2:
             raise ValueError("distance computation only makes sense for a group with exactly 2 atoms")
         if not pbc:
@@ -2422,8 +2421,6 @@ class AtomGroup(object):
         .. versionadded:: 0.8
 
         """
-        from ..core import distances
-
         if box is None:  #Try and auto detect box dimensions
             box = self.dimensions  # Can accept any box
 
@@ -2488,8 +2485,6 @@ class AtomGroup(object):
 
         .. versionadded:: 0.9.2
         """
-        from ..core import distances
-
         if compound.lower() == "atoms":
             return self.packIntoBox(box=box)
 

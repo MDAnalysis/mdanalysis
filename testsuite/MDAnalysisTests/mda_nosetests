@@ -1,0 +1,3 @@
+#!/usr/bin/env python
+import MDAnalysis.tests
+MDAnalysis.tests.test()

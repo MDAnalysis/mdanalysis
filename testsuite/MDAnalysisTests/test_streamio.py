@@ -20,7 +20,7 @@ import MDAnalysis
 import MDAnalysis.lib.util as util
 import MDAnalysis.tests.datafiles as datafiles
 from MDAnalysisTests.test_coordinates import RefAdKSmall
-from MDAnalysisTests import knownfailure
+from MDAnalysisTests.plugins.knownfailure import knownfailure
 
 import StringIO
 import cStringIO
@@ -242,7 +242,7 @@ class TestStreamIO(TestCase, RefAdKSmall):
         u = MDAnalysis.Universe(streamData.as_NamedStream('PDB'))
         assert_equal(u.atoms.numberOfAtoms(), self.ref_numatoms)
 
-    @knownfailure
+    @knownfailure()
     def test_PDBReader(self):
         try:
             u = MDAnalysis.Universe(streamData.as_NamedStream('PDB'), permissive=False)
