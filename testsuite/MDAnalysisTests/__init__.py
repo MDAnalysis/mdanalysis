@@ -87,13 +87,13 @@ Writing test cases
 The unittests use the :mod:`unittest` module together with nose_. See the
 examples in the ``MDAnalysisTests`` directory.
 
-Memory leak detection can be enabled for a class of tests by having it inherit
-:class:`MemleakTest` instead of :class:`TestCase` or just :class:`object`.
-This approach makes use of a `@classmethod` :meth:`setUpClass` in the
-:class:`MemleakTest` class, which should not be overridden in a test class.
-
 The `SciPy testing guidelines`_ are a good howto for writing test cases,
 especially as we are directly using this framework (imported from numpy).
+
+A number of plugins external to nose are automatically loaded. The `knownfailure`
+plugin provides the `@knownfailure()` decorator, which can be used to mark tests
+that are expected to fail. Beware that even if used with default arguments the
+parentheses must be included.
 
 .. _NumPy: http://www.numpy.org/
 .. _nose:
@@ -104,13 +104,13 @@ especially as we are directly using this framework (imported from numpy).
    http://projects.scipy.org/numpy/wiki/TestingGuidelines#id11
 .. _Charmm: http://www.charmm.org
 .. _Gromacs: http://www.gromacs.org
+
 """
 
 __version__ = "0.11.0-dev"  # keep in sync with RELEASE in setup.py
 
 try:
-    from numpy.testing import Tester, assert_, assert_equal, TestCase
-    test = Tester().test
+    from numpy.testing import assert_
 except ImportError:
     raise ImportError("""numpy>=1.5  is required to run the test suite. Please install it first. """
                       """(For example, try "easy_install 'numpy>=1.5'").""")
@@ -120,6 +120,13 @@ try:
 except ImportError:
     raise ImportError('nose is required to run the test suite. Please install it first. '
                       '(For example, try "pip install nose").')
+
+import nose.plugins.multiprocess
+_multiprocess_ok = hasattr(nose.plugins.multiprocess, "_instantiate_plugins")
+if not _multiprocess_ok:
+    raise ImportWarning("nose >= 1.1.0 is needed for multiprocess testing with external plugins, "
+                        "and your setup doesn't meet this requirement. If you're running "
+                        "tests in parallel external plugins will be disabled.")
 
 try:
     import MDAnalysis
@@ -131,27 +138,35 @@ if MDAnalysis.__version__ != __version__:
     raise ImportError("MDAnalysis release {0} must be installed to run the tests, not {1}".format(
             __version__, MDAnalysis.__version__))
 
+from os.path import dirname
+from MDAnalysisTests.plugins import loaded_plugins
+import sys
+
+def run(*args, **kwargs):
+    """Test-running function that loads plugins, sets up arguments, and calls `nose.main()`"""
+    try:
+        kwargs['argv'] = sys.argv + kwargs['argv'] #sys.argv takes precedence
+    except KeyError:
+        kwargs['argv'] = sys.argv
+    # We emulate numpy's treament of the 'fast' label.
+    if 'label' in kwargs:
+        label = kwargs.pop('label')
+        if label == 'fast':
+            kwargs['argv'].extend(['-A','not slow'])
+    # We keep accepting numpy's 'extra_argv'
+    if 'extra_argv' in kwargs:
+        kwargs['argv'].extend(kwargs.pop('extra_argv'))
+    try:
+        kwargs['addplugins'].extend(loaded_plugins.values())
+    except KeyError:
+        kwargs['addplugins'] = loaded_plugins.values()
+    # By default, test our testsuite
+    kwargs['defaultTest'] = dirname(__file__)
+    return nose.main(*args, **kwargs)
+# to keep compatibility with MDAnalysis.tests.test()
+test = run # if we define the function directly as 'test' nose picks it up as a test to be run and recurses.
+
 import MDAnalysis.lib.util
-
-
-def knownfailure(msg="Test skipped due to expected failure", exc_type=AssertionError, mightpass=False):
-    """If decorated function raises exception *exc_type* skip test, else raise AssertionError."""
-
-    def knownfailure_decorator(f):
-        def inner(*args, **kwargs):
-            try:
-                f(*args, **kwargs)
-            except exc_type:
-                raise nose.SkipTest(msg)
-            else:
-                if not mightpass:
-                    raise AssertionError('Failure expected')
-
-        return nose.tools.make_decorator(f)(inner)
-
-    return knownfailure_decorator
-
-
 def executable_not_found(*args):
     """Return ``True`` if not at least one of the executables in args can be found.
 
@@ -177,49 +192,3 @@ def executable_not_found_runtime(*args):
     """
     return lambda: executable_not_found(*args)
 
-import gc
-
-class MemleakTest(TestCase):
-    @classmethod
-    def setUpClass(cls):
-        cls.leakedobjs = set()
-        cls.initobjs = set()
-        if hasattr(cls, "setUp"):
-            cls._mlt_setUp = cls.setUp
-        if hasattr(cls, "tearDown"):
-            cls._mlt_tearDown = cls.tearDown
-
-        # These setUp and tearDown are going to wrap and replace
-        #  the ones we just assigned to the private _mlt_ variables.
-        def setUp(self):
-            # We just record what attributes we have before setup
-            self.initobjs.update(self.__dict__.keys())
-            if hasattr(self, '_mlt_setUp'):
-                self._mlt_setUp()
-
-        def tearDown(self):
-            if hasattr(self, '_mlt_tearDown'):
-                self._mlt_tearDown()
-            # We now specifically delete all remaining attributes that
-            #  tearDown didn't take care of (we leave private ones be).
-            for obj in set(self.__dict__.keys()).difference(self.initobjs):
-                if not obj.startswith("_"): delattr(self, obj)
-            gc.collect()
-            # We have to keep track of previously seen leaks, otherwise
-            # we report them multiple times per test class.
-            latest_leaks = [ obj for obj in gc.garbage if obj not in self.leakedobjs ]
-            self.leakedobjs.update(gc.garbage)
-            if self._testMethodName == "test_that_memleaks":
-                # This one is actually supposed to leak
-                assert_(latest_leaks, "Failed to detect a memleak")
-                # Let's clean it up:
-                # this should resolve the circular reference and clear the uncollectable list
-                gc.garbage[0].s = None
-                gc.garbage[:] = []
-                gc.collect()
-                latest_leaks = [ obj for obj in gc.garbage if obj not in self.leakedobjs or obj in latest_leaks ]
-                assert_(not latest_leaks, "Failed to clean the memleak we created for testing purposes")
-            else:
-                assert_(not latest_leaks, "Memleak: GC failed to collect the following: {}".format(latest_leaks))
-
-        cls.tearDown = tearDown

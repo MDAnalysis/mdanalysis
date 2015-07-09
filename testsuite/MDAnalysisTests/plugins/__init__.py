@@ -1,0 +1,131 @@
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+#
+# MDAnalysis --- http://www.MDAnalysis.org
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
+# Released under the GNU Public Licence, v2 or any higher version
+#
+# Please cite your use of MDAnalysis in published work:
+#
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
+#
+# Plugin management written by Manuel Nuno Melo, 2015
+
+"""
+===========================
+Nose plugins for MDAnalysis
+===========================
+
+:Author: Manuel Nuno Melo
+:Year: 2015
+
+.. versionadded:: 0.11.0
+
+Writing plugins
+===============
+
+Nose plugins can be written to expose several hooks along the nose execution
+chain. This allows very fine control of testing.
+
+The `nose plugin guidelines`_, and examples therein, are a good starting point
+on how to accomplish this, with more details available in the `API specification`_.
+You can also base your plugins in the ones here or in the `nose` suite.
+
+This module will take care of registering all plugins with nose. If you write a
+plugin all you need to do in `__init__.py` is to import it and add its name
+to `__all__`.
+You must also include in its module a `plugin_class` variable that points to
+the plugin class, or list of plugin classes, that you are implementing (it must
+come up after the class definition, otherwise the name will be undefined). Again,
+see the existing modules for examples.
+
+Beware that command-line invocation of nose via the `nosetests` script will
+bypass the loading of these plugins. If you have any code that depends on that,
+have it use the `:func:_check_plugins_loaded` function to act accordingly.
+
+.. _nose plugin guidelines:
+   http://nose.readthedocs.org/en/latest/plugins/writing.html
+.. _API specification:
+   http://nose.readthedocs.org/en/latest/plugins/interface.html
+"""
+
+# Don't forget to also add your plugin to the import further ahead
+__all__ = ['memleak', 'capture_err', 'knownfailure']
+
+try:
+    import nose
+except ImportError:
+    raise ImportError('nose is required to run the test plugin module. Please install it first. '
+                      '(For example, try "pip install nose").')
+
+import nose.plugins.multiprocess
+_multiprocess_ok = hasattr(nose.plugins.multiprocess, "_instantiate_plugins")
+if not _multiprocess_ok:
+    raise ImportWarning("nose >= 1.1.0 is needed for multiprocess testing with external plugins, "
+                        "and your setup doesn't meet this requirement. If you're running "
+                        "tests in parallel external plugins will be disabled.")
+
+def _nose_config():
+    """Function that exposes nose's configuration via a hack in one of our plugins
+    
+    The external plugins managed by this module are scanned for the :attr:`config` attribute,
+    which at least one should implement upon configuration. Plugins need only to be loaded
+    for this to work, not necessarily enabled.
+    """
+    for plugin in loaded_plugins.values():
+        if hasattr(plugin, "config"):
+            return plugin.config
+    return None
+
+def _check_plugins_loaded():
+    """Function that checks whether external plugins were loaded.
+    
+    It can be used to ascertain whether nose tests were launched using `nosetests` from the
+    command-line, and hence that external plugins aren't available.
+
+    It checks whether one of our plugins was configured.
+    """
+    return _nose_config() is not None
+
+def _check_multiprocess():
+    """Function that checks the safe use of external plugins when multiprocessing tests.
+    """
+    plug_list = _nose_config().plugins.plugins
+    # Either we have a safe version of multiprocess or we aren't running it.
+    return _multiprocess_ok or not sum(
+            [isinstance(plug, nose.plugins.multiprocess.MultiProcess)
+             and plug.enabled for plug in plug_list])
+
+# This dictionary holds the external plugin instances that are loaded into nose.
+# Beware that when multiprocessing this dict won't accurately reflect
+# the plugin objects in actual use since they're reinstantiated for
+# each child process.
+loaded_plugins = dict()
+
+# ADD HERE your plugin import
+import memleak, capture_err, knownfailure
+
+plugin_classes = []
+for plugin in __all__:
+    cls = globals()[plugin].plugin_class
+    if issubclass(cls, nose.plugins.Plugin):
+        plugin_classes.append(cls)
+    else:
+        plugin_classes.extend(cls)
+
+for p_class in plugin_classes:
+    if p_class.name is None: # KnownFailure doesn't implement a name...
+        loaded_plugins[p_class.__name__] = p_class()
+    else:
+        loaded_plugins[p_class.name] = p_class()
+    # Add it to multiprocess' list of plugins to instantiate
+    if _multiprocess_ok:
+        try:
+            nose.plugins.multiprocess._instantiate_plugins.append(p_class)
+        except AttributeError:
+            nose.plugins.multiprocess._instantiate_plugins = [p_class]
+

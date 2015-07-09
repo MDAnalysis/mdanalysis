@@ -24,7 +24,7 @@ from numpy.testing import (TestCase, assert_raises, assert_equal, assert_allclos
                            assert_array_almost_equal)
 from nose.plugins.attrib import attr
 from nose.tools import assert_not_equal
-from MDAnalysisTests import knownfailure
+from MDAnalysisTests.plugins.knownfailure import knownfailure
 
 import MDAnalysis as mda
 
