@@ -5,9 +5,15 @@ env:
   - TEST_RUN="FULL"
   - TEST_RUN="COVER"
 # command to install dependencies
+addons:
+  apt:
+    packages:
+      - gfortran
+      - libhdf5-serial-dev
+      - libnetcdf-dev
+      - liblapack-dev
+      - libatlas-dev
 before_install:
-  - sudo apt-get update -qq
-  - sudo apt-get install -q -y gfortran libhdf5-serial-dev libnetcdf-dev liblapack-dev libatlas-dev
   - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
   - chmod +x miniconda.sh
   - ./miniconda.sh -b
