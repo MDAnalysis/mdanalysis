@@ -515,8 +515,8 @@ class test_apply_PBC(TestCase):
         box1 = U.dimensions
         box2 = MDAnalysis.coordinates.core.triclinic_vectors(box1)
 
-        print box2
-        print box2.shape
+        #print box2
+        #print box2.shape
 
         def numpy_PBC(coords, box):
             coords -= np.array([box[2] * val for val in np.floor(coords[:, 2] / box[2][2])])

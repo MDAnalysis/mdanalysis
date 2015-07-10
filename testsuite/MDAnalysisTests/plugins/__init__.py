@@ -47,11 +47,18 @@ Beware that command-line invocation of nose via the `nosetests` script will
 bypass the loading of these plugins. If you have any code that depends on that,
 have it use the `:func:_check_plugins_loaded` function to act accordingly.
 
+Finally, avoid any imports from `MDAnalysis` in plugin code, unless said imports
+happen only at test runtime. See Issue 344 for details.
+
 .. _nose plugin guidelines:
    http://nose.readthedocs.org/en/latest/plugins/writing.html
 .. _API specification:
    http://nose.readthedocs.org/en/latest/plugins/interface.html
 """
+
+# Do NOT import MDAnalysis at this level. Tests should do it themselves.
+# If MDAnalysis is imported here coverage accounting might fail because all the import
+#  code won't be run again under coverage's watch.
 
 # Don't forget to also add your plugin to the import further ahead
 __all__ = ['memleak', 'capture_err', 'knownfailure']
