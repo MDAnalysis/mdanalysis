@@ -14,10 +14,16 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-"""
-This plugin implements memleak checks for tests. Enable using `--with-memleak`.
-Checks are performed by clearing the test's namespace after it has run and
-then checking whether garbage collection reports anything as uncollectable.
+"""Test plugin that reports memleaks (objects deemed uncollectable by python's garbage collector) on a test-by-test basis.
+
+The plugin works by clearing a test's namespace after it has run, and then
+forcing a garbage collection round and checking for uncollectable objects.
+
+Implementation uses the startTest and stopTest hooks. To prevent premature
+success declaration (since the memleak check only runs after the test) the test's
+:class:`nose.proxy.ResultProxy` is monkey-patched with a silent :meth:`addSuccess` method. This
+might seem hackish, but it is how other `:class:nose.plugins.errorclass.ErrorClassPlugins`
+are implemented.
 """
 
 import gc
@@ -42,14 +48,9 @@ class _MemleakResult(nose.proxy.ResultProxy):
         self._ml_is_success = True
 
 class Memleak(ErrorClassPlugin):
-    """Test plugin that reports memleaks (objects deemed uncollectable by python's garbage collector) on a test-by-test basis.
-
-    The plugin works by clearing a test's namespace after it has run, and then
-    forcing a garbage collection round and checking for uncollectable objects.
-
-    Implementation uses the startTest and stopTest hooks. To prevent premature
-    success declaration (since the memleak test only runs after the test), the test's
-    :class:`nose.proxy.ResultProxy` is monkey-patched with a silent :meth:`addSuccess` method.
+    """
+    Report memleaks (objects deemed uncollectable by python's
+    garbage collector) on a test-by-test basis.
     """
     name = "memleak"
     enabled = False

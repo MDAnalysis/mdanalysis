@@ -11,14 +11,13 @@ before_install:
   - export PATH=/home/travis/miniconda/bin:$PATH
   - conda update --yes conda
 install:
-  - conda create --yes -q -n pyenv mkl python=2.7 numpy=1.9.1 scipy=0.14.0 nose=1.3.7
+  - conda create --yes -q -n pyenv mkl python=2.7 numpy=1.9.1 scipy=0.14.0 nose=1.3.4
   - source activate pyenv
   - conda install --yes python=$TRAVIS_PYTHON_VERSION cython biopython matplotlib networkx netcdf4
   - pip install package/
   - pip install testsuite/
   - pip install coveralls
   - chmod +x testsuite/MDAnalysisTests/mda_nosetests
-  - nosetests -V
 # command to run tests
 script:
     - ./testsuite/MDAnalysisTests/mda_nosetests -v --with-coverage --cover-package MDAnalysis

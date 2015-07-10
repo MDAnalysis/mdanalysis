@@ -109,6 +109,10 @@ parentheses must be included.
 
 __version__ = "0.11.0-dev"  # keep in sync with RELEASE in setup.py
 
+# Do NOT import MDAnalysis at this level. Tests should do it themselves.
+# If MDAnalysis is imported here coverage accounting might fail because all the import
+#  code won't be run again under coverage's watch. See Issue 344.
+
 try:
     from numpy.testing import assert_
 except ImportError:
@@ -127,16 +131,6 @@ if not _multiprocess_ok:
     raise ImportWarning("nose >= 1.1.0 is needed for multiprocess testing with external plugins, "
                         "and your setup doesn't meet this requirement. If you're running "
                         "tests in parallel external plugins will be disabled.")
-
-try:
-    import MDAnalysis
-except ImportError:
-    raise ImportError('Install MDAnalysis first to run the tests, '
-                      'e.g. "pip install mdanalysis"')
-
-if MDAnalysis.__version__ != __version__:
-    raise ImportError("MDAnalysis release {0} must be installed to run the tests, not {1}".format(
-            __version__, MDAnalysis.__version__))
 
 from os.path import dirname
 from MDAnalysisTests.plugins import loaded_plugins
@@ -163,21 +157,6 @@ def run(*args, **kwargs):
     # By default, test our testsuite
     kwargs['defaultTest'] = dirname(__file__)
     return nose.run_exit(*args, **kwargs)
-# to keep compatibility with MDAnalysis.tests.test()
-test = run # if we define the function directly as 'test' nose picks it up as a test to be run and recurses.
-
-import MDAnalysis.lib.util
-def executable_not_found(*args):
-    """Return ``True`` if not at least one of the executables in args can be found.
-
-    ``False`` otherwise (i.e. at least one was found).
-    """
-    for name in args:
-        found = MDAnalysis.lib.util.which(name) is not None
-        if found:
-            break
-    return not found
-
 
 def executable_not_found_runtime(*args):
     """Factory function that returns a :func:`executable_not_found`.
@@ -190,5 +169,20 @@ def executable_not_found_runtime(*args):
       @dec.skipif(executable_not_found_runtime("binary_name"), msg="skip test because binary_name not available")
       ...
     """
+    # This must come here so that MDAnalysis isn't imported prematurely, which spoils
+    #  coverage accounting (see Issue 344).
+    import MDAnalysis.lib.util
+    def executable_not_found(*args):
+        """Return ``True`` if not at least one of the executables in args can be found.
+
+        ``False`` otherwise (i.e. at least one was found).
+        """
+        for name in args:
+            found = MDAnalysis.lib.util.which(name) is not None
+            if found:
+                break
+        return not found
+
     return lambda: executable_not_found(*args)
+
 
