@@ -18,6 +18,7 @@ install:
   - pip install testsuite/
   - pip install coveralls
   - chmod +x testsuite/MDAnalysisTests/mda_nosetests
+  - nosetests -V
 # command to run tests
 script:
     - ./testsuite/MDAnalysisTests/mda_nosetests -v --with-coverage --cover-package MDAnalysis
