@@ -161,13 +161,17 @@ class Timestep(object):
             The total number of atoms this Timestep describes
 
         :Keywords:
+          *positions*
+            Whether this Timestep has position information [``True``]
           *velocities*
             Whether this Timestep has velocity information [``False``]
           *forces*
             Whether this Timestep has force information [``False``]
 
         .. versionchanged:: 0.11.0
-           Added keywords for velocities and forces
+           Added keywords for positions, velocities and forces
+           Can add and remove position/velocity/force information by using
+           the has_* attribute
         """
         # readers call Reader._read_next_timestep() on init, incrementing
         # self.frame to 0
@@ -177,24 +181,20 @@ class Timestep(object):
 
         self.data = {}
 
-        # For compat with TRR
-        self.has_positions = True
-        self._pos = np.zeros((numatoms, 3), dtype=np.float32, order=self.order)
+        # Stupid hack to make it allocate first time round
+        # ie we have to go from not having, to having positions
+        # to make the Timestep allocate
+        self._has_positions = False
+        self._has_velocities = False
+        self._has_forces = False
 
+        # These will allocate the arrays if the has flag
+        # gets set to True
+        self.has_positions = kwargs.get('positions', True)
         self.has_velocities = kwargs.get('velocities', False)
-        if self.has_velocities:
-            self._velocities = np.zeros((numatoms, 3),
-                                        dtype=np.float32, order=self.order)
         self.has_forces = kwargs.get('forces', False)
-        if self.has_forces:
-            self._forces = np.zeros((numatoms, 3),
-                                    dtype=np.float32, order=self.order)
 
         self._unitcell = self._init_unitcell()
-
-        self._x = self._pos[:, 0]
-        self._y = self._pos[:, 1]
-        self._z = self._pos[:, 2]
 
     @classmethod
     def from_timestep(cls, other):
@@ -373,13 +373,56 @@ class Timestep(object):
         return self._numatoms
 
     @property
+    def has_positions(self):
+        return self._has_positions
+
+    @has_positions.setter
+    def has_positions(self, val):
+        # Only allocate array if necessary
+        if val and not self._has_positions:
+            self._pos = np.zeros((self.numatoms, 3), dtype=np.float32,
+                                 order=self.order)
+            self._has_positions = True
+        elif not val:
+            self._has_positions = False
+
+    @property
     def positions(self):
         """A record of the positions of all atoms in this Timestep"""
-        return self._pos
+        if self.has_positions:
+            return self._pos
+        else:
+            raise NoDataError("This Timestep has no positions")
 
     @positions.setter
     def positions(self, new):
+        self.has_positions = True
         self._pos[:] = new
+
+    @property
+    def _x(self):
+        return self._pos[:, 0]
+
+    @property
+    def _y(self):
+        return self._pos[:, 1]
+
+    @property
+    def _z(self):
+        return self._pos[:, 2]
+
+    @property
+    def has_velocities(self):
+        return self._has_velocities
+
+    @has_velocities.setter
+    def has_velocities(self, val):
+        if val and not self._has_velocities:
+            self._velocities = np.zeros((self.numatoms, 3), dtype=np.float32,
+                                        order=self.order)
+            self._has_velocities = True
+        elif not val:
+            self._has_velocities = False
 
     @property
     def velocities(self):
@@ -391,17 +434,28 @@ class Timestep(object):
 
         .. versionadded:: 0.11.0
         """
-        try:
+        if self.has_velocities:
             return self._velocities
-        except AttributeError:
+        else:
             raise NoDataError("This Timestep has no velocities")
 
     @velocities.setter
     def velocities(self, new):
-        try:
-            self._velocities[:] = new
-        except AttributeError:
-            raise NoDataError("This Timestep has no velocities")
+        self.has_velocities = True
+        self._velocities[:] = new
+
+    @property
+    def has_forces(self):
+        return self._has_forces
+
+    @has_forces.setter
+    def has_forces(self, val):
+        if val and not self._has_forces:
+            self._forces = np.zeros((self.numatoms, 3), dtype=np.float32,
+                                    order=self.order)
+            self._has_forces = True
+        elif not val:
+            self._has_forces = False
 
     @property
     def forces(self):
@@ -413,17 +467,15 @@ class Timestep(object):
 
         .. versionadded:: 0.11.0
         """
-        try:
+        if self.has_forces:
             return self._forces
-        except AttributeError:
+        else:
             raise NoDataError("This Timestep has no forces")
 
     @forces.setter
     def forces(self, new):
-        try:
-            self._forces[:] = new
-        except AttributeError:
-            raise NoDataError("This Timestep has no forces")
+        self.has_forces = True
+        self._forces[:] = new
 
     @property
     def dimensions(self):

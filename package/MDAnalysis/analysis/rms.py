@@ -454,10 +454,10 @@ class RMSD(object):
                 R[:, :] = rot.reshape(3, 3)
 
                 # Transform each atom in the trajectory (use inplace ops to avoid copying arrays)
-                # (Marginally (~3%) faster than "ts._pos[:] = (ts._pos - x_com) * R + ref_com".)
-                ts._pos -= x_com
-                ts._pos[:] = ts._pos * R  # R acts to the left & is broadcasted N times.
-                ts._pos += ref_com
+                # (Marginally (~3%) faster than "ts.positions[:] = (ts.positions - x_com) * R + ref_com".)
+                ts.positions -= x_com
+                ts.positions[:] = ts.positions * R  # R acts to the left & is broadcasted N times.
+                ts.positions += ref_com
 
                 # 2) calculate secondary RMSDs
                 for igroup, (refpos, atoms) in enumerate(

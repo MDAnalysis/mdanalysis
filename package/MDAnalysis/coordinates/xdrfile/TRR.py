@@ -107,13 +107,22 @@ class Timestep(core.Timestep):
                   " by making use of the '{flag}' flag of Timestep objects.")
 
     def __init__(self, numatoms, **kwargs):
-        super(Timestep, self).__init__(numatoms, velocities=True, forces=True)
+        super(Timestep, self).__init__(numatoms, positions=True,
+                                       velocities=True, forces=True)
         # Set initial sources to -1, so they are never valid
         # _source is compared against current frame when accessing
         # if they do not match, then the Timestep returns _nodataerr
         self.data['position_source'] = -1
         self.data['velocity_source'] = -1
         self.data['force_source'] = -1
+
+        # TRR always has pos vel & force allocated
+        self._pos = np.zeros((self.numatoms, 3), dtype=np.float32,
+                             order=self.order)
+        self._velocities = np.zeros((self.numatoms, 3), dtype=np.float32,
+                                    order=self.order)
+        self._forces = np.zeros((self.numatoms, 3), dtype=np.float32,
+                                order=self.order)
 
         self.data['lmbda'] = 0
 

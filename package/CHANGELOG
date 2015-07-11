@@ -32,6 +32,11 @@ The rules for this file:
   * RMSF class added to rms analysis module
   * ProgressMeter now outputs every *interval* number of ``update`` calls
   * Created lib.mdamath for common mathematical functions.
+  * All Timesteps have the has_positions has_velocities and has_forces
+    boolean flags (Issue #213)
+  * Timesteps can now allocate velocities and forces if they weren't
+    originally created with these through the use of the has_ flags.
+    (Issue #213)
 
   Changes
   * A ProtoReader class intermediate between IObase and Reader was added so
@@ -58,6 +63,7 @@ The rules for this file:
   * base.Reader now defines __iter__
   * __iter__ removed from many Readers (now use base.Reader implementation)
   * numpy >= 1.5 required
+  * Timestep._x _y and _z are now read only (Issue #213)
 
   Fixes
   * ChainReaders no longer leak (Issue #312)

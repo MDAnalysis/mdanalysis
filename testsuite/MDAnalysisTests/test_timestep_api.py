@@ -32,7 +32,7 @@ from nose.tools import assert_not_equal
 from MDAnalysisTests.plugins.knownfailure import knownfailure
 
 import MDAnalysis as mda
-
+from MDAnalysis import NoDataError
 from MDAnalysisTests.datafiles import (
     PSF, DCD, DCD_empty, PDB_small, XPDB_small, PDB_closed, PDB_multiframe,
     PDB, CRD, XTC, TRR, GRO, DMS, CONECT, PDBQT_input,
@@ -136,6 +136,7 @@ class _TestTimestep(TestCase):
 
     def setUp(self):
         self.ts = self.Timestep(self.size)
+        self.ts.frame += 1
         self.ts.positions = self.refpos
 
     def tearDown(self):
@@ -249,20 +250,11 @@ class _TestTimestep(TestCase):
         assert_allclose(self.ts._y, self.ts._pos[:,1])
         assert_allclose(self.ts._z, self.ts._pos[:,2])
 
-    @attr('issue')
-    @knownfailure("Timesteps without setter decorators break the _x, _y, _z views onto"
-                  " _pos (Issue 213)", AssertionError, mightpass=True)
     def test_coordinate_setter_shortcuts(self):
-        # Check that writing to _x, _y, and _z works as expected (Issues 224 and 213)#
-        # For TRRs setting _x, _y, and _z works because the assignment is managed by a decorator.
-        # For other formats that don't have such decorators assigning to any of these silently breaks
-        #  their being a view of the _pos array. Hopefuly all gets clean after Issue 213 is addressed
-        #  and this test can be moved to the general Timestep test class.
-        for idx, coordinate in enumerate(('_x', '_y', '_z')):
-            random_positions = np.random.random(self.size).astype(np.float32)
-            setattr(self.ts, coordinate, random_positions)
-            assert_allclose(getattr(self.ts, coordinate), random_positions)
-            assert_allclose(self.ts._pos[:,idx], random_positions)
+        # Check that _x _y and _z are read only
+        for coordinate in ('_x', '_y', '_z'):
+            random_positions = np.arange(self.size).astype(np.float32)
+            assert_raises(AttributeError, setattr, self.ts, coordinate, random_positions)
 
     # numatoms should be a read only property
     # all Timesteps require this attribute
@@ -281,6 +273,40 @@ class _TestTimestep(TestCase):
     def test_data_presence(self):
         assert_equal(hasattr(self.ts, 'data'), True)
         assert_equal(isinstance(self.ts.data, dict), True)
+
+    def test_allocate_velocities(self):
+        assert_equal(self.ts.has_velocities, False)
+        assert_raises(NoDataError, getattr, self.ts, 'velocities')
+
+        self.ts.has_velocities = True
+        assert_equal(self.ts.has_velocities, True)
+        assert_equal(self.ts.velocities.shape, (self.ts.numatoms, 3))
+
+    def test_allocate_forces(self):
+        assert_equal(self.ts.has_forces, False)
+        assert_raises(NoDataError, getattr, self.ts, 'forces')
+
+        self.ts.has_forces = True
+        assert_equal(self.ts.has_forces, True)
+        assert_equal(self.ts.forces.shape, (self.ts.numatoms, 3))
+
+    def test_velocities_remove(self):
+        ts = self.Timestep(10, velocities=True)
+        ts.frame += 1
+        assert_equal(ts.has_velocities, True)
+
+        ts.has_velocities = False
+        assert_equal(ts.has_velocities, False)
+        assert_raises(NoDataError, getattr, ts, 'velocities')
+
+    def test_forces_remove(self):
+        ts = self.Timestep(10, forces=True)
+        ts.frame += 1
+        assert_equal(ts.has_forces, True)
+
+        ts.has_forces = False
+        assert_equal(ts.has_forces, False)
+        assert_raises(NoDataError, getattr, ts, 'forces')
 
 
 # Can add in custom tests for a given Timestep here!
@@ -336,7 +362,85 @@ class TestXTCTimestep(_TestTimestep, _XTCTimestep):
 
 
 class TestTRRTimestep(_TestTimestep, _TRRTimestep):
-    pass
+    def test_velocities_remove(self):
+        # This test is different because TRR requires that the
+        # has flags get updated every frame
+        ts = self.Timestep(10, velocities=True)
+        ts.frame += 1
+        ts.has_velocities = True  # This line is extra for TRR
+        assert_equal(ts.has_velocities, True)
+
+        ts.has_velocities = False
+        assert_equal(ts.has_velocities, False)
+        assert_raises(NoDataError, getattr, ts, 'velocities')
+
+    def test_forces_remove(self):
+        # This test is different because TRR requires that the
+        # has flags get updated every frame
+        ts = self.Timestep(10, forces=True)
+        ts.frame += 1
+        ts.has_forces = True  # This line is extra for TRR
+        assert_equal(ts.has_forces, True)
+
+        ts.has_forces = False
+        assert_equal(ts.has_forces, False)
+        assert_raises(NoDataError, getattr, ts, 'forces')
+
+    def test_positions_expiry(self):
+        assert_equal(self.ts.has_positions, True)
+        assert_array_almost_equal(self.ts.positions, self.refpos)
+        self.ts.frame += 1
+        assert_equal(self.ts.has_positions, False)
+        assert_raises(NoDataError, getattr, self.ts, 'positions')
+
+    def test_velocities_expiry(self):
+        self.ts.velocities = self.refpos + 10
+        assert_equal(self.ts.has_velocities, True)
+        assert_array_almost_equal(self.ts.velocities, self.refpos + 10)
+        self.ts.frame += 1
+        assert_equal(self.ts.has_velocities, False)
+        assert_raises(NoDataError, getattr, self.ts, 'velocities')
+
+    def test_forces_expiry(self):
+        self.ts.forces = self.refpos + 100
+        assert_equal(self.ts.has_forces, True)
+        assert_array_almost_equal(self.ts.forces, self.refpos + 100)
+        self.ts.frame += 1
+        assert_equal(self.ts.has_forces, False)
+        assert_raises(NoDataError, getattr, self.ts, 'forces')
+
+    def test_positions_renewal(self):
+        assert_equal(self.ts.has_positions, True)
+        self.ts.frame += 1
+        assert_equal(self.ts.has_positions, False)
+        assert_raises(NoDataError, getattr, self.ts, 'positions')
+
+        self.ts.has_positions = True
+        assert_equal(self.ts.has_positions, True)
+        assert_equal(self.ts.positions, self.refpos)
+
+    def test_velocities_renewal(self):
+        self.ts.velocities = self.refpos + 10
+        assert_equal(self.ts.has_velocities, True)
+        assert_array_almost_equal(self.ts.velocities, self.refpos + 10)
+        self.ts.frame += 1
+        assert_equal(self.ts.has_velocities, False)
+        assert_raises(NoDataError, getattr, self.ts, 'velocities')
+
+        self.ts.velocities = self.refpos + 11
+        assert_equal(self.ts.has_velocities, True)
+        assert_array_almost_equal(self.ts.velocities, self.refpos + 11)
+
+    def test_forces_renewal(self):
+        self.ts.forces = self.refpos + 100
+        assert_equal(self.ts.has_forces, True)
+        self.ts.frame += 1
+        assert_equal(self.ts.has_forces, False)
+        assert_raises(NoDataError, getattr, self.ts, 'forces')
+
+        self.ts.forces = self.refpos + 101
+        assert_equal(self.ts.has_forces, True)
+        assert_array_almost_equal(self.ts.forces, self.refpos + 101)
 
 
 class TestDLPolyTimestep(_TestTimestep, _DLPolyTimestep):
@@ -717,3 +821,4 @@ class TestXYZ(_TestTimestepInterface):
     def setUp(self):
         u = self.u = mda.Universe(XYZ_mini)
         self.ts = u.trajectory.ts
+
