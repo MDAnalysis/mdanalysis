@@ -222,6 +222,14 @@ class TestSelectionsCHARMM(TestCase):
         assert_equal(len(phi151), 4)
         assert_equal(phi151[0].name, 'HN', "wrong ordering in selection, should be HN-N-CA-CB")
 
+    def test_global(self):
+        """Test the `global` modifier keyword (Issue 268)"""
+        ag = self.universe.select_atoms("resname LYS and name NZ")
+        # Lys amines within 4 angstrom of the backbone.
+        ag1 = self.universe.select_atoms("resname LYS and name NZ and around 4 backbone")
+        ag2 = ag.select_atoms("around 4 global backbone")
+        assert_(ag2._atoms == ag1._atoms)
+
 
 class TestSelectionsAMBER(TestCase):
     def setUp(self):

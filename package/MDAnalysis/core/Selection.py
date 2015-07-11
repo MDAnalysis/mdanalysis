@@ -27,7 +27,7 @@ Currently all atom arrays are handled internally as sets, but returned as AtomGr
 
 import re
 import numpy
-
+import warnings
 from .AtomGroup import AtomGroup, Universe
 from MDAnalysis.core import flags
 from ..lib.KDTree.NeighborSearch import CoordinateNeighborSearch
@@ -133,6 +133,14 @@ class OrSelection(Selection):
     def __repr__(self):
         return "<'OrSelection' " + repr(self.lsel) + "," + repr(self.rsel) + ">"
 
+class GlobalSelection(Selection):
+    def __init__(self, sel):
+        Selection.__init__(self)
+        self.sel = sel
+
+    def _apply(self, group):
+        sel = self.sel._apply(group.universe)
+        return sel
 
 class AroundSelection(Selection):
     def __init__(self, sel, cutoff, periodic=None):
@@ -502,6 +510,9 @@ class SelgroupSelection(Selection):
 
 class FullSelgroupSelection(Selection):
     def __init__(self, selgroup):
+        warnings.warn("Use of 'fullgroup' in selections is deprecated "
+                "in MDAnalysis '0.11' and will be removed entirely in upcoming "
+                "releases. Use the equivalent syntax 'global group' instead.", DeprecationWarning)
         Selection.__init__(self)
         self._grp = selgroup
 
@@ -903,6 +914,7 @@ class SelectionParser:
     BASE = 'nucleicbase'
     SUGAR = 'nucleicsugar'
     SAME = 'same'
+    GLOBAL = 'global'
     EOF = 'EOF'
     GT = '>'
     LT = '<'
@@ -926,11 +938,11 @@ class SelectionParser:
         (BASE, BaseSelection), (SUGAR, NucleicSugarSelection),
         #(BONDED, BondedSelection), not supported yet, need a better way to walk the bond lists
         (ATOM, AtomSelection), (SELGROUP, SelgroupSelection), (FULLSELGROUP, FullSelgroupSelection),
-        (SAME, SameSelection)])
+        (SAME, SameSelection), (GLOBAL, GlobalSelection)])
     associativity = dict([(AND, "left"), (OR, "left")])
     precedence = dict(
         [(AROUND, 1), (SPHLAYER, 1), (SPHZONE, 1), (CYLAYER, 1), (CYZONE, 1), (POINT, 1), (BYRES, 1), (BONDED, 1),
-            (SAME, 1), (AND, 3), (OR, 3), (NOT, 5)])
+            (SAME, 1), (AND, 3), (OR, 3), (NOT, 5), (GLOBAL, 5)])
 
     # Borg pattern: http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/66531
     _shared_state = {}
@@ -983,7 +995,7 @@ class SelectionParser:
 
     def __parse_subexp(self):
         op = self.__consume_token()
-        if op in (self.NOT, self.BYRES):  # unary operators
+        if op in (self.NOT, self.BYRES, self.GLOBAL):  # unary operators
             exp = self.__parse_expression(self.precedence[op])
             return self.classdict[op](exp)
         elif op in (self.AROUND):
@@ -1094,7 +1106,7 @@ class SelectionParser:
             else:
                 self.__error(prop, expected=False)
         else:
-            self.__error(op)
+            self.__error(op, expected=False)
 
 # The module level instance
 Parser = SelectionParser()

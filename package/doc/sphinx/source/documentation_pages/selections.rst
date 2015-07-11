@@ -171,8 +171,8 @@ Index
         :class:`MDAnalysis.Universe` are consecutively numbered, and the index
         runs from 1 up to the total number of atoms.
 
-Preexisting selections
-----------------------
+Preexisting selections and modifiers
+------------------------------------
 
     group *group-name*
         selects the atoms in the :class:`AtomGroup` passed to the function as an
@@ -187,7 +187,19 @@ Preexisting selections
         *group-name* are included. The resulting selection may therefore have atoms
         that were initially absent from the instance :meth:`~select_atoms` was
         called from.
+    .. deprecated:: 0.11
+        The use of ``fullgroup`` has been deprecated in favor of the equivalent ``global group``. 
         
+    global *selection*
+        by default, when issuing :meth:`~select_atoms` from an :class:`~MDAnalysis.AtomGroup.AtomGroup`
+        selections and subselections are returned intersected with the atoms of that instance.
+        Prefixing a selection term with ``global`` causes its selection to be returned in its entirety.
+        As an exmaple, the ``global`` keyword allows for ``lipids.select_atoms("around 10 global protein")`` ---
+        where ``lipids`` is a group that does not contain any proteins. Were ``global`` it absent the result
+        would be an empty selection since the ``protein`` subselection would itself be empty. 
+        When issuing :meth:`~select_atoms` from a :class:`~MDAnalysis.Universe` ``global`` is ignored.
+
+
 
 Instant selectors
 =================
