@@ -2,25 +2,31 @@ language: python
 python:
   - "2.7"
 # command to install dependencies
+addons:
+  apt:
+    packages:
+      - gfortran
+      - libhdf5-serial-dev
+      - libnetcdf-dev
+      - liblapack-dev
+      - libatlas-dev
 before_install:
-  - sudo apt-get update -qq
-  - sudo apt-get install -q -y gfortran libhdf5-serial-dev libnetcdf-dev liblapack-dev libatlas-dev
   - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
   - chmod +x miniconda.sh
   - ./miniconda.sh -b
   - export PATH=/home/travis/miniconda/bin:$PATH
   - conda update --yes conda
 install:
-  - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then conda create --yes -q -n pyenv mkl python=2.6 numpy=1.6.2 scipy=0.11 nose=1.1; fi
-  - if [[ $TRAVIS_PYTHON_VERSION == '2.7' ]]; then conda create --yes -q -n pyenv mkl python=2.7 numpy=1.9.1 scipy=0.14.0 nose=1.3.4; fi
+  - conda create --yes -q -n pyenv mkl python=2.7 numpy=1.9.1 scipy=0.14.0 nose=1.3.4
   - source activate pyenv
   - conda install --yes python=$TRAVIS_PYTHON_VERSION cython biopython matplotlib networkx netcdf4
   - pip install package/
   - pip install testsuite/
   - pip install coveralls
+  - chmod +x testsuite/MDAnalysisTests/mda_nosetests
 # command to run tests
 script:
-  - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then nosetests -v; fi
-  - if [[ $TRAVIS_PYTHON_VERSION == '2.7' ]]; then nosetests -v --with-coverage --cover-package MDAnalysis; fi
+    - ./testsuite/MDAnalysisTests/mda_nosetests -v --with-coverage --cover-package MDAnalysis --with-memleak
 after_success:
-  - if [[ $TRAVIS_PYTHON_VERSION == '2.7' ]]; then coveralls; fi
+  - coveralls
+

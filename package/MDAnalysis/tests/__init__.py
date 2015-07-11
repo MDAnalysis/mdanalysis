@@ -15,7 +15,8 @@
 #
 
 
-"""=========================
+"""
+=========================
 Test cases for MDAnalysis
 =========================
 
@@ -30,7 +31,7 @@ installed for the tests to run at all.
 Run all the tests with
 
    >>> import MDAnalysis.tests
-   >>> MDAnalysis.tests.test(label='full')
+   >>> MDAnalysis.tests.test()
 
 Some tests can take a few seconds; in order to skip the slow tests run
 
@@ -39,21 +40,24 @@ Some tests can take a few seconds; in order to skip the slow tests run
 Additional information is displayed at a higher verbosity level (the default is
 1):
 
-   >>> MDAnalysis.tests.test(label='fast', verbose=3)
+   >>> MDAnalysis.tests.test(label='fast', argv=['--verbosity=3'])
 
 Note that if no tests are being run then one might have to run the
 tests with the ``--exe`` flag
 
-   >>> MDAnalysis.tests.test(label='fast', extra_argv=['--exe'])
+   >>> MDAnalysis.tests.test(label='fast', argv=['--exe'])
 
 (This happens when python files are installed with the executable bit set. By
 default the nose_ testing framework refuses to use those files and must be
 encouraged to do so with the ``--exe`` switch.)
 
-See `nose commandline options`_ for additional options that can be used; for
-instance, code coverage can also be checked:
+See `nose commandline options`_ for additional options that can be used.
 
-  >>> MDAnalysis.tests.test(label='full', extra_argv=['--exe', '--with-coverage'])
+For the particular case of code coverage MDAnalysis mustn't be imported prior
+to testing, and testing must be invoked directly from `:meth:MDAnalysisTests.run`:
+
+  >>> import MDAnalysisTests
+  >>> MDAnalysisTests.run(argv=['--exe', '--with-coverage', '--cover-package=MDAnalysis'])
 
 
 Data
@@ -83,10 +87,9 @@ Writing test cases
 ==================
 
 The unittests use the :mod:`unittest` module together with nose_. See the
-examples in the ``MDAnalysis/tests`` directory.
+examples provided alongside the ``MDAnalysisTests`` module.
 
-The `SciPy testing guidelines`_ are a good howto for writing test cases,
-especially as we are directly using this framework (imported from numpy).
+The `SciPy testing guidelines`_ are also a good howto for writing test cases.
 
 
 .. _nose:
@@ -101,7 +104,7 @@ especially as we are directly using this framework (imported from numpy).
 """
 
 try:
-    from MDAnalysisTests import test
+    from MDAnalysisTests import run as test
 except ImportError:
     print("Install MDAnalysisTests first. The source package is available from")
     print("http://pypi.python.org/pypi/MDAnalysisTests")

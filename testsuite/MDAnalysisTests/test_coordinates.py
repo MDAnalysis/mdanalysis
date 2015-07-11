@@ -1212,8 +1212,8 @@ class TestMultiPDBReader(TestCase):
             return conect
 
         conect = helper(self.multiverse.atoms, [b for b in u.bonds if not b.is_guessed])
-        for r in conect:
-            print r
+        #for r in conect:
+            #print r
         assert_equal(conect, desired,
                      err_msg="The bond list does not match the test reference; len(actual) is %d, len(desired) is %d "
                              "" % (
@@ -2165,7 +2165,7 @@ class TestChainReader(TestCase):
 
     def test_jump_lastframe_trajectory(self):
         self.trajectory[-1]
-        print self.trajectory.ts, self.trajectory.ts.frame
+        #print self.trajectory.ts, self.trajectory.ts.frame
         assert_equal(self.trajectory.ts.frame + 1, self.trajectory.numframes, "indexing last frame with trajectory[-1]")
 
     def test_slice_trajectory(self):

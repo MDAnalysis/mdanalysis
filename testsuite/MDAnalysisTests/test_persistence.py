@@ -317,27 +317,3 @@ class TestTRRReader_offsets(_GromacsReader_offsets):
     ref_offsets = numpy.array([0,  1144464,  2288928,  3433392,  4577856,  5722320,
                        6866784,  8011248,  9155712, 10300176])
 
-## The following allow testing of the memleak tester plugin.
-## Keep commented out unless you suspect the plugin
-## might be misbehaving."""
-#class A():
-#    """This is a small leak that won't break anything."""
-#    def __init__(self):
-#        self.self_ref = self
-#    def __del__(self):
-#        pass
-#
-#def test_that_memleaks():
-#    """Test that memleaks (Issue 323)"""
-#    a = A()
-#
-#class TestML1(TestCase):
-#    def test_that_memleaks(self):
-#        """Test that memleaks (Issue 323)"""
-#        self.a = A()
-#
-#class TestML2(TestCase):
-#    def setUp(self):
-#        a = A()
-#    def test_that_memleaks(self):
-#        """Test that memleaks (Issue 323)"""
