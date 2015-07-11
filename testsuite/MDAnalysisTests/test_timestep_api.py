@@ -308,6 +308,46 @@ class _TestTimestep(TestCase):
         assert_equal(ts.has_forces, False)
         assert_raises(NoDataError, getattr, ts, 'forces')
 
+    def test_from_coordinates_1(self):
+        ts = self.Timestep.from_coordinates(self.refpos)
+
+        assert_equal(len(ts), self.size)
+        assert_array_almost_equal(ts.positions, self.refpos)
+        assert_raises(NoDataError, getattr, ts, 'velocities')
+        assert_raises(NoDataError, getattr, ts, 'forces')
+
+    def test_from_coordinates_2(self):
+        refvel = self.refpos + 10
+
+        ts = self.Timestep.from_coordinates(self.refpos, velocities=refvel)
+
+        assert_equal(len(ts), self.size)
+        assert_array_almost_equal(ts.positions, self.refpos)
+        assert_array_almost_equal(ts.velocities, refvel)
+        assert_raises(NoDataError, getattr, ts, 'forces')
+
+    def test_from_coordinates_3(self):
+        reffor = self.refpos + 10
+
+        ts = self.Timestep.from_coordinates(self.refpos, forces=reffor)
+
+        assert_equal(len(ts), self.size)
+        assert_array_almost_equal(ts.positions, self.refpos)
+        assert_raises(NoDataError, getattr, ts, 'velocities')
+        assert_array_almost_equal(ts.forces, reffor)
+
+    def test_from_coordinates_4(self):
+        refvel = self.refpos + 20
+        reffor = self.refpos + 10
+
+        ts = self.Timestep.from_coordinates(self.refpos, velocities=refvel,
+                                            forces=reffor)
+
+        assert_equal(len(ts), self.size)
+        assert_array_almost_equal(ts.positions, self.refpos)
+        assert_array_almost_equal(ts.velocities, refvel)
+        assert_array_almost_equal(ts.forces, reffor)
+
 
 # Can add in custom tests for a given Timestep here!
 class TestBaseTimestep(_TestTimestep, _BaseTimestep):
