@@ -61,35 +61,39 @@ class Timestep(core.Timestep):
     TRR Timestep always has positions, velocities and forces allocated, meaning
     that the `_pos`, `_velocities` and `_forces` attributes will always exist.
     Whether or not this data is valid for the current frame is determined by the
-    private attributes, `_pos_source`, `_vel_source` and `_for_source`.
+    flags `has_positions`, `has_velocities` and `has_forces`.  These are controlled
+    by the entries in the data dictionary: `position_source`, `velocity_source`
+    and `force_source`.
     When accessing the `.positions` attribute, this will only be returned if
-    `_pos_source` matches the current `frame`, otherwise a :class:`~MDAnalysis.NoDataError`
+    `position_source` matches the current `frame`, otherwise a :class:`~MDAnalysis.NoDataError`
     will be raised.  This scheme applies to both velocities and forces.
 
     When doing low-level writing to :attr:`~Timestep._pos`, :attr:`~Timestep._velocities`,
-    or :attr:`~Timestep._forces:attr:, the corresponding `_source` flag must be updated
-    to reflect the source of the data.
+    or :attr:`~Timestep._forces:attr:, the corresponding `has_` flag must be updated
+    to reflect the source of the data.  It is important to update the `frame` before setting
+    these flags as they use the current frame number.
 
     An exception to this is assignment to the full property array thus::
 
         ts = MDAnalysis.coordinates.TRR.Timestep(N)     # N being the number of atoms
         ts.velocities = vel_array   # Where vel_array is an existing array of shape (N, DIM)
-                                    #  This will also automatically set the `_vel_source` flag
+                                    #  This will also automatically set the `has_velocities` flag
 
     Attempting to populate the array instead will, however, raise a NoDataError exception::
 
         ts = MDAnalysis.coordinates.TRR.Timestep(N)     # N being the number of atoms
-        ts._velocities[:] = vel_array   #  This will fail if '_vel_source` hasn't been set.
+        ts._velocities[:] = vel_array   #  This will fail if `has_velocities` hasn't been set.
 
     .. versionchanged:: 0.8.0
        TRR :class:`Timestep` objects are now fully aware of the existence or
        not of coordinate/velocity/force information in frames.
     .. versionchanged:: 0.11.0
-       Management of frames redone to use `_pos_source`, `_vel_source` and `_for_source`
-       attributes to check against current frame.
        Velocities and forces can now be directly accessed via the `velocities` and
        `forces` attributes, with a :class:`~MDAnalysis.NoDataError` being raised
        if no data was given for that frame.
+       Management redone to use `has_positions`, `has_velocities` and
+       `has_forces`.  Setting these will update the private attributes
+       which track the data.
 
     .. _Gromacs: http://www.gromacs.org
     """
@@ -103,31 +107,67 @@ class Timestep(core.Timestep):
                   " by making use of the '{flag}' flag of Timestep objects.")
 
     def __init__(self, numatoms, **kwargs):
-        super(Timestep, self).__init__(numatoms, velocities=True, forces=True)
-        # Set initial sources to -1, so they are never valid
+        super(Timestep, self).__init__(numatoms, positions=True,
+                                       velocities=True, forces=True)
+        # Set initial sources to None, so they are never valid
         # _source is compared against current frame when accessing
         # if they do not match, then the Timestep returns _nodataerr
-        self._pos_source = -1
-        self._vel_source = -1
-        self._for_source = -1
-        self.lmbda = 0
+        self.data['position_source'] = None
+        self.data['velocity_source'] = None
+        self.data['force_source'] = None
+
+        # TRR always has pos vel & force allocated
+        self._pos = np.zeros((self.numatoms, 3), dtype=np.float32,
+                             order=self.order)
+        self._velocities = np.zeros((self.numatoms, 3), dtype=np.float32,
+                                    order=self.order)
+        self._forces = np.zeros((self.numatoms, 3), dtype=np.float32,
+                                order=self.order)
+
+        self.data['lmbda'] = 0
+
+    @property
+    def has_positions(self):
+        # When setting position the frame is recorded
+        # if frame gets changed (by reading next frame)
+        # then this data is "out of date", so has_positions
+        # is False
+        return self.data['position_source'] == self.frame
+
+    @has_positions.setter
+    def has_positions(self, val):
+        # If val evaluates to True, say that position data
+        # comes from this frame
+        # If val evaluates to False, say that position data
+        # comes from -1 (ie. never)
+        self.data['position_source'] = self.frame if val else -1
 
     @property
     def positions(self):
-        if self.frame == self._pos_source:
+        # If the position info came from this frame, yield it
+        # else play dumb
+        if self.has_positions:
             return self._pos
         else:
             raise NoDataError(self._nodataerr.format(
-                attr='position', attrs='positions', flag='has_x'))
+                attr='position', attrs='positions', flag='has_positions'))
 
     @positions.setter
     def positions(self, new):
         self._pos[:] = new
-        self._pos_source = self.frame
+        self.has_positions = True
+
+    @property
+    def has_velocities(self):
+        return self.data['velocity_source'] == self.frame
+
+    @has_velocities.setter
+    def has_velocities(self, val):
+        self.data['velocity_source'] = self.frame if val else -1
 
     @property
     def velocities(self):
-        if self.frame == self._vel_source:
+        if self.has_velocities:
             return self._velocities
         else:
             raise NoDataError(self._nodataerr.format(
@@ -136,11 +176,19 @@ class Timestep(core.Timestep):
     @velocities.setter
     def velocities(self, new):
         self._velocities[:] = new
-        self._vel_source = self.frame
+        self.has_velocities = True
+
+    @property
+    def has_forces(self):
+        return self.data['force_source'] == self.frame
+
+    @has_forces.setter
+    def has_forces(self, val):
+        self.data['force_source'] = self.frame if val else -1
 
     @property
     def forces(self):
-        if self.frame == self._for_source:
+        if self.has_forces:
             return self._forces
         else:
             raise NoDataError(self._nodataerr.format(
@@ -149,7 +197,7 @@ class Timestep(core.Timestep):
     @forces.setter
     def forces(self, new):
         self._forces[:] = new
-        self._for_source = self.frame
+        self.has_forces = True
 
 
 class TRRWriter(core.TrjWriter):
@@ -203,12 +251,12 @@ class TRRReader(core.TrjReader):
             self.open_trajectory()
 
         if self._sub is None:
-            ts.status, ts.step, ts.time, ts.lmbda,\
-                ts.has_x, ts.has_v, ts.has_f = libxdrfile2.read_trr(
+            ts.data['status'], ts._frame, ts.time, ts.data['lmbda'],\
+                has_x, has_v, has_f = libxdrfile2.read_trr(
                     self.xdrfile, ts._unitcell, ts._pos, ts._velocities, ts._forces)
         else:
-            ts.status, ts.step, ts.time, ts.lmbda,\
-                ts.has_x, ts.has_v, ts.has_f = libxdrfile2.read_trr(
+            ts.data['status'], ts._frame, ts.time, ts.data['lmbda'],\
+                has_x, has_v, has_f = libxdrfile2.read_trr(
                     self.xdrfile, ts._unitcell, self._pos_buf, self._velocities_buf, self._forces_buf)
             ts._pos[:] = self._pos_buf[self._sub]
             ts._velocities[:] = self._velocities_buf[self._sub]
@@ -216,27 +264,25 @@ class TRRReader(core.TrjReader):
 
         ts.frame += 1
         # Update the sources of data
-        if ts.has_x:
-            ts._pos_source = ts.frame
-        if ts.has_v:
+        if has_x:
+            ts.has_positions = True
+        if has_v:
             ts.has_velocities = True
-            ts._vel_source = ts.frame
-        if ts.has_f:
+        if has_f:
             ts.has_forces = True
-            ts._for_source = ts.frame
 
-        if ((ts.status == libxdrfile2.exdrENDOFFILE) or 
-            (ts.status == libxdrfile2.exdrINT)):
+        if ((ts.data['status'] == libxdrfile2.exdrENDOFFILE) or 
+            (ts.data['status'] == libxdrfile2.exdrINT)):
             # seems that trr files can get a exdrINT when reaching EOF (??)
-            raise IOError(errno.EIO, "End of file reached for %s file" % self.format,
+            raise IOError(errno.EIO, "End of file reached for {0} file".format(self.format),
                           self.filename)
-        elif not ts.status == libxdrfile2.exdrOK:
-            raise IOError(errno.EBADF, "Problem with %s file, status %s" %
-                                       (self.format, statno.ERRORCODE[ts.status]), self.filename)
+        elif not ts.data['status'] == libxdrfile2.exdrOK:
+            raise IOError(errno.EBADF,("Problem with {0} file, status {1}"
+                                       "".format((self.format, statno.ERRORCODE[ts.data['status']]), self.filename)))
 
         if self.convert_units:
             # TRRs have the annoying possibility of frames without coordinates/velocities/forces...
-            if ts.has_x:
+            if ts.has_positions:
                 self.convert_pos_from_native(ts._pos)  # in-place !
             self.convert_pos_from_native(ts._unitcell)  # in-place ! (note: trr contain unit vecs!)
             ts.time = self.convert_time_from_native(ts.time)  # in-place does not work with scalars

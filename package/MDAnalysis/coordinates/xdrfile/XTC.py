@@ -44,7 +44,7 @@ Classes
    :inherited-members:
 """
 
-import numpy
+import numpy as np
 import errno
 
 from . import statno
@@ -71,7 +71,7 @@ class XTCReader(core.TrjReader):
     _Writer = XTCWriter
 
     def _allocate_sub(self, DIM):
-        self._pos_buf = numpy.zeros((self._trr_numatoms, DIM), dtype=numpy.float32, order='C')
+        self._pos_buf = np.zeros((self._trr_numatoms, DIM), dtype=np.float32, order='C')
         self._velocities_buf = None
         self._forces_buf = None
 
@@ -90,17 +90,17 @@ class XTCReader(core.TrjReader):
             self.open_trajectory()
 
         if self._sub is None:
-            ts.status, ts.step, ts.time, ts.prec = libxdrfile2.read_xtc(self.xdrfile, ts._unitcell, ts._pos)
+            ts.data['status'], ts._frame, ts.time, ts.data['prec'] = libxdrfile2.read_xtc(self.xdrfile, ts._unitcell, ts._pos)
         else:
-            ts.status, ts.step, ts.time, ts.prec = libxdrfile2.read_xtc(self.xdrfile, ts._unitcell, self._pos_buf)
+            ts.data['status'], ts._frame, ts.time, ts.data['prec'] = libxdrfile2.read_xtc(self.xdrfile, ts._unitcell, self._pos_buf)
             ts._pos[:] = self._pos_buf[self._sub]
 
-        if ts.status == libxdrfile2.exdrENDOFFILE:
-            raise IOError(errno.EIO, "End of file reached for %s file" % self.format,
+        if ts.data['status'] == libxdrfile2.exdrENDOFFILE:
+            raise IOError(errno.EIO, "End of file reached for {0} file".format(self.format),
                           self.filename)
-        elif not ts.status == libxdrfile2.exdrOK:
-            raise IOError(errno.EBADF, "Problem with %s file, status %s" %
-                                       (self.format, statno.ERRORCODE[ts.status]), self.filename)
+        elif not ts.data['status'] == libxdrfile2.exdrOK:
+            raise IOError(errno.EBADF, ("Problem with {0} file, status {1}"
+                                        "".format((self.format, statno.ERRORCODE[ts.data['status']]), self.filename)))
 
         if self.convert_units:
             self.convert_pos_from_native(ts._pos)  # in-place !

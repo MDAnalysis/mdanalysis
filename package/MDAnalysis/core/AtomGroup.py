@@ -792,7 +792,7 @@ class AtomGroup(object):
             self.__atoms = []
 
         # managed timestep object
-        self.__ts = None
+        self._ts = None
 
         # caches:
         # - built on the fly when they are needed
@@ -1051,7 +1051,7 @@ class AtomGroup(object):
 
         These indices are 0-based and can be used to directly index
         :attr:`Universe.atoms` or the coordinate array
-        :attr:`MDAnalysis.coordinates.base.Timestep._pos`.
+        :attr:`MDAnalysis.coordinates.base.Timestep.positions`.
         """
         return numpy.array([atom.number for atom in self._atoms])
 
@@ -2076,10 +2076,7 @@ class AtomGroup(object):
         """
         if ts is None:
             ts = self.universe.trajectory.ts
-        if hasattr(ts, '_pos_source'):  # TRR handling must be told frame now holds valid coord info.
-            ts.has_x = True
-            ts._pos_source = ts.frame
-        ts._pos[self.indices(), :] = coords
+        ts.positions[self.indices(), :] = coords
 
     positions = property(get_positions, set_positions,
                          doc="""
@@ -2100,7 +2097,7 @@ class AtomGroup(object):
 
         Raises a :exc:`NoDataError` if the underlying
         :class:`~MDAnalysis.coordinates.base.Timestep` does not contain
-        :attr:`~MDAnalysis.coordinates.base.Timestep._velocities`.
+        :attr:`~MDAnalysis.coordinates.base.Timestep.velocities`.
 
         See also :meth:`AtomGroup.set_velocities` and attribute access through
         :attr:`AtomGroup.velocities`.
@@ -2119,7 +2116,7 @@ class AtomGroup(object):
 
         Raises a :exc:`NoDataError` if the underlying
         :class:`~MDAnalysis.coordinates.base.Timestep` does not contain
-        :attr:`~MDAnalysis.coordinates.base.Timestep._velocities`.
+        :attr:`~MDAnalysis.coordinates.base.Timestep.velocities`.
 
         See also :meth:`AtomGroup.get_velocities` and :attr:`AtomGroup.velocities` for
         attribute access.
@@ -2129,10 +2126,7 @@ class AtomGroup(object):
         if ts is None:
             ts = self.universe.trajectory.ts
         try:
-            if hasattr(ts, '_vel_source'):  # TRR handling must be told frame now holds valid velocity info.
-                ts._vel_source = ts.frame
-                ts.has_velocities = True
-            ts._velocities[self.indices(), :] = v
+            ts.velocities[self.indices(), :] = v
         except AttributeError:
             raise NoDataError("Timestep does not contain velocities")
 
@@ -2216,10 +2210,7 @@ class AtomGroup(object):
         if ts is None:
             ts = self.universe.trajectory.ts
         try:
-            if hasattr(ts, '_for_source'):  # TRR handling must be told frame now holds valid force info.
-                ts._for_source = ts.frame
-                ts.has_forces = True
-            ts._forces[self.indices(), :] = forces
+            ts.forces[self.indices(), :] = forces
         except AttributeError:
             raise NoDataError("Timestep does not contain forces")
 
@@ -2256,7 +2247,7 @@ class AtomGroup(object):
         R = M[:3, :3]
         t = M[:3, 3]
         # changes the coordinates (in place)
-        x = self.universe.trajectory.ts._pos
+        x = self.universe.trajectory.ts.positions
         idx = self.indices()
         x[idx] = numpy.dot(x[idx], R.T)
         x[idx] += t
@@ -2289,7 +2280,7 @@ class AtomGroup(object):
         except (ValueError, AttributeError):
             vector = numpy.asarray(t)
         # changes the coordinates (in place)
-        self.universe.trajectory.ts._pos[self.indices()] += vector
+        self.universe.trajectory.ts.positions[self.indices()] += vector
         return vector
 
     def rotate(self, R):
@@ -2306,7 +2297,7 @@ class AtomGroup(object):
         """
         R = numpy.matrix(R, copy=False, dtype=numpy.float32)
         # changes the coordinates (in place)
-        x = self.universe.trajectory.ts._pos
+        x = self.universe.trajectory.ts.positions
         idx = self.indices()
         x[idx] = x[idx] * R.T  # R.T acts to the left & is broadcasted N times.
         return R
@@ -2434,13 +2425,13 @@ class AtomGroup(object):
                 raise ValueError("One or more box dimensions is zero."
                                  "  You can specify a boxsize with 'box='")
 
-        coords = self.universe.coord._pos[self.indices()]
+        coords = self.universe.coord.positions[self.indices()]
         if not inplace:
             return distances.applyPBC(coords, box)
 
-        self.universe.coord._pos[self.indices()] = distances.applyPBC(coords, box)
+        self.universe.coord.positions[self.indices()] = distances.applyPBC(coords, box)
 
-        return self.universe.coord._pos[self.indices()]
+        return self.universe.coord.positions[self.indices()]
 
     def wrap(self, compound="atoms", center="com", box=None):
         """Shift the contents of this AtomGroup back into the unit cell.
@@ -2725,10 +2716,11 @@ class AtomGroup(object):
         :attr:`AtomGroup.ts` attribute; change attributes of the object.
         """
         trj_ts = self.universe.trajectory.ts  # original time step
-        if self.__ts is None or self.__ts.frame != trj_ts.frame:
+
+        if self._ts is None or self._ts.frame != trj_ts.frame:
             # create a timestep of same type as the underlying trajectory
-            self.__ts = trj_ts.copy_slice(self.indices())
-        return self.__ts
+            self._ts = trj_ts.copy_slice(self.indices())
+        return self._ts
 
 
 class Residue(AtomGroup):
@@ -4146,7 +4138,7 @@ class Universe(object):
     def coord(self):
         """Reference to current timestep and coordinates of universe.
 
-        The raw trajectory coordinates are :attr:`Universe.coord._pos`,
+        The raw trajectory coordinates are :attr:`Universe.coord.positions`,
         represented as a :class:`numpy.float32` array.
 
         Because :attr:`coord` is a reference to a

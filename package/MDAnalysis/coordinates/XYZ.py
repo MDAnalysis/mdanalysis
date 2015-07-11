@@ -75,8 +75,8 @@ import itertools
 import MDAnalysis
 from . import base
 from ..core import flags
-import MDAnalysis.lib.util as util
-from MDAnalysis import NoDataError
+from ..lib import util
+from ..exceptions import NoDataError
 
 
 class XYZWriter(base.Writer):
@@ -265,11 +265,8 @@ class XYZReader(base.Reader):
         self.delta = kwargs.pop("delta", 1.0)  # can set delta manually, default is 1ps (taken from TRJReader)
         self.skip_timestep = 1
 
-        self.ts = self._Timestep(self.numatoms)  # numatoms has sideeffects: read trajectory... (FRAGILE)
-        self.ts.frame = -1
+        self.ts = self._Timestep(self.numatoms)
 
-        # Read in the first timestep (FRAGILE);
-        # FIXME: Positions on frame 0 (whatever that means) instead of 1 (as all other readers do).
         #        Haven't quite figured out where to start with all the self._reopen() etc.
         #        (Also cannot just use seek() or reset() because that would break with urllib2.urlopen() streams)
         self._read_next_timestep()
@@ -310,10 +307,9 @@ class XYZReader(base.Reader):
         linesPerFrame = self.numatoms + 2
         counter = 0
         # step through the file (assuming xyzfile has an iterator)
-        f = util.anyopen(self.filename, 'r')
-        for i in f:
-            counter = counter + 1
-        f.close()
+        with util.anyopen(self.filename, 'r') as f:
+            for i in f:
+                counter = counter + 1
 
         # need to check this is an integer!
         numframes = int(counter / linesPerFrame)
@@ -371,9 +367,7 @@ class XYZReader(base.Reader):
 
         # reset ts
         ts = self.ts
-        ts.status = 1
         ts.frame = -1
-        ts.step = 0
         ts.time = 0
         return self.xyzfile
 

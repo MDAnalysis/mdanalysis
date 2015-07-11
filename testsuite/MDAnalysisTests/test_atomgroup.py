@@ -1260,11 +1260,10 @@ class TestAtomGroupVelocities(TestCase):
     @dec.slow
     def test_get_velocities(self):
         v = self.ag.get_velocities()
-        #print self.ag.universe.trajectory.ts._vel_source
         assert_(numpy.any(numpy.abs(v) > 1e-6), "velocities should be non-zero")
 
     def test_vel_src(self):
-        assert_equal(self.universe.trajectory.ts._vel_source, 0)
+        assert_equal(self.universe.trajectory.ts.data['velocity_source'], 0)
 
     @dec.slow
     def test_velocities(self):

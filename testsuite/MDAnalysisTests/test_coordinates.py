@@ -2587,9 +2587,9 @@ class TestTRRWriter(_GromacsWriter):
         for ts in self.universe.trajectory:
             # Inset some gaps in the properties: coords every 4 steps, vels every 2.
             if not ts.frame % 4:
-                ts.has_x = False
+                ts.has_positions = False
             if not ts.frame % 2:
-                ts.has_v = False
+                ts.has_velocities = False
             W.write_next_timestep(ts)
         W.close()
 
@@ -2874,8 +2874,8 @@ class TestTRZWriter(TestCase, RefTRZ):
                                               orig_ts.frame)
             assert_array_almost_equal(orig_ts._unitcell, written_ts._unitcell, self.prec,
                                       err_msg="Unitcell mismatch between orig and written at frame %d" % orig_ts.frame)
-            for att in orig_ts.__dict__.keys():
-                assert_array_almost_equal(orig_ts.__getattribute__(att), written_ts.__getattribute__(att), self.prec,
+            for att in orig_ts.data:
+                assert_array_almost_equal(orig_ts.data[att], written_ts.data[att], self.prec,
                                           err_msg="TS equal failed for %s" % att)
 
 class TestTRZWriter2(object):

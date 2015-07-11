@@ -214,14 +214,14 @@ import errno
 import textwrap
 import warnings
 import logging
-import numpy
+import numpy as np
 
-import MDAnalysis.core
-import MDAnalysis.lib.util as util
+from ..core import flags
+from ..lib import util
 from . import base
-from MDAnalysis.topology.core import guess_atom_element
-from MDAnalysis.core.AtomGroup import Universe
-from MDAnalysis import NoDataError
+from ..topology.core import guess_atom_element
+from ..core.AtomGroup import Universe
+from ..exceptions import NoDataError
 
 
 logger = logging.getLogger("MDAnalysis.coordinates.PBD")
@@ -250,7 +250,7 @@ class PDBReader(base.SingleFrameReader):
     def _read_first_frame(self):
         pdb_id = "0UNK"
         self.pdb = pdb.extensions.get_structure(self.filename, pdb_id)
-        pos = numpy.array([atom.coord for atom in self.pdb.get_atoms()])
+        pos = np.array([atom.coord for atom in self.pdb.get_atoms()])
         self.numatoms = pos.shape[0]
         self.fixed = 0  # parse B field for fixed atoms?
         #self.ts._unitcell[:] = ??? , from CRYST1? --- not implemented in Biopython.PDB
@@ -267,7 +267,7 @@ class PDBReader(base.SingleFrameReader):
         warnings.warn("get_bfactors() will be removed in MDAnalysis 0.8; "
                       "use AtomGroup.bfactors [which will become AtomGroup.bfactors()]",
                       DeprecationWarning)
-        return numpy.array([a.get_bfactor() for a in self.pdb.get_atoms()])
+        return np.array([a.get_bfactor() for a in self.pdb.get_atoms()])
 
     def Writer(self, filename, **kwargs):
         """Returns a strict PDBWriter for *filename*.
@@ -462,7 +462,7 @@ class PrimitivePDBReader(base.Reader):
         """
         self.filename = filename
         if convert_units is None:
-            convert_units = MDAnalysis.core.flags['convert_lengths']
+            convert_units = flags['convert_lengths']
         self.convert_units = convert_units  # convert length and time to base units
 
         try:
@@ -558,7 +558,7 @@ class PrimitivePDBReader(base.Reader):
 
     def get_occupancy(self):
         """Return an array of occupancies in atom order."""
-        return numpy.array(self._occupancy)
+        return np.array(self._occupancy)
 
     def Writer(self, filename, **kwargs):
         """Returns a permissive (simple) PDBWriter for *filename*.
@@ -761,7 +761,7 @@ class PrimitivePDBWriter(base.Writer):
 
         self.filename = filename
         if convert_units is None:
-            convert_units = MDAnalysis.core.flags['convert_lengths']
+            convert_units = flags['convert_lengths']
         self.convert_units = convert_units  # convert length and time to base units
         self.multiframe = self._multiframe if multiframe is None else multiframe
         self.bonds = bonds
@@ -864,10 +864,6 @@ class PrimitivePDBWriter(base.Writer):
            Raises :exc:`NotImplementedError` if it would produce wrong output.
 
         """
-
-        # TODO: The bonds should not be a list of ints, as are now, but a list
-        #       of Atom objects.
-
         if not self.bonds:
             return
 

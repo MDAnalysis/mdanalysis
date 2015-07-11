@@ -128,7 +128,7 @@ those and will raise a :exc:`NotImplementedError` if anything else is detected.
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-import numpy
+import numpy as np
 import warnings
 import errno
 import logging
@@ -136,7 +136,7 @@ import logging
 import MDAnalysis
 from ..core import flags
 from . import base
-import MDAnalysis.lib.util as util
+from ..lib import util
 
 
 logger = logging.getLogger("MDAnalysis.coordinates.AMBER")
@@ -208,7 +208,7 @@ class TRJReader(base.Reader):
 
         # FORMAT(10F8.3)  (X(i), Y(i), Z(i), i=1,NATOM)
         self.default_line_parser = util.FORTRANReader("10F8.3")
-        self.lines_per_frame = int(numpy.ceil(3.0 * self.numatoms / len(self.default_line_parser)))
+        self.lines_per_frame = int(np.ceil(3.0 * self.numatoms / len(self.default_line_parser)))
         # The last line per frame might have fewer than 10
         # We determine right away what parser we need for the last
         # line because it will be the same for all frames.
@@ -233,7 +233,7 @@ class TRJReader(base.Reader):
             self.open_trajectory()
 
         # Read coordinat frame:
-        #coordinates = numpy.zeros(3*self.numatoms, dtype=numpy.float32)
+        #coordinates = numpy.zeros(3*self.numatoms, dtype=np.float32)
         _coords = []
         for number, line in enumerate(self.trjfile):
             try:
@@ -252,13 +252,13 @@ class TRJReader(base.Reader):
         if self.periodic:
             line = self.trjfile.next()
             box = self.box_line_parser.read(line)
-            ts._unitcell[:3] = numpy.array(box, dtype=numpy.float32)
+            ts._unitcell[:3] = np.array(box, dtype=np.float32)
             ts._unitcell[3:] = [90., 90., 90.]  # assumed
 
         # probably slow ... could be optimized by storing the coordinates in X,Y,Z
         # lists or directly filling the array; the array/reshape is not good
         # because it creates an intermediate array
-        ts._pos[:] = numpy.array(_coords).reshape(self.numatoms, 3)
+        ts._pos[:] = np.array(_coords).reshape(self.numatoms, 3)
         ts.frame += 1
         return ts
 
@@ -304,7 +304,7 @@ class TRJReader(base.Reader):
             ts._unitcell[3:] = [90., 90., 90.]  # assumed
         else:
             self.periodic = False
-            ts._unitcell = numpy.zeros(6, numpy.float32)
+            ts._unitcell = np.zeros(6, np.float32)
         self.close()
         return self.periodic
 
@@ -351,9 +351,7 @@ class TRJReader(base.Reader):
                           "This is probably not a AMBER trajectory.")
         # reset ts
         ts = self.ts
-        ts.status = 1
         ts.frame = -1 
-        ts.step = 0
         ts.time = 0
         return self.trjfile
 
@@ -501,7 +499,7 @@ class NCDFReader(base.Reader):
 
         if self.trjfile is None:
             raise IOError("Trajectory is closed")
-        if numpy.dtype(type(frame)) != numpy.dtype(int):
+        if np.dtype(type(frame)) != np.dtype(int):
             # convention... for netcdf could also be a slice
             raise TypeError("frame must be a positive integer")
         if frame >= self.numframes or frame < 0:
@@ -633,7 +631,7 @@ class NCDFWriter(base.Writer):
             raise ValueError("NCDFWriter: no atoms in output trajectory")
         self.numatoms = numatoms
         if convert_units is None:
-            convert_units = MDAnalysis.core.flags['convert_lengths']
+            convert_units = flags['convert_lengths']
         self.convert_units = convert_units  # convert length and time to base units on the fly?
 
         self.start = start  # do we use those?
@@ -730,7 +728,7 @@ class NCDFWriter(base.Writer):
     def is_periodic(self, ts=None):
         """Return ``True`` if :class:`Timestep` *ts* contains a valid simulation box"""
         ts = ts if ts is not None else self.ts
-        return numpy.all(ts.dimensions > 0)
+        return np.all(ts.dimensions > 0)
 
     def write_next_timestep(self, ts=None):
         '''write a new timestep to the trj file
@@ -788,10 +786,6 @@ class NCDFWriter(base.Writer):
             except AttributeError:
                 time = ts.frame * self.delta
             unitcell = ts.dimensions
-
-        if not hasattr(ts, 'step'):
-            # bogus, should be actual MD step number, i.e. frame * delta/dt
-            ts.step = ts.frame
 
         # write step
         self.trjfile.variables['coordinates'][self.curr_frame, :, :] = pos

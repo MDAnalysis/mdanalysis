@@ -72,10 +72,10 @@ import os
 import errno
 import numpy as np
 import struct
-import new  # TODO: Remove this, deprecated in 3.0+
+import new
 
 from ..core import flags
-from .. import units as mdaunits       # use mdaunits instead of units to avoid a clash
+from .. import units as mdaunits  # use mdaunits instead of units to avoid a clash
 from ..exceptions import NoDataError
 from . import base
 from . import core
@@ -83,6 +83,7 @@ from . import core
 from . import _dcdmodule
 # dcdtimeseries is implemented with Pyrex - hopefully all dcd reading functionality can move to pyrex
 from . import dcdtimeseries
+
 
 class Timestep(base.Timestep):
     #: Indices into :attr:`Timestep._unitcell` (``[A, gamma, B, beta, alpha,
@@ -307,11 +308,11 @@ class DCDWriter(base.Writer):
            if no coordinates to be written.
         '''
         if ts is None:
-            if not hasattr(self, "ts"):
-                raise NoDataError("DCDWriter: no coordinate data to write to trajectory file")
-            else:
+            try:
                 ts = self.ts
-        elif not ts.numatoms == self.numatoms:
+            except AttributeError:
+                raise NoDataError("DCDWriter: no coordinate data to write to trajectory file")
+        if not ts.numatoms == self.numatoms:
             raise ValueError("DCDWriter: Timestep does not have the correct number of atoms")
         unitcell = self.convert_dimensions_to_unitcell(ts).astype(np.float32)  # must be float32 (!)
         if not ts._pos.flags.f_contiguous:  # Not in fortran format
@@ -459,22 +460,23 @@ class DCDReader(base.Reader):
         return dict(zip(desc, struct.unpack("LLiiiiidiPPiiii", self._dcd_C_str)))
 
     def _reopen(self):
+        self.ts.frame = -1
         self._reset_dcd_read()
 
     def _read_next_timestep(self, ts=None):
         if ts is None:
             ts = self.ts
-        ts.frame = self._read_next_frame(ts._x, ts._y, ts._z, ts._unitcell, self.skip)
-        # dcd.c gives 1 based, we want 0 based
-        ts.frame -= 1
+        ts._frame = self._read_next_frame(ts._x, ts._y, ts._z, ts._unitcell, self.skip)
+
+        ts.frame += 1
         return ts
 
     def _read_frame(self, frame):
         self._jump_to_frame(frame)
         ts = self.ts
-        ts.frame = self._read_next_frame(ts._x, ts._y, ts._z, ts._unitcell, 1)
-        # dcd.c gives 1 basead, we want 0 based
-        ts.frame -= 1
+        ts._frame = self._read_next_frame(ts._x, ts._y, ts._z, ts._unitcell, 1)
+
+        ts.frame = frame
         return ts
 
     def timeseries(self, asel, start=0, stop=-1, skip=1, format='afc'):
@@ -581,7 +583,6 @@ DCDReader._read_timeseries = new.instancemethod(_dcdmodule.__read_timeseries, No
 DCDWriter._write_dcd_header = new.instancemethod(_dcdmodule.__write_dcd_header, None, DCDWriter)
 DCDWriter._write_next_frame = new.instancemethod(_dcdmodule.__write_next_frame, None, DCDWriter)
 DCDWriter._finish_dcd_write = new.instancemethod(_dcdmodule.__finish_dcd_write, None, DCDWriter)
-
 
 #DCDReader._read_timeseries = new.instancemethod(dcdtimeseries.__read_timeseries, None, DCDReader)
 DCDReader._read_timecorrel = new.instancemethod(dcdtimeseries.__read_timecorrel, None, DCDReader)

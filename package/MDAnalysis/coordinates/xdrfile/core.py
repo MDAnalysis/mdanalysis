@@ -87,10 +87,9 @@ class Timestep(base.Timestep):
 
     def __init__(self, numatoms, **kwargs):
         super(Timestep, self).__init__(numatoms, **kwargs)
-        self.status = libxdrfile2.exdrOK
-        self.step = 0
-        self.time = 0
-        self.prec = 0
+        self.data['status'] = libxdrfile2.exdrOK
+        self._frame = 0
+        self.data['prec'] = 0
 
     def _init_unitcell(self):
         return np.zeros((3, 3), dtype=np.float32)
@@ -232,9 +231,12 @@ class TrjWriter(base.Writer):
         if self.convert_units:
             time = self.convert_time_to_native(time, inplace=False)
 
-        if not hasattr(ts, 'step'):
+        try:
+            step = int(ts._frame)
+        except AttributeError:
             # bogus, should be actual MD step number, i.e. frame * delta/dt
-            ts.step = ts.frame
+            step = ts.frame
+
         unitcell = self.convert_dimensions_to_unitcell(ts).astype(np.float32)  # must be float32 (!)
 
         # make a copy of the scaled positions so that the in-memory
@@ -254,18 +256,15 @@ class TrjWriter(base.Writer):
                 pos = self.convert_pos_to_native(ts._pos, inplace=False)
             else:
                 pos = ts._pos
-            status = libxdrfile2.write_xtc(self.xdrfile, int(ts.step), float(time), unitcell, pos, self.precision)
-        #
+            status = libxdrfile2.write_xtc(self.xdrfile, step, float(time), unitcell, pos, self.precision)
         elif self.format == 'TRR':
-            if not hasattr(ts, 'lmbda'):
-                ts.lmbda = 1.0
-            # Same assignment logic as for TRR Timestep creation (because we might be getting here frames from
-            #  other formats' Timesteps that don't have 'has_' flags).
-            has_x = ts.__dict__.get("has_x", True)
-            has_v = ts.__dict__.get("has_v", hasattr(ts, "_velocities"))
-            has_f = ts.__dict__.get("has_f", hasattr(ts, "_forces"))
+            try:
+                lmbda = ts.data['lmbda']
+            except KeyError:
+                lmbda = 1.0
+
             # COORDINATES
-            if has_x:
+            if ts.has_positions:
                 if self.convert_units:
                     pos = self.convert_pos_to_native(ts._pos, inplace=False)
                 else:
@@ -273,7 +272,7 @@ class TrjWriter(base.Writer):
             else:
                 pos = self._emptyarr
             #VELOCITIES
-            if has_v:
+            if ts.has_velocities:
                 if self.convert_units:
                     velocities = self.convert_velocities_to_native(ts._velocities, inplace=False)
                 else:
@@ -281,18 +280,17 @@ class TrjWriter(base.Writer):
             else:
                 velocities = self._emptyarr
             # FORCES
-            if has_f:
+            if ts.has_forces:
                 if self.convert_units:
                     forces = self.convert_forces_to_native(ts._forces, inplace=False)
                 else:
                     forces = ts._forces
             else:
                 forces = self._emptyarr
-            #
-            status = libxdrfile2.write_trr(self.xdrfile, int(ts.step), float(time), float(ts.lmbda), unitcell,
+
+            status = libxdrfile2.write_trr(self.xdrfile, step, float(time), lmbda, unitcell,
                                            pos, velocities, forces)
-        else:
-            raise NotImplementedError("Gromacs trajectory format %s not known." % self.format)
+
         return status
 
     def close(self):
@@ -653,14 +651,14 @@ class TrjReader(base.Reader):
         self.xdrfile = libxdrfile2.xdrfile_open(self.filename, 'r')
         # reset ts
         ts = self.ts
-        ts.status = libxdrfile2.exdrOK
+        ts.data['status'] = libxdrfile2.exdrOK
         ts.frame = -1 
-        ts.step = 0
+        ts._frame = 0
         ts.time = 0
         # additional data for XTC
-        ts.prec = 0
+        ts.data['prec'] = 0
         # additional data for TRR
-        ts.lmbda = 0
+        ts.data['lmbda'] = 0
         return self.xdrfile
 
     def close(self):
@@ -704,7 +702,6 @@ class TrjReader(base.Reader):
         return self._Writer(filename, numatoms, **kwargs)
 
     def __iter__(self):
-        self.ts.frame = -1  # start at -1 so that the first frame becomes 0
         self._reopen()
         while True:
             try:
