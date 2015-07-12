@@ -82,7 +82,12 @@ import MDAnalysis.core
 
 # This is the XTC class. The TRR overrides with it's own.
 class Timestep(base.Timestep):
-    """Timestep for a Gromacs trajectory."""
+    """Timestep for a Gromacs trajectory.
+
+    .. versionchanged:: 0.11.0
+       Attributes status, lmbda, prec all stored in the :attr:`data` dictionary
+       Native frame number now stored as `_frame`, was `step`
+    """
     order = 'C'
 
     def __init__(self, numatoms, **kwargs):

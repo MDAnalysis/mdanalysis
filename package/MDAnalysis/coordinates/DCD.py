@@ -395,7 +395,7 @@ class DCDReader(base.Reader):
 
     .. versionchanged:: 0.11.0
        Frames now 0-based instead of 1-based
-
+       Native frame number read into ts._frame
     """
     format = 'DCD'
     units = {'time': 'AKMA', 'length': 'Angstrom'}
@@ -423,7 +423,7 @@ class DCDReader(base.Reader):
         # Read in the first timestep
         self._read_next_timestep()
 
-    def _dcd_header(self):
+    def _dcd_header(self):  # pragma: no cover
         """Returns contents of the DCD header C structure::
              typedef struct {
                fio_fd fd;                 // FILE *
@@ -464,6 +464,11 @@ class DCDReader(base.Reader):
         self._reset_dcd_read()
 
     def _read_next_timestep(self, ts=None):
+        """Read the next frame
+
+        .. versionchanged 0.11.0:: 
+           Native frame read into ts._frame, ts.frame naively iterated
+        """
         if ts is None:
             ts = self.ts
         ts._frame = self._read_next_frame(ts._x, ts._y, ts._z, ts._unitcell, self.skip)
@@ -472,6 +477,11 @@ class DCDReader(base.Reader):
         return ts
 
     def _read_frame(self, frame):
+        """Skip to frame and read
+
+        .. versionchanged:: 0.11.0
+           Native frame read into ts._frame, ts.frame naively set to frame
+        """
         self._jump_to_frame(frame)
         ts = self.ts
         ts._frame = self._read_next_frame(ts._x, ts._y, ts._z, ts._unitcell, 1)

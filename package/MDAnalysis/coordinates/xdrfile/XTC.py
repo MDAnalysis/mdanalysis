@@ -65,6 +65,9 @@ class XTCReader(core.TrjReader):
     """Read Gromacs_ XTC trajectory.
 
     .. _Gromacs: http://www.gromacs.org
+
+    .. versionchanged:: 0.11.0
+       Timestep attributes status and prec are now stored in the TS.data dictionary
     """
     format = "XTC"
     _Timestep = Timestep

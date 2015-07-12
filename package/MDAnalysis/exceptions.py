@@ -14,7 +14,7 @@
 #
 
 """
-:mod:`MDAnalysis.exceptions` --- Custom exceptions and warnings
+Custom exceptions and warnings --- :mod:`MDAnalysis.exceptions`
 ===============================================================
 
 """

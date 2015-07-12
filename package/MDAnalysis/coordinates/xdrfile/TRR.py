@@ -68,21 +68,25 @@ class Timestep(core.Timestep):
     `position_source` matches the current `frame`, otherwise a :class:`~MDAnalysis.NoDataError`
     will be raised.  This scheme applies to both velocities and forces.
 
-    When doing low-level writing to :attr:`~Timestep._pos`, :attr:`~Timestep._velocities`,
-    or :attr:`~Timestep._forces:attr:, the corresponding `has_` flag must be updated
-    to reflect the source of the data.  It is important to update the `frame` before setting
-    these flags as they use the current frame number.
+    When writing to the Timestep, it is important that the :attr:`~Timestep.frame`
+    attribute is updated first!  This is because the source of the data is
+    taken as the current frame of the Timestep.
 
-    An exception to this is assignment to the full property array thus::
+    For example::
 
         ts = MDAnalysis.coordinates.TRR.Timestep(N)     # N being the number of atoms
+        ts.frame = 0  # The first frame
         ts.velocities = vel_array   # Where vel_array is an existing array of shape (N, DIM)
-                                    #  This will also automatically set the `has_velocities` flag
+                                    # This will also automatically set the `has_velocities` flag
+                                    # And the velocity source will be "0"
 
-    Attempting to populate the array instead will, however, raise a NoDataError exception::
+    Attempting to populate the array before setting the frame instead will cause the 
+    velocity data to be considered "out of date"::
 
         ts = MDAnalysis.coordinates.TRR.Timestep(N)     # N being the number of atoms
-        ts._velocities[:] = vel_array   #  This will fail if `has_velocities` hasn't been set.
+        ts.velocities = vel_array
+        ts.frame = 0  # This frame number doesn't match the frame number of when
+                      # velocities was populated
 
     .. versionchanged:: 0.8.0
        TRR :class:`Timestep` objects are now fully aware of the existence or
@@ -92,8 +96,9 @@ class Timestep(core.Timestep):
        `forces` attributes, with a :class:`~MDAnalysis.NoDataError` being raised
        if no data was given for that frame.
        Management redone to use `has_positions`, `has_velocities` and
-       `has_forces`.  Setting these will update the private attributes
+       `has_forces`.  Setting these will update the data dictionary entries
        which track the data.
+       Timestep lmbda now stored in the data dictionary 
 
     .. _Gromacs: http://www.gromacs.org
     """
@@ -140,7 +145,7 @@ class Timestep(core.Timestep):
         # comes from this frame
         # If val evaluates to False, say that position data
         # comes from -1 (ie. never)
-        self.data['position_source'] = self.frame if val else -1
+        self.data['position_source'] = self.frame if val else None
 
     @property
     def positions(self):
@@ -163,7 +168,7 @@ class Timestep(core.Timestep):
 
     @has_velocities.setter
     def has_velocities(self, val):
-        self.data['velocity_source'] = self.frame if val else -1
+        self.data['velocity_source'] = self.frame if val else None
 
     @property
     def velocities(self):
@@ -184,7 +189,7 @@ class Timestep(core.Timestep):
 
     @has_forces.setter
     def has_forces(self, val):
-        self.data['force_source'] = self.frame if val else -1
+        self.data['force_source'] = self.frame if val else None
 
     @property
     def forces(self):
@@ -220,6 +225,7 @@ class TRRReader(core.TrjReader):
        will raise a :exc:`NoDataError`.
     .. versionchanged:: 0.11.0
        Returned Timesteps will always be a :class:`Timestep` instance.
+       Attributes lmbda and status now stored in the TS.data dictionary
 
     .. _Gromacs: http://www.gromacs.org
     """
@@ -262,6 +268,7 @@ class TRRReader(core.TrjReader):
             ts._velocities[:] = self._velocities_buf[self._sub]
             ts._forces[:] = self._forces_buf[self._sub]
 
+        # Updated frame number first!
         ts.frame += 1
         # Update the sources of data
         if has_x:

@@ -210,7 +210,7 @@ History
 - 2010-10-09 added write() method to Writers [orbeckst]
 - 2010-10-19 use close() instead of close_trajectory() [orbeckst]
 - 2010-10-30 clarified Writer write() methods (see also `Issue 49`_)
-- 2011-02-01 extended call signatur of Reader class
+- 2011-02-01 extended call signature of Reader class
 - 2011-03-30 optional Writer() method for Readers
 - 2011-04-18 added time and frame managed attributes to Reader
 - 2011-04-20 added volume to Timestep
@@ -252,10 +252,15 @@ Timestep classes are derived from
 :class:`MDAnalysis.coordinates.base.Timestep`, which is the primary
 implementation example (and used directly for the DCDReader).
 
+The discussion on this format is detailed in `Issue 250`_
+
+.. _Issue 250: https://github.com/MDAnalysis/mdanalysis/issues/250
+
+
 Methods
 .......
 
-  ``__init__(numatoms, velocities=False, forces=False)``
+  ``__init__(numatoms, positions=True, velocities=False, forces=False)``
       Define the number of atoms this Timestep will hold and whether or not
       it will have velocity and force information
   ``__eq__``
@@ -280,7 +285,29 @@ Attributes
   ``numatoms``
       number of atoms in the frame
   ``frame``
-      current frame number (1-based)
+      current frame number (0-based)
+  ``_frame``
+      The native frame number of the trajectory.  This can differ from ``frame``
+      as that will always count sequentially from 0 on iteration, whilst
+      ``_frame`` is taken directly from the trajectory.
+  ``data``
+      A dictionary contained all miscellaneous information for the
+      current Timestep.
+  ``positions``
+      A numpy array of all positions in this Timestep, otherwise raises a
+      :class:`~MDAnalysis.exceptions.NoDataError`
+  ``velocities``
+      If present, returns a numpy array of velocities, otherwise raises a 
+      :class:`~MDAnalysis.exceptions.NoDataError`
+  ``forces``
+      If present, returns a numpy array of forces, otherwise raises a 
+      :class:`~MDAnalysis.exceptions.NoDataError`
+  ``has_positions``
+      Boolean of whether position data is available
+  ``has_velocities``
+      Boolean of whether velocity data is available
+  ``has_forces``
+      Boolean of whether force data is available
   ``dimensions``
       system box dimensions (`x, y, z, alpha, beta, gamma`)
       (typically implemented as a property because it needs to translate whatever is in the
@@ -293,25 +320,25 @@ Attributes
       in :attr:`Timestep._unitcell`.
   ``volume``
       system box volume (derived as the determinant of the box vectors of ``dimensions``)
-  ``positions``
-      A numpy array of all positions in this Timestep.
-  ``velocities``
-      If present, returns a numpy array of velocities, otherwise raises a 
-      :class:`~MDAnalysis.NoDataError`
-  ``forces``
-      If present, returns a numpy array of forces, otherwise raises a 
-      :class:`~MDAnalysis.NoDataError`
+
 
 Private attributes
 ..................
 
 These attributes are set directly by the underlying trajectory
-readers. Normally the user should not have to directly access those (although in
-some cases it is convenient to directly use :class:`~MDAnalysis.coordinates.base.Timestep._pos`).
+readers. Normally the user should not have to directly access those,
+but instead should use the attribute above.
 
   ``_pos``
       raw coordinates, a :class:`numpy.float32` array; ``X = _pos[:,0], Y =
       _pos[:,1], Z = _pos[:,2]``
+
+  ``_velocities``
+      raw velocities, a :class:`numpy.float32` array containing velocities
+      (similar to ``_pos``)
+
+  ``_forces``
+      forces, similar to velocities above.
 
   ``_unitcell``
       native unit cell description; the format depends on the
@@ -323,15 +350,6 @@ some cases it is convenient to directly use :class:`~MDAnalysis.coordinates.base
       The method :meth:`Timestep._init_unitcell` is a hook to initialize
       this attribute.
 
-Optional attributes (only implemented by some readers); if an optional
-attribute does not exist, a :exc:`AttributeError` is raised and the calling
-code should handle this gracefully.
-
-  ``_velocities``
-      raw velocities, a :class:`numpy.float32` array containing velocities
-      (similar to ``_pos``)
-  ``_forces``
-      forces, similar to velocities above.
 
 
 Trajectory Reader class
@@ -407,12 +425,12 @@ deal with missing methods gracefully.
      Using slices allows iteration over parts of a trajectory ::
 
        for ts in universe.trajectory[1000:2000]:
-           process_frame(ts)   # do something
+           process_frame(ts)   # do some analysis on ts
 
      or skipping frames ::
 
        for ts in universe.trajectory[1000::100]:
-           process_frame(ts)   # do something
+           process_frame(ts)   # do some analysis on ts
 
      The last example starts reading the trajectory at frame 1000 and
      reads every 100th frame until the end.

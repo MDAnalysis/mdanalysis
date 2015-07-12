@@ -71,7 +71,7 @@ average coordinates in the first frame of the TRR and the modes into
 subsequent ones. The mode number is stored in the
 :attr:`~MDAnalysis.coordinates.xdrfile.TRR.Timestep.step` attribute
 and the mode coordinates are filling the
-:attr:`~MDAnalysis.coordinates.xdrfile.TRR.Timestep._pos` attribute of
+:attr:`~MDAnalysis.coordinates.xdrfile.TRR.Timestep.positions` attribute of
 :class:`~MDAnalysis.coordinates.xdrfile.TRR.Timestep`::
 
    # 'modes' is a mode object with M PCs, similar to a MxNx3 array
@@ -81,21 +81,17 @@ and the mode coordinates are filling the
 
    W = Writer('pca.trr', numatoms=N)            # TRR writer
    ts = MDAnalysis.coordinates.TRR.Timestep(N)  # TRR time step
-                                                #   TRR handling requires 'has_x' to be set
-                                                #   before low-level assignment to ts._pos.
-                                                #   (likewise for 'has_v' and 'has_f' for assignment
-                                                #   to ts._velocites and ts._forces). The default of
-                                                #   the Timestep constructor is to set 'has_x' to True
-                                                #   (but not 'has_v' or 'has_f') when only the number
-                                                #   of atoms is passed.
+                                                # N of atoms is passed.
    for frame,mode in enumerate(modes[4:16]):
        ts.lmbda = -1
-       if frame<=1:
-          ts._pos[:] = xav
-       else:
-          ts._pos[:] = mode.scaledToNorm(1.).array*10   # nm to angstroms
+
        ts.frame = frame         # manually change the frame number
-       ts.step = frame - 1
+       ts._frame = frame - 1
+
+       if frame<=1:
+          ts.positions = xav
+       else:
+          ts.positions = mode.scaledToNorm(1.).array*10   # nm to angstroms
        if frame <= 1:
           ts.time = frame-1
        else:

@@ -19,13 +19,30 @@
 Base classes --- :mod:`MDAnalysis.coordinates.base`
 ====================================================
 
-Derive other Reader and Writer classes from the classes in this
+Derive other Timestep, Reader and Writer classes from the classes in this
 module. The derived classes must follow the Trajectory API in
 :mod:`MDAnalysis.coordinates.__init__`.
 
-.. autoclass:: Timestep
-   :members:
+.. class:: Timestep
 
+   .. automethod:: __init__
+   .. automethod:: from_coordinates
+   .. automethod:: from_timestep
+   .. automethod:: _init_unitcell
+   .. autoattribute:: numatoms
+   .. attribute::`frame`
+
+      frame number (0-based)
+
+      .. versionchanged:: 0.11.0
+         Frames now 0-based; was 1-based
+
+   .. autoattribute:: positions
+   .. autoattribute:: velocities
+   .. autoattribute:: forces
+   .. autoattribute:: has_positions
+   .. autoattribute:: has_velocities
+   .. autoattribute:: has_forces
    .. attribute:: _pos
 
       :class:`numpy.ndarray` of dtype :class:`~numpy.float32` of shape
@@ -53,18 +70,12 @@ module. The derived classes must follow the Trajectory API in
       .. Note::
 
          Normally velocities are accessed through the
+         :attr:`velocities` or the
          :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.velocities`
          method of an :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
-         but this attribute is documented as there can be occasions
-         when it is required (e.g. in order to *change* velocities) or
-         much more convenient or faster to access the raw velocities
-         directly.
 
-         :attr:`~Timestep._velocities` only exists if the underlying
-         trajectory format supports velocities. Your code should check
-         for its existence or handle an :exc:`AttributeError`
-         gracefully.
-
+         :attr:`~Timestep._velocities` only exists if the :attr:`has_velocities`
+         flag is True
 
       .. versionadded:: 0.7.5
 
@@ -73,25 +84,19 @@ module. The derived classes must follow the Trajectory API in
       :class:`numpy.ndarray` of dtype :class:`~numpy.float32`. of shape
       (*numatoms*, 3), holding the forces
 
-      :attr:`~Timestep._forces` only exists if the Timestep was
-      created with the `forces = True` keyword.
+      :attr:`~Timestep._forces` only exists if :attr:`has_forces`
+      is True
 
       .. versionadded:: 0.11.0
          Added as optional to :class:`Timestep`
 
-   .. attribute:: numatoms
-
-      number of atoms
-
-      .. versionchanged:: 0.11.0
-         Became read only managed property
-
-   .. attribute::`frame`
-
-      frame number (0-based)
-
-      .. versionchanged:: 0.11.0
-         Frames now 0-based; was 1-based
+   .. autoattribute:: dimensions
+   .. autoattribute:: volume
+   .. automethod:: __getitem__
+   .. automethod:: __eq__
+   .. automethod:: __iter__
+   .. automethod:: copy
+   .. automethod:: copy_slice
 
 .. autoclass:: IObase
    :members:
@@ -130,26 +135,13 @@ class Timestep(object):
 
          create a timestep object with space for numatoms
 
-      ``ts[i]``
-
-         return coordinates for the i'th atom (0-based)
-
-      ``ts[start:stop:skip]``
-
-         return an array of coordinates, where start, stop and skip
-         correspond to atom indices,
-         :attr:`MDAnalysis.core.AtomGroup.Atom.number` (0-based)
-
-      ``for x in ts``
-
-         iterate of the coordinates, atom by atom
-
     .. versionchanged:: 0.11.0
        Added :meth:`from_timestep` and :meth:`from_coordinates` constructor
        methods.
        :class:`Timestep` init now only accepts integer creation
        :attr:`numatoms` now a read only property
        :attr:`frame` now 0-based instead of 1-based
+       Attributes status and step removed
     """
     order = 'F'
 
@@ -284,11 +276,19 @@ class Timestep(object):
         return True
 
     def __getitem__(self, atoms):
-        if np.dtype(type(atoms)) == np.dtype(int):
-            if (atoms < 0):
-                atoms = self.numatoms + atoms
-            if (atoms < 0) or (atoms >= self.numatoms):
-                raise IndexError
+        """Get a selection of coordinates
+
+        ``ts[i]``
+
+           return coordinates for the i'th atom (0-based)
+
+        ``ts[start:stop:skip]``
+
+           return an array of coordinates, where start, stop and skip
+           correspond to atom indices,
+           :attr:`MDAnalysis.core.AtomGroup.Atom.number` (0-based)
+        """
+        if isinstance(atoms, int):
             return self._pos[atoms]
         elif isinstance(atoms, (slice, np.ndarray)):
             return self._pos[atoms]
@@ -299,11 +299,14 @@ class Timestep(object):
         return self.numatoms
 
     def __iter__(self):
-        def iterTS():
-            for i in xrange(self.numatoms):
-                yield self[i]
+        """Iterate over coordinates
 
-        return iterTS()
+        ``for x in ts``
+
+            iterate of the coordinates, atom by atom
+        """
+        for i in xrange(self.numatoms):
+            yield self[i]
 
     def __repr__(self):
         desc = "< Timestep {0}".format(self.frame)
@@ -370,25 +373,59 @@ class Timestep(object):
 
     @property
     def numatoms(self):
+        """A read only view of the number of atoms this Timestep has
+
+        .. versionchanged:: 0.11.0
+           Changed to read only property
+        """
+        # In future could do some magic here to make setting numatoms
+        # resize the coordinate arrays, but
+        # - not sure if that is ever useful
+        # - not sure how to manage existing data upon extension
         return self._numatoms
 
     @property
     def has_positions(self):
+        """A boolean of whether this Timestep has position data
+
+        This can be changed to ``True`` or ``False`` to allocate space for
+        or remove the data.
+
+        .. versionadded:: 0.11.0
+        """
         return self._has_positions
 
     @has_positions.setter
     def has_positions(self, val):
-        # Only allocate array if necessary
         if val and not self._has_positions:
+            # Setting this will always reallocate position data
+            # ie
+            # True -> False -> True will wipe data from first True state
             self._pos = np.zeros((self.numatoms, 3), dtype=np.float32,
                                  order=self.order)
             self._has_positions = True
         elif not val:
+            # Unsetting val won't delete the numpy array
             self._has_positions = False
 
     @property
     def positions(self):
-        """A record of the positions of all atoms in this Timestep"""
+        """A record of the positions of all atoms in this Timestep
+
+        Setting this attribute will add positions to the Timestep if they
+        weren't originally present.
+
+        :Returns:
+           A numpy.ndarray of shape (numatoms, 3) of position data for each
+           atom
+
+        :Raises:
+           :class:`MDAnalysis.exceptions.NoDataError`
+              If the Timestep has no position data
+
+        .. versionchanged:: 0.11.0
+           Now can raise NoDataError when no position data present
+        """
         if self.has_positions:
             return self._pos
         else:
@@ -401,18 +438,40 @@ class Timestep(object):
 
     @property
     def _x(self):
-        return self._pos[:, 0]
+        """A view onto the x dimension of position data
+
+        .. versionchanged:: 0.11.0
+           Now read only
+        """
+        return self.positions[:, 0]
 
     @property
     def _y(self):
-        return self._pos[:, 1]
+        """A view onto the y dimension of position data
+
+        .. versionchanged:: 0.11.0
+           Now read only
+        """
+        return self.positions[:, 1]
 
     @property
     def _z(self):
-        return self._pos[:, 2]
+        """A view onto the z dimension of position data
+
+        .. versionchanged:: 0.11.0
+           Now read only
+        """
+        return self.positions[:, 2]
 
     @property
     def has_velocities(self):
+        """A boolean of whether this Timestep has velocity data
+
+        This can be changed to ``True`` or ``False`` to allocate space for
+        or remove the data.
+
+        .. versionadded:: 0.11.0
+        """
         return self._has_velocities
 
     @has_velocities.setter
@@ -428,8 +487,15 @@ class Timestep(object):
     def velocities(self):
         """A record of the velocities of all atoms in this Timestep
 
+        Setting this attribute will add velocities to the Timestep if they
+        weren't originally present.
+
+        :Returns:
+           A numpy.ndarray of shape (numatoms, 3) of velocity data for each
+           atom
+
         :Raises:
-           :class:`MDAnalysis.NoDataError`
+           :class:`MDAnalysis.exceptions.NoDataError`
               When the Timestep does not contain velocity information
 
         .. versionadded:: 0.11.0
@@ -446,6 +512,13 @@ class Timestep(object):
 
     @property
     def has_forces(self):
+        """A boolean of whether this Timestep has force data
+
+        This can be changed to ``True`` or ``False`` to allocate space for
+        or remove the data.
+
+        .. versionadded:: 0.11.0
+        """
         return self._has_forces
 
     @has_forces.setter
@@ -460,6 +533,13 @@ class Timestep(object):
     @property
     def forces(self):
         """A record of the forces of all atoms in this Timestep
+
+        Setting this attribute will add forces to the Timestep if they
+        weren't originally present.
+
+        :Returns:
+           A numpy.ndarray of shape (numatoms, 3) of force data for each
+           atom
 
         :Raises:
            :class:`MDAnalysis.NoDataError`
@@ -484,10 +564,8 @@ class Timestep(object):
         lengths *a*, *b*, *c* are in the MDAnalysis length unit (Å), and
         angles are in degrees.
 
-        :attr:`dimensions` is read-only because it transforms the
-        actual format of the unitcell (which differs between different
-        trajectory formats) to the representation described here,
-        which is used everywhere in MDAnalysis.
+        Setting dimensions will populate the underlying native format
+        description of box dimensions
         """
         # The actual Timestep._unitcell depends on the underlying
         # trajectory format. It can be e.g. six floats representing

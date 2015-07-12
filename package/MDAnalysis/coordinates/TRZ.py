@@ -129,6 +129,8 @@ class TRZReader(base.Reader):
 
     .. versionchanged:: 0.11.0
        Frames now 0-based instead of 1-based
+       Extra data (Temperature, Energies, Pressures, etc) now read
+       into ts.data dictionary
     """
 
     format = "TRZ"
