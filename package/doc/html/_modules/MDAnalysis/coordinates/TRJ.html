@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -31,10 +29,10 @@
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
     <link rel="top" title="MDAnalysis 0.11.0-dev documentation" href="../../../index.html" />
-    <link rel="up" title="MDAnalysis" href="../../MDAnalysis.html" /> 
+    <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -43,17 +41,16 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
-          <li><a href="../../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../../index.html">
               <img class="logo" src="../../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
             </a></p>
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../../search.html" method="get">
       <input type="text" name="q" />
@@ -72,7 +69,7 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <h1>Source code for MDAnalysis.coordinates.TRJ</h1><div class="highlight"><pre>
 <span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
@@ -205,7 +202,7 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">unicode_literals</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">errno</span>
 <span class="kn">import</span> <span class="nn">logging</span>
@@ -213,7 +210,7 @@
 <span class="kn">import</span> <span class="nn">MDAnalysis</span>
 <span class="kn">from</span> <span class="nn">..core</span> <span class="kn">import</span> <span class="n">flags</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">base</span>
-<span class="kn">import</span> <span class="nn">MDAnalysis.lib.util</span> <span class="kn">as</span> <span class="nn">util</span>
+<span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">util</span>
 
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&quot;MDAnalysis.coordinates.AMBER&quot;</span><span class="p">)</span>
@@ -285,7 +282,7 @@
 
         <span class="c"># FORMAT(10F8.3)  (X(i), Y(i), Z(i), i=1,NATOM)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">default_line_parser</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">FORTRANReader</span><span class="p">(</span><span class="s">&quot;10F8.3&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">lines_per_frame</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="mf">3.0</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_line_parser</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lines_per_frame</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="mf">3.0</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_line_parser</span><span class="p">)))</span>
         <span class="c"># The last line per frame might have fewer than 10</span>
         <span class="c"># We determine right away what parser we need for the last</span>
         <span class="c"># line because it will be the same for all frames.</span>
@@ -310,7 +307,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">open_trajectory</span><span class="p">()</span>
 
         <span class="c"># Read coordinat frame:</span>
-        <span class="c">#coordinates = numpy.zeros(3*self.numatoms, dtype=numpy.float32)</span>
+        <span class="c">#coordinates = numpy.zeros(3*self.numatoms, dtype=np.float32)</span>
         <span class="n">_coords</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">number</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
@@ -329,13 +326,13 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span><span class="p">:</span>
             <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
             <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">box_line_parser</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-            <span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">box</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">box</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
             <span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">90.</span><span class="p">,</span> <span class="mf">90.</span><span class="p">,</span> <span class="mf">90.</span><span class="p">]</span>  <span class="c"># assumed</span>
 
         <span class="c"># probably slow ... could be optimized by storing the coordinates in X,Y,Z</span>
         <span class="c"># lists or directly filling the array; the array/reshape is not good</span>
         <span class="c"># because it creates an intermediate array</span>
-        <span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">_coords</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">_coords</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
         <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="k">return</span> <span class="n">ts</span>
 
@@ -381,12 +378,12 @@
             <span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">90.</span><span class="p">,</span> <span class="mf">90.</span><span class="p">,</span> <span class="mf">90.</span><span class="p">]</span>  <span class="c"># assumed</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span> <span class="o">=</span> <span class="bp">False</span>
-            <span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span>
 
     <span class="nd">@property</span>
-<div class="viewcode-block" id="TRJReader.numframes"><a class="viewcode-back" href="../../../documentation_pages/coordinates/TRJ.html#MDAnalysis.coordinates.TRJ.TRJReader.numframes">[docs]</a>    <span class="k">def</span> <span class="nf">numframes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">numframes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Number of frames (obtained from reading the whole trajectory).&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_numframes</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>  <span class="c"># return cached value</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_numframes</span>
@@ -396,7 +393,7 @@
             <span class="k">return</span> <span class="mi">0</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_numframes</span>
-</div>
+
     <span class="k">def</span> <span class="nf">_read_trj_numframes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reopen</span><span class="p">()</span>
 
@@ -428,9 +425,7 @@
                           <span class="s">&quot;This is probably not a AMBER trajectory.&quot;</span><span class="p">)</span>
         <span class="c"># reset ts</span>
         <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span>
-        <span class="n">ts</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> 
-        <span class="n">ts</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">ts</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span>
 </div>
@@ -578,7 +573,7 @@
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s">&quot;Trajectory is closed&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">frame</span><span class="p">))</span> <span class="o">!=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="nb">int</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">frame</span><span class="p">))</span> <span class="o">!=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="nb">int</span><span class="p">):</span>
             <span class="c"># convention... for netcdf could also be a slice</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;frame must be a positive integer&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">frame</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">numframes</span> <span class="ow">or</span> <span class="n">frame</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -710,7 +705,7 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;NCDFWriter: no atoms in output trajectory&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span> <span class="o">=</span> <span class="n">numatoms</span>
         <span class="k">if</span> <span class="n">convert_units</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">convert_units</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s">&#39;convert_lengths&#39;</span><span class="p">]</span>
+            <span class="n">convert_units</span> <span class="o">=</span> <span class="n">flags</span><span class="p">[</span><span class="s">&#39;convert_lengths&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span> <span class="o">=</span> <span class="n">convert_units</span>  <span class="c"># convert length and time to base units on the fly?</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">start</span>  <span class="c"># do we use those?</span>
@@ -807,7 +802,7 @@
 <div class="viewcode-block" id="NCDFWriter.is_periodic"><a class="viewcode-back" href="../../../documentation_pages/coordinates/TRJ.html#MDAnalysis.coordinates.TRJ.NCDFWriter.is_periodic">[docs]</a>    <span class="k">def</span> <span class="nf">is_periodic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return ``True`` if :class:`Timestep` *ts* contains a valid simulation box&quot;&quot;&quot;</span>
         <span class="n">ts</span> <span class="o">=</span> <span class="n">ts</span> <span class="k">if</span> <span class="n">ts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span>
-        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="NCDFWriter.write_next_timestep"><a class="viewcode-back" href="../../../documentation_pages/coordinates/TRJ.html#MDAnalysis.coordinates.TRJ.NCDFWriter.write_next_timestep">[docs]</a>    <span class="k">def</span> <span class="nf">write_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;write a new timestep to the trj file</span>
@@ -866,10 +861,6 @@
                 <span class="n">time</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">delta</span>
             <span class="n">unitcell</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="s">&#39;step&#39;</span><span class="p">):</span>
-            <span class="c"># bogus, should be actual MD step number, i.e. frame * delta/dt</span>
-            <span class="n">ts</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span>
-
         <span class="c"># write step</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s">&#39;coordinates&#39;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">curr_frame</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">pos</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s">&#39;time&#39;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">curr_frame</span><span class="p">]</span> <span class="o">=</span> <span class="n">time</span>
@@ -902,7 +893,7 @@
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -911,12 +902,11 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
-          <li><a href="../../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
+    <div class="footer" role="contentinfo">
         &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
@@ -925,7 +915,7 @@
     Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
     Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Zhuyi Xue, Carlos Yáñez S.,
     and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>
 </html>

@@ -1,0 +1,294 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>9.5. Mathematical helper functions — MDAnalysis.lib.mdamath &mdash; MDAnalysis 0.11.0-dev documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.11.0-dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 0.11.0-dev documentation"
+          href="../../_static/opensearch.xml"/>
+    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+    <link rel="top" title="MDAnalysis 0.11.0-dev documentation" href="../../index.html" />
+    <link rel="up" title="9. MDAnalysis library" href="../lib_modules.html" />
+    <link rel="next" title="9.6. Parallel algorithms for MDAnalysis" href="parallel.html" />
+    <link rel="prev" title="9.4. Setting up logging — MDAnalysis.lib.log" href="log.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="parallel.html" title="9.6. Parallel algorithms for MDAnalysis"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="log.html" title="9.4. Setting up logging — MDAnalysis.lib.log"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../lib_modules.html" accesskey="U">9. MDAnalysis library</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="log.html"
+                        title="previous chapter">9.4. Setting up logging &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.lib.log</span></code></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="parallel.html"
+                        title="next chapter">9.6. Parallel algorithms for MDAnalysis</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/documentation_pages/lib/mdamath.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <span class="target" id="module-MDAnalysis.lib.mdamath"></span><div class="section" id="mathematical-helper-functions-mdanalysis-lib-mdamath">
+<h1>9.5. Mathematical helper functions &#8212; <a class="reference internal" href="#module-MDAnalysis.lib.mdamath" title="MDAnalysis.lib.mdamath"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.lib.mdamath</span></code></a><a class="headerlink" href="#mathematical-helper-functions-mdanalysis-lib-mdamath" title="Permalink to this headline">¶</a></h1>
+<p>Helper functions for common mathematical operations</p>
+<dl class="function">
+<dt id="MDAnalysis.lib.mdamath.triclinic_box">
+<code class="descclassname">MDAnalysis.lib.mdamath.</code><code class="descname">triclinic_box</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>z</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/mdamath.html#triclinic_box"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.mdamath.triclinic_box" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the three triclinic box vectors to [A,B,C,alpha,beta,gamma].</p>
+<p>Angles are in degrees.</p>
+<ul class="simple">
+<li>alpha  = angle(y,z)</li>
+<li>beta   = angle(x,z)</li>
+<li>gamma  = angle(x,y)</li>
+</ul>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">Definition of angles: <a class="reference external" href="http://en.wikipedia.org/wiki/Lattice_constant">http://en.wikipedia.org/wiki/Lattice_constant</a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.lib.mdamath.triclinic_vectors">
+<code class="descclassname">MDAnalysis.lib.mdamath.</code><code class="descname">triclinic_vectors</code><span class="sig-paren">(</span><em>dimensions</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/mdamath.html#triclinic_vectors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.mdamath.triclinic_vectors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert <cite>[A,B,C,alpha,beta,gamma]</cite> to a triclinic box representation.</p>
+<p>Original <a class="reference external" href="http://www.mail-archive.com/gmx-users&#64;gromacs.org/msg28032.html">code by Tsjerk Wassenaar</a> posted on the Gromacs mailinglist.</p>
+<p>If <em>dimensions</em> indicates a non-periodic system (i.e. all lengths
+0) then null-vectors are returned.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<dt><em>dimensions</em></dt>
+<dd><p class="first last">list of box lengths and angles (in degrees) such as
+[A,B,C,alpha,beta,gamma]</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">numpy 3x3 array B, with B[0] = first box vector,
+B[1] = second vector, B[2] third box vector.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The first vector is always pointing along the X-axis
+i.e. parallel to (1,0,0).</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.7.6: </span>Null-vectors are returned for non-periodic (or missing) unit cell.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.lib.mdamath.box_volume">
+<code class="descclassname">MDAnalysis.lib.mdamath.</code><code class="descname">box_volume</code><span class="sig-paren">(</span><em>dimensions</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/mdamath.html#box_volume"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.mdamath.box_volume" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the volume of the unitcell described by <em>dimensions</em>.</p>
+<p>The volume is computed as <cite>det(x1,x2,x2)</cite> where the xi are the
+triclinic box vectors from <a class="reference internal" href="#MDAnalysis.lib.mdamath.triclinic_vectors" title="MDAnalysis.lib.mdamath.triclinic_vectors"><code class="xref py py-func docutils literal"><span class="pre">triclinic_vectors()</span></code></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<dt><em>dimensions</em></dt>
+<dd><p class="first last">list of box lengths and angles (in degrees) such as
+[A,B,C,alpha,beta,gamma]</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">numpy 3x3 array B, with B[0] = first box vector,
+B[1] = second vector, B[2] third box vector.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.11.0.</span></p>
+</div>
+<dl class="function">
+<dt>
+<code class="descclassname">MDAnalysis.lib.mdamath.</code><code class="descname">box_volume</code><span class="sig-paren">(</span><em>dimensions</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/mdamath.html#box_volume"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Return the volume of the unitcell described by <em>dimensions</em>.</p>
+<p>The volume is computed as <cite>det(x1,x2,x2)</cite> where the xi are the
+triclinic box vectors from <a class="reference internal" href="#MDAnalysis.lib.mdamath.triclinic_vectors" title="MDAnalysis.lib.mdamath.triclinic_vectors"><code class="xref py py-func docutils literal"><span class="pre">triclinic_vectors()</span></code></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<dt><em>dimensions</em></dt>
+<dd><p class="first last">list of box lengths and angles (in degrees) such as
+[A,B,C,alpha,beta,gamma]</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">numpy 3x3 array B, with B[0] = first box vector,
+B[1] = second vector, B[2] third box vector.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descclassname">MDAnalysis.lib.mdamath.</code><code class="descname">triclinic_box</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>z</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/mdamath.html#triclinic_box"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Convert the three triclinic box vectors to [A,B,C,alpha,beta,gamma].</p>
+<p>Angles are in degrees.</p>
+<ul class="simple">
+<li>alpha  = angle(y,z)</li>
+<li>beta   = angle(x,z)</li>
+<li>gamma  = angle(x,y)</li>
+</ul>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">Definition of angles: <a class="reference external" href="http://en.wikipedia.org/wiki/Lattice_constant">http://en.wikipedia.org/wiki/Lattice_constant</a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descclassname">MDAnalysis.lib.mdamath.</code><code class="descname">triclinic_vectors</code><span class="sig-paren">(</span><em>dimensions</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/mdamath.html#triclinic_vectors"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Convert <cite>[A,B,C,alpha,beta,gamma]</cite> to a triclinic box representation.</p>
+<p>Original <a class="reference external" href="http://www.mail-archive.com/gmx-users&#64;gromacs.org/msg28032.html">code by Tsjerk Wassenaar</a> posted on the Gromacs mailinglist.</p>
+<p>If <em>dimensions</em> indicates a non-periodic system (i.e. all lengths
+0) then null-vectors are returned.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
+<dt><em>dimensions</em></dt>
+<dd><p class="first last">list of box lengths and angles (in degrees) such as
+[A,B,C,alpha,beta,gamma]</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">numpy 3x3 array B, with B[0] = first box vector,
+B[1] = second vector, B[2] third box vector.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The first vector is always pointing along the X-axis
+i.e. parallel to (1,0,0).</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.7.6: </span>Null-vectors are returned for non-periodic (or missing) unit cell.</p>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="parallel.html" title="9.6. Parallel algorithms for MDAnalysis"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="log.html" title="9.4. Setting up logging — MDAnalysis.lib.log"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../lib_modules.html" >9. MDAnalysis library</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
+    David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
+    Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
+    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
+    Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
+    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Zhuyi Xue, Carlos Yáñez S.,
+    and Oliver Beckstein.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

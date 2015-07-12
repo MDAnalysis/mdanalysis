@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -35,8 +33,8 @@
     <link rel="next" title="5.20. Common functions for coordinate reading — MDAnalysis.coordinates.core" href="core.html" />
     <link rel="prev" title="5.18. TRZ trajectory I/O — MDAnalysis.coordinates.TRZ" href="TRZ.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -51,27 +49,29 @@
         <li class="right" >
           <a href="TRZ.html" title="5.18. TRZ trajectory I/O — MDAnalysis.coordinates.TRZ"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
-          <li><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../index.html">
               <img class="logo" src="../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
             </a></p>
   <h4>Previous topic</h4>
   <p class="topless"><a href="TRZ.html"
-                        title="previous chapter">5.18. TRZ trajectory I/O  &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.coordinates.TRZ</span></tt></a></p>
+                        title="previous chapter">5.18. TRZ trajectory I/O  &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.TRZ</span></code></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="core.html"
-                        title="next chapter">5.20. Common functions for coordinate reading &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.core</span></tt></a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="../../_sources/documentation_pages/coordinates/base.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
+                        title="next chapter">5.20. Common functions for coordinate reading &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.core</span></code></a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/documentation_pages/coordinates/base.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
       <input type="text" name="q" />
@@ -90,155 +90,320 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <span class="target" id="module-MDAnalysis.coordinates.base"></span><div class="section" id="base-classes-mdanalysis-coordinates-base">
-<h1>5.19. Base classes &#8212; <a class="reference internal" href="#module-MDAnalysis.coordinates.base" title="MDAnalysis.coordinates.base"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.base</span></tt></a><a class="headerlink" href="#base-classes-mdanalysis-coordinates-base" title="Permalink to this headline">¶</a></h1>
-<p>Derive other Reader and Writer classes from the classes in this
+<h1>5.19. Base classes &#8212; <a class="reference internal" href="#module-MDAnalysis.coordinates.base" title="MDAnalysis.coordinates.base"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.base</span></code></a><a class="headerlink" href="#base-classes-mdanalysis-coordinates-base" title="Permalink to this headline">¶</a></h1>
+<p>Derive other Timestep, Reader and Writer classes from the classes in this
 module. The derived classes must follow the Trajectory API in
-<a class="reference internal" href="init.html#module-MDAnalysis.coordinates.__init__" title="MDAnalysis.coordinates.__init__"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.__init__</span></tt></a>.</p>
+<a class="reference internal" href="init.html#module-MDAnalysis.coordinates.__init__" title="MDAnalysis.coordinates.__init__"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.__init__</span></code></a>.</p>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.base.Timestep">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.base.</tt><tt class="descname">Timestep</tt><big>(</big><em>numatoms</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep" title="Permalink to this definition">¶</a></dt>
-<dd><p>Timestep data for one frame</p>
+<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.base.</code><code class="descname">Timestep</code><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="MDAnalysis.coordinates.base.Timestep.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>numatoms</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Timestep.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a Timestep, representing a frame of a trajectory</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Methods :</th><td class="field-body"><p class="first"><tt class="docutils literal"><span class="pre">ts</span> <span class="pre">=</span> <span class="pre">Timestep(numatoms)</span></tt></p>
-<blockquote>
-<div><p>create a timestep object with space for numatoms</p>
-</div></blockquote>
-<p><tt class="docutils literal"><span class="pre">ts[i]</span></tt></p>
-<blockquote>
-<div><p>return coordinates for the i&#8217;th atom (0-based)</p>
-</div></blockquote>
-<p><tt class="docutils literal"><span class="pre">ts[start:stop:skip]</span></tt></p>
-<blockquote>
-<div><p>return an array of coordinates, where start, stop and skip
-correspond to atom indices,
-<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom.number" title="MDAnalysis.core.AtomGroup.Atom.number"><tt class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.Atom.number</span></tt></a> (0-based)</p>
-</div></blockquote>
-<p><tt class="docutils literal"><span class="pre">for</span> <span class="pre">x</span> <span class="pre">in</span> <span class="pre">ts</span></tt></p>
-<blockquote class="last">
-<div><p>iterate of the coordinates, atom by atom</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-<p class="versionchanged">
-<span class="versionmodified">Changed in version 0.11.0: </span>Added <a class="reference internal" href="#MDAnalysis.coordinates.base.Timestep.from_timestep" title="MDAnalysis.coordinates.base.Timestep.from_timestep"><tt class="xref py py-meth docutils literal"><span class="pre">from_timestep()</span></tt></a> and <a class="reference internal" href="#MDAnalysis.coordinates.base.Timestep.from_coordinates" title="MDAnalysis.coordinates.base.Timestep.from_coordinates"><tt class="xref py py-meth docutils literal"><span class="pre">from_coordinates()</span></tt></a> constructor
-methods.
-<a class="reference internal" href="#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> init now only accepts integer creation
-<a class="reference internal" href="#MDAnalysis.coordinates.base.Timestep.numatoms" title="MDAnalysis.coordinates.base.Timestep.numatoms"><tt class="xref py py-attr docutils literal"><span class="pre">numatoms</span></tt></a> now a read only property
-<tt class="xref py py-attr docutils literal"><span class="pre">frame</span></tt> now 0-based instead of 1-based</p>
-<p>Create a Timestep, representing a frame of a trajectory</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
 <dt><em>numatoms</em></dt>
 <dd><p class="first last">The total number of atoms this Timestep describes</p>
 </dd>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>positions</em></dt>
+<dd><p class="first last">Whether this Timestep has position information [<code class="docutils literal"><span class="pre">True</span></code>]</p>
+</dd>
 <dt><em>velocities</em></dt>
-<dd><p class="first last">Whether this Timestep has velocity information [<tt class="docutils literal"><span class="pre">False</span></tt>]</p>
+<dd><p class="first last">Whether this Timestep has velocity information [<code class="docutils literal"><span class="pre">False</span></code>]</p>
 </dd>
 <dt><em>forces</em></dt>
-<dd><p class="first last">Whether this Timestep has force information [<tt class="docutils literal"><span class="pre">False</span></tt>]</p>
+<dd><p class="first last">Whether this Timestep has force information [<code class="docutils literal"><span class="pre">False</span></code>]</p>
 </dd>
 </dl>
 </td>
 </tr>
 </tbody>
 </table>
-<p class="versionchanged">
-<span class="versionmodified">Changed in version 0.11.0: </span>Added keywords for velocities and forces</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.11.0: </span>Added keywords for positions, velocities and forces
+Can add and remove position/velocity/force information by using
+the has_* attribute</p>
+</div>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="MDAnalysis.coordinates.base.Timestep.from_coordinates">
+<em class="property">classmethod </em><code class="descname">from_coordinates</code><span class="sig-paren">(</span><em>positions</em>, <em>velocities=None</em>, <em>forces=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Timestep.from_coordinates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep.from_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create an instance of this Timestep, from coordinate data</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.11.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="MDAnalysis.coordinates.base.Timestep.from_timestep">
+<em class="property">classmethod </em><code class="descname">from_timestep</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Timestep.from_timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep.from_timestep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a copy of another Timestep, in the format of this Timestep</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.11.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.base.Timestep._init_unitcell">
+<code class="descname">_init_unitcell</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Timestep._init_unitcell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep._init_unitcell" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create custom datastructure for <code class="xref py py-attr docutils literal"><span class="pre">_unitcell</span></code>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.base.Timestep.numatoms">
+<code class="descname">numatoms</code><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep.numatoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>A read only view of the number of atoms this Timestep has</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.11.0: </span>Changed to read only property</p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.base.Timestep.positions">
+<code class="descname">positions</code><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep.positions" title="Permalink to this definition">¶</a></dt>
+<dd><p>A record of the positions of all atoms in this Timestep</p>
+<p>Setting this attribute will add positions to the Timestep if they
+weren&#8217;t originally present.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A numpy.ndarray of shape (numatoms, 3) of position data for each
+atom</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><dl class="first last docutils">
+<dt><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.exceptions.NoDataError</span></code></a></dt>
+<dd><p class="first last">If the Timestep has no position data</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.11.0: </span>Now can raise NoDataError when no position data present</p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.base.Timestep.velocities">
+<code class="descname">velocities</code><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep.velocities" title="Permalink to this definition">¶</a></dt>
+<dd><p>A record of the velocities of all atoms in this Timestep</p>
+<p>Setting this attribute will add velocities to the Timestep if they
+weren&#8217;t originally present.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A numpy.ndarray of shape (numatoms, 3) of velocity data for each
+atom</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><dl class="first last docutils">
+<dt><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.exceptions.NoDataError</span></code></a></dt>
+<dd><p class="first last">When the Timestep does not contain velocity information</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.11.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.base.Timestep.forces">
+<code class="descname">forces</code><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep.forces" title="Permalink to this definition">¶</a></dt>
+<dd><p>A record of the forces of all atoms in this Timestep</p>
+<p>Setting this attribute will add forces to the Timestep if they
+weren&#8217;t originally present.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A numpy.ndarray of shape (numatoms, 3) of force data for each
+atom</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><dl class="first last docutils">
+<dt><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.NoDataError</span></code></dt>
+<dd><p class="first last">When the Timestep does not contain force information</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.11.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.base.Timestep.has_positions">
+<code class="descname">has_positions</code><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep.has_positions" title="Permalink to this definition">¶</a></dt>
+<dd><p>A boolean of whether this Timestep has position data</p>
+<p>This can be changed to <code class="docutils literal"><span class="pre">True</span></code> or <code class="docutils literal"><span class="pre">False</span></code> to allocate space for
+or remove the data.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.11.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.base.Timestep.has_velocities">
+<code class="descname">has_velocities</code><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep.has_velocities" title="Permalink to this definition">¶</a></dt>
+<dd><p>A boolean of whether this Timestep has velocity data</p>
+<p>This can be changed to <code class="docutils literal"><span class="pre">True</span></code> or <code class="docutils literal"><span class="pre">False</span></code> to allocate space for
+or remove the data.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.11.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.base.Timestep.has_forces">
+<code class="descname">has_forces</code><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep.has_forces" title="Permalink to this definition">¶</a></dt>
+<dd><p>A boolean of whether this Timestep has force data</p>
+<p>This can be changed to <code class="docutils literal"><span class="pre">True</span></code> or <code class="docutils literal"><span class="pre">False</span></code> to allocate space for
+or remove the data.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.11.0.</span></p>
+</div>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="MDAnalysis.coordinates.base.Timestep._pos">
-<tt class="descname">_pos</tt><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep._pos" title="Permalink to this definition">¶</a></dt>
-<dd><p><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of dtype <tt class="xref py py-class docutils literal"><span class="pre">float32</span></tt> of shape
+<code class="descname">_pos</code><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep._pos" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of dtype <code class="xref py py-class docutils literal"><span class="pre">float32</span></code> of shape
 (<em>numatoms</em>, 3) and internal FORTRAN order, holding the raw
 cartesian coordinates (in MDAnalysis units, i.e. Å).</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Normally one does not directly access <a class="reference internal" href="#MDAnalysis.coordinates.base.Timestep._pos" title="MDAnalysis.coordinates.base.Timestep._pos"><tt class="xref py py-attr docutils literal"><span class="pre">_pos</span></tt></a> but uses
-the <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.coordinates" title="MDAnalysis.core.AtomGroup.AtomGroup.coordinates"><tt class="xref py py-meth docutils literal"><span class="pre">coordinates()</span></tt></a>
-method of an <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a> but
+<p class="last">Normally one does not directly access <a class="reference internal" href="#MDAnalysis.coordinates.base.Timestep._pos" title="MDAnalysis.coordinates.base.Timestep._pos"><code class="xref py py-attr docutils literal"><span class="pre">_pos</span></code></a> but uses
+the <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.coordinates" title="MDAnalysis.core.AtomGroup.AtomGroup.coordinates"><code class="xref py py-meth docutils literal"><span class="pre">coordinates()</span></code></a>
+method of an <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></code></a> but
 sometimes it can be faster to directly use the raw
 coordinates. Any changes to this array are immediately
 reflected in atom positions. If the frame is written to a new
 trajectory then the coordinates are changed. If a new
 trajectory frame is loaded, then <em>all</em> contents of
-<a class="reference internal" href="#MDAnalysis.coordinates.base.Timestep._pos" title="MDAnalysis.coordinates.base.Timestep._pos"><tt class="xref py py-attr docutils literal"><span class="pre">_pos</span></tt></a> are overwritten.</p>
+<a class="reference internal" href="#MDAnalysis.coordinates.base.Timestep._pos" title="MDAnalysis.coordinates.base.Timestep._pos"><code class="xref py py-attr docutils literal"><span class="pre">_pos</span></code></a> are overwritten.</p>
 </div>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="MDAnalysis.coordinates.base.Timestep._velocities">
-<tt class="descname">_velocities</tt><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep._velocities" title="Permalink to this definition">¶</a></dt>
-<dd><p><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of dtype <tt class="xref py py-class docutils literal"><span class="pre">float32</span></tt>. of shape
+<code class="descname">_velocities</code><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep._velocities" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of dtype <code class="xref py py-class docutils literal"><span class="pre">float32</span></code>. of shape
 (<em>numatoms</em>, 3), holding the raw velocities (in MDAnalysis
 units, i.e. typically Å/ps).</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p>Normally velocities are accessed through the
-<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.velocities" title="MDAnalysis.core.AtomGroup.AtomGroup.velocities"><tt class="xref py py-meth docutils literal"><span class="pre">velocities()</span></tt></a>
-method of an <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a>
-but this attribute is documented as there can be occasions
-when it is required (e.g. in order to <em>change</em> velocities) or
-much more convenient or faster to access the raw velocities
-directly.</p>
-<p class="last"><a class="reference internal" href="#MDAnalysis.coordinates.base.Timestep._velocities" title="MDAnalysis.coordinates.base.Timestep._velocities"><tt class="xref py py-attr docutils literal"><span class="pre">_velocities</span></tt></a> only exists if the underlying
-trajectory format supports velocities. Your code should check
-for its existence or handle an <tt class="xref py py-exc docutils literal"><span class="pre">AttributeError</span></tt>
-gracefully.</p>
+<a class="reference internal" href="#MDAnalysis.coordinates.base.Timestep.velocities" title="MDAnalysis.coordinates.base.Timestep.velocities"><code class="xref py py-attr docutils literal"><span class="pre">velocities</span></code></a> or the
+<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.velocities" title="MDAnalysis.core.AtomGroup.AtomGroup.velocities"><code class="xref py py-meth docutils literal"><span class="pre">velocities()</span></code></a>
+method of an <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></code></a></p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.coordinates.base.Timestep._velocities" title="MDAnalysis.coordinates.base.Timestep._velocities"><code class="xref py py-attr docutils literal"><span class="pre">_velocities</span></code></a> only exists if the <a class="reference internal" href="#MDAnalysis.coordinates.base.Timestep.has_velocities" title="MDAnalysis.coordinates.base.Timestep.has_velocities"><code class="xref py py-attr docutils literal"><span class="pre">has_velocities</span></code></a>
+flag is True</p>
 </div>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.7.5.</span></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.5.</span></p>
+</div>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="MDAnalysis.coordinates.base.Timestep._forces">
-<tt class="descname">_forces</tt><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep._forces" title="Permalink to this definition">¶</a></dt>
-<dd><p><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of dtype <tt class="xref py py-class docutils literal"><span class="pre">float32</span></tt>. of shape
+<code class="descname">_forces</code><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep._forces" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of dtype <code class="xref py py-class docutils literal"><span class="pre">float32</span></code>. of shape
 (<em>numatoms</em>, 3), holding the forces</p>
-<p><a class="reference internal" href="#MDAnalysis.coordinates.base.Timestep._forces" title="MDAnalysis.coordinates.base.Timestep._forces"><tt class="xref py py-attr docutils literal"><span class="pre">_forces</span></tt></a> only exists if the Timestep was
-created with the <cite>forces = True</cite> keyword.</p>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.11.0: </span>Added as optional to <a class="reference internal" href="#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a></p>
+<p><a class="reference internal" href="#MDAnalysis.coordinates.base.Timestep._forces" title="MDAnalysis.coordinates.base.Timestep._forces"><code class="xref py py-attr docutils literal"><span class="pre">_forces</span></code></a> only exists if <a class="reference internal" href="#MDAnalysis.coordinates.base.Timestep.has_forces" title="MDAnalysis.coordinates.base.Timestep.has_forces"><code class="xref py py-attr docutils literal"><span class="pre">has_forces</span></code></a>
+is True</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.11.0: </span>Added as optional to <a class="reference internal" href="#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal"><span class="pre">Timestep</span></code></a></p>
+</div>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="MDAnalysis.coordinates.base.Timestep.numatoms">
-<tt class="descname">numatoms</tt><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Timestep.numatoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep.numatoms" title="Permalink to this definition">¶</a></dt>
-<dd><p>number of atoms</p>
-<p class="versionchanged">
-<span class="versionmodified">Changed in version 0.11.0: </span>Became read only managed property</p>
+<dt id="MDAnalysis.coordinates.base.Timestep.dimensions">
+<code class="descname">dimensions</code><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep.dimensions" title="Permalink to this definition">¶</a></dt>
+<dd><p>unitcell dimensions (<em>A</em>, <em>B</em>, <em>C</em>, <em>alpha</em>, <em>beta</em>, <em>gamma</em>)</p>
+<p>lengths <em>a</em>, <em>b</em>, <em>c</em> are in the MDAnalysis length unit (Å), and
+angles are in degrees.</p>
+<p>Setting dimensions will populate the underlying native format
+description of box dimensions</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.base.Timestep.volume">
+<code class="descname">volume</code><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep.volume" title="Permalink to this definition">¶</a></dt>
+<dd><p>volume of the unitcell</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.base.Timestep.__getitem__">
+<code class="descname">__getitem__</code><span class="sig-paren">(</span><em>atoms</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Timestep.__getitem__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep.__getitem__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a selection of coordinates</p>
+<p><code class="docutils literal"><span class="pre">ts[i]</span></code></p>
+<blockquote>
+<div>return coordinates for the i&#8217;th atom (0-based)</div></blockquote>
+<p><code class="docutils literal"><span class="pre">ts[start:stop:skip]</span></code></p>
+<blockquote>
+<div>return an array of coordinates, where start, stop and skip
+correspond to atom indices,
+<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom.number" title="MDAnalysis.core.AtomGroup.Atom.number"><code class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.Atom.number</span></code></a> (0-based)</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.base.Timestep.__eq__">
+<code class="descname">__eq__</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Timestep.__eq__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep.__eq__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compare with another Timestep</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.11.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.base.Timestep.__iter__">
+<code class="descname">__iter__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Timestep.__iter__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep.__iter__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterate over coordinates</p>
+<p><code class="docutils literal"><span class="pre">for</span> <span class="pre">x</span> <span class="pre">in</span> <span class="pre">ts</span></code></p>
+<blockquote>
+<div>iterate of the coordinates, atom by atom</div></blockquote>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.base.Timestep.copy">
-<tt class="descname">copy</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Timestep.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep.copy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Make an independent (&#8220;deep&#8221;) copy of the whole <a class="reference internal" href="#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a>.</p>
+<code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Timestep.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make an independent (&#8220;deep&#8221;) copy of the whole <a class="reference internal" href="#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal"><span class="pre">Timestep</span></code></a>.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.base.Timestep.copy_slice">
-<tt class="descname">copy_slice</tt><big>(</big><em>sel</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Timestep.copy_slice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep.copy_slice" title="Permalink to this definition">¶</a></dt>
+<code class="descname">copy_slice</code><span class="sig-paren">(</span><em>sel</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Timestep.copy_slice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep.copy_slice" title="Permalink to this definition">¶</a></dt>
 <dd><p>Make a new Timestep containing a subset of the original Timestep.</p>
-<p><tt class="docutils literal"><span class="pre">ts.copy_slice(slice(start,</span> <span class="pre">stop,</span> <span class="pre">skip))</span></tt>
-<tt class="docutils literal"><span class="pre">ts.copy_slice([list</span> <span class="pre">of</span> <span class="pre">indices])</span></tt></p>
+<p><code class="docutils literal"><span class="pre">ts.copy_slice(slice(start,</span> <span class="pre">stop,</span> <span class="pre">skip))</span></code>
+<code class="docutils literal"><span class="pre">ts.copy_slice([list</span> <span class="pre">of</span> <span class="pre">indices])</span></code></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body">A Timestep object of the same type containing all header
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A Timestep object of the same type containing all header
 information and all atom information relevant to the selection.</td>
 </tr>
 </tbody>
@@ -248,205 +413,137 @@ information and all atom information relevant to the selection.</td>
 <p class="last">The selection must be a 0 based slice or array of the atom indices
 in this Timestep</p>
 </div>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.8.</span></p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="MDAnalysis.coordinates.base.Timestep.dimensions">
-<tt class="descname">dimensions</tt><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Timestep.dimensions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep.dimensions" title="Permalink to this definition">¶</a></dt>
-<dd><p>unitcell dimensions (<em>A</em>, <em>B</em>, <em>C</em>, <em>alpha</em>, <em>beta</em>, <em>gamma</em>)</p>
-<p>lengths <em>a</em>, <em>b</em>, <em>c</em> are in the MDAnalysis length unit (Å), and
-angles are in degrees.</p>
-<p><a class="reference internal" href="#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><tt class="xref py py-attr docutils literal"><span class="pre">dimensions</span></tt></a> is read-only because it transforms the
-actual format of the unitcell (which differs between different
-trajectory formats) to the representation described here,
-which is used everywhere in MDAnalysis.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="MDAnalysis.coordinates.base.Timestep.forces">
-<tt class="descname">forces</tt><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Timestep.forces"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep.forces" title="Permalink to this definition">¶</a></dt>
-<dd><p>A record of the forces of all atoms in this Timestep</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Raises :</th><td class="field-body"><dl class="first last docutils">
-<dt><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.NoDataError</span></tt></dt>
-<dd><p class="first last">When the Timestep does not contain force information</p>
-</dd>
-</dl>
-</td>
-</tr>
-</tbody>
-</table>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.11.0.</span></p>
-</dd></dl>
-
-<dl class="classmethod">
-<dt id="MDAnalysis.coordinates.base.Timestep.from_coordinates">
-<em class="property">classmethod </em><tt class="descname">from_coordinates</tt><big>(</big><em>positions</em>, <em>velocities=None</em>, <em>forces=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Timestep.from_coordinates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep.from_coordinates" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create an instance of this Timestep, from coordinate data</p>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.11.0.</span></p>
-</dd></dl>
-
-<dl class="classmethod">
-<dt id="MDAnalysis.coordinates.base.Timestep.from_timestep">
-<em class="property">classmethod </em><tt class="descname">from_timestep</tt><big>(</big><em>other</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Timestep.from_timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep.from_timestep" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a copy of another Timestep, in the format of this Timestep</p>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.11.0.</span></p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="MDAnalysis.coordinates.base.Timestep.positions">
-<tt class="descname">positions</tt><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Timestep.positions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep.positions" title="Permalink to this definition">¶</a></dt>
-<dd><p>A record of the positions of all atoms in this Timestep</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="MDAnalysis.coordinates.base.Timestep.velocities">
-<tt class="descname">velocities</tt><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Timestep.velocities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep.velocities" title="Permalink to this definition">¶</a></dt>
-<dd><p>A record of the velocities of all atoms in this Timestep</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Raises :</th><td class="field-body"><dl class="first last docutils">
-<dt><tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.NoDataError</span></tt></dt>
-<dd><p class="first last">When the Timestep does not contain velocity information</p>
-</dd>
-</dl>
-</td>
-</tr>
-</tbody>
-</table>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.11.0.</span></p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="MDAnalysis.coordinates.base.Timestep.volume">
-<tt class="descname">volume</tt><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Timestep.volume"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep.volume" title="Permalink to this definition">¶</a></dt>
-<dd><p>volume of the unitcell</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.8.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.11.0: </span>Reworked to follow new Timestep API.  Now will strictly only
+copy official attributes of the Timestep.</p>
+</div>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="MDAnalysis.coordinates.base.IObase">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.base.</tt><tt class="descname">IObase</tt><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#IObase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.base.</code><code class="descname">IObase</code><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#IObase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class bundling common functionality for trajectory I/O.</p>
-<p class="versionchanged">
-<span class="versionmodified">Changed in version 0.8: </span>Added context manager protocol.</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.8: </span>Added context manager protocol.</p>
+</div>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.base.IObase.close">
-<tt class="descname">close</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#IObase.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.close" title="Permalink to this definition">¶</a></dt>
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#IObase.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.close" title="Permalink to this definition">¶</a></dt>
 <dd><p>Close the trajectory file.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.base.IObase.convert_forces_from_native">
-<tt class="descname">convert_forces_from_native</tt><big>(</big><em>force</em>, <em>inplace=True</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#IObase.convert_forces_from_native"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.convert_forces_from_native" title="Permalink to this definition">¶</a></dt>
+<code class="descname">convert_forces_from_native</code><span class="sig-paren">(</span><em>force</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#IObase.convert_forces_from_native"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.convert_forces_from_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>In-place conversion of forces array <em>force</em> from native units to base units.</p>
 <p>By default, the input <em>force</em> is modified in place and also returned.</p>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.7.7.</span></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.7.</span></p>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.base.IObase.convert_forces_to_native">
-<tt class="descname">convert_forces_to_native</tt><big>(</big><em>force</em>, <em>inplace=True</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#IObase.convert_forces_to_native"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.convert_forces_to_native" title="Permalink to this definition">¶</a></dt>
+<code class="descname">convert_forces_to_native</code><span class="sig-paren">(</span><em>force</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#IObase.convert_forces_to_native"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.convert_forces_to_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>In-place conversion of force array <em>force</em> from base units to native units.</p>
 <p>By default, the input <em>force</em> is modified in place and also returned.</p>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.7.7.</span></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.7.</span></p>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.base.IObase.convert_pos_from_native">
-<tt class="descname">convert_pos_from_native</tt><big>(</big><em>x</em>, <em>inplace=True</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#IObase.convert_pos_from_native"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.convert_pos_from_native" title="Permalink to this definition">¶</a></dt>
+<code class="descname">convert_pos_from_native</code><span class="sig-paren">(</span><em>x</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#IObase.convert_pos_from_native"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.convert_pos_from_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>In-place conversion of coordinate array x from native units to base units.</p>
 <p>By default, the input <em>x</em> is modified in place and also returned.</p>
-<p class="versionchanged">
-<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <code class="docutils literal"><span class="pre">False</span></code> so that a
 modified copy is returned <em>unless</em> no conversion takes
 place, in which case the reference to the unmodified <em>x</em> is
 returned.</p>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.base.IObase.convert_pos_to_native">
-<tt class="descname">convert_pos_to_native</tt><big>(</big><em>x</em>, <em>inplace=True</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#IObase.convert_pos_to_native"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.convert_pos_to_native" title="Permalink to this definition">¶</a></dt>
+<code class="descname">convert_pos_to_native</code><span class="sig-paren">(</span><em>x</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#IObase.convert_pos_to_native"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.convert_pos_to_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>Conversion of coordinate array x from base units to native units.</p>
 <p>By default, the input <em>x</em> is modified in place and also returned.</p>
-<p class="versionchanged">
-<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <code class="docutils literal"><span class="pre">False</span></code> so that a
 modified copy is returned <em>unless</em> no conversion takes
 place, in which case the reference to the unmodified <em>x</em> is
 returned.</p>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.base.IObase.convert_time_from_native">
-<tt class="descname">convert_time_from_native</tt><big>(</big><em>t</em>, <em>inplace=True</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#IObase.convert_time_from_native"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.convert_time_from_native" title="Permalink to this definition">¶</a></dt>
+<code class="descname">convert_time_from_native</code><span class="sig-paren">(</span><em>t</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#IObase.convert_time_from_native"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.convert_time_from_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert time <em>t</em> from native units to base units.</p>
 <p>By default, the input <em>t</em> is modified in place and also
 returned (although note that scalar values <em>t</em> are passed by
 value in Python and hence an in-place modification has no
 effect on the caller.)</p>
-<p class="versionchanged">
-<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <code class="docutils literal"><span class="pre">False</span></code> so that a
 modified copy is returned <em>unless</em> no conversion takes
 place, in which case the reference to the unmodified <em>x</em> is
 returned.</p>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.base.IObase.convert_time_to_native">
-<tt class="descname">convert_time_to_native</tt><big>(</big><em>t</em>, <em>inplace=True</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#IObase.convert_time_to_native"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.convert_time_to_native" title="Permalink to this definition">¶</a></dt>
+<code class="descname">convert_time_to_native</code><span class="sig-paren">(</span><em>t</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#IObase.convert_time_to_native"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.convert_time_to_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert time <em>t</em> from base units to native units.</p>
 <p>By default, the input <em>t</em> is modified in place and also
 returned. (Also note that scalar values <em>t</em> are passed by
 value in Python and hence an in-place modification has no
 effect on the caller.)</p>
-<p class="versionchanged">
-<span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <tt class="docutils literal"><span class="pre">False</span></tt> so that a
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <code class="docutils literal"><span class="pre">False</span></code> so that a
 modified copy is returned <em>unless</em> no conversion takes
 place, in which case the reference to the unmodified <em>x</em> is
 returned.</p>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.base.IObase.convert_velocities_from_native">
-<tt class="descname">convert_velocities_from_native</tt><big>(</big><em>v</em>, <em>inplace=True</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#IObase.convert_velocities_from_native"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.convert_velocities_from_native" title="Permalink to this definition">¶</a></dt>
+<code class="descname">convert_velocities_from_native</code><span class="sig-paren">(</span><em>v</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#IObase.convert_velocities_from_native"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.convert_velocities_from_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>In-place conversion of velocities array <em>v</em> from native units to base units.</p>
 <p>By default, the input <em>v</em> is modified in place and also returned.</p>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.7.5.</span></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.5.</span></p>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.base.IObase.convert_velocities_to_native">
-<tt class="descname">convert_velocities_to_native</tt><big>(</big><em>v</em>, <em>inplace=True</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#IObase.convert_velocities_to_native"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.convert_velocities_to_native" title="Permalink to this definition">¶</a></dt>
+<code class="descname">convert_velocities_to_native</code><span class="sig-paren">(</span><em>v</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#IObase.convert_velocities_to_native"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.convert_velocities_to_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>In-place conversion of coordinate array <em>v</em> from base units to native units.</p>
 <p>By default, the input <em>v</em> is modified in place and also returned.</p>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.7.5.</span></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.5.</span></p>
+</div>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="MDAnalysis.coordinates.base.IObase.format">
-<tt class="descname">format</tt><em class="property"> = None</em><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.format" title="Permalink to this definition">¶</a></dt>
+<code class="descname">format</code><em class="property"> = None</em><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.format" title="Permalink to this definition">¶</a></dt>
 <dd><p>override to define trajectory format of the reader/writer (DCD, XTC, ...)</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="MDAnalysis.coordinates.base.IObase.units">
-<tt class="descname">units</tt><em class="property"> = {'velocity': None, 'length': None, 'time': None}</em><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.units" title="Permalink to this definition">¶</a></dt>
+<code class="descname">units</code><em class="property"> = {'velocity': None, 'length': None, 'time': None}</em><a class="headerlink" href="#MDAnalysis.coordinates.base.IObase.units" title="Permalink to this definition">¶</a></dt>
 <dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
 ... for formats that support it)</p>
 </dd></dl>
@@ -455,43 +552,44 @@ returned.</p>
 
 <dl class="class">
 <dt id="MDAnalysis.coordinates.base.Reader">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.base.</tt><tt class="descname">Reader</tt><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Reader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.Reader" title="Permalink to this definition">¶</a></dt>
-<dd><p>Base class for trajectory readers that extends <tt class="xref py py-class docutils literal"><span class="pre">ProtoReader</span></tt> with a <tt class="xref py py-meth docutils literal"><span class="pre">__del__()</span></tt> method.</p>
-<p>New Readers should subclass <a class="reference internal" href="#MDAnalysis.coordinates.base.Reader" title="MDAnalysis.coordinates.base.Reader"><tt class="xref py py-class docutils literal"><span class="pre">Reader</span></tt></a> and properly implement a <tt class="xref py py-meth docutils literal"><span class="pre">close()</span></tt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.base.</code><code class="descname">Reader</code><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Reader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.Reader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class for trajectory readers that extends <code class="xref py py-class docutils literal"><span class="pre">ProtoReader</span></code> with a <code class="xref py py-meth docutils literal"><span class="pre">__del__()</span></code> method.</p>
+<p>New Readers should subclass <a class="reference internal" href="#MDAnalysis.coordinates.base.Reader" title="MDAnalysis.coordinates.base.Reader"><code class="xref py py-class docutils literal"><span class="pre">Reader</span></code></a> and properly implement a <code class="xref py py-meth docutils literal"><span class="pre">close()</span></code>
 method, to ensure proper release of resources (mainly file handles). Readers that
-are inherently safe in this regard should subclass <tt class="xref py py-class docutils literal"><span class="pre">ProtoReader</span></tt> instead.</p>
-<p>See the <a class="reference internal" href="init.html#trajectory-api"><em>Trajectory API</em></a> definition in
-<a class="reference internal" href="init.html#module-MDAnalysis.coordinates.__init__" title="MDAnalysis.coordinates.__init__"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.__init__</span></tt></a> for the required attributes and methods.
-.. SeeAlso:: <tt class="xref py py-class docutils literal"><span class="pre">ProtoReader</span></tt>
+are inherently safe in this regard should subclass <code class="xref py py-class docutils literal"><span class="pre">ProtoReader</span></code> instead.</p>
+<p>See the <a class="reference internal" href="init.html#trajectory-api"><span>Trajectory API</span></a> definition in
+<a class="reference internal" href="init.html#module-MDAnalysis.coordinates.__init__" title="MDAnalysis.coordinates.__init__"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.__init__</span></code></a> for the required attributes and methods.
+.. SeeAlso:: <code class="xref py py-class docutils literal"><span class="pre">ProtoReader</span></code>
 .. versionchanged:: 0.11.0</p>
 <blockquote>
-<div>Most of the base Reader class definitions were offloaded to <tt class="xref py py-class docutils literal"><span class="pre">ProtoReader</span></tt>
-so as to allow the subclassing of Readers without a <tt class="xref py py-meth docutils literal"><span class="pre">__del__()</span></tt> method.</div></blockquote>
+<div>Most of the base Reader class definitions were offloaded to <code class="xref py py-class docutils literal"><span class="pre">ProtoReader</span></code>
+so as to allow the subclassing of Readers without a <code class="xref py py-meth docutils literal"><span class="pre">__del__()</span></code> method.</div></blockquote>
 </dd></dl>
 
 <dl class="class">
 <dt id="MDAnalysis.coordinates.base.ChainReader">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.base.</tt><tt class="descname">ChainReader</tt><big>(</big><em>filenames</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#ChainReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.ChainReader" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.base.</code><code class="descname">ChainReader</code><span class="sig-paren">(</span><em>filenames</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#ChainReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.ChainReader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reader that concatenates multiple trajectories on the fly.</p>
 <p><strong>Known issues</strong></p>
 <ul class="simple">
 <li>Trajectory API attributes exist but most of them only reflect
-the first trajectory in the list; <tt class="xref py py-attr docutils literal"><span class="pre">ChainReader.numframes</span></tt>,
-<tt class="xref py py-attr docutils literal"><span class="pre">ChainReader.numatoms</span></tt>, and <tt class="xref py py-attr docutils literal"><span class="pre">ChainReader.fixed</span></tt> are
+the first trajectory in the list; <code class="xref py py-attr docutils literal"><span class="pre">ChainReader.numframes</span></code>,
+<code class="xref py py-attr docutils literal"><span class="pre">ChainReader.numatoms</span></code>, and <code class="xref py py-attr docutils literal"><span class="pre">ChainReader.fixed</span></code> are
 properly set, though</li>
 <li>slicing not implemented</li>
-<li><a class="reference internal" href="#MDAnalysis.coordinates.base.ChainReader.time" title="MDAnalysis.coordinates.base.ChainReader.time"><tt class="xref py py-attr docutils literal"><span class="pre">time</span></tt></a> will not necessarily return the true time but just
+<li><a class="reference internal" href="#MDAnalysis.coordinates.base.ChainReader.time" title="MDAnalysis.coordinates.base.ChainReader.time"><code class="xref py py-attr docutils literal"><span class="pre">time</span></code></a> will not necessarily return the true time but just
 number of frames times a provided time between frames (from the
 keyword <em>delta</em>)</li>
 </ul>
-<p class="versionchanged">
-<span class="versionmodified">Changed in version 0.11.0: </span>Frames now 0-based instead of 1-based</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.11.0: </span>Frames now 0-based instead of 1-based</p>
+</div>
 <p>Set up the chain reader.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>filenames</em></dt>
 <dd><p class="first">file name or list of file names; the reader will open
 all file names and provide frames in the order of
@@ -509,8 +607,8 @@ readers); must be same for all trajectories</p>
 <dt><em>delta</em></dt>
 <dd><p class="first last">The time between frames in MDAnalysis time units if no
 other information is available. If this is not set then
-any call to <a class="reference internal" href="#MDAnalysis.coordinates.base.ChainReader.time" title="MDAnalysis.coordinates.base.ChainReader.time"><tt class="xref py py-attr docutils literal"><span class="pre">time</span></tt></a> will raise a
-<tt class="xref py py-exc docutils literal"><span class="pre">ValueError</span></tt>.</p>
+any call to <a class="reference internal" href="#MDAnalysis.coordinates.base.ChainReader.time" title="MDAnalysis.coordinates.base.ChainReader.time"><code class="xref py py-attr docutils literal"><span class="pre">time</span></code></a> will raise a
+<code class="xref py py-exc docutils literal"><span class="pre">ValueError</span></code>.</p>
 </dd>
 <dt><em>kwargs</em></dt>
 <dd><p class="first last">all other keyword arguments are passed on to each
@@ -521,29 +619,30 @@ trajectory reader unchanged</p>
 </tr>
 </tbody>
 </table>
-<p class="versionchanged">
-<span class="versionmodified">Changed in version 0.8: </span>The <em>delta</em> keyword was added.</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.8: </span>The <em>delta</em> keyword was added.</p>
+</div>
 <dl class="attribute">
 <dt id="MDAnalysis.coordinates.base.ChainReader.active_reader">
-<tt class="descname">active_reader</tt><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#ChainReader.active_reader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.ChainReader.active_reader" title="Permalink to this definition">¶</a></dt>
+<code class="descname">active_reader</code><a class="headerlink" href="#MDAnalysis.coordinates.base.ChainReader.active_reader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reader instance from which frames are being read.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="MDAnalysis.coordinates.base.ChainReader.frame">
-<tt class="descname">frame</tt><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#ChainReader.frame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.ChainReader.frame" title="Permalink to this definition">¶</a></dt>
+<code class="descname">frame</code><a class="headerlink" href="#MDAnalysis.coordinates.base.ChainReader.frame" title="Permalink to this definition">¶</a></dt>
 <dd><p>Cumulative frame number of the current time step.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.base.ChainReader.rewind">
-<tt class="descname">rewind</tt><big>(</big><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#ChainReader.rewind"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.ChainReader.rewind" title="Permalink to this definition">¶</a></dt>
+<code class="descname">rewind</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#ChainReader.rewind"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.ChainReader.rewind" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set current frame to the beginning.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="MDAnalysis.coordinates.base.ChainReader.time">
-<tt class="descname">time</tt><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#ChainReader.time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.ChainReader.time" title="Permalink to this definition">¶</a></dt>
+<code class="descname">time</code><a class="headerlink" href="#MDAnalysis.coordinates.base.ChainReader.time" title="Permalink to this definition">¶</a></dt>
 <dd><p>Cumulative time of the current frame in MDAnalysis time units (typically ps).</p>
 </dd></dl>
 
@@ -551,22 +650,22 @@ trajectory reader unchanged</p>
 
 <dl class="class">
 <dt id="MDAnalysis.coordinates.base.Writer">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.base.</tt><tt class="descname">Writer</tt><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Writer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.Writer" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.base.</code><code class="descname">Writer</code><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Writer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.Writer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class for trajectory writers.</p>
-<p>See Trajectory API definition in <a class="reference internal" href="init.html#module-MDAnalysis.coordinates.__init__" title="MDAnalysis.coordinates.__init__"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.__init__</span></tt></a> for
+<p>See Trajectory API definition in <a class="reference internal" href="init.html#module-MDAnalysis.coordinates.__init__" title="MDAnalysis.coordinates.__init__"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.__init__</span></code></a> for
 the required attributes and methods.</p>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.base.Writer.convert_dimensions_to_unitcell">
-<tt class="descname">convert_dimensions_to_unitcell</tt><big>(</big><em>ts</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Writer.convert_dimensions_to_unitcell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.Writer.convert_dimensions_to_unitcell" title="Permalink to this definition">¶</a></dt>
+<code class="descname">convert_dimensions_to_unitcell</code><span class="sig-paren">(</span><em>ts</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Writer.convert_dimensions_to_unitcell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.Writer.convert_dimensions_to_unitcell" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read dimensions from timestep <em>ts</em> and return appropriate unitcell.</p>
-<p>The default is to return <tt class="docutils literal"><span class="pre">[A,B,C,alpha,beta,gamma]</span></tt>; if this
+<p>The default is to return <code class="docutils literal"><span class="pre">[A,B,C,alpha,beta,gamma]</span></code>; if this
 is not appropriate then this method has to be overriden.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.base.Writer.has_valid_coordinates">
-<tt class="descname">has_valid_coordinates</tt><big>(</big><em>criteria</em>, <em>x</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Writer.has_valid_coordinates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.Writer.has_valid_coordinates" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns <tt class="docutils literal"><span class="pre">True</span></tt> if all values are within limit values of their formats.</p>
+<code class="descname">has_valid_coordinates</code><span class="sig-paren">(</span><em>criteria</em>, <em>x</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Writer.has_valid_coordinates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.Writer.has_valid_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns <code class="docutils literal"><span class="pre">True</span></code> if all values are within limit values of their formats.</p>
 <p>Due to rounding, the test is asymmetric (and <em>min</em> is supposed to be negative):</p>
 <blockquote>
 <div>min &lt; x &lt;= max</div></blockquote>
@@ -574,17 +673,17 @@ is not appropriate then this method has to be overriden.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
 <dt><em>criteria</em></dt>
 <dd><p class="first last">dictionary containing the <em>max</em> and <em>min</em> values in native units</p>
 </dd>
 <dt><em>x</em></dt>
-<dd><p class="first last"><tt class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></tt> of <tt class="docutils literal"><span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">z)</span></tt> coordinates of atoms selected to be written out.</p>
+<dd><p class="first last"><code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of <code class="docutils literal"><span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">z)</span></code> coordinates of atoms selected to be written out.</p>
 </dd>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><p class="first last">boolean</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">boolean</p>
 </td>
 </tr>
 </tbody>
@@ -593,10 +692,10 @@ is not appropriate then this method has to be overriden.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.base.Writer.write">
-<tt class="descname">write</tt><big>(</big><em>obj</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Writer.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.Writer.write" title="Permalink to this definition">¶</a></dt>
+<code class="descname">write</code><span class="sig-paren">(</span><em>obj</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Writer.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.Writer.write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write current timestep, using the supplied <em>obj</em>.</p>
-<p>The argument should be a <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a> or
-a <tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt> or a <a class="reference internal" href="#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a> instance.</p>
+<p>The argument should be a <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></code></a> or
+a <code class="xref py py-class docutils literal"><span class="pre">Universe</span></code> or a <a class="reference internal" href="#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal"><span class="pre">Timestep</span></code></a> instance.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">The size of the <em>obj</em> must be the same as the number of atom
@@ -614,7 +713,7 @@ provided when setting up the trajectory.</p>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -629,11 +728,11 @@ provided when setting up the trajectory.</p>
         <li class="right" >
           <a href="TRZ.html" title="5.18. TRZ trajectory I/O — MDAnalysis.coordinates.TRZ"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
-          <li><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
+    <div class="footer" role="contentinfo">
         &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
@@ -642,7 +741,7 @@ provided when setting up the trajectory.</p>
     Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
     Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Zhuyi Xue, Carlos Yáñez S.,
     and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>
 </html>
