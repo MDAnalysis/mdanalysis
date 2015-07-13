@@ -128,7 +128,8 @@ class PQRReader(base.SingleFrameReader):
                     atoms.append(
                         (int(serial), name, resName, chainID, int(resSeq), float(charge), float(radius), segID))
         self.numatoms = len(coords)
-        self.ts = self._Timestep.from_coordinates(np.array(coords, dtype=np.float32))
+        self.ts = self._Timestep.from_coordinates(np.array(coords, dtype=np.float32),
+                                                  **self._ts_kwargs)
         self.ts._unitcell[:] = unitcell
         self.ts.frame = 0  # 0-based frame number
         if self.convert_units:

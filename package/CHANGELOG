@@ -37,6 +37,8 @@ The rules for this file:
   * Timesteps can now allocate velocities and forces if they weren't
     originally created with these through the use of the has_ flags.
     (Issue #213)
+  * Timesteps now store 'dt' and 'time_offset' if passed to them by Reader
+    (Issues 306 and 307)
 
   Changes
   * A ProtoReader class intermediate between IObase and Reader was added so

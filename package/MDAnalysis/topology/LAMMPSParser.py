@@ -158,7 +158,7 @@ class DATAParser(TopologyReader):
 
             return structure
 
-    def read_DATA_timestep(self, numatoms, TS_class):
+    def read_DATA_timestep(self, numatoms, TS_class, TS_kwargs):
         """Read a DATA file and try and extract x, v, box.
 
         - positions
@@ -211,9 +211,10 @@ class DATAParser(TopologyReader):
         if not read_coords:  # Reaches here if StopIteration hit
             raise IOError("Position information not found")
 
-        ts = TS_class.from_coordinates(positions, velocities=velocities)
+        ts = TS_class.from_coordinates(positions, velocities=velocities,
+                                       **TS_kwargs)
         ts._unitcell = unitcell
-        
+
         return ts
 
     def _parse_pos(self, datafile, pos):

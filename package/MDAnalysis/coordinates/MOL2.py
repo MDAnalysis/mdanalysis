@@ -55,15 +55,9 @@ class MOL2Reader(base.Reader):
     format = 'MOL2'
     units = {'time': None, 'length': 'Angstrom'}
 
-    def __init__(self, filename, convert_units=None, **kwargs):
-        """Read coordinates from *filename*.
-
-        
-        """
-        self.filename = filename
-        if convert_units is None:
-            convert_units = flags['convert_lengths']
-        self.convert_units = convert_units  # convert length and time to base units
+    def __init__(self, filename, **kwargs):
+        """Read coordinates from *filename*."""
+        super(MOL2Reader, self).__init__(filename, **kwargs)
 
         blocks = []
 
@@ -79,7 +73,8 @@ class MOL2Reader(base.Reader):
         sections, coords = self.parse_block(block)
 
         self.numatoms = len(coords)
-        self.ts = self._Timestep.from_coordinates(np.array(coords, dtype=np.float32))
+        self.ts = self._Timestep.from_coordinates(np.array(coords, dtype=np.float32),
+                                                  **self._ts_kwargs)
         self.ts.frame = 0  # 0-based frame number as starting frame
 
         if self.convert_units:
@@ -90,8 +85,6 @@ class MOL2Reader(base.Reader):
         self.substructure = {}
         self.frames = blocks
         self.numframes = len(blocks)
-        self.fixed = 0
-        self.skip = 1
         self.periodic = False
         self.delta = 0
         self.skip_timestep = 1

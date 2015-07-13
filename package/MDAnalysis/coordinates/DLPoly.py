@@ -118,7 +118,8 @@ class ConfigReader(base.SingleFrameReader):
 
         ts = self.ts = self._Timestep(self.numatoms,
                                       velocities=has_vels,
-                                      forces=has_forces)
+                                      forces=has_forces,
+                                      **self._ts_kwargs)
         ts._pos = coords
         if has_vels:
             ts._velocities = velocities
@@ -142,19 +143,8 @@ class HistoryReader(base.Reader):
     units = _DLPOLY_UNITS
     _Timestep = Timestep
 
-    def __init__(self, filename, convert_units=None, **kwargs):
-        if convert_units is None:
-            convert_units = MDAnalysis.core.flags['convert_lengths']
-        self.convert_units = convert_units
-
-        self.filename = filename
-
-        self.fixed = False
-        self.periodic = True
-        self.skip = 1
-        self._delta = None
-        self._dt = None
-        self._skip_timestep = None
+    def __init__(self, filename, **kwargs):
+        super(HistoryReader, self).__init__(filename, **kwargs)
 
         # "private" file handle
         self._file = open(self.filename, 'r')
@@ -165,7 +155,8 @@ class HistoryReader(base.Reader):
 
         self.ts = self._Timestep(self.numatoms,
                                  velocities=self._has_vels,
-                                 forces=self._has_forces)
+                                 forces=self._has_forces,
+                                 **self._ts_kwargs)
         self._read_next_timestep()
 
     def _read_next_timestep(self, ts=None):

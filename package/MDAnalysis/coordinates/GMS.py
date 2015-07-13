@@ -54,6 +54,7 @@ class GMSReader(base.Reader):
 
     .. versionchanged:: 0.11.0
        Frames now 0-based instead of 1-based
+       Added dt and time_offset keywords (passed to Timestep)
     """
 
     format = "GMS"
@@ -62,7 +63,7 @@ class GMSReader(base.Reader):
     units = {'time': 'ps', 'length': 'Angstrom'}
 
     def __init__(self, outfilename, **kwargs):
-        self.filename = outfilename
+        super(GMSReader, self).__init__(outfilename, **kwargs)
 
         # the filename has been parsed to be either b(g)zipped or not
         self.outfile = util.anyopen(self.filename, 'r')
@@ -75,8 +76,6 @@ class GMSReader(base.Reader):
         self._runtyp = None
 
         self.ts = self._Timestep(0) # need for properties initial calculations
-        self.fixed = 0
-        self.skip = 1
         self.periodic = False
         self.delta = kwargs.pop("delta", 1.0)   # there is no time, so let delta be 1
         # update runtyp property
@@ -85,12 +84,11 @@ class GMSReader(base.Reader):
             raise AttributeError('Wrong RUNTYP= '+self.runtyp)
         self.skip_timestep = 1
 
-        self.ts = self._Timestep(self.numatoms)
+        self.ts = self._Timestep(self.numatoms, **self._ts_kwargs)
         # update numframes property
         self.numframes
 
         # Read in the first timestep
-
         self._read_next_timestep()
 
     @property

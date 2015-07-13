@@ -42,7 +42,7 @@ class INPReader(base.SingleFrameReader):
             except IndexError:
                 time = 0.0
 
-            self.ts = self._Timestep(self.numatoms)
+            self.ts = self._Timestep(self.numatoms, **self._ts_kwargs)
             self.ts.time = time
             self.ts.frame = 0
 
