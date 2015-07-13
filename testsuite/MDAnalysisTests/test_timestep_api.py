@@ -348,6 +348,16 @@ class _TestTimestep(TestCase):
         assert_array_almost_equal(ts.velocities, refvel)
         assert_array_almost_equal(ts.forces, reffor)
 
+    def test_supply_dt(self):
+        ts = self.Timestep(20, dt=0.04)
+
+        assert_equal(ts.data['dt'], 0.04)
+
+    def test_supply_time_offset(self):
+        ts = self.Timestep(20, time_offset=100.0)
+
+        assert_equal(ts.data['time_offset'], 100.0)
+
 
 # Can add in custom tests for a given Timestep here!
 class TestBaseTimestep(_TestTimestep, _BaseTimestep):

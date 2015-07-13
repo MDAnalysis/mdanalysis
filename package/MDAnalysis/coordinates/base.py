@@ -159,6 +159,10 @@ class Timestep(object):
             Whether this Timestep has velocity information [``False``]
           *forces*
             Whether this Timestep has force information [``False``]
+          *dt*
+            The time difference between frames (ps)
+          *time_offset*
+            The starting time from which to calculate time
 
         .. versionchanged:: 0.11.0
            Added keywords for positions, velocities and forces
@@ -172,6 +176,12 @@ class Timestep(object):
         self.time = 0.0
 
         self.data = {}
+
+        for att in ('dt', 'time_offset'):
+            try:
+                self.data[att] = kwargs[att]
+            except KeyError:
+                pass
 
         # Stupid hack to make it allocate first time round
         # ie we have to go from not having, to having positions
