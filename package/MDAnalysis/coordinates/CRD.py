@@ -73,7 +73,8 @@ class CRDReader(base.SingleFrameReader):
 
         self.numatoms = len(coords_list)
 
-        self.ts = self._Timestep.from_coordinates(np.array(coords_list))
+        self.ts = self._Timestep.from_coordinates(np.array(coords_list),
+                                                  **self._ts_kwargs)
         self.ts.frame = 0  # 0-based frame number
         # if self.convert_units:
         #    self.convert_pos_from_native(self.ts._pos)             # in-place !

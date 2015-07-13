@@ -236,6 +236,7 @@ class XYZReader(base.Reader):
 
     .. versionchanged:: 0.11.0
        Frames now 0-based instead of 1-based
+       Added dt and time_offset keywords (passed to Timestep)
     """
 
     # this will be overidden when an instance is created and the file extension checked
@@ -245,7 +246,7 @@ class XYZReader(base.Reader):
     _Timestep = base.Timestep
 
     def __init__(self, filename, **kwargs):
-        self.filename = filename
+        super(XYZReader, self).__init__(filename, **kwargs)
 
         # the filename has been parsed to be either be foo.xyz or foo.xyz.bz2 by coordinates::core.py
         # so the last file extension will tell us if it is bzipped or not
@@ -259,13 +260,11 @@ class XYZReader(base.Reader):
         self._numatoms = None
         self._numframes = None
 
-        self.fixed = 0
-        self.skip = 1
         self.periodic = False
         self.delta = kwargs.pop("delta", 1.0)  # can set delta manually, default is 1ps (taken from TRJReader)
         self.skip_timestep = 1
 
-        self.ts = self._Timestep(self.numatoms)
+        self.ts = self._Timestep(self.numatoms, **self._ts_kwargs)
 
         #        Haven't quite figured out where to start with all the self._reopen() etc.
         #        (Also cannot just use seek() or reset() because that would break with urllib2.urlopen() streams)

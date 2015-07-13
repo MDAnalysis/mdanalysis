@@ -254,7 +254,7 @@ class PDBReader(base.SingleFrameReader):
         self.numatoms = pos.shape[0]
         self.fixed = 0  # parse B field for fixed atoms?
         #self.ts._unitcell[:] = ??? , from CRYST1? --- not implemented in Biopython.PDB
-        self.ts = self._Timestep.from_coordinates(pos)
+        self.ts = self._Timestep.from_coordinates(pos, **self._ts_kwargs)
         self.ts.frame = 0
         del pos
         if self.convert_units:
@@ -450,7 +450,7 @@ class PrimitivePDBReader(base.Reader):
     format = 'PDB'
     units = {'time': None, 'length': 'Angstrom'}
 
-    def __init__(self, filename, convert_units=None, **kwargs):
+    def __init__(self, filename, **kwargs):
         """Read coordinates from *filename*.
 
         *filename* can be a gzipped or bzip2ed compressed PDB file.
@@ -460,10 +460,7 @@ class PrimitivePDBReader(base.Reader):
         frame numbers. Therefore, the MODEL numbers must be a sequence
         of integers (typically starting at 1 or 0).
         """
-        self.filename = filename
-        if convert_units is None:
-            convert_units = flags['convert_lengths']
-        self.convert_units = convert_units  # convert length and time to base units
+        super(PrimitivePDBReader, self).__init__(filename, **kwargs)
 
         try:
             self._numatoms = kwargs['numatoms']
@@ -479,7 +476,16 @@ class PrimitivePDBReader(base.Reader):
 
         frames = {}
 
-        self.ts = self._Timestep(self._numatoms)
+        ts_kwargs = {}
+        for att in ('dt', 'time_offset'):
+            try:
+                val = kwargs[att]
+            except KeyError:
+                pass
+            else:
+                ts_kwargs[att] = val
+
+        self.ts = self._Timestep(self._numatoms, **self._ts_kwargs)
         
         pos = 0  # atom position for filling coordinates array
         self._occupancy = []
@@ -550,8 +556,6 @@ class PrimitivePDBReader(base.Reader):
 
         self.frames = frames
         self.numframes = len(frames) if frames else 1
-        self.fixed = 0
-        self.skip = 1
         self.periodic = False
         self.delta = 0
         self.skip_timestep = 1

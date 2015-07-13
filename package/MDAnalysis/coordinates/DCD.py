@@ -402,7 +402,9 @@ class DCDReader(base.Reader):
     _Timestep = Timestep
 
     def __init__(self, dcdfilename, **kwargs):
-        self.filename = self.dcdfilename = dcdfilename  # dcdfilename is legacy
+        super(DCDReader, self).__init__(dcdfilename, **kwargs)
+
+        self.dcdfilename = self.filename # dcdfilename is legacy
         self.dcdfile = None  # set right away because __del__ checks
 
         # Issue #32: segfault if dcd is 0-size
@@ -415,11 +417,10 @@ class DCDReader(base.Reader):
         self.numatoms = 0
         self.numframes = 0
         self.fixed = 0
-        self.skip = 1
         self.periodic = False
 
         self._read_dcd_header()
-        self.ts = self._Timestep(self.numatoms)
+        self.ts = self._Timestep(self.numatoms, **self._ts_kwargs)
         # Read in the first timestep
         self._read_next_timestep()
 

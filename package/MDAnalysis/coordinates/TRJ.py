@@ -164,6 +164,7 @@ class Timestep(base.Timestep):
     """
     order='C'
 
+
 class TRJReader(base.Reader):
     """AMBER trajectory reader.
 
@@ -192,19 +193,17 @@ class TRJReader(base.Reader):
     _Timestep = Timestep
 
     def __init__(self, filename, numatoms=None, **kwargs):
+        super(TRJReader, self).__init__(filename, **kwargs)
         # amber trj REQUIRES the number of atoms from the topology
         if numatoms is None:
             raise ValueError("AMBER TRJ reader REQUIRES the numatoms keyword")
-        self.filename = filename
         self._numatoms = numatoms
         self._numframes = None
 
         self.trjfile = None  # have _read_next_timestep() open it properly!
-        self.fixed = 0
-        self.skip = 1
         self.skip_timestep = 1  # always 1 for trj at the moment
         self.delta = kwargs.pop("delta", 1.0)  # can set delta manually, default is 1ps
-        self.ts = self._Timestep(self.numatoms)
+        self.ts = self._Timestep(self.numatoms, **self._ts_kwargs)
 
         # FORMAT(10F8.3)  (X(i), Y(i), Z(i), i=1,NATOM)
         self.default_line_parser = util.FORTRANReader("10F8.3")
@@ -424,11 +423,7 @@ class NCDFReader(base.Reader):
                               "Reader.\n"
                               "See installation instructions at https://github.com/MDAnalysis/mdanalysis/wiki/netcdf")
 
-        self.filename = filename
-        convert_units = kwargs.pop('convert_units', None)
-        if convert_units is None:
-            convert_units = flags['convert_lengths']
-            self.convert_units = convert_units  # convert length and time to base units
+        super(NCDFReader, self).__init__(filename, **kwargs)
 
         self.trjfile = netcdf.Dataset(self.filename)
 
@@ -481,15 +476,14 @@ class NCDFReader(base.Reader):
 
         self.has_velocities = 'velocities' in self.trjfile.variables
         self.has_forces = 'forces' in self.trjfile.variables
-        self.fixed = 0
-        self.skip = 1
+
         self.skip_timestep = 1  # always 1 for trj at the moment ? CHECK DOCS??
         self.delta = kwargs.pop("delta", 1.0)  # SHOULD GET FROM NCDF (as mean(diff(time)))??
         self.periodic = 'cell_lengths' in self.trjfile.variables
         self._current_frame = 0
 
         self.ts = self._Timestep(self.numatoms, velocities=self.has_velocities,
-                                 forces=self.has_forces)
+                                 forces=self.has_forces, **self._ts_kwargs)
 
         # load first data frame
         self._read_frame(0)

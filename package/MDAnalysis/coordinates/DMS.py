@@ -111,7 +111,9 @@ class DMSReader(base.SingleFrameReader):
             velocities = None
 
         self.ts = self._Timestep.from_coordinates(
-            np.array(coords_list, dtype=np.float32), velocities=velocities)
+            np.array(coords_list, dtype=np.float32),
+            velocities=velocities,
+            **self._ts_kwargs)
         self.ts.frame = 0  # 0-based frame number
 
         self.ts._unitcell = unitcell

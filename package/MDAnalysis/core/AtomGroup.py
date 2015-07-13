@@ -4292,7 +4292,7 @@ def Merge(*args):
             raise ValueError("cannot merge empty AtomGroup")
 
     coords = numpy.vstack([a.coordinates() for a in args])
-    trajectory = MDAnalysis.coordinates.base.Reader()
+    trajectory = MDAnalysis.coordinates.base.Reader(None)
     ts = MDAnalysis.coordinates.base.Timestep.from_coordinates(coords)
     setattr(trajectory, "ts", ts)
     trajectory.numframes = 1

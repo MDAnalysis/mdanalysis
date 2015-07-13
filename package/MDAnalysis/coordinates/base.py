@@ -199,13 +199,13 @@ class Timestep(object):
         self._unitcell = self._init_unitcell()
 
     @classmethod
-    def from_timestep(cls, other):
+    def from_timestep(cls, other, **kwargs):
         """Create a copy of another Timestep, in the format of this Timestep
 
         .. versionadded:: 0.11.0
         """
         ts = cls(other.numatoms, velocities=other.has_velocities,
-                 forces=other.has_forces)
+                 forces=other.has_forces, **kwargs)
         ts.frame = other.frame
         ts.dimensions = other.dimensions
         try:
@@ -233,7 +233,7 @@ class Timestep(object):
         return ts
 
     @classmethod
-    def from_coordinates(cls, positions, velocities=None, forces=None):
+    def from_coordinates(cls, positions, velocities=None, forces=None, **kwargs):
         """Create an instance of this Timestep, from coordinate data
 
         .. versionadded:: 0.11.0
@@ -241,7 +241,7 @@ class Timestep(object):
         has_velocities = velocities is not None
         has_forces = forces is not None
 
-        ts = cls(len(positions), velocities=has_velocities, forces=has_forces)
+        ts = cls(len(positions), velocities=has_velocities, forces=has_forces, **kwargs)
         ts.positions = positions
         if has_velocities:
             ts.velocities = velocities
@@ -986,7 +986,36 @@ class Reader(ProtoReader):
     .. versionchanged:: 0.11.0
        Most of the base Reader class definitions were offloaded to :class:`ProtoReader`
        so as to allow the subclassing of Readers without a :meth:`__del__` method.
+       Created init method to create common functionality, all Reader subclasses
+       must now super through this Class.
+       Added attribute "_ts_kwargs" attribute created in init.  Provides kwargs
+       to be passed to Timestep
     """
+    def __init__(self, filename, convert_units=None, **kwargs):
+        self.filename = filename
+
+        if convert_units is None:
+            convert_units = flags['convert_lengths']
+        self.convert_units = convert_units
+
+        self.fixed = False
+        self.periodic = True
+        self.skip = 1
+        self._delta = None
+        self._dt = None
+        self._skip_timestep = None
+
+        ts_kwargs = {}
+        for att in ('dt', 'time_offset'):
+            try:
+                val = kwargs[att]
+            except KeyError:
+                pass
+            else:
+                ts_kwargs[att] = val
+
+        self._ts_kwargs = ts_kwargs
+
     def __del__(self):
         self.close()
 
@@ -1350,6 +1379,9 @@ class SingleFrameReader(ProtoReader):
     `self.ts` with a :class:`Timestep` object.
 
     .. versionadded:: 0.10.0
+    .. versionchanged:: 0.11.0
+       Added attribute "_ts_kwargs" for subclasses
+       Keywords "dt" and "time_offset" read into _ts_kwargs
     """
     _err = "{0} only contains a single frame"
 
@@ -1366,6 +1398,16 @@ class SingleFrameReader(ProtoReader):
         self.delta = 0
         self.skip_timestep = 1
 
+        ts_kwargs = {}
+        for att in ('dt', 'time_offset'):
+            try:
+                val = kwargs[att]
+            except KeyError:
+                pass
+            else:
+                ts_kwargs[att] = val
+
+        self._ts_kwargs = ts_kwargs
         self._read_first_frame()
 
     def _read_first_frame(self):  # pragma: no cover
