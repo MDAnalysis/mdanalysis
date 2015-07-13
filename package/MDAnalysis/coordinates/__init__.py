@@ -62,6 +62,7 @@ the appropriate reader for the file type is selected (typically by the file
 extension but this choice can be overriden with the ``format`` argument to
 :class:`~MDAnalysis.core.AtomGroup.Universe`).
 
+
 Using Writers
 -------------
 
@@ -76,6 +77,26 @@ only keep the protein::
 
 Using the :func:`with` statement will automatically close the trajectory when
 the last frame has been written.
+
+
+Using Timesteps
+---------------
+
+Both Readers and Writers use Timesteps as their working object.  A Timestep
+represents all data for a given frame in a trajectory.  The data inside a 
+Timestep is often accessed indirectly through a :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
+but it is also possible to manipulate Timesteps directly.
+
+The current Timestep can be accessed through the trajectory read attached
+to the active :class:`~MDAnalysis.core.AtomGroup.Universe`
+
+   ts = u.trajectory.ts
+   ts.positions  # returns a numpy array of positions
+
+Most individual formats have slightly different data available
+in each Timestep due to differences in individual simulation
+packages, but all share in common a broad set of basic data,
+detailed in `Timestep API`_
 
 
 Supported coordinate formats
@@ -241,6 +262,8 @@ with the format (typically the file extension in upper case):
 - Single-frame writer classes must be added to to
   :data:`MDAnalysis.coordinates._frame_writers`.
 
+
+.. _Timestep API:
 
 Timestep class
 ~~~~~~~~~~~~~~
