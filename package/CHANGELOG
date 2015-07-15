@@ -39,6 +39,7 @@ The rules for this file:
     (Issue #213)
   * Timesteps now store 'dt' and 'time_offset' if passed to them by Reader
     (Issues 306 and 307)
+  * MDAnalysis.selection: can also be written to a NamedStream
 
   Changes
   * A ProtoReader class intermediate between IObase and Reader was added so
@@ -66,6 +67,11 @@ The rules for this file:
   * __iter__ removed from many Readers (now use base.Reader implementation)
   * numpy >= 1.5 required
   * Timestep._x _y and _z are now read only (Issue #213)
+  * moved MDAnalysis.selections.base.get_writer() to
+    MDAnalysis.selections.get_writer() to break a circular import. This
+    should not affect any code because
+    MDAnalysis.selections.get_writer() already existed.
+
 
   Fixes
   * Fixed TPRParser considering LJ 1..4 exclusions as bonds (Issue #351)

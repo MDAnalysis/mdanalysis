@@ -31,8 +31,9 @@ that defines `atomselect macros`_. To be used in VMD like this::
 .. autoclass:: SelectionWriter
    :inherited-members:
 """
-import base
+from __future__ import absolute_import
 
+from . import base
 
 class SelectionWriter(base.SelectionWriter):
     format = "VMD"
