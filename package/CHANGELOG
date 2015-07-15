@@ -68,6 +68,7 @@ The rules for this file:
   * Timestep._x _y and _z are now read only (Issue #213)
 
   Fixes
+  * Fixed TPRParser considering LJ 1..4 exclusions as bonds (Issue #351)
   * ChainReaders no longer leak (Issue #312)
   * analysis.hbonds.HydrogenBondAnalysis performs a sanity check for
     static selections (Issue #296)
