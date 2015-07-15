@@ -137,7 +137,7 @@ class TRZReader(base.Reader):
 
     units = {'time': 'ps', 'length': 'nm', 'velocity': 'nm/ps'}
 
-    def __init__(self, trzfilename, numatoms=None, convert_units=None, **kwargs):
+    def __init__(self, trzfilename, numatoms=None, **kwargs):
         """Creates a TRZ Reader
 
         :Arguments:
@@ -148,27 +148,22 @@ class TRZReader(base.Reader):
           *convert_units*
             converts units to MDAnalysis defaults
         """
+        super(TRZReader, self).__init__(trzfilename,  **kwargs)
+
         if numatoms is None:
             raise ValueError('TRZReader requires the numatoms keyword')
 
-        if convert_units is None:
-            convert_units = flags['convert_lengths']
-        self.convert_units = convert_units
-
-        self.filename = trzfilename
         self.trzfile = util.anyopen(self.filename, 'rb')
 
         self._numatoms = numatoms
-        self.fixed = False
-        self.periodic = True
-        self.skip = 1
         self._numframes = None
         self._delta = None
         self._dt = None
         self._skip_timestep = None
 
         self._read_trz_header()
-        self.ts = Timestep(self.numatoms, velocities=True, forces=self.has_force)
+        self.ts = Timestep(self.numatoms, velocities=True, forces=self.has_force,
+                           **self._ts_kwargs)
 
         # structured dtype of a single trajectory frame
         readarg = str(numatoms) + 'f4'

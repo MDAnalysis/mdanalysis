@@ -16,12 +16,19 @@
 
 
 """
-Coordinate/Trajectory Readers and Writers  --- :mod:`MDAnalysis.coordinates`
+Trajectory Readers and Writers  --- :mod:`MDAnalysis.coordinates`
 ============================================================================
 
-The coordinates submodule contains code to read coordinates, either
-single frames (e.g. the PDB module) or trajectories (such as the DCD
-reader). All readers are supposed to expose a :class:`Reader` object
+The coordinates submodule contains code to read, write and store coordinate
+information,
+either single frames (e.g. the GRO module) or trajectories (such as the DCD
+reader). 
+
+
+Readers
+-------
+
+All Readers are supposed to expose a :class:`ProtoReader` object
 that presents a common `Trajectory API`_ to other code.
 
 The :class:`~MDAnalysis.core.AtomGroup.Universe` contains the API
@@ -32,6 +39,35 @@ entry point attribute
 that points to the actual :class:`~MDAnalysis.coordinates.base.Reader`
 object; all Readers are supposed to be accessible through this entry
 point in the same manner ("`duck typing`_").
+
+There are three types of base Reader which act as starting points
+for each specific format. These are:
+
+:class:`~MDAnalysis.coordinates.base.Reader`
+   A standard multi frame Reader which allows iteration over a single
+   file to provide multiple frames of data.  This is used by formats
+   such as TRR and DCD.
+
+:class:`~MDAnalysis.coordinates.base.SingleFrameReader`
+   A simplified Reader which reads a file containing only a single
+   frame of information.  This is used with formats such as GRO
+   and CRD
+
+:class:`~MDAnalysis.coordinates.baseChainReader`
+   An advanced Reader designed to read a sequence of files, to
+   provide iteration over all the frames in each file seamlessly.
+   This Reader can also provide this functionality over a
+   sequence of files in different formats.
+
+Normally, one does not explicitly need to select a reader. This is handled
+automatically when creating a :class:`~MDAnalysis.core.AtomGroup.Universe` and
+the appropriate reader for the file type is selected (typically by the file
+extension but this choice can be overriden with the ``format`` argument to
+:class:`~MDAnalysis.core.AtomGroup.Universe`).
+
+
+Writers
+-------
 
 In order to **write coordinates**, a factory function is provided
 (:func:`MDAnalysis.coordinates.core.writer`) which is made available
@@ -53,18 +89,6 @@ appropriate reader automatically.
 .. _duck typing: http://c2.com/cgi/wiki?DuckTyping
 
 
-Using Readers
--------------
-
-Normally, one does not explicitly need to select a reader. This is handled
-automatically when creating a :class:`~MDAnalysis.core.AtomGroup.Universe` and
-the appropriate reader for the file type is selected (typically by the file
-extension but this choice can be overriden with the ``format`` argument to
-:class:`~MDAnalysis.core.AtomGroup.Universe`).
-
-Using Writers
--------------
-
 A typical approach is to generate a new trajectory from an old one, e.g. to
 only keep the protein::
 
@@ -76,6 +100,26 @@ only keep the protein::
 
 Using the :func:`with` statement will automatically close the trajectory when
 the last frame has been written.
+
+
+Timesteps
+---------------
+
+Both Readers and Writers use Timesteps as their working object.  A Timestep
+represents all data for a given frame in a trajectory.  The data inside a 
+Timestep is often accessed indirectly through a :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
+but it is also possible to manipulate Timesteps directly.
+
+The current Timestep can be accessed through the trajectory read attached
+to the active :class:`~MDAnalysis.core.AtomGroup.Universe`
+
+   ts = u.trajectory.ts
+   ts.positions  # returns a numpy array of positions
+
+Most individual formats have slightly different data available
+in each Timestep due to differences in individual simulation
+packages, but all share in common a broad set of basic data,
+detailed in `Timestep API`_
 
 
 Supported coordinate formats
@@ -241,6 +285,8 @@ with the format (typically the file extension in upper case):
 - Single-frame writer classes must be added to to
   :data:`MDAnalysis.coordinates._frame_writers`.
 
+
+.. _Timestep API:
 
 Timestep class
 ~~~~~~~~~~~~~~

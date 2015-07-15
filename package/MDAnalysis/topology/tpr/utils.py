@@ -500,7 +500,7 @@ def do_moltype(data, symtab, fver):
 
             # the following if..elif..else statement needs to be updated as new
             # type of interactions become interested
-            if ik_obj.name in ['LJ14', 'BONDS']:
+            if ik_obj.name in ['BONDS']:
                 bonds = list(ik_obj.process(ias))
             elif ik_obj.name in ['ANGLES']:
                 angles = list(ik_obj.process(ias))

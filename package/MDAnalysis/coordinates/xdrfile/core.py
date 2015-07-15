@@ -331,7 +331,7 @@ class TrjReader(base.Reader):
     #: writer class that matches this reader (override appropriately)
     _Writer = TrjWriter
 
-    def __init__(self, filename, convert_units=None, sub=None, **kwargs):
+    def __init__(self, filename, sub=None, **kwargs):
         """
         :Arguments:
             *filename*
@@ -355,7 +355,8 @@ class TrjReader(base.Reader):
            New keyword *refresh_offsets*
 
         """
-        self.filename = filename
+        super(TrjReader, self).__init__(filename, **kwargs)
+
         # Convert filename to ascii because of SWIG bug.
         # See: http://sourceforge.net/p/swig/feature-requests/75
         # Only needed for Python < 3
@@ -363,15 +364,11 @@ class TrjReader(base.Reader):
             if isinstance(filename, unicode):
                 self.filename = filename.encode("UTF-8")
 
-        if convert_units is None:
-            convert_units = MDAnalysis.core.flags['convert_lengths']
-        self.convert_units = convert_units  # convert length and time to base units on the fly?
         self.xdrfile = None
 
         self._numframes = None  # takes a long time, avoid accessing self.numframes
         self.skip_timestep = 1  # always 1 for xdr files
         self._delta = None  # compute from time in first two frames!
-        self.fixed = 0  # not relevant for Gromacs xtc/trr
         self._offsets = None  # storage of offsets in the file
         self.skip = 1
         self.periodic = False
@@ -413,7 +410,7 @@ class TrjReader(base.Reader):
         # (same as the calling Universe)
         # at this time, _trr_numatoms and _sub are set, so self.numatoms has all it needs
         # to determine number of atoms.
-        self.ts = self._Timestep(self.numatoms)
+        self.ts = self._Timestep(self.numatoms, **self._ts_kwargs)
 
         # Read in the first timestep
         self._read_next_timestep()

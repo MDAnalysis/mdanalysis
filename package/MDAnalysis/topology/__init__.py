@@ -158,7 +158,7 @@ file types. Each submodule *must* contain a function :func:`parse`:
 
 The function returns the basic MDAnalysis representation of the
 topology. At the moment, this is simply a dictionary with keys
-*_atoms*, *_bonds*, *_angles*, *_dihe*, *_impr*. The dictionary is
+*atoms*, *bonds*, *angles*, *torsions*, *impropers*. The dictionary is
 stored as :attr:`MDAnalysis.AtomGroup.Universe._topology`.
 
 .. warning::
@@ -176,7 +176,7 @@ stored as :attr:`MDAnalysis.AtomGroup.Universe._topology`.
 The format of the individual keys is the following (see
 :mod:`PSFParser` for a reference implementation):
 
-_atoms
+atoms
 ~~~~~~
 
 The **atoms** are represented as a :class:`list` of
@@ -190,7 +190,7 @@ atoms in the topology file. The atom's
 index in this list.
 
 
-_bonds
+bonds
 ~~~~~~
 
 **Bonds** are represented as a :class:`tuple` of :class:`tuple`. Each tuple
@@ -199,7 +199,7 @@ bond is formed. Only one of the two permutations is stored, typically
 the one with the lower atom number first.
 
 
-_bondorder
+bondorder
 ~~~~~~~~~~
 
 Some **bonds** have additional information called **order**. When available
@@ -207,41 +207,32 @@ this is stored in a dictionary of format {bondtuple:order}.  This extra
 information is then passed to Bond initialisation in u._init_bonds()
 
 
-_angles
+angles
 ~~~~~~~
 
 **Angles** are represented by a :class:`list` of :class:`tuple`. Each
-tuple contains three atom numbers.
-
-.. Note::
-
-   At the moment, the order is not defined and depends on how the
-   topology file defines angles.
+tuple contains three atom numbers.  The second of these numbers
+represents the apex of the angle.
 
 
-_dihe
-~~~~~
+torsions
+~~~~~~~~
 
 **Proper dihedral angles** are represented by a :class:`list` of :class:`tuple`. Each
-tuple contains four atom numbers.
-
-.. Note::
-
-   At the moment, the order is not defined and depends on how the
-   topology file defines proper dihedrals..
+tuple contains four atom numbers. The angle of the torsion
+is defined by the angle between the planes formed by atoms 1, 2, and 3, 
+and 2, 3, and 4.
 
 
-
-_impr
-~~~~~
+impropers
+~~~~~~~~~
 
 **Improper dihedral angles** are represented by a :class:`list` of :class:`tuple`. Each
-tuple contains four atom numbers.
-
-.. Note::
-
-   At the moment, the order is not defined and depends on how the
-   topology file defines improper dihedrals..
+tuple contains four atom numbers.  The angle of the improper torsion
+is again defined by the angle between the planes formed by atoms 1, 2, and 3, 
+and 2, 3, and 4.  Improper torsions differ from regular torsions as the
+four atoms need not be sequentially bonded, and are instead often all bonded
+to the second atom.
 
 """
 

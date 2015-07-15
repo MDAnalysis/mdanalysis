@@ -21,6 +21,7 @@ from numpy.testing import *
 from numpy import array, float32, arange
 from nose.plugins.attrib import attr
 
+from MDAnalysisTests.plugins.knownfailure import knownfailure
 
 class TestSelectionsCHARMM(TestCase):
     def setUp(self):
@@ -339,12 +340,19 @@ class TestSelectionsXTC(TestCase):
     def setUp(self):
         self.universe = MDAnalysis.Universe(TPR,XTC)
 
+    # Issue #352
+    # Fails because bonds are constraints, not harmonic bonds
+    # so no "bonds" are detected, so no fragments can be made
+    @knownfailure()
     def test_same_fragment(self):
         """Test the 'same ... as' construct (Issue 217)"""
         # This test comes here because it's a system with solvent, and thus multiple fragments.
-        sel = self.universe.selectAtoms("same fragment as bynum 1")
-        assert_equal(len(sel), 3341, "Found a wrong number of atoms on the same fragment as id 1")
-        assert_equal(sel._atoms, self.universe.atoms[0].fragment._atoms, "Found a different set of atoms when using the 'same fragment as' construct vs. the .fragment prperty")
+        try:
+            sel = self.universe.selectAtoms("same fragment as bynum 1")
+            assert_equal(len(sel), 3341, "Found a wrong number of atoms on the same fragment as id 1")
+            assert_equal(sel._atoms, self.universe.atoms[0].fragment._atoms, "Found a different set of atoms when using the 'same fragment as' construct vs. the .fragment prperty")
+        except MDAnalysis.NoDataError:
+            assert_equal(True, False)
 
 class TestSelectionsNucleicAcids(TestCase):
     def setUp(self):

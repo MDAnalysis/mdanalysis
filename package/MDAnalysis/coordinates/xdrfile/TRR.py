@@ -112,8 +112,9 @@ class Timestep(core.Timestep):
                   " by making use of the '{flag}' flag of Timestep objects.")
 
     def __init__(self, numatoms, **kwargs):
-        super(Timestep, self).__init__(numatoms, positions=True,
-                                       velocities=True, forces=True)
+        kwargs.update(positions=True, velocities=True, forces=True)
+        super(Timestep, self).__init__(numatoms, **kwargs)
+
         # Set initial sources to None, so they are never valid
         # _source is compared against current frame when accessing
         # if they do not match, then the Timestep returns _nodataerr

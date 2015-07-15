@@ -120,10 +120,12 @@ class GROReader(base.SingleFrameReader):
                     unitcell = np.array(map(float, line.split()))
 
         self.numatoms = len(coords_list)
+        vels = np.array(velocities_list, dtype=np.float32) if velocities_list else None
 
         self.ts = self._Timestep.from_coordinates(
             np.array(coords_list),
-            velocities=np.array(velocities_list, dtype=np.float32) if velocities_list else None)
+            velocities=vels,
+            **self._ts_kwargs)
 
         self.ts.frame = 0  # 0-based frame number
 
