@@ -402,7 +402,7 @@ class TestAtomGroup(TestCase):
             assert_equal(at.resname, v)
         assert_equal(all(ag.resnames() == new), True)
 
-    # TODO: add all other methods except selectAtoms(), see test_selections.py
+    # TODO: add all other methods except selectAtoms(), see test_atomselections.py
     def test_set_charge(self):
         # Charges are initially 0
         at1 = Atom(1, 'dave', 'C', 'a', 1, 1, 0.1, 0.0)

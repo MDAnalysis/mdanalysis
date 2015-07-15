@@ -20,6 +20,7 @@ and https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
     - Tests now implement nose plugins, as a submodule. (Issue 331)
       Available plugins are: memleak testing, stderr capturing (for quieter
       test runs), and proper knownfailure implementation (Issue 338).
+    - renamed test_selections.py to test_atomselections.py
 
 02/11/2012 orbeckst, seb-buch
 
