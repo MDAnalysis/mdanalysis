@@ -32,15 +32,19 @@ to a file so that it can be used in another programme.
     CHARMM_ selections
 
 The :class:`MDAnalysis.selections.base.SelectionWriter` base class and
-helper functions are in :mod:`MDAnalysis.selections.base`.
+helper functions are in :mod:`MDAnalysis.selections.base`, with the
+exception of `:func:get_writer`:
+
+.. autofunction:: get_writer
 """
+from __future__ import absolute_import
 
-import vmd
-import pymol
-import gromacs
-import charmm
-from base import get_writer
+import os.path
 
+from . import vmd
+from . import pymol
+from . import gromacs
+from . import charmm
 
 # Signature:
 #   W = SelectionWriter(filename, **kwargs)
@@ -51,3 +55,19 @@ _selection_writers = {
     'pymol': pymol.SelectionWriter, 'pml': pymol.SelectionWriter,
     'gromacs': gromacs.SelectionWriter, 'ndx': gromacs.SelectionWriter,
 }
+
+def get_writer(filename, defaultformat):
+    """Return a :class:`SelectionWriter` for *filename* or a *defaultformat*."""
+
+    if filename:
+        format = os.path.splitext(filename)[1][1:]  # strip initial dot!
+    format = format or defaultformat  # use default if no fmt from fn
+    format = format.strip().lower()  # canonical for lookup
+    try:
+        return _selection_writers[format]
+    except KeyError:
+        raise NotImplementedError("Writing as %r is not implemented; only %r will work."
+                                  % (format, _selection_writers.keys()))
+
+
+

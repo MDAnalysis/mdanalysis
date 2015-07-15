@@ -32,8 +32,9 @@ The selection is named *mdanalysis001*.
 .. _CHARMM: http://www.charmm.org
 .. _CHARMM selection: http://www.charmm.org/documentation/c34b1/select.html
 """
-import base
+from __future__ import absolute_import
 
+from . import base
 
 class SelectionWriter(base.SelectionWriter):
     format = "CHARMM"

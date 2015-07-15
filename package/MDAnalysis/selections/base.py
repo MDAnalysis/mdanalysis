@@ -28,15 +28,13 @@ methods.
    :members: __init__, write, _translate, _write_head, _write_tail, comment
 
 .. autofunction:: join
-.. autofunction:: get_writer
 
 """
+from __future__ import absolute_import
 
 import os.path
 
-import MDAnalysis.lib.util as util
-import MDAnalysis.selections
-
+from ..lib import util
 
 def join(seq, string="", func=None):
     """Create a list from sequence.
@@ -48,19 +46,6 @@ def join(seq, string="", func=None):
     if func is None:
         func = lambda x: x
     return [func(x) + string for x in seq[:-1]] + [func(seq[-1])]
-
-
-def get_writer(filename, defaultformat):
-    """Return a :class:`SelectionWriter` for *filename* or a *defaultformat*."""
-    if filename:
-        format = os.path.splitext(filename)[1][1:]  # strip initial dot!
-    format = format or defaultformat  # use default if no fmt from fn
-    format = format.strip().lower()  # canonical for lookup
-    try:
-        return MDAnalysis.selections._selection_writers[format]
-    except KeyError:
-        raise NotImplementedError("Writing as %r is not implemented; only %r will work."
-                                  % (format, MDAnalysis.selections._selection_writers.keys()))
 
 
 class SelectionWriter(object):
@@ -79,6 +64,10 @@ class SelectionWriter(object):
     .. _PyMol: http://www.pymol.org/
     .. _CHARMM:  http://www.charmm.org/
     .. _Gromacs: http://www.gromacs.org/
+
+    .. versionchanged:: 0.11.0
+       Can now also write to a :class:`~MDAnalysis.lib.util.NamedStream` instead
+       of a normal file (using :class:`~MDAnalysis.lib.util.openany`).
     """
     #: Name of the format.
     format = None
@@ -142,7 +131,7 @@ class SelectionWriter(object):
         """Write a header, depending on the file format."""
         if self.preamble is None:
             return
-        with open(self.filename, self._current_mode) as out:
+        with util.openany(self.filename, self._current_mode) as out:
             out.write(self.comment(self.preamble))
         self._current_mode = 'a'
 
@@ -182,7 +171,7 @@ class SelectionWriter(object):
         # selection_list must contain entries to be joined with spaces or linebreaks
         selection_terms = self._translate(selection.atoms)
         step = self.numterms or len(selection.atoms)
-        with open(self.filename, self._current_mode) as out:
+        with util.openany(self.filename, self._current_mode) as out:
             self._write_head(out, name=name)
             for iatom in xrange(0, len(selection.atoms), step):
                 line = selection_terms[iatom:iatom + step]
@@ -207,7 +196,7 @@ class SelectionWriter(object):
         - terms *must* be strings
         - something like::
              " ".join(terms)
-             
+
           must work
         """
         raise NotImplementedError
