@@ -19,6 +19,7 @@ from numpy.testing import *
 from numpy import pi, sin, cos
 
 import MDAnalysis.lib.util as util
+import MDAnalysis.lib.mdamath as mdamath
 from MDAnalysis.lib.util import cached
 from MDAnalysis.tests.datafiles import PSF
 
@@ -152,59 +153,59 @@ class TestGeometryFunctions(TestCase):
         self.null = numpy.zeros(3)
 
     def testAngleUnitvectors(self):
-        assert_equal(util.angle(self.e1, self.e2), pi / 2)
-        assert_equal(util.angle(self.e1, self.a), pi / 3)
+        assert_equal(mdamath.angle(self.e1, self.e2), pi / 2)
+        assert_equal(mdamath.angle(self.e1, self.a), pi / 3)
 
     def testAngleVectors(self):
-        assert_equal(util.angle(2 * self.e1, self.e2), pi / 2)
-        assert_equal(util.angle(-2 * self.e1, self.e2), pi - pi / 2)
-        assert_equal(util.angle(23.3 * self.e1, self.a), pi / 3)
+        assert_equal(mdamath.angle(2 * self.e1, self.e2), pi / 2)
+        assert_equal(mdamath.angle(-2 * self.e1, self.e2), pi - pi / 2)
+        assert_equal(mdamath.angle(23.3 * self.e1, self.a), pi / 3)
 
     def testAngleNullVector(self):
-        assert_equal(util.angle(self.e1, self.null), numpy.nan)
+        assert_equal(mdamath.angle(self.e1, self.null), numpy.nan)
 
     def testAngleColinear(self):
-        assert_equal(util.angle(self.a, self.a), 0.0)
+        assert_equal(mdamath.angle(self.a, self.a), 0.0)
 
     def testAnglePi(self):
-        assert_almost_equal(util.angle(-2.3456e7 * self.e1, 3.4567e-6 * self.e1), pi)
-        assert_almost_equal(util.angle(2.3456e7 * self.e1, 3.4567e-6 * self.e1), 0.0)
+        assert_almost_equal(mdamath.angle(-2.3456e7 * self.e1, 3.4567e-6 * self.e1), pi)
+        assert_almost_equal(mdamath.angle(2.3456e7 * self.e1, 3.4567e-6 * self.e1), 0.0)
 
     def testAngleRandom(self):
         for x in numpy.random.uniform(0, pi, 20):
             r = numpy.random.uniform(0, 1000)
             v = r * numpy.array([cos(x), sin(x), 0])
-            assert_almost_equal(util.angle(self.e1, v), x, 6)
+            assert_almost_equal(mdamath.angle(self.e1, v), x, 6)
 
     def testNorm(self):
-        assert_equal(util.norm(self.e3), 1)
-        assert_equal(util.norm(self.a), numpy.linalg.norm(self.a))
+        assert_equal(mdamath.norm(self.e3), 1)
+        assert_equal(mdamath.norm(self.a), numpy.linalg.norm(self.a))
 
     def testNormNullVector(self):
-        assert_equal(util.norm(self.null), 0.0)
+        assert_equal(mdamath.norm(self.null), 0.0)
 
     def testNormRandom(self):
         for x in numpy.random.uniform(0, pi, 20):
             r = numpy.random.uniform(0, 1000)
             v = r * numpy.array([cos(x), sin(x), 0])
-            assert_almost_equal(util.norm(v), r, 6)
+            assert_almost_equal(mdamath.norm(v), r, 6)
 
     def testNormal(self):
-        assert_equal(util.normal(self.e1, self.e2), self.e3)
+        assert_equal(mdamath.normal(self.e1, self.e2), self.e3)
         # add more non-trivial tests
 
     def testNormalNullVector(self):
-        assert_equal(util.normal(self.e1, self.null), 0.0)
+        assert_equal(mdamath.normal(self.e1, self.null), 0.0)
 
     def testStp(self):
-        assert_equal(util.stp(self.e1, self.e2, self.e3), 1.0)
+        assert_equal(mdamath.stp(self.e1, self.e2, self.e3), 1.0)
         # add more non-trivial tests
 
     def testDihedral(self):
         ab = self.e1
         bc = ab + self.e2
         cd = bc + self.e3
-        assert_almost_equal(util.dihedral(ab, bc, cd), -pi / 2)
+        assert_almost_equal(mdamath.dihedral(ab, bc, cd), -pi / 2)
 
 
 class Class_with_Caches(object):

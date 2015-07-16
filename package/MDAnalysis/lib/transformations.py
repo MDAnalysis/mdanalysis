@@ -197,7 +197,7 @@ import math
 import numpy
 from numpy.linalg import norm
 
-from .util import angle as vecangle
+from .mdamath import angle as vecangle
 
 def identity_matrix():
     """Return 4x4 identity/unit matrix.

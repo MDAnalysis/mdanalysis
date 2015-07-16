@@ -20,6 +20,11 @@ Mathematical helper functions --- :mod:`MDAnalysis.lib.mdamath`
 
 Helper functions for common mathematical operations
 
+.. autofunction:: normal
+.. autofunction:: norm
+.. autofunction:: angle
+.. autofunction:: dihedral
+.. autofunction:: stp
 .. autofunction:: triclinic_box
 .. autofunction:: triclinic_vectors
 .. autofunction:: box_volume
@@ -29,10 +34,92 @@ Helper functions for common mathematical operations
 import numpy as np
 
 
-def _veclength(v):
-    """Length of vector *v*."""
-    # note: this is 3 times faster than numpy.linalg.norm
+# geometric functions
+def norm(v):
+    r"""Returns the length of a vector, ``sqrt(v.v)``.
+
+    .. math::
+
+       v = \sqrt{\mathbf{v}\cdot\mathbf{v}}
+
+    Faster than :func:`numpy.linalg.norm` because no frills.
+
+    .. versionchanged:: 0.11.0
+       Moved into lib.mdamath
+    """
     return np.sqrt(np.dot(v, v))
+
+
+def normal(vec1, vec2):
+    r"""Returns the unit vector normal to two vectors.
+
+    .. math::
+
+       \hat{\mathbf{n}} = \frac{\mathbf{v}_1 \times \mathbf{v}_2}{|\mathbf{v}_1 \times \mathbf{v}_2|}
+
+    If the two vectors are collinear, the vector :math:`\mathbf{0}` is returned.
+
+    .. versionchanged:: 0.11.0
+       Moved into lib.mdamath
+    """
+    normal = np.cross(vec1, vec2)
+    n = norm(normal)
+    if n == 0.0:
+        return normal  # returns [0,0,0] instead of [nan,nan,nan]
+    return normal / n  # ... could also use numpy.nan_to_num(normal/norm(normal))
+
+
+def angle(a, b):
+    """Returns the angle between two vectors in radians
+
+    .. versionchanged:: 0.11.0
+       Moved into lib.mdamath
+    """
+    x = np.dot(a, b) / (norm(a) * norm(b))
+    # catch roundoffs that lead to nan otherwise
+    if x > 1.0:
+        return 0.0
+    elif x < -1.0:
+        return -np.pi
+    return np.arccos(x)
+
+
+def stp(vec1, vec2, vec3):
+    r"""Takes the scalar triple product of three vectors.
+
+    Returns the volume *V* of the parallel epiped spanned by the three
+    vectors
+
+    .. math::
+
+        V = \mathbf{v}_3 \cdot (\mathbf{v}_1 \times \mathbf{v}_2)
+
+    .. versionchanged:: 0.11.0
+       Moved into lib.mdamath
+    """
+    return np.dot(vec3, np.cross(vec1, vec2))
+
+
+def dihedral(ab, bc, cd):
+    r"""Returns the dihedral angle in radians between vectors connecting A,B,C,D.
+
+    The dihedral measures the rotation around bc::
+
+         ab
+       A---->B
+              \ bc
+              _\'
+                C---->D
+                  cd
+
+    The dihedral angle is restricted to the range -π <= x <= π.
+
+    .. versionadded:: 0.8
+    .. versionchanged:: 0.11.0
+       Moved into lib.mdamath
+    """
+    x = angle(normal(ab, bc), normal(bc, cd))
+    return (x if stp(ab, bc, cd) <= 0.0 else -x)
 
 
 def _angle(a, b):
@@ -41,7 +128,9 @@ def _angle(a, b):
     If one of the lengths is 0 then the angle is returned as 0
     (instead of `nan`).
     """
-    angle = np.arccos(np.dot(a, b) / (_veclength(a) * _veclength(b)))
+    # This function has different limits than angle?
+
+    angle = np.arccos(np.dot(a, b) / (norm(a) * norm(b)))
     if np.isnan(angle):
         return 0.0
     return np.rad2deg(angle)
@@ -58,7 +147,7 @@ def triclinic_box(x, y, z):
 
     .. SeeAlso:: Definition of angles: http://en.wikipedia.org/wiki/Lattice_constant
     """
-    A, B, C = [_veclength(v) for v in x, y, z]
+    A, B, C = [norm(v) for v in x, y, z]
     alpha = _angle(y, z)
     beta = _angle(x, z)
     gamma = _angle(x, y)

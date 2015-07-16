@@ -71,7 +71,7 @@ The rules for this file:
     MDAnalysis.selections.get_writer() to break a circular import. This
     should not affect any code because
     MDAnalysis.selections.get_writer() already existed.
-
+  * Moved norm, normal, angle, stp and dihedral from lib.util to lib.mdamath
 
   Fixes
   * Fixed TPRParser considering LJ 1..4 exclusions as bonds (Issue #351)

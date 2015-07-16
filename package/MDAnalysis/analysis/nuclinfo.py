@@ -102,8 +102,7 @@ Dihedral angles
 import numpy
 from math import pi, sin, cos, atan2, sqrt, pow
 
-from MDAnalysis.lib.util import norm
-from MDAnalysis.lib import util
+from MDAnalysis.lib.mdamath import norm
 
 
 def wc_pair(universe, i, bp, seg1="SYSTEM", seg2="SYSTEM"):
@@ -600,7 +599,7 @@ def pseudo_dihe_baseflip(universe, bp1, bp2, i, seg1="SYSTEM", seg2="SYSTEM", se
     bf2 = universe.selectAtoms(" ( segid %s and resid %s and nucleicsugar ) " % (seg2, bp2))
     bf3 = universe.selectAtoms(" ( segid %s and resid %s and nucleicsugar ) " % (seg3, i))
     x = [bf1.centerOfMass(), bf2.centerOfMass(), bf3.centerOfMass(), bf4.centerOfMass()]
-    pseudo = util.dihedral(x[0] - x[1], x[1] - x[2], x[2] - x[3])
+    pseudo = mdamath.dihedral(x[0] - x[1], x[1] - x[2], x[2] - x[3])
     pseudo = numpy.rad2deg(pseudo)
     if pseudo < 0:
         pseudo = pseudo + 360

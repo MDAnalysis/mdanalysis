@@ -414,8 +414,9 @@ import MDAnalysis
 from .. import SelectionError, NoDataError, SelectionWarning
 from ..lib import util
 from ..lib import distances
+from ..lib import mdamath
+from ..lib import transformations
 from ..lib.util import cached
-from ..lib.transformations import rotation_matrix, vecangle, rotaxis
 
 
 logger = logging.getLogger("MDAnalysis.core.AtomGroup")
@@ -594,9 +595,9 @@ class Atom(object):
             raise NoDataError("Timestep does not contain forces")
 
     def centroid(self):
-        """The centroid of an atom is its position, :attr:`Atom.pos`."""
+        """The centroid of an atom is its position, :attr:`Atom.position`."""
         # centroid exists for compatibility with AtomGroup
-        return self.pos
+        return self.position
 
     @property
     def universe(self):
@@ -1897,7 +1898,7 @@ class AtomGroup(object):
         if len(self) != 2:
             raise ValueError("distance computation only makes sense for a group with exactly 2 atoms")
         if not pbc:
-            return util.norm(self[0].pos - self[1].pos)
+            return mdamath.norm(self[0].position - self[1].position)
         else:
             return distances.self_distance_array(self.coordinates(), box=self.dimensions)[0]
 
@@ -1917,13 +1918,15 @@ class AtomGroup(object):
            :class:`Atom`; anything else will raise a :exc:`ValueError`.
 
         .. versionadded:: 0.7.3
+        .. versionchanged:: 0.11.0
+           Now uses :func:`~MDAnalysis.lib.mdamath.angle` internally
         """
         if len(self) != 3:
             raise ValueError("angle computation only makes sense for a group with exactly 3 atoms")
-        a = self[0].pos - self[1].pos
-        b = self[2].pos - self[1].pos
-        return numpy.rad2deg(numpy.arccos(numpy.dot(a, b) /
-                                          (util.norm(a) * util.norm(b))))
+        a = self[0].position - self[1].position
+        b = self[2].position - self[1].position
+        
+        return numpy.rad2deg(mdamath.angle(a, b))
 
     def improper(self):
         """Returns the improper dihedral between 4 atoms.
@@ -1969,7 +1972,7 @@ class AtomGroup(object):
         ab = A - B
         bc = B - C
         cd = C - D
-        return numpy.rad2deg(util.dihedral(ab, bc, cd))
+        return numpy.rad2deg(mdamath.dihedral(ab, bc, cd))
 
     def principalAxes(self, **kwargs):
         """Calculate the principal axes from the moment of inertia.
@@ -2351,7 +2354,7 @@ class AtomGroup(object):
                 p = point.centroid()
             except AttributeError:
                 p = numpy.asarray(point)
-        M = rotation_matrix(alpha, n, point=p)
+        M = transformations.rotation_matrix(alpha, n, point=p)
         self.transform(M)
         return M
 
@@ -2373,8 +2376,8 @@ class AtomGroup(object):
           u.atoms.write("aligned.pdb")
         """
         p = self.principalAxes()[axis]
-        angle = numpy.degrees(vecangle(p, vector))
-        ax = rotaxis(p, vector)
+        angle = numpy.degrees(mdamath.angle(p, vector))
+        ax = transformations.rotaxis(p, vector)
         #print "principal[%d] = %r" % (axis, p)
         #print "axis = %r, angle = %f deg" % (ax, angle)
         return self.rotateby(angle, ax)

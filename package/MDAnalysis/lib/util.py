@@ -124,15 +124,6 @@ Strings
 .. autofunction:: conv_float
 
 
-Mathematics and Geometry
-------------------------
-
-.. autofunction:: normal
-.. autofunction:: norm
-.. autofunction:: angle
-.. autofunction:: dihedral
-.. autofunction:: stp
-
 Class decorators
 ----------------
 
@@ -150,6 +141,10 @@ Class decorators
    order to make :meth:`NamedStream.close` actually close the
    underlying stream and ``NamedStream.close(force=True)`` will also
    close it.
+
+
+.. versionchanged:: 0.11.0
+   Moved mathematical functions into lib.mdamath
 """
 
 __docformat__ = "restructuredtext en"
@@ -948,79 +943,6 @@ def fixedwidth_bins(delta, xmin, xmax):
     N = numpy.ceil(_length / _delta).astype(numpy.int_)  # number of bins
     dx = 0.5 * (N * _delta - _length)  # add half of the excess to each end
     return {'Nbins': N, 'delta': _delta, 'min': _xmin - dx, 'max': _xmax + dx}
-
-
-# geometric functions
-def norm(v):
-    r"""Returns the length of a vector, ``sqrt(v.v)``.
-
-    .. math::
-
-       v = \sqrt{\mathbf{v}\cdot\mathbf{v}}
-
-    Faster than :func:`numpy.linalg.norm` because no frills.
-    """
-    return numpy.sqrt(numpy.dot(v, v))
-
-
-def normal(vec1, vec2):
-    r"""Returns the unit vector normal to two vectors.
-
-    .. math::
-
-       \hat{\mathbf{n}} = \frac{\mathbf{v}_1 \times \mathbf{v}_2}{|\mathbf{v}_1 \times \mathbf{v}_2|}
-
-    If the two vectors are collinear, the vector :math:`\mathbf{0}` is returned.
-    """
-    normal = numpy.cross(vec1, vec2)
-    n = norm(normal)
-    if n == 0.0:
-        return normal  # returns [0,0,0] instead of [nan,nan,nan]
-    return normal / n  # ... could also use numpy.nan_to_num(normal/norm(normal))
-
-
-def angle(a, b):
-    """Returns the angle between two vectors in radians"""
-    x = numpy.dot(a, b) / (norm(a) * norm(b))
-    # catch roundoffs that lead to nan otherwise
-    if x > 1.0:
-        return 0.0
-    elif x < -1.0:
-        return -numpy.pi
-    return numpy.arccos(x)
-
-
-def stp(vec1, vec2, vec3):
-    r"""Takes the scalar triple product of three vectors.
-
-    Returns the volume *V* of the parallel epiped spanned by the three
-    vectors
-
-    .. math::
-
-        V = \mathbf{v}_3 \cdot (\mathbf{v}_1 \times \mathbf{v}_2)
-    """
-    return numpy.dot(vec3, numpy.cross(vec1, vec2))
-
-
-def dihedral(ab, bc, cd):
-    r"""Returns the dihedral angle in radians between vectors connecting A,B,C,D.
-
-    The dihedral measures the rotation around bc::
-
-         ab
-       A---->B
-              \ bc
-              _\'
-                C---->D
-                  cd
-
-    The dihedral angle is restricted to the range -π <= x <= π.
-
-    .. versionadded:: 0.8
-    """
-    x = angle(normal(ab, bc), normal(bc, cd))
-    return (x if stp(ab, bc, cd) <= 0.0 else -x)
 
 
 # String functions
