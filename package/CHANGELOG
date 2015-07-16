@@ -40,6 +40,8 @@ The rules for this file:
   * Timesteps now store 'dt' and 'time_offset' if passed to them by Reader
     (Issues 306 and 307)
   * MDAnalysis.selection: can also be written to a NamedStream
+  * Added function lib.mdamath.make_whole to "unbreak" molecules
+    over periodic boundaries.
 
   Changes
   * A ProtoReader class intermediate between IObase and Reader was added so
