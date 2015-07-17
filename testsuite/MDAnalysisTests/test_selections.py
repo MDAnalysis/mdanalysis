@@ -18,6 +18,7 @@
 
 # use cStringIO and NamedStream to write to memory instead to temp files
 import cStringIO
+import re
 
 import numpy as np
 from numpy.testing import TestCase, assert_equal, assert_array_equal
@@ -29,8 +30,6 @@ from MDAnalysis.lib.util import NamedStream
 import MDAnalysis
 from MDAnalysis.tests.datafiles import PSF, DCD
 
-
-# add more tests, see Issue #353
 
 class _SelectionWriter(TestCase):
     filename = None
@@ -165,3 +164,34 @@ class TestSelectionWriter_VMD(_SelectionWriter):
     def test_writeselection_vmd(self):
         self._write_selection(name=self.ref_name)
         self._assert_selectionstring()
+
+
+def spt2array(line):
+    """Get name of and convert Jmol SPT definition to integer array"""
+    match = re.search(r'\@~(\w+) \(\{([\d\s]*)\}\)', line)
+    return match.group(1), np.array(match.group(2).split(), dtype=int)
+
+class TestSelectionWriter_Jmol(_SelectionWriter):
+    filename = "CA.spt"
+    ref_name, ref_indices = spt2array(
+        ( '@~ca ({4 21 45 64 83 102 121 128 140 152 159 169 176 198 205 219 236'
+          ' 246 263 283 302 319 334 356});')
+        )
+
+    def test_write_spt(self):
+        self._write(name=self.ref_name)
+
+        header, indices = spt2array(self.namedfile.readline())
+        assert_equal(header, self.ref_name,
+                     err_msg="SPT file has wrong selection name")
+        assert_array_equal(indices, self.ref_indices,
+                           err_msg="SPT indices were not written correctly")
+
+    def test_writeselection_spt(self):
+        self._write_selection(name=self.ref_name)
+
+        header, indices = spt2array(self.namedfile.readline())
+        assert_equal(header, self.ref_name,
+                     err_msg="SPT file has wrong selection name")
+        assert_array_equal(indices, self.ref_indices,
+                           err_msg="SPT indices were not written correctly")
