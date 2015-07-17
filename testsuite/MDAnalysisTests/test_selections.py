@@ -27,8 +27,9 @@ from MDAnalysisTests.plugins.knownfailure import knownfailure
 from MDAnalysis.lib.util import NamedStream
 
 import MDAnalysis
-from MDAnalysis.tests.datafiles import PSF, DCD
+from MDAnalysis.tests.datafiles import PSF, DCD, PDB
 
+from re import search
 
 # add more tests, see Issue #353
 
@@ -95,7 +96,55 @@ class TestSelectionWriter_Gromacs(_SelectionWriter):
         assert_array_equal(indices, self.ref_indices,
                            err_msg="indices were not written correctly")
 
+def spt2array(line):
+    """Get name of and convert Jmol SPT definition to integer array"""
+    match = search(r'\@~(\w+) \(\{([\d\s]*)\}\)', line)
+    return match.group(1), np.array(match.group(2).split(), dtype=int)
 
+class TestSelectionWriter_Jmol(_SelectionWriter):
+    filename = "CA.spt"
 
+    def setUp(self):
+        self.universe = MDAnalysis.Universe(PDB)
+        stream = cStringIO.StringIO()
+        self.namedfile = NamedStream(stream, self.filename)
 
+    ref_name, ref_indices = spt2array(
+        ( '@~ca ({4 21 45 64 83 102 121 128 137 152 159 169 176 198 205 219 236'
+          ' 246 263 283 302 319 334 356 377 384 402 417 434 453 464 478 485 497'
+          ' 514 533 557 567 577 593 615 626 633 644 659 678 685 707 724 734 756'
+          ' 768 787 804 816 826 833 855 874 890 904 916 931 950 966 985 995 101'
+          '4 1030 1052 1067 1091 1110 1120 1137 1152 1164 1175 1199 1213 1220 1'
+          '240 1259 1278 1290 1297 1316 1331 1355 1369 1387 1402 1419 1429 1441'
+          ' 1451 1468 1490 1505 1515 1522 1541 1555 1571 1583 1604 1620 1639 16'
+          '54 1674 1686 1701 1716 1728 1743 1762 1781 1797 1809 1833 1852 1868 '
+          '1875 1899 1923 1939 1956 1965 1980 1991 1998 2022 2038 2059 2076 209'
+          '2 2114 2134 2147 2161 2176 2198 2214 2229 2236 2258 2270 2282 2298 2'
+          '312 2319 2334 2349 2368 2382 2396 2420 2442 2454 2466 2483 2498 2513'
+          ' 2527 2543 2567 2589 2613 2632 2648 2663 2684 2701 2718 2735 2749 27'
+          '58 2773 2792 2811 2818 2839 2860 2871 2893 2908 2918 2933 2943 2950 '
+          '2964 2978 3000 3021 3031 3053 3069 3081 3088 3102 3123 3138 3154 316'
+          '4 3179 3195 3219 3229 3241 3260 3275 3297 3316 3335});')
+        )
 
+    def test_write_spt(self):
+        CA = self.universe.selectAtoms("protein and name CA")
+        CA.write(self.namedfile, name=self.ref_name)
+
+        header, indices = spt2array(self.namedfile.readline())
+
+        assert_equal(header, self.ref_name,
+                     err_msg="SPT file has wrong selection name")
+        assert_array_equal(indices, self.ref_indices,
+                           err_msg="indices were not written correctly")
+
+    def test_writeselection_spt(self):
+        CA = self.universe.selectAtoms("protein and name CA")
+        CA.write_selection(self.namedfile, name=self.ref_name)
+
+        header, indices = spt2array(self.namedfile.readline())
+
+        assert_equal(header, self.ref_name,
+                     err_msg="NDX file has wrong selection name")
+        assert_array_equal(indices, self.ref_indices,
+                           err_msg="indices were not written correctly")
