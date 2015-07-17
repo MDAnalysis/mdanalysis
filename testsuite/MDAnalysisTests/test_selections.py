@@ -146,5 +146,3 @@ class TestSelectionWriter_Jmol(_SelectionWriter):
 
         assert_equal(header, self.ref_name,
                      err_msg="SPT file has wrong selection name")
-        assert_array_equal(indices, self.ref_indices,
-                           err_msg="indices were not written correctly")
