@@ -1925,7 +1925,7 @@ class AtomGroup(object):
             raise ValueError("angle computation only makes sense for a group with exactly 3 atoms")
         a = self[0].position - self[1].position
         b = self[2].position - self[1].position
-        
+
         return numpy.rad2deg(mdamath.angle(a, b))
 
     def improper(self):
@@ -2584,9 +2584,9 @@ class AtomGroup(object):
           *filename*
                ``None``: create TRJNAME_FRAME.FORMAT from filenamefmt [``None``]
           *format*
-                PDB, CRD, GRO, VMD (tcl), PyMol (pml), Gromacs (ndx) CHARMM (str);
-                case-insensitive and can also be supplied as the filename
-                extension [PDB]
+                PDB, CRD, GRO, VMD (tcl), PyMol (pml), Gromacs (ndx) CHARMM (str)
+                Jmol (spt); case-insensitive and can also be supplied as the
+                filename extension [PDB]
           *filenamefmt*
                 format string for default filename; use substitution tokens
                 'trjname' and 'frame' ["%(trjname)s_%(frame)d"]
@@ -4207,15 +4207,15 @@ class Universe(object):
     def _matches_unpickling(self, anchor_name, natoms, fname, trajname):
         if anchor_name is None or anchor_name == self.anchor_name:
             try:
-                return len(self.atoms)==natoms and self.filename==fname and self.trajectory.filenames==trajname 
+                return len(self.atoms)==natoms and self.filename==fname and self.trajectory.filenames==trajname
             except AttributeError: # Only ChainReaders have filenames (plural)
-                return len(self.atoms)==natoms and self.filename==fname and self.trajectory.filename==trajname 
+                return len(self.atoms)==natoms and self.filename==fname and self.trajectory.filename==trajname
         else:
             return False
 
     # A __del__ method can be added to the Universe, but bear in mind that for
     # that to work objects under Universe that hold backreferences to it can
-    # only do so using weakrefs. (Issue #297) 
+    # only do so using weakrefs. (Issue #297)
     #def __del__(self):
     #    pass
 
@@ -4318,4 +4318,3 @@ def Merge(*args):
     MDAnalysis.topology.core.build_segments(u.atoms)
 
     return u
-
