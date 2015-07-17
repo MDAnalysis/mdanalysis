@@ -45,6 +45,7 @@ from . import vmd
 from . import pymol
 from . import gromacs
 from . import charmm
+from . import jmol
 
 # Signature:
 #   W = SelectionWriter(filename, **kwargs)
@@ -54,6 +55,7 @@ _selection_writers = {
     'charmm': charmm.SelectionWriter, 'str': charmm.SelectionWriter,
     'pymol': pymol.SelectionWriter, 'pml': pymol.SelectionWriter,
     'gromacs': gromacs.SelectionWriter, 'ndx': gromacs.SelectionWriter,
+    'jmol': jmol.SelectionWriter, 'spt': jmol.SelectionWriter
 }
 
 def get_writer(filename, defaultformat):
@@ -68,6 +70,3 @@ def get_writer(filename, defaultformat):
     except KeyError:
         raise NotImplementedError("Writing as %r is not implemented; only %r will work."
                                   % (format, _selection_writers.keys()))
-
-
-

@@ -36,6 +36,9 @@ table below.
    | charmm        | str       | w     | CHARMM_ selection of individual atoms;     |
    |               |           |       | module :mod:`MDAnalysis.selections.charmm` |
    +---------------+-----------+-------+--------------------------------------------+
+   | jmol          | spt       | w     | Jmol_ selection commands;                  |
+   |               |           |       | module :mod:`MDAnalysis.selections.jmol`   |
+   +---------------+-----------+-------+--------------------------------------------+
 
 .. rubric:: Contents
 
@@ -46,9 +49,11 @@ table below.
    selections/pymol
    selections/gromacs
    selections/charmm
+   selections/jmol
    selections/base
 
 .. _CHARMM: http://www.charmm.org
 .. _Gromacs: http://www.gromacs.org
 .. _VMD: http://www.ks.uiuc.edu/Research/vmd/
 .. _PyMOL: http://www.pymol.org
+.. _Jmol: http://wiki.jmol.org/
