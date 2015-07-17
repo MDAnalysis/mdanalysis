@@ -328,11 +328,18 @@ def make_whole(atomgroup, reference_atom=None):
         raise ValueError("Non orthogonal boxes are not supported")
     box = atomgroup.dimensions[:3]
 
+    if all(box == 0.0):
+        raise ValueError("Supplied box had zero size")
+
     box_length = box.min() / 2.0
-    # This isn't technically correct, we should really check the bond as
-    # vectors against the box dimensions.  But if the box is large wrt
-    # the bonds, then this becomes true.
-    if all(atomgroup.bonds.bonds() < box_length):
+
+    bondlengths = atomgroup.bonds.bonds(pbc=True)
+    if bondlengths.min() * 1.4 > box_length:
+        raise ValueError("Box lengths are too small relative to bond lengths")
+
+    # If bond lengths don't change after pbc applied, then no bonds
+    # straddle the box boundaries
+    if np.allclose(atomgroup.bonds.bonds(), bondlengths):
         return
     # Can't reuse this calculation of bond lengths as we're changing
     # stuff as we go.

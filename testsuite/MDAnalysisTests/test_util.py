@@ -241,6 +241,20 @@ class TestMakeWhole(object):
         self.u.dimensions = [10., 10., 10., 80., 80., 80]
         assert_raises(ValueError, mdamath.make_whole, self.u.residues[0])
 
+    def test_zero_box_size(self):
+        self._load_bonds()
+
+        self.u.dimensions = [0., 0., 0., 90., 90., 90.]
+        assert_raises(ValueError, mdamath.make_whole, self.u.residues[0])
+
+    def test_too_small_box_size(self):
+        self._load_bonds()
+
+        # Set the z dimensions to 0.5, which is small compared to the
+        # bonds (1-2)
+        self.u.dimensions = [100.0, 100.0, 0.5, 90., 90., 90.]
+        assert_raises(ValueError, mdamath.make_whole, self.u.residues[0])
+
     def _load_bonds(self):
         # Load some bonds into Universe, not required for all tests
         bondlist = [(0, 1), (1, 2), (1, 3), (1, 4), (4, 5), (4, 6), (4, 7)]
