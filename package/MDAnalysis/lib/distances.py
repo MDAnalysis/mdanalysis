@@ -139,25 +139,28 @@ def _check_lengths_match(*arrays):
 def distance_array(reference, configuration, box=None, result=None):
     """Calculate all distances between a reference set and another configuration.
 
-    Calculate all distances d_ij between the coordinates ref[i] and
-    conf[j] in the numpy arrays *ref* and *conf*. If an orthorhombic
-    *box* is supplied then a minimum image convention is used before
+    If there are *i* positions in reference, and *j* positions in configuration,
+    will calculate a *i* x *j* array of distances
+    If an *box* is supplied then a minimum image convention is used when
     calculating distances.
 
-    If a 2D numpy array of dtype ``numpy.float64`` with the shape ``(len(ref),
-    len(conf))`` is provided in *result* then this preallocated array is
+    If a 2D numpy array of dtype ``numpy.float64`` with the shape ``(len(reference),
+    len(configuration))`` is provided in *result* then this preallocated array is
     filled. This can speed up calculations.
 
-    d = distance_array(ref,conf[,box[,result=d]])
+    d = distance_array(reference, configuration[,box[,result=d]])
 
     :Arguments:
-        *ref*
-             reference coordinate array
-        *conf*
-             configuration coordinate array
+        *reference*
+             reference coordinate array (must be numpy.float32)
+        *configuration*
+             configuration coordinate array (must be numpy.float32)
         *box*
              cell dimensions (minimum image convention is applied)
-             or None [``None``]
+             or None [``None``].
+             Cell dimensions must be in an identical to format to those returned
+             by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`,
+             [lx, ly, lz, alpha, beta, gamma]
         *result*
              optional preallocated result array which must have the
              shape (len(ref), len(conf)) and dtype=numpy.float64.
@@ -165,8 +168,8 @@ def distance_array(reference, configuration, box=None, result=None):
              is called repeatedly. [``None``]
     :Returns:
          *d*
-             (len(ref),len(conf)) numpy array with the distances d[i,j]
-             between ref coordinates i and conf coordinates j
+             (len(reference),len(configuration)) numpy array with the distances d[i,j]
+             between reference coordinates i and configuration coordinates j
 
     .. Note:: This method is slower than it could be because internally we need to
           make copies of the ref and conf arrays.
@@ -221,6 +224,9 @@ def self_distance_array(reference, box=None, result=None):
         *box*
              cell dimensions (minimum image convention is applied)
              or None [``None``]
+             Cell dimensions must be in an identical to format to those returned
+             by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`,
+             [lx, ly, lz, alpha, beta, gamma]
         *result*
              optional preallocated result array which must have the shape
              (N*(N-1)/2,) and dtype ``numpy.float64``. Avoids creating
@@ -281,13 +287,16 @@ def transform_RtoS(inputcoords, box):
 
     :Arguments:
       *inputcoords*
-                      An n x 3 array of coordinate data, of type np.float32
+          An n x 3 array of coordinate data, of type np.float32
       *box*
-                      The unitcell dimesions for this system
+          The unitcell dimesions for this system
+          Cell dimensions must be in an identical to format to those returned
+          by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`,
+          [lx, ly, lz, alpha, beta, gamma]
 
     :Returns:
        *outcoords*
-                      An n x 3 array of fractional coordiantes
+          An n x 3 array of fractional coordiantes
     """
     coords = inputcoords.copy('C')
     numcoords = coords.shape[0]
@@ -321,13 +330,16 @@ def transform_StoR(inputcoords, box):
 
     :Arguments:
       *inputcoords*
-                      An n x 3 array of coordinate data, of type np.float32
+           An n x 3 array of coordinate data, of type np.float32
       *box*
-                      The unitcell dimesions for this system
+           The unitcell dimesions for this system
+           Cell dimensions must be in an identical to format to those returned
+           by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`,
+           [lx, ly, lz, alpha, beta, gamma]
 
     :Returns:
        *outcoords*
-                      An n x 3 array of fracional coordiantes
+            An n x 3 array of fracional coordiantes
     """
     coords = inputcoords.copy('C')
     numcoords = coords.shape[0]
@@ -338,8 +350,8 @@ def transform_StoR(inputcoords, box):
         box = triclinic_vectors(box)
     elif (boxtype == 'ortho'):
         box = np.array([[box[0], 0.0, 0.0],
-                           [0.0, box[1], 0.0],
-                           [0.0, 0.0, box[2]]], dtype=np.float32)
+                        [0.0, box[1], 0.0],
+                        [0.0, 0.0, box[2]]], dtype=np.float32)
 
     coord_transform(coords, box)
 
@@ -373,6 +385,9 @@ def calc_bonds(coords1, coords2, box=None, result=None):
           An array of coordinates for the other half of bond
        *box*
           Unit cell information if periodic boundary conditions are required [None]
+          Cell dimensions must be in an identical to format to those returned
+          by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`,
+          [lx, ly, lz, alpha, beta, gamma]
        *result*
           optional preallocated result array which must be same length as coord
           arrays and dtype=numpy.float64. Avoids creating the
@@ -445,6 +460,9 @@ def calc_angles(coords1, coords2, coords3, box=None, result=None):
             optional unit cell information.  This ensures that the connecting vectors between
             atoms respect minimum image convention.  This is import when the angle might
             be between atoms in different images.
+            Cell dimensions must be in an identical to format to those returned
+            by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`,
+            [lx, ly, lz, alpha, beta, gamma]
         *result*
             optional preallocated results array which must have same length as coordinate
             array and dtype=numpy.float64.
@@ -528,6 +546,9 @@ def calc_torsions(coords1, coords2, coords3, coords4, box=None, result=None):
             optional unit cell information.  This ensures that the connecting vectors
             between atoms respect minimum image convention.  This is import when the
             angle might be between atoms in different images.
+            Cell dimensions must be in an identical to format to those returned
+            by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`,
+            [lx, ly, lz, alpha, beta, gamma]
         *result*
             optional preallocated results array which must have same length as
             coordinate array and dtype=numpy.float64.
@@ -585,14 +606,17 @@ def applyPBC(incoords, box):
 
     :Arguments:
         *coords*
-                  coordinate array (of type numpy.float32)
+           coordinate array (of type numpy.float32)
         *box*
-                  box dimensions, can be either orthogonal or triclinic information
+           box dimensions, can be either orthogonal or triclinic information
+           Cell dimensions must be in an identical to format to those returned
+           by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`,
+           [lx, ly, lz, alpha, beta, gamma]
 
     :Returns:
         *newcoords*
-                  coordinates that are now all within the primary unit cell,
-                  as defined by box
+           coordinates that are now all within the primary unit cell,
+           as defined by box
 
     .. versionadded:: 0.8
     """
