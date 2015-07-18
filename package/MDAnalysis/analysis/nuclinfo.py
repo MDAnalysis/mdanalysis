@@ -26,17 +26,17 @@ Nucleic acid analysis --- :mod:`MDAnalysis.analysis.nuclinfo`
 :Copyright: GNU Public License v3
 
 The module provides functions to analyze nuclic acid structures, in
-particular 
+particular
 
-- backbone dihedrals, 
-- chi dihedrals, 
+- backbone dihedrals,
+- chi dihedrals,
 - AS or CP phase angles,
 - Watson-Crick N1-N3 distances, C2-O2 distances, N6-O4 distances, O6-N4 distances.
 
 For applications of this kind of analysis see [Denning2011]_ and [Denning2012]_.
 
 All functions take a :class:`~MDAnalysis.core.AtomGroup.Universe` as an argument
-together with further parameters that specify the base or bases in question. Angles are 
+together with further parameters that specify the base or bases in question. Angles are
 in degrees. The functions use standard CHARMM names for nucleic acids and atom names.
 
 
@@ -47,7 +47,7 @@ in degrees. The functions use standard CHARMM names for nucleic acids and atom n
               CHARMM all-atom additive force field for RNA. *J. Comput. Chem.* 32 (2011),
               1929--1943. doi: `10.1002/jcc.21777`_
 
-.. [Denning2012] E.J. Denning and A.D. MacKerell, Jr. Intrinsic Contribution of the 2'-Hydroxyl to 
+.. [Denning2012] E.J. Denning and A.D. MacKerell, Jr. Intrinsic Contribution of the 2'-Hydroxyl to
               RNA Conformational Heterogeneity. *J. Am. Chem. Soc.* 134 (2012), 2800--2806.
               doi: `10.1021/ja211328g`_
 
@@ -102,7 +102,7 @@ Dihedral angles
 import numpy
 from math import pi, sin, cos, atan2, sqrt, pow
 
-from MDAnalysis.lib.mdamath import norm
+from MDAnalysis.lib import mdamath
 
 
 def wc_pair(universe, i, bp, seg1="SYSTEM", seg2="SYSTEM"):
@@ -123,7 +123,7 @@ def wc_pair(universe, i, bp, seg1="SYSTEM", seg2="SYSTEM"):
       *bp*
           resid of the second base
 
-    NOTE: if failure occurs be sure to check the segment identification
+    .. NOTE:: If failure occurs be sure to check the segment identification.
 
     .. versionadded:: 0.7.6
     """
@@ -133,7 +133,7 @@ def wc_pair(universe, i, bp, seg1="SYSTEM", seg2="SYSTEM"):
         a1, a2 = "N1", "N3"
     wc_dist = universe.selectAtoms(
         " (segid %s and resid %s and name %s)  or (segid %s and resid %s and name %s) " % (seg1, i, a1, seg2, bp, a2))
-    wc = norm(wc_dist[0].pos - wc_dist[1].pos)
+    wc = mdamath.norm(wc_dist[0].pos - wc_dist[1].pos)
     return wc
 
 
@@ -155,7 +155,7 @@ def minor_pair(universe, i, bp, seg1="SYSTEM", seg2="SYSTEM"):
       *bp*
           resid of the second base
 
-    NOTE: if failure occurs be sure to check the segment identification
+    .. NOTE:: If failure occurs be sure to check the segment identification.
 
     .. versionadded:: 0.7.6
     """
@@ -165,7 +165,7 @@ def minor_pair(universe, i, bp, seg1="SYSTEM", seg2="SYSTEM"):
         a1, a2 = "C2", "O2"
     c2o2_dist = universe.selectAtoms(
         " (segid %s and resid %s and name %s)  or (segid %s and resid %s and name %s) " % (seg1, i, a1, seg2, bp, a2))
-    c2o2 = norm(c2o2_dist[0].pos - c2o2_dist[1].pos)
+    c2o2 = mdamath.norm(c2o2_dist[0].pos - c2o2_dist[1].pos)
     return c2o2
 
 
@@ -187,7 +187,7 @@ def major_pair(universe, i, bp, seg1="SYSTEM", seg2="SYSTEM"):
       *bp*
           resid of the second base
 
-    NOTE: if failure occurs be sure to check the segment identification
+    .. NOTE:: If failure occurs be sure to check the segment identification
 
     .. versionadded:: 0.7.6
     """
@@ -203,25 +203,24 @@ def major_pair(universe, i, bp, seg1="SYSTEM", seg2="SYSTEM"):
             a1, a2 = "N6", "O4"
     no_dist = universe.selectAtoms(
         " (segid %s and resid %s and name %s)  or (segid %s and resid %s and name %s) " % (seg1, i, a1, seg2, bp, a2))
-    major = norm(no_dist[0].pos - no_dist[1].pos)
+    major = mdamath.norm(no_dist[0].pos - no_dist[1].pos)
     return major
 
 
 def phase_cp(universe, seg, i):
-    """Pseudo-angle describing the phase of the ribose pucker for residue *i* 
-    using the CP method 
-    
-    The angle is computed by the positions of atoms in the ribose ring 
-    
+    """Pseudo-angle describing the phase of the ribose pucker for residue *i* using the CP method.
+
+    The angle is computed by the positions of atoms in the ribose ring.
+
     :Arguments:
-      *universe* 
+      *universe*
          :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory
-         
+
        *segid*
          segment identity of resid
       *i*
          resid of the base
-    
+
     .. versionadded:: 0.7.6
     """
     atom1 = universe.selectAtoms(" atom %s %s O4\' " % (seg, i))
@@ -275,11 +274,11 @@ def phase_cp(universe, seg, i):
 
 def phase_as(universe, seg, i):
     """Pseudo-angle describing the phase of the ribose pucker for residue *i* using the AS method
-    
-    The angle is computed by the position vector of atoms in the ribose ring
-    
+
+    The angle is computed by the position vector of atoms in the ribose ring.
+
     :Arguments:
-      *universe* 
+      *universe*
          :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory
       *segid*
          segment identity of resid
@@ -323,19 +322,19 @@ def phase_as(universe, seg, i):
 
 def tors(universe, seg, i):
     """Backbone dihedrals includes alpha, beta, gamma, delta, epsilon, zeta, chi
-    
-    The dihedral is computed based on position atoms for resid *i* 
-    
+
+    The dihedral is computed based on position atoms for resid *i*.
+
     :Arguments:
-      *universe* 
+      *universe*
          :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory
       *segid*
-         segid of resid 
+         segid of resid
       *i*
          resid of the base
 
-    NOTE: if failure occurs be sure to check the segment identification
-     
+    .. NOTE:: If failure occurs be sure to check the segment identification
+
     """
     a = universe.selectAtoms(" atom %s %s O3\' " % (seg, i - 1), " atom %s %s P  " % (seg, i),
                              " atom %s %s O5\' " % (seg, i), " atom %s %s C5\' " % (seg, i))
@@ -381,9 +380,9 @@ def tors(universe, seg, i):
 
 def tors_alpha(universe, seg, i):
     """alpha backbone dihedral
-    
-    The dihedral is computed based on position atoms for resid *i*
-    
+
+    The dihedral is computed based on position atoms for resid *i*.
+
     :Arguments:
       *universe*
          :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory
@@ -404,11 +403,11 @@ def tors_alpha(universe, seg, i):
 
 def tors_beta(universe, seg, i):
     """beta  backbone dihedral
-    
-    The dihedral is computed based on position atoms for resid *i*
-    
+
+    The dihedral is computed based on position atoms for resid *i*.
+
     :Arguments:
-      *universe* 
+      *universe*
          :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory
       *segid*
          segid of resid
@@ -427,11 +426,11 @@ def tors_beta(universe, seg, i):
 
 def tors_gamma(universe, seg, i):
     """ Gamma backbone dihedral
-    
-     The dihedral is computed based on position atoms for resid *i*
-    
+
+     The dihedral is computed based on position atoms for resid *i*.
+
     :Arguments:
-      *universe* 
+      *universe*
          :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory
       *segid*
          segid of resid
@@ -450,11 +449,11 @@ def tors_gamma(universe, seg, i):
 
 def tors_delta(universe, seg, i):
     """delta backbone dihedral
-    
-    The dihedral is computed based on position atoms for resid *i*
-    
+
+    The dihedral is computed based on position atoms for resid *i*.
+
     :Arguments:
-      *universe* 
+      *universe*
          :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory
       *segid*
          segid of resid
@@ -474,10 +473,10 @@ def tors_delta(universe, seg, i):
 def tors_eps(universe, seg, i):
     """Epsilon backbone dihedral
 
-    The dihedral is computed based on position atoms for resid *i*
-    
+    The dihedral is computed based on position atoms for resid *i*.
+
     :Arguments:
-      *universe* 
+      *universe*
          :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory
       *segid*
          segid of resid
@@ -497,10 +496,10 @@ def tors_eps(universe, seg, i):
 def tors_zeta(universe, seg, i):
     """Zeta backbone dihedral
 
-    The dihedral is computed based on position atoms for resid *i*
-    
+    The dihedral is computed based on position atoms for resid *i*.
+
     :Arguments:
-      *universe* 
+      *universe*
          :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory
       *segid*
          segid of resid
@@ -519,10 +518,11 @@ def tors_zeta(universe, seg, i):
 
 def tors_chi(universe, seg, i):
     """chi nucleic acid dihedral
-     The dihedral is computed based on position atoms for resid *i*
-     
+
+     The dihedral is computed based on position atoms for resid *i*.
+
      :Arguments:
-       *universe* 
+       *universe*
            :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory
        *segid*
            segid of resid
@@ -544,13 +544,13 @@ def tors_chi(universe, seg, i):
 
 
 def hydroxyl(universe, seg, i):
-    """2-hydroxyl dihedral. Useful only for RNA calculations. 
+    """2-hydroxyl dihedral. Useful only for RNA calculations.
 
-     :Note: This dihedral calculation will only work if using atom names 
-      as documented by charmm force field parameters. 
+     .. Note:: This dihedral calculation will only work if using atom names as
+               documented by charmm force field parameters.
 
      :Arguments:
-       *universe* 
+       *universe*
            :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory
        *segid*
            segid of resid
@@ -561,7 +561,11 @@ def hydroxyl(universe, seg, i):
     """
     h = universe.selectAtoms(" atom %s %s C1\' " % (seg, i), " atom %s %s C2\' " % (seg, i),
                              " atom %s %s O2\' " % (seg, i), " atom %s %s H2\'\' " % (seg, i))
-    hydr = h.dihedral()
+    try:
+        hydr = h.dihedral()
+    except ValueError:
+        raise ValueError("Resid {0} does not contain atoms C1', C2', O2', H2' but atoms {1}".format(
+                i, str(list(h.atoms))))
     if hydr < 0:
         hydr = hydr + 360
     return hydr
@@ -569,24 +573,25 @@ def hydroxyl(universe, seg, i):
 
 def pseudo_dihe_baseflip(universe, bp1, bp2, i, seg1="SYSTEM", seg2="SYSTEM", seg3="SYSTEM"):
     """pseudo dihedral for flipped bases. Useful only for nucleic acid base flipping
-     
+
      The dihedral is computed based on position atoms for resid *i*
-    
-     :Note: This dihedral calculation will only work if using atom names as documented by charmm force field parameters. 
+
+     .. Note:: This dihedral calculation will only work if using atom names as
+               documented by charmm force field parameters.
 
      :Arguments:
-       *universe* 
+       *universe*
            :class:`~MDAnalysis.core.AtomGroup.Universe` containing the trajectory
        *segid1*
            segid of resid base pairing with bp2
        *bp1*
-           resid that base pairs with bp2 
+           resid that base pairs with bp2
        *segid2*
-           segid same as that of segid of flipping resid 
+           segid same as that of segid of flipping resid
        *bp2*
-           resid below the base that flips 
+           resid below the base that flips
        *segid3*
-           segid of resid that flips 
+           segid of resid that flips
        *i*
            resid of the base that flips
 
