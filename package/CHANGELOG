@@ -43,6 +43,8 @@ The rules for this file:
   * MDAnalysis.selection: can also be written to a NamedStream
   * Added function lib.mdamath.make_whole to "unbreak" molecules
     over periodic boundaries.
+  * Added triclinic_dimensions to Timestep, returns representation of unit
+    cell as triclinic vectors (Issue #276)
 
   Changes
   * A ProtoReader class intermediate between IObase and Reader was added so

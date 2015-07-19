@@ -32,6 +32,7 @@ from nose.tools import assert_not_equal
 from MDAnalysisTests.plugins.knownfailure import knownfailure
 
 import MDAnalysis as mda
+from MDAnalysis.lib.mdamath import triclinic_vectors
 from MDAnalysis import NoDataError
 from MDAnalysisTests.datafiles import (
     PSF, DCD, DCD_empty, PDB_small, XPDB_small, PDB_closed, PDB_multiframe,
@@ -242,6 +243,15 @@ class _TestTimestep(TestCase):
             pass  # How to test volume of box when I don't set unitcell first?
         else:
             assert_raises(NotImplementedError, getattr, self.ts, "volume")
+
+    def test_triclinic_vectors(self):
+        assert_allclose(self.ts.triclinic_dimensions, triclinic_vectors(self.ts.dimensions))
+
+    def test_set_triclinic_vectors(self):
+        ref_vec = triclinic_vectors(self.newbox)
+        self.ts.triclinic_dimensions = ref_vec
+        assert_equal(self.ts.dimensions, self.newbox)
+        assert_allclose(self.ts._unitcell, self.unitcell)
 
     @attr('issue')
     def test_coordinate_getter_shortcuts(self):
@@ -468,6 +478,12 @@ class TestDCDTimestep(_TestTimestep, _DCDTimestep):
 class TestDMSTimestep(_TestTimestep, _DMSTimestep):
     def test_dimensions_set_box(self):
         self.ts.dimensions = self.newbox
+        assert_equal(self.ts.dimensions, self.newbox)
+        assert_equal(self.ts._unitcell, self.unitcell)
+
+    def test_set_triclinic_vectors(self):
+        ref_vec = triclinic_vectors(self.newbox)
+        self.ts.triclinic_dimensions = ref_vec
         assert_equal(self.ts.dimensions, self.newbox)
         assert_equal(self.ts._unitcell, self.unitcell)
 
