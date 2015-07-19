@@ -29,11 +29,6 @@ class AmazingMultiFrameReader(Reader):
         self.filename = filename
         self.numframes = 10
         self.numatoms = 10
-        self.skip = 1
-        self.fixed = 0
-        self.periodic = True
-        self.delta = 1.0
-        self.skip_timestep = 1
         # ts isn't a real timestep, but just an integer
         # whose value represents the frame number (0 based)
         self.ts = Timestep(self.numatoms)
@@ -81,8 +76,7 @@ class _TestReader(TestCase):
     
     def test_required_attributes(self):
         """Test that Reader has the required attributes"""
-        for attr in ['filename', 'numatoms', 'numframes', 'fixed', 'skip',
-                     'skip_timestep', 'delta', 'periodic', 'ts',
+        for attr in ['filename', 'numatoms', 'numframes', 'ts',
                      'units', 'format']:
             assert_equal(hasattr(self.reader, attr), True, "Missing attr: {0}".format(attr))
         

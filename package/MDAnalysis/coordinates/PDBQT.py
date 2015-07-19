@@ -176,11 +176,7 @@ class PDBQTReader(base.SingleFrameReader):
             self.convert_pos_from_native(self.ts._pos)  # in-place !
             self.convert_pos_from_native(self.ts._unitcell[:3])  # in-place ! (only lengths)
         self.numframes = 1
-        self.fixed = 0
-        self.skip = 1
-        self.periodic = False
-        self.delta = 0
-        self.skip_timestep = 1
+
         # hack for PDBQTParser:
         self._atoms = np.rec.fromrecords(atoms,
                                          names="serial,name,resName,chainID,resSeq,occupancy,tempFactor,"

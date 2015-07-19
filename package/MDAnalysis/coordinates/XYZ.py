@@ -257,14 +257,10 @@ class XYZReader(base.Reader):
         # note that, like for xtc and trr files, _numatoms and _numframes are used quasi-private variables
         # to prevent the properties being recalculated
         # this is because there is no indexing so the way it measures the number of frames is to read the whole file!
-        self._numatoms = None
+        self._numatoms = self._read_xyz_natoms(self.filename)
         self._numframes = None
 
-        self.periodic = False
-        self.delta = kwargs.pop("delta", 1.0)  # can set delta manually, default is 1ps (taken from TRJReader)
-        self.skip_timestep = 1
-
-        self.ts = self._Timestep(self.numatoms, **self._ts_kwargs)
+        self.ts = self._Timestep(self._numatoms, **self._ts_kwargs)
 
         #        Haven't quite figured out where to start with all the self._reopen() etc.
         #        (Also cannot just use seek() or reset() because that would break with urllib2.urlopen() streams)
@@ -273,20 +269,13 @@ class XYZReader(base.Reader):
     @property
     def numatoms(self):
         """number of atoms in a frame"""
-        if not self._numatoms is None:  # return cached value
-            return self._numatoms
-        try:
-            self._numatoms = self._read_xyz_natoms(self.filename)
-        except IOError:
-            return 0
-        else:
-            return self._numatoms
+        return self._numatoms
 
     def _read_xyz_natoms(self, filename):
         # this assumes that this is only called once at startup and that the filestream is already open
         # (FRAGILE)
-        n = self.xyzfile.readline()
-        self.close()
+        with util.anyopen(self.filename, 'r') as f:
+            n = f.readline()
         # need to check type of n
         return int(n)
 
@@ -367,7 +356,7 @@ class XYZReader(base.Reader):
         # reset ts
         ts = self.ts
         ts.frame = -1
-        ts.time = 0
+
         return self.xyzfile
 
     def Writer(self, filename, **kwargs):

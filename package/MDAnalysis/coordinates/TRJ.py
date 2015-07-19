@@ -76,7 +76,7 @@ AMBER ASCII trajectories are recognised by the suffix '.trj' or
   boxes.
 
 * The trajectory does not contain time information so we simply set
-  the time step to 1 ps (or the user could provide it as kwarg *delta*)
+  the time step to 1 ps (or the user could provide it as kwarg *dt*)
 
 * No direct access of frames is implemented, only iteration through
   the trajectory.
@@ -177,7 +177,7 @@ class TRJReader(base.Reader):
     `numatoms` is left at its default value of ``None``.
 
     The length of a timestep is not stored in the trajectory itself but can
-    be set by passing the `delta` keyword argument to the constructor; it
+    be set by passing the `dt` keyword argument to the constructor; it
     is assumed to be in ps. The default value is 1 ps.
 
     Functionality is currently limited to simple iteration over the
@@ -187,6 +187,7 @@ class TRJReader(base.Reader):
 
     .. versionchanged:: 0.11.0
        Frames now 0-based instead of 1-based
+       kwarg 'delta' renamed to 'dt', for uniformity with other Readers
     """
     format = 'TRJ'
     units = {'time': 'ps', 'length': 'Angstrom'}
@@ -201,8 +202,6 @@ class TRJReader(base.Reader):
         self._numframes = None
 
         self.trjfile = None  # have _read_next_timestep() open it properly!
-        self.skip_timestep = 1  # always 1 for trj at the moment
-        self.delta = kwargs.pop("delta", 1.0)  # can set delta manually, default is 1ps
         self.ts = self._Timestep(self.numatoms, **self._ts_kwargs)
 
         # FORMAT(10F8.3)  (X(i), Y(i), Z(i), i=1,NATOM)
@@ -351,7 +350,7 @@ class TRJReader(base.Reader):
         # reset ts
         ts = self.ts
         ts.frame = -1 
-        ts.time = 0
+
         return self.trjfile
 
     def close(self):
@@ -403,6 +402,7 @@ class NCDFReader(base.Reader):
        Added ability to read Forces
     .. versionchanged:: 0.11.0
        Frame labels now 0-based instead of 1-based
+       kwarg 'delta' renamed to 'dt', for uniformity with other Readers
     """
 
     format = 'NCDF'
@@ -477,8 +477,6 @@ class NCDFReader(base.Reader):
         self.has_velocities = 'velocities' in self.trjfile.variables
         self.has_forces = 'forces' in self.trjfile.variables
 
-        self.skip_timestep = 1  # always 1 for trj at the moment ? CHECK DOCS??
-        self.delta = kwargs.pop("delta", 1.0)  # SHOULD GET FROM NCDF (as mean(diff(time)))??
         self.periodic = 'cell_lengths' in self.trjfile.variables
         self._current_frame = 0
 
@@ -549,7 +547,7 @@ class NCDFReader(base.Reader):
         :Keywords:
           *numatoms*
               number of atoms
-          *delta*
+          *dt*
               length of one timestep in picoseconds
           *remarks*
               string that is stored in the title field
@@ -558,7 +556,7 @@ class NCDFReader(base.Reader):
         """
         numatoms = kwargs.pop('numatoms', self.numatoms)
         kwargs.setdefault('remarks', self.remarks)
-        kwargs.setdefault('delta', self.delta)
+        kwargs.setdefault('dt', self.dt)
         return NCDFWriter(filename, numatoms, **kwargs)
 
 
@@ -583,6 +581,8 @@ class NCDFWriter(base.Writer):
 
     .. versionchanged:: 0.10.0
        Added ability to write velocities and forces
+    .. versionchanged:: 0.11.0
+       kwarg 'delta' renamed to 'dt', for uniformity with other Readers
     """
 
     format = 'NCDF'
@@ -590,7 +590,7 @@ class NCDFWriter(base.Writer):
     units = {'time': 'ps', 'length': 'Angstrom', 'velocity': 'Angstrom/ps',
              'force': 'kcal/(mol*Angstrom)'}
 
-    def __init__(self, filename, numatoms, start=0, step=1, delta=1.0, remarks=None,
+    def __init__(self, filename, numatoms, start=0, step=1, dt=1.0, remarks=None,
                  convert_units=None, zlib=False, cmplevel=1, **kwargs):
         """Create a new NCDFWriter
 
@@ -605,7 +605,7 @@ class NCDFWriter(base.Writer):
             starting timestep
           *step*
             skip between subsequent timesteps
-          *delta*
+          *dt*
             timestep
           *convert_units*
             ``True``: units are converted to the AMBER base format; ``None`` selects
@@ -630,7 +630,7 @@ class NCDFWriter(base.Writer):
 
         self.start = start  # do we use those?
         self.step = step  # do we use those?
-        self.delta = delta
+        self.dt = dt
         self.remarks = remarks or "AMBER NetCDF format (MDAnalysis.coordinates.trj.NCDFWriter)"
 
         self.zlib = zlib
@@ -771,14 +771,12 @@ class NCDFWriter(base.Writer):
             try:
                 time = self.convert_time_to_native(ts.time, inplace=False)
             except AttributeError:
-                time = ts.frame * self.convert_time_to_native(self.delta, inplace=False)
+                time = ts.frame * self.convert_time_to_native(self.dt, inplace=False)
             unitcell = self.convert_dimensions_to_unitcell(ts)
         else:
             pos = ts._pos
-            try:
-                time = ts.time
-            except AttributeError:
-                time = ts.frame * self.delta
+            time = ts.time
+
             unitcell = ts.dimensions
 
         # write step

@@ -336,8 +336,15 @@ Attributes
       The native frame number of the trajectory.  This can differ from ``frame``
       as that will always count sequentially from 0 on iteration, whilst
       ``_frame`` is taken directly from the trajectory.
+  ``time``
+      The current system time in ps.  This value is calculated either from a time
+      set as the Timestep attribute, or from `frame` * `dt`.  Either method allows
+      allows an offset to be applied to the time.
+  ``dt``
+      The change in system time between different frames.  This can be set as an
+      attribute, but defaults to 1.0 ps.
   ``data``
-      A dictionary contained all miscellaneous information for the
+      A dictionary containing all miscellaneous information for the
       current Timestep.
   ``positions``
       A numpy array of all positions in this Timestep, otherwise raises a
@@ -531,18 +538,6 @@ Attributes
      number of atoms (coordinate sets) in a frame (constant)
  ``numframes``
      total number of frames (if known) -- ``None`` if not known
- ``fixed``
-     bool, saying if there are fixed atoms (e.g. dcds)
- ``skip``
-     step size for iterating through the trajectory [1]
- ``skip_timestep``
-     number of integrator steps between frames + 1 (i.e.
-     the stride at which the MD simulation was sampled)
- ``delta``
-     integrator time step (in native units); hence the "length"
-     of a trajctory frame is  ``skip_timestep*delta`` time units
- ``periodic``
-     contains box information for periodic boundary conditions
  ``ts``
      the :class:`~base.Timestep` object; typically customized for each
      trajectory format and derived from :class:`base.Timestep`.
@@ -567,8 +562,19 @@ Attributes
 
 **Optional attributes**
 
+ ``delta``
+     integrator time step (in native units); hence the "length"
+     of a trajctory frame is  ``skip_timestep*delta`` time units
  ``compressed``
      string that identifies the compression (e.g. "gz" or "bz2") or ``None``.
+ ``fixed``
+     bool, saying if there are fixed atoms (e.g. dcds)
+ ``periodic``
+     boolean saying if contains box information for periodic boundary conditions
+     unit cell information is stored in attribute `dimensions`
+ ``skip_timestep``
+     number of integrator steps between frames + 1 (i.e.
+     the stride at which the MD simulation was sampled)
 
 
 Trajectory Writer class

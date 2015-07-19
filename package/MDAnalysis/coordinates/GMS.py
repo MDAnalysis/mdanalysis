@@ -76,13 +76,11 @@ class GMSReader(base.Reader):
         self._runtyp = None
 
         self.ts = self._Timestep(0) # need for properties initial calculations
-        self.periodic = False
-        self.delta = kwargs.pop("delta", 1.0)   # there is no time, so let delta be 1
+
         # update runtyp property
         self.runtyp 
         if not self.runtyp in ['optimize', 'surface']:
             raise AttributeError('Wrong RUNTYP= '+self.runtyp)
-        self.skip_timestep = 1
 
         self.ts = self._Timestep(self.numatoms, **self._ts_kwargs)
         # update numframes property
@@ -248,7 +246,6 @@ class GMSReader(base.Reader):
         # reset ts
         ts = self.ts
         ts.frame = -1 
-        ts.time = 0
         return self.outfile
 
     def close(self):

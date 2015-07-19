@@ -37,6 +37,8 @@ module. The derived classes must follow the Trajectory API in
       .. versionchanged:: 0.11.0
          Frames now 0-based; was 1-based
 
+   .. autoattribute:: time
+   .. autoattribute:: dt
    .. autoattribute:: positions
    .. autoattribute:: velocities
    .. autoattribute:: forces
@@ -160,9 +162,10 @@ class Timestep(object):
           *forces*
             Whether this Timestep has force information [``False``]
           *dt*
-            The time difference between frames (ps)
+            The time difference between frames (ps).  If :attr:`time`
+            is set, then `dt` will be ignored.
           *time_offset*
-            The starting time from which to calculate time
+            The starting time from which to calculate time (ps)
 
         .. versionchanged:: 0.11.0
            Added keywords for positions, velocities and forces
@@ -173,7 +176,6 @@ class Timestep(object):
         # self.frame to 0
         self.frame = -1
         self._numatoms = numatoms
-        self.time = 0.0
 
         self.data = {}
 
@@ -592,6 +594,57 @@ class Timestep(object):
         """volume of the unitcell"""
         return core.box_volume(self.dimensions)
 
+    @property
+    def dt(self):
+        """The time difference in ps between timesteps
+
+        .. Note::
+           This defaults to 1.0 ps in the absence of time data
+
+        .. versionadded:: 0.11.0
+        """
+        try:
+            return self.data['dt']
+        except KeyError:
+            warnings.warn("Reader has no dt information, set to 1.0 ps")
+            return 1.0
+
+    @dt.setter
+    def dt(self, new):
+        self.data['dt'] = new
+
+    @dt.deleter
+    def dt(self):
+        del self.data['dt']
+
+    @property
+    def time(self):
+        """The time in ps of this timestep
+
+        This is calculated as::
+
+          time = ts.data['time_offset'] + ts.time
+
+        Or, if the trajectory doesn't provide time information::
+
+          time = ts.data['time_offset'] + ts.frame * ts.dt
+
+        .. versionadded:: 0.11.0
+        """
+        offset = self.data.get('time_offset', 0)
+        try:
+            return self.data['time'] + offset
+        except KeyError:
+            return self.dt * self.frame + offset
+
+    @time.setter
+    def time(self, new):
+        self.data['time'] = new
+
+    @time.deleter
+    def time(self):
+        del self.data['time']
+
 
 class IObase(object):
     """Base class bundling common functionality for trajectory I/O.
@@ -802,7 +855,7 @@ class ProtoReader(IObase):
     @property
     def dt(self):
         """Time between two trajectory frames in picoseconds."""
-        return self.skip_timestep * self.convert_time_from_native(self.delta)
+        return self.ts.dt
 
     @property
     def totaltime(self):
@@ -821,15 +874,10 @@ class ProtoReader(IObase):
     def time(self):
         """Time of the current frame in MDAnalysis time units (typically ps).
 
-        time = :attr:`Timestep.frame` * :attr:`Reader.dt`
+        This is either read straight from the Timestep, or calculated as
+        time = :attr:`Timestep.frame` * :attr:`Timestep.dt`
         """
-        try:
-            return self.ts.frame * self.dt
-        except KeyError:
-            # single frame formats fail with KeyError because they do not define
-            # a unit for time so we just always return 0 because time is a required
-            # attribute of the Reader
-            return 0.0
+        return self.ts.time
 
     def Writer(self, filename, **kwargs):
         """Returns a trajectory writer with the same properties as this trajectory."""
@@ -839,16 +887,15 @@ class ProtoReader(IObase):
     def OtherWriter(self, filename, **kwargs):
         """Returns a writer appropriate for *filename*.
 
-        Sets the default keywords *start*, *step* and *delta* (if
+        Sets the default keywords *start*, *step* and *dt* (if
         available). *numatoms* is always set from :attr:`Reader.numatoms`.
 
         .. SeeAlso:: :meth:`Reader.Writer` and :func:`MDAnalysis.Writer`
         """
         kwargs['numatoms'] = self.numatoms  # essential
         kwargs.setdefault('start', self.frame)
-        kwargs.setdefault('step', self.skip_timestep)
         try:
-            kwargs.setdefault('delta', self.dt)
+            kwargs.setdefault('dt', self.dt)
         except KeyError:
             pass
         return core.writer(filename, **kwargs)
@@ -970,8 +1017,8 @@ class ProtoReader(IObase):
         return start, stop, step
 
     def __repr__(self):
-        return "< %s %r with %d frames of %d atoms (%d fixed) >" % \
-               (self.__class__.__name__, self.filename, self.numframes, self.numatoms, self.fixed)
+        return "< %s %r with %d frames of %d atoms>" % \
+               (self.__class__.__name__, self.filename, self.numframes, self.numatoms)
 
 class Reader(ProtoReader):
     """Base class for trajectory readers that extends :class:`ProtoReader` with a :meth:`__del__` method.
@@ -997,13 +1044,6 @@ class Reader(ProtoReader):
         if convert_units is None:
             convert_units = flags['convert_lengths']
         self.convert_units = convert_units
-
-        self.fixed = False
-        self.periodic = True
-        self.skip = 1
-        self._delta = None
-        self._dt = None
-        self._skip_timestep = None
 
         ts_kwargs = {}
         for att in ('dt', 'time_offset'):
@@ -1079,7 +1119,7 @@ class ChainReader(ProtoReader):
         self.skip = kwargs.get('skip', 1)
         self._default_delta = kwargs.pop('delta', None)
         self.numatoms = self._get_same('numatoms')
-        self.fixed = self._get_same('fixed')
+        #self.fixed = self._get_same('fixed')
 
         # Translation between virtual frames and frames in individual
         # trajectories.
@@ -1293,10 +1333,10 @@ class ChainReader(ProtoReader):
         return filename[0] if isinstance(filename, tuple) else filename
 
     def __repr__(self):
-        return "< %s %r with %d frames of %d atoms (%d fixed) >" % \
+        return "< %s %r with %d frames of %d atoms>" % \
                (self.__class__.__name__,
                [os.path.basename(self.get_flname(fn)) for fn in self.filenames],
-               self.numframes, self.numatoms, self.fixed)
+               self.numframes, self.numatoms)
 
 
 class Writer(IObase):
@@ -1392,11 +1432,6 @@ class SingleFrameReader(ProtoReader):
         self.convert_units = convert_units
 
         self.numframes = 1
-        self.fixed = 0
-        self.skip = 1
-        self.periodic = False
-        self.delta = 0
-        self.skip_timestep = 1
 
         ts_kwargs = {}
         for att in ('dt', 'time_offset'):
