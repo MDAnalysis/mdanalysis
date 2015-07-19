@@ -354,6 +354,23 @@ class _TestTimestep(TestCase):
         ts = self.Timestep(20, dt=0.04)
 
         assert_equal(ts.data['dt'], 0.04)
+        assert_equal(ts.dt, 0.04)
+
+    def test_redefine_dt(self):
+        ts = self.Timestep(20, dt=0.04)
+        assert_equal(ts.data['dt'], 0.04)
+        assert_equal(ts.dt, 0.04)
+        ts.dt = refdt = 0.46
+        assert_equal(ts.data['dt'], refdt)
+        assert_equal(ts.dt, refdt)
+
+    def test_delete_dt(self):
+        ts = self.Timestep(20, dt=0.04)
+        assert_equal(ts.data['dt'], 0.04)
+        assert_equal(ts.dt, 0.04)
+        del ts.dt
+        assert_equal('dt' in ts.data, False)
+        assert_equal(ts.dt, 1.0)  # default value
 
     def test_supply_time_offset(self):
         ts = self.Timestep(20, time_offset=100.0)
@@ -367,6 +384,15 @@ class _TestTimestep(TestCase):
 
         assert_equal(ts.time, reftime)
 
+    def test_delete_time(self):
+        ts = self.Timestep(20)
+        ts.frame = 0
+        ts.time = reftime = 1234.0
+
+        assert_equal(ts.time, reftime)
+        del ts.time
+        assert_equal(ts.time, 0.0)  # default to 1.0 (dt) * 0 (frame)
+
     def test_time_with_offset(self):
         ref_offset = 2345.0
         ts = self.Timestep(20, time_offset=ref_offset)
@@ -378,6 +404,20 @@ class _TestTimestep(TestCase):
     def test_dt(self):
         ref_dt = 45.0
         ts = self.Timestep(20, dt=ref_dt)
+
+        for i in range(10):
+            ts.frame = i
+            assert_equal(ts.time, i * ref_dt)
+
+    def test_change_dt(self):
+        ref_dt = 45.0
+        ts = self.Timestep(20, dt=ref_dt)
+
+        for i in range(10):
+            ts.frame = i
+            assert_equal(ts.time, i * ref_dt)
+
+        ts.dt = ref_dt = 77.0
 
         for i in range(10):
             ts.frame = i

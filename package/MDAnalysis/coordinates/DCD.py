@@ -396,6 +396,7 @@ class DCDReader(base.Reader):
     .. versionchanged:: 0.11.0
        Frames now 0-based instead of 1-based
        Native frame number read into ts._frame
+       Removed skip keyword and functionality
     """
     format = 'DCD'
     units = {'time': 'AKMA', 'length': 'Angstrom'}

@@ -80,10 +80,12 @@ The rules for this file:
   * NCDF Reader no longer has a default skip_timestep of 1 (Issue #350)
   * All Writers now refer to time between written Timesteps as "dt",
     was previously "delta" in some Writers. (Issue #206)
+  * DCDReader no longer supports the "skip" keyword.  Use slicing
+    on reader iteration to achieve same affect.
 
   Fixes
   * Amber TRJ and NCDF Reader & Writers now use 'dt' instead of 'delta'
-    to refer to time elapsed between timesteps. (Issue #350)
+    to refer to time elapsed between timesteps. (Issue #350 and #206)
   * Fixed TPRParser considering LJ 1..4 exclusions as bonds (Issue #351)
   * ChainReaders no longer leak (Issue #312)
   * analysis.hbonds.HydrogenBondAnalysis performs a sanity check for

@@ -344,7 +344,7 @@ Attributes
       The change in system time between different frames.  This can be set as an
       attribute, but defaults to 1.0 ps.
   ``data``
-      A dictionary contained all miscellaneous information for the
+      A dictionary containing all miscellaneous information for the
       current Timestep.
   ``positions``
       A numpy array of all positions in this Timestep, otherwise raises a
@@ -570,9 +570,8 @@ Attributes
  ``fixed``
      bool, saying if there are fixed atoms (e.g. dcds)
  ``periodic``
-     contains box information for periodic boundary conditions
- ``skip``
-     step size for iterating through the trajectory [1]
+     boolean saying if contains box information for periodic boundary conditions
+     unit cell information is stored in attribute `dimensions`
  ``skip_timestep``
      number of integrator steps between frames + 1 (i.e.
      the stride at which the MD simulation was sampled)

@@ -147,8 +147,8 @@ class TrjWriter(base.Writer):
              skip in frames between subsequent timesteps; only used when *dt* is set.
           *dt*
              time between frames to use. If set will override any time information
-             contained in thee
-             passed :class:`Timestep` objects, which will otherwise be used.
+             contained in the passed :class:`Timestep` objects, which will otherwise
+             be used.
              The :attr:`~Timestep.time` attribute defaults to a timestep of
              to setting the trajectory time at 1 ps per step if there is no
              time information.

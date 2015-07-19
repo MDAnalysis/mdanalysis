@@ -37,6 +37,8 @@ module. The derived classes must follow the Trajectory API in
       .. versionchanged:: 0.11.0
          Frames now 0-based; was 1-based
 
+   .. autoattribute:: time
+   .. autoattribute:: dt
    .. autoattribute:: positions
    .. autoattribute:: velocities
    .. autoattribute:: forces
@@ -611,17 +613,21 @@ class Timestep(object):
     def dt(self, new):
         self.data['dt'] = new
 
+    @dt.deleter
+    def dt(self):
+        del self.data['dt']
+
     @property
     def time(self):
         """The time in ps of this timestep
 
         This is calculated as::
 
-          time = data['time_offset'] + data['time']
+          time = ts.data['time_offset'] + ts.time
 
         Or, if the trajectory doesn't provide time information::
 
-          time = data['offset'] + frame * dt
+          time = ts.data['time_offset'] + ts.frame * ts.dt
 
         .. versionadded:: 0.11.0
         """
@@ -634,6 +640,10 @@ class Timestep(object):
     @time.setter
     def time(self, new):
         self.data['time'] = new
+
+    @time.deleter
+    def time(self):
+        del self.data['time']
 
 
 class IObase(object):
