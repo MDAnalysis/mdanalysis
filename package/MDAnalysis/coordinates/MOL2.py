@@ -85,9 +85,6 @@ class MOL2Reader(base.Reader):
         self.substructure = {}
         self.frames = blocks
         self.numframes = len(blocks)
-        self.periodic = False
-        self.delta = 0
-        self.skip_timestep = 1
 
     def parse_block(self, block):
         sections = {}

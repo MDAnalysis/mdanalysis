@@ -37,13 +37,14 @@ class INPReader(base.SingleFrameReader):
             self.title = inf.readline().strip()
             line = inf.readline().split()
             self.numatoms = int(line[0])
+
+            self.ts = self._Timestep(self.numatoms, **self._ts_kwargs)
             try:
                 time = float(line[1])
             except IndexError:
-                time = 0.0
-
-            self.ts = self._Timestep(self.numatoms, **self._ts_kwargs)
-            self.ts.time = time
+                pass
+            else:
+                self.ts.time = time
             self.ts.frame = 0
 
             for p in xrange(self.numatoms // 2):

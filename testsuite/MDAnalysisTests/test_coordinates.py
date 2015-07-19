@@ -47,7 +47,7 @@ import itertools
 
 def atom_distance(a, b):
     """Calculate the distance between two atoms a and b."""
-    r = a.pos - b.pos
+    r = a.position - b.position
     return np.sqrt(np.sum(r ** 2))
 
 
@@ -549,7 +549,7 @@ class TestNCDFWriter(TestCase, RefVGV):
 
     def test_write_trajectory(self):
         t = self.universe.trajectory
-        W = self.Writer(self.outfile, t.numatoms, delta=t.delta)
+        W = self.Writer(self.outfile, t.numatoms, dt=t.dt)
         self._copy_traj(W)
 
     def test_OtherWriter(self):
@@ -769,8 +769,8 @@ class _SingleFrameReader(TestCase, RefAdKSmall):
         assert_raises(IndexError, go_to_2)
 
     def test_dt(self):
-        """testing that accessing universe.trajectory.dt raises a KeyError for single frame readers"""
-        assert_raises(KeyError, self.universe.trajectory.__getattribute__, "dt")
+        """testing that accessing universe.trajectory.dt gives 1.0 (the default)"""
+        assert_equal(1.0, self.universe.trajectory.dt)
 
     def test_coordinates(self):
         A10CA = self.universe.atoms.CA[10]
@@ -1410,8 +1410,8 @@ class TestGROReader(TestCase, RefAdK):
         assert_equal(self.universe.trajectory.frame, 0, "wrong frame number (should be 0 for 0-based ts.frame)")
 
     def test_dt(self):
-        """testing that accessing universe.trajectory.dt raises a KeyError for single frame readers"""
-        assert_raises(KeyError, self.universe.trajectory.__getattribute__, "dt")
+        """testing that accessing universe.trajectory.dt gives default of 1.0"""
+        assert_equal(self.universe.trajectory.dt, 1.0)
 
     def test_coordinates(self):
         A10CA = self.universe.SYSTEM.CA[10]
@@ -1640,8 +1640,8 @@ class TestPDBReaderBig(TestCase, RefAdK):
 
     @dec.slow
     def test_dt(self):
-        """testing that accessing universe.trajectory.dt raises a KeyError for single frame readers"""
-        assert_raises(KeyError, self.universe.trajectory.__getattribute__, "dt")
+        """testing that accessing universe.trajectory.dt returns the default of 1.0 ps"""
+        assert_equal(self.universe.trajectory.dt, 1.0)
 
     @dec.slow
     def test_coordinates(self):
@@ -1783,7 +1783,7 @@ class TestDCDWriter(TestCase):
     def test_write_trajectory(self):
         """Test writing DCD trajectories (Issue 50)"""
         t = self.universe.trajectory
-        W = self.Writer(self.outfile, t.numatoms, delta=t.delta, step=t.skip_timestep)
+        W = self.Writer(self.outfile, t.numatoms, dt=t.dt, step=t.skip_timestep)
         for ts in self.universe.trajectory:
             W.write_next_timestep(ts)
         W.close()
@@ -2378,7 +2378,7 @@ class _GromacsReader(TestCase):
     @dec.slow
     def test_time(self):
         self.trajectory[4]
-        assert_almost_equal(self.universe.trajectory.time, 400.0, 5,
+        assert_almost_equal(self.universe.trajectory.time, 400.0, 3,
                             err_msg="wrong time of frame")
 
     @dec.slow
@@ -2525,7 +2525,7 @@ class _GromacsWriter(TestCase):
     def test_write_trajectory(self):
         """Test writing Gromacs trajectories (Issue 38)"""
         t = self.universe.trajectory
-        W = self.Writer(self.outfile, t.numatoms, delta=t.delta, step=t.skip_timestep)
+        W = self.Writer(self.outfile, t.numatoms, dt=t.dt)
         for ts in self.universe.trajectory:
             W.write_next_timestep(ts)
         W.close()
@@ -2548,7 +2548,7 @@ class _GromacsWriter(TestCase):
         x = ts._pos.copy()
         time = ts.time
 
-        W = self.Writer(self.outfile, trj.numatoms, delta=trj.delta, step=trj.skip_timestep)
+        W = self.Writer(self.outfile, trj.numatoms, dt=trj.dt)
         trj[-1]  # last timestep (so that time != 0) (say it again, just in case...)
         W.write_next_timestep(ts)
         W.close()
@@ -2566,7 +2566,7 @@ class TestTRRWriter(_GromacsWriter):
 
     def test_velocities(self):
         t = self.universe.trajectory
-        W = self.Writer(self.outfile, t.numatoms, delta=t.delta, step=t.skip_timestep)
+        W = self.Writer(self.outfile, t.numatoms, dt=t.dt)
         for ts in self.universe.trajectory:
             W.write_next_timestep(ts)
         W.close()
@@ -2583,7 +2583,7 @@ class TestTRRWriter(_GromacsWriter):
     def test_gaps(self):
         """Tests the writing and reading back of TRRs with gaps in any of the coordinates/velocities properties."""
         t = self.universe.trajectory
-        W = self.Writer(self.outfile, t.numatoms, delta=t.delta, step=t.skip_timestep)
+        W = self.Writer(self.outfile, t.numatoms, dt=t.dt)
         for ts in self.universe.trajectory:
             # Inset some gaps in the properties: coords every 4 steps, vels every 2.
             if not ts.frame % 4:
@@ -2677,9 +2677,7 @@ class _GromacsWriterIssue117(TestCase):
         self.universe = mda.Universe(PRMncdf, NCDF)
         fd, self.outfile = tempfile.mkstemp(suffix=self.ext)
         os.close(fd)
-        self.Writer = MDAnalysis.Writer(self.outfile, numatoms=self.universe.atoms.numberOfAtoms(),
-                                        delta=self.universe.trajectory.delta,
-                                        step=self.universe.trajectory.skip_timestep)
+        self.Writer = MDAnalysis.Writer(self.outfile, numatoms=self.universe.atoms.numberOfAtoms())
 
     def tearDown(self):
         try:
@@ -2806,10 +2804,6 @@ class TestTRZReader(TestCase, RefTRZ):
 
     def test_delta(self):
         assert_almost_equal(self.trz.delta, self.ref_delta, self.prec, "wrong time delta in trz")
-
-    def test_delta_2(self):
-        self.trz._delta = newref = 4.00
-        assert_almost_equal(self.trz.delta, newref, self.prec, "couldn't inject to delta")
 
     def test_time(self):
         assert_almost_equal(self.trz.time, self.ref_time, self.prec, "wrong time value in trz")

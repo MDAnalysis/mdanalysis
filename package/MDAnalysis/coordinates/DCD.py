@@ -419,7 +419,13 @@ class DCDReader(base.Reader):
         self.fixed = 0
         self.periodic = False
 
+        # This reads skip_timestep and delta from header
         self._read_dcd_header()
+
+        # Convert delta to ps
+        delta = mdaunits.convert(self.delta, 'AKMA', 'ps')
+
+        self._ts_kwargs.update({'dt':self.skip_timestep * delta})
         self.ts = self._Timestep(self.numatoms, **self._ts_kwargs)
         # Read in the first timestep
         self._read_next_timestep()
@@ -472,7 +478,7 @@ class DCDReader(base.Reader):
         """
         if ts is None:
             ts = self.ts
-        ts._frame = self._read_next_frame(ts._x, ts._y, ts._z, ts._unitcell, self.skip)
+        ts._frame = self._read_next_frame(ts._x, ts._y, ts._z, ts._unitcell, 1)
 
         ts.frame += 1
         return ts
@@ -582,6 +588,10 @@ class DCDReader(base.Reader):
         kwargs.setdefault('remarks', self.remarks)
         # dt keyword is simply passed through if provided
         return DCDWriter(filename, numatoms, **kwargs)
+
+    @property
+    def dt(self):
+        return self.skip_timestep * self.convert_time_from_native(self.delta)
 
 
 DCDReader._read_dcd_header = new.instancemethod(_dcdmodule.__read_dcd_header, None, DCDReader)

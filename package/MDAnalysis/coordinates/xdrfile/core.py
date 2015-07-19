@@ -78,6 +78,7 @@ from . import libxdrfile2
 from MDAnalysis.coordinates import base
 from MDAnalysis.coordinates.core import triclinic_box, triclinic_vectors
 import MDAnalysis.core
+from ...lib.util import cached
 
 
 # This is the XTC class. The TRR overrides with it's own.
@@ -129,7 +130,7 @@ class TrjWriter(base.Writer):
     #: override to define trajectory format of the reader (XTC or TRR)
     format = None
 
-    def __init__(self, filename, numatoms, start=0, step=1, delta=None, precision=1000.0, remarks=None,
+    def __init__(self, filename, numatoms, start=0, step=1, dt=None, precision=1000.0, remarks=None,
                  convert_units=None):
         """ Create a new TrjWriter
 
@@ -141,14 +142,16 @@ class TrjWriter(base.Writer):
 
         :Keywords:
           *start*
-             starting timestep; only used when *delta* is set.
+             starting timestep frame; only used when *dt* is set.
           *step*
-             skip between subsequent timesteps; only used when *delta* is set.
-          *delta*
-             timestep to use. If set will override any time information contained in the
-             passed :class:`Timestep` objects; otherwise that will be used. If in the
-             latter case :attr:`~Timestep.time` is unavailable the TrjWriter will default
-             to setting the trajectory time at 1 MDAnalysis unit (typically 1ps) per step.
+             skip in frames between subsequent timesteps; only used when *dt* is set.
+          *dt*
+             time between frames to use. If set will override any time information
+             contained in thee
+             passed :class:`Timestep` objects, which will otherwise be used.
+             The :attr:`~Timestep.time` attribute defaults to a timestep of
+             to setting the trajectory time at 1 ps per step if there is no
+             time information.
           *precision*
               accuracy for lossy XTC format as a power of 10 (ignored
               for TRR) [1000.0]
@@ -161,9 +164,9 @@ class TrjWriter(base.Writer):
            The TRR writer is now able to write TRRs without coordinates/velocities/forces,
            depending on the properties available in the :class:`Timestep` objects passed to
            :meth:`~TRRWriter.write`.
+        .. versionchanged:: 0.11.0
+           Keyword "delta" renamed to "dt"
         """
-        assert self.format in ('XTC', 'TRR')
-
         if numatoms == 0:
             raise ValueError("TrjWriter: no atoms in output trajectory")
         self.filename = filename
@@ -182,7 +185,7 @@ class TrjWriter(base.Writer):
         self.frames_written = 0
         self.start = start
         self.step = step
-        self.delta = delta
+        self.dt = dt
         self.remarks = remarks
         self.precision = precision  # only for XTC
         self.xdrfile = libxdrfile2.xdrfile_open(self.filename, 'w')
@@ -221,17 +224,13 @@ class TrjWriter(base.Writer):
 
         # (1) data common to XTC and TRR
 
-        # Time-writing logic: if the writer was created with a delta parameter,
-        #  use delta*(start+step*frames_written)
-        #  otherwise use the provided Timestep obj time attribute. Fallback to 1 if not present.
-        if self.delta is None:
-            try:
-                time = ts.time
-            except AttributeError:
-                # Default to 1 time unit.
-                time = self.start + self.step * self.frames_written
+        # Time-writing logic: if the writer was created with a dt parameter,
+        #  use dt*(start+step*frames_written)
+        #  otherwise use the provided Timestep obj time attribute
+        if self.dt is None:
+            time = ts.time
         else:
-            time = (self.start + self.step * self.frames_written) * self.delta
+            time = (self.start + self.step * self.frames_written) * self.dt
 
         if self.convert_units:
             time = self.convert_time_to_native(time, inplace=False)
@@ -239,7 +238,7 @@ class TrjWriter(base.Writer):
         try:
             step = int(ts._frame)
         except AttributeError:
-            # bogus, should be actual MD step number, i.e. frame * delta/dt
+            # bogus, should be actual MD step number, i.e. frame * dt/delta
             step = ts.frame
 
         unitcell = self.convert_dimensions_to_unitcell(ts).astype(np.float32)  # must be float32 (!)
@@ -353,10 +352,11 @@ class TrjReader(base.Reader):
 
         .. versionchanged:: 0.9.0
            New keyword *refresh_offsets*
-
+        .. versionchanged:: 0.11.0
+           Renamed "delta" attribute to "dt"
         """
         super(TrjReader, self).__init__(filename, **kwargs)
-
+        self._cache = dict()
         # Convert filename to ascii because of SWIG bug.
         # See: http://sourceforge.net/p/swig/feature-requests/75
         # Only needed for Python < 3
@@ -367,11 +367,8 @@ class TrjReader(base.Reader):
         self.xdrfile = None
 
         self._numframes = None  # takes a long time, avoid accessing self.numframes
-        self.skip_timestep = 1  # always 1 for xdr files
-        self._delta = None  # compute from time in first two frames!
+        self._dt = None  # compute from time in first two frames!
         self._offsets = None  # storage of offsets in the file
-        self.skip = 1
-        self.periodic = False
 
         # actual number of atoms in the trr file
         # first time file is opened, exception should be thrown if bad file
@@ -468,25 +465,24 @@ class TrjReader(base.Reader):
             return self._offsets
 
     @property
-    def delta(self):
+    @cached('dt')
+    def dt(self):
         """Time step length in ps.
 
         The result is computed from the trajectory and cached. If for
         any reason the trajectory cannot be read then 0 is returned.
         """
         # no need for conversion: it's alread in our base unit ps
-        if not self._delta is None:  # return cached value
-            return self._delta
         try:
             t0 = self.ts.time
             self.next()
             t1 = self.ts.time
-            self._delta = t1 - t0
+            dt = t1 - t0
+            return dt
         except IOError:
             return 0
         finally:
             self.rewind()
-        return self._delta
 
     def _offset_filename(self):
         head, tail = os.path.split(self.filename)
@@ -656,7 +652,7 @@ class TrjReader(base.Reader):
         ts.data['status'] = libxdrfile2.exdrOK
         ts.frame = -1 
         ts._frame = 0
-        ts.time = 0
+
         # additional data for XTC
         ts.data['prec'] = 0
         # additional data for TRR
@@ -682,19 +678,22 @@ class TrjReader(base.Reader):
         :Keywords:
           *numatoms*
               number of atoms
-          *delta*
+          *dt*
               Time interval between frames.
           *precision*
               accuracy for lossy XTC format as a power of 10 (ignored
               for TRR) [1000.0]
 
         :Returns: appropriate :class:`TrjWriter`
+
+        .. versionchanged:: 0.11.0
+           Changed "delta" keyword to "dt"
         """
         numatoms = kwargs.pop('numatoms', self.numatoms)
-        kwargs['step'] = self.skip_timestep
-        kwargs.setdefault('delta', self.delta)
+
+        kwargs.setdefault('dt', self.dt)
         try:
-            kwargs['start'] = self[0].time / kwargs['delta']
+            kwargs['start'] = self[0].time / kwargs['dt']
         except (AttributeError, ZeroDivisionError):
             kwargs['start'] = 0
         try:

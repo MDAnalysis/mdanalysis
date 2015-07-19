@@ -531,18 +531,6 @@ Attributes
      number of atoms (coordinate sets) in a frame (constant)
  ``numframes``
      total number of frames (if known) -- ``None`` if not known
- ``fixed``
-     bool, saying if there are fixed atoms (e.g. dcds)
- ``skip``
-     step size for iterating through the trajectory [1]
- ``skip_timestep``
-     number of integrator steps between frames + 1 (i.e.
-     the stride at which the MD simulation was sampled)
- ``delta``
-     integrator time step (in native units); hence the "length"
-     of a trajctory frame is  ``skip_timestep*delta`` time units
- ``periodic``
-     contains box information for periodic boundary conditions
  ``ts``
      the :class:`~base.Timestep` object; typically customized for each
      trajectory format and derived from :class:`base.Timestep`.
@@ -567,8 +555,20 @@ Attributes
 
 **Optional attributes**
 
+ ``delta``
+     integrator time step (in native units); hence the "length"
+     of a trajctory frame is  ``skip_timestep*delta`` time units
  ``compressed``
      string that identifies the compression (e.g. "gz" or "bz2") or ``None``.
+ ``fixed``
+     bool, saying if there are fixed atoms (e.g. dcds)
+ ``periodic``
+     contains box information for periodic boundary conditions
+ ``skip``
+     step size for iterating through the trajectory [1]
+ ``skip_timestep``
+     number of integrator steps between frames + 1 (i.e.
+     the stride at which the MD simulation was sampled)
 
 
 Trajectory Writer class

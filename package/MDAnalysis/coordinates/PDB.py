@@ -476,15 +476,6 @@ class PrimitivePDBReader(base.Reader):
 
         frames = {}
 
-        ts_kwargs = {}
-        for att in ('dt', 'time_offset'):
-            try:
-                val = kwargs[att]
-            except KeyError:
-                pass
-            else:
-                ts_kwargs[att] = val
-
         self.ts = self._Timestep(self._numatoms, **self._ts_kwargs)
         
         pos = 0  # atom position for filling coordinates array
@@ -556,9 +547,6 @@ class PrimitivePDBReader(base.Reader):
 
         self.frames = frames
         self.numframes = len(frames) if frames else 1
-        self.periodic = False
-        self.delta = 0
-        self.skip_timestep = 1
 
     def get_occupancy(self):
         """Return an array of occupancies in atom order."""
