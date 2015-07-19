@@ -336,6 +336,13 @@ Attributes
       The native frame number of the trajectory.  This can differ from ``frame``
       as that will always count sequentially from 0 on iteration, whilst
       ``_frame`` is taken directly from the trajectory.
+  ``time``
+      The current system time in ps.  This value is calculated either from a time
+      set as the Timestep attribute, or from `frame` * `dt`.  Either method allows
+      allows an offset to be applied to the time.
+  ``dt``
+      The change in system time between different frames.  This can be set as an
+      attribute, but defaults to 1.0 ps.
   ``data``
       A dictionary contained all miscellaneous information for the
       current Timestep.

@@ -160,9 +160,10 @@ class Timestep(object):
           *forces*
             Whether this Timestep has force information [``False``]
           *dt*
-            The time difference between frames (ps)
+            The time difference between frames (ps).  If :attr:`time`
+            is set, then `dt` will be ignored.
           *time_offset*
-            The starting time from which to calculate time
+            The starting time from which to calculate time (ps)
 
         .. versionchanged:: 0.11.0
            Added keywords for positions, velocities and forces
@@ -614,12 +615,21 @@ class Timestep(object):
     def time(self):
         """The time in ps of this timestep
 
+        This is calculated as::
+
+          time = data['time_offset'] + data['time']
+
+        Or, if the trajectory doesn't provide time information::
+
+          time = data['offset'] + frame * dt
+
         .. versionadded:: 0.11.0
         """
+        offset = self.data.get('time_offset', 0)
         try:
-            return self.data['time']
+            return self.data['time'] + offset
         except KeyError:
-            return self.dt * self.frame
+            return self.dt * self.frame + offset
 
     @time.setter
     def time(self, new):

@@ -348,7 +348,9 @@ class _TestTimestep(TestCase):
         assert_array_almost_equal(ts.velocities, refvel)
         assert_array_almost_equal(ts.forces, reffor)
 
+    # Time related tests
     def test_supply_dt(self):
+        # Check that this gets stored in data properly
         ts = self.Timestep(20, dt=0.04)
 
         assert_equal(ts.data['dt'], 0.04)
@@ -357,6 +359,48 @@ class _TestTimestep(TestCase):
         ts = self.Timestep(20, time_offset=100.0)
 
         assert_equal(ts.data['time_offset'], 100.0)
+
+    def test_time(self):
+        ts = self.Timestep(20)
+        ts.frame = 0
+        ts.time = reftime = 1234.0
+
+        assert_equal(ts.time, reftime)
+
+    def test_time_with_offset(self):
+        ref_offset = 2345.0
+        ts = self.Timestep(20, time_offset=ref_offset)
+        ts.frame = 0
+        ts.time = reftime = 1234.0
+
+        assert_equal(ts.time, reftime + ref_offset)
+
+    def test_dt(self):
+        ref_dt = 45.0
+        ts = self.Timestep(20, dt=ref_dt)
+
+        for i in range(10):
+            ts.frame = i
+            assert_equal(ts.time, i * ref_dt)
+
+    def test_dt_with_offset(self):
+        ref_dt = 45.0
+        ref_offset = 2345.0
+        ts = self.Timestep(20, dt=ref_dt, time_offset=ref_offset)
+
+        for i in range(10):
+            ts.frame = i
+            assert_equal(ts.time, i * ref_dt + ref_offset)
+
+    def test_time_overrides_dt_with_offset(self):
+        ref_dt = 45.0
+        ref_offset = 2345.0
+        ts = self.Timestep(20, dt=ref_dt, time_offset=ref_offset)
+
+        ts.frame = 0
+        ts.time = reftime = 456.7
+
+        assert_equal(ts.time, reftime + ref_offset)
 
 
 # Can add in custom tests for a given Timestep here!

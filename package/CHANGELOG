@@ -38,7 +38,7 @@ The rules for this file:
     originally created with these through the use of the has_ flags.
     (Issue #213)
   * Timesteps now store 'dt' and 'time_offset' if passed to them by Reader
-    (Issues 306 and 307)
+    to calculate time attribute (Issues 306 and 307)
   * MDAnalysis.selection: can also be written to a NamedStream
   * Added function lib.mdamath.make_whole to "unbreak" molecules
     over periodic boundaries.
