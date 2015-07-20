@@ -93,6 +93,7 @@ module. The derived classes must follow the Trajectory API in
          Added as optional to :class:`Timestep`
 
    .. autoattribute:: dimensions
+   .. autoattribute:: triclinic_dimensions
    .. autoattribute:: volume
    .. automethod:: __getitem__
    .. automethod:: __eq__
@@ -593,6 +594,44 @@ class Timestep(object):
     def volume(self):
         """volume of the unitcell"""
         return core.box_volume(self.dimensions)
+
+    @property
+    def triclinic_dimensions(self):
+        """The unitcell dimensions represented as triclinic vectors
+
+        :Returns:
+           A (3, 3) numpy.ndarray of unit cell vectors
+
+        For example::
+
+          >>> ts.dimensions
+          array([ 13.,  14.,  15.,  90.,  90.,  90.], dtype=float32)
+          >>> ts.triclinic_dimensions
+          array([[ 13.,   0.,   0.],
+                 [  0.,  14.,   0.],
+                 [  0.,   0.,  15.]], dtype=float32)
+
+        Setting the attribute also works::
+
+          >>> ts.triclinic_dimensions = [[15, 0, 0], [5, 15, 0], [5, 5, 15]]
+          >>> ts.dimensions
+          array([ 15.        ,  15.81138802,  16.58312416,  67.58049774,
+                  72.45159912,  71.56504822], dtype=float32)
+
+        .. SeeAlso::
+           :func:`MDAnalysis.lib.mdamath.triclinic_vectors`
+
+        .. versionadded:: 0.11.0
+        """
+        return core.triclinic_vectors(self.dimensions)
+
+    @triclinic_dimensions.setter
+    def triclinic_dimensions(self, new):
+        """Set the unitcell for this Timestep as defined by triclinic vectors
+
+        .. versionadded:: 0.11.0
+        """
+        self.dimensions = core.triclinic_box(*new)
 
     @property
     def dt(self):
