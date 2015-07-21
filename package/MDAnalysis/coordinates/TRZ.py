@@ -31,7 +31,7 @@ Reads coordinates, velocities and more (see attributes of the
 
    .. attribute:: frame
 
-      Index of current frame number (1 based)
+      Index of current frame number (0 based)
 
    .. attribute:: time
 
