@@ -1059,6 +1059,7 @@ class ProtoReader(IObase):
         return "< %s %r with %d frames of %d atoms>" % \
                (self.__class__.__name__, self.filename, self.numframes, self.numatoms)
 
+
 class Reader(ProtoReader):
     """Base class for trajectory readers that extends :class:`ProtoReader` with a :meth:`__del__` method.
 
@@ -1098,21 +1099,11 @@ class Reader(ProtoReader):
     def __del__(self):
         self.close()
 
+
 class ChainReader(ProtoReader):
     """Reader that concatenates multiple trajectories on the fly.
 
-    **Known issues**
-
-    - Trajectory API attributes exist but most of them only reflect
-      the first trajectory in the list; :attr:`ChainReader.numframes`,
-      :attr:`ChainReader.numatoms`, and :attr:`ChainReader.fixed` are
-      properly set, though
-
-    - slicing not implemented
-
-    - :attr:`time` will not necessarily return the true time but just
-      number of frames times a provided time between frames (from the
-      keyword *delta*)
+    .. note:: Slicing not implemented, but indexing will work.
 
     .. versionchanged:: 0.11.0
        Frames now 0-based instead of 1-based
@@ -1131,18 +1122,45 @@ class ChainReader(ProtoReader):
                (i.e. they all must belong to the same topology). The trajectory
                format is deduced from the extension of *filename*.
 
-               Extension: filenames are either single filename or list of file names in either plain file names
-               format or (filename,format) tuple combination
+               Extension: filenames are either single filename or list of file
+               names in either plain file names format or (filename,format)
+               tuple combination
 
-           *skip*
-               skip step (also passed on to the individual trajectory
-               readers); must be same for all trajectories
+           *mode*
+               chaining mode: one of 'cat', 'dropdups'; determines which
+               frames to include when duplicate times are encountered among
+               the set of trajectories. Default is 'cat'.
 
-           *delta*
-               The time between frames in MDAnalysis time units if no
-               other information is available. If this is not set then
-               any call to :attr:`~ChainReader.time` will raise a
-               :exc:`ValueError`.
+               Given the following trajectories (which happen to have
+               overlapping times), with start and end frames marked with
+               letters a - h::
+
+               ====================
+               |                  |                  
+               |        -------------------
+               |        |         ||      |           
+               |        |       ~~~~~~~~~~~~~~~~~~~~~~~
+               |        |       | ||      ||          |
+               a        b       c de      fg          h
+
+               'cat' will give::
+
+               ====================-------------------~~~~~~~~~~~~~~~~~~~~~~~
+               a                  db                 fc                     h
+
+               'dropdups' will give::
+
+               ====================--------~~~~~~~~~~~~
+               a                  de      fg          h 
+
+           *usetimes*
+               if ``True``, use times given by each individual file reader for
+               :meth:`Timestep.time`; otherwise, construct a continuous series
+               of times from each trajectory segment by adding an offset to
+               each trajectory's time given by its Reader [``True``]
+
+               Note that if ``mode='dropdups'`` and ``usetimes=False``, any time
+               gaps between segments will disappear.
 
            *kwargs*
                all other keyword arguments are passed on to each
@@ -1155,38 +1173,11 @@ class ChainReader(ProtoReader):
         self.readers = [core.reader(filename, **kwargs) for filename in self.filenames]
         self.__active_reader_index = 0  # pointer to "active" trajectory index into self.readers
 
-        self.skip = kwargs.get('skip', 1)
-        self._default_delta = kwargs.pop('delta', None)
         self.numatoms = self._get_same('numatoms')
-        #self.fixed = self._get_same('fixed')
-
-        # Translation between virtual frames and frames in individual
-        # trajectories.
-        # Assumes that individual trajectories i contain frames that can
-        # be addressed with an index 0 <= f < numframes[i]
-
-        # Build a map of frames: ordered list of starting virtual
-        # frames; the index i into this list corresponds to the index
-        # into self.readers
-        #
-        # For virtual frame k (1...sum(numframes)) find corresponding
-        # trajectory i and local frame f (i.e. readers[i][f] will
-        # correspond to ChainReader[k]).
-
-        # build map 'start_frames', which is used by _get_local_frame()
         numframes = self._get('numframes')
-        # [0]: frames are 0-indexed internally
-        # (see Timestep._check_slice_indices())
-        self.__start_frames = np.cumsum([0] + numframes)
 
-        self.numframes = np.sum(numframes)
+        if 
 
-        #: source for trajectories frame (fakes trajectory)
-        self.__chained_trajectories_iter = None
-
-        # make sure that iteration always yields frame 1
-        # rewind() also sets self.ts
-        self.ts = None
         self.rewind()
 
     def _get_local_frame(self, k):
