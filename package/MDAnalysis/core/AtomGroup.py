@@ -3393,12 +3393,15 @@ class Universe(object):
                 topology_format = kwargs.get('format', None)
 
             # if passed a Reader, use that
-            if issubclass(kwargs.get('format', None), ProtoReader):
-                coordinatefile = self.filename
-            # or if file is known as a topology & coordinate file, use that 
-            elif (guess_format(self.filename, format=kwargs.get('format', None)) in
-                   MDAnalysis.coordinates._topology_coordinates_readers):
-                coordinatefile = self.filename
+            fmt = kwargs.get('format', None)
+            try:
+                if issubclass(fmt, ProtoReader):
+                    coordinatefile = self.filename
+            except TypeError:
+                # or if file is known as a topology & coordinate file, use that 
+                if (guess_format(self.filename, format=fmt) in
+                    MDAnalysis.coordinates._topology_coordinates_readers):
+                    coordinatefile = self.filename
             # Fix by SB: make sure coordinatefile is never an empty tuple
             if len(coordinatefile) == 0:
                 coordinatefile = None
