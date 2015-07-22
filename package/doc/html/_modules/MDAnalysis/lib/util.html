@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -29,10 +31,10 @@
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
     <link rel="top" title="MDAnalysis 0.11.0-dev documentation" href="../../../index.html" />
-    <link rel="up" title="Module code" href="../../index.html" /> 
+    <link rel="up" title="MDAnalysis" href="../../MDAnalysis.html" /> 
   </head>
-  <body role="document">
-    <div class="related" role="navigation" aria-label="related navigation">
+  <body>
+    <div class="related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -41,16 +43,17 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+        <li><a href="../../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../../index.html">
               <img class="logo" src="../../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
             </a></p>
-<div id="searchbox" style="display: none" role="search">
+<div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../../search.html" method="get">
       <input type="text" name="q" />
@@ -69,7 +72,7 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body" role="main">
+          <div class="body">
             
   <h1>Source code for MDAnalysis.lib.util</h1><div class="highlight"><pre>
 <span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
@@ -198,15 +201,6 @@
 <span class="sd">.. autofunction:: conv_float</span>
 
 
-<span class="sd">Mathematics and Geometry</span>
-<span class="sd">------------------------</span>
-
-<span class="sd">.. autofunction:: normal</span>
-<span class="sd">.. autofunction:: norm</span>
-<span class="sd">.. autofunction:: angle</span>
-<span class="sd">.. autofunction:: dihedral</span>
-<span class="sd">.. autofunction:: stp</span>
-
 <span class="sd">Class decorators</span>
 <span class="sd">----------------</span>
 
@@ -224,6 +218,10 @@
 <span class="sd">   order to make :meth:`NamedStream.close` actually close the</span>
 <span class="sd">   underlying stream and ``NamedStream.close(force=True)`` will also</span>
 <span class="sd">   close it.</span>
+
+
+<span class="sd">.. versionchanged:: 0.11.0</span>
+<span class="sd">   Moved mathematical functions into lib.mdamath</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="n">__docformat__</span> <span class="o">=</span> <span class="s">&quot;restructuredtext en&quot;</span>
@@ -674,13 +672,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">closed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="NamedStream.closed"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.NamedStream.closed">[docs]</a>    <span class="k">def</span> <span class="nf">closed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;``True`` if stream is closed.&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">closed</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">NamedStream</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">closed</span>
-
+</div>
 <div class="viewcode-block" id="NamedStream.seek"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.NamedStream.seek">[docs]</a>    <span class="k">def</span> <span class="nf">seek</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">whence</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">SEEK_SET</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Change the stream position to the given byte *offset* .</span>
 
@@ -1024,79 +1022,6 @@
     <span class="k">return</span> <span class="p">{</span><span class="s">&#39;Nbins&#39;</span><span class="p">:</span> <span class="n">N</span><span class="p">,</span> <span class="s">&#39;delta&#39;</span><span class="p">:</span> <span class="n">_delta</span><span class="p">,</span> <span class="s">&#39;min&#39;</span><span class="p">:</span> <span class="n">_xmin</span> <span class="o">-</span> <span class="n">dx</span><span class="p">,</span> <span class="s">&#39;max&#39;</span><span class="p">:</span> <span class="n">_xmax</span> <span class="o">+</span> <span class="n">dx</span><span class="p">}</span>
 
 
-<span class="c"># geometric functions</span></div>
-<div class="viewcode-block" id="norm"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.norm">[docs]</a><span class="k">def</span> <span class="nf">norm</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
-    <span class="sd">r&quot;&quot;&quot;Returns the length of a vector, ``sqrt(v.v)``.</span>
-
-<span class="sd">    .. math::</span>
-
-<span class="sd">       v = \sqrt{\mathbf{v}\cdot\mathbf{v}}</span>
-
-<span class="sd">    Faster than :func:`numpy.linalg.norm` because no frills.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
-
-</div>
-<div class="viewcode-block" id="normal"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.normal">[docs]</a><span class="k">def</span> <span class="nf">normal</span><span class="p">(</span><span class="n">vec1</span><span class="p">,</span> <span class="n">vec2</span><span class="p">):</span>
-    <span class="sd">r&quot;&quot;&quot;Returns the unit vector normal to two vectors.</span>
-
-<span class="sd">    .. math::</span>
-
-<span class="sd">       \hat{\mathbf{n}} = \frac{\mathbf{v}_1 \times \mathbf{v}_2}{|\mathbf{v}_1 \times \mathbf{v}_2|}</span>
-
-<span class="sd">    If the two vectors are collinear, the vector :math:`\mathbf{0}` is returned.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">normal</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">vec1</span><span class="p">,</span> <span class="n">vec2</span><span class="p">)</span>
-    <span class="n">n</span> <span class="o">=</span> <span class="n">norm</span><span class="p">(</span><span class="n">normal</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">normal</span>  <span class="c"># returns [0,0,0] instead of [nan,nan,nan]</span>
-    <span class="k">return</span> <span class="n">normal</span> <span class="o">/</span> <span class="n">n</span>  <span class="c"># ... could also use numpy.nan_to_num(normal/norm(normal))</span>
-
-</div>
-<div class="viewcode-block" id="angle"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.angle">[docs]</a><span class="k">def</span> <span class="nf">angle</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Returns the angle between two vectors in radians&quot;&quot;&quot;</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">norm</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">*</span> <span class="n">norm</span><span class="p">(</span><span class="n">b</span><span class="p">))</span>
-    <span class="c"># catch roundoffs that lead to nan otherwise</span>
-    <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mf">1.0</span><span class="p">:</span>
-        <span class="k">return</span> <span class="mf">0.0</span>
-    <span class="k">elif</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">:</span>
-        <span class="k">return</span> <span class="o">-</span><span class="n">numpy</span><span class="o">.</span><span class="n">pi</span>
-    <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-
-</div>
-<div class="viewcode-block" id="stp"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.stp">[docs]</a><span class="k">def</span> <span class="nf">stp</span><span class="p">(</span><span class="n">vec1</span><span class="p">,</span> <span class="n">vec2</span><span class="p">,</span> <span class="n">vec3</span><span class="p">):</span>
-    <span class="sd">r&quot;&quot;&quot;Takes the scalar triple product of three vectors.</span>
-
-<span class="sd">    Returns the volume *V* of the parallel epiped spanned by the three</span>
-<span class="sd">    vectors</span>
-
-<span class="sd">    .. math::</span>
-
-<span class="sd">        V = \mathbf{v}_3 \cdot (\mathbf{v}_1 \times \mathbf{v}_2)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vec3</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">vec1</span><span class="p">,</span> <span class="n">vec2</span><span class="p">))</span>
-
-</div>
-<div class="viewcode-block" id="dihedral"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.dihedral">[docs]</a><span class="k">def</span> <span class="nf">dihedral</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">bc</span><span class="p">,</span> <span class="n">cd</span><span class="p">):</span>
-    <span class="sd">r&quot;&quot;&quot;Returns the dihedral angle in radians between vectors connecting A,B,C,D.</span>
-
-<span class="sd">    The dihedral measures the rotation around bc::</span>
-
-<span class="sd">         ab</span>
-<span class="sd">       A----&gt;B</span>
-<span class="sd">              \ bc</span>
-<span class="sd">              _\&#39;</span>
-<span class="sd">                C----&gt;D</span>
-<span class="sd">                  cd</span>
-
-<span class="sd">    The dihedral angle is restricted to the range -π &lt;= x &lt;= π.</span>
-
-<span class="sd">    .. versionadded:: 0.8</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="n">angle</span><span class="p">(</span><span class="n">normal</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">bc</span><span class="p">),</span> <span class="n">normal</span><span class="p">(</span><span class="n">bc</span><span class="p">,</span> <span class="n">cd</span><span class="p">))</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">x</span> <span class="k">if</span> <span class="n">stp</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">bc</span><span class="p">,</span> <span class="n">cd</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mf">0.0</span> <span class="k">else</span> <span class="o">-</span><span class="n">x</span><span class="p">)</span>
-
-
 <span class="c"># String functions</span>
 <span class="c"># ----------------</span>
 
@@ -1252,7 +1177,7 @@
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -1261,20 +1186,21 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li> 
+        <li><a href="../../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer" role="contentinfo">
+    <div class="footer">
         &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
-    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Zhuyi Xue, Carlos Yáñez S.,
+    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Isaac Virshup, Zhuyi Xue, Carlos Yáñez S.,
     and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

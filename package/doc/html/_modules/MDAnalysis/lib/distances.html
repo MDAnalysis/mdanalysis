@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -29,10 +31,10 @@
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
     <link rel="top" title="MDAnalysis 0.11.0-dev documentation" href="../../../index.html" />
-    <link rel="up" title="Module code" href="../../index.html" /> 
+    <link rel="up" title="MDAnalysis" href="../../MDAnalysis.html" /> 
   </head>
-  <body role="document">
-    <div class="related" role="navigation" aria-label="related navigation">
+  <body>
+    <div class="related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -41,16 +43,17 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+        <li><a href="../../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../../index.html">
               <img class="logo" src="../../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
             </a></p>
-<div id="searchbox" style="display: none" role="search">
+<div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../../search.html" method="get">
       <input type="text" name="q" />
@@ -69,7 +72,7 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body" role="main">
+          <div class="body">
             
   <h1>Source code for MDAnalysis.lib.distances</h1><div class="highlight"><pre>
 <span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-</span>
@@ -210,28 +213,31 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Input arrays must all be same shape&quot;</span>
                          <span class="s">&quot;Got {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">shape</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">arrays</span><span class="p">]))</span>
 
-<div class="viewcode-block" id="distance_array"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.distance_array">[docs]</a><span class="k">def</span> <span class="nf">distance_array</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="distance_array"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.lib.distances.distance_array">[docs]</a><span class="k">def</span> <span class="nf">distance_array</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Calculate all distances between a reference set and another configuration.</span>
 
-<span class="sd">    Calculate all distances d_ij between the coordinates ref[i] and</span>
-<span class="sd">    conf[j] in the numpy arrays *ref* and *conf*. If an orthorhombic</span>
-<span class="sd">    *box* is supplied then a minimum image convention is used before</span>
+<span class="sd">    If there are *i* positions in reference, and *j* positions in configuration,</span>
+<span class="sd">    will calculate a *i* x *j* array of distances</span>
+<span class="sd">    If an *box* is supplied then a minimum image convention is used when</span>
 <span class="sd">    calculating distances.</span>
 
-<span class="sd">    If a 2D numpy array of dtype ``numpy.float64`` with the shape ``(len(ref),</span>
-<span class="sd">    len(conf))`` is provided in *result* then this preallocated array is</span>
+<span class="sd">    If a 2D numpy array of dtype ``numpy.float64`` with the shape ``(len(reference),</span>
+<span class="sd">    len(configuration))`` is provided in *result* then this preallocated array is</span>
 <span class="sd">    filled. This can speed up calculations.</span>
 
-<span class="sd">    d = distance_array(ref,conf[,box[,result=d]])</span>
+<span class="sd">    d = distance_array(reference, configuration[,box[,result=d]])</span>
 
 <span class="sd">    :Arguments:</span>
-<span class="sd">        *ref*</span>
-<span class="sd">             reference coordinate array</span>
-<span class="sd">        *conf*</span>
-<span class="sd">             configuration coordinate array</span>
+<span class="sd">        *reference*</span>
+<span class="sd">             reference coordinate array (must be numpy.float32)</span>
+<span class="sd">        *configuration*</span>
+<span class="sd">             configuration coordinate array (must be numpy.float32)</span>
 <span class="sd">        *box*</span>
 <span class="sd">             cell dimensions (minimum image convention is applied)</span>
-<span class="sd">             or None [``None``]</span>
+<span class="sd">             or None [``None``].</span>
+<span class="sd">             Cell dimensions must be in an identical to format to those returned</span>
+<span class="sd">             by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`,</span>
+<span class="sd">             [lx, ly, lz, alpha, beta, gamma]</span>
 <span class="sd">        *result*</span>
 <span class="sd">             optional preallocated result array which must have the</span>
 <span class="sd">             shape (len(ref), len(conf)) and dtype=numpy.float64.</span>
@@ -239,8 +245,8 @@
 <span class="sd">             is called repeatedly. [``None``]</span>
 <span class="sd">    :Returns:</span>
 <span class="sd">         *d*</span>
-<span class="sd">             (len(ref),len(conf)) numpy array with the distances d[i,j]</span>
-<span class="sd">             between ref coordinates i and conf coordinates j</span>
+<span class="sd">             (len(reference),len(configuration)) numpy array with the distances d[i,j]</span>
+<span class="sd">             between reference coordinates i and configuration coordinates j</span>
 
 <span class="sd">    .. Note:: This method is slower than it could be because internally we need to</span>
 <span class="sd">          make copies of the ref and conf arrays.</span>
@@ -279,7 +285,7 @@
     <span class="k">return</span> <span class="n">distances</span>
 
 </div>
-<div class="viewcode-block" id="self_distance_array"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.self_distance_array">[docs]</a><span class="k">def</span> <span class="nf">self_distance_array</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="self_distance_array"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.lib.distances.self_distance_array">[docs]</a><span class="k">def</span> <span class="nf">self_distance_array</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Calculate all distances within a configuration *reference*.</span>
 
 <span class="sd">    If a *box* is supplied then a minimum image convention is used before</span>
@@ -295,6 +301,9 @@
 <span class="sd">        *box*</span>
 <span class="sd">             cell dimensions (minimum image convention is applied)</span>
 <span class="sd">             or None [``None``]</span>
+<span class="sd">             Cell dimensions must be in an identical to format to those returned</span>
+<span class="sd">             by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`,</span>
+<span class="sd">             [lx, ly, lz, alpha, beta, gamma]</span>
 <span class="sd">        *result*</span>
 <span class="sd">             optional preallocated result array which must have the shape</span>
 <span class="sd">             (N*(N-1)/2,) and dtype ``numpy.float64``. Avoids creating</span>
@@ -346,7 +355,7 @@
     <span class="k">return</span> <span class="n">distances</span>
 
 </div>
-<div class="viewcode-block" id="transform_RtoS"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.transform_RtoS">[docs]</a><span class="k">def</span> <span class="nf">transform_RtoS</span><span class="p">(</span><span class="n">inputcoords</span><span class="p">,</span> <span class="n">box</span><span class="p">):</span>
+<div class="viewcode-block" id="transform_RtoS"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.lib.distances.transform_RtoS">[docs]</a><span class="k">def</span> <span class="nf">transform_RtoS</span><span class="p">(</span><span class="n">inputcoords</span><span class="p">,</span> <span class="n">box</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Transform an array of coordinates from real space to S space (aka lambda space)</span>
 
 <span class="sd">    S space represents fractional space within the unit cell for this system</span>
@@ -355,13 +364,16 @@
 
 <span class="sd">    :Arguments:</span>
 <span class="sd">      *inputcoords*</span>
-<span class="sd">                      An n x 3 array of coordinate data, of type np.float32</span>
+<span class="sd">          An n x 3 array of coordinate data, of type np.float32</span>
 <span class="sd">      *box*</span>
-<span class="sd">                      The unitcell dimesions for this system</span>
+<span class="sd">          The unitcell dimesions for this system</span>
+<span class="sd">          Cell dimensions must be in an identical to format to those returned</span>
+<span class="sd">          by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`,</span>
+<span class="sd">          [lx, ly, lz, alpha, beta, gamma]</span>
 
 <span class="sd">    :Returns:</span>
 <span class="sd">       *outcoords*</span>
-<span class="sd">                      An n x 3 array of fractional coordiantes</span>
+<span class="sd">          An n x 3 array of fractional coordiantes</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">coords</span> <span class="o">=</span> <span class="n">inputcoords</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="s">&#39;C&#39;</span><span class="p">)</span>
     <span class="n">numcoords</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -386,7 +398,7 @@
     <span class="k">return</span> <span class="n">coords</span>
 
 </div>
-<div class="viewcode-block" id="transform_StoR"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.transform_StoR">[docs]</a><span class="k">def</span> <span class="nf">transform_StoR</span><span class="p">(</span><span class="n">inputcoords</span><span class="p">,</span> <span class="n">box</span><span class="p">):</span>
+<div class="viewcode-block" id="transform_StoR"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.lib.distances.transform_StoR">[docs]</a><span class="k">def</span> <span class="nf">transform_StoR</span><span class="p">(</span><span class="n">inputcoords</span><span class="p">,</span> <span class="n">box</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Transform an array of coordinates from S space into real space.</span>
 
 <span class="sd">    S space represents fractional space within the unit cell for this system</span>
@@ -395,13 +407,16 @@
 
 <span class="sd">    :Arguments:</span>
 <span class="sd">      *inputcoords*</span>
-<span class="sd">                      An n x 3 array of coordinate data, of type np.float32</span>
+<span class="sd">           An n x 3 array of coordinate data, of type np.float32</span>
 <span class="sd">      *box*</span>
-<span class="sd">                      The unitcell dimesions for this system</span>
+<span class="sd">           The unitcell dimesions for this system</span>
+<span class="sd">           Cell dimensions must be in an identical to format to those returned</span>
+<span class="sd">           by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`,</span>
+<span class="sd">           [lx, ly, lz, alpha, beta, gamma]</span>
 
 <span class="sd">    :Returns:</span>
 <span class="sd">       *outcoords*</span>
-<span class="sd">                      An n x 3 array of fracional coordiantes</span>
+<span class="sd">            An n x 3 array of fracional coordiantes</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">coords</span> <span class="o">=</span> <span class="n">inputcoords</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="s">&#39;C&#39;</span><span class="p">)</span>
     <span class="n">numcoords</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -412,15 +427,15 @@
         <span class="n">box</span> <span class="o">=</span> <span class="n">triclinic_vectors</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
     <span class="k">elif</span> <span class="p">(</span><span class="n">boxtype</span> <span class="o">==</span> <span class="s">&#39;ortho&#39;</span><span class="p">):</span>
         <span class="n">box</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">box</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
-                           <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">box</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mf">0.0</span><span class="p">],</span>
-                           <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">box</span><span class="p">[</span><span class="mi">2</span><span class="p">]]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+                        <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">box</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mf">0.0</span><span class="p">],</span>
+                        <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">box</span><span class="p">[</span><span class="mi">2</span><span class="p">]]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
 
     <span class="n">coord_transform</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">box</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">coords</span>
 
 </div>
-<div class="viewcode-block" id="calc_bonds"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.calc_bonds">[docs]</a><span class="k">def</span> <span class="nf">calc_bonds</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="calc_bonds"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.lib.distances.calc_bonds">[docs]</a><span class="k">def</span> <span class="nf">calc_bonds</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate all distances between a pair of atoms.  *atom1* and *atom2* are both</span>
 <span class="sd">    arrays of coordinates, where atom1[i] and atom2[i] represent a bond.</span>
@@ -447,6 +462,9 @@
 <span class="sd">          An array of coordinates for the other half of bond</span>
 <span class="sd">       *box*</span>
 <span class="sd">          Unit cell information if periodic boundary conditions are required [None]</span>
+<span class="sd">          Cell dimensions must be in an identical to format to those returned</span>
+<span class="sd">          by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`,</span>
+<span class="sd">          [lx, ly, lz, alpha, beta, gamma]</span>
 <span class="sd">       *result*</span>
 <span class="sd">          optional preallocated result array which must be same length as coord</span>
 <span class="sd">          arrays and dtype=numpy.float64. Avoids creating the</span>
@@ -492,7 +510,7 @@
     <span class="k">return</span> <span class="n">distances</span>
 
 </div>
-<div class="viewcode-block" id="calc_angles"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.calc_angles">[docs]</a><span class="k">def</span> <span class="nf">calc_angles</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">coords3</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="calc_angles"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.lib.distances.calc_angles">[docs]</a><span class="k">def</span> <span class="nf">calc_angles</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">coords3</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates the angle formed between three atoms, over a list of coordinates.</span>
 <span class="sd">    All *atom* inputs are lists of coordinates of equal length, with *atom2*</span>
@@ -519,6 +537,9 @@
 <span class="sd">            optional unit cell information.  This ensures that the connecting vectors between</span>
 <span class="sd">            atoms respect minimum image convention.  This is import when the angle might</span>
 <span class="sd">            be between atoms in different images.</span>
+<span class="sd">            Cell dimensions must be in an identical to format to those returned</span>
+<span class="sd">            by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`,</span>
+<span class="sd">            [lx, ly, lz, alpha, beta, gamma]</span>
 <span class="sd">        *result*</span>
 <span class="sd">            optional preallocated results array which must have same length as coordinate</span>
 <span class="sd">            array and dtype=numpy.float64.</span>
@@ -566,7 +587,7 @@
     <span class="k">return</span> <span class="n">angles</span>
 
 </div>
-<div class="viewcode-block" id="calc_torsions"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.calc_torsions">[docs]</a><span class="k">def</span> <span class="nf">calc_torsions</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">coords3</span><span class="p">,</span> <span class="n">coords4</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="calc_torsions"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.lib.distances.calc_torsions">[docs]</a><span class="k">def</span> <span class="nf">calc_torsions</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">coords3</span><span class="p">,</span> <span class="n">coords4</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate the torsional angle formed by four atoms, over a list of coordinates.</span>
 
@@ -602,6 +623,9 @@
 <span class="sd">            optional unit cell information.  This ensures that the connecting vectors</span>
 <span class="sd">            between atoms respect minimum image convention.  This is import when the</span>
 <span class="sd">            angle might be between atoms in different images.</span>
+<span class="sd">            Cell dimensions must be in an identical to format to those returned</span>
+<span class="sd">            by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`,</span>
+<span class="sd">            [lx, ly, lz, alpha, beta, gamma]</span>
 <span class="sd">        *result*</span>
 <span class="sd">            optional preallocated results array which must have same length as</span>
 <span class="sd">            coordinate array and dtype=numpy.float64.</span>
@@ -652,21 +676,24 @@
     <span class="k">return</span> <span class="n">angles</span>
 
 </div>
-<div class="viewcode-block" id="applyPBC"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.applyPBC">[docs]</a><span class="k">def</span> <span class="nf">applyPBC</span><span class="p">(</span><span class="n">incoords</span><span class="p">,</span> <span class="n">box</span><span class="p">):</span>
+<div class="viewcode-block" id="applyPBC"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.lib.distances.applyPBC">[docs]</a><span class="k">def</span> <span class="nf">applyPBC</span><span class="p">(</span><span class="n">incoords</span><span class="p">,</span> <span class="n">box</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Moves a set of coordinates to all be within the primary unit cell</span>
 
 <span class="sd">    newcoords = applyPBC(coords, box)</span>
 
 <span class="sd">    :Arguments:</span>
 <span class="sd">        *coords*</span>
-<span class="sd">                  coordinate array (of type numpy.float32)</span>
+<span class="sd">           coordinate array (of type numpy.float32)</span>
 <span class="sd">        *box*</span>
-<span class="sd">                  box dimensions, can be either orthogonal or triclinic information</span>
+<span class="sd">           box dimensions, can be either orthogonal or triclinic information</span>
+<span class="sd">           Cell dimensions must be in an identical to format to those returned</span>
+<span class="sd">           by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`,</span>
+<span class="sd">           [lx, ly, lz, alpha, beta, gamma]</span>
 
 <span class="sd">    :Returns:</span>
 <span class="sd">        *newcoords*</span>
-<span class="sd">                  coordinates that are now all within the primary unit cell,</span>
-<span class="sd">                  as defined by box</span>
+<span class="sd">           coordinates that are now all within the primary unit cell,</span>
+<span class="sd">           as defined by box</span>
 
 <span class="sd">    .. versionadded:: 0.8</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -704,7 +731,7 @@
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related" role="navigation" aria-label="related navigation">
+    <div class="related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -713,20 +740,21 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li> 
+        <li><a href="../../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer" role="contentinfo">
+    <div class="footer">
         &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
-    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Zhuyi Xue, Carlos Yáñez S.,
+    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Isaac Virshup, Zhuyi Xue, Carlos Yáñez S.,
     and Oliver Beckstein.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>
