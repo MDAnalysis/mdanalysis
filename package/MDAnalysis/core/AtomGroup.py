@@ -3357,6 +3357,7 @@ class Universe(object):
 
         from ..topology.core import get_parser_for, guess_format
         from ..topology.base import TopologyReader
+        from ..coordinates.base import ProtoReader
 
         # managed attribute holding Reader
         self.__trajectory = None
@@ -3390,9 +3391,14 @@ class Universe(object):
                 kwargs['format'] = topology_format
             elif topology_format is None:
                 topology_format = kwargs.get('format', None)
-            if guess_format(self.filename, format=kwargs.get('format', None)) in \
-                    MDAnalysis.coordinates._topology_coordinates_readers:
-                coordinatefile = self.filename  # hack for pdb/gro/crd - only
+
+            # if passed a Reader, use that
+            if issubclass(kwargs.get('format', None), ProtoReader):
+                coordinatefile = self.filename
+            # or if file is known as a topology & coordinate file, use that 
+            elif (guess_format(self.filename, format=kwargs.get('format', None)) in
+                   MDAnalysis.coordinates._topology_coordinates_readers):
+                coordinatefile = self.filename
             # Fix by SB: make sure coordinatefile is never an empty tuple
             if len(coordinatefile) == 0:
                 coordinatefile = None
@@ -3922,7 +3928,7 @@ class Universe(object):
 
         import MDAnalysis.core
         from ..coordinates.core import get_reader_for
-        from ..coordinates.base import Reader
+        from ..coordinates.base import ProtoReader
 
         if len(util.asiterable(filename)) == 1:
             # make sure a single filename is not handed to the ChainReader
@@ -3933,7 +3939,7 @@ class Universe(object):
         perm = kwargs.get('permissive', MDAnalysis.core.flags['permissive_pdb_reader'])
         reader = None
         try:
-            if reader_format is not None and issubclass(reader_format, Reader):
+            if reader_format is not None and issubclass(reader_format, ProtoReader):
                 reader = reader_format
         except TypeError:
             pass

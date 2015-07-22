@@ -1772,6 +1772,21 @@ class TestCustomReaders(TestCase):
         u = MDAnalysis.Universe(TRZ_psf, TRZ, format=MDAnalysis.coordinates.TRZ.TRZReader)
         assert_equal(len(u.atoms), 8184)
 
+    def test_custom_reader_singleframe(self):
+        T = MDAnalysis.topology.GROParser.GROParser
+        R = MDAnalysis.coordinates.GRO.GROReader
+        u = MDAnalysis.Universe(two_water_gro, two_water_gro,
+                                topology_format=T, format=R)
+        assert_equal(len(u.atoms), 6)
+
+    def test_custom_reader_singleframe_2(self):
+        # Same as before, but only one argument to Universe
+        T = MDAnalysis.topology.GROParser.GROParser
+        R = MDAnalysis.coordinates.GRO.GROReader
+        u = MDAnalysis.Universe(two_water_gro,
+                                topology_format=T, format=R)
+        assert_equal(len(u.atoms), 6)
+
     def test_custom_parser(self):
         # topology reader passing works
         u = MDAnalysis.Universe(TRZ_psf, TRZ, topology_format=MDAnalysis.topology.PSFParser.PSFParser)
