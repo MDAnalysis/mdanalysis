@@ -22,7 +22,7 @@ Trajectory Readers and Writers  --- :mod:`MDAnalysis.coordinates`
 The coordinates submodule contains code to read, write and store coordinate
 information,
 either single frames (e.g. the GRO module) or trajectories (such as the DCD
-reader). 
+reader).
 
 
 Readers
@@ -106,7 +106,7 @@ Timesteps
 ---------------
 
 Both Readers and Writers use Timesteps as their working object.  A Timestep
-represents all data for a given frame in a trajectory.  The data inside a 
+represents all data for a given frame in a trajectory.  The data inside a
 Timestep is often accessed indirectly through a :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
 but it is also possible to manipulate Timesteps directly.
 
@@ -264,6 +264,7 @@ History
 - 2013-08-02 Readers/Writers must conform to the Python `Context Manager`_ API
 - 2015-01-15 Timestep._init_unitcell() method added
 - 2015-06-11 Reworked Timestep init.  Base Timestep now does Vels & Forces
+- 2015-07-21 Major changes to Timestep and Reader API (release 0.11.0)
 
 .. _Issue 49: https://github.com/MDAnalysis/mdanalysis/issues/49
 .. _Context Manager: http://docs.python.org/2/reference/datamodel.html#context-managers
@@ -350,10 +351,10 @@ Attributes
       A numpy array of all positions in this Timestep, otherwise raises a
       :class:`~MDAnalysis.exceptions.NoDataError`
   ``velocities``
-      If present, returns a numpy array of velocities, otherwise raises a 
+      If present, returns a numpy array of velocities, otherwise raises a
       :class:`~MDAnalysis.exceptions.NoDataError`
   ``forces``
-      If present, returns a numpy array of forces, otherwise raises a 
+      If present, returns a numpy array of forces, otherwise raises a
       :class:`~MDAnalysis.exceptions.NoDataError`
   ``has_positions``
       Boolean of whether position data is available
