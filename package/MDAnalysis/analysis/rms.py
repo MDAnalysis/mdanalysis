@@ -32,7 +32,7 @@ per-residue root mean square fluctuations (:class:`RMSF`).
 This module uses the fast QCP algorithm [Theobald2005]_ to calculate
 the root mean square distance (RMSD) between two coordinate sets (as
 implemented in
-:func:`MDAnalysis.core.qcprot.CalcRMSDRotationalMatrix`).
+:func:`MDAnalysis.lib.qcprot.CalcRMSDRotationalMatrix`).
 
 When using this module in published work please cite [Theobald2005]_.
 
@@ -40,7 +40,7 @@ When using this module in published work please cite [Theobald2005]_.
 
    :mod:`MDAnalysis.analysis.align`
        aligning structures based on RMSD
-   :mod:`MDAnalysis.core.qcprot`
+   :mod:`MDAnalysis.lib.qcprot`
         implements the fast RMSD algorithm.
 
 Examples
@@ -127,8 +127,8 @@ from itertools import izip
 import numpy
 
 import MDAnalysis
-import MDAnalysis.core.qcprot as qcp
-from MDAnalysis import SelectionError, NoDataError
+import MDAnalysis.lib.qcprot as qcp
+from MDAnalysis.exceptions import SelectionError, NoDataError
 from MDAnalysis.lib.log import ProgressMeter
 from MDAnalysis.lib.util import asiterable
 

@@ -32,9 +32,9 @@ For the example provided below, the minimum least-squares RMSD for the two
 
 import numpy
 
-import MDAnalysis.core.qcprot as qcp
+import MDAnalysis.lib.qcprot as qcp
 
-from numpy.testing import *
+from numpy.testing import assert_almost_equal
 from nose.plugins.attrib import attr
 
 

@@ -43,7 +43,7 @@ manually and explains the intermediate steps.
    :mod:`MDAnalysis.analysis.rms`
         contains functions to compute RMSD (when structural alignment is not
         required)
-   :mod:`MDAnalysis.core.qcprot`
+   :mod:`MDAnalysis.lib.qcprot`
         implements the fast RMSD algorithm.
 
 
@@ -161,8 +161,8 @@ import itertools
 
 import numpy
 
-import MDAnalysis.core.qcprot as qcp
-from MDAnalysis import SelectionError, SelectionWarning
+import MDAnalysis.lib.qcprot as qcp
+from MDAnalysis.exceptions import SelectionError, SelectionWarning
 from MDAnalysis.lib.log import ProgressMeter
 
 import MDAnalysis.analysis.rms as rms

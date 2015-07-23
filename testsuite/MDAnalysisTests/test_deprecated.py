@@ -57,6 +57,12 @@ class TestImports(TestCase):
         except ImportError:
             raise AssertionError("MDAnalysis.core.transformations not available")
 
+    def test_core_qcprot(self):
+        try:
+            import MDAnalysis.core.qcprot
+        except ImportError:
+            raise AssertionError("MDAnalysis.core.qcprot not available")
+
     def test_KDTree(self):
         try:
             import MDAnalysis.KDTree

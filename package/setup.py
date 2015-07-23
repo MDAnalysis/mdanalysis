@@ -237,7 +237,7 @@ if __name__ == '__main__':
                   libraries=['m'] + parallel_libraries,
                   extra_compile_args=parallel_args,
                   extra_link_args=parallel_args),
-        Extension('core.qcprot', ['src/pyqcprot/pyqcprot.%s' % ("pyx" if use_cython else "c")],
+        Extension('lib.qcprot', ['src/pyqcprot/pyqcprot.%s' % ("pyx" if use_cython else "c")],
                   include_dirs=include_dirs,
                   extra_compile_args=["-O3", "-ffast-math"]),
         Extension('lib._transformations', ['src/transformations/transformations.c'],
