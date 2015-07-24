@@ -75,8 +75,8 @@
 # -----------------------------------------------------------------------------
 
 """
-Fast QCP RMSD structure alignment --- :mod:`MDAnalysis.core.qcprot`
-===================================================================
+Fast QCP RMSD structure alignment --- :mod:`MDAnalysis.lib.qcprot`
+==================================================================
 
 :Author:   Joshua L. Adelman, University of Pittsburgh
 :Contact:  jla65@pitt.edu
