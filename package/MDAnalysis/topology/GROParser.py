@@ -17,7 +17,8 @@
 GRO topology parser
 ===================
 
-Read a list of atoms from a GROMOS/Gromacs GRO coordinate file to build a basic topology.
+Read a list of atoms from a GROMOS/Gromacs GRO coordinate file to
+build a basic topology.
 
 Atom types, masses and charges are guessed.
 
@@ -43,12 +44,12 @@ class GROParser(TopologyReader):
     def parse(self):
         """Parse GRO file *filename* and return the dict `structure`.
 
-            Only reads the list of atoms.
+        Only reads the list of atoms.
 
-            :Returns: MDAnalysis internal *structure* dict
+        :Returns: MDAnalysis internal *structure* dict
 
-            .. SeeAlso:: The *structure* dict is defined in
-            :func:`MDAnalysis.topology.base`.
+        .. SeeAlso:: The *structure* dict is defined in
+                     :func:`MDAnalysis.topology.base`.
         """
         atom_iter = 0
         atoms = []

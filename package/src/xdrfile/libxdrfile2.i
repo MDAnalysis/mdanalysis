@@ -1,4 +1,4 @@
-/* -*- C -*-  (not really, but good for syntax highlighting) */
+/* -*- Mode: C; indent-tabs-mode:nil -*-  */
 /* SWIG interface for Gromacs libxdrfile2 with the XTC and TRR code 
    Copyright (c) 2010 Oliver Beckstein <orbeckst@gmail.com>
    Copyright (c) 2013,2014 Manuel Melo <manuel.nuno.melo@gmail.com>
@@ -17,16 +17,16 @@
 The Gromacs XTC/TRR library :mod:`libxdrfile2`
 ==============================================
 
-:mod:`libxdrfile2`, a derivative of the Gromacs_ `libxdrfile library`_, provides an
-interface to some high-level functions for XTC/TRR trajectory handling.
-Only functions required for reading and processing whole trajectories are exposed at
-the moment; low-level routines to read individual numbers are not provided. In
-addition, :mod:`libxdrfile2` exposes functions to allow fast frame indexing and XDR
-file seeking.
+:mod:`libxdrfile2`, a derivative of the Gromacs_ `libxdrfile library`_,
+provides an interface to some high-level functions for XTC/TRR trajectory
+handling.  Only functions required for reading and processing whole
+trajectories are exposed at the moment; low-level routines to read individual
+numbers are not provided. In addition, :mod:`libxdrfile2` exposes functions to
+allow fast frame indexing and XDR file seeking.
 
 The functions querying the numbers of atoms in a trajectory frame
-(:func:`read_xtc_natoms` and :func:`read_trr_natoms`) open a file themselves and
-only require the file name.
+(:func:`read_xtc_natoms` and :func:`read_trr_natoms`) open a file themselves
+and only require the file name.
 
 All other functions operate on a *XDRFILE* object, which is a special file
 handle for xdr files.  Any xdr-based trajectory file (XTC or TRR format) always
@@ -36,17 +36,20 @@ with :func:`xdrfile_close`.
 The functions fill or read existing arrays of coordinates; they never allocate
 these arrays themselves. Hence they need to be setup outside libxdrfile2 as
 numpy arrays. The exception to these are the indexing ones functions that take
-care of array allocation and transference to a garbage-collectable memory object.
+care of array allocation and transference to a garbage-collectable memory
+object.
 
 
 .. _Gromacs: http://www.gromacs.org
-.. _libxdrfile library: http://www.gromacs.org/Developer_Zone/Programming_Guide/XTC_Library
+.. _libxdrfile library: 
+   http://www.gromacs.org/Developer_Zone/Programming_Guide/XTC_Library
 
 .. versionchanged:: 0.8.0
-   :mod:`libxdrfile2` is now used instead of :mod:`libxdrfile`. :mod:`libxdrfile2` is
-   based on :mod:`libxdrfile` but has xdr seeking and indexing capabilities.
-   Unlike :mod:`libxdrfile` before it, :mod:`libxdrfile2` is distributed under the GNU
-   GENERAL PUBLIC LICENSE, version 2 (or higher).
+   :mod:`libxdrfile2` is now used instead of
+   :mod:`libxdrfile`. :mod:`libxdrfile2` is based on :mod:`libxdrfile` but has
+   xdr seeking and indexing capabilities.  Unlike :mod:`libxdrfile` before it,
+   :mod:`libxdrfile2` is distributed under the GNU GENERAL PUBLIC LICENSE,
+   version 2 (or higher).
 
 
 Example: Reading from a XTC
@@ -171,11 +174,11 @@ to access xdr files such as XTC or TRR trajectories.
               functions.
 
               :Arguments:
-		  *path*
-		     file name
-		  *mode*
-		     'r' for reading and 'w' for writing
-	      :Returns: *XDRFILE* handle
+                  *path*
+                     file name
+                  *mode*
+                     'r' for reading and 'w' for writing
+              :Returns: *XDRFILE* handle
 
 .. function:: xdrfile_close(XDRFILE) -> status
 
@@ -209,10 +212,12 @@ The advantage of XTC over TRR is its significantly reduced size.
 
 .. function:: read_xtc_numframes(fn) -> (numframes, offsets)
 
-              Read through the whole trajectory headers to obtain the total number of frames. 
-              The process is speeded up by reading frame headers for the amount of data in the frame,
-              and then skipping directly to the next header. An array of frame offsets is also
-              returned, which can later be used to seek direcly to arbitrary frames in the trajectory. 
+              Read through the whole trajectory headers to obtain the 
+              total number of frames. The process is speeded up by reading 
+              frame headers for the amount of data in the frame, 
+              and then skipping directly to the next header. An array of 
+              frame offsets is also returned, which can later be used to 
+              seek direcly to arbitrary frames in the trajectory. 
 
               :Arguments:
                 *fn*
@@ -397,7 +402,7 @@ calculations. Velocities and forces are optional in the sense that they can be a
 /* Python SWIG interface to some functions in Gromacs libxdr v 2.0
    Copyright (c) 2010 Oliver Beckstein <orbeckst@gmail.com>
    Published under the GNU LESSER GENERAL PUBLIC LICENSE Version 3 (or higher)
-   See http://mdanalysis.googlecode.com for details.
+   See http://www.mdanalysis.org for details.
  */
 #define SWIG_FILE_WITH_INIT
 #include <stdio.h>
@@ -571,7 +576,7 @@ typedef float rvec[DIM];
 /* Read one frame of an open xtc file */
 /*
 extern int read_xtc(XDRFILE *xd,int natoms,int *step,float *time,
- 		    matrix box,rvec *x,float *prec); 
+                    matrix box,rvec *x,float *prec); 
 */
 %feature("autodoc", "read_xtc(XDRFILE, box, x) -> (status, step, time, precision)") my_read_xtc;
 %rename (read_xtc) my_read_xtc;
@@ -594,9 +599,9 @@ PyObject * my_read_xtc(XDRFILE *xd, matrix box, int natoms, int _DIM, float *x) 
 %rename (read_trr) my_read_trr;
 %inline %{
 PyObject * my_read_trr(XDRFILE *xd, matrix box, 
-		int natoms,  int _DIM,  float *x,
-		int vnatoms, int v_DIM, float *v,
-		int fnatoms, int f_DIM, float *f) {
+                int natoms,  int _DIM,  float *x,
+                int vnatoms, int v_DIM, float *v,
+                int fnatoms, int f_DIM, float *f) {
   /* _DIM = 3 always, need to reorder for numpy.i SWIG */
   int status, step, has_prop=0;
   float time, lmbda;
@@ -629,13 +634,13 @@ PyObject * my_read_trr(XDRFILE *xd, matrix box,
 /* Write a frame to xtc file */
 /*
 extern int write_xtc(XDRFILE *xd, int natoms,int step,float time,
-		     matrix box,rvec *x,float prec);
+                     matrix box,rvec *x,float prec);
 */
 %feature("autodoc", "write_xtc(XDRFILE, step, time, box, x, prec) -> status") my_write_xtc;
 %rename (write_xtc) my_write_xtc;
 %inline %{
 int my_write_xtc(XDRFILE *xd, int step, float time,
-		 matrix box, int natoms, int _DIM, float *x, float prec) {
+                 matrix box, int natoms, int _DIM, float *x, float prec) {
   /* _DIM = 3 always, need to reorder for numpy.i SWIG */
   return write_xtc(xd, natoms, step, time, box, (rvec *)x, prec);
 }
@@ -645,9 +650,9 @@ int my_write_xtc(XDRFILE *xd, int step, float time,
 %rename (write_trr) my_write_trr;
 %inline %{
 int my_write_trr(XDRFILE *xd, int step, float time, float lmbda, matrix box, 
-		 int natoms,  int _DIM,  float *x, 
-		 int vnatoms, int v_DIM, float *v, 
-		 int fnatoms, int f_DIM, float *f) { 
+                 int natoms,  int _DIM,  float *x, 
+                 int vnatoms, int v_DIM, float *v, 
+                 int fnatoms, int f_DIM, float *f) { 
   /* Preparing for the case of empty arrays - NULL pointers tell the library to skip this property. */
   if (_DIM == 0) x = NULL;
   if (v_DIM == 0) v = NULL;

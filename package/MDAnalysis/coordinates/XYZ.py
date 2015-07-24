@@ -23,22 +23,24 @@ coordinate trajectory format. The implemented format definition was
 taken from the `VMD xyzplugin`_ and is therefore compatible with VMD.
 
 Note the following:
-* comments are not allowed in the XYZ file (we neither read nor write
-  them to remain compatible with VMD)
-* the atom name (first column) is ignored during reading
-* the coordinates are assumed to be space-delimited rather than fixed
-  width (this may cause issues - see below)
-* all fields to the right of the z-coordinate are ignored
-* the unitcell information is all zeros since this is not recorded in
-  the XYZ format
 
-**Units**
+* Comments are not allowed in the XYZ file (we neither read nor write
+  them to remain compatible with VMD).
+* The atom name (first column) is ignored during reading.
+* The coordinates are assumed to be space-delimited rather than fixed
+  width (this may cause issues - see below).
+* All fields to the right of the z-coordinate are ignored.
+* The unitcell information is all zeros since this is not recorded in
+  the XYZ format.
+
+.. rubric:: Units
+
 * Coordinates are in Angstroms.
-* The length of a timestep can be set by passing the *delta* argument,
+* The length of a timestep can be set by passing the *dt* argument,
   it's assumed to be in ps (default: 1 ps).
 
 There appears to be no rigid format definition so it is likely users
-will need to tweak this Class.
+will need to tweak this class.
 
 .. _xyz-format:
 
@@ -56,10 +58,11 @@ the `VMD xyzplugin`_ from whence the definition was taken)::
     ...
     atomN x y z [ ...         ]                                                 line N+2
 
-* comment lines not implemented
-* optional data ignored
-* molecule name
-
+.. Note::
+   * comment lines not implemented (do not include them)
+   * molecule name: the line is required but the content is ignored
+     at the moment
+   * optional data (after the coordinates) are presently ignored
 
 
 .. Links
@@ -83,9 +86,10 @@ class XYZWriter(base.Writer):
     """Writes an XYZ file
 
     The XYZ file format is not formally defined. This writer follows
-    the vmd implementation. See:
+    the VMD implementation for the molfile `xyzplugin`_.
 
-    http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html
+    .. _xyzplugin:
+       http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html
     """
 
     format = 'XYZ'
@@ -100,15 +104,20 @@ class XYZWriter(base.Writer):
                 file name of trajectory file. If it ends with "gz" then the file
                 will be gzip-compressed; if it ends with "bz2" it will be bzip2
                 compressed.
-         :Keywords:
-             *atoms*
-                Provide atom names: This can be a list of names or an :class:`AtomGroup`.
-                If none is provided, atoms will be called 'X' in the output. These atom
-                names will be used when a trajectory is written from raw :class:`Timestep`
-                objects which do not contain atom information.
 
-                If you write a :class:`AtomGroup` with :meth:`XYZWriter.write` then atom
-                information is taken at each step and *atoms* is ignored.
+        :Keywords:
+             *atoms*
+                Provide atom names: This can be a list of names or an
+                :class:`AtomGroup`.  If none is provided, atoms will
+                be called 'X' in the output. These atom names will be
+                used when a trajectory is written from raw
+                :class:`Timestep` objects which do not contain atom
+                information.
+
+                If you write a :class:`AtomGroup` with
+                :meth:`XYZWriter.write` then atom information is taken
+                at each step and *atoms* is ignored.
+
              *remark*
                 single line of text ("molecule name")
         """
@@ -213,7 +222,7 @@ class XYZReader(base.Reader):
     """Reads from an XYZ file
 
     :Data:
-        ts
+        :attr:`ts`
           Timestep object containing coordinates of current frame
 
     :Methods:
@@ -227,17 +236,19 @@ class XYZReader(base.Reader):
           on the fly and also reads streams via
           :class:`~MDAnalysis.lib.util.NamedStream`.
 
-    File format: http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html
-
-    Validation: the geometric centre of 1284 atoms was calculated over
-    500 frames using both MDAnalysis and a VMD Tcl script. There was
-    exact agreement (measured to 3DP). bzipped and gzipped versions of
-    the XYZ file were also tested
+    The XYZ file format follows VMD's xyzplugin_ and is also described
+    under :ref:`XYZ format <xyz-format>`.
 
     .. versionchanged:: 0.11.0
-       Frames now 0-based instead of 1-based
-       Added dt and time_offset keywords (passed to Timestep)
+       Frames now 0-based instead of 1-based. Added *dt* and
+       *time_offset* keywords (passed to :class:`Timestep`)
     """
+
+    # Phil Fowler:
+    # Validation: the geometric centre of 1284 atoms was calculated over
+    # 500 frames using both MDAnalysis and a VMD Tcl script. There was
+    # exact agreement (measured to three decimal places). bzipped and
+    # gzipped versions of the XYZ file were also tested
 
     # this will be overidden when an instance is created and the file extension checked
     format = "XYZ"

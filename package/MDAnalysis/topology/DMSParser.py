@@ -58,10 +58,10 @@ class DMSParser(TopologyReader):
         Only reads the list of atoms.
 
         :Returns: MDAnalysis internal *structure* dict, which contains
-        Atom and Bond objects
+                  Atom and Bond objects
 
         .. SeeAlso:: The *structure* dict is defined in
-        `MDAnalysis.topology`.
+                     :mod:`MDAnalysis.topology`.
 
         """
         # Fix by SB: Needed because sqlite3.connect does not raise anything if file is not there

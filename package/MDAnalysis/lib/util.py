@@ -1062,21 +1062,21 @@ def conv_float(s):
 def cached(key):
     """Cache a property within a class
 
-    Requires the Class to have a cache dict called "_cache"
+    Requires the Class to have a cache dict called ``_cache``.
 
-    Usage:
+    Usage::
 
-    class A(object):
-        def__init__(self):
-            self._cache = dict()
+       class A(object):
+           def__init__(self):
+               self._cache = dict()
 
-        @property
-        @cached('keyname')
-        def size(self):
-            # This code gets ran only if the lookup of keyname fails
-            # After this code has been ran once, the result is stored in 
-            # _cache with the key: 'keyname'
-            size = 10.0
+           @property
+           @cached('keyname')
+           def size(self):
+               # This code gets ran only if the lookup of keyname fails
+               # After this code has been ran once, the result is stored in
+               # _cache with the key: 'keyname'
+               size = 10.0
 
     .. versionadded:: 0.9.0
     """

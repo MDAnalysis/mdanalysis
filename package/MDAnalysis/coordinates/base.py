@@ -861,18 +861,19 @@ class IObase(object):
 class ProtoReader(IObase):
     """Base class for Readers, without a :meth:`__del__` method.
 
-    Extends :class:`IObase` with most attributes and methods of a generic Reader,
-    with the exception of a :meth:`__del__` method. It should be used as base for Readers
-    that do not need :meth:`__del__`, especially since having even an empty :meth:`__del__`
-    might lead to memory leaks.
+    Extends :class:`IObase` with most attributes and methods of a generic
+    Reader, with the exception of a :meth:`__del__` method. It should be used
+    as base for Readers that do not need :meth:`__del__`, especially since
+    having even an empty :meth:`__del__` might lead to memory leaks.
 
     See the :ref:`Trajectory API` definition in
-    :mod:`MDAnalysis.coordinates.__init__` for the required attributes and methods.
+    :mod:`MDAnalysis.coordinates.__init__` for the required attributes and
+    methods.
+
+    .. SeeAlso:: :class:`Reader`
 
     .. versionchanged:: 0.11.0
        Frames now 0-based instead of 1-based
-
-    .. SeeAlso:: :class:`Reader`
     """
 
     #: The appropriate Timestep class, e.g.
@@ -1062,20 +1063,24 @@ class ProtoReader(IObase):
 class Reader(ProtoReader):
     """Base class for trajectory readers that extends :class:`ProtoReader` with a :meth:`__del__` method.
 
-    New Readers should subclass :class:`Reader` and properly implement a :meth:`close`
-    method, to ensure proper release of resources (mainly file handles). Readers that
-    are inherently safe in this regard should subclass :class:`ProtoReader` instead.
+    New Readers should subclass :class:`Reader` and properly implement a
+    :meth:`close` method, to ensure proper release of resources (mainly file
+    handles). Readers that are inherently safe in this regard should subclass
+    :class:`ProtoReader` instead.
 
     See the :ref:`Trajectory API` definition in
-    :mod:`MDAnalysis.coordinates.__init__` for the required attributes and methods.
+    :mod:`MDAnalysis.coordinates.__init__` for the required attributes and
+    methods.
+
     .. SeeAlso:: :class:`ProtoReader`
+
     .. versionchanged:: 0.11.0
-       Most of the base Reader class definitions were offloaded to :class:`ProtoReader`
-       so as to allow the subclassing of Readers without a :meth:`__del__` method.
-       Created init method to create common functionality, all Reader subclasses
-       must now super through this Class.
-       Added attribute "_ts_kwargs" attribute created in init.  Provides kwargs
-       to be passed to Timestep
+       Most of the base Reader class definitions were offloaded to
+       :class:`ProtoReader` so as to allow the subclassing of Readers without a
+       :meth:`__del__` method.  Created init method to create common
+       functionality, all Reader subclasses must now :func:`super` through this
+       class.  Added attribute :attr:`_ts_kwargs`, which is created in init.
+       Provides kwargs to be passed to :class:`Timestep`
     """
     def __init__(self, filename, convert_units=None, **kwargs):
         self.filename = filename

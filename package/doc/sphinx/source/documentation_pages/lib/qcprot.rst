@@ -1,2 +1,2 @@
-.. automodule:: MDAnalysis.core.qcprot
+.. automodule:: MDAnalysis.lib.qcprot
 

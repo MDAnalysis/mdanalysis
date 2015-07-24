@@ -1149,13 +1149,13 @@ class AtomGroup(object):
         *id* string or the *name* or the *description*) are directly passed to
         :class:`Bio.SeqRecord.SeqRecord`.
 
-        If the keyword *format* is set to ``'Seq'``, all *kwargs* are ignored and
-        a :class:`Bio.Seq.Seq` instance is returned. The difference to the
+        If the keyword *format* is set to ``'Seq'``, all *kwargs* are ignored
+        and a :class:`Bio.Seq.Seq` instance is returned. The difference to the
         record is that the record also contains metadata and can be directly
         used as an input for other functions in :mod:`Bio`.
 
-        If the keyword *format* is set to ``'string'``, all *kwargs* are ignored
-        and a Python string is returned.
+        If the keyword *format* is set to ``'string'``, all *kwargs* are
+        ignored and a Python string is returned.
 
         .. rubric:: Example: Write FASTA file
 
@@ -1175,11 +1175,14 @@ class AtomGroup(object):
 
         :Keywords:
             *format*
+
                 - ``"string"``: return sequence as a string of 1-letter codes
                 - ``"Seq"``: return a :class:`Bio.Seq.Seq` instance
                 - ``"SeqRecord"``: return a :class:`Bio.SeqRecord.SeqRecord`
                   instance
+
                 Default is ``"SeqRecord"``
+
              *id*
                 Sequence ID for SeqRecord (should be different for different
                 sequences)
@@ -2446,12 +2449,15 @@ class AtomGroup(object):
            *compound*
                The group which will be kept together through the shifting
                process. [``atoms``]
+
                Possible options:
-                   * ``atoms``
-                   * ``group`` - This AtomGroup
-                   * ``residues``
-                   * ``segments``
-                   * ``fragments``
+
+                   - ``atoms``
+                   - ``group`` - This AtomGroup
+                   - ``residues``
+                   - ``segments``
+                   - ``fragments``
+
            *center*
                How to define the center of a given group of atoms [``com``]
            *box*
@@ -3198,8 +3204,9 @@ class Universe(object):
 
     The system always requires a *topology* file --- in the simplest case just
     a list of atoms. This can be a CHARMM/NAMD PSF file or a simple coordinate
-    file with atom informations such as XYZ, PDB, Gromacs GRO, or CHARMM CRD. See
-    :ref:`Supported topology formats` for what kind of topologies can be read.
+    file with atom informations such as XYZ, PDB, Gromacs GRO, or CHARMM
+    CRD. See :ref:`Supported topology formats` for what kind of topologies can
+    be read.
 
     A trajectory provides coordinates; the coordinates have to be ordered in
     the same way as the list of atoms in the topology. A trajectory can be a
@@ -3208,9 +3215,10 @@ class Universe(object):
     :ref:`Supported coordinate formats` for what can be read as a
     "trajectory".
 
-    As a special case, when the topology is a XYZ, PDB, GRO or CRD file
-    then the coordinates are immediately loaded from the "topology"
-    file unless a trajectory is supplied.
+    As a special case, when the topology is a file that contains atom
+    information *and* coordinates (such as XYZ, PDB, GRO or CRD, see
+    :ref:`Supported coordinates formats`) then the coordinates are immediately
+    loaded from the "topology" file unless a trajectory is supplied.
 
     Examples for setting up a universe::
 
@@ -3252,15 +3260,17 @@ class Universe(object):
        :class:`~MDAnalysis.coordinates.PDB.PrimitivePDBReader`.
 
     .. versionchanged:: 0.8
-       Parse arbitrary number of arguments as a single topology file and a a sequence
-       of trajectories.
+       Parse arbitrary number of arguments as a single topology file and a
+       sequence of trajectories.
 
     .. versionchanged:: 0.9.0
        Topology information now loaded lazily, but can be forced with
-       :meth:`build_topology`
-       Changed .bonds attribute to be a :class:`~MDAnalysis.topology.core.TopologyGroup`
-       Added .angles and .torsions attribute as :class:`~MDAnalysis.topology.core.TopologyGroup`
-       Added fragments to Universe cache
+       :meth:`build_topology`. Changed :attr:`bonds` attribute to be a
+       :class:`~MDAnalysis.topology.core.TopologyGroup`. Added :attr:`angles`
+       and :attr:`torsions` attribute as
+       :class:`~MDAnalysis.topology.core.TopologyGroup`. Added fragments to
+       Universe cache
+
     .. versionchanged:: 0.11.0
        :meth:`make_anchor`, :meth:`remove_anchor`, :attr:`is_anchor`, and
        :attr:`anchor_name` were added to support the pickling/unpickling of
@@ -3398,7 +3408,7 @@ class Universe(object):
                 if issubclass(fmt, ProtoReader):
                     coordinatefile = self.filename
             except TypeError:
-                # or if file is known as a topology & coordinate file, use that 
+                # or if file is known as a topology & coordinate file, use that
                 if (guess_format(self.filename, format=fmt) in
                     MDAnalysis.coordinates._topology_coordinates_readers):
                     coordinatefile = self.filename

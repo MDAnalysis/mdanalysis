@@ -139,7 +139,8 @@ class TopologyObject(object):
         """Type of the bond as a tuple
 
         When comparing types, it is important to consider the reverse
-        of the type too, ie::
+        of the type too, i.e.::
+
             a.type == b.type or a.type == b.type[::-1]
 
         """
@@ -211,7 +212,9 @@ class Bond(TopologyObject):
     bond was guessed.
 
     The presence of a particular atom can also be queried::
-       >>> Atom in Bond
+
+      >>> Atom in Bond
+
     will return either ``True`` or ``False``.
 
     .. versionchanged:: 0.9.0
