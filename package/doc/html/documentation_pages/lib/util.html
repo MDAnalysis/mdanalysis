@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>9.8. Helper functions — MDAnalysis.lib.util &mdash; MDAnalysis 0.11.0-dev documentation</title>
+    <title>9.9. Helper functions — MDAnalysis.lib.util &mdash; MDAnalysis 0.11.0-dev documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -33,7 +33,7 @@
     <link rel="top" title="MDAnalysis 0.11.0-dev documentation" href="../../index.html" />
     <link rel="up" title="9. MDAnalysis library" href="../lib_modules.html" />
     <link rel="next" title="10. Constants and unit conversion — MDAnalysis.units" href="../units.html" />
-    <link rel="prev" title="9.7. Homogeneous Transformation Matrices and Quaternions — MDAnalysis.lib.transformations" href="transformations.html" /> 
+    <link rel="prev" title="9.8. Fast QCP RMSD structure alignment — MDAnalysis.core.qcprot" href="qcprot.html" /> 
   </head>
   <body>
     <div class="related">
@@ -49,7 +49,7 @@
           <a href="../units.html" title="10. Constants and unit conversion — MDAnalysis.units"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="transformations.html" title="9.7. Homogeneous Transformation Matrices and Quaternions — MDAnalysis.lib.transformations"
+          <a href="qcprot.html" title="9.8. Fast QCP RMSD structure alignment — MDAnalysis.core.qcprot"
              accesskey="P">previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
           <li><a href="../lib_modules.html" accesskey="U">9. MDAnalysis library</a> &raquo;</li> 
@@ -62,24 +62,24 @@
             </a></p>
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">9.8. Helper functions &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.lib.util</span></tt></a><ul>
-<li><a class="reference internal" href="#files-and-directories">9.8.1. Files and directories</a></li>
-<li><a class="reference internal" href="#streams">9.8.2. Streams</a></li>
-<li><a class="reference internal" href="#containers-and-lists">9.8.3. Containers and lists</a></li>
-<li><a class="reference internal" href="#file-parsing">9.8.4. File parsing</a></li>
-<li><a class="reference internal" href="#data-manipulation-and-handling">9.8.5. Data manipulation and handling</a></li>
-<li><a class="reference internal" href="#strings">9.8.6. Strings</a></li>
-<li><a class="reference internal" href="#class-decorators">9.8.7. Class decorators</a></li>
+<li><a class="reference internal" href="#">9.9. Helper functions &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.lib.util</span></tt></a><ul>
+<li><a class="reference internal" href="#files-and-directories">9.9.1. Files and directories</a></li>
+<li><a class="reference internal" href="#streams">9.9.2. Streams</a></li>
+<li><a class="reference internal" href="#containers-and-lists">9.9.3. Containers and lists</a></li>
+<li><a class="reference internal" href="#file-parsing">9.9.4. File parsing</a></li>
+<li><a class="reference internal" href="#data-manipulation-and-handling">9.9.5. Data manipulation and handling</a></li>
+<li><a class="reference internal" href="#strings">9.9.6. Strings</a></li>
+<li><a class="reference internal" href="#class-decorators">9.9.7. Class decorators</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="transformations.html"
-                        title="previous chapter">9.7. Homogeneous Transformation Matrices and Quaternions &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.lib.transformations</span></tt></a></p>
+  <p class="topless"><a href="qcprot.html"
+                        title="previous chapter">9.8. Fast QCP RMSD structure alignment &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.core.qcprot</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="../units.html"
-                        title="next chapter">10. Constants and unit conversion &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.units</span></tt></a></p>
+                        title="next chapter">10. Constants and unit conversion &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.units</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/lib/util.txt"
@@ -107,10 +107,10 @@
           <div class="body">
             
   <span class="target" id="module-MDAnalysis.lib.util"></span><div class="section" id="helper-functions-mdanalysis-lib-util">
-<h1>9.8. Helper functions &#8212; <a class="reference internal" href="#module-MDAnalysis.lib.util" title="MDAnalysis.lib.util"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.lib.util</span></tt></a><a class="headerlink" href="#helper-functions-mdanalysis-lib-util" title="Permalink to this headline">¶</a></h1>
+<h1>9.9. Helper functions &#8212; <a class="reference internal" href="#module-MDAnalysis.lib.util" title="MDAnalysis.lib.util"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.lib.util</span></tt></a><a class="headerlink" href="#helper-functions-mdanalysis-lib-util" title="Permalink to this headline">¶</a></h1>
 <p>Small helper functions that don&#8217;t fit anywhere else.</p>
 <div class="section" id="files-and-directories">
-<h2>9.8.1. Files and directories<a class="headerlink" href="#files-and-directories" title="Permalink to this headline">¶</a></h2>
+<h2>9.9.1. Files and directories<a class="headerlink" href="#files-and-directories" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.lib.util.filename">
 <tt class="descclassname">MDAnalysis.lib.util.</tt><tt class="descname">filename</tt><big>(</big><em>name</em>, <em>ext=None</em>, <em>keep=False</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#filename"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.filename" title="Permalink to this definition">¶</a></dt>
@@ -215,7 +215,7 @@ behavior to return a tuple <tt class="docutils literal"><span class="pre">(strea
 
 </div>
 <div class="section" id="streams">
-<h2>9.8.2. Streams<a class="headerlink" href="#streams" title="Permalink to this headline">¶</a></h2>
+<h2>9.9.2. Streams<a class="headerlink" href="#streams" title="Permalink to this headline">¶</a></h2>
 <p>Many of the readers are not restricted to just reading files. They can
 also use gzip-compressed or bzip2-compressed files (through the
 internal use of <a class="reference internal" href="#MDAnalysis.lib.util.openany" title="MDAnalysis.lib.util.openany"><tt class="xref py py-func docutils literal"><span class="pre">openany()</span></tt></a>). It is also possible to provide more
@@ -484,7 +484,7 @@ supplied). The current file position is not changed.</p>
 
 </div>
 <div class="section" id="containers-and-lists">
-<h2>9.8.3. Containers and lists<a class="headerlink" href="#containers-and-lists" title="Permalink to this headline">¶</a></h2>
+<h2>9.9.3. Containers and lists<a class="headerlink" href="#containers-and-lists" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.lib.util.iterable">
 <tt class="descclassname">MDAnalysis.lib.util.</tt><tt class="descname">iterable</tt><big>(</big><em>obj</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#iterable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.iterable" title="Permalink to this definition">¶</a></dt>
@@ -505,7 +505,7 @@ supplied). The current file position is not changed.</p>
 
 </div>
 <div class="section" id="file-parsing">
-<h2>9.8.4. File parsing<a class="headerlink" href="#file-parsing" title="Permalink to this headline">¶</a></h2>
+<h2>9.9.4. File parsing<a class="headerlink" href="#file-parsing" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.lib.util.FORTRANReader">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.lib.util.</tt><tt class="descname">FORTRANReader</tt><big>(</big><em>fmt</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#FORTRANReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.FORTRANReader" title="Permalink to this definition">¶</a></dt>
@@ -587,7 +587,7 @@ forms.</p>
 
 </div>
 <div class="section" id="data-manipulation-and-handling">
-<h2>9.8.5. Data manipulation and handling<a class="headerlink" href="#data-manipulation-and-handling" title="Permalink to this headline">¶</a></h2>
+<h2>9.9.5. Data manipulation and handling<a class="headerlink" href="#data-manipulation-and-handling" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.lib.util.fixedwidth_bins">
 <tt class="descclassname">MDAnalysis.lib.util.</tt><tt class="descname">fixedwidth_bins</tt><big>(</big><em>delta</em>, <em>xmin</em>, <em>xmax</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#fixedwidth_bins"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.fixedwidth_bins" title="Permalink to this definition">¶</a></dt>
@@ -598,7 +598,7 @@ forms.</p>
 
 </div>
 <div class="section" id="strings">
-<h2>9.8.6. Strings<a class="headerlink" href="#strings" title="Permalink to this headline">¶</a></h2>
+<h2>9.9.6. Strings<a class="headerlink" href="#strings" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.lib.util.convert_aa_code">
 <tt class="descclassname">MDAnalysis.lib.util.</tt><tt class="descname">convert_aa_code</tt><big>(</big><em>x</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#convert_aa_code"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.convert_aa_code" title="Permalink to this definition">¶</a></dt>
@@ -652,29 +652,25 @@ otherwise the original object is passed back.</p>
 
 </div>
 <div class="section" id="class-decorators">
-<h2>9.8.7. Class decorators<a class="headerlink" href="#class-decorators" title="Permalink to this headline">¶</a></h2>
+<h2>9.9.7. Class decorators<a class="headerlink" href="#class-decorators" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.lib.util.cached">
 <tt class="descclassname">MDAnalysis.lib.util.</tt><tt class="descname">cached</tt><big>(</big><em>key</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#cached"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.cached" title="Permalink to this definition">¶</a></dt>
 <dd><p>Cache a property within a class</p>
-<p>Requires the Class to have a cache dict called &#8220;_cache&#8221;</p>
+<p>Requires the Class to have a cache dict called <tt class="docutils literal"><span class="pre">_cache</span></tt>.</p>
 <p>Usage:</p>
-<dl class="docutils">
-<dt>class A(object):</dt>
-<dd><dl class="first docutils">
-<dt>def__init__(self):</dt>
-<dd>self._cache = dict()</dd>
-</dl>
-<p>&#64;property
-&#64;cached(&#8216;keyname&#8217;)
-def size(self):</p>
-<blockquote class="last">
-<div># This code gets ran only if the lookup of keyname fails
-# After this code has been ran once, the result is stored in 
-# _cache with the key: &#8216;keyname&#8217;
-size = 10.0</div></blockquote>
-</dd>
-</dl>
+<div class="highlight-python"><pre>class A(object):
+    def__init__(self):
+        self._cache = dict()
+
+    @property
+    @cached('keyname')
+    def size(self):
+        # This code gets ran only if the lookup of keyname fails
+        # After this code has been ran once, the result is stored in
+        # _cache with the key: 'keyname'
+        size = 10.0</pre>
+</div>
 <p class="versionadded">
 <span class="versionmodified">New in version 0.9.0.</span></p>
 </dd></dl>
@@ -719,7 +715,7 @@ close it.</td></tr>
           <a href="../units.html" title="10. Constants and unit conversion — MDAnalysis.units"
              >next</a> |</li>
         <li class="right" >
-          <a href="transformations.html" title="9.7. Homogeneous Transformation Matrices and Quaternions — MDAnalysis.lib.transformations"
+          <a href="qcprot.html" title="9.8. Fast QCP RMSD structure alignment — MDAnalysis.core.qcprot"
              >previous</a> |</li>
         <li><a href="../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
           <li><a href="../lib_modules.html" >9. MDAnalysis library</a> &raquo;</li> 

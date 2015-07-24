@@ -70,10 +70,10 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="XTC.html"
-                        title="previous chapter">5.16. Gromacs XTC file IO &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.coordinates.XTC</span></tt></a></p>
+                        title="previous chapter">5.16. Gromacs XTC file IO &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.XTC</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="TRZ.html"
-                        title="next chapter">5.18. TRZ trajectory I/O  &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.coordinates.TRZ</span></tt></a></p>
+                        title="next chapter">5.18. TRZ trajectory I/O  &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.TRZ</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/coordinates/XYZ.txt"
@@ -105,25 +105,25 @@
 <p>The <a class="reference internal" href="#xyz-format"><em>XYZ format</em></a> is a loosely defined, simple
 coordinate trajectory format. The implemented format definition was
 taken from the <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html">VMD xyzplugin</a> and is therefore compatible with VMD.</p>
-<p>Note the following:
-* comments are not allowed in the XYZ file (we neither read nor write</p>
-<blockquote>
-<div>them to remain compatible with VMD)</div></blockquote>
+<p>Note the following:</p>
 <ul class="simple">
-<li>the atom name (first column) is ignored during reading</li>
-<li>the coordinates are assumed to be space-delimited rather than fixed
-width (this may cause issues - see below)</li>
-<li>all fields to the right of the z-coordinate are ignored</li>
-<li>the unitcell information is all zeros since this is not recorded in
-the XYZ format</li>
+<li>Comments are not allowed in the XYZ file (we neither read nor write
+them to remain compatible with VMD).</li>
+<li>The atom name (first column) is ignored during reading.</li>
+<li>The coordinates are assumed to be space-delimited rather than fixed
+width (this may cause issues - see below).</li>
+<li>All fields to the right of the z-coordinate are ignored.</li>
+<li>The unitcell information is all zeros since this is not recorded in
+the XYZ format.</li>
 </ul>
-<p><strong>Units</strong>
-* Coordinates are in Angstroms.
-* The length of a timestep can be set by passing the <em>delta</em> argument,</p>
-<blockquote>
-<div>it&#8217;s assumed to be in ps (default: 1 ps).</div></blockquote>
+<p class="rubric">Units</p>
+<ul class="simple">
+<li>Coordinates are in Angstroms.</li>
+<li>The length of a timestep can be set by passing the <em>dt</em> argument,
+it&#8217;s assumed to be in ps (default: 1 ps).</li>
+</ul>
 <p>There appears to be no rigid format definition so it is likely users
-will need to tweak this Class.</p>
+will need to tweak this class.</p>
 <div class="section" id="xyz-file-format">
 <span id="xyz-format"></span><h2>5.17.1. XYZ File format<a class="headerlink" href="#xyz-file-format" title="Permalink to this headline">¶</a></h2>
 <p>Definiton used by the <a class="reference internal" href="#MDAnalysis.coordinates.XYZ.XYZReader" title="MDAnalysis.coordinates.XYZ.XYZReader"><tt class="xref py py-class docutils literal"><span class="pre">XYZReader</span></tt></a> and <a class="reference internal" href="#MDAnalysis.coordinates.XYZ.XYZWriter" title="MDAnalysis.coordinates.XYZ.XYZWriter"><tt class="xref py py-class docutils literal"><span class="pre">XYZWriter</span></tt></a> (and
@@ -136,11 +136,15 @@ atom2 x y z [ ...         ] and (optionally) other data.
 ...
 atomN x y z [ ...         ]                                                 line N+2</pre>
 </div>
-<ul class="simple">
-<li>comment lines not implemented</li>
-<li>optional data ignored</li>
-<li>molecule name</li>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<ul class="last simple">
+<li>comment lines not implemented (do not include them)</li>
+<li>molecule name: the line is required but the content is ignored
+at the moment</li>
+<li>optional data (after the coordinates) are presently ignored</li>
 </ul>
+</div>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.XYZ.XYZReader">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.XYZ.</tt><tt class="descname">XYZReader</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XYZ.html#XYZReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.XYZ.XYZReader" title="Permalink to this definition">¶</a></dt>
@@ -150,7 +154,7 @@ atomN x y z [ ...         ]                                                 line
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Data :</th><td class="field-body"><dl class="first docutils">
-<dt>ts</dt>
+<dt><tt class="xref py py-attr docutils literal"><span class="pre">ts</span></tt></dt>
 <dd><p class="first last">Timestep object containing coordinates of current frame</p>
 </dd>
 </dl>
@@ -168,14 +172,11 @@ atomN x y z [ ...         ]                                                 line
 </tr>
 </tbody>
 </table>
-<p>File format: <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html">http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html</a></p>
-<p>Validation: the geometric centre of 1284 atoms was calculated over
-500 frames using both MDAnalysis and a VMD Tcl script. There was
-exact agreement (measured to 3DP). bzipped and gzipped versions of
-the XYZ file were also tested</p>
+<p>The XYZ file format follows VMD&#8217;s <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html">xyzplugin</a> and is also described
+under <a class="reference internal" href="#xyz-format"><em>XYZ format</em></a>.</p>
 <p class="versionchanged">
-<span class="versionmodified">Changed in version 0.11.0: </span>Frames now 0-based instead of 1-based
-Added dt and time_offset keywords (passed to Timestep)</p>
+<span class="versionmodified">Changed in version 0.11.0: </span>Frames now 0-based instead of 1-based. Added <em>dt</em> and
+<em>time_offset</em> keywords (passed to <tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt>)</p>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.XYZ.XYZReader.Writer">
 <tt class="descname">Writer</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XYZ.html#XYZReader.Writer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.XYZ.XYZReader.Writer" title="Permalink to this definition">¶</a></dt>
@@ -231,43 +232,37 @@ Added dt and time_offset keywords (passed to Timestep)</p>
 <em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.XYZ.</tt><tt class="descname">XYZWriter</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XYZ.html#XYZWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.XYZ.XYZWriter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Writes an XYZ file</p>
 <p>The XYZ file format is not formally defined. This writer follows
-the vmd implementation. See:</p>
-<p><a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html">http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html</a></p>
+the VMD implementation for the molfile <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html">xyzplugin</a>.</p>
 <p>Initialize the XYZ trajectory writer</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><blockquote class="first">
-<div><dl class="docutils">
+<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>filename</em></dt>
 <dd><p class="first last">file name of trajectory file. If it ends with &#8220;gz&#8221; then the file
 will be gzip-compressed; if it ends with &#8220;bz2&#8221; it will be bzip2
 compressed.</p>
 </dd>
 </dl>
-</div></blockquote>
-<table class="last docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>atoms</em></dt>
-<dd><p class="first">Provide atom names: This can be a list of names or an <tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt>.
-If none is provided, atoms will be called &#8216;X&#8217; in the output. These atom
-names will be used when a trajectory is written from raw <tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt>
-objects which do not contain atom information.</p>
-<p class="last">If you write a <tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt> with <a class="reference internal" href="#MDAnalysis.coordinates.XYZ.XYZWriter.write" title="MDAnalysis.coordinates.XYZ.XYZWriter.write"><tt class="xref py py-meth docutils literal"><span class="pre">XYZWriter.write()</span></tt></a> then atom
-information is taken at each step and <em>atoms</em> is ignored.</p>
+<dd><p class="first">Provide atom names: This can be a list of names or an
+<tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt>.  If none is provided, atoms will
+be called &#8216;X&#8217; in the output. These atom names will be
+used when a trajectory is written from raw
+<tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt> objects which do not contain atom
+information.</p>
+<p class="last">If you write a <tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt> with
+<a class="reference internal" href="#MDAnalysis.coordinates.XYZ.XYZWriter.write" title="MDAnalysis.coordinates.XYZ.XYZWriter.write"><tt class="xref py py-meth docutils literal"><span class="pre">XYZWriter.write()</span></tt></a> then atom information is taken
+at each step and <em>atoms</em> is ignored.</p>
 </dd>
 <dt><em>remark</em></dt>
 <dd><p class="first last">single line of text (&#8220;molecule name&#8221;)</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
 </td>
 </tr>
 </tbody>

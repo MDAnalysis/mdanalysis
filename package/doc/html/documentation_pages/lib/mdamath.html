@@ -62,7 +62,7 @@
             </a></p>
   <h4>Previous topic</h4>
   <p class="topless"><a href="log.html"
-                        title="previous chapter">9.4. Setting up logging &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.lib.log</span></tt></a></p>
+                        title="previous chapter">9.4. Setting up logging &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.lib.log</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="parallel.html"
                         title="next chapter">9.6. Parallel algorithms for MDAnalysis</a></p>
@@ -279,15 +279,16 @@ caused by the atomgroup not being a single fragment.
 unit cell, causing breaks mid molecule, with the molecule then appearing
 on either side of the unit cell. This is problematic for operations
 such as calculating the center of mass of the molecule.</p>
-<p>+&#8212;&#8212;&#8212;&#8211;+     +&#8212;&#8212;&#8212;&#8211;+
+<div class="highlight-python"><pre>+-----------+     +-----------+
 |           |     |           |
-| 6       3 |     |         3 | 6  
-| !       ! |     |         ! | ! 
-<a href="#id6"><span class="problematic" id="id7">|-5-8   1-2-|</span></a> -&gt;  |       1-2-<a href="#id1"><span class="problematic" id="id2">|</span></a>-5-8    
-| !       ! |     |         ! | !  
-| 7       4 |     |         4 | 7  
+| 6       3 |     |         3 | 6
+| !       ! |     |         ! | !
+|-5-8   1-2-| -&gt;  |       1-2-|-5-8
+| !       ! |     |         ! | !
+| 7       4 |     |         4 | 7
 |           |     |           |
-+&#8212;&#8212;&#8212;&#8211;+     +&#8212;&#8212;&#8212;&#8211;+</p>
++-----------+     +-----------+</pre>
+</div>
 <p>Usage:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">MDAnalysis.util.mdamath</span> <span class="kn">import</span> <span class="n">make_whole</span>
 
@@ -418,15 +419,16 @@ caused by the atomgroup not being a single fragment.
 unit cell, causing breaks mid molecule, with the molecule then appearing
 on either side of the unit cell. This is problematic for operations
 such as calculating the center of mass of the molecule.</p>
-<p>+&#8212;&#8212;&#8212;&#8211;+     +&#8212;&#8212;&#8212;&#8211;+
+<div class="highlight-python"><pre>+-----------+     +-----------+
 |           |     |           |
-| 6       3 |     |         3 | 6  
-| !       ! |     |         ! | ! 
-<a href="#id8"><span class="problematic" id="id9">|-5-8   1-2-|</span></a> -&gt;  |       1-2-<a href="#id3"><span class="problematic" id="id4">|</span></a>-5-8    
-| !       ! |     |         ! | !  
-| 7       4 |     |         4 | 7  
+| 6       3 |     |         3 | 6
+| !       ! |     |         ! | !
+|-5-8   1-2-| -&gt;  |       1-2-|-5-8
+| !       ! |     |         ! | !
+| 7       4 |     |         4 | 7
 |           |     |           |
-+&#8212;&#8212;&#8212;&#8211;+     +&#8212;&#8212;&#8212;&#8211;+</p>
++-----------+     +-----------+</pre>
+</div>
 <p>Usage:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">MDAnalysis.util.mdamath</span> <span class="kn">import</span> <span class="n">make_whole</span>
 

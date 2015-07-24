@@ -62,7 +62,7 @@
             </a></p>
   <h4>Previous topic</h4>
   <p class="topless"><a href="TRZ.html"
-                        title="previous chapter">5.18. TRZ trajectory I/O  &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.coordinates.TRZ</span></tt></a></p>
+                        title="previous chapter">5.18. TRZ trajectory I/O  &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.coordinates.TRZ</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="core.html"
                         title="next chapter">5.20. Common functions for coordinate reading &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.core</span></tt></a></p>
@@ -601,20 +601,24 @@ returned.</p>
 <dt id="MDAnalysis.coordinates.base.Reader">
 <em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.base.</tt><tt class="descname">Reader</tt><big>(</big><em>filename</em>, <em>convert_units=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Reader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.Reader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class for trajectory readers that extends <tt class="xref py py-class docutils literal"><span class="pre">ProtoReader</span></tt> with a <tt class="xref py py-meth docutils literal"><span class="pre">__del__()</span></tt> method.</p>
-<p>New Readers should subclass <a class="reference internal" href="#MDAnalysis.coordinates.base.Reader" title="MDAnalysis.coordinates.base.Reader"><tt class="xref py py-class docutils literal"><span class="pre">Reader</span></tt></a> and properly implement a <tt class="xref py py-meth docutils literal"><span class="pre">close()</span></tt>
-method, to ensure proper release of resources (mainly file handles). Readers that
-are inherently safe in this regard should subclass <tt class="xref py py-class docutils literal"><span class="pre">ProtoReader</span></tt> instead.</p>
+<p>New Readers should subclass <a class="reference internal" href="#MDAnalysis.coordinates.base.Reader" title="MDAnalysis.coordinates.base.Reader"><tt class="xref py py-class docutils literal"><span class="pre">Reader</span></tt></a> and properly implement a
+<tt class="xref py py-meth docutils literal"><span class="pre">close()</span></tt> method, to ensure proper release of resources (mainly file
+handles). Readers that are inherently safe in this regard should subclass
+<tt class="xref py py-class docutils literal"><span class="pre">ProtoReader</span></tt> instead.</p>
 <p>See the <a class="reference internal" href="init.html#trajectory-api"><em>Trajectory API</em></a> definition in
-<a class="reference internal" href="init.html#module-MDAnalysis.coordinates.__init__" title="MDAnalysis.coordinates.__init__"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.__init__</span></tt></a> for the required attributes and methods.
-.. SeeAlso:: <tt class="xref py py-class docutils literal"><span class="pre">ProtoReader</span></tt>
-.. versionchanged:: 0.11.0</p>
-<blockquote>
-<div>Most of the base Reader class definitions were offloaded to <tt class="xref py py-class docutils literal"><span class="pre">ProtoReader</span></tt>
-so as to allow the subclassing of Readers without a <tt class="xref py py-meth docutils literal"><span class="pre">__del__()</span></tt> method.
-Created init method to create common functionality, all Reader subclasses
-must now super through this Class.
-Added attribute &#8220;_ts_kwargs&#8221; attribute created in init.  Provides kwargs
-to be passed to Timestep</div></blockquote>
+<a class="reference internal" href="init.html#module-MDAnalysis.coordinates.__init__" title="MDAnalysis.coordinates.__init__"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.coordinates.__init__</span></tt></a> for the required attributes and
+methods.</p>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><tt class="xref py py-class docutils literal"><span class="pre">ProtoReader</span></tt></p>
+</div>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.11.0: </span>Most of the base Reader class definitions were offloaded to
+<tt class="xref py py-class docutils literal"><span class="pre">ProtoReader</span></tt> so as to allow the subclassing of Readers without a
+<tt class="xref py py-meth docutils literal"><span class="pre">__del__()</span></tt> method.  Created init method to create common
+functionality, all Reader subclasses must now <a class="reference external" href="http://docs.python.org/library/functions.html#super" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">super()</span></tt></a> through this
+class.  Added attribute <tt class="xref py py-attr docutils literal"><span class="pre">_ts_kwargs</span></tt>, which is created in init.
+Provides kwargs to be passed to <a class="reference internal" href="#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt></a></p>
 </dd></dl>
 
 <dl class="class">

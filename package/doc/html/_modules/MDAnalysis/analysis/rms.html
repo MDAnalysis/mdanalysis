@@ -109,7 +109,7 @@
 <span class="sd">This module uses the fast QCP algorithm [Theobald2005]_ to calculate</span>
 <span class="sd">the root mean square distance (RMSD) between two coordinate sets (as</span>
 <span class="sd">implemented in</span>
-<span class="sd">:func:`MDAnalysis.core.qcprot.CalcRMSDRotationalMatrix`).</span>
+<span class="sd">:func:`MDAnalysis.lib.qcprot.CalcRMSDRotationalMatrix`).</span>
 
 <span class="sd">When using this module in published work please cite [Theobald2005]_.</span>
 
@@ -117,7 +117,7 @@
 
 <span class="sd">   :mod:`MDAnalysis.analysis.align`</span>
 <span class="sd">       aligning structures based on RMSD</span>
-<span class="sd">   :mod:`MDAnalysis.core.qcprot`</span>
+<span class="sd">   :mod:`MDAnalysis.lib.qcprot`</span>
 <span class="sd">        implements the fast RMSD algorithm.</span>
 
 <span class="sd">Examples</span>
@@ -204,8 +204,8 @@
 <span class="kn">import</span> <span class="nn">numpy</span>
 
 <span class="kn">import</span> <span class="nn">MDAnalysis</span>
-<span class="kn">import</span> <span class="nn">MDAnalysis.core.qcprot</span> <span class="kn">as</span> <span class="nn">qcp</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">SelectionError</span><span class="p">,</span> <span class="n">NoDataError</span>
+<span class="kn">import</span> <span class="nn">MDAnalysis.lib.qcprot</span> <span class="kn">as</span> <span class="nn">qcp</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.exceptions</span> <span class="kn">import</span> <span class="n">SelectionError</span><span class="p">,</span> <span class="n">NoDataError</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.log</span> <span class="kn">import</span> <span class="n">ProgressMeter</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.util</span> <span class="kn">import</span> <span class="n">asiterable</span>
 

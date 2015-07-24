@@ -126,17 +126,17 @@
 <p>The module contains code to analyze root mean square quantities such
 as the coordinat root mean square distance (<a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD" title="MDAnalysis.analysis.rms.RMSD"><tt class="xref py py-class docutils literal"><span class="pre">RMSD</span></tt></a>) or the
 per-residue root mean square fluctuations (<a class="reference internal" href="#MDAnalysis.analysis.rms.RMSF" title="MDAnalysis.analysis.rms.RMSF"><tt class="xref py py-class docutils literal"><span class="pre">RMSF</span></tt></a>).</p>
-<p>This module uses the fast QCP algorithm <a class="reference internal" href="../core/qcprot.html#theobald2005">[Theobald2005]</a> to calculate
+<p>This module uses the fast QCP algorithm [Theobald2005] to calculate
 the root mean square distance (RMSD) between two coordinate sets (as
 implemented in
-<a class="reference internal" href="../core/qcprot.html#MDAnalysis.core.qcprot.CalcRMSDRotationalMatrix" title="MDAnalysis.core.qcprot.CalcRMSDRotationalMatrix"><tt class="xref py py-func docutils literal"><span class="pre">MDAnalysis.core.qcprot.CalcRMSDRotationalMatrix()</span></tt></a>).</p>
-<p>When using this module in published work please cite <a class="reference internal" href="../core/qcprot.html#theobald2005">[Theobald2005]</a>.</p>
+<tt class="xref py py-func docutils literal"><span class="pre">MDAnalysis.lib.qcprot.CalcRMSDRotationalMatrix()</span></tt>).</p>
+<p>When using this module in published work please cite [Theobald2005].</p>
 <div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
 <dl class="last docutils">
 <dt><a class="reference internal" href="align.html#module-MDAnalysis.analysis.align" title="MDAnalysis.analysis.align"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.align</span></tt></a></dt>
 <dd>aligning structures based on RMSD</dd>
-<dt><a class="reference internal" href="../core/qcprot.html#module-MDAnalysis.core.qcprot" title="MDAnalysis.core.qcprot"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.core.qcprot</span></tt></a></dt>
+<dt><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.lib.qcprot</span></tt></dt>
 <dd>implements the fast RMSD algorithm.</dd>
 </dl>
 </div>
@@ -211,7 +211,7 @@ the center.</p>
 <p>The <em>weights</em> can be an array of length N, containing e.g. masses
 for a weighted RMSD calculation.</p>
 <p>The function uses Douglas Theobald&#8217;s fast QCP algorithm
-<a class="reference internal" href="../core/qcprot.html#theobald2005">[Theobald2005]</a> to calculate the RMSD.</p>
+[Theobald2005] to calculate the RMSD.</p>
 <dl class="docutils">
 <dt>Example::</dt>
 <dd><div class="first last highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">)</span>
@@ -239,7 +239,7 @@ in the array <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD.r
 <div class="highlight-python"><pre>frame    time (ps)    RMSD (A)</pre>
 </div>
 <p>This class uses Douglas Theobald&#8217;s fast QCP algorithm
-<a class="reference internal" href="../core/qcprot.html#theobald2005">[Theobald2005]</a> to calculate the RMSD.</p>
+[Theobald2005] to calculate the RMSD.</p>
 <p class="versionadded">
 <span class="versionmodified">New in version 0.7.7.</span></p>
 <p>Setting up the RMSD analysis.</p>

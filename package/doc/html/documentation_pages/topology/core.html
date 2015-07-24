@@ -62,7 +62,7 @@
             </a></p>
   <h4>Previous topic</h4>
   <p class="topless"><a href="base.html"
-                        title="previous chapter">4.18. Base topology reader classes &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.topology.base</span></tt></a></p>
+                        title="previous chapter">4.18. Base topology reader classes &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.topology.base</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="tables.html"
                         title="next chapter">4.20. MDAnalysis topology tables</a></p>
@@ -142,13 +142,10 @@ Atom 2 is the apex of the angle</p>
 numbers are connected and they have the same bond order. The
 ordering of the two atom numbers is ignored as is the fact that a
 bond was guessed.</p>
-<dl class="docutils">
-<dt>The presence of a particular atom can also be queried::</dt>
-<dd><div class="first last highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Atom</span> <span class="ow">in</span> <span class="n">Bond</span>
+<p>The presence of a particular atom can also be queried:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Atom</span> <span class="ow">in</span> <span class="n">Bond</span>
 </pre></div>
 </div>
-</dd>
-</dl>
 <p>will return either <tt class="docutils literal"><span class="pre">True</span></tt> or <tt class="docutils literal"><span class="pre">False</span></tt>.</p>
 <p class="versionchanged">
 <span class="versionmodified">Changed in version 0.9.0: </span>Now a subclass of <a class="reference internal" href="#MDAnalysis.topology.core.TopologyObject" title="MDAnalysis.topology.core.TopologyObject"><tt class="xref py py-class docutils literal"><span class="pre">TopologyObject</span></tt></a>. Changed class to use
@@ -556,7 +553,7 @@ via the <tt class="docutils literal"><span class="pre">is_guessed</span></tt> ma
 <tt class="descname">type</tt><a class="reference internal" href="../../_modules/MDAnalysis/topology/core.html#TopologyObject.type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.core.TopologyObject.type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Type of the bond as a tuple</p>
 <p>When comparing types, it is important to consider the reverse
-of the type too, ie:</p>
+of the type too, i.e.:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">a</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">b</span><span class="o">.</span><span class="n">type</span> <span class="ow">or</span> <span class="n">a</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">b</span><span class="o">.</span><span class="n">type</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 </pre></div>
 </div>

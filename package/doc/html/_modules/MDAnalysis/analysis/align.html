@@ -120,7 +120,7 @@
 <span class="sd">   :mod:`MDAnalysis.analysis.rms`</span>
 <span class="sd">        contains functions to compute RMSD (when structural alignment is not</span>
 <span class="sd">        required)</span>
-<span class="sd">   :mod:`MDAnalysis.core.qcprot`</span>
+<span class="sd">   :mod:`MDAnalysis.lib.qcprot`</span>
 <span class="sd">        implements the fast RMSD algorithm.</span>
 
 
@@ -238,8 +238,8 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span>
 
-<span class="kn">import</span> <span class="nn">MDAnalysis.core.qcprot</span> <span class="kn">as</span> <span class="nn">qcp</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">SelectionError</span><span class="p">,</span> <span class="n">SelectionWarning</span>
+<span class="kn">import</span> <span class="nn">MDAnalysis.lib.qcprot</span> <span class="kn">as</span> <span class="nn">qcp</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.exceptions</span> <span class="kn">import</span> <span class="n">SelectionError</span><span class="p">,</span> <span class="n">SelectionWarning</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.log</span> <span class="kn">import</span> <span class="n">ProgressMeter</span>
 
 <span class="kn">import</span> <span class="nn">MDAnalysis.analysis.rms</span> <span class="kn">as</span> <span class="nn">rms</span>

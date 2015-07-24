@@ -99,7 +99,7 @@
 <span class="sd">The coordinates submodule contains code to read, write and store coordinate</span>
 <span class="sd">information,</span>
 <span class="sd">either single frames (e.g. the GRO module) or trajectories (such as the DCD</span>
-<span class="sd">reader). </span>
+<span class="sd">reader).</span>
 
 
 <span class="sd">Readers</span>
@@ -183,7 +183,7 @@
 <span class="sd">---------------</span>
 
 <span class="sd">Both Readers and Writers use Timesteps as their working object.  A Timestep</span>
-<span class="sd">represents all data for a given frame in a trajectory.  The data inside a </span>
+<span class="sd">represents all data for a given frame in a trajectory.  The data inside a</span>
 <span class="sd">Timestep is often accessed indirectly through a :class:`~MDAnalysis.core.AtomGroup.AtomGroup`</span>
 <span class="sd">but it is also possible to manipulate Timesteps directly.</span>
 
@@ -341,6 +341,7 @@
 <span class="sd">- 2013-08-02 Readers/Writers must conform to the Python `Context Manager`_ API</span>
 <span class="sd">- 2015-01-15 Timestep._init_unitcell() method added</span>
 <span class="sd">- 2015-06-11 Reworked Timestep init.  Base Timestep now does Vels &amp; Forces</span>
+<span class="sd">- 2015-07-21 Major changes to Timestep and Reader API (release 0.11.0)</span>
 
 <span class="sd">.. _Issue 49: https://github.com/MDAnalysis/mdanalysis/issues/49</span>
 <span class="sd">.. _Context Manager: http://docs.python.org/2/reference/datamodel.html#context-managers</span>
@@ -427,10 +428,10 @@
 <span class="sd">      A numpy array of all positions in this Timestep, otherwise raises a</span>
 <span class="sd">      :class:`~MDAnalysis.exceptions.NoDataError`</span>
 <span class="sd">  ``velocities``</span>
-<span class="sd">      If present, returns a numpy array of velocities, otherwise raises a </span>
+<span class="sd">      If present, returns a numpy array of velocities, otherwise raises a</span>
 <span class="sd">      :class:`~MDAnalysis.exceptions.NoDataError`</span>
 <span class="sd">  ``forces``</span>
-<span class="sd">      If present, returns a numpy array of forces, otherwise raises a </span>
+<span class="sd">      If present, returns a numpy array of forces, otherwise raises a</span>
 <span class="sd">      :class:`~MDAnalysis.exceptions.NoDataError`</span>
 <span class="sd">  ``has_positions``</span>
 <span class="sd">      Boolean of whether position data is available</span>

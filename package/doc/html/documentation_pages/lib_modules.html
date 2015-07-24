@@ -63,7 +63,7 @@
                         title="previous chapter">8.1.2. 3D Streamplot</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="lib/distances.html"
-                        title="next chapter">9.1. Fast distance array computation &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.lib.distances</span></tt></a></p>
+                        title="next chapter">9.1. Fast distance array computation &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.lib.distances</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../_sources/documentation_pages/lib_modules.txt"
@@ -94,11 +94,15 @@
 <span id="lib"></span><h1>9. MDAnalysis library<a class="headerlink" href="#mdanalysis-library" title="Permalink to this headline">¶</a></h1>
 <p><a class="reference internal" href="lib/distances.html#module-MDAnalysis.lib.distances" title="MDAnalysis.lib.distances"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.lib.distances</span></tt></a> contains many high performance
 maths functions.</p>
-<p><a class="reference internal" href="lib/_distances.html#module-MDAnalysis.lib._distances" title="MDAnalysis.lib._distances"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.lib._distances</span></tt></a> contains low level access to
-the MDAnalysis&#8217; Cython functions in <cite>distances</cite>.  These have little to
-no error checking done on inputs so should be used with caution.</p>
+<p><a class="reference internal" href="lib/_distances.html#module-MDAnalysis.lib._distances" title="MDAnalysis.lib._distances"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.lib._distances</span></tt></a> contains low level access to the
+MDAnalysis&#8217; Cython functions in <cite>distances</cite>.  These have little to no
+error checking done on inputs so should be used with
+caution. <a class="reference internal" href="lib/parallel.html#module-MDAnalysis.lib.parallel" title="MDAnalysis.lib.parallel"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.lib.parallel</span></tt></a> contains parallelized
+implementations for some these algorithms.</p>
 <p><a class="reference internal" href="lib/transformations.html#module-MDAnalysis.lib.transformations" title="MDAnalysis.lib.transformations"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.lib.transformations</span></tt></a> contains a multitude of
 matrix operations for manipulating coordinate data.</p>
+<p><a class="reference internal" href="lib/qcprot.html#module-MDAnalysis.lib.qcprot" title="MDAnalysis.lib.qcprot"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.lib.qcprot</span></tt></a> contains a fast implementation of
+superposition by minimizing the RMSD.</p>
 <p><a class="reference internal" href="lib/util.html#module-MDAnalysis.lib.util" title="MDAnalysis.lib.util"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.lib.util</span></tt></a> contains various file, string
 and mathematical utility functions.</p>
 <div class="toctree-wrapper compound">
@@ -110,7 +114,8 @@ and mathematical utility functions.</p>
 <li class="toctree-l1"><a class="reference internal" href="lib/mdamath.html">9.5. Mathematical helper functions &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.lib.mdamath</span></tt></a></li>
 <li class="toctree-l1"><a class="reference internal" href="lib/parallel.html">9.6. Parallel algorithms for MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="lib/transformations.html">9.7. Homogeneous Transformation Matrices and Quaternions &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.lib.transformations</span></tt></a></li>
-<li class="toctree-l1"><a class="reference internal" href="lib/util.html">9.8. Helper functions &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.lib.util</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="lib/qcprot.html">9.8. Fast QCP RMSD structure alignment &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.qcprot</span></tt></a></li>
+<li class="toctree-l1"><a class="reference internal" href="lib/util.html">9.9. Helper functions &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.lib.util</span></tt></a></li>
 </ul>
 </div>
 </div>

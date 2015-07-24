@@ -338,17 +338,19 @@ in the new merged universe.</p>
 <dd><p>The MDAnalysis Universe contains all the information describing the system.</p>
 <p>The system always requires a <em>topology</em> file &#8212; in the simplest case just
 a list of atoms. This can be a CHARMM/NAMD PSF file or a simple coordinate
-file with atom informations such as XYZ, PDB, Gromacs GRO, or CHARMM CRD. See
-<a class="reference internal" href="../topology/init.html#supported-topology-formats"><em>Table of Supported Topology Formats</em></a> for what kind of topologies can be read.</p>
+file with atom informations such as XYZ, PDB, Gromacs GRO, or CHARMM
+CRD. See <a class="reference internal" href="../topology/init.html#supported-topology-formats"><em>Table of Supported Topology Formats</em></a> for what kind of topologies can
+be read.</p>
 <p>A trajectory provides coordinates; the coordinates have to be ordered in
 the same way as the list of atoms in the topology. A trajectory can be a
 single frame such as a PDB, CRD, or GRO file, or it can be a MD trajectory
 (in CHARMM/NAMD/LAMMPS DCD, Gromacs XTC/TRR, or generic XYZ format).  See
 <a class="reference internal" href="../coordinates/init.html#id1"><em>Table of supported coordinate formats</em></a> for what can be read as a
 &#8220;trajectory&#8221;.</p>
-<p>As a special case, when the topology is a XYZ, PDB, GRO or CRD file
-then the coordinates are immediately loaded from the &#8220;topology&#8221;
-file unless a trajectory is supplied.</p>
+<p>As a special case, when the topology is a file that contains atom
+information <em>and</em> coordinates (such as XYZ, PDB, GRO or CRD, see
+<em class="xref std std-ref">Supported coordinates formats</em>) then the coordinates are immediately
+loaded from the &#8220;topology&#8221; file unless a trajectory is supplied.</p>
 <p>Examples for setting up a universe:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">)</span>          <span class="c"># read system from file(s)</span>
 <span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">pdbfile</span><span class="p">)</span>                       <span class="c"># read atoms and coordinates from PDB or GRO</span>
@@ -388,14 +390,15 @@ information needed.</p>
 <span class="versionmodified">Changed in version 0.7.5: </span>Can also read multi-frame PDB files with the
 <a class="reference internal" href="../coordinates/PDB.html#MDAnalysis.coordinates.PDB.PrimitivePDBReader" title="MDAnalysis.coordinates.PDB.PrimitivePDBReader"><tt class="xref py py-class docutils literal"><span class="pre">PrimitivePDBReader</span></tt></a>.</p>
 <p class="versionchanged">
-<span class="versionmodified">Changed in version 0.8: </span>Parse arbitrary number of arguments as a single topology file and a a sequence
-of trajectories.</p>
+<span class="versionmodified">Changed in version 0.8: </span>Parse arbitrary number of arguments as a single topology file and a
+sequence of trajectories.</p>
 <p class="versionchanged">
 <span class="versionmodified">Changed in version 0.9.0: </span>Topology information now loaded lazily, but can be forced with
-<a class="reference internal" href="#MDAnalysis.core.AtomGroup.Universe.build_topology" title="MDAnalysis.core.AtomGroup.Universe.build_topology"><tt class="xref py py-meth docutils literal"><span class="pre">build_topology()</span></tt></a>
-Changed .bonds attribute to be a <a class="reference internal" href="../topology/core.html#MDAnalysis.topology.core.TopologyGroup" title="MDAnalysis.topology.core.TopologyGroup"><tt class="xref py py-class docutils literal"><span class="pre">TopologyGroup</span></tt></a>
-Added .angles and .torsions attribute as <a class="reference internal" href="../topology/core.html#MDAnalysis.topology.core.TopologyGroup" title="MDAnalysis.topology.core.TopologyGroup"><tt class="xref py py-class docutils literal"><span class="pre">TopologyGroup</span></tt></a>
-Added fragments to Universe cache</p>
+<a class="reference internal" href="#MDAnalysis.core.AtomGroup.Universe.build_topology" title="MDAnalysis.core.AtomGroup.Universe.build_topology"><tt class="xref py py-meth docutils literal"><span class="pre">build_topology()</span></tt></a>. Changed <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Universe.bonds" title="MDAnalysis.core.AtomGroup.Universe.bonds"><tt class="xref py py-attr docutils literal"><span class="pre">bonds</span></tt></a> attribute to be a
+<a class="reference internal" href="../topology/core.html#MDAnalysis.topology.core.TopologyGroup" title="MDAnalysis.topology.core.TopologyGroup"><tt class="xref py py-class docutils literal"><span class="pre">TopologyGroup</span></tt></a>. Added <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Universe.angles" title="MDAnalysis.core.AtomGroup.Universe.angles"><tt class="xref py py-attr docutils literal"><span class="pre">angles</span></tt></a>
+and <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Universe.torsions" title="MDAnalysis.core.AtomGroup.Universe.torsions"><tt class="xref py py-attr docutils literal"><span class="pre">torsions</span></tt></a> attribute as
+<a class="reference internal" href="../topology/core.html#MDAnalysis.topology.core.TopologyGroup" title="MDAnalysis.topology.core.TopologyGroup"><tt class="xref py py-class docutils literal"><span class="pre">TopologyGroup</span></tt></a>. Added fragments to
+Universe cache</p>
 <p class="versionchanged">
 <span class="versionmodified">Changed in version 0.11.0: </span><a class="reference internal" href="#MDAnalysis.core.AtomGroup.Universe.make_anchor" title="MDAnalysis.core.AtomGroup.Universe.make_anchor"><tt class="xref py py-meth docutils literal"><span class="pre">make_anchor()</span></tt></a>, <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Universe.remove_anchor" title="MDAnalysis.core.AtomGroup.Universe.remove_anchor"><tt class="xref py py-meth docutils literal"><span class="pre">remove_anchor()</span></tt></a>, <a class="reference internal" href="#MDAnalysis.core.AtomGroup.Universe.is_anchor" title="MDAnalysis.core.AtomGroup.Universe.is_anchor"><tt class="xref py py-attr docutils literal"><span class="pre">is_anchor</span></tt></a>, and
 <tt class="xref py py-attr docutils literal"><span class="pre">anchor_name</span></tt> were added to support the pickling/unpickling of
@@ -1877,12 +1880,12 @@ as a <tt class="xref py py-class docutils literal"><span class="pre">Bio.SeqReco
 further processed. In this case, all keyword arguments (such as the
 <em>id</em> string or the <em>name</em> or the <em>description</em>) are directly passed to
 <tt class="xref py py-class docutils literal"><span class="pre">Bio.SeqRecord.SeqRecord</span></tt>.</p>
-<p>If the keyword <em>format</em> is set to <tt class="docutils literal"><span class="pre">'Seq'</span></tt>, all <em>kwargs</em> are ignored and
-a <tt class="xref py py-class docutils literal"><span class="pre">Bio.Seq.Seq</span></tt> instance is returned. The difference to the
+<p>If the keyword <em>format</em> is set to <tt class="docutils literal"><span class="pre">'Seq'</span></tt>, all <em>kwargs</em> are ignored
+and a <tt class="xref py py-class docutils literal"><span class="pre">Bio.Seq.Seq</span></tt> instance is returned. The difference to the
 record is that the record also contains metadata and can be directly
 used as an input for other functions in <tt class="xref py py-mod docutils literal"><span class="pre">Bio</span></tt>.</p>
-<p>If the keyword <em>format</em> is set to <tt class="docutils literal"><span class="pre">'string'</span></tt>, all <em>kwargs</em> are ignored
-and a Python string is returned.</p>
+<p>If the keyword <em>format</em> is set to <tt class="docutils literal"><span class="pre">'string'</span></tt>, all <em>kwargs</em> are
+ignored and a Python string is returned.</p>
 <p class="rubric">Example: Write FASTA file</p>
 <p>Use <tt class="xref py py-func docutils literal"><span class="pre">Bio.SeqIO.write()</span></tt>, which takes sequence records:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">Bio.SeqIO</span>
@@ -1902,9 +1905,9 @@ and a Python string is returned.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first docutils">
-<dt><em>format</em></dt>
-<dd><blockquote class="first">
+<tr class="field-odd field"><th class="field-name">Keywords :</th><td class="field-body"><p class="first"><em>format</em></p>
+<blockquote>
+<div><blockquote>
 <div><ul class="simple">
 <li><tt class="docutils literal"><span class="pre">&quot;string&quot;</span></tt>: return sequence as a string of 1-letter codes</li>
 <li><tt class="docutils literal"><span class="pre">&quot;Seq&quot;</span></tt>: return a <tt class="xref py py-class docutils literal"><span class="pre">Bio.Seq.Seq</span></tt> instance</li>
@@ -1913,7 +1916,7 @@ instance</li>
 </ul>
 <p>Default is <tt class="docutils literal"><span class="pre">&quot;SeqRecord&quot;</span></tt></p>
 </div></blockquote>
-<dl class="last docutils">
+<dl class="docutils">
 <dt><em>id</em></dt>
 <dd><p class="first last">Sequence ID for SeqRecord (should be different for different
 sequences)</p>
@@ -1929,8 +1932,7 @@ sequences)</p>
 <tt class="xref py py-class docutils literal"><span class="pre">Bio.SeqRecord.SeqRecord</span></tt>.</p>
 </dd>
 </dl>
-</dd>
-</dl>
+</div></blockquote>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Raises :</th><td class="field-body"><p class="first last"><tt class="xref py py-exc docutils literal"><span class="pre">ValueError</span></tt> if a residue name cannot be converted to a
@@ -2362,8 +2364,8 @@ groups of atoms to be kept together through the process.</p>
 <tr class="field-odd field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first last docutils">
 <dt><em>compound</em></dt>
 <dd><p class="first">The group which will be kept together through the shifting
-process. [<tt class="docutils literal"><span class="pre">atoms</span></tt>]
-Possible options:</p>
+process. [<tt class="docutils literal"><span class="pre">atoms</span></tt>]</p>
+<p>Possible options:</p>
 <blockquote class="last">
 <div><ul class="simple">
 <li><tt class="docutils literal"><span class="pre">atoms</span></tt></li>
