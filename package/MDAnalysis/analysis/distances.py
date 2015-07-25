@@ -44,7 +44,7 @@ logger = logging.getLogger("MDAnalysis.analysis.distances")
 
 
 def contact_matrix(coord, cutoff=15.0, returntype="numpy", box=None, progress_meter_freq=100, quiet=False):
-    '''Calculates a matrix of contacts between a list of coordinates.
+    '''Calculates a matrix of contacts within a numpy array of type float32.
 
     There is a fast, high-memory-usage version for small systems
     (*returntype* = 'numpy'), and a slower, low-memory-usage version for
@@ -56,6 +56,11 @@ def contact_matrix(coord, cutoff=15.0, returntype="numpy", box=None, progress_me
 
     Change *progress_meter_freq* to alter frequency of progress meter
     updates. Or switch *quiet* to ``True`` to suppress it completely.
+
+    Only the sparse calculation makes use of the progress meter, and
+    the meter is only available in a terminal (not in a GUI
+    IDE / Jupyter notebook). This is because the print statements
+    from C code are sent to a different standard out.
 
     .. versionchanged:: 0.11.0
        Keyword *suppress_progmet* was changed to *quiet*.
