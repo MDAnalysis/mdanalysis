@@ -315,7 +315,7 @@ if __name__ == '__main__':
           },
           test_suite="MDAnalysisTests",
           tests_require=[
-              'nose>=0.10',
+              'nose>=1.3.7',
               'MDAnalysisTests==%s' % RELEASE,  # same as this release!
           ],
           zip_safe=False,  # as a zipped egg the *.so files are not found (at least in Ubuntu/Linux)
