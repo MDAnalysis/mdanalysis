@@ -1949,3 +1949,93 @@ class TestGuessBonds(TestCase):
         ag.guess_bonds(vdwradii=self.vdw)
         self._check_atomgroup(ag, u)
 
+
+class TestAtomGroupSettingGetting(object):
+    """Test working with the properties of Atoms via AtomGroups
+
+    list of properties:
+    - name x
+    - altLoc x - can't play via AG
+    - type x 
+    - mass x 
+    - charge x
+    - radius x 
+    - bfactor x - ugly hack for getting because it's a property
+    - serial x - can't play via AG
+
+    Residue/Segment related ones:
+    - resname
+    - resid
+    - resnum
+    - residue?
+    - segid?
+    - segment?
+
+    Check that:
+    - getting properties from AG matches the Atom values
+    - setting properties from AG changes the Atom
+    - setting the property on Atom changes AG
+    """
+    def get_new(self, att_type):
+        """Return enough values to change the small g"""
+        if att_type == 'string':
+            return ['A', 'B', 'C', 'D', 'E', 'F']
+        elif att_type == 'float':
+            return [0.001, 0.002, 0.003, 0.005, 0.012, 0.025]
+        elif att_type == 'int':
+            return [4, 6, 8, 1, 5, 4]
+
+    def _check_ag_matches_atom(self, att, ag, ag_meth):
+        """Checking Atomgroup matches Atoms"""
+        # Check that accessing via AtomGroup is identical to doing
+        # a list comprehension over AG
+        ref = ag_meth()
+        other = [getattr(atom, att) for atom in ag]
+
+        assert_equal(ref, other,
+                     err_msg="AtomGroup doesn't match Atoms for property: {0}".format(att))
+
+    def _change_atom_check_ag(self, att, vals, ag, ag_meth):
+        """Changing Atom, checking AtomGroup"""
+        # Set attributes via Atoms
+        for atom, val in zip(ag, vals):
+            setattr(atom, att, val)
+        ag._clear_caches()
+        # Check that AtomGroup returns new values
+        assert_equal(vals, ag_meth(),
+                     err_msg="Change to Atoms not reflected in AtomGroup for property: {0}".format(att))
+
+    def _change_ag_check_atoms(self, att, vals, ag, ag_meth):
+        """Changing AtomGroup, checking Atoms"""
+        ag_meth(vals)
+
+        for atom, val in zip(ag, vals):
+            assert_equal(getattr(atom, att), val,
+                         err_msg="Change to AtomGroup not reflected in Atoms for propert: {0}".format(att))
+
+    def test_attributes(self):
+        u = MDAnalysis.Universe(PSF, DCD)
+        master = u.atoms
+        idx = [0, 1, 4, 7, 11, 14]
+        ag = master[idx]
+
+        def get_bfac():
+            return ag.bfactors
+
+        for att, att_type, ag_meth, ag_set in (
+                ('name', 'string', ag.names, ag.set_name),
+                ('type', 'string', ag.types, ag.set_type),
+                ('altLoc', 'string', None, None),  # can't access via AG
+                ('serial', 'int', None, None),  # can't access via AG
+                ('charge', 'float', ag.charges, ag.set_charge),
+                ('mass', 'float', ag.masses, ag.set_mass),
+                ('radius', 'float', ag.radii, ag.set_radius),
+                ('bfactor', 'float', get_bfac, ag.set_bfactor)
+        ):
+            vals = self.get_new(att_type)
+            if not ag_meth is None:
+                yield self._check_ag_matches_atom, att, ag, ag_meth
+            if not ag_meth is None:
+                yield self._change_atom_check_ag, att, vals, ag, ag_meth
+            if not ag_set is None:
+                yield self._change_ag_check_atoms, att, vals, ag, ag_set
