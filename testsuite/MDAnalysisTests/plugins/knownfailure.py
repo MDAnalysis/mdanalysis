@@ -26,7 +26,7 @@ Beware that the decorator must be used as a function call: `@knownfailure()`, wi
 and, optionally, arguments.
 """
 
-from MDAnalysisTests.plugins import loaded_plugins, _check_plugins_loaded, _check_multiprocess 
+from MDAnalysisTests.plugins import loaded_plugins, _check_plugins_loaded
 # Since we're already doing import checks in MDAnalysisTests and .plugins no need to clutter here
 from numpy.testing.noseclasses import KnownFailure, KnownFailureTest
 import nose
@@ -42,7 +42,7 @@ def knownfailure(msg="Test skipped due to expected failure", exc_type=AssertionE
             except exc_type:
                 # We have to allow for a number of cases where KnownFailureTest won't be properly caught
                 #  (running from the command-line nosetests or using too old a multiprocess plugin)
-                if _check_plugins_loaded() and loaded_plugins["KnownFailure"].enabled and _check_multiprocess():
+                if _check_plugins_loaded() and loaded_plugins["KnownFailure"].enabled:
                     raise KnownFailureTest(msg)
                 else: #Fallback if run from command-line and the plugin isn't loaded 
                     raise nose.SkipTest(msg)

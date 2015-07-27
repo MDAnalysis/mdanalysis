@@ -113,31 +113,20 @@ __version__ = "0.11.0-dev"  # keep in sync with RELEASE in setup.py
 # If MDAnalysis is imported here coverage accounting might fail because all the import
 #  code won't be run again under coverage's watch. See Issue 344.
 
+from os.path import dirname
+# We get our nose from the plugins so that version-checking needs only be done there.
+from MDAnalysisTests.plugins import nose, loaded_plugins
+import sys
+# This is a de facto test for numpy's version, since we don't actually need assert_ here.
+#  Should we be clean about this and just call distutils to compare version strings?
 try:
     from numpy.testing import assert_
 except ImportError:
     raise ImportError("""numpy>=1.5  is required to run the test suite. Please install it first. """
                       """(For example, try "easy_install 'numpy>=1.5'").""")
 
-try:
-    import nose
-except ImportError:
-    raise ImportError('nose is required to run the test suite. Please install it first. '
-                      '(For example, try "pip install nose").')
-
-import nose.plugins.multiprocess
-_multiprocess_ok = hasattr(nose.plugins.multiprocess, "_instantiate_plugins")
-if not _multiprocess_ok:
-    raise ImportWarning("nose >= 1.1.0 is needed for multiprocess testing with external plugins, "
-                        "and your setup doesn't meet this requirement. If you're running "
-                        "tests in parallel external plugins will be disabled.")
-
-from os.path import dirname
-from MDAnalysisTests.plugins import loaded_plugins
-import sys
-
 def run(*args, **kwargs):
-    """Test-running function that loads plugins, sets up arguments, and calls `nose.main()`"""
+    """Test-running function that loads plugins, sets up arguments, and calls `nose.run_exit()`"""
     try:
         kwargs['argv'] = sys.argv + kwargs['argv'] #sys.argv takes precedence
     except KeyError:

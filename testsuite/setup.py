@@ -126,7 +126,7 @@ For details see the report for `Issue 87`_.
           install_requires=[
               'MDAnalysis==%s' % RELEASE,  # same as this release!
               'numpy>=1.5',
-              'nose>=0.10',
+              'nose>=1.3.7',
           ],
           zip_safe=False,  # had 'KeyError' as zipped egg (2MB savings are not worth the trouble)
           )

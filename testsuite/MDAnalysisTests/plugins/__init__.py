@@ -63,18 +63,16 @@ happen only at test runtime. See Issue 344 for details.
 # Don't forget to also add your plugin to the import further ahead
 __all__ = ['memleak', 'capture_err', 'knownfailure']
 
+import distutils.version
 try:
     import nose
+    if distutils.version.LooseVersion(nose.__version__) < distutils.version.LooseVersion('1.3.7'):
+        raise ImportError
 except ImportError:
-    raise ImportError('nose is required to run the test plugin module. Please install it first. '
-                      '(For example, try "pip install nose").')
+    raise ImportError("""nose >= 1.3.7 is required to run the test suite. Please install it first. """
+                      """(For example, try "pip install 'nose>=1.3.7'").""")
 
 import nose.plugins.multiprocess
-_multiprocess_ok = hasattr(nose.plugins.multiprocess, "_instantiate_plugins")
-if not _multiprocess_ok:
-    raise ImportWarning("nose >= 1.1.0 is needed for multiprocess testing with external plugins, "
-                        "and your setup doesn't meet this requirement. If you're running "
-                        "tests in parallel external plugins will be disabled.")
 
 def _nose_config():
     """Function that exposes nose's configuration via a hack in one of our plugins
@@ -97,15 +95,6 @@ def _check_plugins_loaded():
     It checks whether one of our plugins was configured.
     """
     return _nose_config() is not None
-
-def _check_multiprocess():
-    """Function that checks the safe use of external plugins when multiprocessing tests.
-    """
-    plug_list = _nose_config().plugins.plugins
-    # Either we have a safe version of multiprocess or we aren't running it.
-    return _multiprocess_ok or not sum(
-            [isinstance(plug, nose.plugins.multiprocess.MultiProcess)
-             and plug.enabled for plug in plug_list])
 
 # This dictionary holds the external plugin instances that are loaded into nose.
 # Beware that when multiprocessing this dict won't accurately reflect
@@ -130,9 +119,8 @@ for p_class in plugin_classes:
     else:
         loaded_plugins[p_class.name] = p_class()
     # Add it to multiprocess' list of plugins to instantiate
-    if _multiprocess_ok:
-        try:
-            nose.plugins.multiprocess._instantiate_plugins.append(p_class)
-        except AttributeError:
-            nose.plugins.multiprocess._instantiate_plugins = [p_class]
+    try:
+        nose.plugins.multiprocess._instantiate_plugins.append(p_class)
+    except AttributeError:
+        nose.plugins.multiprocess._instantiate_plugins = [p_class]
 
