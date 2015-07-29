@@ -245,7 +245,7 @@ class TestPSF_Issue121(TestCase):
         except IndexError:
             raise AssertionError("Issue 121 not fixed: cannot load PSF with empty SEGID")
         assert_equal(u.atoms.numberOfAtoms(), 98)
-        assert_equal(u.atoms.segids(), ["SYSTEM"])
+        assert_equal(u.atoms.segids, ["SYSTEM"])
 
 
 class TestPSF_bonds(TestCase):

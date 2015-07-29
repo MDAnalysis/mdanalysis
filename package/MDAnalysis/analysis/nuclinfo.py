@@ -127,9 +127,9 @@ def wc_pair(universe, i, bp, seg1="SYSTEM", seg2="SYSTEM"):
 
     .. versionadded:: 0.7.6
     """
-    if universe.selectAtoms(" resid %s " % (i,)).resnames()[0] in ["DC", "DT", "U", "C", "T", "CYT", "THY", "URA"]:
+    if universe.selectAtoms(" resid %s " % (i,)).resnames[0] in ["DC", "DT", "U", "C", "T", "CYT", "THY", "URA"]:
         a1, a2 = "N3", "N1"
-    if universe.selectAtoms(" resid %s " % (i,)).resnames()[0] in ["DG", "DA", "A", "G", "ADE", "GUA"]:
+    if universe.selectAtoms(" resid %s " % (i,)).resnames[0] in ["DG", "DA", "A", "G", "ADE", "GUA"]:
         a1, a2 = "N1", "N3"
     wc_dist = universe.selectAtoms(
         " (segid %s and resid %s and name %s)  or (segid %s and resid %s and name %s) " % (seg1, i, a1, seg2, bp, a2))
@@ -159,9 +159,9 @@ def minor_pair(universe, i, bp, seg1="SYSTEM", seg2="SYSTEM"):
 
     .. versionadded:: 0.7.6
     """
-    if universe.selectAtoms(" resid %s " % (i,)).resnames()[0] in ["DC", "DT", "U", "C", "T", "CYT", "THY", "URA"]:
+    if universe.selectAtoms(" resid %s " % (i,)).resnames[0] in ["DC", "DT", "U", "C", "T", "CYT", "THY", "URA"]:
         a1, a2 = "O2", "C2"
-    if universe.selectAtoms(" resid %s " % (i,)).resnames()[0] in ["DG", "DA", "A", "G", "ADE", "GUA"]:
+    if universe.selectAtoms(" resid %s " % (i,)).resnames[0] in ["DG", "DA", "A", "G", "ADE", "GUA"]:
         a1, a2 = "C2", "O2"
     c2o2_dist = universe.selectAtoms(
         " (segid %s and resid %s and name %s)  or (segid %s and resid %s and name %s) " % (seg1, i, a1, seg2, bp, a2))
@@ -191,13 +191,13 @@ def major_pair(universe, i, bp, seg1="SYSTEM", seg2="SYSTEM"):
 
     .. versionadded:: 0.7.6
     """
-    if universe.selectAtoms(" resid %s " % (i,)).resnames()[0] in ["DC", "DG", "C", "G", "CYT", "GUA"]:
-        if universe.selectAtoms(" resid %s " % (i,)).resnames()[0] in ["DC", "C", "CYT"]:
+    if universe.selectAtoms(" resid %s " % (i,)).resnames[0] in ["DC", "DG", "C", "G", "CYT", "GUA"]:
+        if universe.selectAtoms(" resid %s " % (i,)).resnames[0] in ["DC", "C", "CYT"]:
             a1, a2 = "N4", "O6"
         else:
             a1, a2 = "O6", "N4"
-    if universe.selectAtoms(" resid %s " % (i,)).resnames()[0] in ["DT", "DA", "A", "T", "U", "ADE", "THY", "URA"]:
-        if universe.selectAtoms(" resid %s " % (i,)).resnames()[0] in ["DT", "T", "THY", "U", "URA"]:
+    if universe.selectAtoms(" resid %s " % (i,)).resnames[0] in ["DT", "DA", "A", "T", "U", "ADE", "THY", "URA"]:
+        if universe.selectAtoms(" resid %s " % (i,)).resnames[0] in ["DT", "T", "THY", "U", "URA"]:
             a1, a2 = "O4", "N6"
         else:
             a1, a2 = "N6", "O4"

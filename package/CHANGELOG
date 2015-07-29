@@ -45,8 +45,13 @@ The rules for this file:
     over periodic boundaries.
   * Added triclinic_dimensions to Timestep, returns representation of unit
     cell as triclinic vectors (Issue #276)
+  * Added setter to bfactors property (Issue #372)
+  * Added AtomGroup altLocs and serials properties with setters. (Issue #372)
 
   Changes
+  * Changed many AtomGroup methods to properties.  These are: indices, masses,
+    charges, names, types, radii, resids, resnames, resnums, segids
+    (Issue #372)
   * A ProtoReader class intermediate between IObase and Reader was added so
     specific Readers can be subclassed without __del__ (the ChainReader and
     SingleFrameReader), thus preventing memleaks (Issue #312).

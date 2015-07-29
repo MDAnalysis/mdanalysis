@@ -37,14 +37,14 @@ from MDAnalysis.analysis.align import alignto
 
 
 def capping(ref, ace, nma, output):
-    resids = ref.selectAtoms("all").resids()
+    resids = ref.selectAtoms("all").resids
     resid_min, resid_max = min(resids), max(resids)
 
     # There is probably some cache i need to update both the atom and residues
     for a in ace.atoms:
-        a.resid += resid_min - max(ace.atoms.resids())
+        a.resid += resid_min - max(ace.atoms.resids)
     for r in ace.residues:
-        r.id += resid_min - max(ace.atoms.resids())
+        r.id += resid_min - max(ace.atoms.resids)
     for a in nma.atoms:
         a.resid = resid_max
     for r in nma.residues:
@@ -102,8 +102,8 @@ class TestCapping(TestCase):
         nma = u.selectAtoms("resname NMA")
 
         # Check if the resids were assigned correctly
-        assert_equal(ace.resids()[0], 1)
-        assert_equal(nma.resids()[0], 15)
+        assert_equal(ace.resids[0], 1)
+        assert_equal(nma.resids[0], 15)
 
         assert_array_equal(peptide.trajectory.ts.dimensions, u.trajectory.ts.dimensions)
 
@@ -120,8 +120,8 @@ class TestCapping(TestCase):
         nma = u.selectAtoms("resname NMA")
 
         # Check if the resids were assigned correctly
-        assert_equal(ace.resids()[0], 1)
-        assert_equal(nma.resids()[0], 15)
+        assert_equal(ace.resids[0], 1)
+        assert_equal(nma.resids[0], 15)
 
         assert_array_equal(peptide.trajectory.ts.dimensions, u.trajectory.ts.dimensions)
 

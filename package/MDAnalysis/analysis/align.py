@@ -324,7 +324,7 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
                                                  tol_mass=tol_mass, strict=strict)
 
     if mass_weighted:
-        weights = ref_atoms.masses() / numpy.mean(ref_atoms.masses())
+        weights = ref_atoms.masses / numpy.mean(ref_atoms.masses)
         ref_com = ref_atoms.centerOfMass()
         mobile_com = mobile_atoms.centerOfMass()
     else:
@@ -464,7 +464,7 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
     logger.info("RMS-fitting on %d atoms." % len(ref_atoms))
     if mass_weighted:
         # if performing a mass-weighted alignment/rmsd calculation
-        weight = ref_atoms.masses() / ref_atoms.masses().mean()
+        weight = ref_atoms.masses / ref_atoms.masses.mean()
     else:
         weight = None
 
@@ -830,7 +830,7 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
                 ag1.numberOfResidues(), ag2.numberOfResidues())
             dbgmsg = "mismatched residue numbers\n" + \
                 "\n".join(["{0} | {1}"  for r1, r2 in
-                           itertools.izip_longest(ag1.resids(), ag2.resids())])
+                           itertools.izip_longest(ag1.resids, ag2.resids)])
             logger.error(errmsg)
             logger.debug(dbgmsg)
             raise SelectionError(errmsg)
@@ -857,8 +857,8 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
         # pairwise2 consumes too much memory for thousands of characters in
         # each sequence. Perhaps a solution would be pairwise alignment per residue.
         #
-        # aln_elem = Bio.pairwise2.align.globalms("".join([MDAnalysis.topology.core.guess_atom_element(n) for n in gref.atoms.names()]),
-        #    "".join([MDAnalysis.topology.core.guess_atom_element(n) for n in models[0].atoms.names()]),
+        # aln_elem = Bio.pairwise2.align.globalms("".join([MDAnalysis.topology.core.guess_atom_element(n) for n in gref.atoms.names]),
+        #    "".join([MDAnalysis.topology.core.guess_atom_element(n) for n in models[0].atoms.names]),
         #                               2, -1, -1, -0.1,
         #                               one_alignment_only=True)
 
@@ -875,8 +875,8 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
                     logger.error("Offending residues: group {0}: {1}".format(
                             number,
                             ", ".join(["{0[0]}{0[1]} ({0[2]})".format(r) for r in
-                                       itertools.izip(ag.resnames()[mismatch_resindex],
-                                                      ag.resids()[mismatch_resindex],
+                                       itertools.izip(ag.resnames[mismatch_resindex],
+                                                      ag.resids[mismatch_resindex],
                                                       rsize[mismatch_resindex]
                                                       )])))
                 logger.error("Found {0} residues with non-matching numbers of atoms (#)".format(
@@ -891,7 +891,7 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
                 # not pretty... but need to do things on a per-atom basis in order
                 # to preserve original selection
                 ag = g.atoms
-                good = ag.resids()[match_mask]
+                good = ag.resids[match_mask]
                 resids = numpy.array([a.resid for a in ag])  # resid for each atom
                 ix_good = numpy.in1d(resids, good)   # boolean array for all matching atoms
                 return ag[numpy.arange(len(ag))[ix_good]]   # workaround for missing boolean indexing
@@ -904,14 +904,14 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
             mismatch_resindex = numpy.arange(ag1.numberOfResidues())[mismatch_mask]
             logger.warn("Removed {0} residues with non-matching numbers of atoms".format(
                     mismatch_mask.sum()))
-            logger.debug("Removed residue ids: group 1: {0}".format(ag1.resids()[mismatch_resindex]))
-            logger.debug("Removed residue ids: group 2: {0}".format(ag2.resids()[mismatch_resindex]))
+            logger.debug("Removed residue ids: group 1: {0}".format(ag1.resids[mismatch_resindex]))
+            logger.debug("Removed residue ids: group 2: {0}".format(ag2.resids[mismatch_resindex]))
             # replace after logging (still need old ag1 and ag2 for diagnostics)
             ag1 = _ag1
             ag2 = _ag2
             del _ag1, _ag2
 
-    mass_mismatches = (numpy.absolute(ag1.masses() - ag2.masses()) > tol_mass)
+    mass_mismatches = (numpy.absolute(ag1.masses - ag2.masses) > tol_mass)
     if numpy.any(mass_mismatches):
         # Test 2 failed.
         # diagnostic output:

@@ -42,7 +42,7 @@ traj_atoms = traj.selectAtoms(selections['target'])
 natoms = traj_atoms.numberOfAtoms()
 
 # if performing a mass-weighted alignment/rmsd calculation
-# masses = ref_atoms.masses()
+# masses = ref_atoms.masses
 #weight = masses/numpy.mean(masses)
 
 # reference centre of mass system

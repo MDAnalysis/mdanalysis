@@ -49,14 +49,14 @@ class TestAtomGroupPickle(TestCase):
         """Test that an AtomGroup can be unpickled (Issue 293)"""
         newag = cPickle.loads(self.pickle_str)
         # Can unpickle
-        assert_array_equal(self.ag.indices(), newag.indices())
+        assert_array_equal(self.ag.indices, newag.indices)
         assert_(newag.universe is self.universe, "Unpickled AtomGroup on wrong Universe.")
 
     def test_unpickle_named(self):
         """Test that an AtomGroup can be unpickled (Issue 293)"""
         newag = cPickle.loads(self.pickle_str_n)
         # Can unpickle
-        assert_array_equal(self.ag_n.indices(), newag.indices())
+        assert_array_equal(self.ag_n.indices, newag.indices)
         assert_(newag.universe is self.universe_n, "Unpickled AtomGroup on wrong Universe.")
 
     def test_unpickle_noanchor(self):
@@ -75,7 +75,7 @@ class TestAtomGroupPickle(TestCase):
         # now it goes back into the anchor list again
         self.universe.make_anchor()
         newag = cPickle.loads(self.pickle_str)
-        assert_array_equal(self.ag.indices(), newag.indices())
+        assert_array_equal(self.ag.indices, newag.indices)
         assert_(newag.universe is self.universe, "Unpickled AtomGroup on wrong Universe.")
 
     def test_unpickle_reanchor_other(self):
@@ -84,7 +84,7 @@ class TestAtomGroupPickle(TestCase):
         # and universe_n goes into the anchor list
         self.universe_n.make_anchor()
         newag = cPickle.loads(self.pickle_str)
-        assert_array_equal(self.ag.indices(), newag.indices())
+        assert_array_equal(self.ag.indices, newag.indices)
         assert_(newag.universe is self.universe_n, "Unpickled AtomGroup on wrong Universe.")
 
     def test_unpickle_wrongname(self):
@@ -100,7 +100,7 @@ class TestAtomGroupPickle(TestCase):
         # and make universe a named anchor
         self.universe.anchor_name = "test1"
         newag = cPickle.loads(self.pickle_str_n)
-        assert_array_equal(self.ag_n.indices(), newag.indices())
+        assert_array_equal(self.ag_n.indices, newag.indices)
         assert_(newag.universe is self.universe, "Unpickled AtomGroup on wrong Universe.")
 
 class TestEmptyAtomGroupPickle(TestCase):

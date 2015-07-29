@@ -12,7 +12,7 @@ asel = system.selectAtoms(' ( name CA ) ')
 #---------------------------------
 #  making the mass matrix
 #---------------------------------
-kg = asel.masses() * (1.6605388e-27)
+kg = asel.masses * (1.6605388e-27)
 masses = Numeric.repeat(kg, 3)
 mass_matrix = Numeric.identity(len(masses)) * masses
 

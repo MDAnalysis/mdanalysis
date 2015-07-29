@@ -229,8 +229,8 @@ def dist(A, B, offset=0):
         off_A, off_B = offset
     except (TypeError, ValueError):
         off_A = off_B = int(offset)
-    residues_A = numpy.array(A.resids()) + off_A
-    residues_B = numpy.array(B.resids()) + off_B
+    residues_A = numpy.array(A.resids) + off_A
+    residues_B = numpy.array(B.resids) + off_B
     r = A.coordinates() - B.coordinates()
     d = numpy.sqrt(numpy.sum(r * r, axis=1))
     return numpy.array([residues_A, residues_B, d])

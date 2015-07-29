@@ -1078,7 +1078,7 @@ class PrimitivePDBWriter(base.Writer):
             coor = ts._pos
 
         if hasattr(self.obj, "indices"):
-            coor = coor[self.obj.indices()]
+            coor = coor[self.obj.indices]
 
         if len(atoms) != len(coor):
             raise ValueError(

@@ -492,7 +492,7 @@ class SelgroupSelection(Selection):
         self._grp = selgroup
 
     def _apply(self, group):
-        common = numpy.intersect1d(group.atoms.indices(), self._grp.atoms.indices())
+        common = numpy.intersect1d(group.atoms.indices, self._grp.atoms.indices)
         res_atoms = [i for i in self._grp if i.number in common]
         return set(res_atoms)
 

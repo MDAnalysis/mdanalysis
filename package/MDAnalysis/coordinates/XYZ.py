@@ -136,12 +136,12 @@ class XYZWriter(base.Writer):
         """Return a list of atom names"""
         # AtomGroup
         try:
-            return atoms.names()
+            return atoms.names
         except AttributeError:
             pass
         # universe?
         try:
-            return atoms.atoms.names()
+            return atoms.atoms.names
         except AttributeError:
             pass
         # list or string (can be a single atom name... deal with this in write_next_timestep() once we know numatoms)
@@ -185,12 +185,12 @@ class XYZWriter(base.Writer):
                     ts = ts_full
                 else:
                     # Only populate a time step with the selected atoms.
-                    ts = ts_full.copy_slice(atoms.indices())
+                    ts = ts_full.copy_slice(atoms.indices)
             elif hasattr(obj, 'trajectory'):
                 # For Universe only --- get everything
                 ts = obj.trajectory.ts
             # update atom names
-            self.atomnames = atoms.names()
+            self.atomnames = atoms.names
         else:
             ts = obj
 

@@ -31,7 +31,7 @@ def rmsd_traj(traj, ref, **kwargs):
     natoms = traj_atoms.numberOfAtoms()
 
     # if performing a mass-weighted alignment/rmsd calculation
-    # masses = ref_atoms.masses()
+    # masses = ref_atoms.masses
     #weight = masses/numpy.mean(masses)
 
     # reference centre of mass system
