@@ -790,6 +790,9 @@ class AtomGroup(object):
     .. versionchanged:: 0.11.0
        AtomGroups can now be picled and unpickled provided compatible Universes
        are available.
+       The follow methods were changed to properties: indices, masses, charges, names,
+       types, radii, resids, resnames, resnums, segids
+       Added altLocs and serials properties and setters
     """
     # for generalized __getitem__ __iter__ and __len__
     # (override _containername for ResidueGroup and SegmentGroup)
