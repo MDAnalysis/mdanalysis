@@ -1956,13 +1956,13 @@ class TestAtomGroupProperties(object):
 
     list of properties:
     - name x
-    - altLoc x - can't play via AG
+    - altLoc x
     - type x 
     - mass x 
     - charge x
     - radius x 
     - bfactor x
-    - serial x - can't play via AG
+    - serial x
 
     Residue/Segment related ones:
     - resname
@@ -2030,8 +2030,8 @@ class TestAtomGroupProperties(object):
         for att, atts, att_type, ag_set in (
                 ('name', 'names', 'string', ag.set_name),
                 ('type', 'types', 'string', ag.set_type),
-                ('altLoc', 'altLocs', 'string', None),  # can't access via AG
-                ('serial', 'serials', 'int', None),  # can't access via AG
+                ('altLoc', 'altLocs', 'string', ag.set_altLoc),
+                ('serial', 'serials', 'int', ag.set_serial),
                 ('charge', 'charges', 'float', ag.set_charge),
                 ('mass', 'masses', 'float', ag.set_mass),
                 ('radius', 'radii', 'float', ag.set_radius),
@@ -2042,5 +2042,4 @@ class TestAtomGroupProperties(object):
             yield self._check_singular, att, atts
             yield self._check_ag_matches_atom, att, atts, ag
             yield self._change_atom_check_ag, att, vals, ag
-            if not ag_set is None:
-                yield self._change_ag_check_atoms, att, vals, ag, ag_set
+            yield self._change_ag_check_atoms, att, vals, ag, ag_set
