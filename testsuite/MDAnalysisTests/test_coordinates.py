@@ -1195,7 +1195,7 @@ class TestMultiPDBReader(TestCase):
             con = {}
 
             for bond in bonds:
-                a1, a2 = bond[0].number, bond[1].number
+                a1, a2 = bond[0].index, bond[1].index
                 if not a1 in con:
                     con[a1] = []
                 if not a2 in con:
@@ -1204,7 +1204,7 @@ class TestMultiPDBReader(TestCase):
                 con[a1].append(a2)
 
             #print con
-            atoms = sorted([a.number for a in atoms])
+            atoms = sorted([a.index for a in atoms])
 
             conect = [([a, ] + sorted(con[a])) for a in atoms if a in con]
             conect = [[a + 1 for a in c] for c in conect]
@@ -3075,7 +3075,7 @@ class _DLPConfig2(object):
 
     def test_number(self):
         ref = [0, 1, 2]
-        assert_equal([a.number for a in self.u.atoms], ref)
+        assert_equal([a.index for a in self.u.atoms], ref)
 
 class TestConfigReader2(_DLPConfig2):
     f = DLP_CONFIG_order

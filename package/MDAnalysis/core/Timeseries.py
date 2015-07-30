@@ -200,7 +200,7 @@ class Timeseries(object):
             return '<' + self.__class__.__name__ + ' timeseries object is not populated with data>'
 
     def getAtomList(self):
-        return [a.number for a in self.atoms]
+        return [a.index for a in self.atoms]
 
     def getFormatCode(self):
         return self.code

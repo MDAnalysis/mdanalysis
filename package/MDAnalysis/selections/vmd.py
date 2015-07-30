@@ -47,7 +47,7 @@ class SelectionWriter(base.SelectionWriter):
 
     def _translate(self, atoms, **kwargs):
         # VMD index is 0-based (as is MDAnalysis)
-        return [str(atom.number) for atom in atoms]
+        return [str(atom.index) for atom in atoms]
 
     def _write_tail(self, out, **kwargs):
         out.write("}")

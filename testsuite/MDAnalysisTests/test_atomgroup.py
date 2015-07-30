@@ -998,7 +998,7 @@ class TestResidue(TestCase):
         atom = self.res[2]
         assert_equal(type(atom), MDAnalysis.core.AtomGroup.Atom)
         assert_equal(atom.name, "CA")
-        assert_equal(atom.number, 1522)
+        assert_equal(atom.index, 1522)
         assert_equal(atom.resid, 101)
 
     def test_slicing(self):

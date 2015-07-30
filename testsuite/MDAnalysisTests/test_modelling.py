@@ -149,7 +149,7 @@ class TestMerge(TestCase):
 
     def test_merge(self):
         u1, u2, u3 = self.universes
-        ids_before = [a.number for u in [u1, u2, u3] for a in u.atoms]
+        ids_before = [a.index for u in [u1, u2, u3] for a in u.atoms]
         # Do the merge
         u0 = MDAnalysis.Merge(u1.atoms, u2.atoms, u3.atoms)
         # Check that the output Universe has the same number of atoms as the
@@ -165,17 +165,17 @@ class TestMerge(TestCase):
 
         # Make sure that the atom ids of the original universes are unchanged,
         # ie we didn't make the original Universes 'dirty'
-        ids_after = [a.number for u in [u1, u2, u3] for a in u.atoms]
+        ids_after = [a.index for u in [u1, u2, u3] for a in u.atoms]
         assert_equal(len(ids_after), (len(u1.atoms) + len(u2.atoms) + len(u3.atoms)))
         assert_equal(ids_before, ids_after)
 
         # Test that we have a same number of atoms in a different way
-        ids_new = [a.number for a in u0.atoms]
+        ids_new = [a.index for a in u0.atoms]
         assert_equal(len(ids_new), len(ids_before))
 
         u0.atoms.write(self.outfile)
         u = MDAnalysis.Universe(self.outfile)
-        ids_new2 = [a.number for a in u.atoms]
+        ids_new2 = [a.index for a in u.atoms]
         assert_equal(ids_new, ids_new2)
 
     def test_residue_references(self):

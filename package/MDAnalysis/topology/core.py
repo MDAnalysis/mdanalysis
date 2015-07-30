@@ -132,7 +132,7 @@ class TopologyObject(object):
 
         .. versionadded:: 0.10.0
         """
-        return tuple([a.number for a in self.atoms])
+        return tuple([a.index for a in self.atoms])
 
     @property
     def type(self):
@@ -164,7 +164,7 @@ class TopologyObject(object):
             cname=self.__class__.__name__,
             conts=", ".join([
                 "Atom {num} ({name} of {resname}-{resid})".format(
-                    num=a.number + 1,
+                    num=a.index + 1,
                     name=a.name,
                     resname=a.resname,
                     resid=a.resid)
@@ -176,8 +176,8 @@ class TopologyObject(object):
 
     def __eq__(self, other):
         """Check whether two bonds have identical contents"""
-        my_tup = tuple([a.number for a in self.atoms])
-        ot_tup = tuple([a.number for a in other.atoms])
+        my_tup = tuple([a.index for a in self.atoms])
+        ot_tup = tuple([a.index for a in other.atoms])
 
         return (my_tup == ot_tup) or (my_tup == ot_tup[::-1])
 
@@ -252,7 +252,7 @@ class Bond(TopologyObject):
         s_id = "<Bond between: Atom {0:d} ({1.name} of {1.resname} {1.resid}"\
                " {1.altLoc}) and Atom {2:d} ({3.name} of {3.resname}"\
                "{3.resid} {3.altLoc})".format(
-                   a1.number + 1, a1, a2.number + 1, a2)
+                   a1.index + 1, a1, a2.index + 1, a2)
         try:
             s_length = ", length {0:.2f} A".format(self.length())
         except AttributeError:
@@ -566,7 +566,7 @@ def guess_bonds(atoms, coords, **kwargs):
             if dist[a] < (vdw_i + vdwradii[atom_j.type]) * fudge_factor:
                 # because of method used, same bond won't be seen twice,
                 # so don't need to worry about duplicates
-                bonds.append((atom.number, atom_j.number))
+                bonds.append((atom.index, atom_j.index))
 
     return tuple(bonds)
 
@@ -593,7 +593,7 @@ def guess_angles(bonds):
             for other_b in atom.bonds:
                 if other_b != b:  # if not the same bond I start as
                     third_a = other_b.partner(atom)
-                    desc = tuple([other_a.number, atom.number, third_a.number])
+                    desc = tuple([other_a.index, atom.index, third_a.index])
                     if desc[0] > desc[-1]:  # first index always less than last
                         desc = desc[::-1]
                     angles_found.add(desc)
@@ -616,7 +616,7 @@ def guess_torsions(angles):
     torsions_found = set()
 
     for b in angles:
-        a_tup = tuple([a.number for a in b])  # angle as tuple of numbers
+        a_tup = tuple([a.index for a in b])  # angle as tuple of numbers
         # if searching with b[0], want tuple of (b[2], b[1], b[0], +new)
         # search the first and last atom of each angle
         for atom, prefix in zip([b.atoms[0], b.atoms[-1]],
@@ -624,7 +624,7 @@ def guess_torsions(angles):
             for other_b in atom.bonds:
                 if not other_b.partner(atom) in b:
                     third_a = other_b.partner(atom)
-                    desc = prefix + (third_a.number,)
+                    desc = prefix + (third_a.index,)
                     if desc[0] > desc[-1]:
                         desc = desc[::-1]
                     torsions_found.add(desc)
@@ -652,14 +652,14 @@ def guess_improper_torsions(angles):
     for b in angles:
         atom = b[1]  # select middle atom in angle
         # start of improper tuple
-        a_tup = tuple([b[a].number for a in [1, 2, 0]])
+        a_tup = tuple([b[a].index for a in [1, 2, 0]])
         # if searching with b[1], want tuple of (b[1], b[2], b[0], +new)
         # search the first and last atom of each angle
         for other_b in atom.bonds:
             other_atom = other_b.partner(atom)
             # if this atom isn't in the angle I started with
             if not other_atom in b:
-                desc = a_tup + (other_atom.number,)
+                desc = a_tup + (other_atom.index,)
                 if desc[0] > desc[-1]:
                     desc = desc[::-1]
                 torsions_found.add(desc)

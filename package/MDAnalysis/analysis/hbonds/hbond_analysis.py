@@ -75,7 +75,7 @@ indicates comments that are not part of the output.)::
 .. Note::
 
    For historic reasons, the *donor index* and *acceptor index* are a 1-based
-   indices. To get the :attr:`Atom.number` (the 0-based index typically used in
+   indices. To get the :attr:`Atom.index` (the 0-based index typically used in
    MDAnalysis simply subtract 1. For instance, to find an atom in
    :attr:`Universe.atoms` by *index* from the output one would use
    ``u.atoms[index-1]``.
@@ -266,7 +266,7 @@ Classes
 
       .. Note::
 
-         The *index* is a 1-based index. To get the :attr:`Atom.number` (the
+         The *index* is a 1-based index. To get the :attr:`Atom.index` (the
          0-based index typically used in MDAnalysis simply subtract 1. For
          instance, to find an atom in :attr:`Universe.atoms` by *index* one
          would use ``u.atoms[index-1]``.
@@ -296,7 +296,7 @@ Classes
 
       .. Note::
 
-         The *index* is a 1-based index. To get the :attr:`Atom.number` (the
+         The *index* is a 1-based index. To get the :attr:`Atom.index` (the
          0-based index typically used in MDAnalysis simply subtract 1. For
          instance, to find an atom in :attr:`Universe.atoms` by *index* one
          would use ``u.atoms[index-1]``.
@@ -716,7 +716,7 @@ class HydrogenBondAnalysis(object):
                       category=DeprecationWarning)
         try:
             hydrogens = [
-                a for a in self.u.atoms[atom.number + 1:atom.number + 4]
+                a for a in self.u.atoms[atom.index + 1:atom.index + 4]
                 if a.name.startswith(('H', '1H', '2H', '3H')) \
                     and self.calc_eucl_distance(atom, a) < self.r_cov[atom.name[0]]]
         except IndexError:
@@ -877,12 +877,12 @@ class HydrogenBondAnalysis(object):
                             dist = self.calc_eucl_distance(donor_atom, a)
                             if angle >= self.angle and dist <= self.distance:
                                 self.logger_debug(
-                                    "S1-D: %s <-> S2-A: %s %f A, %f DEG" % (h.number + 1, a.number + 1, dist, angle))
+                                    "S1-D: %s <-> S2-A: %s %f A, %f DEG" % (h.index + 1, a.index + 1, dist, angle))
                                 #self.logger_debug("S1-D: %r <-> S2-A: %r %f A, %f DEG" % (h, a, dist, angle))
                                 frame_results.append(
-                                    [h.number + 1, a.number + 1, '%s%s:%s' % (h.resname, repr(h.resid), h.name),
+                                    [h.index + 1, a.index + 1, '%s%s:%s' % (h.resname, repr(h.resid), h.name),
                                         '%s%s:%s' % (a.resname, repr(a.resid), a.name), dist, angle])
-                                already_found[(h.number + 1, a.number + 1)] = True
+                                already_found[(h.index + 1, a.index + 1)] = True
             if self.selection1_type in ('acceptor', 'both') and len(self._s1_acceptors) > 0:
                 self.logger_debug("Selection 1 Acceptors <-> Donors")
                 ns_acceptors = NS.AtomNeighborSearch(self._s1_acceptors)
@@ -892,18 +892,18 @@ class HydrogenBondAnalysis(object):
                         res = ns_acceptors.search_list(AtomGroup([h]), self.distance)
                         for a in res:
                             if remove_duplicates and (
-                                    (h.number + 1, a.number + 1) in already_found
-                                    or (a.number + 1, h.number + 1) in already_found):
+                                    (h.index + 1, a.index + 1) in already_found
+                                    or (a.index + 1, h.index + 1) in already_found):
                                 continue
                             angle = self.calc_angle(d, h, a)
                             donor_atom = h if self.distance_type != 'heavy' else d
                             dist = self.calc_eucl_distance(donor_atom, a)
                             if angle >= self.angle and dist <= self.distance:
                                 self.logger_debug(
-                                    "S1-A: %s <-> S2-D: %s %f A, %f DEG" % (a.number + 1, h.number + 1, dist, angle))
+                                    "S1-A: %s <-> S2-D: %s %f A, %f DEG" % (a.index + 1, h.index + 1, dist, angle))
                                 #self.logger_debug("S1-A: %r <-> S2-D: %r %f A, %f DEG" % (a, h, dist, angle))
                                 frame_results.append(
-                                    [h.number + 1, a.number + 1, '%s%s:%s' % (h.resname, repr(h.resid), h.name),
+                                    [h.index + 1, a.index + 1, '%s%s:%s' % (h.resname, repr(h.resid), h.name),
                                         '%s%s:%s' % (a.resname, repr(a.resid), a.name), dist, angle])
             self.timeseries.append(frame_results)
 
@@ -1178,7 +1178,7 @@ class HydrogenBondAnalysis(object):
         .. Note::
 
            *index* is the 0-based MDAnalysis index
-           (:attr:`MDAnalysis.core.AtomGroup.Atom.number`).  The
+           (:attr:`MDAnalysis.core.AtomGroup.Atom.index`).  The
            tables generated by :class:`HydrogenBondAnalysis` contain
            1-based indices.
 
@@ -1194,7 +1194,7 @@ class HydrogenBondAnalysis(object):
             x = []
             for k in xrange(len(donors)):
                 if k in hydrogens:
-                    x.extend([(atom.number, donors[k].name) for atom in hydrogens[k]])
+                    x.extend([(atom.index, donors[k].name) for atom in hydrogens[k]])
             return dict(x)
 
         h2donor = _make_dict(s2d, s2h)  # 2 is typically the larger group

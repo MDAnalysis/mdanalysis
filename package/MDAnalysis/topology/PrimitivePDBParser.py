@@ -137,9 +137,9 @@ class PrimitivePDBParser(TopologyReader):
         # Problem is that in multiframe PDB, the CONECT is at end of file,
         # so the "break" call happens before bonds are reached.
 
-        # Mapping between the atom array indicies a.number and atom ids
+        # Mapping between the atom array indicies a.index and atom ids
         # (serial) in the original PDB file
-        mapping = dict((a.serial, a.number) for a in atoms)
+        mapping = dict((a.serial, a.index) for a in atoms)
 
         bonds = set()
         with openany(self.filename, "r") as f:

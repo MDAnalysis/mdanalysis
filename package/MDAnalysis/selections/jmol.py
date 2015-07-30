@@ -45,7 +45,7 @@ class SelectionWriter(base.SelectionWriter):
     def _translate(self, atoms, **kwargs):
         # Jmol indexing is 0 based when using atom bitsets
         def _index(atom):
-            return str(atom.number)
+            return str(atom.index)
 
         return base.join(atoms, ' ', _index)
 

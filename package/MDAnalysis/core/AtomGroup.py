@@ -121,13 +121,8 @@ lists. For instance, many MD codes number residues consecutively starting from
 N-terminus. Let's say that the first residue is really residue 10. In order to
 store the canonical residue IDs ("resnum") one could the use ::
 
-  import numpy as np
   protein = u.selectAtoms("protein").residues
-  protein.set_resnum(np.array(protein.resnums) + 9)
-
-.. TODO: correct this example when resnums has become a property that returns a np array
-..  protein = u.selectAtoms("protein").residues
-..  protein.set_resnum(protein.resnums + 9)
+  protein.set_resnum(protein.resnums + 9)
 
 One can then use ``protein.select("resnum 42")`` to select the residue that has
 the canonical residue id 42 (instead of ``resid 33``).
@@ -288,9 +283,9 @@ Classes and functions
 .. autoclass:: Atom
    :members:
 
-   .. attribute::     number
+   .. attribute::     index
 
-      atom number
+      atom index
 
    .. attribute::     segid
 
@@ -424,7 +419,7 @@ logger = logging.getLogger("MDAnalysis.core.AtomGroup")
 
 # Constant to translate the name of an Atom's property
 # to the plural version, as found in AtomGroup
-_PLURAL_PROPERTIES = {'number': 'indices',
+_PLURAL_PROPERTIES = {'index': 'indices',
                       'name': 'names',
                       'type': 'types',
                       'resname': 'resnames',
@@ -466,18 +461,19 @@ class Atom(object):
        Changed bonds angles torsions impropers to be a managed property
     .. versionchanged 0.11.0
        Changed references to :class:`Universe` to be weak.
+       Renamed atom.number to atom.index
     """
 
     __slots__ = (
-        "number", "id", "name", "type", "resname", "resid", "segid",
+        "index", "id", "name", "type", "resname", "resid", "segid",
         "mass", "charge", "residue", "segment",
         "_universe",
         "radius", "bfactor", "resnum", "serial", "altLoc")
 
-    def __init__(self, number, name, type, resname, resid, segid, mass, charge,
+    def __init__(self, index, name, type, resname, resid, segid, mass, charge,
                  residue=None, segment=None, radius=None, bfactor=None,
                  resnum=None, serial=None, altLoc=None, universe=None):
-        self.number = number
+        self.index = index
         self.name = name
         self.altLoc = altLoc
         self.type = str(type)  # always a string (needed for selections)
@@ -502,19 +498,19 @@ class Atom(object):
     def __repr__(self):
         return ("<Atom {idx}: {name} of type {t} of resname {rname}, "
                 "resid {rid} and segid {sid}{altloc}>".format(
-                    idx=self.number + 1, name=self.name, t=self.type,
+                    idx=self.index + 1, name=self.name, t=self.type,
                     rname=self.resname, rid=self.resid, sid=self.segid,
                     altloc="" if not self.altLoc
                     else " and altloc {0}".format(self.altLoc)))
 
     def __cmp__(self, other):
-        return cmp(self.number, other.number)
+        return cmp(self.index, other.index)
 
     def __eq__(self, other):
-        return self.number == other.number
+        return self.index == other.index
 
     def __hash__(self):
-        return hash(self.number)
+        return hash(self.index)
 
     def __add__(self, other):
         if not (isinstance(other, Atom) or isinstance(other, AtomGroup)):
@@ -524,6 +520,11 @@ class Atom(object):
             return AtomGroup([self, other])
         else:
             return AtomGroup([self] + other._atoms)
+
+    @property
+    def number(self):
+        """The index of this atom"""
+        return self.index
 
     @property
     def pos(self):
@@ -544,7 +545,7 @@ class Atom(object):
 
         :Returns: a (3,) shape numpy array
         """
-        return self.universe.coord.positions[self.number]  # internal numbering starts at 0
+        return self.universe.coord.positions[self.index]  # internal numbering starts at 0
 
     @position.setter
     def position(self, coords):
@@ -553,7 +554,7 @@ class Atom(object):
         @param coords: a 1x3 numpy array of {x,y,z} coordinates, or optionally
             a single scalar if you should want to set all coordinates to the same value.
         """
-        self.universe.coord.positions[self.number, :] = coords  # internal numbering starts at 0
+        self.universe.coord.positions[self.index, :] = coords  # internal numbering starts at 0
 
     @property
     def velocity(self):
@@ -569,7 +570,7 @@ class Atom(object):
         # TODO: Remove error checking here (and all similar below)
         # and add to Timestep
         try:
-            return self.universe.coord.velocities[self.number]
+            return self.universe.coord.velocities[self.index]
         except (AttributeError, NoDataError):
             raise NoDataError("Timestep does not contain velocities")
 
@@ -583,7 +584,7 @@ class Atom(object):
         .. versionadded:: 0.9.2
         """
         try:
-            self.universe.coord.velocities[self.number] = vals
+            self.universe.coord.velocities[self.index] = vals
         except (AttributeError, NoDataError):
             raise NoDataError("Timestep does not contain velocities")
 
@@ -599,7 +600,7 @@ class Atom(object):
         .. versionadded:: 0.9.2
         """
         try:
-            return self.universe.coord.forces[self.number]
+            return self.universe.coord.forces[self.index]
         except (AttributeError, NoDataError):
             raise NoDataError("Timestep does not contain forces")
 
@@ -610,7 +611,7 @@ class Atom(object):
         .. versionadded:: 0.9.2
         """
         try:
-            self.universe.coord.forces[self.number] = vals
+            self.universe.coord.forces[self.index] = vals
         except (AttributeError, NoDataError):
             raise NoDataError("Timestep does not contain forces")
 
@@ -627,7 +628,7 @@ class Atom(object):
             return self._universe()
         else:
             raise AttributeError(
-                "Atom {0} is not assigned to a Universe".format(self.number))
+                "Atom {0} is not assigned to a Universe".format(self.index))
 
     @universe.setter
     def universe(self, universe):
@@ -1072,16 +1073,19 @@ class AtomGroup(object):
     @property
     @cached('indices')
     def indices(self):
-        """Array of all :attr:`Atom.number` in the group.
+        """Array of all :attr:`Atom.index` in the group.
 
         These indices are 0-based and can be used to directly index
         :attr:`Universe.atoms` or the coordinate array
         :attr:`MDAnalysis.coordinates.base.Timestep.positions`.
 
+        .. Note::
+           This property is read only
+
         .. versionchanged:: 0.11.0
            Now a property
         """
-        return numpy.array([atom.number for atom in self._atoms])
+        return numpy.array([atom.index for atom in self._atoms])
 
     @property
     @cached('masses')
@@ -4473,7 +4477,7 @@ def Merge(*args):
         a.universe = u
     # adjust the atom numbering
     for i, a in enumerate(atoms):
-        a.number = i
+        a.index = i
         a.serial = i + 1
     u.atoms = AtomGroup(atoms)
     # adjust the residue and segment numbering (removes any remaining references to the old universe)

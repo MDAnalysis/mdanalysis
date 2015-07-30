@@ -148,17 +148,17 @@ class TestSelectionsCHARMM(TestCase):
     def test_bynum(self):
         "Tests the bynum selection, also from AtomGroup instances (Issue 275)"
         sel = self.universe.selectAtoms('bynum 5')
-        assert_equal(sel[0].number, 4)
+        assert_equal(sel[0].index, 4)
         sel = self.universe.selectAtoms('bynum 1:10')
         assert_equal(len(sel), 10)
-        assert_equal(sel[0].number, 0)
-        assert_equal(sel[-1].number, 9)
+        assert_equal(sel[0].index, 0)
+        assert_equal(sel[-1].index, 9)
         subsel = sel.selectAtoms('bynum 5')
-        assert_equal(subsel[0].number, 4)
+        assert_equal(subsel[0].index, 4)
         subsel = sel.selectAtoms('bynum 2:5')
         assert_equal(len(subsel), 4)
-        assert_equal(subsel[0].number, 1)
-        assert_equal(subsel[-1].number, 4)
+        assert_equal(subsel[0].index, 1)
+        assert_equal(subsel[-1].index, 4)
 
     # TODO:
     # add more test cases for byres, bynum, point

@@ -46,7 +46,7 @@ class SelectionWriter(base.SelectionWriter):
     def _translate(self, atoms, **kwargs):
         # CHARMM index is 1-based
         def _index(atom):
-            return "BYNUM %d" % (atom.number + 1)
+            return "BYNUM %d" % (atom.index + 1)
 
         return base.join(atoms, ' .or.', _index)
 

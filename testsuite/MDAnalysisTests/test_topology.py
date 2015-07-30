@@ -183,10 +183,10 @@ class _TestTopology(TestCase):
                      "wrong number of residues in topology")
 
     def test_atom_number(self):
-        assert_equal(self.universe.atoms[0].number, 0,
-                     "first atom should have Atom.number 0")
-        assert_equal(self.universe.atoms[-1].number, self.ref_numatoms - 1,
-                     "last atom has wrong Atom.number")
+        assert_equal(self.universe.atoms[0].index, 0,
+                     "first atom should have Atom.index 0")
+        assert_equal(self.universe.atoms[-1].index, self.ref_numatoms - 1,
+                     "last atom has wrong Atom.index")
 
 
 class RefAdKSmall(object):
@@ -378,7 +378,7 @@ class TestTopologyObjects(TestCase):
         assert_equal(len(self.a1), 2)
 
     def test_indices(self):
-        assert_equal(self.b.indices, tuple([b.number for b in self.b.atoms]))
+        assert_equal(self.b.indices, tuple([b.index for b in self.b.atoms]))
 
     # Bond class checks
     def test_partner(self):
@@ -962,10 +962,10 @@ class TestDMSReader(_TestTopology, RefDMS):
         assert_equal(len(s3), 190)
 
     def test_atom_number(self):
-        assert_equal(self.universe.atoms[0].number, 0,
-                     "first atom should have Atom.number 0")
-        assert_equal(self.universe.atoms[-1].number, 3341 - 1,
-                     "last atom has wrong Atom.number")
+        assert_equal(self.universe.atoms[0].index, 0,
+                     "first atom should have Atom.index 0")
+        assert_equal(self.universe.atoms[-1].index, 3341 - 1,
+                     "last atom has wrong Atom.index")
 
 
 # GROMACS TPR

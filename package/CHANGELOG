@@ -49,6 +49,7 @@ The rules for this file:
   * Added AtomGroup altLocs and serials properties with setters. (Issue #372)
 
   Changes
+  * Changed atom.number attribute to atom.index (Issue #372)
   * Changed many AtomGroup methods to properties.  These are: indices, masses,
     charges, names, types, radii, resids, resnames, resnums, segids
     (Issue #372)

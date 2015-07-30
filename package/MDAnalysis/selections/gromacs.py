@@ -43,7 +43,7 @@ class SelectionWriter(base.SelectionWriter):
 
     def _translate(self, atoms, **kwargs):
         # Gromacs index is 1-based; MDAnalysis is 0-based
-        return [str(atom.number + 1) for atom in atoms]
+        return [str(atom.index + 1) for atom in atoms]
 
     def _write_head(self, out, **kwargs):
         out.write("[ %(name)s ]\n" % kwargs)

@@ -253,7 +253,7 @@ class GROWriter(base.Writer):
                     str(atom.resid)[-5:],  # truncate highest digits on overflow
                     atom.resname.strip()[:5],
                     atom.name.strip()[:5],
-                    str(atom.number + 1)[-5:],  # number (1-based), truncate highest digits on overflow
+                    str(atom.index + 1)[-5:],  # index (1-based), truncate highest digits on overflow
                     c[0], c[1], c[2],  # coords - outputted with 3 d.p.
                 )
                 output_gro.write(output_line)
