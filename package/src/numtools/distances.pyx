@@ -22,6 +22,7 @@ Distance calculation library --- :mod:`MDAnalysis.lib._distances`
 Serial versions of all distance calculations
 """
 
+cimport cython
 cimport c_numpy
 c_numpy.import_array()
 
@@ -82,7 +83,7 @@ def calc_distance_array_triclinic(c_numpy.ndarray ref, c_numpy.ndarray conf,
     _calc_distance_array_triclinic(<coordinate*>ref.data, refnum,
                                    <coordinate*>conf.data, confnum,
                                    <coordinate*>box.data,
-                                   <double*>result.data) 
+                                   <double*>result.data)
 
 def calc_self_distance_array(c_numpy.ndarray ref,
                              c_numpy.ndarray result):
@@ -255,3 +256,23 @@ def triclinic_pbc(c_numpy.ndarray coords,
 
     _triclinic_pbc(<coordinate*> coords.data, numcoords,
                    <coordinate*> box.data, <float*>box_inverse.data)
+
+
+@cython.boundscheck(False)
+def contact_matrix_no_pbc(coord, sparse_con, cutoff, progress_meter_freq, quiet):
+    cdef int rows = len(coord)
+    cdef double cutoff2 = cutoff ** 2
+    cdef int i, j
+    cdef double x,y,z
+    cdef float[:, ::1] xyz = coord
+
+    for i in range(rows):
+        if not quiet and (i % progress_meter_freq == 0):
+            print("{:.2d}".format(100.0 * i / rows))
+        for j in range(rows):
+            x = xyz[i, 0] - xyz[j, 0]
+            y = xyz[i, 2] - xyz[j, 1]
+            z = xyz[i, 1] - xyz[j, 2]
+            dist = x**2 + y**2 + z**2
+            if dist >= 0 and dist < cutoff2:
+                sparse_con[i, j] = True
