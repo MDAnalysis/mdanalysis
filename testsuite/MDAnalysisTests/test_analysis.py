@@ -80,6 +80,19 @@ class TestContactMatrix(TestCase):
         assert_equal(contacts[0, 3], True, "entry (0,3) should be a contact")
         assert_equal(contacts[0, 4], False, "entry (0,3) should be a contact")
 
+    def test_box(self):
+        coord = numpy.array([[1, 1, 1], [5, 5, 5], [11, 11, 11]],
+                         dtype=numpy.float32)
+        box = numpy.array([10, 10, 10], dtype=numpy.float32)
+        contacts = MDAnalysis.analysis.distances.contact_matrix(coord, box=box,
+                                                                cutoff=1)
+
+        res = numpy.array([[True, False, True],
+                        [False, True, False],
+                        [True, False, True]])
+
+        assert_equal(contacts, res)
+
 
 class TestAlign(TestCase):
     def setUp(self):
@@ -543,4 +556,3 @@ class TestWaterdynamics(TestCase):
         sp = MDAnalysis.analysis.waterdynamics.SurvivalProbability(self.universe, self.selection1, 0, 6, 3)
         sp.run(quiet=True)
         assert_equal(round(sp.timeseries[1],5), 1.0)
-
