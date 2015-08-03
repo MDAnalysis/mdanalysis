@@ -27,6 +27,7 @@ from numpy.testing import *
 import numpy
 import nose
 from nose.plugins.attrib import attr
+from scipy import sparse
 
 import os
 import errno
@@ -80,7 +81,7 @@ class TestContactMatrix(TestCase):
         assert_equal(contacts[0, 3], True, "entry (0,3) should be a contact")
         assert_equal(contacts[0, 4], False, "entry (0,3) should be a contact")
 
-    def test_box(self):
+    def test_box_dense(self):
         coord = numpy.array([[1, 1, 1], [5, 5, 5], [11, 11, 11]],
                          dtype=numpy.float32)
         box = numpy.array([10, 10, 10], dtype=numpy.float32)
@@ -88,10 +89,23 @@ class TestContactMatrix(TestCase):
                                                                 cutoff=1)
 
         res = numpy.array([[True, False, True],
-                        [False, True, False],
-                        [True, False, True]])
+                           [False, True, False],
+                           [True, False, True]])
 
         assert_equal(contacts, res)
+
+    def test_box_sparse(self):
+        coord = numpy.array([[1, 1, 1], [5, 5, 5], [11, 11, 11]],
+                         dtype=numpy.float32)
+        box = numpy.array([10, 10, 10], dtype=numpy.float32)
+        contacts = MDAnalysis.analysis.distances.contact_matrix(
+            coord, box=box, returntype='sparse', cutoff=1, quiet=True)
+
+        res = numpy.array([[True, False, True],
+                           [False, True, False],
+                           [True, False, True]])
+
+        assert_equal(contacts.toarray(), res)
 
 
 class TestAlign(TestCase):
