@@ -32,11 +32,9 @@ __all__ = ['distance_array', 'self_distance_array', 'contact_matrix', 'dist']
 
 import numpy
 from scipy import sparse
-from scipy import weave
-from scipy.weave import converters
 
 from MDAnalysis.lib.distances import distance_array, self_distance_array
-from MDAnalysis.lib._distances import contact_matrix_no_pbc
+from MDAnalysis.lib._distances import contact_matrix_no_pbc, contact_matrix_pbc
 from MDAnalysis.lib.KDTree.NeighborSearch import AtomNeighborSearch
 
 import logging
@@ -75,80 +73,13 @@ def contact_matrix(coord, cutoff=15.0, returntype="numpy", box=None, progress_me
         # TODO Jan: this distance matrix will be symmetric, hence some of the iterations could be skipped.
         if box is not None:
             # if PBC
-            contact_matrix_pbc(coord, sparse_contacts, box, cutoff, progress_meter_freq, quiet)
+            logger.info("contact_matrix_pbc(): using box %r", box)
+            contact_matrix_pbc(coord, sparse_contacts, box, cutoff,
+                               progress_meter_freq, quiet)
         else:
             # if no PBC
             contact_matrix_no_pbc(coord, sparse_contacts, cutoff, progress_meter_freq, quiet)
         return sparse_contacts
-
-
-def contact_matrix_pbc(coord, sparse_contacts, box, cutoff, progress_meter_freq, quiet):
-    """Contact matrix calculation with periodic boundary conditions.
-
-    You don't have to call this function explicitly; just provide a
-    *box* to :func:`contact_matrix`, which will then call this
-    function.
-
-    Only orthorhombic boxes are currently supported.
-
-    This function uses  `python.weave`_.
-
-    ..  _`python.weave`: http://github.com/scipy/scipy/tree/master/scipy/weave/examples
-    """
-
-    box_half = numpy.array([x / 2. for x in box])
-    logger.info("contac_matrix_pbc(): using box %r", box)
-    logger.debug("contac_matrix_pbc(): half box %r", box_half)
-    _quiet = 1 if quiet else 0  # weave does not like Python True/False and does not convert to bool
-
-    c_code = """
-    #include <math.h>
-    int rows = Ncoord[0];
-    float cutoff2 = powf(cutoff, 2);
-    py::tuple args(2);
-    bool b = 1;
-    args[1] = b;
-    for (int i=0; i < rows; i++) {
-        // Print progress meter
-        if (! _quiet && (i % progress_meter_freq == 0)) {
-            printf("%.1f percent done \\n", (100.0 * i / rows));
-        }
-        for (int j=0; j < rows; j++) {
-            float x = coord(i,0) - coord(j,0);
-            float y = coord(i,1) - coord(j,1);
-            float z = coord(i,2) - coord(j,2);
-
-            // Handle the periodicity
-            if (fabs(x) > box_half(0) ) {
-                if (x < 0.0) {x += box(0); }
-                else { x -= box(0); }
-            }
-
-            if (fabs(y) > box_half(1) ) {
-                if (y < 0.0) {y += box(1); }
-                else { y -= box(1); }
-            }
-
-            if (fabs(z) > box_half(2) ) {
-                if (z < 0.0) {z += box(2); }
-                else { z -= box(2); }
-            }
-
-            float dist = powf(x, 2) + powf(y, 2) + powf(z, 2);
-
-            if (dist != 0.0 && dist < cutoff2) {
-                py::tuple idx(2);
-                idx[0] = i;
-                idx[1] = j;
-                args[0] = idx;
-                sparse_contacts.mcall("__setitem__", args);
-            }
-        }
-    }
-    """
-    weave.inline(c_code,
-                 ['coord', 'sparse_contacts', 'box', 'box_half', 'cutoff', 'progress_meter_freq', '_quiet'],
-                 type_converters=converters.blitz)
 
 
 def dist(A, B, offset=0):

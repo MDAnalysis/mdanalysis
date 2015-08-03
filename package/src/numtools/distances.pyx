@@ -50,6 +50,7 @@ cdef extern from "calc_distances.h":
     void _calc_torsion_triclinic(coordinate* atom1, coordinate* atom2, coordinate* atom3, coordinate* atom4, int numatom, coordinate* box, double* angles)
     void _ortho_pbc(coordinate* coords, int numcoords, float* box, float* box_inverse)
     void _triclinic_pbc(coordinate* coords, int numcoords, coordinate* box, float* box_inverse)
+    void minimum_image(double *x, float *box, float *inverse_box)
 
 def calc_distance_array(c_numpy.ndarray ref, c_numpy.ndarray conf,
                         c_numpy.ndarray result):
@@ -268,7 +269,7 @@ def contact_matrix_no_pbc(coord, sparse_contacts, cutoff, progress_meter_freq, q
 
     for i in range(rows):
         if not quiet and (i % progress_meter_freq == 0):
-            print("{:.2d}".format(100.0 * i / rows))
+            print("{:.2f}".format(100.0 * i / rows))
         for j in range(rows):
             x = xyz[i, 0] - xyz[j, 0]
             y = xyz[i, 1] - xyz[j, 1]
@@ -276,3 +277,37 @@ def contact_matrix_no_pbc(coord, sparse_contacts, cutoff, progress_meter_freq, q
             dist = x**2 + y**2 + z**2
             if dist >= 0 and dist < cutoff2:
                 sparse_contacts[i, j] = True
+
+
+@cython.boundscheck(False)
+def contact_matrix_pbc(coord, sparse_contacts, box, cutoff, progress_meter_freq, quiet):
+    cdef int rows = len(coord)
+    cdef double cutoff2 = cutoff ** 2
+    cdef int i, j
+    cdef double x,y,z, dist
+    cdef float[:, ::1] xyz = coord
+    cdef float[::1] box_view = box
+    cdef float[::1] box_half = box / 2.
+
+    for i in range(rows):
+        if not quiet and (i % progress_meter_freq == 0):
+            print("{:.2f}".format(100.0 * i / rows))
+        for j in range(i, rows):
+            x = xyz[i, 0] - xyz[j, 0]
+            y = xyz[i, 1] - xyz[j, 1]
+            z = xyz[i, 2] - xyz[j, 2]
+
+            if abs(x) > box_half[0]:
+                x = x+box_view[0] if x<0.0 else x-box_view[0]
+
+            if abs(y) > box_half[1]:
+                y = y+box_view[1] if y<0.0 else y-box_view[1]
+
+            if abs(z) > box_half[2]:
+                z = z+box_view[2] if z<0.0 else z-box_view[2]
+
+            dist = x**2 + y**2 + z**2
+
+            if dist >= 0 and dist < cutoff2:
+                sparse_contacts[i, j] = True
+                sparse_contacts[j, i] = True
