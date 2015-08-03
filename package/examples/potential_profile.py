@@ -21,7 +21,7 @@ numbins = int((zmax - zmin) / binwidth)
 
 # setting the charges for the atoms
 charge_dist = None
-charges = universe.atoms.charges()
+charges = universe.atoms.charges
 
 # setting the skip for the traj
 universe.trajectory.skip = 10

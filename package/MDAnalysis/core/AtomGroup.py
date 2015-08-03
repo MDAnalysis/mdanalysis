@@ -121,13 +121,8 @@ lists. For instance, many MD codes number residues consecutively starting from
 N-terminus. Let's say that the first residue is really residue 10. In order to
 store the canonical residue IDs ("resnum") one could the use ::
 
-  import numpy as np
   protein = u.selectAtoms("protein").residues
-  protein.set_resnum(np.array(protein.resnums()) + 9)
-
-.. TODO: correct this example when resnums has become a property that returns a np array
-..  protein = u.selectAtoms("protein").residues
-..  protein.set_resnum(protein.resnums + 9)
+  protein.set_resnum(protein.resnums + 9)
 
 One can then use ``protein.select("resnum 42")`` to select the residue that has
 the canonical residue id 42 (instead of ``resid 33``).
@@ -135,7 +130,7 @@ the canonical residue id 42 (instead of ``resid 33``).
 One can also read the resids directly from  an original PDB file::
 
   orig = MDAnalysis.Universe("2jln.pdb")
-  protein.set_resnum(orig.selectAtoms("protein").resids())
+  protein.set_resnum(orig.selectAtoms("protein").resids)
 
 
 Working with Topologies
@@ -247,7 +242,7 @@ AdK molecule and then translate and rotate the second copy::
 
     p1.set_segid("A")
     p2.set_segid("B")
-    p2.residues.set_resid(p2.residues.resids() + p1.residues.resids()[-1])  # increment resids for p2 with the last
+    p2.residues.set_resid(p2.residues.resids + p1.residues.resids[-1])  # increment resids for p2 with the last
     resid from p1
 
     # you must regenerate the selections after modifying them (see notes in the docs!)
@@ -288,9 +283,9 @@ Classes and functions
 .. autoclass:: Atom
    :members:
 
-   .. attribute::     number
+   .. attribute::     index
 
-      atom number
+      atom index
 
    .. attribute::     segid
 
@@ -422,6 +417,26 @@ from ..lib.util import cached
 logger = logging.getLogger("MDAnalysis.core.AtomGroup")
 
 
+# Constant to translate the name of an Atom's property
+# to the plural version, as found in AtomGroup
+_PLURAL_PROPERTIES = {'index': 'indices',
+                      'name': 'names',
+                      'type': 'types',
+                      'resname': 'resnames',
+                      'resid': 'resids',
+                      'segid': 'segids',
+                      'mass': 'masses',
+                      'charge': 'charges',
+                      'radius': 'radii',
+                      'bfactor': 'bfactors',
+                      'resnum': 'resnums',
+                      'altLoc': 'altLocs',
+                      'serial': 'serials'}
+# And the return route
+_SINGULAR_PROPERTIES = {v: k for k, v in _PLURAL_PROPERTIES.items()}
+
+
+
 class Atom(object):
     """A class representing a single atom.
 
@@ -446,18 +461,19 @@ class Atom(object):
        Changed bonds angles torsions impropers to be a managed property
     .. versionchanged 0.11.0
        Changed references to :class:`Universe` to be weak.
+       Renamed atom.number to atom.index
     """
 
     __slots__ = (
-        "number", "id", "name", "type", "resname", "resid", "segid",
+        "index", "id", "name", "type", "resname", "resid", "segid",
         "mass", "charge", "residue", "segment",
         "_universe",
         "radius", "bfactor", "resnum", "serial", "altLoc")
 
-    def __init__(self, number, name, type, resname, resid, segid, mass, charge,
+    def __init__(self, index, name, type, resname, resid, segid, mass, charge,
                  residue=None, segment=None, radius=None, bfactor=None,
                  resnum=None, serial=None, altLoc=None, universe=None):
-        self.number = number
+        self.index = index
         self.name = name
         self.altLoc = altLoc
         self.type = str(type)  # always a string (needed for selections)
@@ -482,19 +498,19 @@ class Atom(object):
     def __repr__(self):
         return ("<Atom {idx}: {name} of type {t} of resname {rname}, "
                 "resid {rid} and segid {sid}{altloc}>".format(
-                    idx=self.number + 1, name=self.name, t=self.type,
+                    idx=self.index + 1, name=self.name, t=self.type,
                     rname=self.resname, rid=self.resid, sid=self.segid,
                     altloc="" if not self.altLoc
                     else " and altloc {0}".format(self.altLoc)))
 
     def __cmp__(self, other):
-        return cmp(self.number, other.number)
+        return cmp(self.index, other.index)
 
     def __eq__(self, other):
-        return self.number == other.number
+        return self.index == other.index
 
     def __hash__(self):
-        return hash(self.number)
+        return hash(self.index)
 
     def __add__(self, other):
         if not (isinstance(other, Atom) or isinstance(other, AtomGroup)):
@@ -504,6 +520,11 @@ class Atom(object):
             return AtomGroup([self, other])
         else:
             return AtomGroup([self] + other._atoms)
+
+    @property
+    def number(self):
+        """The index of this atom"""
+        return self.index
 
     @property
     def pos(self):
@@ -524,7 +545,7 @@ class Atom(object):
 
         :Returns: a (3,) shape numpy array
         """
-        return self.universe.coord.positions[self.number]  # internal numbering starts at 0
+        return self.universe.coord.positions[self.index]  # internal numbering starts at 0
 
     @position.setter
     def position(self, coords):
@@ -533,7 +554,7 @@ class Atom(object):
         @param coords: a 1x3 numpy array of {x,y,z} coordinates, or optionally
             a single scalar if you should want to set all coordinates to the same value.
         """
-        self.universe.coord.positions[self.number, :] = coords  # internal numbering starts at 0
+        self.universe.coord.positions[self.index, :] = coords  # internal numbering starts at 0
 
     @property
     def velocity(self):
@@ -549,7 +570,7 @@ class Atom(object):
         # TODO: Remove error checking here (and all similar below)
         # and add to Timestep
         try:
-            return self.universe.coord.velocities[self.number]
+            return self.universe.coord.velocities[self.index]
         except (AttributeError, NoDataError):
             raise NoDataError("Timestep does not contain velocities")
 
@@ -563,7 +584,7 @@ class Atom(object):
         .. versionadded:: 0.9.2
         """
         try:
-            self.universe.coord.velocities[self.number] = vals
+            self.universe.coord.velocities[self.index] = vals
         except (AttributeError, NoDataError):
             raise NoDataError("Timestep does not contain velocities")
 
@@ -579,7 +600,7 @@ class Atom(object):
         .. versionadded:: 0.9.2
         """
         try:
-            return self.universe.coord.forces[self.number]
+            return self.universe.coord.forces[self.index]
         except (AttributeError, NoDataError):
             raise NoDataError("Timestep does not contain forces")
 
@@ -590,7 +611,7 @@ class Atom(object):
         .. versionadded:: 0.9.2
         """
         try:
-            self.universe.coord.forces[self.number] = vals
+            self.universe.coord.forces[self.index] = vals
         except (AttributeError, NoDataError):
             raise NoDataError("Timestep does not contain forces")
 
@@ -607,7 +628,7 @@ class Atom(object):
             return self._universe()
         else:
             raise AttributeError(
-                "Atom {0} is not assigned to a Universe".format(self.number))
+                "Atom {0} is not assigned to a Universe".format(self.index))
 
     @universe.setter
     def universe(self, universe):
@@ -770,6 +791,9 @@ class AtomGroup(object):
     .. versionchanged:: 0.11.0
        AtomGroups can now be picled and unpickled provided compatible Universes
        are available.
+       The follow methods were changed to properties: indices, masses, charges, names,
+       types, radii, resids, resnames, resnums, segids
+       Added altLocs and serials properties and setters
     """
     # for generalized __getitem__ __iter__ and __len__
     # (override _containername for ResidueGroup and SegmentGroup)
@@ -848,13 +872,13 @@ class AtomGroup(object):
                 pass
         # Call each in turn to force them to build into cache
         # indices
-        self._cache['indices'] = self.indices()
+        self._cache['indices'] = self.indices
         # residue instances
         self._cache['residues'] = self.residues
         # segment instances
         self._cache['segments'] = self.segments
         # masses
-        self._cache['masses'] = self.masses()
+        self._cache['masses'] = self.masses
         # bonds angles torsions impropers
         self._cache['bonds'] = self.bonds
         self._cache['angles'] = self.angles
@@ -1013,7 +1037,7 @@ class AtomGroup(object):
             fname = self.universe.trajectory.filenames
         except AttributeError:
             fname = self.universe.trajectory.filename
-        return (self.indices(), self.universe.anchor_name, len(self.universe.atoms),
+        return (self.indices, self.universe.anchor_name, len(self.universe.atoms),
                 self.universe.filename, fname)
 
     def __setstate__(self, state):
@@ -1046,42 +1070,134 @@ class AtomGroup(object):
         """Total number of segments in the group"""
         return len(self.segments)
 
+    @property
     @cached('indices')
     def indices(self):
-        """Array of all :attr:`Atom.number` in the group.
+        """Array of all :attr:`Atom.index` in the group.
 
         These indices are 0-based and can be used to directly index
         :attr:`Universe.atoms` or the coordinate array
         :attr:`MDAnalysis.coordinates.base.Timestep.positions`.
-        """
-        return numpy.array([atom.number for atom in self._atoms])
 
+        .. Note::
+           This property is read only
+
+        .. versionchanged:: 0.11.0
+           Now a property
+        """
+        return numpy.array([atom.index for atom in self._atoms])
+
+    @property
+    @cached('masses')
+    def masses(self):
+        """Array of atomic masses (as defined in the topology)
+
+        .. versionchanged:: 0.11.0
+           Now a property
+        """
+        return numpy.array([atom.mass for atom in self._atoms])
+
+    @masses.setter
+    def masses(self, new):
+        self._clear_caches('masses')
+        self.set_mass(new)
+
+    def totalMass(self):
+        """Total mass of the selection (masses are taken from the topology or guessed)."""
+        return numpy.sum(self.masses, axis=0)
+
+    @property
+    def charges(self):
+        """Array of partial charges of the atoms (as defined in the topology)
+
+        .. versionchanged:: 0.11.0
+           Now a property
+        """
+        return numpy.array([atom.charge for atom in self._atoms])
+
+    @charges.setter
+    def charges(self, new):
+        self.set_charge(new)
+
+    def totalCharge(self):
+        """Sum of all partial charges (must be defined in topology)."""
+        return numpy.sum(self.charges, axis=0)
+
+    @property
     def names(self):
         """Returns a list of atom names.
 
         .. versionchanged:: 0.8
            Returns a :class:`numpy.ndarray`
+        .. versionchanged:: 0.11.0
+           Now a property
         """
         return numpy.array([a.name for a in self._atoms])
 
+    @names.setter
+    def names(self, new):
+        self.set_name(new)
+
+    @property
     def types(self):
         """Returns an array of atom types.
 
-        .. versionadded 0.9.0
+        .. versionadded:: 0.9.0
+        .. versionchanged:: 0.11.0
+           Now a property
         """
         return numpy.array([a.type for a in self._atoms])
 
+    @types.setter
+    def types(self, new):
+        self.set_type(new)
+
     @property
-    @cached('fragments')
-    def fragments(self):
-        """Read-only list of fragments.
+    def radii(self):
+        """Array of atomic radii (as defined in the PQR file)
 
-        Contains all fragments that any Atom in this AtomGroup is part of, the contents of
-        the fragments may extend beyond the contents of this AtomGroup.
-
-        .. versionadded 0.9.0
+        .. versionchanged:: 0.11.0
+           Now a property
         """
-        return tuple(set(a.fragment for a in self._atoms))
+        return numpy.array([atom.radius for atom in self._atoms])
+
+    @radii.setter
+    def radii(self, new):
+        self.set_radius(new)
+
+    @property
+    def bfactors(self):
+        """Crystallographic B-factors (from PDB) in A**2.
+        """
+        return numpy.array([atom.bfactor for atom in self._atoms])
+
+    @bfactors.setter
+    def bfactors(self, new):
+        self.set_bfactor(new)
+
+    @property
+    def altLocs(self):
+        """numpy array of the altLocs for all atoms in this group
+
+        .. versionadded:: 0.11.0
+        """
+        return numpy.array([atom.altLoc for atom in self._atoms])
+
+    @altLocs.setter
+    def altLocs(self, new):
+        self.set_altloc(new)
+
+    @property
+    def serials(self):
+        """numpy array of the serials for all atoms in this group
+
+        .. versionadded:: 0.11.0
+        """
+        return numpy.array([atom.serial for atom in self._atoms])
+
+    @serials.setter
+    def serials(self, new):
+        self.set_serial(new)
 
     @property
     @cached('residues')
@@ -1105,30 +1221,88 @@ class AtomGroup(object):
             current_residue = atom.residue
         return ResidueGroup(residues)
 
+    @property
+    @cached('segments')
+    def segments(self):
+        """Read-only list of :class:`Segment` objects.
+
+        A :class:`SegmentGroup` of all segments that contain atoms in this group.
+
+        .. versionchanged:: 0.9.0
+           Now strictly returns a :class:`SegmentGroup` of a set of
+           the :class:`Segment` instances from this :class:`AtomGroup`
+
+        """
+        segments = []
+        seen_segments = set()
+        current_segment = None
+        for atom in self._atoms:
+            if atom.segment != current_segment and not atom.segment in seen_segments:
+                segments.append(atom.segment)
+                seen_segments.add(atom.segment)
+            current_segment = atom.segment
+        return SegmentGroup(segments)
+
+    @property
     def resids(self):
         """Returns a list of residue numbers.
 
         .. versionchanged:: 0.8
            Returns a :class:`numpy.ndarray`
+        .. versionchanged:: 0.11.0
+           Now a property
         """
         return numpy.array([r.id for r in self.residues])
 
+    @resids.setter
+    def resids(self, new):
+        self.set_resid(new)
+
+    @property
     def resnames(self):
         """Returns a list of residue names.
 
         .. versionchanged:: 0.8
            Returns a :class:`numpy.ndarray`
+        .. versionchanged:: 0.11.0
+           Now a property
         """
         return numpy.array([r.name for r in self.residues])
 
+    @resnames.setter
+    def resnames(self, new):
+        self.set_resname(new)
+
+    @property
     def resnums(self):
         """Returns a list of canonical residue numbers.
 
         .. versionadded:: 0.7.4
         .. versionchanged:: 0.8
            Returns a :class:`numpy.ndarray`
+        .. versionchanged:: 0.11.0
+           Now a property
         """
         return numpy.array([r.resnum for r in self.residues])
+
+    @resnums.setter
+    def resnums(self, new):
+        self.set_resnum(new)
+
+    @property
+    def segids(self):
+        """Returns a list of segment ids (=segment names).
+
+        .. versionchanged:: 0.8
+           Returns a :class:`numpy.ndarray`
+        .. versionchanged:: 0.11.0
+           Now a property
+        """
+        return numpy.array([s.name for s in self.segments])
+
+    @segids.setter
+    def segids(self, new):
+        self.set_segid(new)
 
     def sequence(self, **kwargs):
         """Returns the amino acid sequence.
@@ -1211,7 +1385,7 @@ class AtomGroup(object):
             raise TypeError("Unknown format='{0}': must be one of: {1}".format(
                     format, ", ".join(formats)))
         try:
-            sequence = "".join([util.convert_aa_code(r) for r in self.resnames()])
+            sequence = "".join([util.convert_aa_code(r) for r in self.resnames])
         except KeyError as err:
             raise ValueError("AtomGroup contains a residue name '{0}' that "
                              "does not have a IUPAC protein 1-letter "
@@ -1224,34 +1398,16 @@ class AtomGroup(object):
         return Bio.SeqRecord.SeqRecord(seq, **kwargs)
 
     @property
-    @cached('segments')
-    def segments(self):
-        """Read-only list of :class:`Segment` objects.
+    @cached('fragments')
+    def fragments(self):
+        """Read-only list of fragments.
 
-        A :class:`SegmentGroup` of all segments that contain atoms in this group.
+        Contains all fragments that any Atom in this AtomGroup is part of, the contents of
+        the fragments may extend beyond the contents of this AtomGroup.
 
-        .. versionchanged:: 0.9.0
-           Now strictly returns a :class:`SegmentGroup` of a set of
-           the :class:`Segment` instances from this :class:`AtomGroup`
-
+        .. versionadded 0.9.0
         """
-        segments = []
-        seen_segments = set()
-        current_segment = None
-        for atom in self._atoms:
-            if atom.segment != current_segment and not atom.segment in seen_segments:
-                segments.append(atom.segment)
-                seen_segments.add(atom.segment)
-            current_segment = atom.segment
-        return SegmentGroup(segments)
-
-    def segids(self):
-        """Returns a list of segment ids (=segment names).
-
-        .. versionchanged:: 0.8
-           Returns a :class:`numpy.ndarray`
-        """
-        return numpy.array([s.name for s in self.segments])
+        return tuple(set(a.fragment for a in self._atoms))
 
     def guess_bonds(self, vdwradii=None):
         """Guess all the bonds that exist within this AtomGroup and add to Universe.
@@ -1374,33 +1530,6 @@ class AtomGroup(object):
         mybonds = [b for a in self._atoms for b in a.impropers]
 
         return TopologyGroup(mybonds)
-
-    @cached('masses')
-    def masses(self):
-        """Array of atomic masses (as defined in the topology)"""
-        return numpy.array([atom.mass for atom in self._atoms])
-
-    def totalMass(self):
-        """Total mass of the selection (masses are taken from the topology or guessed)."""
-        return numpy.sum(self.masses(), axis=0)
-
-    def charges(self):
-        """Array of partial charges of the atoms (as defined in the topology)"""
-        return numpy.array([atom.charge for atom in self._atoms])
-
-    def totalCharge(self):
-        """Sum of all partial charges (must be defined in topology)."""
-        return numpy.sum(self.charges(), axis=0)
-
-    def radii(self):
-        """Array of atomic radii (as defined in the PQR file)"""
-        return numpy.array([atom.radius for atom in self._atoms])
-
-    @property
-    def bfactors(self):
-        """Crystallographic B-factors (from PDB) in A**2.
-        """
-        return numpy.array([atom.bfactor for atom in self._atoms])
 
     def _set_attribute(self, groupname, name, value, **kwargs):
         """Set attribute *name* to *value* for all elements in *groupname*.
@@ -1650,6 +1779,26 @@ class AtomGroup(object):
         """
         self.set("bfactor", bfactor, conversion=float)
 
+    def set_altLoc(self, altLoc):
+        """Set the altLoc of atoms in this group
+
+        This can apply a single value to all atoms, or a series of
+        values to each atom
+
+        .. versionadded:: 0.11.0
+        """
+        self.set("altLoc", altLoc, conversion=str)
+
+    def set_serial(self, serial):
+        """Set the serial of atoms in this group
+
+        This can apply a single value to all atoms, or a series of
+        values to each atom
+
+        .. versionadded:: 0.11.0
+        """
+        self.set("serial", serial, conversion=int)
+
     def centerOfGeometry(self, **kwargs):
         """Center of geometry (also known as centroid) of the selection.
 
@@ -1667,7 +1816,7 @@ class AtomGroup(object):
         if pbc:
             return numpy.sum(self.packIntoBox(inplace=False), axis=0) / self.numberOfAtoms()
         else:
-            return numpy.sum(self.coordinates(), axis=0) / self.numberOfAtoms()
+            return numpy.sum(self.positions, axis=0) / self.numberOfAtoms()
 
     centroid = centerOfGeometry
 
@@ -1686,10 +1835,10 @@ class AtomGroup(object):
         """
         pbc = kwargs.pop('pbc', MDAnalysis.core.flags['use_pbc'])
         if pbc:
-            return numpy.sum(self.packIntoBox(inplace=False) * self.masses()[:, numpy.newaxis],
+            return numpy.sum(self.packIntoBox(inplace=False) * self.masses[:, numpy.newaxis],
                              axis=0) / self.totalMass()
         else:
-            return numpy.sum(self.coordinates() * self.masses()[:, numpy.newaxis], axis=0) / self.totalMass()
+            return numpy.sum(self.positions * self.masses[:, numpy.newaxis], axis=0) / self.totalMass()
 
     def radiusOfGyration(self, **kwargs):
         """Radius of gyration.
@@ -1705,11 +1854,11 @@ class AtomGroup(object):
         .. versionchanged:: 0.8 Added *pbc* keyword
         """
         pbc = kwargs.pop('pbc', MDAnalysis.core.flags['use_pbc'])
-        masses = self.masses()
+        masses = self.masses
         if pbc:
             recenteredpos = self.packIntoBox(inplace=False) - self.centerOfMass(pbc=True)
         else:
-            recenteredpos = self.coordinates() - self.centerOfMass(pbc=False)
+            recenteredpos = self.positions - self.centerOfMass(pbc=False)
         rog_sq = numpy.sum(masses * numpy.sum(numpy.power(recenteredpos, 2), axis=1)) / self.totalMass()
         return numpy.sqrt(rog_sq)
 
@@ -1730,11 +1879,11 @@ class AtomGroup(object):
         .. versionchanged:: 0.8 Added *pbc* keyword
         """
         pbc = kwargs.pop('pbc', MDAnalysis.core.flags['use_pbc'])
-        masses = self.masses()
+        masses = self.masses
         if pbc:
             recenteredpos = self.packIntoBox(inplace=False) - self.centerOfMass(pbc=True)
         else:
-            recenteredpos = self.coordinates() - self.centerOfMass(pbc=False)
+            recenteredpos = self.positions - self.centerOfMass(pbc=False)
         tensor = numpy.zeros((3, 3))
         for x in xrange(recenteredpos.shape[0]):
             tensor += masses[x] * numpy.outer(recenteredpos[x, :],
@@ -1761,11 +1910,11 @@ class AtomGroup(object):
         .. versionchanged:: 0.8 Added *pbc* keyword
         """
         pbc = kwargs.pop('pbc', MDAnalysis.core.flags['use_pbc'])
-        masses = self.masses()
+        masses = self.masses
         if pbc:
             recenteredpos = self.packIntoBox(inplace=False) - self.centerOfMass(pbc=True)
         else:
-            recenteredpos = self.coordinates() - self.centerOfMass(pbc=False)
+            recenteredpos = self.positions - self.centerOfMass(pbc=False)
         tensor = numpy.zeros((3, 3))
         for x in xrange(recenteredpos.shape[0]):
             tensor += masses[x] * numpy.outer(recenteredpos[x, :],
@@ -1794,9 +1943,9 @@ class AtomGroup(object):
         if pbc:
             pos = self.packIntoBox(inplace=False) - self.centerOfMass(pbc=True)
         else:
-            pos = self.coordinates() - self.centerOfMass(pbc=False)
+            pos = self.positions - self.centerOfMass(pbc=False)
 
-        masses = self.masses()
+        masses = self.masses
         # Create the inertia tensor
         # m_i = mass of atom i
         # (x_i, y_i, z_i) = pos of atom i
@@ -2042,7 +2191,7 @@ class AtomGroup(object):
         """
         if ts is None:
             ts = self.universe.trajectory.ts
-        return numpy.array(ts.positions[self.indices()], copy=copy, dtype=dtype)
+        return numpy.array(ts.positions[self.indices], copy=copy, dtype=dtype)
 
     coordinates = get_positions
     """NumPy array of the coordinates.
@@ -2082,7 +2231,7 @@ class AtomGroup(object):
         """
         if ts is None:
             ts = self.universe.trajectory.ts
-        ts.positions[self.indices(), :] = coords
+        ts.positions[self.indices, :] = coords
 
     positions = property(get_positions, set_positions,
                          doc="""
@@ -2113,7 +2262,7 @@ class AtomGroup(object):
         if ts is None:
             ts = self.universe.trajectory.ts
         try:
-            return numpy.array(ts.velocities[self.indices()], copy=copy, dtype=dtype)
+            return numpy.array(ts.velocities[self.indices], copy=copy, dtype=dtype)
         except (AttributeError, NoDataError):
             raise NoDataError("Timestep does not contain velocities")
 
@@ -2132,7 +2281,7 @@ class AtomGroup(object):
         if ts is None:
             ts = self.universe.trajectory.ts
         try:
-            ts.velocities[self.indices(), :] = v
+            ts.velocities[self.indices, :] = v
         except AttributeError:
             raise NoDataError("Timestep does not contain velocities")
 
@@ -2184,7 +2333,7 @@ class AtomGroup(object):
         if ts is None:
             ts = self.universe.trajectory.ts
         try:
-            return numpy.array(ts.forces[self.indices()], copy=copy, dtype=dtype)
+            return numpy.array(ts.forces[self.indices], copy=copy, dtype=dtype)
         except (AttributeError, NoDataError):
             raise NoDataError("Timestep does not contain forces")
 
@@ -2216,7 +2365,7 @@ class AtomGroup(object):
         if ts is None:
             ts = self.universe.trajectory.ts
         try:
-            ts.forces[self.indices(), :] = forces
+            ts.forces[self.indices, :] = forces
         except AttributeError:
             raise NoDataError("Timestep does not contain forces")
 
@@ -2254,7 +2403,7 @@ class AtomGroup(object):
         t = M[:3, 3]
         # changes the coordinates (in place)
         x = self.universe.trajectory.ts.positions
-        idx = self.indices()
+        idx = self.indices
         x[idx] = numpy.dot(x[idx], R.T)
         x[idx] += t
         return R
@@ -2286,7 +2435,7 @@ class AtomGroup(object):
         except (ValueError, AttributeError):
             vector = numpy.asarray(t)
         # changes the coordinates (in place)
-        self.universe.trajectory.ts.positions[self.indices()] += vector
+        self.universe.trajectory.ts.positions[self.indices] += vector
         return vector
 
     def rotate(self, R):
@@ -2304,7 +2453,7 @@ class AtomGroup(object):
         R = numpy.matrix(R, copy=False, dtype=numpy.float32)
         # changes the coordinates (in place)
         x = self.universe.trajectory.ts.positions
-        idx = self.indices()
+        idx = self.indices
         x[idx] = x[idx] * R.T  # R.T acts to the left & is broadcasted N times.
         return R
 
@@ -2431,13 +2580,13 @@ class AtomGroup(object):
                 raise ValueError("One or more box dimensions is zero."
                                  "  You can specify a boxsize with 'box='")
 
-        coords = self.universe.coord.positions[self.indices()]
+        coords = self.universe.coord.positions[self.indices]
         if not inplace:
             return distances.applyPBC(coords, box)
 
-        self.universe.coord.positions[self.indices()] = distances.applyPBC(coords, box)
+        self.universe.coord.positions[self.indices] = distances.applyPBC(coords, box)
 
-        return self.universe.coord.positions[self.indices()]
+        return self.universe.coord.positions[self.indices]
 
     def wrap(self, compound="atoms", center="com", box=None):
         """Shift the contents of this AtomGroup back into the unit cell.
@@ -2561,7 +2710,7 @@ class AtomGroup(object):
 
         # more complicated groupings
         try:
-            # use own list comprehension to avoid sorting/compression by eg self.resids()
+            # use own list comprehension to avoid sorting/compression by eg self.resids
             ids = numpy.array([getattr(atom, accessors[level]) for atom in self])
         except KeyError:
             raise ValueError("level = '{0}' not supported, must be one of {1}".format(
@@ -2691,7 +2840,6 @@ class AtomGroup(object):
         writer = SelectionWriter(filename, **kwargs)
         writer.write(self.atoms)  # wants a atomgroup
 
-    # properties
     @property
     def dimensions(self):
         """Dimensions of the Universe to which the group belongs, at the current time step."""
@@ -2728,7 +2876,7 @@ class AtomGroup(object):
 
         if self._ts is None or self._ts.frame != trj_ts.frame:
             # create a timestep of same type as the underlying trajectory
-            self._ts = trj_ts.copy_slice(self.indices())
+            self._ts = trj_ts.copy_slice(self.indices)
         return self._ts
 
 
@@ -4329,7 +4477,7 @@ def Merge(*args):
         a.universe = u
     # adjust the atom numbering
     for i, a in enumerate(atoms):
-        a.number = i
+        a.index = i
         a.serial = i + 1
     u.atoms = AtomGroup(atoms)
     # adjust the residue and segment numbering (removes any remaining references to the old universe)

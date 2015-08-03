@@ -714,7 +714,7 @@ class ContactAnalysis1(object):
         """Plot :attr:`ContactAnalysis1.qavg`, the matrix of average native contacts."""
         from pylab import pcolor, gca, meshgrid, xlabel, ylabel, xlim, ylim, colorbar, savefig
 
-        x, y = self.selections[0].resids(), self.selections[1].resids()
+        x, y = self.selections[0].resids, self.selections[1].resids
         X, Y = meshgrid(x, y)
 
         pcolor(X, Y, self.qavg.T, **kwargs)
@@ -742,7 +742,7 @@ class ContactAnalysis1(object):
         """
         from pylab import imshow, xlabel, ylabel, xlim, ylim, colorbar, cm, clf, savefig
 
-        x, y = self.selections[0].resids(), self.selections[1].resids()
+        x, y = self.selections[0].resids, self.selections[1].resids
 
         kwargs['origin'] = 'lower'
         kwargs.setdefault('aspect', 'equal')

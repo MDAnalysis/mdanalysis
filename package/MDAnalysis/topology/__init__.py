@@ -134,7 +134,7 @@ trajectory. This includes
 
 * identity of atoms (name, type, number, partial charge, ...) and to
   which residue and segment they belong; atoms are identified in
-  MDAnalysis by their :attr:`~MDAnalysis.core.AtomGroup.Atom.number`,
+  MDAnalysis by their :attr:`~MDAnalysis.core.AtomGroup.Atom.index`,
   an integer number starting at 0 and incremented in the order of
   atoms found in the topology.
 
@@ -186,7 +186,7 @@ with the data read from the topology file.
 
 The order of atoms in the list must correspond to the sequence of
 atoms in the topology file. The atom's
-:attr:`~MDAnalysis.core.AtomGroup.Atom.number` corresponds to its
+:attr:`~MDAnalysis.core.AtomGroup.Atom.index` corresponds to its
 index in this list.
 
 

@@ -323,7 +323,7 @@ class RMSD(object):
                                  "the same number of atoms: N_ref=%d, N_traj=%d" %
                                  (len(self.ref_atoms), len(self.traj_atoms)))
         logger.info("RMS calculation for %d atoms." % len(self.ref_atoms))
-        mass_mismatches = (numpy.absolute(self.ref_atoms.masses() - self.traj_atoms.masses()) > self.tol_mass)
+        mass_mismatches = (numpy.absolute(self.ref_atoms.masses - self.traj_atoms.masses) > self.tol_mass)
         if numpy.any(mass_mismatches):
             # diagnostic output:
             logger.error("Atoms: reference | trajectory")
@@ -392,7 +392,7 @@ class RMSD(object):
 
         if mass_weighted:
             # if performing a mass-weighted alignment/rmsd calculation
-            weight = self.ref_atoms.masses() / self.ref_atoms.masses().mean()
+            weight = self.ref_atoms.masses / self.ref_atoms.masses.mean()
         else:
             weight = None
 

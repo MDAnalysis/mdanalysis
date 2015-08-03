@@ -47,7 +47,7 @@ class SelectionWriter(base.SelectionWriter):
     def _translate(self, atoms, **kwargs):
         # PyMol index is 1-based
         def _index(atom):
-            return "index %d" % (atom.number + 1)
+            return "index %d" % (atom.index + 1)
 
         return base.join(atoms, ' |', _index)
 

@@ -26,11 +26,11 @@ import numpy as np
 
 
 def capping(ref, ace, nma, output):
-    resids = ref.selectAtoms("all").resids()
+    resids = ref.selectAtoms("all").resids
     resid_min, resid_max = min(resids), max(resids)
 
     for a in ace.atoms:
-        a.resid += resid_min - max(ace.atoms.resids())
+        a.resid += resid_min - max(ace.atoms.resids)
     for a in nma.atoms:
         a.resid = resid_max
 

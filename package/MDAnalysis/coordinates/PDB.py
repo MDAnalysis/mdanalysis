@@ -872,15 +872,15 @@ class PrimitivePDBWriter(base.Writer):
 
         [[bonds.add(b) for b in a.bonds] for a in self.obj.atoms]
 
-        atoms = set([a.number for a in self.obj.atoms])
+        atoms = set([a.index for a in self.obj.atoms])
 
-        mapping = dict([(atom.number, i) for i, atom in enumerate(self.obj.atoms)])
+        mapping = dict([(atom.index, i) for i, atom in enumerate(self.obj.atoms)])
 
         # Write out only the bonds that were defined in CONECT records
         if self.bonds == "conect":
-            bonds = [(bond[0].number, bond[1].number) for bond in bonds if not bond.is_guessed]
+            bonds = [(bond[0].index, bond[1].index) for bond in bonds if not bond.is_guessed]
         elif self.bonds == "all":
-            bonds = [(bond[0].number, bond[1].number) for bond in bonds]
+            bonds = [(bond[0].index, bond[1].index) for bond in bonds]
         else:
             raise ValueError("bonds has to be either None, 'conect' or 'all'")
         con = {}
@@ -896,7 +896,7 @@ class PrimitivePDBWriter(base.Writer):
             con[a1].append(a2)
 
         #print con
-        atoms = sorted([a.number for a in self.obj.atoms])
+        atoms = sorted([a.index for a in self.obj.atoms])
 
         conect = [([a, ] + sorted(con[a])) for a in atoms if a in con]
 
@@ -1078,7 +1078,7 @@ class PrimitivePDBWriter(base.Writer):
             coor = ts._pos
 
         if hasattr(self.obj, "indices"):
-            coor = coor[self.obj.indices()]
+            coor = coor[self.obj.indices]
 
         if len(atoms) != len(coor):
             raise ValueError(

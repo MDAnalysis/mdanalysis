@@ -299,7 +299,7 @@ class Timestep(object):
 
            return an array of coordinates, where start, stop and skip
            correspond to atom indices,
-           :attr:`MDAnalysis.core.AtomGroup.Atom.number` (0-based)
+           :attr:`MDAnalysis.core.AtomGroup.Atom.index` (0-based)
         """
         if isinstance(atoms, int):
             return self._pos[atoms]
