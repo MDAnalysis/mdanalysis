@@ -259,7 +259,7 @@ def triclinic_pbc(c_numpy.ndarray coords,
 
 
 @cython.boundscheck(False)
-def contact_matrix_no_pbc(coord, sparse_con, cutoff, progress_meter_freq, quiet):
+def contact_matrix_no_pbc(coord, sparse_contacts, cutoff, progress_meter_freq, quiet):
     cdef int rows = len(coord)
     cdef double cutoff2 = cutoff ** 2
     cdef int i, j
@@ -271,8 +271,8 @@ def contact_matrix_no_pbc(coord, sparse_con, cutoff, progress_meter_freq, quiet)
             print("{:.2d}".format(100.0 * i / rows))
         for j in range(rows):
             x = xyz[i, 0] - xyz[j, 0]
-            y = xyz[i, 2] - xyz[j, 1]
-            z = xyz[i, 1] - xyz[j, 2]
+            y = xyz[i, 1] - xyz[j, 1]
+            z = xyz[i, 2] - xyz[j, 2]
             dist = x**2 + y**2 + z**2
             if dist >= 0 and dist < cutoff2:
-                sparse_con[i, j] = True
+                sparse_contacts[i, j] = True
