@@ -260,7 +260,7 @@ def triclinic_pbc(c_numpy.ndarray coords,
 
 
 @cython.boundscheck(False)
-def contact_matrix_no_pbc(coord, sparse_contacts, cutoff, progress_meter_freq, quiet):
+def contact_matrix_no_pbc(coord, sparse_contacts, cutoff):
     cdef int rows = len(coord)
     cdef double cutoff2 = cutoff ** 2
     cdef int i, j
@@ -268,8 +268,6 @@ def contact_matrix_no_pbc(coord, sparse_contacts, cutoff, progress_meter_freq, q
     cdef float[:, ::1] xyz = coord
 
     for i in range(rows):
-        if not quiet and (i % progress_meter_freq == 0):
-            print("{:.2f}".format(100.0 * i / rows))
         sparse_contacts[i, i] = True
         for j in range(i+1, rows):
             x = xyz[i, 0] - xyz[j, 0]
@@ -282,7 +280,7 @@ def contact_matrix_no_pbc(coord, sparse_contacts, cutoff, progress_meter_freq, q
 
 
 @cython.boundscheck(False)
-def contact_matrix_pbc(coord, sparse_contacts, box, cutoff, progress_meter_freq, quiet):
+def contact_matrix_pbc(coord, sparse_contacts, box, cutoff):
     cdef int rows = len(coord)
     cdef double cutoff2 = cutoff ** 2
     cdef int i, j
@@ -292,8 +290,6 @@ def contact_matrix_pbc(coord, sparse_contacts, box, cutoff, progress_meter_freq,
     cdef float[::1] box_half = box / 2.
 
     for i in range(rows):
-        if not quiet and (i % progress_meter_freq == 0):
-            print("{:.2f}".format(100.0 * i / rows))
         sparse_contacts[i, i] = True
         for j in range(i+1, rows):
             x = xyz[i, 0] - xyz[j, 0]

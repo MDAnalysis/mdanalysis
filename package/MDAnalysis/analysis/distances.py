@@ -42,7 +42,7 @@ import logging
 logger = logging.getLogger("MDAnalysis.analysis.distances")
 
 
-def contact_matrix(coord, cutoff=15.0, returntype="numpy", box=None, progress_meter_freq=100, quiet=False):
+def contact_matrix(coord, cutoff=15.0, returntype="numpy", box=None):
     '''Calculates a matrix of contacts within a numpy array of type float32.
 
     There is a fast, high-memory-usage version for small systems
@@ -53,14 +53,6 @@ def contact_matrix(coord, cutoff=15.0, returntype="numpy", box=None, progress_me
     periodic boundary conditions are applied.  Only orthorhombic boxes
     are currently supported.
 
-    Change *progress_meter_freq* to alter frequency of progress meter
-    updates. Or switch *quiet* to ``True`` to suppress it completely.
-
-    Only the sparse calculation makes use of the progress meter, and
-    the meter is only available in a terminal (not in a GUI
-    IDE / Jupyter notebook). This is because the print statements
-    from C code are sent to a different standard out.
-
     .. versionchanged:: 0.11.0
        Keyword *suppress_progmet* was changed to *quiet*.
     '''
@@ -70,15 +62,12 @@ def contact_matrix(coord, cutoff=15.0, returntype="numpy", box=None, progress_me
     elif returntype == "sparse":
         # Initialize square List of Lists matrix of dimensions equal to number of coordinates passed
         sparse_contacts = sparse.lil_matrix((len(coord), len(coord)), dtype='bool')
-        # TODO Jan: this distance matrix will be symmetric, hence some of the iterations could be skipped.
         if box is not None:
             # if PBC
-            logger.info("contact_matrix_pbc(): using box %r", box)
-            contact_matrix_pbc(coord, sparse_contacts, box, cutoff,
-                               progress_meter_freq, quiet)
+            contact_matrix_pbc(coord, sparse_contacts, box, cutoff)
         else:
             # if no PBC
-            contact_matrix_no_pbc(coord, sparse_contacts, cutoff, progress_meter_freq, quiet)
+            contact_matrix_no_pbc(coord, sparse_contacts, cutoff)
         return sparse_contacts
 
 

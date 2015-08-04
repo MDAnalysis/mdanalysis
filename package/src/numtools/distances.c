@@ -739,22 +739,6 @@ static CYTHON_INLINE int __Pyx_ArgTypeTest(PyObject *obj, PyTypeObject *type, in
 
 static CYTHON_INLINE long __Pyx_div_long(long, long); /* proto */
 
-#ifndef __PYX_FORCE_INIT_THREADS
-  #define __PYX_FORCE_INIT_THREADS 0
-#endif
-
-#if CYTHON_COMPILING_IN_CPYTHON
-static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg, PyObject *kw);
-#else
-#define __Pyx_PyObject_Call(func, arg, kw) PyObject_Call(func, arg, kw)
-#endif
-
-#if CYTHON_COMPILING_IN_CPYTHON
-static CYTHON_INLINE PyObject* __Pyx_PyObject_CallMethO(PyObject *func, PyObject *arg);
-#endif
-
-static CYTHON_INLINE PyObject* __Pyx_PyObject_CallOneArg(PyObject *func, PyObject *arg);
-
 static CYTHON_INLINE int  __Pyx_GetBufferAndValidate(Py_buffer* buf, PyObject* obj,
     __Pyx_TypeInfo* dtype, int flags, int nd, int cast, __Pyx_BufFmt_StackElem* stack);
 static CYTHON_INLINE void __Pyx_SafeReleaseBuffer(Py_buffer* info);
@@ -784,6 +768,12 @@ static CYTHON_INLINE int __pyx_sub_acquisition_count_locked(
 static CYTHON_INLINE void __Pyx_INC_MEMVIEW(__Pyx_memviewslice *, int, int);
 static CYTHON_INLINE void __Pyx_XDEC_MEMVIEW(__Pyx_memviewslice *, int, int);
 
+#if CYTHON_COMPILING_IN_CPYTHON
+static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg, PyObject *kw);
+#else
+#define __Pyx_PyObject_Call(func, arg, kw) PyObject_Call(func, arg, kw)
+#endif
+
 static CYTHON_INLINE void __Pyx_ErrRestore(PyObject *type, PyObject *value, PyObject *tb);
 static CYTHON_INLINE void __Pyx_ErrFetch(PyObject **type, PyObject **value, PyObject **tb);
 
@@ -802,6 +792,10 @@ static CYTHON_INLINE int __Pyx_PyUnicode_Equals(PyObject* s1, PyObject* s2, int 
 #endif
 
 static CYTHON_INLINE Py_ssize_t __Pyx_div_Py_ssize_t(Py_ssize_t, Py_ssize_t); /* proto */
+
+#ifndef __PYX_FORCE_INIT_THREADS
+  #define __PYX_FORCE_INIT_THREADS 0
+#endif
 
 #define UNARY_NEG_WOULD_OVERFLOW(x)            (((x) < 0) & ((unsigned long)(x) == 0-(unsigned long)(x)))
 
@@ -911,6 +905,12 @@ static void __Pyx_WriteUnraisable(const char *name, int clineno,
                                   int lineno, const char *filename,
                                   int full_traceback);
 
+#if CYTHON_COMPILING_IN_CPYTHON
+static CYTHON_INLINE PyObject* __Pyx_PyObject_CallMethO(PyObject *func, PyObject *arg);
+#endif
+
+static CYTHON_INLINE PyObject* __Pyx_PyObject_CallOneArg(PyObject *func, PyObject *arg);
+
 static int __Pyx_SetVtable(PyObject *dict, void *vtable);
 
 typedef struct {
@@ -958,14 +958,6 @@ static Py_ssize_t __Pyx_minusones[] = {-1, -1, -1, -1, -1, -1, -1, -1};
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value);
 
 static CYTHON_INLINE int __Pyx_PyInt_As_int(PyObject *);
-
-static int __Pyx_Print(PyObject*, PyObject *, int);
-#if CYTHON_COMPILING_IN_PYPY || PY_MAJOR_VERSION >= 3
-static PyObject* __pyx_print = 0;
-static PyObject* __pyx_print_kwargs = 0;
-#endif
-
-static int __Pyx_PrintOne(PyObject* stream, PyObject *o);
 
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value);
 
@@ -1114,8 +1106,8 @@ static PyObject *__pyx_pf_3lib_10_distances_28calc_torsion_ortho(CYTHON_UNUSED P
 static PyObject *__pyx_pf_3lib_10_distances_30calc_torsion_triclinic(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coords1, PyArrayObject *__pyx_v_coords2, PyArrayObject *__pyx_v_coords3, PyArrayObject *__pyx_v_coords4, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_results); /* proto */
 static PyObject *__pyx_pf_3lib_10_distances_32ortho_pbc(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coords, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_box_inverse); /* proto */
 static PyObject *__pyx_pf_3lib_10_distances_34triclinic_pbc(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coords, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_box_inverse); /* proto */
-static PyObject *__pyx_pf_3lib_10_distances_36contact_matrix_no_pbc(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_coord, PyObject *__pyx_v_sparse_contacts, PyObject *__pyx_v_cutoff, PyObject *__pyx_v_progress_meter_freq, PyObject *__pyx_v_quiet); /* proto */
-static PyObject *__pyx_pf_3lib_10_distances_38contact_matrix_pbc(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_coord, PyObject *__pyx_v_sparse_contacts, PyObject *__pyx_v_box, PyObject *__pyx_v_cutoff, PyObject *__pyx_v_progress_meter_freq, PyObject *__pyx_v_quiet); /* proto */
+static PyObject *__pyx_pf_3lib_10_distances_36contact_matrix_no_pbc(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_coord, PyObject *__pyx_v_sparse_contacts, PyObject *__pyx_v_cutoff); /* proto */
+static PyObject *__pyx_pf_3lib_10_distances_38contact_matrix_pbc(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_coord, PyObject *__pyx_v_sparse_contacts, PyObject *__pyx_v_box, PyObject *__pyx_v_cutoff); /* proto */
 static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __pyx_array_obj *__pyx_v_self, PyObject *__pyx_v_shape, Py_ssize_t __pyx_v_itemsize, PyObject *__pyx_v_format, PyObject *__pyx_v_mode, int __pyx_v_allocate_buffer); /* proto */
 static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array_2__getbuffer__(struct __pyx_array_obj *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags); /* proto */
 static void __pyx_array___pyx_pf_15View_dot_MemoryView_5array_4__dealloc__(struct __pyx_array_obj *__pyx_v_self); /* proto */
@@ -1159,17 +1151,14 @@ static char __pyx_k_j[] = "j";
 static char __pyx_k_x[] = "x";
 static char __pyx_k_y[] = "y";
 static char __pyx_k_z[] = "z";
-static char __pyx_k_2f[] = "{:.2f}";
 static char __pyx_k_id[] = "id";
 static char __pyx_k_box[] = "box";
-static char __pyx_k_end[] = "end";
 static char __pyx_k_obj[] = "obj";
 static char __pyx_k_ref[] = "ref";
 static char __pyx_k_xyz[] = "xyz";
 static char __pyx_k_base[] = "base";
 static char __pyx_k_conf[] = "conf";
 static char __pyx_k_dist[] = "dist";
-static char __pyx_k_file[] = "file";
 static char __pyx_k_main[] = "__main__";
 static char __pyx_k_mode[] = "mode";
 static char __pyx_k_name[] = "name";
@@ -1184,8 +1173,6 @@ static char __pyx_k_class[] = "__class__";
 static char __pyx_k_coord[] = "coord";
 static char __pyx_k_error[] = "error";
 static char __pyx_k_flags[] = "flags";
-static char __pyx_k_print[] = "print";
-static char __pyx_k_quiet[] = "quiet";
 static char __pyx_k_range[] = "range";
 static char __pyx_k_shape[] = "shape";
 static char __pyx_k_start[] = "start";
@@ -1236,7 +1223,6 @@ static char __pyx_k_calc_torsion_ortho[] = "calc_torsion_ortho";
 static char __pyx_k_contact_matrix_pbc[] = "contact_matrix_pbc";
 static char __pyx_k_strided_and_direct[] = "<strided and direct>";
 static char __pyx_k_calc_distance_array[] = "calc_distance_array";
-static char __pyx_k_progress_meter_freq[] = "progress_meter_freq";
 static char __pyx_k_calc_angle_triclinic[] = "calc_angle_triclinic";
 static char __pyx_k_strided_and_indirect[] = "<strided and indirect>";
 static char __pyx_k_contact_matrix_no_pbc[] = "contact_matrix_no_pbc";
@@ -1274,7 +1260,6 @@ static char __pyx_k_Unable_to_convert_item_to_object[] = "Unable to convert item
 static char __pyx_k_calc_self_distance_array_triclin[] = "calc_self_distance_array_triclinic";
 static char __pyx_k_got_differing_extents_in_dimensi[] = "got differing extents in dimension %d (got %d and %d)";
 static char __pyx_k_unable_to_allocate_shape_and_str[] = "unable to allocate shape and strides.";
-static PyObject *__pyx_kp_s_2f;
 static PyObject *__pyx_kp_s_Buffer_view_does_not_expose_stri;
 static PyObject *__pyx_kp_s_Can_only_create_a_buffer_that_is;
 static PyObject *__pyx_kp_s_Cannot_index_with_type_s;
@@ -1334,10 +1319,8 @@ static PyObject *__pyx_n_s_cutoff2;
 static PyObject *__pyx_n_s_dist;
 static PyObject *__pyx_n_s_distnum;
 static PyObject *__pyx_n_s_dtype_is_object;
-static PyObject *__pyx_n_s_end;
 static PyObject *__pyx_n_s_enumerate;
 static PyObject *__pyx_n_s_error;
-static PyObject *__pyx_n_s_file;
 static PyObject *__pyx_n_s_flags;
 static PyObject *__pyx_n_s_format;
 static PyObject *__pyx_n_s_fortran;
@@ -1361,11 +1344,8 @@ static PyObject *__pyx_n_s_numcoords;
 static PyObject *__pyx_n_s_obj;
 static PyObject *__pyx_n_s_ortho_pbc;
 static PyObject *__pyx_n_s_pack;
-static PyObject *__pyx_n_s_print;
-static PyObject *__pyx_n_s_progress_meter_freq;
 static PyObject *__pyx_n_s_pyx_getbuffer;
 static PyObject *__pyx_n_s_pyx_vtable;
-static PyObject *__pyx_n_s_quiet;
 static PyObject *__pyx_n_s_range;
 static PyObject *__pyx_n_s_ref;
 static PyObject *__pyx_n_s_refnum;
@@ -3917,7 +3897,7 @@ static PyObject *__pyx_pf_3lib_10_distances_34triclinic_pbc(CYTHON_UNUSED PyObje
 /* "src/numtools/distances.pyx":263
  * 
  * @cython.boundscheck(False)
- * def contact_matrix_no_pbc(coord, sparse_contacts, cutoff, progress_meter_freq, quiet):             # <<<<<<<<<<<<<<
+ * def contact_matrix_no_pbc(coord, sparse_contacts, cutoff):             # <<<<<<<<<<<<<<
  *     cdef int rows = len(coord)
  *     cdef double cutoff2 = cutoff ** 2
  */
@@ -3929,8 +3909,6 @@ static PyObject *__pyx_pw_3lib_10_distances_37contact_matrix_no_pbc(PyObject *__
   PyObject *__pyx_v_coord = 0;
   PyObject *__pyx_v_sparse_contacts = 0;
   PyObject *__pyx_v_cutoff = 0;
-  PyObject *__pyx_v_progress_meter_freq = 0;
-  PyObject *__pyx_v_quiet = 0;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -3938,14 +3916,12 @@ static PyObject *__pyx_pw_3lib_10_distances_37contact_matrix_no_pbc(PyObject *__
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("contact_matrix_no_pbc (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_coord,&__pyx_n_s_sparse_contacts,&__pyx_n_s_cutoff,&__pyx_n_s_progress_meter_freq,&__pyx_n_s_quiet,0};
-    PyObject* values[5] = {0,0,0,0,0};
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_coord,&__pyx_n_s_sparse_contacts,&__pyx_n_s_cutoff,0};
+    PyObject* values[3] = {0,0,0};
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
       const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
       switch (pos_args) {
-        case  5: values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
-        case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
         case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
         case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
         case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
@@ -3960,58 +3936,44 @@ static PyObject *__pyx_pw_3lib_10_distances_37contact_matrix_no_pbc(PyObject *__
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_sparse_contacts)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("contact_matrix_no_pbc", 1, 5, 5, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 263; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("contact_matrix_no_pbc", 1, 3, 3, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 263; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_cutoff)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("contact_matrix_no_pbc", 1, 5, 5, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 263; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-        }
-        case  3:
-        if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_progress_meter_freq)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("contact_matrix_no_pbc", 1, 5, 5, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 263; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-        }
-        case  4:
-        if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_quiet)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("contact_matrix_no_pbc", 1, 5, 5, 4); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 263; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("contact_matrix_no_pbc", 1, 3, 3, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 263; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
         if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "contact_matrix_no_pbc") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 263; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
-    } else if (PyTuple_GET_SIZE(__pyx_args) != 5) {
+    } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
       values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
       values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
-      values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
-      values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
     }
     __pyx_v_coord = values[0];
     __pyx_v_sparse_contacts = values[1];
     __pyx_v_cutoff = values[2];
-    __pyx_v_progress_meter_freq = values[3];
-    __pyx_v_quiet = values[4];
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("contact_matrix_no_pbc", 1, 5, 5, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 263; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("contact_matrix_no_pbc", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 263; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("lib._distances.contact_matrix_no_pbc", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_3lib_10_distances_36contact_matrix_no_pbc(__pyx_self, __pyx_v_coord, __pyx_v_sparse_contacts, __pyx_v_cutoff, __pyx_v_progress_meter_freq, __pyx_v_quiet);
+  __pyx_r = __pyx_pf_3lib_10_distances_36contact_matrix_no_pbc(__pyx_self, __pyx_v_coord, __pyx_v_sparse_contacts, __pyx_v_cutoff);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3lib_10_distances_36contact_matrix_no_pbc(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_coord, PyObject *__pyx_v_sparse_contacts, PyObject *__pyx_v_cutoff, PyObject *__pyx_v_progress_meter_freq, PyObject *__pyx_v_quiet) {
+static PyObject *__pyx_pf_3lib_10_distances_36contact_matrix_no_pbc(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_coord, PyObject *__pyx_v_sparse_contacts, PyObject *__pyx_v_cutoff) {
   int __pyx_v_rows;
   double __pyx_v_cutoff2;
   int __pyx_v_i;
@@ -4029,26 +3991,23 @@ static PyObject *__pyx_pf_3lib_10_distances_36contact_matrix_no_pbc(CYTHON_UNUSE
   __Pyx_memviewslice __pyx_t_4 = { 0, 0, { 0 }, { 0 }, { 0 } };
   int __pyx_t_5;
   int __pyx_t_6;
-  int __pyx_t_7;
-  int __pyx_t_8;
+  PyObject *__pyx_t_7 = NULL;
+  PyObject *__pyx_t_8 = NULL;
   int __pyx_t_9;
-  PyObject *__pyx_t_10 = NULL;
-  PyObject *__pyx_t_11 = NULL;
-  PyObject *__pyx_t_12 = NULL;
-  PyObject *__pyx_t_13 = NULL;
+  int __pyx_t_10;
+  int __pyx_t_11;
+  int __pyx_t_12;
+  Py_ssize_t __pyx_t_13;
   int __pyx_t_14;
-  int __pyx_t_15;
+  Py_ssize_t __pyx_t_15;
   int __pyx_t_16;
-  int __pyx_t_17;
-  Py_ssize_t __pyx_t_18;
-  int __pyx_t_19;
-  Py_ssize_t __pyx_t_20;
-  int __pyx_t_21;
-  Py_ssize_t __pyx_t_22;
+  Py_ssize_t __pyx_t_17;
+  int __pyx_t_18;
+  Py_ssize_t __pyx_t_19;
+  int __pyx_t_20;
+  Py_ssize_t __pyx_t_21;
+  int __pyx_t_22;
   int __pyx_t_23;
-  Py_ssize_t __pyx_t_24;
-  int __pyx_t_25;
-  Py_ssize_t __pyx_t_26;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -4056,7 +4015,7 @@ static PyObject *__pyx_pf_3lib_10_distances_36contact_matrix_no_pbc(CYTHON_UNUSE
 
   /* "src/numtools/distances.pyx":264
  * @cython.boundscheck(False)
- * def contact_matrix_no_pbc(coord, sparse_contacts, cutoff, progress_meter_freq, quiet):
+ * def contact_matrix_no_pbc(coord, sparse_contacts, cutoff):
  *     cdef int rows = len(coord)             # <<<<<<<<<<<<<<
  *     cdef double cutoff2 = cutoff ** 2
  *     cdef int i, j
@@ -4065,7 +4024,7 @@ static PyObject *__pyx_pf_3lib_10_distances_36contact_matrix_no_pbc(CYTHON_UNUSE
   __pyx_v_rows = __pyx_t_1;
 
   /* "src/numtools/distances.pyx":265
- * def contact_matrix_no_pbc(coord, sparse_contacts, cutoff, progress_meter_freq, quiet):
+ * def contact_matrix_no_pbc(coord, sparse_contacts, cutoff):
  *     cdef int rows = len(coord)
  *     cdef double cutoff2 = cutoff ** 2             # <<<<<<<<<<<<<<
  *     cdef int i, j
@@ -4094,8 +4053,8 @@ static PyObject *__pyx_pf_3lib_10_distances_36contact_matrix_no_pbc(CYTHON_UNUSE
  *     cdef float[:, ::1] xyz = coord
  * 
  *     for i in range(rows):             # <<<<<<<<<<<<<<
- *         if not quiet and (i % progress_meter_freq == 0):
- *             print("{:.2f}".format(100.0 * i / rows))
+ *         sparse_contacts[i, i] = True
+ *         for j in range(i+1, rows):
  */
   __pyx_t_5 = __pyx_v_rows;
   for (__pyx_t_6 = 0; __pyx_t_6 < __pyx_t_5; __pyx_t_6+=1) {
@@ -4104,169 +4063,88 @@ static PyObject *__pyx_pf_3lib_10_distances_36contact_matrix_no_pbc(CYTHON_UNUSE
     /* "src/numtools/distances.pyx":271
  * 
  *     for i in range(rows):
- *         if not quiet and (i % progress_meter_freq == 0):             # <<<<<<<<<<<<<<
- *             print("{:.2f}".format(100.0 * i / rows))
- *         sparse_contacts[i, i] = True
- */
-    __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_v_quiet); if (unlikely(__pyx_t_8 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 271; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __pyx_t_9 = ((!__pyx_t_8) != 0);
-    if (__pyx_t_9) {
-    } else {
-      __pyx_t_7 = __pyx_t_9;
-      goto __pyx_L6_bool_binop_done;
-    }
-    __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_i); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 271; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_10 = PyNumber_Remainder(__pyx_t_2, __pyx_v_progress_meter_freq); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 271; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_10);
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = PyObject_RichCompare(__pyx_t_10, __pyx_int_0, Py_EQ); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 271; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-    __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_9 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 271; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_7 = __pyx_t_9;
-    __pyx_L6_bool_binop_done:;
-    if (__pyx_t_7) {
-
-      /* "src/numtools/distances.pyx":272
- *     for i in range(rows):
- *         if not quiet and (i % progress_meter_freq == 0):
- *             print("{:.2f}".format(100.0 * i / rows))             # <<<<<<<<<<<<<<
- *         sparse_contacts[i, i] = True
- *         for j in range(i+1, rows):
- */
-      __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_2f, __pyx_n_s_format); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 272; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-      __Pyx_GOTREF(__pyx_t_10);
-      __pyx_t_3 = (100.0 * __pyx_v_i);
-      if (unlikely(__pyx_v_rows == 0)) {
-        #ifdef WITH_THREAD
-        PyGILState_STATE __pyx_gilstate_save = PyGILState_Ensure();
-        #endif
-        PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-        #ifdef WITH_THREAD
-        PyGILState_Release(__pyx_gilstate_save);
-        #endif
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 272; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-      }
-      __pyx_t_11 = PyFloat_FromDouble((__pyx_t_3 / __pyx_v_rows)); if (unlikely(!__pyx_t_11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 272; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-      __Pyx_GOTREF(__pyx_t_11);
-      __pyx_t_12 = NULL;
-      if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_10))) {
-        __pyx_t_12 = PyMethod_GET_SELF(__pyx_t_10);
-        if (likely(__pyx_t_12)) {
-          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_10);
-          __Pyx_INCREF(__pyx_t_12);
-          __Pyx_INCREF(function);
-          __Pyx_DECREF_SET(__pyx_t_10, function);
-        }
-      }
-      if (!__pyx_t_12) {
-        __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_10, __pyx_t_11); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 272; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-        __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-        __Pyx_GOTREF(__pyx_t_2);
-      } else {
-        __pyx_t_13 = PyTuple_New(1+1); if (unlikely(!__pyx_t_13)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 272; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-        __Pyx_GOTREF(__pyx_t_13);
-        PyTuple_SET_ITEM(__pyx_t_13, 0, __pyx_t_12); __Pyx_GIVEREF(__pyx_t_12); __pyx_t_12 = NULL;
-        PyTuple_SET_ITEM(__pyx_t_13, 0+1, __pyx_t_11);
-        __Pyx_GIVEREF(__pyx_t_11);
-        __pyx_t_11 = 0;
-        __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_10, __pyx_t_13, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 272; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-        __Pyx_GOTREF(__pyx_t_2);
-        __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-      }
-      __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-      if (__Pyx_PrintOne(0, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 272; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      goto __pyx_L5;
-    }
-    __pyx_L5:;
-
-    /* "src/numtools/distances.pyx":273
- *         if not quiet and (i % progress_meter_freq == 0):
- *             print("{:.2f}".format(100.0 * i / rows))
  *         sparse_contacts[i, i] = True             # <<<<<<<<<<<<<<
  *         for j in range(i+1, rows):
  *             x = xyz[i, 0] - xyz[j, 0]
  */
-    __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_i); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 273; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_i); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 271; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_10 = __Pyx_PyInt_From_int(__pyx_v_i); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 273; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_10);
-    __pyx_t_13 = PyTuple_New(2); if (unlikely(!__pyx_t_13)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 273; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_13);
-    PyTuple_SET_ITEM(__pyx_t_13, 0, __pyx_t_2);
+    __pyx_t_7 = __Pyx_PyInt_From_int(__pyx_v_i); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 271; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_7);
+    __pyx_t_8 = PyTuple_New(2); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 271; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_8);
+    PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_2);
     __Pyx_GIVEREF(__pyx_t_2);
-    PyTuple_SET_ITEM(__pyx_t_13, 1, __pyx_t_10);
-    __Pyx_GIVEREF(__pyx_t_10);
+    PyTuple_SET_ITEM(__pyx_t_8, 1, __pyx_t_7);
+    __Pyx_GIVEREF(__pyx_t_7);
     __pyx_t_2 = 0;
-    __pyx_t_10 = 0;
-    if (unlikely(PyObject_SetItem(__pyx_v_sparse_contacts, __pyx_t_13, Py_True) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 273; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
+    __pyx_t_7 = 0;
+    if (unlikely(PyObject_SetItem(__pyx_v_sparse_contacts, __pyx_t_8, Py_True) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 271; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-    /* "src/numtools/distances.pyx":274
- *             print("{:.2f}".format(100.0 * i / rows))
+    /* "src/numtools/distances.pyx":272
+ *     for i in range(rows):
  *         sparse_contacts[i, i] = True
  *         for j in range(i+1, rows):             # <<<<<<<<<<<<<<
  *             x = xyz[i, 0] - xyz[j, 0]
  *             y = xyz[i, 1] - xyz[j, 1]
  */
-    __pyx_t_14 = __pyx_v_rows;
-    for (__pyx_t_15 = (__pyx_v_i + 1); __pyx_t_15 < __pyx_t_14; __pyx_t_15+=1) {
-      __pyx_v_j = __pyx_t_15;
+    __pyx_t_9 = __pyx_v_rows;
+    for (__pyx_t_10 = (__pyx_v_i + 1); __pyx_t_10 < __pyx_t_9; __pyx_t_10+=1) {
+      __pyx_v_j = __pyx_t_10;
 
-      /* "src/numtools/distances.pyx":275
+      /* "src/numtools/distances.pyx":273
  *         sparse_contacts[i, i] = True
  *         for j in range(i+1, rows):
  *             x = xyz[i, 0] - xyz[j, 0]             # <<<<<<<<<<<<<<
  *             y = xyz[i, 1] - xyz[j, 1]
  *             z = xyz[i, 2] - xyz[j, 2]
  */
-      __pyx_t_16 = __pyx_v_i;
+      __pyx_t_11 = __pyx_v_i;
       __pyx_t_1 = 0;
-      if (__pyx_t_16 < 0) __pyx_t_16 += __pyx_v_xyz.shape[0];
+      if (__pyx_t_11 < 0) __pyx_t_11 += __pyx_v_xyz.shape[0];
       if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_xyz.shape[1];
-      __pyx_t_17 = __pyx_v_j;
-      __pyx_t_18 = 0;
-      if (__pyx_t_17 < 0) __pyx_t_17 += __pyx_v_xyz.shape[0];
-      if (__pyx_t_18 < 0) __pyx_t_18 += __pyx_v_xyz.shape[1];
-      __pyx_v_x = ((*((float *) ( /* dim=1 */ ((char *) (((float *) ( /* dim=0 */ (__pyx_v_xyz.data + __pyx_t_16 * __pyx_v_xyz.strides[0]) )) + __pyx_t_1)) ))) - (*((float *) ( /* dim=1 */ ((char *) (((float *) ( /* dim=0 */ (__pyx_v_xyz.data + __pyx_t_17 * __pyx_v_xyz.strides[0]) )) + __pyx_t_18)) ))));
+      __pyx_t_12 = __pyx_v_j;
+      __pyx_t_13 = 0;
+      if (__pyx_t_12 < 0) __pyx_t_12 += __pyx_v_xyz.shape[0];
+      if (__pyx_t_13 < 0) __pyx_t_13 += __pyx_v_xyz.shape[1];
+      __pyx_v_x = ((*((float *) ( /* dim=1 */ ((char *) (((float *) ( /* dim=0 */ (__pyx_v_xyz.data + __pyx_t_11 * __pyx_v_xyz.strides[0]) )) + __pyx_t_1)) ))) - (*((float *) ( /* dim=1 */ ((char *) (((float *) ( /* dim=0 */ (__pyx_v_xyz.data + __pyx_t_12 * __pyx_v_xyz.strides[0]) )) + __pyx_t_13)) ))));
 
-      /* "src/numtools/distances.pyx":276
+      /* "src/numtools/distances.pyx":274
  *         for j in range(i+1, rows):
  *             x = xyz[i, 0] - xyz[j, 0]
  *             y = xyz[i, 1] - xyz[j, 1]             # <<<<<<<<<<<<<<
  *             z = xyz[i, 2] - xyz[j, 2]
  *             dist = x**2 + y**2 + z**2
  */
-      __pyx_t_19 = __pyx_v_i;
-      __pyx_t_20 = 1;
-      if (__pyx_t_19 < 0) __pyx_t_19 += __pyx_v_xyz.shape[0];
-      if (__pyx_t_20 < 0) __pyx_t_20 += __pyx_v_xyz.shape[1];
-      __pyx_t_21 = __pyx_v_j;
-      __pyx_t_22 = 1;
-      if (__pyx_t_21 < 0) __pyx_t_21 += __pyx_v_xyz.shape[0];
-      if (__pyx_t_22 < 0) __pyx_t_22 += __pyx_v_xyz.shape[1];
-      __pyx_v_y = ((*((float *) ( /* dim=1 */ ((char *) (((float *) ( /* dim=0 */ (__pyx_v_xyz.data + __pyx_t_19 * __pyx_v_xyz.strides[0]) )) + __pyx_t_20)) ))) - (*((float *) ( /* dim=1 */ ((char *) (((float *) ( /* dim=0 */ (__pyx_v_xyz.data + __pyx_t_21 * __pyx_v_xyz.strides[0]) )) + __pyx_t_22)) ))));
+      __pyx_t_14 = __pyx_v_i;
+      __pyx_t_15 = 1;
+      if (__pyx_t_14 < 0) __pyx_t_14 += __pyx_v_xyz.shape[0];
+      if (__pyx_t_15 < 0) __pyx_t_15 += __pyx_v_xyz.shape[1];
+      __pyx_t_16 = __pyx_v_j;
+      __pyx_t_17 = 1;
+      if (__pyx_t_16 < 0) __pyx_t_16 += __pyx_v_xyz.shape[0];
+      if (__pyx_t_17 < 0) __pyx_t_17 += __pyx_v_xyz.shape[1];
+      __pyx_v_y = ((*((float *) ( /* dim=1 */ ((char *) (((float *) ( /* dim=0 */ (__pyx_v_xyz.data + __pyx_t_14 * __pyx_v_xyz.strides[0]) )) + __pyx_t_15)) ))) - (*((float *) ( /* dim=1 */ ((char *) (((float *) ( /* dim=0 */ (__pyx_v_xyz.data + __pyx_t_16 * __pyx_v_xyz.strides[0]) )) + __pyx_t_17)) ))));
 
-      /* "src/numtools/distances.pyx":277
+      /* "src/numtools/distances.pyx":275
  *             x = xyz[i, 0] - xyz[j, 0]
  *             y = xyz[i, 1] - xyz[j, 1]
  *             z = xyz[i, 2] - xyz[j, 2]             # <<<<<<<<<<<<<<
  *             dist = x**2 + y**2 + z**2
  *             if dist >= 0 and dist < cutoff2:
  */
-      __pyx_t_23 = __pyx_v_i;
-      __pyx_t_24 = 2;
-      if (__pyx_t_23 < 0) __pyx_t_23 += __pyx_v_xyz.shape[0];
-      if (__pyx_t_24 < 0) __pyx_t_24 += __pyx_v_xyz.shape[1];
-      __pyx_t_25 = __pyx_v_j;
-      __pyx_t_26 = 2;
-      if (__pyx_t_25 < 0) __pyx_t_25 += __pyx_v_xyz.shape[0];
-      if (__pyx_t_26 < 0) __pyx_t_26 += __pyx_v_xyz.shape[1];
-      __pyx_v_z = ((*((float *) ( /* dim=1 */ ((char *) (((float *) ( /* dim=0 */ (__pyx_v_xyz.data + __pyx_t_23 * __pyx_v_xyz.strides[0]) )) + __pyx_t_24)) ))) - (*((float *) ( /* dim=1 */ ((char *) (((float *) ( /* dim=0 */ (__pyx_v_xyz.data + __pyx_t_25 * __pyx_v_xyz.strides[0]) )) + __pyx_t_26)) ))));
+      __pyx_t_18 = __pyx_v_i;
+      __pyx_t_19 = 2;
+      if (__pyx_t_18 < 0) __pyx_t_18 += __pyx_v_xyz.shape[0];
+      if (__pyx_t_19 < 0) __pyx_t_19 += __pyx_v_xyz.shape[1];
+      __pyx_t_20 = __pyx_v_j;
+      __pyx_t_21 = 2;
+      if (__pyx_t_20 < 0) __pyx_t_20 += __pyx_v_xyz.shape[0];
+      if (__pyx_t_21 < 0) __pyx_t_21 += __pyx_v_xyz.shape[1];
+      __pyx_v_z = ((*((float *) ( /* dim=1 */ ((char *) (((float *) ( /* dim=0 */ (__pyx_v_xyz.data + __pyx_t_18 * __pyx_v_xyz.strides[0]) )) + __pyx_t_19)) ))) - (*((float *) ( /* dim=1 */ ((char *) (((float *) ( /* dim=0 */ (__pyx_v_xyz.data + __pyx_t_20 * __pyx_v_xyz.strides[0]) )) + __pyx_t_21)) ))));
 
-      /* "src/numtools/distances.pyx":278
+      /* "src/numtools/distances.pyx":276
  *             y = xyz[i, 1] - xyz[j, 1]
  *             z = xyz[i, 2] - xyz[j, 2]
  *             dist = x**2 + y**2 + z**2             # <<<<<<<<<<<<<<
@@ -4275,77 +4153,77 @@ static PyObject *__pyx_pf_3lib_10_distances_36contact_matrix_no_pbc(CYTHON_UNUSE
  */
       __pyx_v_dist = ((pow(__pyx_v_x, 2.0) + pow(__pyx_v_y, 2.0)) + pow(__pyx_v_z, 2.0));
 
-      /* "src/numtools/distances.pyx":279
+      /* "src/numtools/distances.pyx":277
  *             z = xyz[i, 2] - xyz[j, 2]
  *             dist = x**2 + y**2 + z**2
  *             if dist >= 0 and dist < cutoff2:             # <<<<<<<<<<<<<<
  *                 sparse_contacts[i, j] = True
  *                 sparse_contacts[j, i] = True
  */
-      __pyx_t_9 = ((__pyx_v_dist >= 0.0) != 0);
-      if (__pyx_t_9) {
+      __pyx_t_23 = ((__pyx_v_dist >= 0.0) != 0);
+      if (__pyx_t_23) {
       } else {
-        __pyx_t_7 = __pyx_t_9;
-        goto __pyx_L11_bool_binop_done;
+        __pyx_t_22 = __pyx_t_23;
+        goto __pyx_L8_bool_binop_done;
       }
-      __pyx_t_9 = ((__pyx_v_dist < __pyx_v_cutoff2) != 0);
-      __pyx_t_7 = __pyx_t_9;
-      __pyx_L11_bool_binop_done:;
-      if (__pyx_t_7) {
+      __pyx_t_23 = ((__pyx_v_dist < __pyx_v_cutoff2) != 0);
+      __pyx_t_22 = __pyx_t_23;
+      __pyx_L8_bool_binop_done:;
+      if (__pyx_t_22) {
 
-        /* "src/numtools/distances.pyx":280
+        /* "src/numtools/distances.pyx":278
  *             dist = x**2 + y**2 + z**2
  *             if dist >= 0 and dist < cutoff2:
  *                 sparse_contacts[i, j] = True             # <<<<<<<<<<<<<<
  *                 sparse_contacts[j, i] = True
  * 
  */
-        __pyx_t_13 = __Pyx_PyInt_From_int(__pyx_v_i); if (unlikely(!__pyx_t_13)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 280; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-        __Pyx_GOTREF(__pyx_t_13);
-        __pyx_t_10 = __Pyx_PyInt_From_int(__pyx_v_j); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 280; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-        __Pyx_GOTREF(__pyx_t_10);
-        __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 280; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_8 = __Pyx_PyInt_From_int(__pyx_v_i); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 278; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_GOTREF(__pyx_t_8);
+        __pyx_t_7 = __Pyx_PyInt_From_int(__pyx_v_j); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 278; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_GOTREF(__pyx_t_7);
+        __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 278; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_2);
-        PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_13);
-        __Pyx_GIVEREF(__pyx_t_13);
-        PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_t_10);
-        __Pyx_GIVEREF(__pyx_t_10);
-        __pyx_t_13 = 0;
-        __pyx_t_10 = 0;
-        if (unlikely(PyObject_SetItem(__pyx_v_sparse_contacts, __pyx_t_2, Py_True) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 280; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_8);
+        __Pyx_GIVEREF(__pyx_t_8);
+        PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_t_7);
+        __Pyx_GIVEREF(__pyx_t_7);
+        __pyx_t_8 = 0;
+        __pyx_t_7 = 0;
+        if (unlikely(PyObject_SetItem(__pyx_v_sparse_contacts, __pyx_t_2, Py_True) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 278; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-        /* "src/numtools/distances.pyx":281
+        /* "src/numtools/distances.pyx":279
  *             if dist >= 0 and dist < cutoff2:
  *                 sparse_contacts[i, j] = True
  *                 sparse_contacts[j, i] = True             # <<<<<<<<<<<<<<
  * 
  * 
  */
-        __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_j); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 281; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_j); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 279; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_2);
-        __pyx_t_10 = __Pyx_PyInt_From_int(__pyx_v_i); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 281; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-        __Pyx_GOTREF(__pyx_t_10);
-        __pyx_t_13 = PyTuple_New(2); if (unlikely(!__pyx_t_13)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 281; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-        __Pyx_GOTREF(__pyx_t_13);
-        PyTuple_SET_ITEM(__pyx_t_13, 0, __pyx_t_2);
+        __pyx_t_7 = __Pyx_PyInt_From_int(__pyx_v_i); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 279; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_GOTREF(__pyx_t_7);
+        __pyx_t_8 = PyTuple_New(2); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 279; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_GOTREF(__pyx_t_8);
+        PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_2);
         __Pyx_GIVEREF(__pyx_t_2);
-        PyTuple_SET_ITEM(__pyx_t_13, 1, __pyx_t_10);
-        __Pyx_GIVEREF(__pyx_t_10);
+        PyTuple_SET_ITEM(__pyx_t_8, 1, __pyx_t_7);
+        __Pyx_GIVEREF(__pyx_t_7);
         __pyx_t_2 = 0;
-        __pyx_t_10 = 0;
-        if (unlikely(PyObject_SetItem(__pyx_v_sparse_contacts, __pyx_t_13, Py_True) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 281; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-        __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-        goto __pyx_L10;
+        __pyx_t_7 = 0;
+        if (unlikely(PyObject_SetItem(__pyx_v_sparse_contacts, __pyx_t_8, Py_True) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 279; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+        goto __pyx_L7;
       }
-      __pyx_L10:;
+      __pyx_L7:;
     }
   }
 
   /* "src/numtools/distances.pyx":263
  * 
  * @cython.boundscheck(False)
- * def contact_matrix_no_pbc(coord, sparse_contacts, cutoff, progress_meter_freq, quiet):             # <<<<<<<<<<<<<<
+ * def contact_matrix_no_pbc(coord, sparse_contacts, cutoff):             # <<<<<<<<<<<<<<
  *     cdef int rows = len(coord)
  *     cdef double cutoff2 = cutoff ** 2
  */
@@ -4356,10 +4234,8 @@ static PyObject *__pyx_pf_3lib_10_distances_36contact_matrix_no_pbc(CYTHON_UNUSE
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_2);
   __PYX_XDEC_MEMVIEW(&__pyx_t_4, 1);
-  __Pyx_XDECREF(__pyx_t_10);
-  __Pyx_XDECREF(__pyx_t_11);
-  __Pyx_XDECREF(__pyx_t_12);
-  __Pyx_XDECREF(__pyx_t_13);
+  __Pyx_XDECREF(__pyx_t_7);
+  __Pyx_XDECREF(__pyx_t_8);
   __Pyx_AddTraceback("lib._distances.contact_matrix_no_pbc", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
@@ -4369,10 +4245,10 @@ static PyObject *__pyx_pf_3lib_10_distances_36contact_matrix_no_pbc(CYTHON_UNUSE
   return __pyx_r;
 }
 
-/* "src/numtools/distances.pyx":285
+/* "src/numtools/distances.pyx":283
  * 
  * @cython.boundscheck(False)
- * def contact_matrix_pbc(coord, sparse_contacts, box, cutoff, progress_meter_freq, quiet):             # <<<<<<<<<<<<<<
+ * def contact_matrix_pbc(coord, sparse_contacts, box, cutoff):             # <<<<<<<<<<<<<<
  *     cdef int rows = len(coord)
  *     cdef double cutoff2 = cutoff ** 2
  */
@@ -4385,8 +4261,6 @@ static PyObject *__pyx_pw_3lib_10_distances_39contact_matrix_pbc(PyObject *__pyx
   PyObject *__pyx_v_sparse_contacts = 0;
   PyObject *__pyx_v_box = 0;
   PyObject *__pyx_v_cutoff = 0;
-  PyObject *__pyx_v_progress_meter_freq = 0;
-  PyObject *__pyx_v_quiet = 0;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -4394,14 +4268,12 @@ static PyObject *__pyx_pw_3lib_10_distances_39contact_matrix_pbc(PyObject *__pyx
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("contact_matrix_pbc (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_coord,&__pyx_n_s_sparse_contacts,&__pyx_n_s_box,&__pyx_n_s_cutoff,&__pyx_n_s_progress_meter_freq,&__pyx_n_s_quiet,0};
-    PyObject* values[6] = {0,0,0,0,0,0};
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_coord,&__pyx_n_s_sparse_contacts,&__pyx_n_s_box,&__pyx_n_s_cutoff,0};
+    PyObject* values[4] = {0,0,0,0};
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
       const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
       switch (pos_args) {
-        case  6: values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
-        case  5: values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
         case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
         case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
         case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
@@ -4417,65 +4289,51 @@ static PyObject *__pyx_pw_3lib_10_distances_39contact_matrix_pbc(PyObject *__pyx
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_sparse_contacts)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("contact_matrix_pbc", 1, 6, 6, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 285; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("contact_matrix_pbc", 1, 4, 4, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 283; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_box)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("contact_matrix_pbc", 1, 6, 6, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 285; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("contact_matrix_pbc", 1, 4, 4, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 283; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  3:
         if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_cutoff)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("contact_matrix_pbc", 1, 6, 6, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 285; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-        }
-        case  4:
-        if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_progress_meter_freq)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("contact_matrix_pbc", 1, 6, 6, 4); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 285; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-        }
-        case  5:
-        if (likely((values[5] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_quiet)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("contact_matrix_pbc", 1, 6, 6, 5); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 285; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("contact_matrix_pbc", 1, 4, 4, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 283; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "contact_matrix_pbc") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 285; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "contact_matrix_pbc") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 283; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
-    } else if (PyTuple_GET_SIZE(__pyx_args) != 6) {
+    } else if (PyTuple_GET_SIZE(__pyx_args) != 4) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
       values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
       values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
       values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
-      values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
-      values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
     }
     __pyx_v_coord = values[0];
     __pyx_v_sparse_contacts = values[1];
     __pyx_v_box = values[2];
     __pyx_v_cutoff = values[3];
-    __pyx_v_progress_meter_freq = values[4];
-    __pyx_v_quiet = values[5];
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("contact_matrix_pbc", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 285; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("contact_matrix_pbc", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 283; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("lib._distances.contact_matrix_pbc", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_3lib_10_distances_38contact_matrix_pbc(__pyx_self, __pyx_v_coord, __pyx_v_sparse_contacts, __pyx_v_box, __pyx_v_cutoff, __pyx_v_progress_meter_freq, __pyx_v_quiet);
+  __pyx_r = __pyx_pf_3lib_10_distances_38contact_matrix_pbc(__pyx_self, __pyx_v_coord, __pyx_v_sparse_contacts, __pyx_v_box, __pyx_v_cutoff);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3lib_10_distances_38contact_matrix_pbc(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_coord, PyObject *__pyx_v_sparse_contacts, PyObject *__pyx_v_box, PyObject *__pyx_v_cutoff, PyObject *__pyx_v_progress_meter_freq, PyObject *__pyx_v_quiet) {
+static PyObject *__pyx_pf_3lib_10_distances_38contact_matrix_pbc(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_coord, PyObject *__pyx_v_sparse_contacts, PyObject *__pyx_v_box, PyObject *__pyx_v_cutoff) {
   int __pyx_v_rows;
   double __pyx_v_cutoff2;
   int __pyx_v_i;
@@ -4496,64 +4354,61 @@ static PyObject *__pyx_pf_3lib_10_distances_38contact_matrix_pbc(CYTHON_UNUSED P
   __Pyx_memviewslice __pyx_t_5 = { 0, 0, { 0 }, { 0 }, { 0 } };
   int __pyx_t_6;
   int __pyx_t_7;
-  int __pyx_t_8;
-  int __pyx_t_9;
+  PyObject *__pyx_t_8 = NULL;
+  PyObject *__pyx_t_9 = NULL;
   int __pyx_t_10;
-  PyObject *__pyx_t_11 = NULL;
-  PyObject *__pyx_t_12 = NULL;
-  PyObject *__pyx_t_13 = NULL;
-  PyObject *__pyx_t_14 = NULL;
+  int __pyx_t_11;
+  int __pyx_t_12;
+  int __pyx_t_13;
+  Py_ssize_t __pyx_t_14;
   int __pyx_t_15;
-  int __pyx_t_16;
+  Py_ssize_t __pyx_t_16;
   int __pyx_t_17;
-  int __pyx_t_18;
-  Py_ssize_t __pyx_t_19;
-  int __pyx_t_20;
-  Py_ssize_t __pyx_t_21;
-  int __pyx_t_22;
+  Py_ssize_t __pyx_t_18;
+  int __pyx_t_19;
+  Py_ssize_t __pyx_t_20;
+  int __pyx_t_21;
+  Py_ssize_t __pyx_t_22;
   Py_ssize_t __pyx_t_23;
   int __pyx_t_24;
   Py_ssize_t __pyx_t_25;
-  int __pyx_t_26;
+  Py_ssize_t __pyx_t_26;
   Py_ssize_t __pyx_t_27;
   Py_ssize_t __pyx_t_28;
   Py_ssize_t __pyx_t_29;
   Py_ssize_t __pyx_t_30;
   Py_ssize_t __pyx_t_31;
   Py_ssize_t __pyx_t_32;
-  Py_ssize_t __pyx_t_33;
-  Py_ssize_t __pyx_t_34;
-  Py_ssize_t __pyx_t_35;
-  Py_ssize_t __pyx_t_36;
+  int __pyx_t_33;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("contact_matrix_pbc", 0);
 
-  /* "src/numtools/distances.pyx":286
+  /* "src/numtools/distances.pyx":284
  * @cython.boundscheck(False)
- * def contact_matrix_pbc(coord, sparse_contacts, box, cutoff, progress_meter_freq, quiet):
+ * def contact_matrix_pbc(coord, sparse_contacts, box, cutoff):
  *     cdef int rows = len(coord)             # <<<<<<<<<<<<<<
  *     cdef double cutoff2 = cutoff ** 2
  *     cdef int i, j
  */
-  __pyx_t_1 = PyObject_Length(__pyx_v_coord); if (unlikely(__pyx_t_1 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 286; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyObject_Length(__pyx_v_coord); if (unlikely(__pyx_t_1 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 284; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_rows = __pyx_t_1;
 
-  /* "src/numtools/distances.pyx":287
- * def contact_matrix_pbc(coord, sparse_contacts, box, cutoff, progress_meter_freq, quiet):
+  /* "src/numtools/distances.pyx":285
+ * def contact_matrix_pbc(coord, sparse_contacts, box, cutoff):
  *     cdef int rows = len(coord)
  *     cdef double cutoff2 = cutoff ** 2             # <<<<<<<<<<<<<<
  *     cdef int i, j
  *     cdef double x,y,z, dist
  */
-  __pyx_t_2 = PyNumber_Power(__pyx_v_cutoff, __pyx_int_2, Py_None); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 287; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = PyNumber_Power(__pyx_v_cutoff, __pyx_int_2, Py_None); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 285; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_3 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 287; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_3 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 285; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_cutoff2 = __pyx_t_3;
 
-  /* "src/numtools/distances.pyx":290
+  /* "src/numtools/distances.pyx":288
  *     cdef int i, j
  *     cdef double x,y,z, dist
  *     cdef float[:, ::1] xyz = coord             # <<<<<<<<<<<<<<
@@ -4561,12 +4416,12 @@ static PyObject *__pyx_pf_3lib_10_distances_38contact_matrix_pbc(CYTHON_UNUSED P
  *     cdef float[::1] box_half = box / 2.
  */
   __pyx_t_4 = __Pyx_PyObject_to_MemoryviewSlice_d_dc_float(__pyx_v_coord);
-  if (unlikely(!__pyx_t_4.memview)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 290; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__pyx_t_4.memview)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 288; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_xyz = __pyx_t_4;
   __pyx_t_4.memview = NULL;
   __pyx_t_4.data = NULL;
 
-  /* "src/numtools/distances.pyx":291
+  /* "src/numtools/distances.pyx":289
  *     cdef double x,y,z, dist
  *     cdef float[:, ::1] xyz = coord
  *     cdef float[::1] box_view = box             # <<<<<<<<<<<<<<
@@ -4574,216 +4429,135 @@ static PyObject *__pyx_pf_3lib_10_distances_38contact_matrix_pbc(CYTHON_UNUSED P
  * 
  */
   __pyx_t_5 = __Pyx_PyObject_to_MemoryviewSlice_dc_float(__pyx_v_box);
-  if (unlikely(!__pyx_t_5.memview)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 291; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__pyx_t_5.memview)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 289; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_box_view = __pyx_t_5;
   __pyx_t_5.memview = NULL;
   __pyx_t_5.data = NULL;
 
-  /* "src/numtools/distances.pyx":292
+  /* "src/numtools/distances.pyx":290
  *     cdef float[:, ::1] xyz = coord
  *     cdef float[::1] box_view = box
  *     cdef float[::1] box_half = box / 2.             # <<<<<<<<<<<<<<
  * 
  *     for i in range(rows):
  */
-  __pyx_t_2 = __Pyx_PyNumber_Divide(__pyx_v_box, __pyx_float_2_); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 292; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyNumber_Divide(__pyx_v_box, __pyx_float_2_); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 290; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_5 = __Pyx_PyObject_to_MemoryviewSlice_dc_float(__pyx_t_2);
-  if (unlikely(!__pyx_t_5.memview)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 292; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__pyx_t_5.memview)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 290; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_box_half = __pyx_t_5;
   __pyx_t_5.memview = NULL;
   __pyx_t_5.data = NULL;
 
-  /* "src/numtools/distances.pyx":294
+  /* "src/numtools/distances.pyx":292
  *     cdef float[::1] box_half = box / 2.
  * 
  *     for i in range(rows):             # <<<<<<<<<<<<<<
- *         if not quiet and (i % progress_meter_freq == 0):
- *             print("{:.2f}".format(100.0 * i / rows))
+ *         sparse_contacts[i, i] = True
+ *         for j in range(i+1, rows):
  */
   __pyx_t_6 = __pyx_v_rows;
   for (__pyx_t_7 = 0; __pyx_t_7 < __pyx_t_6; __pyx_t_7+=1) {
     __pyx_v_i = __pyx_t_7;
 
-    /* "src/numtools/distances.pyx":295
+    /* "src/numtools/distances.pyx":293
  * 
  *     for i in range(rows):
- *         if not quiet and (i % progress_meter_freq == 0):             # <<<<<<<<<<<<<<
- *             print("{:.2f}".format(100.0 * i / rows))
- *         sparse_contacts[i, i] = True
- */
-    __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_v_quiet); if (unlikely(__pyx_t_9 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 295; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __pyx_t_10 = ((!__pyx_t_9) != 0);
-    if (__pyx_t_10) {
-    } else {
-      __pyx_t_8 = __pyx_t_10;
-      goto __pyx_L6_bool_binop_done;
-    }
-    __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_i); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 295; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_11 = PyNumber_Remainder(__pyx_t_2, __pyx_v_progress_meter_freq); if (unlikely(!__pyx_t_11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 295; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_11);
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = PyObject_RichCompare(__pyx_t_11, __pyx_int_0, Py_EQ); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 295; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-    __pyx_t_10 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_10 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 295; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_8 = __pyx_t_10;
-    __pyx_L6_bool_binop_done:;
-    if (__pyx_t_8) {
-
-      /* "src/numtools/distances.pyx":296
- *     for i in range(rows):
- *         if not quiet and (i % progress_meter_freq == 0):
- *             print("{:.2f}".format(100.0 * i / rows))             # <<<<<<<<<<<<<<
- *         sparse_contacts[i, i] = True
- *         for j in range(i+1, rows):
- */
-      __pyx_t_11 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_2f, __pyx_n_s_format); if (unlikely(!__pyx_t_11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 296; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-      __Pyx_GOTREF(__pyx_t_11);
-      __pyx_t_3 = (100.0 * __pyx_v_i);
-      if (unlikely(__pyx_v_rows == 0)) {
-        #ifdef WITH_THREAD
-        PyGILState_STATE __pyx_gilstate_save = PyGILState_Ensure();
-        #endif
-        PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-        #ifdef WITH_THREAD
-        PyGILState_Release(__pyx_gilstate_save);
-        #endif
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 296; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-      }
-      __pyx_t_12 = PyFloat_FromDouble((__pyx_t_3 / __pyx_v_rows)); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 296; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-      __Pyx_GOTREF(__pyx_t_12);
-      __pyx_t_13 = NULL;
-      if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_11))) {
-        __pyx_t_13 = PyMethod_GET_SELF(__pyx_t_11);
-        if (likely(__pyx_t_13)) {
-          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_11);
-          __Pyx_INCREF(__pyx_t_13);
-          __Pyx_INCREF(function);
-          __Pyx_DECREF_SET(__pyx_t_11, function);
-        }
-      }
-      if (!__pyx_t_13) {
-        __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_11, __pyx_t_12); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 296; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-        __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-        __Pyx_GOTREF(__pyx_t_2);
-      } else {
-        __pyx_t_14 = PyTuple_New(1+1); if (unlikely(!__pyx_t_14)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 296; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-        __Pyx_GOTREF(__pyx_t_14);
-        PyTuple_SET_ITEM(__pyx_t_14, 0, __pyx_t_13); __Pyx_GIVEREF(__pyx_t_13); __pyx_t_13 = NULL;
-        PyTuple_SET_ITEM(__pyx_t_14, 0+1, __pyx_t_12);
-        __Pyx_GIVEREF(__pyx_t_12);
-        __pyx_t_12 = 0;
-        __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_11, __pyx_t_14, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 296; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-        __Pyx_GOTREF(__pyx_t_2);
-        __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-      }
-      __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-      if (__Pyx_PrintOne(0, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 296; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      goto __pyx_L5;
-    }
-    __pyx_L5:;
-
-    /* "src/numtools/distances.pyx":297
- *         if not quiet and (i % progress_meter_freq == 0):
- *             print("{:.2f}".format(100.0 * i / rows))
  *         sparse_contacts[i, i] = True             # <<<<<<<<<<<<<<
  *         for j in range(i+1, rows):
  *             x = xyz[i, 0] - xyz[j, 0]
  */
-    __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_i); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 297; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_i); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 293; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_11 = __Pyx_PyInt_From_int(__pyx_v_i); if (unlikely(!__pyx_t_11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 297; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_11);
-    __pyx_t_14 = PyTuple_New(2); if (unlikely(!__pyx_t_14)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 297; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_14);
-    PyTuple_SET_ITEM(__pyx_t_14, 0, __pyx_t_2);
+    __pyx_t_8 = __Pyx_PyInt_From_int(__pyx_v_i); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 293; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_8);
+    __pyx_t_9 = PyTuple_New(2); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 293; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_9);
+    PyTuple_SET_ITEM(__pyx_t_9, 0, __pyx_t_2);
     __Pyx_GIVEREF(__pyx_t_2);
-    PyTuple_SET_ITEM(__pyx_t_14, 1, __pyx_t_11);
-    __Pyx_GIVEREF(__pyx_t_11);
+    PyTuple_SET_ITEM(__pyx_t_9, 1, __pyx_t_8);
+    __Pyx_GIVEREF(__pyx_t_8);
     __pyx_t_2 = 0;
-    __pyx_t_11 = 0;
-    if (unlikely(PyObject_SetItem(__pyx_v_sparse_contacts, __pyx_t_14, Py_True) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 297; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
+    __pyx_t_8 = 0;
+    if (unlikely(PyObject_SetItem(__pyx_v_sparse_contacts, __pyx_t_9, Py_True) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 293; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
 
-    /* "src/numtools/distances.pyx":298
- *             print("{:.2f}".format(100.0 * i / rows))
+    /* "src/numtools/distances.pyx":294
+ *     for i in range(rows):
  *         sparse_contacts[i, i] = True
  *         for j in range(i+1, rows):             # <<<<<<<<<<<<<<
  *             x = xyz[i, 0] - xyz[j, 0]
  *             y = xyz[i, 1] - xyz[j, 1]
  */
-    __pyx_t_15 = __pyx_v_rows;
-    for (__pyx_t_16 = (__pyx_v_i + 1); __pyx_t_16 < __pyx_t_15; __pyx_t_16+=1) {
-      __pyx_v_j = __pyx_t_16;
+    __pyx_t_10 = __pyx_v_rows;
+    for (__pyx_t_11 = (__pyx_v_i + 1); __pyx_t_11 < __pyx_t_10; __pyx_t_11+=1) {
+      __pyx_v_j = __pyx_t_11;
 
-      /* "src/numtools/distances.pyx":299
+      /* "src/numtools/distances.pyx":295
  *         sparse_contacts[i, i] = True
  *         for j in range(i+1, rows):
  *             x = xyz[i, 0] - xyz[j, 0]             # <<<<<<<<<<<<<<
  *             y = xyz[i, 1] - xyz[j, 1]
  *             z = xyz[i, 2] - xyz[j, 2]
  */
-      __pyx_t_17 = __pyx_v_i;
+      __pyx_t_12 = __pyx_v_i;
       __pyx_t_1 = 0;
-      if (__pyx_t_17 < 0) __pyx_t_17 += __pyx_v_xyz.shape[0];
+      if (__pyx_t_12 < 0) __pyx_t_12 += __pyx_v_xyz.shape[0];
       if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_xyz.shape[1];
-      __pyx_t_18 = __pyx_v_j;
-      __pyx_t_19 = 0;
-      if (__pyx_t_18 < 0) __pyx_t_18 += __pyx_v_xyz.shape[0];
-      if (__pyx_t_19 < 0) __pyx_t_19 += __pyx_v_xyz.shape[1];
-      __pyx_v_x = ((*((float *) ( /* dim=1 */ ((char *) (((float *) ( /* dim=0 */ (__pyx_v_xyz.data + __pyx_t_17 * __pyx_v_xyz.strides[0]) )) + __pyx_t_1)) ))) - (*((float *) ( /* dim=1 */ ((char *) (((float *) ( /* dim=0 */ (__pyx_v_xyz.data + __pyx_t_18 * __pyx_v_xyz.strides[0]) )) + __pyx_t_19)) ))));
+      __pyx_t_13 = __pyx_v_j;
+      __pyx_t_14 = 0;
+      if (__pyx_t_13 < 0) __pyx_t_13 += __pyx_v_xyz.shape[0];
+      if (__pyx_t_14 < 0) __pyx_t_14 += __pyx_v_xyz.shape[1];
+      __pyx_v_x = ((*((float *) ( /* dim=1 */ ((char *) (((float *) ( /* dim=0 */ (__pyx_v_xyz.data + __pyx_t_12 * __pyx_v_xyz.strides[0]) )) + __pyx_t_1)) ))) - (*((float *) ( /* dim=1 */ ((char *) (((float *) ( /* dim=0 */ (__pyx_v_xyz.data + __pyx_t_13 * __pyx_v_xyz.strides[0]) )) + __pyx_t_14)) ))));
 
-      /* "src/numtools/distances.pyx":300
+      /* "src/numtools/distances.pyx":296
  *         for j in range(i+1, rows):
  *             x = xyz[i, 0] - xyz[j, 0]
  *             y = xyz[i, 1] - xyz[j, 1]             # <<<<<<<<<<<<<<
  *             z = xyz[i, 2] - xyz[j, 2]
  * 
  */
-      __pyx_t_20 = __pyx_v_i;
-      __pyx_t_21 = 1;
-      if (__pyx_t_20 < 0) __pyx_t_20 += __pyx_v_xyz.shape[0];
-      if (__pyx_t_21 < 0) __pyx_t_21 += __pyx_v_xyz.shape[1];
-      __pyx_t_22 = __pyx_v_j;
-      __pyx_t_23 = 1;
-      if (__pyx_t_22 < 0) __pyx_t_22 += __pyx_v_xyz.shape[0];
-      if (__pyx_t_23 < 0) __pyx_t_23 += __pyx_v_xyz.shape[1];
-      __pyx_v_y = ((*((float *) ( /* dim=1 */ ((char *) (((float *) ( /* dim=0 */ (__pyx_v_xyz.data + __pyx_t_20 * __pyx_v_xyz.strides[0]) )) + __pyx_t_21)) ))) - (*((float *) ( /* dim=1 */ ((char *) (((float *) ( /* dim=0 */ (__pyx_v_xyz.data + __pyx_t_22 * __pyx_v_xyz.strides[0]) )) + __pyx_t_23)) ))));
+      __pyx_t_15 = __pyx_v_i;
+      __pyx_t_16 = 1;
+      if (__pyx_t_15 < 0) __pyx_t_15 += __pyx_v_xyz.shape[0];
+      if (__pyx_t_16 < 0) __pyx_t_16 += __pyx_v_xyz.shape[1];
+      __pyx_t_17 = __pyx_v_j;
+      __pyx_t_18 = 1;
+      if (__pyx_t_17 < 0) __pyx_t_17 += __pyx_v_xyz.shape[0];
+      if (__pyx_t_18 < 0) __pyx_t_18 += __pyx_v_xyz.shape[1];
+      __pyx_v_y = ((*((float *) ( /* dim=1 */ ((char *) (((float *) ( /* dim=0 */ (__pyx_v_xyz.data + __pyx_t_15 * __pyx_v_xyz.strides[0]) )) + __pyx_t_16)) ))) - (*((float *) ( /* dim=1 */ ((char *) (((float *) ( /* dim=0 */ (__pyx_v_xyz.data + __pyx_t_17 * __pyx_v_xyz.strides[0]) )) + __pyx_t_18)) ))));
 
-      /* "src/numtools/distances.pyx":301
+      /* "src/numtools/distances.pyx":297
  *             x = xyz[i, 0] - xyz[j, 0]
  *             y = xyz[i, 1] - xyz[j, 1]
  *             z = xyz[i, 2] - xyz[j, 2]             # <<<<<<<<<<<<<<
  * 
  *             if abs(x) > box_half[0]:
  */
-      __pyx_t_24 = __pyx_v_i;
-      __pyx_t_25 = 2;
-      if (__pyx_t_24 < 0) __pyx_t_24 += __pyx_v_xyz.shape[0];
-      if (__pyx_t_25 < 0) __pyx_t_25 += __pyx_v_xyz.shape[1];
-      __pyx_t_26 = __pyx_v_j;
-      __pyx_t_27 = 2;
-      if (__pyx_t_26 < 0) __pyx_t_26 += __pyx_v_xyz.shape[0];
-      if (__pyx_t_27 < 0) __pyx_t_27 += __pyx_v_xyz.shape[1];
-      __pyx_v_z = ((*((float *) ( /* dim=1 */ ((char *) (((float *) ( /* dim=0 */ (__pyx_v_xyz.data + __pyx_t_24 * __pyx_v_xyz.strides[0]) )) + __pyx_t_25)) ))) - (*((float *) ( /* dim=1 */ ((char *) (((float *) ( /* dim=0 */ (__pyx_v_xyz.data + __pyx_t_26 * __pyx_v_xyz.strides[0]) )) + __pyx_t_27)) ))));
+      __pyx_t_19 = __pyx_v_i;
+      __pyx_t_20 = 2;
+      if (__pyx_t_19 < 0) __pyx_t_19 += __pyx_v_xyz.shape[0];
+      if (__pyx_t_20 < 0) __pyx_t_20 += __pyx_v_xyz.shape[1];
+      __pyx_t_21 = __pyx_v_j;
+      __pyx_t_22 = 2;
+      if (__pyx_t_21 < 0) __pyx_t_21 += __pyx_v_xyz.shape[0];
+      if (__pyx_t_22 < 0) __pyx_t_22 += __pyx_v_xyz.shape[1];
+      __pyx_v_z = ((*((float *) ( /* dim=1 */ ((char *) (((float *) ( /* dim=0 */ (__pyx_v_xyz.data + __pyx_t_19 * __pyx_v_xyz.strides[0]) )) + __pyx_t_20)) ))) - (*((float *) ( /* dim=1 */ ((char *) (((float *) ( /* dim=0 */ (__pyx_v_xyz.data + __pyx_t_21 * __pyx_v_xyz.strides[0]) )) + __pyx_t_22)) ))));
 
-      /* "src/numtools/distances.pyx":303
+      /* "src/numtools/distances.pyx":299
  *             z = xyz[i, 2] - xyz[j, 2]
  * 
  *             if abs(x) > box_half[0]:             # <<<<<<<<<<<<<<
  *                 x = x+box_view[0] if x<0.0 else x-box_view[0]
  * 
  */
-      __pyx_t_28 = 0;
-      if (__pyx_t_28 < 0) __pyx_t_28 += __pyx_v_box_half.shape[0];
-      __pyx_t_8 = ((fabs(__pyx_v_x) > (*((float *) ( /* dim=0 */ ((char *) (((float *) __pyx_v_box_half.data) + __pyx_t_28)) )))) != 0);
-      if (__pyx_t_8) {
+      __pyx_t_23 = 0;
+      if (__pyx_t_23 < 0) __pyx_t_23 += __pyx_v_box_half.shape[0];
+      __pyx_t_24 = ((fabs(__pyx_v_x) > (*((float *) ( /* dim=0 */ ((char *) (((float *) __pyx_v_box_half.data) + __pyx_t_23)) )))) != 0);
+      if (__pyx_t_24) {
 
-        /* "src/numtools/distances.pyx":304
+        /* "src/numtools/distances.pyx":300
  * 
  *             if abs(x) > box_half[0]:
  *                 x = x+box_view[0] if x<0.0 else x-box_view[0]             # <<<<<<<<<<<<<<
@@ -4791,32 +4565,32 @@ static PyObject *__pyx_pf_3lib_10_distances_38contact_matrix_pbc(CYTHON_UNUSED P
  *             if abs(y) > box_half[1]:
  */
         if (((__pyx_v_x < 0.0) != 0)) {
-          __pyx_t_29 = 0;
-          if (__pyx_t_29 < 0) __pyx_t_29 += __pyx_v_box_view.shape[0];
-          __pyx_t_3 = (__pyx_v_x + (*((float *) ( /* dim=0 */ ((char *) (((float *) __pyx_v_box_view.data) + __pyx_t_29)) ))));
+          __pyx_t_25 = 0;
+          if (__pyx_t_25 < 0) __pyx_t_25 += __pyx_v_box_view.shape[0];
+          __pyx_t_3 = (__pyx_v_x + (*((float *) ( /* dim=0 */ ((char *) (((float *) __pyx_v_box_view.data) + __pyx_t_25)) ))));
         } else {
-          __pyx_t_30 = 0;
-          if (__pyx_t_30 < 0) __pyx_t_30 += __pyx_v_box_view.shape[0];
-          __pyx_t_3 = (__pyx_v_x - (*((float *) ( /* dim=0 */ ((char *) (((float *) __pyx_v_box_view.data) + __pyx_t_30)) ))));
+          __pyx_t_26 = 0;
+          if (__pyx_t_26 < 0) __pyx_t_26 += __pyx_v_box_view.shape[0];
+          __pyx_t_3 = (__pyx_v_x - (*((float *) ( /* dim=0 */ ((char *) (((float *) __pyx_v_box_view.data) + __pyx_t_26)) ))));
         }
         __pyx_v_x = __pyx_t_3;
-        goto __pyx_L10;
+        goto __pyx_L7;
       }
-      __pyx_L10:;
+      __pyx_L7:;
 
-      /* "src/numtools/distances.pyx":306
+      /* "src/numtools/distances.pyx":302
  *                 x = x+box_view[0] if x<0.0 else x-box_view[0]
  * 
  *             if abs(y) > box_half[1]:             # <<<<<<<<<<<<<<
  *                 y = y+box_view[1] if y<0.0 else y-box_view[1]
  * 
  */
-      __pyx_t_31 = 1;
-      if (__pyx_t_31 < 0) __pyx_t_31 += __pyx_v_box_half.shape[0];
-      __pyx_t_8 = ((fabs(__pyx_v_y) > (*((float *) ( /* dim=0 */ ((char *) (((float *) __pyx_v_box_half.data) + __pyx_t_31)) )))) != 0);
-      if (__pyx_t_8) {
+      __pyx_t_27 = 1;
+      if (__pyx_t_27 < 0) __pyx_t_27 += __pyx_v_box_half.shape[0];
+      __pyx_t_24 = ((fabs(__pyx_v_y) > (*((float *) ( /* dim=0 */ ((char *) (((float *) __pyx_v_box_half.data) + __pyx_t_27)) )))) != 0);
+      if (__pyx_t_24) {
 
-        /* "src/numtools/distances.pyx":307
+        /* "src/numtools/distances.pyx":303
  * 
  *             if abs(y) > box_half[1]:
  *                 y = y+box_view[1] if y<0.0 else y-box_view[1]             # <<<<<<<<<<<<<<
@@ -4824,32 +4598,32 @@ static PyObject *__pyx_pf_3lib_10_distances_38contact_matrix_pbc(CYTHON_UNUSED P
  *             if abs(z) > box_half[2]:
  */
         if (((__pyx_v_y < 0.0) != 0)) {
-          __pyx_t_32 = 1;
-          if (__pyx_t_32 < 0) __pyx_t_32 += __pyx_v_box_view.shape[0];
-          __pyx_t_3 = (__pyx_v_y + (*((float *) ( /* dim=0 */ ((char *) (((float *) __pyx_v_box_view.data) + __pyx_t_32)) ))));
+          __pyx_t_28 = 1;
+          if (__pyx_t_28 < 0) __pyx_t_28 += __pyx_v_box_view.shape[0];
+          __pyx_t_3 = (__pyx_v_y + (*((float *) ( /* dim=0 */ ((char *) (((float *) __pyx_v_box_view.data) + __pyx_t_28)) ))));
         } else {
-          __pyx_t_33 = 1;
-          if (__pyx_t_33 < 0) __pyx_t_33 += __pyx_v_box_view.shape[0];
-          __pyx_t_3 = (__pyx_v_y - (*((float *) ( /* dim=0 */ ((char *) (((float *) __pyx_v_box_view.data) + __pyx_t_33)) ))));
+          __pyx_t_29 = 1;
+          if (__pyx_t_29 < 0) __pyx_t_29 += __pyx_v_box_view.shape[0];
+          __pyx_t_3 = (__pyx_v_y - (*((float *) ( /* dim=0 */ ((char *) (((float *) __pyx_v_box_view.data) + __pyx_t_29)) ))));
         }
         __pyx_v_y = __pyx_t_3;
-        goto __pyx_L11;
+        goto __pyx_L8;
       }
-      __pyx_L11:;
+      __pyx_L8:;
 
-      /* "src/numtools/distances.pyx":309
+      /* "src/numtools/distances.pyx":305
  *                 y = y+box_view[1] if y<0.0 else y-box_view[1]
  * 
  *             if abs(z) > box_half[2]:             # <<<<<<<<<<<<<<
  *                 z = z+box_view[2] if z<0.0 else z-box_view[2]
  * 
  */
-      __pyx_t_34 = 2;
-      if (__pyx_t_34 < 0) __pyx_t_34 += __pyx_v_box_half.shape[0];
-      __pyx_t_8 = ((fabs(__pyx_v_z) > (*((float *) ( /* dim=0 */ ((char *) (((float *) __pyx_v_box_half.data) + __pyx_t_34)) )))) != 0);
-      if (__pyx_t_8) {
+      __pyx_t_30 = 2;
+      if (__pyx_t_30 < 0) __pyx_t_30 += __pyx_v_box_half.shape[0];
+      __pyx_t_24 = ((fabs(__pyx_v_z) > (*((float *) ( /* dim=0 */ ((char *) (((float *) __pyx_v_box_half.data) + __pyx_t_30)) )))) != 0);
+      if (__pyx_t_24) {
 
-        /* "src/numtools/distances.pyx":310
+        /* "src/numtools/distances.pyx":306
  * 
  *             if abs(z) > box_half[2]:
  *                 z = z+box_view[2] if z<0.0 else z-box_view[2]             # <<<<<<<<<<<<<<
@@ -4857,20 +4631,20 @@ static PyObject *__pyx_pf_3lib_10_distances_38contact_matrix_pbc(CYTHON_UNUSED P
  *             dist = x**2 + y**2 + z**2
  */
         if (((__pyx_v_z < 0.0) != 0)) {
-          __pyx_t_35 = 2;
-          if (__pyx_t_35 < 0) __pyx_t_35 += __pyx_v_box_view.shape[0];
-          __pyx_t_3 = (__pyx_v_z + (*((float *) ( /* dim=0 */ ((char *) (((float *) __pyx_v_box_view.data) + __pyx_t_35)) ))));
+          __pyx_t_31 = 2;
+          if (__pyx_t_31 < 0) __pyx_t_31 += __pyx_v_box_view.shape[0];
+          __pyx_t_3 = (__pyx_v_z + (*((float *) ( /* dim=0 */ ((char *) (((float *) __pyx_v_box_view.data) + __pyx_t_31)) ))));
         } else {
-          __pyx_t_36 = 2;
-          if (__pyx_t_36 < 0) __pyx_t_36 += __pyx_v_box_view.shape[0];
-          __pyx_t_3 = (__pyx_v_z - (*((float *) ( /* dim=0 */ ((char *) (((float *) __pyx_v_box_view.data) + __pyx_t_36)) ))));
+          __pyx_t_32 = 2;
+          if (__pyx_t_32 < 0) __pyx_t_32 += __pyx_v_box_view.shape[0];
+          __pyx_t_3 = (__pyx_v_z - (*((float *) ( /* dim=0 */ ((char *) (((float *) __pyx_v_box_view.data) + __pyx_t_32)) ))));
         }
         __pyx_v_z = __pyx_t_3;
-        goto __pyx_L12;
+        goto __pyx_L9;
       }
-      __pyx_L12:;
+      __pyx_L9:;
 
-      /* "src/numtools/distances.pyx":312
+      /* "src/numtools/distances.pyx":308
  *                 z = z+box_view[2] if z<0.0 else z-box_view[2]
  * 
  *             dist = x**2 + y**2 + z**2             # <<<<<<<<<<<<<<
@@ -4879,74 +4653,74 @@ static PyObject *__pyx_pf_3lib_10_distances_38contact_matrix_pbc(CYTHON_UNUSED P
  */
       __pyx_v_dist = ((pow(__pyx_v_x, 2.0) + pow(__pyx_v_y, 2.0)) + pow(__pyx_v_z, 2.0));
 
-      /* "src/numtools/distances.pyx":314
+      /* "src/numtools/distances.pyx":310
  *             dist = x**2 + y**2 + z**2
  * 
  *             if dist >= 0 and dist < cutoff2:             # <<<<<<<<<<<<<<
  *                 sparse_contacts[i, j] = True
  *                 sparse_contacts[j, i] = True
  */
-      __pyx_t_10 = ((__pyx_v_dist >= 0.0) != 0);
-      if (__pyx_t_10) {
+      __pyx_t_33 = ((__pyx_v_dist >= 0.0) != 0);
+      if (__pyx_t_33) {
       } else {
-        __pyx_t_8 = __pyx_t_10;
-        goto __pyx_L14_bool_binop_done;
+        __pyx_t_24 = __pyx_t_33;
+        goto __pyx_L11_bool_binop_done;
       }
-      __pyx_t_10 = ((__pyx_v_dist < __pyx_v_cutoff2) != 0);
-      __pyx_t_8 = __pyx_t_10;
-      __pyx_L14_bool_binop_done:;
-      if (__pyx_t_8) {
+      __pyx_t_33 = ((__pyx_v_dist < __pyx_v_cutoff2) != 0);
+      __pyx_t_24 = __pyx_t_33;
+      __pyx_L11_bool_binop_done:;
+      if (__pyx_t_24) {
 
-        /* "src/numtools/distances.pyx":315
+        /* "src/numtools/distances.pyx":311
  * 
  *             if dist >= 0 and dist < cutoff2:
  *                 sparse_contacts[i, j] = True             # <<<<<<<<<<<<<<
  *                 sparse_contacts[j, i] = True
  */
-        __pyx_t_14 = __Pyx_PyInt_From_int(__pyx_v_i); if (unlikely(!__pyx_t_14)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 315; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-        __Pyx_GOTREF(__pyx_t_14);
-        __pyx_t_11 = __Pyx_PyInt_From_int(__pyx_v_j); if (unlikely(!__pyx_t_11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 315; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-        __Pyx_GOTREF(__pyx_t_11);
-        __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 315; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_9 = __Pyx_PyInt_From_int(__pyx_v_i); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 311; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_GOTREF(__pyx_t_9);
+        __pyx_t_8 = __Pyx_PyInt_From_int(__pyx_v_j); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 311; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_GOTREF(__pyx_t_8);
+        __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 311; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_2);
-        PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_14);
-        __Pyx_GIVEREF(__pyx_t_14);
-        PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_t_11);
-        __Pyx_GIVEREF(__pyx_t_11);
-        __pyx_t_14 = 0;
-        __pyx_t_11 = 0;
-        if (unlikely(PyObject_SetItem(__pyx_v_sparse_contacts, __pyx_t_2, Py_True) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 315; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_9);
+        __Pyx_GIVEREF(__pyx_t_9);
+        PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_t_8);
+        __Pyx_GIVEREF(__pyx_t_8);
+        __pyx_t_9 = 0;
+        __pyx_t_8 = 0;
+        if (unlikely(PyObject_SetItem(__pyx_v_sparse_contacts, __pyx_t_2, Py_True) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 311; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-        /* "src/numtools/distances.pyx":316
+        /* "src/numtools/distances.pyx":312
  *             if dist >= 0 and dist < cutoff2:
  *                 sparse_contacts[i, j] = True
  *                 sparse_contacts[j, i] = True             # <<<<<<<<<<<<<<
  */
-        __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_j); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 316; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_j); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 312; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_2);
-        __pyx_t_11 = __Pyx_PyInt_From_int(__pyx_v_i); if (unlikely(!__pyx_t_11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 316; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-        __Pyx_GOTREF(__pyx_t_11);
-        __pyx_t_14 = PyTuple_New(2); if (unlikely(!__pyx_t_14)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 316; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-        __Pyx_GOTREF(__pyx_t_14);
-        PyTuple_SET_ITEM(__pyx_t_14, 0, __pyx_t_2);
+        __pyx_t_8 = __Pyx_PyInt_From_int(__pyx_v_i); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 312; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_GOTREF(__pyx_t_8);
+        __pyx_t_9 = PyTuple_New(2); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 312; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_GOTREF(__pyx_t_9);
+        PyTuple_SET_ITEM(__pyx_t_9, 0, __pyx_t_2);
         __Pyx_GIVEREF(__pyx_t_2);
-        PyTuple_SET_ITEM(__pyx_t_14, 1, __pyx_t_11);
-        __Pyx_GIVEREF(__pyx_t_11);
+        PyTuple_SET_ITEM(__pyx_t_9, 1, __pyx_t_8);
+        __Pyx_GIVEREF(__pyx_t_8);
         __pyx_t_2 = 0;
-        __pyx_t_11 = 0;
-        if (unlikely(PyObject_SetItem(__pyx_v_sparse_contacts, __pyx_t_14, Py_True) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 316; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-        __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-        goto __pyx_L13;
+        __pyx_t_8 = 0;
+        if (unlikely(PyObject_SetItem(__pyx_v_sparse_contacts, __pyx_t_9, Py_True) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 312; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+        goto __pyx_L10;
       }
-      __pyx_L13:;
+      __pyx_L10:;
     }
   }
 
-  /* "src/numtools/distances.pyx":285
+  /* "src/numtools/distances.pyx":283
  * 
  * @cython.boundscheck(False)
- * def contact_matrix_pbc(coord, sparse_contacts, box, cutoff, progress_meter_freq, quiet):             # <<<<<<<<<<<<<<
+ * def contact_matrix_pbc(coord, sparse_contacts, box, cutoff):             # <<<<<<<<<<<<<<
  *     cdef int rows = len(coord)
  *     cdef double cutoff2 = cutoff ** 2
  */
@@ -4958,10 +4732,8 @@ static PyObject *__pyx_pf_3lib_10_distances_38contact_matrix_pbc(CYTHON_UNUSED P
   __Pyx_XDECREF(__pyx_t_2);
   __PYX_XDEC_MEMVIEW(&__pyx_t_4, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_t_5, 1);
-  __Pyx_XDECREF(__pyx_t_11);
-  __Pyx_XDECREF(__pyx_t_12);
-  __Pyx_XDECREF(__pyx_t_13);
-  __Pyx_XDECREF(__pyx_t_14);
+  __Pyx_XDECREF(__pyx_t_8);
+  __Pyx_XDECREF(__pyx_t_9);
   __Pyx_AddTraceback("lib._distances.contact_matrix_pbc", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
@@ -16282,7 +16054,6 @@ static struct PyModuleDef __pyx_moduledef = {
 #endif
 
 static __Pyx_StringTabEntry __pyx_string_tab[] = {
-  {&__pyx_kp_s_2f, __pyx_k_2f, sizeof(__pyx_k_2f), 0, 0, 1, 0},
   {&__pyx_kp_s_Buffer_view_does_not_expose_stri, __pyx_k_Buffer_view_does_not_expose_stri, sizeof(__pyx_k_Buffer_view_does_not_expose_stri), 0, 0, 1, 0},
   {&__pyx_kp_s_Can_only_create_a_buffer_that_is, __pyx_k_Can_only_create_a_buffer_that_is, sizeof(__pyx_k_Can_only_create_a_buffer_that_is), 0, 0, 1, 0},
   {&__pyx_kp_s_Cannot_index_with_type_s, __pyx_k_Cannot_index_with_type_s, sizeof(__pyx_k_Cannot_index_with_type_s), 0, 0, 1, 0},
@@ -16342,10 +16113,8 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_dist, __pyx_k_dist, sizeof(__pyx_k_dist), 0, 0, 1, 1},
   {&__pyx_n_s_distnum, __pyx_k_distnum, sizeof(__pyx_k_distnum), 0, 0, 1, 1},
   {&__pyx_n_s_dtype_is_object, __pyx_k_dtype_is_object, sizeof(__pyx_k_dtype_is_object), 0, 0, 1, 1},
-  {&__pyx_n_s_end, __pyx_k_end, sizeof(__pyx_k_end), 0, 0, 1, 1},
   {&__pyx_n_s_enumerate, __pyx_k_enumerate, sizeof(__pyx_k_enumerate), 0, 0, 1, 1},
   {&__pyx_n_s_error, __pyx_k_error, sizeof(__pyx_k_error), 0, 0, 1, 1},
-  {&__pyx_n_s_file, __pyx_k_file, sizeof(__pyx_k_file), 0, 0, 1, 1},
   {&__pyx_n_s_flags, __pyx_k_flags, sizeof(__pyx_k_flags), 0, 0, 1, 1},
   {&__pyx_n_s_format, __pyx_k_format, sizeof(__pyx_k_format), 0, 0, 1, 1},
   {&__pyx_n_s_fortran, __pyx_k_fortran, sizeof(__pyx_k_fortran), 0, 0, 1, 1},
@@ -16369,11 +16138,8 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_obj, __pyx_k_obj, sizeof(__pyx_k_obj), 0, 0, 1, 1},
   {&__pyx_n_s_ortho_pbc, __pyx_k_ortho_pbc, sizeof(__pyx_k_ortho_pbc), 0, 0, 1, 1},
   {&__pyx_n_s_pack, __pyx_k_pack, sizeof(__pyx_k_pack), 0, 0, 1, 1},
-  {&__pyx_n_s_print, __pyx_k_print, sizeof(__pyx_k_print), 0, 0, 1, 1},
-  {&__pyx_n_s_progress_meter_freq, __pyx_k_progress_meter_freq, sizeof(__pyx_k_progress_meter_freq), 0, 0, 1, 1},
   {&__pyx_n_s_pyx_getbuffer, __pyx_k_pyx_getbuffer, sizeof(__pyx_k_pyx_getbuffer), 0, 0, 1, 1},
   {&__pyx_n_s_pyx_vtable, __pyx_k_pyx_vtable, sizeof(__pyx_k_pyx_vtable), 0, 0, 1, 1},
-  {&__pyx_n_s_quiet, __pyx_k_quiet, sizeof(__pyx_k_quiet), 0, 0, 1, 1},
   {&__pyx_n_s_range, __pyx_k_range, sizeof(__pyx_k_range), 0, 0, 1, 1},
   {&__pyx_n_s_ref, __pyx_k_ref, sizeof(__pyx_k_ref), 0, 0, 1, 1},
   {&__pyx_n_s_refnum, __pyx_k_refnum, sizeof(__pyx_k_refnum), 0, 0, 1, 1},
@@ -16773,26 +16539,26 @@ static int __Pyx_InitCachedConstants(void) {
   /* "src/numtools/distances.pyx":263
  * 
  * @cython.boundscheck(False)
- * def contact_matrix_no_pbc(coord, sparse_contacts, cutoff, progress_meter_freq, quiet):             # <<<<<<<<<<<<<<
+ * def contact_matrix_no_pbc(coord, sparse_contacts, cutoff):             # <<<<<<<<<<<<<<
  *     cdef int rows = len(coord)
  *     cdef double cutoff2 = cutoff ** 2
  */
-  __pyx_tuple__49 = PyTuple_Pack(14, __pyx_n_s_coord, __pyx_n_s_sparse_contacts, __pyx_n_s_cutoff, __pyx_n_s_progress_meter_freq, __pyx_n_s_quiet, __pyx_n_s_rows, __pyx_n_s_cutoff2, __pyx_n_s_i, __pyx_n_s_j, __pyx_n_s_x, __pyx_n_s_y, __pyx_n_s_z, __pyx_n_s_xyz, __pyx_n_s_dist); if (unlikely(!__pyx_tuple__49)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 263; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__49 = PyTuple_Pack(12, __pyx_n_s_coord, __pyx_n_s_sparse_contacts, __pyx_n_s_cutoff, __pyx_n_s_rows, __pyx_n_s_cutoff2, __pyx_n_s_i, __pyx_n_s_j, __pyx_n_s_x, __pyx_n_s_y, __pyx_n_s_z, __pyx_n_s_xyz, __pyx_n_s_dist); if (unlikely(!__pyx_tuple__49)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 263; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__49);
   __Pyx_GIVEREF(__pyx_tuple__49);
-  __pyx_codeobj__50 = (PyObject*)__Pyx_PyCode_New(5, 0, 14, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__49, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_max_foss_molecular_dynamic, __pyx_n_s_contact_matrix_no_pbc, 263, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__50)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 263; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__50 = (PyObject*)__Pyx_PyCode_New(3, 0, 12, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__49, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_max_foss_molecular_dynamic, __pyx_n_s_contact_matrix_no_pbc, 263, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__50)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 263; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "src/numtools/distances.pyx":285
+  /* "src/numtools/distances.pyx":283
  * 
  * @cython.boundscheck(False)
- * def contact_matrix_pbc(coord, sparse_contacts, box, cutoff, progress_meter_freq, quiet):             # <<<<<<<<<<<<<<
+ * def contact_matrix_pbc(coord, sparse_contacts, box, cutoff):             # <<<<<<<<<<<<<<
  *     cdef int rows = len(coord)
  *     cdef double cutoff2 = cutoff ** 2
  */
-  __pyx_tuple__51 = PyTuple_Pack(17, __pyx_n_s_coord, __pyx_n_s_sparse_contacts, __pyx_n_s_box, __pyx_n_s_cutoff, __pyx_n_s_progress_meter_freq, __pyx_n_s_quiet, __pyx_n_s_rows, __pyx_n_s_cutoff2, __pyx_n_s_i, __pyx_n_s_j, __pyx_n_s_x, __pyx_n_s_y, __pyx_n_s_z, __pyx_n_s_dist, __pyx_n_s_xyz, __pyx_n_s_box_view, __pyx_n_s_box_half); if (unlikely(!__pyx_tuple__51)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 285; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__51 = PyTuple_Pack(15, __pyx_n_s_coord, __pyx_n_s_sparse_contacts, __pyx_n_s_box, __pyx_n_s_cutoff, __pyx_n_s_rows, __pyx_n_s_cutoff2, __pyx_n_s_i, __pyx_n_s_j, __pyx_n_s_x, __pyx_n_s_y, __pyx_n_s_z, __pyx_n_s_dist, __pyx_n_s_xyz, __pyx_n_s_box_view, __pyx_n_s_box_half); if (unlikely(!__pyx_tuple__51)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 283; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__51);
   __Pyx_GIVEREF(__pyx_tuple__51);
-  __pyx_codeobj__52 = (PyObject*)__Pyx_PyCode_New(6, 0, 17, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__51, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_max_foss_molecular_dynamic, __pyx_n_s_contact_matrix_pbc, 285, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__52)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 285; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__52 = (PyObject*)__Pyx_PyCode_New(4, 0, 15, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__51, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_max_foss_molecular_dynamic, __pyx_n_s_contact_matrix_pbc, 283, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__52)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 283; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
   /* "View.MemoryView":276
  *         return self.name
@@ -17213,7 +16979,7 @@ PyMODINIT_FUNC PyInit__distances(void)
   /* "src/numtools/distances.pyx":263
  * 
  * @cython.boundscheck(False)
- * def contact_matrix_no_pbc(coord, sparse_contacts, cutoff, progress_meter_freq, quiet):             # <<<<<<<<<<<<<<
+ * def contact_matrix_no_pbc(coord, sparse_contacts, cutoff):             # <<<<<<<<<<<<<<
  *     cdef int rows = len(coord)
  *     cdef double cutoff2 = cutoff ** 2
  */
@@ -17222,16 +16988,16 @@ PyMODINIT_FUNC PyInit__distances(void)
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_contact_matrix_no_pbc, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 263; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "src/numtools/distances.pyx":285
+  /* "src/numtools/distances.pyx":283
  * 
  * @cython.boundscheck(False)
- * def contact_matrix_pbc(coord, sparse_contacts, box, cutoff, progress_meter_freq, quiet):             # <<<<<<<<<<<<<<
+ * def contact_matrix_pbc(coord, sparse_contacts, box, cutoff):             # <<<<<<<<<<<<<<
  *     cdef int rows = len(coord)
  *     cdef double cutoff2 = cutoff ** 2
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3lib_10_distances_39contact_matrix_pbc, NULL, __pyx_n_s_lib__distances); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 285; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3lib_10_distances_39contact_matrix_pbc, NULL, __pyx_n_s_lib__distances); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 283; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_contact_matrix_pbc, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 285; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_contact_matrix_pbc, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 283; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "src/numtools/distances.pyx":1
@@ -17584,74 +17350,6 @@ static CYTHON_INLINE long __Pyx_div_long(long a, long b) {
     q -= ((r != 0) & ((r ^ b) < 0));
     return q;
 }
-
-#if CYTHON_COMPILING_IN_CPYTHON
-static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg, PyObject *kw) {
-    PyObject *result;
-    ternaryfunc call = func->ob_type->tp_call;
-    if (unlikely(!call))
-        return PyObject_Call(func, arg, kw);
-    if (unlikely(Py_EnterRecursiveCall((char*)" while calling a Python object")))
-        return NULL;
-    result = (*call)(func, arg, kw);
-    Py_LeaveRecursiveCall();
-    if (unlikely(!result) && unlikely(!PyErr_Occurred())) {
-        PyErr_SetString(
-            PyExc_SystemError,
-            "NULL result without error in PyObject_Call");
-    }
-    return result;
-}
-#endif
-
-#if CYTHON_COMPILING_IN_CPYTHON
-static CYTHON_INLINE PyObject* __Pyx_PyObject_CallMethO(PyObject *func, PyObject *arg) {
-    PyObject *self, *result;
-    PyCFunction cfunc;
-    cfunc = PyCFunction_GET_FUNCTION(func);
-    self = PyCFunction_GET_SELF(func);
-    if (unlikely(Py_EnterRecursiveCall((char*)" while calling a Python object")))
-        return NULL;
-    result = cfunc(self, arg);
-    Py_LeaveRecursiveCall();
-    if (unlikely(!result) && unlikely(!PyErr_Occurred())) {
-        PyErr_SetString(
-            PyExc_SystemError,
-            "NULL result without error in PyObject_Call");
-    }
-    return result;
-}
-#endif
-
-#if CYTHON_COMPILING_IN_CPYTHON
-static PyObject* __Pyx__PyObject_CallOneArg(PyObject *func, PyObject *arg) {
-    PyObject *result;
-    PyObject *args = PyTuple_New(1);
-    if (unlikely(!args)) return NULL;
-    Py_INCREF(arg);
-    PyTuple_SET_ITEM(args, 0, arg);
-    result = __Pyx_PyObject_Call(func, args, NULL);
-    Py_DECREF(args);
-    return result;
-}
-static CYTHON_INLINE PyObject* __Pyx_PyObject_CallOneArg(PyObject *func, PyObject *arg) {
-#ifdef __Pyx_CyFunction_USED
-    if (likely(PyCFunction_Check(func) || PyObject_TypeCheck(func, __pyx_CyFunctionType))) {
-#else
-    if (likely(PyCFunction_Check(func))) {
-#endif
-        if (likely(PyCFunction_GET_FLAGS(func) & METH_O)) {
-            return __Pyx_PyObject_CallMethO(func, arg);
-        }
-    }
-    return __Pyx__PyObject_CallOneArg(func, arg);
-}
-#else
-static CYTHON_INLINE PyObject* __Pyx_PyObject_CallOneArg(PyObject *func, PyObject *arg) {
-    PyObject* args = PyTuple_Pack(1, arg);
-    return (likely(args)) ? __Pyx_PyObject_Call(func, args, NULL) : NULL;
-}
-#endif
 
 static CYTHON_INLINE int __Pyx_IsLittleEndian(void) {
   unsigned int n = 1;
@@ -18337,6 +18035,25 @@ static CYTHON_INLINE void __Pyx_XDEC_MEMVIEW(__Pyx_memviewslice *memslice,
     }
 }
 
+#if CYTHON_COMPILING_IN_CPYTHON
+static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg, PyObject *kw) {
+    PyObject *result;
+    ternaryfunc call = func->ob_type->tp_call;
+    if (unlikely(!call))
+        return PyObject_Call(func, arg, kw);
+    if (unlikely(Py_EnterRecursiveCall((char*)" while calling a Python object")))
+        return NULL;
+    result = (*call)(func, arg, kw);
+    Py_LeaveRecursiveCall();
+    if (unlikely(!result) && unlikely(!PyErr_Occurred())) {
+        PyErr_SetString(
+            PyExc_SystemError,
+            "NULL result without error in PyObject_Call");
+    }
+    return result;
+}
+#endif
+
 static CYTHON_INLINE void __Pyx_ErrRestore(PyObject *type, PyObject *value, PyObject *tb) {
 #if CYTHON_COMPILING_IN_CPYTHON
     PyObject *tmp_type, *tmp_value, *tmp_tb;
@@ -18933,6 +18650,55 @@ static void __Pyx_WriteUnraisable(const char *name, CYTHON_UNUSED int clineno,
     }
 }
 
+#if CYTHON_COMPILING_IN_CPYTHON
+static CYTHON_INLINE PyObject* __Pyx_PyObject_CallMethO(PyObject *func, PyObject *arg) {
+    PyObject *self, *result;
+    PyCFunction cfunc;
+    cfunc = PyCFunction_GET_FUNCTION(func);
+    self = PyCFunction_GET_SELF(func);
+    if (unlikely(Py_EnterRecursiveCall((char*)" while calling a Python object")))
+        return NULL;
+    result = cfunc(self, arg);
+    Py_LeaveRecursiveCall();
+    if (unlikely(!result) && unlikely(!PyErr_Occurred())) {
+        PyErr_SetString(
+            PyExc_SystemError,
+            "NULL result without error in PyObject_Call");
+    }
+    return result;
+}
+#endif
+
+#if CYTHON_COMPILING_IN_CPYTHON
+static PyObject* __Pyx__PyObject_CallOneArg(PyObject *func, PyObject *arg) {
+    PyObject *result;
+    PyObject *args = PyTuple_New(1);
+    if (unlikely(!args)) return NULL;
+    Py_INCREF(arg);
+    PyTuple_SET_ITEM(args, 0, arg);
+    result = __Pyx_PyObject_Call(func, args, NULL);
+    Py_DECREF(args);
+    return result;
+}
+static CYTHON_INLINE PyObject* __Pyx_PyObject_CallOneArg(PyObject *func, PyObject *arg) {
+#ifdef __Pyx_CyFunction_USED
+    if (likely(PyCFunction_Check(func) || PyObject_TypeCheck(func, __pyx_CyFunctionType))) {
+#else
+    if (likely(PyCFunction_Check(func))) {
+#endif
+        if (likely(PyCFunction_GET_FLAGS(func) & METH_O)) {
+            return __Pyx_PyObject_CallMethO(func, arg);
+        }
+    }
+    return __Pyx__PyObject_CallOneArg(func, arg);
+}
+#else
+static CYTHON_INLINE PyObject* __Pyx_PyObject_CallOneArg(PyObject *func, PyObject *arg) {
+    PyObject* args = PyTuple_Pack(1, arg);
+    return (likely(args)) ? __Pyx_PyObject_Call(func, args, NULL) : NULL;
+}
+#endif
+
 static int __Pyx_SetVtable(PyObject *dict, void *vtable) {
 #if PY_VERSION_HEX >= 0x02070000
     PyObject *ob = PyCapsule_New(vtable, 0, 0);
@@ -19271,147 +19037,6 @@ raise_neg_overflow:
         "can't convert negative value to int");
     return (int) -1;
 }
-
-#if !CYTHON_COMPILING_IN_PYPY && PY_MAJOR_VERSION < 3
-static PyObject *__Pyx_GetStdout(void) {
-    PyObject *f = PySys_GetObject((char *)"stdout");
-    if (!f) {
-        PyErr_SetString(PyExc_RuntimeError, "lost sys.stdout");
-    }
-    return f;
-}
-static int __Pyx_Print(PyObject* f, PyObject *arg_tuple, int newline) {
-    int i;
-    if (!f) {
-        if (!(f = __Pyx_GetStdout()))
-            return -1;
-    }
-    Py_INCREF(f);
-    for (i=0; i < PyTuple_GET_SIZE(arg_tuple); i++) {
-        PyObject* v;
-        if (PyFile_SoftSpace(f, 1)) {
-            if (PyFile_WriteString(" ", f) < 0)
-                goto error;
-        }
-        v = PyTuple_GET_ITEM(arg_tuple, i);
-        if (PyFile_WriteObject(v, f, Py_PRINT_RAW) < 0)
-            goto error;
-        if (PyString_Check(v)) {
-            char *s = PyString_AsString(v);
-            Py_ssize_t len = PyString_Size(v);
-            if (len > 0) {
-                switch (s[len-1]) {
-                    case ' ': break;
-                    case '\f': case '\r': case '\n': case '\t': case '\v':
-                        PyFile_SoftSpace(f, 0);
-                        break;
-                    default:  break;
-                }
-            }
-        }
-    }
-    if (newline) {
-        if (PyFile_WriteString("\n", f) < 0)
-            goto error;
-        PyFile_SoftSpace(f, 0);
-    }
-    Py_DECREF(f);
-    return 0;
-error:
-    Py_DECREF(f);
-    return -1;
-}
-#else
-static int __Pyx_Print(PyObject* stream, PyObject *arg_tuple, int newline) {
-    PyObject* kwargs = 0;
-    PyObject* result = 0;
-    PyObject* end_string;
-    if (unlikely(!__pyx_print)) {
-        __pyx_print = PyObject_GetAttr(__pyx_b, __pyx_n_s_print);
-        if (!__pyx_print)
-            return -1;
-    }
-    if (stream) {
-        kwargs = PyDict_New();
-        if (unlikely(!kwargs))
-            return -1;
-        if (unlikely(PyDict_SetItem(kwargs, __pyx_n_s_file, stream) < 0))
-            goto bad;
-        if (!newline) {
-            end_string = PyUnicode_FromStringAndSize(" ", 1);
-            if (unlikely(!end_string))
-                goto bad;
-            if (PyDict_SetItem(kwargs, __pyx_n_s_end, end_string) < 0) {
-                Py_DECREF(end_string);
-                goto bad;
-            }
-            Py_DECREF(end_string);
-        }
-    } else if (!newline) {
-        if (unlikely(!__pyx_print_kwargs)) {
-            __pyx_print_kwargs = PyDict_New();
-            if (unlikely(!__pyx_print_kwargs))
-                return -1;
-            end_string = PyUnicode_FromStringAndSize(" ", 1);
-            if (unlikely(!end_string))
-                return -1;
-            if (PyDict_SetItem(__pyx_print_kwargs, __pyx_n_s_end, end_string) < 0) {
-                Py_DECREF(end_string);
-                return -1;
-            }
-            Py_DECREF(end_string);
-        }
-        kwargs = __pyx_print_kwargs;
-    }
-    result = PyObject_Call(__pyx_print, arg_tuple, kwargs);
-    if (unlikely(kwargs) && (kwargs != __pyx_print_kwargs))
-        Py_DECREF(kwargs);
-    if (!result)
-        return -1;
-    Py_DECREF(result);
-    return 0;
-bad:
-    if (kwargs != __pyx_print_kwargs)
-        Py_XDECREF(kwargs);
-    return -1;
-}
-#endif
-
-#if !CYTHON_COMPILING_IN_PYPY && PY_MAJOR_VERSION < 3
-static int __Pyx_PrintOne(PyObject* f, PyObject *o) {
-    if (!f) {
-        if (!(f = __Pyx_GetStdout()))
-            return -1;
-    }
-    Py_INCREF(f);
-    if (PyFile_SoftSpace(f, 0)) {
-        if (PyFile_WriteString(" ", f) < 0)
-            goto error;
-    }
-    if (PyFile_WriteObject(o, f, Py_PRINT_RAW) < 0)
-        goto error;
-    if (PyFile_WriteString("\n", f) < 0)
-        goto error;
-    Py_DECREF(f);
-    return 0;
-error:
-    Py_DECREF(f);
-    return -1;
-    /* the line below is just to avoid C compiler
-     * warnings about unused functions */
-    return __Pyx_Print(f, NULL, 0);
-}
-#else
-static int __Pyx_PrintOne(PyObject* stream, PyObject *o) {
-    int res;
-    PyObject* arg_tuple = PyTuple_Pack(1, o);
-    if (unlikely(!arg_tuple))
-        return -1;
-    res = __Pyx_Print(stream, arg_tuple, 1);
-    Py_DECREF(arg_tuple);
-    return res;
-}
-#endif
 
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value) {
     const long neg_one = (long) -1, const_zero = 0;
