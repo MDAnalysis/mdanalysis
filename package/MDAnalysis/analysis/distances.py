@@ -54,7 +54,7 @@ def contact_matrix(coord, cutoff=15.0, returntype="numpy", box=None):
     are currently supported.
 
     .. versionchanged:: 0.11.0
-       Keyword *suppress_progmet* was changed to *quiet*.
+       Keyword *suppress_progmet* and *progress_meter_freq* were removed.
     '''
     if returntype == "numpy":
         adj = (distance_array(coord, coord, box=box) < cutoff)
