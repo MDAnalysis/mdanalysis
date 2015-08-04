@@ -270,13 +270,15 @@ def contact_matrix_no_pbc(coord, sparse_contacts, cutoff, progress_meter_freq, q
     for i in range(rows):
         if not quiet and (i % progress_meter_freq == 0):
             print("{:.2f}".format(100.0 * i / rows))
-        for j in range(rows):
+        sparse_contacts[i, i] = True
+        for j in range(i+1, rows):
             x = xyz[i, 0] - xyz[j, 0]
             y = xyz[i, 1] - xyz[j, 1]
             z = xyz[i, 2] - xyz[j, 2]
             dist = x**2 + y**2 + z**2
             if dist >= 0 and dist < cutoff2:
                 sparse_contacts[i, j] = True
+                sparse_contacts[j, i] = True
 
 
 @cython.boundscheck(False)
@@ -292,7 +294,8 @@ def contact_matrix_pbc(coord, sparse_contacts, box, cutoff, progress_meter_freq,
     for i in range(rows):
         if not quiet and (i % progress_meter_freq == 0):
             print("{:.2f}".format(100.0 * i / rows))
-        for j in range(i, rows):
+        sparse_contacts[i, i] = True
+        for j in range(i+1, rows):
             x = xyz[i, 0] - xyz[j, 0]
             y = xyz[i, 1] - xyz[j, 1]
             z = xyz[i, 2] - xyz[j, 2]
