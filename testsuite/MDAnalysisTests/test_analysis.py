@@ -43,17 +43,21 @@ class TestContactMatrix(TestCase):
         self.coord = numpy.array([[1, 1, 1],
                                   [5, 5, 5],
                                   [1.1, 1.1, 1.1],
-                                  [11, 11, 11]], dtype=numpy.float32)
+                                  [11, 11, 11],  # neighboring image with pbc
+                                  [21, 21, 21]],  # non neighboring image with pbc
+                                 dtype=numpy.float32)
         self.box = numpy.array([10, 10, 10], dtype=numpy.float32)
-        self.shape = (4, 4)
-        self.res_no_pbc = numpy.array([[True, False, True, False],
-                                       [False, True, False, False],
-                                       [True, False, True, False],
-                                       [False, False, False, True]])
-        self.res_pbc = numpy.array([[True, False, True, True],
-                                    [False, True, False, False],
-                                    [True, False, True, True],
-                                    [True, False, True, True]])
+        self.shape = (5, 5)
+        self.res_no_pbc = numpy.array([[1, 0, 1, 0, 0],
+                                       [0, 1, 0, 0, 0],
+                                       [1, 0, 1, 0, 0],
+                                       [0, 0, 0, 1, 0],
+                                       [0, 0, 0, 0, 1]], dtype=numpy.bool)
+        self.res_pbc = numpy.array([[1, 0, 1, 1, 1],
+                                    [0, 1, 0, 0, 0],
+                                    [1, 0, 1, 1, 1],
+                                    [1, 0, 1, 1, 1],
+                                    [1, 0, 1, 1, 1]], dtype=numpy.bool)
 
     def test_numpy(self):
         contacts = MDAnalysis.analysis.distances.contact_matrix(
