@@ -18,7 +18,7 @@ The rules for this file:
   Enhancements
   * Added Jmol selection writer (Issue #356)
   * Added reading of Hoomd XML files (Issue #333)
-    These can only act as topology information for now 
+    These can only act as topology information for now
   * Tests can now detect memleaks on a per-test basis (Issue #323)
   * AtomGroups can now be pickled/unpickled (Issue #293)
   * Universes can have a __del__ method (not actually added) without
@@ -28,7 +28,7 @@ The rules for this file:
   * Timestep objects now have __eq__ method
   * coordinates.base.Timestep now can handle velocities and forces
   * Waterdynamics analysis module added, including five analysis classes: Hydrogen Bond
-    Lifetimes, Water Orientational Relaxation, Angular Distribution, Mean Square 
+    Lifetimes, Water Orientational Relaxation, Angular Distribution, Mean Square
     Displacement and Survival Probability. Documentation and test are included.
   * RMSF class added to rms analysis module
   * ProgressMeter now outputs every *interval* number of ``update`` calls
@@ -85,6 +85,9 @@ The rules for this file:
     was previously "delta" in some Writers. (Issue #206)
   * DCDReader no longer supports the "skip" keyword.  Use slicing
     on reader iteration to achieve same affect.
+  * Contact-Matrix now treats the particle distance with itself as a contact for
+    sparse matrices and numpy arrays. The progress reporting for sparse
+    calculations has been removed.
 
   Fixes
   * Amber TRJ and NCDF Reader & Writers now use 'dt' instead of 'delta'
@@ -99,6 +102,8 @@ The rules for this file:
   * Fixed bug and added DivisionByZero exception in analysis/waterdinamics.py
     in SurvivalProbability.
   * Fixed parsing of PDB header data for PrimitivePDBReader (Issue #332)
+  * Fixed contact_matrix handles periodic boundary conditions correctly for
+    sparse matrices.
 
 06/01/15  richardjgowers, caio s. souza, manuel.nuno.melo, orbeckst,
           sseyler
@@ -177,7 +182,7 @@ The rules for this file:
   Enhancements
 
   * XYZ file format can be used without an associated topology file.
-  * GAMESS output files can be read as trajectories for calculations of 
+  * GAMESS output files can be read as trajectories for calculations of
     type ``SURFACE'' and ``OPTIMIZE'' (work wit both GAMESS-US and Firefly)
 
   Changes
@@ -284,7 +289,7 @@ The rules for this file:
   * fixed DCD triclinic unit cell reading and writing (although the new CHARMM
     format with the box matrix is not supported for writing) (Issue 187)
     ATTENTION: Support for triclinic boxes from DCDs was BROKEN prior to this fix!
-  * fixed creation of residues and segments in Merge() 
+  * fixed creation of residues and segments in Merge()
   * resolves Issue 188 regarding Helanal Finish Argument
   * fixed Issue 184 (TPR files with double precision)
   * fixed Issue 199 (FutureWarning in pyqcprot)
@@ -302,7 +307,7 @@ The rules for this file:
   Enhancements
 
   * Named selections can now be passed to selectAtoms (Issue 174)
-  * (experimental) MDAnalysis.visualization namespace added along with 
+  * (experimental) MDAnalysis.visualization namespace added along with
     2D/3D streamplot modules & documentation for them
   * TRR file handling is now fully aware of missing coordinate/velocity/force
     information when reading and writing frames.
@@ -313,7 +318,7 @@ The rules for this file:
     Gromacs TPR format (Gromacs 4.0 to 4.6.1), see Issue 2)
   * fast XTC seeking (Issue 127)
   * changing resid (set_resid()) or segid (set_segid()) changes the
-    topology and lists of resids/segids can be assigned to 
+    topology and lists of resids/segids can be assigned to
     groups of objects (AtomGroup, ResidueGroup)
   * helanal: additional output of local bend and unit twist angles
     (Issue 133)
@@ -331,19 +336,19 @@ The rules for this file:
     ...) in addition to providing all trajectories as a list,
     i.e. Universe(topology, [traj1, traj2, ...])
   * added support for YASP and IBIsCO formats (.trz) (Issue 152)
-  * new methods for AtomGroup: packIntoBox([inplace=True]) 
+  * new methods for AtomGroup: packIntoBox([inplace=True])
   * added non-standard "extended" PDB format (XPDB) that reads
     five-digit residue numbers
   * util.convert_aa_code() recognizes non-standard residue names such
     as HSE, GLUH, GLH, ...
   * added new geometrics selections: sphlayer, sphzone, cylayer, cyzone
   * added TopologyDict and TopologyGroup classes for bond analysis
-  * added calc_bonds, calc_angles and calc_torsions cython functions to 
+  * added calc_bonds, calc_angles and calc_torsions cython functions to
     core.distances for quickly calculating bond information
-  * added applyPBC(coords, box) function to core.distances to move 
+  * added applyPBC(coords, box) function to core.distances to move
     coordinates to within the primary unit cell
   * many AtomGroup methods now support 'pbc' flag to move atoms to within
-    primary unitcell before calculation.  This behaviour can also be 
+    primary unitcell before calculation.  This behaviour can also be
     toggled using the core.flags['use_pbc'] flag (Issue 156)
   * MDAnalysis.analysis.rms.rmsd(): new center keyword so that one can
     immediately calculate the minimum rmsd of two rigid-body superimposed
@@ -372,7 +377,7 @@ The rules for this file:
   * asUniverse now also accepts any instance that inherits from
     MDAnalysis.Universe (Issue 176)
   * fixed XDR writer incorrect use of delta parameter (Issue 154)
-  * fixed incorrect computation of distances in serial and parallel 
+  * fixed incorrect computation of distances in serial and parallel
     distance_array() with PBC (Issue 151)
   * fixed Issue 129 (hole.py module pipe/file closure)
   * fixed array comparison bug in MDAnalysis.analysis.helanal
@@ -389,9 +394,9 @@ The rules for this file:
     C-compiler (clang) (Issue 142) although they will not get a parallel
     version of distance_array.
   * PDB with blank lines gave IndexError (Issue 158)
-  * fixed AtomGroup.ts Timestep instance not containing all available 
+  * fixed AtomGroup.ts Timestep instance not containing all available
     information (Issue 163)
-  * fixed Timestep copy method returning a base Timestep rather than 
+  * fixed Timestep copy method returning a base Timestep rather than
     appropriate format (Issue 164)
 
 12/24/12 danny.parton, jandom, orbeckst, jjlights03, jphillips, naveen.michaudagrawal, andy.somogyi, sebastien.buchoux
@@ -400,15 +405,15 @@ The rules for this file:
 
   Enhancements
 
-  * multithreaded distance_array() (Issue 80, experimental); see the 
+  * multithreaded distance_array() (Issue 80, experimental); see the
     new core.parallel.distance module
   * MDAnalysis.analysis.rms for simple RMSD analysis
   * format of input coordinates can be set as (filename, format)
-    tuples (Issue 76) 
-  * new AtomGroup.asphericity() and AtomGroup.shapeParameter()   
+    tuples (Issue 76)
+  * new AtomGroup.asphericity() and AtomGroup.shapeParameter()
     methods to compute shape descriptors.
   * access to forces (AtomGroup.forces with get_forces() and set_forces();
-    the default unit for force is kJ/(mol*A) and it is automatically 
+    the default unit for force is kJ/(mol*A) and it is automatically
     converted from/to native). Currently, only the TRR Reader/Writer
     support forces.
   * all element masses
@@ -423,12 +428,12 @@ The rules for this file:
   * fixed Issue 121 (PSFParser would fail with IndexError for files without SEGID)
   * Issue 122 (made installation of netCDF4 library optional, which
     means that users of the AMBER netcdf Reader/Writer will have to
-    manually install the library and its dependencies netcdf and HDF5, 
+    manually install the library and its dependencies netcdf and HDF5,
     see https://code.google.com/p/mdanalysis/wiki/netcdf)
 
 06/30/12 orbeckst, joshua.adelman, andy.somogyi, tyler.je.reddy, lukas.grossar, denniej0, danny.parton
 
-  * 0.7.6 
+  * 0.7.6
 
   Enhancements
 
@@ -438,16 +443,16 @@ The rules for this file:
   * AMBER NetCDF (binary trajectory) reader and writer, supporting
     coordinates and velocities; requires netcdf4-python (Issue 109)
   * additional attributes and methods for AtomGroup to consolidate
-    the interface to the Timestep: attribute 'positions' and 
-    'get_positions()' can be used instead of the 'coordinates()' 
+    the interface to the Timestep: attribute 'positions' and
+    'get_positions()' can be used instead of the 'coordinates()'
     method. get/set methods for both positions and velocities.
   * almost all Readers now support some form of slicing; unsupported
-    slicing operations will raise a TypeError  
-  * additional analysis for Nucleic Acid order parameters 
-    (MDAnalysis.analysis.nuclinfo) 
-  * AMBER TOPParser now able to do both amber10 and amber12 formats 
+    slicing operations will raise a TypeError
+  * additional analysis for Nucleic Acid order parameters
+    (MDAnalysis.analysis.nuclinfo)
+  * AMBER TOPParser now able to do both amber10 and amber12 formats
     (Issue 100)
- 
+
   Changes
 
   * selectAtoms: updated *nucleic* and *nucleicxstal* selection definition
@@ -458,9 +463,9 @@ The rules for this file:
     - many new analysis functions (see docs)
     - run() does not return the results anymore; results are simply
       stored as attribute timeseries (similar to other analysis tools)
-    - only write per-frame debugging messages to the logfile when the 
+    - only write per-frame debugging messages to the logfile when the
       new verbose keyword is set to True
-    - more reliable detection of hydrogens bonded to heavy atoms  
+    - more reliable detection of hydrogens bonded to heavy atoms
     - remove duplicate hydrogen bonds from the output
   * removed CHO and EAM (formyl and ethanol termini of gA in CHARMM)
     from the set of residues recognized as protein (collision with
@@ -468,10 +473,10 @@ The rules for this file:
   * PrimitivePDBWriter: special segid SYSTEM is translated to empty
     chainID
   * In order to write multi frame PDB files, the multiframe=True
-    keyword must be supplied or use the MultiPDBWriter 
+    keyword must be supplied or use the MultiPDBWriter
   * empty AtomGroup can be constructed or can result from a selection
     without matches; it does *not* raise NoDataError anymore (Issue 12)
-  * all single frame readers denote the first (and only) frame as 
+  * all single frame readers denote the first (and only) frame as
     frame number 1 (i.e. ts.frame == 1); it used to be 0 but 1 is
     consistent with the way this is is handled with real trajectories
   * requires Biopython >= 1.51 (fixes for Issue 112 and Issue 113)
@@ -490,7 +495,7 @@ The rules for this file:
   * fixed: permissive=True flag was ignored in Universe and hence the
     PrimitivePDBReader was always selected even if the Biopython one
     was desired
-  * fixed Issue 112 (used removed Biopython constructs in 
+  * fixed Issue 112 (used removed Biopython constructs in
     MDAnalysis.analysis.align.fasta2select; thanks to francesco.oteri
     for a test case and fix)
   * fixed failing 'type' selection for topology formats that read an
@@ -502,9 +507,9 @@ The rules for this file:
 02/16/12 sebastien.buchoux
 
   * 0.7.5.1
-  
+
   Fixes
-  
+
   * added: missing files (Issue 95)
   * removed: unused delaunay-related files
 
@@ -540,17 +545,17 @@ The rules for this file:
 
   Changes
 
-  * The UnitTests are now integrated with the separate test data in a 
-    separate Python package named MDAnalysisTests; to run the tests 
+  * The UnitTests are now integrated with the separate test data in a
+    separate Python package named MDAnalysisTests; to run the tests
     for 0.7.5 one will need MDAnalysisTests-0.7.5 (Issue 87).
   * install a range of analysis dependencies right away: networkx,
     biopython, GridDataFormats (usually all painless); leave scipy and
-    matplotlib to the user and the local package manager  
+    matplotlib to the user and the local package manager
   * When writing a trajectory and converting units, effectively a copy
     of the timestep is made and the in-memory timestep is not
     altered. In this way, analysis after writing a frame will still
     see the coordinates in MDAnalysis units and not converted units.
-  
+
   Fixes
 
   * analysis.align.rms_fit_traj(): can output fitted trajectory to any
@@ -561,7 +566,7 @@ The rules for this file:
   * fixed HydrogenBondingAnalysis backbone donor list: had C but
     should have been O (this was supposed to be fixed with r849 in
     0.7.4 but a typo crept in). NOTE: analysis might have produced
-    partially wrong results. 
+    partially wrong results.
   * fixed: dihedral() and other methods using core.util.angle() sometimes
     returned nan instead of +pi or -pi
   * fixed: writing a trajectory from chained CRD files gave garbage
@@ -572,7 +577,7 @@ The rules for this file:
     as "iterable"; this lead the Reader autodections and then the
     ChainReader fail with "Runtime Error: Maximum recursion depth
     exceeded" for single filenames provided as a unicode string.
-  * fixed: HBond analysis pickling of tables (Issue 92) 
+  * fixed: HBond analysis pickling of tables (Issue 92)
 
 
 07/09/11 orbeckst, dcaplan, jandom
@@ -597,11 +602,11 @@ The rules for this file:
     the canonical PDB residue number (EXPERIMENTAL)
 
   Fixes
- 
+
   * fixed Issue 74 (bug in AMBER topology parser which would show up for
     certain numbers of input lines; thanks to htaoyu1)
-  * fix for Issue 48 (sparse contact_matrix in distances.py was slow when 
-    written in pure python; optimized in c code using scipy.weave) 
+  * fix for Issue 48 (sparse contact_matrix in distances.py was slow when
+    written in pure python; optimized in c code using scipy.weave)
   * HydrogenBondingAnalysis: donor atom name CO --> O (proper backbone
     oxygen); without the fix one misses most of the backbone H-bonds
   * alignto() and rms_fit_trj(): order of mobile and reference
@@ -618,7 +623,7 @@ The rules for this file:
     releases of MDAnalysis will also use these test data unless a
     MDAnalysisTestData package with a higher release number is available.
 
- 
+
 
 05/22/11 orbeckst, jandom, Benjamin Hall, Paul Rigor, dcaplan,
          Christian Beckstein (logo), denniej0
@@ -633,7 +638,7 @@ The rules for this file:
     faster and use QCPROT)
 
   Enhancements
- 
+
   * PDBQT (autodock) format added (reading and writing of single frames)
   * new attributes universe.trajectory.frame and universe.trajectory.frame:
     report the current frame number and time (e.g. in ps) of the current frame
@@ -670,7 +675,7 @@ The rules for this file:
   * NOTE: minimum Python version required is 2.5 (since 0.6.3)
 
   Enhancements
- 
+
   * loading from a PDB sets segid to the chain id if it exists
   * PrimitivePDBWriter uses first letter of segid as PDB chain id
   * aliased segment.name to segment.id
@@ -681,7 +686,7 @@ The rules for this file:
     radii as a NumPy array; internally B-factor has also become an
     attribute of each Atom.
   * recognise many more OPLS/AA and Amber residue names as "protein"
-  * recognise more atom masses (taken from CHARMM27 and Gromacs) and 
+  * recognise more atom masses (taken from CHARMM27 and Gromacs) and
     atom types (from CHARMM, Amber, OPLS, GROMOS) and moved
     masses and types into new module topology.tables; the type recognition
     is still incomplete but can be easily enhanced in tables
@@ -689,13 +694,13 @@ The rules for this file:
   * TrajectoryReader gained Writer() method which returns an appropriate
     TrajectoryWriter instance that can be used for processing this
     trajectory (enhancement of the Trajectory API); if no Writer is known
-    then a NotImplementedError is raised    
-  * doc improvements   
-   
+    then a NotImplementedError is raised
+  * doc improvements
+
   Fixes
-  
+
   * installation: removed dependency on Cython; developer should
-    use setup_developer.py instead of setup.py (Issue 66)   
+    use setup_developer.py instead of setup.py (Issue 66)
   * Fixed a problem with the strict PDBReader: raised exception when the
     pdb did not contain a segid
   * Support for PDBs with 4 character resnames and segID output when
@@ -715,7 +720,7 @@ The rules for this file:
   * AMBER topology and trj capabilities (netcdf not yet available)
   * PQR file reading support
   * new analysis.contacts.ContactAnalysis1 class that supports a
-    native contact analysis between arbitrary groups     
+    native contact analysis between arbitrary groups
   * new examples (e.g. peptide helix clustering in a membrane)
   * fixed Issue 58 (align.rms_fit_trj; fix reported by Joshua Adelman)
   * new analysis module 'density': creation and analysis of volume data
@@ -736,7 +741,7 @@ The rules for this file:
     - DCD.DCDReader.dcd_header() and DCD.DCDWriter.dcd_header()
       (use _dcd_header())
     - Universe.dcd (and Universe.xtc, Universe.trr...) --- from
-      now on only Universe.trajectory is supported. 
+      now on only Universe.trajectory is supported.
       WILL BREAK LEGACY CODE!
     - removed the following packages from top-level MDAnalysis
       name space:
@@ -751,14 +756,14 @@ The rules for this file:
             'Universe', 'asUniverse', 'Writer', 'collection']
           - removed copy flag from distance_array and self_distance_array:
             setting it to False would always give wrong results so there was
-            no good reason keeping it around 
-  * whitespace is no longer required around parentheses for 
+            no good reason keeping it around
+  * whitespace is no longer required around parentheses for
     selectAtoms strings but the old syntax with white space
     still works (Issue 43)
   * improved trajectory writing
     - MDAnalysis.Writer() factory function that provides an
       appropriate writer for the desired file format
-    - Writer.write() accepts a Timestep, a Universe, or a 
+    - Writer.write() accepts a Timestep, a Universe, or a
       arbitrary AtomGroup (e.g. from a selection); this is much
       more flexible than Writer.write_next_timestep()
   * New attributes for trajectory readers: dt (time between
@@ -768,21 +773,21 @@ The rules for this file:
        1. indexing with integers returns a single Atom
        2. slicing always returns a new AtomGroup
        3. advanced slicing with a list or array returns a new
-          AtomGroup (NEW, fixes Issue 36) 
+          AtomGroup (NEW, fixes Issue 36)
     - AtomGroup coordinates can be manipulated (translate(),
       rotate() and rotateby() methods; when appropriate, these methods
       can take AtomGroups or arrays to determine coordinates)
-    - new attributes 'residues' and 'segments' for AtomGroup to give 
-      access to the list of residue/segment objects of the group 
+    - new attributes 'residues' and 'segments' for AtomGroup to give
+      access to the list of residue/segment objects of the group
     - new exception 'NoDataError'; raised when creation of an empty
       AtomGroup is attempted (see also Issue 12)
     - consistent representation of the Segment > Residue > Atom
       hierarchy: all classes related to AtomGroup have the
       attributes 'atoms', 'residues', 'segments' which provide
       access to groups of the corresponding objects
-  * improvements to Residue, ResidueGroup and Segment classes 
+  * improvements to Residue, ResidueGroup and Segment classes
     - documented accessing residues from Segment as
-      Segment.r<resid>; resid is 1-based -- BREAKS OLD CODE 
+      Segment.r<resid>; resid is 1-based -- BREAKS OLD CODE
       that relied on this being 0-based
     - added SegmentGroup class
           - can write from Residue, ResidueGroup and Segment (Issue 46)
@@ -791,23 +796,23 @@ The rules for this file:
           - added documentation and examples in the doc strings
           - new special dihedral angle selections defined for Residue
             class to simplify analysis of backbone torsions (experimental)
-  * new contact_matrix method for calculating contacts 
+  * new contact_matrix method for calculating contacts
     (Issue 30); for large (N > ~10000) coordinate arrays
     automatically switches to a method using a sparse matrix (slower)
   * more example scripts (e.g. for membrane analysis, trajectory writing,
     coordinate transformations)
   * CRDReader added (fixes  Issue 40 ) ... it will work for both
-    standard and extended formats: NO special flags needed. 
-  * CRDWriter will now write extended crd files: NO special flags needed.  
+    standard and extended formats: NO special flags needed.
+  * CRDWriter will now write extended crd files: NO special flags needed.
   * By default, PDB files are read with the PrimitivePDBReader and not
     the Bio.PDB reader anymore because the latter can drop atoms when
     they have the same name in a residue (which happens for systems
     generated from MD simulations) The PrimitivePDBReader copes just fine
     with those cases (but does not handle esoteric PDB features such as
     alternative atoms and insertion codes that are not needed for
-    handling MD simulation data).  
+    handling MD simulation data).
       - The default behaviour of MDAnalysis  can be set through the flag
-	MDAnalysis.core.flag['permissive_pdb_reader']. The default is True.  
+	MDAnalysis.core.flag['permissive_pdb_reader']. The default is True.
       - One can always manually select the PDB reader by providing the
         permissive keyword to Universe; e.g. Universe(...,permissive=False)
         will read the input file with the Bio.PDB reader. This might be
@@ -844,7 +849,7 @@ The rules for this file:
      - lipid bilayer leaflet detection
      - native contact analysis ("q1-q2")
      - rms-fitting based on sequence alignment
-  * write selections for other codes from AtomGroups (VMD, pymol, CHARMM, 
+  * write selections for other codes from AtomGroups (VMD, pymol, CHARMM,
     Gromacs ndx)
   * gro reader (Issue 31)
   * better API for loading a topology and a coordinate file in Universe()
@@ -857,7 +862,7 @@ The rules for this file:
   * added basic XYZ reader with compression support (Issue 35)
   * PDB reader guesses masses (unknown elements are set to 0)
   * installation requires Biopython (www.biopython.org)
- 
+
 05/28/10 orbeckst, denniej0
   * 0.6.2 release
   * removed a number of imports from the top level (such as rms_fitting);
@@ -867,7 +872,7 @@ The rules for this file:
   * deprecated DCD.dcd_header --> DCD._dcd_header
   * XTC and TRR compute numframes by iterating through trajectory (slow!)
   * introduced units: base units are ps (time) and Angstrom (length); see core.flags
-  * XTC and TRR automatically convert between native Gromacs units (ps, nm) and 
+  * XTC and TRR automatically convert between native Gromacs units (ps, nm) and
     base units (uses core.flags['convert_gromacs_lengths'] = True)
   * more test cases
   * *really* FIXED Issue 16 (can easy_install from tar file)
@@ -892,7 +897,7 @@ The rules for this file:
   * renamed _dcdtest to dcdtimeseries (will not affect old code)
   * unit tests added (still need more test cases)
 
-03/31/10 orbeckst, denniej0 
+03/31/10 orbeckst, denniej0
   * 0.6.0 release
   * added KDTree and Neighbour searching code from Biopython for
     faster distance selections: used for AROUND selections;
@@ -937,4 +942,3 @@ The rules for this file:
 
 11/12/07 naveen
   * prepared for release outside lab
-
