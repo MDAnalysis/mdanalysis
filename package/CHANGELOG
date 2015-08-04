@@ -58,8 +58,6 @@ The rules for this file:
   * Added from_timestep and from_coordinates construction methods
     to base.Timestep
   * Removed FormatError, now replaced by ValueError
-  * distances.contact_matrix(): changed keyword 'suppress_progmet' to
-    'quiet'
   * Moved MDAnalysis.KDTree to MDAnalysis.lib.KDTree (Issue #287)
   * Moved MDAnalysis.core.transformations to MDAnalysis.lib.transformations
     (Issue #287)
@@ -85,9 +83,9 @@ The rules for this file:
     was previously "delta" in some Writers. (Issue #206)
   * DCDReader no longer supports the "skip" keyword.  Use slicing
     on reader iteration to achieve same affect.
-  * Contact-Matrix now treats the particle distance with itself as a contact for
-    sparse matrices and numpy arrays. The progress reporting for sparse
-    calculations has been removed.
+  * distances.contact_matrix now treats the particle distance with
+    itself as a contact for sparse matrices and numpy arrays. The
+    progress reporting for sparse calculations has been removed.
 
   Fixes
   * Amber TRJ and NCDF Reader & Writers now use 'dt' instead of 'delta'
