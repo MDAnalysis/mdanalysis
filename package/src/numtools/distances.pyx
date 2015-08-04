@@ -50,7 +50,6 @@ cdef extern from "calc_distances.h":
     void _calc_torsion_triclinic(coordinate* atom1, coordinate* atom2, coordinate* atom3, coordinate* atom4, int numatom, coordinate* box, double* angles)
     void _ortho_pbc(coordinate* coords, int numcoords, float* box, float* box_inverse)
     void _triclinic_pbc(coordinate* coords, int numcoords, coordinate* box, float* box_inverse)
-    void minimum_image(double *x, float *box, float *inverse_box)
 
 def calc_distance_array(c_numpy.ndarray ref, c_numpy.ndarray conf,
                         c_numpy.ndarray result):
@@ -263,17 +262,17 @@ def triclinic_pbc(c_numpy.ndarray coords,
 def contact_matrix_no_pbc(coord, sparse_contacts, cutoff):
     cdef int rows = len(coord)
     cdef double cutoff2 = cutoff ** 2
-    cdef int i, j
-    cdef double x,y,z
     cdef float[:, ::1] xyz = coord
 
+    cdef int i, j
+    cdef double x, y, z, dist
     for i in range(rows):
         sparse_contacts[i, i] = True
         for j in range(i+1, rows):
             x = xyz[i, 0] - xyz[j, 0]
             y = xyz[i, 1] - xyz[j, 1]
             z = xyz[i, 2] - xyz[j, 2]
-            dist = x**2 + y**2 + z**2
+            dist = x*x + y*y + z*z
             if dist < cutoff2:
                 sparse_contacts[i, j] = True
                 sparse_contacts[j, i] = True
@@ -283,12 +282,12 @@ def contact_matrix_no_pbc(coord, sparse_contacts, cutoff):
 def contact_matrix_pbc(coord, sparse_contacts, box, cutoff):
     cdef int rows = len(coord)
     cdef double cutoff2 = cutoff ** 2
-    cdef int i, j
-    cdef double x,y,z, dist
     cdef float[:, ::1] xyz = coord
     cdef float[::1] box_view = box
     cdef float[::1] box_half = box / 2.
 
+    cdef int i, j
+    cdef double x, y, z, dist
     for i in range(rows):
         sparse_contacts[i, i] = True
         for j in range(i+1, rows):
@@ -305,7 +304,7 @@ def contact_matrix_pbc(coord, sparse_contacts, box, cutoff):
             if abs(z) > box_half[2]:
                 z = z+box_view[2] if z<0.0 else z-box_view[2]
 
-            dist = x**2 + y**2 + z**2
+            dist = x*x + y*y + z*z
 
             if dist < cutoff2:
                 sparse_contacts[i, j] = True
