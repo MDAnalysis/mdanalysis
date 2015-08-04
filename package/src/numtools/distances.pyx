@@ -274,7 +274,7 @@ def contact_matrix_no_pbc(coord, sparse_contacts, cutoff):
             y = xyz[i, 1] - xyz[j, 1]
             z = xyz[i, 2] - xyz[j, 2]
             dist = x**2 + y**2 + z**2
-            if dist >= 0 and dist < cutoff2:
+            if dist < cutoff2:
                 sparse_contacts[i, j] = True
                 sparse_contacts[j, i] = True
 
@@ -307,6 +307,6 @@ def contact_matrix_pbc(coord, sparse_contacts, box, cutoff):
 
             dist = x**2 + y**2 + z**2
 
-            if dist >= 0 and dist < cutoff2:
+            if dist < cutoff2:
                 sparse_contacts[i, j] = True
                 sparse_contacts[j, i] = True

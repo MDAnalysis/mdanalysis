@@ -76,10 +76,10 @@ class TestContactMatrix(TestCase):
         contacts = MDAnalysis.analysis.distances.contact_matrix(selection.coordinates(), cutoff=1.07,
                                                                 returntype="sparse")
         assert_equal(contacts.shape, (50, 50), "wrong shape (should be (50,50))")
-        assert_equal(contacts[0, 0], False, "entry (0,0) should be a non-contact")
+        assert_equal(contacts[0, 0], True, "entry (0,0) should be a contact")
         assert_equal(contacts[0, 2], True, "entry (0,2) should be a contact")
         assert_equal(contacts[0, 3], True, "entry (0,3) should be a contact")
-        assert_equal(contacts[0, 4], False, "entry (0,3) should be a contact")
+        assert_equal(contacts[0, 4], False, "entry (0,4) should be a non-contact")
 
     def test_box_dense(self):
         coord = numpy.array([[1, 1, 1], [5, 5, 5], [11, 11, 11]],
@@ -92,7 +92,7 @@ class TestContactMatrix(TestCase):
                            [False, True, False],
                            [True, False, True]])
 
-        assert_equal(contacts, res)
+        assert_equal(contacts, res, "diagonal elements and (0,2)/(2,0) should be a contact")
 
     def test_box_sparse(self):
         coord = numpy.array([[1, 1, 1], [5, 5, 5], [11, 11, 11]],
