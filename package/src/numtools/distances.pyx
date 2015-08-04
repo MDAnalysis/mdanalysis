@@ -50,6 +50,7 @@ cdef extern from "calc_distances.h":
     void _calc_torsion_triclinic(coordinate* atom1, coordinate* atom2, coordinate* atom3, coordinate* atom4, int numatom, coordinate* box, double* angles)
     void _ortho_pbc(coordinate* coords, int numcoords, float* box, float* box_inverse)
     void _triclinic_pbc(coordinate* coords, int numcoords, coordinate* box, float* box_inverse)
+    void minimum_image(double *x, float *box, float *inverse_box)
 
 def calc_distance_array(c_numpy.ndarray ref, c_numpy.ndarray conf,
                         c_numpy.ndarray result):
@@ -262,17 +263,18 @@ def triclinic_pbc(c_numpy.ndarray coords,
 def contact_matrix_no_pbc(coord, sparse_contacts, cutoff):
     cdef int rows = len(coord)
     cdef double cutoff2 = cutoff ** 2
-    cdef float[:, ::1] xyz = coord
+    cdef float[:, ::1] coord_view = coord
 
     cdef int i, j
-    cdef double x, y, z, dist
+    cdef double[3] rr;
+    cdef double dist
     for i in range(rows):
         sparse_contacts[i, i] = True
         for j in range(i+1, rows):
-            x = xyz[i, 0] - xyz[j, 0]
-            y = xyz[i, 1] - xyz[j, 1]
-            z = xyz[i, 2] - xyz[j, 2]
-            dist = x*x + y*y + z*z
+            rr[0] = coord_view[i, 0] - coord_view[j, 0]
+            rr[1] = coord_view[i, 1] - coord_view[j, 1]
+            rr[2] = coord_view[i, 2] - coord_view[j, 2]
+            dist = rr[0]*rr[0] + rr[1]*rr[1] + rr[2]*rr[2]
             if dist < cutoff2:
                 sparse_contacts[i, j] = True
                 sparse_contacts[j, i] = True
@@ -282,29 +284,23 @@ def contact_matrix_no_pbc(coord, sparse_contacts, cutoff):
 def contact_matrix_pbc(coord, sparse_contacts, box, cutoff):
     cdef int rows = len(coord)
     cdef double cutoff2 = cutoff ** 2
-    cdef float[:, ::1] xyz = coord
+    cdef float[:, ::1] coord_view = coord
     cdef float[::1] box_view = box
-    cdef float[::1] box_half = box / 2.
+    cdef float[::1] box_inv = 1. / box
 
     cdef int i, j
-    cdef double x, y, z, dist
+    cdef double[3] rr;
+    cdef double dist
     for i in range(rows):
         sparse_contacts[i, i] = True
         for j in range(i+1, rows):
-            x = xyz[i, 0] - xyz[j, 0]
-            y = xyz[i, 1] - xyz[j, 1]
-            z = xyz[i, 2] - xyz[j, 2]
+            rr[0] = coord_view[i, 0] - coord_view[j, 0]
+            rr[1] = coord_view[i, 1] - coord_view[j, 1]
+            rr[2] = coord_view[i, 2] - coord_view[j, 2]
 
-            if abs(x) > box_half[0]:
-                x = x+box_view[0] if x<0.0 else x-box_view[0]
+            minimum_image(rr, &box_view[0], &box_inv[0])
 
-            if abs(y) > box_half[1]:
-                y = y+box_view[1] if y<0.0 else y-box_view[1]
-
-            if abs(z) > box_half[2]:
-                z = z+box_view[2] if z<0.0 else z-box_view[2]
-
-            dist = x*x + y*y + z*z
+            dist = rr[0]*rr[0] + rr[1]*rr[1] + rr[2]*rr[2]
 
             if dist < cutoff2:
                 sparse_contacts[i, j] = True
