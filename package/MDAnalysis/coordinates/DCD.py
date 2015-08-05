@@ -72,7 +72,7 @@ import os
 import errno
 import numpy as np
 import struct
-import new
+import types
 
 from ..core import flags
 from .. import units as mdaunits  # use mdaunits instead of units to avoid a clash
@@ -474,7 +474,7 @@ class DCDReader(base.Reader):
     def _read_next_timestep(self, ts=None):
         """Read the next frame
 
-        .. versionchanged 0.11.0:: 
+        .. versionchanged 0.11.0::
            Native frame read into ts._frame, ts.frame naively iterated
         """
         if ts is None:
@@ -595,17 +595,16 @@ class DCDReader(base.Reader):
         return self.skip_timestep * self.convert_time_from_native(self.delta)
 
 
-DCDReader._read_dcd_header = new.instancemethod(_dcdmodule.__read_dcd_header, None, DCDReader)
-DCDReader._read_next_frame = new.instancemethod(_dcdmodule.__read_next_frame, None, DCDReader)
-DCDReader._jump_to_frame = new.instancemethod(_dcdmodule.__jump_to_frame, None, DCDReader)
-DCDReader._reset_dcd_read = new.instancemethod(_dcdmodule.__reset_dcd_read, None, DCDReader)
-DCDReader._finish_dcd_read = new.instancemethod(_dcdmodule.__finish_dcd_read, None, DCDReader)
-DCDReader._read_timeseries = new.instancemethod(_dcdmodule.__read_timeseries, None, DCDReader)
+DCDReader._read_dcd_header = types.MethodType(_dcdmodule.__read_dcd_header, None, DCDReader)
+DCDReader._read_next_frame = types.MethodType(_dcdmodule.__read_next_frame, None, DCDReader)
+DCDReader._jump_to_frame = types.MethodType(_dcdmodule.__jump_to_frame, None, DCDReader)
+DCDReader._reset_dcd_read = types.MethodType(_dcdmodule.__reset_dcd_read, None, DCDReader)
+DCDReader._finish_dcd_read = types.MethodType(_dcdmodule.__finish_dcd_read, None, DCDReader)
+DCDReader._read_timeseries = types.MethodType(_dcdmodule.__read_timeseries, None, DCDReader)
 
-DCDWriter._write_dcd_header = new.instancemethod(_dcdmodule.__write_dcd_header, None, DCDWriter)
-DCDWriter._write_next_frame = new.instancemethod(_dcdmodule.__write_next_frame, None, DCDWriter)
-DCDWriter._finish_dcd_write = new.instancemethod(_dcdmodule.__finish_dcd_write, None, DCDWriter)
+DCDWriter._write_dcd_header = types.MethodType(_dcdmodule.__write_dcd_header, None, DCDWriter)
+DCDWriter._write_next_frame = types.MethodType(_dcdmodule.__write_next_frame, None, DCDWriter)
+DCDWriter._finish_dcd_write = types.MethodType(_dcdmodule.__finish_dcd_write, None, DCDWriter)
 
-#DCDReader._read_timeseries = new.instancemethod(dcdtimeseries.__read_timeseries, None, DCDReader)
-DCDReader._read_timecorrel = new.instancemethod(dcdtimeseries.__read_timecorrel, None, DCDReader)
-
+#DCDReader._read_timeseries = types.MethodType(dcdtimeseries.__read_timeseries, None, DCDReader)
+DCDReader._read_timecorrel = types.MethodType(dcdtimeseries.__read_timecorrel, None, DCDReader)
