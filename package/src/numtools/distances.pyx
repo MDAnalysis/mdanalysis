@@ -22,6 +22,7 @@ Distance calculation library --- :mod:`MDAnalysis.lib._distances`
 Serial versions of all distance calculations
 """
 
+cimport cython
 cimport c_numpy
 c_numpy.import_array()
 
@@ -49,6 +50,7 @@ cdef extern from "calc_distances.h":
     void _calc_torsion_triclinic(coordinate* atom1, coordinate* atom2, coordinate* atom3, coordinate* atom4, int numatom, coordinate* box, double* angles)
     void _ortho_pbc(coordinate* coords, int numcoords, float* box, float* box_inverse)
     void _triclinic_pbc(coordinate* coords, int numcoords, coordinate* box, float* box_inverse)
+    void minimum_image(double *x, float *box, float *inverse_box)
 
 def calc_distance_array(c_numpy.ndarray ref, c_numpy.ndarray conf,
                         c_numpy.ndarray result):
@@ -82,7 +84,7 @@ def calc_distance_array_triclinic(c_numpy.ndarray ref, c_numpy.ndarray conf,
     _calc_distance_array_triclinic(<coordinate*>ref.data, refnum,
                                    <coordinate*>conf.data, confnum,
                                    <coordinate*>box.data,
-                                   <double*>result.data) 
+                                   <double*>result.data)
 
 def calc_self_distance_array(c_numpy.ndarray ref,
                              c_numpy.ndarray result):
@@ -255,3 +257,51 @@ def triclinic_pbc(c_numpy.ndarray coords,
 
     _triclinic_pbc(<coordinate*> coords.data, numcoords,
                    <coordinate*> box.data, <float*>box_inverse.data)
+
+
+@cython.boundscheck(False)
+def contact_matrix_no_pbc(coord, sparse_contacts, cutoff):
+    cdef int rows = len(coord)
+    cdef double cutoff2 = cutoff ** 2
+    cdef float[:, ::1] coord_view = coord
+
+    cdef int i, j
+    cdef double[3] rr;
+    cdef double dist
+    for i in range(rows):
+        sparse_contacts[i, i] = True
+        for j in range(i+1, rows):
+            rr[0] = coord_view[i, 0] - coord_view[j, 0]
+            rr[1] = coord_view[i, 1] - coord_view[j, 1]
+            rr[2] = coord_view[i, 2] - coord_view[j, 2]
+            dist = rr[0]*rr[0] + rr[1]*rr[1] + rr[2]*rr[2]
+            if dist < cutoff2:
+                sparse_contacts[i, j] = True
+                sparse_contacts[j, i] = True
+
+
+@cython.boundscheck(False)
+def contact_matrix_pbc(coord, sparse_contacts, box, cutoff):
+    cdef int rows = len(coord)
+    cdef double cutoff2 = cutoff ** 2
+    cdef float[:, ::1] coord_view = coord
+    cdef float[::1] box_view = box
+    cdef float[::1] box_inv = 1. / box
+
+    cdef int i, j
+    cdef double[3] rr;
+    cdef double dist
+    for i in range(rows):
+        sparse_contacts[i, i] = True
+        for j in range(i+1, rows):
+            rr[0] = coord_view[i, 0] - coord_view[j, 0]
+            rr[1] = coord_view[i, 1] - coord_view[j, 1]
+            rr[2] = coord_view[i, 2] - coord_view[j, 2]
+
+            minimum_image(rr, &box_view[0], &box_inv[0])
+
+            dist = rr[0]*rr[0] + rr[1]*rr[1] + rr[2]*rr[2]
+
+            if dist < cutoff2:
+                sparse_contacts[i, j] = True
+                sparse_contacts[j, i] = True

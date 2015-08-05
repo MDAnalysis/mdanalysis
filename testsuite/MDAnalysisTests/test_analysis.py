@@ -40,45 +40,52 @@ from MDAnalysisTests import executable_not_found_runtime
 
 class TestContactMatrix(TestCase):
     def setUp(self):
-        self.universe = MDAnalysis.Universe(PSF, DCD)
-        self.dcd = self.universe.trajectory
-        # reasonable precision so that tests succeed on 32 and 64 bit machines
-        # (the reference values were obtained on 64 bit)
-        # Example:
-        #   Items are not equal: wrong maximum distance value
-        #   ACTUAL: 52.470254967456412
-        #   DESIRED: 52.470257062419059
-        self.prec = 5
-
-    def tearDown(self):
-        del self.universe
-        del self.dcd
+        self.coord = numpy.array([[1, 1, 1],
+                                  [5, 5, 5],
+                                  [1.1, 1.1, 1.1],
+                                  [11, 11, 11],  # neighboring image with pbc
+                                  [21, 21, 21]],  # non neighboring image with pbc
+                                 dtype=numpy.float32)
+        self.box = numpy.array([10, 10, 10], dtype=numpy.float32)
+        self.shape = (5, 5)
+        self.res_no_pbc = numpy.array([[1, 0, 1, 0, 0],
+                                       [0, 1, 0, 0, 0],
+                                       [1, 0, 1, 0, 0],
+                                       [0, 0, 0, 1, 0],
+                                       [0, 0, 0, 0, 1]], dtype=numpy.bool)
+        self.res_pbc = numpy.array([[1, 0, 1, 1, 1],
+                                    [0, 1, 0, 0, 0],
+                                    [1, 0, 1, 1, 1],
+                                    [1, 0, 1, 1, 1],
+                                    [1, 0, 1, 1, 1]], dtype=numpy.bool)
 
     def test_numpy(self):
-        U = self.universe
-        self.dcd.rewind()
-        self.dcd[10]
-        # small cutoff value as the input file is a protein
-        contacts = MDAnalysis.analysis.distances.contact_matrix(U.atoms.coordinates(), cutoff=1.5, returntype="numpy")
-        assert_equal(contacts.shape, (3341, 3341), "wrong shape (should be (Natoms,Natoms))")
-        assert_equal(contacts[0][0], True, "first entry should be a contact")
-        assert_equal(contacts[0][-1], False, "last entry for first atom should be a non-contact")
+        contacts = MDAnalysis.analysis.distances.contact_matrix(
+            self.coord, cutoff=1, returntype="numpy")
+        assert_equal(contacts.shape, self.shape,
+                     "wrong shape (should be {})".format(self.shape))
+        assert_equal(contacts, self.res_no_pbc)
 
     def test_sparse(self):
-        U = self.universe
-        self.dcd.rewind()
-        self.dcd[10]
-        # Just taking first 50 atoms as the sparse method is slow
-        selection = U.selectAtoms('bynum 1:50')
-        # small cutoff value as the input file is a protein
-        # High progress_meter_freq so progress meter is not printed during test
-        contacts = MDAnalysis.analysis.distances.contact_matrix(selection.coordinates(), cutoff=1.07,
-                                                                returntype="sparse", quiet=True)
-        assert_equal(contacts.shape, (50, 50), "wrong shape (should be (50,50))")
-        assert_equal(contacts[0, 0], False, "entry (0,0) should be a non-contact")
-        assert_equal(contacts[0, 2], True, "entry (0,2) should be a contact")
-        assert_equal(contacts[0, 3], True, "entry (0,3) should be a contact")
-        assert_equal(contacts[0, 4], False, "entry (0,3) should be a contact")
+        contacts = MDAnalysis.analysis.distances.contact_matrix(
+            self.coord, cutoff=1.5, returntype="sparse")
+        assert_equal(contacts.shape, self.shape,
+                     "wrong shape (should be {})".format(self.shape))
+        assert_equal(contacts.toarray(), self.res_no_pbc)
+
+    def test_box_numpy(self):
+        contacts = MDAnalysis.analysis.distances.contact_matrix(
+            self.coord, box=self.box, cutoff=1)
+        assert_equal(contacts.shape, self.shape,
+                     "wrong shape (should be {})".format(self.shape))
+        assert_equal(contacts, self.res_pbc)
+
+    def test_box_sparse(self):
+        contacts = MDAnalysis.analysis.distances.contact_matrix(
+            self.coord, box=self.box, cutoff=1, returntype='sparse')
+        assert_equal(contacts.shape, self.shape,
+                     "wrong shape (should be {})".format(self.shape))
+        assert_equal(contacts.toarray(), self.res_pbc)
 
 
 class TestAlign(TestCase):
@@ -543,4 +550,3 @@ class TestWaterdynamics(TestCase):
         sp = MDAnalysis.analysis.waterdynamics.SurvivalProbability(self.universe, self.selection1, 0, 6, 3)
         sp.run(quiet=True)
         assert_equal(round(sp.timeseries[1],5), 1.0)
-
