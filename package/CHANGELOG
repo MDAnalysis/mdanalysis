@@ -11,7 +11,8 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/15  tyler.je.reddy, richardjgowers, alejob, orbeckst, dotsdl,
-        manuel.nuno.melo, cyanezstange, khuston, ivirshup, kain88-de
+        manuel.nuno.melo, cyanezstange, khuston, ivirshup, kain88-de,
+        gormanstock
 
   * 0.11.0
 
@@ -108,6 +109,7 @@ The rules for this file:
   * Fixed parsing of PDB header data for PrimitivePDBReader (Issue #332)
   * Fixed contact_matrix handles periodic boundary conditions correctly for
     sparse matrices.
+  * Fixed analysis.hole not using CPOINT (Issue #384)
 
 06/01/15  richardjgowers, caio s. souza, manuel.nuno.melo, orbeckst,
           sseyler

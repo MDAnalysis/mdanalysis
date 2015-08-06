@@ -722,12 +722,12 @@ class HOLE(BaseHOLE):
             """)
         if self.cpoint is not None:
             # note: if it is None then we can't change this with a kw for run() !!
-            self.template += "\nCPOINT %(cpoint_xyz)s\n"
+            self.template += "CPOINT %(cpoint_xyz)s\n"
         else:
             logger.info("HOLE will guess CPOINT")
         if self.cvect is not None:
             # note: if it is None then we can't change this with a kw for run() !!
-            self.template += "\nCVECT  %(cvect_xyz)s\n"
+            self.template += "CVECT  %(cvect_xyz)s\n"
         else:
             logger.info("HOLE will guess CVECT")
 
@@ -797,7 +797,7 @@ class HOLE(BaseHOLE):
         #       ignored here. Arguably a bug... but then again, the keywords for run() are
         #       not even officially documented :-).
         kwargs.setdefault("cvect_xyz", seq2str(kwargs.pop('cvect', self.cvect)))
-        kwargs.setdefault("cpoint_xyz", seq2str(kwargs.pop('cpoint', self.cvect)))
+        kwargs.setdefault("cpoint_xyz", seq2str(kwargs.pop('cpoint', self.cpoint)))
         kwargs.setdefault("ignore", seq2str(kwargs.pop('ignore_residues', self.ignore_residues)))
         holeargs = vars(self).copy()
         holeargs.update(kwargs)
