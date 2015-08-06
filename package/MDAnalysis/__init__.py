@@ -134,18 +134,16 @@ the OPLS/AA force field.
 
 """
 
-__version__ = "0.11.0-dev"  # NOTE: keep in sync with RELEASE in setup.py
-
 __all__ = ['Timeseries', 'Universe', 'asUniverse', 'Writer', 'collection']
 
 import logging
 
-from .lib import log
-from .lib.log import NullHandler, start_logging, stop_logging
+from .version import __version__
 
-h = log.NullHandler()
-logging.getLogger("MDAnalysis").addHandler(h)
-del h
+from .lib import log
+from .lib.log import start_logging, stop_logging
+
+logging.getLogger("MDAnalysis").addHandler(log.NullHandler())
 del logging
 
 # custom exceptions and warnings

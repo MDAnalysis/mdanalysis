@@ -76,23 +76,24 @@ from __future__ import division
 import sys
 import logging
 
+from .. import version
 
-
-def start_logging(logfile="MDAnalysis.log"):
+def start_logging(logfile="MDAnalysis.log", version=version.__version__):
     """Start logging of messages to file and console.
 
     The default logfile is named `MDAnalysis.log` and messages are
     logged with the tag *MDAnalysis*.
     """
-    log.create("MDAnalysis", logfile=logfile)
-    logging.getLogger("MDAnalysis").info("MDAnalysis %s STARTED logging to %r", __version__, logfile)
+    create("MDAnalysis", logfile=logfile)
+    logging.getLogger("MDAnalysis").info(
+        "MDAnalysis %s STARTED logging to %r", version, logfile)
 
 
 def stop_logging():
     """Stop logging to logfile and console."""
     logger = logging.getLogger("MDAnalysis")
     logger.info("MDAnalysis STOPPED logging")
-    log.clear_handlers(logger)  # this _should_ do the job...
+    clear_handlers(logger)  # this _should_ do the job...
 
 
 
