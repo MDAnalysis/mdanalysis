@@ -24,7 +24,7 @@ Generation and Analysis of HOLE pore profiles --- :mod:`MDAnalysis.analysis.hole
 
 With the help of this module, HOLE_ can be run on frames in a trajectory. Data
 can be combined and analyzed. HOLE_ [Smart1993]_ [Smart1996]_ must be installed
-separately.
+separately and can be obtained from http://www.smartsci.uk/hole/.
 
 
 .. rubric:: References
@@ -34,9 +34,9 @@ separately.
 .. [Smart1996] O.S. Smart, J.G. Neduvelil, X. Wang, B.A. Wallace, and M.S.P. Sansom.
                HOLE: A program for the analysis of the pore dimensions of ion channel
                structural models. J.Mol.Graph., 14:354–360, 1996.
-               URL http://hole.biop.ox.ac.uk/hole.
+               URL http://www.smartsci.uk/hole/
 
-.. _HOLE: http://hole.biop.ox.ac.uk/hole
+.. _HOLE: http://www.smartsci.uk/hole/
 
 
 Examples
@@ -457,7 +457,7 @@ class HOLE(BaseHOLE):
     .. versionadded:: 0.7.7
 
     .. _`HOLE control parameters`:
-       http://d2o.bioch.ox.ac.uk:38080/doc/hole_d03.html
+       http://s3.smartsci.uk/hole2/doc/old/hole_d03.html
     """
     #: Maximum number of characters in a filename (limitation of HOLE)
     HOLE_MAX_LENGTH = 70
@@ -734,7 +734,7 @@ class HOLE(BaseHOLE):
         if self.dcd:
             # CHARMD -- DCD (matches COORD)
             # CHARMS int int -- ignore_first_N_frames   skip_every_X_frames
-            # http://d2o.bioch.ox.ac.uk:38080/doc/hole_d03.html#CHARMD
+            #        http://s3.smartsci.uk/hole2/doc/old/hole_d03.html#CHARMD
             self.template += "\nCHARMD %(dcd)s\nCHARMS %(dcd_iniskip)d %(dcd_step)d\n"
 
         # sanity checks
@@ -845,11 +845,11 @@ class HOLE(BaseHOLE):
         pore radius < 2.30 Å) are green and wide areas (pore radius > 2.30 Å
         are blue).
 
-        .. _`Visualization of HOLE results`: http://d2o.bioch.ox.ac.uk:38080/doc/hole_d04.html
-        .. _`sph_process`: http://d2o.bioch.ox.ac.uk:38080/doc/hole_d04.html#sph_process
+        .. _`Visualization of HOLE results`: http://s3.smartsci.uk/hole2/doc/index.html#_producing_a_triangulated_surface_and_visualizing_in_vmd
+        .. _`sph_process`: http://s3.smartsci.uk/hole2/doc/old/hole_d04.html#sph_process
         """
         # not sure how this works when run on multiple frames...
-        # see http://d2o.bioch.ox.ac.uk:38080/doc/hole_d04.html#sph_process
+        # see http://s3.smartsci.uk/hole2/doc/old/hole_d04.html#sph_process
         kwargs.setdefault("dotden", self.dotden)
 
         fd, tmp_sos = tempfile.mkstemp(suffix=".sos", text=True)
