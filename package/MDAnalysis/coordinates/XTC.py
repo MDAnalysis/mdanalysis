@@ -35,9 +35,9 @@ The XTC I/O interface uses
 access to frames. This works by initially building an internal index
 of all frames and then using this index for direct seeks. Building the
 index is triggered by
-:func:`~MDAnalysis.coordinates.xdrfile.libxdrfile2.read_xtc_numframes`,
+:func:`~MDAnalysis.coordinates.xdrfile.libxdrfile2.read_xtc_n_frames`,
 which typically happens when one accesses the
-:attr:`XTCReader.numframes` attribute for the first time. Building the
+:attr:`XTCReader.n_frames` attribute for the first time. Building the
 index may take many minutes for large trajectories but afterwards
 access is faster than with native Gromacs tools.
 

@@ -217,7 +217,7 @@ class LeafletFinder(object):
 
     def __repr__(self):
         return "<LeafletFinder(%r, cutoff=%.1f A) with %d atoms in %d groups>" % \
-               (self.selectionstring, self.cutoff, self.selection.numberOfAtoms(),
+               (self.selectionstring, self.cutoff, self.selection.n_atoms,
                len(self.components))
 
 

@@ -128,14 +128,14 @@ class DATAReader(base.SingleFrameReader):
     units = {'time': None, 'length': 'Angstrom'}
 
     def __init__(self, filename, **kwargs):
-        self.numatoms = kwargs.pop('numatoms', None)
-        if self.numatoms is None:  # this should be done by parsing DATA first
-            raise ValueError("DATAReader requires numatoms keyword")
+        self.n_atoms = kwargs.pop('n_atoms', None)
+        if self.n_atoms is None:  # this should be done by parsing DATA first
+            raise ValueError("DATAReader requires n_atoms keyword")
         super(DATAReader, self).__init__(filename, **kwargs)
 
     def _read_first_frame(self):
         with DATAParser(self.filename) as p:
-            self.ts = p.read_DATA_timestep(self.numatoms, self._Timestep,
+            self.ts = p.read_DATA_timestep(self.n_atoms, self._Timestep,
                                            self._ts_kwargs)
 
         self.ts.frame = 0

@@ -164,14 +164,14 @@ class DCDWriter(base.Writer):
 
     Typical usage::
 
-       with DCDWriter("new.dcd", u.atoms.numberOfAtoms()) as w:
+       with DCDWriter("new.dcd", u.atoms.n_atoms) as w:
            for ts in u.trajectory
                w.write_next_timestep(ts)
 
     Keywords are available to set some of the low-level attributes of the DCD.
 
     :Methods:
-       ``d = DCDWriter(dcdfilename, numatoms, start, step, delta, remarks)``
+       ``d = DCDWriter(dcdfilename, n_atoms, start, step, delta, remarks)``
 
     .. Note::
 
@@ -194,7 +194,7 @@ class DCDWriter(base.Writer):
     format = 'DCD'
     units = {'time': 'AKMA', 'length': 'Angstrom'}
 
-    def __init__(self, filename, numatoms, start=0, step=1,
+    def __init__(self, filename, n_atoms, start=0, step=1,
                  delta=mdaunits.convert(1., 'ps', 'AKMA'), dt=None,
                  remarks="Created by DCDWriter", convert_units=None):
         """Create a new DCDWriter
@@ -202,7 +202,7 @@ class DCDWriter(base.Writer):
         :Arguments:
          *filename*
            name of output file
-         *numatoms*
+         *n_atoms*
            number of atoms in dcd file
          *start*
            starting timestep
@@ -232,18 +232,18 @@ class DCDWriter(base.Writer):
           record "There are dt ps between each frame".
 
         """
-        if numatoms == 0:
+        if n_atoms == 0:
             raise ValueError("DCDWriter: no atoms in output trajectory")
-        elif numatoms is None:
+        elif n_atoms is None:
             # probably called from MDAnalysis.Writer() so need to give user a gentle heads up...
-            raise ValueError("DCDWriter: REQUIRES the number of atoms in the 'numatoms' argument\n" +
+            raise ValueError("DCDWriter: REQUIRES the number of atoms in the 'n_atoms' argument\n" +
                              " " * len("ValueError: ") +
-                             "For example: numatoms=universe.atoms.numberOfAtoms()")
+                             "For example: n_atoms=universe.atoms.n_atoms")
         self.filename = filename
         # convert length and time to base units on the fly?
         self.convert_units = flags['convert_lengths'] if convert_units is None \
             else convert_units
-        self.numatoms = numatoms
+        self.n_atoms = n_atoms
 
         self.frames_written = 0
         self.start = start
@@ -259,7 +259,7 @@ class DCDWriter(base.Writer):
             self.delta = delta
         self.dcdfile = open(self.filename, 'wb')
         self.remarks = remarks
-        self._write_dcd_header(self.numatoms, self.start, self.step, self.delta, self.remarks)
+        self._write_dcd_header(self.n_atoms, self.start, self.step, self.delta, self.remarks)
 
     def _dcd_header(self):
         """Returns contents of the DCD header C structure::
@@ -312,7 +312,7 @@ class DCDWriter(base.Writer):
                 ts = self.ts
             except AttributeError:
                 raise NoDataError("DCDWriter: no coordinate data to write to trajectory file")
-        if not ts.numatoms == self.numatoms:
+        if not ts.n_atoms == self.n_atoms:
             raise ValueError("DCDWriter: Timestep does not have the correct number of atoms")
         unitcell = self.convert_dimensions_to_unitcell(ts).astype(np.float32)  # must be float32 (!)
         if not ts._pos.flags.f_contiguous:  # Not in fortran format
@@ -415,8 +415,8 @@ class DCDReader(base.Reader):
             raise IOError(errno.EIO, "DCD file is zero size", self.filename)
 
         self.dcdfile = open(self.filename, 'rb')
-        self.numatoms = 0
-        self.numframes = 0
+        self.n_atoms = 0
+        self.n_frames = 0
         self.fixed = 0
         self.periodic = False
 
@@ -427,7 +427,7 @@ class DCDReader(base.Reader):
         delta = mdaunits.convert(self.delta, 'AKMA', 'ps')
 
         self._ts_kwargs.update({'dt':self.skip_timestep * delta})
-        self.ts = self._Timestep(self.numatoms, **self._ts_kwargs)
+        self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
         # Read in the first timestep
         self._read_next_timestep()
 
@@ -557,7 +557,7 @@ class DCDReader(base.Reader):
           *filename*
               filename of the output DCD trajectory
         :Keywords:
-          *numatoms*
+          *n_atoms*
               number of atoms
           *start*
               number of the first recorded MD step
@@ -582,13 +582,13 @@ class DCDReader(base.Reader):
 
         .. SeeAlso:: :class:`DCDWriter` has detailed argument description
         """
-        numatoms = kwargs.pop('numatoms', self.numatoms)
+        n_atoms = kwargs.pop('n_atoms', self.n_atoms)
         kwargs.setdefault('start', self.start_timestep)
         kwargs.setdefault('step', self.skip_timestep)
         kwargs.setdefault('delta', self.delta)
         kwargs.setdefault('remarks', self.remarks)
         # dt keyword is simply passed through if provided
-        return DCDWriter(filename, numatoms, **kwargs)
+        return DCDWriter(filename, n_atoms, **kwargs)
 
     @property
     def dt(self):

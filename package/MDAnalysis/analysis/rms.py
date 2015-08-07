@@ -316,7 +316,7 @@ class RMSD(object):
 
         self.ref_atoms = self.reference.selectAtoms(*self.select['reference'])
         self.traj_atoms = self.universe.selectAtoms(*self.select['mobile'])
-        natoms = self.traj_atoms.numberOfAtoms()
+        natoms = self.traj_atoms.n_atoms
         if len(self.ref_atoms) != len(self.traj_atoms):
             logger.exception()
             raise SelectionError("Reference and trajectory atom selections do not contain " +
@@ -386,7 +386,7 @@ class RMSD(object):
         mass_weighted = kwargs.pop('mass_weighted', self.mass_weighted)
         ref_frame = kwargs.pop('ref_frame', self.ref_frame)
 
-        natoms = self.traj_atoms.numberOfAtoms()
+        natoms = self.traj_atoms.n_atoms
         trajectory = self.universe.trajectory
         traj_atoms = self.traj_atoms
 
@@ -464,7 +464,7 @@ class RMSD(object):
                         izip(groupselections_ref_coords_T_64, self.groupselections_atoms), 3):
                     rmsd[k, igroup] = qcp.CalcRMSDRotationalMatrix(refpos,
                                                                    atoms['mobile'].positions.T.astype(numpy.float64),
-                                                                   atoms['mobile'].numberOfAtoms(), None, weight)
+                                                                   atoms['mobile'].n_atoms, None, weight)
             else:
                 # only calculate RMSD by setting the Rmatrix to None
                 # (no need to carry out the rotation as we already get the optimum RMSD)
@@ -540,7 +540,7 @@ class RMSF(object):
                 [``False``]
 
         """
-        sumsquares = numpy.zeros((self.atomgroup.numberOfAtoms(), 3))
+        sumsquares = numpy.zeros((self.atomgroup.n_atoms, 3))
         means = numpy.array(sumsquares)
 
         if quiet:
@@ -548,10 +548,10 @@ class RMSF(object):
 
         # set up progress output
         if progout:
-            percentage = ProgressMeter(self.atomgroup.universe.trajectory.numframes,
+            percentage = ProgressMeter(self.atomgroup.universe.trajectory.n_frames,
                                        interval=progout)
         else:
-            percentage = ProgressMeter(self.atomgroup.universe.trajectory.numframes,
+            percentage = ProgressMeter(self.atomgroup.universe.trajectory.n_frames,
                                        quiet=True)
 
         for k, ts in enumerate(self.atomgroup.universe.trajectory[start:stop:step]):

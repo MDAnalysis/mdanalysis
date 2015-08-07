@@ -42,17 +42,17 @@ object.
 
    .. attribute:: _pos
 
-      coordinates of the atoms as a :class:`numpy.ndarray` of shape `(numatoms, 3)`
+      coordinates of the atoms as a :class:`numpy.ndarray` of shape `(n_atoms, 3)`
 
    .. attribute:: _velocities
 
-      velocities of the atoms as a :class:`numpy.ndarray` of shape `(numatoms, 3)`;
+      velocities of the atoms as a :class:`numpy.ndarray` of shape `(n_atoms, 3)`;
       only available if the trajectory contains velocities or if the
       *velocities* = ``True`` keyword has been supplied.
 
    .. attribute:: _forces
 
-      forces of the atoms as a :class:`numpy.ndarray` of shape `(numatoms, 3)`;
+      forces of the atoms as a :class:`numpy.ndarray` of shape `(n_atoms, 3)`;
       only available if the trajectory contains forces or if the
       *forces* = ``True`` keyword has been supplied.
 
@@ -171,10 +171,10 @@ class TRJReader(base.Reader):
     Reads the ASCII formatted `AMBER TRJ format`_. Periodic box information
     is auto-detected.
 
-    The number of atoms in a timestep *must* be provided in the `numatoms`
+    The number of atoms in a timestep *must* be provided in the `n_atoms`
     keyword because it is not stored in the trajectory header and cannot be
     reliably autodetected. The constructor raises a :exc:`ValueError` if
-    `numatoms` is left at its default value of ``None``.
+    `n_atoms` is left at its default value of ``None``.
 
     The length of a timestep is not stored in the trajectory itself but can
     be set by passing the `dt` keyword argument to the constructor; it
@@ -193,24 +193,24 @@ class TRJReader(base.Reader):
     units = {'time': 'ps', 'length': 'Angstrom'}
     _Timestep = Timestep
 
-    def __init__(self, filename, numatoms=None, **kwargs):
+    def __init__(self, filename, n_atoms=None, **kwargs):
         super(TRJReader, self).__init__(filename, **kwargs)
         # amber trj REQUIRES the number of atoms from the topology
-        if numatoms is None:
-            raise ValueError("AMBER TRJ reader REQUIRES the numatoms keyword")
-        self._numatoms = numatoms
-        self._numframes = None
+        if n_atoms is None:
+            raise ValueError("AMBER TRJ reader REQUIRES the n_atoms keyword")
+        self._n_atoms = n_atoms
+        self._n_frames = None
 
         self.trjfile = None  # have _read_next_timestep() open it properly!
-        self.ts = self._Timestep(self.numatoms, **self._ts_kwargs)
+        self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
 
         # FORMAT(10F8.3)  (X(i), Y(i), Z(i), i=1,NATOM)
         self.default_line_parser = util.FORTRANReader("10F8.3")
-        self.lines_per_frame = int(np.ceil(3.0 * self.numatoms / len(self.default_line_parser)))
+        self.lines_per_frame = int(np.ceil(3.0 * self.n_atoms / len(self.default_line_parser)))
         # The last line per frame might have fewer than 10
         # We determine right away what parser we need for the last
         # line because it will be the same for all frames.
-        last_per_line = 3 * self.numatoms % len(self.default_line_parser)
+        last_per_line = 3 * self.n_atoms % len(self.default_line_parser)
         self.last_line_parser = util.FORTRANReader("%dF8.3" % last_per_line)
 
         # FORMAT(10F8.3)  BOX(1), BOX(2), BOX(3)
@@ -231,7 +231,7 @@ class TRJReader(base.Reader):
             self.open_trajectory()
 
         # Read coordinat frame:
-        #coordinates = numpy.zeros(3*self.numatoms, dtype=np.float32)
+        #coordinates = numpy.zeros(3*self.n_atoms, dtype=np.float32)
         _coords = []
         for number, line in enumerate(self.trjfile):
             try:
@@ -256,7 +256,7 @@ class TRJReader(base.Reader):
         # probably slow ... could be optimized by storing the coordinates in X,Y,Z
         # lists or directly filling the array; the array/reshape is not good
         # because it creates an intermediate array
-        ts._pos[:] = np.array(_coords).reshape(self.numatoms, 3)
+        ts._pos[:] = np.array(_coords).reshape(self.n_atoms, 3)
         ts.frame += 1
         return ts
 
@@ -282,7 +282,7 @@ class TRJReader(base.Reader):
            so for 1 atom we always assume no box
          XXX: needs a Timestep that knows about AMBER unitcells!
         """
-        if self.numatoms == 1:
+        if self.n_atoms == 1:
             # for 1 atom we cannot detect the box with the current approach
             self.periodic = False  # see _read_next_timestep()!
             wmsg = "Trajectory contains a single atom: assuming periodic=False"
@@ -307,18 +307,18 @@ class TRJReader(base.Reader):
         return self.periodic
 
     @property
-    def numframes(self):
+    def n_frames(self):
         """Number of frames (obtained from reading the whole trajectory)."""
-        if not self._numframes is None:  # return cached value
-            return self._numframes
+        if not self._n_frames is None:  # return cached value
+            return self._n_frames
         try:
-            self._numframes = self._read_trj_numframes(self.filename)
+            self._n_frames = self._read_trj_n_frames(self.filename)
         except IOError:
             return 0
         else:
-            return self._numframes
+            return self._n_frames
 
-    def _read_trj_numframes(self, filename):
+    def _read_trj_n_frames(self, filename):
         self._reopen()
 
         counter = 0
@@ -332,8 +332,8 @@ class TRJReader(base.Reader):
         return counter
 
     @property
-    def numatoms(self):
-        return self._numatoms
+    def n_atoms(self):
+        return self._n_atoms
 
     def _reopen(self):
         self.close()
@@ -372,7 +372,7 @@ class NCDFReader(base.Reader):
     AMBER binary trajectories are automatically recognised by the
     file extension ".ncdf".
 
-    The number of atoms (*numatoms*) does not have to be provided as it can
+    The number of atoms (*n_atoms*) does not have to be provided as it can
     be read from the trajectory. The trajectory reader can randomly access
     frames and therefore supports direct indexing (with 0-based frame
     indices) and full-feature trajectory iteration, including slicing.
@@ -411,7 +411,7 @@ class NCDFReader(base.Reader):
              'force': 'kcal/(mol*Angstrom)'}
     _Timestep = Timestep
 
-    def __init__(self, filename, numatoms=None, **kwargs):
+    def __init__(self, filename, n_atoms=None, **kwargs):
         try:
             import netCDF4 as netcdf
         except ImportError:
@@ -440,8 +440,8 @@ class NCDFReader(base.Reader):
             warnings.warn(wmsg)
             logger.warn(wmsg)
 
-        self.numatoms = len(self.trjfile.dimensions['atom'])
-        self.numframes = len(self.trjfile.dimensions['frame'])
+        self.n_atoms = len(self.trjfile.dimensions['atom'])
+        self.n_frames = len(self.trjfile.dimensions['frame'])
         # also records time steps in data.variables['time'] and unit
         # but my example only has 0
 
@@ -468,11 +468,11 @@ class NCDFReader(base.Reader):
                     self.trjfile.variables['coordinates'].units))
         if hasattr(self.trjfile.variables['coordinates'], 'scale_factor'):
             raise NotImplementedError("scale_factors are not implemented")
-        if numatoms is not None:
-            if numatoms != self.numatoms:
-                raise ValueError("Supplied numatoms (%d) != natom from ncdf (%d). "
-                                 "Note: numatoms can be None and then the ncdf value is used!" % (
-                                 numatoms, self.numatoms))
+        if n_atoms is not None:
+            if n_atoms != self.n_atoms:
+                raise ValueError("Supplied n_atoms (%d) != natom from ncdf (%d). "
+                                 "Note: n_atoms can be None and then the ncdf value is used!" % (
+                                 n_atoms, self.n_atoms))
 
         self.has_velocities = 'velocities' in self.trjfile.variables
         self.has_forces = 'forces' in self.trjfile.variables
@@ -480,7 +480,7 @@ class NCDFReader(base.Reader):
         self.periodic = 'cell_lengths' in self.trjfile.variables
         self._current_frame = 0
 
-        self.ts = self._Timestep(self.numatoms, velocities=self.has_velocities,
+        self.ts = self._Timestep(self.n_atoms, velocities=self.has_velocities,
                                  forces=self.has_forces, **self._ts_kwargs)
 
         # load first data frame
@@ -494,9 +494,9 @@ class NCDFReader(base.Reader):
         if np.dtype(type(frame)) != np.dtype(int):
             # convention... for netcdf could also be a slice
             raise TypeError("frame must be a positive integer")
-        if frame >= self.numframes or frame < 0:
-            raise IndexError("frame index must be 0 <= frame < {0}".format(self.numframes))
-        # note: self.trjfile.variables['coordinates'].shape == (frames, numatoms, 3)
+        if frame >= self.n_frames or frame < 0:
+            raise IndexError("frame index must be 0 <= frame < {0}".format(self.n_frames))
+        # note: self.trjfile.variables['coordinates'].shape == (frames, n_atoms, 3)
         ts._pos[:] = self.trjfile.variables['coordinates'][frame]
         ts.time = self.trjfile.variables['time'][frame]
         if self.has_velocities:
@@ -545,7 +545,7 @@ class NCDFReader(base.Reader):
           *filename*
               filename of the output NCDF trajectory
         :Keywords:
-          *numatoms*
+          *n_atoms*
               number of atoms
           *dt*
               length of one timestep in picoseconds
@@ -554,10 +554,10 @@ class NCDFReader(base.Reader):
 
         :Returns: :class:`NCDFWriter`
         """
-        numatoms = kwargs.pop('numatoms', self.numatoms)
+        n_atoms = kwargs.pop('n_atoms', self.n_atoms)
         kwargs.setdefault('remarks', self.remarks)
         kwargs.setdefault('dt', self.dt)
-        return NCDFWriter(filename, numatoms, **kwargs)
+        return NCDFWriter(filename, n_atoms, **kwargs)
 
 
 class NCDFWriter(base.Writer):
@@ -590,14 +590,14 @@ class NCDFWriter(base.Writer):
     units = {'time': 'ps', 'length': 'Angstrom', 'velocity': 'Angstrom/ps',
              'force': 'kcal/(mol*Angstrom)'}
 
-    def __init__(self, filename, numatoms, start=0, step=1, dt=1.0, remarks=None,
+    def __init__(self, filename, n_atoms, start=0, step=1, dt=1.0, remarks=None,
                  convert_units=None, zlib=False, cmplevel=1, **kwargs):
         """Create a new NCDFWriter
 
         :Arguments:
          *filename*
             name of output file
-         *numatoms*
+         *n_atoms*
             number of atoms in trajectory file
 
         :Keywords:
@@ -621,9 +621,9 @@ class NCDFWriter(base.Writer):
             Write forces into the trajectory [``False``]
         """
         self.filename = filename
-        if numatoms == 0:
+        if n_atoms == 0:
             raise ValueError("NCDFWriter: no atoms in output trajectory")
-        self.numatoms = numatoms
+        self.n_atoms = n_atoms
         if convert_units is None:
             convert_units = flags['convert_lengths']
         self.convert_units = convert_units  # convert length and time to base units on the fly?
@@ -684,7 +684,7 @@ class NCDFWriter(base.Writer):
 
         # Create dimensions
         ncfile.createDimension('frame', None)  # unlimited number of steps (can append)
-        ncfile.createDimension('atom', self.numatoms)  # number of atoms in system
+        ncfile.createDimension('atom', self.n_atoms)  # number of atoms in system
         ncfile.createDimension('spatial', 3)  # number of spatial dimensions
         ncfile.createDimension('cell_spatial', 3)  # unitcell lengths
         ncfile.createDimension('cell_angular', 3)  # unitcell angles
@@ -735,7 +735,7 @@ class NCDFWriter(base.Writer):
                 raise IOError("NCDFWriter: no coordinate data to write to trajectory file")
             else:
                 ts = self.ts  # self.ts would have to be assigned manually!
-        elif ts.numatoms != self.numatoms:
+        elif ts.n_atoms != self.n_atoms:
             raise IOError("NCDFWriter: Timestep does not have the correct number of atoms")
 
         if self.trjfile is None:

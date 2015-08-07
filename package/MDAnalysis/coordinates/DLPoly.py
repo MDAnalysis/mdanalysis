@@ -102,7 +102,7 @@ class ConfigReader(base.SingleFrameReader):
             velocities = np.array(velocities, dtype=np.float32, order='F')
         if has_forces:
             forces = np.array(forces, dtype=np.float32, order='F')
-        self.numatoms = len(coords)
+        self.n_atoms = len(coords)
 
         if ids:
             # If we have indices then sort based on them
@@ -115,7 +115,7 @@ class ConfigReader(base.SingleFrameReader):
             if has_forces:
                 forces = forces[order]
 
-        ts = self.ts = self._Timestep(self.numatoms,
+        ts = self.ts = self._Timestep(self.n_atoms,
                                       velocities=has_vels,
                                       forces=has_forces,
                                       **self._ts_kwargs)
@@ -148,11 +148,11 @@ class HistoryReader(base.Reader):
         # "private" file handle
         self._file = open(self.filename, 'r')
         self.title = self._file.readline().strip()
-        self._levcfg, self._imcon, self.numatoms = map(int, self._file.readline().split()[:3])
+        self._levcfg, self._imcon, self.n_atoms = map(int, self._file.readline().split()[:3])
         self._has_vels = True if self._levcfg > 0 else False
         self._has_forces = True if self._levcfg == 2 else False
 
-        self.ts = self._Timestep(self.numatoms,
+        self.ts = self._Timestep(self.n_atoms,
                                  velocities=self._has_vels,
                                  forces=self._has_forces,
                                  **self._ts_kwargs)
@@ -174,7 +174,7 @@ class HistoryReader(base.Reader):
         # and later sort by them
         ids = []
 
-        for i in range(self.numatoms):
+        for i in range(self.n_atoms):
             line = self._file.readline().strip()  # atom info line
             try:
                 idx = int(line.split()[1])
@@ -193,7 +193,7 @@ class HistoryReader(base.Reader):
         if ids:
             ids = np.array(ids)
             # if ids aren't strictly sequential
-            if not all(ids == (np.arange(self.numatoms) + 1)):
+            if not all(ids == (np.arange(self.n_atoms) + 1)):
                 order = np.argsort(ids)
                 ts._pos[:] = ts._pos[order]
                 if self._has_vels:
@@ -211,14 +211,14 @@ class HistoryReader(base.Reader):
         return self._read_next_timestep()
 
     @property
-    def numframes(self):
+    def n_frames(self):
         try:
-            return self._numframes
+            return self._n_frames
         except AttributeError:
-            self._numframes = self._read_numframes()
-            return self._numframes
+            self._n_frames = self._read_n_frames()
+            return self._n_frames
 
-    def _read_numframes(self):
+    def _read_n_frames(self):
         """Read the number of frames, and the offset for each frame
 
         offset[i] - returns the offset in bytes to seek into the file to be
@@ -227,7 +227,7 @@ class HistoryReader(base.Reader):
         offsets = self._offsets = []
 
         with open(self.filename, 'r') as f:
-            numframes = 0
+            n_frames = 0
 
             f.readline()
             f.readline()
@@ -235,12 +235,12 @@ class HistoryReader(base.Reader):
             line = f.readline()
             while line.startswith('timestep'):
                 offsets.append(position)
-                numframes += 1
+                n_frames += 1
                 if not self._imcon == 0:  # box info
                     f.readline()
                     f.readline()
                     f.readline()
-                for _ in range(self.numatoms):
+                for _ in range(self.n_atoms):
                     f.readline()
                     f.readline()
                     if self._has_vels:
@@ -250,7 +250,7 @@ class HistoryReader(base.Reader):
                 position = f.tell()
                 line = f.readline()
 
-        return numframes
+        return n_frames
 
     def rewind(self):
         self._reopen()

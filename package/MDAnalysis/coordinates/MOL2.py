@@ -72,7 +72,7 @@ class MOL2Reader(base.Reader):
 
         sections, coords = self.parse_block(block)
 
-        self.numatoms = len(coords)
+        self.n_atoms = len(coords)
         self.ts = self._Timestep.from_coordinates(np.array(coords, dtype=np.float32),
                                                   **self._ts_kwargs)
         self.ts.frame = 0  # 0-based frame number as starting frame
@@ -84,7 +84,7 @@ class MOL2Reader(base.Reader):
         self.molecule = {}
         self.substructure = {}
         self.frames = blocks
-        self.numframes = len(blocks)
+        self.n_frames = len(blocks)
 
     def parse_block(self, block):
         sections = {}
@@ -211,7 +211,7 @@ class MOL2Writer(base.Writer):
     format = 'MOL2'
     units = {'time': None, 'length': 'Angstrom'}
 
-    def __init__(self, filename, numatoms=None, start=0, step=1,
+    def __init__(self, filename, n_atoms=None, start=0, step=1,
                  convert_units=None, multiframe=None):
         """Create a new MOL2Writer
 
@@ -309,7 +309,7 @@ class MOL2Writer(base.Writer):
         # Start from trajectory[0]/frame 1, if there are more than 1 frame.
         # If there is only 1 frame, the traj.frames is not like a python list:
         # accessing trajectory[-1] raises key error.
-        if not start and traj.numframes > 1:
+        if not start and traj.n_frames > 1:
             start = traj.frame
 
         for framenumber in xrange(start, len(traj), step):

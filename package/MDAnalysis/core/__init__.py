@@ -34,7 +34,7 @@ To get started, load the Universe::
 A simple selection of all water oxygens within 4 A of the protein::
 
   water_shell = u.selectAtoms('name OH2 and around 4.0 protein')
-  water_shell.numberOfAtoms()   # how many waters were selected
+  water_shell.n_atoms           # how many waters were selected
   water_shell.totalMass()       # their total mass
 
 :class:`AtomGroup` instances have various methods that allow

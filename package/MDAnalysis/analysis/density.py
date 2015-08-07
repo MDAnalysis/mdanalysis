@@ -509,23 +509,23 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
 
     for ts in u.trajectory:
         print("Histograming %6d atoms in frame %5d/%d  [%5.1f%%]\r" % \
-              (len(coord), ts.frame, u.trajectory.numframes, 100.0 * ts.frame / u.trajectory.numframes),)
+              (len(coord), ts.frame, u.trajectory.n_frames, 100.0 * ts.frame / u.trajectory.n_frames),)
         coord = current_coordinates()
         if len(coord) == 0:
             continue
         h[:], edges[:] = numpy.histogramdd(coord, bins=bins, range=arange, normed=False)
         grid += h  # accumulate average histogram
     print("")
-    numframes = u.trajectory.numframes / u.trajectory.skip
-    grid /= float(numframes)
+    n_frames = u.trajectory.n_frames / u.trajectory.skip
+    grid /= float(n_frames)
 
     # pick from kwargs
     metadata = kwargs.pop('metadata', {})
     metadata['psf'] = u.filename
     metadata['dcd'] = u.trajectory.filename
     metadata['atomselection'] = atomselection
-    metadata['numframes'] = numframes
-    metadata['totaltime'] = round(u.trajectory.numframes * u.trajectory.dt, 3)
+    metadata['n_frames'] = n_frames
+    metadata['totaltime'] = round(u.trajectory.n_frames * u.trajectory.dt, 3)
     metadata['dt'] = u.trajectory.dt
     metadata['time_unit'] = MDAnalysis.core.flags['time_unit']
     metadata['trajectory_skip'] = u.trajectory.skip_timestep  # frames
@@ -767,7 +767,7 @@ class BfactorDensityCreator(object):
         self.delta = numpy.diag(map(lambda e: (e[-1] - e[0]) / (len(e) - 1), self.edges))
         self.midpoints = map(lambda e: 0.5 * (e[:-1] + e[1:]), self.edges)
         self.origin = map(lambda m: m[0], self.midpoints)
-        numframes = 1
+        n_frames = 1
 
         if sigma is None:
             # histogram individually, and smear out at the same time
@@ -791,7 +791,7 @@ class BfactorDensityCreator(object):
         except TypeError:
             metadata = {'pdb': pdb}
         metadata['atomselection'] = atomselection
-        metadata['numframes'] = numframes
+        metadata['n_frames'] = n_frames
         metadata['sigma'] = sigma
         self.metadata = metadata
 
