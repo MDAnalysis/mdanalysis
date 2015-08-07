@@ -375,7 +375,7 @@ Classes and functions
    .. attribute:: impropers
 
       A :class:`MDAnalysis.core.topologyobjects.TopologyGroup` of all
-      :class:`MDAnalysis.topology.objects.ImproperDihedral` instances
+      :class:`MDAnalysis.core.topologyobjects.ImproperDihedral` instances
       that this atom is present in.
 
       .. versionadded:: 0.8.1
@@ -2031,7 +2031,7 @@ class AtomGroup(object):
         """This AtomGroup represented as a Bond object
 
         :Returns:
-          A :class:`MDAnalysis.topology.objects.Bond` object
+          A :class:`MDAnalysis.core.topologyobjects.Bond` object
 
         :Raises:
           `ValueError` if the AtomGroup is not length 2
@@ -2047,7 +2047,7 @@ class AtomGroup(object):
         """This AtomGroup represented as an Angle object
 
         :Returns:
-          A :class:`MDAnalysis.topology.objects.Angle` object
+          A :class:`MDAnalysis.core.topologyobjects.Angle` object
 
         :Raises:
           `ValueError` if the AtomGroup is not length 3
@@ -2063,7 +2063,7 @@ class AtomGroup(object):
         """This AtomGroup represented as a Dihedral object
 
         :Returns:
-          A :class:`MDAnalysis.topology.objects.Dihedral` object
+          A :class:`MDAnalysis.core.topologyobjects.Dihedral` object
 
         :Raises:
           `ValueError` if the AtomGroup is not length 4
@@ -2080,7 +2080,7 @@ class AtomGroup(object):
         """This AtomGroup represented as an ImproperDihedral object
 
         :Returns:
-          A :class:`MDAnalysis.topology.objects.ImproperDihedral` object
+          A :class:`MDAnalysis.core.topologyobjects.ImproperDihedral` object
 
         :Raises:
           `ValueError` if the AtomGroup is not length 4
