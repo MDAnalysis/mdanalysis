@@ -320,7 +320,7 @@ class TestTriclinicDistances(TestCase):
 
 
 class TestCythonFunctions(TestCase):
-    # Unit tests for calc_bonds calc_angles and calc_torsions in lib.distances
+    # Unit tests for calc_bonds calc_angles and calc_dihedrals in lib.distances
     # Tests both numerical results as well as input types as Cython will silently 
     # produce nonsensical results if given wrong data types otherwise.
     def setUp(self):
@@ -424,47 +424,47 @@ class TestCythonFunctions(TestCase):
         assert_raises(ValueError, MDAnalysis.lib.distances.calc_angles,
                       self.a, self.b, self.c, result=badresult)  # Bad result array
 
-    def test_torsions(self):
-        torsions = MDAnalysis.lib.distances.calc_torsions(self.a, self.b, self.c, self.d)
+    def test_dihedrals(self):
+        dihedrals = MDAnalysis.lib.distances.calc_dihedrals(self.a, self.b, self.c, self.d)
         # Check calculated values
-        assert_equal(len(torsions), 4, err_msg="calc_torsions results have wrong length")
-        #        assert_almost_equal(torsions[0], 0.0, self.prec, err_msg="Zero length torsion failed")
-        #        assert_almost_equal(torsions[1], 0.0, self.prec, err_msg="Straight line torsion failed")
-        assert_almost_equal(torsions[2], np.pi, self.prec, err_msg="180 degree torsion failed")
-        assert_almost_equal(torsions[3], 0.50714064, self.prec,
-                            err_msg="arbitrary torsion angle failed")
+        assert_equal(len(dihedrals), 4, err_msg="calc_dihedrals results have wrong length")
+        #        assert_almost_equal(dihedrals[0], 0.0, self.prec, err_msg="Zero length dihedral failed")
+        #        assert_almost_equal(dihedrals[1], 0.0, self.prec, err_msg="Straight line dihedral failed")
+        assert_almost_equal(dihedrals[2], np.pi, self.prec, err_msg="180 degree dihedral failed")
+        assert_almost_equal(dihedrals[3], 0.50714064, self.prec,
+                            err_msg="arbitrary dihedral angle failed")
     # Check data type checks
-    def test_torsions_wrongtype(self):
-        assert_raises(TypeError, MDAnalysis.lib.distances.calc_torsions,
+    def test_dihedrals_wrongtype(self):
+        assert_raises(TypeError, MDAnalysis.lib.distances.calc_dihedrals,
                       self.a, self.wrongtype, self.c, self.d)  # try inputting float64 values
-        assert_raises(TypeError, MDAnalysis.lib.distances.calc_torsions,
+        assert_raises(TypeError, MDAnalysis.lib.distances.calc_dihedrals,
                       self.wrongtype, self.b, self.c, self.d)
-        assert_raises(TypeError, MDAnalysis.lib.distances.calc_torsions,
+        assert_raises(TypeError, MDAnalysis.lib.distances.calc_dihedrals,
                       self.a, self.b, self.wrongtype, self.d)
-        assert_raises(TypeError, MDAnalysis.lib.distances.calc_torsions,
+        assert_raises(TypeError, MDAnalysis.lib.distances.calc_dihedrals,
                       self.a, self.b, self.c, self.wrongtype)
 
-    def test_torsions_wronglength(self):
-        assert_raises(ValueError, MDAnalysis.lib.distances.calc_torsions,
+    def test_dihedrals_wronglength(self):
+        assert_raises(ValueError, MDAnalysis.lib.distances.calc_dihedrals,
                       self.a, self.wronglength, self.c, self.d)
-        assert_raises(ValueError, MDAnalysis.lib.distances.calc_torsions,
+        assert_raises(ValueError, MDAnalysis.lib.distances.calc_dihedrals,
                       self.wronglength, self.b, self.c, self.d)
-        assert_raises(ValueError, MDAnalysis.lib.distances.calc_torsions,
+        assert_raises(ValueError, MDAnalysis.lib.distances.calc_dihedrals,
                       self.a, self.b, self.wronglength, self.d)
-        assert_raises(ValueError, MDAnalysis.lib.distances.calc_torsions,
+        assert_raises(ValueError, MDAnalysis.lib.distances.calc_dihedrals,
                       self.a, self.b, self.c, self.wronglength)
 
-    def test_torsions_bad_result(self):
+    def test_dihedrals_bad_result(self):
         badresult = np.zeros(len(self.a) - 1)
 
-        assert_raises(ValueError, MDAnalysis.lib.distances.calc_torsions,
+        assert_raises(ValueError, MDAnalysis.lib.distances.calc_dihedrals,
                       self.a, self.b, self.c, self.d, result=badresult)  # Bad result array
 
     def test_numpy_compliance(self):
         # Checks that the cython functions give identical results to the numpy versions
         bonds = MDAnalysis.lib.distances.calc_bonds(self.a, self.b)
         angles = MDAnalysis.lib.distances.calc_angles(self.a, self.b, self.c)
-        torsions = MDAnalysis.lib.distances.calc_torsions(self.a, self.b, self.c, self.d)
+        dihedrals = MDAnalysis.lib.distances.calc_dihedrals(self.a, self.b, self.c, self.d)
 
         bonds_numpy = np.array([mdamath.norm(y - x) for x, y in zip(self.a, self.b)])
         vec1 = self.a - self.b
@@ -473,16 +473,16 @@ class TestCythonFunctions(TestCase):
         ab = self.b - self.a
         bc = self.c - self.b
         cd = self.d - self.c
-        torsions_numpy = np.array([mdamath.dihedral(x, y, z) for x, y, z in zip(ab, bc, cd)])
+        dihedrals_numpy = np.array([mdamath.dihedral(x, y, z) for x, y, z in zip(ab, bc, cd)])
 
         assert_almost_equal(bonds, bonds_numpy, self.prec,
                             err_msg="Cython bonds didn't match numpy calculations")
         # numpy 0 angle returns NaN rather than 0
         assert_almost_equal(angles[1:], angles_numpy[1:], self.prec,
                             err_msg="Cython angles didn't match numpy calcuations")
-        # same issue with first two torsions
-        assert_almost_equal(torsions[2:], torsions_numpy[2:], self.prec,
-                            err_msg="Cython torsions didn't match numpy calculations")
+        # same issue with first two dihedrals
+        assert_almost_equal(dihedrals[2:], dihedrals_numpy[2:], self.prec,
+                            err_msg="Cython dihedrals didn't match numpy calculations")
 
 
 class test_apply_PBC(TestCase):
@@ -534,7 +534,7 @@ class test_apply_PBC(TestCase):
 
 
 class TestPeriodicAngles(TestCase):
-    """Test case for properly considering minimum image convention when calculating angles and torsions
+    """Test case for properly considering minimum image convention when calculating angles and dihedrals
     (Issue 172)
     """
 
@@ -571,21 +571,21 @@ class TestPeriodicAngles(TestCase):
         for val in [test1, test2, test3, test4]:
             assert_almost_equal(ref, val, self.prec, err_msg="Min image in angle calculation failed")
 
-    def test_torsions(self):
-        from MDAnalysis.lib.distances import calc_torsions
+    def test_dihedrals(self):
+        from MDAnalysis.lib.distances import calc_dihedrals
 
         a2 = (self.a + self.box * (-1, 0, 0)).astype(np.float32)
         b2 = (self.b + self.box * (1, 0, 1)).astype(np.float32)
         c2 = (self.c + self.box * (-2, 5, -7)).astype(np.float32)
         d2 = (self.d + self.box * (0, -5, 0)).astype(np.float32)
 
-        ref = calc_torsions(self.a, self.b, self.c, self.d)
+        ref = calc_dihedrals(self.a, self.b, self.c, self.d)
 
-        test1 = calc_torsions(a2, self.b, self.c, self.d, box=self.box)
-        test2 = calc_torsions(self.a, b2, self.c, self.d, box=self.box)
-        test3 = calc_torsions(self.a, self.b, c2, self.d, box=self.box)
-        test4 = calc_torsions(self.a, self.b, self.c, d2, box=self.box)
-        test5 = calc_torsions(a2, b2, c2, d2, box=self.box)
+        test1 = calc_dihedrals(a2, self.b, self.c, self.d, box=self.box)
+        test2 = calc_dihedrals(self.a, b2, self.c, self.d, box=self.box)
+        test3 = calc_dihedrals(self.a, self.b, c2, self.d, box=self.box)
+        test4 = calc_dihedrals(self.a, self.b, self.c, d2, box=self.box)
+        test5 = calc_dihedrals(a2, b2, c2, d2, box=self.box)
 
         for val in [test1, test2, test3, test4, test5]:
-            assert_almost_equal(ref, val, self.prec, err_msg="Min image in torsion calculation failed")
+            assert_almost_equal(ref, val, self.prec, err_msg="Min image in dihedral calculation failed")

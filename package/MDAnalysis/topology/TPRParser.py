@@ -169,7 +169,7 @@ class TPRParser(TopologyReader):
                 'atoms': tpr_top.atoms,
                 'bonds': tpr_top.bonds,
                 'angles': tpr_top.angles,
-                'torsions': tpr_top.dihe,
+                'dihedrals': tpr_top.dihe,
                 'impropers': tpr_top.impr
             }
         else:

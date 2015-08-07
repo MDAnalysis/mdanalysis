@@ -92,6 +92,14 @@ The rules for this file:
   * distances.contact_matrix now treats the particle distance with
     itself as a contact for sparse matrices and numpy arrays. The
     progress reporting for sparse calculations has been removed.
+  * AtomGroup.bond .angle .dihedral and .improper now return the
+    corresponding TopologyObject rather than performing the calculation
+    (Issue #373)
+  * All TopologyObjects now have a "value" method to evaluate them (Issue #373)
+  * TopologyGroup now has a "values" methods to evaluate all contained
+    bonds (Issue #373)
+  * TopologyGroup.selectBonds renamed to select_bonds
+  * TopologyObjects and TopologyGroup moved to core.topologyobjects module
 
   Fixes
   * Amber TRJ and NCDF Reader & Writers now use 'dt' instead of 'delta'

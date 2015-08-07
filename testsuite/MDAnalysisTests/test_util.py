@@ -23,7 +23,7 @@ from MDAnalysisTests.datafiles import PSF, Make_Whole
 import MDAnalysis.lib.util as util
 import MDAnalysis.lib.mdamath as mdamath
 from MDAnalysis.lib.util import cached
-from MDAnalysis.topology.core import TopologyGroup, Bond
+from MDAnalysis.core.topologyobjects import TopologyGroup, Bond
 from MDAnalysis.exceptions import NoDataError
 import MDAnalysis as mda
 

@@ -138,7 +138,7 @@ Working with Topologies
 
 If the topology file given to the Universe had bonding information then this
 will have been loaded into the Universe as :attr:`Universe.bonds`
-:attr:`Universe.angles` :attr:`Universe.torsions` and :attr:`Universe.impropers`.
+:attr:`Universe.angles` :attr:`Universe.dihedrals` and :attr:`Universe.impropers`.
 
 
 If your topology file does not have this information, it is still possible
@@ -146,7 +146,7 @@ to construct it based on the positions of the atoms and assumed vdw radii
 for these atoms.  See :meth:`MDAnalysis.AtomGroup.guess_bonds` and
 :func:`MDAnalysis.topology.core.guess_bonds` for details.
 
-This Topology information is stored in :class:`MDAnalysis.topology.core.TopologyGroup`
+This Topology information is stored in :class:`MDAnalysis.core.topologyobjects.TopologyGroup`
 objects.  These are designed to be analogous to the AtomGroup container for Atoms.
 
 For examples working with a box of ethanol::
@@ -157,7 +157,7 @@ For examples working with a box of ethanol::
     <TopologyGroup containing 11784 Bonds>
     >>> u.bonds.types()  # view available types
     [('O', 'H'), ('C', 'O'), ('C', 'H'), ('C', 'C')]
-    >>> u.bonds.selectBonds(('C', 'O'))  # return all C-O bonds from the group
+    >>> u.bonds.select_bonds(('C', 'O'))  # return all C-O bonds from the group
     <TopologyGroup containing 1473 Bonds>
 
 Bonds are categorised based on the types of atoms.  This is done in a way
@@ -174,12 +174,12 @@ For example::
 There is only C-C-H bonds and no H-C-C bonds.  Selection however is
 aware that sometimes types are reversed::
 
-    u.angles.selectBonds(('H', 'C', 'C'))  # note reversal of type
+    u.angles.select_bonds(('H', 'C', 'C'))  # note reversal of type
     >>> <TopologyGroup containing 7365 Angles>
 
 TopologyGroups can be combined and indexed::
 
-    >>> tg = u.angles.selectBonds(('C', 'C', 'O')) + u.angles.selectBonds(('C', 'O', 'H'))
+    >>> tg = u.angles.select_bonds(('C', 'C', 'O')) + u.angles.select_bonds(('C', 'O', 'H'))
     >>> tg.types()
     [('C', 'O', 'H'), ('C', 'C', 'O')]
     >>> tg[:100]
@@ -188,7 +188,7 @@ TopologyGroups can be combined and indexed::
 Finally, TopologyGroups are linked to some fast Cython calculation methods to
 determine bond lengths and angle sizes::
 
-    >>> tg.angles()
+    >>> tg.values()
     array([ 1.88042373,  1.95928987,  1.74770012, ...,  1.79306789,
             1.95522678,  1.88881045])
 
@@ -349,23 +349,34 @@ Classes and functions
 
    .. attribute:: bonds
 
-      List of :class:`~MDAnalysis.topogology.core.Bond` instances that
+      A :class:`MDAnalysis.core.topologyobjects.TopologyGroup` of all
+      :class:`~MDAnalysis.topogology.objects.Bond` instances that
       contains all the bonds that this atom participates in.
 
       .. versionadded:: 0.8.1
 
    .. attribute:: angles
 
-      List of :class:`~MDAnalysis.topogology.core.Angle` instances
+      A :class:`MDAnalysis.core.topologyobjects.TopologyGroup` of all
+      :class:`~MDAnalysis.topogology.objects.Angle` instances
       that contains all the angles that this atom participates in.
 
       .. versionadded:: 0.8.1
 
-   .. attribute:: torsions
+   .. attribute:: dihedrals
 
-      List of :class:`~MDAnalysis.topogology.core.Torsion` instances
-      that contains all the dihedral torsions that this atom
+      A :class:`MDAnalysis.core.topologyobjects.TopologyGroup` of all
+      :class:`~MDAnalysis.topogology.objects.Dihedral` instances
+      that contains all the dihedrals that this atom
       participates in.
+
+      .. versionadded:: 0.8.1
+
+   .. attribute:: impropers
+
+      A :class:`MDAnalysis.core.topologyobjects.TopologyGroup` of all
+      :class:`MDAnalysis.topology.objects.ImproperDihedral` instances
+      that this atom is present in.
 
       .. versionadded:: 0.8.1
 
@@ -412,7 +423,7 @@ from ..lib import distances
 from ..lib import mdamath
 from ..lib import transformations
 from ..lib.util import cached
-
+from . import topologyobjects as top
 
 logger = logging.getLogger("MDAnalysis.core.AtomGroup")
 
@@ -431,7 +442,8 @@ _PLURAL_PROPERTIES = {'index': 'indices',
                       'bfactor': 'bfactors',
                       'resnum': 'resnums',
                       'altLoc': 'altLocs',
-                      'serial': 'serials'}
+                      'serial': 'serials',
+                      'value': 'values'}
 # And the return route
 _SINGULAR_PROPERTIES = {v: k for k, v in _PLURAL_PROPERTIES.items()}
 
@@ -462,6 +474,7 @@ class Atom(object):
     .. versionchanged 0.11.0
        Changed references to :class:`Universe` to be weak.
        Renamed atom.number to atom.index
+       Renamed atom.torsions to atom.dihedrals
     """
 
     __slots__ = (
@@ -655,49 +668,41 @@ class Atom(object):
 
     @property
     def bonds(self):
-        """A list of the bonds that this Atom is in
+        """A TopologyGroup of the bonds that this Atom is in
 
         .. versionchanged:: 0.9.0
            Changed to managed property
         """
-        from ..topology.core import TopologyGroup
-
-        return TopologyGroup(self.universe._bondDict[self])
+        return top.TopologyGroup(self.universe._bondDict[self])
 
     @property
     def angles(self):
-        """A list of the angles that this Atom is in
+        """A TopologyGroup of the angles that this Atom is in
 
         .. versionchanged:: 0.9.0
            Changed to managed property
         """
-        from ..topology.core import TopologyGroup
-
-        return TopologyGroup(self.universe._angleDict[self])
+        return top.TopologyGroup(self.universe._angleDict[self])
 
     @property
-    def torsions(self):
-        """A list of the torsions/dihedrals that this Atom is in
+    def dihedrals(self):
+        """A TopologyGroup of the dihedrals that this Atom is in
 
         .. versionchanged:: 0.9.0
            Changed to managed property
+        .. versionchanged:: 0.11.0
+           Renamed to dihedrals (was torsions)
         """
-        from ..topology.core import TopologyGroup
-
-        return TopologyGroup(self.universe._torsionDict[self])
-
-    dihedrals = torsions
+        return top.TopologyGroup(self.universe._dihedralDict[self])
 
     @property
     def impropers(self):
-        """A list of the improper torsions that this Atom is in
+        """A TopologyGroup of the improper dihedrals that this Atom is in
 
         .. versionchanged:: 0.9.0
            Changed to managed property
         """
-        from ..topology.core import TopologyGroup
-
-        return TopologyGroup(self.universe._improperDict[self])
+        return top.TopologyGroup(self.universe._improperDict[self])
 
 
 class AtomGroup(object):
@@ -789,11 +794,14 @@ class AtomGroup(object):
        _atomcache_size within the class.
        Added fragments manged property. Is a lazily built, cached entry, similar to residues.
     .. versionchanged:: 0.11.0
-       AtomGroups can now be picled and unpickled provided compatible Universes
+       AtomGroups can now be pickled and unpickled provided compatible Universes
        are available.
        The follow methods were changed to properties: indices, masses, charges, names,
        types, radii, resids, resnames, resnums, segids
        Added altLocs and serials properties and setters
+       Torsions and torsion renamed to dihedral
+       The bond, angle, dihedral and improper methods were removed and replaced
+       with properties of the same name which return the corresponding object.
     """
     # for generalized __getitem__ __iter__ and __len__
     # (override _containername for ResidueGroup and SegmentGroup)
@@ -849,8 +857,8 @@ class AtomGroup(object):
         * segments (:attr:`AtomGroup.segments`)
         * bonds (:attr:`AtomGroup.bonds`)
         * angles (:attr:`AtomGroup.angles`)
-        * torsions (:attr:`AtomGroup.torsions`)
-        * improper torsions (:attr:`AtomGroup.impropers`)
+        * dihedrals (:attr:`AtomGroup.dihedrals`)
+        * improper dihedrals (:attr:`AtomGroup.impropers`)
 
         .. SeeAlso:: :meth:`_clear_caches`
 
@@ -865,7 +873,7 @@ class AtomGroup(object):
 
         # Delete preexisting cache if exists
         for att in ['indices', 'residues', 'segments', 'masses',
-                    'bonds', 'angles', 'torsions', 'impropers']:
+                    'bonds', 'angles', 'dihedrals', 'impropers']:
             try:
                 del self._cache[att]
             except KeyError:
@@ -879,10 +887,10 @@ class AtomGroup(object):
         self._cache['segments'] = self.segments
         # masses
         self._cache['masses'] = self.masses
-        # bonds angles torsions impropers
+        # bonds angles dihedrals impropers
         self._cache['bonds'] = self.bonds
         self._cache['angles'] = self.angles
-        self._cache['torsions'] = self.torsions
+        self._cache['dihedrals'] = self.dihedrals
         self._cache['impropers'] = self.impropers
 
     def _clear_caches(self, *args):
@@ -1421,10 +1429,9 @@ class AtomGroup(object):
 
         .. versionadded:: 0.10.0
         """
-        from ..topology.core import (guess_bonds, Bond,
-                                     guess_angles, Angle,
-                                     guess_torsions, Torsion,
-                                     TopologyGroup)
+        from ..topology.core import (guess_bonds,
+                                     guess_angles,
+                                     guess_dihedrals)
 
         b = guess_bonds(self.atoms, self.atoms.positions, vdwradii=vdwradii)
 
@@ -1433,27 +1440,27 @@ class AtomGroup(object):
         # will hash differently.
         existing_bonds = set(self.universe.bonds.to_indices())
         new_b = set(b).difference(existing_bonds)
-        bgroup = TopologyGroup.from_indices(new_b, self.universe.atoms,
-                                            bondclass=Bond, guessed=True)
+        bgroup = top.TopologyGroup.from_indices(new_b, self.universe.atoms,
+                                                            bondclass=top.Bond, guessed=True)
         self.universe.bonds += bgroup
         self._clear_caches('bonds')
 
         a = guess_angles(self.bonds)
         existing_angles = set(self.universe.angles.to_indices())
         new_a = set(a).difference(existing_angles)
-        agroup = TopologyGroup.from_indices(new_a, self.universe.atoms,
-                                            bondclass=Angle, guessed=True)
+        agroup = top.TopologyGroup.from_indices(new_a, self.universe.atoms,
+                                                            bondclass=top.Angle, guessed=True)
         self.universe.angles += agroup
 
         self._clear_caches('angles')
 
-        t = guess_torsions(self.angles)
-        existing_t = set(self.universe.torsions.to_indices())
+        t = guess_dihedrals(self.angles)
+        existing_t = set(self.universe.dihedrals.to_indices())
         new_t = set(t).difference(existing_t)
-        tgroup = TopologyGroup.from_indices(new_t, self.universe.atoms,
-                                          bondclass=Torsion, guessed=True)
-        self.universe.torsions += tgroup
-        self._clear_caches('torsions')
+        tgroup = top.TopologyGroup.from_indices(new_t, self.universe.atoms,
+                                                            bondclass=top.Dihedral, guessed=True)
+        self.universe.dihedrals += tgroup
+        self._clear_caches('dihedrals')
 
     @property
     @cached('bonds')
@@ -1468,11 +1475,9 @@ class AtomGroup(object):
         .. versionchanged:: 0.10.0
            Now always returns a (possibly empty) TopologyGroup
         """
-        from ..topology.core import TopologyGroup
-
         mybonds = [b for a in self._atoms for b in a.bonds]
 
-        return TopologyGroup(mybonds)
+        return top.TopologyGroup(mybonds)
 
     @property
     @cached('angles')
@@ -1487,49 +1492,43 @@ class AtomGroup(object):
         .. versionchanged:: 0.10.0
            Now always returns a (possibly empty) TopologyGroup
         """
-        from ..topology.core import TopologyGroup
-
         mybonds = [b for a in self._atoms for b in a.angles]
 
-        return TopologyGroup(mybonds)
+        return top.TopologyGroup(mybonds)
 
     @property
-    @cached('torsions')
-    def torsions(self):
-        """All the torsions in this AtomGroup
+    @cached('dihedrals')
+    def dihedrals(self):
+        """All the dihedrals in this AtomGroup
 
-        Note that these torsions might extend out of the AtomGroup, to select
-        only torsions which are entirely contained by the AtomGroup use
-        u.torsions.atomgroup_intersection(ag, strict=True)
+        Note that these dihedrals might extend out of the AtomGroup, to select
+        only dihedrals which are entirely contained by the AtomGroup use
+        u.dihedrals.atomgroup_intersection(ag, strict=True)
 
         .. versionadded:: 0.9.0
         .. versionchanged:: 0.10.0
            Now always returns a (possibly empty) TopologyGroup
         """
-        from ..topology.core import TopologyGroup
+        mybonds = [b for a in self._atoms for b in a.dihedrals]
 
-        mybonds = [b for a in self._atoms for b in a.torsions]
-
-        return TopologyGroup(mybonds)
+        return top.TopologyGroup(mybonds)
 
     @property
     @cached('impropers')
     def impropers(self):
-        """All the improper torsions in this AtomGroup
+        """All the improper dihedrals in this AtomGroup
 
-        Note that these improper torsions might extend out of the AtomGroup,
-        to select only torsions which are entirely contained by the AtomGroup use
+        Note that these improper dihedrals might extend out of the AtomGroup,
+        to select only dihedrals which are entirely contained by the AtomGroup use
         u.impropers.atomgroup_intersection(ag, strict=True)
 
         .. versionadded:: 0.9.0
         .. versionchanged:: 0.10.0
            Now always returns a (possibly empty) TopologyGroup
         """
-        from ..topology.core import TopologyGroup
-
         mybonds = [b for a in self._atoms for b in a.impropers]
 
-        return TopologyGroup(mybonds)
+        return top.TopologyGroup(mybonds)
 
     def _set_attribute(self, groupname, name, value, **kwargs):
         """Set attribute *name* to *value* for all elements in *groupname*.
@@ -2027,104 +2026,71 @@ class AtomGroup(object):
         R = numpy.sqrt(numpy.max(numpy.sum(numpy.square(x - centroid), axis=1)))
         return R, centroid
 
-    def bond(self, pbc=False):
-        """Returns the distance between atoms in a 2-atom group.
+    @property
+    def bond(self):
+        """This AtomGroup represented as a Bond object
 
-        Distance between atoms 0 and 1::
+        :Returns:
+          A :class:`MDAnalysis.topology.objects.Bond` object
 
-            0---1
+        :Raises:
+          `ValueError` if the AtomGroup is not length 2
 
-        .. Note::
-
-           Only makes sense for a :class:`AtomGroup` with exactly 2
-           :class:`Atom`; anything else will raise a
-           :exc:`ValueError`.
-
-        :Keywords:
-          *pbc*
-            ``True``: Account for minimum image convention when calculating [``False``]
-
-        .. versionadded:: 0.7.3
-        .. versionchanged:: 0.8 Added *pbc* keyword
+        .. versionadded:: 0.11.0
         """
         if len(self) != 2:
-            raise ValueError("distance computation only makes sense for a group with exactly 2 atoms")
-        if not pbc:
-            return mdamath.norm(self[0].position - self[1].position)
-        else:
-            return distances.self_distance_array(self.coordinates(), box=self.dimensions)[0]
+            raise ValueError("bond only makes sense for a group with exactly 2 atoms")
+        return top.Bond(self.atoms)
 
+    @property
     def angle(self):
-        """Returns the angle in degrees between atoms 0, 1, 2.
+        """This AtomGroup represented as an Angle object
 
-        Angle between atoms 0 and 2 with apex at 1::
+        :Returns:
+          A :class:`MDAnalysis.topology.objects.Angle` object
 
-              2
-             /
-            /
-           1------0
+        :Raises:
+          `ValueError` if the AtomGroup is not length 3
 
-        .. Note::
-
-           Only makes sense for a :class:`AtomGroup` with exactly 3
-           :class:`Atom`; anything else will raise a :exc:`ValueError`.
-
-        .. versionadded:: 0.7.3
-        .. versionchanged:: 0.11.0
-           Now uses :func:`~MDAnalysis.lib.mdamath.angle` internally
+        .. versionadded:: 0.11.0
         """
         if len(self) != 3:
-            raise ValueError("angle computation only makes sense for a group with exactly 3 atoms")
-        a = self[0].position - self[1].position
-        b = self[2].position - self[1].position
+            raise ValueError("angle only makes sense for a group with exactly 3 atoms")
+        return top.Angle(self.atoms)
 
-        return numpy.rad2deg(mdamath.angle(a, b))
-
-    def improper(self):
-        """Returns the improper dihedral between 4 atoms.
-
-        The improper dihedral is calculated in the same way as the proper
-        :meth:`dihedral`: The angle between the planes formed by atoms (0,1,2)
-        and (1,2,3).
-
-        .. Note::
-
-           Only makes sense for a :class:`AtomGroup` with exactly 4
-           :class:`Atom`; anything else will raise a :exc:`ValueError`. The
-           interpretation of the angle as an "improper" solely depends on the
-           selection of atoms and thus the user input!
-
-        .. versionadded:: 0.7.3
-        """
-        return self.dihedral()
-
+    @property
     def dihedral(self):
-        """Calculate the dihedral angle in degrees.
+        """This AtomGroup represented as a Dihedral object
 
-        Dihedral angle around axis connecting atoms 1 and 2 (i.e. the angle
-        between the planes spanned by atoms (0,1,2) and (1,2,3))::
+        :Returns:
+          A :class:`MDAnalysis.topology.objects.Dihedral` object
 
-                  3
-                  |
-            1-----2
-           /
-          0
+        :Raises:
+          `ValueError` if the AtomGroup is not length 4
 
-        .. Note::
-
-           Only makes sense for a :class:`AtomGroup` with exactly 4
-           :class:`Atom`; anything else will raise a :exc:`ValueError`.
-
-        .. versionadded:: 0.7.0
+        .. versionadded:: 0.11.0
         """
         if len(self) != 4:
-            raise ValueError("dihedral computation only makes sense for a group with exactly 4 atoms")
+            raise ValueError("dihedral only makes sense for a group with exactly 4 atoms")
 
-        A, B, C, D = self.coordinates()[:4]
-        ab = A - B
-        bc = B - C
-        cd = C - D
-        return numpy.rad2deg(mdamath.dihedral(ab, bc, cd))
+        return top.Dihedral(self.atoms)
+
+    @property
+    def improper(self):
+        """This AtomGroup represented as an ImproperDihedral object
+
+        :Returns:
+          A :class:`MDAnalysis.topology.objects.ImproperDihedral` object
+
+        :Raises:
+          `ValueError` if the AtomGroup is not length 4
+
+        .. versionadded:: 0.11.0
+        """
+        if len(self) != 4:
+            raise ValueError("improper only makes sense for a group with exactly 4 atoms")
+
+        return top.ImproperDihedral(self.atoms)
 
     def principalAxes(self, **kwargs):
         """Calculate the principal axes from the moment of inertia.
@@ -3414,9 +3380,9 @@ class Universe(object):
     .. versionchanged:: 0.9.0
        Topology information now loaded lazily, but can be forced with
        :meth:`build_topology`. Changed :attr:`bonds` attribute to be a
-       :class:`~MDAnalysis.topology.core.TopologyGroup`. Added :attr:`angles`
+       :class:`~MDAnalysis.core.topologyobjects.TopologyGroup`. Added :attr:`angles`
        and :attr:`torsions` attribute as
-       :class:`~MDAnalysis.topology.core.TopologyGroup`. Added fragments to
+       :class:`~MDAnalysis.core.topologyobjects.TopologyGroup`. Added fragments to
        Universe cache
 
     .. versionchanged:: 0.11.0
@@ -3467,7 +3433,7 @@ class Universe(object):
           *guess_bonds*
               Once Universe has been loaded, attempt to guess the connectivity
               between atoms.  This will populate the .bonds .angles and
-              .torsions attributes of the Universe.
+              .dihedrals attributes of the Universe.
           *vdwradii*
               For use with *guess_bonds*. Supply a dict giving a vdwradii for each atom type
               which are used in guessing bonds.
@@ -3524,8 +3490,8 @@ class Universe(object):
         # Currently cached objects (managed property name and cache key):
         # - bonds
         # - angles
-        # - torsions
-        # - improper torsions
+        # - dihedrals
+        # - improper dihedrals
         # - fragments
         # Cached stuff is handled using util.cached decorator
         self._cache = dict()
@@ -3679,17 +3645,15 @@ class Universe(object):
 
         .. versionadded:: 0.10.0
         """
-        from ..topology.core import TopologyGroup
-
         defined = self._topology.get(cat, set())
         guessed = self._topology.get('guessed_' + cat, set())
 
-        TopSet = TopologyGroup.from_indices(defined, self.atoms,
-                                            bondclass=Top, guessed=False,
-                                            remove_duplicates=True)
-        TopSet += TopologyGroup.from_indices(guessed, self.atoms,
-                                             bondclass=Top, guessed=True,
-                                             remove_duplicates=True)
+        TopSet = top.TopologyGroup.from_indices(defined, self.atoms,
+                                                            bondclass=Top, guessed=False,
+                                                            remove_duplicates=True)
+        TopSet += top.TopologyGroup.from_indices(guessed, self.atoms,
+                                                             bondclass=Top, guessed=True,
+                                                             remove_duplicates=True)
 
         return TopSet
 
@@ -3697,11 +3661,9 @@ class Universe(object):
         """Set bond information from u._topology['bonds']
 
         .. versionchanged 0.9.0
-           Now returns a :class:`~MDAnalysis.topology.core.TopologyGroup`
+           Now returns a :class:`~MDAnalysis.core.topologyobjects.TopologyGroup`
         """
-        from ..topology.core import Bond
-
-        bonds = self._init_top('bonds', Bond)
+        bonds = self._init_top('bonds', top.Bond)
 
         bondorder = self._topology.get('bondorder', None)
         if bondorder:
@@ -3716,43 +3678,36 @@ class Universe(object):
     def _init_angles(self):
         """Builds angle information from u._topology['angles']
 
-        Returns ``None`` if no angle information is present, otherwise
-        returns a :class:`~MDAnalysis.topology.core.TopologyGroup`
+        Returns a :class:`~MDAnalysis.core.topologyobjects.TopologyGroup`
 
         .. versionadded:: 0.9.0
         .. versionchanged:: 0.10.0
            Now reads guessed angles and tags them appropriately.
         """
-        from ..topology.core import Angle
+        return self._init_top('angles', top.Angle)
 
-        return self._init_top('angles', Angle)
+    def _init_dihedrals(self):
+        """Builds dihedral information from u._topology['dihedrals']
 
-    def _init_torsions(self):
-        """Builds torsion information from u._topology['torsions']
-
-        Returns ``None`` if no torsion information is present, otherwise
-        returns a :class:`~MDAnalysis.topology.core.TopologyGroup`
+        Returns a :class:`~MDAnalysis.core.topologyobjects.TopologyGroup`
 
         .. versionadded:: 0.9.0
         .. versionchanged:: 0.10.0
            Now reads guessed torsions and tags them appropriately.
+        .. versionchanged:: 0.11.0
+           Renamed to _init_dihedrals (was _init_torsions)
         """
-        from ..topology.core import Torsion
-
-        return self._init_top('torsions', Torsion)
+        return self._init_top('dihedrals', top.Dihedral)
 
     def _init_impropers(self):
-        """Build improper torsion information from u._topology['impropers']
+        """Build improper dihedral information from u._topology['impropers']
 
-        Returns ``None`` if no improper torsion information is present,
-        otherwise returns a :class:`~MDAnalysis.topology.core.TopologyGroup`
+        Returns a :class:`~MDAnalysis.core.topologyobjects.TopologyGroup`
 
         .. versionadded:: 0.9.0
         .. versionchanged:: 0.10.0
         """
-        from ..topology.core import Improper_Torsion
-
-        return self._init_top('impropers', Improper_Torsion)
+        return self._init_top('impropers', top.ImproperDihedral)
 
     def _init_fragments(self):
         """Build all fragments in the Universe
@@ -3873,15 +3828,17 @@ class Universe(object):
         return bd
 
     @property
-    @cached('torsionDict')
-    def _torsionDict(self):
-        """Lazily built dictionary of torsions
+    @cached('dihedralDict')
+    def _dihedralDict(self):
+        """Lazily built dictionary of dihedrals
 
-        Translates Atom to list of torsions
+        Translates Atom to list of dihedrals
 
         .. versionadded:: 0.9.0
+        .. versionchanged:: 0.11.0
+           Renamed to _dihedralDict (was _torsionDict)
         """
-        bonds = self.torsions
+        bonds = self.dihedrals
         bd = defaultdict(list)
 
         if bonds is None:
@@ -3895,9 +3852,9 @@ class Universe(object):
     @property
     @cached('improperDict')
     def _improperDict(self):
-        """Lazily built dictionary of improper torsions
+        """Lazily built dictionary of improper dihedrals
 
-        Translates Atom to list of improper torsions
+        Translates Atom to list of improper dihedrals
 
         .. versionadded:: 0.9.0
         """
@@ -3932,7 +3889,7 @@ class Universe(object):
 
     def build_topology(self):
         """
-        Bond angle and torsion information is lazily constructed into the
+        Bond angle and dihedral information is lazily constructed into the
         Universe.
 
         This method forces all this information to be loaded.
@@ -3943,8 +3900,8 @@ class Universe(object):
             self._cache['bonds'] = self._init_bonds()
         if 'angles' not in self._cache:
             self._cache['angles'] = self._init_angles()
-        if 'torsions' not in self._cache:
-            self._cache['torsions'] = self._init_torsions()
+        if 'dihedrals' not in self._cache:
+            self._cache['dihedrals'] = self._init_dihedrals()
         if 'impropers' not in self._cache:
             self._cache['impropers'] = self._init_impropers()
 
@@ -3952,11 +3909,11 @@ class Universe(object):
     @cached('bonds')
     def bonds(self):
         """
-        Returns a :class:`~MDAnalysis.topology.core.TopologyGroup` of all
+        Returns a :class:`~MDAnalysis.core.topologyobjects.TopologyGroup` of all
         bonds in the Universe.
 
         .. versionchanged:: 0.9.0
-           Now a lazily built :class:`~MDAnalysis.topology.core.TopologyGroup`
+           Now a lazily built :class:`~MDAnalysis.core.topologyobjects.TopologyGroup`
         .. versionchanged:: 0.9.2
            Now can return empty TopologyGroup
         """
@@ -3988,7 +3945,7 @@ class Universe(object):
     @cached('angles')
     def angles(self):
         """
-        Returns a :class:`~MDAnalysis.topology.core.TopologyGroup`
+        Returns a :class:`~MDAnalysis.core.topologyobjects.TopologyGroup`
         of all angles in the Universe
 
         .. versionadded:: 0.9.0
@@ -4007,33 +3964,33 @@ class Universe(object):
         self._clear_caches('angles', 'angleDict')
 
     @property
-    @cached('torsions')
-    def torsions(self):
+    @cached('dihedrals')
+    def dihedrals(self):
         """
-        Returns a :class:`~MDAnalysis.topology.core.TopologyGroup`
-        of all torsions in the Universe
+        Returns a :class:`~MDAnalysis.core.topologyobjects.TopologyGroup`
+        of all dihedrals in the Universe
 
         .. versionadded:: 0.9.0
         .. versionchanged:: 0.9.2
            Now can return empty TopologyGroup
         """
-        return self._init_torsions()
+        return self._init_dihedrals()
 
-    @torsions.setter
-    def torsions(self, bondlist):
-        self._fill_cache('torsions', bondlist)
-        self._clear_caches('torsionDict')
+    @dihedrals.setter
+    def dihedrals(self, bondlist):
+        self._fill_cache('dihedrals', bondlist)
+        self._clear_caches('dihedralDict')
 
-    @torsions.deleter
-    def torsions(self):
-        self._clear_caches('torsions', 'torsionDict')
+    @dihedrals.deleter
+    def dihedrals(self):
+        self._clear_caches('dihedrals', 'dihedralDict')
 
     @property
     @cached('impropers')
     def impropers(self):
         """
-        Returns a :class:`~MDAnalysis.topology.core.TopologyGroup`
-        of all improper torsions in the Universe
+        Returns a :class:`~MDAnalysis.core.topologyobjects.TopologyGroup`
+        of all improper dihedrals in the Universe
 
         .. versionadded:: 0.9.0
         .. versionchanged:: 0.9.2

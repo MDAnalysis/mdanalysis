@@ -92,7 +92,7 @@ class PSFParser(TopologyReader):
                 ("atoms", ("NATOM", 1, 1, self._parseatoms)),
                 ("bonds", ("NBOND", 2, 4, self._parsesection)),
                 ("angles", ("NTHETA", 3, 3, self._parsesection)),
-                ("torsions", ("NPHI", 4, 2, self._parsesection)),
+                ("dihedrals", ("NPHI", 4, 2, self._parsesection)),
                 ("impropers", ("NIMPHI", 4, 2, self._parsesection)),
                 ("donors", ("NDON", 2, 4, self._parsesection)),
                 ("acceptors", ("NACC", 2, 4, self._parsesection))

@@ -45,9 +45,9 @@ cdef extern from "calc_distances.h":
     void _calc_angle(coordinate* atom1, coordinate* atom2, coordinate* atom3, int numatom, double* angles)
     void _calc_angle_ortho(coordinate* atom1, coordinate* atom2, coordinate* atom3, int numatom, float* box, double* angles)
     void _calc_angle_triclinic(coordinate* atom1, coordinate* atom2, coordinate* atom3, int numatom, coordinate* box, double* angles)
-    void _calc_torsion(coordinate* atom1, coordinate* atom2, coordinate* atom3, coordinate* atom4, int numatom, double* angles)
-    void _calc_torsion_ortho(coordinate* atom1, coordinate* atom2, coordinate* atom3, coordinate* atom4, int numatom, float* box, double* angles)
-    void _calc_torsion_triclinic(coordinate* atom1, coordinate* atom2, coordinate* atom3, coordinate* atom4, int numatom, coordinate* box, double* angles)
+    void _calc_dihedral(coordinate* atom1, coordinate* atom2, coordinate* atom3, coordinate* atom4, int numatom, double* angles)
+    void _calc_dihedral_ortho(coordinate* atom1, coordinate* atom2, coordinate* atom3, coordinate* atom4, int numatom, float* box, double* angles)
+    void _calc_dihedral_triclinic(coordinate* atom1, coordinate* atom2, coordinate* atom3, coordinate* atom4, int numatom, coordinate* box, double* angles)
     void _ortho_pbc(coordinate* coords, int numcoords, float* box, float* box_inverse)
     void _triclinic_pbc(coordinate* coords, int numcoords, coordinate* box, float* box_inverse)
 
@@ -198,7 +198,7 @@ def calc_angle_triclinic(c_numpy.ndarray coords1,
                           <coordinate*>box.data,
                           <double*>results.data)
 
-def calc_torsion(c_numpy.ndarray coords1,
+def calc_dihedral(c_numpy.ndarray coords1,
                  c_numpy.ndarray coords2,
                  c_numpy.ndarray coords3,
                  c_numpy.ndarray coords4,
@@ -206,12 +206,12 @@ def calc_torsion(c_numpy.ndarray coords1,
     cdef int numcoords
     numcoords = coords1.dimensions[0]
 
-    _calc_torsion(<coordinate*> coords1.data, <coordinate*> coords2.data,
+    _calc_dihedral(<coordinate*> coords1.data, <coordinate*> coords2.data,
                   <coordinate*> coords3.data, <coordinate*> coords4.data,
                   numcoords,
                   <double*>results.data)
 
-def calc_torsion_ortho(c_numpy.ndarray coords1,
+def calc_dihedral_ortho(c_numpy.ndarray coords1,
                        c_numpy.ndarray coords2,
                        c_numpy.ndarray coords3,
                        c_numpy.ndarray coords4,
@@ -220,13 +220,13 @@ def calc_torsion_ortho(c_numpy.ndarray coords1,
     cdef int numcoords
     numcoords = coords1.dimensions[0]
 
-    _calc_torsion_ortho(<coordinate*> coords1.data, <coordinate*> coords2.data,
+    _calc_dihedral_ortho(<coordinate*> coords1.data, <coordinate*> coords2.data,
                         <coordinate*> coords3.data, <coordinate*> coords4.data,
                         numcoords,
                         <float*>box.data,
                         <double*>results.data)
 
-def calc_torsion_triclinic(c_numpy.ndarray coords1,
+def calc_dihedral_triclinic(c_numpy.ndarray coords1,
                            c_numpy.ndarray coords2,
                            c_numpy.ndarray coords3,
                            c_numpy.ndarray coords4,
@@ -235,7 +235,7 @@ def calc_torsion_triclinic(c_numpy.ndarray coords1,
     cdef int numcoords
     numcoords = coords1.dimensions[0]
 
-    _calc_torsion_triclinic(<coordinate*> coords1.data, <coordinate*> coords2.data,
+    _calc_dihedral_triclinic(<coordinate*> coords1.data, <coordinate*> coords2.data,
                             <coordinate*> coords3.data, <coordinate*> coords4.data,
                             numcoords,
                             <coordinate*>box.data,

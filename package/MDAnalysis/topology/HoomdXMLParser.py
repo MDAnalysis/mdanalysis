@@ -115,7 +115,7 @@ class HoomdXMLParser(TopologyReader):
         atoms = []
         bonds = []
         angles = []
-        torsions = []
+        dihedrals = []
         impropers = []
 
         for i in range(natoms):
@@ -144,9 +144,9 @@ class HoomdXMLParser(TopologyReader):
             torsionlines = torsion.text.strip().split('\n')
             for torsionline in torsionlines:
                 torsionwords = torsionline.split()
-                torsions.append((int(torsionwords[1]),int(torsionwords[2]),int(torsionwords[3]),int(torsionwords[4])))
+                dihedrals.append((int(torsionwords[1]),int(torsionwords[2]),int(torsionwords[3]),int(torsionwords[4])))
         except:
-            torsions = []
+            dihedrals = []
 
         try:
             improper = configuration.find('improper')
@@ -158,5 +158,5 @@ class HoomdXMLParser(TopologyReader):
             impropers = []
 
 
-        structure = {'atoms': atoms, 'bonds': bonds, 'angles': angles, 'torsions': torsions, 'impropers': impropers}
+        structure = {'atoms': atoms, 'bonds': bonds, 'angles': angles, 'dihedrals': dihedrals, 'impropers': impropers}
         return structure
