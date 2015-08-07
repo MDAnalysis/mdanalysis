@@ -33,8 +33,8 @@ The TRR I/O interface uses :mod:`~MDAnalysis.coordinates.xdrfile.libxdrfile2`
 to implement random access to frames. This works by initially building an
 internal index of all frames and then using this index for direct
 seeks. Building the index is triggered by
-:func:`~MDAnalysis.coordinates.xdrfile.libxdrfile2.read_trr_numframes`, which
-typically happens when one accesses the :attr:`TRRReader.numframes` attribute
+:func:`~MDAnalysis.coordinates.xdrfile.libxdrfile2.read_trr_n_frames`, which
+typically happens when one accesses the :attr:`TRRReader.n_frames` attribute
 for the first time. Building the index may take many minutes for large
 trajectories but afterwards access is faster than with native Gromacs tools.
 
@@ -79,7 +79,7 @@ and the mode coordinates are filling the
 
    N = len(xav)   # number of atoms, i.e. number of coordinates
 
-   W = Writer('pca.trr', numatoms=N)            # TRR writer
+   W = Writer('pca.trr', n_atoms=N)            # TRR writer
    ts = MDAnalysis.coordinates.TRR.Timestep(N)  # TRR time step
                                                 # N of atoms is passed.
    for frame,mode in enumerate(modes[4:16]):

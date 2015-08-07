@@ -167,7 +167,7 @@ class PDBQTReader(base.SingleFrameReader):
                     coords.append((x, y, z))
                     atoms.append(
                         (serial, name, resName, chainID, resSeq, occupancy, tempFactor, partialCharge, atomtype))
-        self.numatoms = len(coords)
+        self.n_atoms = len(coords)
         self.ts = self._Timestep.from_coordinates(np.array(coords, dtype=np.float32),
                                                   **self._ts_kwargs)
         self.ts._unitcell[:] = unitcell
@@ -175,7 +175,7 @@ class PDBQTReader(base.SingleFrameReader):
         if self.convert_units:
             self.convert_pos_from_native(self.ts._pos)  # in-place !
             self.convert_pos_from_native(self.ts._unitcell[:3])  # in-place ! (only lengths)
-        self.numframes = 1
+        self.n_frames = 1
 
         # hack for PDBQTParser:
         self._atoms = np.rec.fromrecords(atoms,

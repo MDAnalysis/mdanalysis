@@ -177,7 +177,7 @@ class Timeseries(object):
         else:
             raise TypeError("Invalid atoms passed to %s timeseries" % self.__class__.__name__)
         self.code = code
-        self.numatoms = len(self.atoms)
+        self.n_atoms = len(self.atoms)
         self.dsize = dsize
 
     # Properties
@@ -209,13 +209,13 @@ class Timeseries(object):
         return self.dsize
 
     def getNumAtoms(self):
-        return self.numatoms
+        return self.n_atoms
 
     def getAtomCounts(self):
-        return [self.numatoms]
+        return [self.n_atoms]
 
     def getAuxData(self):
-        return [0.] * self.numatoms
+        return [0.] * self.n_atoms
 
 
 class Atom(Timeseries):
@@ -241,17 +241,17 @@ class Atom(Timeseries):
         else:
             size = 1
         if isinstance(atoms, AtomGroup.AtomGroup):
-            numatoms = len(atoms.atoms)
+            n_atoms = len(atoms.atoms)
         elif isinstance(atoms, list):
-            numatoms = len(atoms)
+            n_atoms = len(atoms)
         elif isinstance(atoms, AtomGroup.Atom):
-            numatoms = 1
+            n_atoms = 1
         else:
             raise TypeError("Invalid atoms passed to %s timeseries" % self.__class__.__name__)
-        Timeseries.__init__(self, code * numatoms, atoms, size * numatoms)
+        Timeseries.__init__(self, code * n_atoms, atoms, size * n_atoms)
 
     def getAtomCounts(self):
-        return [1, ] * self.numatoms
+        return [1, ] * self.n_atoms
 
 
 class Bond(Timeseries):
@@ -334,7 +334,7 @@ class CenterOfGeometry(Timeseries):
         Timeseries.__init__(self, 'm', atoms, 3)
 
     def getAuxData(self):
-        return [1.] * self.numatoms
+        return [1.] * self.n_atoms
 
 
 class CenterOfMass(Timeseries):

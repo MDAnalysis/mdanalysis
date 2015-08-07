@@ -155,7 +155,7 @@ class _GromacsReader_offsets(TestCase):
     @dec.slow
     def test_offsets(self):
         if self.trajectory._offsets is None:
-            self.trajectory.numframes
+            self.trajectory.n_frames
         assert_array_almost_equal(self.trajectory._offsets, self.ref_offsets,
                                   err_msg="wrong frame offsets")
 
@@ -182,7 +182,7 @@ class _GromacsReader_offsets(TestCase):
     @dec.slow
     def test_persistent_offsets_stored(self):
         # build offsets
-        self.trajectory.numframes
+        self.trajectory.n_frames
         assert_equal((self.trajectory._offsets is None), False)
     
         # check that stored offsets present
@@ -191,7 +191,7 @@ class _GromacsReader_offsets(TestCase):
     @dec.slow
     def test_persistent_offsets_ctime_match(self):
         # build offsets
-        self.trajectory.numframes
+        self.trajectory.n_frames
 
         with open(self.trajectory._offset_filename(), 'rb') as f:
             saved_offsets = cPickle.load(f)
@@ -202,7 +202,7 @@ class _GromacsReader_offsets(TestCase):
     @dec.slow
     def test_persistent_offsets_size_match(self):
         # build offsets
-        self.trajectory.numframes
+        self.trajectory.n_frames
 
         with open(self.trajectory._offset_filename(), 'rb') as f:
             saved_offsets = cPickle.load(f)
@@ -213,7 +213,7 @@ class _GromacsReader_offsets(TestCase):
     @dec.slow
     def test_persistent_offsets_autoload(self):
         # build offsets
-        self.trajectory.numframes
+        self.trajectory.n_frames
 
         # check that stored offsets are loaded for new universe
         u = MDAnalysis.Universe(self.top, self.traj)
@@ -222,7 +222,7 @@ class _GromacsReader_offsets(TestCase):
     @dec.slow
     def test_persistent_offsets_ctime_mismatch(self):
         # build offsets
-        self.trajectory.numframes
+        self.trajectory.n_frames
 
         # check that stored offsets are not loaded when trajectory ctime
         # differs from stored ctime
@@ -240,7 +240,7 @@ class _GromacsReader_offsets(TestCase):
     @dec.slow
     def test_persistent_offsets_size_mismatch(self):
         # build offsets
-        self.trajectory.numframes
+        self.trajectory.n_frames
 
         # check that stored offsets are not loaded when trajectory size differs
         # from stored size
@@ -256,7 +256,7 @@ class _GromacsReader_offsets(TestCase):
     @dec.slow
     def test_persistent_offsets_last_frame_wrong(self):
         # build offsets
-        self.trajectory.numframes
+        self.trajectory.n_frames
 
         # check that stored offsets are not loaded when the offsets themselves
         # appear to be wrong
@@ -274,7 +274,7 @@ class _GromacsReader_offsets(TestCase):
     @dec.slow
     def test_persistent_offsets_readonly(self):
         # build offsets
-        self.trajectory.numframes
+        self.trajectory.n_frames
 
         # check that if directory is read-only offsets aren't stored
         os.unlink(self.trajectory._offset_filename())
@@ -290,7 +290,7 @@ class _GromacsReader_offsets(TestCase):
     @dec.slow
     def test_persistent_offsets_refreshTrue(self):
         # build offsets
-        self.trajectory.numframes
+        self.trajectory.n_frames
 
         # check that the *refresh_offsets* keyword ensures stored offsets
         # aren't retrieved
@@ -300,7 +300,7 @@ class _GromacsReader_offsets(TestCase):
     @dec.slow
     def test_persistent_offsets_refreshFalse(self):
         # build offsets
-        self.trajectory.numframes
+        self.trajectory.n_frames
 
         # check that the *refresh_offsets* keyword as False grabs offsets
         u = MDAnalysis.Universe(self.top, self.traj, refresh_offsets=False)

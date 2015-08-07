@@ -112,7 +112,7 @@ segment selectors for interactive work::
   u.selectAtoms("resname SOL").set_segid("water")
   u.selectAtoms("resname NA or resname CL").set_segid("ions")
 
-  u.protein.numberOfResidues()
+  u.protein.n_residues
   water_oxygens = u.water.OW
 
 The setter methods have the additional advantage that they can assign
@@ -1027,8 +1027,8 @@ class AtomGroup(object):
             return AtomGroup(self._atoms + [other])
 
     def __repr__(self):
-        return "<AtomGroup with {natoms} atoms>".format(
-            natoms=len(self))
+        return "<AtomGroup with {n_atoms} atoms>".format(
+            n_atoms=len(self))
 
     def __getstate__(self):
         if self.universe is None:
@@ -1041,11 +1041,11 @@ class AtomGroup(object):
                 self.universe.filename, fname)
 
     def __setstate__(self, state):
-        indices, anchor_name, universe_natoms = state[:3]
+        indices, anchor_name, universe_n_atoms = state[:3]
         if indices is None:
             self.__init__([])
             return
-        if numpy.max(indices) >= universe_natoms:
+        if numpy.max(indices) >= universe_n_atoms:
             raise ValueError("Trying to unpickle an inconsistent AtomGroup")
         lookup_set = MDAnalysis._anchor_universes if anchor_name is None else MDAnalysis._named_anchor_universes
         for test_universe in lookup_set:
@@ -1058,15 +1058,18 @@ class AtomGroup(object):
                         "anchor_name: {}, ".format(anchor_name) if anchor_name is not None else "",
                         *state[2:]))
 
-    def numberOfAtoms(self):
+    @property
+    def n_atoms(self):
         """Total number of atoms in the group"""
         return len(self._atoms)
 
-    def numberOfResidues(self):
+    @property
+    def n_residues(self):
         """Total number of residues in the group"""
         return len(self.residues)
 
-    def numberOfSegments(self):
+    @property
+    def n_segments(self):
         """Total number of segments in the group"""
         return len(self.segments)
 
@@ -1814,9 +1817,9 @@ class AtomGroup(object):
         """
         pbc = kwargs.pop('pbc', MDAnalysis.core.flags['use_pbc'])
         if pbc:
-            return numpy.sum(self.packIntoBox(inplace=False), axis=0) / self.numberOfAtoms()
+            return numpy.sum(self.packIntoBox(inplace=False), axis=0) / self.n_atoms
         else:
-            return numpy.sum(self.positions, axis=0) / self.numberOfAtoms()
+            return numpy.sum(self.positions, axis=0) / self.n_atoms
 
     centroid = centerOfGeometry
 
@@ -2767,7 +2770,7 @@ class AtomGroup(object):
         trj = self.universe.trajectory  # unified trajectory API
         frame = trj.ts.frame
 
-        if trj.numframes == 1: kwargs.setdefault("multiframe", False)
+        if trj.n_frames == 1: kwargs.setdefault("multiframe", False)
 
         if filename is None:
             trjname, ext = os.path.splitext(os.path.basename(trj.filename))
@@ -4116,17 +4119,17 @@ class Universe(object):
                     #TypeError: ...."
 
         # supply number of atoms for readers that cannot do it for themselves
-        kwargs['numatoms'] = self.atoms.numberOfAtoms()
+        kwargs['n_atoms'] = self.atoms.n_atoms
         self.trajectory = reader(filename, **kwargs)    # unified trajectory API
-        if self.trajectory.numatoms != self.atoms.numberOfAtoms():
+        if self.trajectory.n_atoms != self.atoms.n_atoms:
             raise ValueError("The topology and {form} trajectory files don't"
                              " have the same number of atoms!\n"
-                             "Topology number of atoms {top_natoms}\n"
-                             "Trajectory: {fname} Number of atoms {trj_natoms}".format(
+                             "Topology number of atoms {top_n_atoms}\n"
+                             "Trajectory: {fname} Number of atoms {trj_n_atoms}".format(
                                  form=self.trajectory.format,
-                                 top_natoms=len(self.atoms),
+                                 top_n_atoms=len(self.atoms),
                                  fname=filename,
-                                 trj_natoms=self.trajectory.numatoms))
+                                 trj_n_atoms=self.trajectory.n_atoms))
 
         return filename, self.trajectory.format
 
@@ -4279,8 +4282,8 @@ class Universe(object):
             return atomgrp
 
     def __repr__(self):
-        return "<Universe with {natoms} atoms{bonds}>".format(
-            natoms=len(self.atoms),
+        return "<Universe with {n_atoms} atoms{bonds}>".format(
+            n_atoms=len(self.atoms),
             bonds=" and {0} bonds".format(len(self.bonds)) if self.bonds else "")
 
     def __getstate__(self):
@@ -4371,12 +4374,12 @@ class Universe(object):
         else:
             MDAnalysis._named_anchor_universes.add(self)
 
-    def _matches_unpickling(self, anchor_name, natoms, fname, trajname):
+    def _matches_unpickling(self, anchor_name, n_atoms, fname, trajname):
         if anchor_name is None or anchor_name == self.anchor_name:
             try:
-                return len(self.atoms)==natoms and self.filename==fname and self.trajectory.filenames==trajname
+                return len(self.atoms)==n_atoms and self.filename==fname and self.trajectory.filenames==trajname
             except AttributeError: # Only ChainReaders have filenames (plural)
-                return len(self.atoms)==natoms and self.filename==fname and self.trajectory.filename==trajname
+                return len(self.atoms)==n_atoms and self.filename==fname and self.trajectory.filename==trajname
         else:
             return False
 
@@ -4465,7 +4468,7 @@ def Merge(*args):
     trajectory = MDAnalysis.coordinates.base.Reader(None)
     ts = MDAnalysis.coordinates.base.Timestep.from_coordinates(coords)
     setattr(trajectory, "ts", ts)
-    trajectory.numframes = 1
+    trajectory.n_frames = 1
 
     # create an empty Universe object
     u = Universe()

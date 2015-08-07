@@ -547,10 +547,10 @@ class ContactAnalysis1(object):
             if x is None:
                 raise ValueError("a reference AtomGroup must be supplied")
         for ref, sel, s in izip(self.references, self.selections, self.selection_strings):
-            if ref.atoms.numberOfAtoms() != sel.atoms.numberOfAtoms():
+            if ref.atoms.n_atoms != sel.atoms.n_atoms:
                 raise ValueError("selection=%r: Number of atoms differ between "
                                  "reference (%d) and trajectory (%d)" %
-                                 (s, ref.atoms.numberOfAtoms(), sel.atoms.numberOfAtoms()))
+                                 (s, ref.atoms.n_atoms, sel.atoms.n_atoms))
 
         # compute reference contacts
         dref = MDAnalysis.lib.distances.distance_array(
@@ -614,7 +614,7 @@ class ContactAnalysis1(object):
             self.qavg *= 0  # average contact existence
             A, B = self.selections
             # determine the end_frame value to use:
-            total_frames = self.universe.trajectory.numframes
+            total_frames = self.universe.trajectory.n_frames
             if not end_frame:
                 # use the total number of frames in trajectory if no final value specified
                 end_frame = total_frames
@@ -630,8 +630,8 @@ class ContactAnalysis1(object):
                 out.write("%(frame)4d  %(q1)8.6f %(n1)5d\n" % vars())
         if store:
             self.timeseries = numpy.array(records).T
-        numframes = len(range(total_frames)[start_frame:end_frame:step_value])
-        self.qavg /= numframes
+        n_frames = len(range(total_frames)[start_frame:end_frame:step_value])
+        self.qavg /= n_frames
         numpy.savetxt(self.outarray, self.qavg, fmt="%8.6f")
         return self.output
 

@@ -926,7 +926,7 @@ class HOLE(BaseHOLE):
             from MDAnalysis import Universe
 
             u = Universe(self.filename, self.dcd)
-            length = int((u.trajectory.numframes - self.dcd_iniskip) / (self.dcd_step + 1))
+            length = int((u.trajectory.n_frames - self.dcd_iniskip) / (self.dcd_step + 1))
             logger.info("Found %d input frames in DCD trajectory %r", length, self.dcd)
 
         # one recarray for each frame, indexed by frame number
@@ -1081,15 +1081,15 @@ class HOLEtraj(BaseHOLE):
             q = numpy.loadtxt(data)
         elif data is None:
             # frame numbers
-            q = numpy.arange(1, self.universe.trajectory.numframes + 1)
+            q = numpy.arange(1, self.universe.trajectory.n_frames + 1)
         else:
             q = numpy.asarray(data)
 
         if len(q.shape) != 1:
             raise TypeError("Order parameter array must be 1D.")
-        if len(q) != self.universe.trajectory.numframes:
+        if len(q) != self.universe.trajectory.n_frames:
             errmsg = "Not same number of orderparameters ({0}) as trajectory frames ({1})".format(
-                len(q), self.universe.trajectory.numframes)
+                len(q), self.universe.trajectory.n_frames)
             logger.error(errmsg)
             raise ValueError(errmsg)
         return q

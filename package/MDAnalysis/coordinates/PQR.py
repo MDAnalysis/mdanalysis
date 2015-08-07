@@ -127,7 +127,7 @@ class PQRReader(base.SingleFrameReader):
                     coords.append((float(x), float(y), float(z)))
                     atoms.append(
                         (int(serial), name, resName, chainID, int(resSeq), float(charge), float(radius), segID))
-        self.numatoms = len(coords)
+        self.n_atoms = len(coords)
         self.ts = self._Timestep.from_coordinates(np.array(coords, dtype=np.float32),
                                                   **self._ts_kwargs)
         self.ts._unitcell[:] = unitcell

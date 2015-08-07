@@ -817,9 +817,9 @@ class HydrogenBondAnalysis(object):
         self.timeseries = []
         self.timesteps = []
 
-        logger.info("checking trajectory...")  # numframes can take a while!
+        logger.info("checking trajectory...")  # n_frames can take a while!
         try:
-            frames = numpy.arange(self.u.trajectory.numframes)[self.traj_slice]
+            frames = numpy.arange(self.u.trajectory.n_frames)[self.traj_slice]
         except:
             logger.error("Problem reading trajectory or trajectory slice incompatible.")
             logger.exception()
@@ -844,7 +844,7 @@ class HydrogenBondAnalysis(object):
 
         logger.info("Starting analysis (frame index start=%d stop=%d, step=%d)",
                     (self.traj_slice.start or 0),
-                    (self.traj_slice.stop or self.u.trajectory.numframes), self.traj_slice.step or 1)
+                    (self.traj_slice.stop or self.u.trajectory.n_frames), self.traj_slice.step or 1)
 
         for ts in self.u.trajectory[self.traj_slice]:
             # all bonds for this timestep

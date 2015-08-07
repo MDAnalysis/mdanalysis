@@ -248,22 +248,22 @@ class HydrogenBondAutoCorrel(object):
         dt = self.u.trajectory.dt  # frame step size in time
         req_frames = int(sample_time / dt)  # the number of frames required
 
-        numframes = len(self.u.trajectory)
-        if req_frames > numframes:
+        n_frames = len(self.u.trajectory)
+        if req_frames > n_frames:
             warnings.warn("Number of required frames ({}) greater than the"
                           " number of frames in trajectory ({})"
-                          .format(req_frames, numframes), RuntimeWarning)
+                          .format(req_frames, n_frames), RuntimeWarning)
 
         numruns = self.nruns
-        if numruns > numframes:
-            numruns = numframes
+        if numruns > n_frames:
+            numruns = n_frames
             warnings.warn("Number of runs ({}) greater than the number of"
                           " frames in trajectory ({})"
-                          .format(self.nruns, numframes), RuntimeWarning)
+                          .format(self.nruns, n_frames), RuntimeWarning)
 
-        self._starts = numpy.arange(0, numframes, numframes / numruns, dtype=int)
+        self._starts = numpy.arange(0, n_frames, n_frames / numruns, dtype=int)
         # limit stop points using clip
-        self._stops = numpy.clip(self._starts + req_frames, 0, numframes)
+        self._stops = numpy.clip(self._starts + req_frames, 0, n_frames)
 
         self._skip = req_frames / self.nsamples
         if self._skip == 0:  # If nsamples > req_frames

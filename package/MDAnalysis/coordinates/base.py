@@ -29,7 +29,7 @@ module. The derived classes must follow the Trajectory API in
    .. automethod:: from_coordinates
    .. automethod:: from_timestep
    .. automethod:: _init_unitcell
-   .. autoattribute:: numatoms
+   .. autoattribute:: n_atoms
    .. attribute::`frame`
 
       frame number (0-based)
@@ -48,7 +48,7 @@ module. The derived classes must follow the Trajectory API in
    .. attribute:: _pos
 
       :class:`numpy.ndarray` of dtype :class:`~numpy.float32` of shape
-      (*numatoms*, 3) and internal FORTRAN order, holding the raw
+      (*n_atoms*, 3) and internal FORTRAN order, holding the raw
       cartesian coordinates (in MDAnalysis units, i.e. Å).
 
       .. Note::
@@ -66,7 +66,7 @@ module. The derived classes must follow the Trajectory API in
    .. attribute:: _velocities
 
       :class:`numpy.ndarray` of dtype :class:`~numpy.float32`. of shape
-      (*numatoms*, 3), holding the raw velocities (in MDAnalysis
+      (*n_atoms*, 3), holding the raw velocities (in MDAnalysis
       units, i.e. typically Å/ps).
 
       .. Note::
@@ -84,7 +84,7 @@ module. The derived classes must follow the Trajectory API in
    .. attribute:: _forces
 
       :class:`numpy.ndarray` of dtype :class:`~numpy.float32`. of shape
-      (*numatoms*, 3), holding the forces
+      (*n_atoms*, 3), holding the forces
 
       :attr:`~Timestep._forces` only exists if :attr:`has_forces`
       is True
@@ -134,25 +134,25 @@ class Timestep(object):
 
     :Methods:
 
-      ``ts = Timestep(numatoms)``
+      ``ts = Timestep(n_atoms)``
 
-         create a timestep object with space for numatoms
+         create a timestep object with space for n_atoms
 
     .. versionchanged:: 0.11.0
        Added :meth:`from_timestep` and :meth:`from_coordinates` constructor
        methods.
        :class:`Timestep` init now only accepts integer creation
-       :attr:`numatoms` now a read only property
+       :attr:`n_atoms` now a read only property
        :attr:`frame` now 0-based instead of 1-based
        Attributes status and step removed
     """
     order = 'F'
 
-    def __init__(self, numatoms, **kwargs):
+    def __init__(self, n_atoms, **kwargs):
         """Create a Timestep, representing a frame of a trajectory
 
         :Arguments:
-          *numatoms*
+          *n_atoms*
             The total number of atoms this Timestep describes
 
         :Keywords:
@@ -176,7 +176,7 @@ class Timestep(object):
         # readers call Reader._read_next_timestep() on init, incrementing
         # self.frame to 0
         self.frame = -1
-        self._numatoms = numatoms
+        self._n_atoms = n_atoms
 
         self.data = {}
 
@@ -207,7 +207,7 @@ class Timestep(object):
 
         .. versionadded:: 0.11.0
         """
-        ts = cls(other.numatoms, velocities=other.has_velocities,
+        ts = cls(other.n_atoms, velocities=other.has_velocities,
                  forces=other.has_forces, **kwargs)
         ts.frame = other.frame
         ts.dimensions = other.dimensions
@@ -269,7 +269,7 @@ class Timestep(object):
         if not self.frame == other.frame:
             return False
 
-        if not self.numatoms == other.numatoms:
+        if not self.n_atoms == other.n_atoms:
             return False
 
         # Check contents of np arrays last (probably slow)
@@ -309,7 +309,7 @@ class Timestep(object):
             raise TypeError
 
     def __len__(self):
-        return self.numatoms
+        return self.n_atoms
 
     def __iter__(self):
         """Iterate over coordinates
@@ -318,7 +318,7 @@ class Timestep(object):
 
             iterate of the coordinates, atom by atom
         """
-        for i in xrange(self.numatoms):
+        for i in xrange(self.n_atoms):
             yield self[i]
 
     def __repr__(self):
@@ -355,12 +355,12 @@ class Timestep(object):
         """
         # Detect the size of the Timestep by doing a dummy slice
         try:
-            new_numatoms = len(self._pos[sel])
+            new_n_atoms = len(self._pos[sel])
         except:
             raise TypeError("Selection type must be compatible with slicing"
                             " the coordinates")
         # Make a mostly empty TS of same type of reduced size
-        new_TS = self.__class__(new_numatoms, velocities=self.has_velocities,
+        new_TS = self.__class__(new_n_atoms, velocities=self.has_velocities,
                                 forces=self.has_forces)
 
         if self.has_positions:
@@ -385,17 +385,17 @@ class Timestep(object):
         return new_TS
 
     @property
-    def numatoms(self):
+    def n_atoms(self):
         """A read only view of the number of atoms this Timestep has
 
         .. versionchanged:: 0.11.0
            Changed to read only property
         """
-        # In future could do some magic here to make setting numatoms
+        # In future could do some magic here to make setting n_atoms
         # resize the coordinate arrays, but
         # - not sure if that is ever useful
         # - not sure how to manage existing data upon extension
-        return self._numatoms
+        return self._n_atoms
 
     @property
     def has_positions(self):
@@ -414,7 +414,7 @@ class Timestep(object):
             # Setting this will always reallocate position data
             # ie
             # True -> False -> True will wipe data from first True state
-            self._pos = np.zeros((self.numatoms, 3), dtype=np.float32,
+            self._pos = np.zeros((self.n_atoms, 3), dtype=np.float32,
                                  order=self.order)
             self._has_positions = True
         elif not val:
@@ -429,7 +429,7 @@ class Timestep(object):
         weren't originally present.
 
         :Returns:
-           A numpy.ndarray of shape (numatoms, 3) of position data for each
+           A numpy.ndarray of shape (n_atoms, 3) of position data for each
            atom
 
         :Raises:
@@ -490,7 +490,7 @@ class Timestep(object):
     @has_velocities.setter
     def has_velocities(self, val):
         if val and not self._has_velocities:
-            self._velocities = np.zeros((self.numatoms, 3), dtype=np.float32,
+            self._velocities = np.zeros((self.n_atoms, 3), dtype=np.float32,
                                         order=self.order)
             self._has_velocities = True
         elif not val:
@@ -504,7 +504,7 @@ class Timestep(object):
         weren't originally present.
 
         :Returns:
-           A numpy.ndarray of shape (numatoms, 3) of velocity data for each
+           A numpy.ndarray of shape (n_atoms, 3) of velocity data for each
            atom
 
         :Raises:
@@ -537,7 +537,7 @@ class Timestep(object):
     @has_forces.setter
     def has_forces(self, val):
         if val and not self._has_forces:
-            self._forces = np.zeros((self.numatoms, 3), dtype=np.float32,
+            self._forces = np.zeros((self.n_atoms, 3), dtype=np.float32,
                                     order=self.order)
             self._has_forces = True
         elif not val:
@@ -551,7 +551,7 @@ class Timestep(object):
         weren't originally present.
 
         :Returns:
-           A numpy.ndarray of shape (numatoms, 3) of force data for each
+           A numpy.ndarray of shape (n_atoms, 3) of force data for each
            atom
 
         :Raises:
@@ -881,7 +881,7 @@ class ProtoReader(IObase):
     _Timestep = Timestep
 
     def __len__(self):
-        return self.numframes
+        return self.n_frames
 
     def next(self):
         """Forward one step to next frame."""
@@ -899,8 +899,8 @@ class ProtoReader(IObase):
 
     @property
     def totaltime(self):
-        """Total length of the trajectory numframes * dt."""
-        return self.numframes * self.dt
+        """Total length of the trajectory n_frames * dt."""
+        return self.n_frames * self.dt
 
     @property
     def frame(self):
@@ -928,11 +928,11 @@ class ProtoReader(IObase):
         """Returns a writer appropriate for *filename*.
 
         Sets the default keywords *start*, *step* and *dt* (if
-        available). *numatoms* is always set from :attr:`Reader.numatoms`.
+        available). *n_atoms* is always set from :attr:`Reader.n_atoms`.
 
         .. SeeAlso:: :meth:`Reader.Writer` and :func:`MDAnalysis.Writer`
         """
-        kwargs['numatoms'] = self.numatoms  # essential
+        kwargs['n_atoms'] = self.n_atoms  # essential
         kwargs.setdefault('start', self.frame)
         try:
             kwargs.setdefault('dt', self.dt)
@@ -1058,7 +1058,8 @@ class ProtoReader(IObase):
 
     def __repr__(self):
         return "< %s %r with %d frames of %d atoms>" % \
-               (self.__class__.__name__, self.filename, self.numframes, self.numatoms)
+               (self.__class__.__name__, self.filename, self.n_frames, self.n_atoms)
+
 
 class Reader(ProtoReader):
     """Base class for trajectory readers that extends :class:`ProtoReader` with a :meth:`__del__` method.
@@ -1103,14 +1104,15 @@ class Reader(ProtoReader):
     def __del__(self):
         self.close()
 
+
 class ChainReader(ProtoReader):
     """Reader that concatenates multiple trajectories on the fly.
 
     **Known issues**
 
     - Trajectory API attributes exist but most of them only reflect
-      the first trajectory in the list; :attr:`ChainReader.numframes`,
-      :attr:`ChainReader.numatoms`, and :attr:`ChainReader.fixed` are
+      the first trajectory in the list; :attr:`ChainReader.n_frames`,
+      :attr:`ChainReader.n_atoms`, and :attr:`ChainReader.fixed` are
       properly set, though
 
     - slicing not implemented
@@ -1162,29 +1164,29 @@ class ChainReader(ProtoReader):
 
         self.skip = kwargs.get('skip', 1)
         self._default_delta = kwargs.pop('delta', None)
-        self.numatoms = self._get_same('numatoms')
+        self.n_atoms = self._get_same('n_atoms')
         #self.fixed = self._get_same('fixed')
 
         # Translation between virtual frames and frames in individual
         # trajectories.
         # Assumes that individual trajectories i contain frames that can
-        # be addressed with an index 0 <= f < numframes[i]
+        # be addressed with an index 0 <= f < n_frames[i]
 
         # Build a map of frames: ordered list of starting virtual
         # frames; the index i into this list corresponds to the index
         # into self.readers
         #
-        # For virtual frame k (1...sum(numframes)) find corresponding
+        # For virtual frame k (1...sum(n_frames)) find corresponding
         # trajectory i and local frame f (i.e. readers[i][f] will
         # correspond to ChainReader[k]).
 
         # build map 'start_frames', which is used by _get_local_frame()
-        numframes = self._get('numframes')
+        n_frames = self._get('n_frames')
         # [0]: frames are 0-indexed internally
         # (see Timestep._check_slice_indices())
-        self.__start_frames = np.cumsum([0] + numframes)
+        self.__start_frames = np.cumsum([0] + n_frames)
 
-        self.numframes = np.sum(numframes)
+        self.n_frames = np.sum(n_frames)
 
         #: source for trajectories frame (fakes trajectory)
         self.__chained_trajectories_iter = None
@@ -1380,7 +1382,7 @@ class ChainReader(ProtoReader):
         return "< %s %r with %d frames of %d atoms>" % \
                (self.__class__.__name__,
                [os.path.basename(self.get_flname(fn)) for fn in self.filenames],
-               self.numframes, self.numatoms)
+               self.n_frames, self.n_atoms)
 
 
 class Writer(IObase):
@@ -1431,9 +1433,9 @@ class Writer(IObase):
 
     def __repr__(self):
         try:
-            return "< %s %r for %d atoms >" % (self.__class__.__name__, self.filename, self.numatoms)
+            return "< %s %r for %d atoms >" % (self.__class__.__name__, self.filename, self.n_atoms)
         except (TypeError, AttributeError):
-            # no trajectory loaded yet or a Writer that does not need e.g. self.numatoms
+            # no trajectory loaded yet or a Writer that does not need e.g. self.n_atoms
             return "< %s %r >" % (self.__class__.__name__, self.filename)
 
     def has_valid_coordinates(self, criteria, x):
@@ -1453,7 +1455,7 @@ class Writer(IObase):
         x = np.ravel(x)
         return np.all(criteria["min"] < x) and np.all(x <= criteria["max"])
 
-        # def write_next_timestep(self, ts=None)
+    # def write_next_timestep(self, ts=None)
 
 class SingleFrameReader(ProtoReader):
     """Base class for Readers that only have one frame.
@@ -1475,7 +1477,7 @@ class SingleFrameReader(ProtoReader):
             convert_units = flags['convert_lengths']
         self.convert_units = convert_units
 
-        self.numframes = 1
+        self.n_frames = 1
 
         ts_kwargs = {}
         for att in ('dt', 'time_offset'):

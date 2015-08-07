@@ -190,7 +190,7 @@ class _TestTimestep(TestCase):
 
     def _test_TS_slice(self, ref_TS, TS2, sel):
         per_atom = ['_x', '_y', '_z', '_pos', '_velocities', '_forces']
-        ignore = ['numatoms', '_numatoms']
+        ignore = ['n_atoms', '_n_atoms']
 
         for att in ref_TS.__dict__:
             try:
@@ -266,16 +266,16 @@ class _TestTimestep(TestCase):
             random_positions = np.arange(self.size).astype(np.float32)
             assert_raises(AttributeError, setattr, self.ts, coordinate, random_positions)
 
-    # numatoms should be a read only property
+    # n_atoms should be a read only property
     # all Timesteps require this attribute
-    def test_numatoms(self):
-        assert_equal(self.ts.numatoms, self.ts._numatoms)
+    def test_n_atoms(self):
+        assert_equal(self.ts.n_atoms, self.ts._n_atoms)
 
-    def test_numatoms_readonly(self):
-        assert_raises(AttributeError, self.ts.__setattr__, 'numatoms', 20)
+    def test_n_atoms_readonly(self):
+        assert_raises(AttributeError, self.ts.__setattr__, 'n_atoms', 20)
 
-    def test_numatoms_presence(self):
-        assert_equal(hasattr(self.ts, '_numatoms'), True)
+    def test_n_atoms_presence(self):
+        assert_equal(hasattr(self.ts, '_n_atoms'), True)
 
     def test_unitcell_presence(self):
         assert_equal(hasattr(self.ts, '_unitcell'), True)
@@ -290,7 +290,7 @@ class _TestTimestep(TestCase):
 
         self.ts.has_velocities = True
         assert_equal(self.ts.has_velocities, True)
-        assert_equal(self.ts.velocities.shape, (self.ts.numatoms, 3))
+        assert_equal(self.ts.velocities.shape, (self.ts.n_atoms, 3))
 
     def test_allocate_forces(self):
         assert_equal(self.ts.has_forces, False)
@@ -298,7 +298,7 @@ class _TestTimestep(TestCase):
 
         self.ts.has_forces = True
         assert_equal(self.ts.has_forces, True)
-        assert_equal(self.ts.forces.shape, (self.ts.numatoms, 3))
+        assert_equal(self.ts.forces.shape, (self.ts.n_atoms, 3))
 
     def test_velocities_remove(self):
         ts = self.Timestep(10, velocities=True)
@@ -659,7 +659,7 @@ class TestTimestep_Copy(TestCase):
         per_atom = [
             '_x', '_y', '_z', '_pos', '_velocities', '_forces',
             '_tpos', '_tvelocities', '_tforces']
-        ignore = ['numatoms', '_numatoms']
+        ignore = ['n_atoms', '_n_atoms']
 
         for att in ref_TS.__dict__:
             try:
@@ -781,7 +781,7 @@ class TestTimestepEquality(object):  # using test generator, don't change to Tes
         assert_not_equal(ts1, ts2)
         assert_not_equal(ts2, ts1)
 
-    def test_wrong_numatoms(self):
+    def test_wrong_n_atoms(self):
         ts1 = mda.coordinates.base.Timestep(10)
         ts1.positions = np.arange(30).reshape(10, 3)
 

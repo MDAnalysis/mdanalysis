@@ -36,9 +36,9 @@ class INPReader(base.SingleFrameReader):
         with open(self.filename, 'r') as inf:
             self.title = inf.readline().strip()
             line = inf.readline().split()
-            self.numatoms = int(line[0])
+            self.n_atoms = int(line[0])
 
-            self.ts = self._Timestep(self.numatoms, **self._ts_kwargs)
+            self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
             try:
                 time = float(line[1])
             except IndexError:
@@ -47,14 +47,14 @@ class INPReader(base.SingleFrameReader):
                 self.ts.time = time
             self.ts.frame = 0
 
-            for p in xrange(self.numatoms // 2):
+            for p in xrange(self.n_atoms // 2):
                 line = inf.readline()
                 # each float is f12.7, 6 floats a line
                 for i, dest in enumerate([(2*p, 0), (2*p, 1), (2*p, 2),
                                           (2*p + 1, 0), (2*p + 1, 1), (2*p + 1, 2)]):
                     self.ts._pos[dest] = float(line[i*12:(i+1)*12])
             # Read last coordinate if necessary            
-            if self.numatoms % 2:
+            if self.n_atoms % 2:
                 line = inf.readline()
                 for i in range(3):
                     self.ts._pos[-1, i] = float(line[i*12:(i+1)*12])

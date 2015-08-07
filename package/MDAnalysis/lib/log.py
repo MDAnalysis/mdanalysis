@@ -174,7 +174,7 @@ class ProgressMeter(object):
     Usage::
 
        u = Universe(PSF, DCD)
-       pm = ProgressMeter(u.trajectory.numframes, interval=100)
+       pm = ProgressMeter(u.trajectory.n_frames, interval=100)
        for ts in u.trajectory:
            pm.echo(ts.frame)
            ...
@@ -196,7 +196,7 @@ class ProgressMeter(object):
     It is possible to embed (almost) arbitrary additional data in the
     format string, for example a current RMSD value:
 
-       pm = ProgressMeter(u.trajectory.numframes, interval=100,
+       pm = ProgressMeter(u.trajectory.n_frames, interval=100,
                           "RMSD %(rmsd)5.2f at %(step)5d/%(numsteps)d [%(percentage)5.1f%%]\\r")
        for ts in u.trajectory:
            pm.echo(ts.frame, rmsd=current_rmsd)

@@ -91,8 +91,8 @@ class Timestep(base.Timestep):
     """
     order = 'C'
 
-    def __init__(self, numatoms, **kwargs):
-        super(Timestep, self).__init__(numatoms, **kwargs)
+    def __init__(self, n_atoms, **kwargs):
+        super(Timestep, self).__init__(n_atoms, **kwargs)
         self.data['status'] = libxdrfile2.exdrOK
         self._frame = 0
         self.data['prec'] = 0
@@ -130,14 +130,14 @@ class TrjWriter(base.Writer):
     #: override to define trajectory format of the reader (XTC or TRR)
     format = None
 
-    def __init__(self, filename, numatoms, start=0, step=1, dt=None, precision=1000.0, remarks=None,
+    def __init__(self, filename, n_atoms, start=0, step=1, dt=None, precision=1000.0, remarks=None,
                  convert_units=None):
         """ Create a new TrjWriter
 
         :Arguments:
           *filename*
              name of output file
-          *numatoms*
+          *n_atoms*
              number of atoms in trajectory file
 
         :Keywords:
@@ -167,7 +167,7 @@ class TrjWriter(base.Writer):
         .. versionchanged:: 0.11.0
            Keyword "delta" renamed to "dt"
         """
-        if numatoms == 0:
+        if n_atoms == 0:
             raise ValueError("TrjWriter: no atoms in output trajectory")
         self.filename = filename
         # Convert filename to ascii because of SWIG bug.
@@ -180,7 +180,7 @@ class TrjWriter(base.Writer):
         if convert_units is None:
             convert_units = MDAnalysis.core.flags['convert_lengths']
         self.convert_units = convert_units  # convert length and time to base units on the fly?
-        self.numatoms = numatoms
+        self.n_atoms = n_atoms
 
         self.frames_written = 0
         self.start = start
@@ -194,7 +194,7 @@ class TrjWriter(base.Writer):
         # To flag empty properties to be skipped when writing a TRR it suffices to pass an empty 2D array with shape(
         # natoms,0)
         if self.format == 'TRR':
-            self._emptyarr = np.array([], dtype=np.float32).reshape(self.numatoms, 0)
+            self._emptyarr = np.array([], dtype=np.float32).reshape(self.n_atoms, 0)
 
     def write_next_timestep(self, ts=None):
         """ write a new timestep to the trj file
@@ -209,7 +209,7 @@ class TrjWriter(base.Writer):
                 raise IOError("TrjWriter: no coordinate data to write to trajectory file")
             else:
                 ts = self.ts
-        elif not ts.numatoms == self.numatoms:
+        elif not ts.n_atoms == self.n_atoms:
             # Check to make sure Timestep has the correct number of atoms
             raise IOError("TrjWriter: Timestep does not have the correct number of atoms")
 
@@ -366,13 +366,13 @@ class TrjReader(base.Reader):
 
         self.xdrfile = None
 
-        self._numframes = None  # takes a long time, avoid accessing self.numframes
+        self._n_frames = None  # takes a long time, avoid accessing self.n_frames
         self._dt = None  # compute from time in first two frames!
         self._offsets = None  # storage of offsets in the file
 
         # actual number of atoms in the trr file
         # first time file is opened, exception should be thrown if bad file
-        self._trr_numatoms = self._read_trj_natoms(self.filename)
+        self._trr_n_atoms = self._read_trj_natoms(self.filename)
 
         # logic for handling sub sections of trr:
         # this class has some tmp buffers into which the libxdrfile2 functions read the
@@ -384,10 +384,10 @@ class TrjReader(base.Reader):
             # only valid type
             if not isinstance(sub, np.ndarray) or len(sub.shape) != 1 or sub.dtype.kind != 'i':
                 raise TypeError("sub MUST be a single dimensional numpy array of integers")
-            if len(sub) > self._trr_numatoms:
+            if len(sub) > self._trr_n_atoms:
                 raise ValueError("sub MUST be less than or equal to the number of actual trr atoms,"
-                                 " {0} in this case".format(self._trr_numatoms))
-            if np.max(sub) >= self._trr_numatoms or np.min(sub) < 0:
+                                 " {0} in this case".format(self._trr_n_atoms))
+            if np.max(sub) >= self._trr_n_atoms or np.min(sub) < 0:
                 raise IndexError("sub contains out-of-range elements for the given trajectory")
             # sub appears to be valid
             self._sub = sub
@@ -405,9 +405,9 @@ class TrjReader(base.Reader):
 
         # make the timestep, this is ALWAYS the used the public number of atoms
         # (same as the calling Universe)
-        # at this time, _trr_numatoms and _sub are set, so self.numatoms has all it needs
+        # at this time, _trr_n_atoms and _sub are set, so self.n_atoms has all it needs
         # to determine number of atoms.
-        self.ts = self._Timestep(self.numatoms, **self._ts_kwargs)
+        self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
 
         # Read in the first timestep
         self._read_next_timestep()
@@ -417,7 +417,7 @@ class TrjReader(base.Reader):
             self._retrieve_offsets()
 
     @property
-    def numatoms(self):
+    def n_atoms(self):
         """The number of publically available atoms that this reader will store in the timestep.
 
         If 'sub' was not given in the ctor, then this value will just be the actual
@@ -426,10 +426,10 @@ class TrjReader(base.Reader):
 
         If for any reason the trajectory cannot be read then a negative value is returned.
         """
-        return len(self._sub) if self._sub is not None else self._trr_numatoms
+        return len(self._sub) if self._sub is not None else self._trr_n_atoms
 
     @property
-    def numframes(self):
+    def n_frames(self):
         """Read the number of frames from the trajectory.
 
         The result is cached. If for any reason the trajectory cannot
@@ -442,22 +442,22 @@ class TrjReader(base.Reader):
 
         .. SeeAlso:: :meth:`TrjReader.load_offsets` and :meth:`TrjReader.save_offsets`
         """
-        if not self._numframes is None:  # return cached value
-            return self._numframes
+        if not self._n_frames is None:  # return cached value
+            return self._n_frames
         try:
-            self._read_trj_numframes(self.filename)
+            self._read_trj_n_frames(self.filename)
         except IOError:
-            self._numframes = 0
+            self._n_frames = 0
             return 0
         else:
-            return self._numframes
+            return self._n_frames
 
     @property
     def offsets(self):
         if self._offsets is not None:
             return self._offsets
         try:
-            self._read_trj_numframes(self.filename)
+            self._read_trj_n_frames(self.filename)
         except IOError:
             self._offsets = []
             return 0
@@ -539,7 +539,7 @@ class TrjReader(base.Reader):
             
         """
         if self._offsets is None:
-            self._read_trj_numframes(self.filename)
+            self._read_trj_n_frames(self.filename)
 
         output = {'ctime': os.path.getctime(self.filename),
                   'size': os.path.getsize(self.filename),
@@ -616,11 +616,11 @@ class TrjReader(base.Reader):
             warnings.warn("Missing key 'offsets' in file '{0}';"
                           " aborting load of offsets.".format(filename))
             return
-        self._numframes = len(self._offsets)
+        self._n_frames = len(self._offsets)
 
         # finally, check that loaded offsets appear to work by trying
         # to load last frame; otherwise, dump them so they get regenerated
-        # on next call to ``self.numframes``
+        # on next call to ``self.n_frames``
 
         #store current frame
         frame = self.frame
@@ -632,7 +632,7 @@ class TrjReader(base.Reader):
             warnings.warn("Could not access last frame with loaded offsets;"
                           " will rebuild offsets instead.")
             self._offsets = None
-            self._numframes = None
+            self._n_frames = None
 
     def open_trajectory(self):
         """Open xdr trajectory file.
@@ -676,7 +676,7 @@ class TrjReader(base.Reader):
               filename of the output trajectory
 
         :Keywords:
-          *numatoms*
+          *n_atoms*
               number of atoms
           *dt*
               Time interval between frames.
@@ -689,7 +689,7 @@ class TrjReader(base.Reader):
         .. versionchanged:: 0.11.0
            Changed "delta" keyword to "dt"
         """
-        numatoms = kwargs.pop('numatoms', self.numatoms)
+        n_atoms = kwargs.pop('n_atoms', self.n_atoms)
 
         kwargs.setdefault('dt', self.dt)
         try:
@@ -700,7 +700,7 @@ class TrjReader(base.Reader):
             kwargs.setdefault('precision', self.precision)
         except AttributeError:
             pass  # not needed for TRR
-        return self._Writer(filename, numatoms, **kwargs)
+        return self._Writer(filename, n_atoms, **kwargs)
 
     def __iter__(self):
         self._reopen()
@@ -728,7 +728,7 @@ class TrjReader(base.Reader):
 
         """
         if self._offsets is None:
-            self._read_trj_numframes(self.filename)
+            self._read_trj_n_frames(self.filename)
         self._seek(self._offsets[frame])
         self.ts.frame = frame - 1 # frame gets +1'd in _read_next_timestep   
         self._read_next_timestep()

@@ -121,7 +121,7 @@ class XYZWriter(base.Writer):
              *remark*
                 single line of text ("molecule name")
         """
-        # numatoms is ignored ...
+        # n_atoms is ignored ...
         self.filename = args[0]
         # convert length and time to base units on the fly?
         convert_units = kwargs.pop('convert_units', None)
@@ -144,7 +144,7 @@ class XYZWriter(base.Writer):
             return atoms.atoms.names
         except AttributeError:
             pass
-        # list or string (can be a single atom name... deal with this in write_next_timestep() once we know numatoms)
+        # list or string (can be a single atom name... deal with this in write_next_timestep() once we know n_atoms)
         return np.asarray(util.asiterable(atoms))
 
     def close(self):
@@ -181,7 +181,7 @@ class XYZWriter(base.Writer):
             if hasattr(obj, 'universe'):
                 # For AtomGroup and children (Residue, ResidueGroup, Segment)
                 ts_full = obj.universe.trajectory.ts
-                if ts_full.numatoms == atoms.numberOfAtoms():
+                if ts_full.n_atoms == atoms.n_atoms:
                     ts = ts_full
                 else:
                     # Only populate a time step with the selected atoms.
@@ -204,15 +204,15 @@ class XYZWriter(base.Writer):
             else:
                 ts = self.ts
 
-        if len(self.atomnames) != ts.numatoms:
-            self.atomnames = np.array([self.atomnames[0]] * ts.numatoms)
+        if len(self.atomnames) != ts.n_atoms:
+            self.atomnames = np.array([self.atomnames[0]] * ts.n_atoms)
 
         if self.convert_units:
             coordinates = self.convert_pos_to_native(ts._pos, inplace=False)
         else:
             coordinates = ts._pos
 
-        self.xyz.write("{0:d}\n".format(ts.numatoms))
+        self.xyz.write("{0:d}\n".format(ts.n_atoms))
         self.xyz.write("frame {0}\n".format(ts.frame))
         for atom, (x, y, z) in itertools.izip(self.atomnames, coordinates):
             self.xyz.write("%8s  %10.5f %10.5f %10.5f\n" % (atom, x, y, z))
@@ -265,22 +265,22 @@ class XYZReader(base.Reader):
         self.xyzfile = util.anyopen(self.filename, "r")
         self.compression = ext[1:] if ext[1:] != "xyz" else None
 
-        # note that, like for xtc and trr files, _numatoms and _numframes are used quasi-private variables
+        # note that, like for xtc and trr files, _n_atoms and _n_frames are used quasi-private variables
         # to prevent the properties being recalculated
         # this is because there is no indexing so the way it measures the number of frames is to read the whole file!
-        self._numatoms = self._read_xyz_natoms(self.filename)
-        self._numframes = None
+        self._n_atoms = self._read_xyz_natoms(self.filename)
+        self._n_frames = None
 
-        self.ts = self._Timestep(self._numatoms, **self._ts_kwargs)
+        self.ts = self._Timestep(self._n_atoms, **self._ts_kwargs)
 
         #        Haven't quite figured out where to start with all the self._reopen() etc.
         #        (Also cannot just use seek() or reset() because that would break with urllib2.urlopen() streams)
         self._read_next_timestep()
 
     @property
-    def numatoms(self):
+    def n_atoms(self):
         """number of atoms in a frame"""
-        return self._numatoms
+        return self._n_atoms
 
     def _read_xyz_natoms(self, filename):
         # this assumes that this is only called once at startup and that the filestream is already open
@@ -291,19 +291,19 @@ class XYZReader(base.Reader):
         return int(n)
 
     @property
-    def numframes(self):
-        if not self._numframes is None:  # return cached value
-            return self._numframes
+    def n_frames(self):
+        if not self._n_frames is None:  # return cached value
+            return self._n_frames
         try:
-            self._numframes = self._read_xyz_numframes(self.filename)
+            self._n_frames = self._read_xyz_n_frames(self.filename)
         except IOError:
             return 0
         else:
-            return self._numframes
+            return self._n_frames
 
-    def _read_xyz_numframes(self, filename):
+    def _read_xyz_n_frames(self, filename):
         # the number of lines in the XYZ file will be 2 greater than the number of atoms
-        linesPerFrame = self.numatoms + 2
+        linesPerFrame = self.n_atoms + 2
         counter = 0
         # step through the file (assuming xyzfile has an iterator)
         with util.anyopen(self.filename, 'r') as f:
@@ -311,8 +311,8 @@ class XYZReader(base.Reader):
                 counter = counter + 1
 
         # need to check this is an integer!
-        numframes = int(counter / linesPerFrame)
-        return numframes
+        n_frames = int(counter / linesPerFrame)
+        return n_frames
 
     def _read_next_timestep(self, ts=None):
         # check that the timestep object exists
@@ -338,7 +338,7 @@ class XYZReader(base.Reader):
                 z.append(float(words[3]))
 
             # stop when the cursor has reached the end of that block
-            if counter == self.numatoms:
+            if counter == self.n_atoms:
                 ts._unitcell = np.zeros((6), np.float32)
                 ts._x[:] = x  # more efficient to do it this way to avoid re-creating the numpy arrays
                 ts._y[:] = y

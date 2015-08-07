@@ -68,11 +68,11 @@ class GMSReader(base.Reader):
         # the filename has been parsed to be either b(g)zipped or not
         self.outfile = util.anyopen(self.filename, 'r')
 
-        # note that, like for xtc and trr files, _numatoms and _numframes are used quasi-private variables
+        # note that, like for xtc and trr files, _n_atoms and _n_frames are used quasi-private variables
         # to prevent the properties being recalculated
         # this is because there is no indexing so the way it measures the number of frames is to read the whole file!
-        self._numatoms = None
-        self._numframes = None
+        self._n_atoms = None
+        self._n_frames = None
         self._runtyp = None
 
         self.ts = self._Timestep(0) # need for properties initial calculations
@@ -82,9 +82,9 @@ class GMSReader(base.Reader):
         if not self.runtyp in ['optimize', 'surface']:
             raise AttributeError('Wrong RUNTYP= '+self.runtyp)
 
-        self.ts = self._Timestep(self.numatoms, **self._ts_kwargs)
-        # update numframes property
-        self.numframes
+        self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
+        # update n_frames property
+        self.n_frames
 
         # Read in the first timestep
         self._read_next_timestep()
@@ -114,16 +114,16 @@ class GMSReader(base.Reader):
         raise EOFError
 
     @property
-    def numatoms(self):
+    def n_atoms(self):
         """number of atoms in a frame"""
-        if not self._numatoms is None:   # return cached value
-            return self._numatoms
+        if not self._n_atoms is None:   # return cached value
+            return self._n_atoms
         try:
-            self._numatoms = self._read_out_natoms()
+            self._n_atoms = self._read_out_natoms()
         except IOError:
             return 0
         else:
-            return self._numatoms
+            return self._n_atoms
 
     def _read_out_natoms(self):
         self._reopen()
@@ -139,17 +139,17 @@ class GMSReader(base.Reader):
         raise EOFError
 
     @property
-    def numframes(self):
-        if not self._numframes is None:   # return cached value
-            return self._numframes
+    def n_frames(self):
+        if not self._n_frames is None:   # return cached value
+            return self._n_frames
         try:
-            self._numframes = self._read_out_numframes(self.filename)
+            self._n_frames = self._read_out_n_frames(self.filename)
         except IOError:
             return 0
         else:
-            return self._numframes
+            return self._n_frames
 
-    def _read_out_numframes(self, filename):
+    def _read_out_n_frames(self, filename):
         self._reopen()
         counter = 0
         if self.runtyp == 'optimize':
@@ -190,7 +190,7 @@ class GMSReader(base.Reader):
                 if (flag == 2) and (re.match(r'^\s*[-]+\s*', line) != None):
                     flag = 3
                     continue
-                if flag == 3 and counter < self.numatoms:
+                if flag == 3 and counter < self.n_atoms:
                     words = line.split()
                     x.append(float(words[2]))
                     y.append(float(words[3]))
@@ -206,7 +206,7 @@ class GMSReader(base.Reader):
                         r'^\s*HAS ENERGY VALUE\s*([-]?[0-9]+\.[0-9]+)\s*', line) != None):
                     flag = 3
                     continue
-                if flag == 3 and counter < self.numatoms:
+                if flag == 3 and counter < self.n_atoms:
                     words = line.split()
                     x.append(float(words[1]))
                     y.append(float(words[2]))
@@ -214,7 +214,7 @@ class GMSReader(base.Reader):
                     counter += 1
 
             # stop when the cursor has reached the end of that block
-            if counter == self._numatoms:
+            if counter == self._n_atoms:
                 ts._x[:] = x # more efficient to do it this way to avoid re-creating the numpy arrays
                 ts._y[:] = y
                 ts._z[:] = z

@@ -104,7 +104,7 @@ class DMSReader(base.SingleFrameReader):
 
         if not coords_list:
             raise IOError("Found no coordinates")
-        self.numatoms = len(coords_list)
+        self.n_atoms = len(coords_list)
 
         velocities = np.array(velocities_list, dtype=np.float32)
         if not velocities.any():

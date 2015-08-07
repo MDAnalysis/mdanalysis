@@ -251,7 +251,7 @@ class PDBReader(base.SingleFrameReader):
         pdb_id = "0UNK"
         self.pdb = pdb.extensions.get_structure(self.filename, pdb_id)
         pos = np.array([atom.coord for atom in self.pdb.get_atoms()])
-        self.numatoms = pos.shape[0]
+        self.n_atoms = pos.shape[0]
         self.fixed = 0  # parse B field for fixed atoms?
         #self.ts._unitcell[:] = ??? , from CRYST1? --- not implemented in Biopython.PDB
         self.ts = self._Timestep.from_coordinates(pos, **self._ts_kwargs)
@@ -463,9 +463,9 @@ class PrimitivePDBReader(base.Reader):
         super(PrimitivePDBReader, self).__init__(filename, **kwargs)
 
         try:
-            self._numatoms = kwargs['numatoms']
+            self._n_atoms = kwargs['n_atoms']
         except KeyError:
-            raise ValueError("PrimitivePDBReader requires the numatoms keyword")
+            raise ValueError("PrimitivePDBReader requires the n_atoms keyword")
 
         self.model_offset = kwargs.pop("model_offset", 0)
 
@@ -476,7 +476,7 @@ class PrimitivePDBReader(base.Reader):
 
         frames = {}
 
-        self.ts = self._Timestep(self._numatoms, **self._ts_kwargs)
+        self.ts = self._Timestep(self._n_atoms, **self._ts_kwargs)
         
         pos = 0  # atom position for filling coordinates array
         self._occupancy = []
@@ -529,11 +529,11 @@ class PrimitivePDBReader(base.Reader):
         self.compound = compound
         self.remarks = remarks        
 
-        if pos != self._numatoms:
+        if pos != self._n_atoms:
             raise ValueError("Read an incorrect number of atoms\n"
                              "Expected {expected} got {actual}"
-                             "".format(expected=self._numatoms, actual=pos))
-        self.numatoms = pos
+                             "".format(expected=self._n_atoms, actual=pos))
+        self.n_atoms = pos
 
         self.ts.frame = 0  # 0-based frame number as starting frame
 
@@ -546,7 +546,7 @@ class PrimitivePDBReader(base.Reader):
             frames[0] = 0
 
         self.frames = frames
-        self.numframes = len(frames) if frames else 1
+        self.n_frames = len(frames) if frames else 1
 
     def get_occupancy(self):
         """Return an array of occupancies in atom order."""
@@ -562,7 +562,7 @@ class PrimitivePDBReader(base.Reader):
         :Returns: :class:`PrimitivePDBWriter`
 
         """
-        kwargs.setdefault('multiframe', self.numframes > 1)
+        kwargs.setdefault('multiframe', self.n_frames > 1)
         return PrimitivePDBWriter(filename, **kwargs)
 
     def rewind(self):
@@ -621,10 +621,10 @@ class PrimitivePDBReader(base.Reader):
                     continue
 
         # check if atom number changed
-        if pos != self._numatoms:
+        if pos != self._n_atoms:
             raise ValueError("Read an incorrect number of atoms\n"
                              "Expected {expected} got {actual}"
-                             "".format(expected=self._numatoms, actual=pos+1))
+                             "".format(expected=self._n_atoms, actual=pos+1))
 
         if self.convert_units:
             self.convert_pos_from_native(self.ts._pos)  # in-place !
@@ -703,7 +703,7 @@ class PrimitivePDBWriter(base.Writer):
     remark_max_length = 66
     _multiframe = False
 
-    def __init__(self, filename, bonds="conect", numatoms=None, start=0, step=1,
+    def __init__(self, filename, bonds="conect", n_atoms=None, start=0, step=1,
                  remarks="Created by PrimitivePDBWriter",
                  convert_units=None, multiframe=None):
         """Create a new PDBWriter
@@ -745,8 +745,8 @@ class PrimitivePDBWriter(base.Writer):
         .. _ENDMDL: http://www.wwpdb.org/documentation/format32/sect9.html#ENDMDL
 
         """
-        # numatoms = None : dummy keyword argument
-        # (not used, but Writer() always provides numatoms as the second argument)
+        # n_atoms = None : dummy keyword argument
+        # (not used, but Writer() always provides n_atoms as the second argument)
 
         # TODO: - remarks should be a list of lines and written to REMARK
         #       - additional title keyword could contain line for TITLE
@@ -862,7 +862,7 @@ class PrimitivePDBWriter(base.Writer):
         if not self.obj or not hasattr(self.obj, 'universe') or not hasattr(self.obj.universe, 'bonds'):
             return
 
-        if self.obj.atoms.numberOfAtoms() != self.obj.universe.atoms.numberOfAtoms():
+        if self.obj.atoms.n_atoms != self.obj.universe.atoms.n_atoms:
             pass
             #logger.error("PDB CONECT records not written because this only works correctly for a whole Universe.")
             #raise NotImplementedError("PDB CONECT records not written because this only works correctly for a whole
@@ -984,12 +984,12 @@ class PrimitivePDBWriter(base.Writer):
         constructor). Thus, if *u* is a Universe then ::
 
            u.trajectory[-2]
-           pdb = PrimitivePDBWriter("out.pdb", u.atoms.numberOfAtoms())
+           pdb = PrimitivePDBWriter("out.pdb", u.atoms.n_atoms)
            pdb.write_all_timesteps(u)
 
         will write a PDB trajectory containing the last 2 frames and ::
 
-           pdb = PrimitivePDBWriter("out.pdb", u.atoms.numberOfAtoms(), start=12, skip=2)
+           pdb = PrimitivePDBWriter("out.pdb", u.atoms.n_atoms, start=12, skip=2)
            pdb.write_all_timesteps(u)
 
         will be writing frames 12, 14, 16, ...
@@ -1007,7 +1007,7 @@ class PrimitivePDBWriter(base.Writer):
         # Start from trajectory[0]/frame 0, if there are more than 1 frame.
         # If there is only 1 frame, the traj.frames is not like a python list:
         # accessing trajectory[-1] raises key error.
-        if not start and traj.numframes > 1:
+        if not start and traj.n_frames > 1:
             start = traj.frame
 
         for framenumber in xrange(start, len(traj), step):

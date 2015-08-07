@@ -53,7 +53,7 @@ def rms_rotation_matrix(c_numpy.ndarray conf, c_numpy.ndarray ref, c_numpy.ndarr
         ie   coor * R, where coor is the coordinate array and R the rotation matrix'''
     cdef c_numpy.ndarray ref_cms, pos, cross, k, mat
     cdef c_numpy.ndarray e, v
-    cdef int i, numatoms
+    cdef int i, n_atoms
     cdef double possq
 
     warnings.warn("rms_rotation_matrix() is deprecated and will be removed in 0.8. Use MDAnalysis.core.qcprot.CalcRMSDRotationalMatrix()",
@@ -61,15 +61,15 @@ def rms_rotation_matrix(c_numpy.ndarray conf, c_numpy.ndarray ref, c_numpy.ndarr
 
     if conf.dimensions[0] != ref.dimensions[0]:
         raise Exception("Error: RMS fit - conformation and reference don't have the same number of atoms")
-    numatoms = conf.dimensions[0]
+    n_atoms = conf.dimensions[0]
     ref_cms = numpy.zeros((3,), numpy.float64)
-    for i from 0 <= i < numatoms:
+    for i from 0 <= i < n_atoms:
         ref_cms = ref_cms + ref[i]
-    ref_cms = ref_cms / numatoms
+    ref_cms = ref_cms / n_atoms
     pos = numpy.zeros((3,), numpy.float64)
     possq = 0.
     cross = numpy.zeros((3,3), numpy.float64)
-    for i from 0 <= i < numatoms:
+    for i from 0 <= i < n_atoms:
         r = conf[i]
         r_ref = ref[i]-ref_cms
         w = weights[i]
