@@ -192,8 +192,8 @@ class TestRMSF(TestCase):
 
     def test_rmsf_identical_frames(self):
         # write a dummy trajectory of all the same frame
-        with MDAnalysis.Writer(self.outfile, self.universe.atoms.numberOfAtoms()) as W:
-            for i in xrange(self.universe.trajectory.numframes):
+        with MDAnalysis.Writer(self.outfile, self.universe.atoms.n_atoms) as W:
+            for i in xrange(self.universe.trajectory.n_frames):
                 W.write(self.universe)
 
         self.universe = MDAnalysis.Universe(GRO, self.outfile)
@@ -216,7 +216,7 @@ class TestHydrogenBondAnalysis(TestCase):
         }
         # ideal helix with 1 proline:
         self.values = {
-            'num_bb_hbonds':  u.atoms.numberOfResidues() - u.SYSTEM.PRO.numberOfResidues() - 4,
+            'num_bb_hbonds':  u.atoms.n_residues - u.SYSTEM.PRO.n_residues - 4,
             'donor_resid': numpy.array([5,  6,  8,  9, 10, 11, 12, 13]),
             'acceptor_resnm': numpy.array(['ALA', 'ALA', 'ALA', 'ALA', 'ALA', 'PRO', 'ALA', 'ALA']),
             }

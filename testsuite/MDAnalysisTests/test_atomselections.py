@@ -34,67 +34,67 @@ class TestSelectionsCHARMM(TestCase):
 
     def test_segid(self):
         sel = self.universe.selectAtoms('segid 4AKE')
-        assert_equal(sel.numberOfAtoms(), 3341, "failed to select segment 4AKE")
+        assert_equal(sel.n_atoms, 3341, "failed to select segment 4AKE")
         assert_equal(sel._atoms, self.universe.s4AKE._atoms,
                      "selected segment 4AKE is not the same as auto-generated segment s4AKE")
 
     def test_protein(self):
         sel = self.universe.selectAtoms('protein')
-        assert_equal(sel.numberOfAtoms(), 3341, "failed to select protein")
+        assert_equal(sel.n_atoms, 3341, "failed to select protein")
         assert_equal(sel._atoms, self.universe.s4AKE._atoms,
                      "selected protein is not the same as auto-generated protein segment s4AKE")
 
     def test_backbone(self):
         sel = self.universe.selectAtoms('backbone')
-        assert_equal(sel.numberOfAtoms(), 855)
+        assert_equal(sel.n_atoms, 855)
 
     def test_resid_single(self):
         sel = self.universe.selectAtoms('resid 100')
-        assert_equal(sel.numberOfAtoms(), 7)
+        assert_equal(sel.n_atoms, 7)
         assert_equal(sel.resnames, ['GLY'])
 
     def test_resid_range(self):
         sel = self.universe.selectAtoms('resid 100:105')
-        assert_equal(sel.numberOfAtoms(), 89)
+        assert_equal(sel.n_atoms, 89)
         assert_equal(sel.resnames, ['GLY', 'ILE', 'ASN', 'VAL', 'ASP', 'TYR'])
 
     def test_selgroup(self):
         sel = self.universe.selectAtoms('not resid 100')
         sel2 = self.universe.selectAtoms('not group notr100', notr100=sel)
-        assert_equal(sel2.numberOfAtoms(), 7)
+        assert_equal(sel2.n_atoms, 7)
         assert_equal(sel2.resnames, ['GLY'])
 
     def test_fullselgroup(self):
         sel1 = self.universe.selectAtoms('resid 101')
         sel2 = self.universe.selectAtoms('resid 100')
         sel3 = sel1.selectAtoms('fullgroup r100', r100=sel2)
-        assert_equal(sel2.numberOfAtoms(), 7)
+        assert_equal(sel2.n_atoms, 7)
         assert_equal(sel2.resnames, ['GLY'])
 
     # resnum selections are boring here because we haven't really a mechanism yet
     # to assign the canonical PDB resnums
     def test_resnum_single(self):
         sel = self.universe.selectAtoms('resnum 100')
-        assert_equal(sel.numberOfAtoms(), 7)
+        assert_equal(sel.n_atoms, 7)
         assert_equal(sel.resids, [100])
         assert_equal(sel.resnames, ['GLY'])
 
     def test_resnum_range(self):
         sel = self.universe.selectAtoms('resnum 100:105')
-        assert_equal(sel.numberOfAtoms(), 89)
+        assert_equal(sel.n_atoms, 89)
         assert_equal(sel.resids, range(100, 106))
         assert_equal(sel.resnames, ['GLY', 'ILE', 'ASN', 'VAL', 'ASP', 'TYR'])
 
     def test_resname(self):
         sel = self.universe.selectAtoms('resname LEU')
-        assert_equal(sel.numberOfAtoms(), 304, "Failed to find all 'resname LEU' atoms.")
-        assert_equal(sel.numberOfResidues(), 16, "Failed to find all 'resname LEU' residues.")
+        assert_equal(sel.n_atoms, 304, "Failed to find all 'resname LEU' atoms.")
+        assert_equal(sel.n_residues, 16, "Failed to find all 'resname LEU' residues.")
         assert_equal(sel._atoms, self.universe.s4AKE.LEU._atoms,
                      "selected 'resname LEU' atoms are not the same as auto-generated s4AKE.LEU")
 
     def test_name(self):
         sel = self.universe.selectAtoms('name CA')
-        assert_equal(sel.numberOfAtoms(), 214)
+        assert_equal(sel.n_atoms, 214)
 
     def test_atom(self):
         sel = self.universe.selectAtoms('atom 4AKE 100 CA')
@@ -113,7 +113,7 @@ class TestSelectionsCHARMM(TestCase):
 
     def test_or(self):
         sel = self.universe.selectAtoms('resname LYS or resname ARG')
-        assert_equal(sel.numberOfResidues(), 31)
+        assert_equal(sel.n_residues, 31)
 
     def test_not(self):
         sel = self.universe.selectAtoms('not backbone')
@@ -189,7 +189,7 @@ class TestSelectionsCHARMM(TestCase):
         assert_equal(len(sel), 797, "Found a wrong number of atoms in the same segment of resid 110")
         assert_array_equal(sel.resids, target_resids, "Found wrong residues in the same segment of resid 110")
 
-        target_resids = arange(150,self.universe.atoms.numberOfResidues())+1
+        target_resids = arange(150,self.universe.atoms.n_residues)+1
         sel = self.universe.selectAtoms("same segment as resid 160")
         assert_equal(len(sel), 1024, "Found a wrong number of atoms in the same segment of resid 160")
         assert_array_equal(sel.resids, target_resids, "Found wrong residues in the same segment of resid 160")
@@ -234,15 +234,15 @@ class TestSelectionsAMBER(TestCase):
 
     def test_protein(self):
         sel = self.universe.selectAtoms('protein')
-        assert_equal(sel.numberOfAtoms(), 22, "failed to select protein")
+        assert_equal(sel.n_atoms, 22, "failed to select protein")
 
     def test_backbone(self):
         sel = self.universe.selectAtoms('backbone')
-        assert_equal(sel.numberOfAtoms(), 7)
+        assert_equal(sel.n_atoms, 7)
 
     def test_resid_single(self):
         sel = self.universe.selectAtoms('resid 3')
-        assert_equal(sel.numberOfAtoms(), 6)
+        assert_equal(sel.n_atoms, 6)
         assert_equal(sel.resnames, ['NME'])
 
     def test_type(self):
@@ -262,12 +262,12 @@ class TestSelectionsNAMD(TestCase):
 
     def test_protein(self):
         sel = self.universe.selectAtoms('protein or resname HAO or resname ORT')  # must include non-standard residues
-        assert_equal(sel.numberOfAtoms(), self.universe.atoms.numberOfAtoms(), "failed to select peptide")
-        assert_equal(sel.numberOfResidues(), 6, "failed to select all peptide residues")
+        assert_equal(sel.n_atoms, self.universe.atoms.n_atoms, "failed to select peptide")
+        assert_equal(sel.n_residues, 6, "failed to select all peptide residues")
 
     def test_resid_single(self):
         sel = self.universe.selectAtoms('resid 12')
-        assert_equal(sel.numberOfAtoms(), 26)
+        assert_equal(sel.n_atoms, 26)
         assert_equal(sel.resnames, ['HAO'])
 
     def test_type(self):
@@ -284,12 +284,12 @@ class TestSelectionsGRO(TestCase):
     @dec.slow
     def test_protein(self):
         sel = self.universe.selectAtoms('protein')
-        assert_equal(sel.numberOfAtoms(), 3341, "failed to select protein")
+        assert_equal(sel.n_atoms, 3341, "failed to select protein")
 
     @dec.slow
     def test_backbone(self):
         sel = self.universe.selectAtoms('backbone')
-        assert_equal(sel.numberOfAtoms(), 855)
+        assert_equal(sel.n_atoms, 855)
 
     @dec.slow
     def test_type(self):
@@ -302,7 +302,7 @@ class TestSelectionsGRO(TestCase):
     @dec.slow
     def test_resid_single(self):
         sel = self.universe.selectAtoms('resid 100')
-        assert_equal(sel.numberOfAtoms(), 7)
+        assert_equal(sel.n_atoms, 7)
         assert_equal(sel.resnames, ['GLY'])
 
     @dec.slow
@@ -360,23 +360,23 @@ class TestSelectionsNucleicAcids(TestCase):
 
     def test_nucleic(self):
         rna = self.universe.selectAtoms("nucleic")
-        assert_equal(rna.numberOfAtoms(), 739)
-        assert_equal(rna.numberOfResidues(), 23)
+        assert_equal(rna.n_atoms, 739)
+        assert_equal(rna.n_residues, 23)
 
     def test_nucleicbackbone(self):
         rna = self.universe.selectAtoms("nucleicbackbone")
-        assert_equal(rna.numberOfResidues(), 23)
-        assert_equal(rna.numberOfAtoms(), rna.numberOfResidues() * 5 - 1)
+        assert_equal(rna.n_residues, 23)
+        assert_equal(rna.n_atoms, rna.n_residues * 5 - 1)
         # -1 because this is a single strand of RNA and on P is missing at the 5' end
 
     # todo: need checks for other selection resnames such as DT DA DG DC DU 
 
     def test_nucleicbase(self):
         rna = self.universe.selectAtoms("nucleicbase")
-        assert_equal(rna.numberOfResidues(), 23)
-        assert_equal(rna.numberOfAtoms(), 214)
+        assert_equal(rna.n_residues, 23)
+        assert_equal(rna.n_atoms, 214)
 
     def test_nucleicsugar(self):
         rna = self.universe.selectAtoms("nucleicsugar")
-        assert_equal(rna.numberOfResidues(), 23)
-        assert_equal(rna.numberOfAtoms(), rna.numberOfResidues() * 5)
+        assert_equal(rna.n_residues, 23)
+        assert_equal(rna.n_atoms, rna.n_residues * 5)

@@ -210,7 +210,7 @@ The advantage of XTC over TRR is its significantly reduced size.
               :Raises: :exc:`IOError` if the supplied filed is not a XTC 
                        or if it is not readable.
 
-.. function:: read_xtc_numframes(fn) -> (numframes, offsets)
+.. function:: read_xtc_n_frames(fn) -> (n_frames, offsets)
 
               Read through the whole trajectory headers to obtain the 
               total number of frames. The process is speeded up by reading 
@@ -225,7 +225,7 @@ The advantage of XTC over TRR is its significantly reduced size.
 
               :Returns:
                 a tuple containing:
-                  *numframes*
+                  *n_frames*
                      an int with the total frame count in the trajectory
                   *offsets*
                      a numpy array of int64 recording the starting byte offset of each frame
@@ -300,7 +300,7 @@ calculations. Velocities and forces are optional in the sense that they can be a
               :Raises: :exc:`IOError` if the supplied filed is not a TRR
                        or if it is not readable.
 
-.. function:: read_trr_numframes(fn) -> (numframes, offsets)
+.. function:: read_trr_n_frames(fn) -> (n_frames, offsets)
 
               Read through the whole trajectory headers to obtain the total number of frames. 
               The process is speeded up by reading frame headers for the amount of data in the frame,
@@ -313,7 +313,7 @@ calculations. Velocities and forces are optional in the sense that they can be a
 
               :Returns:
                 a tuple containing:
-                  *numframes*
+                  *n_frames*
                      an int with the total frame count in the trajectory
                   *offsets*
                      a numpy array of int64 recording the starting byte offset of each frame
@@ -466,23 +466,23 @@ extern int xdrfile_close(XDRFILE *fp);
   }
 %}
 
-%feature("autodoc", "0") my_read_xtc_numframes;
-%rename (read_xtc_numframes) my_read_xtc_numframes;
-%exception my_read_xtc_numframes {
+%feature("autodoc", "0") my_read_xtc_n_frames;
+%rename (read_xtc_n_frames) my_read_xtc_n_frames;
+%exception my_read_xtc_n_frames {
   $action
   if (PyErr_Occurred()) SWIG_fail;
 }
 %inline %{
-PyObject * my_read_xtc_numframes(char *fn) {
-    int numframes, status;
+PyObject * my_read_xtc_n_frames(char *fn) {
+    int n_frames, status;
     int64_t *offsets[1];
     PyObject *npoffsets = NULL;
-    status = read_xtc_numframes(fn, &numframes, offsets);
+    status = read_xtc_n_frames(fn, &n_frames, offsets);
     if (status != exdrOK) {
-      PyErr_Format(PyExc_IOError, "[%d] Error reading numframes by seeking through xtc '%s'", status, fn);
+      PyErr_Format(PyExc_IOError, "[%d] Error reading n_frames by seeking through xtc '%s'", status, fn);
       return 0;
     }
-    npy_intp nfrms[1] = { numframes };
+    npy_intp nfrms[1] = { n_frames };
     npoffsets = PyArray_SimpleNewFromData(1, nfrms, NPY_INT64, *offsets);
     if (npoffsets==NULL)
     {
@@ -494,7 +494,7 @@ PyObject * my_read_xtc_numframes(char *fn) {
     /* From http://web.archive.org/web/20130304224839/http://blog.enthought.com/python/numpy/simplified-creation-of-numpy-arrays-from-pre-allocated-memory/ */
     PyArray_BASE(npoffsets) = PyCObject_FromVoidPtr(*offsets, free);
     PyObject *tuple = PyTuple_New(2); 
-    PyTuple_SET_ITEM(tuple, 0, PyInt_FromLong((long)numframes));
+    PyTuple_SET_ITEM(tuple, 0, PyInt_FromLong((long)n_frames));
     PyTuple_SET_ITEM(tuple, 1, npoffsets);
     return tuple;
   }
@@ -525,23 +525,23 @@ PyObject * my_read_xtc_numframes(char *fn) {
 %}
 
 
-%feature("autodoc", "0") my_read_trr_numframes;
-%rename (read_trr_numframes) my_read_trr_numframes;
-%exception my_read_trr_numframes {
+%feature("autodoc", "0") my_read_trr_n_frames;
+%rename (read_trr_n_frames) my_read_trr_n_frames;
+%exception my_read_trr_n_frames {
   $action
   if (PyErr_Occurred()) SWIG_fail;
 }
 %inline %{
-PyObject * my_read_trr_numframes(char *fn) {
-    int numframes, status;
+PyObject * my_read_trr_n_frames(char *fn) {
+    int n_frames, status;
     int64_t *offsets[1];
     PyObject *npoffsets = NULL;
-    status = read_trr_numframes(fn, &numframes, offsets);
+    status = read_trr_n_frames(fn, &n_frames, offsets);
     if (status != exdrOK) {
-      PyErr_Format(PyExc_IOError, "[%d] Error reading numframes by seeking through trr '%s'", status, fn);
+      PyErr_Format(PyExc_IOError, "[%d] Error reading n_frames by seeking through trr '%s'", status, fn);
       return 0;
     }
-    npy_intp nfrms[1] = { numframes };
+    npy_intp nfrms[1] = { n_frames };
     npoffsets = PyArray_SimpleNewFromData(1, nfrms, NPY_INT64, *offsets);
     if (npoffsets==NULL)
     {
@@ -553,7 +553,7 @@ PyObject * my_read_trr_numframes(char *fn) {
     /* From http://web.archive.org/web/20130304224839/http://blog.enthought.com/python/numpy/simplified-creation-of-numpy-arrays-from-pre-allocated-memory/ */
     PyArray_BASE(npoffsets) = PyCObject_FromVoidPtr(*offsets, free);
     PyObject *tuple = PyTuple_New(2); 
-    PyTuple_SET_ITEM(tuple, 0, PyInt_FromLong((long)numframes));
+    PyTuple_SET_ITEM(tuple, 0, PyInt_FromLong((long)n_frames));
     PyTuple_SET_ITEM(tuple, 1, npoffsets);
     return tuple;
   }

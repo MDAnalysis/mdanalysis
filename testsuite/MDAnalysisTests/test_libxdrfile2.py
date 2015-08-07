@@ -31,31 +31,31 @@ class TestLib(TestCase):
 
 
 class TestXTC(TestCase):
-    def test_numatoms(self):
+    def test_n_atoms(self):
         natoms = xdr.read_xtc_natoms(XTC)
         assert_equal(natoms, 47681, "Number of atoms in XTC frame")
 
-    def test_numframes_offsets(self):
-        numframes, offsets = xdr.read_xtc_numframes(XTC)
+    def test_n_frames_offsets(self):
+        n_frames, offsets = xdr.read_xtc_n_frames(XTC)
         desired_offsets = [0,  165188,  330364,  495520,  660708,  825872,  991044,
                            1156212, 1321384, 1486544]
 
-        assert_equal(numframes, len(desired_offsets), "Number of frames in XTC trajectory")
+        assert_equal(n_frames, len(desired_offsets), "Number of frames in XTC trajectory")
 
         assert_array_almost_equal(offsets, desired_offsets, err_msg="wrong xtc frame offsets")
 
 
 class TestTRR(TestCase):
-    def test_numatoms(self):
+    def test_n_atoms(self):
         natoms = xdr.read_trr_natoms(TRR)
         assert_equal(natoms, 47681, "Number of atoms in TRR frame")
 
-    def test_numframes_offsets(self):
-        numframes, offsets = xdr.read_trr_numframes(TRR)
+    def test_n_frames_offsets(self):
+        n_frames, offsets = xdr.read_trr_n_frames(TRR)
         desired_offsets = [0,  1144464,  2288928,  3433392,  4577856,  5722320,
                            6866784,  8011248,  9155712, 10300176]
 
-        assert_equal(numframes, len(desired_offsets), "Number of frames in TRR trajectory")
+        assert_equal(n_frames, len(desired_offsets), "Number of frames in TRR trajectory")
 
         assert_array_almost_equal(offsets, desired_offsets, err_msg="wrong trr frame offsets")
 

@@ -24,7 +24,7 @@ rmsd = numpy.zeros((nframes,))
 
 # Setup writer to write aligned dcd file
 writer = mda.coordinates.DCD.DCDWriter(
-    'rmsfit.dcd',frames.numatoms,
+    'rmsfit.dcd',frames.n_atoms,
     frames.start_timestep,
     frames.skip_timestep,
     frames.delta,
@@ -32,7 +32,7 @@ writer = mda.coordinates.DCD.DCDWriter(
 
 ref_atoms = ref.selectAtoms(selections['reference'])
 traj_atoms = traj.selectAtoms(selections['target'])
-natoms = traj_atoms.numberOfAtoms()
+natoms = traj_atoms.n_atoms
 
 # if performing a mass-weighted alignment/rmsd calculation
 #masses = ref_atoms.masses()

@@ -43,19 +43,19 @@ class TestPDBQT(TestCase):
 
     def test_segid(self):
         sel = self.universe.selectAtoms('segid A')
-        assert_equal(sel.numberOfAtoms(), 909, "failed to select segment A")
+        assert_equal(sel.n_atoms, 909, "failed to select segment A")
         sel = self.universe.selectAtoms('segid B')
-        assert_equal(sel.numberOfAtoms(), 896, "failed to select segment B")
+        assert_equal(sel.n_atoms, 896, "failed to select segment B")
 
     def test_protein(self):
         sel = self.universe.selectAtoms('protein')
-        assert_equal(sel.numberOfAtoms(), 1805, "failed to select protein")
+        assert_equal(sel.n_atoms, 1805, "failed to select protein")
         assert_equal(sel._atoms, self.universe.atoms._atoms,
                      "selected protein is not the same as auto-generated protein segment A+B")
 
     def test_backbone(self):
         sel = self.universe.selectAtoms('backbone')
-        assert_equal(sel.numberOfAtoms(), 796)
+        assert_equal(sel.n_atoms, 796)
 
     def test_neighborhood(self):
         '''test KDTree-based distance search around query atoms
@@ -77,8 +77,8 @@ class TestPDBQT(TestCase):
                      "Writing and reading of chain A does not recover same atoms")
         del uA
 
-    def test_numframes(self):
-        assert_equal(self.universe.trajectory.numframes, 1, "wrong number of frames in pdb")
+    def test_n_frames(self):
+        assert_equal(self.universe.trajectory.n_frames, 1, "wrong number of frames in pdb")
 
     def test_time(self):
         assert_equal(self.universe.trajectory.time, 0.0, "wrong time of the frame")

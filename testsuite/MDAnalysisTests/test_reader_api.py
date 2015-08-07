@@ -27,11 +27,11 @@ class AmazingMultiFrameReader(Reader):
 
     def __init__(self, filename, **kwargs):
         self.filename = filename
-        self.numframes = 10
-        self.numatoms = 10
+        self.n_frames = 10
+        self.n_atoms = 10
         # ts isn't a real timestep, but just an integer
         # whose value represents the frame number (0 based)
-        self.ts = Timestep(self.numatoms)
+        self.ts = Timestep(self.n_atoms)
         self.ts.frame = -1
         self._read_next_timestep()
 
@@ -45,7 +45,7 @@ class AmazingMultiFrameReader(Reader):
 
     def _read_next_timestep(self):
         self.ts.frame += 1
-        if (self.ts.frame + 1) > self.numframes:
+        if (self.ts.frame + 1) > self.n_frames:
             raise IOError
         else:
             return self.ts
@@ -63,8 +63,8 @@ class AmazingReader(SingleFrameReader):
     format = 'Amazing'
     # have to hack this in to get the base class to "work"
     def _read_first_frame(self):
-        self.numatoms = 10
-        self.ts = Timestep(self.numatoms)
+        self.n_atoms = 10
+        self.ts = Timestep(self.n_atoms)
         self.ts.frame = 0
 
 
@@ -76,14 +76,14 @@ class _TestReader(TestCase):
     
     def test_required_attributes(self):
         """Test that Reader has the required attributes"""
-        for attr in ['filename', 'numatoms', 'numframes', 'ts',
+        for attr in ['filename', 'n_atoms', 'n_frames', 'ts',
                      'units', 'format']:
             assert_equal(hasattr(self.reader, attr), True, "Missing attr: {0}".format(attr))
         
     def test_iter(self):
         l = [ts for ts in self.reader]
 
-        assert_equal(len(l), self.numframes)
+        assert_equal(len(l), self.n_frames)
 
     def test_close(self):
         sfr = self.readerclass('text.txt')
@@ -107,12 +107,12 @@ class _TestReader(TestCase):
     def test_len(self):
         l = len(self.reader)
 
-        assert_equal(l, self.numframes)
+        assert_equal(l, self.n_frames)
 
 
 class _Multi(object):
-    numframes = 10
-    numatoms = 10
+    n_frames = 10
+    n_atoms = 10
     readerclass = AmazingMultiFrameReader
     reference = [i for i in range(10)]
     
@@ -175,8 +175,8 @@ class TestMultiFrameReader(_Multi, _TestReader):
         assert_raises(TypeError, sl)
 
 class _Single(TestCase):
-    numframes = 1
-    numatoms = 10
+    n_frames = 1
+    n_atoms = 10
     readerclass = AmazingReader
 
 class TestSingleFrameReader(_Single, _TestReader):

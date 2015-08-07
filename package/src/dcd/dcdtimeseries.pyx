@@ -68,9 +68,9 @@ def __read_timecorrel(object self, object atoms, object atomcounts, object forma
     cdef char* fmtstr
 
     dcd = <dcdhandle*>PyCObject_AsVoidPtr(self._dcd_C_ptr)
-    cdef int numframes
+    cdef int n_frames
     if (stop == -1): stop = dcd.nsets
-    numframes = (stop-start+1) / skip
+    n_frames = (stop-start+1) / skip
     cdef int numdata
     numdata = len(format)
     if numdata==0:
@@ -85,8 +85,8 @@ def __read_timecorrel(object self, object atoms, object atomcounts, object forma
     cdef int range
     range = upperb - lowerb + 1
     # Create data list
-    #data = numpy.zeros((numframes, sizedata), numpy.float64)
-    data = numpy.zeros((sizedata, numframes), numpy.float64)
+    #data = numpy.zeros((n_frames, sizedata), numpy.float64)
+    data = numpy.zeros((sizedata, n_frames), numpy.float64)
     temp = numpy.zeros((3, range), numpy.float32)
     tempX = <float*>(temp.data+0*temp.strides[0])
     tempY = <float*>(temp.data+1*temp.strides[0])
@@ -108,7 +108,7 @@ def __read_timecorrel(object self, object atoms, object atomcounts, object forma
     cdef int index, numskip
     cdef int i, j
     cdef float unitcell[6]
-    for i from 0 <= i < numframes:
+    for i from 0 <= i < n_frames:
         if (skip > 1):
             # Check if we have fixed atoms
             # XXX not done
@@ -140,11 +140,11 @@ def __read_timeseries(object self, object atoms, int skip):
     cdef int rc
 
     dcd = <dcdhandle*>PyCObject_AsVoidPtr(self._dcd_C_ptr)
-    cdef int numframes
-    numframes = dcd.nsets / skip
-    cdef int numatoms
-    numatoms = len(atoms)
-    if numatoms==0:
+    cdef int n_frames
+    n_frames = dcd.nsets / skip
+    cdef int n_atoms
+    n_atoms = len(atoms)
+    if n_atoms==0:
         raise Exception("No atoms passed into __read_timeseries function")
     atomlist = numpy.array(atoms)
     cdef int lowerb, upperb, range
@@ -152,7 +152,7 @@ def __read_timeseries(object self, object atoms, int skip):
     upperb = atoms[-1]
     range = upperb - lowerb + 1
     # Create atom list
-    coord = numpy.zeros((numatoms, numframes, 3), numpy.float64)
+    coord = numpy.zeros((n_atoms, n_frames, 3), numpy.float64)
     temp = numpy.zeros((3, range), numpy.float32)
     tempX = <float*>(temp.data+0*temp.strides[0])
     tempY = <float*>(temp.data+1*temp.strides[0])
@@ -165,7 +165,7 @@ def __read_timeseries(object self, object atoms, int skip):
     cdef int index, numskip
     cdef int i, j
     cdef float unitcell[6]
-    for i from 0 <= i < numframes:
+    for i from 0 <= i < n_frames:
         if (skip > 1):
             # Check if we have fixed atoms
             # XXX not done
@@ -180,7 +180,7 @@ def __read_timeseries(object self, object atoms, int skip):
         if (rc < 0):
             raise IOError("Error reading frame from DCD file")
         # Copy into numeric array
-        for j from 0 <= j < numatoms:
+        for j from 0 <= j < n_atoms:
             index = (<int*>atomlist.data)[j]-lowerb
             (<double*> (coord.data+j*coord.strides[0]+i*coord.strides[1]+0*coord.strides[2]))[0] = tempX[index]
             (<double*> (coord.data+j*coord.strides[0]+i*coord.strides[1]+1*coord.strides[2]))[0] = tempY[index]

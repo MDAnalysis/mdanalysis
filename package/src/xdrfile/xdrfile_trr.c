@@ -486,7 +486,7 @@ int read_trr_natoms(char *fn,int *natoms)
 	return exdrOK;
 }
 
-int read_trr_numframes(char *fn, int *numframes, int64_t **offsets)
+int read_trr_n_frames(char *fn, int *n_frames, int64_t **offsets)
 {
 	XDRFILE *xd;
 	t_trnheader sh;
@@ -529,7 +529,7 @@ int read_trr_numframes(char *fn, int *numframes, int64_t **offsets)
     }
 
     (*offsets)[0] = 0L;
-    *numframes = 1;
+    *n_frames = 1;
     while (1)
     {
         if (xdr_seek(xd, (int64_t) (framebytes), SEEK_CUR) != exdrOK) {
@@ -542,7 +542,7 @@ int read_trr_numframes(char *fn, int *numframes, int64_t **offsets)
             break;
         /* Read was successful; this is another frame */
         /* Check if we need to enlarge array */
-        if (*numframes == est_nframes){
+        if (*n_frames == est_nframes){
             est_nframes += est_nframes/5 + 1; // Increase in 20% stretches
             if ((*offsets = realloc(*offsets, sizeof(int64_t)*est_nframes))==NULL)
             {
@@ -550,8 +550,8 @@ int read_trr_numframes(char *fn, int *numframes, int64_t **offsets)
                 return exdrNOMEM;
             }
         }
-        (*offsets)[*numframes] = frame_offset;
-        (*numframes)++;
+        (*offsets)[*n_frames] = frame_offset;
+        (*n_frames)++;
         /* Calculate how much to skip this time */
         framebytes = sh.ir_size + sh.e_size + sh.box_size +
                      sh.vir_size + sh.pres_size + sh.top_size +
