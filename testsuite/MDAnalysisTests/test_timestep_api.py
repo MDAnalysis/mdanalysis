@@ -26,7 +26,7 @@ _TestTimestepInterface tests the Readers are correctly using Timesteps
 import itertools
 import numpy as np
 from numpy.testing import (TestCase, assert_raises, assert_equal, assert_allclose,
-                           assert_array_almost_equal)
+                           assert_array_almost_equal, assert_)
 from nose.plugins.attrib import attr
 from nose.tools import assert_not_equal
 from MDAnalysisTests.plugins.knownfailure import knownfailure
@@ -626,8 +626,8 @@ class TestTimestep_Copy(TestCase):
         TS2 = ref_TS.copy()
 
         err_msg = ("Timestep copy failed for format {form}"
-                   " on attribute {att}") 
-        
+                   " on attribute {att}")
+
         for att in ref_TS.__dict__:
             ref = ref_TS.__dict__[att]
 
@@ -726,12 +726,12 @@ class TestTimestepEquality(object):  # using test generator, don't change to Tes
         ts2 = mda.coordinates.base.Timestep(10)
         ts2.positions = np.arange(30).reshape(10, 3)
 
-        assert_equal(ts1, ts2)
-        assert_equal(ts2, ts1)
+        assert_(ts1 == ts2)
+        assert_(ts2 == ts1)
 
     def _check_ts(self, a, b, err_msg):
-        assert_equal(a, b, err_msg=err_msg)
-        assert_equal(b, a, err_msg=err_msg)
+        assert_(a == b, err_msg)
+        assert_(b == a, err_msg)
 
     def test_other_timestep(self):
         # use a subclass to base.Timestep to check it works
@@ -767,8 +767,8 @@ class TestTimestepEquality(object):  # using test generator, don't change to Tes
 
         b = tuple([0, 1, 2, 3])
 
-        assert_not_equal(ts1, b)
-        assert_not_equal(b, ts1)
+        assert_(ts1 != b)
+        assert_(b != ts1)
 
     def test_wrong_frame(self):
         ts1 = mda.coordinates.base.Timestep(10)
@@ -778,8 +778,8 @@ class TestTimestepEquality(object):  # using test generator, don't change to Tes
         ts2.positions = np.arange(30).reshape(10, 3)
         ts2.frame = 987
 
-        assert_not_equal(ts1, ts2)
-        assert_not_equal(ts2, ts1)
+        assert_(ts1 != ts2)
+        assert_(ts2 != ts1)
 
     def test_wrong_n_atoms(self):
         ts1 = mda.coordinates.base.Timestep(10)
@@ -787,8 +787,8 @@ class TestTimestepEquality(object):  # using test generator, don't change to Tes
 
         ts3 = mda.coordinates.base.Timestep(20)
 
-        assert_not_equal(ts1, ts3)
-        assert_not_equal(ts3, ts1)
+        assert_(ts1 != ts3)
+        assert_(ts3 != ts1)
 
     def test_wrong_pos(self):
         ts1 = mda.coordinates.base.Timestep(10)
@@ -797,8 +797,8 @@ class TestTimestepEquality(object):  # using test generator, don't change to Tes
         ts2 = mda.coordinates.base.Timestep(10)
         ts2.positions = np.arange(30).reshape(10, 3) + 1.0
 
-        assert_not_equal(ts1, ts2)
-        assert_not_equal(ts2, ts1)
+        assert_(ts1 != ts2)
+        assert_(ts2 != ts1)
 
     def test_check_vels(self):
         ts1 = mda.coordinates.base.Timestep(10, velocities=True)
@@ -807,8 +807,8 @@ class TestTimestepEquality(object):  # using test generator, don't change to Tes
         ts1.velocities = np.arange(30).reshape(10, 3)
         ts2.velocities = np.arange(30).reshape(10, 3)
 
-        assert_equal(ts1, ts2)
-        assert_equal(ts2, ts1)
+        assert_(ts1 == ts2)
+        assert_(ts2 == ts1)
 
     def test_check_mismatched_vels(self):
         ts1 = mda.coordinates.base.Timestep(10, velocities=True)
@@ -816,8 +816,8 @@ class TestTimestepEquality(object):  # using test generator, don't change to Tes
 
         ts1.velocities = np.arange(30).reshape(10, 3)
 
-        assert_not_equal(ts1, ts2)
-        assert_not_equal(ts2, ts1)
+        assert_(ts1 != ts2)
+        assert_(ts2 != ts1)
 
     def test_check_wrong_vels(self):
         ts1 = mda.coordinates.base.Timestep(10, velocities=True)
@@ -826,8 +826,8 @@ class TestTimestepEquality(object):  # using test generator, don't change to Tes
         ts1.velocities = np.arange(30).reshape(10, 3)
         ts2.velocities = np.arange(30).reshape(10, 3) + 1.0
 
-        assert_not_equal(ts1, ts2)
-        assert_not_equal(ts2, ts1)
+        assert_(ts1 != ts2)
+        assert_(ts2 != ts1)
 
     def test_check_forces(self):
         ts1 = mda.coordinates.base.Timestep(10, forces=True)
@@ -836,8 +836,8 @@ class TestTimestepEquality(object):  # using test generator, don't change to Tes
         ts1.forces = np.arange(30).reshape(10, 3)
         ts2.forces = np.arange(30).reshape(10, 3)
 
-        assert_equal(ts1, ts2)
-        assert_equal(ts2, ts1)
+        assert_(ts1 == ts2)
+        assert_(ts2 == ts1)
 
     def test_check_mismatched_forces(self):
         ts1 = mda.coordinates.base.Timestep(10, forces=True)
@@ -845,8 +845,8 @@ class TestTimestepEquality(object):  # using test generator, don't change to Tes
 
         ts1.forces = np.arange(30).reshape(10, 3)
 
-        assert_not_equal(ts1, ts2)
-        assert_not_equal(ts2, ts1)
+        assert_(ts1 != ts2)
+        assert_(ts2 != ts1)
 
     def test_check_wrong_forces(self):
         ts1 = mda.coordinates.base.Timestep(10, forces=True)
@@ -855,8 +855,8 @@ class TestTimestepEquality(object):  # using test generator, don't change to Tes
         ts1.forces = np.arange(30).reshape(10, 3)
         ts2.forces = np.arange(30).reshape(10, 3) + 1.0
 
-        assert_not_equal(ts1, ts2)
-        assert_not_equal(ts2, ts1)
+        assert_(ts1 != ts2)
+        assert_(ts2 != ts1)
 
 
 class _TestTimestepInterface(object):
