@@ -45,7 +45,7 @@ class _SelectionWriter(TestCase):
         del self.namedfile
 
     def _selection(self):
-        return self.universe.selectAtoms("protein and name CA and bynum 1-{0}".format(self.max_number))
+        return self.universe.select_atoms("protein and name CA and bynum 1-{0}".format(self.max_number))
 
     def _write(self, **kwargs):
         g = self._selection()

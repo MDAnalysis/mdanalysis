@@ -105,7 +105,7 @@ class TestAlign(TestCase):
 
     def test_rmsd(self):
         self.universe.trajectory[0]  # ensure first frame
-        bb = self.universe.selectAtoms('backbone')
+        bb = self.universe.select_atoms('backbone')
         A = bb.coordinates(copy=True)  # coordinates of first frame (copy=True just in case)
         self.universe.trajectory[-1]  # forward to last frame
         B = bb.coordinates()  # coordinates of last frame
@@ -175,7 +175,7 @@ class TestRMSF(TestCase):
         del self.universe
 
     def test_rmsf(self):
-        rmsfs = MDAnalysis.analysis.rms.RMSF(self.universe.selectAtoms('name CA'))
+        rmsfs = MDAnalysis.analysis.rms.RMSF(self.universe.select_atoms('name CA'))
         rmsfs.run(quiet=True)
         test_rmsfs = numpy.load(rmsfArray)
 
@@ -184,7 +184,7 @@ class TestRMSF(TestCase):
                             "values")
 
     def test_rmsf_single_frame(self):
-        rmsfs = MDAnalysis.analysis.rms.RMSF(self.universe.selectAtoms('name CA'))
+        rmsfs = MDAnalysis.analysis.rms.RMSF(self.universe.select_atoms('name CA'))
         rmsfs.run(start=5, stop=6, quiet=True)
 
         assert_almost_equal(rmsfs.rmsf, 0, 5,
@@ -197,7 +197,7 @@ class TestRMSF(TestCase):
                 W.write(self.universe)
 
         self.universe = MDAnalysis.Universe(GRO, self.outfile)
-        rmsfs = MDAnalysis.analysis.rms.RMSF(self.universe.selectAtoms('name CA'))
+        rmsfs = MDAnalysis.analysis.rms.RMSF(self.universe.select_atoms('name CA'))
         rmsfs.run(quiet=True)
 
         assert_almost_equal(rmsfs.rmsf, 0, 5,

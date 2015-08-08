@@ -53,10 +53,10 @@ class TestMol2(TestCase):
 
     def test_write_selection(self):
         ref = Universe(mol2_molecule)
-        gr0 = ref.selectAtoms("name C*")
+        gr0 = ref.select_atoms("name C*")
         gr0.write(self.outfile)
         u = Universe(self.outfile)
-        gr1 = u.selectAtoms("name C*")
+        gr1 = u.select_atoms("name C*")
         assert_equal(len(gr0), len(gr1))
 
     def test_broken_molecule(self):

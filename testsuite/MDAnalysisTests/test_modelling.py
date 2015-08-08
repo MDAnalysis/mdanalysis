@@ -37,7 +37,7 @@ from MDAnalysis.analysis.align import alignto
 
 
 def capping(ref, ace, nma, output):
-    resids = ref.selectAtoms("all").resids
+    resids = ref.select_atoms("all").resids
     resid_min, resid_max = min(resids), max(resids)
 
     # There is probably some cache i need to update both the atom and residues
@@ -63,11 +63,11 @@ def capping(ref, ace, nma, output):
             strict=True)
 
     #  TODO remove the Hydrogen closest to ACE's oxygen
-    u = Merge(ace.selectAtoms("resname ACE"),
-              ref.selectAtoms(
+    u = Merge(ace.select_atoms("resname ACE"),
+              ref.select_atoms(
                   "not (resid {0} and name HT*) and not (resid {1} and (name HT* or name OT1))"
                   "".format(resid_min, resid_max)),
-              nma.selectAtoms("resname NME or resname NMA"))
+              nma.select_atoms("resname NME or resname NMA"))
     u.trajectory.ts.dimensions = ref.trajectory.ts.dimensions
     u.atoms.write(output)
     return u
@@ -94,12 +94,12 @@ class TestCapping(TestCase):
         nma = MDAnalysis.Universe(capping_nma)
 
         u = capping(peptide, ace, nma, self.outfile)
-        assert_equal(len(u.selectAtoms("not name H*")), len(ref.selectAtoms("not name H*")))
+        assert_equal(len(u.select_atoms("not name H*")), len(ref.select_atoms("not name H*")))
 
         u = MDAnalysis.Universe(self.outfile)
 
-        ace = u.selectAtoms("resname ACE")
-        nma = u.selectAtoms("resname NMA")
+        ace = u.select_atoms("resname ACE")
+        nma = u.select_atoms("resname NMA")
 
         # Check if the resids were assigned correctly
         assert_equal(ace.resids[0], 1)
@@ -114,10 +114,10 @@ class TestCapping(TestCase):
         nma = MDAnalysis.Universe(capping_nma)
 
         u = capping(peptide, ace, nma, self.outfile)
-        assert_equal(len(u.selectAtoms("not name H*")), len(ref.selectAtoms("not name H*")))
+        assert_equal(len(u.select_atoms("not name H*")), len(ref.select_atoms("not name H*")))
 
-        ace = u.selectAtoms("resname ACE")
-        nma = u.selectAtoms("resname NMA")
+        ace = u.select_atoms("resname ACE")
+        nma = u.select_atoms("resname NMA")
 
         # Check if the resids were assigned correctly
         assert_equal(ace.resids[0], 1)

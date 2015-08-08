@@ -42,19 +42,19 @@ class TestPDBQT(TestCase):
             pass
 
     def test_segid(self):
-        sel = self.universe.selectAtoms('segid A')
+        sel = self.universe.select_atoms('segid A')
         assert_equal(sel.n_atoms, 909, "failed to select segment A")
-        sel = self.universe.selectAtoms('segid B')
+        sel = self.universe.select_atoms('segid B')
         assert_equal(sel.n_atoms, 896, "failed to select segment B")
 
     def test_protein(self):
-        sel = self.universe.selectAtoms('protein')
+        sel = self.universe.select_atoms('protein')
         assert_equal(sel.n_atoms, 1805, "failed to select protein")
         assert_equal(sel._atoms, self.universe.atoms._atoms,
                      "selected protein is not the same as auto-generated protein segment A+B")
 
     def test_backbone(self):
-        sel = self.universe.selectAtoms('backbone')
+        sel = self.universe.select_atoms('backbone')
         assert_equal(sel.n_atoms, 796)
 
     def test_neighborhood(self):
@@ -64,7 +64,7 @@ class TestPDBQT(TestCase):
         the atoms in the query pdb to create a list of protein
         residues within 4.0A of the query atoms.
         '''
-        protein = self.universe.selectAtoms("protein")
+        protein = self.universe.select_atoms("protein")
         ns_protein = kdNS.AtomNeighborSearch(protein)
         query_atoms = self.query_universe.atoms
         residue_neighbors = ns_protein.search_list(query_atoms, 4.0)
