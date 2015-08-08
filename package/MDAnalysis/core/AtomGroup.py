@@ -795,6 +795,7 @@ class AtomGroup(object):
        The follow methods were changed to properties: indices, masses, charges, names,
        types, radii, resids, resnames, resnums, segids
        Added altLocs and serials properties and setters
+       Deprecated selectAtoms in favour of select_atoms
     """
     # for generalized __getitem__ __iter__ and __len__
     # (override _containername for ResidueGroup and SegmentGroup)
@@ -3430,6 +3431,7 @@ class Universe(object):
        :meth:`make_anchor`, :meth:`remove_anchor`, :attr:`is_anchor`, and
        :attr:`anchor_name` were added to support the pickling/unpickling of
        :class:`AtomGroup`.
+       Deprecated selectAtoms in favour of select_atoms
     """
 
     def __init__(self, *args, **kwargs):

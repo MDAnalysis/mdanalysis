@@ -93,6 +93,7 @@ The rules for this file:
   * distances.contact_matrix now treats the particle distance with
     itself as a contact for sparse matrices and numpy arrays. The
     progress reporting for sparse calculations has been removed.
+  * deprecated selectAtoms in favour of select_atoms (Issue #389)
 
   Fixes
   * Amber TRJ and NCDF Reader & Writers now use 'dt' instead of 'delta'
