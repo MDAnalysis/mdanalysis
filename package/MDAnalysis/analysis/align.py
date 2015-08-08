@@ -200,7 +200,7 @@ def rotation_matrix(a, b, weights=None):
     :meth:`MDAnalysis.core.AtomGroup.AtomGroup.rotate` to generate a rotated
     selection, e.g. ::
 
-      >>> R = rotation_matrix(A.selectAtoms('backbone').coordinates(), B.selectAtoms('backbone').coordinates())
+      >>> R = rotation_matrix(A.select_atoms('backbone').coordinates(), B.select_atoms('backbone').coordinates())
       >>> A.atoms.rotate(R)
       >>> A.atoms.write("rotated.pdb")
 
@@ -228,8 +228,8 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
     The superposition is done in the following way:
 
     1. A rotation matrix is computed that minimizes the RMSD between
-       the coordinates of `mobile.selectAtoms(sel1)` and
-       `reference.selectAtoms(sel2)`; before the rotation, *mobile* is
+       the coordinates of `mobile.select_atoms(sel1)` and
+       `reference.select_atoms(sel2)`; before the rotation, *mobile* is
        translated so that its center of geometry (or center of mass)
        coincides with the one of *reference*. (See below for explanation of
        how *sel1* and *sel2* are derived from *select*.)
@@ -259,7 +259,7 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
          or a whole :class:`~MDAnalysis.core.AtomGroup.Universe`
       *select*
          1. any valid selection string for
-            :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms` that produces identical
+            :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.select_atoms` that produces identical
             selections in *mobile* and *reference*; or
          2. dictionary ``{'mobile':sel1, 'reference':sel2}``.
             (the :func:`fasta2select` function returns such a
@@ -291,7 +291,7 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
              context of the selection from *mobile* such as the rest of a
              protein, ligands and the surrounding water)
          *selection-string*
-             Apply to `mobile.selectAtoms(selection-string)`
+             Apply to `mobile.select_atoms(selection-string)`
          :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
              Apply to the arbitrary group of atoms
 
@@ -310,15 +310,15 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
        the old behavior was the equivalent of *strict* = ``True``.
     """
     if select in ('all', None):
-        # keep the EXACT order in the input AtomGroups; selectAtoms('all')
+        # keep the EXACT order in the input AtomGroups; select_atoms('all')
         # orders them by index, which can lead to wrong results if the user
         # has crafted mobile and reference to match atom by atom
         mobile_atoms = mobile.atoms
         ref_atoms = reference.atoms
     else:
         select = rms._process_selection(select)
-        mobile_atoms = mobile.selectAtoms(*select['mobile'])
-        ref_atoms = reference.selectAtoms(*select['reference'])
+        mobile_atoms = mobile.select_atoms(*select['mobile'])
+        ref_atoms = reference.select_atoms(*select['reference'])
 
     ref_atoms, mobile_atoms = get_matching_atoms(ref_atoms, mobile_atoms,
                                                  tol_mass=tol_mass, strict=strict)
@@ -342,7 +342,7 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
     if subselection is None:
         atoms = mobile.universe.atoms
     elif type(subselection) is str:
-        atoms = mobile.selectAtoms(subselection)
+        atoms = mobile.select_atoms(subselection)
     else:
         try:
             atoms = subselection.atoms
@@ -374,7 +374,7 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
          (uses the current time step of the object)
       *select*
          1. any valid selection string for
-            :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms` that produces identical
+            :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.select_atoms` that produces identical
             selections in *mobile* and *reference*; or
          2. a dictionary ``{'mobile':sel1, 'reference':sel2}`` (the
             :func:`fasta2select` function returns such a
@@ -454,8 +454,8 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
     del _Writer
 
     select = rms._process_selection(select)
-    ref_atoms = reference.selectAtoms(*select['reference'])
-    traj_atoms = traj.selectAtoms(*select['mobile'])
+    ref_atoms = reference.select_atoms(*select['reference'])
+    traj_atoms = traj.select_atoms(*select['mobile'])
     natoms = traj_atoms.n_atoms
 
     ref_atoms, traj_atoms = get_matching_atoms(ref_atoms, traj_atoms,
@@ -597,7 +597,7 @@ def fasta2select(fastafilename, is_aligned=False,
     sequence of resids as they appear in the psf in *ref_resids* or
     *target_resids*, e.g. ::
 
-       target_resids = [a.resid for a in trj.selectAtoms('name CA')]
+       target_resids = [a.resid for a in trj.select_atoms('name CA')]
 
     (This translation table *is* combined with any value for *xxx_offset*!)
 

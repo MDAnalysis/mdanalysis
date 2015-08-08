@@ -112,9 +112,9 @@ Examples
 
   from MDAnalysis.analysis import hbonds
   import matplotlib.pyplot as plt
-  H = u.selectAtoms('name Hn')
-  O = u.selectAtoms('name O')
-  N = u.selectAtoms('name N')
+  H = u.select_atoms('name Hn')
+  O = u.select_atoms('name O')
+  N = u.select_atoms('name N')
   hb_ac = hbonds.HydrogenBondAutoCorrel(u, acceptors = u.atoms.O,
               hydrogens = u.atoms.Hn, donors = u.atoms.N,bond_type='continuous',
               sample_time = 2, nruns = 20, nsamples = 1000)

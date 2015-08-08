@@ -44,7 +44,7 @@ from MDAnalysis.tests.datafiles import GRO, XTC
 universe = Universe(GRO, XTC)
 
 # adjust the selection, e.g. "resname TIP3 and name OH2" for CHARMM
-solvent = universe.selectAtoms("resname SOL and name OW")
+solvent = universe.select_atoms("resname SOL and name OW")
 
 dmin, dmax = 0.0, 8.0
 nbins = 80

@@ -695,7 +695,7 @@ class X3DNAtraj(BaseX3DNA):
 
         profiles = {}
 
-        nucleic = self.universe.selectAtoms(self.selection)
+        nucleic = self.universe.select_atoms(self.selection)
         for ts in self.universe.trajectory[start:stop:step]:
             print ts.frame
             print nucleic.atoms

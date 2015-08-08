@@ -34,7 +34,7 @@ a trajectory with only one frame.
 In order to write a selection to a PDB file one typically uses the
 :meth:`MDAnalysis.core.AtomGroup.AtomGroup.write` method of the selection::
 
-  calphas = universe.selectAtoms("name CA")
+  calphas = universe.select_atoms("name CA")
   calphas.write("calpha_only.pdb")
 
 This uses the coordinates from the current timestep of the trajectory.
@@ -43,7 +43,7 @@ In order to write a PDB trajectory one needs to first obtain a multi-frame
 writer (keyword *multiframe* = ``True``) and then iterate through the
 trajectory, while writing each frame::
 
-  calphas = universe.selectAtoms("name CA")
+  calphas = universe.select_atoms("name CA")
   W = MDAnalysis.Writer("calpha_traj.pdb", multiframe=True)
   for ts in u.trajectory:
       W.write(calphas)
@@ -113,7 +113,7 @@ do the following::
 Similarly, writing only a protein::
 
   pdb = MDAnalysis.Writer("protein.pdb", multiframe=True)
-  protein = u.selectAtoms("protein")
+  protein = u.select_atoms("protein")
   for ts in u.trajectory:
       pdb.write(protein)
   pdb.close()
@@ -122,14 +122,14 @@ A single frame can be written with the
 :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.write` method of any
 :class:`~MDAnalysis.core.AtomGroup.AtomGroup`::
 
-   protein = u.selectAtoms("protein")
+   protein = u.select_atoms("protein")
    protein.write("protein.pdb")
 
 Alternatively, get the single frame writer and supply the
 :class:`~MDAnalysis.core.AtomGroup.AtomGroup`::
 
   pdb = MDAnalysis.Writer("protein.pdb")
-  protein = u.selectAtoms("protein")
+  protein = u.select_atoms("protein")
   pdb.write(protein)
   pdb.close()
 
@@ -366,7 +366,7 @@ class PDBWriter(base.Writer):
                 return
             # primitive PDB writing (ignores timestep argument)
             ppw = PrimitivePDBWriter(self.filename)
-            ppw.write(self.universe.selectAtoms('all'))
+            ppw.write(self.universe.select_atoms('all'))
             ppw.close()
         else:
             # full fledged PDB writer

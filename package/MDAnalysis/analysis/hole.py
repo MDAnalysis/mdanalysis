@@ -1026,7 +1026,7 @@ class HOLEtraj(BaseHOLE):
                ``universe.trajectory[start, stop, step]``
 
           *selection*
-               selection string for :meth:`~MDAnalysis.core.AtomGroup.Universe.selectAtoms` to select
+               selection string for :meth:`~MDAnalysis.core.AtomGroup.Universe.select_atoms` to select
                the group of atoms that is to be analysed by HOLE ["protein"]
 
           *cpoint*
@@ -1068,7 +1068,7 @@ class HOLEtraj(BaseHOLE):
         This method simply uses the center of geometry of the protein selection
         as a guess. *selection* is "protein" by default.
         """
-        return self.universe.selectAtoms(kwargs.get("selection", "protein")).centerOfGeometry()
+        return self.universe.select_atoms(kwargs.get("selection", "protein")).centerOfGeometry()
 
     def _process_orderparameters(self, data):
         """Read orderparameters from *data*
@@ -1119,7 +1119,7 @@ class HOLEtraj(BaseHOLE):
 
         # TODO: alternatively, dump all frames with leading framenumber and use a wildcard
         #       (although the file renaming might create problems...)
-        protein = self.universe.selectAtoms(self.selection)
+        protein = self.universe.select_atoms(self.selection)
         for q, ts in izip(self.orderparameters[start:stop:step], self.universe.trajectory[start:stop:step]):
             logger.info("HOLE analysis frame %4d (orderparameter %g)", ts.frame, q)
             fd, pdbfile = tempfile.mkstemp(suffix=".pdb")

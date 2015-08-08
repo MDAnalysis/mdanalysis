@@ -93,7 +93,7 @@ A typical approach is to generate a new trajectory from an old one, e.g. to
 only keep the protein::
 
   u = MDAnalysis.Universe(PDB, XTC)
-  protein = u.selectAtoms("protein")
+  protein = u.select_atoms("protein")
   with MDAnalysis.Writer("protein.xtc", protein.n_atoms) as W:
       for ts in u.trajectory:
           W.write(protein)

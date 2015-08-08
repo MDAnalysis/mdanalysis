@@ -13,7 +13,7 @@ object ("attributes"). For example, a
 returns the center of mass of the group of atoms. It also contains an
 attribute called :attr:`~MDAnalysis.core.AtomGroup.AtomGroup.residues`
 that lists all the residues that belong to the group. Using methods
-such as :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms`
+such as :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.select_atoms`
 (which uses `CHARMM-style`_ atom :ref:`selection-commands-label`) one
 can create new objects (in this case, another
 :class:`~MDAnalysis.core.AtomGroup.AtomGroup`).
@@ -28,7 +28,7 @@ of a protein and the radius of gyration of the backbone atoms are calculated::
   u = MDAnalysis.Universe(PSF,DCD)                 # always start with a Universe
   nterm = u.s4AKE.N[0]   # can access structure via segid (s4AKE) and atom name
   cterm = u.s4AKE.C[-1]  # ... takes the last atom named 'C'
-  bb = u.selectAtoms('protein and backbone')  # a selection (a AtomGroup)
+  bb = u.select_atoms('protein and backbone')  # a selection (a AtomGroup)
   for ts in u.trajectory:     # iterate through all frames
     r = cterm.pos - nterm.pos # end-to-end vector from atom positions
     d = numpy.linalg.norm(r)  # end-to-end distance
@@ -117,10 +117,10 @@ over time::
   >>> print u.trajectory
   < DCDReader '/..../MDAnalysis/tests/data/adk_dims.dcd' with 98 frames of 3341 atoms (0 fixed) >
 
-Finally, the :meth:`MDAnalysis.Universe.selectAtoms` method generates a new
+Finally, the :meth:`MDAnalysis.Universe.select_atoms` method generates a new
 :class:`~MDAnalysis.core.AtomGroup.AtomGroup` according to a selection criterion
 
-  >>> calphas = u.selectAtoms("name CA")
+  >>> calphas = u.select_atoms("name CA")
   >>> print calphas
   <AtomGroup with 214 atoms>
 

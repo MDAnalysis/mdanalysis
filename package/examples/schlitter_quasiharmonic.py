@@ -4,7 +4,7 @@ from MDAnalysis import *
 import Numeric
 
 system = AtomGroup.System("data/beta_op_adp-vmd.psf", "data/step1.dcd")
-asel = system.selectAtoms('segid F and backbone and not type O')
+asel = system.select_atoms('segid F and backbone and not type O')
 
 masses = Numeric.repeat(asel.masses, 3)
 mass_matrix = Numeric.sqrt(Numeric.identity(len(masses)) * masses)

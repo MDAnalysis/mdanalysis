@@ -81,8 +81,8 @@ in MDAnalysis. ::
     sel_acidic = "(resname ASP or resname GLU) and (name OE* or name OD*)"
 
     # reference groups (first frame of the trajectory, but you could also use a separate PDB, eg crystal structure)
-    acidic = u.selectAtoms(sel_acidic)
-    basic = u.selectAtoms(sel_basic)
+    acidic = u.select_atoms(sel_acidic)
+    basic = u.select_atoms(sel_basic)
 
     # set up analysis of native contacts ("salt bridges"); salt bridges have a distance <6 A
     CA1 = MDAnalysis.analysis.contacts.ContactAnalysis1(u, selection=(sel_acidic, sel_basic), refgroup=(acidic,
@@ -267,9 +267,9 @@ class ContactAnalysis(object):
         r1 = MDAnalysis.Universe(topology, self.ref1)
         r2 = MDAnalysis.Universe(topology, self.ref2)
 
-        self.ca = self.u.selectAtoms(self.selection)
-        ca1 = r1.selectAtoms(self.selection)
-        ca2 = r2.selectAtoms(self.selection)
+        self.ca = self.u.select_atoms(self.selection)
+        ca1 = r1.select_atoms(self.selection)
+        ca2 = r2.select_atoms(self.selection)
 
         # NOTE: self_distance_array() produces a 1D array; this works here
         #       but is not the same as the 2D output from distance_array()!
@@ -426,16 +426,16 @@ class ContactAnalysis1(object):
     the reference atoms; this example uses some arbitrary selections::
 
       ref = Universe('crystal.pdb')
-      refA = re.selectAtoms('name CA and segid A and resid 6:100')
-      refB = re.selectAtoms('name CA and segid B and resid 1:40')
+      refA = re.select_atoms('name CA and segid A and resid 6:100')
+      refB = re.select_atoms('name CA and segid B and resid 1:40')
 
     Load the trajectory::
 
       u = Universe(topology, trajectory)
 
     We then need two selection strings *selA* and *selB* that, when applied as
-    ``u.selectAtoms(selA)`` produce a list of atoms that is equivalent to the
-    reference (i.e. ``u.selectAtoms(selA)`` must select the same atoms as
+    ``u.select_atoms(selA)`` produce a list of atoms that is equivalent to the
+    reference (i.e. ``u.select_atoms(selA)`` must select the same atoms as
     ``refA`` in this example)::
 
       selA = 'name CA and resid 1:95'     # corresponds to refA
@@ -540,7 +540,7 @@ class ContactAnalysis1(object):
         self.filenames = args
         self.universe = MDAnalysis.asUniverse(*args, **kwargs)
 
-        self.selections = [self.universe.selectAtoms(s) for s in self.selection_strings]
+        self.selections = [self.universe.select_atoms(s) for s in self.selection_strings]
 
         # sanity checkes
         for x in self.references:

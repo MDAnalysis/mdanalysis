@@ -6,7 +6,7 @@ from numpy import *
 from numpy import linalg
 
 system = AtomGroup.Universe(".psf", ".dcd")
-asel = system.selectAtoms(' ( name CA ) ')
+asel = system.select_atoms(' ( name CA ) ')
 # print asel
 
 #---------------------------------
