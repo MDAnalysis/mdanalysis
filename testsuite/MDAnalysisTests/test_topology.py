@@ -15,7 +15,7 @@
 
 import MDAnalysis
 from MDAnalysis.core.AtomGroup import AtomGroup
-from MDAnalysis.core.distances import calc_bonds, calc_angles, calc_dihedrals
+from MDAnalysis.lib.distances import calc_bonds, calc_angles, calc_dihedrals
 from MDAnalysis.topology.core import (
     guess_atom_type, guess_atom_element, get_atom_mass, guess_format,
     guess_bonds, guess_angles, guess_dihedrals, guess_improper_dihedrals,
