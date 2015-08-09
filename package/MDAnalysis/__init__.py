@@ -71,7 +71,7 @@ testing (see below under `Examples`_)::
 
 Select the C-alpha atoms and store them as a group of atoms::
 
-  >>> ca = u.selectAtoms('name CA')
+  >>> ca = u.select_atoms('name CA')
   >>> len(ca)
   214
 
@@ -134,19 +134,21 @@ the OPLS/AA force field.
 
 """
 
-__version__ = "0.11.0-dev"  # NOTE: keep in sync with RELEASE in setup.py
-
 __all__ = ['Timeseries', 'Universe', 'asUniverse', 'Writer', 'collection']
 
 import logging
+import warnings
+
+from .version import __version__
 
 from .lib import log
-from .lib.log import NullHandler, start_logging, stop_logging
+from .lib.log import start_logging, stop_logging
 
-h = log.NullHandler()
-logging.getLogger("MDAnalysis").addHandler(h)
-del h
+logging.getLogger("MDAnalysis").addHandler(log.NullHandler())
 del logging
+
+# DeprecationWarnings are loud by default
+warnings.simplefilter('always', DeprecationWarning)
 
 # custom exceptions and warnings
 from .exceptions import (

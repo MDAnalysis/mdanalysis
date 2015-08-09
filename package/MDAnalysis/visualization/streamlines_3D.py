@@ -39,7 +39,7 @@ def determine_container_limits(coordinate_file_path, trajectory_file_path, buffe
     '''A function for the parent process which should take the input trajectory and calculate the limits of the
     container for the system and return these limits.'''
     universe_object = MDAnalysis.Universe(coordinate_file_path, trajectory_file_path)
-    all_atom_selection = universe_object.selectAtoms('all')  # select all particles
+    all_atom_selection = universe_object.select_atoms('all')  # select all particles
     all_atom_coordinate_array = all_atom_selection.coordinates()
     x_min, x_max, y_min, y_max, z_min, z_max = [
         all_atom_coordinate_array[..., 0].min(),
@@ -245,7 +245,7 @@ def produce_coordinate_arrays_single_process(coordinate_file_path, trajectory_fi
     send these coordinate arrays to all child processes rather than having each child process open a trajectoryand
     waste memory.'''
     universe_object = MDAnalysis.Universe(coordinate_file_path, trajectory_file_path)
-    relevant_particles = universe_object.selectAtoms(MDA_selection)
+    relevant_particles = universe_object.select_atoms(MDA_selection)
     # pull out coordinate arrays from desired frames:
     for ts in universe_object.trajectory:
         if ts.frame > end_frame:

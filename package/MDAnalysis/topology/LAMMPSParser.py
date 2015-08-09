@@ -158,7 +158,7 @@ class DATAParser(TopologyReader):
 
             return structure
 
-    def read_DATA_timestep(self, numatoms, TS_class, TS_kwargs):
+    def read_DATA_timestep(self, n_atoms, TS_class, TS_kwargs):
         """Read a DATA file and try and extract x, v, box.
 
         - positions
@@ -194,12 +194,12 @@ class DATAParser(TopologyReader):
                     break
 
                 if section == 'Atoms':
-                    positions = np.zeros((numatoms, 3),
+                    positions = np.zeros((n_atoms, 3),
                                          dtype=np.float32, order='F')
                     self._parse_pos(datafile, positions)
                     read_coords = True
                 elif section == 'Velocities':
-                    velocities = np.zeros((numatoms, 3),
+                    velocities = np.zeros((n_atoms, 3),
                                           dtype=np.float32, order='F')
                     self._parse_vel(datafile, velocities)
                     read_velocities = True

@@ -37,7 +37,7 @@ Reads coordinates, velocities and more (see attributes of the
 
       Current system time in ps
 
-   .. attribute:: numatoms
+   .. attribute:: n_atoms
 
       Number of atoms in the frame (will be constant throughout trajectory)
 
@@ -138,32 +138,32 @@ class TRZReader(base.Reader):
 
     units = {'time': 'ps', 'length': 'nm', 'velocity': 'nm/ps'}
 
-    def __init__(self, trzfilename, numatoms=None, **kwargs):
+    def __init__(self, trzfilename, n_atoms=None, **kwargs):
         """Creates a TRZ Reader
 
         :Arguments:
           *trzfilename*
             name of input file
-          *numatoms*
+          *n_atoms*
             number of atoms in trajectory, must taken from topology file!
           *convert_units*
             converts units to MDAnalysis defaults
         """
         super(TRZReader, self).__init__(trzfilename,  **kwargs)
 
-        if numatoms is None:
-            raise ValueError('TRZReader requires the numatoms keyword')
+        if n_atoms is None:
+            raise ValueError('TRZReader requires the n_atoms keyword')
 
         self.trzfile = util.anyopen(self.filename, 'rb')
         self._cache = dict()
-        self._numatoms = numatoms
+        self._n_atoms = n_atoms
 
         self._read_trz_header()
-        self.ts = Timestep(self.numatoms, velocities=True, forces=self.has_force,
+        self.ts = Timestep(self.n_atoms, velocities=True, forces=self.has_force,
                            **self._ts_kwargs)
 
         # structured dtype of a single trajectory frame
-        readarg = str(numatoms) + 'f4'
+        readarg = str(n_atoms) + 'f4'
         frame_contents = [
             ('p1', 'i4'),
             ('nframe', 'i4'),
@@ -262,20 +262,20 @@ class TRZReader(base.Reader):
             return ts
 
     @property
-    def numatoms(self):
+    def n_atoms(self):
         """Number of atoms in a frame"""
-        return self._numatoms
+        return self._n_atoms
 
     @property
-    @cached('numframes')
-    def numframes(self):
+    @cached('n_frames')
+    def n_frames(self):
         """Total number of frames in a trajectory"""
         try:
-            return self._read_trz_numframes(self.trzfile)
+            return self._read_trz_n_frames(self.trzfile)
         except IOError:
             return 0
 
-    def _read_trz_numframes(self, trzfile):
+    def _read_trz_n_frames(self, trzfile):
         """Uses size of file and dtype information to determine how many frames exist
 
         .. versionchanged:: 0.9.0
@@ -395,11 +395,11 @@ class TRZReader(base.Reader):
 
         return self.trzfile
 
-    def Writer(self, filename, numatoms=None):
-        if numatoms is None:
+    def Writer(self, filename, n_atoms=None):
+        if n_atoms is None:
             # guess that they want to write the whole timestep unless told otherwise?
-            numatoms = self.ts.numatoms
-        return TRZWriter(filename, numatoms)
+            n_atoms = self.ts.n_atoms
+        return TRZWriter(filename, n_atoms)
 
     def close(self):
         """Close trz file if it was open"""
@@ -412,20 +412,20 @@ class TRZWriter(base.Writer):
     """Writes a TRZ format trajectory.
 
     :Methods:
-       ``W = TRZWriter(trzfilename, numatoms, title='TRZ')``
+       ``W = TRZWriter(trzfilename, n_atoms, title='TRZ')``
     """
 
     format = 'TRZ'
 
     units = {'time': 'ps', 'length': 'nm', 'velocity': 'nm/ps'}
 
-    def __init__(self, filename, numatoms, title='TRZ', convert_units=None):
+    def __init__(self, filename, n_atoms, title='TRZ', convert_units=None):
         """Create a TRZWriter
 
         :Arguments:
          *filename*
           name of output file
-         *numatoms*
+         *n_atoms*
           number of atoms in trajectory
 
         :Keywords:
@@ -437,11 +437,11 @@ class TRZWriter(base.Writer):
           (see :ref:`flags-label`)
         """
         self.filename = filename
-        if numatoms is None:
-            raise ValueError("TRZWriter requires the numatoms keyword")
-        if numatoms == 0:
+        if n_atoms is None:
+            raise ValueError("TRZWriter requires the n_atoms keyword")
+        if n_atoms == 0:
             raise ValueError("TRZWriter: no atoms in output trajectory")
-        self.numatoms = numatoms
+        self.n_atoms = n_atoms
 
         if convert_units is None:
             convert_units = flags['convert_lengths']
@@ -451,7 +451,7 @@ class TRZWriter(base.Writer):
 
         self._writeheader(title)
 
-        floatsize = str(numatoms) + 'f4'
+        floatsize = str(n_atoms) + 'f4'
         self.frameDtype = np.dtype([
             ('p1a', 'i4'),
             ('nframe', 'i4'),
@@ -506,7 +506,7 @@ class TRZWriter(base.Writer):
 
     def write_next_timestep(self, ts):
         # Check size of ts is same as initial
-        if not ts.numatoms == self.numatoms:
+        if not ts.n_atoms == self.n_atoms:
             raise ValueError("Number of atoms in ts different to initialisation")
 
         # Gather data, faking it when unavailable
@@ -542,7 +542,7 @@ class TRZWriter(base.Writer):
         try:
             vels = ts._velocities
         except AttributeError:
-            vels = np.zeros((self.numatoms, 3), dtype=np.float32, order='F')
+            vels = np.zeros((self.n_atoms, 3), dtype=np.float32, order='F')
             warnings.warn("Timestep didn't have velocity information, "
                           "this will be set to zero in output trajectory. ")
 
@@ -563,7 +563,7 @@ class TRZWriter(base.Writer):
         out['ek'] = data['kinetic_energy']
         out['T'] = data['temperature']
         out['blanks'] = 0.0, 0.0
-        size = ts.numatoms * 4  # size of float for vels & coords
+        size = ts.n_atoms * 4  # size of float for vels & coords
         out['p5a'], out['p5b'] = size, size
         out['rx'] = self.convert_pos_to_native(ts._x, inplace=False)
         out['p6a'], out['p6b'] = size, size

@@ -72,7 +72,7 @@ class TestDistanceArrayDCD(TestCase):
     def setUp(self):
         self.universe = MDAnalysis.Universe(PSF, DCD)
         self.trajectory = self.universe.trajectory
-        self.ca = self.universe.selectAtoms('name CA')
+        self.ca = self.universe.select_atoms('name CA')
         # reasonable precision so that tests succeed on 32 and 64 bit machines
         # (the reference values were obtained on 64 bit)
         # Example:
@@ -134,7 +134,7 @@ class TestSelfDistanceArrayDCD(TestCase):
     def setUp(self):
         self.universe = MDAnalysis.Universe(PSF, DCD)
         self.trajectory = self.universe.trajectory
-        self.ca = self.universe.selectAtoms('name CA')
+        self.ca = self.universe.select_atoms('name CA')
         # see comments above on precision
         self.prec = 5
 

@@ -678,7 +678,7 @@ class HydrogenBondAnalysis(object):
         .. versionadded:: 0.7.6
         """
         try:
-            return atom.residue.selectAtoms(
+            return atom.residue.select_atoms(
                 "(name H* or name 1H* or name 2H* or name 3H* or type H) and around %f name %s" %
                 (self.r_cov[atom.name[0]], atom.name))
         except NoDataError:
@@ -724,7 +724,7 @@ class HydrogenBondAnalysis(object):
         return hydrogens
 
     def _update_selection_1(self):
-        self._s1 = self.u.selectAtoms(self.selection1)
+        self._s1 = self.u.select_atoms(self.selection1)
         self.logger_debug("Size of selection 1: {0} atoms".format(len(self._s1)))
         if not self._s1:
             logger.warn("Selection 1 '{0}' did not select any atoms.".format(str(self.selection1)[:80]))
@@ -732,7 +732,7 @@ class HydrogenBondAnalysis(object):
         self._s1_donors_h = {}
         self._s1_acceptors = {}
         if self.selection1_type in ('donor', 'both'):
-            self._s1_donors = self._s1.selectAtoms(' or '.join(['name {0}'.format(name) for name in self.donors]))
+            self._s1_donors = self._s1.select_atoms(' or '.join(['name {0}'.format(name) for name in self.donors]))
             self._s1_donors_h = {}
             for i, d in enumerate(self._s1_donors):
                 tmp = self._get_bonded_hydrogens(d)
@@ -741,11 +741,11 @@ class HydrogenBondAnalysis(object):
             self.logger_debug("Selection 1 donors: {0}".format(len(self._s1_donors)))
             self.logger_debug("Selection 1 donor hydrogens: {0}".format(len(self._s1_donors_h)))
         if self.selection1_type in ('acceptor', 'both'):
-            self._s1_acceptors = self._s1.selectAtoms(' or '.join(['name {0}'.format(name) for name in self.acceptors]))
+            self._s1_acceptors = self._s1.select_atoms(' or '.join(['name {0}'.format(name) for name in self.acceptors]))
             self.logger_debug("Selection 1 acceptors: {0}".format(len(self._s1_acceptors)))
 
     def _update_selection_2(self):
-        self._s2 = self.u.selectAtoms(self.selection2)
+        self._s2 = self.u.select_atoms(self.selection2)
         if self.filter_first and len(self._s2) > 0:
             self.logger_debug("Size of selection 2 before filtering: {0} atoms".format(len(self._s2)))
             ns_selection_2 = NS.AtomNeighborSearch(self._s2)
@@ -757,10 +757,10 @@ class HydrogenBondAnalysis(object):
         self._s2_donors_h = {}
         self._s2_acceptors = {}
         if self.selection1_type in ('donor', 'both'):
-            self._s2_acceptors = self._s2.selectAtoms(' or '.join(['name %s' % i for i in self.acceptors]))
+            self._s2_acceptors = self._s2.select_atoms(' or '.join(['name %s' % i for i in self.acceptors]))
             self.logger_debug("Selection 2 acceptors: %d" % len(self._s2_acceptors))
         if self.selection1_type in ('acceptor', 'both'):
-            self._s2_donors = self._s2.selectAtoms(' or '.join(['name %s' % i for i in self.donors]))
+            self._s2_donors = self._s2.select_atoms(' or '.join(['name %s' % i for i in self.donors]))
             self._s2_donors_h = {}
             for i, d in enumerate(self._s2_donors):
                 tmp = self._get_bonded_hydrogens(d)
@@ -817,9 +817,9 @@ class HydrogenBondAnalysis(object):
         self.timeseries = []
         self.timesteps = []
 
-        logger.info("checking trajectory...")  # numframes can take a while!
+        logger.info("checking trajectory...")  # n_frames can take a while!
         try:
-            frames = numpy.arange(self.u.trajectory.numframes)[self.traj_slice]
+            frames = numpy.arange(self.u.trajectory.n_frames)[self.traj_slice]
         except:
             logger.error("Problem reading trajectory or trajectory slice incompatible.")
             logger.exception()
@@ -844,7 +844,7 @@ class HydrogenBondAnalysis(object):
 
         logger.info("Starting analysis (frame index start=%d stop=%d, step=%d)",
                     (self.traj_slice.start or 0),
-                    (self.traj_slice.stop or self.u.trajectory.numframes), self.traj_slice.step or 1)
+                    (self.traj_slice.stop or self.u.trajectory.n_frames), self.traj_slice.step or 1)
 
         for ts in self.u.trajectory[self.traj_slice]:
             # all bonds for this timestep

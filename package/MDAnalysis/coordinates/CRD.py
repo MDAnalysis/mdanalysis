@@ -71,7 +71,7 @@ class CRDReader(base.SingleFrameReader):
                     raise ValueError("Check CRD format at line {0}: {1}"
                                      "".format(linenum, line.rstrip()))
 
-        self.numatoms = len(coords_list)
+        self.n_atoms = len(coords_list)
 
         self.ts = self._Timestep.from_coordinates(np.array(coords_list),
                                                   **self._ts_kwargs)
@@ -80,9 +80,9 @@ class CRDReader(base.SingleFrameReader):
         #    self.convert_pos_from_native(self.ts._pos)             # in-place !
 
         # sanity check
-        if self.numatoms != natoms:
+        if self.n_atoms != natoms:
             raise ValueError("Found %d coordinates in %r but the header claims that there "
-                              "should be %d coordinates." % (self.numatoms, self.filename, natoms))
+                              "should be %d coordinates." % (self.n_atoms, self.filename, natoms))
 
     def Writer(self, filename, **kwargs):
         """Returns a CRDWriter for *filename*.
@@ -157,7 +157,7 @@ class CRDWriter(base.Writer):
                     current_resid += 1
                 self._ATOM(serial=i + 1, resSeq=atom.resid, resName=atom.resname, name=atom.name,
                            x=coor[i, 0], y=coor[i, 1], z=coor[i, 2], chainID=atom.segid,
-                           tempFactor=atom.bfactor, TotRes=current_resid, numatoms=len(atoms))
+                           tempFactor=atom.bfactor, TotRes=current_resid, n_atoms=len(atoms))
 
     def _TITLE(self, *title):
         """Write TITLE record.
@@ -168,16 +168,16 @@ class CRDWriter(base.Writer):
             line = " " + line
         self.crd.write(self.fmt['TITLE'] % line)
 
-    def _NUMATOMS(self, numatoms):
+    def _NUMATOMS(self, n_atoms):
         """Write generic total number of atoms in system)
         """
-        if numatoms > 99999:
-            self.crd.write(self.fmt['NUMATOMS_EXT'] % numatoms)
+        if n_atoms > 99999:
+            self.crd.write(self.fmt['NUMATOMS_EXT'] % n_atoms)
         else:
-            self.crd.write(self.fmt['NUMATOMS'] % numatoms)
+            self.crd.write(self.fmt['NUMATOMS'] % n_atoms)
 
     def _ATOM(self, serial=None, resSeq=None, resName=None, name=None, x=None, y=None, z=None, chainID=None,
-              tempFactor=0.0, TotRes=None, numatoms=None):
+              tempFactor=0.0, TotRes=None, n_atoms=None):
         """Write ATOM record.
 
         All inputs are cut to the maximum allowed length. For integer
@@ -194,7 +194,7 @@ class CRDWriter(base.Writer):
                 raise ValueError('parameter ' + arg + ' must be defined.')
 
         chainID = chainID or ""  # or should we provide a chainID such as 'A'?
-        if numatoms > 99999:
+        if n_atoms > 99999:
             serial = int(str(serial)[-10:])  # check for overflow here?
             name = name[:8]
             resName = resName[:8]

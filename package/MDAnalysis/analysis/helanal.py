@@ -277,7 +277,7 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
         if end is None:
             end = universe.atoms[-1].resid
         selection += " and resid %(start)d:%(end)d" % vars()
-    ca = universe.selectAtoms(selection)
+    ca = universe.select_atoms(selection)
     trajectory = universe.trajectory
 
     if finish is not None:
@@ -293,7 +293,7 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
         print "Analysing from residue", start, "to the C termini"
     elif start is None and end is not None:
         print "Analysing from the N termini to", end
-    print "Analysing %d/%d residues" % (ca.numberOfAtoms(), universe.atoms.numberOfResidues())
+    print "Analysing %d/%d residues" % (ca.n_atoms, universe.atoms.n_residues)
 
     if not prefix is None:
         prefix = str(prefix)
@@ -535,8 +535,8 @@ def helanal_main(pdbfile, selection="name CA", start=None, end=None, ref_axis=No
         if end is None:
             end = universe.atoms[-1].resid
         selection += " and resid %(start)d:%(end)d" % vars()
-    ca = universe.selectAtoms(selection)
-    print "Analysing %d/%d residues" % (ca.numberOfAtoms(), universe.atoms.numberOfResidues())
+    ca = universe.select_atoms(selection)
+    print "Analysing %d/%d residues" % (ca.n_atoms, universe.atoms.n_residues)
 
     twist, bending_angles, height, rnou, origins, local_helix_axes, local_screw_angles = \
         main_loop(ca.coordinates(), ref_axis=ref_axis)

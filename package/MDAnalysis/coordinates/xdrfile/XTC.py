@@ -74,15 +74,15 @@ class XTCReader(core.TrjReader):
     _Writer = XTCWriter
 
     def _allocate_sub(self, DIM):
-        self._pos_buf = np.zeros((self._trr_numatoms, DIM), dtype=np.float32, order='C')
+        self._pos_buf = np.zeros((self._trr_n_atoms, DIM), dtype=np.float32, order='C')
         self._velocities_buf = None
         self._forces_buf = None
 
     def _read_trj_natoms(self, filename):
         return libxdrfile2.read_xtc_natoms(filename)
 
-    def _read_trj_numframes(self, filename):
-        self._numframes, self._offsets = libxdrfile2.read_xtc_numframes(filename)
+    def _read_trj_n_frames(self, filename):
+        self._n_frames, self._offsets = libxdrfile2.read_xtc_n_frames(filename)
         self._store_offsets()
 
     def _read_next_timestep(self, ts=None):

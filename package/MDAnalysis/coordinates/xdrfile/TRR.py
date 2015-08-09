@@ -111,9 +111,9 @@ class Timestep(core.Timestep):
                   "(2) reflow your code to not access {attrs} when they're not there,"
                   " by making use of the '{flag}' flag of Timestep objects.")
 
-    def __init__(self, numatoms, **kwargs):
+    def __init__(self, n_atoms, **kwargs):
         kwargs.update(positions=True, velocities=True, forces=True)
-        super(Timestep, self).__init__(numatoms, **kwargs)
+        super(Timestep, self).__init__(n_atoms, **kwargs)
 
         # Set initial sources to None, so they are never valid
         # _source is compared against current frame when accessing
@@ -123,11 +123,11 @@ class Timestep(core.Timestep):
         self.data['force_source'] = None
 
         # TRR always has pos vel & force allocated
-        self._pos = np.zeros((self.numatoms, 3), dtype=np.float32,
+        self._pos = np.zeros((self.n_atoms, 3), dtype=np.float32,
                              order=self.order)
-        self._velocities = np.zeros((self.numatoms, 3), dtype=np.float32,
+        self._velocities = np.zeros((self.n_atoms, 3), dtype=np.float32,
                                     order=self.order)
-        self._forces = np.zeros((self.numatoms, 3), dtype=np.float32,
+        self._forces = np.zeros((self.n_atoms, 3), dtype=np.float32,
                                 order=self.order)
 
         self.data['lmbda'] = 0
@@ -236,15 +236,15 @@ class TRRReader(core.TrjReader):
     units = {'time': 'ps', 'length': 'nm', 'velocity': 'nm/ps', 'force': 'kJ/(mol*nm)'}
 
     def _allocate_sub(self, DIM):
-        self._pos_buf = np.zeros((self._trr_numatoms, DIM), dtype=np.float32, order='C')
-        self._velocities_buf = np.zeros((self._trr_numatoms, DIM), dtype=np.float32, order='C')
-        self._forces_buf = np.zeros((self._trr_numatoms, DIM), dtype=np.float32, order='C')
+        self._pos_buf = np.zeros((self._trr_n_atoms, DIM), dtype=np.float32, order='C')
+        self._velocities_buf = np.zeros((self._trr_n_atoms, DIM), dtype=np.float32, order='C')
+        self._forces_buf = np.zeros((self._trr_n_atoms, DIM), dtype=np.float32, order='C')
     
     def _read_trj_natoms(self, filename):
         return libxdrfile2.read_trr_natoms(filename)
     
-    def _read_trj_numframes(self, filename):
-        self._numframes, self._offsets = libxdrfile2.read_trr_numframes(filename)
+    def _read_trj_n_frames(self, filename):
+        self._n_frames, self._offsets = libxdrfile2.read_trr_n_frames(filename)
         self._store_offsets()
 
     def _read_next_timestep(self, ts=None):

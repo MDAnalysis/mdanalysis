@@ -665,7 +665,7 @@ class WaterOrientationalRelaxation(object):
     def _selection_serial(self,universe,selection_str):
         selection = []
         for ts in universe.trajectory:
-            selection.append(universe.selectAtoms(selection_str))
+            selection.append(universe.select_atoms(selection_str))
             print ts.frame
         return selection
 
@@ -822,7 +822,7 @@ class AngularDistribution(object):
     def _selection_serial(self,universe,selection_str):
         selection = []
         for ts in universe.trajectory:
-            selection.append(universe.selectAtoms(selection_str))
+            selection.append(universe.select_atoms(selection_str))
             print ts.frame
         return selection
 
@@ -943,7 +943,7 @@ class  MeanSquareDisplacement(object):
     def _selection_serial(self,universe,selection_str):
         selection = []
         for ts in universe.trajectory:
-            selection.append(universe.selectAtoms(selection_str))
+            selection.append(universe.select_atoms(selection_str))
             print ts.frame
         return selection
 
@@ -1053,7 +1053,7 @@ class SurvivalProbability(object):
     def _selection_serial(self,universe,selection_str):
         selection = []
         for ts in universe.trajectory:
-            selection.append(universe.selectAtoms(selection_str))
+            selection.append(universe.select_atoms(selection_str))
             print ts.frame
         return selection
 

@@ -12,8 +12,8 @@ import MDAnalysis
 
 # need permissive to read HETATM (apparently...)
 P = MDAnalysis.Universe('./data/3ldd.pdb', permissive=True)
-filterK = P.selectAtoms('resname K and resid 1:4')
-monomer = P.selectAtoms('protein')
+filterK = P.select_atoms('resname K and resid 1:4')
+monomer = P.select_atoms('protein')
 axis = (filterK[0], filterK[-1])  # first to last filter ion
 monomer.write('A.pdb')
 monomer.rotateby(90, axis, filterK)

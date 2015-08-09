@@ -68,7 +68,7 @@ class TestGROVelocities(TestCase):
         #read the velocities from the GRO_velocity file and compare the AtomGroup and individual Atom velocities
         # parsed with the reference values:
         u = MDAnalysis.Universe(GRO_velocity)
-        all_atoms = u.selectAtoms('all')
+        all_atoms = u.select_atoms('all')
         #check for read-in and unit conversion for .gro file velocities for the entire AtomGroup:
         assert_almost_equal(all_atoms.velocities, self.reference_velocities, self.prec,
                             err_msg="problem reading .gro file velocities")
@@ -104,7 +104,7 @@ class TestTRRForces(TestCase):
 
     @attr('slow')
     def testForces(self):
-        protein = self.universe.selectAtoms("protein")
+        protein = self.universe.select_atoms("protein")
         assert_equal(len(protein), 918)
         mean_F = numpy.mean([protein.forces.mean(axis=0) for ts in self.universe.trajectory], axis=0)
         assert_almost_equal(mean_F, self.reference_mean_protein_force, self.prec,

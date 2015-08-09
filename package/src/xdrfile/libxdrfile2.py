@@ -168,7 +168,7 @@ The advantage of XTC over TRR is its significantly reduced size.
               :Raises: :exc:`IOError` if the supplied filed is not a XTC 
                        or if it is not readable.
 
-.. function:: read_xtc_numframes(fn) -> (numframes, offsets)
+.. function:: read_xtc_n_frames(fn) -> (n_frames, offsets)
 
               Read through the whole trajectory headers to obtain the total number of frames. 
               The process is speeded up by reading frame headers for the amount of data in the frame,
@@ -181,7 +181,7 @@ The advantage of XTC over TRR is its significantly reduced size.
 
               :Returns:
                 a tuple containing:
-                  *numframes*
+                  *n_frames*
                      an int with the total frame count in the trajectory
                   *offsets*
                      a numpy array of int64 recording the starting byte offset of each frame
@@ -256,7 +256,7 @@ calculations. Velocities and forces are optional in the sense that they can be a
               :Raises: :exc:`IOError` if the supplied filed is not a TRR
                        or if it is not readable.
 
-.. function:: read_trr_numframes(fn) -> (numframes, offsets)
+.. function:: read_trr_n_frames(fn) -> (n_frames, offsets)
 
               Read through the whole trajectory headers to obtain the total number of frames. 
               The process is speeded up by reading frame headers for the amount of data in the frame,
@@ -269,7 +269,7 @@ calculations. Velocities and forces are optional in the sense that they can be a
 
               :Returns:
                 a tuple containing:
-                  *numframes*
+                  *n_frames*
                      an int with the total frame count in the trajectory
                   *offsets*
                      a numpy array of int64 recording the starting byte offset of each frame
@@ -463,9 +463,9 @@ def read_xtc_natoms(*args):
     return _libxdrfile2.read_xtc_natoms(*args)
 
 
-def read_xtc_numframes(*args):
-    """read_xtc_numframes(fn) -> PyObject *"""
-    return _libxdrfile2.read_xtc_numframes(*args)
+def read_xtc_n_frames(*args):
+    """read_xtc_n_frames(fn) -> PyObject *"""
+    return _libxdrfile2.read_xtc_n_frames(*args)
 
 
 def read_trr_natoms(*args):
@@ -473,9 +473,9 @@ def read_trr_natoms(*args):
     return _libxdrfile2.read_trr_natoms(*args)
 
 
-def read_trr_numframes(*args):
-    """read_trr_numframes(fn) -> PyObject *"""
-    return _libxdrfile2.read_trr_numframes(*args)
+def read_trr_n_frames(*args):
+    """read_trr_n_frames(fn) -> PyObject *"""
+    return _libxdrfile2.read_trr_n_frames(*args)
 
 
 DIM = _libxdrfile2.DIM

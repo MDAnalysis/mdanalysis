@@ -35,7 +35,7 @@ class TestMol2(TestCase):
     def test_read(self):
         u = Universe(mol2_molecules)
         assert_equal(len(u.atoms), 49)
-        assert_equal(u.trajectory.numframes, 200)
+        assert_equal(u.trajectory.n_frames, 200)
 
         u.trajectory[199]
         assert_array_almost_equal(u.atoms.positions[0], [1.7240, 11.2730, 14.1200])
@@ -53,10 +53,10 @@ class TestMol2(TestCase):
 
     def test_write_selection(self):
         ref = Universe(mol2_molecule)
-        gr0 = ref.selectAtoms("name C*")
+        gr0 = ref.select_atoms("name C*")
         gr0.write(self.outfile)
         u = Universe(self.outfile)
-        gr1 = u.selectAtoms("name C*")
+        gr1 = u.select_atoms("name C*")
         assert_equal(len(gr0), len(gr1))
 
     def test_broken_molecule(self):
@@ -105,6 +105,6 @@ class TestMol2_traj(TestCase):
         frames = [ts.frame for ts in self.traj[20:5:-1]]
         assert_equal(frames, range(20, 5, -1), "reversing traj [20:5:-1]")
 
-    def test_numframes(self):
-        assert_equal(self.universe.trajectory.numframes, 200, "wrong number of frames in traj")
+    def test_n_frames(self):
+        assert_equal(self.universe.trajectory.n_frames, 200, "wrong number of frames in traj")
 

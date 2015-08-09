@@ -172,8 +172,8 @@ class GNMAnalysis(object):
         # (its a popular way of treating small ligands eg drugs)
         # be careful that it doesn't have any atoms which can be caught by the global selection as this could lead to
         #  double counting
-        self.Bonus_groups = [self.u.selectAtoms(item) for item in Bonus_groups]
-        self.ca = self.u.selectAtoms(self.selection)
+        self.Bonus_groups = [self.u.select_atoms(item) for item in Bonus_groups]
+        self.ca = self.u.select_atoms(self.selection)
 
     def generate_output(self, w, v, outputobject, time, matrix, nmodes=2, ReportVector=None, counter=0):
         '''Appends eigenvalues and eigenvectors to results.
@@ -201,14 +201,14 @@ class GNMAnalysis(object):
         near-neighbours and then calculating which are are within
         the cutoff. Returns the resulting matrix
         '''
-        #ca = self.u.selectAtoms(self.selection)
+        #ca = self.u.select_atoms(self.selection)
         positions = self.ca.coordinates()
 
         natoms = len(positions)
 
         #add the com from each bonus group to the ca_positions list
         for item in self.Bonus_groups:
-            #bonus = self.u.selectAtoms(item)
+            #bonus = self.u.select_atoms(item)
             positions = numpy.vstack((positions, item.centerOfMass()))
             natoms += 1
 
@@ -305,7 +305,7 @@ class closeContactGNMAnalysis(GNMAnalysis):
         self.ReportVector = ReportVector
         # no bonus groups in this version of the GNM analysis tool; this is because this version doesn't use CA atoms
         #  or centroids, and so doesn't need them
-        self.ca = self.u.selectAtoms(self.selection)
+        self.ca = self.u.select_atoms(self.selection)
         self.MassWeight = MassWeight
 
     def generate_kirchoff(self):

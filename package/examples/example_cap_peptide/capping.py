@@ -26,7 +26,7 @@ import numpy as np
 
 
 def capping(ref, ace, nma, output):
-    resids = ref.selectAtoms("all").resids
+    resids = ref.select_atoms("all").resids
     resid_min, resid_max = min(resids), max(resids)
 
     for a in ace.atoms:
@@ -54,10 +54,10 @@ def capping(ref, ace, nma, output):
 
     # TODO remove the Hydrogen closest to ACE's oxygen
     u = Merge(
-        ace.selectAtoms("resname ACE"),
-        ref.selectAtoms("not (resid {} and name HT*) and not (resid {} and (name HT* or name OT1))".format(resid_min,
+        ace.select_atoms("resname ACE"),
+        ref.select_atoms("not (resid {} and name HT*) and not (resid {} and (name HT* or name OT1))".format(resid_min,
                                                                                                            resid_max)),
-        nma.selectAtoms("resname NME or resname NMA"))
+        nma.select_atoms("resname NME or resname NMA"))
     u.trajectory.ts.dimensions = ref.trajectory.ts.dimensions
     u.atoms.write(output)
     return u

@@ -120,7 +120,7 @@ def per_core_work(coordinate_file_path, trajectory_file_path, list_square_vertex
     for ts in universe_object.trajectory:
         if ts.frame < start_frame:  # don't start until first specified frame
             continue
-        relevant_particle_coordinate_array_xy = universe_object.selectAtoms(MDA_selection).coordinates()[..., :-1]
+        relevant_particle_coordinate_array_xy = universe_object.select_atoms(MDA_selection).coordinates()[..., :-1]
           # only 2D / xy coords for now
         #I will need a list of indices for relevant particles falling within each square in THIS frame:
         list_indices_in_squares_this_frame = produce_list_indices_point_in_polygon_this_frame(

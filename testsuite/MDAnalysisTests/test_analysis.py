@@ -105,7 +105,7 @@ class TestAlign(TestCase):
 
     def test_rmsd(self):
         self.universe.trajectory[0]  # ensure first frame
-        bb = self.universe.selectAtoms('backbone')
+        bb = self.universe.select_atoms('backbone')
         A = bb.coordinates(copy=True)  # coordinates of first frame (copy=True just in case)
         self.universe.trajectory[-1]  # forward to last frame
         B = bb.coordinates()  # coordinates of last frame
@@ -175,7 +175,7 @@ class TestRMSF(TestCase):
         del self.universe
 
     def test_rmsf(self):
-        rmsfs = MDAnalysis.analysis.rms.RMSF(self.universe.selectAtoms('name CA'))
+        rmsfs = MDAnalysis.analysis.rms.RMSF(self.universe.select_atoms('name CA'))
         rmsfs.run(quiet=True)
         test_rmsfs = numpy.load(rmsfArray)
 
@@ -184,7 +184,7 @@ class TestRMSF(TestCase):
                             "values")
 
     def test_rmsf_single_frame(self):
-        rmsfs = MDAnalysis.analysis.rms.RMSF(self.universe.selectAtoms('name CA'))
+        rmsfs = MDAnalysis.analysis.rms.RMSF(self.universe.select_atoms('name CA'))
         rmsfs.run(start=5, stop=6, quiet=True)
 
         assert_almost_equal(rmsfs.rmsf, 0, 5,
@@ -192,12 +192,12 @@ class TestRMSF(TestCase):
 
     def test_rmsf_identical_frames(self):
         # write a dummy trajectory of all the same frame
-        with MDAnalysis.Writer(self.outfile, self.universe.atoms.numberOfAtoms()) as W:
-            for i in xrange(self.universe.trajectory.numframes):
+        with MDAnalysis.Writer(self.outfile, self.universe.atoms.n_atoms) as W:
+            for i in xrange(self.universe.trajectory.n_frames):
                 W.write(self.universe)
 
         self.universe = MDAnalysis.Universe(GRO, self.outfile)
-        rmsfs = MDAnalysis.analysis.rms.RMSF(self.universe.selectAtoms('name CA'))
+        rmsfs = MDAnalysis.analysis.rms.RMSF(self.universe.select_atoms('name CA'))
         rmsfs.run(quiet=True)
 
         assert_almost_equal(rmsfs.rmsf, 0, 5,
@@ -216,7 +216,7 @@ class TestHydrogenBondAnalysis(TestCase):
         }
         # ideal helix with 1 proline:
         self.values = {
-            'num_bb_hbonds':  u.atoms.numberOfResidues() - u.SYSTEM.PRO.numberOfResidues() - 4,
+            'num_bb_hbonds':  u.atoms.n_residues - u.SYSTEM.PRO.n_residues - 4,
             'donor_resid': numpy.array([5,  6,  8,  9, 10, 11, 12, 13]),
             'acceptor_resnm': numpy.array(['ALA', 'ALA', 'ALA', 'ALA', 'ALA', 'PRO', 'ALA', 'ALA']),
             }

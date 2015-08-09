@@ -125,7 +125,7 @@ def find_partners(peptide_list, lookup):
     """
     ret = {}
     for id, selection in peptide_list.items():
-        atom_list = universe.selectAtoms("around %d (%s) and not resname W" % (cutoff, selection))
+        atom_list = universe.select_atoms("around %d (%s) and not resname W" % (cutoff, selection))
         ret[id] = set()
         for atom in atom_list:
             if atom.resname == "CHOL" or atom.resname == "DPPC" or atom.resname == "DUPC":

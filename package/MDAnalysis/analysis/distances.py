@@ -99,7 +99,7 @@ def dist(A, B, offset=0):
     :Returns: NumPy `array([resids_A, resids_B, distances])`
 
     """
-    if A.atoms.numberOfAtoms() != B.atoms.numberOfAtoms():
+    if A.atoms.n_atoms != B.atoms.n_atoms:
         raise ValueError("AtomGroups A and B do not have the same number of atoms")
     try:
         off_A, off_B = offset

@@ -30,7 +30,7 @@ class RefTPR(object):
     """
     topology = TPR
     parser = MDAnalysis.topology.TPRParser.TPRParser
-    ref_numatoms = 47681
+    ref_n_atoms = 47681
     ref_numresidues = 11302
     ref_proteinatoms = 3341
 
@@ -45,7 +45,7 @@ class TestTPR(_TestTopology, RefTPR):
 
 class TPRBase(object):
     parser = MDAnalysis.topology.TPRParser.TPRParser
-    ref_numatoms = 2263
+    ref_n_atoms = 2263
     ref_numresidues = 230
     ref_proteinatoms = 1962
 
@@ -170,7 +170,7 @@ class TestTPR455(_TestTopology, TPR455):
 @dec.slow
 class TPR455Double(object):
     parser = MDAnalysis.topology.TPRParser.TPRParser
-    ref_numatoms = 21692
+    ref_n_atoms = 21692
     ref_numresidues = 4352
     ref_proteinatoms = 0  # no protein, but DOPC, DPPC, CHOL, SOL
     topology = TPR455Double
@@ -182,7 +182,7 @@ class TestTPR455Double(_TestTopology, TPR455Double):
 
 class TPR46xBase(object):
     parser = MDAnalysis.topology.TPRParser.TPRParser
-    ref_numatoms = 44052
+    ref_n_atoms = 44052
     ref_numresidues = 10712
     ref_proteinatoms = 1885
 

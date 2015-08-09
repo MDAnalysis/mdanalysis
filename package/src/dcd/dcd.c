@@ -344,15 +344,15 @@ __read_dcd_header(PyObject *self, PyObject *args)
   Py_DECREF(temp);
   temp = Py_BuildValue("i", dcd->natoms);
   if (temp == NULL) goto error;
-  if (PyObject_SetAttrString(self, "numatoms", temp) == -1) {
-    PyErr_SetString(PyExc_AttributeError, "Could not create attribute numatoms");
+  if (PyObject_SetAttrString(self, "n_atoms", temp) == -1) {
+    PyErr_SetString(PyExc_AttributeError, "Could not create attribute n_atoms");
     goto error;
   }
   Py_DECREF(temp);
   temp = Py_BuildValue("i", dcd->nsets);
   if (temp == NULL) goto error;
-  if (PyObject_SetAttrString(self, "numframes", temp) == -1) {
-    PyErr_SetString(PyExc_AttributeError, "Could not create attribute numframes");
+  if (PyObject_SetAttrString(self, "n_frames", temp) == -1) {
+    PyErr_SetString(PyExc_AttributeError, "Could not create attribute n_frames");
     goto error;
   }
   Py_DECREF(temp);
@@ -434,7 +434,7 @@ __read_timeseries(PyObject *self, PyObject *args)
   float *tempX = NULL, *tempY = NULL, *tempZ = NULL;
   int rc;
   int i, j, index;
-  int numatoms = 0, numframes = 0;
+  int n_atoms = 0, n_frames = 0;
   int start = 0, stop = -1, skip = 1, numskip = 0;
   dcdhandle *dcd = NULL;
   int *atomlist = NULL;
@@ -465,18 +465,18 @@ __read_timeseries(PyObject *self, PyObject *args)
 
   // Assume that start and stop are valid
   if (stop == -1) { stop = dcd->nsets; }
-  numframes = (stop-start+1) / skip;
-  //numframes = dcd->nsets / skip;
-  numatoms = PyList_Size((PyObject*)atoms);
-  if (numatoms == 0) {
+  n_frames = (stop-start+1) / skip;
+  //n_frames = dcd->nsets / skip;
+  n_atoms = PyList_Size((PyObject*)atoms);
+  if (n_atoms == 0) {
     PyErr_SetString(PyExc_Exception, "No atoms passed into _read_timeseries function");
     return NULL;
   }
-  atomlist = (int*)malloc(sizeof(int)*numatoms);
-  memset(atomlist, 0, sizeof(int)*numatoms);
+  atomlist = (int*)malloc(sizeof(int)*n_atoms);
+  memset(atomlist, 0, sizeof(int)*n_atoms);
 
   // Get the atom indexes
-  for (i=0;i<numatoms;i++) {
+  for (i=0;i<n_atoms;i++) {
     temp = PyList_GetItem((PyObject*)atoms, i); // Borrowed Reference
     if (temp==NULL) goto error;
     // Make sure temp is an integer
@@ -491,27 +491,27 @@ __read_timeseries(PyObject *self, PyObject *args)
     atomlist[i] = PyInt_AsLong(temp);
   }
 
-  lowerb = atomlist[0]; upperb = atomlist[numatoms-1];
+  lowerb = atomlist[0]; upperb = atomlist[n_atoms-1];
   range = upperb-lowerb+1;
 	
   // Figure out the format string
   if (strncasecmp(format, "afc", 3) == 0) {
-    dimensions[0] = numatoms; dimensions[1] = numframes; dimensions[2] = 3;
+    dimensions[0] = n_atoms; dimensions[1] = n_frames; dimensions[2] = 3;
   } else
     if (strncasecmp(format, "acf", 3) == 0) {
-      dimensions[0] = numatoms; dimensions[1] = 3; dimensions[2] = numframes;
+      dimensions[0] = n_atoms; dimensions[1] = 3; dimensions[2] = n_frames;
     } else
       if (strncasecmp(format, "fac", 3) == 0) {
-	dimensions[0] = numframes; dimensions[1] = numatoms; dimensions[2] = 3;
+	dimensions[0] = n_frames; dimensions[1] = n_atoms; dimensions[2] = 3;
       } else
 	if (strncasecmp(format, "fca", 3) == 0) {
-	  dimensions[0] = numframes; dimensions[1] = 3; dimensions[2] = numatoms;
+	  dimensions[0] = n_frames; dimensions[1] = 3; dimensions[2] = n_atoms;
 	} else
 	  if (strncasecmp(format, "caf", 3) == 0) {
-	    dimensions[0] = 3; dimensions[1] = numatoms; dimensions[2] = numframes;
+	    dimensions[0] = 3; dimensions[1] = n_atoms; dimensions[2] = n_frames;
 	  } else
 	    if (strncasecmp(format, "cfa", 3) == 0) {
-	      dimensions[0] = 3; dimensions[1] = numframes; dimensions[2] = numatoms;
+	      dimensions[0] = 3; dimensions[1] = n_frames; dimensions[2] = n_atoms;
 	    }
 	
   coord = (PyArrayObject*) PyArray_SimpleNew(3, dimensions, NPY_DOUBLE);
@@ -534,7 +534,7 @@ __read_timeseries(PyObject *self, PyObject *args)
     goto error;
   }
 	
-  for (i=0;i<numframes;i++)
+  for (i=0;i<n_frames;i++)
     {
       if (skip > 1) {
 	/*if (dcd->first && dcd->nfixed) {
@@ -572,7 +572,7 @@ __read_timeseries(PyObject *self, PyObject *args)
     	goto error;
       }
       // Copy into Numeric array only those atoms we are interested in
-      for (j=0;j<numatoms;j++) {
+      for (j=0;j<n_atoms;j++) {
 	index = atomlist[j]-lowerb;
 	/* 
 	 * coord[a][b][c] = *(float*)(coord->data + a*coord->strides[0] + b*coord->strides[1] + c*coord->strides[2])

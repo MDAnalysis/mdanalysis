@@ -139,14 +139,14 @@ def get_writer_for(filename=None, format='DCD', multiframe=None):
         raise ValueError("Unknown value %r for multiframe, only True, False, None allowed" % multiframe)
 
 
-def writer(filename, numatoms=None, **kwargs):
+def writer(filename, n_atoms=None, **kwargs):
     """Initialize a trajectory writer instance for *filename*.
 
     :Arguments:
        *filename*
             Output filename of the trajectory; the extension determines the
             format.
-       *numatoms*
+       *n_atoms*
             The number of atoms in the output trajectory; can be ommitted
             for single-frame writers.
        *multiframe*
@@ -176,7 +176,7 @@ def writer(filename, numatoms=None, **kwargs):
     """
     Writer = get_writer_for(filename, format=kwargs.pop('format', None),
                             multiframe=kwargs.pop('multiframe', None))
-    return Writer(filename, numatoms=numatoms, **kwargs)
+    return Writer(filename, n_atoms=n_atoms, **kwargs)
 
 
 def get_ext(filename):

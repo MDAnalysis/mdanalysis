@@ -233,7 +233,7 @@ class SphericalLayerSelection(Selection):
             str(sel_CoG[0]) + " " + str(sel_CoG[1]) + " " + str(sel_CoG[2]) + " " +\
             str(self.exRadius) + " and not point " + str(sel_CoG[0]) + " " + str(sel_CoG[1]) + " " + \
             str(sel_CoG[2]) + " " + str(self.inRadius)
-        sel = sys_ag.selectAtoms(sel_CoG_str)
+        sel = sys_ag.select_atoms(sel_CoG_str)
         res_atoms = AtomGroup(set(sel))
         if self.periodic:
             box = group.dimensions[:3]  # ignored with KDTree
@@ -286,7 +286,7 @@ class SphericalZoneSelection(Selection):
         sys_ag = AtomGroup(sys_atoms_list)
         sel_CoG_str = str("point ") + str(sel_CoG[0]) + " " + str(sel_CoG[1]) + " " + str(sel_CoG[2]) + " " + str(
             self.cutoff)
-        sel = sys_ag.selectAtoms(sel_CoG_str)
+        sel = sys_ag.select_atoms(sel_CoG_str)
         res_atoms = AtomGroup(set(sel))
         if self.periodic:
             box = group.dimensions[:3]  # ignored with KDTree

@@ -35,8 +35,8 @@ Example::
   import MDAnalysis.lib.KDTree.NeighborSearch as NS
 
   u = Universe(psf,dcd)
-  water = u.selectAtoms('name OH2')
-  protein = u.selectAtoms('protein')
+  water = u.select_atoms('name OH2')
+  protein = u.select_atoms('protein')
 
   # when analyzing a trajectory, carry out the next two steps
   # for every frame

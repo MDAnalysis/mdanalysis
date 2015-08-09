@@ -200,7 +200,7 @@ def rotation_matrix(a, b, weights=None):
     :meth:`MDAnalysis.core.AtomGroup.AtomGroup.rotate` to generate a rotated
     selection, e.g. ::
 
-      >>> R = rotation_matrix(A.selectAtoms('backbone').coordinates(), B.selectAtoms('backbone').coordinates())
+      >>> R = rotation_matrix(A.select_atoms('backbone').coordinates(), B.select_atoms('backbone').coordinates())
       >>> A.atoms.rotate(R)
       >>> A.atoms.write("rotated.pdb")
 
@@ -228,8 +228,8 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
     The superposition is done in the following way:
 
     1. A rotation matrix is computed that minimizes the RMSD between
-       the coordinates of `mobile.selectAtoms(sel1)` and
-       `reference.selectAtoms(sel2)`; before the rotation, *mobile* is
+       the coordinates of `mobile.select_atoms(sel1)` and
+       `reference.select_atoms(sel2)`; before the rotation, *mobile* is
        translated so that its center of geometry (or center of mass)
        coincides with the one of *reference*. (See below for explanation of
        how *sel1* and *sel2* are derived from *select*.)
@@ -259,7 +259,7 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
          or a whole :class:`~MDAnalysis.core.AtomGroup.Universe`
       *select*
          1. any valid selection string for
-            :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms` that produces identical
+            :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.select_atoms` that produces identical
             selections in *mobile* and *reference*; or
          2. dictionary ``{'mobile':sel1, 'reference':sel2}``.
             (the :func:`fasta2select` function returns such a
@@ -291,7 +291,7 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
              context of the selection from *mobile* such as the rest of a
              protein, ligands and the surrounding water)
          *selection-string*
-             Apply to `mobile.selectAtoms(selection-string)`
+             Apply to `mobile.select_atoms(selection-string)`
          :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
              Apply to the arbitrary group of atoms
 
@@ -310,15 +310,15 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
        the old behavior was the equivalent of *strict* = ``True``.
     """
     if select in ('all', None):
-        # keep the EXACT order in the input AtomGroups; selectAtoms('all')
+        # keep the EXACT order in the input AtomGroups; select_atoms('all')
         # orders them by index, which can lead to wrong results if the user
         # has crafted mobile and reference to match atom by atom
         mobile_atoms = mobile.atoms
         ref_atoms = reference.atoms
     else:
         select = rms._process_selection(select)
-        mobile_atoms = mobile.selectAtoms(*select['mobile'])
-        ref_atoms = reference.selectAtoms(*select['reference'])
+        mobile_atoms = mobile.select_atoms(*select['mobile'])
+        ref_atoms = reference.select_atoms(*select['reference'])
 
     ref_atoms, mobile_atoms = get_matching_atoms(ref_atoms, mobile_atoms,
                                                  tol_mass=tol_mass, strict=strict)
@@ -342,7 +342,7 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
     if subselection is None:
         atoms = mobile.universe.atoms
     elif type(subselection) is str:
-        atoms = mobile.selectAtoms(subselection)
+        atoms = mobile.select_atoms(subselection)
     else:
         try:
             atoms = subselection.atoms
@@ -374,7 +374,7 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
          (uses the current time step of the object)
       *select*
          1. any valid selection string for
-            :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms` that produces identical
+            :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.select_atoms` that produces identical
             selections in *mobile* and *reference*; or
          2. a dictionary ``{'mobile':sel1, 'reference':sel2}`` (the
             :func:`fasta2select` function returns such a
@@ -454,9 +454,9 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
     del _Writer
 
     select = rms._process_selection(select)
-    ref_atoms = reference.selectAtoms(*select['reference'])
-    traj_atoms = traj.selectAtoms(*select['mobile'])
-    natoms = traj_atoms.numberOfAtoms()
+    ref_atoms = reference.select_atoms(*select['reference'])
+    traj_atoms = traj.select_atoms(*select['mobile'])
+    natoms = traj_atoms.n_atoms
 
     ref_atoms, traj_atoms = get_matching_atoms(ref_atoms, traj_atoms,
                                                  tol_mass=tol_mass, strict=strict)
@@ -514,7 +514,7 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
         writer.write(traj.atoms)  # write whole input trajectory system
         percentage.echo(ts.frame)
     logger.info("Wrote %d RMS-fitted coordinate frames to file %r",
-                frames.numframes, filename)
+                frames.n_frames, filename)
     if not rmsdfile is None:
         numpy.savetxt(rmsdfile, rmsd)
         logger.info("Wrote RMSD timeseries  to file %r", rmsdfile)
@@ -524,6 +524,7 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
         logging.disable(logging.NOTSET)
 
     return filename
+
 
 def sequence_alignment(mobile, reference, **kwargs):
     """Generate a global sequence alignment between residues in *reference* and *mobile*.
@@ -568,6 +569,7 @@ def sequence_alignment(mobile, reference, **kwargs):
     # choose top alignment
     return aln[0]
 
+
 def fasta2select(fastafilename, is_aligned=False,
                  ref_resids=None, target_resids=None,
                  ref_offset=0, target_offset=0, verbosity=3,
@@ -595,7 +597,7 @@ def fasta2select(fastafilename, is_aligned=False,
     sequence of resids as they appear in the psf in *ref_resids* or
     *target_resids*, e.g. ::
 
-       target_resids = [a.resid for a in trj.selectAtoms('name CA')]
+       target_resids = [a.resid for a in trj.select_atoms('name CA')]
 
     (This translation table *is* combined with any value for *xxx_offset*!)
 
@@ -816,8 +818,8 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
 
     """
 
-    if ag1.numberOfAtoms() != ag2.numberOfAtoms():
-        if ag1.numberOfResidues() != ag2.numberOfResidues():
+    if ag1.n_atoms != ag2.n_atoms:
+        if ag1.n_residues != ag2.n_residues:
             errmsg = "Reference and trajectory atom selections do not contain "
             "the same number of atoms: \n"
             "atoms:    N_ref={0}, N_traj={1}\n"
@@ -826,8 +828,8 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
             "\n"
             "(More details can be found in the log file "
             "which can be enabled with 'MDAnalysis.start_logging()')".format(
-                ag1.numberOfAtoms(), ag2.numberOfAtoms(),
-                ag1.numberOfResidues(), ag2.numberOfResidues())
+                ag1.n_atoms, ag2.n_atoms,
+                ag1.n_residues, ag2.n_residues)
             dbgmsg = "mismatched residue numbers\n" + \
                 "\n".join(["{0} | {1}"  for r1, r2 in
                            itertools.izip_longest(ag1.resids, ag2.resids)])
@@ -838,7 +840,7 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
             msg = ("Reference and trajectory atom selections do not contain "
                    "the same number of atoms: \n"
                    "atoms:    N_ref={0}, N_traj={1}").format(
-                ag1.numberOfAtoms(), ag2.numberOfAtoms())
+                ag1.n_atoms, ag2.n_atoms)
             if strict:
                 raise SelectionError(msg)
 
@@ -851,7 +853,7 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
         # - number of residues is the same
         # We will remove residues with mismatching number of atoms (e.g. not resolved
         # in an X-ray structure)
-        assert ag1.numberOfResidues() == ag2.numberOfResidues()
+        assert ag1.n_residues == ag2.n_residues
 
         # Alternatively, we could align all atoms but Needleman-Wunsch
         # pairwise2 consumes too much memory for thousands of characters in
@@ -863,14 +865,14 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
         #                               one_alignment_only=True)
 
         # For now, just remove the residues that don't have matching numbers
-        rsize1 = numpy.array([r.numberOfAtoms() for r in ag1.residues])
-        rsize2 = numpy.array([r.numberOfAtoms() for r in ag2.residues])
+        rsize1 = numpy.array([r.n_atoms for r in ag1.residues])
+        rsize2 = numpy.array([r.n_atoms for r in ag2.residues])
         rsize_mismatches = numpy.absolute(rsize1 - rsize2)
         mismatch_mask = (rsize_mismatches > 0)
         if numpy.any(mismatch_mask):
             if strict:
                 # diagnostics
-                mismatch_resindex = numpy.arange(ag1.numberOfResidues())[mismatch_mask]
+                mismatch_resindex = numpy.arange(ag1.n_residues)[mismatch_mask]
                 def log_mismatch(number, ag, rsize, mismatch_resindex=mismatch_resindex):
                     logger.error("Offending residues: group {0}: {1}".format(
                             number,
@@ -901,7 +903,7 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
             # diagnostics
             # (ugly workaround for missing boolean indexing of AtomGroup)
             # note: ag[arange(len(ag))[boolean]] is ~2x faster than ag[where[boolean]]
-            mismatch_resindex = numpy.arange(ag1.numberOfResidues())[mismatch_mask]
+            mismatch_resindex = numpy.arange(ag1.n_residues)[mismatch_mask]
             logger.warn("Removed {0} residues with non-matching numbers of atoms".format(
                     mismatch_mask.sum()))
             logger.debug("Removed residue ids: group 1: {0}".format(ag1.resids[mismatch_resindex]))
@@ -916,8 +918,8 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
         # Test 2 failed.
         # diagnostic output:
         # (ugly workaround because boolean indexing is not yet working for atomgroups)
-        assert ag1.numberOfAtoms() == ag2.numberOfAtoms()
-        mismatch_atomindex = numpy.arange(ag1.numberOfAtoms())[mass_mismatches]
+        assert ag1.n_atoms == ag2.n_atoms
+        mismatch_atomindex = numpy.arange(ag1.n_atoms)[mass_mismatches]
 
         logger.error("Atoms: reference | trajectory")
         for ar, at in itertools.izip(ag1[mismatch_atomindex], ag2[mismatch_atomindex]):

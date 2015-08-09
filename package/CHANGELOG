@@ -11,7 +11,8 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/15  tyler.je.reddy, richardjgowers, alejob, orbeckst, dotsdl,
-        manuel.nuno.melo, cyanezstange, khuston, ivirshup, kain88-de
+        manuel.nuno.melo, cyanezstange, khuston, ivirshup, kain88-de,
+        gormanstock
 
   * 0.11.0
 
@@ -100,6 +101,7 @@ The rules for this file:
     bonds (Issue #373)
   * TopologyGroup.selectBonds renamed to select_bonds
   * TopologyObjects and TopologyGroup moved to core.topologyobjects module
+  * deprecated selectAtoms in favour of select_atoms (Issue #389)
 
   Fixes
   * Amber TRJ and NCDF Reader & Writers now use 'dt' instead of 'delta'
@@ -116,6 +118,7 @@ The rules for this file:
   * Fixed parsing of PDB header data for PrimitivePDBReader (Issue #332)
   * Fixed contact_matrix handles periodic boundary conditions correctly for
     sparse matrices.
+  * Fixed analysis.hole not using CPOINT (Issue #384)
 
 06/01/15  richardjgowers, caio s. souza, manuel.nuno.melo, orbeckst,
           sseyler

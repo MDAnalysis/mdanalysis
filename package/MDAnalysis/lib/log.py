@@ -76,23 +76,24 @@ from __future__ import division
 import sys
 import logging
 
+from .. import version
 
-
-def start_logging(logfile="MDAnalysis.log"):
+def start_logging(logfile="MDAnalysis.log", version=version.__version__):
     """Start logging of messages to file and console.
 
     The default logfile is named `MDAnalysis.log` and messages are
     logged with the tag *MDAnalysis*.
     """
-    log.create("MDAnalysis", logfile=logfile)
-    logging.getLogger("MDAnalysis").info("MDAnalysis %s STARTED logging to %r", __version__, logfile)
+    create("MDAnalysis", logfile=logfile)
+    logging.getLogger("MDAnalysis").info(
+        "MDAnalysis %s STARTED logging to %r", version, logfile)
 
 
 def stop_logging():
     """Stop logging to logfile and console."""
     logger = logging.getLogger("MDAnalysis")
     logger.info("MDAnalysis STOPPED logging")
-    log.clear_handlers(logger)  # this _should_ do the job...
+    clear_handlers(logger)  # this _should_ do the job...
 
 
 
@@ -173,7 +174,7 @@ class ProgressMeter(object):
     Usage::
 
        u = Universe(PSF, DCD)
-       pm = ProgressMeter(u.trajectory.numframes, interval=100)
+       pm = ProgressMeter(u.trajectory.n_frames, interval=100)
        for ts in u.trajectory:
            pm.echo(ts.frame)
            ...
@@ -195,7 +196,7 @@ class ProgressMeter(object):
     It is possible to embed (almost) arbitrary additional data in the
     format string, for example a current RMSD value:
 
-       pm = ProgressMeter(u.trajectory.numframes, interval=100,
+       pm = ProgressMeter(u.trajectory.n_frames, interval=100,
                           "RMSD %(rmsd)5.2f at %(step)5d/%(numsteps)d [%(percentage)5.1f%%]\\r")
        for ts in u.trajectory:
            pm.echo(ts.frame, rmsd=current_rmsd)

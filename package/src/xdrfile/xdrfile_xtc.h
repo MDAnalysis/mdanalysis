@@ -42,7 +42,7 @@ extern "C" {
   extern int read_xtc_natoms(char *fn,int *natoms);
 
   /* Seek through trajectory counting and indexing frames */
-  extern int read_xtc_numframes(char *fn, int *numframes, int64_t **offsets);
+  extern int read_xtc_n_frames(char *fn, int *n_frames, int64_t **offsets);
   
   /* Read one frame of an open xtc file */
   extern int read_xtc(XDRFILE *xd,int natoms,int *step,float *time,

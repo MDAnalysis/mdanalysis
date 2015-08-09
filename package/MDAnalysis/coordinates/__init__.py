@@ -93,8 +93,8 @@ A typical approach is to generate a new trajectory from an old one, e.g. to
 only keep the protein::
 
   u = MDAnalysis.Universe(PDB, XTC)
-  protein = u.selectAtoms("protein")
-  with MDAnalysis.Writer("protein.xtc", protein.numberOfAtoms()) as W:
+  protein = u.select_atoms("protein")
+  with MDAnalysis.Writer("protein.xtc", protein.n_atoms) as W:
       for ts in u.trajectory:
           W.write(protein)
 
@@ -307,7 +307,7 @@ The discussion on this format is detailed in `Issue 250`_
 Methods
 .......
 
-  ``__init__(numatoms, positions=True, velocities=False, forces=False)``
+  ``__init__(n_atoms, positions=True, velocities=False, forces=False)``
       Define the number of atoms this Timestep will hold and whether or not
       it will have velocity and force information
   ``__eq__``
@@ -329,7 +329,7 @@ Methods
 Attributes
 ..........
 
-  ``numatoms``
+  ``n_atoms``
       number of atoms in the frame
   ``frame``
       current frame number (0-based)
@@ -429,7 +429,7 @@ The following methods must be implemented in a Reader class.
      following data are supplied in keywords when a trajectory is loaded from
      within :class:`MDAnalysis.Universe`:
 
-      - *numatoms*: the number of atoms (known from the topology)
+      - *n_atoms*: the number of atoms (known from the topology)
 
  ``__iter__()``
      allow iteration from beginning to end::
@@ -526,9 +526,9 @@ Attributes
 
  ``filename``
      filename of the trajectory
- ``numatoms``
+ ``n_atoms``
      number of atoms (coordinate sets) in a frame (constant)
- ``numframes``
+ ``n_frames``
      total number of frames (if known) -- ``None`` if not known
  ``ts``
      the :class:`~base.Timestep` object; typically customized for each
@@ -546,7 +546,7 @@ Attributes
      on the fly ``skip_timestep * delta`` and converts to the MDAnalysis base
      unit for time (pico seconds by default)
  ``totaltime``
-     total length of the trajectory = ``numframes * dt``
+     total length of the trajectory = ``n_frames * dt``
  ``time``
      time of the current time step, in MDAnalysis time units (ps)
  ``frame``
@@ -582,7 +582,7 @@ Typically, many methods and attributes are overriden.
 
 Signature::
 
-   W = TrajectoryWriter(filename,numatoms,**kwargs)
+   W = TrajectoryWriter(filename,n_atoms,**kwargs)
    W.write_next_timestep(Timestep)
 
 or::
@@ -595,7 +595,7 @@ or::
 Methods
 .......
 
- ``__init__(filename,numatoms[,start[,step[,delta[,remarks]]]])``
+ ``__init__(filename,n_atoms[,start[,step[,delta[,remarks]]]])``
      opens *filename* and writes header if required by format
  ``write(obj)``
      write Timestep data in *obj*
@@ -649,7 +649,7 @@ Signature::
    W.write(Universe)
 
 The blanket *kwargs* is required so that one can pass the same kind of
-arguments (filename and numatoms) as for the Trajectory writers. In
+arguments (filename and n_atoms) as for the Trajectory writers. In
 this way, the simple :func:`~MDAnalysis.coordinates.core.writer`
 factory function can be used for all writers.
 
@@ -784,7 +784,7 @@ _frame_writers = {
 #: trajectory writers: export frames, typically only saving coordinates
 #: Signature::
 #:
-#:   W = TrajectoryWriter(filename,numatoms,**kwargs)
+#:   W = TrajectoryWriter(filename,n_atoms,**kwargs)
 #:   W.write_next_timestep(TimeStep)
 #:   W.write(Timestep)
 #:   W.write(AtomGroup)

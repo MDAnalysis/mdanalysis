@@ -9,12 +9,12 @@ Once you have the :meth:`~MDAnalysis.core.AtomGroup.Universe` object, you can
 select atoms (using a syntax very similar to `CHARMM's atom selection
 syntax`_)::
 
-  >>> kalp = universe.selectAtoms("segid KALP")
+  >>> kalp = universe.select_atoms("segid KALP")
 
 .. _`CHARMM's atom selection syntax`: 
    http://www.charmm.org/documentation/c37b1/select.html
 
-The :meth:`~MDAnalysis.core.AtomGroup.Universe.selectAtoms` of a
+The :meth:`~MDAnalysis.core.AtomGroup.Universe.select_atoms` of a
 :class:`~MDAnalysis.core.AtomGroup.Universe` returns a
 :class:`~MDAnalysis.core.AtomGroup.AtomGroup`, so you can use all the methods
 defined for AtomGroups on them. Selections always return an :class:`AtomGroup` with
@@ -23,7 +23,7 @@ there aren't any duplicates, which can happen with complicated selections).
 
 One can group subselections using parentheses::
 
- >>> universe.selectAtoms("segid DMPC and not (name H* or name O*)")
+ >>> universe.select_atoms("segid DMPC and not (name H* or name O*)")
  <AtomGroup with 3420 atoms>
 
 Almost all the basic CHARMM selections work.
@@ -177,7 +177,7 @@ Preexisting selections
     group *group-name*
         selects the atoms in the :class:`AtomGroup` passed to the function as an
         argument named *group-name*. Only the atoms common to *group-name* and the
-        instance :meth:`~selectAtoms` was called from will be considered.
+        instance :meth:`~select_atoms` was called from will be considered.
         *group-name* will be included in the parsing just by comparison of atom indices.
         This means that it is up to the user to make sure they were defined in an
         appropriate :class:`Universe`.
@@ -185,7 +185,7 @@ Preexisting selections
     fullgroup *group-name*
         just like the ``group`` keyword with the difference that all the atoms of
         *group-name* are included. The resulting selection may therefore have atoms
-        that were initially absent from the instance :meth:`~selectAtoms` was
+        that were initially absent from the instance :meth:`~select_atoms` was
         called from.
         
 
@@ -267,7 +267,7 @@ Atom name selector
 Ordered selections
 ==================
 
-:meth:`~MDAnalysis.Universe.selectAtoms` sorts the atoms in the
+:meth:`~MDAnalysis.Universe.select_atoms` sorts the atoms in the
 :class:`~MDAnalysis.core.AtomGroup.AtomGroup` by atom index before returning them (this is to
 eliminate possible duplicates in the selection). If the ordering of atoms is
 crucial (for instance when describing angles or dihedrals) or if duplicate
@@ -277,16 +277,16 @@ not sort them.
 The most straightforward way to concatentate two AtomGroups is by using the
 **+** operator::
 
- >>> ordered = u.selectAtoms("segid DMPC and resid 3 and name P") + u.selectAtoms("segid DMPC and resid 2 and name P")
+ >>> ordered = u.select_atoms("segid DMPC and resid 3 and name P") + u.select_atoms("segid DMPC and resid 2 and name P")
  >>> print list(ordered)
  [< Atom 570: name 'P' of type '180' of resid 'DMPC', 3 and 'DMPC'>,
  < Atom 452: name 'P' of type '180' of resid 'DMPC', 2 and 'DMPC'>]
 
 A shortcut is to provide *two or more* selections to
-:meth:`~MDAnalysis.Universe.selectAtoms`, which then does the concatenation
+:meth:`~MDAnalysis.Universe.select_atoms`, which then does the concatenation
 automatically::
 
- >>> print list(universe.selectAtoms("segid DMPC and resid 3 and name P", "segid DMPC and resid 2 and name P"))
+ >>> print list(universe.select_atoms("segid DMPC and resid 3 and name P", "segid DMPC and resid 2 and name P"))
  [< Atom 570: name 'P' of type '180' of resid 'DMPC', 3 and 'DMPC'>,
  < Atom 452: name 'P' of type '180' of resid 'DMPC', 2 and 'DMPC'>]
 
@@ -294,7 +294,7 @@ Just for comparison to show that a single selection string does not work as one
 might expect::
 
  # WRONG!
- >>> print list(universe.selectAtoms("segid DMPC and ( resid 3 or resid 2 ) and name P"))
+ >>> print list(universe.select_atoms("segid DMPC and ( resid 3 or resid 2 ) and name P"))
  [< Atom 452: name 'P' of type '180' of resid 'DMPC', 2 and 'DMPC'>,
  < Atom 570: name 'P' of type '180' of resid 'DMPC', 3 and 'DMPC'>]
  

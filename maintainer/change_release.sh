@@ -10,7 +10,7 @@ like '0.7.6' or 0.7.6-dev'.
 Run from the top directory of the git checkout.
 "
 
-FILES="package/setup.py package/MDAnalysis/__init__.py testsuite/setup.py testsuite/MDAnalysisTests/__init__.py"
+FILES="package/setup.py package/MDAnalysis/version.py testsuite/setup.py testsuite/MDAnalysisTests/__init__.py"
 
 die () {
     echo "ERROR: $1"

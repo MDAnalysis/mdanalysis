@@ -119,7 +119,7 @@ class GROReader(base.SingleFrameReader):
                 elif linenum == total_atnums + 2:
                     unitcell = np.array(map(float, line.split()))
 
-        self.numatoms = len(coords_list)
+        self.n_atoms = len(coords_list)
         vels = np.array(velocities_list, dtype=np.float32) if velocities_list else None
 
         self.ts = self._Timestep.from_coordinates(
@@ -177,7 +177,7 @@ class GROWriter(base.Writer):
     #: format strings for the GRO file (all include newline); precision
     #: of 3 decimal places is hard-coded here.
     fmt = {
-        'numatoms': "%5d\n",  # number of atoms
+        'n_atoms': "%5d\n",  # number of atoms
         # coordinates output format, see http://chembytes.wikidot.com/g-grofile
         'xyz_v': "%5s%-5s%5s%5s%8.3f%8.3f%8.3f%8.4f%8.4f%8.4f\n",  # coordinates and velocities
         'xyz': "%5s%-5s%5s%5s%8.3f%8.3f%8.3f\n",  # coordinates only
@@ -245,7 +245,7 @@ class GROWriter(base.Writer):
         with util.openany(self.filename, 'w') as output_gro:
             # Header
             output_gro.write('Written by MDAnalysis\n')
-            output_gro.write(self.fmt['numatoms'] % len(atoms))
+            output_gro.write(self.fmt['n_atoms'] % len(atoms))
             # Atom descriptions and coords
             for atom_index, atom in enumerate(atoms):
                 c = coordinates[atom_index]

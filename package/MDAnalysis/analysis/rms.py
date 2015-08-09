@@ -164,7 +164,7 @@ def rmsd(a, b, weights=None, center=False):
 
     Example::
      >>> u = Universe(PSF,DCD)
-     >>> bb = u.selectAtoms('backbone')
+     >>> bb = u.select_atoms('backbone')
      >>> A = bb.coordinates()  # coordinates of first frame
      >>> u.trajectory[-1]      # forward to last frame
      >>> B = bb.coordinates()  # coordinates of last frame
@@ -194,7 +194,7 @@ def _process_selection(select):
     :Arguments:
       *select*
          - any valid selection string for
-           :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms` that produces identical
+           :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.select_atoms` that produces identical
            selections in *mobile* and *reference*; or
          - dictionary ``{'mobile':sel1, 'reference':sel2}``.
            The :func:`fasta2select` function returns such a
@@ -266,7 +266,7 @@ class RMSD(object):
              The selection to operate on; can be one of:
 
              1. any valid selection string for
-                :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms` that produces identical
+                :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.select_atoms` that produces identical
                 selections in *mobile* and *reference*; or
              2. a dictionary ``{'mobile':sel1, 'reference':sel2}`` (the
                 :func:`MDAnalysis.analysis.align.fasta2select` function returns such a
@@ -314,9 +314,9 @@ class RMSD(object):
         self.ref_frame = ref_frame
         self.filename = filename
 
-        self.ref_atoms = self.reference.selectAtoms(*self.select['reference'])
-        self.traj_atoms = self.universe.selectAtoms(*self.select['mobile'])
-        natoms = self.traj_atoms.numberOfAtoms()
+        self.ref_atoms = self.reference.select_atoms(*self.select['reference'])
+        self.traj_atoms = self.universe.select_atoms(*self.select['mobile'])
+        natoms = self.traj_atoms.n_atoms
         if len(self.ref_atoms) != len(self.traj_atoms):
             logger.exception()
             raise SelectionError("Reference and trajectory atom selections do not contain " +
@@ -344,8 +344,8 @@ class RMSD(object):
         # each a dict with reference/mobile
         self.groupselections_atoms = [
             {
-                'reference': self.reference.selectAtoms(*s['reference']),
-                'mobile': self.universe.selectAtoms(*s['mobile']),
+                'reference': self.reference.select_atoms(*s['reference']),
+                'mobile': self.universe.select_atoms(*s['mobile']),
             }
             for s in self.groupselections]
         # sanity check
@@ -386,7 +386,7 @@ class RMSD(object):
         mass_weighted = kwargs.pop('mass_weighted', self.mass_weighted)
         ref_frame = kwargs.pop('ref_frame', self.ref_frame)
 
-        natoms = self.traj_atoms.numberOfAtoms()
+        natoms = self.traj_atoms.n_atoms
         trajectory = self.universe.trajectory
         traj_atoms = self.traj_atoms
 
@@ -406,7 +406,7 @@ class RMSD(object):
             ref_coordinates = self.ref_atoms.positions - ref_com  # makes a copy
             if self.groupselections_atoms:
                 groupselections_ref_coords_T_64 = [
-                    self.reference.selectAtoms(*s['reference']).positions.T.astype(numpy.float64) for s in
+                    self.reference.select_atoms(*s['reference']).positions.T.astype(numpy.float64) for s in
                     self.groupselections]
         finally:
             # Move back to the original frame
@@ -464,7 +464,7 @@ class RMSD(object):
                         izip(groupselections_ref_coords_T_64, self.groupselections_atoms), 3):
                     rmsd[k, igroup] = qcp.CalcRMSDRotationalMatrix(refpos,
                                                                    atoms['mobile'].positions.T.astype(numpy.float64),
-                                                                   atoms['mobile'].numberOfAtoms(), None, weight)
+                                                                   atoms['mobile'].n_atoms, None, weight)
             else:
                 # only calculate RMSD by setting the Rmatrix to None
                 # (no need to carry out the rotation as we already get the optimum RMSD)
@@ -540,7 +540,7 @@ class RMSF(object):
                 [``False``]
 
         """
-        sumsquares = numpy.zeros((self.atomgroup.numberOfAtoms(), 3))
+        sumsquares = numpy.zeros((self.atomgroup.n_atoms, 3))
         means = numpy.array(sumsquares)
 
         if quiet:
@@ -548,10 +548,10 @@ class RMSF(object):
 
         # set up progress output
         if progout:
-            percentage = ProgressMeter(self.atomgroup.universe.trajectory.numframes,
+            percentage = ProgressMeter(self.atomgroup.universe.trajectory.n_frames,
                                        interval=progout)
         else:
-            percentage = ProgressMeter(self.atomgroup.universe.trajectory.numframes,
+            percentage = ProgressMeter(self.atomgroup.universe.trajectory.n_frames,
                                        quiet=True)
 
         for k, ts in enumerate(self.atomgroup.universe.trajectory[start:stop:step]):

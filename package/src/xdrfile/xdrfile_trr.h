@@ -42,7 +42,7 @@ extern "C" {
   extern int read_trr_natoms(char *fn,int *natoms);
 
   /* Skip through trajectory, reading headers, obtain the total number of frames in the trr */ 
-  extern int read_trr_numframes(char *fn, int *numframes, int64_t **offsets);
+  extern int read_trr_n_frames(char *fn, int *n_frames, int64_t **offsets);
 
   /* Read one frame of an open trr file. If either of x,v,f,box are
      NULL the arrays will be read from the file but not used.  */

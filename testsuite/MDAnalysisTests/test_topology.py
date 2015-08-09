@@ -176,17 +176,17 @@ class _TestTopology(TestCase):
     #        assert_raises(IOError, p.parse) or assert_raises(ValueError, p.parse)
 
     def test_parser_atoms(self):
-        assert_equal(self.universe.atoms.numberOfAtoms(),
-                     self.ref_numatoms,
+        assert_equal(self.universe.atoms.n_atoms,
+                     self.ref_n_atoms,
                      "wrong number of atoms in topology")
-        assert_equal(self.universe.atoms.numberOfResidues(),
+        assert_equal(self.universe.atoms.n_residues,
                      self.ref_numresidues,
                      "wrong number of residues in topology")
 
     def test_atom_number(self):
         assert_equal(self.universe.atoms[0].index, 0,
                      "first atom should have Atom.index 0")
-        assert_equal(self.universe.atoms[-1].index, self.ref_numatoms - 1,
+        assert_equal(self.universe.atoms[-1].index, self.ref_n_atoms - 1,
                      "last atom has wrong Atom.index")
 
 
@@ -197,7 +197,7 @@ class RefAdKSmall(object):
     """
     topology = PSF
     parser = MDAnalysis.topology.PSFParser.PSFParser
-    ref_numatoms = 3341
+    ref_n_atoms = 3341
     ref_numresidues = 214
 
 
@@ -214,7 +214,7 @@ class RefNAMD_CGENFF(object):
     """
     topology = PSF_NAMD
     parser = MDAnalysis.topology.PSFParser.PSFParser
-    ref_numatoms = 130
+    ref_n_atoms = 130
     ref_numresidues = 6
 
 class RefHoomdXML(object):
@@ -222,7 +222,7 @@ class RefHoomdXML(object):
     """
     topology = HoomdXMLdata
     parser = MDAnalysis.topology.HoomdXMLParser.HoomdXMLParser
-    ref_numatoms = 769
+    ref_n_atoms = 769
     ref_numresidues = 1
 
 class TestHoomdXML(_TestTopology, RefHoomdXML):
@@ -245,7 +245,7 @@ class TestPSF_Issue121(TestCase):
             u = MDAnalysis.Universe(PSF_nosegid)
         except IndexError:
             raise AssertionError("Issue 121 not fixed: cannot load PSF with empty SEGID")
-        assert_equal(u.atoms.numberOfAtoms(), 98)
+        assert_equal(u.atoms.n_atoms, 98)
         assert_equal(u.atoms.segids, ["SYSTEM"])
 
 
@@ -911,7 +911,7 @@ class RefCappedAla(object):
     """
     topology = PRMpbc
     parser = MDAnalysis.topology.TOPParser.TOPParser
-    ref_numatoms = 5071
+    ref_n_atoms = 5071
     ref_numresidues = 1686
     ref_proteinatoms = 22
 
@@ -920,7 +920,7 @@ class RefAMBER12(object):
     """Fixture data for testing AMBER12 reading (Issue 100)"""
     topology = PRM12
     parser = MDAnalysis.topology.TOPParser.TOPParser
-    ref_numatoms = 8923
+    ref_n_atoms = 8923
     ref_numresidues = 2861
     ref_proteinatoms = 0
 
@@ -941,7 +941,7 @@ class TestAMBER12(_TestTopology, RefAMBER12):
 class RefPDB(object):
     topology = PDB_small
     parser = MDAnalysis.topology.PDBParser.PDBParser
-    ref_numatoms = 3341
+    ref_n_atoms = 3341
     ref_numresidues = 214
 
 
@@ -962,7 +962,7 @@ class TestPDB_Perm(_TestTopology, RefPDB_Perm):
 class RefXPDB(object):
     topology = PDB
     parser = MDAnalysis.topology.ExtendedPDBParser.ExtendedPDBParser
-    ref_numatoms = 47681
+    ref_n_atoms = 47681
     ref_numresidues = 11302
 
 
@@ -970,7 +970,7 @@ class RefXPDB(object):
 class RefDMS(object):
     topology = DMS
     parser = MDAnalysis.topology.DMSParser.DMSParser
-    ref_numatoms = 3341
+    ref_n_atoms = 3341
     ref_numresidues = 214
 
 
@@ -989,16 +989,16 @@ class TestDMSReader(_TestTopology, RefDMS):
 
     def test_atomsels(self):
         # Desired value taken from VMD atomsel
-        s0 = self.universe.selectAtoms("name CA")
+        s0 = self.universe.select_atoms("name CA")
         assert_equal(len(s0), 214)
 
-        s1 = self.universe.selectAtoms("resid 33")
+        s1 = self.universe.select_atoms("resid 33")
         assert_equal(len(s1), 12)
 
-        s2 = self.universe.selectAtoms("segid 4AKE")
+        s2 = self.universe.select_atoms("segid 4AKE")
         assert_equal(len(s2), 3341)
 
-        s3 = self.universe.selectAtoms("resname ALA")
+        s3 = self.universe.select_atoms("resname ALA")
         assert_equal(len(s3), 190)
 
     def test_atom_number(self):
@@ -1013,7 +1013,7 @@ class TestDMSReader(_TestTopology, RefDMS):
 class RefTPR(object):
     parser = MDAnalysis.topology.TPRParser.TPRParser
     topology = TPR
-    ref_numatoms = 47681
+    ref_n_atoms = 47681
     ref_numresidues = 11302
 
 
@@ -1042,7 +1042,7 @@ class TestTopologyGuessers(TestCase):
 
     def test_guess_bonds_badtype(self):
         # rename my carbons and watch it get confused about missing types
-        self.u.selectAtoms('type C').set_type('QQ')
+        self.u.select_atoms('type C').set_type('QQ')
         assert_raises(ValueError, guess_bonds, self.u.atoms, self.u.atoms.positions)
 
     def test_guess_bonds_withag(self):
@@ -1132,7 +1132,7 @@ class TestTopologyGuessers(TestCase):
 class RefLammpsData(object):
     topology = LAMMPSdata
     parser = MDAnalysis.topology.LAMMPSParser.DATAParser
-    ref_numatoms = 18360
+    ref_n_atoms = 18360
     ref_numresidues = 24
 
 
@@ -1181,7 +1181,7 @@ class TestGuessFormat(TestCase):
 class RefXYZ(object):
     topology = XYZ_mini
     parser = MDAnalysis.topology.XYZParser.XYZParser
-    ref_numatoms = 3
+    ref_n_atoms = 3
     ref_numresidues = 1
 
 
@@ -1192,7 +1192,7 @@ class TestXYZTopology(RefXYZ, _TestTopology):
 class RefGMSsym(object):
     topology = GMS_SYMOPT
     parser = MDAnalysis.topology.GMSParser.GMSParser
-    ref_numatoms = 4
+    ref_n_atoms = 4
     ref_numresidues = 1
 
 class TestGMS_withSymmetry(_TestTopology, RefGMSsym):
@@ -1201,7 +1201,7 @@ class TestGMS_withSymmetry(_TestTopology, RefGMSsym):
 class RefGMSasym(object):
     topology = GMS_ASYMSURF
     parser = MDAnalysis.topology.GMSParser.GMSParser
-    ref_numatoms = 6
+    ref_n_atoms = 6
     ref_numresidues = 1
 
 class TestGMS_noSymmetry(_TestTopology, RefGMSasym):

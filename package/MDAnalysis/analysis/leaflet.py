@@ -87,7 +87,7 @@ class LeafletFinder(object):
                  :class:`MDAnalysis.Universe` or a PDB file name.
              *selection*
                  :class:`MDAnalysis.core.AtomGroup.AtomGroup` or a
-                 :meth:`MDAnalysis.Universe.selectAtoms` selection string
+                 :meth:`MDAnalysis.Universe.select_atoms` selection string
                  for atoms that define the lipid head groups, e.g.
                  universe.atoms.PO4 or "name PO4" or "name P*"
         :Keywords:
@@ -109,7 +109,7 @@ class LeafletFinder(object):
         if type(self.selectionstring) == MDAnalysis.core.AtomGroup.AtomGroup:
             self.selection = self.selectionstring
         else:
-            self.selection = universe.selectAtoms(self.selectionstring)
+            self.selection = universe.select_atoms(self.selectionstring)
         self.pbc = pbc
         self.sparse = sparse
         self._init_graph(cutoff)
@@ -217,7 +217,7 @@ class LeafletFinder(object):
 
     def __repr__(self):
         return "<LeafletFinder(%r, cutoff=%.1f A) with %d atoms in %d groups>" % \
-               (self.selectionstring, self.cutoff, self.selection.numberOfAtoms(),
+               (self.selectionstring, self.cutoff, self.selection.n_atoms,
                len(self.components))
 
 

@@ -240,7 +240,7 @@ del _StreamData
 class TestStreamIO(TestCase, RefAdKSmall):
     def test_PrimitivePDBReader(self):
         u = MDAnalysis.Universe(streamData.as_NamedStream('PDB'))
-        assert_equal(u.atoms.numberOfAtoms(), self.ref_numatoms)
+        assert_equal(u.atoms.n_atoms, self.ref_n_atoms)
 
     @knownfailure()
     def test_PDBReader(self):
@@ -248,24 +248,24 @@ class TestStreamIO(TestCase, RefAdKSmall):
             u = MDAnalysis.Universe(streamData.as_NamedStream('PDB'), permissive=False)
         except Exception as err:
             raise AssertionError("StreamIO not supported:\n>>>>> {0}".format(err))
-        assert_equal(u.atoms.numberOfAtoms(), self.ref_numatoms)
+        assert_equal(u.atoms.n_atoms, self.ref_n_atoms)
 
     def test_CRDReader(self):
         u = MDAnalysis.Universe(streamData.as_NamedStream('CRD'))
-        assert_equal(u.atoms.numberOfAtoms(), self.ref_numatoms)
+        assert_equal(u.atoms.n_atoms, self.ref_n_atoms)
 
     def test_PSFParser(self):
         u = MDAnalysis.Universe(streamData.as_NamedStream('PSF'))
-        assert_equal(u.atoms.numberOfAtoms(), self.ref_numatoms)
+        assert_equal(u.atoms.n_atoms, self.ref_n_atoms)
 
     def test_PSF_CRD(self):
         u = MDAnalysis.Universe(streamData.as_NamedStream('PSF'),
                                 streamData.as_NamedStream('CRD'))
-        assert_equal(u.atoms.numberOfAtoms(), self.ref_numatoms)
+        assert_equal(u.atoms.n_atoms, self.ref_n_atoms)
 
     def test_PQRReader(self):
         u = MDAnalysis.Universe(streamData.as_NamedStream('PQR'))
-        assert_equal(u.atoms.numberOfAtoms(), self.ref_numatoms)
+        assert_equal(u.atoms.n_atoms, self.ref_n_atoms)
         assert_almost_equal(u.atoms.totalCharge(), self.ref_charmm_totalcharge, 3,
                             "Total charge (in CHARMM) does not match expected value.")
         assert_almost_equal(u.atoms.H.charges, self.ref_charmm_Hcharges, 3,
@@ -273,16 +273,16 @@ class TestStreamIO(TestCase, RefAdKSmall):
 
     def test_PDBQTReader(self):
         u = MDAnalysis.Universe(streamData.as_NamedStream('PDBQT'))
-        sel = u.selectAtoms('backbone')
-        assert_equal(sel.numberOfAtoms(), 796)
-        sel = u.selectAtoms('segid A')
-        assert_equal(sel.numberOfAtoms(), 909, "failed to select segment A")
-        sel = u.selectAtoms('segid B')
-        assert_equal(sel.numberOfAtoms(), 896, "failed to select segment B")
+        sel = u.select_atoms('backbone')
+        assert_equal(sel.n_atoms, 796)
+        sel = u.select_atoms('segid A')
+        assert_equal(sel.n_atoms, 909, "failed to select segment A")
+        sel = u.select_atoms('segid B')
+        assert_equal(sel.n_atoms, 896, "failed to select segment B")
 
     def test_GROReader(self):
         u = MDAnalysis.Universe(streamData.as_NamedStream('GRO'))
-        assert_equal(u.atoms.numberOfAtoms(), 6)
+        assert_equal(u.atoms.n_atoms, 6)
         assert_almost_equal(u.atoms[3].position,
                             10. * numpy.array([1.275, 0.053, 0.622]), 3,  # manually convert nm -> A
                             err_msg="wrong coordinates for water 2 OW")
@@ -293,7 +293,7 @@ class TestStreamIO(TestCase, RefAdKSmall):
     def test_MOL2Reader(self):
         u = MDAnalysis.Universe(streamData.as_NamedStream('MOL2'))
         assert_equal(len(u.atoms), 49)
-        assert_equal(u.trajectory.numframes, 200)
+        assert_equal(u.trajectory.n_frames, 200)
         u.trajectory[199]
         assert_array_almost_equal(u.atoms.positions[0], [1.7240, 11.2730, 14.1200])
 
@@ -301,7 +301,7 @@ class TestStreamIO(TestCase, RefAdKSmall):
         u = MDAnalysis.Universe(streamData.as_NamedStream('XYZ_PSF'),
                                 streamData.as_NamedStream('XYZ'))
         assert_equal(len(u.atoms), 8)
-        assert_equal(u.trajectory.numframes, 3)
+        assert_equal(u.trajectory.n_frames, 3)
         assert_equal(u.trajectory.frame, 0)  # weird, something odd with XYZ reader
         u.trajectory.next()  # (should really only need one next()... )
         assert_equal(u.trajectory.frame, 1)  # !!!! ???
