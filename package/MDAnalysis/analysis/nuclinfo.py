@@ -298,11 +298,11 @@ def phase_as(universe, seg, i):
     angle5 = universe.select_atoms(" atom %s %s O4\' " % (seg, i), " atom %s %s C1\' " % (seg, i),
                                   " atom %s %s C2\' " % (seg, i), " atom %s %s C3\' " % (seg, i))
 
-    data1 = angle1.dihedral()
-    data2 = angle2.dihedral()
-    data3 = angle3.dihedral()
-    data4 = angle4.dihedral()
-    data5 = angle5.dihedral()
+    data1 = angle1.dihedral.value()
+    data2 = angle2.dihedral.value()
+    data3 = angle3.dihedral.value()
+    data4 = angle4.dihedral.value()
+    data5 = angle5.dihedral.value()
 
     B = ((data1 * sin(2 * 2 * pi * (1 - 1.) / 5.)) + (data2 * sin(2 * 2 * pi * (2 - 1.) / 5.)) +
          (data3 * sin(2 * 2 * pi * (3 - 1.) / 5.)) + (data4 * sin(2 * 2 * pi * (4 - 1.) / 5.)) +
@@ -355,13 +355,13 @@ def tors(universe, seg, i):
         c = universe.select_atoms(" atom %s %s O4\' " % (seg, i), " atom %s %s C1\' " % (seg, i),
                                  " atom %s %s N9 " % (seg, i), " atom %s %s C4  " % (seg, i))
 
-    alpha = a.dihedral()
-    beta = b.dihedral()
-    gamma = g.dihedral()
-    delta = d.dihedral()
-    epsilon = e.dihedral()
-    zeta = z.dihedral()
-    chi = c.dihedral()
+    alpha = a.dihedral.value()
+    beta = b.dihedral.value()
+    gamma = g.dihedral.value()
+    delta = d.dihedral.value()
+    epsilon = e.dihedral.value()
+    zeta = z.dihedral.value()
+    chi = c.dihedral.value()
 
     if alpha < 0:
         alpha = alpha + 360
@@ -395,7 +395,7 @@ def tors_alpha(universe, seg, i):
     """
     a = universe.select_atoms(" atom %s %s O3\' " % (seg, i - 1), " atom %s %s P  " % (seg, i),
                              " atom %s %s O5\' " % (seg, i), " atom %s %s C5\' " % (seg, i))
-    alpha = a.dihedral()
+    alpha = a.dihedral.value()
     if alpha < 0:
         alpha = alpha + 360
     return alpha
@@ -418,7 +418,7 @@ def tors_beta(universe, seg, i):
     """
     b = universe.select_atoms(" atom %s %s P    " % (seg, i), " atom %s %s O5\' " % (seg, i),
                              " atom %s %s C5\' " % (seg, i), " atom %s %s C4\' " % (seg, i))
-    beta = b.dihedral()
+    beta = b.dihedral.value()
     if beta < 0:
         beta = beta + 360
     return beta
@@ -441,7 +441,7 @@ def tors_gamma(universe, seg, i):
     """
     g = universe.select_atoms(" atom %s %s O5\' " % (seg, i), " atom %s %s C5\' " % (seg, i),
                              " atom %s %s C4\' " % (seg, i), " atom %s %s C3\' " % (seg, i))
-    gamma = g.dihedral()
+    gamma = g.dihedral.value()
     if gamma < 0:
         gamma = gamma + 360
     return gamma
@@ -464,7 +464,7 @@ def tors_delta(universe, seg, i):
     """
     d = universe.select_atoms(" atom %s %s C5\' " % (seg, i), " atom %s %s C4\' " % (seg, i),
                              " atom %s %s C3\' " % (seg, i), " atom %s %s O3\' " % (seg, i))
-    delta = d.dihedral()
+    delta = d.dihedral.value()
     if delta < 0:
         delta = delta + 360
     return delta
@@ -487,7 +487,7 @@ def tors_eps(universe, seg, i):
     """
     e = universe.select_atoms(" atom %s %s C4\' " % (seg, i), " atom %s %s C3\' " % (seg, i),
                              " atom %s %s O3\' " % (seg, i), " atom %s %s P    " % (seg, i + 1))
-    epsilon = e.dihedral()
+    epsilon = e.dihedral.value()
     if epsilon < 0:
         epsilon = epsilon + 360
     return epsilon
@@ -510,7 +510,7 @@ def tors_zeta(universe, seg, i):
     """
     z = universe.select_atoms(" atom %s %s C3\' " % (seg, i), " atom %s %s O3\' " % (seg, i),
                              " atom %s %s P    " % (seg, i + 1), " atom %s %s O5\' " % (seg, i + 1))
-    zeta = z.dihedral()
+    zeta = z.dihedral.value()
     if zeta < 0:
         zeta = zeta + 360
     return zeta
@@ -537,7 +537,7 @@ def tors_chi(universe, seg, i):
     except:
         c = universe.select_atoms(" atom %s %s O4\' " % (seg, i), " atom %s %s C1\' " % (seg, i),
                                  " atom %s %s N9 " % (seg, i), " atom %s %s C4  " % (seg, i))
-    chi = c.dihedral()
+    chi = c.dihedral.value()
     if chi < 0:
         chi = chi + 360
     return chi
@@ -562,7 +562,7 @@ def hydroxyl(universe, seg, i):
     h = universe.select_atoms(" atom %s %s C1\' " % (seg, i), " atom %s %s C2\' " % (seg, i),
                              " atom %s %s O2\' " % (seg, i), " atom %s %s H2\'\' " % (seg, i))
     try:
-        hydr = h.dihedral()
+        hydr = h.dihedral.value()
     except ValueError:
         raise ValueError("Resid {0} does not contain atoms C1', C2', O2', H2' but atoms {1}".format(
                 i, str(list(h.atoms))))

@@ -15,13 +15,14 @@
 
 import MDAnalysis
 from MDAnalysis.core.AtomGroup import AtomGroup
-from MDAnalysis.core.distances import calc_bonds, calc_angles, calc_torsions
+from MDAnalysis.core.distances import calc_bonds, calc_angles, calc_dihedrals
 from MDAnalysis.topology.core import (
     guess_atom_type, guess_atom_element, get_atom_mass, guess_format,
-    guess_bonds, guess_angles, guess_torsions, guess_improper_torsions,
-    get_parser_for,
-    Bond, Angle, Torsion, Improper_Torsion,
-    TopologyGroup, TopologyObject, TopologyDict)
+    guess_bonds, guess_angles, guess_dihedrals, guess_improper_dihedrals,
+    get_parser_for)
+from MDAnalysis.core.topologyobjects import (
+    TopologyGroup, TopologyObject, TopologyDict,
+    Bond, Angle, Dihedral, ImproperDihedral)
 from MDAnalysis.tests.datafiles import (
     PRMpbc, PRM12, PSF, PSF_NAMD, PSF_nosegid, DMS, PDB_small, DCD,
     LAMMPSdata, trz4data, TPR, PDB, XYZ_mini, GMS_SYMOPT, GMS_ASYMSURF,
@@ -249,7 +250,7 @@ class TestPSF_Issue121(TestCase):
 
 
 class TestPSF_bonds(TestCase):
-    """Tests reading of bonds angles and torsions in psf files"""
+    """Tests reading of bonds angles and dihedrals in psf files"""
 
     def setUp(self):
         topology = PSF
@@ -298,11 +299,11 @@ class TestPSF_bonds(TestCase):
         assert_equal(any([a2 in b and a6 in b for b in a1.angles]),
                      False)  # both a2 and a6 feature, but never simultaneously
 
-    def test_torsions_counts(self):
-        assert_equal(len(self.universe._topology['torsions']), 8921)
-        assert_equal(len(self.universe.atoms[0].torsions), 14)
+    def test_dihedrals_counts(self):
+        assert_equal(len(self.universe._topology['dihedrals']), 8921)
+        assert_equal(len(self.universe.atoms[0].dihedrals), 14)
 
-    def test_torsions_identity(self):
+    def test_dihedrals_identity(self):
         a1 = self.universe.atoms[0]
         a2 = self.universe.atoms[1]
         a3 = self.universe.atoms[2]
@@ -310,11 +311,11 @@ class TestPSF_bonds(TestCase):
         a6 = self.universe.atoms[5]
         a7 = self.universe.atoms[6]
         a42 = self.universe.atoms[41]
-        assert_equal(all([a1 in b for b in a1.torsions]), True)
-        assert_equal(any([a2 in b and a5 in b and a6 in b for b in a1.torsions]), True)
-        assert_equal(any([a2 in b and a5 in b and a7 in b for b in a1.torsions]), True)
-        assert_equal(any([a42 in b for b in a1.torsions]), False)
-        assert_equal(any([a2 in b and a3 in b and a6 in b for b in a1.torsions]), False)
+        assert_equal(all([a1 in b for b in a1.dihedrals]), True)
+        assert_equal(any([a2 in b and a5 in b and a6 in b for b in a1.dihedrals]), True)
+        assert_equal(any([a2 in b and a5 in b and a7 in b for b in a1.dihedrals]), True)
+        assert_equal(any([a42 in b for b in a1.dihedrals]), False)
+        assert_equal(any([a2 in b and a3 in b and a6 in b for b in a1.dihedrals]), False)
 
 
 class TestTopologyObjects(TestCase):
@@ -407,18 +408,21 @@ class TestTopologyObjects(TestCase):
         angle = self.u.atoms[210].angles[0]
 
         assert_almost_equal(angle.angle(), 107.20893, self.precision)
+        assert_almost_equal(angle.value(), 107.20893, self.precision)
 
-    # Torsion class check
-    def test_torsion(self):
-        torsion = self.u.atoms[14].torsions[0]
+    # Dihedral class check
+    def test_dihedral(self):
+        dihedral = self.u.atoms[14].dihedrals[0]
 
-        assert_almost_equal(torsion.torsion(), 18.317778, self.precision)
+        assert_almost_equal(dihedral.dihedral(), 18.317778, self.precision)
+        assert_almost_equal(dihedral.value(), 18.317778, self.precision)
 
-    # Improper_Torsion class check
+    # Improper_Dihedral class check
     def test_improper(self):
         imp = self.u.atoms[4].impropers[0]
 
         assert_almost_equal(imp.improper(), -3.8370631, self.precision)
+        assert_almost_equal(imp.value(), -3.8370631, self.precision)
 
 
 class TestTopologyGroup(TestCase):
@@ -434,7 +438,7 @@ class TestTopologyGroup(TestCase):
         # topologydicts for testing
         self.b_td = self.universe.bonds.topDict
         self.a_td = self.universe.angles.topDict
-        self.t_td = self.universe.torsions.topDict
+        self.t_td = self.universe.dihedrals.topDict
 
     def tearDown(self):
         del self.universe
@@ -451,7 +455,7 @@ class TestTopologyGroup(TestCase):
     # * then check same key reversed is accepted
     # * then select based on key
     # * then select based on reversed key and check output is the same
-    # all for Bonds Angles and Torsions
+    # all for Bonds Angles and Dihedrals
     def test_td_len(self):
         assert_equal(len(self.b_td), 57)
 
@@ -506,19 +510,19 @@ class TestTopologyGroup(TestCase):
         tg2 = self.a_td[b[::-1]]
         assert_equal(tg1 == tg2, True)
 
-    def test_torsions_types(self):
-        """TopologyDict for torsions"""
-        assert_equal(len(self.universe.atoms.torsions.types()), 220)
+    def test_dihedrals_types(self):
+        """TopologyDict for dihedrals"""
+        assert_equal(len(self.universe.atoms.dihedrals.types()), 220)
 
-    def test_torsions_contains(self):
+    def test_dihedrals_contains(self):
         assert_equal(('30', '29', '20', '70') in self.t_td, True)
 
-    def test_torsions_uniqueness(self):
+    def test_dihedrals_uniqueness(self):
         bondtypes = self.t_td.keys()
         assert_equal(any([b[::-1] in bondtypes for b in bondtypes if b[::-1] != b]),
                      False)
 
-    def test_torsions_reversal(self):
+    def test_dihedrals_reversal(self):
         bondtypes = self.t_td.keys()
         b = bondtypes[1]
         assert_equal(all([b in self.t_td, b[::-1] in self.t_td]), True)
@@ -585,13 +589,13 @@ class TestTopologyGroup(TestCase):
             for b in topg.bondlist:
                 if any([a in atomg for a in b.atoms]):
                     man.append(b)
-            return MDAnalysis.topology.core.TopologyGroup(man)
+            return TopologyGroup(man)
 
         u = self.universe
         ag = self.universe.atoms[10:60]
 
         # Check that every bond has at least one atom in the atomgroup
-        for TG in [u.bonds, u.angles, u.torsions, u.impropers]:
+        for TG in [u.bonds, u.angles, u.dihedrals, u.impropers]:
             newTG = TG.atomgroup_intersection(ag)
 
             assert_equal(check_loose_intersection(newTG, ag), True,
@@ -617,7 +621,7 @@ class TestTopologyGroup(TestCase):
                     man.append(b)
 
             if len(man) > 0:
-                return MDAnalysis.topology.core.TopologyGroup(man)
+                return TopologyGroup(man)
             else:
                 return None
 
@@ -632,14 +636,14 @@ class TestTopologyGroup(TestCase):
         assert_equal(check_strict_intersection(u.angles, testinput), True)
         assert_equal(manual(u.angles, testinput),
                      u.angles.atomgroup_intersection(testinput, strict=True))
-        # torsions
-        assert_equal(check_strict_intersection(u.torsions, testinput), True)
-        assert_equal(manual(u.torsions, testinput),
-                     u.torsions.atomgroup_intersection(testinput, strict=True))
+        # dihedrals
+        assert_equal(check_strict_intersection(u.dihedrals, testinput), True)
+        assert_equal(manual(u.dihedrals, testinput),
+                     u.dihedrals.atomgroup_intersection(testinput, strict=True))
 
     def test_verticalTG(self):
-        b1 = self.universe.atoms[0].torsions[0]
-        b2 = self.universe.atoms[20].torsions[0]
+        b1 = self.universe.atoms[0].dihedrals[0]
+        b2 = self.universe.atoms[20].dihedrals[0]
 
         TG = TopologyGroup([b1, b2])
 
@@ -785,11 +789,11 @@ class TestTopologyGroup_Cython(TestCase):
         self.u = MDAnalysis.Universe(PSF, DCD)
         self.u.build_topology()
         # topologygroups for testing
-        # bond, angle, torsion, improper
+        # bond, angle, dihedral, improper
         ag = self.u.atoms[:5]
         self.bgroup = ag.bonds
         self.agroup = ag.angles
-        self.tgroup = ag.torsions
+        self.tgroup = ag.dihedrals
         self.igroup = ag.impropers
 
     def tearDown(self):
@@ -812,6 +816,13 @@ class TestTopologyGroup_Cython(TestCase):
                      calc_bonds(self.bgroup.atom1.positions,
                                 self.bgroup.atom2.positions,
                                 box=self.u.dimensions))
+        assert_equal(self.bgroup.values(),
+                     calc_bonds(self.bgroup.atom1.positions,
+                                self.bgroup.atom2.positions))
+        assert_equal(self.bgroup.values(pbc=True),
+                     calc_bonds(self.bgroup.atom1.positions,
+                                self.bgroup.atom2.positions,
+                                box=self.u.dimensions))
 
     # angles
     def test_wrong_type_angles(self):
@@ -828,35 +839,64 @@ class TestTopologyGroup_Cython(TestCase):
                                  self.agroup.atom2.positions,
                                  self.agroup.atom3.positions,
                                  box=self.u.dimensions))
+        assert_equal(self.agroup.values(),
+                     calc_angles(self.agroup.atom1.positions,
+                                 self.agroup.atom2.positions,
+                                 self.agroup.atom3.positions))
+        assert_equal(self.agroup.values(pbc=True),
+                     calc_angles(self.agroup.atom1.positions,
+                                 self.agroup.atom2.positions,
+                                 self.agroup.atom3.positions,
+                                 box=self.u.dimensions))
 
-    # torsions & impropers
-    def test_wrong_type_torsions(self):
+    # dihedrals & impropers
+    def test_wrong_type_dihedrals(self):
         for tg in [self.bgroup, self.agroup]:
-            assert_raises(TypeError, tg.torsions)
+            assert_raises(TypeError, tg.dihedrals)
 
-    def test_right_type_torsions(self):
-        assert_equal(self.tgroup.torsions(),
-                     calc_torsions(self.tgroup.atom1.positions,
+    def test_right_type_dihedrals(self):
+        assert_equal(self.tgroup.dihedrals(),
+                     calc_dihedrals(self.tgroup.atom1.positions,
                                    self.tgroup.atom2.positions,
                                    self.tgroup.atom3.positions,
                                    self.tgroup.atom4.positions))
-
-        assert_equal(self.tgroup.torsions(pbc=True),
-                     calc_torsions(self.tgroup.atom1.positions,
+        assert_equal(self.tgroup.dihedrals(pbc=True),
+                     calc_dihedrals(self.tgroup.atom1.positions,
+                                   self.tgroup.atom2.positions,
+                                   self.tgroup.atom3.positions,
+                                   self.tgroup.atom4.positions,
+                                   box=self.u.dimensions))
+        assert_equal(self.tgroup.values(),
+                     calc_dihedrals(self.tgroup.atom1.positions,
+                                   self.tgroup.atom2.positions,
+                                   self.tgroup.atom3.positions,
+                                   self.tgroup.atom4.positions))
+        assert_equal(self.tgroup.values(pbc=True),
+                     calc_dihedrals(self.tgroup.atom1.positions,
                                    self.tgroup.atom2.positions,
                                    self.tgroup.atom3.positions,
                                    self.tgroup.atom4.positions,
                                    box=self.u.dimensions))
 
     def test_right_type_impropers(self):
-        assert_equal(self.igroup.torsions(),
-                     calc_torsions(self.igroup.atom1.positions,
+        assert_equal(self.igroup.dihedrals(),
+                     calc_dihedrals(self.igroup.atom1.positions,
                                    self.igroup.atom2.positions,
                                    self.igroup.atom3.positions,
                                    self.igroup.atom4.positions))
-
-        assert_equal(self.igroup.torsions(pbc=True),
-                     calc_torsions(self.igroup.atom1.positions,
+        assert_equal(self.igroup.dihedrals(pbc=True),
+                     calc_dihedrals(self.igroup.atom1.positions,
+                                   self.igroup.atom2.positions,
+                                   self.igroup.atom3.positions,
+                                   self.igroup.atom4.positions,
+                                   box=self.u.dimensions))
+        assert_equal(self.igroup.values(),
+                     calc_dihedrals(self.igroup.atom1.positions,
+                                   self.igroup.atom2.positions,
+                                   self.igroup.atom3.positions,
+                                   self.igroup.atom4.positions))
+        assert_equal(self.igroup.values(pbc=True),
+                     calc_dihedrals(self.igroup.atom1.positions,
                                    self.igroup.atom2.positions,
                                    self.igroup.atom3.positions,
                                    self.igroup.atom4.positions,
@@ -986,8 +1026,8 @@ class TestTopologyGuessers(TestCase):
 
     guess_bonds
     guess_angles
-    guess_torsions
-    guess_improper_torsions
+    guess_dihedrals
+    guess_improper_dihedrals
     """
 
     def setUp(self):
@@ -1041,18 +1081,18 @@ class TestTopologyGuessers(TestCase):
 
         assert_equal(set(guessed_angs), set(dump_result))
 
-    def test_guess_torsions(self):
+    def test_guess_dihedrals(self):
         ag = self.u.atoms[:10]
         ag.bonds
         ag.angles
 
-        guessed_tors = guess_torsions(ag.angles)
+        guessed_tors = guess_dihedrals(ag.angles)
 
-        dump_result = ag.torsions.dump_contents()
+        dump_result = ag.dihedrals.dump_contents()
 
         assert_equal(set(guessed_tors), set(dump_result))
 
-    def test_guess_improper_torsions(self):
+    def test_guess_improper_dihedrals(self):
         ag = self.u.atoms[:5]
         ag.bonds
         ag.angles
@@ -1067,7 +1107,7 @@ class TestTopologyGuessers(TestCase):
             (0, 3, 2, 4), (0, 3, 2, 1), (0, 4, 3, 1),
             (0, 3, 1, 2), (0, 4, 2, 3), (0, 2, 1, 3))
 
-        imps = guess_improper_torsions(angs)
+        imps = guess_improper_dihedrals(angs)
 
         assert_equal(set(result), set(imps))
 
@@ -1078,13 +1118,13 @@ class TestTopologyGuessers(TestCase):
 
         assert_equal(len(self.u.angles), 6123)
 
-    def test_guess_torsions_set(self):
-        self.u.torsions = guess_torsions(self.u.angles)
+    def test_guess_dihedrals_set(self):
+        self.u.dihedrals = guess_dihedrals(self.u.angles)
 
-        assert_equal(len(self.u.torsions), 8921)
+        assert_equal(len(self.u.dihedrals), 8921)
 
     def test_guess_impropers_set(self):
-        self.u.impropers = guess_improper_torsions(self.u.angles)
+        self.u.impropers = guess_improper_dihedrals(self.u.angles)
 
         assert_equal(len(self.u.impropers), 10314)
 
@@ -1119,9 +1159,9 @@ class TestLammpsData(_TestTopology, RefLammpsData):
         assert_equal(len(self.universe._topology['angles']), 29904)
         assert_equal((7575, 7578, 7579) in self.universe._topology['angles'], True)
 
-    def test_torsions(self):
-        assert_equal(len(self.universe._topology['torsions']), 5712)
-        assert_equal((3210, 3212, 3215, 3218) in self.universe._topology['torsions'],
+    def test_dihedrals(self):
+        assert_equal(len(self.universe._topology['dihedrals']), 5712)
+        assert_equal((3210, 3212, 3215, 3218) in self.universe._topology['dihedrals'],
                      True)
 
     def test_masses(self):

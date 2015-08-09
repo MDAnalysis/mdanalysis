@@ -568,39 +568,39 @@ class TestAtomGroup(TestCase):
         u = self.universe
         u.trajectory.rewind()  # just to make sure...
         phisel = u.s4AKE.r10.phi_selection()
-        assert_almost_equal(phisel.dihedral(), -168.57384, self.dih_prec)
+        assert_almost_equal(phisel.dihedral.value(), -168.57384, self.dih_prec)
 
     def test_dihedral_psi(self):
         u = self.universe
         u.trajectory.rewind()  # just to make sure...
         psisel = u.s4AKE.r10.psi_selection()
-        assert_almost_equal(psisel.dihedral(), -30.064838, self.dih_prec)
+        assert_almost_equal(psisel.dihedral.value(), -30.064838, self.dih_prec)
 
     def test_dihedral_omega(self):
         u = self.universe
         u.trajectory.rewind()  # just to make sure...
         osel = u.s4AKE.r8.omega_selection()
-        assert_almost_equal(osel.dihedral(), -179.93439, self.dih_prec)
+        assert_almost_equal(osel.dihedral.value(), -179.93439, self.dih_prec)
 
     def test_dihedral_chi1(self):
         u = self.universe
         u.trajectory.rewind()  # just to make sure...
         sel = u.s4AKE.r13.chi1_selection()  # LYS
-        assert_almost_equal(sel.dihedral(), -58.428127, self.dih_prec)
+        assert_almost_equal(sel.dihedral.value(), -58.428127, self.dih_prec)
 
     def test_dihedral_ValueError(self):
         """test that AtomGroup.dihedral() raises ValueError if not exactly 4 atoms given"""
         nodih = self.universe.select_atoms("resid 3:10")
-        assert_raises(ValueError, nodih.dihedral)
+        assert_raises(ValueError, getattr, nodih, 'dihedral')
         nodih = self.universe.select_atoms("resid 3:5")
-        assert_raises(ValueError, nodih.dihedral)
+        assert_raises(ValueError, getattr, nodih, 'dihedral')
 
     def test_improper(self):
         u = self.universe
         u.trajectory.rewind()  # just to make sure...
         peptbond = u.select_atoms("atom 4AKE 20 C", "atom 4AKE 21 CA",
                                  "atom 4AKE 21 N", "atom 4AKE 21 HN")
-        assert_almost_equal(peptbond.improper(), 168.52952575683594, self.dih_prec,
+        assert_almost_equal(peptbond.improper.value(), 168.52952575683594, self.dih_prec,
                             "Peptide bond improper dihedral for M21 calculated wrongly.")
 
     def test_dihedral_equals_improper(self):
@@ -608,34 +608,34 @@ class TestAtomGroup(TestCase):
         u.trajectory.rewind()  # just to make sure...
         peptbond = u.select_atoms("atom 4AKE 20 C", "atom 4AKE 21 CA",
                                  "atom 4AKE 21 N", "atom 4AKE 21 HN")
-        assert_equal(peptbond.improper(), peptbond.dihedral(),
+        assert_equal(peptbond.improper.value(), peptbond.dihedral.value(),
                      "improper() and proper dihedral() give different results")
 
     def test_bond(self):
         self.universe.trajectory.rewind()  # just to make sure...
         sel2 = self.universe.s4AKE.r98.select_atoms("name OE1", "name OE2")
-        assert_almost_equal(sel2.bond(), 2.1210737228393555, 3,
+        assert_almost_equal(sel2.bond.value(), 2.1210737228393555, 3,
                             "distance of Glu98 OE1--OE2 wrong")
 
     def test_bond_pbc(self):
         self.universe.trajectory.rewind()
         sel2 = self.universe.s4AKE.r98.select_atoms("name OE1", "name OE2")
-        assert_almost_equal(sel2.bond(pbc=True), 2.1210737228393555, 3,
+        assert_almost_equal(sel2.bond.value(pbc=True), 2.1210737228393555, 3,
                             "distance of Glu98 OE1--OE2 wrong")
 
     def test_bond_ValueError(self):
         ag = self.universe.atoms[:4]
-        assert_raises(ValueError, ag.bond)
+        assert_raises(ValueError, getattr, ag, 'bond')
 
     def test_angle(self):
         self.universe.trajectory.rewind()  # just to make sure...
         sel3 = self.universe.s4AKE.r98.select_atoms("name OE1", "name CD", "name OE2")
-        assert_almost_equal(sel3.angle(), 117.46187591552734, 3,
+        assert_almost_equal(sel3.angle.value(), 117.46187591552734, 3,
                             "angle of Glu98 OE1-CD-OE2 wrong")
 
     def test_angle_ValueError(self):
         ag = self.universe.atoms[:2]
-        assert_raises(ValueError, ag.angle)
+        assert_raises(ValueError, getattr, ag, 'angle')
 
     def test_shapeParameter(self):
         s = self.universe.s4AKE.shapeParameter()
@@ -809,8 +809,8 @@ class TestAtomGroupNoTop(TestCase):
     def test_noangles(self):
         assert_equal(self.ag.angles, [])
 
-    def test_notorsions(self):
-        assert_equal(self.ag.torsions, [])
+    def test_nodihedrals(self):
+        assert_equal(self.ag.dihedrals, [])
 
     def test_noimps(self):
         assert_equal(self.ag.impropers, [])
@@ -886,7 +886,7 @@ class TestAtomGroupNoTop(TestCase):
 
 
 class TestUniverseSetTopology(TestCase):
-    """Tests setting of bonds/angles/torsions/impropers from Universe."""
+    """Tests setting of bonds/angles/dihedrals/impropers from Universe."""
 
     def setUp(self):
         self.u = MDAnalysis.Universe(PSF, DCD)
@@ -912,14 +912,14 @@ class TestUniverseSetTopology(TestCase):
         assert_equal(len(self.u.angles), 0)
         assert_equal(len(self.u.atoms[0].angles), 0)
 
-    def test_set_torsions(self):
-        assert_equal(len(self.u.torsions), 8921)
-        assert_equal(len(self.u.atoms[0].torsions), 14)
+    def test_set_dihedrals(self):
+        assert_equal(len(self.u.dihedrals), 8921)
+        assert_equal(len(self.u.atoms[0].dihedrals), 14)
 
-        self.u.torsions = []
+        self.u.dihedrals = []
 
-        assert_equal(len(self.u.torsions), 0)
-        assert_equal(len(self.u.atoms[0].torsions), 0)
+        assert_equal(len(self.u.dihedrals), 0)
+        assert_equal(len(self.u.atoms[0].dihedrals), 0)
 
     def test_set_impropers(self):
         assert_equal(len(self.u.impropers), 541)
@@ -959,17 +959,17 @@ class TestUniverseSetTopology(TestCase):
         assert_equal('angles' in self.u._cache, False)
         assert_equal('angleDict' in self.u._cache, False)
 
-    def test_torsions_delete(self):
-        bg = self.u.torsions
-        abg = self.u.atoms[0].torsions
+    def test_dihedrals_delete(self):
+        bg = self.u.dihedrals
+        abg = self.u.atoms[0].dihedrals
 
-        assert_equal('torsions' in self.u._cache, True)
-        assert_equal('torsionDict' in self.u._cache, True)
+        assert_equal('dihedrals' in self.u._cache, True)
+        assert_equal('dihedralDict' in self.u._cache, True)
 
-        del self.u.torsions
+        del self.u.dihedrals
 
-        assert_equal('torsions' in self.u._cache, False)
-        assert_equal('torsionDict' in self.u._cache, False)
+        assert_equal('dihedrals' in self.u._cache, False)
+        assert_equal('dihedralDict' in self.u._cache, False)
 
     def test_impropers_delete(self):
         bg = self.u.impropers
@@ -1882,7 +1882,7 @@ class TestGuessBonds(TestCase):
         """Verify that the Universe is created correctly"""
         assert_equal(len(u.bonds), 4)
         assert_equal(len(u.angles), 2)
-        assert_equal(len(u.torsions), 0)
+        assert_equal(len(u.dihedrals), 0)
         assert_equal(len(u.atoms[0].bonds), 2)
         assert_equal(len(u.atoms[1].bonds), 1)
         assert_equal(len(u.atoms[2].bonds), 1)
@@ -1910,7 +1910,7 @@ class TestGuessBonds(TestCase):
 
         assert_equal(len(u.bonds), 0)
         assert_equal(len(u.angles), 0)
-        assert_equal(len(u.torsions), 0)
+        assert_equal(len(u.dihedrals), 0)
 
     def _check_atomgroup(self, ag, u):
         """Verify that the AtomGroup made bonds correctly,
@@ -1918,10 +1918,10 @@ class TestGuessBonds(TestCase):
         """
         assert_equal(len(ag.bonds), 2)
         assert_equal(len(ag.angles), 1)
-        assert_equal(len(ag.torsions), 0)
+        assert_equal(len(ag.dihedrals), 0)
         assert_equal(len(u.bonds), 2)
         assert_equal(len(u.angles), 1)
-        assert_equal(len(u.torsions), 0)
+        assert_equal(len(u.dihedrals), 0)
         assert_equal(len(u.atoms[0].bonds), 2)
         assert_equal(len(u.atoms[1].bonds), 1)
         assert_equal(len(u.atoms[2].bonds), 1)
@@ -1957,10 +1957,10 @@ class TestAtomGroupProperties(object):
     list of properties:
     - name x
     - altLoc x
-    - type x 
-    - mass x 
+    - type x
+    - mass x
     - charge x
-    - radius x 
+    - radius x
     - bfactor x
     - serial x
 

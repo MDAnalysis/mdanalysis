@@ -528,9 +528,9 @@ static void _calc_angle_triclinic(coordinate* atom1, coordinate* atom2,
   }
 }
 
-static void _calc_torsion(coordinate* atom1, coordinate* atom2,
-                          coordinate* atom3, coordinate* atom4,
-                          int numatom, double* angles)
+static void _calc_dihedral(coordinate* atom1, coordinate* atom2,
+                           coordinate* atom3, coordinate* atom4,
+                           int numatom, double* angles)
 {
   int i;
   double va[3], vb[3], vc[3];
@@ -579,9 +579,9 @@ static void _calc_torsion(coordinate* atom1, coordinate* atom2,
   }
 }
 
-static void _calc_torsion_ortho(coordinate* atom1, coordinate* atom2,
-                                coordinate* atom3, coordinate* atom4,
-                                int numatom, float* box, double* angles)
+static void _calc_dihedral_ortho(coordinate* atom1, coordinate* atom2,
+                                 coordinate* atom3, coordinate* atom4,
+                                 int numatom, float* box, double* angles)
 {
   int i;
   double va[3], vb[3], vc[3];
@@ -638,9 +638,9 @@ static void _calc_torsion_ortho(coordinate* atom1, coordinate* atom2,
   }
 }
 
-static void _calc_torsion_triclinic(coordinate* atom1, coordinate* atom2,
-                                    coordinate* atom3, coordinate* atom4,
-                                    int numatom, coordinate* box, double* angles)
+static void _calc_dihedral_triclinic(coordinate* atom1, coordinate* atom2,
+                                     coordinate* atom3, coordinate* atom4,
+                                     int numatom, coordinate* box, double* angles)
 {
   int i;
   double va[3], vb[3], vc[3];

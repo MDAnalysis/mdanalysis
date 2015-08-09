@@ -92,12 +92,12 @@ class DATAParser(TopologyReader):
             strkey = {
                 'Bonds': 'bonds',
                 'Angles': 'angles',
-                'Dihedrals': 'torsions',
+                'Dihedrals': 'dihedrals',
                 'Impropers': 'impropers'}
             nentries = {
                 'bonds': 2,
                 'angles': 3,
-                'torsions': 4,
+                'dihedrals': 4,
                 'impropers': 4}
             # Masses can appear after Atoms section.
             # If this happens, this blank dict will be used and all atoms
@@ -345,7 +345,7 @@ class DATAParser(TopologyReader):
             'atoms': 'atoms',
             'bonds': 'bonds',
             'angles': 'angles',
-            'dihedrals': 'torsions',
+            'dihedrals': 'dihedrals',
             'impropers': 'impropers'}
         nitems = dict.fromkeys(hvals.values(), 0)
 

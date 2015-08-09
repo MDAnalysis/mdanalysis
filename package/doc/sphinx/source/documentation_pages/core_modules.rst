@@ -18,5 +18,6 @@ parsing in :mod:`MDAnalysis.core.Selection`.
    core/init
    core/AtomGroup
    core/Selection
+   core/topologyobjects
    core/Timeseries
 

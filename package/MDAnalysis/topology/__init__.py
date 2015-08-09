@@ -158,7 +158,7 @@ file types. Each submodule *must* contain a function :func:`parse`:
 
 The function returns the basic MDAnalysis representation of the
 topology. At the moment, this is simply a dictionary with keys
-*atoms*, *bonds*, *angles*, *torsions*, *impropers*. The dictionary is
+*atoms*, *bonds*, *angles*, *dihedrals*, *impropers*. The dictionary is
 stored as :attr:`MDAnalysis.AtomGroup.Universe._topology`.
 
 .. warning::
@@ -215,7 +215,7 @@ tuple contains three atom numbers.  The second of these numbers
 represents the apex of the angle.
 
 
-torsions
+dihedrals
 ~~~~~~~~
 
 **Proper dihedral angles** are represented by a :class:`list` of :class:`tuple`. Each
@@ -230,7 +230,7 @@ impropers
 **Improper dihedral angles** are represented by a :class:`list` of :class:`tuple`. Each
 tuple contains four atom numbers.  The angle of the improper torsion
 is again defined by the angle between the planes formed by atoms 1, 2, and 3, 
-and 2, 3, and 4.  Improper torsions differ from regular torsions as the
+and 2, 3, and 4.  Improper dihedrals differ from regular dihedrals as the
 four atoms need not be sequentially bonded, and are instead often all bonded
 to the second atom.
 

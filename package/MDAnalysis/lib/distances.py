@@ -28,7 +28,7 @@ Functions
 .. autofunction:: self_distance_array(reference [, box [,result]])
 .. autofunction:: calc_bonds(atom1, atom2 [, box, [,result]])
 .. autofunction:: calc_angles(atom1, atom2, atom3 [,box [, result]])
-.. autofunction:: calc_torsions(atom1, atom2, atom3, atom4 [,box [, result]])
+.. autofunction:: calc_dihedrals(atom1, atom2, atom3, atom4 [,box [, result]])
 .. autofunction:: applyPBC(coordinates, box)
 .. autofunction:: transform_RtoS(coordinates, box)
 .. autofunction:: transform_StoR(coordinates, box)
@@ -49,9 +49,9 @@ from ._distances import (calc_distance_array,
                          calc_angle,
                          calc_angle_ortho,
                          calc_angle_triclinic,
-                         calc_torsion,
-                         calc_torsion_ortho,
-                         calc_torsion_triclinic,
+                         calc_dihedral,
+                         calc_dihedral_ortho,
+                         calc_dihedral_triclinic,
                          ortho_pbc,
                          triclinic_pbc)
 
@@ -510,11 +510,11 @@ def calc_angles(coords1, coords2, coords3, box=None, result=None):
     return angles
 
 
-def calc_torsions(coords1, coords2, coords3, coords4, box=None, result=None):
+def calc_dihedrals(coords1, coords2, coords3, coords4, box=None, result=None):
     """
-    Calculate the torsional angle formed by four atoms, over a list of coordinates.
+    Calculate the dihedral angle formed by four atoms, over a list of coordinates.
 
-    Torsional angle around axis connecting atoms 1 and 2 (i.e. the angle
+    Dihedral angle around axis connecting atoms 1 and 2 (i.e. the angle
     between the planes spanned by atoms (0,1,2) and (1,2,3))::
 
                   3
@@ -531,17 +531,17 @@ def calc_torsions(coords1, coords2, coords3, coords4, box=None, result=None):
     account when constructing the connecting vectors between atoms, ie that the vector
     between atoms 1 & 2 goes between coordinates in the same image.
 
-    angles = calc_torsions(coords1, coords2, coords3, coords4 [,box=box, result=angles])
+    angles = calc_dihedrals(coords1, coords2, coords3, coords4 [,box=box, result=angles])
 
     :Arguments:
         *coords1*
-            coordinate array of 1st atom in torsions
+            coordinate array of 1st atom in dihedrals
         *coords2*
-            coordinate array of 2nd atom in torsions
+            coordinate array of 2nd atom in dihedrals
         *coords3*
-            coordinate array of 3rd atom in torsions
+            coordinate array of 3rd atom in dihedrals
         *coords4*
-            coordinate array of 4th atom in torsions
+            coordinate array of 4th atom in dihedrals
         *box*
             optional unit cell information.  This ensures that the connecting vectors
             between atoms respect minimum image convention.  This is import when the
@@ -590,11 +590,11 @@ def calc_torsions(coords1, coords2, coords3, coords4, box=None, result=None):
 
     if box is not None:
         if boxtype == 'ortho':
-            calc_torsion_ortho(atom1, atom2, atom3, atom4, box, angles)
+            calc_dihedral_ortho(atom1, atom2, atom3, atom4, box, angles)
         else:
-            calc_torsion_triclinic(atom1, atom2, atom3, atom4, box, angles)
+            calc_dihedral_triclinic(atom1, atom2, atom3, atom4, box, angles)
     else:
-        calc_torsion(atom1, atom2, atom3, atom4, angles)
+        calc_dihedral(atom1, atom2, atom3, atom4, angles)
 
     return angles
 
