@@ -290,9 +290,9 @@ class SphericalZoneSelection(Selection):
         if self.periodic:
             pass  # or warn? -- no periodic functionality with KDTree search
 
-        CNS = CoordinateNeighborSearch(sys_coor)  # cache the KDTree for this selection/frame?
-        found_indices = CNS.search(self.ref, self.cutoff)
-        res_atoms = [self._group_atoms_list[i] for i in found_indices]  # make list numpy array and use fancy indexing?
+        kdtree = KDTree(sys_coor, leaf_size=10)
+        found_indices = kdtree.query_radius(self.ref, self.cutoff)[0]
+        res_atoms = [self._group_atoms_list[i] for i in found_indices]
         return set(res_atoms)
 
     def _apply_distmat(self, group):
