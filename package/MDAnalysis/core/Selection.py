@@ -231,10 +231,10 @@ class SphericalLayerSelection(Selection):
         self.ref = numpy.array((sel_CoG[0], sel_CoG[1], sel_CoG[2]))
         if self.periodic:
             pass  # or warn? -- no periodic functionality with KDTree search
-
-        CNS = CoordinateNeighborSearch(sys_coor)  # cache the KDTree for this selection/frame?
-        found_ExtIndices = CNS.search(self.ref, self.exRadius)
-        found_IntIndices = CNS.search(self.ref, self.inRadius)
+        kdtree = KDTree(sys_coor, leaf_size=10)
+        # ref is exactly one coordinate so pull the first entry of the array
+        found_ExtIndices = kdtree.query_radius(self.ref, self.exRadius)[0]
+        found_IntIndices = kdtree.query_radius(self.ref, self.inRadius)[0]
         found_indices = list(set(found_ExtIndices) - set(found_IntIndices))
         res_atoms = [self._group_atoms_list[i] for i in found_indices]
         return set(res_atoms)
