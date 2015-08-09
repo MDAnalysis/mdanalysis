@@ -20,10 +20,9 @@
 ================================================================
 """
 
-__all__ = ['KDTree', 'log', 'transformations', 'util', 'mdamath', 'distances',
+__all__ = ['log', 'transformations', 'util', 'mdamath', 'distances',
            'parallel']
 
-from . import KDTree
 from . import log
 from . import transformations
 from . import util

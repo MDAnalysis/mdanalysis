@@ -101,7 +101,7 @@ except ImportError:
         The 'gridData' module from GridDataFormats could not be
         imported. Please install it first.  You can try installing with
         setuptools directly from the internet:
-    
+
           easy_install GridDataFormats
 
         Alternatively, download the package from
@@ -582,7 +582,6 @@ def notwithin_coordinates_factory(universe, sel1, sel2, cutoff, not_within=True,
     protein = universe.select_atoms(sel2)
     if use_kdtree:
         # using faster hand-coded 'not within' selection with kd-tree
-        import MDAnalysis.lib.KDTree.NeighborSearch as NS
         import MDAnalysis.core.AtomGroup
 
         set_solvent = set(solvent)  # need sets to do bulk = allsolvent - selection
