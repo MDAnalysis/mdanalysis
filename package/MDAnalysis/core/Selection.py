@@ -28,9 +28,10 @@ Currently all atom arrays are handled internally as sets, but returned as AtomGr
 import re
 import numpy
 from numpy.lib.utils import deprecate
+from sklearn.neighbors import KDTree
+
 from .AtomGroup import AtomGroup, Universe
 from MDAnalysis.core import flags
-from ..lib.KDTree.NeighborSearch import CoordinateNeighborSearch
 from ..lib import distances
 from ..lib.mdamath import triclinic_vectors
 
@@ -162,16 +163,23 @@ class AroundSelection(Selection):
         """KDTree based selection is about 7x faster than distmat for typical problems.
         Limitations: always ignores periodicity
         """
-        sel_atoms = self.sel._apply(group)  # group is wrong, should be universe (?!)
-        sys_atoms_list = [a for a in (self._group_atoms - sel_atoms)]  # list needed for back-indexing
+        # group is wrong, should be universe (?!)
+        sel_atoms = self.sel._apply(group)
+        # list needed for back-indexing
+        sys_atoms_list = [a for a in (self._group_atoms - sel_atoms)]
         sel_indices = numpy.array([a.index for a in sel_atoms], dtype=int)
         sys_indices = numpy.array([a.index for a in sys_atoms_list], dtype=int)
         sel_coor = Selection.coord[sel_indices]
-        sys_coor = Selection.coord[sys_indices]
-        # Can we optimize search by using the larger set for the tree?
-        CNS = CoordinateNeighborSearch(sys_coor)  # cache the KDTree for this selection/frame?
-        found_indices = CNS.search_list(sel_coor, self.cutoff)
-        res_atoms = [sys_atoms_list[i] for i in found_indices]  # make list numpy array and use fancy indexing?
+        kdtree = KDTree(Selection.coord[sys_indices], leaf_size=10)
+        found_indices = kdtree.query_radius(numpy.array(sel_coor), self.cutoff)
+        # the list-comprehension here can be understood as a nested loop.
+        # for list in found_indices:
+        #     for i in list:
+        #         yield sys_atoms_list[i]
+        # converting found_indices to a numpy array won't reallt work since
+        # each we will find a different number of neighbors for each center in
+        # sel_coor.
+        res_atoms = [sys_atoms_list[i] for list in found_indices for i in list]
         return set(res_atoms)
 
     def _apply_distmat(self, group):
@@ -214,11 +222,11 @@ class SphericalLayerSelection(Selection):
 
     def _apply_KDTree(self, group):
         """Selection using KDTree but periodic = True not supported.
-        (KDTree routine is ca 15% slower than the distance matrix one)
         """
         sys_indices = numpy.array([a.index for a in self._group_atoms_list])
         sys_coor = Selection.coord[sys_indices]
-        sel_atoms = self.sel._apply(group)  # group is wrong, should be universe (?!)
+        # group is wrong, should be universe (?!)
+        sel_atoms = self.sel._apply(group)
         sel_CoG = AtomGroup(sel_atoms).center_of_geometry()
         self.ref = numpy.array((sel_CoG[0], sel_CoG[1], sel_CoG[2]))
         if self.periodic:
@@ -336,14 +344,14 @@ class _CylindricalSelection(Selection):
             cyl_z_hheight = (self.zmax-self.zmin)/2
 
             if 2*self.exRadius > box[0]:
-                raise NotImplementedError("The diameter of the cylinder selection (%.3f) is larger than the unit cell's x dimension (%.3f). Can only do selections where it is smaller or equal." % (2*self.exRadius, box[0])) 
+                raise NotImplementedError("The diameter of the cylinder selection (%.3f) is larger than the unit cell's x dimension (%.3f). Can only do selections where it is smaller or equal." % (2*self.exRadius, box[0]))
             if 2*self.exRadius > box[1]:
                 raise NotImplementedError("The diameter of the cylinder selection (%.3f) is larger than the unit cell's y dimension (%.3f). Can only do selections where it is smaller or equal." % (2*self.exRadius, box[1]))
             if 2*cyl_z_hheight > box[2]:
                 raise NotImplementedError("The total length of the cylinder selection in z (%.3f) is larger than the unit cell's z dimension (%.3f). Can only do selections where it is smaller or equal." % (2*cyl_z_hheight, box[2]))
             #how off-center in z is our CoG relative to the cylinder's center
             cyl_center = sel_CoG + [0,0,(self.zmax+self.zmin)/2]
-            coords += box/2 - cyl_center 
+            coords += box/2 - cyl_center
             coords = distances.apply_PBC(coords, box=Selection.coord.dimensions)
             if is_triclinic:
                 coords = distances.apply_PBC(coords, box=box)
@@ -379,7 +387,7 @@ class _CylindricalSelection(Selection):
 class CylindricalZoneSelection(_CylindricalSelection):
     def __init__(self, sel, exRadius, zmax, zmin, periodic=None):
         Selection.__init__(self)
-        _CylindricalSelection.__init__(self, sel, exRadius, zmax, zmin, periodic) 
+        _CylindricalSelection.__init__(self, sel, exRadius, zmax, zmin, periodic)
 
     def __repr__(self):
         return "<'CylindricalZoneSelection' radius " + repr(self.exRadius) + ", zmax " + repr(
@@ -388,7 +396,7 @@ class CylindricalZoneSelection(_CylindricalSelection):
 class CylindricalLayerSelection(_CylindricalSelection):
     def __init__(self, sel, inRadius, exRadius, zmax, zmin, periodic=None):
         Selection.__init__(self)
-        _CylindricalSelection.__init__(self, sel, exRadius, zmax, zmin, periodic) 
+        _CylindricalSelection.__init__(self, sel, exRadius, zmax, zmin, periodic)
         self.inRadius = inRadius
         self.inRadiusSq = inRadius * inRadius
 
