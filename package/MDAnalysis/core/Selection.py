@@ -27,7 +27,7 @@ Currently all atom arrays are handled internally as sets, but returned as AtomGr
 
 import re
 import numpy
-import warnings
+from numpy.lib.utils import deprecate
 from .AtomGroup import AtomGroup, Universe
 from MDAnalysis.core import flags
 from ..lib.KDTree.NeighborSearch import CoordinateNeighborSearch
@@ -508,11 +508,9 @@ class SelgroupSelection(Selection):
         return "<" + repr(self.__class__.__name__) + ">"
 
 
+@deprecate(old_name='fullgroup', new_name='global group')
 class FullSelgroupSelection(Selection):
     def __init__(self, selgroup):
-        warnings.warn("Use of 'fullgroup' in selections is deprecated "
-                "in MDAnalysis '0.11' and will be removed entirely in upcoming "
-                "releases. Use the equivalent syntax 'global group' instead.", DeprecationWarning)
         Selection.__init__(self)
         self._grp = selgroup
 
