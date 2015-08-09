@@ -17,6 +17,7 @@ The rules for this file:
   * 0.11.0
 
   Enhancements
+  * Added the 'global' selection keyword (Issue #268)
   * Added Jmol selection writer (Issue #356)
   * Added reading of Hoomd XML files (Issue #333)
     These can only act as topology information for now
@@ -50,6 +51,7 @@ The rules for this file:
   * Added AtomGroup altLocs and serials properties with setters. (Issue #372)
 
   Changes
+  * Deprecated the use of the 'fullgroup' selection keyword (Issue #268)
   * Changed atom.number attribute to atom.index (Issue #372)
   * Changed many AtomGroup methods to properties.  These are: indices, masses,
     charges, names, types, radii, resids, resnames, resnums, segids
