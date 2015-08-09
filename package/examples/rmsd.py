@@ -26,8 +26,8 @@ def rmsd_traj(traj, ref, **kwargs):
     nframes = len(frames)
     rmsd = numpy.zeros((nframes,))
 
-    ref_atoms = ref.selectAtoms(selections['reference'])
-    traj_atoms = traj.selectAtoms(selections['mobile'])
+    ref_atoms = ref.select_atoms(selections['reference'])
+    traj_atoms = traj.select_atoms(selections['mobile'])
     natoms = traj_atoms.numberOfAtoms()
 
     # if performing a mass-weighted alignment/rmsd calculation

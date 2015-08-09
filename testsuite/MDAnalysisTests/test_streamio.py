@@ -273,11 +273,11 @@ class TestStreamIO(TestCase, RefAdKSmall):
 
     def test_PDBQTReader(self):
         u = MDAnalysis.Universe(streamData.as_NamedStream('PDBQT'))
-        sel = u.selectAtoms('backbone')
+        sel = u.select_atoms('backbone')
         assert_equal(sel.n_atoms, 796)
-        sel = u.selectAtoms('segid A')
+        sel = u.select_atoms('segid A')
         assert_equal(sel.n_atoms, 909, "failed to select segment A")
-        sel = u.selectAtoms('segid B')
+        sel = u.select_atoms('segid B')
         assert_equal(sel.n_atoms, 896, "failed to select segment B")
 
     def test_GROReader(self):

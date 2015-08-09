@@ -163,7 +163,7 @@ class TestXYZReader(TestCase, Ref2r9r):
         centreOfGeometry = 0
 
         for i in self.universe.trajectory:
-            sel = self.universe.selectAtoms("all")
+            sel = self.universe.select_atoms("all")
             centreOfGeometry += sum(sel.centerOfGeometry())
 
         assert_almost_equal(centreOfGeometry, self.ref_sum_centre_of_geometry, self.prec,
@@ -229,7 +229,7 @@ class TestCompressedXYZReader(TestCase, Ref2r9r):
         centreOfGeometry = 0
 
         for i in self.universe.trajectory:
-            sel = self.universe.selectAtoms("all")
+            sel = self.universe.select_atoms("all")
             centreOfGeometry += sum(sel.centerOfGeometry())
 
         assert_almost_equal(centreOfGeometry, self.ref_sum_centre_of_geometry, self.prec,
@@ -362,7 +362,7 @@ class RefVGV(object):
 
       w = MDAnalysis.Universe(PRMncdf, TRJncdf)
       ref_n_atoms = len(w.atoms)
-      ref_proteinatoms = len(w.selectAtoms("protein"))
+      ref_proteinatoms = len(w.select_atoms("protein"))
       ref_sum_centre_of_geometry = np.sum([protein.centerOfGeometry() for ts in w.trajectory])
     """
     ref_n_atoms = 2661
@@ -391,11 +391,11 @@ class _TRJReaderTest(TestCase):
         assert_equal(self.universe.trajectory.periodic, self.ref_periodic)
 
     def test_amber_proteinselection(self):
-        protein = self.universe.selectAtoms('protein')
+        protein = self.universe.select_atoms('protein')
         assert_equal(protein.n_atoms, self.ref_proteinatoms, "error in protein selection (HIS or termini?)")
 
     def test_sum_centres_of_geometry(self):
-        protein = self.universe.selectAtoms('protein')
+        protein = self.universe.select_atoms('protein')
         total = np.sum([protein.centerOfGeometry() for ts in self.universe.trajectory])
         assert_almost_equal(total, self.ref_sum_centre_of_geometry, self.prec,
                             err_msg="sum of centers of geometry over the trajectory do not match")
@@ -604,7 +604,7 @@ class TestNCDFWriter(TestCase, RefVGV):
     @attr('issue')
     def test_write_AtomGroup(self):
         """test to write NCDF from AtomGroup (Issue 116)"""
-        p = self.universe.selectAtoms("not resname WAT")
+        p = self.universe.select_atoms("not resname WAT")
         p.write(self.outtop)
         W = self.Writer(self.outfile, n_atoms=p.n_atoms)
         for ts in self.universe.trajectory:
@@ -739,7 +739,7 @@ class _SingleFrameReader(TestCase, RefAdKSmall):
     def test_load_file(self):
         U = self.universe
         assert_equal(len(U.atoms), self.ref_n_atoms, "load Universe from file %s" % U.trajectory.filename)
-        assert_equal(U.atoms.selectAtoms('resid 150 and name HA2').atoms[0],
+        assert_equal(U.atoms.select_atoms('resid 150 and name HA2').atoms[0],
                      U.atoms[self.ref_E151HA2_index], "Atom selections")
 
     def test_n_atoms(self):
@@ -914,7 +914,7 @@ class TestExtendedPDBReader(_SingleFrameReader):
     def test_long_resSeq(self):
         #it checks that it can read a 5-digit resid
         self.universe = mda.Universe(XPDB_small, topology_format="XPDB")
-        u = self.universe.selectAtoms('resid 1 or resid 10 or resid 100 or resid 1000 or resid 10000')
+        u = self.universe.select_atoms('resid 1 or resid 10 or resid 100 or resid 1000 or resid 10000')
         assert_equal(u[4].resid, 10000, "can't read a five digit resid")
 
 
@@ -958,7 +958,7 @@ class TestPrimitivePDBWriter(TestCase):
         u = self.universe2
         W = mda.Writer(self.outfile)
         u.trajectory[50]
-        W.write(u.selectAtoms('all'))
+        W.write(u.select_atoms('all'))
         W.close()
         u2 = mda.Universe(self.outfile)
         assert_equal(u2.trajectory.n_frames, 1, err_msg="The number of frames should be 1.")
@@ -1247,7 +1247,7 @@ class TestMultiPDBWriter(TestCase):
     def test_write_atomselection(self):
         """Test if multiframe writer can write selected frames for an atomselection."""
         u = self.multiverse
-        group = u.selectAtoms('name CA', 'name C')
+        group = u.select_atoms('name CA', 'name C')
         desired_group = 56
         desired_frames = 6
         pdb = MDAnalysis.Writer(self.outfile, multiframe=True, start=12, step=2)
@@ -1271,7 +1271,7 @@ class TestMultiPDBWriter(TestCase):
         Test write_all_timesteps() of the  multiframe writer (selected frames for an atomselection)
         """
         u = self.multiverse
-        group = u.selectAtoms('name CA', 'name C')
+        group = u.select_atoms('name CA', 'name C')
         desired_group = 56
         desired_frames = 6
 
@@ -1394,7 +1394,7 @@ class TestGROReader(TestCase, RefAdK):
     def test_load_gro(self):
         U = self.universe
         assert_equal(len(U.atoms), self.ref_n_atoms, "load Universe from small GRO")
-        assert_equal(U.atoms.selectAtoms('resid 150 and name HA2').atoms[0],
+        assert_equal(U.atoms.select_atoms('resid 150 and name HA2').atoms[0],
                      U.atoms[self.ref_E151HA2_index], "Atom selections")
 
     def test_n_atoms(self):
@@ -1428,7 +1428,7 @@ class TestGROReader(TestCase, RefAdK):
                             err_msg="distance between M1:N and G214:C")
 
     def test_selection(self):
-        na = self.universe.selectAtoms('resname NA+')
+        na = self.universe.select_atoms('resname NA+')
         assert_equal(len(na), self.ref_Na_sel_size, "Atom selection of last atoms in file")
 
     def test_unitcell(self):
@@ -1614,12 +1614,12 @@ class TestPDBReaderBig(TestCase, RefAdK):
     def test_load_pdb(self):
         U = self.universe
         assert_equal(len(U.atoms), self.ref_n_atoms, "load Universe from big PDB")
-        assert_equal(U.atoms.selectAtoms('resid 150 and name HA2').atoms[0],
+        assert_equal(U.atoms.select_atoms('resid 150 and name HA2').atoms[0],
                      U.atoms[self.ref_E151HA2_index], "Atom selections")
 
     @dec.slow
     def test_selection(self):
-        na = self.universe.selectAtoms('resname NA+')
+        na = self.universe.select_atoms('resname NA+')
         assert_equal(len(na), self.ref_Na_sel_size, "Atom selection of last atoms in file")
 
     @dec.slow
@@ -1659,7 +1659,7 @@ class TestPDBReaderBig(TestCase, RefAdK):
 
     @dec.slow
     def test_selection(self):
-        na = self.universe.selectAtoms('resname NA+')
+        na = self.universe.select_atoms('resname NA+')
         assert_equal(len(na), self.ref_Na_sel_size, "Atom selection of last atoms in file")
 
     @dec.slow
@@ -2018,7 +2018,7 @@ class TestDCDCorrel(_TestDCD):
         ca = self.universe.s4AKE.CA
         ca_termini = mda.core.AtomGroup.AtomGroup([ca[0], ca[-1]])
         # note that this is not quite phi... HN should be C of prec. residue
-        phi151 = self.universe.selectAtoms('resid 151').selectAtoms('name HN', 'name N', 'name CA', 'name CB')
+        phi151 = self.universe.select_atoms('resid 151').select_atoms('name HN', 'name N', 'name CA', 'name CB')
         C.addTimeseries(TS.Atom('v', ca_termini))  # 0
         C.addTimeseries(TS.Bond(ca_termini))  # 1
         C.addTimeseries(TS.Bond([ca[0], ca[-1]]))  # 2
@@ -2099,7 +2099,7 @@ def compute_correl_references():
     all = universe.atoms
     ca = universe.s4AKE.CA
     ca_termini = mda.core.AtomGroup.AtomGroup([ca[0], ca[-1]])
-    phi151 = universe.selectAtoms('resid 151').selectAtoms('name HN', 'name N', 'name CA', 'name CB')
+    phi151 = universe.select_atoms('resid 151').select_atoms('name HN', 'name N', 'name CA', 'name CB')
 
     C = MDAnalysis.collection
     C.clear()
@@ -2236,7 +2236,7 @@ class TestTRRReader_Sub(TestCase):
         later compare to using 'sub'
         """
         usol = mda.Universe(PDB_sub_sol, TRR_sub_sol)
-        atoms = usol.selectAtoms("not resname SOL")
+        atoms = usol.select_atoms("not resname SOL")
         self.pos = atoms.positions
         self.vel = atoms.velocities
         self.force = atoms.forces
@@ -2336,7 +2336,7 @@ class _GromacsReader(TestCase):
         T.next()
         T.next()
         assert_equal(self.ts.frame, 2, "failed to step to frame 3")
-        ca = U.selectAtoms('name CA and resid 122')
+        ca = U.select_atoms('name CA and resid 122')
         # low precision match (2 decimals in A, 3 in nm) because the above are the trr coords
         assert_array_almost_equal(ca.coordinates(), ca_Angstrom, 2,
                                   err_msg="coords of Ca of resid 122 do not match for frame 3")
@@ -2483,7 +2483,7 @@ class _XDRNoConversion(TestCase):
         T.next()
         T.next()
         assert_equal(self.ts.frame, 2, "failed to step to frame 3")
-        ca = U.selectAtoms('name CA and resid 122')
+        ca = U.select_atoms('name CA and resid 122')
         # low precision match because we also look at the trr: only 3 decimals in nm in xtc!
         assert_array_almost_equal(ca.coordinates(), ca_nm, 3,
                                   err_msg="native coords of Ca of resid 122 do not match for frame 3 "
@@ -2799,7 +2799,7 @@ class TestTRZReader(TestCase, RefTRZ):
         assert_almost_equal(fortytwo.pos, self.ref_coordinates, self.prec, "wrong coordinates in trz")
 
     def test_velocities(self):
-        fortytwo = self.universe.selectAtoms('bynum 42')
+        fortytwo = self.universe.select_atoms('bynum 42')
         assert_almost_equal(fortytwo.velocities, self.ref_velocities, self.prec, "wrong velocities in trz")
 
     def test_delta(self):
@@ -2905,7 +2905,7 @@ class TestWrite_Partial_Timestep(TestCase):
 
     def setUp(self):
         self.universe = mda.Universe(TRZ_psf, TRZ)
-        self.ag = self.universe.selectAtoms('name N')
+        self.ag = self.universe.select_atoms('name N')
         self.prec = 3
         fd, self.outfile = tempfile.mkstemp(suffix='.pdb')
         os.close(fd)

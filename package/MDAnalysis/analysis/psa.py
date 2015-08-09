@@ -97,13 +97,13 @@ Classes, methods, and functions
    .. attribute:: ref_select
 
       string, selection for
-      :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms` to select frame
+      :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.select_atoms` to select frame
       from :attr:`Path.u_reference`
 
    .. attribute:: path_select
 
       string, selection for
-      :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms` to select atoms
+      :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.select_atoms` to select atoms
       to compose :attr:`Path.path`
 
    .. attribute:: ref_frame
@@ -133,13 +133,13 @@ Classes, methods, and functions
    .. attribute:: ref_select
 
       string, selection for
-      :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms` to select frame
+      :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.select_atoms` to select frame
       from :attr:`PSA.u_reference`
 
    .. attribute:: path_select
 
       string, selection for
-      :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms` to select atoms
+      :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.select_atoms` to select atoms
       to compose :attr:`Path.path`
 
    .. attribute:: ref_frame
@@ -230,7 +230,7 @@ def hausdorff(P,Q, N=None):
     Example::
      >>> u = Universe(PSF,DCD)
      >>> mid = len(u.trajectory)/2
-     >>> ca = u.selectAtoms('name CA')
+     >>> ca = u.select_atoms('name CA')
      >>> P = numpy.array([
      ...                ca.positions for _ in u.trajectory[:mid:]
      ...              ]) # first half of trajectory
@@ -275,7 +275,7 @@ def discrete_frechet(P,Q, N=None):
     Example::
      >>> u = Universe(PSF,DCD)
      >>> mid = len(u.trajectory)/2
-     >>> ca = u.selectAtoms('name CA')
+     >>> ca = u.select_atoms('name CA')
      >>> P = numpy.array([
      ...                ca.positions for _ in u.trajectory[:mid:]
      ...              ]) # first half of trajectory
@@ -391,7 +391,7 @@ class Path(object):
              The selection to operate on for rms fitting; can be one of:
 
              1. any valid selection string for
-                :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms` that
+                :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.select_atoms` that
                 produces identical selections in *mobile* and *reference*; or
              2. a dictionary ``{'mobile':sel1, 'reference':sel2}`` (the
                 :func:`MDAnalysis.analysis.align.fasta2select` function returns
@@ -500,7 +500,7 @@ class Path(object):
         else:
             u = self.u_original
         frames = u.trajectory
-        atoms = u.selectAtoms(select)
+        atoms = u.select_atoms(select)
         frames.rewind()
         if flat:
             return numpy.array([atoms.positions.flatten() for _ in frames])
@@ -592,7 +592,7 @@ class PSA(object):
              The selection to operate on; can be one of:
 
              1. any valid selection string for
-                :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms` that
+                :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.select_atoms` that
                 produces identical selections in *mobile* and *reference*; or
              2. a dictionary ``{'mobile':sel1, 'reference':sel2}`` (the
                 :func:`MDAnalysis.analysis.align.fasta2select` function returns

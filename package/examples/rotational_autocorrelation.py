@@ -4,7 +4,7 @@ from pylab import *
 
 universe = Universe(...)
 
-group = universe.selectAtoms("resname DMPC and ( name N or name P )")
+group = universe.select_atoms("resname DMPC and ( name N or name P )")
 
 skip = 5  # probably don't have enough memory to load the entire trajectory
 data = universe.dcd.timeseries(group, skip=skip, format="afc")

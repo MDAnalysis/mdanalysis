@@ -32,7 +32,7 @@ def blocked(universe, nblocks, analyze):
 
 
 def rgyr(universe):
-    return universe.selectAtoms('protein').radiusOfGyration()
+    return universe.select_atoms('protein').radiusOfGyration()
 
 
 if __name__ == "__main__":

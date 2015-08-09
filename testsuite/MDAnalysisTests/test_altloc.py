@@ -34,25 +34,25 @@ class TestAltloc(TestCase):
 
     def test_atomgroups(self):
         u = Universe(self.filename)
-        segidB0 = len(u.selectAtoms("segid B and (not altloc B)"))
-        segidB1 = len(u.selectAtoms("segid B and (not altloc A)"))
+        segidB0 = len(u.select_atoms("segid B and (not altloc B)"))
+        segidB1 = len(u.select_atoms("segid B and (not altloc A)"))
         assert_equal(segidB0, segidB1)
-        altlocB0 = len(u.selectAtoms("segid B and (altloc A)"))
-        altlocB1 = len(u.selectAtoms("segid B and (altloc B)"))
+        altlocB0 = len(u.select_atoms("segid B and (altloc A)"))
+        altlocB1 = len(u.select_atoms("segid B and (altloc B)"))
         assert_equal(altlocB0, altlocB1)
-        sum = len(u.selectAtoms("segid B"))
+        sum = len(u.select_atoms("segid B"))
         assert_equal(sum, segidB0 + altlocB0)
 
     def test_bonds(self):
         u = Universe(self.filename, guess_bonds=True)
         # need to force topology to load before querying individual atom bonds
         u.build_topology()
-        bonds0 = u.selectAtoms("segid B and (altloc A)")[0].bonds
-        bonds1 = u.selectAtoms("segid B and (altloc B)")[0].bonds
+        bonds0 = u.select_atoms("segid B and (altloc A)")[0].bonds
+        bonds1 = u.select_atoms("segid B and (altloc B)")[0].bonds
         assert_equal(len(bonds0), len(bonds1))
 
     def test_write_read(self):
         u = Universe(self.filename)
-        u.selectAtoms("all").write(self.outfile)
+        u.select_atoms("all").write(self.outfile)
         u2 = Universe(self.outfile)
         assert_equal(len(u.atoms), len(u2.atoms))

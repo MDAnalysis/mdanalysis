@@ -949,16 +949,16 @@ class TestDMSReader(_TestTopology, RefDMS):
 
     def test_atomsels(self):
         # Desired value taken from VMD atomsel
-        s0 = self.universe.selectAtoms("name CA")
+        s0 = self.universe.select_atoms("name CA")
         assert_equal(len(s0), 214)
 
-        s1 = self.universe.selectAtoms("resid 33")
+        s1 = self.universe.select_atoms("resid 33")
         assert_equal(len(s1), 12)
 
-        s2 = self.universe.selectAtoms("segid 4AKE")
+        s2 = self.universe.select_atoms("segid 4AKE")
         assert_equal(len(s2), 3341)
 
-        s3 = self.universe.selectAtoms("resname ALA")
+        s3 = self.universe.select_atoms("resname ALA")
         assert_equal(len(s3), 190)
 
     def test_atom_number(self):
@@ -1002,7 +1002,7 @@ class TestTopologyGuessers(TestCase):
 
     def test_guess_bonds_badtype(self):
         # rename my carbons and watch it get confused about missing types
-        self.u.selectAtoms('type C').set_type('QQ')
+        self.u.select_atoms('type C').set_type('QQ')
         assert_raises(ValueError, guess_bonds, self.u.atoms, self.u.atoms.positions)
 
     def test_guess_bonds_withag(self):

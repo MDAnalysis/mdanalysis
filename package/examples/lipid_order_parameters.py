@@ -11,7 +11,7 @@ order_param = numpy.zeros(len(tail_carbons))
 for i, carbon in enumerate(tail_carbons):
     selection = "resname DMPC and ( name C2%d or name H%dR or name H%dS or name C3%d or name H%dX or name H%dY )" % \
                 ((carbon,) * 6)
-    group = universe.selectAtoms(selection)
+    group = universe.select_atoms(selection)
 
     data = universe.dcd.timeseries(group, format="afc", skip=skip)
 

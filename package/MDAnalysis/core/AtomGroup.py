@@ -72,13 +72,13 @@ derived from :class:`Atom` instances: all :class:`Atom` objects with the same
 :class:`Residue.id` = *resid*. This means that just changing, say, the residue
 name with a command such as ::
 
-  >>> r = u.selectAtoms("resid 99").residues[0]
+  >>> r = u.select_atoms("resid 99").residues[0]
   >>> print(r)
   <Residue 'ALA', 99>
   >>> r.name = "UNK"
   >>> print(r)
   <Residue 'UNK', 99>
-  >>> rnew = u.selectAtoms("resid 99").residues[0]
+  >>> rnew = u.select_atoms("resid 99").residues[0]
   >>> print(rnew)
   <Residue 'UNK', 99>
 
@@ -107,10 +107,10 @@ rearrangements are carried out. Manipulating segments might be more useful in
 order to add additional structure to a :class:`Universe` and provide instant
 segment selectors for interactive work::
 
-  u.selectAtoms("protein").set_segid("protein")
-  u.selectAtoms("resname POPE or resname POPC").set_segid("lipids")
-  u.selectAtoms("resname SOL").set_segid("water")
-  u.selectAtoms("resname NA or resname CL").set_segid("ions")
+  u.select_atoms("protein").set_segid("protein")
+  u.select_atoms("resname POPE or resname POPC").set_segid("lipids")
+  u.select_atoms("resname SOL").set_segid("water")
+  u.select_atoms("resname NA or resname CL").set_segid("ions")
 
   u.protein.n_residues
   water_oxygens = u.water.OW
@@ -121,7 +121,7 @@ lists. For instance, many MD codes number residues consecutively starting from
 N-terminus. Let's say that the first residue is really residue 10. In order to
 store the canonical residue IDs ("resnum") one could the use ::
 
-  protein = u.selectAtoms("protein").residues
+  protein = u.select_atoms("protein").residues
   protein.set_resnum(protein.resnums + 9)
 
 One can then use ``protein.select("resnum 42")`` to select the residue that has
@@ -130,7 +130,7 @@ the canonical residue id 42 (instead of ``resid 33``).
 One can also read the resids directly from  an original PDB file::
 
   orig = MDAnalysis.Universe("2jln.pdb")
-  protein.set_resnum(orig.selectAtoms("protein").resids)
+  protein.set_resnum(orig.select_atoms("protein").resids)
 
 
 Working with Topologies
@@ -215,7 +215,7 @@ combine all of them together::
     u1 = MDAnalysis.Universe("protein.pdb")
     u2 = MDAnalysis.Universe("ligand.pdb")
     u3 = MDAnalysis.Universe("solvent.pdb")
-    u = MDAnalysis.Merge(u1.selectAtoms("protein"), u2.atoms, u3.atoms)
+    u = MDAnalysis.Merge(u1.select_atoms("protein"), u2.atoms, u3.atoms)
     u.atoms.write("system.pdb")
 
 The complete system is then written out to a new PDB file.
@@ -229,16 +229,16 @@ AdK molecule and then translate and rotate the second copy::
 
     import MDAnalysis; from MDAnalysis.tests.datafiles import *
     u = MDAnalysis.Universe(PSF, DCD)
-    p = u.selectAtoms("protein")
+    p = u.select_atoms("protein")
     m = MDAnalysis.Merge(p,p)
 
     # now renumber resids and segids for each copy
 
     # first copy of the protein (need to use atom indices because currently that's the only reliable property in the
     merged universe)
-    p1 = m.selectAtoms("bynum 1:3341")
+    p1 = m.select_atoms("bynum 1:3341")
     # second copy
-    p2 = m.selectAtoms("bynum 3342:6682")
+    p2 = m.select_atoms("bynum 3342:6682")
 
     p1.set_segid("A")
     p2.set_segid("B")
@@ -247,8 +247,8 @@ AdK molecule and then translate and rotate the second copy::
 
     # you must regenerate the selections after modifying them (see notes in the docs!)
     # because the changed resids are not reflected in the selection (due to how residues are referenced internally)
-    p1 = m.selectAtoms("segid A")       # or as before:  m.selectAtoms("bynum 1:3341")
-    p2 = m.selectAtoms("segid B")
+    p1 = m.select_atoms("segid A")       # or as before:  m.select_atoms("bynum 1:3341")
+    p2 = m.select_atoms("segid B")
 
     # rotate and translate
     p2.rotateby(180, [0,0,1])
@@ -397,6 +397,7 @@ from __future__ import print_function, absolute_import
 import warnings
 import numpy
 from numpy.linalg import eig
+from numpy.lib.utils import deprecate
 import itertools
 from collections import defaultdict
 import copy
@@ -703,7 +704,7 @@ class Atom(object):
 class AtomGroup(object):
     """A group of atoms.
 
-      ag = universe.selectAtoms(atom-list)
+      ag = universe.select_atoms(atom-list)
 
     The AtomGroup contains a list of atoms; typically, a AtomGroup is generated
     from a selection. It is build from any list-like collection of
@@ -794,6 +795,7 @@ class AtomGroup(object):
        The follow methods were changed to properties: indices, masses, charges, names,
        types, radii, resids, resnames, resnums, segids
        Added altLocs and serials properties and setters
+       Deprecated selectAtoms in favour of select_atoms
     """
     # for generalized __getitem__ __iter__ and __len__
     # (override _containername for ResidueGroup and SegmentGroup)
@@ -1341,7 +1343,7 @@ class AtomGroup(object):
            import Bio.SeqIO
 
            # get the sequence record of a protein component of a Universe
-           protein = u.selectAtoms("protein")
+           protein = u.select_atoms("protein")
            record = protein.sequence(id="myseq1", name="myprotein")
 
            Bio.SeqIO.write(record, "single.fasta", "fasta")
@@ -2674,12 +2676,12 @@ class AtomGroup(object):
             if not all(s == 0.0):
                 o.translate(s)
 
-    def selectAtoms(self, sel, *othersel, **selgroups):
+    def select_atoms(self, sel, *othersel, **selgroups):
         """Selection of atoms using the MDAnalysis selection syntax.
 
-        AtomGroup.selectAtoms(selection[,selection[,...]], [groupname=atomgroup[,groupname=atomgroup[,...]]])
+        AtomGroup.select_atoms(selection[,selection[,...]], [groupname=atomgroup[,groupname=atomgroup[,...]]])
 
-        .. SeeAlso:: :meth:`Universe.selectAtoms`
+        .. SeeAlso:: :meth:`Universe.select_atoms`
         """
         from . import Selection  # can ONLY import in method, otherwise cyclical import!
 
@@ -2694,6 +2696,9 @@ class AtomGroup(object):
                 #atomselections.append(Selection.Parser.parse(sel).apply(self))
             #return tuple(atomselections)
             return atomgrp
+
+    selectAtoms = deprecate(select_atoms, old_name='selectAtoms',
+                            new_name='select_atoms')
 
     def split(self, level):
         """Split atomgroup into a list of atomgroups by *level*.
@@ -2945,10 +2950,10 @@ class Residue(AtomGroup):
                   found in the previous residue (by resid) then this
                   method returns ``None``.
         """
-        sel = self.universe.selectAtoms(
+        sel = self.universe.select_atoms(
             'segid %s and resid %d and name C' % (self.segment.id, self.id - 1)) + \
               self['N'] + self['CA'] + self['C']
-        if len(sel) == 4:  # selectAtoms doesnt raise errors if nothing found, so check size
+        if len(sel) == 4:  # select_atoms doesnt raise errors if nothing found, so check size
             return sel
         else:
             return None
@@ -2961,7 +2966,7 @@ class Residue(AtomGroup):
                   method returns ``None``.
         """
         sel = self['N'] + self['CA'] + self['C'] + \
-              self.universe.selectAtoms(
+              self.universe.select_atoms(
                   'segid %s and resid %d and name N' % (self.segment.id, self.id + 1))
         if len(sel) == 4:
             return sel
@@ -2983,7 +2988,7 @@ class Residue(AtomGroup):
         nextres = self.id + 1
         segid = self.segment.id
         sel = self['CA'] + self['C'] + \
-              self.universe.selectAtoms(
+              self.universe.select_atoms(
                   'segid %s and resid %d and name N' % (segid, nextres),
                   'segid %s and resid %d and name CA' % (segid, nextres))
         if len(sel) == 4:
@@ -3383,9 +3388,9 @@ class Universe(object):
        u.load_new(trajectory)                      # read from a new trajectory file
 
     Select atoms, with syntax similar to CHARMM (see
-    :class:`~Universe.selectAtoms` for details)::
+    :class:`~Universe.select_atoms` for details)::
 
-       u.selectAtoms(...)
+       u.select_atoms(...)
 
     *Attributes:*
 
@@ -3426,6 +3431,7 @@ class Universe(object):
        :meth:`make_anchor`, :meth:`remove_anchor`, :attr:`is_anchor`, and
        :attr:`anchor_name` were added to support the pickling/unpickling of
        :class:`AtomGroup`.
+       Deprecated selectAtoms in favour of select_atoms
     """
 
     def __init__(self, *args, **kwargs):
@@ -4133,7 +4139,7 @@ class Universe(object):
 
         return filename, self.trajectory.format
 
-    def selectAtoms(self, sel, *othersel, **selgroups):
+    def select_atoms(self, sel, *othersel, **selgroups):
         """Select atoms using a CHARMM selection string.
 
         Returns an :class:`AtomGroup` with atoms sorted according to their
@@ -4146,11 +4152,11 @@ class Universe(object):
         Subselections can be grouped with parentheses.
 
         Example::
-           >>> sel = universe.selectAtoms("segid DMPC and not ( name H* or name O* )")
+           >>> sel = universe.select_atoms("segid DMPC and not ( name H* or name O* )")
            >>> sel
            <AtomGroup with 3420 atoms>
 
-           >>> universe.selectAtoms("around 10 group notHO", notHO=sel)
+           >>> universe.select_atoms("around 10 group notHO", notHO=sel)
            <AtomGroup with 1250 atoms>
 
         .. Note::
@@ -4250,7 +4256,7 @@ class Universe(object):
             group *group-name*
                 selects the atoms in the :class:`AtomGroup` passed to the function as an
                 argument named *group-name*. Only the atoms common to *group-name* and the
-                instance :meth:`~selectAtoms` was called from will be considered.
+                instance :meth:`~select_atoms` was called from will be considered.
                 *group-name* will be included in the parsing just by comparison of atom indices.
                 This means that it is up to the user to make sure they were defined in an
                 appropriate :class:`Universe`.
@@ -4258,7 +4264,7 @@ class Universe(object):
             fullgroup *group-name*
                 just like the ``group`` keyword with the difference that all the atoms of
                 *group-name* are included. The resulting selection may therefore have atoms
-                that were initially absent from the instance :meth:`~selectAtoms` was
+                that were initially absent from the instance :meth:`~select_atoms` was
                 called from.
 
 
@@ -4280,6 +4286,9 @@ class Universe(object):
                 #atomselections.append(Selection.Parser.parse(sel).apply(self))
             #return tuple(atomselections)
             return atomgrp
+
+    selectAtoms = deprecate(select_atoms, old_name='selectAtoms',
+                            new_name='select_atoms')
 
     def __repr__(self):
         return "<Universe with {n_atoms} atoms{bonds}>".format(
@@ -4416,7 +4425,7 @@ def Merge(*args):
     """Return a :class:`Universe` from two or more :class:`AtomGroup` instances.
 
     :class:`AtomGroup` instances can come from different Universes, or come
-    directly from a :meth:`~Universe.selectAtoms` call.
+    directly from a :meth:`~Universe.select_atoms` call.
 
     It can also be used with a single :class:`AtomGroup` if the user wants to,
     for example, re-order the atoms in the Universe.
@@ -4440,7 +4449,7 @@ def Merge(*args):
        u1 = Universe("protein.pdb")
        u2 = Universe("ligand.pdb")
        u3 = Universe("solvent.pdb")
-       u = Merge(u1.selectAtoms("protein"), u2.atoms, u3.atoms)
+       u = Merge(u1.select_atoms("protein"), u2.atoms, u3.atoms)
        u.atoms.write("system.pdb")
 
     The complete system is then written out to a new PDB file.

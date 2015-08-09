@@ -458,7 +458,7 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
 
     """
     try:
-        universe.selectAtoms('all')
+        universe.select_atoms('all')
         universe.trajectory.ts
     except AttributeError:
         raise TypeError("The universe must be a proper MDAnalysis.Universe instance.")
@@ -471,14 +471,14 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
         def current_coordinates():
             return notwithin_coordinates()
     else:
-        group = u.selectAtoms(atomselection)
+        group = u.select_atoms(atomselection)
 
         def current_coordinates():
             return group.coordinates()
 
     coord = current_coordinates()
     logger.info("Selected %d atoms out of %d atoms (%s) from %d total." %
-                (coord.shape[0], len(u.selectAtoms(atomselection)), atomselection, len(u.atoms)))
+                (coord.shape[0], len(u.select_atoms(atomselection)), atomselection, len(u.atoms)))
 
     # mild warning; typically this is run on RMS-fitted trajectories and
     # so the box information is rather meaningless
@@ -578,8 +578,8 @@ def notwithin_coordinates_factory(universe, sel1, sel2, cutoff, not_within=True,
     # distance matrix    633        1          1           False
     # AROUND + kdtree    420        0.66       1.5         n/a ('name OH2 around 4 protein')
     # manual + kdtree    182        0.29       3.5         True
-    solvent = universe.selectAtoms(sel1)
-    protein = universe.selectAtoms(sel2)
+    solvent = universe.select_atoms(sel1)
+    protein = universe.select_atoms(sel2)
     if use_kdtree:
         # using faster hand-coded 'not within' selection with kd-tree
         import MDAnalysis.lib.KDTree.NeighborSearch as NS
@@ -750,7 +750,7 @@ class BfactorDensityCreator(object):
         from MDAnalysis import asUniverse
 
         u = asUniverse(pdb)
-        group = u.selectAtoms(atomselection)
+        group = u.select_atoms(atomselection)
         coord = group.coordinates()
         logger.info("Selected %d atoms (%s) out of %d total." %
                     (coord.shape[0], atomselection, len(u.atoms)))

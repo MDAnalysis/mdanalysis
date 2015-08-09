@@ -37,8 +37,8 @@ writer = mda.coordinates.DCD.DCDWriter(
     frames.delta,
     remarks='RMS fitted trajectory to ref')
 
-ref_atoms = ref.selectAtoms(selections['reference'])
-traj_atoms = traj.selectAtoms(selections['target'])
+ref_atoms = ref.select_atoms(selections['reference'])
+traj_atoms = traj.select_atoms(selections['target'])
 natoms = traj_atoms.numberOfAtoms()
 
 # if performing a mass-weighted alignment/rmsd calculation
