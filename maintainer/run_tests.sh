@@ -4,6 +4,7 @@
 # Placed into the Public Domain
 
 LOGFILE="$PWD/unittests_$(date +'%Y%m%d').txt"
+NPROC=6
 usage="$0 [options]
 
 Build MDAnalysis and run the unit tests.
@@ -14,6 +15,7 @@ Options
 -o FILE           also write output to FILE,
                   set to /dev/null if you do not want it.
                   [default: ${LOGFILE}]
+-n NPROC          run in parallel with NPROC processes [$NPROC]
 "
 
 function get_root_dir () {
@@ -36,13 +38,14 @@ print('Python version: %s' % sys.version);
 }
 
 
-while getopts hio: OPT; do
+while getopts hio:n: OPT; do
     case "$OPT" in
 	h)  echo "$usage"; exit 0;;
 	i)  echo "rootdir: $(get_root_dir)";
             report_python_env;
 	    exit 0;;        
         o)  LOGFILE=${OPTARG};;
+	n)  NPROC=${OPTARG};;
 	*)  echo "Unknown option $OPT"; exit 2;;
     esac
 done
@@ -70,12 +73,18 @@ cd "$cur_dir"
 # Get the lib dirs
 lib_dir="`ls \"$root_dir/package/build\" | grep \"lib\"`"
 package_lib="$root_dir/package/build/$lib_dir"
-testsuite_lib="$root_dir/testsuite/build/lib"
+
+testsuite_lib_dir="`ls \"$root_dir/testsuite/build\" | grep \"lib\"`"
+testsuite_lib="$root_dir/testsuite/build/$testsuite_lib_dir"
 
 # Run the tests
+NOSETESTS=$root_dir/testsuite/MDAnalysisTests/mda_nosetests 
 echo
 echo "Running the tests... (output to ${LOGFILE})"
+echo "(Using MDAnalysis test script $NOSETESTS.)"
+echo "Tests from $tessuite_lib"
 
 cd "$package_lib"
-nosetests -v "$testsuite_lib/MDAnalysisTests" 2>&1 | tee $LOGFILE
+$NOSETESTS -v --processes=$NPROC --process-timeout=120 \
+	    --with-memleak "$testsuite_lib/MDAnalysisTests" 2>&1 | tee $LOGFILE
 cd "$cur_dir"
