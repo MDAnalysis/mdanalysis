@@ -249,8 +249,8 @@ class __Pyx_FakeReference {
 #define _USE_MATH_DEFINES
 #endif
 #include <math.h>
-#define __PYX_HAVE__core__parallel__distances
-#define __PYX_HAVE_API__core__parallel__distances
+#define __PYX_HAVE__lib__parallel__distances
+#define __PYX_HAVE_API__lib__parallel__distances
 #include "string.h"
 #include "stdio.h"
 #include "stdlib.h"
@@ -703,7 +703,7 @@ typedef npy_longdouble __pyx_t_5numpy_longdouble_t;
  * 
  * # Register a C math sqrt function
  */
-typedef __pyx_t_5numpy_float32_t __pyx_t_4core_8parallel_9distances_DTYPE_t;
+typedef __pyx_t_5numpy_float32_t __pyx_t_3lib_8parallel_9distances_DTYPE_t;
 #if CYTHON_CCOMPLEX
   #ifdef __cplusplus
     typedef ::std::complex< float > __pyx_t_float_complex;
@@ -1108,17 +1108,17 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *, cha
 
 /* Module declarations from 'cython' */
 
-/* Module declarations from 'core.parallel.distances' */
-static __Pyx_TypeInfo __Pyx_TypeInfo_nn___pyx_t_4core_8parallel_9distances_DTYPE_t = { "DTYPE_t", NULL, sizeof(__pyx_t_4core_8parallel_9distances_DTYPE_t), { 0 }, 0, 'R', 0, 0 };
-#define __Pyx_MODULE_NAME "core.parallel.distances"
-int __pyx_module_is_main_core__parallel__distances = 0;
+/* Module declarations from 'lib.parallel.distances' */
+static __Pyx_TypeInfo __Pyx_TypeInfo_nn___pyx_t_3lib_8parallel_9distances_DTYPE_t = { "DTYPE_t", NULL, sizeof(__pyx_t_3lib_8parallel_9distances_DTYPE_t), { 0 }, 0, 'R', 0, 0 };
+#define __Pyx_MODULE_NAME "lib.parallel.distances"
+int __pyx_module_is_main_lib__parallel__distances = 0;
 
-/* Implementation of 'core.parallel.distances' */
+/* Implementation of 'lib.parallel.distances' */
 static PyObject *__pyx_builtin_range;
 static PyObject *__pyx_builtin_ValueError;
 static PyObject *__pyx_builtin_RuntimeError;
-static PyObject *__pyx_pf_4core_8parallel_9distances_distance_array_serial(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coordA, PyArrayObject *__pyx_v_coordB, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_result); /* proto */
-static PyObject *__pyx_pf_4core_8parallel_9distances_2distance_array(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coordA, PyArrayObject *__pyx_v_coordB, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_result); /* proto */
+static PyObject *__pyx_pf_3lib_8parallel_9distances_distance_array_serial(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coordA, PyArrayObject *__pyx_v_coordB, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_result); /* proto */
+static PyObject *__pyx_pf_3lib_8parallel_9distances_2distance_array(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coordA, PyArrayObject *__pyx_v_coordB, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_result); /* proto */
 static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags); /* proto */
 static void __pyx_pf_5numpy_7ndarray_2__releasebuffer__(PyArrayObject *__pyx_v_self, Py_buffer *__pyx_v_info); /* proto */
 static char __pyx_k_B[] = "B";
@@ -1167,9 +1167,9 @@ static char __pyx_k_ValueError[] = "ValueError";
 static char __pyx_k_RuntimeError[] = "RuntimeError";
 static char __pyx_k_distance_array[] = "distance_array";
 static char __pyx_k_distance_array_serial[] = "distance_array_serial";
-static char __pyx_k_core_parallel_distances[] = "core.parallel.distances";
+static char __pyx_k_lib_parallel_distances[] = "lib.parallel.distances";
 static char __pyx_k_ndarray_is_not_C_contiguous[] = "ndarray is not C contiguous";
-static char __pyx_k_Fast_parallel_distance_array_co[] = "\nFast parallel distance array computation --- :mod:`MDAnalysis.core.parallel.distances`\n======================================================================================\n\n:Author:  Jan Doma\305\204ski\n:Year:    2012\n:Licence: GPL\n\nA fast, parallel :func:`distance_array` function as a substitute for\n:func:`MDAnalysis.core.distances.distance_array`; implemented with\n`Cython Parallelism`_. For development notes see the comments for\n`Issue 80`_.\n\n.. _Cython Parallelism: http://docs.cython.org/src/userguide/parallelism.html\n.. _Issue 80: http://issues.mdanalysis.org/80\n\nLoad the module with ::\n\n  import MDAnalysis.core.parallel.distances\n\n\n.. function:: distance_array(ref, conf[, box[, result]])\n\n   Calculate all distances d_ij between the coordinates ``ref[i]`` and\n   ``conf[j]`` in the numpy arrays *ref* and *conf*.\n\n   This is a parallelized version that will automatically decide on\n   how many threads to run.\n\n   Periodic boundary conditions can be taken into account if the box\n   vectors are provided in the 3x3 matrix *box*. The default ``None``\n   calculates simple distances.\n\n   A pre-allocated array can be supplied as *results*.\n\n   .. warning::\n      Only orthorhombic boxes are supported for *box*, anything else will\n      produce wrong results.\n\n   .. versionadded:: 0.7.7\n\n.. function:: distance_array_serial(ref, conf[, box[, result]])\n\n   Calculate all distances d_ij between the coordinates ref[i] and\n   conf[j] in the numpy arrays *ref* and *conf*.\n\n   Periodic boundary conditions can be taken into account if the box\n   vectors are provided in the 3x3 matrix *box*. The default ``None``\n   calculates simple distances.\n\n   A pre-allocated array can be supplied as *results*.\n\n   Serial version (to check the parallel version). This version is\n   slightly slower than the regular serial (pure C)\n   :func:`MDAnalysis.core.distances.distance_array` function.\n\n   .. warning::\n      Only orthorhombic boxes a""re supported for *box*, anything else will\n      produce wrong results.\n\n   .. versionadded:: 0.7.7\n";
+static char __pyx_k_Fast_parallel_distance_array_co[] = "\nFast parallel distance array computation --- :mod:`MDAnalysis.lib.parallel.distances`\n======================================================================================\n\n:Author:  Jan Doma\305\204ski\n:Year:    2012\n:Licence: GPL\n\nA fast, parallel :func:`distance_array` function as a substitute for\n:func:`MDAnalysis.lib.distances.distance_array`; implemented with\n`Cython Parallelism`_. For development notes see the comments for\n`Issue 80`_.\n\n.. _Cython Parallelism: http://docs.cython.org/src/userguide/parallelism.html\n.. _Issue 80: http://issues.mdanalysis.org/80\n\nLoad the module with ::\n\n  import MDAnalysis.lib.parallel.distances\n\n\n.. function:: distance_array(ref, conf[, box[, result]])\n\n   Calculate all distances d_ij between the coordinates ``ref[i]`` and\n   ``conf[j]`` in the numpy arrays *ref* and *conf*.\n\n   This is a parallelized version that will automatically decide on\n   how many threads to run.\n\n   Periodic boundary conditions can be taken into account if the box\n   vectors are provided in the 3x3 matrix *box*. The default ``None``\n   calculates simple distances.\n\n   A pre-allocated array can be supplied as *results*.\n\n   .. warning::\n      Only orthorhombic boxes are supported for *box*, anything else will\n      produce wrong results.\n\n   .. versionadded:: 0.7.7\n\n.. function:: distance_array_serial(ref, conf[, box[, result]])\n\n   Calculate all distances d_ij between the coordinates ref[i] and\n   conf[j] in the numpy arrays *ref* and *conf*.\n\n   Periodic boundary conditions can be taken into account if the box\n   vectors are provided in the 3x3 matrix *box*. The default ``None``\n   calculates simple distances.\n\n   A pre-allocated array can be supplied as *results*.\n\n   Serial version (to check the parallel version). This version is\n   slightly slower than the regular serial (pure C)\n   :func:`MDAnalysis.lib.distances.distance_array` function.\n\n   .. warning::\n      Only orthorhombic boxes are s""upported for *box*, anything else will\n      produce wrong results.\n\n   .. versionadded:: 0.7.7\n";
 static char __pyx_k_nfs_homes2_oliver_Library_pytho[] = "/nfs/homes2/oliver/Library/python/mdanalysis/package/src/numtools/distances_parallel.pyx";
 static char __pyx_k_unknown_dtype_code_in_numpy_pxd[] = "unknown dtype code in numpy.pxd (%d)";
 static char __pyx_k_Coordinate_arrays_of_the_same_le[] = "Coordinate arrays of the same length must be used.\n    Distance matrix must be square: number of rows (%d) must be the same as the number of columns (%d)";
@@ -1195,7 +1195,6 @@ static PyObject *__pyx_n_s_box_z;
 static PyObject *__pyx_n_s_cols;
 static PyObject *__pyx_n_s_coordA;
 static PyObject *__pyx_n_s_coordB;
-static PyObject *__pyx_n_s_core_parallel_distances;
 static PyObject *__pyx_n_s_dist;
 static PyObject *__pyx_n_s_distance_array;
 static PyObject *__pyx_n_s_distance_array_serial;
@@ -1206,6 +1205,7 @@ static PyObject *__pyx_n_s_has_box;
 static PyObject *__pyx_n_s_i;
 static PyObject *__pyx_n_s_import;
 static PyObject *__pyx_n_s_j;
+static PyObject *__pyx_n_s_lib_parallel_distances;
 static PyObject *__pyx_n_s_main;
 static PyObject *__pyx_kp_u_ndarray_is_not_C_contiguous;
 static PyObject *__pyx_kp_u_ndarray_is_not_Fortran_contiguou;
@@ -1240,10 +1240,10 @@ static PyObject *__pyx_codeobj__10;
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_4core_8parallel_9distances_1distance_array_serial(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_4core_8parallel_9distances_distance_array_serial[] = "distance_array_serial(ref,conf[,box[,result]])\n\n    Calculate all distances d_ij between the coordinates ref[i] and\n    conf[j] in the numpy arrays *ref* and *conf*.\n\n    Periodic boundary conditions can be taken into account if the box\n    vectors are provided in the 3x3 matrix *box*.\n\n    A pre-allocated array can be supplied as *results*.\n\n    Serial version (to check the parallel version). This version is\n    slightly slower than the regular serial (pure C)\n    :func:`MDAnalysis.core.distances.distance_array` function.\n\n    .. warning::\n       Only orthorhombic boxes are supported, anything else will\n       produce wrong results.\n    ";
-static PyMethodDef __pyx_mdef_4core_8parallel_9distances_1distance_array_serial = {"distance_array_serial", (PyCFunction)__pyx_pw_4core_8parallel_9distances_1distance_array_serial, METH_VARARGS|METH_KEYWORDS, __pyx_doc_4core_8parallel_9distances_distance_array_serial};
-static PyObject *__pyx_pw_4core_8parallel_9distances_1distance_array_serial(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_3lib_8parallel_9distances_1distance_array_serial(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_3lib_8parallel_9distances_distance_array_serial[] = "distance_array_serial(ref,conf[,box[,result]])\n\n    Calculate all distances d_ij between the coordinates ref[i] and\n    conf[j] in the numpy arrays *ref* and *conf*.\n\n    Periodic boundary conditions can be taken into account if the box\n    vectors are provided in the 3x3 matrix *box*.\n\n    A pre-allocated array can be supplied as *results*.\n\n    Serial version (to check the parallel version). This version is\n    slightly slower than the regular serial (pure C)\n    :func:`MDAnalysis.lib.distances.distance_array` function.\n\n    .. warning::\n       Only orthorhombic boxes are supported, anything else will\n       produce wrong results.\n    ";
+static PyMethodDef __pyx_mdef_3lib_8parallel_9distances_1distance_array_serial = {"distance_array_serial", (PyCFunction)__pyx_pw_3lib_8parallel_9distances_1distance_array_serial, METH_VARARGS|METH_KEYWORDS, __pyx_doc_3lib_8parallel_9distances_distance_array_serial};
+static PyObject *__pyx_pw_3lib_8parallel_9distances_1distance_array_serial(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyArrayObject *__pyx_v_coordA = 0;
   PyArrayObject *__pyx_v_coordB = 0;
   PyArrayObject *__pyx_v_box = 0;
@@ -1329,7 +1329,7 @@ static PyObject *__pyx_pw_4core_8parallel_9distances_1distance_array_serial(PyOb
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("distance_array_serial", 0, 2, 4, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 97; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
-  __Pyx_AddTraceback("core.parallel.distances.distance_array_serial", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("lib.parallel.distances.distance_array_serial", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
@@ -1337,7 +1337,7 @@ static PyObject *__pyx_pw_4core_8parallel_9distances_1distance_array_serial(PyOb
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coordB), __pyx_ptype_5numpy_ndarray, 1, "coordB", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 98; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_box), __pyx_ptype_5numpy_ndarray, 1, "box", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 99; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_result), __pyx_ptype_5numpy_ndarray, 1, "result", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 100; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_r = __pyx_pf_4core_8parallel_9distances_distance_array_serial(__pyx_self, __pyx_v_coordA, __pyx_v_coordB, __pyx_v_box, __pyx_v_result);
+  __pyx_r = __pyx_pf_3lib_8parallel_9distances_distance_array_serial(__pyx_self, __pyx_v_coordA, __pyx_v_coordB, __pyx_v_box, __pyx_v_result);
 
   /* "src/numtools/distances_parallel.pyx":97
  *     float round(double x) nogil
@@ -1356,17 +1356,17 @@ static PyObject *__pyx_pw_4core_8parallel_9distances_1distance_array_serial(PyOb
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_4core_8parallel_9distances_distance_array_serial(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coordA, PyArrayObject *__pyx_v_coordB, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_result) {
-  __pyx_t_4core_8parallel_9distances_DTYPE_t __pyx_v_x;
-  __pyx_t_4core_8parallel_9distances_DTYPE_t __pyx_v_y;
-  __pyx_t_4core_8parallel_9distances_DTYPE_t __pyx_v_z;
-  __pyx_t_4core_8parallel_9distances_DTYPE_t __pyx_v_dist;
+static PyObject *__pyx_pf_3lib_8parallel_9distances_distance_array_serial(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coordA, PyArrayObject *__pyx_v_coordB, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_result) {
+  __pyx_t_3lib_8parallel_9distances_DTYPE_t __pyx_v_x;
+  __pyx_t_3lib_8parallel_9distances_DTYPE_t __pyx_v_y;
+  __pyx_t_3lib_8parallel_9distances_DTYPE_t __pyx_v_z;
+  __pyx_t_3lib_8parallel_9distances_DTYPE_t __pyx_v_dist;
   Py_ssize_t __pyx_v_i;
   Py_ssize_t __pyx_v_j;
   char __pyx_v_has_box;
-  __pyx_t_4core_8parallel_9distances_DTYPE_t __pyx_v_box_x;
-  __pyx_t_4core_8parallel_9distances_DTYPE_t __pyx_v_box_y;
-  __pyx_t_4core_8parallel_9distances_DTYPE_t __pyx_v_box_z;
+  __pyx_t_3lib_8parallel_9distances_DTYPE_t __pyx_v_box_x;
+  __pyx_t_3lib_8parallel_9distances_DTYPE_t __pyx_v_box_y;
+  __pyx_t_3lib_8parallel_9distances_DTYPE_t __pyx_v_box_z;
   npy_intp __pyx_v_rows;
   npy_intp __pyx_v_cols;
   __Pyx_LocalBuf_ND __pyx_pybuffernd_box;
@@ -1434,22 +1434,22 @@ static PyObject *__pyx_pf_4core_8parallel_9distances_distance_array_serial(CYTHO
   __pyx_pybuffernd_result.rcbuffer = &__pyx_pybuffer_result;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_coordA.rcbuffer->pybuffer, (PyObject*)__pyx_v_coordA, &__Pyx_TypeInfo_nn___pyx_t_4core_8parallel_9distances_DTYPE_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 97; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_coordA.rcbuffer->pybuffer, (PyObject*)__pyx_v_coordA, &__Pyx_TypeInfo_nn___pyx_t_3lib_8parallel_9distances_DTYPE_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 97; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __pyx_pybuffernd_coordA.diminfo[0].strides = __pyx_pybuffernd_coordA.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_coordA.diminfo[0].shape = __pyx_pybuffernd_coordA.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_coordA.diminfo[1].strides = __pyx_pybuffernd_coordA.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_coordA.diminfo[1].shape = __pyx_pybuffernd_coordA.rcbuffer->pybuffer.shape[1];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_coordB.rcbuffer->pybuffer, (PyObject*)__pyx_v_coordB, &__Pyx_TypeInfo_nn___pyx_t_4core_8parallel_9distances_DTYPE_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 97; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_coordB.rcbuffer->pybuffer, (PyObject*)__pyx_v_coordB, &__Pyx_TypeInfo_nn___pyx_t_3lib_8parallel_9distances_DTYPE_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 97; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __pyx_pybuffernd_coordB.diminfo[0].strides = __pyx_pybuffernd_coordB.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_coordB.diminfo[0].shape = __pyx_pybuffernd_coordB.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_coordB.diminfo[1].strides = __pyx_pybuffernd_coordB.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_coordB.diminfo[1].shape = __pyx_pybuffernd_coordB.rcbuffer->pybuffer.shape[1];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_box.rcbuffer->pybuffer, (PyObject*)__pyx_v_box, &__Pyx_TypeInfo_nn___pyx_t_4core_8parallel_9distances_DTYPE_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 97; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_box.rcbuffer->pybuffer, (PyObject*)__pyx_v_box, &__Pyx_TypeInfo_nn___pyx_t_3lib_8parallel_9distances_DTYPE_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 97; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __pyx_pybuffernd_box.diminfo[0].strides = __pyx_pybuffernd_box.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_box.diminfo[0].shape = __pyx_pybuffernd_box.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_result.rcbuffer->pybuffer, (PyObject*)__pyx_v_result, &__Pyx_TypeInfo_nn___pyx_t_4core_8parallel_9distances_DTYPE_t, PyBUF_FORMAT| PyBUF_STRIDES| PyBUF_WRITABLE, 2, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 97; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_result.rcbuffer->pybuffer, (PyObject*)__pyx_v_result, &__Pyx_TypeInfo_nn___pyx_t_3lib_8parallel_9distances_DTYPE_t, PyBUF_FORMAT| PyBUF_STRIDES| PyBUF_WRITABLE, 2, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 97; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __pyx_pybuffernd_result.diminfo[0].strides = __pyx_pybuffernd_result.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_result.diminfo[0].shape = __pyx_pybuffernd_result.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_result.diminfo[1].strides = __pyx_pybuffernd_result.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_result.diminfo[1].shape = __pyx_pybuffernd_result.rcbuffer->pybuffer.shape[1];
 
@@ -1499,7 +1499,7 @@ static PyObject *__pyx_pf_4core_8parallel_9distances_distance_array_serial(CYTHO
       __Pyx_RaiseBufferIndexError(__pyx_t_4);
       {__pyx_filename = __pyx_f[0]; __pyx_lineno = 127; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
-    __pyx_v_box_x = (*__Pyx_BufPtrStrided1d(__pyx_t_4core_8parallel_9distances_DTYPE_t *, __pyx_pybuffernd_box.rcbuffer->pybuffer.buf, __pyx_t_3, __pyx_pybuffernd_box.diminfo[0].strides));
+    __pyx_v_box_x = (*__Pyx_BufPtrStrided1d(__pyx_t_3lib_8parallel_9distances_DTYPE_t *, __pyx_pybuffernd_box.rcbuffer->pybuffer.buf, __pyx_t_3, __pyx_pybuffernd_box.diminfo[0].strides));
 
     /* "src/numtools/distances_parallel.pyx":128
  *         has_box = 1
@@ -1518,7 +1518,7 @@ static PyObject *__pyx_pf_4core_8parallel_9distances_distance_array_serial(CYTHO
       __Pyx_RaiseBufferIndexError(__pyx_t_4);
       {__pyx_filename = __pyx_f[0]; __pyx_lineno = 128; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
-    __pyx_v_box_y = (*__Pyx_BufPtrStrided1d(__pyx_t_4core_8parallel_9distances_DTYPE_t *, __pyx_pybuffernd_box.rcbuffer->pybuffer.buf, __pyx_t_5, __pyx_pybuffernd_box.diminfo[0].strides));
+    __pyx_v_box_y = (*__Pyx_BufPtrStrided1d(__pyx_t_3lib_8parallel_9distances_DTYPE_t *, __pyx_pybuffernd_box.rcbuffer->pybuffer.buf, __pyx_t_5, __pyx_pybuffernd_box.diminfo[0].strides));
 
     /* "src/numtools/distances_parallel.pyx":129
  *         box_x = box[0]
@@ -1537,7 +1537,7 @@ static PyObject *__pyx_pf_4core_8parallel_9distances_distance_array_serial(CYTHO
       __Pyx_RaiseBufferIndexError(__pyx_t_4);
       {__pyx_filename = __pyx_f[0]; __pyx_lineno = 129; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
-    __pyx_v_box_z = (*__Pyx_BufPtrStrided1d(__pyx_t_4core_8parallel_9distances_DTYPE_t *, __pyx_pybuffernd_box.rcbuffer->pybuffer.buf, __pyx_t_6, __pyx_pybuffernd_box.diminfo[0].strides));
+    __pyx_v_box_z = (*__Pyx_BufPtrStrided1d(__pyx_t_3lib_8parallel_9distances_DTYPE_t *, __pyx_pybuffernd_box.rcbuffer->pybuffer.buf, __pyx_t_6, __pyx_pybuffernd_box.diminfo[0].strides));
     goto __pyx_L3;
   }
   __pyx_L3:;
@@ -1656,10 +1656,10 @@ static PyObject *__pyx_pf_4core_8parallel_9distances_distance_array_serial(CYTHO
     {
       __Pyx_BufFmt_StackElem __pyx_stack[1];
       __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_result.rcbuffer->pybuffer);
-      __pyx_t_4 = __Pyx_GetBufferAndValidate(&__pyx_pybuffernd_result.rcbuffer->pybuffer, (PyObject*)__pyx_t_11, &__Pyx_TypeInfo_nn___pyx_t_4core_8parallel_9distances_DTYPE_t, PyBUF_FORMAT| PyBUF_STRIDES| PyBUF_WRITABLE, 2, 0, __pyx_stack);
+      __pyx_t_4 = __Pyx_GetBufferAndValidate(&__pyx_pybuffernd_result.rcbuffer->pybuffer, (PyObject*)__pyx_t_11, &__Pyx_TypeInfo_nn___pyx_t_3lib_8parallel_9distances_DTYPE_t, PyBUF_FORMAT| PyBUF_STRIDES| PyBUF_WRITABLE, 2, 0, __pyx_stack);
       if (unlikely(__pyx_t_4 < 0)) {
         PyErr_Fetch(&__pyx_t_12, &__pyx_t_13, &__pyx_t_14);
-        if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_result.rcbuffer->pybuffer, (PyObject*)__pyx_v_result, &__Pyx_TypeInfo_nn___pyx_t_4core_8parallel_9distances_DTYPE_t, PyBUF_FORMAT| PyBUF_STRIDES| PyBUF_WRITABLE, 2, 0, __pyx_stack) == -1)) {
+        if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_result.rcbuffer->pybuffer, (PyObject*)__pyx_v_result, &__Pyx_TypeInfo_nn___pyx_t_3lib_8parallel_9distances_DTYPE_t, PyBUF_FORMAT| PyBUF_STRIDES| PyBUF_WRITABLE, 2, 0, __pyx_stack) == -1)) {
           Py_XDECREF(__pyx_t_12); Py_XDECREF(__pyx_t_13); Py_XDECREF(__pyx_t_14);
           __Pyx_RaiseBufferFallbackError();
         } else {
@@ -1801,7 +1801,7 @@ static PyObject *__pyx_pf_4core_8parallel_9distances_distance_array_serial(CYTHO
         __Pyx_RaiseBufferIndexError(__pyx_t_4);
         {__pyx_filename = __pyx_f[0]; __pyx_lineno = 145; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
-      __pyx_v_x = ((*__Pyx_BufPtrStrided2d(__pyx_t_4core_8parallel_9distances_DTYPE_t *, __pyx_pybuffernd_coordA.rcbuffer->pybuffer.buf, __pyx_t_19, __pyx_pybuffernd_coordA.diminfo[0].strides, __pyx_t_20, __pyx_pybuffernd_coordA.diminfo[1].strides)) - (*__Pyx_BufPtrStrided2d(__pyx_t_4core_8parallel_9distances_DTYPE_t *, __pyx_pybuffernd_coordB.rcbuffer->pybuffer.buf, __pyx_t_21, __pyx_pybuffernd_coordB.diminfo[0].strides, __pyx_t_22, __pyx_pybuffernd_coordB.diminfo[1].strides)));
+      __pyx_v_x = ((*__Pyx_BufPtrStrided2d(__pyx_t_3lib_8parallel_9distances_DTYPE_t *, __pyx_pybuffernd_coordA.rcbuffer->pybuffer.buf, __pyx_t_19, __pyx_pybuffernd_coordA.diminfo[0].strides, __pyx_t_20, __pyx_pybuffernd_coordA.diminfo[1].strides)) - (*__Pyx_BufPtrStrided2d(__pyx_t_3lib_8parallel_9distances_DTYPE_t *, __pyx_pybuffernd_coordB.rcbuffer->pybuffer.buf, __pyx_t_21, __pyx_pybuffernd_coordB.diminfo[0].strides, __pyx_t_22, __pyx_pybuffernd_coordB.diminfo[1].strides)));
 
       /* "src/numtools/distances_parallel.pyx":146
  *         for j in range(cols) :
@@ -1840,7 +1840,7 @@ static PyObject *__pyx_pf_4core_8parallel_9distances_distance_array_serial(CYTHO
         __Pyx_RaiseBufferIndexError(__pyx_t_4);
         {__pyx_filename = __pyx_f[0]; __pyx_lineno = 146; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
-      __pyx_v_y = ((*__Pyx_BufPtrStrided2d(__pyx_t_4core_8parallel_9distances_DTYPE_t *, __pyx_pybuffernd_coordA.rcbuffer->pybuffer.buf, __pyx_t_23, __pyx_pybuffernd_coordA.diminfo[0].strides, __pyx_t_24, __pyx_pybuffernd_coordA.diminfo[1].strides)) - (*__Pyx_BufPtrStrided2d(__pyx_t_4core_8parallel_9distances_DTYPE_t *, __pyx_pybuffernd_coordB.rcbuffer->pybuffer.buf, __pyx_t_25, __pyx_pybuffernd_coordB.diminfo[0].strides, __pyx_t_26, __pyx_pybuffernd_coordB.diminfo[1].strides)));
+      __pyx_v_y = ((*__Pyx_BufPtrStrided2d(__pyx_t_3lib_8parallel_9distances_DTYPE_t *, __pyx_pybuffernd_coordA.rcbuffer->pybuffer.buf, __pyx_t_23, __pyx_pybuffernd_coordA.diminfo[0].strides, __pyx_t_24, __pyx_pybuffernd_coordA.diminfo[1].strides)) - (*__Pyx_BufPtrStrided2d(__pyx_t_3lib_8parallel_9distances_DTYPE_t *, __pyx_pybuffernd_coordB.rcbuffer->pybuffer.buf, __pyx_t_25, __pyx_pybuffernd_coordB.diminfo[0].strides, __pyx_t_26, __pyx_pybuffernd_coordB.diminfo[1].strides)));
 
       /* "src/numtools/distances_parallel.pyx":147
  *             x = coordA[i,0] - coordB[j,0];
@@ -1879,7 +1879,7 @@ static PyObject *__pyx_pf_4core_8parallel_9distances_distance_array_serial(CYTHO
         __Pyx_RaiseBufferIndexError(__pyx_t_4);
         {__pyx_filename = __pyx_f[0]; __pyx_lineno = 147; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
-      __pyx_v_z = ((*__Pyx_BufPtrStrided2d(__pyx_t_4core_8parallel_9distances_DTYPE_t *, __pyx_pybuffernd_coordA.rcbuffer->pybuffer.buf, __pyx_t_27, __pyx_pybuffernd_coordA.diminfo[0].strides, __pyx_t_28, __pyx_pybuffernd_coordA.diminfo[1].strides)) - (*__Pyx_BufPtrStrided2d(__pyx_t_4core_8parallel_9distances_DTYPE_t *, __pyx_pybuffernd_coordB.rcbuffer->pybuffer.buf, __pyx_t_29, __pyx_pybuffernd_coordB.diminfo[0].strides, __pyx_t_30, __pyx_pybuffernd_coordB.diminfo[1].strides)));
+      __pyx_v_z = ((*__Pyx_BufPtrStrided2d(__pyx_t_3lib_8parallel_9distances_DTYPE_t *, __pyx_pybuffernd_coordA.rcbuffer->pybuffer.buf, __pyx_t_27, __pyx_pybuffernd_coordA.diminfo[0].strides, __pyx_t_28, __pyx_pybuffernd_coordA.diminfo[1].strides)) - (*__Pyx_BufPtrStrided2d(__pyx_t_3lib_8parallel_9distances_DTYPE_t *, __pyx_pybuffernd_coordB.rcbuffer->pybuffer.buf, __pyx_t_29, __pyx_pybuffernd_coordB.diminfo[0].strides, __pyx_t_30, __pyx_pybuffernd_coordB.diminfo[1].strides)));
 
       /* "src/numtools/distances_parallel.pyx":150
  *             # Python objects, including np.ndarrays (even when defined)
@@ -1982,7 +1982,7 @@ static PyObject *__pyx_pf_4core_8parallel_9distances_distance_array_serial(CYTHO
         __Pyx_RaiseBufferIndexError(__pyx_t_4);
         {__pyx_filename = __pyx_f[0]; __pyx_lineno = 155; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
-      *__Pyx_BufPtrStrided2d(__pyx_t_4core_8parallel_9distances_DTYPE_t *, __pyx_pybuffernd_result.rcbuffer->pybuffer.buf, __pyx_t_31, __pyx_pybuffernd_result.diminfo[0].strides, __pyx_t_32, __pyx_pybuffernd_result.diminfo[1].strides) = __pyx_v_dist;
+      *__Pyx_BufPtrStrided2d(__pyx_t_3lib_8parallel_9distances_DTYPE_t *, __pyx_pybuffernd_result.rcbuffer->pybuffer.buf, __pyx_t_31, __pyx_pybuffernd_result.diminfo[0].strides, __pyx_t_32, __pyx_pybuffernd_result.diminfo[1].strides) = __pyx_v_dist;
     }
   }
 
@@ -2019,7 +2019,7 @@ static PyObject *__pyx_pf_4core_8parallel_9distances_distance_array_serial(CYTHO
     __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_coordB.rcbuffer->pybuffer);
     __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_result.rcbuffer->pybuffer);
   __Pyx_ErrRestore(__pyx_type, __pyx_value, __pyx_tb);}
-  __Pyx_AddTraceback("core.parallel.distances.distance_array_serial", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("lib.parallel.distances.distance_array_serial", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   goto __pyx_L2;
   __pyx_L0:;
@@ -2043,10 +2043,10 @@ static PyObject *__pyx_pf_4core_8parallel_9distances_distance_array_serial(CYTHO
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_4core_8parallel_9distances_3distance_array(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_4core_8parallel_9distances_2distance_array[] = "distance_array(ref,conf,box=None,result=None)\n\n    Calculate all distances d_ij between the coordinates ref[i] and\n    conf[j] in the numpy arrays *ref* and *conf*.\n\n    Parallel version that will automatically decide on how many threads\n    to run.\n    ";
-static PyMethodDef __pyx_mdef_4core_8parallel_9distances_3distance_array = {"distance_array", (PyCFunction)__pyx_pw_4core_8parallel_9distances_3distance_array, METH_VARARGS|METH_KEYWORDS, __pyx_doc_4core_8parallel_9distances_2distance_array};
-static PyObject *__pyx_pw_4core_8parallel_9distances_3distance_array(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_3lib_8parallel_9distances_3distance_array(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_3lib_8parallel_9distances_2distance_array[] = "distance_array(ref,conf,box=None,result=None)\n\n    Calculate all distances d_ij between the coordinates ref[i] and\n    conf[j] in the numpy arrays *ref* and *conf*.\n\n    Parallel version that will automatically decide on how many threads\n    to run.\n    ";
+static PyMethodDef __pyx_mdef_3lib_8parallel_9distances_3distance_array = {"distance_array", (PyCFunction)__pyx_pw_3lib_8parallel_9distances_3distance_array, METH_VARARGS|METH_KEYWORDS, __pyx_doc_3lib_8parallel_9distances_2distance_array};
+static PyObject *__pyx_pw_3lib_8parallel_9distances_3distance_array(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyArrayObject *__pyx_v_coordA = 0;
   PyArrayObject *__pyx_v_coordB = 0;
   PyArrayObject *__pyx_v_box = 0;
@@ -2132,7 +2132,7 @@ static PyObject *__pyx_pw_4core_8parallel_9distances_3distance_array(PyObject *_
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("distance_array", 0, 2, 4, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 163; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
-  __Pyx_AddTraceback("core.parallel.distances.distance_array", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("lib.parallel.distances.distance_array", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
@@ -2140,7 +2140,7 @@ static PyObject *__pyx_pw_4core_8parallel_9distances_3distance_array(PyObject *_
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_coordB), __pyx_ptype_5numpy_ndarray, 1, "coordB", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 164; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_box), __pyx_ptype_5numpy_ndarray, 1, "box", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 165; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_result), __pyx_ptype_5numpy_ndarray, 1, "result", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 166; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_r = __pyx_pf_4core_8parallel_9distances_2distance_array(__pyx_self, __pyx_v_coordA, __pyx_v_coordB, __pyx_v_box, __pyx_v_result);
+  __pyx_r = __pyx_pf_3lib_8parallel_9distances_2distance_array(__pyx_self, __pyx_v_coordA, __pyx_v_coordB, __pyx_v_box, __pyx_v_result);
 
   /* "src/numtools/distances_parallel.pyx":163
  * 
@@ -2159,17 +2159,17 @@ static PyObject *__pyx_pw_4core_8parallel_9distances_3distance_array(PyObject *_
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_4core_8parallel_9distances_2distance_array(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coordA, PyArrayObject *__pyx_v_coordB, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_result) {
-  __pyx_t_4core_8parallel_9distances_DTYPE_t __pyx_v_x;
-  __pyx_t_4core_8parallel_9distances_DTYPE_t __pyx_v_y;
-  __pyx_t_4core_8parallel_9distances_DTYPE_t __pyx_v_z;
-  __pyx_t_4core_8parallel_9distances_DTYPE_t __pyx_v_dist;
+static PyObject *__pyx_pf_3lib_8parallel_9distances_2distance_array(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_coordA, PyArrayObject *__pyx_v_coordB, PyArrayObject *__pyx_v_box, PyArrayObject *__pyx_v_result) {
+  __pyx_t_3lib_8parallel_9distances_DTYPE_t __pyx_v_x;
+  __pyx_t_3lib_8parallel_9distances_DTYPE_t __pyx_v_y;
+  __pyx_t_3lib_8parallel_9distances_DTYPE_t __pyx_v_z;
+  __pyx_t_3lib_8parallel_9distances_DTYPE_t __pyx_v_dist;
   Py_ssize_t __pyx_v_i;
   Py_ssize_t __pyx_v_j;
   char __pyx_v_has_box;
-  __pyx_t_4core_8parallel_9distances_DTYPE_t __pyx_v_box_x;
-  __pyx_t_4core_8parallel_9distances_DTYPE_t __pyx_v_box_y;
-  __pyx_t_4core_8parallel_9distances_DTYPE_t __pyx_v_box_z;
+  __pyx_t_3lib_8parallel_9distances_DTYPE_t __pyx_v_box_x;
+  __pyx_t_3lib_8parallel_9distances_DTYPE_t __pyx_v_box_y;
+  __pyx_t_3lib_8parallel_9distances_DTYPE_t __pyx_v_box_z;
   npy_intp __pyx_v_rows;
   npy_intp __pyx_v_cols;
   __Pyx_LocalBuf_ND __pyx_pybuffernd_box;
@@ -2238,22 +2238,22 @@ static PyObject *__pyx_pf_4core_8parallel_9distances_2distance_array(CYTHON_UNUS
   __pyx_pybuffernd_result.rcbuffer = &__pyx_pybuffer_result;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_coordA.rcbuffer->pybuffer, (PyObject*)__pyx_v_coordA, &__Pyx_TypeInfo_nn___pyx_t_4core_8parallel_9distances_DTYPE_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 163; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_coordA.rcbuffer->pybuffer, (PyObject*)__pyx_v_coordA, &__Pyx_TypeInfo_nn___pyx_t_3lib_8parallel_9distances_DTYPE_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 163; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __pyx_pybuffernd_coordA.diminfo[0].strides = __pyx_pybuffernd_coordA.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_coordA.diminfo[0].shape = __pyx_pybuffernd_coordA.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_coordA.diminfo[1].strides = __pyx_pybuffernd_coordA.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_coordA.diminfo[1].shape = __pyx_pybuffernd_coordA.rcbuffer->pybuffer.shape[1];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_coordB.rcbuffer->pybuffer, (PyObject*)__pyx_v_coordB, &__Pyx_TypeInfo_nn___pyx_t_4core_8parallel_9distances_DTYPE_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 163; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_coordB.rcbuffer->pybuffer, (PyObject*)__pyx_v_coordB, &__Pyx_TypeInfo_nn___pyx_t_3lib_8parallel_9distances_DTYPE_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 163; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __pyx_pybuffernd_coordB.diminfo[0].strides = __pyx_pybuffernd_coordB.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_coordB.diminfo[0].shape = __pyx_pybuffernd_coordB.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_coordB.diminfo[1].strides = __pyx_pybuffernd_coordB.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_coordB.diminfo[1].shape = __pyx_pybuffernd_coordB.rcbuffer->pybuffer.shape[1];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_box.rcbuffer->pybuffer, (PyObject*)__pyx_v_box, &__Pyx_TypeInfo_nn___pyx_t_4core_8parallel_9distances_DTYPE_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 163; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_box.rcbuffer->pybuffer, (PyObject*)__pyx_v_box, &__Pyx_TypeInfo_nn___pyx_t_3lib_8parallel_9distances_DTYPE_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 163; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __pyx_pybuffernd_box.diminfo[0].strides = __pyx_pybuffernd_box.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_box.diminfo[0].shape = __pyx_pybuffernd_box.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_result.rcbuffer->pybuffer, (PyObject*)__pyx_v_result, &__Pyx_TypeInfo_nn___pyx_t_4core_8parallel_9distances_DTYPE_t, PyBUF_FORMAT| PyBUF_STRIDES| PyBUF_WRITABLE, 2, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 163; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_result.rcbuffer->pybuffer, (PyObject*)__pyx_v_result, &__Pyx_TypeInfo_nn___pyx_t_3lib_8parallel_9distances_DTYPE_t, PyBUF_FORMAT| PyBUF_STRIDES| PyBUF_WRITABLE, 2, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 163; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __pyx_pybuffernd_result.diminfo[0].strides = __pyx_pybuffernd_result.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_result.diminfo[0].shape = __pyx_pybuffernd_result.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_result.diminfo[1].strides = __pyx_pybuffernd_result.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_result.diminfo[1].shape = __pyx_pybuffernd_result.rcbuffer->pybuffer.shape[1];
 
@@ -2295,7 +2295,7 @@ static PyObject *__pyx_pf_4core_8parallel_9distances_2distance_array(CYTHON_UNUS
  */
     __pyx_t_3 = 0;
     if (__pyx_t_3 < 0) __pyx_t_3 += __pyx_pybuffernd_box.diminfo[0].shape;
-    __pyx_v_box_x = (*__Pyx_BufPtrStrided1d(__pyx_t_4core_8parallel_9distances_DTYPE_t *, __pyx_pybuffernd_box.rcbuffer->pybuffer.buf, __pyx_t_3, __pyx_pybuffernd_box.diminfo[0].strides));
+    __pyx_v_box_x = (*__Pyx_BufPtrStrided1d(__pyx_t_3lib_8parallel_9distances_DTYPE_t *, __pyx_pybuffernd_box.rcbuffer->pybuffer.buf, __pyx_t_3, __pyx_pybuffernd_box.diminfo[0].strides));
 
     /* "src/numtools/distances_parallel.pyx":185
  *         has_box = 1
@@ -2306,7 +2306,7 @@ static PyObject *__pyx_pf_4core_8parallel_9distances_2distance_array(CYTHON_UNUS
  */
     __pyx_t_4 = 1;
     if (__pyx_t_4 < 0) __pyx_t_4 += __pyx_pybuffernd_box.diminfo[0].shape;
-    __pyx_v_box_y = (*__Pyx_BufPtrStrided1d(__pyx_t_4core_8parallel_9distances_DTYPE_t *, __pyx_pybuffernd_box.rcbuffer->pybuffer.buf, __pyx_t_4, __pyx_pybuffernd_box.diminfo[0].strides));
+    __pyx_v_box_y = (*__Pyx_BufPtrStrided1d(__pyx_t_3lib_8parallel_9distances_DTYPE_t *, __pyx_pybuffernd_box.rcbuffer->pybuffer.buf, __pyx_t_4, __pyx_pybuffernd_box.diminfo[0].strides));
 
     /* "src/numtools/distances_parallel.pyx":186
  *         box_x = box[0]
@@ -2317,7 +2317,7 @@ static PyObject *__pyx_pf_4core_8parallel_9distances_2distance_array(CYTHON_UNUS
  */
     __pyx_t_5 = 2;
     if (__pyx_t_5 < 0) __pyx_t_5 += __pyx_pybuffernd_box.diminfo[0].shape;
-    __pyx_v_box_z = (*__Pyx_BufPtrStrided1d(__pyx_t_4core_8parallel_9distances_DTYPE_t *, __pyx_pybuffernd_box.rcbuffer->pybuffer.buf, __pyx_t_5, __pyx_pybuffernd_box.diminfo[0].strides));
+    __pyx_v_box_z = (*__Pyx_BufPtrStrided1d(__pyx_t_3lib_8parallel_9distances_DTYPE_t *, __pyx_pybuffernd_box.rcbuffer->pybuffer.buf, __pyx_t_5, __pyx_pybuffernd_box.diminfo[0].strides));
     goto __pyx_L3;
   }
   __pyx_L3:;
@@ -2396,10 +2396,10 @@ static PyObject *__pyx_pf_4core_8parallel_9distances_2distance_array(CYTHON_UNUS
     {
       __Pyx_BufFmt_StackElem __pyx_stack[1];
       __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_result.rcbuffer->pybuffer);
-      __pyx_t_11 = __Pyx_GetBufferAndValidate(&__pyx_pybuffernd_result.rcbuffer->pybuffer, (PyObject*)__pyx_t_10, &__Pyx_TypeInfo_nn___pyx_t_4core_8parallel_9distances_DTYPE_t, PyBUF_FORMAT| PyBUF_STRIDES| PyBUF_WRITABLE, 2, 0, __pyx_stack);
+      __pyx_t_11 = __Pyx_GetBufferAndValidate(&__pyx_pybuffernd_result.rcbuffer->pybuffer, (PyObject*)__pyx_t_10, &__Pyx_TypeInfo_nn___pyx_t_3lib_8parallel_9distances_DTYPE_t, PyBUF_FORMAT| PyBUF_STRIDES| PyBUF_WRITABLE, 2, 0, __pyx_stack);
       if (unlikely(__pyx_t_11 < 0)) {
         PyErr_Fetch(&__pyx_t_12, &__pyx_t_13, &__pyx_t_14);
-        if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_result.rcbuffer->pybuffer, (PyObject*)__pyx_v_result, &__Pyx_TypeInfo_nn___pyx_t_4core_8parallel_9distances_DTYPE_t, PyBUF_FORMAT| PyBUF_STRIDES| PyBUF_WRITABLE, 2, 0, __pyx_stack) == -1)) {
+        if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_result.rcbuffer->pybuffer, (PyObject*)__pyx_v_result, &__Pyx_TypeInfo_nn___pyx_t_3lib_8parallel_9distances_DTYPE_t, PyBUF_FORMAT| PyBUF_STRIDES| PyBUF_WRITABLE, 2, 0, __pyx_stack) == -1)) {
           Py_XDECREF(__pyx_t_12); Py_XDECREF(__pyx_t_13); Py_XDECREF(__pyx_t_14);
           __Pyx_RaiseBufferFallbackError();
         } else {
@@ -2507,7 +2507,7 @@ static PyObject *__pyx_pf_4core_8parallel_9distances_2distance_array(CYTHON_UNUS
                 #define unlikely(x) (x)
             #endif
             #ifdef _OPENMP
-            #pragma omp parallel  private(__pyx_t_16, __pyx_t_1, __pyx_t_21, __pyx_t_24, __pyx_t_32, __pyx_t_25, __pyx_t_15, __pyx_t_31, __pyx_t_19, __pyx_t_22, __pyx_t_18, __pyx_t_33, __pyx_t_23, __pyx_t_26, __pyx_t_28, __pyx_t_27, __pyx_t_30, __pyx_t_29, __pyx_t_11, __pyx_t_17, __pyx_t_20) private(__pyx_filename, __pyx_lineno, __pyx_clineno) shared(__pyx_parallel_why, __pyx_parallel_exc_type, __pyx_parallel_exc_value, __pyx_parallel_exc_tb)
+            #pragma omp parallel  private(__pyx_t_26, __pyx_t_1, __pyx_t_20, __pyx_t_27, __pyx_t_22, __pyx_t_31, __pyx_t_23, __pyx_t_25, __pyx_t_15, __pyx_t_21, __pyx_t_11, __pyx_t_19, __pyx_t_30, __pyx_t_28, __pyx_t_29, __pyx_t_17, __pyx_t_18, __pyx_t_33, __pyx_t_16, __pyx_t_32, __pyx_t_24) private(__pyx_filename, __pyx_lineno, __pyx_clineno) shared(__pyx_parallel_why, __pyx_parallel_exc_type, __pyx_parallel_exc_value, __pyx_parallel_exc_tb)
             #endif /* _OPENMP */
             {
                 #ifdef _OPENMP
@@ -2527,12 +2527,12 @@ static PyObject *__pyx_pf_4core_8parallel_9distances_2distance_array(CYTHON_UNUS
                 __pyx_t_15 = __pyx_v_rows;
                 if (1 == 0) abort();
                 {
-                    Py_ssize_t __pyx_parallel_temp0 = 0xbad0bad0;
-                    Py_ssize_t __pyx_parallel_temp1 = 0xbad0bad0;
-                    __pyx_t_4core_8parallel_9distances_DTYPE_t __pyx_parallel_temp2 = __PYX_NAN();
-                    __pyx_t_4core_8parallel_9distances_DTYPE_t __pyx_parallel_temp3 = __PYX_NAN();
-                    __pyx_t_4core_8parallel_9distances_DTYPE_t __pyx_parallel_temp4 = __PYX_NAN();
-                    __pyx_t_4core_8parallel_9distances_DTYPE_t __pyx_parallel_temp5 = __PYX_NAN();
+                    __pyx_t_3lib_8parallel_9distances_DTYPE_t __pyx_parallel_temp0 = __PYX_NAN();
+                    __pyx_t_3lib_8parallel_9distances_DTYPE_t __pyx_parallel_temp1 = __PYX_NAN();
+                    __pyx_t_3lib_8parallel_9distances_DTYPE_t __pyx_parallel_temp2 = __PYX_NAN();
+                    Py_ssize_t __pyx_parallel_temp3 = 0xbad0bad0;
+                    Py_ssize_t __pyx_parallel_temp4 = 0xbad0bad0;
+                    __pyx_t_3lib_8parallel_9distances_DTYPE_t __pyx_parallel_temp5 = __PYX_NAN();
                     const char *__pyx_parallel_filename = NULL; int __pyx_parallel_lineno = 0, __pyx_parallel_clineno = 0;
                     PyObject *__pyx_parallel_exc_type = NULL, *__pyx_parallel_exc_value = NULL, *__pyx_parallel_exc_tb = NULL;
                     int __pyx_parallel_why;
@@ -2550,18 +2550,18 @@ static PyObject *__pyx_pf_4core_8parallel_9distances_2distance_array(CYTHON_UNUS
                     if (__pyx_t_17 > 0)
                     {
                         #ifdef _OPENMP
-                        #pragma omp for lastprivate(__pyx_v_j) firstprivate(__pyx_v_i) lastprivate(__pyx_v_i) lastprivate(__pyx_v_x) lastprivate(__pyx_v_z) lastprivate(__pyx_v_dist) lastprivate(__pyx_v_y) schedule(dynamic, __pyx_t_11)
+                        #pragma omp for lastprivate(__pyx_v_z) lastprivate(__pyx_v_y) lastprivate(__pyx_v_x) lastprivate(__pyx_v_j) firstprivate(__pyx_v_i) lastprivate(__pyx_v_i) lastprivate(__pyx_v_dist) schedule(dynamic, __pyx_t_11)
                         #endif /* _OPENMP */
                         for (__pyx_t_16 = 0; __pyx_t_16 < __pyx_t_17; __pyx_t_16++){
                             if (__pyx_parallel_why < 2)
                             {
                                 __pyx_v_i = 0 + 1 * __pyx_t_16;
                                 /* Initialize private variables to invalid values */
+                                __pyx_v_z = ((__pyx_t_3lib_8parallel_9distances_DTYPE_t)__PYX_NAN());
+                                __pyx_v_y = ((__pyx_t_3lib_8parallel_9distances_DTYPE_t)__PYX_NAN());
+                                __pyx_v_x = ((__pyx_t_3lib_8parallel_9distances_DTYPE_t)__PYX_NAN());
                                 __pyx_v_j = ((Py_ssize_t)0xbad0bad0);
-                                __pyx_v_x = ((__pyx_t_4core_8parallel_9distances_DTYPE_t)__PYX_NAN());
-                                __pyx_v_z = ((__pyx_t_4core_8parallel_9distances_DTYPE_t)__PYX_NAN());
-                                __pyx_v_dist = ((__pyx_t_4core_8parallel_9distances_DTYPE_t)__PYX_NAN());
-                                __pyx_v_y = ((__pyx_t_4core_8parallel_9distances_DTYPE_t)__PYX_NAN());
+                                __pyx_v_dist = ((__pyx_t_3lib_8parallel_9distances_DTYPE_t)__PYX_NAN());
 
                                 /* "src/numtools/distances_parallel.pyx":201
  *         # The two loops are independent, let's use
@@ -2589,7 +2589,7 @@ static PyObject *__pyx_pf_4core_8parallel_9distances_2distance_array(CYTHON_UNUS
                                   __pyx_t_23 = 0;
                                   if (__pyx_t_22 < 0) __pyx_t_22 += __pyx_pybuffernd_coordB.diminfo[0].shape;
                                   if (__pyx_t_23 < 0) __pyx_t_23 += __pyx_pybuffernd_coordB.diminfo[1].shape;
-                                  __pyx_v_x = ((*__Pyx_BufPtrStrided2d(__pyx_t_4core_8parallel_9distances_DTYPE_t *, __pyx_pybuffernd_coordA.rcbuffer->pybuffer.buf, __pyx_t_20, __pyx_pybuffernd_coordA.diminfo[0].strides, __pyx_t_21, __pyx_pybuffernd_coordA.diminfo[1].strides)) - (*__Pyx_BufPtrStrided2d(__pyx_t_4core_8parallel_9distances_DTYPE_t *, __pyx_pybuffernd_coordB.rcbuffer->pybuffer.buf, __pyx_t_22, __pyx_pybuffernd_coordB.diminfo[0].strides, __pyx_t_23, __pyx_pybuffernd_coordB.diminfo[1].strides)));
+                                  __pyx_v_x = ((*__Pyx_BufPtrStrided2d(__pyx_t_3lib_8parallel_9distances_DTYPE_t *, __pyx_pybuffernd_coordA.rcbuffer->pybuffer.buf, __pyx_t_20, __pyx_pybuffernd_coordA.diminfo[0].strides, __pyx_t_21, __pyx_pybuffernd_coordA.diminfo[1].strides)) - (*__Pyx_BufPtrStrided2d(__pyx_t_3lib_8parallel_9distances_DTYPE_t *, __pyx_pybuffernd_coordB.rcbuffer->pybuffer.buf, __pyx_t_22, __pyx_pybuffernd_coordB.diminfo[0].strides, __pyx_t_23, __pyx_pybuffernd_coordB.diminfo[1].strides)));
 
                                   /* "src/numtools/distances_parallel.pyx":203
  *             for j in range(cols) :
@@ -2606,7 +2606,7 @@ static PyObject *__pyx_pf_4core_8parallel_9distances_2distance_array(CYTHON_UNUS
                                   __pyx_t_27 = 1;
                                   if (__pyx_t_26 < 0) __pyx_t_26 += __pyx_pybuffernd_coordB.diminfo[0].shape;
                                   if (__pyx_t_27 < 0) __pyx_t_27 += __pyx_pybuffernd_coordB.diminfo[1].shape;
-                                  __pyx_v_y = ((*__Pyx_BufPtrStrided2d(__pyx_t_4core_8parallel_9distances_DTYPE_t *, __pyx_pybuffernd_coordA.rcbuffer->pybuffer.buf, __pyx_t_24, __pyx_pybuffernd_coordA.diminfo[0].strides, __pyx_t_25, __pyx_pybuffernd_coordA.diminfo[1].strides)) - (*__Pyx_BufPtrStrided2d(__pyx_t_4core_8parallel_9distances_DTYPE_t *, __pyx_pybuffernd_coordB.rcbuffer->pybuffer.buf, __pyx_t_26, __pyx_pybuffernd_coordB.diminfo[0].strides, __pyx_t_27, __pyx_pybuffernd_coordB.diminfo[1].strides)));
+                                  __pyx_v_y = ((*__Pyx_BufPtrStrided2d(__pyx_t_3lib_8parallel_9distances_DTYPE_t *, __pyx_pybuffernd_coordA.rcbuffer->pybuffer.buf, __pyx_t_24, __pyx_pybuffernd_coordA.diminfo[0].strides, __pyx_t_25, __pyx_pybuffernd_coordA.diminfo[1].strides)) - (*__Pyx_BufPtrStrided2d(__pyx_t_3lib_8parallel_9distances_DTYPE_t *, __pyx_pybuffernd_coordB.rcbuffer->pybuffer.buf, __pyx_t_26, __pyx_pybuffernd_coordB.diminfo[0].strides, __pyx_t_27, __pyx_pybuffernd_coordB.diminfo[1].strides)));
 
                                   /* "src/numtools/distances_parallel.pyx":204
  *                 x = coordA[i,0] - coordB[j,0];
@@ -2623,7 +2623,7 @@ static PyObject *__pyx_pf_4core_8parallel_9distances_2distance_array(CYTHON_UNUS
                                   __pyx_t_31 = 2;
                                   if (__pyx_t_30 < 0) __pyx_t_30 += __pyx_pybuffernd_coordB.diminfo[0].shape;
                                   if (__pyx_t_31 < 0) __pyx_t_31 += __pyx_pybuffernd_coordB.diminfo[1].shape;
-                                  __pyx_v_z = ((*__Pyx_BufPtrStrided2d(__pyx_t_4core_8parallel_9distances_DTYPE_t *, __pyx_pybuffernd_coordA.rcbuffer->pybuffer.buf, __pyx_t_28, __pyx_pybuffernd_coordA.diminfo[0].strides, __pyx_t_29, __pyx_pybuffernd_coordA.diminfo[1].strides)) - (*__Pyx_BufPtrStrided2d(__pyx_t_4core_8parallel_9distances_DTYPE_t *, __pyx_pybuffernd_coordB.rcbuffer->pybuffer.buf, __pyx_t_30, __pyx_pybuffernd_coordB.diminfo[0].strides, __pyx_t_31, __pyx_pybuffernd_coordB.diminfo[1].strides)));
+                                  __pyx_v_z = ((*__Pyx_BufPtrStrided2d(__pyx_t_3lib_8parallel_9distances_DTYPE_t *, __pyx_pybuffernd_coordA.rcbuffer->pybuffer.buf, __pyx_t_28, __pyx_pybuffernd_coordA.diminfo[0].strides, __pyx_t_29, __pyx_pybuffernd_coordA.diminfo[1].strides)) - (*__Pyx_BufPtrStrided2d(__pyx_t_3lib_8parallel_9distances_DTYPE_t *, __pyx_pybuffernd_coordB.rcbuffer->pybuffer.buf, __pyx_t_30, __pyx_pybuffernd_coordB.diminfo[0].strides, __pyx_t_31, __pyx_pybuffernd_coordB.diminfo[1].strides)));
 
                                   /* "src/numtools/distances_parallel.pyx":207
  *                 # Python objects, including np.ndarrays (even when defined)
@@ -2715,7 +2715,7 @@ static PyObject *__pyx_pf_4core_8parallel_9distances_2distance_array(CYTHON_UNUS
                                   __pyx_t_33 = __pyx_v_j;
                                   if (__pyx_t_32 < 0) __pyx_t_32 += __pyx_pybuffernd_result.diminfo[0].shape;
                                   if (__pyx_t_33 < 0) __pyx_t_33 += __pyx_pybuffernd_result.diminfo[1].shape;
-                                  *__Pyx_BufPtrStrided2d(__pyx_t_4core_8parallel_9distances_DTYPE_t *, __pyx_pybuffernd_result.rcbuffer->pybuffer.buf, __pyx_t_32, __pyx_pybuffernd_result.diminfo[0].strides, __pyx_t_33, __pyx_pybuffernd_result.diminfo[1].strides) = __pyx_v_dist;
+                                  *__Pyx_BufPtrStrided2d(__pyx_t_3lib_8parallel_9distances_DTYPE_t *, __pyx_pybuffernd_result.rcbuffer->pybuffer.buf, __pyx_t_32, __pyx_pybuffernd_result.diminfo[0].strides, __pyx_t_33, __pyx_pybuffernd_result.diminfo[1].strides) = __pyx_v_dist;
                                 }
                                 goto __pyx_L20;
                                 __pyx_L14_error:;
@@ -2742,12 +2742,12 @@ static PyObject *__pyx_pf_4core_8parallel_9distances_2distance_array(CYTHON_UNUS
                                 #pragma omp critical(__pyx_parallel_lastprivates0)
                                 #endif /* _OPENMP */
                                 {
-                                    __pyx_parallel_temp0 = __pyx_v_j;
-                                    __pyx_parallel_temp1 = __pyx_v_i;
+                                    __pyx_parallel_temp0 = __pyx_v_z;
+                                    __pyx_parallel_temp1 = __pyx_v_y;
                                     __pyx_parallel_temp2 = __pyx_v_x;
-                                    __pyx_parallel_temp3 = __pyx_v_z;
-                                    __pyx_parallel_temp4 = __pyx_v_dist;
-                                    __pyx_parallel_temp5 = __pyx_v_y;
+                                    __pyx_parallel_temp3 = __pyx_v_j;
+                                    __pyx_parallel_temp4 = __pyx_v_i;
+                                    __pyx_parallel_temp5 = __pyx_v_dist;
                                 }
                                 __pyx_L20:;
                                 #ifdef _OPENMP
@@ -2761,12 +2761,12 @@ static PyObject *__pyx_pf_4core_8parallel_9distances_2distance_array(CYTHON_UNUS
                       __pyx_parallel_why = 4;
                     }
                     if (__pyx_parallel_why) {
-                      __pyx_v_j = __pyx_parallel_temp0;
-                      __pyx_v_i = __pyx_parallel_temp1;
+                      __pyx_v_z = __pyx_parallel_temp0;
+                      __pyx_v_y = __pyx_parallel_temp1;
                       __pyx_v_x = __pyx_parallel_temp2;
-                      __pyx_v_z = __pyx_parallel_temp3;
-                      __pyx_v_dist = __pyx_parallel_temp4;
-                      __pyx_v_y = __pyx_parallel_temp5;
+                      __pyx_v_j = __pyx_parallel_temp3;
+                      __pyx_v_i = __pyx_parallel_temp4;
+                      __pyx_v_dist = __pyx_parallel_temp5;
                       switch (__pyx_parallel_why) {
                             case 3: goto __pyx_L11_return;
                             case 4:
@@ -2918,7 +2918,7 @@ static PyObject *__pyx_pf_4core_8parallel_9distances_2distance_array(CYTHON_UNUS
     __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_coordB.rcbuffer->pybuffer);
     __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_result.rcbuffer->pybuffer);
   __Pyx_ErrRestore(__pyx_type, __pyx_value, __pyx_tb);}
-  __Pyx_AddTraceback("core.parallel.distances.distance_array", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("lib.parallel.distances.distance_array", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   goto __pyx_L2;
   __pyx_L0:;
@@ -4975,7 +4975,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_cols, __pyx_k_cols, sizeof(__pyx_k_cols), 0, 0, 1, 1},
   {&__pyx_n_s_coordA, __pyx_k_coordA, sizeof(__pyx_k_coordA), 0, 0, 1, 1},
   {&__pyx_n_s_coordB, __pyx_k_coordB, sizeof(__pyx_k_coordB), 0, 0, 1, 1},
-  {&__pyx_n_s_core_parallel_distances, __pyx_k_core_parallel_distances, sizeof(__pyx_k_core_parallel_distances), 0, 0, 1, 1},
   {&__pyx_n_s_dist, __pyx_k_dist, sizeof(__pyx_k_dist), 0, 0, 1, 1},
   {&__pyx_n_s_distance_array, __pyx_k_distance_array, sizeof(__pyx_k_distance_array), 0, 0, 1, 1},
   {&__pyx_n_s_distance_array_serial, __pyx_k_distance_array_serial, sizeof(__pyx_k_distance_array_serial), 0, 0, 1, 1},
@@ -4986,6 +4985,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_i, __pyx_k_i, sizeof(__pyx_k_i), 0, 0, 1, 1},
   {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
   {&__pyx_n_s_j, __pyx_k_j, sizeof(__pyx_k_j), 0, 0, 1, 1},
+  {&__pyx_n_s_lib_parallel_distances, __pyx_k_lib_parallel_distances, sizeof(__pyx_k_lib_parallel_distances), 0, 0, 1, 1},
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
   {&__pyx_kp_u_ndarray_is_not_C_contiguous, __pyx_k_ndarray_is_not_C_contiguous, sizeof(__pyx_k_ndarray_is_not_C_contiguous), 0, 1, 0, 0},
   {&__pyx_kp_u_ndarray_is_not_Fortran_contiguou, __pyx_k_ndarray_is_not_Fortran_contiguou, sizeof(__pyx_k_ndarray_is_not_Fortran_contiguou), 0, 1, 0, 0},
@@ -5187,14 +5187,14 @@ PyMODINIT_FUNC PyInit_distances(void)
   #if PY_MAJOR_VERSION < 3 && (__PYX_DEFAULT_STRING_ENCODING_IS_ASCII || __PYX_DEFAULT_STRING_ENCODING_IS_DEFAULT)
   if (__Pyx_init_sys_getdefaultencoding_params() < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   #endif
-  if (__pyx_module_is_main_core__parallel__distances) {
+  if (__pyx_module_is_main_lib__parallel__distances) {
     if (PyObject_SetAttrString(__pyx_m, "__name__", __pyx_n_s_main) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
   }
   #if PY_MAJOR_VERSION >= 3
   {
     PyObject *modules = PyImport_GetModuleDict(); if (unlikely(!modules)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    if (!PyDict_GetItemString(modules, "core.parallel.distances")) {
-      if (unlikely(PyDict_SetItemString(modules, "core.parallel.distances", __pyx_m) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (!PyDict_GetItemString(modules, "lib.parallel.distances")) {
+      if (unlikely(PyDict_SetItemString(modules, "lib.parallel.distances", __pyx_m) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
   }
   #endif
@@ -5257,7 +5257,7 @@ PyMODINIT_FUNC PyInit_distances(void)
  *                           np.ndarray[DTYPE_t, ndim=2] coordB, \
  *                           np.ndarray[DTYPE_t, ndim=1] box = None, \
  */
-  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_4core_8parallel_9distances_1distance_array_serial, NULL, __pyx_n_s_core_parallel_distances); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 97; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_3lib_8parallel_9distances_1distance_array_serial, NULL, __pyx_n_s_lib_parallel_distances); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 97; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_distance_array_serial, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 97; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -5269,7 +5269,7 @@ PyMODINIT_FUNC PyInit_distances(void)
  *                    np.ndarray[DTYPE_t, ndim=2] coordB, \
  *                    np.ndarray[DTYPE_t, ndim=1] box = None, \
  */
-  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_4core_8parallel_9distances_3distance_array, NULL, __pyx_n_s_core_parallel_distances); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 163; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_3lib_8parallel_9distances_3distance_array, NULL, __pyx_n_s_lib_parallel_distances); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 163; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_distance_array, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 163; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -5300,11 +5300,11 @@ PyMODINIT_FUNC PyInit_distances(void)
   __Pyx_XDECREF(__pyx_t_2);
   if (__pyx_m) {
     if (__pyx_d) {
-      __Pyx_AddTraceback("init core.parallel.distances", __pyx_clineno, __pyx_lineno, __pyx_filename);
+      __Pyx_AddTraceback("init lib.parallel.distances", __pyx_clineno, __pyx_lineno, __pyx_filename);
     }
     Py_DECREF(__pyx_m); __pyx_m = 0;
   } else if (!PyErr_Occurred()) {
-    PyErr_SetString(PyExc_ImportError, "init core.parallel.distances");
+    PyErr_SetString(PyExc_ImportError, "init lib.parallel.distances");
   }
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
