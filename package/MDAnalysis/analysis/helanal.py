@@ -98,10 +98,9 @@ References
    characteristics of alpha helices in globular proteins. *Biophysical Journal*
    75(4):1935-1944.
 
-.. [Bansal2000] Bansal M, Kumar S, Velavan R. 2000. HELANAL - A program to
-   characterise helix geometry in proteins. *J Biomol Struct Dyn.*  17(5):811-9.
-   http://www.jbsdonline.com/c3003/c4003/HELANAL-A-Program-to-Characterize-Helix-Geometry-in-Proteins-p-811-820
-   -p10020.html
+.. [Bansal2000] Bansal M, Kumar S, Velavan R. 2000.
+   HELANAL - A program to characterise helix geometry in proteins.
+   *J Biomol Struct Dyn.*  17(5):811-819.
 
 Functions
 ---------
@@ -221,7 +220,7 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
 
     :Keywords:
        *selection*
-          selection string that selects Calpha atoms ["name CA"]
+          selection string that selects Calpha atoms [``"name CA"``]
        *start*
           start residue
        *end*
@@ -233,28 +232,28 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
           stop analysis for time (ps) =< *finish*; ``None`` goes to the
           end of the trajectory [``None``]
        *matrix_filename*
-          Output file- bending matrix ["bending_matrix.dat"]
+          Output file- bending matrix [``"bending_matrix.dat"``]
        *origin_pdbfile*
-          Output file- origin pdb file ["origin.pdb"]
+          Output file- origin pdb file [``"origin.pdb"``]
        *summary_filename*
-          Output file- all of the basic data ["summary.txt"]
+          Output file- all of the basic data [``"summary.txt"``]
        *screw_filename*
           Output file- local tilts of individual residues from 2 to n-1
-          ["screw.xvg"]
+          [``"screw.xvg"``]
        *tilt_filename*
           Output file- tilt of line of best fit applied to origin axes
-          ["local_tilt.xvg"]
+          [``"local_tilt.xvg"``]
        *bend_filename*
           Output file- local bend angles between successive local helix axes
-          ["local_bend.xvg"]
+          [``"local_bend.xvg"``]
        *twist_filename*
           Output file- local unit twist between successive helix turns
-          ["unit_twist.xvg"]
+          [``"unit_twist.xvg"``]
        *prefix*
           Prefix to add to all output file names; set to ``None`` to disable
-          ["helanal__"]
+          [``"helanal__"``]
        *ref_axis*
-          Calculate tilt angle relative to the axis; if ``None`` then [0,0,1]
+          Calculate tilt angle relative to the axis; if ``None`` then ``[0,0,1]``
           is chosen [``None``]
 
     :Raises:

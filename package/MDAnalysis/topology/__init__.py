@@ -103,7 +103,7 @@ The following table lists the currently supported topology formats.
 
    Hoomd XML         xml         `HOOMD XML`_ topology file.  Reads atom types, masses, and
                                  charges if possible. Also reads bonds, angles, and dihedrals.
-                                 
+
                                  :mod:`MDAnalysis.topology.HOOMDXMLarser`
 
    ================= ==========  =====================================================
@@ -216,11 +216,11 @@ represents the apex of the angle.
 
 
 dihedrals
-~~~~~~~~
+~~~~~~~~~
 
 **Proper dihedral angles** are represented by a :class:`list` of :class:`tuple`. Each
 tuple contains four atom numbers. The angle of the torsion
-is defined by the angle between the planes formed by atoms 1, 2, and 3, 
+is defined by the angle between the planes formed by atoms 1, 2, and 3,
 and 2, 3, and 4.
 
 
@@ -229,7 +229,7 @@ impropers
 
 **Improper dihedral angles** are represented by a :class:`list` of :class:`tuple`. Each
 tuple contains four atom numbers.  The angle of the improper torsion
-is again defined by the angle between the planes formed by atoms 1, 2, and 3, 
+is again defined by the angle between the planes formed by atoms 1, 2, and 3,
 and 2, 3, and 4.  Improper dihedrals differ from regular dihedrals as the
 four atoms need not be sequentially bonded, and are instead often all bonded
 to the second atom.

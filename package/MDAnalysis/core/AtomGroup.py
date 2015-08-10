@@ -3339,7 +3339,7 @@ class Universe(object):
 
     As a special case, when the topology is a file that contains atom
     information *and* coordinates (such as XYZ, PDB, GRO or CRD, see
-    :ref:`Supported coordinates formats`) then the coordinates are immediately
+    :ref:`Supported coordinate formats`) then the coordinates are immediately
     loaded from the "topology" file unless a trajectory is supplied.
 
     Examples for setting up a universe::
@@ -3397,7 +3397,7 @@ class Universe(object):
        :meth:`make_anchor`, :meth:`remove_anchor`, :attr:`is_anchor`, and
        :attr:`anchor_name` were added to support the pickling/unpickling of
        :class:`AtomGroup`.
-       Deprecated selectAtoms in favour of select_atoms
+       Deprecated :meth:`selectAtoms` in favour of :meth:`select_atoms`.
     """
 
     def __init__(self, *args, **kwargs):
@@ -3458,11 +3458,12 @@ class Universe(object):
               instances pickled with *anchor_name*==``None``. [``None``]
 
 
-        This routine tries to do the right thing:
+        This class tries to do the right thing:
 
-        1. If a pdb/gro file is provided instead of a psf and no *coordinatefile*
-           then the coordinates are taken from the first file. Thus you can load
-           a functional universe with ::
+        1. If file with topology and coordinate information (such as PDB, GRO,
+           CRD, ...) is provided instead of a topology file and no
+           *coordinatefile* then the coordinates are taken from the first
+           file. Thus you can load a functional universe with ::
 
               u = Universe('1ake.pdb')
 
