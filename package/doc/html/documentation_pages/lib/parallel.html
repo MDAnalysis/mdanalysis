@@ -63,7 +63,7 @@
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">9.6. Parallel algorithms for MDAnalysis</a><ul>
-<li><a class="reference internal" href="#fast-parallel-distance-array-computation-mdanalysis-core-parallel-distances">9.6.1. Fast parallel distance array computation &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.core.parallel.distances</span></tt></a></li>
+<li><a class="reference internal" href="#fast-parallel-distance-array-computation-mdanalysis-lib-parallel-distances">9.6.1. Fast parallel distance array computation &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.lib.parallel.distances</span></tt></a></li>
 </ul>
 </li>
 </ul>
@@ -111,8 +111,8 @@ modern multi-core processors.</p>
 it is possible that the parallel code has some bugs or
 incompatibilities or less features than the serial code.</p>
 </div>
-<span class="target" id="module-MDAnalysis.lib.parallel.distances"></span><div class="section" id="fast-parallel-distance-array-computation-mdanalysis-core-parallel-distances">
-<h2>9.6.1. Fast parallel distance array computation &#8212; <tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.core.parallel.distances</span></tt><a class="headerlink" href="#fast-parallel-distance-array-computation-mdanalysis-core-parallel-distances" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-MDAnalysis.lib.parallel.distances"></span><div class="section" id="fast-parallel-distance-array-computation-mdanalysis-lib-parallel-distances">
+<h2>9.6.1. Fast parallel distance array computation &#8212; <a class="reference internal" href="#module-MDAnalysis.lib.parallel.distances" title="MDAnalysis.lib.parallel.distances"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.lib.parallel.distances</span></tt></a><a class="headerlink" href="#fast-parallel-distance-array-computation-mdanalysis-lib-parallel-distances" title="Permalink to this headline">¶</a></h2>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -126,11 +126,11 @@ incompatibilities or less features than the serial code.</p>
 </tbody>
 </table>
 <p>A fast, parallel <a class="reference internal" href="#MDAnalysis.lib.parallel.distances.distance_array" title="MDAnalysis.lib.parallel.distances.distance_array"><tt class="xref py py-func docutils literal"><span class="pre">distance_array()</span></tt></a> function as a substitute for
-<tt class="xref py py-func docutils literal"><span class="pre">MDAnalysis.core.distances.distance_array()</span></tt>; implemented with
+<a class="reference internal" href="distances.html#MDAnalysis.lib.distances.distance_array" title="MDAnalysis.lib.distances.distance_array"><tt class="xref py py-func docutils literal"><span class="pre">MDAnalysis.lib.distances.distance_array()</span></tt></a>; implemented with
 <a class="reference external" href="http://docs.cython.org/src/userguide/parallelism.html">Cython Parallelism</a>. For development notes see the comments for
 <a class="reference external" href="http://issues.mdanalysis.org/80">Issue 80</a>.</p>
 <p>Load the module with</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">MDAnalysis.core.parallel.distances</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">MDAnalysis.lib.parallel.distances</span>
 </pre></div>
 </div>
 <dl class="function">
@@ -164,7 +164,7 @@ calculates simple distances.</p>
 <p>A pre-allocated array can be supplied as <em>results</em>.</p>
 <p>Serial version (to check the parallel version). This version is
 slightly slower than the regular serial (pure C)
-<tt class="xref py py-func docutils literal"><span class="pre">MDAnalysis.core.distances.distance_array()</span></tt> function.</p>
+<a class="reference internal" href="distances.html#MDAnalysis.lib.distances.distance_array" title="MDAnalysis.lib.distances.distance_array"><tt class="xref py py-func docutils literal"><span class="pre">MDAnalysis.lib.distances.distance_array()</span></tt></a> function.</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
 <p class="last">Only orthorhombic boxes are supported for <em>box</em>, anything else will
@@ -209,7 +209,8 @@ produce wrong results.</p>
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
-    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Isaac Virshup, Zhuyi Xue, Carlos Yáñez S.,
+    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Gorman Stock, Isaac Virshup,
+    Zhuyi Xue, Carlos Yáñez S.,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

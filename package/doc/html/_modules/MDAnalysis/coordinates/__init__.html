@@ -170,8 +170,8 @@
 <span class="sd">only keep the protein::</span>
 
 <span class="sd">  u = MDAnalysis.Universe(PDB, XTC)</span>
-<span class="sd">  protein = u.selectAtoms(&quot;protein&quot;)</span>
-<span class="sd">  with MDAnalysis.Writer(&quot;protein.xtc&quot;, protein.numberOfAtoms()) as W:</span>
+<span class="sd">  protein = u.select_atoms(&quot;protein&quot;)</span>
+<span class="sd">  with MDAnalysis.Writer(&quot;protein.xtc&quot;, protein.n_atoms) as W:</span>
 <span class="sd">      for ts in u.trajectory:</span>
 <span class="sd">          W.write(protein)</span>
 
@@ -384,7 +384,7 @@
 <span class="sd">Methods</span>
 <span class="sd">.......</span>
 
-<span class="sd">  ``__init__(numatoms, positions=True, velocities=False, forces=False)``</span>
+<span class="sd">  ``__init__(n_atoms, positions=True, velocities=False, forces=False)``</span>
 <span class="sd">      Define the number of atoms this Timestep will hold and whether or not</span>
 <span class="sd">      it will have velocity and force information</span>
 <span class="sd">  ``__eq__``</span>
@@ -406,7 +406,7 @@
 <span class="sd">Attributes</span>
 <span class="sd">..........</span>
 
-<span class="sd">  ``numatoms``</span>
+<span class="sd">  ``n_atoms``</span>
 <span class="sd">      number of atoms in the frame</span>
 <span class="sd">  ``frame``</span>
 <span class="sd">      current frame number (0-based)</span>
@@ -506,7 +506,7 @@
 <span class="sd">     following data are supplied in keywords when a trajectory is loaded from</span>
 <span class="sd">     within :class:`MDAnalysis.Universe`:</span>
 
-<span class="sd">      - *numatoms*: the number of atoms (known from the topology)</span>
+<span class="sd">      - *n_atoms*: the number of atoms (known from the topology)</span>
 
 <span class="sd"> ``__iter__()``</span>
 <span class="sd">     allow iteration from beginning to end::</span>
@@ -603,9 +603,9 @@
 
 <span class="sd"> ``filename``</span>
 <span class="sd">     filename of the trajectory</span>
-<span class="sd"> ``numatoms``</span>
+<span class="sd"> ``n_atoms``</span>
 <span class="sd">     number of atoms (coordinate sets) in a frame (constant)</span>
-<span class="sd"> ``numframes``</span>
+<span class="sd"> ``n_frames``</span>
 <span class="sd">     total number of frames (if known) -- ``None`` if not known</span>
 <span class="sd"> ``ts``</span>
 <span class="sd">     the :class:`~base.Timestep` object; typically customized for each</span>
@@ -623,7 +623,7 @@
 <span class="sd">     on the fly ``skip_timestep * delta`` and converts to the MDAnalysis base</span>
 <span class="sd">     unit for time (pico seconds by default)</span>
 <span class="sd"> ``totaltime``</span>
-<span class="sd">     total length of the trajectory = ``numframes * dt``</span>
+<span class="sd">     total length of the trajectory = ``n_frames * dt``</span>
 <span class="sd"> ``time``</span>
 <span class="sd">     time of the current time step, in MDAnalysis time units (ps)</span>
 <span class="sd"> ``frame``</span>
@@ -659,7 +659,7 @@
 
 <span class="sd">Signature::</span>
 
-<span class="sd">   W = TrajectoryWriter(filename,numatoms,**kwargs)</span>
+<span class="sd">   W = TrajectoryWriter(filename,n_atoms,**kwargs)</span>
 <span class="sd">   W.write_next_timestep(Timestep)</span>
 
 <span class="sd">or::</span>
@@ -672,7 +672,7 @@
 <span class="sd">Methods</span>
 <span class="sd">.......</span>
 
-<span class="sd"> ``__init__(filename,numatoms[,start[,step[,delta[,remarks]]]])``</span>
+<span class="sd"> ``__init__(filename,n_atoms[,start[,step[,delta[,remarks]]]])``</span>
 <span class="sd">     opens *filename* and writes header if required by format</span>
 <span class="sd"> ``write(obj)``</span>
 <span class="sd">     write Timestep data in *obj*</span>
@@ -726,7 +726,7 @@
 <span class="sd">   W.write(Universe)</span>
 
 <span class="sd">The blanket *kwargs* is required so that one can pass the same kind of</span>
-<span class="sd">arguments (filename and numatoms) as for the Trajectory writers. In</span>
+<span class="sd">arguments (filename and n_atoms) as for the Trajectory writers. In</span>
 <span class="sd">this way, the simple :func:`~MDAnalysis.coordinates.core.writer`</span>
 <span class="sd">factory function can be used for all writers.</span>
 
@@ -861,7 +861,7 @@
 <span class="c">#: trajectory writers: export frames, typically only saving coordinates</span>
 <span class="c">#: Signature::</span>
 <span class="c">#:</span>
-<span class="c">#:   W = TrajectoryWriter(filename,numatoms,**kwargs)</span>
+<span class="c">#:   W = TrajectoryWriter(filename,n_atoms,**kwargs)</span>
 <span class="c">#:   W.write_next_timestep(TimeStep)</span>
 <span class="c">#:   W.write(Timestep)</span>
 <span class="c">#:   W.write(AtomGroup)</span>
@@ -905,7 +905,8 @@
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
-    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Isaac Virshup, Zhuyi Xue, Carlos Yáñez S.,
+    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Gorman Stock, Isaac Virshup,
+    Zhuyi Xue, Carlos Yáñez S.,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

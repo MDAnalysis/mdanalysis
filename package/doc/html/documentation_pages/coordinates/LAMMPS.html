@@ -142,7 +142,7 @@ values.</p>
 <tt class="descname">OtherWriter</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDReader.OtherWriter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a writer appropriate for <em>filename</em>.</p>
 <p>Sets the default keywords <em>start</em>, <em>step</em> and <em>dt</em> (if
-available). <em>numatoms</em> is always set from <tt class="xref py py-attr docutils literal"><span class="pre">Reader.numatoms</span></tt>.</p>
+available). <em>n_atoms</em> is always set from <tt class="xref py py-attr docutils literal"><span class="pre">Reader.n_atoms</span></tt>.</p>
 <div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><tt class="xref py py-meth docutils literal"><span class="pre">Reader.Writer()</span></tt> and <tt class="xref py py-func docutils literal"><span class="pre">MDAnalysis.Writer()</span></tt></p>
@@ -166,7 +166,7 @@ available). <em>numatoms</em> is always set from <tt class="xref py py-attr docu
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first docutils">
-<dt><em>numatoms</em></dt>
+<dt><em>n_atoms</em></dt>
 <dd><p class="first last">number of atoms</p>
 </dd>
 <dt><em>start</em></dt>
@@ -377,7 +377,7 @@ coordinates)</p>
 <dl class="attribute">
 <dt id="MDAnalysis.coordinates.LAMMPS.DCDReader.totaltime">
 <tt class="descname">totaltime</tt><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDReader.totaltime" title="Permalink to this definition">¶</a></dt>
-<dd><p>Total length of the trajectory numframes * dt.</p>
+<dd><p>Total length of the trajectory n_frames * dt.</p>
 </dd></dl>
 
 </dd></dl>
@@ -563,7 +563,7 @@ if no coordinates to be written.</p>
 <tt class="descname">OtherWriter</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DATAReader.OtherWriter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a writer appropriate for <em>filename</em>.</p>
 <p>Sets the default keywords <em>start</em>, <em>step</em> and <em>dt</em> (if
-available). <em>numatoms</em> is always set from <tt class="xref py py-attr docutils literal"><span class="pre">Reader.numatoms</span></tt>.</p>
+available). <em>n_atoms</em> is always set from <tt class="xref py py-attr docutils literal"><span class="pre">Reader.n_atoms</span></tt>.</p>
 <div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><tt class="xref py py-meth docutils literal"><span class="pre">Reader.Writer()</span></tt> and <tt class="xref py py-func docutils literal"><span class="pre">MDAnalysis.Writer()</span></tt></p>
@@ -690,7 +690,7 @@ time = <tt class="xref py py-attr docutils literal"><span class="pre">Timestep.f
 <dl class="attribute">
 <dt id="MDAnalysis.coordinates.LAMMPS.DATAReader.totaltime">
 <tt class="descname">totaltime</tt><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DATAReader.totaltime" title="Permalink to this definition">¶</a></dt>
-<dd><p>Total length of the trajectory numframes * dt.</p>
+<dd><p>Total length of the trajectory n_frames * dt.</p>
 </dd></dl>
 
 </dd></dl>
@@ -730,7 +730,8 @@ time = <tt class="xref py py-attr docutils literal"><span class="pre">Timestep.f
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
-    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Isaac Virshup, Zhuyi Xue, Carlos Yáñez S.,
+    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Gorman Stock, Isaac Virshup,
+    Zhuyi Xue, Carlos Yáñez S.,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

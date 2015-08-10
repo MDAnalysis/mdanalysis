@@ -101,7 +101,7 @@
 
 <span class="sd">With the help of this module, HOLE_ can be run on frames in a trajectory. Data</span>
 <span class="sd">can be combined and analyzed. HOLE_ [Smart1993]_ [Smart1996]_ must be installed</span>
-<span class="sd">separately.</span>
+<span class="sd">separately and can be obtained from http://www.smartsci.uk/hole/.</span>
 
 
 <span class="sd">.. rubric:: References</span>
@@ -111,9 +111,9 @@
 <span class="sd">.. [Smart1996] O.S. Smart, J.G. Neduvelil, X. Wang, B.A. Wallace, and M.S.P. Sansom.</span>
 <span class="sd">               HOLE: A program for the analysis of the pore dimensions of ion channel</span>
 <span class="sd">               structural models. J.Mol.Graph., 14:354–360, 1996.</span>
-<span class="sd">               URL http://hole.biop.ox.ac.uk/hole.</span>
+<span class="sd">               URL http://www.smartsci.uk/hole/</span>
 
-<span class="sd">.. _HOLE: http://hole.biop.ox.ac.uk/hole</span>
+<span class="sd">.. _HOLE: http://www.smartsci.uk/hole/</span>
 
 
 <span class="sd">Examples</span>
@@ -534,7 +534,7 @@
 <span class="sd">    .. versionadded:: 0.7.7</span>
 
 <span class="sd">    .. _`HOLE control parameters`:</span>
-<span class="sd">       http://d2o.bioch.ox.ac.uk:38080/doc/hole_d03.html</span>
+<span class="sd">       http://s3.smartsci.uk/hole2/doc/old/hole_d03.html</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c">#: Maximum number of characters in a filename (limitation of HOLE)</span>
     <span class="n">HOLE_MAX_LENGTH</span> <span class="o">=</span> <span class="mi">70</span>
@@ -799,19 +799,19 @@
 <span class="s">            &quot;&quot;&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cpoint</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="c"># note: if it is None then we can&#39;t change this with a kw for run() !!</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">template</span> <span class="o">+=</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">CPOINT </span><span class="si">%(cpoint_xyz)s</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">template</span> <span class="o">+=</span> <span class="s">&quot;CPOINT </span><span class="si">%(cpoint_xyz)s</span><span class="se">\n</span><span class="s">&quot;</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;HOLE will guess CPOINT&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cvect</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="c"># note: if it is None then we can&#39;t change this with a kw for run() !!</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">template</span> <span class="o">+=</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">CVECT  </span><span class="si">%(cvect_xyz)s</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">template</span> <span class="o">+=</span> <span class="s">&quot;CVECT  </span><span class="si">%(cvect_xyz)s</span><span class="se">\n</span><span class="s">&quot;</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;HOLE will guess CVECT&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dcd</span><span class="p">:</span>
             <span class="c"># CHARMD -- DCD (matches COORD)</span>
             <span class="c"># CHARMS int int -- ignore_first_N_frames   skip_every_X_frames</span>
-            <span class="c"># http://d2o.bioch.ox.ac.uk:38080/doc/hole_d03.html#CHARMD</span>
+            <span class="c">#        http://s3.smartsci.uk/hole2/doc/old/hole_d03.html#CHARMD</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">template</span> <span class="o">+=</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">CHARMD </span><span class="si">%(dcd)s</span><span class="se">\n</span><span class="s">CHARMS </span><span class="si">%(dcd_iniskip)d</span><span class="s"> </span><span class="si">%(dcd_step)d</span><span class="se">\n</span><span class="s">&quot;</span>
 
         <span class="c"># sanity checks</span>
@@ -874,7 +874,7 @@
         <span class="c">#       ignored here. Arguably a bug... but then again, the keywords for run() are</span>
         <span class="c">#       not even officially documented :-).</span>
         <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s">&quot;cvect_xyz&quot;</span><span class="p">,</span> <span class="n">seq2str</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;cvect&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cvect</span><span class="p">)))</span>
-        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s">&quot;cpoint_xyz&quot;</span><span class="p">,</span> <span class="n">seq2str</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;cpoint&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cvect</span><span class="p">)))</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s">&quot;cpoint_xyz&quot;</span><span class="p">,</span> <span class="n">seq2str</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;cpoint&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cpoint</span><span class="p">)))</span>
         <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">seq2str</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;ignore_residues&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ignore_residues</span><span class="p">)))</span>
         <span class="n">holeargs</span> <span class="o">=</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">holeargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
@@ -922,11 +922,11 @@
 <span class="sd">        pore radius &lt; 2.30 Å) are green and wide areas (pore radius &gt; 2.30 Å</span>
 <span class="sd">        are blue).</span>
 
-<span class="sd">        .. _`Visualization of HOLE results`: http://d2o.bioch.ox.ac.uk:38080/doc/hole_d04.html</span>
-<span class="sd">        .. _`sph_process`: http://d2o.bioch.ox.ac.uk:38080/doc/hole_d04.html#sph_process</span>
+<span class="sd">        .. _`Visualization of HOLE results`: http://s3.smartsci.uk/hole2/doc/index.html#_producing_a_triangulated_surface_and_visualizing_in_vmd</span>
+<span class="sd">        .. _`sph_process`: http://s3.smartsci.uk/hole2/doc/old/hole_d04.html#sph_process</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c"># not sure how this works when run on multiple frames...</span>
-        <span class="c"># see http://d2o.bioch.ox.ac.uk:38080/doc/hole_d04.html#sph_process</span>
+        <span class="c"># see http://s3.smartsci.uk/hole2/doc/old/hole_d04.html#sph_process</span>
         <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s">&quot;dotden&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dotden</span><span class="p">)</span>
 
         <span class="n">fd</span><span class="p">,</span> <span class="n">tmp_sos</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkstemp</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s">&quot;.sos&quot;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
@@ -1003,7 +1003,7 @@
             <span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">Universe</span>
 
             <span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dcd</span><span class="p">)</span>
-            <span class="n">length</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">numframes</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">dcd_iniskip</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dcd_step</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="n">length</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">n_frames</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">dcd_iniskip</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dcd_step</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Found </span><span class="si">%d</span><span class="s"> input frames in DCD trajectory </span><span class="si">%r</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dcd</span><span class="p">)</span>
 
         <span class="c"># one recarray for each frame, indexed by frame number</span>
@@ -1103,7 +1103,7 @@
 <span class="sd">               ``universe.trajectory[start, stop, step]``</span>
 
 <span class="sd">          *selection*</span>
-<span class="sd">               selection string for :meth:`~MDAnalysis.core.AtomGroup.Universe.selectAtoms` to select</span>
+<span class="sd">               selection string for :meth:`~MDAnalysis.core.AtomGroup.Universe.select_atoms` to select</span>
 <span class="sd">               the group of atoms that is to be analysed by HOLE [&quot;protein&quot;]</span>
 
 <span class="sd">          *cpoint*</span>
@@ -1145,7 +1145,7 @@
 <span class="sd">        This method simply uses the center of geometry of the protein selection</span>
 <span class="sd">        as a guess. *selection* is &quot;protein&quot; by default.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;selection&quot;</span><span class="p">,</span> <span class="s">&quot;protein&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">centerOfGeometry</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;selection&quot;</span><span class="p">,</span> <span class="s">&quot;protein&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">centerOfGeometry</span><span class="p">()</span>
 </div>
     <span class="k">def</span> <span class="nf">_process_orderparameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Read orderparameters from *data*</span>
@@ -1158,15 +1158,15 @@
             <span class="n">q</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">data</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="c"># frame numbers</span>
-            <span class="n">q</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">numframes</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">n_frames</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">q</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;Order parameter array must be 1D.&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">q</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">numframes</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">q</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">n_frames</span><span class="p">:</span>
             <span class="n">errmsg</span> <span class="o">=</span> <span class="s">&quot;Not same number of orderparameters ({0}) as trajectory frames ({1})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="nb">len</span><span class="p">(</span><span class="n">q</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">numframes</span><span class="p">)</span>
+                <span class="nb">len</span><span class="p">(</span><span class="n">q</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">n_frames</span><span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">q</span>
@@ -1196,7 +1196,7 @@
 
         <span class="c"># TODO: alternatively, dump all frames with leading framenumber and use a wildcard</span>
         <span class="c">#       (although the file renaming might create problems...)</span>
-        <span class="n">protein</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">)</span>
+        <span class="n">protein</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">q</span><span class="p">,</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">izip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">orderparameters</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">:</span><span class="n">step</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">:</span><span class="n">step</span><span class="p">]):</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;HOLE analysis frame </span><span class="si">%4d</span><span class="s"> (orderparameter </span><span class="si">%g</span><span class="s">)&quot;</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
             <span class="n">fd</span><span class="p">,</span> <span class="n">pdbfile</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkstemp</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s">&quot;.pdb&quot;</span><span class="p">)</span>
@@ -1251,7 +1251,8 @@
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
-    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Isaac Virshup, Zhuyi Xue, Carlos Yáñez S.,
+    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Gorman Stock, Isaac Virshup,
+    Zhuyi Xue, Carlos Yáñez S.,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

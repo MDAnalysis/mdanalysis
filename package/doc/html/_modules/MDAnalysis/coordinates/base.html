@@ -106,7 +106,7 @@
 <span class="sd">   .. automethod:: from_coordinates</span>
 <span class="sd">   .. automethod:: from_timestep</span>
 <span class="sd">   .. automethod:: _init_unitcell</span>
-<span class="sd">   .. autoattribute:: numatoms</span>
+<span class="sd">   .. autoattribute:: n_atoms</span>
 <span class="sd">   .. attribute::`frame`</span>
 
 <span class="sd">      frame number (0-based)</span>
@@ -125,7 +125,7 @@
 <span class="sd">   .. attribute:: _pos</span>
 
 <span class="sd">      :class:`numpy.ndarray` of dtype :class:`~numpy.float32` of shape</span>
-<span class="sd">      (*numatoms*, 3) and internal FORTRAN order, holding the raw</span>
+<span class="sd">      (*n_atoms*, 3) and internal FORTRAN order, holding the raw</span>
 <span class="sd">      cartesian coordinates (in MDAnalysis units, i.e. Å).</span>
 
 <span class="sd">      .. Note::</span>
@@ -143,7 +143,7 @@
 <span class="sd">   .. attribute:: _velocities</span>
 
 <span class="sd">      :class:`numpy.ndarray` of dtype :class:`~numpy.float32`. of shape</span>
-<span class="sd">      (*numatoms*, 3), holding the raw velocities (in MDAnalysis</span>
+<span class="sd">      (*n_atoms*, 3), holding the raw velocities (in MDAnalysis</span>
 <span class="sd">      units, i.e. typically Å/ps).</span>
 
 <span class="sd">      .. Note::</span>
@@ -161,7 +161,7 @@
 <span class="sd">   .. attribute:: _forces</span>
 
 <span class="sd">      :class:`numpy.ndarray` of dtype :class:`~numpy.float32`. of shape</span>
-<span class="sd">      (*numatoms*, 3), holding the forces</span>
+<span class="sd">      (*n_atoms*, 3), holding the forces</span>
 
 <span class="sd">      :attr:`~Timestep._forces` only exists if :attr:`has_forces`</span>
 <span class="sd">      is True</span>
@@ -211,25 +211,25 @@
 
 <span class="sd">    :Methods:</span>
 
-<span class="sd">      ``ts = Timestep(numatoms)``</span>
+<span class="sd">      ``ts = Timestep(n_atoms)``</span>
 
-<span class="sd">         create a timestep object with space for numatoms</span>
+<span class="sd">         create a timestep object with space for n_atoms</span>
 
 <span class="sd">    .. versionchanged:: 0.11.0</span>
 <span class="sd">       Added :meth:`from_timestep` and :meth:`from_coordinates` constructor</span>
 <span class="sd">       methods.</span>
 <span class="sd">       :class:`Timestep` init now only accepts integer creation</span>
-<span class="sd">       :attr:`numatoms` now a read only property</span>
+<span class="sd">       :attr:`n_atoms` now a read only property</span>
 <span class="sd">       :attr:`frame` now 0-based instead of 1-based</span>
 <span class="sd">       Attributes status and step removed</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">order</span> <span class="o">=</span> <span class="s">&#39;F&#39;</span>
 
-<div class="viewcode-block" id="Timestep.__init__"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Timestep.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">numatoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Timestep.__init__"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Timestep.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create a Timestep, representing a frame of a trajectory</span>
 
 <span class="sd">        :Arguments:</span>
-<span class="sd">          *numatoms*</span>
+<span class="sd">          *n_atoms*</span>
 <span class="sd">            The total number of atoms this Timestep describes</span>
 
 <span class="sd">        :Keywords:</span>
@@ -253,7 +253,7 @@
         <span class="c"># readers call Reader._read_next_timestep() on init, incrementing</span>
         <span class="c"># self.frame to 0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_numatoms</span> <span class="o">=</span> <span class="n">numatoms</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_atoms</span> <span class="o">=</span> <span class="n">n_atoms</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
 
@@ -284,7 +284,7 @@
 
 <span class="sd">        .. versionadded:: 0.11.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">ts</span> <span class="o">=</span> <span class="n">cls</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">numatoms</span><span class="p">,</span> <span class="n">velocities</span><span class="o">=</span><span class="n">other</span><span class="o">.</span><span class="n">has_velocities</span><span class="p">,</span>
+        <span class="n">ts</span> <span class="o">=</span> <span class="n">cls</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="n">velocities</span><span class="o">=</span><span class="n">other</span><span class="o">.</span><span class="n">has_velocities</span><span class="p">,</span>
                  <span class="n">forces</span><span class="o">=</span><span class="n">other</span><span class="o">.</span><span class="n">has_forces</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">frame</span>
         <span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">dimensions</span>
@@ -346,7 +346,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">frame</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">False</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">numatoms</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">False</span>
 
         <span class="c"># Check contents of np arrays last (probably slow)</span>
@@ -376,7 +376,7 @@
 
 <span class="sd">           return an array of coordinates, where start, stop and skip</span>
 <span class="sd">           correspond to atom indices,</span>
-<span class="sd">           :attr:`MDAnalysis.core.AtomGroup.Atom.number` (0-based)</span>
+<span class="sd">           :attr:`MDAnalysis.core.AtomGroup.Atom.index` (0-based)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span><span class="p">[</span><span class="n">atoms</span><span class="p">]</span>
@@ -386,7 +386,7 @@
             <span class="k">raise</span> <span class="ne">TypeError</span>
 </div>
     <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span>
 
 <div class="viewcode-block" id="Timestep.__iter__"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Timestep.__iter__">[docs]</a>    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Iterate over coordinates</span>
@@ -395,7 +395,7 @@
 
 <span class="sd">            iterate of the coordinates, atom by atom</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">):</span>
             <span class="k">yield</span> <span class="bp">self</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
 </div>
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -432,12 +432,12 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c"># Detect the size of the Timestep by doing a dummy slice</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">new_numatoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pos</span><span class="p">[</span><span class="n">sel</span><span class="p">])</span>
+            <span class="n">new_n_atoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pos</span><span class="p">[</span><span class="n">sel</span><span class="p">])</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;Selection type must be compatible with slicing&quot;</span>
                             <span class="s">&quot; the coordinates&quot;</span><span class="p">)</span>
         <span class="c"># Make a mostly empty TS of same type of reduced size</span>
-        <span class="n">new_TS</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">(</span><span class="n">new_numatoms</span><span class="p">,</span> <span class="n">velocities</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">has_velocities</span><span class="p">,</span>
+        <span class="n">new_TS</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">(</span><span class="n">new_n_atoms</span><span class="p">,</span> <span class="n">velocities</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">has_velocities</span><span class="p">,</span>
                                 <span class="n">forces</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">has_forces</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_positions</span><span class="p">:</span>
@@ -462,17 +462,17 @@
         <span class="k">return</span> <span class="n">new_TS</span>
 </div>
     <span class="nd">@property</span>
-<div class="viewcode-block" id="Timestep.numatoms"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Timestep.numatoms">[docs]</a>    <span class="k">def</span> <span class="nf">numatoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Timestep.n_atoms"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Timestep.n_atoms">[docs]</a>    <span class="k">def</span> <span class="nf">n_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;A read only view of the number of atoms this Timestep has</span>
 
 <span class="sd">        .. versionchanged:: 0.11.0</span>
 <span class="sd">           Changed to read only property</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c"># In future could do some magic here to make setting numatoms</span>
+        <span class="c"># In future could do some magic here to make setting n_atoms</span>
         <span class="c"># resize the coordinate arrays, but</span>
         <span class="c"># - not sure if that is ever useful</span>
         <span class="c"># - not sure how to manage existing data upon extension</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_numatoms</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_atoms</span>
 </div>
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">has_positions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -491,7 +491,7 @@
             <span class="c"># Setting this will always reallocate position data</span>
             <span class="c"># ie</span>
             <span class="c"># True -&gt; False -&gt; True will wipe data from first True state</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
                                  <span class="n">order</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_has_positions</span> <span class="o">=</span> <span class="bp">True</span>
         <span class="k">elif</span> <span class="ow">not</span> <span class="n">val</span><span class="p">:</span>
@@ -506,7 +506,7 @@
 <span class="sd">        weren&#39;t originally present.</span>
 
 <span class="sd">        :Returns:</span>
-<span class="sd">           A numpy.ndarray of shape (numatoms, 3) of position data for each</span>
+<span class="sd">           A numpy.ndarray of shape (n_atoms, 3) of position data for each</span>
 <span class="sd">           atom</span>
 
 <span class="sd">        :Raises:</span>
@@ -567,7 +567,7 @@
     <span class="nd">@has_velocities.setter</span>
 <div class="viewcode-block" id="Timestep.has_velocities"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Timestep.has_velocities">[docs]</a>    <span class="k">def</span> <span class="nf">has_velocities</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">val</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_velocities</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_velocities</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_velocities</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
                                         <span class="n">order</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_has_velocities</span> <span class="o">=</span> <span class="bp">True</span>
         <span class="k">elif</span> <span class="ow">not</span> <span class="n">val</span><span class="p">:</span>
@@ -581,7 +581,7 @@
 <span class="sd">        weren&#39;t originally present.</span>
 
 <span class="sd">        :Returns:</span>
-<span class="sd">           A numpy.ndarray of shape (numatoms, 3) of velocity data for each</span>
+<span class="sd">           A numpy.ndarray of shape (n_atoms, 3) of velocity data for each</span>
 <span class="sd">           atom</span>
 
 <span class="sd">        :Raises:</span>
@@ -614,7 +614,7 @@
     <span class="nd">@has_forces.setter</span>
 <div class="viewcode-block" id="Timestep.has_forces"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Timestep.has_forces">[docs]</a>    <span class="k">def</span> <span class="nf">has_forces</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">val</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_forces</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_forces</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_forces</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
                                     <span class="n">order</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_has_forces</span> <span class="o">=</span> <span class="bp">True</span>
         <span class="k">elif</span> <span class="ow">not</span> <span class="n">val</span><span class="p">:</span>
@@ -628,7 +628,7 @@
 <span class="sd">        weren&#39;t originally present.</span>
 
 <span class="sd">        :Returns:</span>
-<span class="sd">           A numpy.ndarray of shape (numatoms, 3) of force data for each</span>
+<span class="sd">           A numpy.ndarray of shape (n_atoms, 3) of force data for each</span>
 <span class="sd">           atom</span>
 
 <span class="sd">        :Raises:</span>
@@ -938,18 +938,19 @@
 <span class="k">class</span> <span class="nc">ProtoReader</span><span class="p">(</span><span class="n">IObase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Base class for Readers, without a :meth:`__del__` method.</span>
 
-<span class="sd">    Extends :class:`IObase` with most attributes and methods of a generic Reader,</span>
-<span class="sd">    with the exception of a :meth:`__del__` method. It should be used as base for Readers</span>
-<span class="sd">    that do not need :meth:`__del__`, especially since having even an empty :meth:`__del__`</span>
-<span class="sd">    might lead to memory leaks.</span>
+<span class="sd">    Extends :class:`IObase` with most attributes and methods of a generic</span>
+<span class="sd">    Reader, with the exception of a :meth:`__del__` method. It should be used</span>
+<span class="sd">    as base for Readers that do not need :meth:`__del__`, especially since</span>
+<span class="sd">    having even an empty :meth:`__del__` might lead to memory leaks.</span>
 
 <span class="sd">    See the :ref:`Trajectory API` definition in</span>
-<span class="sd">    :mod:`MDAnalysis.coordinates.__init__` for the required attributes and methods.</span>
+<span class="sd">    :mod:`MDAnalysis.coordinates.__init__` for the required attributes and</span>
+<span class="sd">    methods.</span>
+
+<span class="sd">    .. SeeAlso:: :class:`Reader`</span>
 
 <span class="sd">    .. versionchanged:: 0.11.0</span>
 <span class="sd">       Frames now 0-based instead of 1-based</span>
-
-<span class="sd">    .. SeeAlso:: :class:`Reader`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c">#: The appropriate Timestep class, e.g.</span>
@@ -957,7 +958,7 @@
     <span class="n">_Timestep</span> <span class="o">=</span> <span class="n">Timestep</span>
 
     <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">numframes</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span>
 
     <span class="k">def</span> <span class="nf">next</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Forward one step to next frame.&quot;&quot;&quot;</span>
@@ -975,8 +976,8 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">totaltime</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Total length of the trajectory numframes * dt.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">numframes</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt</span>
+        <span class="sd">&quot;&quot;&quot;Total length of the trajectory n_frames * dt.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1004,11 +1005,11 @@
         <span class="sd">&quot;&quot;&quot;Returns a writer appropriate for *filename*.</span>
 
 <span class="sd">        Sets the default keywords *start*, *step* and *dt* (if</span>
-<span class="sd">        available). *numatoms* is always set from :attr:`Reader.numatoms`.</span>
+<span class="sd">        available). *n_atoms* is always set from :attr:`Reader.n_atoms`.</span>
 
 <span class="sd">        .. SeeAlso:: :meth:`Reader.Writer` and :func:`MDAnalysis.Writer`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;numatoms&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span>  <span class="c"># essential</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;n_atoms&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span>  <span class="c"># essential</span>
         <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s">&#39;start&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s">&#39;dt&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt</span><span class="p">)</span>
@@ -1134,25 +1135,30 @@
 
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s">&quot;&lt; </span><span class="si">%s</span><span class="s"> </span><span class="si">%r</span><span class="s"> with </span><span class="si">%d</span><span class="s"> frames of </span><span class="si">%d</span><span class="s"> atoms&gt;&quot;</span> <span class="o">%</span> \
-               <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">numframes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span><span class="p">)</span>
+               <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">)</span>
+
 
 <div class="viewcode-block" id="Reader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Reader">[docs]</a><span class="k">class</span> <span class="nc">Reader</span><span class="p">(</span><span class="n">ProtoReader</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Base class for trajectory readers that extends :class:`ProtoReader` with a :meth:`__del__` method.</span>
 
-<span class="sd">    New Readers should subclass :class:`Reader` and properly implement a :meth:`close`</span>
-<span class="sd">    method, to ensure proper release of resources (mainly file handles). Readers that</span>
-<span class="sd">    are inherently safe in this regard should subclass :class:`ProtoReader` instead.</span>
+<span class="sd">    New Readers should subclass :class:`Reader` and properly implement a</span>
+<span class="sd">    :meth:`close` method, to ensure proper release of resources (mainly file</span>
+<span class="sd">    handles). Readers that are inherently safe in this regard should subclass</span>
+<span class="sd">    :class:`ProtoReader` instead.</span>
 
 <span class="sd">    See the :ref:`Trajectory API` definition in</span>
-<span class="sd">    :mod:`MDAnalysis.coordinates.__init__` for the required attributes and methods.</span>
+<span class="sd">    :mod:`MDAnalysis.coordinates.__init__` for the required attributes and</span>
+<span class="sd">    methods.</span>
+
 <span class="sd">    .. SeeAlso:: :class:`ProtoReader`</span>
+
 <span class="sd">    .. versionchanged:: 0.11.0</span>
-<span class="sd">       Most of the base Reader class definitions were offloaded to :class:`ProtoReader`</span>
-<span class="sd">       so as to allow the subclassing of Readers without a :meth:`__del__` method.</span>
-<span class="sd">       Created init method to create common functionality, all Reader subclasses</span>
-<span class="sd">       must now super through this Class.</span>
-<span class="sd">       Added attribute &quot;_ts_kwargs&quot; attribute created in init.  Provides kwargs</span>
-<span class="sd">       to be passed to Timestep</span>
+<span class="sd">       Most of the base Reader class definitions were offloaded to</span>
+<span class="sd">       :class:`ProtoReader` so as to allow the subclassing of Readers without a</span>
+<span class="sd">       :meth:`__del__` method.  Created init method to create common</span>
+<span class="sd">       functionality, all Reader subclasses must now :func:`super` through this</span>
+<span class="sd">       class.  Added attribute :attr:`_ts_kwargs`, which is created in init.</span>
+<span class="sd">       Provides kwargs to be passed to :class:`Timestep`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">convert_units</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
@@ -1174,6 +1180,7 @@
 
     <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
 </div>
 <div class="viewcode-block" id="ChainReader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ChainReader">[docs]</a><span class="k">class</span> <span class="nc">ChainReader</span><span class="p">(</span><span class="n">ProtoReader</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Reader that concatenates multiple trajectories on the fly.</span>
@@ -1181,8 +1188,8 @@
 <span class="sd">    **Known issues**</span>
 
 <span class="sd">    - Trajectory API attributes exist but most of them only reflect</span>
-<span class="sd">      the first trajectory in the list; :attr:`ChainReader.numframes`,</span>
-<span class="sd">      :attr:`ChainReader.numatoms`, and :attr:`ChainReader.fixed` are</span>
+<span class="sd">      the first trajectory in the list; :attr:`ChainReader.n_frames`,</span>
+<span class="sd">      :attr:`ChainReader.n_atoms`, and :attr:`ChainReader.fixed` are</span>
 <span class="sd">      properly set, though</span>
 
 <span class="sd">    - slicing not implemented</span>
@@ -1234,29 +1241,29 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">skip</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;skip&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_default_delta</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;delta&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_same</span><span class="p">(</span><span class="s">&#39;numatoms&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_same</span><span class="p">(</span><span class="s">&#39;n_atoms&#39;</span><span class="p">)</span>
         <span class="c">#self.fixed = self._get_same(&#39;fixed&#39;)</span>
 
         <span class="c"># Translation between virtual frames and frames in individual</span>
         <span class="c"># trajectories.</span>
         <span class="c"># Assumes that individual trajectories i contain frames that can</span>
-        <span class="c"># be addressed with an index 0 &lt;= f &lt; numframes[i]</span>
+        <span class="c"># be addressed with an index 0 &lt;= f &lt; n_frames[i]</span>
 
         <span class="c"># Build a map of frames: ordered list of starting virtual</span>
         <span class="c"># frames; the index i into this list corresponds to the index</span>
         <span class="c"># into self.readers</span>
         <span class="c">#</span>
-        <span class="c"># For virtual frame k (1...sum(numframes)) find corresponding</span>
+        <span class="c"># For virtual frame k (1...sum(n_frames)) find corresponding</span>
         <span class="c"># trajectory i and local frame f (i.e. readers[i][f] will</span>
         <span class="c"># correspond to ChainReader[k]).</span>
 
         <span class="c"># build map &#39;start_frames&#39;, which is used by _get_local_frame()</span>
-        <span class="n">numframes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s">&#39;numframes&#39;</span><span class="p">)</span>
+        <span class="n">n_frames</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s">&#39;n_frames&#39;</span><span class="p">)</span>
         <span class="c"># [0]: frames are 0-indexed internally</span>
         <span class="c"># (see Timestep._check_slice_indices())</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__start_frames</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">([</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">numframes</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__start_frames</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">([</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">n_frames</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">numframes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">numframes</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">n_frames</span><span class="p">)</span>
 
         <span class="c">#: source for trajectories frame (fakes trajectory)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__chained_trajectories_iter</span> <span class="o">=</span> <span class="bp">None</span>
@@ -1452,7 +1459,7 @@
         <span class="k">return</span> <span class="s">&quot;&lt; </span><span class="si">%s</span><span class="s"> </span><span class="si">%r</span><span class="s"> with </span><span class="si">%d</span><span class="s"> frames of </span><span class="si">%d</span><span class="s"> atoms&gt;&quot;</span> <span class="o">%</span> \
                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span>
                <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_flname</span><span class="p">(</span><span class="n">fn</span><span class="p">))</span> <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">filenames</span><span class="p">],</span>
-               <span class="bp">self</span><span class="o">.</span><span class="n">numframes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span><span class="p">)</span>
+               <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">)</span>
 
 </div>
 <div class="viewcode-block" id="Writer"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Writer">[docs]</a><span class="k">class</span> <span class="nc">Writer</span><span class="p">(</span><span class="n">IObase</span><span class="p">):</span>
@@ -1503,9 +1510,9 @@
 
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">return</span> <span class="s">&quot;&lt; </span><span class="si">%s</span><span class="s"> </span><span class="si">%r</span><span class="s"> for </span><span class="si">%d</span><span class="s"> atoms &gt;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">numatoms</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s">&quot;&lt; </span><span class="si">%s</span><span class="s"> </span><span class="si">%r</span><span class="s"> for </span><span class="si">%d</span><span class="s"> atoms &gt;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">)</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">AttributeError</span><span class="p">):</span>
-            <span class="c"># no trajectory loaded yet or a Writer that does not need e.g. self.numatoms</span>
+            <span class="c"># no trajectory loaded yet or a Writer that does not need e.g. self.n_atoms</span>
             <span class="k">return</span> <span class="s">&quot;&lt; </span><span class="si">%s</span><span class="s"> </span><span class="si">%r</span><span class="s"> &gt;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Writer.has_valid_coordinates"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Writer.has_valid_coordinates">[docs]</a>    <span class="k">def</span> <span class="nf">has_valid_coordinates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">criteria</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
@@ -1525,7 +1532,7 @@
         <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">criteria</span><span class="p">[</span><span class="s">&quot;min&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">x</span><span class="p">)</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">x</span> <span class="o">&lt;=</span> <span class="n">criteria</span><span class="p">[</span><span class="s">&quot;max&quot;</span><span class="p">])</span>
 
-        <span class="c"># def write_next_timestep(self, ts=None)</span>
+    <span class="c"># def write_next_timestep(self, ts=None)</span>
 </div></div>
 <span class="k">class</span> <span class="nc">SingleFrameReader</span><span class="p">(</span><span class="n">ProtoReader</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Base class for Readers that only have one frame.</span>
@@ -1547,7 +1554,7 @@
             <span class="n">convert_units</span> <span class="o">=</span> <span class="n">flags</span><span class="p">[</span><span class="s">&#39;convert_lengths&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span> <span class="o">=</span> <span class="n">convert_units</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">numframes</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span> <span class="o">=</span> <span class="mi">1</span>
 
         <span class="n">ts_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">att</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;dt&#39;</span><span class="p">,</span> <span class="s">&#39;time_offset&#39;</span><span class="p">):</span>
@@ -1617,7 +1624,8 @@
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
-    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Isaac Virshup, Zhuyi Xue, Carlos Yáñez S.,
+    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Gorman Stock, Isaac Virshup,
+    Zhuyi Xue, Carlos Yáñez S.,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

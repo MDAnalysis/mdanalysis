@@ -62,7 +62,7 @@
             </a></p>
   <h4>Previous topic</h4>
   <p class="topless"><a href="TRZ.html"
-                        title="previous chapter">5.18. TRZ trajectory I/O  &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.coordinates.TRZ</span></tt></a></p>
+                        title="previous chapter">5.18. TRZ trajectory I/O  &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.coordinates.TRZ</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="core.html"
                         title="next chapter">5.20. Common functions for coordinate reading &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.coordinates.core</span></tt></a></p>
@@ -102,14 +102,14 @@ module. The derived classes must follow the Trajectory API in
 <em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.base.</tt><tt class="descname">Timestep</tt><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="method">
 <dt id="MDAnalysis.coordinates.base.Timestep.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>numatoms</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Timestep.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep.__init__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__init__</tt><big>(</big><em>n_atoms</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Timestep.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a Timestep, representing a frame of a trajectory</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
-<dt><em>numatoms</em></dt>
+<dt><em>n_atoms</em></dt>
 <dd><p class="first last">The total number of atoms this Timestep describes</p>
 </dd>
 </dl>
@@ -166,8 +166,8 @@ the has_* attribute</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="MDAnalysis.coordinates.base.Timestep.numatoms">
-<tt class="descname">numatoms</tt><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Timestep.numatoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep.numatoms" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.base.Timestep.n_atoms">
+<tt class="descname">n_atoms</tt><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Timestep.n_atoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep.n_atoms" title="Permalink to this definition">¶</a></dt>
 <dd><p>A read only view of the number of atoms this Timestep has</p>
 <p class="versionchanged">
 <span class="versionmodified">Changed in version 0.11.0: </span>Changed to read only property</p>
@@ -211,7 +211,7 @@ weren&#8217;t originally present.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first">A numpy.ndarray of shape (numatoms, 3) of position data for each
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first">A numpy.ndarray of shape (n_atoms, 3) of position data for each
 atom</p>
 </td>
 </tr>
@@ -238,7 +238,7 @@ weren&#8217;t originally present.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first">A numpy.ndarray of shape (numatoms, 3) of velocity data for each
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first">A numpy.ndarray of shape (n_atoms, 3) of velocity data for each
 atom</p>
 </td>
 </tr>
@@ -265,7 +265,7 @@ weren&#8217;t originally present.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first">A numpy.ndarray of shape (numatoms, 3) of force data for each
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first">A numpy.ndarray of shape (n_atoms, 3) of force data for each
 atom</p>
 </td>
 </tr>
@@ -316,7 +316,7 @@ or remove the data.</p>
 <dt id="MDAnalysis.coordinates.base.Timestep._pos">
 <tt class="descname">_pos</tt><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep._pos" title="Permalink to this definition">¶</a></dt>
 <dd><p><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of dtype <tt class="xref py py-class docutils literal"><span class="pre">float32</span></tt> of shape
-(<em>numatoms</em>, 3) and internal FORTRAN order, holding the raw
+(<em>n_atoms</em>, 3) and internal FORTRAN order, holding the raw
 cartesian coordinates (in MDAnalysis units, i.e. Å).</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -336,7 +336,7 @@ trajectory frame is loaded, then <em>all</em> contents of
 <dt id="MDAnalysis.coordinates.base.Timestep._velocities">
 <tt class="descname">_velocities</tt><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep._velocities" title="Permalink to this definition">¶</a></dt>
 <dd><p><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of dtype <tt class="xref py py-class docutils literal"><span class="pre">float32</span></tt>. of shape
-(<em>numatoms</em>, 3), holding the raw velocities (in MDAnalysis
+(<em>n_atoms</em>, 3), holding the raw velocities (in MDAnalysis
 units, i.e. typically Å/ps).</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -355,7 +355,7 @@ flag is True</p>
 <dt id="MDAnalysis.coordinates.base.Timestep._forces">
 <tt class="descname">_forces</tt><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep._forces" title="Permalink to this definition">¶</a></dt>
 <dd><p><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of dtype <tt class="xref py py-class docutils literal"><span class="pre">float32</span></tt>. of shape
-(<em>numatoms</em>, 3), holding the forces</p>
+(<em>n_atoms</em>, 3), holding the forces</p>
 <p><a class="reference internal" href="#MDAnalysis.coordinates.base.Timestep._forces" title="MDAnalysis.coordinates.base.Timestep._forces"><tt class="xref py py-attr docutils literal"><span class="pre">_forces</span></tt></a> only exists if <a class="reference internal" href="#MDAnalysis.coordinates.base.Timestep.has_forces" title="MDAnalysis.coordinates.base.Timestep.has_forces"><tt class="xref py py-attr docutils literal"><span class="pre">has_forces</span></tt></a>
 is True</p>
 <p class="versionadded">
@@ -425,7 +425,7 @@ description of box dimensions</p>
 <blockquote>
 <div>return an array of coordinates, where start, stop and skip
 correspond to atom indices,
-<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom.number" title="MDAnalysis.core.AtomGroup.Atom.number"><tt class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.Atom.number</span></tt></a> (0-based)</div></blockquote>
+<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom.index" title="MDAnalysis.core.AtomGroup.Atom.index"><tt class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.Atom.index</span></tt></a> (0-based)</div></blockquote>
 </dd></dl>
 
 <dl class="method">
@@ -628,8 +628,8 @@ Provides kwargs to be passed to <a class="reference internal" href="#MDAnalysis.
 <p><strong>Known issues</strong></p>
 <ul class="simple">
 <li>Trajectory API attributes exist but most of them only reflect
-the first trajectory in the list; <tt class="xref py py-attr docutils literal"><span class="pre">ChainReader.numframes</span></tt>,
-<tt class="xref py py-attr docutils literal"><span class="pre">ChainReader.numatoms</span></tt>, and <tt class="xref py py-attr docutils literal"><span class="pre">ChainReader.fixed</span></tt> are
+the first trajectory in the list; <tt class="xref py py-attr docutils literal"><span class="pre">ChainReader.n_frames</span></tt>,
+<tt class="xref py py-attr docutils literal"><span class="pre">ChainReader.n_atoms</span></tt>, and <tt class="xref py py-attr docutils literal"><span class="pre">ChainReader.fixed</span></tt> are
 properly set, though</li>
 <li>slicing not implemented</li>
 <li><a class="reference internal" href="#MDAnalysis.coordinates.base.ChainReader.time" title="MDAnalysis.coordinates.base.ChainReader.time"><tt class="xref py py-attr docutils literal"><span class="pre">time</span></tt></a> will not necessarily return the true time but just
@@ -792,7 +792,8 @@ provided when setting up the trajectory.</p>
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
-    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Isaac Virshup, Zhuyi Xue, Carlos Yáñez S.,
+    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Gorman Stock, Isaac Virshup,
+    Zhuyi Xue, Carlos Yáñez S.,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

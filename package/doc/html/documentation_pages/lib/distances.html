@@ -329,10 +329,10 @@ array and dtype=numpy.float64.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="MDAnalysis.lib.distances.calc_torsions">
-<tt class="descclassname">MDAnalysis.lib.distances.</tt><tt class="descname">calc_torsions</tt><big>(</big><em>atom1</em>, <em>atom2</em>, <em>atom3</em>, <em>atom4</em><span class="optional">[</span>, <em>box</em><span class="optional">[</span>, <em>result</em><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/lib/distances.html#calc_torsions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.distances.calc_torsions" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate the torsional angle formed by four atoms, over a list of coordinates.</p>
-<p>Torsional angle around axis connecting atoms 1 and 2 (i.e. the angle
+<dt id="MDAnalysis.lib.distances.calc_dihedrals">
+<tt class="descclassname">MDAnalysis.lib.distances.</tt><tt class="descname">calc_dihedrals</tt><big>(</big><em>atom1</em>, <em>atom2</em>, <em>atom3</em>, <em>atom4</em><span class="optional">[</span>, <em>box</em><span class="optional">[</span>, <em>result</em><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/lib/distances.html#calc_dihedrals"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.distances.calc_dihedrals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the dihedral angle formed by four atoms, over a list of coordinates.</p>
+<p>Dihedral angle around axis connecting atoms 1 and 2 (i.e. the angle
 between the planes spanned by atoms (0,1,2) and (1,2,3)):</p>
 <div class="highlight-python"><pre>        3
         |
@@ -346,23 +346,23 @@ up calculations.</p>
 <p>The optional argument <tt class="docutils literal"><span class="pre">box</span></tt> ensures that periodic boundaries are taken into
 account when constructing the connecting vectors between atoms, ie that the vector
 between atoms 1 &amp; 2 goes between coordinates in the same image.</p>
-<p>angles = calc_torsions(coords1, coords2, coords3, coords4 [,box=box, result=angles])</p>
+<p>angles = calc_dihedrals(coords1, coords2, coords3, coords4 [,box=box, result=angles])</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>coords1</em></dt>
-<dd><p class="first last">coordinate array of 1st atom in torsions</p>
+<dd><p class="first last">coordinate array of 1st atom in dihedrals</p>
 </dd>
 <dt><em>coords2</em></dt>
-<dd><p class="first last">coordinate array of 2nd atom in torsions</p>
+<dd><p class="first last">coordinate array of 2nd atom in dihedrals</p>
 </dd>
 <dt><em>coords3</em></dt>
-<dd><p class="first last">coordinate array of 3rd atom in torsions</p>
+<dd><p class="first last">coordinate array of 3rd atom in dihedrals</p>
 </dd>
 <dt><em>coords4</em></dt>
-<dd><p class="first last">coordinate array of 4th atom in torsions</p>
+<dd><p class="first last">coordinate array of 4th atom in dihedrals</p>
 </dd>
 <dt><em>box</em></dt>
 <dd><p class="first last">optional unit cell information.  This ensures that the connecting vectors
@@ -647,9 +647,9 @@ array which saves time when the function is called repeatedly. [None]</p>
 
 <dl class="function">
 <dt>
-<tt class="descclassname">MDAnalysis.lib.distances.</tt><tt class="descname">calc_torsions</tt><big>(</big><em>coords1</em>, <em>coords2</em>, <em>coords3</em>, <em>coords4</em>, <em>box=None</em>, <em>result=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/lib/distances.html#calc_torsions"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p>Calculate the torsional angle formed by four atoms, over a list of coordinates.</p>
-<p>Torsional angle around axis connecting atoms 1 and 2 (i.e. the angle
+<tt class="descclassname">MDAnalysis.lib.distances.</tt><tt class="descname">calc_dihedrals</tt><big>(</big><em>coords1</em>, <em>coords2</em>, <em>coords3</em>, <em>coords4</em>, <em>box=None</em>, <em>result=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/lib/distances.html#calc_dihedrals"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Calculate the dihedral angle formed by four atoms, over a list of coordinates.</p>
+<p>Dihedral angle around axis connecting atoms 1 and 2 (i.e. the angle
 between the planes spanned by atoms (0,1,2) and (1,2,3)):</p>
 <div class="highlight-python"><pre>        3
         |
@@ -663,23 +663,23 @@ up calculations.</p>
 <p>The optional argument <tt class="docutils literal"><span class="pre">box</span></tt> ensures that periodic boundaries are taken into
 account when constructing the connecting vectors between atoms, ie that the vector
 between atoms 1 &amp; 2 goes between coordinates in the same image.</p>
-<p>angles = calc_torsions(coords1, coords2, coords3, coords4 [,box=box, result=angles])</p>
+<p>angles = calc_dihedrals(coords1, coords2, coords3, coords4 [,box=box, result=angles])</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
 <dt><em>coords1</em></dt>
-<dd><p class="first last">coordinate array of 1st atom in torsions</p>
+<dd><p class="first last">coordinate array of 1st atom in dihedrals</p>
 </dd>
 <dt><em>coords2</em></dt>
-<dd><p class="first last">coordinate array of 2nd atom in torsions</p>
+<dd><p class="first last">coordinate array of 2nd atom in dihedrals</p>
 </dd>
 <dt><em>coords3</em></dt>
-<dd><p class="first last">coordinate array of 3rd atom in torsions</p>
+<dd><p class="first last">coordinate array of 3rd atom in dihedrals</p>
 </dd>
 <dt><em>coords4</em></dt>
-<dd><p class="first last">coordinate array of 4th atom in torsions</p>
+<dd><p class="first last">coordinate array of 4th atom in dihedrals</p>
 </dd>
 <dt><em>box</em></dt>
 <dd><p class="first last">optional unit cell information.  This ensures that the connecting vectors
@@ -926,7 +926,8 @@ by <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coord
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
-    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Isaac Virshup, Zhuyi Xue, Carlos Yáñez S.,
+    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Gorman Stock, Isaac Virshup,
+    Zhuyi Xue, Carlos Yáñez S.,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

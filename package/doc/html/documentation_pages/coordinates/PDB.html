@@ -124,7 +124,7 @@ recognized; the only difference is thath the single-frame PDB is represented as
 a trajectory with only one frame.</p>
 <p>In order to write a selection to a PDB file one typically uses the
 <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.write" title="MDAnalysis.core.AtomGroup.AtomGroup.write"><tt class="xref py py-meth docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.AtomGroup.write()</span></tt></a> method of the selection:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">calphas</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="s">&quot;name CA&quot;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">calphas</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s">&quot;name CA&quot;</span><span class="p">)</span>
 <span class="n">calphas</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;calpha_only.pdb&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -132,7 +132,7 @@ a trajectory with only one frame.</p>
 <p>In order to write a PDB trajectory one needs to first obtain a multi-frame
 writer (keyword <em>multiframe</em> = <tt class="docutils literal"><span class="pre">True</span></tt>) and then iterate through the
 trajectory, while writing each frame:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">calphas</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="s">&quot;name CA&quot;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">calphas</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s">&quot;name CA&quot;</span><span class="p">)</span>
 <span class="n">W</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Writer</span><span class="p">(</span><span class="s">&quot;calpha_traj.pdb&quot;</span><span class="p">,</span> <span class="n">multiframe</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">:</span>
     <span class="n">W</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">calphas</span><span class="p">)</span>
@@ -193,7 +193,7 @@ do the following:</p>
 </div>
 <p>Similarly, writing only a protein:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">pdb</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Writer</span><span class="p">(</span><span class="s">&quot;protein.pdb&quot;</span><span class="p">,</span> <span class="n">multiframe</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-<span class="n">protein</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="s">&quot;protein&quot;</span><span class="p">)</span>
+<span class="n">protein</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s">&quot;protein&quot;</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">:</span>
     <span class="n">pdb</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">protein</span><span class="p">)</span>
 <span class="n">pdb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
@@ -202,14 +202,14 @@ do the following:</p>
 <p>A single frame can be written with the
 <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.write" title="MDAnalysis.core.AtomGroup.AtomGroup.write"><tt class="xref py py-meth docutils literal"><span class="pre">write()</span></tt></a> method of any
 <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a>:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">protein</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="s">&quot;protein&quot;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">protein</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s">&quot;protein&quot;</span><span class="p">)</span>
 <span class="n">protein</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;protein.pdb&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Alternatively, get the single frame writer and supply the
 <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a>:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">pdb</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Writer</span><span class="p">(</span><span class="s">&quot;protein.pdb&quot;</span><span class="p">)</span>
-<span class="n">protein</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="s">&quot;protein&quot;</span><span class="p">)</span>
+<span class="n">protein</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s">&quot;protein&quot;</span><span class="p">)</span>
 <span class="n">pdb</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">protein</span><span class="p">)</span>
 <span class="n">pdb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
@@ -411,7 +411,7 @@ of integers (typically starting at 1 or 0).</p>
 
 <dl class="class">
 <dt id="MDAnalysis.coordinates.PDB.PrimitivePDBWriter">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.PDB.</tt><tt class="descname">PrimitivePDBWriter</tt><big>(</big><em>filename</em>, <em>bonds='conect'</em>, <em>numatoms=None</em>, <em>start=0</em>, <em>step=1</em>, <em>remarks='Created by PrimitivePDBWriter'</em>, <em>convert_units=None</em>, <em>multiframe=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PrimitivePDBWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.PDB.</tt><tt class="descname">PrimitivePDBWriter</tt><big>(</big><em>filename</em>, <em>bonds='conect'</em>, <em>n_atoms=None</em>, <em>start=0</em>, <em>step=1</em>, <em>remarks='Created by PrimitivePDBWriter'</em>, <em>convert_units=None</em>, <em>multiframe=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PrimitivePDBWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PrimitivePDBWriter" title="Permalink to this definition">¶</a></dt>
 <dd><p>PDB writer that implements a subset of the <a class="reference external" href="http://www.wwpdb.org/documentation/format32/v3.2.html">PDB 3.2 standard</a> .</p>
 <p>PDB format as used by NAMD/CHARMM: 4-letter resnames and segID are allowed,
 altLoc is written.</p>
@@ -667,12 +667,12 @@ or a <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.
 the end, using a step of <em>skip</em> (<em>start</em> and <em>skip</em> are set in the
 constructor). Thus, if <em>u</em> is a Universe then</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
-<span class="n">pdb</span> <span class="o">=</span> <span class="n">PrimitivePDBWriter</span><span class="p">(</span><span class="s">&quot;out.pdb&quot;</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">numberOfAtoms</span><span class="p">())</span>
+<span class="n">pdb</span> <span class="o">=</span> <span class="n">PrimitivePDBWriter</span><span class="p">(</span><span class="s">&quot;out.pdb&quot;</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">)</span>
 <span class="n">pdb</span><span class="o">.</span><span class="n">write_all_timesteps</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>will write a PDB trajectory containing the last 2 frames and</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">pdb</span> <span class="o">=</span> <span class="n">PrimitivePDBWriter</span><span class="p">(</span><span class="s">&quot;out.pdb&quot;</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">numberOfAtoms</span><span class="p">(),</span> <span class="n">start</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">skip</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">pdb</span> <span class="o">=</span> <span class="n">PrimitivePDBWriter</span><span class="p">(</span><span class="s">&quot;out.pdb&quot;</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">skip</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <span class="n">pdb</span><span class="o">.</span><span class="n">write_all_timesteps</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -715,7 +715,7 @@ its argument so that topology information can be gathered.</p>
 
 <dl class="class">
 <dt id="MDAnalysis.coordinates.PDB.MultiPDBWriter">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.PDB.</tt><tt class="descname">MultiPDBWriter</tt><big>(</big><em>filename</em>, <em>bonds='conect'</em>, <em>numatoms=None</em>, <em>start=0</em>, <em>step=1</em>, <em>remarks='Created by PrimitivePDBWriter'</em>, <em>convert_units=None</em>, <em>multiframe=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#MultiPDBWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.MultiPDBWriter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.PDB.</tt><tt class="descname">MultiPDBWriter</tt><big>(</big><em>filename</em>, <em>bonds='conect'</em>, <em>n_atoms=None</em>, <em>start=0</em>, <em>step=1</em>, <em>remarks='Created by PrimitivePDBWriter'</em>, <em>convert_units=None</em>, <em>multiframe=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#MultiPDBWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.MultiPDBWriter" title="Permalink to this definition">¶</a></dt>
 <dd><p>PDB writer that implements a subset of the <a class="reference external" href="http://www.wwpdb.org/documentation/format32/v3.2.html">PDB 3.2 standard</a> .</p>
 <p>PDB format as used by NAMD/CHARMM: 4-letter resnames and segID, altLoc
 is written.</p>
@@ -949,7 +949,8 @@ implemented in Python. Bioinformatics, 19, 2308-2310. <a class="reference extern
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
-    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Isaac Virshup, Zhuyi Xue, Carlos Yáñez S.,
+    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Gorman Stock, Isaac Virshup,
+    Zhuyi Xue, Carlos Yáñez S.,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

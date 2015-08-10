@@ -342,8 +342,8 @@ or if it is not readable.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="MDAnalysis.coordinates.xdrfile.libxdrfile2.read_xtc_numframes">
-<tt class="descclassname">MDAnalysis.coordinates.xdrfile.libxdrfile2.</tt><tt class="descname">read_xtc_numframes</tt><big>(</big><em>fn) -&gt; (numframes</em>, <em>offsets</em><big>)</big><a class="reference internal" href="../../../_modules/MDAnalysis/coordinates/xdrfile/libxdrfile2.html#read_xtc_numframes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.libxdrfile2.read_xtc_numframes" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.xdrfile.libxdrfile2.read_xtc_n_frames">
+<tt class="descclassname">MDAnalysis.coordinates.xdrfile.libxdrfile2.</tt><tt class="descname">read_xtc_n_frames</tt><big>(</big><em>fn) -&gt; (n_frames</em>, <em>offsets</em><big>)</big><a class="reference internal" href="../../../_modules/MDAnalysis/coordinates/xdrfile/libxdrfile2.html#read_xtc_n_frames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.libxdrfile2.read_xtc_n_frames" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read through the whole trajectory headers to obtain the total number of frames. 
 The process is speeded up by reading frame headers for the amount of data in the frame,
 and then skipping directly to the next header. An array of frame offsets is also
@@ -362,7 +362,7 @@ returned, which can later be used to seek direcly to arbitrary frames in the tra
 <tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><dl class="first docutils">
 <dt>a tuple containing:</dt>
 <dd><dl class="first last docutils">
-<dt><em>numframes</em></dt>
+<dt><em>n_frames</em></dt>
 <dd><p class="first last">an int with the total frame count in the trajectory</p>
 </dd>
 <dt><em>offsets</em></dt>
@@ -499,8 +499,8 @@ or if it is not readable.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="MDAnalysis.coordinates.xdrfile.libxdrfile2.read_trr_numframes">
-<tt class="descclassname">MDAnalysis.coordinates.xdrfile.libxdrfile2.</tt><tt class="descname">read_trr_numframes</tt><big>(</big><em>fn) -&gt; (numframes</em>, <em>offsets</em><big>)</big><a class="reference internal" href="../../../_modules/MDAnalysis/coordinates/xdrfile/libxdrfile2.html#read_trr_numframes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.libxdrfile2.read_trr_numframes" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.xdrfile.libxdrfile2.read_trr_n_frames">
+<tt class="descclassname">MDAnalysis.coordinates.xdrfile.libxdrfile2.</tt><tt class="descname">read_trr_n_frames</tt><big>(</big><em>fn) -&gt; (n_frames</em>, <em>offsets</em><big>)</big><a class="reference internal" href="../../../_modules/MDAnalysis/coordinates/xdrfile/libxdrfile2.html#read_trr_n_frames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.libxdrfile2.read_trr_n_frames" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read through the whole trajectory headers to obtain the total number of frames. 
 The process is speeded up by reading frame headers for the amount of data in the frame,
 and then skipping directly to the next header. An array of frame offsets is also
@@ -519,7 +519,7 @@ returned, which can later be used to seek direcly to arbitrary frames in the tra
 <tr class="field-even field"><th class="field-name">Returns :</th><td class="field-body"><dl class="first docutils">
 <dt>a tuple containing:</dt>
 <dd><dl class="first last docutils">
-<dt><em>numframes</em></dt>
+<dt><em>n_frames</em></dt>
 <dd><p class="first last">an int with the total frame count in the trajectory</p>
 </dd>
 <dt><em>offsets</em></dt>
@@ -696,7 +696,8 @@ constants under <a class="reference internal" href="#status-symbols">Status symb
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
-    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Isaac Virshup, Zhuyi Xue, Carlos Yáñez S.,
+    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Gorman Stock, Isaac Virshup,
+    Zhuyi Xue, Carlos Yáñez S.,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

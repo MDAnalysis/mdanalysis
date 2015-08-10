@@ -1,0 +1,174 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>MDAnalysis.version &mdash; MDAnalysis 0.11.0-dev documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.11.0-dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 0.11.0-dev documentation"
+          href="../../_static/opensearch.xml"/>
+    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+    <link rel="top" title="MDAnalysis 0.11.0-dev documentation" href="../../index.html" />
+    <link rel="up" title="MDAnalysis" href="../MDAnalysis.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for MDAnalysis.version</h1><div class="highlight"><pre>
+<span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
+<span class="c"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8</span>
+<span class="c">#</span>
+<span class="c"># MDAnalysis --- http://www.MDAnalysis.org</span>
+<span class="c"># Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein</span>
+<span class="c"># and contributors (see AUTHORS for the full list)</span>
+<span class="c">#</span>
+<span class="c"># Released under the GNU Public Licence, v2 or any higher version</span>
+<span class="c">#</span>
+<span class="c"># Please cite your use of MDAnalysis in published work:</span>
+<span class="c"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
+<span class="c">#</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Version information for MDAnalysis</span>
+<span class="sd">==================================</span>
+
+<span class="sd">The version information in this file indicates the release of</span>
+<span class="sd">MDAnalysis. MDAnalysis uses `semantic versioning`_ as desribed in the</span>
+<span class="sd">wiki page on `versioning of MDAnalysis`_.</span>
+
+<span class="sd">In brief:</span>
+
+<span class="sd">Given a version number MAJOR.MINOR.PATCH, we increment the</span>
+
+<span class="sd">1. **MAJOR** version when we make **incompatible API changes**,</span>
+<span class="sd">2. **MINOR** version when we **add functionality** in a</span>
+<span class="sd">   **backwards-compatible** manner, and</span>
+<span class="sd">3. **PATCH** version when we make backwards-compatible **bug fixes**.</span>
+
+<span class="sd">However, as long as the **MAJOR** number is **0** (i.e. the API has</span>
+<span class="sd">not stabilized), even **MINOR** increases *may* introduce incompatible</span>
+<span class="sd">API changes. As soon as we have a 1.0.0 release, the public API can</span>
+<span class="sd">only be changed in a backward-incompatible manner with an increase in</span>
+<span class="sd">MAJOR version.</span>
+
+<span class="sd">Additional labels for pre-release and build metadata are available as</span>
+<span class="sd">extensions to the MAJOR.MINOR.PATCH format.</span>
+
+
+<span class="sd">.. Note:: Development versions and pre-releases have a suffix after</span>
+<span class="sd">          the release number, such as ``0.11.0-dev``. If you have</span>
+<span class="sd">          problems, try out a full release (e.g. ``0.11.0``) first.</span>
+
+<span class="sd">.. _`semantic versioning`: http://semver.org/</span>
+<span class="sd">.. _`versioning of MDAnalysis`:</span>
+<span class="sd">   http://wiki.mdanalysis.org/SemanticVersioning</span>
+
+<span class="sd">Data</span>
+<span class="sd">====</span>
+
+<span class="sd">.. autodata:: __version__</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c"># keep __version__ in separate file to avoid circular imports</span>
+<span class="c"># e.g. with lib.log</span>
+
+<span class="c">#: Release of MDAnalysis as a string, using _`semantic versioning`.</span>
+<span class="n">__version__</span> <span class="o">=</span> <span class="s">&quot;0.11.0-dev&quot;</span>  <span class="c"># NOTE: keep in sync with RELEASE in setup.py</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
+    David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
+    Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
+    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
+    Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
+    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Gorman Stock, Isaac Virshup,
+    Zhuyi Xue, Carlos Yáñez S.,
+    and Oliver Beckstein.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

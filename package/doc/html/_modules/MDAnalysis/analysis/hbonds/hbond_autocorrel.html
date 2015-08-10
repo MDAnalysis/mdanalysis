@@ -189,9 +189,9 @@
 
 <span class="sd">  from MDAnalysis.analysis import hbonds</span>
 <span class="sd">  import matplotlib.pyplot as plt</span>
-<span class="sd">  H = u.selectAtoms(&#39;name Hn&#39;)</span>
-<span class="sd">  O = u.selectAtoms(&#39;name O&#39;)</span>
-<span class="sd">  N = u.selectAtoms(&#39;name N&#39;)</span>
+<span class="sd">  H = u.select_atoms(&#39;name Hn&#39;)</span>
+<span class="sd">  O = u.select_atoms(&#39;name O&#39;)</span>
+<span class="sd">  N = u.select_atoms(&#39;name N&#39;)</span>
 <span class="sd">  hb_ac = hbonds.HydrogenBondAutoCorrel(u, acceptors = u.atoms.O,</span>
 <span class="sd">              hydrogens = u.atoms.Hn, donors = u.atoms.N,bond_type=&#39;continuous&#39;,</span>
 <span class="sd">              sample_time = 2, nruns = 20, nsamples = 1000)</span>
@@ -325,22 +325,22 @@
         <span class="n">dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">dt</span>  <span class="c"># frame step size in time</span>
         <span class="n">req_frames</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sample_time</span> <span class="o">/</span> <span class="n">dt</span><span class="p">)</span>  <span class="c"># the number of frames required</span>
 
-        <span class="n">numframes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">req_frames</span> <span class="o">&gt;</span> <span class="n">numframes</span><span class="p">:</span>
+        <span class="n">n_frames</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">req_frames</span> <span class="o">&gt;</span> <span class="n">n_frames</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;Number of required frames ({}) greater than the&quot;</span>
                           <span class="s">&quot; number of frames in trajectory ({})&quot;</span>
-                          <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">req_frames</span><span class="p">,</span> <span class="n">numframes</span><span class="p">),</span> <span class="ne">RuntimeWarning</span><span class="p">)</span>
+                          <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">req_frames</span><span class="p">,</span> <span class="n">n_frames</span><span class="p">),</span> <span class="ne">RuntimeWarning</span><span class="p">)</span>
 
         <span class="n">numruns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nruns</span>
-        <span class="k">if</span> <span class="n">numruns</span> <span class="o">&gt;</span> <span class="n">numframes</span><span class="p">:</span>
-            <span class="n">numruns</span> <span class="o">=</span> <span class="n">numframes</span>
+        <span class="k">if</span> <span class="n">numruns</span> <span class="o">&gt;</span> <span class="n">n_frames</span><span class="p">:</span>
+            <span class="n">numruns</span> <span class="o">=</span> <span class="n">n_frames</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;Number of runs ({}) greater than the number of&quot;</span>
                           <span class="s">&quot; frames in trajectory ({})&quot;</span>
-                          <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nruns</span><span class="p">,</span> <span class="n">numframes</span><span class="p">),</span> <span class="ne">RuntimeWarning</span><span class="p">)</span>
+                          <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nruns</span><span class="p">,</span> <span class="n">n_frames</span><span class="p">),</span> <span class="ne">RuntimeWarning</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_starts</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">numframes</span><span class="p">,</span> <span class="n">numframes</span> <span class="o">/</span> <span class="n">numruns</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_starts</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_frames</span><span class="p">,</span> <span class="n">n_frames</span> <span class="o">/</span> <span class="n">numruns</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
         <span class="c"># limit stop points using clip</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_stops</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_starts</span> <span class="o">+</span> <span class="n">req_frames</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">numframes</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stops</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_starts</span> <span class="o">+</span> <span class="n">req_frames</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">n_frames</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_skip</span> <span class="o">=</span> <span class="n">req_frames</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">nsamples</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_skip</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>  <span class="c"># If nsamples &gt; req_frames</span>
@@ -625,7 +625,8 @@
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
-    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Isaac Virshup, Zhuyi Xue, Carlos Yáñez S.,
+    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Gorman Stock, Isaac Virshup,
+    Zhuyi Xue, Carlos Yáñez S.,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

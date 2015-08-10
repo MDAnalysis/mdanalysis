@@ -121,7 +121,7 @@ the <a class="reference external" href="http://groups.google.com/group/mdnalysis
 object.</p>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.TRJ.Timestep">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.TRJ.</tt><tt class="descname">Timestep</tt><big>(</big><em>numatoms</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#Timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.Timestep" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.TRJ.</tt><tt class="descname">Timestep</tt><big>(</big><em>n_atoms</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#Timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.Timestep" title="Permalink to this definition">¶</a></dt>
 <dd><p>AMBER trajectory Timestep.</p>
 <p>The Timestep can be initialized with <em>arg</em> being an integer
 (the number of atoms) and an optional keyword argument <em>velocities</em> to
@@ -134,7 +134,7 @@ allocate space for both coordinates and velocities;</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
-<dt><em>numatoms</em></dt>
+<dt><em>n_atoms</em></dt>
 <dd><p class="first last">The total number of atoms this Timestep describes</p>
 </dd>
 </dl>
@@ -169,13 +169,13 @@ the has_* attribute</p>
 <dl class="attribute">
 <dt id="MDAnalysis.coordinates.TRJ.Timestep._pos">
 <tt class="descname">_pos</tt><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.Timestep._pos" title="Permalink to this definition">¶</a></dt>
-<dd><p>coordinates of the atoms as a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of shape <cite>(numatoms, 3)</cite></p>
+<dd><p>coordinates of the atoms as a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of shape <cite>(n_atoms, 3)</cite></p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="MDAnalysis.coordinates.TRJ.Timestep._velocities">
 <tt class="descname">_velocities</tt><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.Timestep._velocities" title="Permalink to this definition">¶</a></dt>
-<dd><p>velocities of the atoms as a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of shape <cite>(numatoms, 3)</cite>;
+<dd><p>velocities of the atoms as a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of shape <cite>(n_atoms, 3)</cite>;
 only available if the trajectory contains velocities or if the
 <em>velocities</em> = <tt class="docutils literal"><span class="pre">True</span></tt> keyword has been supplied.</p>
 </dd></dl>
@@ -183,7 +183,7 @@ only available if the trajectory contains velocities or if the
 <dl class="attribute">
 <dt id="MDAnalysis.coordinates.TRJ.Timestep._forces">
 <tt class="descname">_forces</tt><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.Timestep._forces" title="Permalink to this definition">¶</a></dt>
-<dd><p>forces of the atoms as a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of shape <cite>(numatoms, 3)</cite>;
+<dd><p>forces of the atoms as a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> of shape <cite>(n_atoms, 3)</cite>;
 only available if the trajectory contains forces or if the
 <em>forces</em> = <tt class="docutils literal"><span class="pre">True</span></tt> keyword has been supplied.</p>
 </dd></dl>
@@ -212,14 +212,14 @@ assumed to be non-periodic (for technical reasons).</li>
 </ul>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.TRJ.TRJReader">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.TRJ.</tt><tt class="descname">TRJReader</tt><big>(</big><em>filename</em>, <em>numatoms=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#TRJReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.TRJReader" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.TRJ.</tt><tt class="descname">TRJReader</tt><big>(</big><em>filename</em>, <em>n_atoms=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#TRJReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.TRJReader" title="Permalink to this definition">¶</a></dt>
 <dd><p>AMBER trajectory reader.</p>
 <p>Reads the ASCII formatted <a class="reference external" href="http://ambermd.org/formats.html#trajectory">AMBER TRJ format</a>. Periodic box information
 is auto-detected.</p>
-<p>The number of atoms in a timestep <em>must</em> be provided in the <cite>numatoms</cite>
+<p>The number of atoms in a timestep <em>must</em> be provided in the <cite>n_atoms</cite>
 keyword because it is not stored in the trajectory header and cannot be
 reliably autodetected. The constructor raises a <tt class="xref py py-exc docutils literal"><span class="pre">ValueError</span></tt> if
-<cite>numatoms</cite> is left at its default value of <tt class="docutils literal"><span class="pre">None</span></tt>.</p>
+<cite>n_atoms</cite> is left at its default value of <tt class="docutils literal"><span class="pre">None</span></tt>.</p>
 <p>The length of a timestep is not stored in the trajectory itself but can
 be set by passing the <cite>dt</cite> keyword argument to the constructor; it
 is assumed to be in ps. The default value is 1 ps.</p>
@@ -235,8 +235,8 @@ kwarg &#8216;delta&#8217; renamed to &#8216;dt&#8217;, for uniformity with other
 </dd></dl>
 
 <dl class="attribute">
-<dt id="MDAnalysis.coordinates.TRJ.TRJReader.numframes">
-<tt class="descname">numframes</tt><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#TRJReader.numframes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.TRJReader.numframes" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.TRJ.TRJReader.n_frames">
+<tt class="descname">n_frames</tt><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#TRJReader.n_frames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.TRJReader.n_frames" title="Permalink to this definition">¶</a></dt>
 <dd><p>Number of frames (obtained from reading the whole trajectory).</p>
 </dd></dl>
 
@@ -267,11 +267,11 @@ defaults of ångström and picoseconds but at the moment MDAnalysis only support
 those and will raise a <tt class="xref py py-exc docutils literal"><span class="pre">NotImplementedError</span></tt> if anything else is detected.</p>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.TRJ.NCDFReader">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.TRJ.</tt><tt class="descname">NCDFReader</tt><big>(</big><em>filename</em>, <em>numatoms=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#NCDFReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.NCDFReader" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.TRJ.</tt><tt class="descname">NCDFReader</tt><big>(</big><em>filename</em>, <em>n_atoms=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#NCDFReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.NCDFReader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reader for <a class="reference external" href="http://ambermd.org/netcdf/nctraj.html">AMBER NETCDF format</a> (version 1.0).</p>
 <p>AMBER binary trajectories are automatically recognised by the
 file extension &#8221;.ncdf&#8221;.</p>
-<p>The number of atoms (<em>numatoms</em>) does not have to be provided as it can
+<p>The number of atoms (<em>n_atoms</em>) does not have to be provided as it can
 be read from the trajectory. The trajectory reader can randomly access
 frames and therefore supports direct indexing (with 0-based frame
 indices) and full-feature trajectory iteration, including slicing.</p>
@@ -314,7 +314,7 @@ kwarg &#8216;delta&#8217; renamed to &#8216;dt&#8217;, for uniformity with other
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first docutils">
-<dt><em>numatoms</em></dt>
+<dt><em>n_atoms</em></dt>
 <dd><p class="first last">number of atoms</p>
 </dd>
 <dt><em>dt</em></dt>
@@ -343,7 +343,7 @@ kwarg &#8216;delta&#8217; renamed to &#8216;dt&#8217;, for uniformity with other
 
 <dl class="class">
 <dt id="MDAnalysis.coordinates.TRJ.NCDFWriter">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.TRJ.</tt><tt class="descname">NCDFWriter</tt><big>(</big><em>filename</em>, <em>numatoms</em>, <em>start=0</em>, <em>step=1</em>, <em>dt=1.0</em>, <em>remarks=None</em>, <em>convert_units=None</em>, <em>zlib=False</em>, <em>cmplevel=1</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#NCDFWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.NCDFWriter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.TRJ.</tt><tt class="descname">NCDFWriter</tt><big>(</big><em>filename</em>, <em>n_atoms</em>, <em>start=0</em>, <em>step=1</em>, <em>dt=1.0</em>, <em>remarks=None</em>, <em>convert_units=None</em>, <em>zlib=False</em>, <em>cmplevel=1</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#NCDFWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.NCDFWriter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Writer for <a class="reference external" href="http://ambermd.org/netcdf/nctraj.html">AMBER NETCDF format</a> (version 1.0).</p>
 <p>AMBER binary trajectories are automatically recognised by the
 file extension &#8221;.ncdf&#8221;.</p>
@@ -369,7 +369,7 @@ velocities).</p>
 <dt><em>filename</em></dt>
 <dd><p class="first last">name of output file</p>
 </dd>
-<dt><em>numatoms</em></dt>
+<dt><em>n_atoms</em></dt>
 <dd><p class="first last">number of atoms in trajectory file</p>
 </dd>
 </dl>
@@ -458,7 +458,8 @@ be written to trajectory file</p>
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
-    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Isaac Virshup, Zhuyi Xue, Carlos Yáñez S.,
+    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Gorman Stock, Isaac Virshup,
+    Zhuyi Xue, Carlos Yáñez S.,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

@@ -117,8 +117,8 @@ on an <a class="reference internal" href="AtomGroup.html#MDAnalysis.core.AtomGro
 </pre></div>
 </div>
 <p>A simple selection of all water oxygens within 4 A of the protein:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">water_shell</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="s">&#39;name OH2 and around 4.0 protein&#39;</span><span class="p">)</span>
-<span class="n">water_shell</span><span class="o">.</span><span class="n">numberOfAtoms</span><span class="p">()</span>   <span class="c"># how many waters were selected</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">water_shell</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s">&#39;name OH2 and around 4.0 protein&#39;</span><span class="p">)</span>
+<span class="n">water_shell</span><span class="o">.</span><span class="n">n_atoms</span>           <span class="c"># how many waters were selected</span>
 <span class="n">water_shell</span><span class="o">.</span><span class="n">totalMass</span><span class="p">()</span>       <span class="c"># their total mass</span>
 </pre></div>
 </div>
@@ -408,7 +408,8 @@ all values are directly set.</p>
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
-    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Isaac Virshup, Zhuyi Xue, Carlos Yáñez S.,
+    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Gorman Stock, Isaac Virshup,
+    Zhuyi Xue, Carlos Yáñez S.,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

@@ -189,8 +189,8 @@ appropriate reader automatically.</p>
 <p>A typical approach is to generate a new trajectory from an old one, e.g. to
 only keep the protein:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PDB</span><span class="p">,</span> <span class="n">XTC</span><span class="p">)</span>
-<span class="n">protein</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="s">&quot;protein&quot;</span><span class="p">)</span>
-<span class="k">with</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Writer</span><span class="p">(</span><span class="s">&quot;protein.xtc&quot;</span><span class="p">,</span> <span class="n">protein</span><span class="o">.</span><span class="n">numberOfAtoms</span><span class="p">())</span> <span class="k">as</span> <span class="n">W</span><span class="p">:</span>
+<span class="n">protein</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s">&quot;protein&quot;</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Writer</span><span class="p">(</span><span class="s">&quot;protein.xtc&quot;</span><span class="p">,</span> <span class="n">protein</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">)</span> <span class="k">as</span> <span class="n">W</span><span class="p">:</span>
     <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">:</span>
         <span class="n">W</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">protein</span><span class="p">)</span>
 </pre></div>
@@ -461,7 +461,7 @@ implementation example (and used directly for the DCDReader).</p>
 <h4>5.1.5.3.1. Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><dl class="docutils">
-<dt><tt class="docutils literal"><span class="pre">__init__(numatoms,</span> <span class="pre">positions=True,</span> <span class="pre">velocities=False,</span> <span class="pre">forces=False)</span></tt></dt>
+<dt><tt class="docutils literal"><span class="pre">__init__(n_atoms,</span> <span class="pre">positions=True,</span> <span class="pre">velocities=False,</span> <span class="pre">forces=False)</span></tt></dt>
 <dd>Define the number of atoms this Timestep will hold and whether or not
 it will have velocity and force information</dd>
 <dt><tt class="docutils literal"><span class="pre">__eq__</span></tt></dt>
@@ -486,7 +486,7 @@ initialize <tt class="xref py py-attr docutils literal"><span class="pre">Timest
 <h4>5.1.5.3.2. Attributes<a class="headerlink" href="#attributes" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><dl class="docutils">
-<dt><tt class="docutils literal"><span class="pre">numatoms</span></tt></dt>
+<dt><tt class="docutils literal"><span class="pre">n_atoms</span></tt></dt>
 <dd>number of atoms in the frame</dd>
 <dt><tt class="docutils literal"><span class="pre">frame</span></tt></dt>
 <dd>current frame number (0-based)</dd>
@@ -583,7 +583,7 @@ following data are supplied in keywords when a trajectory is loaded from
 within <tt class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></tt>:</p>
 <blockquote class="last">
 <div><ul class="simple">
-<li><em>numatoms</em>: the number of atoms (known from the topology)</li>
+<li><em>n_atoms</em>: the number of atoms (known from the topology)</li>
 </ul>
 </div></blockquote>
 </dd>
@@ -679,9 +679,9 @@ with observable timeseries computed from the trajectory</dd>
 <div><dl class="docutils">
 <dt><tt class="docutils literal"><span class="pre">filename</span></tt></dt>
 <dd>filename of the trajectory</dd>
-<dt><tt class="docutils literal"><span class="pre">numatoms</span></tt></dt>
+<dt><tt class="docutils literal"><span class="pre">n_atoms</span></tt></dt>
 <dd>number of atoms (coordinate sets) in a frame (constant)</dd>
-<dt><tt class="docutils literal"><span class="pre">numframes</span></tt></dt>
+<dt><tt class="docutils literal"><span class="pre">n_frames</span></tt></dt>
 <dd>total number of frames (if known) &#8211; <tt class="docutils literal"><span class="pre">None</span></tt> if not known</dd>
 <dt><tt class="docutils literal"><span class="pre">ts</span></tt></dt>
 <dd>the <tt class="xref py py-class docutils literal"><span class="pre">Timestep</span></tt> object; typically customized for each
@@ -699,7 +699,7 @@ Any field not used should be set to <tt class="docutils literal"><span class="pr
 on the fly <tt class="docutils literal"><span class="pre">skip_timestep</span> <span class="pre">*</span> <span class="pre">delta</span></tt> and converts to the MDAnalysis base
 unit for time (pico seconds by default)</dd>
 <dt><tt class="docutils literal"><span class="pre">totaltime</span></tt></dt>
-<dd>total length of the trajectory = <tt class="docutils literal"><span class="pre">numframes</span> <span class="pre">*</span> <span class="pre">dt</span></tt></dd>
+<dd>total length of the trajectory = <tt class="docutils literal"><span class="pre">n_frames</span> <span class="pre">*</span> <span class="pre">dt</span></tt></dd>
 <dt><tt class="docutils literal"><span class="pre">time</span></tt></dt>
 <dd>time of the current time step, in MDAnalysis time units (ps)</dd>
 <dt><tt class="docutils literal"><span class="pre">frame</span></tt></dt>
@@ -735,7 +735,7 @@ multiple frames to a trajectory file. Every time the
 another frame is appended to the trajectory.</p>
 <p>Typically, many methods and attributes are overriden.</p>
 <p>Signature:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">W</span> <span class="o">=</span> <span class="n">TrajectoryWriter</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="n">numatoms</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">W</span> <span class="o">=</span> <span class="n">TrajectoryWriter</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="n">n_atoms</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 <span class="n">W</span><span class="o">.</span><span class="n">write_next_timestep</span><span class="p">(</span><span class="n">Timestep</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -749,7 +749,7 @@ another frame is appended to the trajectory.</p>
 <h4>5.1.5.5.1. Methods<a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><dl class="docutils">
-<dt><tt class="docutils literal"><span class="pre">__init__(filename,numatoms[,start[,step[,delta[,remarks]]]])</span></tt></dt>
+<dt><tt class="docutils literal"><span class="pre">__init__(filename,n_atoms[,start[,step[,delta[,remarks]]]])</span></tt></dt>
 <dd>opens <em>filename</em> and writes header if required by format</dd>
 <dt><tt class="docutils literal"><span class="pre">write(obj)</span></tt></dt>
 <dd>write Timestep data in <em>obj</em></dd>
@@ -807,7 +807,7 @@ way.</p>
 </pre></div>
 </div>
 <p>The blanket <em>kwargs</em> is required so that one can pass the same kind of
-arguments (filename and numatoms) as for the Trajectory writers. In
+arguments (filename and n_atoms) as for the Trajectory writers. In
 this way, the simple <a class="reference internal" href="core.html#MDAnalysis.coordinates.core.writer" title="MDAnalysis.coordinates.core.writer"><tt class="xref py py-func docutils literal"><span class="pre">writer()</span></tt></a>
 factory function can be used for all writers.</p>
 <div class="section" id="id17">
@@ -877,7 +877,7 @@ Signature:</p>
 <tt class="descclassname">MDAnalysis.coordinates.__init__.</tt><tt class="descname">_trajectory_writers</tt><em class="property"> = {'MOL2': &lt;class 'MDAnalysis.coordinates.MOL2.MOL2Writer'&gt;, 'TRZ': &lt;class 'MDAnalysis.coordinates.TRZ.TRZWriter'&gt;, 'XTC': &lt;class 'MDAnalysis.coordinates.xdrfile.XTC.XTCWriter'&gt;, 'XYZ': &lt;class 'MDAnalysis.coordinates.XYZ.XYZWriter'&gt;, 'LAMMPS': &lt;class 'MDAnalysis.coordinates.LAMMPS.DCDWriter'&gt;, 'DCD': &lt;class 'MDAnalysis.coordinates.DCD.DCDWriter'&gt;, 'TRR': &lt;class 'MDAnalysis.coordinates.xdrfile.TRR.TRRWriter'&gt;, 'PDB': &lt;class 'MDAnalysis.coordinates.PDB.MultiPDBWriter'&gt;, 'NCDF': &lt;class 'MDAnalysis.coordinates.TRJ.NCDFWriter'&gt;}</em><a class="headerlink" href="#MDAnalysis.coordinates.__init__._trajectory_writers" title="Permalink to this definition">¶</a></dt>
 <dd><p>trajectory writers: export frames, typically only saving coordinates
 Signature:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">W</span> <span class="o">=</span> <span class="n">TrajectoryWriter</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="n">numatoms</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">W</span> <span class="o">=</span> <span class="n">TrajectoryWriter</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="n">n_atoms</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 <span class="n">W</span><span class="o">.</span><span class="n">write_next_timestep</span><span class="p">(</span><span class="n">TimeStep</span><span class="p">)</span>
 <span class="n">W</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">Timestep</span><span class="p">)</span>
 <span class="n">W</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">AtomGroup</span><span class="p">)</span>
@@ -921,7 +921,8 @@ Signature:</p>
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
-    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Isaac Virshup, Zhuyi Xue, Carlos Yáñez S.,
+    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Gorman Stock, Isaac Virshup,
+    Zhuyi Xue, Carlos Yáñez S.,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

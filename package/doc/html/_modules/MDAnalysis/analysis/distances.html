@@ -109,10 +109,9 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span>
 <span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">sparse</span>
-<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">weave</span>
-<span class="kn">from</span> <span class="nn">scipy.weave</span> <span class="kn">import</span> <span class="n">converters</span>
 
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.distances</span> <span class="kn">import</span> <span class="n">distance_array</span><span class="p">,</span> <span class="n">self_distance_array</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.lib._distances</span> <span class="kn">import</span> <span class="n">contact_matrix_no_pbc</span><span class="p">,</span> <span class="n">contact_matrix_pbc</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.KDTree.NeighborSearch</span> <span class="kn">import</span> <span class="n">AtomNeighborSearch</span>
 
 <span class="kn">import</span> <span class="nn">logging</span>
@@ -120,8 +119,8 @@
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&quot;MDAnalysis.analysis.distances&quot;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="contact_matrix"><a class="viewcode-back" href="../../../documentation_pages/analysis/distances.html#MDAnalysis.analysis.distances.contact_matrix">[docs]</a><span class="k">def</span> <span class="nf">contact_matrix</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="mf">15.0</span><span class="p">,</span> <span class="n">returntype</span><span class="o">=</span><span class="s">&quot;numpy&quot;</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">progress_meter_freq</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;Calculates a matrix of contacts between a list of coordinates.</span>
+<div class="viewcode-block" id="contact_matrix"><a class="viewcode-back" href="../../../documentation_pages/analysis/distances.html#MDAnalysis.analysis.distances.contact_matrix">[docs]</a><span class="k">def</span> <span class="nf">contact_matrix</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="mf">15.0</span><span class="p">,</span> <span class="n">returntype</span><span class="o">=</span><span class="s">&quot;numpy&quot;</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Calculates a matrix of contacts within a numpy array of type float32.</span>
 
 <span class="sd">    There is a fast, high-memory-usage version for small systems</span>
 <span class="sd">    (*returntype* = &#39;numpy&#39;), and a slower, low-memory-usage version for</span>
@@ -131,11 +130,8 @@
 <span class="sd">    periodic boundary conditions are applied.  Only orthorhombic boxes</span>
 <span class="sd">    are currently supported.</span>
 
-<span class="sd">    Change *progress_meter_freq* to alter frequency of progress meter</span>
-<span class="sd">    updates. Or switch *quiet* to ``True`` to suppress it completely.</span>
-
 <span class="sd">    .. versionchanged:: 0.11.0</span>
-<span class="sd">       Keyword *suppress_progmet* was changed to *quiet*.</span>
+<span class="sd">       Keyword *suppress_progmet* and *progress_meter_freq* were removed.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">if</span> <span class="n">returntype</span> <span class="o">==</span> <span class="s">&quot;numpy&quot;</span><span class="p">:</span>
         <span class="n">adj</span> <span class="o">=</span> <span class="p">(</span><span class="n">distance_array</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">coord</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">cutoff</span><span class="p">)</span>
@@ -143,130 +139,15 @@
     <span class="k">elif</span> <span class="n">returntype</span> <span class="o">==</span> <span class="s">&quot;sparse&quot;</span><span class="p">:</span>
         <span class="c"># Initialize square List of Lists matrix of dimensions equal to number of coordinates passed</span>
         <span class="n">sparse_contacts</span> <span class="o">=</span> <span class="n">sparse</span><span class="o">.</span><span class="n">lil_matrix</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">coord</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">coord</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;bool&#39;</span><span class="p">)</span>
-        <span class="c"># TODO Jan: this distance matrix will be symmetric, hence some of the iterations could be skipped.</span>
         <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="c"># if PBC</span>
-            <span class="n">contact_matrix_pbc</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">sparse_contacts</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">,</span> <span class="n">progress_meter_freq</span><span class="p">,</span> <span class="n">quiet</span><span class="p">)</span>
+            <span class="n">contact_matrix_pbc</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">sparse_contacts</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c"># if no PBC</span>
-            <span class="n">contact_matrix_no_pbc</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">sparse_contacts</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">,</span> <span class="n">progress_meter_freq</span><span class="p">,</span> <span class="n">quiet</span><span class="p">)</span>
+            <span class="n">contact_matrix_no_pbc</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">sparse_contacts</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">sparse_contacts</span>
 
 </div>
-<span class="k">def</span> <span class="nf">contact_matrix_pbc</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">sparse_contacts</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">,</span> <span class="n">progress_meter_freq</span><span class="p">,</span> <span class="n">quiet</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Contact matrix calculation with periodic boundary conditions.</span>
-
-<span class="sd">    You don&#39;t have to call this function explicitly; just provide a</span>
-<span class="sd">    *box* to :func:`contact_matrix`, which will then call this</span>
-<span class="sd">    function.</span>
-
-<span class="sd">    Only orthorhombic boxes are currently supported.</span>
-
-<span class="sd">    This function uses  `python.weave`_.</span>
-
-<span class="sd">    ..  _`python.weave`: http://github.com/scipy/scipy/tree/master/scipy/weave/examples</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">box_half</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span> <span class="o">/</span> <span class="mf">2.</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">box</span><span class="p">])</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;contac_matrix_pbc(): using box </span><span class="si">%r</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">box</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;contac_matrix_pbc(): half box </span><span class="si">%r</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">box_half</span><span class="p">)</span>
-    <span class="n">_quiet</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">quiet</span> <span class="k">else</span> <span class="mi">0</span>  <span class="c"># weave does not like Python True/False and does not convert to bool</span>
-
-    <span class="n">c_code</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
-<span class="s">    #include &lt;math.h&gt;</span>
-<span class="s">    int rows = Ncoord[0];</span>
-<span class="s">    float cutoff2 = powf(cutoff, 2);</span>
-<span class="s">    py::tuple args(2);</span>
-<span class="s">    bool b = 1;</span>
-<span class="s">    args[1] = b;</span>
-<span class="s">    for (int i=0; i &lt; rows; i++) {</span>
-<span class="s">        // Print progress meter</span>
-<span class="s">        if (! _quiet &amp;&amp; (i % progress_meter_freq == 0)) {</span>
-<span class="s">            printf(&quot;</span><span class="si">%.1f</span><span class="s"> percent done </span><span class="se">\\</span><span class="s">n&quot;, (100.0 * i / rows));</span>
-<span class="s">        }</span>
-<span class="s">        for (int j=0; j &lt; rows; j++) {</span>
-<span class="s">            float x = coord(i,0) - coord(j,0);</span>
-<span class="s">            float y = coord(i,1) - coord(j,1);</span>
-<span class="s">            float z = coord(i,2) - coord(j,2);</span>
-
-<span class="s">            // Handle the periodicity</span>
-<span class="s">            if (fabs(x) &gt; box_half(0) ) {</span>
-<span class="s">                if (x &lt; 0.0) {x += box(0); }</span>
-<span class="s">                else { x -= box(0); }</span>
-<span class="s">            }</span>
-
-<span class="s">            if (fabs(y) &gt; box_half(1) ) {</span>
-<span class="s">                if (y &lt; 0.0) {y += box(1); }</span>
-<span class="s">                else { y -= box(1); }</span>
-<span class="s">            }</span>
-
-<span class="s">            if (fabs(z) &gt; box_half(2) ) {</span>
-<span class="s">                if (z &lt; 0.0) {z += box(2); }</span>
-<span class="s">                else { z -= box(2); }</span>
-<span class="s">            }</span>
-
-<span class="s">            float dist = powf(x, 2) + powf(y, 2) + powf(z, 2);</span>
-
-<span class="s">            if (dist != 0.0 &amp;&amp; dist &lt; cutoff2) {</span>
-<span class="s">                py::tuple idx(2);</span>
-<span class="s">                idx[0] = i;</span>
-<span class="s">                idx[1] = j;</span>
-<span class="s">                args[0] = idx;</span>
-<span class="s">                sparse_contacts.mcall(&quot;__setitem__&quot;, args);</span>
-<span class="s">            }</span>
-<span class="s">        }</span>
-<span class="s">    }</span>
-<span class="s">    &quot;&quot;&quot;</span>
-    <span class="n">weave</span><span class="o">.</span><span class="n">inline</span><span class="p">(</span><span class="n">c_code</span><span class="p">,</span>
-                 <span class="p">[</span><span class="s">&#39;coord&#39;</span><span class="p">,</span> <span class="s">&#39;sparse_contacts&#39;</span><span class="p">,</span> <span class="s">&#39;box&#39;</span><span class="p">,</span> <span class="s">&#39;box_half&#39;</span><span class="p">,</span> <span class="s">&#39;cutoff&#39;</span><span class="p">,</span> <span class="s">&#39;progress_meter_freq&#39;</span><span class="p">,</span> <span class="s">&#39;_quiet&#39;</span><span class="p">],</span>
-                 <span class="n">type_converters</span><span class="o">=</span><span class="n">converters</span><span class="o">.</span><span class="n">blitz</span><span class="p">)</span>
-
-
-<span class="k">def</span> <span class="nf">contact_matrix_no_pbc</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">sparse_contacts</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">,</span> <span class="n">progress_meter_freq</span><span class="p">,</span> <span class="n">quiet</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Contact matrix calculation without periodic boundary conditions.</span>
-
-<span class="sd">    You don&#39;t have to call this function explicitly; just set *box* =</span>
-<span class="sd">    ``None`` when calling :func:`contact_matrix`, which will then call</span>
-<span class="sd">    this function.</span>
-
-<span class="sd">    This function uses  `python.weave`_.</span>
-
-<span class="sd">    ..  _`python.weave`: http://github.com/scipy/scipy/tree/master/scipy/weave/examples</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">_quiet</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">quiet</span> <span class="k">else</span> <span class="mi">0</span>  <span class="c"># weave does not like Python True/False and does not convert to bool</span>
-
-    <span class="n">c_code</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
-<span class="s">    #include &lt;math.h&gt;</span>
-<span class="s">    int rows = Ncoord[0];</span>
-<span class="s">    float cutoff2 = powf(cutoff, 2.);</span>
-<span class="s">    py::tuple args(2);</span>
-<span class="s">    bool b = 1;</span>
-<span class="s">    args[1] = b;</span>
-<span class="s">    for (int i=0; i &lt; rows; i++) {</span>
-<span class="s">        // Print progress meter</span>
-<span class="s">        if (! _quiet &amp;&amp; (i % progress_meter_freq == 0)) {</span>
-<span class="s">            printf(&quot;</span><span class="si">%.1f</span><span class="s"> percent done </span><span class="se">\\</span><span class="s">n&quot;, (100.0 * i / rows));</span>
-<span class="s">        }</span>
-<span class="s">        for (int j=0; j &lt; rows; j++) {</span>
-<span class="s">            float x = coord(i,0) - coord(j,0);</span>
-<span class="s">            float y = coord(i,1) - coord(j,1);</span>
-<span class="s">            float z = coord(i,2) - coord(j,2);</span>
-
-<span class="s">            float dist = powf(x, 2.) + powf(y, 2.) + powf(z, 2.);</span>
-<span class="s">            if (dist != 0.0 &amp;&amp; dist &lt; cutoff2) {</span>
-<span class="s">                py::tuple idx(2);</span>
-<span class="s">                idx[0] = i;</span>
-<span class="s">                idx[1] = j;</span>
-<span class="s">                args[0] = idx;</span>
-<span class="s">                sparse_contacts.mcall(&quot;__setitem__&quot;,args);</span>
-<span class="s">            }</span>
-<span class="s">        }</span>
-<span class="s">    }</span>
-<span class="s">    &quot;&quot;&quot;</span>
-    <span class="n">weave</span><span class="o">.</span><span class="n">inline</span><span class="p">(</span><span class="n">c_code</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;coord&#39;</span><span class="p">,</span> <span class="s">&#39;sparse_contacts&#39;</span><span class="p">,</span> <span class="s">&#39;cutoff&#39;</span><span class="p">,</span> <span class="s">&#39;progress_meter_freq&#39;</span><span class="p">,</span> <span class="s">&#39;_quiet&#39;</span><span class="p">],</span>
-                 <span class="n">type_converters</span><span class="o">=</span><span class="n">converters</span><span class="o">.</span><span class="n">blitz</span><span class="p">)</span>
-
-
 <div class="viewcode-block" id="dist"><a class="viewcode-back" href="../../../documentation_pages/analysis/distances.html#MDAnalysis.analysis.distances.dist">[docs]</a><span class="k">def</span> <span class="nf">dist</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return distance between atoms in two atom groups.</span>
 
@@ -295,14 +176,14 @@
 <span class="sd">    :Returns: NumPy `array([resids_A, resids_B, distances])`</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">A</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">numberOfAtoms</span><span class="p">()</span> <span class="o">!=</span> <span class="n">B</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">numberOfAtoms</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">A</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">!=</span> <span class="n">B</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;AtomGroups A and B do not have the same number of atoms&quot;</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">off_A</span><span class="p">,</span> <span class="n">off_B</span> <span class="o">=</span> <span class="n">offset</span>
     <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
         <span class="n">off_A</span> <span class="o">=</span> <span class="n">off_B</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span>
-    <span class="n">residues_A</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">resids</span><span class="p">())</span> <span class="o">+</span> <span class="n">off_A</span>
-    <span class="n">residues_B</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">B</span><span class="o">.</span><span class="n">resids</span><span class="p">())</span> <span class="o">+</span> <span class="n">off_B</span>
+    <span class="n">residues_A</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">resids</span><span class="p">)</span> <span class="o">+</span> <span class="n">off_A</span>
+    <span class="n">residues_B</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">B</span><span class="o">.</span><span class="n">resids</span><span class="p">)</span> <span class="o">+</span> <span class="n">off_B</span>
     <span class="n">r</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span> <span class="o">-</span> <span class="n">B</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span>
     <span class="n">d</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">r</span> <span class="o">*</span> <span class="n">r</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">residues_A</span><span class="p">,</span> <span class="n">residues_B</span><span class="p">,</span> <span class="n">d</span><span class="p">])</span>
@@ -358,7 +239,8 @@
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
-    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Isaac Virshup, Zhuyi Xue, Carlos Yáñez S.,
+    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Gorman Stock, Isaac Virshup,
+    Zhuyi Xue, Carlos Yáñez S.,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

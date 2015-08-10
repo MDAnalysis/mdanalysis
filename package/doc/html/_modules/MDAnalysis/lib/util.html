@@ -1139,21 +1139,21 @@
 <div class="viewcode-block" id="cached"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.cached">[docs]</a><span class="k">def</span> <span class="nf">cached</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Cache a property within a class</span>
 
-<span class="sd">    Requires the Class to have a cache dict called &quot;_cache&quot;</span>
+<span class="sd">    Requires the Class to have a cache dict called ``_cache``.</span>
 
-<span class="sd">    Usage:</span>
+<span class="sd">    Usage::</span>
 
-<span class="sd">    class A(object):</span>
-<span class="sd">        def__init__(self):</span>
-<span class="sd">            self._cache = dict()</span>
+<span class="sd">       class A(object):</span>
+<span class="sd">           def__init__(self):</span>
+<span class="sd">               self._cache = dict()</span>
 
-<span class="sd">        @property</span>
-<span class="sd">        @cached(&#39;keyname&#39;)</span>
-<span class="sd">        def size(self):</span>
-<span class="sd">            # This code gets ran only if the lookup of keyname fails</span>
-<span class="sd">            # After this code has been ran once, the result is stored in </span>
-<span class="sd">            # _cache with the key: &#39;keyname&#39;</span>
-<span class="sd">            size = 10.0</span>
+<span class="sd">           @property</span>
+<span class="sd">           @cached(&#39;keyname&#39;)</span>
+<span class="sd">           def size(self):</span>
+<span class="sd">               # This code gets ran only if the lookup of keyname fails</span>
+<span class="sd">               # After this code has been ran once, the result is stored in</span>
+<span class="sd">               # _cache with the key: &#39;keyname&#39;</span>
+<span class="sd">               size = 10.0</span>
 
 <span class="sd">    .. versionadded:: 0.9.0</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1198,7 +1198,8 @@
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
-    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Isaac Virshup, Zhuyi Xue, Carlos Yáñez S.,
+    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Gorman Stock, Isaac Virshup,
+    Zhuyi Xue, Carlos Yáñez S.,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

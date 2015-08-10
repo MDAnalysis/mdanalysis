@@ -67,7 +67,7 @@
 <li><a class="reference internal" href="#geometric">2.1.3. Geometric</a></li>
 <li><a class="reference internal" href="#similarity-and-connectivity">2.1.4. Similarity and connectivity</a></li>
 <li><a class="reference internal" href="#index">2.1.5. Index</a></li>
-<li><a class="reference internal" href="#preexisting-selections">2.1.6. Preexisting selections</a></li>
+<li><a class="reference internal" href="#preexisting-selections-and-modifiers">2.1.6. Preexisting selections and modifiers</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#instant-selectors">2.2. Instant selectors</a><ul>
@@ -119,17 +119,17 @@
 <p>Once you have the <a class="reference internal" href="core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-meth docutils literal"><span class="pre">Universe()</span></tt></a> object, you can
 select atoms (using a syntax very similar to <a class="reference external" href="http://www.charmm.org/documentation/c37b1/select.html">CHARMM&#8217;s atom selection
 syntax</a>):</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">kalp</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="s">&quot;segid KALP&quot;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">kalp</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s">&quot;segid KALP&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The <a class="reference internal" href="core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe.selectAtoms" title="MDAnalysis.core.AtomGroup.Universe.selectAtoms"><tt class="xref py py-meth docutils literal"><span class="pre">selectAtoms()</span></tt></a> of a
+<p>The <a class="reference internal" href="core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe.select_atoms" title="MDAnalysis.core.AtomGroup.Universe.select_atoms"><tt class="xref py py-meth docutils literal"><span class="pre">select_atoms()</span></tt></a> of a
 <a class="reference internal" href="core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a> returns a
 <a class="reference internal" href="core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a>, so you can use all the methods
 defined for AtomGroups on them. Selections always return an <tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt> with
 atoms sorted according to their index in the topology (this is to ensure that
 there aren&#8217;t any duplicates, which can happen with complicated selections).</p>
 <p>One can group subselections using parentheses:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">universe</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="s">&quot;segid DMPC and not (name H* or name O*)&quot;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s">&quot;segid DMPC and not (name H* or name O*)&quot;</span><span class="p">)</span>
 <span class="go">&lt;AtomGroup with 3420 atoms&gt;</span>
 </pre></div>
 </div>
@@ -288,22 +288,34 @@ runs from 1 up to the total number of atoms.</dd>
 </dl>
 </div></blockquote>
 </div>
-<div class="section" id="preexisting-selections">
-<h3>2.1.6. Preexisting selections<a class="headerlink" href="#preexisting-selections" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="preexisting-selections-and-modifiers">
+<h3>2.1.6. Preexisting selections and modifiers<a class="headerlink" href="#preexisting-selections-and-modifiers" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><dl class="docutils">
 <dt>group <em>group-name</em></dt>
 <dd>selects the atoms in the <tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt> passed to the function as an
 argument named <em>group-name</em>. Only the atoms common to <em>group-name</em> and the
-instance <tt class="xref py py-meth docutils literal"><span class="pre">selectAtoms()</span></tt> was called from will be considered.
+instance <tt class="xref py py-meth docutils literal"><span class="pre">select_atoms()</span></tt> was called from will be considered.
 <em>group-name</em> will be included in the parsing just by comparison of atom indices.
 This means that it is up to the user to make sure they were defined in an
 appropriate <tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt>.</dd>
 <dt>fullgroup <em>group-name</em></dt>
 <dd>just like the <tt class="docutils literal"><span class="pre">group</span></tt> keyword with the difference that all the atoms of
 <em>group-name</em> are included. The resulting selection may therefore have atoms
-that were initially absent from the instance <tt class="xref py py-meth docutils literal"><span class="pre">selectAtoms()</span></tt> was
+that were initially absent from the instance <tt class="xref py py-meth docutils literal"><span class="pre">select_atoms()</span></tt> was
 called from.</dd>
+</dl>
+<p class="deprecated">
+<span class="versionmodified">Deprecated since version 0.11: </span>The use of <tt class="docutils literal"><span class="pre">fullgroup</span></tt> has been deprecated in favor of the equivalent <tt class="docutils literal"><span class="pre">global</span> <span class="pre">group</span></tt>.</p>
+<dl class="docutils">
+<dt>global <em>selection</em></dt>
+<dd>by default, when issuing <tt class="xref py py-meth docutils literal"><span class="pre">select_atoms()</span></tt> from an <tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt>
+selections and subselections are returned intersected with the atoms of that instance.
+Prefixing a selection term with <tt class="docutils literal"><span class="pre">global</span></tt> causes its selection to be returned in its entirety.
+As an exmaple, the <tt class="docutils literal"><span class="pre">global</span></tt> keyword allows for <tt class="docutils literal"><span class="pre">lipids.select_atoms(&quot;around</span> <span class="pre">10</span> <span class="pre">global</span> <span class="pre">protein&quot;)</span></tt> &#8212;
+where <tt class="docutils literal"><span class="pre">lipids</span></tt> is a group that does not contain any proteins. Were <tt class="docutils literal"><span class="pre">global</span></tt> it absent the result
+would be an empty selection since the <tt class="docutils literal"><span class="pre">protein</span></tt> subselection would itself be empty.
+When issuing <tt class="xref py py-meth docutils literal"><span class="pre">select_atoms()</span></tt> from a <tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt> <tt class="docutils literal"><span class="pre">global</span></tt> is ignored.</dd>
 </dl>
 </div></blockquote>
 </div>
@@ -427,7 +439,7 @@ found, or</li>
 </div>
 <div class="section" id="ordered-selections">
 <span id="ordered-selections-label"></span><h2>2.3. Ordered selections<a class="headerlink" href="#ordered-selections" title="Permalink to this headline">¶</a></h2>
-<p><tt class="xref py py-meth docutils literal"><span class="pre">selectAtoms()</span></tt> sorts the atoms in the
+<p><tt class="xref py py-meth docutils literal"><span class="pre">select_atoms()</span></tt> sorts the atoms in the
 <a class="reference internal" href="core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a> by atom index before returning them (this is to
 eliminate possible duplicates in the selection). If the ordering of atoms is
 crucial (for instance when describing angles or dihedrals) or if duplicate
@@ -435,16 +447,16 @@ atoms are required then one has to concatenate multiple AtomGroups, which does
 not sort them.</p>
 <p>The most straightforward way to concatentate two AtomGroups is by using the
 <strong>+</strong> operator:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">ordered</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="s">&quot;segid DMPC and resid 3 and name P&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">u</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="s">&quot;segid DMPC and resid 2 and name P&quot;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">ordered</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s">&quot;segid DMPC and resid 3 and name P&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s">&quot;segid DMPC and resid 2 and name P&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="nb">list</span><span class="p">(</span><span class="n">ordered</span><span class="p">)</span>
 <span class="go">[&lt; Atom 570: name &#39;P&#39; of type &#39;180&#39; of resid &#39;DMPC&#39;, 3 and &#39;DMPC&#39;&gt;,</span>
 <span class="go">&lt; Atom 452: name &#39;P&#39; of type &#39;180&#39; of resid &#39;DMPC&#39;, 2 and &#39;DMPC&#39;&gt;]</span>
 </pre></div>
 </div>
 <p>A shortcut is to provide <em>two or more</em> selections to
-<tt class="xref py py-meth docutils literal"><span class="pre">selectAtoms()</span></tt>, which then does the concatenation
+<tt class="xref py py-meth docutils literal"><span class="pre">select_atoms()</span></tt>, which then does the concatenation
 automatically:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="nb">list</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="s">&quot;segid DMPC and resid 3 and name P&quot;</span><span class="p">,</span> <span class="s">&quot;segid DMPC and resid 2 and name P&quot;</span><span class="p">))</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="nb">list</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s">&quot;segid DMPC and resid 3 and name P&quot;</span><span class="p">,</span> <span class="s">&quot;segid DMPC and resid 2 and name P&quot;</span><span class="p">))</span>
 <span class="go">[&lt; Atom 570: name &#39;P&#39; of type &#39;180&#39; of resid &#39;DMPC&#39;, 3 and &#39;DMPC&#39;&gt;,</span>
 <span class="go">&lt; Atom 452: name &#39;P&#39; of type &#39;180&#39; of resid &#39;DMPC&#39;, 2 and &#39;DMPC&#39;&gt;]</span>
 </pre></div>
@@ -452,7 +464,7 @@ automatically:</p>
 <p>Just for comparison to show that a single selection string does not work as one
 might expect:</p>
 <div class="highlight-python"><pre># WRONG!
-&gt;&gt;&gt; print list(universe.selectAtoms("segid DMPC and ( resid 3 or resid 2 ) and name P"))
+&gt;&gt;&gt; print list(universe.select_atoms("segid DMPC and ( resid 3 or resid 2 ) and name P"))
 [&lt; Atom 452: name 'P' of type '180' of resid 'DMPC', 2 and 'DMPC'&gt;,
 &lt; Atom 570: name 'P' of type '180' of resid 'DMPC', 3 and 'DMPC'&gt;]</pre>
 </div>
@@ -490,7 +502,8 @@ might expect:</p>
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
-    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Isaac Virshup, Zhuyi Xue, Carlos Yáñez S.,
+    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Gorman Stock, Isaac Virshup,
+    Zhuyi Xue, Carlos Yáñez S.,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

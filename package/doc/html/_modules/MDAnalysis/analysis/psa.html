@@ -174,13 +174,13 @@
 <span class="sd">   .. attribute:: ref_select</span>
 
 <span class="sd">      string, selection for</span>
-<span class="sd">      :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms` to select frame</span>
+<span class="sd">      :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.select_atoms` to select frame</span>
 <span class="sd">      from :attr:`Path.u_reference`</span>
 
 <span class="sd">   .. attribute:: path_select</span>
 
 <span class="sd">      string, selection for</span>
-<span class="sd">      :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms` to select atoms</span>
+<span class="sd">      :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.select_atoms` to select atoms</span>
 <span class="sd">      to compose :attr:`Path.path`</span>
 
 <span class="sd">   .. attribute:: ref_frame</span>
@@ -210,13 +210,13 @@
 <span class="sd">   .. attribute:: ref_select</span>
 
 <span class="sd">      string, selection for</span>
-<span class="sd">      :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms` to select frame</span>
+<span class="sd">      :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.select_atoms` to select frame</span>
 <span class="sd">      from :attr:`PSA.u_reference`</span>
 
 <span class="sd">   .. attribute:: path_select</span>
 
 <span class="sd">      string, selection for</span>
-<span class="sd">      :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms` to select atoms</span>
+<span class="sd">      :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.select_atoms` to select atoms</span>
 <span class="sd">      to compose :attr:`Path.path`</span>
 
 <span class="sd">   .. attribute:: ref_frame</span>
@@ -307,7 +307,7 @@
 <span class="sd">    Example::</span>
 <span class="sd">     &gt;&gt;&gt; u = Universe(PSF,DCD)</span>
 <span class="sd">     &gt;&gt;&gt; mid = len(u.trajectory)/2</span>
-<span class="sd">     &gt;&gt;&gt; ca = u.selectAtoms(&#39;name CA&#39;)</span>
+<span class="sd">     &gt;&gt;&gt; ca = u.select_atoms(&#39;name CA&#39;)</span>
 <span class="sd">     &gt;&gt;&gt; P = numpy.array([</span>
 <span class="sd">     ...                ca.positions for _ in u.trajectory[:mid:]</span>
 <span class="sd">     ...              ]) # first half of trajectory</span>
@@ -352,7 +352,7 @@
 <span class="sd">    Example::</span>
 <span class="sd">     &gt;&gt;&gt; u = Universe(PSF,DCD)</span>
 <span class="sd">     &gt;&gt;&gt; mid = len(u.trajectory)/2</span>
-<span class="sd">     &gt;&gt;&gt; ca = u.selectAtoms(&#39;name CA&#39;)</span>
+<span class="sd">     &gt;&gt;&gt; ca = u.select_atoms(&#39;name CA&#39;)</span>
 <span class="sd">     &gt;&gt;&gt; P = numpy.array([</span>
 <span class="sd">     ...                ca.positions for _ in u.trajectory[:mid:]</span>
 <span class="sd">     ...              ]) # first half of trajectory</span>
@@ -468,7 +468,7 @@
 <span class="sd">             The selection to operate on for rms fitting; can be one of:</span>
 
 <span class="sd">             1. any valid selection string for</span>
-<span class="sd">                :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms` that</span>
+<span class="sd">                :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.select_atoms` that</span>
 <span class="sd">                produces identical selections in *mobile* and *reference*; or</span>
 <span class="sd">             2. a dictionary ``{&#39;mobile&#39;:sel1, &#39;reference&#39;:sel2}`` (the</span>
 <span class="sd">                :func:`MDAnalysis.analysis.align.fasta2select` function returns</span>
@@ -577,7 +577,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">u</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u_original</span>
         <span class="n">frames</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span>
-        <span class="n">atoms</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="n">select</span><span class="p">)</span>
+        <span class="n">atoms</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">)</span>
         <span class="n">frames</span><span class="o">.</span><span class="n">rewind</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">flat</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">atoms</span><span class="o">.</span><span class="n">positions</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">frames</span><span class="p">])</span>
@@ -669,7 +669,7 @@
 <span class="sd">             The selection to operate on; can be one of:</span>
 
 <span class="sd">             1. any valid selection string for</span>
-<span class="sd">                :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms` that</span>
+<span class="sd">                :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.select_atoms` that</span>
 <span class="sd">                produces identical selections in *mobile* and *reference*; or</span>
 <span class="sd">             2. a dictionary ``{&#39;mobile&#39;:sel1, &#39;reference&#39;:sel2}`` (the</span>
 <span class="sd">                :func:`MDAnalysis.analysis.align.fasta2select` function returns</span>
@@ -1115,7 +1115,8 @@
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
-    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Isaac Virshup, Zhuyi Xue, Carlos Yáñez S.,
+    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Gorman Stock, Isaac Virshup,
+    Zhuyi Xue, Carlos Yáñez S.,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

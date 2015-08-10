@@ -68,7 +68,7 @@
 <li><a class="reference internal" href="#bonds">4.1.1.2. bonds</a></li>
 <li><a class="reference internal" href="#bondorder">4.1.1.3. bondorder</a></li>
 <li><a class="reference internal" href="#angles">4.1.1.4. angles</a></li>
-<li><a class="reference internal" href="#torsions">4.1.1.5. torsions</a></li>
+<li><a class="reference internal" href="#dihedrals">4.1.1.5. dihedrals</a></li>
 <li><a class="reference internal" href="#impropers">4.1.1.6. impropers</a></li>
 </ul>
 </li>
@@ -236,10 +236,9 @@ order.
 </tr>
 <tr class="row-even"><td>Hoomd XML</td>
 <td>xml</td>
-<td><p class="first"><a class="reference external" href="http://codeblue.umich.edu/hoomd-blue/doc/page_xml_file_format.html">HOOMD XML</a> topology file.  Reads atom types, masses, and
-charges if possible. Also reads bonds, angles, and dihedrals.</p>
-<p class="last"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.HOOMDXMLarser</span></tt></p>
-</td>
+<td><a class="reference external" href="http://codeblue.umich.edu/hoomd-blue/doc/page_xml_file_format.html">HOOMD XML</a> topology file.  Reads atom types, masses, and
+charges if possible. Also reads bonds, angles, and dihedrals.
+<a class="reference internal" href="HoomdXMLParser.html#module-MDAnalysis.topology.HoomdXMLParser" title="MDAnalysis.topology.HoomdXMLParser"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.topology.HoomdXMLParser</span></tt></a></td>
 </tr>
 </tbody>
 </table>
@@ -276,7 +275,7 @@ trajectory. This includes</p>
 <ul class="simple">
 <li>identity of atoms (name, type, number, partial charge, ...) and to
 which residue and segment they belong; atoms are identified in
-MDAnalysis by their <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom.number" title="MDAnalysis.core.AtomGroup.Atom.number"><tt class="xref py py-attr docutils literal"><span class="pre">number</span></tt></a>,
+MDAnalysis by their <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom.index" title="MDAnalysis.core.AtomGroup.Atom.index"><tt class="xref py py-attr docutils literal"><span class="pre">index</span></tt></a>,
 an integer number starting at 0 and incremented in the order of
 atoms found in the topology.</li>
 <li>bonds (pairs of atoms)</li>
@@ -291,7 +290,7 @@ list of coordinates.</p>
 file types. Each submodule <em>must</em> contain a function <tt class="xref py py-func docutils literal"><span class="pre">parse()</span></tt>:</p>
 <p>The function returns the basic MDAnalysis representation of the
 topology. At the moment, this is simply a dictionary with keys
-<em>atoms</em>, <em>bonds</em>, <em>angles</em>, <em>torsions</em>, <em>impropers</em>. The dictionary is
+<em>atoms</em>, <em>bonds</em>, <em>angles</em>, <em>dihedrals</em>, <em>impropers</em>. The dictionary is
 stored as <tt class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.AtomGroup.Universe._topology</span></tt>.</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
@@ -314,7 +313,7 @@ to initialize the <a class="reference internal" href="../core/AtomGroup.html#MDA
 with the data read from the topology file.</p>
 <p>The order of atoms in the list must correspond to the sequence of
 atoms in the topology file. The atom&#8217;s
-<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom.number" title="MDAnalysis.core.AtomGroup.Atom.number"><tt class="xref py py-attr docutils literal"><span class="pre">number</span></tt></a> corresponds to its
+<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom.index" title="MDAnalysis.core.AtomGroup.Atom.index"><tt class="xref py py-attr docutils literal"><span class="pre">index</span></tt></a> corresponds to its
 index in this list.</p>
 </div>
 <div class="section" id="bonds">
@@ -336,19 +335,19 @@ information is then passed to Bond initialisation in u._init_bonds()</p>
 tuple contains three atom numbers.  The second of these numbers
 represents the apex of the angle.</p>
 </div>
-<div class="section" id="torsions">
-<h3>4.1.1.5. torsions<a class="headerlink" href="#torsions" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="dihedrals">
+<h3>4.1.1.5. dihedrals<a class="headerlink" href="#dihedrals" title="Permalink to this headline">¶</a></h3>
 <p><strong>Proper dihedral angles</strong> are represented by a <a class="reference external" href="http://docs.python.org/library/functions.html#list" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">list</span></tt></a> of <tt class="xref py py-class docutils literal"><span class="pre">tuple</span></tt>. Each
 tuple contains four atom numbers. The angle of the torsion
-is defined by the angle between the planes formed by atoms 1, 2, and 3, 
+is defined by the angle between the planes formed by atoms 1, 2, and 3,
 and 2, 3, and 4.</p>
 </div>
 <div class="section" id="impropers">
 <h3>4.1.1.6. impropers<a class="headerlink" href="#impropers" title="Permalink to this headline">¶</a></h3>
 <p><strong>Improper dihedral angles</strong> are represented by a <a class="reference external" href="http://docs.python.org/library/functions.html#list" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">list</span></tt></a> of <tt class="xref py py-class docutils literal"><span class="pre">tuple</span></tt>. Each
 tuple contains four atom numbers.  The angle of the improper torsion
-is again defined by the angle between the planes formed by atoms 1, 2, and 3, 
-and 2, 3, and 4.  Improper torsions differ from regular torsions as the
+is again defined by the angle between the planes formed by atoms 1, 2, and 3,
+and 2, 3, and 4.  Improper dihedrals differ from regular dihedrals as the
 four atoms need not be sequentially bonded, and are instead often all bonded
 to the second atom.</p>
 </div>
@@ -387,7 +386,8 @@ to the second atom.</p>
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
-    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Isaac Virshup, Zhuyi Xue, Carlos Yáñez S.,
+    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Gorman Stock, Isaac Virshup,
+    Zhuyi Xue, Carlos Yáñez S.,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

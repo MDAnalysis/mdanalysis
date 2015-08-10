@@ -535,7 +535,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">universe</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="s">&#39;all&#39;</span><span class="p">)</span>
+        <span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s">&#39;all&#39;</span><span class="p">)</span>
         <span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span>
     <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;The universe must be a proper MDAnalysis.Universe instance.&quot;</span><span class="p">)</span>
@@ -548,14 +548,14 @@
         <span class="k">def</span> <span class="nf">current_coordinates</span><span class="p">():</span>
             <span class="k">return</span> <span class="n">notwithin_coordinates</span><span class="p">()</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">group</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="n">atomselection</span><span class="p">)</span>
+        <span class="n">group</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">atomselection</span><span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">current_coordinates</span><span class="p">():</span>
             <span class="k">return</span> <span class="n">group</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span>
 
     <span class="n">coord</span> <span class="o">=</span> <span class="n">current_coordinates</span><span class="p">()</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Selected </span><span class="si">%d</span><span class="s"> atoms out of </span><span class="si">%d</span><span class="s"> atoms (</span><span class="si">%s</span><span class="s">) from </span><span class="si">%d</span><span class="s"> total.&quot;</span> <span class="o">%</span>
-                <span class="p">(</span><span class="n">coord</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">len</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="n">atomselection</span><span class="p">)),</span> <span class="n">atomselection</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">)))</span>
+                <span class="p">(</span><span class="n">coord</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">len</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">atomselection</span><span class="p">)),</span> <span class="n">atomselection</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">)))</span>
 
     <span class="c"># mild warning; typically this is run on RMS-fitted trajectories and</span>
     <span class="c"># so the box information is rather meaningless</span>
@@ -586,23 +586,23 @@
 
     <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">:</span>
         <span class="k">print</span><span class="p">(</span><span class="s">&quot;Histograming </span><span class="si">%6d</span><span class="s"> atoms in frame </span><span class="si">%5d</span><span class="s">/</span><span class="si">%d</span><span class="s">  [</span><span class="si">%5.1f%%</span><span class="s">]</span><span class="se">\r</span><span class="s">&quot;</span> <span class="o">%</span> \
-              <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">coord</span><span class="p">),</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">numframes</span><span class="p">,</span> <span class="mf">100.0</span> <span class="o">*</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">/</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">numframes</span><span class="p">),)</span>
+              <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">coord</span><span class="p">),</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="mf">100.0</span> <span class="o">*</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">/</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">n_frames</span><span class="p">),)</span>
         <span class="n">coord</span> <span class="o">=</span> <span class="n">current_coordinates</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">coord</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">continue</span>
         <span class="n">h</span><span class="p">[:],</span> <span class="n">edges</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">histogramdd</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="n">arange</span><span class="p">,</span> <span class="n">normed</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
         <span class="n">grid</span> <span class="o">+=</span> <span class="n">h</span>  <span class="c"># accumulate average histogram</span>
     <span class="k">print</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">)</span>
-    <span class="n">numframes</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">numframes</span> <span class="o">/</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">skip</span>
-    <span class="n">grid</span> <span class="o">/=</span> <span class="nb">float</span><span class="p">(</span><span class="n">numframes</span><span class="p">)</span>
+    <span class="n">n_frames</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">n_frames</span> <span class="o">/</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">skip</span>
+    <span class="n">grid</span> <span class="o">/=</span> <span class="nb">float</span><span class="p">(</span><span class="n">n_frames</span><span class="p">)</span>
 
     <span class="c"># pick from kwargs</span>
     <span class="n">metadata</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;metadata&#39;</span><span class="p">,</span> <span class="p">{})</span>
     <span class="n">metadata</span><span class="p">[</span><span class="s">&#39;psf&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">filename</span>
     <span class="n">metadata</span><span class="p">[</span><span class="s">&#39;dcd&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">filename</span>
     <span class="n">metadata</span><span class="p">[</span><span class="s">&#39;atomselection&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">atomselection</span>
-    <span class="n">metadata</span><span class="p">[</span><span class="s">&#39;numframes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">numframes</span>
-    <span class="n">metadata</span><span class="p">[</span><span class="s">&#39;totaltime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">numframes</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">dt</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="n">metadata</span><span class="p">[</span><span class="s">&#39;n_frames&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_frames</span>
+    <span class="n">metadata</span><span class="p">[</span><span class="s">&#39;totaltime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">n_frames</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">dt</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
     <span class="n">metadata</span><span class="p">[</span><span class="s">&#39;dt&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">dt</span>
     <span class="n">metadata</span><span class="p">[</span><span class="s">&#39;time_unit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s">&#39;time_unit&#39;</span><span class="p">]</span>
     <span class="n">metadata</span><span class="p">[</span><span class="s">&#39;trajectory_skip&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">skip_timestep</span>  <span class="c"># frames</span>
@@ -655,8 +655,8 @@
     <span class="c"># distance matrix    633        1          1           False</span>
     <span class="c"># AROUND + kdtree    420        0.66       1.5         n/a (&#39;name OH2 around 4 protein&#39;)</span>
     <span class="c"># manual + kdtree    182        0.29       3.5         True</span>
-    <span class="n">solvent</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="n">sel1</span><span class="p">)</span>
-    <span class="n">protein</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="n">sel2</span><span class="p">)</span>
+    <span class="n">solvent</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">sel1</span><span class="p">)</span>
+    <span class="n">protein</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">sel2</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">use_kdtree</span><span class="p">:</span>
         <span class="c"># using faster hand-coded &#39;not within&#39; selection with kd-tree</span>
         <span class="kn">import</span> <span class="nn">MDAnalysis.lib.KDTree.NeighborSearch</span> <span class="kn">as</span> <span class="nn">NS</span>
@@ -827,7 +827,7 @@
         <span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">asUniverse</span>
 
         <span class="n">u</span> <span class="o">=</span> <span class="n">asUniverse</span><span class="p">(</span><span class="n">pdb</span><span class="p">)</span>
-        <span class="n">group</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="n">atomselection</span><span class="p">)</span>
+        <span class="n">group</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">atomselection</span><span class="p">)</span>
         <span class="n">coord</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Selected </span><span class="si">%d</span><span class="s"> atoms (</span><span class="si">%s</span><span class="s">) out of </span><span class="si">%d</span><span class="s"> total.&quot;</span> <span class="o">%</span>
                     <span class="p">(</span><span class="n">coord</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">atomselection</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">)))</span>
@@ -844,7 +844,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">delta</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">e</span><span class="p">:</span> <span class="p">(</span><span class="n">e</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">e</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">midpoints</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">e</span><span class="p">:</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">e</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">e</span><span class="p">[</span><span class="mi">1</span><span class="p">:]),</span> <span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">origin</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">m</span><span class="p">:</span> <span class="n">m</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">midpoints</span><span class="p">)</span>
-        <span class="n">numframes</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">n_frames</span> <span class="o">=</span> <span class="mi">1</span>
 
         <span class="k">if</span> <span class="n">sigma</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="c"># histogram individually, and smear out at the same time</span>
@@ -868,7 +868,7 @@
         <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
             <span class="n">metadata</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;pdb&#39;</span><span class="p">:</span> <span class="n">pdb</span><span class="p">}</span>
         <span class="n">metadata</span><span class="p">[</span><span class="s">&#39;atomselection&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">atomselection</span>
-        <span class="n">metadata</span><span class="p">[</span><span class="s">&#39;numframes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">numframes</span>
+        <span class="n">metadata</span><span class="p">[</span><span class="s">&#39;n_frames&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_frames</span>
         <span class="n">metadata</span><span class="p">[</span><span class="s">&#39;sigma&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sigma</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="n">metadata</span>
 
@@ -956,7 +956,8 @@
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
-    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Isaac Virshup, Zhuyi Xue, Carlos Yáñez S.,
+    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Gorman Stock, Isaac Virshup,
+    Zhuyi Xue, Carlos Yáñez S.,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

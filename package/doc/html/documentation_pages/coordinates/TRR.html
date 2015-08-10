@@ -119,8 +119,8 @@ process other data such as modes from a principal component analysis.</p>
 to implement random access to frames. This works by initially building an
 internal index of all frames and then using this index for direct
 seeks. Building the index is triggered by
-<a class="reference internal" href="xdrfile/libxdrfile2.html#MDAnalysis.coordinates.xdrfile.libxdrfile2.read_trr_numframes" title="MDAnalysis.coordinates.xdrfile.libxdrfile2.read_trr_numframes"><tt class="xref py py-func docutils literal"><span class="pre">read_trr_numframes()</span></tt></a>, which
-typically happens when one accesses the <a class="reference internal" href="#MDAnalysis.coordinates.TRR.TRRReader.numframes" title="MDAnalysis.coordinates.TRR.TRRReader.numframes"><tt class="xref py py-attr docutils literal"><span class="pre">TRRReader.numframes</span></tt></a> attribute
+<a class="reference internal" href="xdrfile/libxdrfile2.html#MDAnalysis.coordinates.xdrfile.libxdrfile2.read_trr_n_frames" title="MDAnalysis.coordinates.xdrfile.libxdrfile2.read_trr_n_frames"><tt class="xref py py-func docutils literal"><span class="pre">read_trr_n_frames()</span></tt></a>, which
+typically happens when one accesses the <a class="reference internal" href="#MDAnalysis.coordinates.TRR.TRRReader.n_frames" title="MDAnalysis.coordinates.TRR.TRRReader.n_frames"><tt class="xref py py-attr docutils literal"><span class="pre">TRRReader.n_frames</span></tt></a> attribute
 for the first time. Building the index may take many minutes for large
 trajectories but afterwards access is faster than with native Gromacs tools.</p>
 <p class="versionchanged">
@@ -155,7 +155,7 @@ and the mode coordinates are filling the
 
 N = len(xav)   # number of atoms, i.e. number of coordinates
 
-W = Writer('pca.trr', numatoms=N)            # TRR writer
+W = Writer('pca.trr', n_atoms=N)            # TRR writer
 ts = MDAnalysis.coordinates.TRR.Timestep(N)  # TRR time step
                                              # N of atoms is passed.
 for frame,mode in enumerate(modes[4:16]):
@@ -182,7 +182,7 @@ for frame,mode in enumerate(modes[4:16]):
 <h2>5.15.2. Module reference<a class="headerlink" href="#module-reference" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.TRR.Timestep">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.TRR.</tt><tt class="descname">Timestep</tt><big>(</big><em>numatoms</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRR.Timestep" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.TRR.</tt><tt class="descname">Timestep</tt><big>(</big><em>n_atoms</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRR.Timestep" title="Permalink to this definition">¶</a></dt>
 <dd><p>Timestep for a <a class="reference external" href="http://www.gromacs.org">Gromacs</a> TRR trajectory.</p>
 <p>TRR Timestep always has positions, velocities and forces allocated, meaning
 that the <cite>_pos</cite>, <cite>_velocities</cite> and <cite>_forces</cite> attributes will always exist.
@@ -297,8 +297,8 @@ copy official attributes of the Timestep.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="MDAnalysis.coordinates.TRR.Timestep.numatoms">
-<tt class="descname">numatoms</tt><a class="headerlink" href="#MDAnalysis.coordinates.TRR.Timestep.numatoms" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.TRR.Timestep.n_atoms">
+<tt class="descname">n_atoms</tt><a class="headerlink" href="#MDAnalysis.coordinates.TRR.Timestep.n_atoms" title="Permalink to this definition">¶</a></dt>
 <dd><p>A read only view of the number of atoms this Timestep has</p>
 <p class="versionchanged">
 <span class="versionmodified">Changed in version 0.11.0: </span>Changed to read only property</p>
@@ -415,7 +415,7 @@ new ones; if <tt class="docutils literal"><span class="pre">False</span></tt>, u
 <tt class="descname">OtherWriter</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRR.TRRReader.OtherWriter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a writer appropriate for <em>filename</em>.</p>
 <p>Sets the default keywords <em>start</em>, <em>step</em> and <em>dt</em> (if
-available). <em>numatoms</em> is always set from <tt class="xref py py-attr docutils literal"><span class="pre">Reader.numatoms</span></tt>.</p>
+available). <em>n_atoms</em> is always set from <tt class="xref py py-attr docutils literal"><span class="pre">Reader.n_atoms</span></tt>.</p>
 <div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><tt class="xref py py-meth docutils literal"><span class="pre">Reader.Writer()</span></tt> and <tt class="xref py py-func docutils literal"><span class="pre">MDAnalysis.Writer()</span></tt></p>
@@ -439,7 +439,7 @@ available). <em>numatoms</em> is always set from <tt class="xref py py-attr docu
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first docutils">
-<dt><em>numatoms</em></dt>
+<dt><em>n_atoms</em></dt>
 <dd><p class="first last">number of atoms</p>
 </dd>
 <dt><em>dt</em></dt>
@@ -618,15 +618,9 @@ with the frame offsets for the loaded trajectory</p>
 </table>
 </dd></dl>
 
-<dl class="method">
-<dt id="MDAnalysis.coordinates.TRR.TRRReader.next">
-<tt class="descname">next</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRR.TRRReader.next" title="Permalink to this definition">¶</a></dt>
-<dd><p>Forward one step to next frame.</p>
-</dd></dl>
-
 <dl class="attribute">
-<dt id="MDAnalysis.coordinates.TRR.TRRReader.numatoms">
-<tt class="descname">numatoms</tt><a class="headerlink" href="#MDAnalysis.coordinates.TRR.TRRReader.numatoms" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.TRR.TRRReader.n_atoms">
+<tt class="descname">n_atoms</tt><a class="headerlink" href="#MDAnalysis.coordinates.TRR.TRRReader.n_atoms" title="Permalink to this definition">¶</a></dt>
 <dd><p>The number of publically available atoms that this reader will store in the timestep.</p>
 <p>If &#8216;sub&#8217; was not given in the ctor, then this value will just be the actual
 number of atoms in the underlying trajectory file. If however &#8216;sub&#8217; was given, then
@@ -635,8 +629,8 @@ this value is the number specified by the &#8216;sub&#8217; sub-selection.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="MDAnalysis.coordinates.TRR.TRRReader.numframes">
-<tt class="descname">numframes</tt><a class="headerlink" href="#MDAnalysis.coordinates.TRR.TRRReader.numframes" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.TRR.TRRReader.n_frames">
+<tt class="descname">n_frames</tt><a class="headerlink" href="#MDAnalysis.coordinates.TRR.TRRReader.n_frames" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read the number of frames from the trajectory.</p>
 <p>The result is cached. If for any reason the trajectory cannot
 be read then 0 is returned.</p>
@@ -648,6 +642,12 @@ loading will be significantly faster.</p>
 <p class="first admonition-title">See also</p>
 <p class="last"><tt class="xref py py-meth docutils literal"><span class="pre">TrjReader.load_offsets()</span></tt> and <tt class="xref py py-meth docutils literal"><span class="pre">TrjReader.save_offsets()</span></tt></p>
 </div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.TRR.TRRReader.next">
+<tt class="descname">next</tt><big>(</big><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRR.TRRReader.next" title="Permalink to this definition">¶</a></dt>
+<dd><p>Forward one step to next frame.</p>
 </dd></dl>
 
 <dl class="method">
@@ -719,14 +719,14 @@ time = <tt class="xref py py-attr docutils literal"><span class="pre">Timestep.f
 <dl class="attribute">
 <dt id="MDAnalysis.coordinates.TRR.TRRReader.totaltime">
 <tt class="descname">totaltime</tt><a class="headerlink" href="#MDAnalysis.coordinates.TRR.TRRReader.totaltime" title="Permalink to this definition">¶</a></dt>
-<dd><p>Total length of the trajectory numframes * dt.</p>
+<dd><p>Total length of the trajectory n_frames * dt.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="MDAnalysis.coordinates.TRR.TRRWriter">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.TRR.</tt><tt class="descname">TRRWriter</tt><big>(</big><em>filename</em>, <em>numatoms</em>, <em>start=0</em>, <em>step=1</em>, <em>dt=None</em>, <em>precision=1000.0</em>, <em>remarks=None</em>, <em>convert_units=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRR.TRRWriter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.TRR.</tt><tt class="descname">TRRWriter</tt><big>(</big><em>filename</em>, <em>n_atoms</em>, <em>start=0</em>, <em>step=1</em>, <em>dt=None</em>, <em>precision=1000.0</em>, <em>remarks=None</em>, <em>convert_units=None</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.TRR.TRRWriter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write a <a class="reference external" href="http://www.gromacs.org">Gromacs</a> TRR trajectory.</p>
 <p>Create a new TrjWriter</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -737,7 +737,7 @@ time = <tt class="xref py py-attr docutils literal"><span class="pre">Timestep.f
 <dt><em>filename</em></dt>
 <dd><p class="first last">name of output file</p>
 </dd>
-<dt><em>numatoms</em></dt>
+<dt><em>n_atoms</em></dt>
 <dd><p class="first last">number of atoms in trajectory file</p>
 </dd>
 </dl>
@@ -960,7 +960,8 @@ be written to trajectory file</p>
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
-    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Isaac Virshup, Zhuyi Xue, Carlos Yáñez S.,
+    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Gorman Stock, Isaac Virshup,
+    Zhuyi Xue, Carlos Yáñez S.,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

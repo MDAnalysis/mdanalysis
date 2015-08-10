@@ -119,8 +119,8 @@
 </table>
 <p>The module contains functions to fit a target structure to a reference
 structure. They use the fast QCP algorithm to calculate the root mean
-square distance (RMSD) between two coordinate sets [Theobald2005] and
-the rotation matrix <em>R</em> that minimizes the RMSD [Liu2010]. (Please
+square distance (RMSD) between two coordinate sets <a class="reference internal" href="../lib/qcprot.html#theobald2005">[Theobald2005]</a> and
+the rotation matrix <em>R</em> that minimizes the RMSD <a class="reference internal" href="../lib/qcprot.html#liu2010">[Liu2010]</a>. (Please
 cite these references when using this module.).</p>
 <p>Typically, one selects a group of atoms (such as the C-alphas),
 calculates the RMSD and transformation matrix, and applys the
@@ -136,7 +136,7 @@ manually and explains the intermediate steps.</p>
 <dt><a class="reference internal" href="rms.html#module-MDAnalysis.analysis.rms" title="MDAnalysis.analysis.rms"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.rms</span></tt></a></dt>
 <dd>contains functions to compute RMSD (when structural alignment is not
 required)</dd>
-<dt><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.lib.qcprot</span></tt></dt>
+<dt><a class="reference internal" href="../lib/qcprot.html#module-MDAnalysis.lib.qcprot" title="MDAnalysis.lib.qcprot"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.lib.qcprot</span></tt></a></dt>
 <dd>implements the fast RMSD algorithm.</dd>
 </dl>
 </div>
@@ -228,8 +228,8 @@ function and then feed the resulting dictionary to <a class="reference internal"
 <p>The superposition is done in the following way:</p>
 <ol class="arabic simple">
 <li>A rotation matrix is computed that minimizes the RMSD between
-the coordinates of <cite>mobile.selectAtoms(sel1)</cite> and
-<cite>reference.selectAtoms(sel2)</cite>; before the rotation, <em>mobile</em> is
+the coordinates of <cite>mobile.select_atoms(sel1)</cite> and
+<cite>reference.select_atoms(sel2)</cite>; before the rotation, <em>mobile</em> is
 translated so that its center of geometry (or center of mass)
 coincides with the one of <em>reference</em>. (See below for explanation of
 how <em>sel1</em> and <em>sel2</em> are derived from <em>select</em>.)</li>
@@ -266,7 +266,7 @@ or a whole <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis
 <dt><em>select</em></dt>
 <dd><ol class="first arabic simple">
 <li>any valid selection string for
-<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms" title="MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms"><tt class="xref py py-meth docutils literal"><span class="pre">selectAtoms()</span></tt></a> that produces identical
+<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.select_atoms" title="MDAnalysis.core.AtomGroup.AtomGroup.select_atoms"><tt class="xref py py-meth docutils literal"><span class="pre">select_atoms()</span></tt></a> that produces identical
 selections in <em>mobile</em> and <em>reference</em>; or</li>
 <li>dictionary <tt class="docutils literal"><span class="pre">{'mobile':sel1,</span> <span class="pre">'reference':sel2}</span></tt>.
 (the <a class="reference internal" href="#MDAnalysis.analysis.align.fasta2select" title="MDAnalysis.analysis.align.fasta2select"><tt class="xref py py-func docutils literal"><span class="pre">fasta2select()</span></tt></a> function returns such a
@@ -307,7 +307,7 @@ context of the selection from <em>mobile</em> such as the rest of a
 protein, ligands and the surrounding water)</p>
 </dd>
 <dt><em>selection-string</em></dt>
-<dd><p class="first last">Apply to <cite>mobile.selectAtoms(selection-string)</cite></p>
+<dd><p class="first last">Apply to <cite>mobile.select_atoms(selection-string)</cite></p>
 </dd>
 <dt><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><tt class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></tt></a></dt>
 <dd><p class="first last">Apply to the arbitrary group of atoms</p>
@@ -360,7 +360,7 @@ universe if one wants to fit to the current frame.</p>
 <dt><em>select</em></dt>
 <dd><ol class="first arabic simple">
 <li>any valid selection string for
-<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms" title="MDAnalysis.core.AtomGroup.AtomGroup.selectAtoms"><tt class="xref py py-meth docutils literal"><span class="pre">selectAtoms()</span></tt></a> that produces identical
+<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.select_atoms" title="MDAnalysis.core.AtomGroup.AtomGroup.select_atoms"><tt class="xref py py-meth docutils literal"><span class="pre">select_atoms()</span></tt></a> that produces identical
 selections in <em>mobile</em> and <em>reference</em>; or</li>
 <li>a dictionary <tt class="docutils literal"><span class="pre">{'mobile':sel1,</span> <span class="pre">'reference':sel2}</span></tt> (the
 <a class="reference internal" href="#MDAnalysis.analysis.align.fasta2select" title="MDAnalysis.analysis.align.fasta2select"><tt class="xref py py-func docutils literal"><span class="pre">fasta2select()</span></tt></a> function returns such a
@@ -477,7 +477,7 @@ masses of the atoms)</p>
 <p><em>R</em> can be used as an argument for
 <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.rotate" title="MDAnalysis.core.AtomGroup.AtomGroup.rotate"><tt class="xref py py-meth docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.AtomGroup.rotate()</span></tt></a> to generate a rotated
 selection, e.g.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">R</span> <span class="o">=</span> <span class="n">rotation_matrix</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="s">&#39;backbone&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">coordinates</span><span class="p">(),</span> <span class="n">B</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="s">&#39;backbone&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">coordinates</span><span class="p">())</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">R</span> <span class="o">=</span> <span class="n">rotation_matrix</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s">&#39;backbone&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">coordinates</span><span class="p">(),</span> <span class="n">B</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s">&#39;backbone&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">coordinates</span><span class="p">())</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">A</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">A</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;rotated.pdb&quot;</span><span class="p">)</span>
 </pre></div>
@@ -524,7 +524,7 @@ un-aligned sequence, namely the first residue has resid == 1.</p>
 structure/psf has gaps due to missing parts), simply provide the
 sequence of resids as they appear in the psf in <em>ref_resids</em> or
 <em>target_resids</em>, e.g.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">target_resids</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">resid</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">trj</span><span class="o">.</span><span class="n">selectAtoms</span><span class="p">(</span><span class="s">&#39;name CA&#39;</span><span class="p">)]</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">target_resids</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">resid</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">trj</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s">&#39;name CA&#39;</span><span class="p">)]</span>
 </pre></div>
 </div>
 <p>(This translation table <em>is</em> combined with any value for <em>xxx_offset</em>!)</p>
@@ -691,7 +691,8 @@ matching atomgroups (possibly with residues removed)</p>
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
-    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Isaac Virshup, Zhuyi Xue, Carlos Yáñez S.,
+    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Gorman Stock, Isaac Virshup,
+    Zhuyi Xue, Carlos Yáñez S.,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

@@ -72,10 +72,10 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="gnm.html"
-                        title="previous chapter">3.5.1. Elastic network analysis of MD trajectories &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.analysis.gnm</span></tt></a></p>
+                        title="previous chapter">3.5.1. Elastic network analysis of MD trajectories &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.gnm</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="density.html"
-                        title="next chapter">3.6.1. Generating densities from trajectories &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.analysis.density</span></tt></a></p>
+                        title="next chapter">3.6.1. Generating densities from trajectories &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.density</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/documentation_pages/analysis/helanal.txt"
@@ -185,10 +185,9 @@ characteristics of alpha helices in globular proteins. <em>Biophysical Journal</
 <table class="docutils citation" frame="void" id="bansal2000" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[Bansal2000]</td><td><em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id2">2</a>)</em> Bansal M, Kumar S, Velavan R. 2000. HELANAL - A program to
-characterise helix geometry in proteins. <em>J Biomol Struct Dyn.</em>  17(5):811-9.
-<a class="reference external" href="http://www.jbsdonline.com/c3003/c4003/HELANAL-A-Program-to-Characterize-Helix-Geometry-in-Proteins-p-811-820">http://www.jbsdonline.com/c3003/c4003/HELANAL-A-Program-to-Characterize-Helix-Geometry-in-Proteins-p-811-820</a>
--p10020.html</td></tr>
+<tr><td class="label">[Bansal2000]</td><td><em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id2">2</a>)</em> Bansal M, Kumar S, Velavan R. 2000.
+HELANAL - A program to characterise helix geometry in proteins.
+<em>J Biomol Struct Dyn.</em>  17(5):811-819.</td></tr>
 </tbody>
 </table>
 </div>
@@ -216,7 +215,7 @@ helix, e.g. with &#8220;name CA and resid 1:20&#8221; or use start=1, stop=20.</
 </tr>
 <tr class="field-even field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first docutils">
 <dt><em>selection</em></dt>
-<dd><p class="first last">selection string that selects Calpha atoms [&#8220;name CA&#8221;]</p>
+<dd><p class="first last">selection string that selects Calpha atoms [<tt class="docutils literal"><span class="pre">&quot;name</span> <span class="pre">CA&quot;</span></tt>]</p>
 </dd>
 <dt><em>start</em></dt>
 <dd><p class="first last">start residue</p>
@@ -233,36 +232,36 @@ beginning [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
 end of the trajectory [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
 </dd>
 <dt><em>matrix_filename</em></dt>
-<dd><p class="first last">Output file- bending matrix [&#8220;bending_matrix.dat&#8221;]</p>
+<dd><p class="first last">Output file- bending matrix [<tt class="docutils literal"><span class="pre">&quot;bending_matrix.dat&quot;</span></tt>]</p>
 </dd>
 <dt><em>origin_pdbfile</em></dt>
-<dd><p class="first last">Output file- origin pdb file [&#8220;origin.pdb&#8221;]</p>
+<dd><p class="first last">Output file- origin pdb file [<tt class="docutils literal"><span class="pre">&quot;origin.pdb&quot;</span></tt>]</p>
 </dd>
 <dt><em>summary_filename</em></dt>
-<dd><p class="first last">Output file- all of the basic data [&#8220;summary.txt&#8221;]</p>
+<dd><p class="first last">Output file- all of the basic data [<tt class="docutils literal"><span class="pre">&quot;summary.txt&quot;</span></tt>]</p>
 </dd>
 <dt><em>screw_filename</em></dt>
 <dd><p class="first last">Output file- local tilts of individual residues from 2 to n-1
-[&#8220;screw.xvg&#8221;]</p>
+[<tt class="docutils literal"><span class="pre">&quot;screw.xvg&quot;</span></tt>]</p>
 </dd>
 <dt><em>tilt_filename</em></dt>
 <dd><p class="first last">Output file- tilt of line of best fit applied to origin axes
-[&#8220;local_tilt.xvg&#8221;]</p>
+[<tt class="docutils literal"><span class="pre">&quot;local_tilt.xvg&quot;</span></tt>]</p>
 </dd>
 <dt><em>bend_filename</em></dt>
 <dd><p class="first last">Output file- local bend angles between successive local helix axes
-[&#8220;local_bend.xvg&#8221;]</p>
+[<tt class="docutils literal"><span class="pre">&quot;local_bend.xvg&quot;</span></tt>]</p>
 </dd>
 <dt><em>twist_filename</em></dt>
 <dd><p class="first last">Output file- local unit twist between successive helix turns
-[&#8220;unit_twist.xvg&#8221;]</p>
+[<tt class="docutils literal"><span class="pre">&quot;unit_twist.xvg&quot;</span></tt>]</p>
 </dd>
 <dt><em>prefix</em></dt>
 <dd><p class="first last">Prefix to add to all output file names; set to <tt class="docutils literal"><span class="pre">None</span></tt> to disable
-[&#8220;<a href="#id6"><span class="problematic" id="id7">helanal__</span></a>&#8220;]</p>
+[<tt class="docutils literal"><span class="pre">&quot;helanal__&quot;</span></tt>]</p>
 </dd>
 <dt><em>ref_axis</em></dt>
-<dd><p class="first last">Calculate tilt angle relative to the axis; if <tt class="docutils literal"><span class="pre">None</span></tt> then [0,0,1]
+<dd><p class="first last">Calculate tilt angle relative to the axis; if <tt class="docutils literal"><span class="pre">None</span></tt> then <tt class="docutils literal"><span class="pre">[0,0,1]</span></tt>
 is chosen [<tt class="docutils literal"><span class="pre">None</span></tt>]</p>
 </dd>
 </dl>
@@ -325,7 +324,8 @@ the helix, e.g. with &#8220;name CA and resid 1:20&#8221;.</p>
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
-    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Isaac Virshup, Zhuyi Xue, Carlos Yáñez S.,
+    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Gorman Stock, Isaac Virshup,
+    Zhuyi Xue, Carlos Yáñez S.,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

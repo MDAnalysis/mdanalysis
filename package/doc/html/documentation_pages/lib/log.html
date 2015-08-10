@@ -140,7 +140,7 @@ in depth documentation about using logging.</p>
 stop the default <em>MDAnalysis</em> logger.</p>
 <dl class="function">
 <dt id="MDAnalysis.start_logging">
-<tt class="descclassname">MDAnalysis.</tt><tt class="descname">start_logging</tt><big>(</big><em>logfile='MDAnalysis.log'</em><big>)</big><a class="headerlink" href="#MDAnalysis.start_logging" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.</tt><tt class="descname">start_logging</tt><big>(</big><em>logfile='MDAnalysis.log'</em>, <em>version='0.11.0-dev'</em><big>)</big><a class="headerlink" href="#MDAnalysis.start_logging" title="Permalink to this definition">¶</a></dt>
 <dd><p>Start logging of messages to file and console.</p>
 <p>The default logfile is named <cite>MDAnalysis.log</cite> and messages are
 logged with the tag <em>MDAnalysis</em>.</p>
@@ -177,7 +177,7 @@ and the filter list to empty.</p>
 <dd><p>Simple progress meter</p>
 <p>Usage:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
-<span class="n">pm</span> <span class="o">=</span> <span class="n">ProgressMeter</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">numframes</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">pm</span> <span class="o">=</span> <span class="n">ProgressMeter</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">:</span>
     <span class="n">pm</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
     <span class="o">...</span>
@@ -199,7 +199,7 @@ lines will be printed on top of each other.</p>
 format string, for example a current RMSD value:</p>
 <blockquote>
 <div><dl class="docutils">
-<dt>pm = ProgressMeter(u.trajectory.numframes, interval=100,</dt>
+<dt>pm = ProgressMeter(u.trajectory.n_frames, interval=100,</dt>
 <dd>&#8220;RMSD %(rmsd)5.2f at %(step)5d/%(numsteps)d [%(percentage)5.1f%%]r&#8221;)</dd>
 <dt>for ts in u.trajectory:</dt>
 <dd>pm.echo(ts.frame, rmsd=current_rmsd)
@@ -322,7 +322,7 @@ console.</p>
 
 <dl class="function">
 <dt id="MDAnalysis.lib.log.start_logging">
-<tt class="descclassname">MDAnalysis.lib.log.</tt><tt class="descname">start_logging</tt><big>(</big><em>logfile='MDAnalysis.log'</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/lib/log.html#start_logging"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.log.start_logging" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MDAnalysis.lib.log.</tt><tt class="descname">start_logging</tt><big>(</big><em>logfile='MDAnalysis.log'</em>, <em>version='0.11.0-dev'</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/lib/log.html#start_logging"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.log.start_logging" title="Permalink to this definition">¶</a></dt>
 <dd><p>Start logging of messages to file and console.</p>
 <p>The default logfile is named <cite>MDAnalysis.log</cite> and messages are
 logged with the tag <em>MDAnalysis</em>.</p>
@@ -369,7 +369,8 @@ logged with the tag <em>MDAnalysis</em>.</p>
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
-    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Isaac Virshup, Zhuyi Xue, Carlos Yáñez S.,
+    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Gorman Stock, Isaac Virshup,
+    Zhuyi Xue, Carlos Yáñez S.,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>

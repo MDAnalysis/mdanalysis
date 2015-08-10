@@ -138,14 +138,14 @@ Trajectory API.</p>
 <h2>5.3.1. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.DCD.Timestep">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.DCD.</tt><tt class="descname">Timestep</tt><big>(</big><em>numatoms</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/DCD.html#Timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.DCD.Timestep" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.DCD.</tt><tt class="descname">Timestep</tt><big>(</big><em>n_atoms</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/DCD.html#Timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.DCD.Timestep" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a Timestep, representing a frame of a trajectory</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first docutils">
-<dt><em>numatoms</em></dt>
+<dt><em>n_atoms</em></dt>
 <dd><p class="first last">The total number of atoms this Timestep describes</p>
 </dd>
 </dl>
@@ -266,7 +266,7 @@ weren&#8217;t originally present.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first">A numpy.ndarray of shape (numatoms, 3) of force data for each
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first">A numpy.ndarray of shape (n_atoms, 3) of force data for each
 atom</p>
 </td>
 </tr>
@@ -330,8 +330,8 @@ or remove the data.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="MDAnalysis.coordinates.DCD.Timestep.numatoms">
-<tt class="descname">numatoms</tt><a class="headerlink" href="#MDAnalysis.coordinates.DCD.Timestep.numatoms" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.coordinates.DCD.Timestep.n_atoms">
+<tt class="descname">n_atoms</tt><a class="headerlink" href="#MDAnalysis.coordinates.DCD.Timestep.n_atoms" title="Permalink to this definition">¶</a></dt>
 <dd><p>A read only view of the number of atoms this Timestep has</p>
 <p class="versionchanged">
 <span class="versionmodified">Changed in version 0.11.0: </span>Changed to read only property</p>
@@ -347,7 +347,7 @@ weren&#8217;t originally present.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first">A numpy.ndarray of shape (numatoms, 3) of position data for each
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first">A numpy.ndarray of shape (n_atoms, 3) of position data for each
 atom</p>
 </td>
 </tr>
@@ -426,7 +426,7 @@ weren&#8217;t originally present.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first">A numpy.ndarray of shape (numatoms, 3) of velocity data for each
+<tr class="field-odd field"><th class="field-name">Returns :</th><td class="field-body"><p class="first">A numpy.ndarray of shape (n_atoms, 3) of velocity data for each
 atom</p>
 </td>
 </tr>
@@ -517,7 +517,7 @@ Removed skip keyword and functionality</p>
 <tt class="descname">OtherWriter</tt><big>(</big><em>filename</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.OtherWriter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a writer appropriate for <em>filename</em>.</p>
 <p>Sets the default keywords <em>start</em>, <em>step</em> and <em>dt</em> (if
-available). <em>numatoms</em> is always set from <tt class="xref py py-attr docutils literal"><span class="pre">Reader.numatoms</span></tt>.</p>
+available). <em>n_atoms</em> is always set from <tt class="xref py py-attr docutils literal"><span class="pre">Reader.n_atoms</span></tt>.</p>
 <div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><tt class="xref py py-meth docutils literal"><span class="pre">Reader.Writer()</span></tt> and <tt class="xref py py-func docutils literal"><span class="pre">MDAnalysis.Writer()</span></tt></p>
@@ -541,7 +541,7 @@ available). <em>numatoms</em> is always set from <tt class="xref py py-attr docu
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Keywords :</th><td class="field-body"><dl class="first docutils">
-<dt><em>numatoms</em></dt>
+<dt><em>n_atoms</em></dt>
 <dd><p class="first last">number of atoms</p>
 </dd>
 <dt><em>start</em></dt>
@@ -752,17 +752,17 @@ coordinates)</p>
 <dl class="attribute">
 <dt id="MDAnalysis.coordinates.DCD.DCDReader.totaltime">
 <tt class="descname">totaltime</tt><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.totaltime" title="Permalink to this definition">¶</a></dt>
-<dd><p>Total length of the trajectory numframes * dt.</p>
+<dd><p>Total length of the trajectory n_frames * dt.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="MDAnalysis.coordinates.DCD.DCDWriter">
-<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.DCD.</tt><tt class="descname">DCDWriter</tt><big>(</big><em>filename</em>, <em>numatoms</em>, <em>start=0</em>, <em>step=1</em>, <em>delta=20.45482949774598</em>, <em>dt=None</em>, <em>remarks=u'Created by DCDWriter'</em>, <em>convert_units=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/DCD.html#DCDWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">MDAnalysis.coordinates.DCD.</tt><tt class="descname">DCDWriter</tt><big>(</big><em>filename</em>, <em>n_atoms</em>, <em>start=0</em>, <em>step=1</em>, <em>delta=20.45482949774598</em>, <em>dt=None</em>, <em>remarks=u'Created by DCDWriter'</em>, <em>convert_units=None</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/DCD.html#DCDWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Writes to a DCD file</p>
 <p>Typical usage:</p>
-<div class="highlight-python"><pre>with DCDWriter("new.dcd", u.atoms.numberOfAtoms()) as w:
+<div class="highlight-python"><pre>with DCDWriter("new.dcd", u.atoms.n_atoms) as w:
     for ts in u.trajectory
         w.write_next_timestep(ts)</pre>
 </div>
@@ -771,7 +771,7 @@ coordinates)</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Methods :</th><td class="field-body"><tt class="docutils literal"><span class="pre">d</span> <span class="pre">=</span> <span class="pre">DCDWriter(dcdfilename,</span> <span class="pre">numatoms,</span> <span class="pre">start,</span> <span class="pre">step,</span> <span class="pre">delta,</span> <span class="pre">remarks)</span></tt></td>
+<tr class="field-odd field"><th class="field-name">Methods :</th><td class="field-body"><tt class="docutils literal"><span class="pre">d</span> <span class="pre">=</span> <span class="pre">DCDWriter(dcdfilename,</span> <span class="pre">n_atoms,</span> <span class="pre">start,</span> <span class="pre">step,</span> <span class="pre">delta,</span> <span class="pre">remarks)</span></tt></td>
 </tr>
 </tbody>
 </table>
@@ -800,7 +800,7 @@ by default it will use AKMA time units.</p>
 <dt><em>filename</em></dt>
 <dd><p class="first last">name of output file</p>
 </dd>
-<dt><em>numatoms</em></dt>
+<dt><em>n_atoms</em></dt>
 <dd><p class="first last">number of atoms in dcd file</p>
 </dd>
 <dt><em>start</em></dt>
@@ -1036,7 +1036,8 @@ if no coordinates to be written.</p>
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
     Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
     Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
-    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Isaac Virshup, Zhuyi Xue, Carlos Yáñez S.,
+    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Gorman Stock, Isaac Virshup,
+    Zhuyi Xue, Carlos Yáñez S.,
     and Oliver Beckstein.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
