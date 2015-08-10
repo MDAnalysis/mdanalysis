@@ -103,8 +103,7 @@ The following table lists the currently supported topology formats.
 
    Hoomd XML         xml         `HOOMD XML`_ topology file.  Reads atom types, masses, and
                                  charges if possible. Also reads bonds, angles, and dihedrals.
-
-                                 :mod:`MDAnalysis.topology.HOOMDXMLarser`
+                                 :mod:`MDAnalysis.topology.HoomdXMLParser`
 
    ================= ==========  =====================================================
 

@@ -41,6 +41,7 @@ topology file format in the *topology_format* keyword argument to
    topology/XYZParser
    topology/LAMMPSParser
    topology/GMSParser
+   topology/HoomdXMLParser
 
 .. rubric:: Topology core modules
 

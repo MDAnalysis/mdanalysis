@@ -12,7 +12,10 @@
 
 """
 HOOMD XML topology parser
-========================
+=========================
+
+.. versionadded:: 0.11.0
+
 The :class:`HoomdXMLParser` generates a topology from files for the HOOMD_ code.
 
 Read a list of atoms from a `HOOMD XML`_ file to build a basic topology.
@@ -32,6 +35,7 @@ Classes
 .. autoclass:: HoomdXMLParser
    :members:
    :inherited-members:
+
 """
 from __future__ import absolute_import
 from ..lib.util import openany
@@ -43,7 +47,7 @@ import xml.etree.ElementTree as ET
 class HoomdXMLParser(TopologyReader):
     def parse(self):
         """Parse Hoomd XML file *filename* and return the dict `structure`.
-            
+
            Hoomd XML format does not contain a node for names. The parser will
            look for a name node anyway, and if it doesn't find one, it will use
            the atom types as names. If the Hoomd XML file doesn't contain a type
@@ -57,7 +61,9 @@ class HoomdXMLParser(TopologyReader):
            :Returns: MDAnalysis internal *structure* dict
 
            .. SeeAlso:: The *structure* dict is defined in
-           :func:`MDAnalysis.topology.base`.
+                        :func:`MDAnalysis.topology.base`.
+
+           .. versionadded:: 0.11.0
 
         """
         with openany(self.filename) as stream:
