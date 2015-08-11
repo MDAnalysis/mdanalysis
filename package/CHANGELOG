@@ -51,6 +51,11 @@ The rules for this file:
   * Added AtomGroup altLocs and serials properties with setters. (Issue #372)
 
   Changes
+  * Changed AtomGroup counting methods to properties with different
+    names: numberOfAtoms() to n_atoms, numberOfResidues() to
+    n_residues, numberOfSegments() --> n_segments (Issue #376)
+  * Changed trajectory reader numframes to n_frames (Issue #376)
+  * Changed Timestep.numatoms to n_atoms (Issue #376)
   * Deprecated the use of the 'fullgroup' selection keyword (Issue #268)
   * Changed atom.number attribute to atom.index (Issue #372)
   * Changed many AtomGroup methods to properties.  These are: indices, masses,
