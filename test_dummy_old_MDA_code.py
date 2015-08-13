@@ -32,3 +32,14 @@ all_selection.resnames()
 all_selection.resnums()
 #all_selection.segids()
 all_selection.segids()
+
+#similarly for atomgroup count method renaming:
+
+#all_selection.numberOfAtoms()
+all_selection.numberOfAtoms()
+
+#all_selection.numberOfResidues()
+all_selection.numberOfResidues()
+
+#all_selection.numberOfSegments()
+all_selection.numberOfSegments()
