@@ -43,3 +43,41 @@ all_selection.numberOfResidues()
 
 #all_selection.numberOfSegments()
 all_selection.numberOfSegments()
+
+#for old import statements:
+
+#import MDAnalysis.KDTree
+import MDAnalysis.KDTree
+#from MDAnalysis import KDTree
+from MDAnalysis import KDTree
+
+#import MDAnalysis.core.transformations
+import MDAnalysis.core.transformations
+#from MDAnalysis.core import transformations
+from MDAnalysis.core import transformations
+
+#import MDAnalysis.core.util
+import MDAnalysis.core.util
+#from MDAnalysis.core import util
+from MDAnalysis.core import util
+
+#import MDAnalysis.core.log
+import MDAnalysis.core.log
+#from MDAnalysis.core import log
+from MDAnalysis.core import log
+
+#import MDAnalysis.core.units
+import MDAnalysis.core.units
+#from MDAnalysis.core import units
+from MDAnalysis.core import units
+
+#import MDAnalysis.core.distances
+import MDAnalysis.core.distances
+#from MDAnalysis.core import distances
+from MDAnalysis.core import distances
+
+#import MDAnalysis.core.parallel
+import MDAnalysis.core.parallel
+#from MDAnalysis.core import parallel
+from MDAnalysis.core import parallel
+
