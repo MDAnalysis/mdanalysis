@@ -1,6 +1,6 @@
 '''
-Copy to /Users/treddy/anaconda/lib/python2.7/lib2to3/fixes/
-Then run with: 2to3 -f agcountmethods test_dummy_old_MDA_code.py 
+run with: python ten2eleven.py -f agcountmethods test_dummy_old_MDA_code.py 
+Author: Tyler Reddy
 '''
 
 from lib2to3.fixer_base import BaseFix
