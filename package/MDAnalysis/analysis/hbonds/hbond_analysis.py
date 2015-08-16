@@ -319,6 +319,7 @@ from MDAnalysis.core.AtomGroup import AtomGroup
 from MDAnalysis.lib.util import parse_residue
 from MDAnalysis.lib.mdamath import norm, angle
 from MDAnalysis.lib.log import ProgressMeter
+from MDAnalysis.lib.atomneighbor import AtomNeighborSearch
 
 import warnings
 import logging
@@ -746,20 +747,24 @@ class HydrogenBondAnalysis(object):
     def _update_selection_2(self):
         self._s2 = self.u.select_atoms(self.selection2)
         if self.filter_first and len(self._s2) > 0:
-            self.logger_debug("Size of selection 2 before filtering: {0} atoms".format(len(self._s2)))
-            ns_selection_2 = NS.AtomNeighborSearch(self._s2)
-            self._s2 = ns_selection_2.search_list(self._s1, 3. * self.distance)
-        self.logger_debug("Size of selection 2: {0} atoms".format(len(self._s2)))
+            self.logger_debug('Size of selection 2 before filtering:'
+                              ' {} atoms'.format(len(self._s2)))
+            ns_selection_2 = AtomNeighborSearch(self._s2)
+            self._s2 = ns_selection_2.search(self._s1, 3. * self.distance)
+        self.logger_debug('Size of selection 2: {0} atoms'.format(len(self._s2)))
         if not self._s2:
-             logger.warn("Selection 2 '{0}' did not select any atoms.".format(str(self.selection2)[:80]))
+            logger.warn('Selection 2 "{}" did not select any atoms.'.format(
+                str(self.selection2)[:80]))
         self._s2_donors = {}
         self._s2_donors_h = {}
         self._s2_acceptors = {}
         if self.selection1_type in ('donor', 'both'):
-            self._s2_acceptors = self._s2.select_atoms(' or '.join(['name %s' % i for i in self.acceptors]))
+            self._s2_acceptors = self._s2.select_atoms(
+                ' or '.join(['name %s' % i for i in self.acceptors]))
             self.logger_debug("Selection 2 acceptors: %d" % len(self._s2_acceptors))
         if self.selection1_type in ('acceptor', 'both'):
-            self._s2_donors = self._s2.select_atoms(' or '.join(['name %s' % i for i in self.donors]))
+            self._s2_donors = self._s2.select_atoms(
+                ' or '.join(['name %s' % i for i in self.donors]))
             self._s2_donors_h = {}
             for i, d in enumerate(self._s2_donors):
                 tmp = self._get_bonded_hydrogens(d)
@@ -865,11 +870,11 @@ class HydrogenBondAnalysis(object):
 
             if self.selection1_type in ('donor', 'both') and len(self._s2_acceptors) > 0:
                 self.logger_debug("Selection 1 Donors <-> Acceptors")
-                ns_acceptors = NS.AtomNeighborSearch(self._s2_acceptors)
+                ns_acceptors = AtomNeighborSearch(self._s2_acceptors)
                 for i, donor_h_set in self._s1_donors_h.items():
                     d = self._s1_donors[i]
                     for h in donor_h_set:
-                        res = ns_acceptors.search_list(AtomGroup([h]), self.distance)
+                        res = ns_acceptors.search(AtomGroup([h]), self.distance)
                         for a in res:
                             angle = self.calc_angle(d, h, a)
                             donor_atom = h if self.distance_type != 'heavy' else d
@@ -884,11 +889,11 @@ class HydrogenBondAnalysis(object):
                                 already_found[(h.index + 1, a.index + 1)] = True
             if self.selection1_type in ('acceptor', 'both') and len(self._s1_acceptors) > 0:
                 self.logger_debug("Selection 1 Acceptors <-> Donors")
-                ns_acceptors = NS.AtomNeighborSearch(self._s1_acceptors)
+                ns_acceptors = AtomNeighborSearch(self._s1_acceptors)
                 for i, donor_h_set in self._s2_donors_h.items():
                     d = self._s2_donors[i]
                     for h in donor_h_set:
-                        res = ns_acceptors.search_list(AtomGroup([h]), self.distance)
+                        res = ns_acceptors.search(AtomGroup([h]), self.distance)
                         for a in res:
                             if remove_duplicates and (
                                     (h.index + 1, a.index + 1) in already_found
