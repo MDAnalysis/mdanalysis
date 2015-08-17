@@ -28,7 +28,7 @@ Currently all atom arrays are handled internally as sets, but returned as AtomGr
 import re
 import numpy
 from numpy.lib.utils import deprecate
-from sklearn.neighbors import KDTree
+from Bio.KDTree import KDTree
 
 from .AtomGroup import AtomGroup, Universe
 from MDAnalysis.core import flags
@@ -170,8 +170,14 @@ class AroundSelection(Selection):
         sel_indices = numpy.array([a.index for a in sel_atoms], dtype=int)
         sys_indices = numpy.array([a.index for a in sys_atoms_list], dtype=int)
         sel_coor = Selection.coord[sel_indices]
-        kdtree = KDTree(Selection.coord[sys_indices], leaf_size=10)
-        found_indices = kdtree.query_radius(numpy.array(sel_coor), self.cutoff)
+
+        kdtree = KDTree(dim=3, bucket_size=10)
+        kdtree.set_coords(Selection.coord[sys_indices])
+        found_indices = []
+        for atom in numpy.array(sel_coor):
+            kdtree.search(atom, self.cutoff)
+            found_indices.append(kdtree.get_indices())
+
         # the list-comprehension here can be understood as a nested loop.
         # for list in found_indices:
         #     for i in list:
@@ -231,10 +237,13 @@ class SphericalLayerSelection(Selection):
         self.ref = numpy.array((sel_CoG[0], sel_CoG[1], sel_CoG[2]))
         if self.periodic:
             pass  # or warn? -- no periodic functionality with KDTree search
-        kdtree = KDTree(sys_coor, leaf_size=10)
-        # ref is exactly one coordinate so pull the first entry of the array
-        found_ExtIndices = kdtree.query_radius(self.ref, self.exRadius)[0]
-        found_IntIndices = kdtree.query_radius(self.ref, self.inRadius)[0]
+        kdtree = KDTree(dim=3, bucket_size=10)
+        kdtree.set_coords(sys_coor)
+
+        kdtree.search(self.ref, self.exRadius)
+        found_ExtIndices = kdtree.get_indices()
+        kdtree.search(self.ref, self.inRadius)
+        found_IntIndices = kdtree.get_indices()
         found_indices = list(set(found_ExtIndices) - set(found_IntIndices))
         res_atoms = [self._group_atoms_list[i] for i in found_indices]
         return set(res_atoms)
@@ -290,8 +299,10 @@ class SphericalZoneSelection(Selection):
         if self.periodic:
             pass  # or warn? -- no periodic functionality with KDTree search
 
-        kdtree = KDTree(sys_coor, leaf_size=10)
-        found_indices = kdtree.query_radius(self.ref, self.cutoff)[0]
+        kdtree = KDTree(dim=3, bucket_size=10)
+        kdtree.set_coords(sys_coor)
+        kdtree.search(self.ref, self.cutoff)
+        found_indices = kdtree.get_indices()
         res_atoms = [self._group_atoms_list[i] for i in found_indices]
         return set(res_atoms)
 
