@@ -1,21 +1,25 @@
 import numpy
-from sklearn.neighbors import KDTree
+from Bio.KDTree import KDTree
 
 from MDAnalysis.core.AtomGroup import AtomGroup
 
 
 class AtomNeighborSearch():
 
-    def __init__(self, atom_group, leaf_size=10):
+    def __init__(self, atom_group, bucket_size=10):
         self.atom_group = atom_group
         if not hasattr(atom_group, 'coordinates'):
             raise TypeError('atom_group must have a coordinates() method'
                             '(eq a AtomGroup from a selection)')
-        self.kdtree = KDTree(atom_group.coordinates(), leaf_size=leaf_size)
+        self.kdtree = KDTree(dim=3, bucket_size=bucket_size)
+        self.kdtree.set_coords(atom_group.coordinates())
 
     def search(self, atoms, radius, level='A'):
-        indices = self.kdtree.query_radius(atoms.coordinates(), radius)
-        unique_idx = numpy.unique([i for list in indices for i in list])
+        indices = []
+        for atom in atoms.coordinates():
+            self.kdtree.search(atom, radius)
+            indices.append(self.kdtree.get_indices())
+        unique_idx = numpy.unique([i for l in indices for i in l])
         return self._index2level(unique_idx, level)
 
     def _index2level(self, indices, level):
