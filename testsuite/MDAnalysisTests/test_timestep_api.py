@@ -39,6 +39,7 @@ from MDAnalysisTests.datafiles import (
     PDB, CRD, XTC, TRR, GRO, DMS, CONECT, PDBQT_input,
     XYZ, XYZ_bz2, XYZ_psf, PRM, TRJ, TRJ_bz2, PRMpbc, TRJpbc_bz2, PRMncdf, NCDF, PQR,
     PDB_sub_dry, TRR_sub_sol, PDB_sub_sol, TRZ, TRZ_psf, LAMMPSdata, LAMMPSdata_mini,
+    LAMMPSdata2,LAMMPSdcd2,
     PSF_TRICLINIC, DCD_TRICLINIC, PSF_NAMD_TRICLINIC, DCD_NAMD_TRICLINIC,
     GMS_ASYMOPT, GMS_SYMOPT, GMS_ASYMSURF, XYZ_mini, PFncdf_Top, PFncdf_Trj,
     INPCRD, XYZ_five, mol2_molecules,
@@ -876,6 +877,10 @@ class _TestTimestepInterface(object):
     def test_frame(self):
         assert_equal(self.ts.frame, 0)
 
+    @knownfailure
+    def test_dt(self):
+        assert_equal(self.u.trajectory.dt, self.ts.dt)
+
 
 class TestCRD(_TestTimestepInterface):
     def setUp(self):
@@ -920,6 +925,11 @@ class TestINPCRD(_TestTimestepInterface):
 class TestLAMMPS(_TestTimestepInterface):
     def setUp(self):
         u = self.u = mda.Universe(LAMMPSdata)
+        self.ts = u.trajectory.ts
+
+class TestLAMMPSDCD(_TestTimestepInterface):
+    def setUp(self):
+        u = self.u = mda.Universe(LAMMPSdata2,LAMMPSdcd2, format='LAMMPS', topology_format='DATA', timeunit='fs')
         self.ts = u.trajectory.ts
 
 class TestMOL2(_TestTimestepInterface):

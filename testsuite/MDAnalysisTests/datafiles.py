@@ -205,6 +205,9 @@ trz4data = resource_filename(__name__, "data/datatest.trz")
 LAMMPSdata = resource_filename(__name__, "data/datatest.data")
 LAMMPSdata_mini = resource_filename(__name__, "data/mini.data")
 
+LAMMPSdata2 = resource_filename(__name__, "data/lammps2.data")
+LAMMPSdcd2 = resource_filename(__name__, "data/lammps2.dcd")
+
 unordered_res = resource_filename(__name__, "data/unordered_res.pdb")
 
 GMS_ASYMOPT       = resource_filename(__name__, "data/gms/c1opt.gms.gz")
