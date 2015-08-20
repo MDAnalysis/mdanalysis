@@ -90,3 +90,11 @@ AtomGroup.angle()
 AtomGroup.torsion() 
 #AtomGroup.improper() -> AtomGroup.improper.value()
 AtomGroup.improper() 
+
+#atomgroup, atom and universe torsion to dihedral conversions
+#AtomGroup.torsions -> AtomGroup.dihedrals
+AtomGroup.torsions 
+#Atom.torsions -> Atom.dihedrals
+Atom.torsions 
+#Universe.torsions -> Universe.dihedrals
+Universe.torsions 
