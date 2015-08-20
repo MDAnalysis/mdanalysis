@@ -81,3 +81,12 @@ import MDAnalysis.core.parallel
 #from MDAnalysis.core import parallel
 from MDAnalysis.core import parallel
 
+# These methods are now properties returning an object
+#AtomGroup.bond() -> AtomGroup.bond.value()
+AtomGroup.bond() 
+#AtomGroup.angle() -> AtomGroup.angle.value()
+AtomGroup.angle() 
+#AtomGroup.torsion() -> AtomGroup.dihedral.value()
+AtomGroup.torsion() 
+#AtomGroup.improper() -> AtomGroup.improper.value()
+AtomGroup.improper() 
