@@ -34,6 +34,7 @@ Functions
 .. autofunction:: transform_StoR(coordinates, box)
 """
 import numpy as np
+from numpy.lib.utils import deprecate
 
 from .mdamath import triclinic_vectors, triclinic_box
 from ._distances import (calc_distance_array,
@@ -560,6 +561,8 @@ def calc_dihedrals(coords1, coords2, coords3, coords4, box=None, result=None):
     .. versionadded:: 0.8
     .. versionchanged:: 0.9.0
        Added optional box argument to account for periodic boundaries in calculation
+    .. versionchanged:: 0.11.0
+       Renamed from calc_torsions to calc_dihedrals
     """
     atom1 = coords1.copy('C')
     atom2 = coords2.copy('C')
@@ -597,6 +600,9 @@ def calc_dihedrals(coords1, coords2, coords3, coords4, box=None, result=None):
         calc_dihedral(atom1, atom2, atom3, atom4, angles)
 
     return angles
+
+calc_torsions = deprecate(calc_dihedrals, old_name='calc_torsions',
+                          new_name='calc_dihedrals')
 
 
 def applyPBC(incoords, box):

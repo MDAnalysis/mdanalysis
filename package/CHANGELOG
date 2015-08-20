@@ -106,6 +106,7 @@ The rules for this file:
   * All TopologyObjects now have a "value" method to evaluate them (Issue #373)
   * TopologyGroup now has a "values" methods to evaluate all contained
     bonds (Issue #373)
+  * MDAnalysis.lib.distances.calc_torsions renamed to calc_dihedrals (Issue #373)
   * TopologyGroup.selectBonds renamed to select_bonds
   * TopologyObjects and TopologyGroup moved to core.topologyobjects module
   * deprecated selectAtoms in favour of select_atoms (Issue #389)
