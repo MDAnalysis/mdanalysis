@@ -603,7 +603,7 @@ def pseudo_dihe_baseflip(universe, bp1, bp2, i, seg1="SYSTEM", seg2="SYSTEM", se
     bf4 = universe.select_atoms(" ( segid %s and resid %s and nucleicbase ) " % (seg3, i))
     bf2 = universe.select_atoms(" ( segid %s and resid %s and nucleicsugar ) " % (seg2, bp2))
     bf3 = universe.select_atoms(" ( segid %s and resid %s and nucleicsugar ) " % (seg3, i))
-    x = [bf1.centerOfMass(), bf2.centerOfMass(), bf3.centerOfMass(), bf4.centerOfMass()]
+    x = [bf1.center_of_mass(), bf2.center_of_mass(), bf3.center_of_mass(), bf4.center_of_mass()]
     pseudo = mdamath.dihedral(x[0] - x[1], x[1] - x[2], x[2] - x[3])
     pseudo = numpy.rad2deg(pseudo)
     if pseudo < 0:

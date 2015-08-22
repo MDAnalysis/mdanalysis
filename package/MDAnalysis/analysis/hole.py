@@ -1033,7 +1033,7 @@ class HOLEtraj(BaseHOLE):
                Point inside the pore.
 
                If set to ``True`` then *cpoint* is guessed as the
-               :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.centerOfGeometry` of
+               :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.center_of_geometry` of
                the *selection* from the first frame of the trajectory.
 
                If *cpoint* is not set or set to ``None`` then HOLE guesses it
@@ -1068,7 +1068,7 @@ class HOLEtraj(BaseHOLE):
         This method simply uses the center of geometry of the protein selection
         as a guess. *selection* is "protein" by default.
         """
-        return self.universe.select_atoms(kwargs.get("selection", "protein")).centerOfGeometry()
+        return self.universe.select_atoms(kwargs.get("selection", "protein")).center_of_geometry()
 
     def _process_orderparameters(self, data):
         """Read orderparameters from *data*

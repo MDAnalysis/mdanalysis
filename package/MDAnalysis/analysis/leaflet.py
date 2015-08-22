@@ -31,12 +31,12 @@ Algorithm:
 One can use this information to identify
 
 * the upper and lower leaflet of a *planar membrane* by comparing the
-  the :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.centerOfGeometry` of
+  the :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.center_of_geometry` of
   the leaflet groups, or
 
 * the outer and inner leaflet of a *vesicle* by comparing histograms
   of distances from the centre of geometry (or possibly simply the
-  :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.radiusOfGyration`).
+  :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.radius_of_gyration`).
 
 See example scripts in the ``examples/`` directory on how to use
 :class:`LeafletFinder`. The function :func:`optimize_cutoff` implements a
@@ -103,7 +103,7 @@ class LeafletFinder(object):
                  use fast :func:`~MDAnalysis.analysis.distances.distance_array`
                  implementation [``None``].
         """
-        universe = MDAnalysis.asUniverse(universe)
+        universe = MDAnalysis.as_Universe(universe)
         self.universe = universe
         self.selectionstring = selectionstring
         if type(self.selectionstring) == MDAnalysis.core.AtomGroup.AtomGroup:

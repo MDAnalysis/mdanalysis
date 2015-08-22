@@ -29,7 +29,7 @@ Functions
 .. autofunction:: calc_bonds(atom1, atom2 [, box, [,result]])
 .. autofunction:: calc_angles(atom1, atom2, atom3 [,box [, result]])
 .. autofunction:: calc_dihedrals(atom1, atom2, atom3, atom4 [,box [, result]])
-.. autofunction:: applyPBC(coordinates, box)
+.. autofunction:: apply_PBC(coordinates, box)
 .. autofunction:: transform_RtoS(coordinates, box)
 .. autofunction:: transform_StoR(coordinates, box)
 """
@@ -605,10 +605,10 @@ calc_torsions = deprecate(calc_dihedrals, old_name='calc_torsions',
                           new_name='calc_dihedrals')
 
 
-def applyPBC(incoords, box):
+def apply_PBC(incoords, box):
     """Moves a set of coordinates to all be within the primary unit cell
 
-    newcoords = applyPBC(coords, box)
+    newcoords = apply_PBC(coords, box)
 
     :Arguments:
         *coords*
@@ -653,3 +653,5 @@ def applyPBC(incoords, box):
         triclinic_pbc(coords, box, box_inv)
 
     return coords
+
+applyPBC = deprecate(apply_PBC, old_name='applyPBC', new_name='apply_PBC')

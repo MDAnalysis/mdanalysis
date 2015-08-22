@@ -209,7 +209,7 @@ class GNMAnalysis(object):
         #add the com from each bonus group to the ca_positions list
         for item in self.Bonus_groups:
             #bonus = self.u.select_atoms(item)
-            positions = numpy.vstack((positions, item.centerOfMass()))
+            positions = numpy.vstack((positions, item.center_of_mass()))
             natoms += 1
 
         matrix = numpy.zeros((natoms, natoms), "float")

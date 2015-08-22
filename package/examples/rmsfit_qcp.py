@@ -46,7 +46,7 @@ natoms = traj_atoms.numberOfAtoms()
 #weight = masses/numpy.mean(masses)
 
 # reference centre of mass system
-ref_com = ref_atoms.centerOfMass()
+ref_com = ref_atoms.center_of_mass()
 ref_coordinates = ref_atoms.coordinates() - ref_com
 
 # allocate the array for selection atom coords
@@ -58,7 +58,7 @@ traj_coordinates = traj_atoms.coordinates().copy()
 for k, ts in enumerate(frames):
     # shift coordinates for rotation fitting
     # selection is updated with the time frame
-    x_com = traj_atoms.centerOfMass()
+    x_com = traj_atoms.center_of_mass()
     traj_coordinates[:] = traj_atoms.coordinates() - x_com
     R = numpy.zeros((9,), dtype=numpy.float64)
     # Need to transpose coordinates such that the coordinate array is

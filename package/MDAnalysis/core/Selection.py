@@ -219,7 +219,7 @@ class SphericalLayerSelection(Selection):
         sys_indices = numpy.array([a.index for a in self._group_atoms_list])
         sys_coor = Selection.coord[sys_indices]
         sel_atoms = self.sel._apply(group)  # group is wrong, should be universe (?!)
-        sel_CoG = AtomGroup(sel_atoms).centerOfGeometry()
+        sel_CoG = AtomGroup(sel_atoms).center_of_geometry()
         self.ref = numpy.array((sel_CoG[0], sel_CoG[1], sel_CoG[2]))
         if self.periodic:
             pass  # or warn? -- no periodic functionality with KDTree search
@@ -233,7 +233,7 @@ class SphericalLayerSelection(Selection):
 
     def _apply_distmat(self, group):
         sel_atoms = self.sel._apply(group)  # group is wrong, should be universe (?!)
-        sel_CoG = AtomGroup(sel_atoms).centerOfGeometry()
+        sel_CoG = AtomGroup(sel_atoms).center_of_geometry()
         sys_atoms_list = [a for a in (self._group_atoms)]  # list needed for back-indexing
         sys_ag = AtomGroup(sys_atoms_list)
         sel_CoG_str = \
@@ -277,7 +277,7 @@ class SphericalZoneSelection(Selection):
         sys_indices = numpy.array([a.index for a in self._group_atoms_list])
         sys_coor = Selection.coord[sys_indices]
         sel_atoms = self.sel._apply(group)  # group is wrong, should be universe (?!)
-        sel_CoG = AtomGroup(sel_atoms).centerOfGeometry()
+        sel_CoG = AtomGroup(sel_atoms).center_of_geometry()
         self.ref = numpy.array((sel_CoG[0], sel_CoG[1], sel_CoG[2]))
         if self.periodic:
             pass  # or warn? -- no periodic functionality with KDTree search
@@ -289,7 +289,7 @@ class SphericalZoneSelection(Selection):
 
     def _apply_distmat(self, group):
         sel_atoms = self.sel._apply(group)  # group is wrong, should be universe (?!)
-        sel_CoG = AtomGroup(sel_atoms).centerOfGeometry()
+        sel_CoG = AtomGroup(sel_atoms).center_of_geometry()
         sys_atoms_list = [a for a in (self._group_atoms)]  # list needed for back-indexing
         sys_ag = AtomGroup(sys_atoms_list)
         sel_CoG_str = str("point ") + str(sel_CoG[0]) + " " + str(sel_CoG[1]) + " " + str(sel_CoG[2]) + " " + str(
@@ -322,7 +322,7 @@ class _CylindricalSelection(Selection):
 
     def _apply_distmat(self, group):
         sel_atoms = self.sel._apply(group)
-        sel_CoG = AtomGroup(sel_atoms).centerOfGeometry()
+        sel_CoG = AtomGroup(sel_atoms).center_of_geometry()
         coords = AtomGroup(Selection._group_atoms_list).positions
 
         if self.periodic and not numpy.any(Selection.coord.dimensions[:3]==0):
@@ -344,9 +344,9 @@ class _CylindricalSelection(Selection):
             #how off-center in z is our CoG relative to the cylinder's center
             cyl_center = sel_CoG + [0,0,(self.zmax+self.zmin)/2]
             coords += box/2 - cyl_center 
-            coords = distances.applyPBC(coords, box=Selection.coord.dimensions)
+            coords = distances.apply_PBC(coords, box=Selection.coord.dimensions)
             if is_triclinic:
-                coords = distances.applyPBC(coords, box=box)
+                coords = distances.apply_PBC(coords, box=box)
             sel_CoG = box/2
             zmin = -cyl_z_hheight
             zmax = cyl_z_hheight

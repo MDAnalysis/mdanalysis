@@ -35,7 +35,7 @@ def rmsd_traj(traj, ref, **kwargs):
     #weight = masses/numpy.mean(masses)
 
     # reference centre of mass system
-    ref_com = ref_atoms.centerOfMass()
+    ref_com = ref_atoms.center_of_mass()
     ref_coordinates = ref_atoms.coordinates() - ref_com
 
     # allocate the array for selection atom coords
@@ -47,7 +47,7 @@ def rmsd_traj(traj, ref, **kwargs):
     for k, ts in enumerate(frames):
         # shift coordinates for rotation fitting
         # selection is updated with the time frame
-        x_com = traj_atoms.centerOfMass()
+        x_com = traj_atoms.center_of_mass()
         traj_coordinates[:] = traj_atoms.coordinates() - x_com
 
         ### NOTE: If you're only interested in RMSD and never in the

@@ -538,7 +538,7 @@ class ContactAnalysis1(object):
         self.timeseries = None  # final result
 
         self.filenames = args
-        self.universe = MDAnalysis.asUniverse(*args, **kwargs)
+        self.universe = MDAnalysis.as_Universe(*args, **kwargs)
 
         self.selections = [self.universe.select_atoms(s) for s in self.selection_strings]
 

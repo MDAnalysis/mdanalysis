@@ -87,7 +87,7 @@ interactive exploration or copy and the use ``%paste`` in
   for ts in u.trajectory:     # iterate through all frames
      r = cterm.pos - nterm.pos # end-to-end vector from atom positions
      d = numpy.linalg.norm(r)  # end-to-end distance
-     rgyr = bb.radiusOfGyration()  # method of a AtomGroup; updates with each frame
+     rgyr = bb.radius_of_gyration()  # method of a AtomGroup; updates with each frame
      data.append((ts.frame, u.trajectory.time, d, rgyr))
   data = numpy.array(data).transpose()
   frames, t, e2e, Rg = data  

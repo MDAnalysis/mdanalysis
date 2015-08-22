@@ -109,7 +109,9 @@ The rules for this file:
   * MDAnalysis.lib.distances.calc_torsions renamed to calc_dihedrals (Issue #373)
   * TopologyGroup.selectBonds renamed to select_bonds
   * TopologyObjects and TopologyGroup moved to core.topologyobjects module
-  * deprecated selectAtoms in favour of select_atoms (Issue #389)
+  * deprecated camelCase AtomGroup methods in favour of underscore_style
+    (Issue #389)
+  * deprecate lib.distances.applyPBC in favour of apply_PBC (Issue #389)
 
   Fixes
   * Amber TRJ and NCDF Reader & Writers now use 'dt' instead of 'delta'
