@@ -4380,7 +4380,7 @@ def as_Universe(*args, **kwargs):
 
     1. If the first argument is a universe, just return it::
 
-         as_universe(universe) --> universe
+         as_Universe(universe) --> universe
 
     2. Otherwise try to build a universe from the first or the first
        and second argument::
@@ -4397,7 +4397,7 @@ def as_Universe(*args, **kwargs):
         return args[0]
     return Universe(*args, **kwargs)
 
-asUniverse = deprecate(as_universe, old_name='asUniverse', new_name='as_Universe')
+asUniverse = deprecate(as_Universe, old_name='asUniverse', new_name='as_Universe')
 
 def Merge(*args):
     """Return a :class:`Universe` from two or more :class:`AtomGroup` instances.
