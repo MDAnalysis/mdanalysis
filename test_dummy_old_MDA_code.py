@@ -98,3 +98,29 @@ AtomGroup.torsions
 Atom.torsions 
 #Universe.torsions -> Universe.dihedrals
 Universe.torsions 
+
+#camelcase fixes
+
+# from core.AtomGroup
+#totalMass -> total_mass
+ag.totalMass
+#totalCharge -> total_charge
+ag.totalCharge 
+#centerOfGeometry -> center_of_geometry
+ag.centerOfGeometry 
+#radiusOfGyration -> radius_of_gyration
+ag.radiusOfGyration 
+#shapeParameter -> shape_parameter
+ag.shapeParameter 
+#momentOfInertia -> moment_of_inertia
+ag.momentOfInertia 
+#principalAxes -> principal_axes
+ag.principalAxes 
+#packIntoBox -> pack_into_box
+ag.packIntoBox 
+#asUniverse -> as_universe
+ag.asUniverse 
+
+# from lib.distances
+#applyPBC -> apply_PBC
+lib.distances.applyPBC 
