@@ -76,8 +76,8 @@ Note that in this example translations have not been removed. In order
 to look at the pure rotation one needs to superimpose the centres of
 mass (or geometry) first:
 
-   >>> ref0 =  ref.atoms.CA.coordinates() - ref.atoms.CA.centerOfMass()
-   >>> mobile0 = mobile.atoms.CA.coordinates() - mobile.atoms.CA.centerOfMass()
+   >>> ref0 =  ref.atoms.CA.coordinates() - ref.atoms.CA.center_of_mass()
+   >>> mobile0 = mobile.atoms.CA.coordinates() - mobile.atoms.CA.center_of_mass()
    >>> rmsd(mobile0, ref0)
     6.8093965864717951
 
@@ -95,9 +95,9 @@ function ::
 
 Putting all this together one can superimpose all of *mobile* onto *ref*::
 
-   >>> mobile.atoms.translate(-mobile.atoms.CA.centerOfMass())
+   >>> mobile.atoms.translate(-mobile.atoms.CA.center_of_mass())
    >>> mobile.atoms.rotate(R)
-   >>> mobile.atoms.translate(ref.atoms.CA.centerOfMass())
+   >>> mobile.atoms.translate(ref.atoms.CA.center_of_mass())
    >>> mobile.atoms.write("mobile_on_ref.pdb")
 
 
@@ -325,12 +325,12 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
 
     if mass_weighted:
         weights = ref_atoms.masses / numpy.mean(ref_atoms.masses)
-        ref_com = ref_atoms.centerOfMass()
-        mobile_com = mobile_atoms.centerOfMass()
+        ref_com = ref_atoms.center_of_mass()
+        mobile_com = mobile_atoms.center_of_mass()
     else:
         weights = None
-        ref_com = ref_atoms.centerOfGeometry()
-        mobile_com = mobile_atoms.centerOfGeometry()
+        ref_com = ref_atoms.center_of_geometry()
+        mobile_com = mobile_atoms.center_of_geometry()
 
     ref_coordinates = ref_atoms.coordinates() - ref_com
     mobile_coordinates = mobile_atoms.coordinates() - mobile_com
@@ -470,7 +470,7 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
 
     # reference centre of mass system
     # (compatibility with pre 1.0 numpy: explicitly cast coords to float32)
-    ref_com = ref_atoms.centerOfMass().astype(numpy.float32)
+    ref_com = ref_atoms.center_of_mass().astype(numpy.float32)
     ref_coordinates = ref_atoms.coordinates() - ref_com
 
     # allocate the array for selection atom coords
@@ -492,7 +492,7 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
     for k, ts in enumerate(frames):
         # shift coordinates for rotation fitting
         # selection is updated with the time frame
-        x_com = traj_atoms.centerOfMass().astype(numpy.float32)
+        x_com = traj_atoms.center_of_mass().astype(numpy.float32)
         traj_coordinates[:] = traj_atoms.coordinates() - x_com
 
         # Need to transpose coordinates such that the coordinate array is

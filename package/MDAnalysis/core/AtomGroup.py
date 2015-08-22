@@ -389,7 +389,7 @@ Classes and functions
 .. autoclass:: SegmentGroup
    :members:
 
-.. autofunction:: asUniverse
+.. autofunction:: as_Universe
 .. autoexception:: SelectionError
    :no-members:
 .. autoexception:: SelectionWarning
@@ -1115,9 +1115,11 @@ class AtomGroup(object):
         self._clear_caches('masses')
         self.set_mass(new)
 
-    def totalMass(self):
+    def total_mass(self):
         """Total mass of the selection (masses are taken from the topology or guessed)."""
         return numpy.sum(self.masses, axis=0)
+
+    totalMass = deprecate(total_mass, old_name='totalMass', new_name='total_mass')
 
     @property
     def charges(self):
@@ -1132,9 +1134,11 @@ class AtomGroup(object):
     def charges(self, new):
         self.set_charge(new)
 
-    def totalCharge(self):
+    def total_charge(self):
         """Sum of all partial charges (must be defined in topology)."""
         return numpy.sum(self.charges, axis=0)
+
+    totalCharge = deprecate(total_charge, old_name='totalCharge', new_name='total_charge')
 
     @property
     def names(self):
@@ -1803,7 +1807,7 @@ class AtomGroup(object):
         """
         self.set("serial", serial, conversion=int)
 
-    def centerOfGeometry(self, **kwargs):
+    def center_of_geometry(self, **kwargs):
         """Center of geometry (also known as centroid) of the selection.
 
         :Keywords:
@@ -1818,13 +1822,16 @@ class AtomGroup(object):
         """
         pbc = kwargs.pop('pbc', MDAnalysis.core.flags['use_pbc'])
         if pbc:
-            return numpy.sum(self.packIntoBox(inplace=False), axis=0) / self.n_atoms
+            return numpy.sum(self.pack_into_box(inplace=False), axis=0) / self.n_atoms
         else:
             return numpy.sum(self.positions, axis=0) / self.n_atoms
 
-    centroid = centerOfGeometry
+    centerOfGeometry = deprecate(center_of_geometry, old_name='centerOfGeometry',
+                                 new_name='center_of_geometry')
 
-    def centerOfMass(self, **kwargs):
+    centroid = center_of_geometry
+
+    def center_of_mass(self, **kwargs):
         """Center of mass of the selection.
 
         :Keywords:
@@ -1839,12 +1846,14 @@ class AtomGroup(object):
         """
         pbc = kwargs.pop('pbc', MDAnalysis.core.flags['use_pbc'])
         if pbc:
-            return numpy.sum(self.packIntoBox(inplace=False) * self.masses[:, numpy.newaxis],
-                             axis=0) / self.totalMass()
+            return numpy.sum(self.pack_into_box(inplace=False) * self.masses[:, numpy.newaxis],
+                             axis=0) / self.total_mass()
         else:
-            return numpy.sum(self.positions * self.masses[:, numpy.newaxis], axis=0) / self.totalMass()
+            return numpy.sum(self.positions * self.masses[:, numpy.newaxis], axis=0) / self.total_mass()
 
-    def radiusOfGyration(self, **kwargs):
+    centerOfMass = deprecate(center_of_mass, old_name='centerOfMass', new_name='center_of_mass')
+
+    def radius_of_gyration(self, **kwargs):
         """Radius of gyration.
 
         :Keywords:
@@ -1860,13 +1869,15 @@ class AtomGroup(object):
         pbc = kwargs.pop('pbc', MDAnalysis.core.flags['use_pbc'])
         masses = self.masses
         if pbc:
-            recenteredpos = self.packIntoBox(inplace=False) - self.centerOfMass(pbc=True)
+            recenteredpos = self.pack_into_box(inplace=False) - self.center_of_mass(pbc=True)
         else:
-            recenteredpos = self.positions - self.centerOfMass(pbc=False)
-        rog_sq = numpy.sum(masses * numpy.sum(numpy.power(recenteredpos, 2), axis=1)) / self.totalMass()
+            recenteredpos = self.positions - self.center_of_mass(pbc=False)
+        rog_sq = numpy.sum(masses * numpy.sum(numpy.power(recenteredpos, 2), axis=1)) / self.total_mass()
         return numpy.sqrt(rog_sq)
 
-    def shapeParameter(self, **kwargs):
+    radiusOfGyration = deprecate(radius_of_gyration, old_name='radiusOfGyration', new_name='radius_of_gyration')
+
+    def shape_parameter(self, **kwargs):
         """Shape parameter.
 
         See [Dima2004]_ for background information.
@@ -1885,17 +1896,19 @@ class AtomGroup(object):
         pbc = kwargs.pop('pbc', MDAnalysis.core.flags['use_pbc'])
         masses = self.masses
         if pbc:
-            recenteredpos = self.packIntoBox(inplace=False) - self.centerOfMass(pbc=True)
+            recenteredpos = self.pack_into_box(inplace=False) - self.center_of_mass(pbc=True)
         else:
-            recenteredpos = self.positions - self.centerOfMass(pbc=False)
+            recenteredpos = self.positions - self.center_of_mass(pbc=False)
         tensor = numpy.zeros((3, 3))
         for x in xrange(recenteredpos.shape[0]):
             tensor += masses[x] * numpy.outer(recenteredpos[x, :],
                                               recenteredpos[x, :])
-        tensor /= self.totalMass()
+        tensor /= self.total_mass()
         eig_vals = numpy.linalg.eigvalsh(tensor)
         shape = 27.0 * numpy.prod(eig_vals - numpy.mean(eig_vals)) / numpy.power(numpy.sum(eig_vals), 3)
         return shape
+
+    shapeParameter = deprecate(shape_parameter, old_name='shapeParameter', new_name='shape_parameter')
 
     def asphericity(self, **kwargs):
         """Asphericity.
@@ -1916,20 +1929,20 @@ class AtomGroup(object):
         pbc = kwargs.pop('pbc', MDAnalysis.core.flags['use_pbc'])
         masses = self.masses
         if pbc:
-            recenteredpos = self.packIntoBox(inplace=False) - self.centerOfMass(pbc=True)
+            recenteredpos = self.pack_into_box(inplace=False) - self.center_of_mass(pbc=True)
         else:
-            recenteredpos = self.positions - self.centerOfMass(pbc=False)
+            recenteredpos = self.positions - self.center_of_mass(pbc=False)
         tensor = numpy.zeros((3, 3))
         for x in xrange(recenteredpos.shape[0]):
             tensor += masses[x] * numpy.outer(recenteredpos[x, :],
                                               recenteredpos[x, :])
-        tensor /= self.totalMass()
+        tensor /= self.total_mass()
         eig_vals = numpy.linalg.eigvalsh(tensor)
         shape = (3.0 / 2.0) * numpy.sum(numpy.power(eig_vals - numpy.mean(eig_vals), 2)) / numpy.power(
             numpy.sum(eig_vals), 2)
         return shape
 
-    def momentOfInertia(self, **kwargs):
+    def moment_of_inertia(self, **kwargs):
         """Tensor of inertia as 3x3 NumPy array.
 
         :Keywords:
@@ -1945,9 +1958,9 @@ class AtomGroup(object):
         pbc = kwargs.pop('pbc', MDAnalysis.core.flags['use_pbc'])
         # Convert to local coordinates
         if pbc:
-            pos = self.packIntoBox(inplace=False) - self.centerOfMass(pbc=True)
+            pos = self.pack_into_box(inplace=False) - self.center_of_mass(pbc=True)
         else:
-            pos = self.positions - self.centerOfMass(pbc=False)
+            pos = self.positions - self.center_of_mass(pbc=False)
 
         masses = self.masses
         # Create the inertia tensor
@@ -1975,6 +1988,9 @@ class AtomGroup(object):
 
         return tens
 
+    momentOfInertia = deprecate(moment_of_inertia, old_name='momentOfInertia',
+                                new_name='moment_of_inertia')
+
     def bbox(self, **kwargs):
         """Return the bounding box of the selection.
 
@@ -1998,7 +2014,7 @@ class AtomGroup(object):
         """
         pbc = kwargs.pop('pbc', MDAnalysis.core.flags['use_pbc'])
         if pbc:
-            x = self.packIntoBox(inplace=False)
+            x = self.pack_into_box(inplace=False)
         else:
             x = self.coordinates()
         return numpy.array([x.min(axis=0), x.max(axis=0)])
@@ -2023,11 +2039,11 @@ class AtomGroup(object):
         """
         pbc = kwargs.pop('pbc', MDAnalysis.core.flags['use_pbc'])
         if pbc:
-            x = self.packIntoBox(inplace=False)
-            centroid = self.centerOfGeometry(pbc=True)
+            x = self.pack_into_box(inplace=False)
+            centroid = self.center_of_geometry(pbc=True)
         else:
             x = self.coordinates()
-            centroid = self.centerOfGeometry(pbc=False)
+            centroid = self.center_of_geometry(pbc=False)
         R = numpy.sqrt(numpy.max(numpy.sum(numpy.square(x - centroid), axis=1)))
         return R, centroid
 
@@ -2097,10 +2113,10 @@ class AtomGroup(object):
 
         return top.ImproperDihedral(self.atoms)
 
-    def principalAxes(self, **kwargs):
+    def principal_axes(self, **kwargs):
         """Calculate the principal axes from the moment of inertia.
 
-        e1,e2,e3 = AtomGroup.principalAxes()
+        e1,e2,e3 = AtomGroup.principal_axes()
 
         The eigenvectors are sorted by eigenvalue, i.e. the first one
         corresponds to the highest eigenvalue and is thus the first principal axes.
@@ -2120,13 +2136,15 @@ class AtomGroup(object):
         """
         pbc = kwargs.pop('pbc', MDAnalysis.core.flags['use_pbc'])
         if pbc:
-            eigenval, eigenvec = eig(self.momentOfInertia(pbc=True))
+            eigenval, eigenvec = eig(self.moment_of_inertia(pbc=True))
         else:
-            eigenval, eigenvec = eig(self.momentOfInertia(pbc=False))
+            eigenval, eigenvec = eig(self.moment_of_inertia(pbc=False))
         # Sort
         indices = numpy.argsort(eigenval)
         # Return transposed in more logical form. See Issue 33.
         return eigenvec[:, indices].T
+
+    principalAxes = deprecate(principal_axes, old_name='principalAxes', new_name='principal_axes')
 
     def get_positions(self, ts=None, copy=False, dtype=numpy.float32):
         """Get a NumPy array of the coordinates.
@@ -2487,7 +2505,7 @@ class AtomGroup(object):
         :Arguments:
           *axis*
             Index of the principal axis (0, 1, or 2), as produced by
-            :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.principalAxes`.
+            :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.principal_axes`.
           *vector*
             A 3D vector such as the z-axis (``[0,0,1]``); can be
             anything that looks like a list with three entries.
@@ -2498,14 +2516,14 @@ class AtomGroup(object):
           u.atoms.align_principalAxis(0, [0,0,1])
           u.atoms.write("aligned.pdb")
         """
-        p = self.principalAxes()[axis]
+        p = self.principal_axes()[axis]
         angle = numpy.degrees(mdamath.angle(p, vector))
         ax = transformations.rotaxis(p, vector)
         #print "principal[%d] = %r" % (axis, p)
         #print "axis = %r, angle = %f deg" % (ax, angle)
         return self.rotateby(angle, ax)
 
-    def packIntoBox(self, box=None, inplace=True):
+    def pack_into_box(self, box=None, inplace=True):
         r"""Shift all atoms in this group to be within the primary unit cell.
 
         AtomGroup.packintobox([box, [inplace=True]])
@@ -2553,16 +2571,18 @@ class AtomGroup(object):
 
         coords = self.universe.coord.positions[self.indices]
         if not inplace:
-            return distances.applyPBC(coords, box)
+            return distances.apply_PBC(coords, box)
 
-        self.universe.coord.positions[self.indices] = distances.applyPBC(coords, box)
+        self.universe.coord.positions[self.indices] = distances.apply_PBC(coords, box)
 
         return self.universe.coord.positions[self.indices]
+
+    packIntoBox = deprecate(pack_into_box, old_name='packIntoBox', new_name='pack_into_box')
 
     def wrap(self, compound="atoms", center="com", box=None):
         """Shift the contents of this AtomGroup back into the unit cell.
 
-        This is a more powerful version of :meth:`packIntoBox`, allowing
+        This is a more powerful version of :meth:`pack_into_box`, allowing
         groups of atoms to be kept together through the process.
 
         :Keywords:
@@ -2601,12 +2621,12 @@ class AtomGroup(object):
         will be used.
 
         .. Note::
-           wrap with all default keywords is identical to :meth:`packIntoBox`
+           wrap with all default keywords is identical to :meth:`pack_into_box`
 
         .. versionadded:: 0.9.2
         """
         if compound.lower() == "atoms":
-            return self.packIntoBox(box=box)
+            return self.pack_into_box(box=box)
 
         if compound.lower() == 'group':
             objects = [self.atoms]
@@ -2622,9 +2642,9 @@ class AtomGroup(object):
                              "or 'fragments'".format(compound))
 
         if center.lower() in ('com', 'centerofmass'):
-            centers = numpy.vstack([o.centerOfMass() for o in objects])
+            centers = numpy.vstack([o.center_of_mass() for o in objects])
         elif center.lower() in ('cog', 'centroid', 'centerofgeometry'):
-            centers = numpy.vstack([o.centerOfGeometry() for o in objects])
+            centers = numpy.vstack([o.center_of_geometry() for o in objects])
         else:
             raise ValueError("Unrecognised center definition: {0}"
                              "Please use one of 'com' or 'cog'".format(center))
@@ -2634,7 +2654,7 @@ class AtomGroup(object):
             box = self.dimensions
 
         # calculate shift per object center
-        dests = distances.applyPBC(centers, box=box)
+        dests = distances.apply_PBC(centers, box=box)
         shifts = dests - centers
 
         for o, s in itertools.izip(objects, shifts):
@@ -2670,7 +2690,6 @@ class AtomGroup(object):
         """Split atomgroup into a list of atomgroups by *level*.
 
         *level* can be "atom", "residue", "segment".
-
         .. versionadded:: 0.9.0
         """
         # CHECK: What happens to duplicate atoms (with advanced slicing)?
@@ -4356,7 +4375,7 @@ class Universe(object):
     #def __del__(self):
     #    pass
 
-def asUniverse(*args, **kwargs):
+def as_Universe(*args, **kwargs):
     """Return a universe from the input arguments.
 
     1. If the first argument is a universe, just return it::
@@ -4366,18 +4385,19 @@ def asUniverse(*args, **kwargs):
     2. Otherwise try to build a universe from the first or the first
        and second argument::
 
-         asUniverse(PDB, **kwargs) --> Universe(PDB, **kwargs)
-         asUniverse(PSF, DCD, **kwargs) --> Universe(PSF, DCD, **kwargs)
-         asUniverse(*args, **kwargs) --> Universe(*args, **kwargs)
+         as_Universe(PDB, **kwargs) --> Universe(PDB, **kwargs)
+         as_Universe(PSF, DCD, **kwargs) --> Universe(PSF, DCD, **kwargs)
+         as_Universe(*args, **kwargs) --> Universe(*args, **kwargs)
 
     :Returns: an instance of :class:`~MDAnalaysis.AtomGroup.Universe`
     """
     if len(args) == 0:
-        raise TypeError("asUniverse() takes at least one argument (%d given)" % len(args))
+        raise TypeError("as_Universe() takes at least one argument (%d given)" % len(args))
     elif len(args) == 1 and isinstance(args[0], Universe):
         return args[0]
     return Universe(*args, **kwargs)
 
+asUniverse = deprecate(as_universe, old_name='asUniverse', new_name='as_Universe')
 
 def Merge(*args):
     """Return a :class:`Universe` from two or more :class:`AtomGroup` instances.

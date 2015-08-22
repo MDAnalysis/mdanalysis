@@ -493,22 +493,22 @@ class test_apply_PBC(TestCase):
         del self.prec
 
     def test_ortho_PBC(self):
-        from MDAnalysis.lib.distances import applyPBC
+        from MDAnalysis.lib.distances import apply_PBC
 
         U = MDAnalysis.Universe(PSF, DCD)
         atoms = U.atoms.coordinates()
         box1 = np.array([2.5, 2.5, 3.5], dtype=np.float32)
         box2 = np.array([2.5, 2.5, 3.5, 90., 90., 90.], dtype=np.float32)
 
-        cyth1 = applyPBC(atoms, box1)
-        cyth2 = applyPBC(atoms, box2)
+        cyth1 = apply_PBC(atoms, box1)
+        cyth2 = apply_PBC(atoms, box2)
         reference = atoms - np.floor(atoms / box1) * box1
 
-        assert_almost_equal(cyth1, reference, self.prec, err_msg="Ortho applyPBC #1 failed comparison with np")
-        assert_almost_equal(cyth2, reference, self.prec, err_msg="Ortho applyPBC #2 failed comparison with np")
+        assert_almost_equal(cyth1, reference, self.prec, err_msg="Ortho apply_PBC #1 failed comparison with np")
+        assert_almost_equal(cyth2, reference, self.prec, err_msg="Ortho apply_PBC #2 failed comparison with np")
 
     def test_tric_PBC(self):
-        from MDAnalysis.lib.distances import applyPBC
+        from MDAnalysis.lib.distances import apply_PBC
 
         U = MDAnalysis.Universe(TRIC)
         atoms = U.atoms.coordinates()
@@ -525,12 +525,12 @@ class test_apply_PBC(TestCase):
 
             return coords
 
-        cyth1 = applyPBC(atoms, box1)
-        cyth2 = applyPBC(atoms, box2)
+        cyth1 = apply_PBC(atoms, box1)
+        cyth2 = apply_PBC(atoms, box2)
         reference = numpy_PBC(atoms, box2)
 
-        assert_almost_equal(cyth1, reference, self.prec, err_msg="Triclinic applyPBC failed comparison with np")
-        assert_almost_equal(cyth2, reference, self.prec, err_msg="Trlclinic applyPBC failed comparison with np")
+        assert_almost_equal(cyth1, reference, self.prec, err_msg="Triclinic apply_PBC failed comparison with np")
+        assert_almost_equal(cyth2, reference, self.prec, err_msg="Trlclinic apply_PBC failed comparison with np")
 
 
 class TestPeriodicAngles(TestCase):

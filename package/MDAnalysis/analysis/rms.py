@@ -402,7 +402,7 @@ class RMSD(object):
             # Move to the ref_frame
             # (coordinates MUST be stored in case the ref traj is advanced elsewhere or if ref == mobile universe)
             self.reference.trajectory[ref_frame]
-            ref_com = self.ref_atoms.centerOfMass()
+            ref_com = self.ref_atoms.center_of_mass()
             ref_coordinates = self.ref_atoms.positions - ref_com  # makes a copy
             if self.groupselections_atoms:
                 groupselections_ref_coords_T_64 = [
@@ -436,7 +436,7 @@ class RMSD(object):
         for k, ts in enumerate(trajectory[start:stop:step]):
             # shift coordinates for rotation fitting
             # selection is updated with the time frame
-            x_com = traj_atoms.centerOfMass().astype(numpy.float32)
+            x_com = traj_atoms.center_of_mass().astype(numpy.float32)
             traj_coordinates[:] = traj_atoms.coordinates() - x_com
 
             rmsd[k, :2] = ts.frame, trajectory.time

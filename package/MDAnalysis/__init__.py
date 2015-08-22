@@ -77,9 +77,9 @@ Select the C-alpha atoms and store them as a group of atoms::
 
 Calculate the centre of mass of the CA and of all atoms::
 
-  >>> ca.centerOfMass()
+  >>> ca.center_of_mass()
   array([ 0.06873595, -0.04605918, -0.24643682])
-  >>> u.atoms.centerOfMass()
+  >>> u.atoms.center_of_mass()
   array([-0.01094035,  0.05727601, -0.12885778])
 
 Calculate the CA end-to-end distance (in angstroem)::
@@ -134,7 +134,7 @@ the OPLS/AA force field.
 
 """
 
-__all__ = ['Timeseries', 'Universe', 'asUniverse', 'Writer', 'collection']
+__all__ = ['Timeseries', 'Universe', 'as_Universe', 'Writer', 'collection']
 
 import logging
 import warnings
@@ -162,7 +162,7 @@ from . import units
 
 # Bring some often used objects into the current namespace
 from .core import Timeseries
-from .core.AtomGroup import Universe, asUniverse, Merge
+from .core.AtomGroup import Universe, as_Universe, Merge
 from .coordinates.core import writer as Writer
 
 collection = Timeseries.TimeseriesCollection()

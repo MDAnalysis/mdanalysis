@@ -747,9 +747,9 @@ class BfactorDensityCreator(object):
         that can be easily matched to a broader density distribution.
 
         """
-        from MDAnalysis import asUniverse
+        from MDAnalysis import as_Universe
 
-        u = asUniverse(pdb)
+        u = as_Universe(pdb)
         group = u.select_atoms(atomselection)
         coord = group.coordinates()
         logger.info("Selected %d atoms (%s) out of %d total." %

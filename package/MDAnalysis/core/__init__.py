@@ -35,7 +35,7 @@ A simple selection of all water oxygens within 4 A of the protein::
 
   water_shell = u.select_atoms('name OH2 and around 4.0 protein')
   water_shell.n_atoms           # how many waters were selected
-  water_shell.totalMass()       # their total mass
+  water_shell.total_mass()       # their total mass
 
 :class:`AtomGroup` instances have various methods that allow
 calculation of simple properties. For more complicated analysis,
@@ -426,8 +426,8 @@ _flags = [
 
            Changing this to ``True`` changes the default behaviour of
            commonly used :class:`MDAnalysis.core.AtomGroup.AtomGroup` methods
-           such as :meth:`MDAnalysis.core.AtomGroup.AtomGroup.centerOfMass`
-           and :meth:`MDAnalysis.core.AtomGroup.AtomGroup.centerOfGeometry`!
+           such as :meth:`MDAnalysis.core.AtomGroup.AtomGroup.center_of_mass`
+           and :meth:`MDAnalysis.core.AtomGroup.AtomGroup.center_of_geometry`!
         """),
 
 ]

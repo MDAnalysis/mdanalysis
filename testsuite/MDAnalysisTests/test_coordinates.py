@@ -164,7 +164,7 @@ class TestXYZReader(TestCase, Ref2r9r):
 
         for i in self.universe.trajectory:
             sel = self.universe.select_atoms("all")
-            centreOfGeometry += sum(sel.centerOfGeometry())
+            centreOfGeometry += sum(sel.center_of_geometry())
 
         assert_almost_equal(centreOfGeometry, self.ref_sum_centre_of_geometry, self.prec,
                             err_msg="sum of centers of geometry over the trajectory do not match")
@@ -230,7 +230,7 @@ class TestCompressedXYZReader(TestCase, Ref2r9r):
 
         for i in self.universe.trajectory:
             sel = self.universe.select_atoms("all")
-            centreOfGeometry += sum(sel.centerOfGeometry())
+            centreOfGeometry += sum(sel.center_of_geometry())
 
         assert_almost_equal(centreOfGeometry, self.ref_sum_centre_of_geometry, self.prec,
                             err_msg="sum of centers of geometry over the trajectory do not match")
@@ -363,7 +363,7 @@ class RefVGV(object):
       w = MDAnalysis.Universe(PRMncdf, TRJncdf)
       ref_n_atoms = len(w.atoms)
       ref_proteinatoms = len(w.select_atoms("protein"))
-      ref_sum_centre_of_geometry = np.sum([protein.centerOfGeometry() for ts in w.trajectory])
+      ref_sum_centre_of_geometry = np.sum([protein.center_of_geometry() for ts in w.trajectory])
     """
     ref_n_atoms = 2661
     ref_proteinatoms = 50
@@ -396,7 +396,7 @@ class _TRJReaderTest(TestCase):
 
     def test_sum_centres_of_geometry(self):
         protein = self.universe.select_atoms('protein')
-        total = np.sum([protein.centerOfGeometry() for ts in self.universe.trajectory])
+        total = np.sum([protein.center_of_geometry() for ts in self.universe.trajectory])
         assert_almost_equal(total, self.ref_sum_centre_of_geometry, self.prec,
                             err_msg="sum of centers of geometry over the trajectory do not match")
 
@@ -1305,8 +1305,8 @@ class TestPQRReader(_SingleFrameReader):
         self.universe = mda.Universe(PQR)
         self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
 
-    def test_totalCharge(self):
-        assert_almost_equal(self.universe.atoms.totalCharge(), self.ref_charmm_totalcharge, 3,
+    def test_total_charge(self):
+        assert_almost_equal(self.universe.atoms.total_charge(), self.ref_charmm_totalcharge, 3,
                             "Total charge (in CHARMM) does not match expected value.")
 
     def test_hydrogenCharges(self):
@@ -1370,10 +1370,10 @@ class TestPQRWriter(TestCase, RefAdKSmall):
         self.universe.atoms.write(self.outfile)
         assert_equal(ts._pos, x, err_msg="Positions in Timestep were modified by writer.")
 
-    def test_totalCharge(self):
+    def test_total_charge(self):
         self.universe.atoms.write(self.outfile)
         u = mda.Universe(self.outfile)
-        assert_almost_equal(u.atoms.totalCharge(), self.ref_charmm_totalcharge, 3,
+        assert_almost_equal(u.atoms.total_charge(), self.ref_charmm_totalcharge, 3,
                             "Total charge (in CHARMM) does not match expected value.")
 
 

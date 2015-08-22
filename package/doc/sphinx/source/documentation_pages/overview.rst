@@ -9,7 +9,7 @@ objects. Each object has a number of operations defined on itself
 (also known as "methods") and also contains values describing the
 object ("attributes"). For example, a
 :class:`~MDAnalysis.core.AtomGroup.AtomGroup` object has a
-:meth:`~MDAnalysis.core.AtomGroup.AtomGroup.centerOfMass` method that
+:meth:`~MDAnalysis.core.AtomGroup.AtomGroup.center_of_mass` method that
 returns the center of mass of the group of atoms. It also contains an
 attribute called :attr:`~MDAnalysis.core.AtomGroup.AtomGroup.residues`
 that lists all the residues that belong to the group. Using methods
@@ -32,7 +32,7 @@ of a protein and the radius of gyration of the backbone atoms are calculated::
   for ts in u.trajectory:     # iterate through all frames
     r = cterm.pos - nterm.pos # end-to-end vector from atom positions
     d = numpy.linalg.norm(r)  # end-to-end distance
-    rgyr = bb.radiusOfGyration()  # method of a AtomGroup; updates with each frame
+    rgyr = bb.radius_of_gyration()  # method of a AtomGroup; updates with each frame
     print "frame = %d: d = %f Angstroem, Rgyr = %f Angstroem" % (ts.frame, d, rgyr)
 
 

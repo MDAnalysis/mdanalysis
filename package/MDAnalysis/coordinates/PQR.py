@@ -239,7 +239,7 @@ class PQRWriter(base.Writer):
             # Header
             self._write_REMARK(pqrfile, self.remarks)
             self._write_REMARK(pqrfile, "Input: frame {0} of {1}".format(frame, u.trajectory.filename), 5)
-            self._write_REMARK(pqrfile, "total charge: {0:+8.4f} e".format(atoms.totalCharge()), 6)
+            self._write_REMARK(pqrfile, "total charge: {0:+8.4f} e".format(atoms.total_charge()), 6)
             # Atom descriptions and coords
             for atom_index, atom in enumerate(atoms):
                 XYZ = coordinates[atom_index]

@@ -203,7 +203,7 @@ class AtomNeighborSearch(CoordinateNeighborSearch):
         from a :class:`~MDAnalysis.core.AtomGroup.AtomGroup` one can
         simply provide the output of the
         :class:`~MDAnalysis.core.AtomGroup.AtomGroup.centroid` or
-        :class:`~MDAnalysis.core.AtomGroup.AtomGroup.centerOfMass`
+        :class:`~MDAnalysis.core.AtomGroup.AtomGroup.center_of_mass`
         functions.
         """
         self.kdt.search(center, radius)

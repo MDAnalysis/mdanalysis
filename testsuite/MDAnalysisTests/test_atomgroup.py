@@ -20,7 +20,7 @@ from MDAnalysis.tests.datafiles import PSF, DCD, PDB_small, GRO, TRR, \
     TRZ, TRZ_psf, PSF_notop, PSF_BAD, unordered_res, \
     XYZ_mini, two_water_gro, two_water_gro_nonames
 import MDAnalysis.core.AtomGroup
-from MDAnalysis.core.AtomGroup import Atom, AtomGroup, asUniverse
+from MDAnalysis.core.AtomGroup import Atom, AtomGroup, as_Universe
 from MDAnalysis import NoDataError
 from MDAnalysis.core.AtomGroup import _PLURAL_PROPERTIES, _SINGULAR_PROPERTIES
 
@@ -162,7 +162,7 @@ class TestAtomGroup(TestCase):
         assert_equal(type(newag), type(self.ag), "Failed to make a new AtomGroup: type mismatch")
         assert_equal(newag.n_atoms, len(self.ag[1000:2000:200]))
         assert_equal(newag.n_residues, 5)
-        assert_almost_equal(newag.totalMass(), 40.044999999999995)  # check any special method
+        assert_almost_equal(newag.total_mass(), 40.044999999999995)  # check any special method
 
     def test_getitem_int(self):
         assert_equal(self.universe.atoms[0], self.universe.atoms._atoms[0])
@@ -211,12 +211,12 @@ class TestAtomGroup(TestCase):
         """testing that len(atomgroup) == atomgroup.n_atoms"""
         assert_equal(len(self.ag), self.ag.n_atoms, "len and n_atoms disagree")
 
-    def test_centerOfGeometry(self):
-        assert_array_almost_equal(self.ag.centerOfGeometry(),
+    def test_center_of_geometry(self):
+        assert_array_almost_equal(self.ag.center_of_geometry(),
                                   array([-0.04223963, 0.0141824, -0.03505163], dtype=float32))
 
-    def test_centerOfMass(self):
-        assert_array_almost_equal(self.ag.centerOfMass(),
+    def test_center_of_mass(self):
+        assert_array_almost_equal(self.ag.center_of_mass(),
                                   array([-0.01094035, 0.05727601, -0.12885778]))
 
     def test_coordinates(self):
@@ -229,18 +229,18 @@ class TestAtomGroup(TestCase):
                                           [11.35541916, 7.0690732, -0.32511973],
                                           [-13.26763439, 4.90658951, 10.6880455]], dtype=float32))
 
-    def test_principalAxes(self):
-        assert_array_almost_equal(self.ag.principalAxes(),
+    def test_principal_axes(self):
+        assert_array_almost_equal(self.ag.principal_axes(),
                                   array([
                                       [-9.99925632e-01, 1.21546132e-02, 9.98264877e-04],
                                       [1.20986911e-02, 9.98951474e-01, -4.41539838e-02],
                                       [1.53389276e-03, 4.41386224e-02, 9.99024239e-01]]))
 
-    def test_totalCharge(self):
-        assert_almost_equal(self.ag.totalCharge(), -4.0)
+    def test_total_charge(self):
+        assert_almost_equal(self.ag.total_charge(), -4.0)
 
-    def test_totalMass(self):
-        assert_almost_equal(self.ag.totalMass(), 23582.043)
+    def test_total_mass(self):
+        assert_almost_equal(self.ag.total_mass(), 23582.043)
 
     def test_indices_ndarray(self):
         assert_equal(isinstance(self.ag.indices, numpy.ndarray), True)
@@ -441,7 +441,7 @@ class TestAtomGroup(TestCase):
         box = numpy.zeros(9, dtype=numpy.float32).reshape(3, 3)
 
         def badpack(a):
-            return a.packIntoBox(box=box)
+            return a.pack_into_box(box=box)
 
         assert_raises(ValueError, badpack, ag)
 
@@ -449,12 +449,12 @@ class TestAtomGroup(TestCase):
         ag = self.universe.atoms[:10]
 
         def badpack(a):
-            return a.packIntoBox()
+            return a.pack_into_box()
 
         assert_raises(ValueError, badpack, ag)
 
     def test_packintobox(self):
-        """test AtomGroup.packIntoBox(): Tests application of periodic boundary conditions on coordinates
+        """test AtomGroup.pack_into_box(): Tests application of periodic boundary conditions on coordinates
 
         Reference system doesn't have dimensions, so an arbitrary box is imposed on the system
         """
@@ -462,7 +462,7 @@ class TestAtomGroup(TestCase):
         u.trajectory.rewind()  # just to make sure...
         ag = u.atoms[1000:2000:200]
 
-        ag.packIntoBox(box=numpy.array([5., 5., 5.], dtype=numpy.float32))  # Provide arbitrary box
+        ag.pack_into_box(box=numpy.array([5., 5., 5.], dtype=numpy.float32))  # Provide arbitrary box
         assert_array_almost_equal(ag.coordinates(),
                                   array(
                                       [
@@ -637,8 +637,8 @@ class TestAtomGroup(TestCase):
         ag = self.universe.atoms[:2]
         assert_raises(ValueError, getattr, ag, 'angle')
 
-    def test_shapeParameter(self):
-        s = self.universe.s4AKE.shapeParameter()
+    def test_shape_parameter(self):
+        s = self.universe.s4AKE.shape_parameter()
         assert_almost_equal(s, 0.00240753939086033, 6)
 
     def test_asphericity(self):
@@ -1563,58 +1563,58 @@ class TestPBCFlag(TestCase):
 
     def test_default(self):
         # Test regular behaviour
-        assert_almost_equal(self.ag.centerOfGeometry(), self.ref_noPBC['COG'], self.prec)
-        assert_almost_equal(self.ag.centerOfMass(), self.ref_noPBC['COM'], self.prec)
-        assert_almost_equal(self.ag.radiusOfGyration(), self.ref_noPBC['ROG'], self.prec)
-        assert_almost_equal(self.ag.shapeParameter(), self.ref_noPBC['Shape'], self.prec)
+        assert_almost_equal(self.ag.center_of_geometry(), self.ref_noPBC['COG'], self.prec)
+        assert_almost_equal(self.ag.center_of_mass(), self.ref_noPBC['COM'], self.prec)
+        assert_almost_equal(self.ag.radius_of_gyration(), self.ref_noPBC['ROG'], self.prec)
+        assert_almost_equal(self.ag.shape_parameter(), self.ref_noPBC['Shape'], self.prec)
         assert_almost_equal(self.ag.asphericity(), self.ref_noPBC['Asph'], self.prec)
-        assert_almost_equal(self.ag.momentOfInertia(), self.ref_noPBC['MOI'], self.prec)
+        assert_almost_equal(self.ag.moment_of_inertia(), self.ref_noPBC['MOI'], self.prec)
         assert_almost_equal(self.ag.bbox(), self.ref_noPBC['BBox'], self.prec)
         assert_almost_equal(self.ag.bsphere()[0], self.ref_noPBC['BSph'][0], self.prec)
         assert_almost_equal(self.ag.bsphere()[1], self.ref_noPBC['BSph'][1], self.prec)
-        assert_almost_equal(self.ag.principalAxes(), self.ref_noPBC['PAxes'], self.prec)
+        assert_almost_equal(self.ag.principal_axes(), self.ref_noPBC['PAxes'], self.prec)
 
     def test_pbcflag(self):
         # Test using ag method flag
-        assert_almost_equal(self.ag.centerOfGeometry(pbc=True), self.ref_PBC['COG'], self.prec)
-        assert_almost_equal(self.ag.centerOfMass(pbc=True), self.ref_PBC['COM'], self.prec)
-        assert_almost_equal(self.ag.radiusOfGyration(pbc=True), self.ref_PBC['ROG'], self.prec)
-        assert_almost_equal(self.ag.shapeParameter(pbc=True), self.ref_PBC['Shape'], self.prec)
+        assert_almost_equal(self.ag.center_of_geometry(pbc=True), self.ref_PBC['COG'], self.prec)
+        assert_almost_equal(self.ag.center_of_mass(pbc=True), self.ref_PBC['COM'], self.prec)
+        assert_almost_equal(self.ag.radius_of_gyration(pbc=True), self.ref_PBC['ROG'], self.prec)
+        assert_almost_equal(self.ag.shape_parameter(pbc=True), self.ref_PBC['Shape'], self.prec)
         assert_almost_equal(self.ag.asphericity(pbc=True), self.ref_PBC['Asph'], self.prec)
-        assert_almost_equal(self.ag.momentOfInertia(pbc=True), self.ref_PBC['MOI'], self.prec)
+        assert_almost_equal(self.ag.moment_of_inertia(pbc=True), self.ref_PBC['MOI'], self.prec)
         assert_almost_equal(self.ag.bbox(pbc=True), self.ref_PBC['BBox'], self.prec)
         assert_almost_equal(self.ag.bsphere(pbc=True)[0], self.ref_PBC['BSph'][0], self.prec)
         assert_almost_equal(self.ag.bsphere(pbc=True)[1], self.ref_PBC['BSph'][1], self.prec)
-        assert_almost_equal(self.ag.principalAxes(pbc=True), self.ref_PBC['PAxes'], self.prec)
+        assert_almost_equal(self.ag.principal_axes(pbc=True), self.ref_PBC['PAxes'], self.prec)
 
     def test_usepbc_flag(self):
         # Test using the core.flags flag
         MDAnalysis.core.flags['use_pbc'] = True
-        assert_almost_equal(self.ag.centerOfGeometry(), self.ref_PBC['COG'], self.prec)
-        assert_almost_equal(self.ag.centerOfMass(), self.ref_PBC['COM'], self.prec)
-        assert_almost_equal(self.ag.radiusOfGyration(), self.ref_PBC['ROG'], self.prec)
-        assert_almost_equal(self.ag.shapeParameter(), self.ref_PBC['Shape'], self.prec)
+        assert_almost_equal(self.ag.center_of_geometry(), self.ref_PBC['COG'], self.prec)
+        assert_almost_equal(self.ag.center_of_mass(), self.ref_PBC['COM'], self.prec)
+        assert_almost_equal(self.ag.radius_of_gyration(), self.ref_PBC['ROG'], self.prec)
+        assert_almost_equal(self.ag.shape_parameter(), self.ref_PBC['Shape'], self.prec)
         assert_almost_equal(self.ag.asphericity(), self.ref_PBC['Asph'], self.prec)
-        assert_almost_equal(self.ag.momentOfInertia(), self.ref_PBC['MOI'], self.prec)
+        assert_almost_equal(self.ag.moment_of_inertia(), self.ref_PBC['MOI'], self.prec)
         assert_almost_equal(self.ag.bbox(), self.ref_PBC['BBox'], self.prec)
         assert_almost_equal(self.ag.bsphere()[0], self.ref_PBC['BSph'][0], self.prec)
         assert_almost_equal(self.ag.bsphere()[1], self.ref_PBC['BSph'][1], self.prec)
-        assert_almost_equal(self.ag.principalAxes(), self.ref_PBC['PAxes'], self.prec)
+        assert_almost_equal(self.ag.principal_axes(), self.ref_PBC['PAxes'], self.prec)
         MDAnalysis.core.flags['use_pbc'] = False
 
     def test_override_flag(self):
         # Test using the core.flags flag, then overriding
         MDAnalysis.core.flags['use_pbc'] = True
-        assert_almost_equal(self.ag.centerOfGeometry(pbc=False), self.ref_noPBC['COG'], self.prec)
-        assert_almost_equal(self.ag.centerOfMass(pbc=False), self.ref_noPBC['COM'], self.prec)
-        assert_almost_equal(self.ag.radiusOfGyration(pbc=False), self.ref_noPBC['ROG'], self.prec)
-        assert_almost_equal(self.ag.shapeParameter(pbc=False), self.ref_noPBC['Shape'], self.prec)
+        assert_almost_equal(self.ag.center_of_geometry(pbc=False), self.ref_noPBC['COG'], self.prec)
+        assert_almost_equal(self.ag.center_of_mass(pbc=False), self.ref_noPBC['COM'], self.prec)
+        assert_almost_equal(self.ag.radius_of_gyration(pbc=False), self.ref_noPBC['ROG'], self.prec)
+        assert_almost_equal(self.ag.shape_parameter(pbc=False), self.ref_noPBC['Shape'], self.prec)
         assert_almost_equal(self.ag.asphericity(pbc=False), self.ref_noPBC['Asph'], self.prec)
-        assert_almost_equal(self.ag.momentOfInertia(pbc=False), self.ref_noPBC['MOI'], self.prec)
+        assert_almost_equal(self.ag.moment_of_inertia(pbc=False), self.ref_noPBC['MOI'], self.prec)
         assert_almost_equal(self.ag.bbox(pbc=False), self.ref_noPBC['BBox'], self.prec)
         assert_almost_equal(self.ag.bsphere(pbc=False)[0], self.ref_noPBC['BSph'][0], self.prec)
         assert_almost_equal(self.ag.bsphere(pbc=False)[1], self.ref_noPBC['BSph'][1], self.prec)
-        assert_almost_equal(self.ag.principalAxes(pbc=False), self.ref_noPBC['PAxes'], self.prec)
+        assert_almost_equal(self.ag.principal_axes(pbc=False), self.ref_noPBC['PAxes'], self.prec)
         MDAnalysis.core.flags['use_pbc'] = False
 
 
@@ -1626,15 +1626,15 @@ class TestAsUniverse(TestCase):
         del self.u
 
     def test_empty_TypeError(self):
-        assert_raises(TypeError, asUniverse)
+        assert_raises(TypeError, as_Universe)
 
     def test_passback(self):
-        returnval = asUniverse(self.u)
+        returnval = as_Universe(self.u)
 
         assert_equal(returnval is self.u, True)
 
     def test_makeuni(self):
-        returnval = asUniverse(PSF_notop, DCD)
+        returnval = as_Universe(PSF_notop, DCD)
 
         ## __eq__ method for Universe doesn't exist, make one up here
         assert_equal(set(returnval.atoms), set(self.u.atoms))
@@ -1833,7 +1833,7 @@ class TestWrap(TestCase):
         ag = self.u.atoms[:100]
         ag.wrap(compound='group')
 
-        cen = ag.centerOfMass()
+        cen = ag.center_of_mass()
 
         assert_equal(self._in_box(cen), True)
 
@@ -1841,7 +1841,7 @@ class TestWrap(TestCase):
         ag = self.u.atoms[300:400]
         ag.wrap(compound='residues')
 
-        cen = numpy.vstack([r.centerOfMass() for r in ag.residues])
+        cen = numpy.vstack([r.center_of_mass() for r in ag.residues])
 
         assert_equal(self._in_box(cen), True)
 
@@ -1849,7 +1849,7 @@ class TestWrap(TestCase):
         ag = self.u.atoms[1000:1200]
         ag.wrap(compound='segments')
 
-        cen = numpy.vstack([s.centerOfMass() for s in ag.segments])
+        cen = numpy.vstack([s.center_of_mass() for s in ag.segments])
 
         assert_equal(self._in_box(cen), True)
 
@@ -1857,7 +1857,7 @@ class TestWrap(TestCase):
         ag = self.u.atoms[:250]
         ag.wrap(compound='fragments')
 
-        cen = numpy.vstack([f.centerOfMass() for f in ag.fragments])
+        cen = numpy.vstack([f.center_of_mass() for f in ag.fragments])
 
         assert_equal(self._in_box(cen), True)
 
