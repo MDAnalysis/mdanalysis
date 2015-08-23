@@ -3181,11 +3181,25 @@ class TestIncompletePDB(object):
         assert len(self.u.atoms) == 3
 
     def test_coords(self):
-        pass
+        assert_array_almost_equal(self.u.atoms.positions,
+                                  np.array([[111.2519989, 98.3730011, 98.18699646],
+                                            [111.20300293, 101.74199677, 96.43000031],
+                                            [107.60700226, 102.96800232, 96.31600189]],
+                                           dtype=np.float32))
 
     def test_dims(self):
-        pass
+        assert_array_almost_equal(self.u.dimensions,
+                                  np.array([ 216.48899841, 216.48899841, 216.48899841,
+                                             90., 90., 90.], dtype=np.float32))
 
     def test_names(self):
-        pass
+        assert all(self.u.atoms.names == 'CA')
 
+    def test_residues(self):
+        assert len(self.u.residues) == 3
+
+    def test_resnames(self):
+        assert len(self.u.atoms.resnames) == 3
+        assert 'VAL' in self.u.atoms.resnames
+        assert 'LYS' in self.u.atoms.resnames
+        assert 'PHE' in self.u.atoms.resnames
