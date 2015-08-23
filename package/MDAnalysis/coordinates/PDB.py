@@ -521,8 +521,12 @@ class PrimitivePDBReader(base.Reader):
                         continue
                     self.ts._pos[pos] = map(float, [line[30:38], line[38:46], line[46:54]])
                     pos += 1
-                    occupancy = float(line[54:60])
-                    self._occupancy.append(occupancy)
+                    try:
+                        occupancy = float(line[54:60])
+                    except ValueError:
+                        pass
+                    else:
+                        self._occupancy.append(occupancy)
 
         self.header = header
         self.title = title

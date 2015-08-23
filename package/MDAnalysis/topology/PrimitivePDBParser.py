@@ -108,7 +108,10 @@ class PrimitivePDBParser(TopologyReader):
                         resSeq = int(line[22:26])
                         # insertCode = _c(27, 27, str)  # not used
                         # occupancy = float(line[54:60])
-                    tempFactor = float(line[60:66])
+                    try:
+                        tempFactor = float(line[60:66])
+                    except ValueError:
+                        tempFactor = 0.0
                     segID = line[66:76].strip()
                     element = line[76:78].strip()
 
