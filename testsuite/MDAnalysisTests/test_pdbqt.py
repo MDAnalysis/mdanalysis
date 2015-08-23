@@ -16,7 +16,7 @@
 
 import MDAnalysis
 from MDAnalysis.tests.datafiles import PDBQT_input, PDBQT_querypdb
-from MDAnalysis.lib.atomneighbor import AtomNeighborSearch
+from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
 
 from numpy.testing import *
 from nose.plugins.attrib import attr
