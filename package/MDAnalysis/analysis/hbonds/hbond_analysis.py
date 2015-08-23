@@ -319,7 +319,7 @@ from MDAnalysis.core.AtomGroup import AtomGroup
 from MDAnalysis.lib.util import parse_residue
 from MDAnalysis.lib.mdamath import norm, angle
 from MDAnalysis.lib.log import ProgressMeter
-from MDAnalysis.lib.atomneighbor import AtomNeighborSearch
+from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
 
 import warnings
 import logging

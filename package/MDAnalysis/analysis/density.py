@@ -114,6 +114,7 @@ except ImportError:
 
 import MDAnalysis
 from MDAnalysis.lib.util import fixedwidth_bins, iterable, asiterable
+from MDAnalysis.lib import NeighborSearch as NS
 from MDAnalysis import NoDataError, MissingDataWarning
 from .. import units
 
