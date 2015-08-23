@@ -72,7 +72,14 @@ The rules for this file:
   * Added from_timestep and from_coordinates construction methods
     to base.Timestep
   * Removed FormatError, now replaced by ValueError
-  * Moved MDAnalysis.KDTree to MDAnalysis.lib.KDTree (Issue #287)
+  * Removed KDTree and CoordinateNeighbor from MDAnalaysis. If you
+    want to search in cartesian coordinates directly for nighboring
+    points use the BioPython KDTree or scikit-learn Neighbors module.
+    The AtomNeighborSearch class has been ported to use the BioPython
+    KDTree and is now located in MDAnalaysis.lib.NeighborSearch.
+    MDAnalaysis.KDTree still exists in this version so load the
+    NeighborSearch module but is deprecated and will be removed in
+    1.0. (Issue #383)
   * Moved MDAnalysis.core.transformations to MDAnalysis.lib.transformations
     (Issue #287)
   * Moved MDAnalysis.core.util to MDAnalysis.lib.util (Issue #287)
