@@ -28,7 +28,7 @@ from nose.plugins.attrib import attr
 
 from MDAnalysisTests.datafiles import (
     PSF, DCD, DCD_empty, PDB_small, XPDB_small, PDB_closed, PDB_multiframe, PDB_full,
-    PDB, CRD, XTC, TRR, GRO, DMS, CONECT,
+    PDB, CRD, XTC, TRR, GRO, DMS, CONECT, INC_PDB,
     XYZ, XYZ_bz2, XYZ_psf, PRM, TRJ, TRJ_bz2, PRMpbc, TRJpbc_bz2, PRMncdf, NCDF, PQR,
     PDB_sub_dry, TRR_sub_sol, PDB_sub_sol, TRZ, TRZ_psf, LAMMPSdata, LAMMPSdata_mini,
     PSF_TRICLINIC, DCD_TRICLINIC, PSF_NAMD_TRICLINIC, DCD_NAMD_TRICLINIC,
@@ -3165,3 +3165,27 @@ class TestDLPolyHistoryMinimal(_DLHistory):
 
     def test_unitcell(self):
         pass
+
+class TestIncompletePDB(object):
+    """Tests for Issue #396
+
+    Reads an incomplete (but still intelligible) PDB file
+    """
+    def setUp(self):
+        self.u = MDAnalysis.Universe(INC_PDB)
+
+    def tearDown(self):
+        del self.u
+
+    def test_natoms(self):
+        assert len(self.u.atoms) == 3
+
+    def test_coords(self):
+        pass
+
+    def test_dims(self):
+        pass
+
+    def test_names(self):
+        pass
+
