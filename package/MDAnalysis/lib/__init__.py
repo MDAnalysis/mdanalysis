@@ -20,13 +20,13 @@
 ================================================================
 """
 
-__all__ = ['KDTree', 'log', 'transformations', 'util', 'mdamath', 'distances',
-           'parallel']
+__all__ = ['log', 'transformations', 'util', 'mdamath', 'distances',
+           'parallel', 'NeighborSearch']
 
-from . import KDTree
 from . import log
 from . import transformations
 from . import util
 from . import mdamath
 from . import distances  # distances relies on mdamath
 from . import parallel
+from . import NeighborSearch

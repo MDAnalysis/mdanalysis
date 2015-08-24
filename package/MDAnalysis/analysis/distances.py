@@ -35,7 +35,6 @@ from scipy import sparse
 
 from MDAnalysis.lib.distances import distance_array, self_distance_array
 from MDAnalysis.lib._distances import contact_matrix_no_pbc, contact_matrix_pbc
-from MDAnalysis.lib.KDTree.NeighborSearch import AtomNeighborSearch
 
 import logging
 
@@ -124,7 +123,7 @@ def between(group, A, B, distance):
 
     Similar to "*group* and (AROUND *A* *distance* and AROUND *B* *distance*)".
 
-    .. SeeAlso:: Makes use of :mod:`MDAnalysis.lib.KDTree.NeighborSearch`.
+    .. SeeAlso:: Makes use of :mod:`MDAnalysis.lib.NeighborSearch`.
 
     .. versionadded: 0.7.5
     """

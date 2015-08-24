@@ -16,7 +16,7 @@
 
 import MDAnalysis
 from MDAnalysis.tests.datafiles import PDBQT_input, PDBQT_querypdb
-import MDAnalysis.lib.KDTree.NeighborSearch as kdNS
+from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
 
 from numpy.testing import *
 from nose.plugins.attrib import attr
@@ -65,9 +65,9 @@ class TestPDBQT(TestCase):
         residues within 4.0A of the query atoms.
         '''
         protein = self.universe.select_atoms("protein")
-        ns_protein = kdNS.AtomNeighborSearch(protein)
+        ns_protein = AtomNeighborSearch(protein)
         query_atoms = self.query_universe.atoms
-        residue_neighbors = ns_protein.search_list(query_atoms, 4.0)
+        residue_neighbors = ns_protein.search(query_atoms, 4.0)
         assert_equal(len(residue_neighbors), 80)
 
     def test_writer(self):
