@@ -141,6 +141,13 @@ import warnings
 
 from .version import __version__
 
+# custom exceptions and warnings
+from .exceptions import (
+    SelectionError, FinishTimeException, NoDataError, ApplicationError,
+    SelectionWarning, MissingDataWarning, ConversionWarning, FileFormatWarning,
+    StreamWarning
+)
+
 from .lib import log
 from .lib.log import start_logging, stop_logging
 
@@ -149,13 +156,6 @@ del logging
 
 # DeprecationWarnings are loud by default
 warnings.simplefilter('always', DeprecationWarning)
-
-# custom exceptions and warnings
-from .exceptions import (
-    SelectionError, FinishTimeException, NoDataError, ApplicationError,
-    SelectionWarning, MissingDataWarning, ConversionWarning, FileFormatWarning,
-    StreamWarning
-)
 
 
 from . import units
