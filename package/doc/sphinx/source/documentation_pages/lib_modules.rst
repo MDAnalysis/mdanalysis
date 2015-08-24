@@ -22,13 +22,16 @@ superposition by minimizing the RMSD.
 :mod:`MDAnalysis.lib.util` contains various file, string
 and mathematical utility functions.
 
+:mod:`MDAnalysis.lib.NeighborSearch` contains classes to do neighbor searches
+     with MDAnalysis objects.
+
 
 .. toctree::
    :maxdepth: 1
 
    ./lib/distances
    ./lib/_distances
-   ./lib/KDTree_modules
+   ./lib/NeighborSearch
    ./lib/log
    ./lib/mdamath
    ./lib/parallel
