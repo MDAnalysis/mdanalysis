@@ -741,6 +741,7 @@ def realpath(*args):
         return None
     return os.path.realpath(os.path.expanduser(os.path.expandvars(os.path.join(*args))))
 
+
 def get_ext(filename):
     """Return the lower-cased extension of *filename* without a leading dot.
 
@@ -751,16 +752,17 @@ def get_ext(filename):
         ext = ext[1:]
     return root, ext.lower()
 
+
 def check_compressed_format(root, ext):
     """Check if this is a supported gzipped/bzip2ed file format and return UPPERCASE format."""
-    filename = root + '.' + ext  # only needed for diagnostics
     # XYZReader&others are setup to handle both plain and compressed (bzip2, gz) files
     # ..so if the first file extension is bzip2 or gz, look at the one to the left of it
     if ext.lower() in ("bz2", "gz"):
         try:
             root, ext = get_ext(root)
         except:
-            raise TypeError("Cannot determine coordinate format for '{0}'".format(filename))
+            raise TypeError("Cannot determine coordinate format for '{0}.{1}'"
+                            "".format(root, ext))
 
     return ext.upper()
 
@@ -774,7 +776,6 @@ def format_from_filename_extension(filename):
             "Cannot determine coordinate file format for file '{0}'.\n"
             "           You can set the format explicitly with "
             "'Universe(..., format=FORMAT)'.".format(filename))
-            #TypeError: ...."
     format = check_compressed_format(root, ext)
     return format
 
@@ -810,7 +811,7 @@ def guess_format(filename):
         format = (format_from_filename_extension(filename)
                   if not iterable(filename) else 'CHAIN')
 
-    return str(format).upper()
+    return format.upper()
 
 
 def iterable(obj):

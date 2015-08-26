@@ -577,7 +577,7 @@ class TestGuessFormat(object):
     ]
     # list of possible compressed extensions
     # include no extension too!
-    compressed_extensions = ['.bz2']
+    compressed_extensions = ['.bz2', '.gz']
 
     def _check_get_ext(self, f, fn):
         """Check that get ext works"""
