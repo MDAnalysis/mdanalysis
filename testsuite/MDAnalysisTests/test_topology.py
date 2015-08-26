@@ -16,8 +16,9 @@
 import MDAnalysis
 from MDAnalysis.core.AtomGroup import AtomGroup
 from MDAnalysis.lib.distances import calc_bonds, calc_angles, calc_dihedrals
+from MDAnalysis.lib.util import guess_format
 from MDAnalysis.topology.core import (
-    guess_atom_type, guess_atom_element, get_atom_mass, guess_format,
+    guess_atom_type, guess_atom_element, get_atom_mass,
     guess_bonds, guess_angles, guess_dihedrals, guess_improper_dihedrals,
     get_parser_for)
 from MDAnalysis.core.topologyobjects import (
@@ -1166,16 +1167,6 @@ class TestLammpsData(_TestTopology, RefLammpsData):
 
     def test_masses(self):
         assert_equal(self.universe.atoms[0].mass, 0.012)
-
-
-class TestGuessFormat(TestCase):
-    """Tests the guess_format function in core.topology"""
-
-    def test_weirdinput(self):
-        assert_raises(TypeError, guess_format, 123)
-
-    def test_unknowntopology(self):
-        assert_raises(TypeError, guess_format, 'file.jpg')
 
 
 class RefXYZ(object):

@@ -3508,7 +3508,7 @@ class Universe(object):
            control when unpickling instances of :class:`MDAnalysis.core.AtomGroup.AtomGroup`.
         """
 
-        from ..topology.core import get_parser_for, guess_format
+        from ..topology.core import get_parser_for
         from ..topology.base import TopologyReader
         from ..coordinates.base import ProtoReader
 
@@ -3552,8 +3552,9 @@ class Universe(object):
                     coordinatefile = self.filename
             except TypeError:
                 # or if file is known as a topology & coordinate file, use that
-                if (guess_format(self.filename, format=fmt) in
-                    MDAnalysis.coordinates._topology_coordinates_readers):
+                if fmt is None:
+                    fmt = util.guess_format(self.filename)
+                if fmt in MDAnalysis.coordinates._topology_coordinates_readers:
                     coordinatefile = self.filename
             # Fix by SB: make sure coordinatefile is never an empty tuple
             if len(coordinatefile) == 0:
@@ -3568,7 +3569,7 @@ class Universe(object):
                               MDAnalysis.core.flags['permissive_pdb_reader'])
             parser = get_parser_for(self.filename,
                                     permissive=perm,
-                                    tformat=topology_format)
+                                    format=topology_format)
         try:
             with parser(self.filename, universe=self) as p:
                 self._topology = p.parse()
@@ -4099,8 +4100,6 @@ class Universe(object):
                 raise TypeError(
                     "Cannot find an appropriate coordinate reader for file '{0}'.\n"
                     "           {1}".format(filename, err))
-                    #TypeError: ...."
-
         # supply number of atoms for readers that cannot do it for themselves
         kwargs['n_atoms'] = self.atoms.n_atoms
         self.trajectory = reader(filename, **kwargs)    # unified trajectory API

@@ -534,3 +534,110 @@ class TestFixedwidthBins(object):
         assert ret['delta'] == 0.4
         assert_almost_equal(ret['min'], 3.9)
         assert_almost_equal(ret['max'], 5.1)
+
+class TestGuessFormat(object):
+    """Test guessing of format from filenames
+
+    Tests also getting the appropriate Parser and Reader from a
+    given filename
+    """
+    # list of known formats, followed by the desired Parser and Reader
+    # None indicates that there isn't a Parser/Reader for this format
+    formats = [
+        ('CHAIN', None, mda.coordinates.base.ChainReader),
+        ('CONFIG', mda.topology.DLPolyParser.ConfigParser, mda.coordinates.DLPoly.ConfigReader),
+        ('CRD', mda.topology.CRDParser.CRDParser, mda.coordinates.CRD.CRDReader),
+        ('DATA', mda.topology.LAMMPSParser.DATAParser, mda.coordinates.LAMMPS.DATAReader),
+        ('DCD', None, mda.coordinates.DCD.DCDReader),
+        ('DMS', mda.topology.DMSParser.DMSParser, mda.coordinates.DMS.DMSReader),
+        ('GMS', mda.topology.GMSParser.GMSParser, mda.coordinates.GMS.GMSReader),
+        ('GRO', mda.topology.GROParser.GROParser, mda.coordinates.GRO.GROReader),
+        ('HISTORY', mda.topology.DLPolyParser.HistoryParser, mda.coordinates.DLPoly.HistoryReader),
+        ('INPCRD', None, mda.coordinates.INPCRD.INPReader),
+        ('LAMMPS', None, mda.coordinates.LAMMPS.DCDReader),
+        ('MDCRD', None, mda.coordinates.TRJ.TRJReader),
+        ('MOL2', mda.topology.MOL2Parser.MOL2Parser, mda.coordinates.MOL2.MOL2Reader),
+        ('NC', None, mda.coordinates.TRJ.NCDFReader),
+        ('NCDF', None, mda.coordinates.TRJ.NCDFReader),
+        ('PDB', mda.topology.PDBParser.PDBParser, mda.coordinates.PDB.PDBReader),
+        ('PDBQT', mda.topology.PDBQTParser.PDBQTParser, mda.coordinates.PDBQT.PDBQTReader),
+        ('PRMTOP', mda.topology.TOPParser.TOPParser, None),
+        ('PQR', mda.topology.PQRParser.PQRParser, mda.coordinates.PQR.PQRReader),
+        ('PSF', mda.topology.PSFParser.PSFParser, None),
+        ('RESTRT', None, mda.coordinates.INPCRD.INPReader),
+        ('TOP', mda.topology.TOPParser.TOPParser, None),
+        ('TPR', mda.topology.TPRParser.TPRParser, None),
+        ('TRJ', None, mda.coordinates.TRJ.TRJReader),
+        ('TRR', None, mda.coordinates.TRR.TRRReader),
+        ('TRZ', None, mda.coordinates.TRZ.TRZReader),
+        ('XML', mda.topology.HoomdXMLParser.HoomdXMLParser, None),
+        ('XPDB', mda.topology.ExtendedPDBParser.ExtendedPDBParser, mda.coordinates.PDB.ExtendedPDBReader),
+        ('XTC', None, mda.coordinates.XTC.XTCReader),
+        ('XYZ', mda.topology.XYZParser.XYZParser, mda.coordinates.XYZ.XYZReader),
+    ]
+    # list of possible compressed extensions
+    # include no extension too!
+    compressed_extensions = ['.bz2']
+
+    def _check_get_ext(self, f, fn):
+        """Check that get ext works"""
+        a, b = util.get_ext(fn)
+
+        assert a == 'file'
+        assert b == f.lower()
+
+    def _check_compressed(self, f, fn):
+        """Check that format suffixed by compressed extension works"""
+        a = util.format_from_filename_extension(fn)
+
+        assert a == f
+
+    def _check_guess_format(self, f, fn):
+        a = util.guess_format(fn)
+
+        assert a == f
+
+    def _check_get_parser(self, fn, P):
+        a = mda.topology.core.get_parser_for(fn)
+
+        assert a == P
+
+    def _check_get_parser_invalid(self, fn):
+        assert_raises(ValueError, mda.topology.core.get_parser_for, fn)
+
+    def _check_get_reader(self, fn, R):
+        a = mda.coordinates.core.get_reader_for(fn)
+
+        assert a == R
+
+    def _check_get_reader_invalid(self, fn):
+        assert_raises(ValueError, mda.coordinates.core.get_reader_for, fn)
+
+    def test_formats(self):
+        # f - format extension
+        # P - parser class or None
+        # R - reader class or None
+        for f, P, R in self.formats:
+            fn = 'file.{}'.format(f)
+            # check f doesn't trip up get_ext or guess_format
+            yield self._check_get_ext, f, fn
+            yield self._check_guess_format, f, fn
+
+            # check adding extension to f
+            # also checks f without extension
+            yield self._check_compressed, f, fn
+            for e in self.compressed_extensions:
+                yield self._check_compressed, f, fn + e
+                yield self._check_guess_format, f, fn + e
+
+            if P is not None:
+                yield self._check_get_parser, fn, P
+                for e in self.compressed_extensions:
+                    yield self._check_get_parser, fn + e, P
+            else:
+                yield self._check_get_parser_invalid, fn
+
+            if R is not None:
+                yield self._check_get_reader, fn, R
+            else:
+                yield self._check_get_reader_invalid, fn
