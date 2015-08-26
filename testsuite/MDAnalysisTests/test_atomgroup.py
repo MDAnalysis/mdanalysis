@@ -1474,7 +1474,7 @@ class TestUniverse(TestCase):
         def bad_load(uni):
             return uni.load_new('filename.notarealextension')
 
-        assert_raises(TypeError, bad_load, u)
+        assert_raises(ValueError, bad_load, u)
 
     def test_load_structure(self):
         # Universe(struct)
