@@ -206,6 +206,8 @@ class TRZReader(base.Reader):
         self._dtype = np.dtype(frame_contents)
 
         self._read_next_timestep()
+        
+        self.ts.dt = self.dt
 
     def _read_trz_header(self):
         """Reads the header of the trz trajectory"""

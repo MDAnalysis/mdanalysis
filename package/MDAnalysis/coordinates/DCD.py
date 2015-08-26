@@ -424,7 +424,7 @@ class DCDReader(base.Reader):
         self._read_dcd_header()
 
         # Convert delta to ps
-        delta = mdaunits.convert(self.delta, 'AKMA', 'ps')
+        delta = mdaunits.convert(self.delta, self.units['time'], 'ps')
 
         self._ts_kwargs.update({'dt':self.skip_timestep * delta})
         self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)

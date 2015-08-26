@@ -29,7 +29,7 @@ import numpy as np
 from . import base
 from . import core
 
-_DLPOLY_UNITS = {'length': 'Angstrom', 'velocity': 'Angstrom/ps'}
+_DLPOLY_UNITS = {'length': 'Angstrom', 'velocity': 'Angstrom/ps', 'time': 'ps'}
 
 
 class Timestep(base.Timestep):
