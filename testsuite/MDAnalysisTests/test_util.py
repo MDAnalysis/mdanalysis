@@ -630,6 +630,7 @@ class TestGuessFormat(object):
                 yield self._check_compressed, f, fn + e
                 yield self._check_guess_format, f, fn + e
 
+            # Check that expected parser is returned
             if P is not None:
                 yield self._check_get_parser, fn, P
                 for e in self.compressed_extensions:
@@ -637,7 +638,10 @@ class TestGuessFormat(object):
             else:
                 yield self._check_get_parser_invalid, fn
 
+            # Check that expected reader is returned
             if R is not None:
                 yield self._check_get_reader, fn, R
+                for e in self.compressed_extensions:
+                    yield self._check_get_reader, fn + e, R
             else:
                 yield self._check_get_reader_invalid, fn
