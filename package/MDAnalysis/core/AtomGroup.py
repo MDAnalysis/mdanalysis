@@ -4086,12 +4086,20 @@ class Universe(object):
         reader_format = kwargs.pop('format', None)
         perm = kwargs.get('permissive', MDAnalysis.core.flags['permissive_pdb_reader'])
         reader = None
+
+        # Check if we were passed a Reader to use
         try:
             if reader_format is not None and issubclass(reader_format, ProtoReader):
                 reader = reader_format
         except TypeError:
             pass
+
         if not reader:
+            # Check if we need to use Chain reader
+            if util.iterable(filename):
+                # Save the format and pass this to ChainReader
+                kwargs.update({'format': reader_format})
+                reader_format='CHAIN'
             try:
                 reader = get_reader_for(filename,
                                         permissive=perm,
@@ -4102,6 +4110,7 @@ class Universe(object):
                     "           {1}".format(filename, err))
         # supply number of atoms for readers that cannot do it for themselves
         kwargs['n_atoms'] = self.atoms.n_atoms
+
         self.trajectory = reader(filename, **kwargs)    # unified trajectory API
         if self.trajectory.n_atoms != self.atoms.n_atoms:
             raise ValueError("The topology and {form} trajectory files don't"
