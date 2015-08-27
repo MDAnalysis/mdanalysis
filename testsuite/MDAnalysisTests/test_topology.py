@@ -228,12 +228,7 @@ class RefHoomdXML(object):
 
 class TestHoomdXML(_TestTopology, RefHoomdXML):
     """Testing Hoomd XML file"""
-    def setUp(self):
-        self.universe = MDAnalysis.Universe(self.topology,topology_format='XML')
-
-    @knownfailure
-    def test_correct_parser(self):
-        super(TestHoomdXML, self).test_correct_parser()
+    pass
 
 class TestPSF_NAMD_CGENFF(_TestTopology, RefNAMD_CGENFF):
     """Testing NAMD PSF file (with CGENFF atom types, Issue 107)"""
