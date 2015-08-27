@@ -124,3 +124,9 @@ ag.asUniverse
 # from lib.distances
 #applyPBC -> apply_PBC
 lib.distances.applyPBC 
+
+#frame_count = universe.trajectory.numframes
+frame_count = universe.trajectory.numframes
+traj = universe.trajectory
+#frame_count = traj.numframes
+frame_count = traj.numframes
