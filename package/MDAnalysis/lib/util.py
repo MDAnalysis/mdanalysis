@@ -773,7 +773,7 @@ def format_from_filename_extension(filename):
         root, ext = get_ext(filename)
     except:
         raise TypeError(
-            "Cannot determine coordinate file format for file '{0}'.\n"
+            "Cannot determine file format for file '{0}'.\n"
             "           You can set the format explicitly with "
             "'Universe(..., format=FORMAT)'.".format(filename))
     format = check_compressed_format(root, ext)

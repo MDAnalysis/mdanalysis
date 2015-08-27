@@ -645,3 +645,15 @@ class TestGuessFormat(object):
                     yield self._check_get_reader, fn + e, R
             else:
                 yield self._check_get_reader_invalid, fn
+
+    def test_check_compressed_format_TE(self):
+        assert_raises(TypeError, util.check_compressed_format, 1234, 'bz2')
+
+    def test_format_from_filename_TE(self):
+        assert_raises(TypeError, util.format_from_filename_extension, 1234)
+
+    def test_guess_format_stream_VE(self):
+        # This stream has no name, so can't guess format
+        s = cStringIO.StringIO('this is a very fun file')
+
+        assert_raises(ValueError, util.guess_format, s)
