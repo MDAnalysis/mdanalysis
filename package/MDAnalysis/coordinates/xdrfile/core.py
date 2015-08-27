@@ -408,6 +408,7 @@ class TrjReader(base.Reader):
         # at this time, _trr_n_atoms and _sub are set, so self.n_atoms has all it needs
         # to determine number of atoms.
         self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
+        self.ts._reader = self
 
         # Read in the first timestep
         self._read_next_timestep()
@@ -415,8 +416,6 @@ class TrjReader(base.Reader):
         # try retrieving stored offsets
         if not kwargs.pop('refresh_offsets', False):
             self._retrieve_offsets()
-
-        self.ts.dt = self.dt
 
     @property
     def n_atoms(self):
@@ -466,9 +465,7 @@ class TrjReader(base.Reader):
         else:
             return self._offsets
 
-    @property
-    @cached('dt')
-    def dt(self):
+    def _get_dt(self):
         """Time step length in ps.
 
         The result is computed from the trajectory and cached. If for

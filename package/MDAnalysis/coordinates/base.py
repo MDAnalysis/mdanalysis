@@ -224,7 +224,7 @@ class Timestep(object):
         except NoDataError:
             pass
 
-        for att in ('_frame', '_time'):
+        for att in ('_frame', '_time', '_reader'):
             try:
                 setattr(ts, att, getattr(other, att))
             except AttributeError:
@@ -374,7 +374,7 @@ class Timestep(object):
         new_TS.time = self.time
         new_TS.frame = self.frame
 
-        for att in ('_frame', '_time'):
+        for att in ('_frame', '_time', '_reader'):
             try:
                 setattr(new_TS, att, getattr(self, att))
             except AttributeError:
@@ -645,8 +645,14 @@ class Timestep(object):
         try:
             return self.data['dt']
         except KeyError:
-            warnings.warn("Reader has no dt information, set to 1.0 ps")
-            return 1.0
+            pass
+        try:
+            dt = self.data['ts'] = self._reader._get_dt()
+            return dt
+        except AttributeError:
+            pass
+        warnings.warn("Reader has no dt information, set to 1.0 ps")
+        return 1.0
 
     @dt.setter
     def dt(self, new):

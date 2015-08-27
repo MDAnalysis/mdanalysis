@@ -161,6 +161,7 @@ class TRZReader(base.Reader):
         self._read_trz_header()
         self.ts = Timestep(self.n_atoms, velocities=True, forces=self.has_force,
                            **self._ts_kwargs)
+        self.ts._reader = self
 
         # structured dtype of a single trajectory frame
         readarg = str(n_atoms) + 'f4'
@@ -206,8 +207,6 @@ class TRZReader(base.Reader):
         self._dtype = np.dtype(frame_contents)
 
         self._read_next_timestep()
-        
-        self.ts.dt = self.dt
 
     def _read_trz_header(self):
         """Reads the header of the trz trajectory"""
@@ -292,9 +291,7 @@ class TRZReader(base.Reader):
 
         return nframes
 
-    @property
-    @cached('dt')
-    def dt(self):
+    def _get_dt(self):
         """The amount of time between frames in ps
 
         Assumes that this step is constant (ie. 2 trajectories with different steps haven't been
