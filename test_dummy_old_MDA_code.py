@@ -131,3 +131,12 @@ traj = universe.trajectory
 #frame_count = traj.numframes
 frame_count = traj.numframes
 
+# From MDAnalysis.lib.distances
+#calc_torsions() -> calc_dihedrals()
+#from MDAnalysis.lib.distances import calc_torsions
+from MDAnalysis.lib.distances import calc_torsions
+#MDAnalysis.lib.distances.calc_torsions()
+MDAnalysis.lib.distances.calc_torsions()
+result = MDAnalysis.lib.distances.calc_torsions()
+#dist.calc_torsions()
+dist.calc_torsions()
