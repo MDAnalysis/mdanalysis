@@ -28,7 +28,6 @@ Helper functions:
 
 .. autofunction:: get_reader_for
 .. autofunction:: get_writer_for
-.. autofunction:: guess_format
 
 """
 import os.path
@@ -36,8 +35,7 @@ import numpy
 from numpy import sin, cos, sqrt
 from numpy import rad2deg, deg2rad
 
-import MDAnalysis.coordinates
-import MDAnalysis.lib.util
+from ..lib import util
 from ..lib.mdamath import triclinic_box, triclinic_vectors, box_volume
 
 
@@ -47,10 +45,25 @@ def get_reader_for(filename, permissive=False, format=None):
     Automatic detection is disabled when an explicit *format* is
     provided.
     """
-    format = guess_format(filename, format=format)
+    from . import _trajectory_readers
+
+    if format is None:
+        format = util.guess_format(filename)
+    format = format.upper()
     if permissive and format == 'PDB':
-        return MDAnalysis.coordinates._trajectory_readers['Permissive_PDB']
-    return MDAnalysis.coordinates._trajectory_readers[format]
+        return _trajectory_readers['Permissive_PDB']
+    try:
+        return _trajectory_readers[format]
+    except KeyError:
+        raise ValueError(
+            "Unknown coordinate trajectory format '{0}' for '{1}'. The FORMATs \n"
+            "           {2}\n"
+            "           are implemented in MDAnalysis.\n"
+            "           See http://docs.mdanalysis.org/documentation_pages/coordinates/init.html#id1\n"
+            "           Use the format keyword to explicitly set the format: 'Universe(...,format=FORMAT)'\n"
+            "           For missing formats, raise an issue at "
+            "http://issues.mdanalysis.org".format(
+                format, filename, _trajectory_readers.keys()))
 
 
 def reader(filename, **kwargs):
@@ -114,25 +127,27 @@ def get_writer_for(filename=None, format='DCD', multiframe=None):
        Added *multiframe* keyword; the default ``None`` reflects the previous
        behaviour.
     """
+    from . import _trajectory_writers, _frame_writers
+
     if isinstance(filename, basestring) and filename:
-        root, ext = get_ext(filename)
-        format = check_compressed_format(root, ext)
+        root, ext = util.get_ext(filename)
+        format = util.check_compressed_format(root, ext)
     if multiframe is None:
         try:
-            return MDAnalysis.coordinates._trajectory_writers[format]
+            return _trajectory_writers[format]
         except KeyError:
             try:
-                return MDAnalysis.coordinates._frame_writers[format]
+                return _frame_writers[format]
             except KeyError:
                 raise TypeError("No trajectory or frame writer for format %r" % format)
     elif multiframe is True:
         try:
-            return MDAnalysis.coordinates._trajectory_writers[format]
+            return _trajectory_writers[format]
         except KeyError:
             raise TypeError("No trajectory  writer for format %r" % format)
     elif multiframe is False:
         try:
-            return MDAnalysis.coordinates._frame_writers[format]
+            return _frame_writers[format]
         except KeyError:
             raise TypeError("No single frame writer for format %r" % format)
     else:
@@ -177,94 +192,5 @@ def writer(filename, n_atoms=None, **kwargs):
     Writer = get_writer_for(filename, format=kwargs.pop('format', None),
                             multiframe=kwargs.pop('multiframe', None))
     return Writer(filename, n_atoms=n_atoms, **kwargs)
-
-
-def get_ext(filename):
-    """Return the lower-cased extension of *filename* without a leading dot.
-
-    :Returns: root, ext
-    """
-    root, ext = os.path.splitext(filename)
-    if ext.startswith(os.extsep):
-        ext = ext[1:]
-    return root, ext.lower()
-
-
-def format_from_filename_extension(filename):
-    """Guess file format from the file extension"""
-    try:
-        root, ext = get_ext(filename)
-    except:
-        raise TypeError(
-            "Cannot determine coordinate file format for file '{0}'.\n"
-            "           You can set the format explicitly with "
-            "'Universe(..., format=FORMAT)'.".format(filename))
-            #TypeError: ...."
-    format = ext.upper()
-    format = check_compressed_format(root, ext)
-    return format
-
-
-def guess_format(filename, format=None):
-    """Returns the type of file *filename*.
-
-    The current heuristic simply looks at the filename extension but more
-    complicated probes could be implemented here or in the individual packages
-    (e.g. as static methods). *filename* can also be a stream, in which case
-    *filename.name* is looked at for a hint to the format if *format* is not
-    provided.
-
-    If *format* is supplied then it overrides the auto detection.
-    """
-    if format is None:
-        if MDAnalysis.lib.util.isstream(filename):
-            # perhaps StringIO or open stream
-            try:
-                format = format_from_filename_extension(filename.name)
-            except AttributeError:
-                # format is None so we need to complain:
-                raise ValueError("guess_format requires an explicit format specifier "
-                                 "for stream {0}".format(filename))
-        else:
-            # iterator, list, filename: simple extension checking... something more
-            # complicated is left for the ambitious.
-            # Note: at the moment the upper-case extension *is* the format specifier
-            # and list of filenames is handled by ChainReader
-            format = format_from_filename_extension(filename) if not MDAnalysis.lib.util.iterable(
-                filename) else 'CHAIN'
-    else:
-        # format was set; but a list of filenames is always handled by ChainReader
-        format = format if not MDAnalysis.lib.util.iterable(filename) else 'CHAIN'
-
-    format = str(format).upper()
-
-    # sanity check
-    if format != 'CHAIN' and not format in MDAnalysis.coordinates._trajectory_readers:
-        raise TypeError(
-            "Unknown coordinate trajectory format '{0}' for '{1}'. The FORMATs \n"
-            "           {2}\n"
-            "           are implemented in MDAnalysis.\n"
-            "           See http://docs.mdanalysis.org/documentation_pages/coordinates/init.html#id1\n"
-            "           Use the format keyword to explicitly set the format: 'Universe(...,format=FORMAT)'\n"
-            "           For missing formats, raise an issue at "
-            "http://issues.mdanalysis.org".format(
-                format, filename, MDAnalysis.coordinates._trajectory_readers.keys()))
-            #TypeError: ...."
-    return format
-
-
-def check_compressed_format(root, ext):
-    """Check if this is a supported gzipped/bzip2ed file format and return UPPERCASE format."""
-    filename = root + '.' + ext  # only needed for diagnostics
-    # XYZReader&others are setup to handle both plain and compressed (bzip2, gz) files
-    # ..so if the first file extension is bzip2 or gz, look at the one to the left of it
-    if ext.lower() in ("bz2", "gz"):
-        try:
-            root, ext = get_ext(root)
-        except:
-            raise TypeError("Cannot determine coordinate format for '{0}'".format(filename))
-        if not ext.upper() in MDAnalysis.coordinates._compressed_formats:
-            raise TypeError("Cannot handle coordinates '{0}' in compressed format".format(filename))
-    return ext.upper()
 
 

@@ -36,6 +36,7 @@ from itertools import izip
 from . import tables
 from ..lib import distances
 from ..lib.util import cached
+from ..lib import util
 from ..core import AtomGroup
 
 
@@ -106,69 +107,37 @@ def build_residues(atoms):
     return residues
 
 
-def get_parser_for(filename, permissive=False, tformat=None):
+def get_parser_for(filename, permissive=False, format=None):
     """Return the appropriate topology parser for *filename*.
 
     Automatic detection is disabled when an explicit *format* is
     provided.
-    """
-    from . import _topology_parsers
 
-    tformat = guess_format(filename, format=tformat)
-    if tformat == 'PDB' and permissive:
-        return _topology_parsers['Permissive_PDB']
-    else:
-        return _topology_parsers[tformat]
-
-
-def guess_format(filename, format=None):
-    """Returns the type of topology file *filename*.
-
-    The current heuristic simply looks at the filename extension but
-    more complicated probes could be implemented here or in the
-    individual packages (e.g. as static methods).
-
-    If *format* is supplied then it overrides the auto detection.
+    :Raises:
+      *ValueError*
+        If no appropriate parser could be found.
     """
     from . import _topology_parsers
 
     if format is None:
-        # simple extension checking... something more complicated is left
-        # for the ambitious
-        try:
-            root, ext = os.path.splitext(filename)
-            if ext.startswith('.'):
-                ext = ext[1:]
-            format = ext.upper()
-        except:
-            raise TypeError(
-                "Cannot autodetect topology type for file '{0}' "
-                "(file extension could not be parsed).\n"
-                "           You can use 'Universe(topology, ..., topology_format=FORMAT)' "
-                "to explicitly specify the format and\n"
-                "           override automatic detection. Known FORMATs are:\n"
-                "           {1}\n"
-                "           See http://docs.mdanalysis.org/documentation_pages/topology/init.html#supported-topology-formats\n"
-                "           For missing formats, raise an issue at "
-                "http://issues.mdanalysis.org".format(filename, _topology_parsers.keys()))
-                #TypeError: ...."
-    else:
-        # internally, formats are all uppercase
-        format = str(format).upper()
+        format = util.guess_format(filename)
+    format = format.upper()
+    if format == 'PDB' and permissive:
+        return _topology_parsers['Permissive_PDB']
 
-    # sanity check
-    if format not in _topology_parsers:
-        raise TypeError(
-            "Unknown topology format '{0}' for file '{1}'.\n"
-            "           The following FORMATs are implemented in MDAnalysis:\n"
-            "           {2}\n"
+    try:
+        return _topology_parsers[format]
+    except KeyError:
+        raise ValueError(
+            "Cannot autodetect topology type for file '{0}' "
+            "(file extension could not be parsed).\n"
+            "           You can use 'Universe(topology, ..., topology_format=FORMAT)' "
+            "to explicitly specify the format and\n"
+            "           override automatic detection. Known FORMATs are:\n"
+            "           {1}\n"
             "           See http://docs.mdanalysis.org/documentation_pages/topology/init.html#supported-topology-formats\n"
-            "           You can use 'Universe(topology, ..., topology_format=FORMAT)' to explicitly\n"
-            "           specify the format and override automatic detection.\n"
             "           For missing formats, raise an issue at "
-            "http://issues.mdanalysis.org".format(format, filename, _topology_parsers.keys()))
-            #TypeError: ...."
-    return format
+            "http://issues.mdanalysis.org".format(filename, _topology_parsers.keys()))
 
 
 # following guess_* used by PDB parser

@@ -119,8 +119,11 @@ The rules for this file:
   * deprecated camelCase AtomGroup methods in favour of underscore_style
     (Issue #389)
   * deprecate lib.distances.applyPBC in favour of apply_PBC (Issue #389)
+  * Consolidated coordinates.guess_format and topology.guess_format to
+    lib.util.guess_format  (Issue #336)
 
   Fixes
+  * Topology files can now be compressed (Issue #336)
   * Fixed PDB Parser and Reader requiring occupancy field (Issue #396)
   * Amber TRJ and NCDF Reader & Writers now use 'dt' instead of 'delta'
     to refer to time elapsed between timesteps. (Issue #350 and #206)

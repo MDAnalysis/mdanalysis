@@ -33,6 +33,7 @@ Files and directories
 .. autofunction:: greedy_splitext
 .. autofunction:: which
 .. autofunction:: realpath
+.. autofunction:: guess_format
 
 Streams
 -------
@@ -739,6 +740,78 @@ def realpath(*args):
     if None in args:
         return None
     return os.path.realpath(os.path.expanduser(os.path.expandvars(os.path.join(*args))))
+
+
+def get_ext(filename):
+    """Return the lower-cased extension of *filename* without a leading dot.
+
+    :Returns: root, ext
+    """
+    root, ext = os.path.splitext(filename)
+    if ext.startswith(os.extsep):
+        ext = ext[1:]
+    return root, ext.lower()
+
+
+def check_compressed_format(root, ext):
+    """Check if this is a supported gzipped/bzip2ed file format and return UPPERCASE format."""
+    # XYZReader&others are setup to handle both plain and compressed (bzip2, gz) files
+    # ..so if the first file extension is bzip2 or gz, look at the one to the left of it
+    if ext.lower() in ("bz2", "gz"):
+        try:
+            root, ext = get_ext(root)
+        except:
+            raise TypeError("Cannot determine coordinate format for '{0}.{1}'"
+                            "".format(root, ext))
+
+    return ext.upper()
+
+
+def format_from_filename_extension(filename):
+    """Guess file format from the file extension"""
+    try:
+        root, ext = get_ext(filename)
+    except:
+        raise TypeError(
+            "Cannot determine file format for file '{0}'.\n"
+            "           You can set the format explicitly with "
+            "'Universe(..., format=FORMAT)'.".format(filename))
+    format = check_compressed_format(root, ext)
+    return format
+
+
+def guess_format(filename):
+    """Return the format of *filename*
+
+    The current heuristic simply looks at the filename extension
+    and can work around compressed format extensions
+
+    *filename* can also be a stream, in which case
+    *filename.name* is looked at for a hint to the format
+
+    :Raises:
+       *ValueError*
+
+    .. versionadded:: 0.11.0
+       Moved into lib.util
+    """
+    if isstream(filename):
+        # perhaps StringIO or open stream
+        try:
+            format = format_from_filename_extension(filename.name)
+        except AttributeError:
+            # format is None so we need to complain:
+            raise ValueError("guess_format requires an explicit format specifier "
+                             "for stream {0}".format(filename))
+    else:
+        # iterator, list, filename: simple extension checking... something more
+        # complicated is left for the ambitious.
+        # Note: at the moment the upper-case extension *is* the format specifier
+        # and list of filenames is handled by ChainReader
+        format = (format_from_filename_extension(filename)
+                  if not iterable(filename) else 'CHAIN')
+
+    return format.upper()
 
 
 def iterable(obj):
