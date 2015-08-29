@@ -3513,7 +3513,7 @@ class Universe(object):
         from ..coordinates.base import ProtoReader
 
         # managed attribute holding Reader
-        self.__trajectory = None
+        self._trajectory = None
 
         # Cache is used to store objects which are built lazily into Universe
         # Currently cached objects (managed property name and cache key):
@@ -4324,15 +4324,15 @@ class Universe(object):
     @property
     def trajectory(self):
         """Reference to trajectory reader object containing trajectory data."""
-        if not self.__trajectory is None:
-            return self.__trajectory
+        if not self._trajectory is None:
+            return self._trajectory
         else:
             raise AttributeError("No trajectory loaded into Universe")
 
     @trajectory.setter
     def trajectory(self, value):
-        del self.__trajectory  # guarantees that files are closed (?)
-        self.__trajectory = value
+        del self._trajectory  # guarantees that files are closed (?)
+        self._trajectory = value
 
     def make_anchor(self):
         """Add this Universe to the list where anchors are searched for when unpickling

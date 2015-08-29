@@ -162,6 +162,8 @@ import warnings
 from functools import wraps
 import numpy
 
+from ..exceptions import StreamWarning
+
 
 # Python 3.0, 3.1 do not have the builtin callable()
 try:
@@ -279,8 +281,6 @@ def anyopen(datasource, mode='r', reset=True):
        Only returns the ``stream`` and tries to set ``stream.name = filename`` instead of the previous
        behavior to return a tuple ``(stream, filename)``.
     """
-    from MDAnalysis import StreamWarning
-
     handlers = {'bz2': bz2.BZ2File, 'gz': gzip.open, '': file}
 
     if mode.startswith('r'):
@@ -531,8 +531,6 @@ class NamedStream(io.IOBase, basestring):
     def reset(self):
         """Move to the beginning of the stream"""
         # try to rewind
-        from MDAnalysis import StreamWarning
-
         try:
             self.stream.reset()  # e.g. StreamIO
         except (AttributeError, IOError):
