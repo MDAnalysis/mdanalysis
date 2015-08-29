@@ -51,39 +51,39 @@ class TestSelectionsCHARMM(TestCase):
     def test_resid_single(self):
         sel = self.universe.select_atoms('resid 100')
         assert_equal(sel.n_atoms, 7)
-        assert_equal(sel.resnames, ['GLY'])
+        assert_equal(sel.residues.resnames, ['GLY'])
 
     def test_resid_range(self):
         sel = self.universe.select_atoms('resid 100:105')
         assert_equal(sel.n_atoms, 89)
-        assert_equal(sel.resnames, ['GLY', 'ILE', 'ASN', 'VAL', 'ASP', 'TYR'])
+        assert_equal(sel.residues.resnames, ['GLY', 'ILE', 'ASN', 'VAL', 'ASP', 'TYR'])
 
     def test_selgroup(self):
         sel = self.universe.select_atoms('not resid 100')
         sel2 = self.universe.select_atoms('not group notr100', notr100=sel)
         assert_equal(sel2.n_atoms, 7)
-        assert_equal(sel2.resnames, ['GLY'])
+        assert_equal(sel2.residues.resnames, ['GLY'])
 
     def test_fullselgroup(self):
         sel1 = self.universe.select_atoms('resid 101')
         sel2 = self.universe.select_atoms('resid 100')
         sel3 = sel1.select_atoms('fullgroup r100', r100=sel2)
         assert_equal(sel2.n_atoms, 7)
-        assert_equal(sel2.resnames, ['GLY'])
+        assert_equal(sel2.residues.resnames, ['GLY'])
 
     # resnum selections are boring here because we haven't really a mechanism yet
     # to assign the canonical PDB resnums
     def test_resnum_single(self):
         sel = self.universe.select_atoms('resnum 100')
         assert_equal(sel.n_atoms, 7)
-        assert_equal(sel.resids, [100])
-        assert_equal(sel.resnames, ['GLY'])
+        assert_equal(sel.residues.resids, [100])
+        assert_equal(sel.residues.resnames, ['GLY'])
 
     def test_resnum_range(self):
         sel = self.universe.select_atoms('resnum 100:105')
         assert_equal(sel.n_atoms, 89)
-        assert_equal(sel.resids, range(100, 106))
-        assert_equal(sel.resnames, ['GLY', 'ILE', 'ASN', 'VAL', 'ASP', 'TYR'])
+        assert_equal(sel.residues.resids, range(100, 106))
+        assert_equal(sel.residues.resnames, ['GLY', 'ILE', 'ASN', 'VAL', 'ASP', 'TYR'])
 
     def test_resname(self):
         sel = self.universe.select_atoms('resname LEU')
@@ -171,31 +171,31 @@ class TestSelectionsCHARMM(TestCase):
         target_resids = array([ 7, 8, 10, 11, 12, 14, 17, 25, 32, 37, 38, 42, 46,
                                49, 55, 56, 66, 73, 80, 85, 93, 95, 99, 100, 122, 127,
                               130, 144, 150, 176, 180, 186, 188, 189, 194, 198, 203, 207, 214])
-        assert_array_equal(sel.resids, target_resids, "Found wrong residues with same resname as resids 10 or 11")
+        assert_array_equal(sel.residues.resids, target_resids, "Found wrong residues with same resname as resids 10 or 11")
 
     def test_same_segment(self):
         """Test the 'same ... as' construct (Issue 217)"""
-        self.universe.residues[:100].set_segid("A")  # make up some segments
-        self.universe.residues[100:150].set_segid("B")
-        self.universe.residues[150:].set_segid("C")
+        self.universe.residues[:100].set_segids("A")  # make up some segments
+        self.universe.residues[100:150].set_segids("B")
+        self.universe.residues[150:].set_segids("C")
 
         target_resids = arange(100)+1 
         sel = self.universe.select_atoms("same segment as resid 10")
         assert_equal(len(sel), 1520, "Found a wrong number of atoms in the same segment of resid 10")
-        assert_array_equal(sel.resids, target_resids, "Found wrong residues in the same segment of resid 10")
+        assert_array_equal(sel.residues.resids, target_resids, "Found wrong residues in the same segment of resid 10")
 
         target_resids = arange(100,150)+1 
         sel = self.universe.select_atoms("same segment as resid 110")
         assert_equal(len(sel), 797, "Found a wrong number of atoms in the same segment of resid 110")
-        assert_array_equal(sel.resids, target_resids, "Found wrong residues in the same segment of resid 110")
+        assert_array_equal(sel.residues.resids, target_resids, "Found wrong residues in the same segment of resid 110")
 
         target_resids = arange(150,self.universe.atoms.n_residues)+1
         sel = self.universe.select_atoms("same segment as resid 160")
         assert_equal(len(sel), 1024, "Found a wrong number of atoms in the same segment of resid 160")
-        assert_array_equal(sel.resids, target_resids, "Found wrong residues in the same segment of resid 160")
+        assert_array_equal(sel.residues.resids, target_resids, "Found wrong residues in the same segment of resid 160")
 
         #cleanup
-        self.universe.residues.set_segid("4AKE")
+        self.universe.residues.set_segids("4AKE")
 
 
 
@@ -251,7 +251,7 @@ class TestSelectionsAMBER(TestCase):
     def test_resid_single(self):
         sel = self.universe.select_atoms('resid 3')
         assert_equal(sel.n_atoms, 6)
-        assert_equal(sel.resnames, ['NME'])
+        assert_equal(sel.residues.resnames, ['NME'])
 
     def test_type(self):
         sel = self.universe.select_atoms('type 1')
@@ -276,7 +276,7 @@ class TestSelectionsNAMD(TestCase):
     def test_resid_single(self):
         sel = self.universe.select_atoms('resid 12')
         assert_equal(sel.n_atoms, 26)
-        assert_equal(sel.resnames, ['HAO'])
+        assert_equal(sel.residues.resnames, ['HAO'])
 
     def test_type(self):
         sel = self.universe.select_atoms('type H')
@@ -305,13 +305,16 @@ class TestSelectionsGRO(TestCase):
         assert_equal(len(sel), 23853)
         sel = self.universe.select_atoms('type S')
         assert_equal(len(sel), 7)
-        assert_equal(sel.resnames, self.universe.select_atoms("resname CYS or resname MET").resnames)
+        assert_equal(
+                sel.residues.resnames,
+                self.universe.select_atoms(
+                    "resname CYS or resname MET").residues.resnames)
 
     @dec.slow
     def test_resid_single(self):
         sel = self.universe.select_atoms('resid 100')
         assert_equal(sel.n_atoms, 7)
-        assert_equal(sel.resnames, ['GLY'])
+        assert_equal(sel.residues.resnames, ['GLY'])
 
     @dec.slow
     def test_atom(self):
@@ -361,6 +364,7 @@ class TestSelectionsXTC(TestCase):
             assert_equal(sel._atoms, self.universe.atoms[0].fragment._atoms, "Found a different set of atoms when using the 'same fragment as' construct vs. the .fragment prperty")
         except MDAnalysis.NoDataError:
             assert_equal(True, False)
+
 
 class TestSelectionsNucleicAcids(TestCase):
     def setUp(self):

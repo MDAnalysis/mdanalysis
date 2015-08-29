@@ -69,6 +69,7 @@ class TestMol2(TestCase):
         #self.assertEqual("The mol2 block (BrokenMolecule.mol2:0) has no atoms" in context.exception.message,
         # True)
 
+
 class TestMol2_traj(TestCase):
     def setUp(self):
         self.universe = Universe(mol2_molecules)
@@ -107,4 +108,3 @@ class TestMol2_traj(TestCase):
 
     def test_n_frames(self):
         assert_equal(self.universe.trajectory.n_frames, 200, "wrong number of frames in traj")
-

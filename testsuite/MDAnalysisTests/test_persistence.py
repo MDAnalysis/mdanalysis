@@ -103,6 +103,7 @@ class TestAtomGroupPickle(TestCase):
         assert_array_equal(self.ag_n.indices, newag.indices)
         assert_(newag.universe is self.universe, "Unpickled AtomGroup on wrong Universe.")
 
+
 class TestEmptyAtomGroupPickle(TestCase):
     # This comes in a class just to get memleak testing
     def test_pickle_unpickle_empty(self):
@@ -111,6 +112,7 @@ class TestEmptyAtomGroupPickle(TestCase):
         pickle_str = cPickle.dumps(ag, protocol=cPickle.HIGHEST_PROTOCOL)
         newag = cPickle.loads(pickle_str)
         assert_equal(len(newag), 0)
+
 
 class _GromacsReader_offsets(TestCase):
     # This base class assumes same lengths and dt for XTC and TRR test cases!
@@ -312,8 +314,8 @@ class TestXTCReader_offsets(_GromacsReader_offsets):
     ref_offsets = numpy.array([0,  165188,  330364,  495520,  660708,  825872,  991044, 1156212,
                             1321384, 1486544])
 
+
 class TestTRRReader_offsets(_GromacsReader_offsets):
     filename = TRR
     ref_offsets = numpy.array([0,  1144464,  2288928,  3433392,  4577856,  5722320,
                        6866784,  8011248,  9155712, 10300176])
-

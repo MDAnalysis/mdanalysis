@@ -4,7 +4,7 @@
 
 The rules for this file:
   * entries are sorted newest-first.
-  * summarize sets of changes - don't reproduce every subversion log comment here.
+  * summarize sets of changes - don't reproduce every git log comment here.
   * don't ever delete anything.
   * keep the format consistent (79 char width, M/D/Y date format) and do not
     use tabs but use spaces for formatting
@@ -121,6 +121,12 @@ The rules for this file:
   * deprecate lib.distances.applyPBC in favour of apply_PBC (Issue #389)
   * Consolidated coordinates.guess_format and topology.guess_format to
     lib.util.guess_format  (Issue #336)
+  * AtomGroup.res[names,ids,nums] and AtomGroup.segids now give arrays of equal
+    size to AtomGroup (Issue #385)
+  * ResidueGroup.segids now gives arrays of equal size to ResidueGroup 
+    (Issue #385)
+  * AtomGroup setters `set_<property>` now plural for consistency with property
+    names
 
   Fixes
   * Topology files can now be compressed (Issue #336)

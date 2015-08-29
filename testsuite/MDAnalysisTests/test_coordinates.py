@@ -1352,7 +1352,7 @@ class TestPQRWriter(TestCase, RefAdKSmall):
                             err_msg="Writing PQR file with PQRWriter does not reproduce original radii")
 
     def test_write_withChainID(self):
-        self.universe.atoms.set_segid('A')
+        self.universe.atoms.set_segids('A')
         assert_equal(self.universe.segments.segids[0], 'A')  # sanity check
         self.universe.atoms.write(self.outfile)
         u = mda.Universe(self.outfile)
@@ -3029,11 +3029,13 @@ class _DLPConfig(object):
         ref = np.array([-1979.558687, 739.7961625, 1027.996603])
         assert_allclose(self.ts._forces[0], ref)
 
+
 class TestConfigReader(_DLPConfig):
     f = DLP_CONFIG
 
     def test_read(self):
         assert self.rd.title == "DL_POLY: Potassium Chloride Test Case"
+
 
 class TestConfigOrder(_DLPConfig):
     f = DLP_CONFIG_order
@@ -3049,6 +3051,7 @@ class TestConfigMinimal(_DLPConfig):
 
     def test_forces(self):
         assert_raises(AttributeError, getattr, self.ts, "_forces")
+
 
 class _DLPConfig2(object):
     def setUp(self):
@@ -3076,6 +3079,7 @@ class _DLPConfig2(object):
     def test_number(self):
         ref = [0, 1, 2]
         assert_equal([a.index for a in self.u.atoms], ref)
+
 
 class TestConfigReader2(_DLPConfig2):
     f = DLP_CONFIG_order
@@ -3148,6 +3152,7 @@ class _DLHistory(object):
         for ts, r in itertools.izip(self.u.trajectory, [ref1, ref2, ref3]):
             assert_allclose(ts._unitcell, r)
 
+
 class TestDLPolyHistory(_DLHistory):
     f = DLP_HISTORY
 
@@ -3165,6 +3170,7 @@ class TestDLPolyHistoryMinimal(_DLHistory):
 
     def test_unitcell(self):
         pass
+
 
 class TestIncompletePDB(object):
     """Tests for Issue #396

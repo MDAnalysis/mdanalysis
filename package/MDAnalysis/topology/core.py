@@ -51,13 +51,16 @@ def build_segments(atoms):
     :class:`~MDAnalysis.core.AtomGroup.Atom` instances, which record
     to which residue and segment an atom belongs.
 
-    :Returns: structure dict, which associates a segname with a
-              :class:`~MDAnalysis.core.AtomGroup.Segment`
+    :Returns: List of :class:`~MDAnalysis.core.AtomGroup.Segment`
+              instances
 
     .. versionchanged:: 0.9.0
        Now allows resids in a given :class:`Segment` to be given in non sequential order.
+    .. versionchanged:: 0.11.0
+       Returns a list instead of a dict for consistency with the outputs of
+       :func:`build_residues`
     """
-    struc = {}
+    struc = list()
     resatomlist = defaultdict(list)
     curr_segname = atoms[0].segid
 
@@ -69,7 +72,7 @@ def build_segments(atoms):
             # Build the Segment we just left
             residues = [AtomGroup.Residue(ats[0].resname, k, ats)
                         for k, ats in resatomlist.iteritems()]
-            struc[curr_segname] = AtomGroup.Segment(curr_segname, residues)
+            struc.append(AtomGroup.Segment(curr_segname, residues))
 
             # Reset things and start again
             resatomlist = defaultdict(list)
@@ -79,7 +82,7 @@ def build_segments(atoms):
     # Add the last segment
     residues = [AtomGroup.Residue(ats[0].resname, k, ats)
                 for k, ats in resatomlist.iteritems()]
-    struc[curr_segname] = AtomGroup.Segment(curr_segname, residues)
+    struc.append(AtomGroup.Segment(curr_segname, residues))
     return struc
 
 
