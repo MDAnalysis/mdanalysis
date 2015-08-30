@@ -877,7 +877,6 @@ class _TestTimestepInterface(object):
     def test_frame(self):
         assert_equal(self.ts.frame, 0)
 
-    @knownfailure
     def test_dt(self):
         assert_equal(self.u.trajectory.dt, self.ts.dt)
 

@@ -416,6 +416,8 @@ class TrjReader(base.Reader):
         if not kwargs.pop('refresh_offsets', False):
             self._retrieve_offsets()
 
+        self.ts.dt = self.dt
+
     @property
     def n_atoms(self):
         """The number of publically available atoms that this reader will store in the timestep.
