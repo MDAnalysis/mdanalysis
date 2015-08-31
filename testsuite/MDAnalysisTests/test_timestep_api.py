@@ -183,41 +183,7 @@ class _TestTimestep(TestCase):
     def test_repr(self):
         assert_equal(type(repr(self.ts)), str)
 
-    def test_copy(self):
-        ts2 = self.ts.copy()
-        # no __eq__ method
-        assert_allclose(ts2._pos, self.ts._pos)
-        assert_equal(self.ts is ts2, False)
-
-    def _test_TS_slice(self, ref_TS, TS2, sel):
-        per_atom = ['_x', '_y', '_z', '_pos', '_velocities', '_forces']
-        ignore = ['n_atoms', '_n_atoms']
-
-        for att in ref_TS.__dict__:
-            try:
-                if att in per_atom:
-                    assert_equal(ref_TS.__dict__[att][sel], TS2.__dict__[att],
-                                 err_msg="Timestep slice failed for format: '%s' on attribute: '%s'"
-                                         % (self.name, att))
-                elif not att in ignore:
-                    assert_equal(ref_TS.__dict__[att], TS2.__dict__[att],
-                                 err_msg="Timestep slice failed for format: '%s' on attribute: '%s'"
-                                         % (self.name, att))
-            except KeyError:
-                self.fail("Timestep copy failed for format: '%s' on attribute: '%s'"
-                          % (self.name, att))
-
-    def test_copy_slice(self):
-        sel = slice(0, self.size, 2)
-        ts2 = self.ts.copy_slice(sel)
-
-        self._test_TS_slice(self.ts, ts2, sel)
-
-    def test_copy_slice2(self):
-        sel = [0, 1, 3]
-        ts2 = self.ts.copy_slice(sel)
-
-        self._test_TS_slice(self.ts, ts2, sel)
+    # Test copy done as separate test
 
     # Dimensions has 2 possible cases
     # Timestep doesn't do dimensions, should raise NotImplementedError for .dimension and .volume
@@ -598,127 +564,6 @@ class TestDLPolyTimestep(_TestTimestep, _DLPolyTimestep):
     pass
 
 
-class TestTimestep_Copy(TestCase):
-    """
-    Timestep.copy() method seems to be broken, (Issue 164).  The base.Timestep .copy() method returns a TS of
-    class base.Timestep rather than the appropriate subclass.
-
-    This class makes a TS object of the first frame, .copy()'s this as a new object and compares the content
-    of the two resulting objects.
-
-    This test class is then subclassed below to try and test all Timestep classes that exist within MDA.
-    """
-
-    def setUp(self):
-        self.universe = mda.Universe(PSF, DCD)
-        self.name = 'DCD (base)'
-
-    def tearDown(self):
-        del self.universe
-        del self.name
-
-    def test_TS_copy(self):
-        """
-        Checks equality between two Timesteps
-
-        Will check that TS2 has all the same attributes and values for these attributes as ref_TS.
-        """
-        ref_TS = self.universe.trajectory.ts
-        TS2 = ref_TS.copy()
-
-        err_msg = ("Timestep copy failed for format {form}"
-                   " on attribute {att}")
-
-        for att in ref_TS.__dict__:
-            ref = ref_TS.__dict__[att]
-
-            try:
-                if isinstance(ref, np.ndarray):
-                    assert_array_almost_equal(ref, TS2.__dict__[att], decimal=4, err_msg=err_msg.format(form=self.name, att=att))
-                else:
-                    assert_equal(ref, TS2.__dict__[att], err_msg=err_msg.format(form=self.name, att=att))
-            except KeyError:
-                self.fail(err_msg.format(form=self.name, att=att))
-
-    def test_TS_slice(self):
-        ref_TS = self.universe.trajectory.ts
-
-        sel = slice(0, 100, 4)
-        TS2 = ref_TS.copy_slice(sel)
-
-        self._test_TS_slice(ref_TS, TS2, sel)
-
-    def test_TS_indices(self):
-        ref_TS = self.universe.trajectory.ts
-
-        sel = [0, 1, 2, 3, 5, 8, 13, 21, 34, 55]
-        TS2 = ref_TS.copy_slice(sel)
-
-        self._test_TS_slice(ref_TS, TS2, sel)
-
-    def _test_TS_slice(self, ref_TS, TS2, sel):
-        per_atom = [
-            '_x', '_y', '_z', '_pos', '_velocities', '_forces',
-            '_tpos', '_tvelocities', '_tforces']
-        ignore = ['n_atoms', '_n_atoms']
-
-        for att in ref_TS.__dict__:
-            try:
-                if att in per_atom:
-                    assert_equal(ref_TS.__dict__[att][sel], TS2.__dict__[att],
-                                 err_msg="Timestep slice failed for format: '%s' on attribute: '%s'"
-                                         % (self.name, att))
-                elif not att in ignore:
-                    assert_equal(ref_TS.__dict__[att], TS2.__dict__[att],
-                                 err_msg="Timestep slice failed for format: '%s' on attribute: '%s'"
-                                         % (self.name, att))
-            except KeyError:
-                self.fail("Timestep copy failed for format: '%s' on attribute: '%s'"
-                          % (self.name, att))
-
-
-class TestTimestep_Copy_DMS(TestTimestep_Copy):
-    def setUp(self):
-        self.universe = mda.Universe(DMS)
-        self.name = 'DMS'
-
-
-class TestTimestep_Copy_GRO(TestTimestep_Copy):
-    def setUp(self):
-        self.universe = mda.Universe(GRO)
-        self.name = 'GRO'
-
-
-class TestTimestep_Copy_PDB(TestTimestep_Copy):
-    def setUp(self):
-        self.universe = mda.Universe(PDB_small)
-        self.name = 'PDB'
-
-
-class TestTimestep_Copy_TRJ(TestTimestep_Copy):
-    def setUp(self):
-        self.universe = mda.Universe(PRM, TRJ)
-        self.name = 'TRJ'
-
-
-class TestTimestep_Copy_TRR(TestTimestep_Copy):
-    def setUp(self):
-        self.universe = mda.Universe(GRO, TRR)
-        self.name = 'TRR'
-
-
-class TestTimestep_Copy_TRZ(TestTimestep_Copy):
-    def setUp(self):
-        self.universe = mda.Universe(TRZ_psf, TRZ)
-        self.name = 'TRZ'
-
-
-class TestTimestep_Copy_XTC(TestTimestep_Copy):
-    def setUp(self):
-        self.universe = mda.Universe(PDB, XTC)
-        self.name = 'XTC'
-
-
 class TestTimestepEquality(object):  # using test generator, don't change to TestCase
     def test_check_equal(self):
         ts1 = mda.coordinates.base.Timestep(10)
@@ -877,7 +722,6 @@ class _TestTimestepInterface(object):
     def test_frame(self):
         assert_equal(self.ts.frame, 0)
 
-    @knownfailure
     def test_dt(self):
         assert_equal(self.u.trajectory.dt, self.ts.dt)
 
@@ -982,3 +826,87 @@ class TestXYZ(_TestTimestepInterface):
         u = self.u = mda.Universe(XYZ_mini)
         self.ts = u.trajectory.ts
 
+
+class TestTimestepCopy(object):
+    """Test copy and copy_slice methods on Timestep"""
+    formats = [
+        ('DCD', (PSF, DCD)),
+        ('DMS', (DMS,)),
+        ('GRO', (GRO,)),
+        ('PDB', (PDB_small,)),
+        ('TRJ', (PRM, TRJ)),
+        ('TRR', (GRO, TRR)),
+        ('TRZ', (TRZ_psf, TRZ)),
+        ('XTC', (PDB, XTC)),
+    ]
+
+    def _check_copy(self, name, ref_ts):
+        """Check basic copy"""
+        ts2 = ref_ts.copy()
+
+        err_msg = ("Timestep copy failed for format {form}"
+                   " on attribute {att}")
+
+        # eq method checks:
+        # - frame
+        # - n_atoms
+        # - positions, vels and forces
+        assert_(ref_ts == ts2)
+
+        assert_array_almost_equal(ref_ts.dimensions, ts2.dimensions,
+                                  decimal=4)
+
+        # Check things not covered by eq
+        for d in ref_ts.data:
+            assert_(d in ts2.data)
+            if isinstance(ref_ts.data[d], np.ndarray):
+                assert_array_almost_equal(
+                    ref_ts.data[d], ts2.data[d])
+            else:
+                assert_(ref_ts.data[d] == ts2.data[d])
+
+    def _check_independent(self, name, ts):
+        """Check that copies made are independent"""
+        ts2 = ts.copy()
+
+        if ts.has_positions:
+            self._check_array(ts.positions, ts2.positions)
+        if ts.has_velocities:
+            self._check_array(ts.velocities, ts2.velocities)
+        if ts.has_forces:
+            self._check_array(ts.forces, ts2.forces)
+        self._check_array(ts.dimensions, ts2.dimensions)
+
+    def _check_array(self, arr1, arr2):
+        """Check modifying one array doesn't change other"""
+        ref = arr1.copy()
+        arr2 += 1.0
+        assert_array_almost_equal(ref, arr1)
+
+    def _check_copy_slice_indices(self, name, ts):
+        sl = slice(0, len(ts), 3)
+        ts2 = ts.copy_slice(sl)
+        self._check_slice(ts, ts2, sl)
+
+    def _check_copy_slice_slice(self, name, ts):
+        sl = [0, 1, 3, 5, 6, 7]
+        ts2 = ts.copy_slice(sl)
+        self._check_slice(ts, ts2, sl)
+
+    def _check_slice(self, ts1, ts2, sl):
+        if ts1.has_positions:
+            assert_array_almost_equal(ts1.positions[sl], ts2.positions)
+        if ts1.has_velocities:
+            assert_array_almost_equal(ts1.velocities[sl], ts2.velocities)
+        if ts1.has_forces:
+            assert_array_almost_equal(ts1.forces[sl], ts2.forces)
+
+    def test_copy(self):
+        for fname, args in self.formats:
+            u = mda.Universe(*args)
+            ts = u.trajectory.ts
+
+            yield self._check_copy, fname, ts
+            yield self._check_independent, fname, ts
+            yield self._check_copy_slice_indices, fname, ts
+            yield self._check_copy_slice_slice, fname, ts

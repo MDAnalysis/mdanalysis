@@ -73,6 +73,7 @@ import numpy as np
 import sys
 import cPickle
 import warnings
+import weakref
 
 from . import libxdrfile2
 from MDAnalysis.coordinates import base
@@ -354,6 +355,7 @@ class TrjReader(base.Reader):
            New keyword *refresh_offsets*
         .. versionchanged:: 0.11.0
            Renamed "delta" attribute to "dt"
+           Now passes weakref of self to ts (as "_reader")
         """
         super(TrjReader, self).__init__(filename, **kwargs)
         self._cache = dict()
@@ -408,6 +410,7 @@ class TrjReader(base.Reader):
         # at this time, _trr_n_atoms and _sub are set, so self.n_atoms has all it needs
         # to determine number of atoms.
         self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
+        self.ts._reader = weakref.ref(self)
 
         # Read in the first timestep
         self._read_next_timestep()
@@ -464,14 +467,13 @@ class TrjReader(base.Reader):
         else:
             return self._offsets
 
-    @property
-    @cached('dt')
-    def dt(self):
+    def _get_dt(self):
         """Time step length in ps.
 
         The result is computed from the trajectory and cached. If for
         any reason the trajectory cannot be read then 0 is returned.
         """
+        curr = self.ts.frame
         # no need for conversion: it's alread in our base unit ps
         try:
             t0 = self.ts.time
@@ -482,7 +484,7 @@ class TrjReader(base.Reader):
         except IOError:
             return 0
         finally:
-            self.rewind()
+            self[curr]
 
     def _offset_filename(self):
         head, tail = os.path.split(self.filename)

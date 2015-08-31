@@ -77,6 +77,7 @@ import warnings
 import numpy as np
 import os
 import errno
+import weakref
 
 from . import base
 from ..core import flags
@@ -132,6 +133,7 @@ class TRZReader(base.Reader):
        Frames now 0-based instead of 1-based
        Extra data (Temperature, Energies, Pressures, etc) now read
        into ts.data dictionary
+       Now passes a weakref of self to ts (ts._reader)
     """
 
     format = "TRZ"
@@ -161,6 +163,7 @@ class TRZReader(base.Reader):
         self._read_trz_header()
         self.ts = Timestep(self.n_atoms, velocities=True, forces=self.has_force,
                            **self._ts_kwargs)
+        self.ts._reader = weakref.ref(self)
 
         # structured dtype of a single trajectory frame
         readarg = str(n_atoms) + 'f4'
@@ -290,9 +293,7 @@ class TRZReader(base.Reader):
 
         return nframes
 
-    @property
-    @cached('dt')
-    def dt(self):
+    def _get_dt(self):
         """The amount of time between frames in ps
 
         Assumes that this step is constant (ie. 2 trajectories with different steps haven't been
