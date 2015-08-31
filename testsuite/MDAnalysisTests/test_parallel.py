@@ -19,6 +19,7 @@ from MDAnalysis.lib.distances import distance_array as distance_array_reference
 import numpy as np
 from numpy.testing import *
 
+
 try:
     from numpy.testing import assert_allclose
 except ImportError:

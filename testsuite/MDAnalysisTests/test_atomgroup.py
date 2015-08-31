@@ -207,6 +207,15 @@ class TestAtomGroup(TestCase):
     def test_n_segments(self):
         assert_equal(self.ag.n_segments, 1)
 
+    def test_resids_dim(self):
+        assert_equal(len(self.ag.resids), len(self.ag))
+
+    def test_resnums_dim(self):
+        assert_equal(len(self.ag.resnums), len(self.ag))
+
+    def test_segids_dim(self):
+        assert_equal(len(self.ag.segids), len(self.ag))
+
     def test_len(self):
         """testing that len(atomgroup) == atomgroup.n_atoms"""
         assert_equal(len(self.ag), self.ag.n_atoms, "len and n_atoms disagree")
@@ -252,19 +261,19 @@ class TestAtomGroup(TestCase):
         assert_equal(isinstance(self.ag.resids, numpy.ndarray), True)
 
     def test_resids(self):
-        assert_array_equal(self.ag.resids, numpy.arange(1, 215))
+        assert_array_equal(self.ag.residues.resids, numpy.arange(1, 215))
 
     def test_resnums_ndarray(self):
-        assert_equal(isinstance(self.ag.resnums, numpy.ndarray), True)
+        assert_equal(isinstance(self.ag.residues.resnums, numpy.ndarray), True)
 
     def test_resnums(self):
-        assert_array_equal(self.ag.resids, numpy.arange(1, 215))
+        assert_array_equal(self.ag.residues.resnums, numpy.arange(1, 215))
 
     def test_resnames_ndarray(self):
-        assert_equal(isinstance(self.ag.resnames, numpy.ndarray), True)
+        assert_equal(isinstance(self.ag.residues.resnames, numpy.ndarray), True)
 
     def test_resnames(self):
-        resnames = self.ag.resnames
+        resnames = self.ag.residues.resnames
         assert_array_equal(resnames[0:3], numpy.array(["MET", "ARG", "ILE"]))
 
     def test_names_ndarray(self):
@@ -311,11 +320,11 @@ class TestAtomGroup(TestCase):
 
     def test_sequence_string(self):
         p = self.universe.select_atoms("protein")
-        assert_equal(p.sequence(format="string"), self.ref_adk_sequence)
+        assert_equal(p.residues.sequence(format="string"), self.ref_adk_sequence)
 
     def test_sequence_SeqRecord(self):
         p = self.universe.select_atoms("protein")
-        s = p.sequence(format="SeqRecord",
+        s = p.residues.sequence(format="SeqRecord",
                        id="P69441", name="KAD_ECOLI Adenylate kinase",
                        description="EcAdK from pdb 4AKE")
         assert_equal(s.id, "P69441")
@@ -323,20 +332,20 @@ class TestAtomGroup(TestCase):
 
     def test_sequence_SeqRecord_default(self):
         p = self.universe.select_atoms("protein")
-        s = p.sequence(id="P69441", name="KAD_ECOLI Adenylate kinase",
+        s = p.residues.sequence(id="P69441", name="KAD_ECOLI Adenylate kinase",
                        description="EcAdK from pdb 4AKE")
         assert_equal(s.id, "P69441")
         assert_equal(s.seq.tostring(), self.ref_adk_sequence)
 
     def test_sequence_Seq(self):
         p = self.universe.select_atoms("protein")
-        s = p.sequence(format="Seq")
+        s = p.residues.sequence(format="Seq")
         assert_equal(s.tostring(), self.ref_adk_sequence)
 
     def test_sequence_nonIUPACresname(self):
         """test_sequence_nonIUPACresname: non recognized amino acids raise ValueError"""
         # fake non-IUPAC residue name for this test
-        self.universe.select_atoms("resname MET").set_resname("MSE")
+        self.universe.select_atoms("resname MET").set_resnames("MSE")
         self.universe.atoms._rebuild_caches()
         def wrong_res():
             self.universe.atoms.sequence()
@@ -368,20 +377,18 @@ class TestAtomGroup(TestCase):
         assert_equal(repr(self.ag), "<AtomGroup with 3341 atoms>")
 
     ## Issue 202 following 4 tests
-    @knownfailure()
     def test_set_resnum_single(self):
         ag = self.universe.atoms[:3]
         new = 5
-        ag.set_resnum(new)
+        ag.set_resnums(new)
         for at in ag:
             assert_equal(at.resnum, new)
         assert_equal(all(ag.resnums == new), True)
 
-    @knownfailure()
     def test_set_resnum_many(self):
         ag = self.universe.atoms[:3]
         new = [22, 23, 24]
-        ag.set_resnum(new)
+        ag.set_resnums(new)
         for at, v in zip(ag, new):
             assert_equal(at.resnum, v)
         assert_equal(all(ag.resnums == new), True)
@@ -389,49 +396,48 @@ class TestAtomGroup(TestCase):
     def test_set_resname_single(self):
         ag = self.universe.atoms[:3]
         new = 'abc'
-        ag.set_resname(new)
+        ag.set_resnames(new)
         for at in ag:
             assert_equal(at.resname, new)
         assert_equal(all(ag.resnames == new), True)
 
-    @knownfailure()
     def test_set_resname_many(self):
         ag = self.universe.atoms[:3]
         new = ['aa', 'bb', 'cc']
-        ag.set_resname(new)
+        ag.set_resnames(new)
         for at, v in zip(ag, new):
             assert_equal(at.resname, v)
         assert_equal(all(ag.resnames == new), True)
 
     # TODO: add all other methods except select_atoms(), see test_atomselections.py
-    def test_set_charge(self):
+    def test_set_charges(self):
         # Charges are initially 0
         at1 = Atom(1, 'dave', 'C', 'a', 1, 1, 0.1, 0.0)
         at2 = Atom(2, 'dave', 'C', 'a', 1, 1, 0.1, 0.0)
         ag = AtomGroup([at1, at2])
 
         charges = [1.0, 2.0]
-        ag.set_charge(charges)
+        ag.set_charges(charges)
         for at, val in zip(ag, charges):
             assert_equal(at.charge, val)
 
-    def test_set_radius(self):
+    def test_set_radii(self):
         at1 = Atom(1, 'dave', 'C', 'a', 1, 1, 0.1, 0.0)
         at2 = Atom(2, 'dave', 'C', 'a', 1, 1, 0.1, 0.0)
         ag = AtomGroup([at1, at2])
 
         radii = [1.0, 2.0]
-        ag.set_radius(radii)
+        ag.set_radii(radii)
         for at, val in zip(ag, radii):
             assert_equal(at.radius, val)
 
-    def test_set_bfactor(self):
+    def test_set_bfactors(self):
         at1 = Atom(1, 'dave', 'C', 'a', 1, 1, 0.1, 0.0)
         at2 = Atom(2, 'dave', 'C', 'a', 1, 1, 0.1, 0.0)
         ag = AtomGroup([at1, at2])
 
         bfacs = [1.0, 2.0]
-        ag.set_bfactor(bfacs)
+        ag.set_bfactors(bfacs)
         for at, val in zip(ag, bfacs):
             assert_equal(at.bfactor, val)
 
@@ -526,26 +532,26 @@ class TestAtomGroup(TestCase):
     def test_phi_selection(self):
         phisel = self.universe.s4AKE.r10.phi_selection()
         assert_equal(phisel.names, ['C', 'N', 'CA', 'C'])
-        assert_equal(phisel.resids, [9, 10])
-        assert_equal(phisel.resnames, ['PRO', 'GLY'])
+        assert_equal(phisel.residues.resids, [9, 10])
+        assert_equal(phisel.residues.resnames, ['PRO', 'GLY'])
 
     def test_psi_selection(self):
         psisel = self.universe.s4AKE.r10.psi_selection()
         assert_equal(psisel.names, ['N', 'CA', 'C', 'N'])
-        assert_equal(psisel.resids, [10, 11])
-        assert_equal(psisel.resnames, ['GLY', 'ALA'])
+        assert_equal(psisel.residues.resids, [10, 11])
+        assert_equal(psisel.residues.resnames, ['GLY', 'ALA'])
 
     def test_omega_selection(self):
         osel = self.universe.s4AKE.r8.omega_selection()
         assert_equal(osel.names, ['CA', 'C', 'N', 'CA'])
-        assert_equal(osel.resids, [8, 9])
-        assert_equal(osel.resnames, ['ALA', 'PRO'])
+        assert_equal(osel.residues.resids, [8, 9])
+        assert_equal(osel.residues.resnames, ['ALA', 'PRO'])
 
     def test_chi1_selection(self):
         sel = self.universe.s4AKE.r13.chi1_selection()  # LYS
         assert_equal(sel.names, ['N', 'CA', 'CB', 'CG'])
-        assert_equal(sel.resids, [13])
-        assert_equal(sel.resnames, ['LYS'])
+        assert_equal(sel.residues.resids, [13])
+        assert_equal(sel.residues.resnames, ['LYS'])
 
     # Test failed selections of phi/psi/omega/chi1
     def test_phi_sel_fail(self):
@@ -692,10 +698,10 @@ class TestAtomGroup(TestCase):
             return self.universe.atoms[:2].set_forces([0.2])
         assert_raises(NoDataError, set_for)
 
-    def test_set_resid(self):
+    def test_set_resids(self):
         ag = self.universe.select_atoms("bynum 12:42")
         resid = 999
-        ag.set_resid(resid)
+        ag.set_resids(resid)
         # check individual atoms
         assert_equal([a.resid for a in ag],
                      resid * numpy.ones(ag.n_atoms),
@@ -707,7 +713,7 @@ class TestAtomGroup(TestCase):
     def test_set_names(self):
         ag = self.universe.atoms[:2]
         names = ['One', 'Two']
-        ag.set_name(names)
+        ag.set_names(names)
         for a, b in zip(ag, names):
             assert_equal(a.name, b)
 
@@ -715,19 +721,19 @@ class TestAtomGroup(TestCase):
         """test_set_resid: set AtomGroup resids on a per-atom basis"""
         ag = self.universe.select_atoms("bynum 12:42")
         resids = numpy.array([a.resid for a in ag]) + 1000
-        ag.set_resid(resids)
+        ag.set_resids(resids)
         # check individual atoms
         assert_equal([a.resid for a in ag], resids,
                      err_msg="failed to set_resid atoms 12:42 to resids {0}".format(resids))
         # check residues
-        assert_equal(ag.resids, numpy.unique(resids),
+        assert_equal(ag.residues.resids, numpy.unique(resids),
                      err_msg="failed to set_resid of residues belonging to atoms 12:42 to same resid")
 
     def test_merge_residues(self):
         ag = self.universe.select_atoms("resid 12:14")
         nres_old = self.universe.atoms.n_residues
         natoms_old = ag.n_atoms
-        ag.set_resid(12)  # merge all into one with resid 12
+        ag.set_resids(12)  # merge all into one with resid 12
         nres_new = self.universe.atoms.n_residues
         r_merged = self.universe.select_atoms("resid 12:14").residues
         natoms_new = self.universe.select_atoms("resid 12").n_atoms
@@ -736,26 +742,26 @@ class TestAtomGroup(TestCase):
                      err_msg="set_resid failed to merge residues: merged = {0}".format(r_merged))
         assert_equal(natoms_new, natoms_old, err_msg="set_resid lost atoms on merge".format(r_merged))
 
-    def test_set_mass(self):
+    def test_set_masses(self):
         ag = self.universe.select_atoms("bynum 12:42 and name H*")
         mass = 2.0
-        ag.set_mass(mass)
+        ag.set_masses(mass)
         # check individual atoms
         assert_equal([a.mass for a in ag],
                      mass * numpy.ones(ag.n_atoms),
                      err_msg="failed to set_mass H* atoms in resid 12:42 to {0}".format(mass))
 
-    def test_set_segid(self):
+    def test_set_segids(self):
         u = self.universe
-        u.select_atoms("(resid 1-29 or resid 60-121 or resid 160-214)").set_segid("CORE")
-        u.select_atoms("resid 122-159").set_segid("LID")
-        u.select_atoms("resid 30-59").set_segid("NMP")
-        assert_equal(u.atoms.segids, ["CORE", "NMP", "CORE", "LID", "CORE"],
+        u.select_atoms("(resid 1-29 or resid 60-121 or resid 160-214)").set_segids("CORE")
+        u.select_atoms("resid 122-159").set_segids("LID")
+        u.select_atoms("resid 30-59").set_segids("NMP")
+        assert_equal(u.segments.segids, ["CORE", "NMP", "CORE", "LID", "CORE"],
                      err_msg="failed to change segids = {0}".format(u.atoms.segids))
 
     def test_wronglen_set(self):
         """Give the setter function a list of wrong length"""
-        assert_raises(ValueError, self.ag.set_mass, [0.1, 0.2])
+        assert_raises(ValueError, self.ag.set_masses, [0.1, 0.2])
 
     def test_split_atoms(self):
         ag = self.universe.select_atoms("resid 1:50 and not resname LYS and (name CA or name CB)")
@@ -770,8 +776,8 @@ class TestAtomGroup(TestCase):
     def test_split_residues(self):
         ag = self.universe.select_atoms("resid 1:50 and not resname LYS and (name CA or name CB)")
         sg = ag.split("residue")
-        assert_equal(len(sg), len(ag.resids))
-        for g, ref_resname in itertools.izip(sg, ag.resnames):
+        assert_equal(len(sg), len(ag.residues.resids))
+        for g, ref_resname in itertools.izip(sg, ag.residues.resnames):
             if ref_resname == "GLY":
                 assert_equal(len(g), 1)
             else:
@@ -782,8 +788,8 @@ class TestAtomGroup(TestCase):
     def test_split_segments(self):
         ag = self.universe.select_atoms("resid 1:50 and not resname LYS and (name CA or name CB)")
         sg = ag.split("segment")
-        assert_equal(len(sg), len(ag.segids))
-        for g, ref_segname in itertools.izip(sg, ag.segids):
+        assert_equal(len(sg), len(ag.segments.segids))
+        for g, ref_segname in itertools.izip(sg, ag.segments.segids):
             for atom in g:
                 assert_equal(atom.segid, ref_segname)
 
@@ -793,6 +799,7 @@ class TestAtomGroup(TestCase):
         def access_nonexistent_instantselector():
             self.universe.atoms.NO_SUCH_ATOM
         assert_raises(AttributeError, access_nonexistent_instantselector)
+
 
 class TestAtomGroupNoTop(TestCase):
     def setUp(self):
@@ -1032,14 +1039,23 @@ class TestResidueGroup(TestCase):
     def test_n_residues(self):
         assert_equal(self.rg.n_residues, 214)
 
+    def test_resids_dim(self):
+        assert_equal(len(self.rg.resids), len(self.rg))
+
+    def test_resnums_dim(self):
+        assert_equal(len(self.rg.resnums), len(self.rg))
+
+    def test_segids_dim(self):
+        assert_equal(len(self.rg.segids), len(self.rg))
+
     def test_len(self):
         """testing that len(residuegroup) == residuegroup.n_residues"""
         assert_equal(len(self.rg), self.rg.n_residues, "len and n_residues disagree")
 
-    def test_set_resid(self):
+    def test_set_resids(self):
         rg = self.universe.select_atoms("bynum 12:42").residues
         resid = 999
-        rg.set_resid(resid)
+        rg.set_resids(resid)
         # check individual atoms
         assert_equal([a.resid for a in rg.atoms],
                      resid * numpy.ones(rg.n_atoms),
@@ -1052,7 +1068,7 @@ class TestResidueGroup(TestCase):
         """test_set_resid: set ResidueGroup resids on a per-residue basis"""
         rg = self.universe.select_atoms("resid 10:18").residues
         resids = numpy.array(rg.resids) + 1000
-        rg.set_resid(resids)
+        rg.set_resids(resids)
         # check individual atoms
         for r, resid in itertools.izip(rg, resids):
             assert_equal([a.resid for a in r.atoms],
@@ -1069,7 +1085,7 @@ class TestResidueGroup(TestCase):
     def test_set_resids_updates_self(self):
         rg = self.universe.select_atoms("resid 10:18").residues
         resids = numpy.array(rg.resids) + 1000
-        rg.set_resid(resids)
+        rg.set_resids(resids)
         #rgnew = self.universe.select_atoms("resid 1000:1008").residues
         assert_equal(rg.resids, numpy.unique(resids),
                      err_msg="old selection was not changed in place after set_resid")
@@ -1077,7 +1093,7 @@ class TestResidueGroup(TestCase):
     def test_set_resnum_single(self):
         rg = self.universe.residues[:3]
         new = 22
-        rg.set_resnum(new)
+        rg.set_resnums(new)
 
         assert_equal(all(rg.resnums == new), True)
         for r in rg:
@@ -1086,7 +1102,7 @@ class TestResidueGroup(TestCase):
     def test_set_resnum_many(self):
         rg = self.universe.residues[:3]
         new = [22, 23, 24]
-        rg.set_resnum(new)
+        rg.set_resnums(new)
 
         assert_equal(all(rg.resnums == new), True)
         for r, v in zip(rg, new):
@@ -1096,13 +1112,13 @@ class TestResidueGroup(TestCase):
         rg = self.universe.residues[:3]
         new = [22, 23, 24, 25]
 
-        assert_raises(ValueError, rg.set_resnum, new)
+        assert_raises(ValueError, rg.set_resnums, new)
 
     def test_set_resname_single(self):
         rg = self.universe.residues[:3]
         new = 'newname'
 
-        rg.set_resname(new)
+        rg.set_resnames(new)
         assert_equal(all(rg.resnames == new), True)
         for r in rg:
             assert_equal(r.name, new)
@@ -1110,7 +1126,7 @@ class TestResidueGroup(TestCase):
     def test_set_resname_many(self):
         rg = self.universe.residues[:3]
         new = ['a', 'b', 'c']
-        rg.set_resname(new)
+        rg.set_resnames(new)
 
         assert_equal(all(rg.resnames == new), True)
         for r, v in zip(rg, new):
@@ -1120,13 +1136,13 @@ class TestResidueGroup(TestCase):
         rg = self.universe.residues[:3]
         new = ['a', 'b', 'c', 'd']
 
-        assert_raises(ValueError, rg.set_resname, new)
+        assert_raises(ValueError, rg.set_resnames, new)
 
     def test_merge_residues(self):
         rg = self.universe.select_atoms("resid 12:14").residues
         nres_old = self.universe.atoms.n_residues
         natoms_old = rg.n_atoms
-        rg.set_resid(12)  # merge all into one with resid 12
+        rg.set_resids(12)  # merge all into one with resid 12
         nres_new = self.universe.atoms.n_residues
         r_merged = self.universe.select_atoms("resid 12:14").residues
         natoms_new = self.universe.select_atoms("resid 12").n_atoms
@@ -1139,10 +1155,10 @@ class TestResidueGroup(TestCase):
                      err_msg="Universe.residues and Universe.atoms.n_residues do not agree after residue "
                              "merge.")
 
-    def test_set_mass(self):
+    def test_set_masses(self):
         rg = self.universe.select_atoms("bynum 12:42 and name H*").residues
         mass = 2.0
-        rg.set_mass(mass)
+        rg.set_masses(mass)
         # check individual atoms
         assert_equal([a.mass for a in rg.atoms],
                      mass * numpy.ones(rg.n_atoms),
@@ -1152,9 +1168,9 @@ class TestResidueGroup(TestCase):
 class TestSegment(TestCase):
     def setUp(self):
         self.universe = MDAnalysis.Universe(PSF, DCD)
-        self.universe.residues[:100].set_segid("A")  # make up some segments
-        self.universe.residues[100:150].set_segid("B")
-        self.universe.residues[150:].set_segid("C")
+        self.universe.residues[:100].set_segids("A")  # make up some segments
+        self.universe.residues[100:150].set_segids("B")
+        self.universe.residues[150:].set_segids("C")
         self.sB = self.universe.segments[1]
 
     def test_type(self):
@@ -1206,49 +1222,58 @@ class TestSegmentGroup(TestCase):
     def test_n_residues(self):
         assert_equal(self.g.n_residues, 214)
 
-    def test_set_resid(self):
+    def test_resids_dim(self):
+        assert_equal(len(self.g.resids), len(self.g.residues))
+
+    def test_resnums_dim(self):
+        assert_equal(len(self.g.resnums), len(self.g.residues))
+
+    def test_segids_dim(self):
+        assert_equal(len(self.g.segids), len(self.g))
+
+    def test_set_resids(self):
         g = self.universe.select_atoms("bynum 12:42").segments
         resid = 999
-        g.set_resid(resid)
+        g.set_resids(resid)
         # check individual atoms
         assert_equal([a.resid for a in g.atoms],
                      resid * numpy.ones(g.n_atoms),
                      err_msg="failed to set_resid for segment to same resid")
         # check residues
-        assert_equal(g.resids, resid * numpy.ones(g.n_residues),
+        assert_equal(g.residues.resids, resid * numpy.ones(g.n_residues),
                      err_msg="failed to set_resid of segments belonging to atoms 12:42 to same resid")
 
     def test_set_resids(self):
         g = self.universe.select_atoms("resid 10:18").segments
         resid = 999
-        g.set_resid(resid * numpy.ones(len(g)))
+        g.set_resids(resid * numpy.ones(len(g)))
         # note: all is now one residue... not meaningful but it is the correct behaviour
-        assert_equal(g.atoms.resids, [resid],
+        assert_equal(g.resids, [resid],
                      err_msg="failed to set_resid  in Segment {0}".format(g))
 
-    def test_set_segid(self):
+    def test_set_segids(self):
         s = self.universe.select_atoms('all').segments
-        s.set_segid(['ADK'])
+        s.set_segids(['ADK'])
         assert_equal(self.universe.segments.segids, ['ADK'],
                      err_msg="failed to set_segid on segments")
 
     def test_set_segid_updates_self(self):
         g = self.universe.select_atoms("resid 10:18").segments
-        g.set_segid('ADK')
+        g.set_segids('ADK')
         assert_equal(g.segids, ['ADK'],
                      err_msg="old selection was not changed in place after set_segid")
 
-    def test_set_mass(self):
+    def test_set_masses(self):
         g = self.universe.select_atoms("bynum 12:42 and name H*").segments
         mass = 2.0
-        g.set_mass(mass)
+        g.set_masses(mass)
         # check individual atoms
         assert_equal([a.mass for a in g.atoms],
                      mass * numpy.ones(g.n_atoms),
                      err_msg="failed to set_mass in segment of  H* atoms in resid 12:42 to {0}".format(mass))
 
     def test_set_segid_ValueError(self):
-        assert_raises(ValueError, self.g.set_resid, [1, 2, 3, 4])
+        assert_raises(ValueError, self.g.set_resids, [1, 2, 3, 4])
 
 
 class TestAtomGroupVelocities(TestCase):
@@ -1313,6 +1338,7 @@ def test_empty_AtomGroup():
     """Test that an empty AtomGroup can be constructed (Issue 12)"""
     ag = MDAnalysis.core.AtomGroup.AtomGroup([])
     assert_equal(len(ag), 0)
+
 
 class _WriteAtoms(TestCase):
     """Set up the standard AdK system in implicit solvent."""
@@ -1386,6 +1412,7 @@ class _WriteAtoms(TestCase):
         assert_equal(len(u2.atoms), len(U.atoms), "written 4AKE universe does not match original universe in size")
         assert_almost_equal(u2.atoms.coordinates(), U.atoms.coordinates(), self.precision,
                             err_msg="written universe 4AKE coordinates do not agree with original")
+
 
 class TestWritePDB(_WriteAtoms):
     ext = "pdb"
@@ -1508,6 +1535,7 @@ class TestUniverse(TestCase):
         box = numpy.array([10, 11, 12, 90, 90, 90])
         u.dimensions = numpy.array([10, 11, 12, 90, 90, 90])
         assert_allclose(u.dimensions, box)
+
 
 class TestPBCFlag(TestCase):
     def setUp(self):
@@ -1764,6 +1792,7 @@ class TestUnorderedResidues(TestCase):
     def test_build_residues(self):
         assert_equal(len(self.u.residues), 35)
 
+
 class TestCustomReaders(TestCase):
     """
     Can pass a reader as kwarg on Universe creation
@@ -1798,6 +1827,7 @@ class TestCustomReaders(TestCase):
         u = MDAnalysis.Universe(TRZ_psf, TRZ, format=MDAnalysis.coordinates.TRZ.TRZReader,
                                 topology_format=MDAnalysis.topology.PSFParser.PSFParser)
         assert_equal(len(u.atoms), 8184)
+
 
 class TestWrap(TestCase):
     def setUp(self):
@@ -2028,14 +2058,16 @@ class TestAtomGroupProperties(object):
         ag = master[idx]
 
         for att, atts, att_type, ag_set in (
-                ('name', 'names', 'string', ag.set_name),
-                ('type', 'types', 'string', ag.set_type),
-                ('altLoc', 'altLocs', 'string', ag.set_altLoc),
-                ('serial', 'serials', 'int', ag.set_serial),
-                ('charge', 'charges', 'float', ag.set_charge),
-                ('mass', 'masses', 'float', ag.set_mass),
-                ('radius', 'radii', 'float', ag.set_radius),
-                ('bfactor', 'bfactors', 'float', ag.set_bfactor)
+                ('name', 'names', 'string', ag.set_names),
+                ('resid', 'resids', 'int', ag.set_resids),
+                ('segid', 'segids', 'string', ag.set_segids),
+                ('type', 'types', 'string', ag.set_types),
+                ('altLoc', 'altLocs', 'string', ag.set_altLocs),
+                ('serial', 'serials', 'int', ag.set_serials),
+                ('charge', 'charges', 'float', ag.set_charges),
+                ('mass', 'masses', 'float', ag.set_masses),
+                ('radius', 'radii', 'float', ag.set_radii),
+                ('bfactor', 'bfactors', 'float', ag.set_bfactors)
         ):
             vals = self.get_new(att_type)
             yield self._check_plural, att, atts

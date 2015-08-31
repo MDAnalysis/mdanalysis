@@ -125,6 +125,7 @@ except ImportError:
     raise ImportError("""numpy>=1.5  is required to run the test suite. Please install it first. """
                       """(For example, try "easy_install 'numpy>=1.5'").""")
 
+
 def run(*args, **kwargs):
     """Test-running function that loads plugins, sets up arguments, and calls `nose.run_exit()`"""
     try:
@@ -146,6 +147,7 @@ def run(*args, **kwargs):
     # By default, test our testsuite
     kwargs['defaultTest'] = dirname(__file__)
     return nose.run_exit(*args, **kwargs)
+
 
 def executable_not_found_runtime(*args):
     """Factory function that returns a :func:`executable_not_found`.
@@ -173,5 +175,3 @@ def executable_not_found_runtime(*args):
         return not found
 
     return lambda: executable_not_found(*args)
-
-

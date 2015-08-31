@@ -115,7 +115,8 @@ class _Multi(object):
     n_atoms = 10
     readerclass = AmazingMultiFrameReader
     reference = [i for i in range(10)]
-    
+   
+
 class TestMultiFrameReader(_Multi, _TestReader):
     def _check_slice(self, sl):
         """Compare the slice applied to trajectory, to slice of list"""
@@ -174,10 +175,12 @@ class TestMultiFrameReader(_Multi, _TestReader):
             return list(self.reader[1.2:2.5:0.1])
         assert_raises(TypeError, sl)
 
+
 class _Single(TestCase):
     n_frames = 1
     n_atoms = 10
     readerclass = AmazingReader
+
 
 class TestSingleFrameReader(_Single, _TestReader):
     def test_next(self):
@@ -225,4 +228,3 @@ class TestSingleFrameReader(_Single, _TestReader):
 
     def test_read_frame(self):
         assert_raises(IndexError, self.reader._read_frame, 1)
-

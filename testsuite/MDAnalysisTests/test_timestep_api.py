@@ -731,95 +731,114 @@ class TestCRD(_TestTimestepInterface):
         u = self.u = mda.Universe(XYZ_five, INPCRD)
         self.ts = u.trajectory.ts
 
+
 class TestDCD(_TestTimestepInterface):
     def setUp(self):
         u = self.u = mda.Universe(PSF, DCD)
         self.ts = u.trajectory.ts
+
 
 class TestDLPConfig(_TestTimestepInterface):
     def setUp(self):
         u = self.u = mda.Universe(DLP_CONFIG, format='CONFIG')
         self.ts = u.trajectory.ts
 
+
 class TestDLPHistory(_TestTimestepInterface):
     def setUp(self):
         u = self.u = mda.Universe(DLP_HISTORY, format='HISTORY')
         self.ts = u.trajectory.ts
+
 
 class TestDMS(_TestTimestepInterface):
     def setUp(self):
         u = self.u = mda.Universe(DMS)
         self.ts = u.trajectory.ts
 
+
 class TestGMS(_TestTimestepInterface):
     def setUp(self):
         u = self.u = mda.Universe(GMS_ASYMOPT, GMS_ASYMOPT, format='GMS', topology_format='GMS')
         self.ts = u.trajectory.ts
+
 
 class TestGRO(_TestTimestepInterface):
     def setUp(self):
         u = self.u = mda.Universe(GRO)
         self.ts = u.trajectory.ts
 
+
 class TestINPCRD(_TestTimestepInterface):
     def setUp(self):
         u = self.u = mda.Universe(XYZ_five, INPCRD)
         self.ts = u.trajectory.ts
+
 
 class TestLAMMPS(_TestTimestepInterface):
     def setUp(self):
         u = self.u = mda.Universe(LAMMPSdata)
         self.ts = u.trajectory.ts
 
+
 class TestLAMMPSDCD(_TestTimestepInterface):
     def setUp(self):
         u = self.u = mda.Universe(LAMMPSdata2,LAMMPSdcd2, format='LAMMPS', topology_format='DATA', timeunit='fs')
         self.ts = u.trajectory.ts
+
 
 class TestMOL2(_TestTimestepInterface):
     def setUp(self):
         u = self.u = mda.Universe(mol2_molecules)
         self.ts = u.trajectory.ts
 
+
 class TestPDB(_TestTimestepInterface):
     def setUp(self):
         u = self.u = mda.Universe(PDB_small)
         self.ts = u.trajectory.ts
+
 
 class TestPDBQT(_TestTimestepInterface):
     def setUp(self):
         u = self.u = mda.Universe(PDBQT_input)
         self.ts = u.trajectory.ts
 
+
 class TestPQR(_TestTimestepInterface):
     def setUp(self):
         u = self.u = mda.Universe(PQR)
         self.ts = u.trajectory.ts
+
 
 class TestTRJ(_TestTimestepInterface):
     def setUp(self):
         u = self.u = mda.Universe(PRM, TRJ)
         self.ts = u.trajectory.ts
 
+
 class TestNCDF(_TestTimestepInterface):
     def setUp(self):
         u = self.u = mda.Universe(PRMncdf, NCDF)
         self.ts = u.trajectory.ts
+
 
 class TestTRR(_TestTimestepInterface):
     def setUp(self):
         u = self.u = mda.Universe(GRO, TRR)
         self.ts = u.trajectory.ts
 
+
 class TestTRZ(_TestTimestepInterface):
     def setUp(self):
         u = self.u = mda.Universe(TRZ_psf, TRZ)
         self.ts = u.trajectory.ts
 
+
 class TestXTC(_TestTimestepInterface):
     def setUp(self):
         u = self.u = mda.Universe(GRO, XTC)
         self.ts = u.trajectory.ts
+
 
 class TestXYZ(_TestTimestepInterface):
     def setUp(self):

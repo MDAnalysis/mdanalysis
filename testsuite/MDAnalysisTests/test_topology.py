@@ -242,7 +242,7 @@ class TestPSF_Issue121(TestCase):
         except IndexError:
             raise AssertionError("Issue 121 not fixed: cannot load PSF with empty SEGID")
         assert_equal(u.atoms.n_atoms, 98)
-        assert_equal(u.atoms.segids, ["SYSTEM"])
+        assert_equal(u.segments.segids, ["SYSTEM"])
 
 
 class TestPSF_bonds(TestCase):
@@ -1038,7 +1038,7 @@ class TestTopologyGuessers(TestCase):
 
     def test_guess_bonds_badtype(self):
         # rename my carbons and watch it get confused about missing types
-        self.u.select_atoms('type C').set_type('QQ')
+        self.u.select_atoms('type C').set_types('QQ')
         assert_raises(ValueError, guess_bonds, self.u.atoms, self.u.atoms.positions)
 
     def test_guess_bonds_withag(self):
@@ -1175,14 +1175,17 @@ class TestXYZTopology(RefXYZ, _TestTopology):
     def test_segments(self):
         assert_equal(len(self.universe.segments), 1)
 
+
 class RefGMSsym(object):
     topology = GMS_SYMOPT
     parser = MDAnalysis.topology.GMSParser.GMSParser
     ref_n_atoms = 4
     ref_numresidues = 1
 
+
 class TestGMS_withSymmetry(_TestTopology, RefGMSsym):
     """Testing GAMESS output file format"""
+
 
 class RefGMSasym(object):
     topology = GMS_ASYMSURF
@@ -1190,8 +1193,10 @@ class RefGMSasym(object):
     ref_n_atoms = 6
     ref_numresidues = 1
 
+
 class TestGMS_noSymmetry(_TestTopology, RefGMSasym):
     """Testing GAMESS output file format"""
+
 
 class _DLPolyParser(object):
     """Test of real data"""
@@ -1215,10 +1220,12 @@ class _DLPolyParser(object):
         assert_equal(atoms[0].name, 'K+')
         assert_equal(atoms[4].name, 'Cl-')
 
+
 class TestDLPolyConfigParser(_DLPolyParser):
     def setUp(self):
         self.p = MDAnalysis.topology.DLPolyParser.ConfigParser
         self.f = DLP_CONFIG
+
 
 class TestDLPolyHistoryParser(_DLPolyParser):
     def setUp(self):
@@ -1249,20 +1256,24 @@ class _DLPoly(object):
         assert_equal(atoms[1].name, 'B')
         assert_equal(atoms[2].name, 'A')
 
+
 class TestDLPolyConfigOrder(_DLPoly):
     def setUp(self):
         self.p = MDAnalysis.topology.DLPolyParser.ConfigParser
         self.f = DLP_CONFIG_order
+
 
 class TestDLPolyConfigMinimal(_DLPoly):
     def setUp(self):
         self.p = MDAnalysis.topology.DLPolyParser.ConfigParser
         self.f = DLP_CONFIG_minimal
 
+
 class TestDLPolyHistoryOrder(_DLPoly):
     def setUp(self):
         self.p = MDAnalysis.topology.DLPolyParser.HistoryParser
         self.f = DLP_HISTORY_order
+
 
 class TestDLPolyHistoryMinimal(_DLPoly):
     def setUp(self):

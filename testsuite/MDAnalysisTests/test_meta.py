@@ -28,11 +28,13 @@ def test_import():
         raise AssertionError('Failed to import module MDAnalysis. Install MDAnalysis'
                 'first to run the tests, e.g. "pip install mdanalysis"')
 
+
 def test_matching_versions():
     import MDAnalysis.version
     assert_(MDAnalysis.version.__version__ == MDAnalysisTests.__version__,
             "MDAnalysis release {0} must be installed to have meaningful tests, not {1}".format(
             MDAnalysisTests.__version__, MDAnalysis.__version__))
+
 
 def test_version_format(version=None):
     if version is None:
@@ -42,6 +44,7 @@ def test_version_format(version=None):
     m = re.match('(?P<MAJOR>\d+)\.(?P<MINOR>\d+)\.(?P<PATCH>\d+)(-(?P<suffix>\w+))?$',
                  version)
     assert_(m, "version {0} does not match the MAJOR.MINOR.PATCH(-suffix) format".format(version))
+
 
 def test_version_at_packagelevel():
     import MDAnalysis

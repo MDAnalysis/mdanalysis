@@ -57,13 +57,16 @@ class _SelectionWriter(TestCase):
         g.write_selection(self.namedfile, **kwargs)
         return g
 
+
 def ndx2array(lines):
     """Convert Gromacs NDX text file lines to integer array"""
     return np.array(" ".join(lines).replace("\n", "").split(), dtype=int)
 
+
 def lines2one(lines):
     """Join lines and squash all whitespace"""
     return " ".join(" ".join(lines).split())
+
 
 class TestSelectionWriter_Gromacs(_SelectionWriter):
     filename = "CA.ndx"
@@ -89,6 +92,7 @@ class TestSelectionWriter_Gromacs(_SelectionWriter):
     def test_writeselection_ndx(self):
         self._write_selection(name=self.ref_name)
         self._assert_indices()
+
 
 class TestSelectionWriter_Charmm(_SelectionWriter):
     filename = "CA.str"
@@ -170,6 +174,7 @@ def spt2array(line):
     """Get name of and convert Jmol SPT definition to integer array"""
     match = re.search(r'\@~(\w+) \(\{([\d\s]*)\}\)', line)
     return match.group(1), np.array(match.group(2).split(), dtype=int)
+
 
 class TestSelectionWriter_Jmol(_SelectionWriter):
     filename = "CA.spt"

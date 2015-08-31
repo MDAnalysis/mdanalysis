@@ -286,6 +286,7 @@ class TestHydrogenBondAnalysisHeavyFail(TestHydrogenBondAnalysisHeavy):
         self.values['donor_resid'] = numpy.array([])
         self.values['acceptor_resnm'] = numpy.array([], dtype="|S3")
 
+
 class TestHydrogenBondAnalysisChecking(object):
     def _setUp(self):
         self.universe = u = MDAnalysis.Universe(PDB_helix)
@@ -365,6 +366,7 @@ class TestHydrogenBondAnalysisChecking(object):
                 yield run_HBA_dynamic_selections, s1, s2, s1type
         finally:
             self._tearDown() # manually tear down (because with yield cannot use TestCase)
+
 
 class TestAlignmentProcessing(TestCase):
     def setUp(self):
@@ -519,6 +521,7 @@ class Test_Helanal(TestCase):
         #        MDAnalysis.analysis.helanal.helanal_trajectory(u, selection=sel, finish=5)
          #   except IndexError:
          #       self.fail("IndexError consistent with Issue 188.")
+
 
 class TestWaterdynamics(TestCase):
     def setUp(self):
