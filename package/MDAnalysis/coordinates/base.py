@@ -224,13 +224,12 @@ class Timestep(object):
         except NoDataError:
             pass
 
-        for att in ('_frame', '_time', '_reader'):
+        for att in ('_frame', '_reader'):
             try:
                 setattr(ts, att, getattr(other, att))
             except AttributeError:
                 pass
 
-        ts.time = other.time
         ts.data = copy.deepcopy(other.data)
 
         return ts
@@ -371,10 +370,9 @@ class Timestep(object):
             new_TS.forces = self.forces[sel]
         new_TS._unitcell = self._unitcell.copy()
 
-        new_TS.time = self.time
         new_TS.frame = self.frame
 
-        for att in ('_frame', '_time', '_reader'):
+        for att in ('_frame', '_reader'):
             try:
                 setattr(new_TS, att, getattr(self, att))
             except AttributeError:
@@ -647,7 +645,7 @@ class Timestep(object):
         except KeyError:
             pass
         try:
-            dt = self.data['ts'] = self._reader._get_dt()
+            dt = self.data['dt'] = self._reader._get_dt()
             return dt
         except AttributeError:
             pass

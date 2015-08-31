@@ -471,6 +471,7 @@ class TrjReader(base.Reader):
         The result is computed from the trajectory and cached. If for
         any reason the trajectory cannot be read then 0 is returned.
         """
+        curr = self.ts.frame
         # no need for conversion: it's alread in our base unit ps
         try:
             t0 = self.ts.time
@@ -481,7 +482,7 @@ class TrjReader(base.Reader):
         except IOError:
             return 0
         finally:
-            self.rewind()
+            self[curr]
 
     def _offset_filename(self):
         head, tail = os.path.split(self.filename)

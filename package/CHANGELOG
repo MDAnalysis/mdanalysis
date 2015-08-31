@@ -137,6 +137,7 @@ The rules for this file:
   * Fixed contact_matrix handles periodic boundary conditions correctly for
     sparse matrices.
   * Fixed analysis.hole not using CPOINT (Issue #384)
+  * Fixed XTC/TRR .dt rewinding the trajectory
 
 06/01/15  richardjgowers, caio s. souza, manuel.nuno.melo, orbeckst,
           sseyler
