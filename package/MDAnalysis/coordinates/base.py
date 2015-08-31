@@ -121,6 +121,7 @@ import warnings
 import bisect
 import numpy as np
 import copy
+import weakref
 
 from ..core import flags
 from .. import units
@@ -224,11 +225,14 @@ class Timestep(object):
         except NoDataError:
             pass
 
-        for att in ('_frame', '_reader'):
+        for att in ('_frame',):
             try:
                 setattr(ts, att, getattr(other, att))
             except AttributeError:
                 pass
+
+        if hasattr(ts, '_reader'):
+            other._reader = weakref.ref(ts._reader())
 
         ts.data = copy.deepcopy(other.data)
 
@@ -372,11 +376,14 @@ class Timestep(object):
 
         new_TS.frame = self.frame
 
-        for att in ('_frame', '_reader'):
+        for att in ('_frame',):
             try:
                 setattr(new_TS, att, getattr(self, att))
             except AttributeError:
                 pass
+
+        if hasattr(self, '_reader'):
+            new_TS._reader = weakref.ref(self._reader())
 
         new_TS.data = copy.deepcopy(self.data)
 
@@ -645,7 +652,7 @@ class Timestep(object):
         except KeyError:
             pass
         try:
-            dt = self.data['dt'] = self._reader._get_dt()
+            dt = self.data['dt'] = self._reader()._get_dt()
             return dt
         except AttributeError:
             pass
