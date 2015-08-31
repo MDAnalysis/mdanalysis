@@ -1618,6 +1618,8 @@ class AtomGroup(object):
         """
         self.set("name", name, conversion=str)
 
+    set_name = deprecate(set_names, old_name='set_name', new_name='set_names')
+
     def set_resids(self, resid):
         """Set the resids to integer *resid* for **all atoms** in the :class:`AtomGroup`.
 
@@ -1660,6 +1662,8 @@ class AtomGroup(object):
                     'residues',
                     ResidueGroup(build_residues(self.universe.atoms)))
 
+    set_resid = deprecate(set_resids, old_name='set_resid', new_name='set_resids')
+
     def set_resnums(self, resnum):
         """Set the resnums to *resnum* for **all atoms** in the :class:`AtomGroup`.
 
@@ -1686,6 +1690,8 @@ class AtomGroup(object):
         """
         self.set("resnum", resnum)
 
+    set_resnum = deprecate(set_resnums, old_name='set_resnum', new_name='set_resnums')
+
     def set_resnames(self, resname):
         """Set the resnames to string *resname* for **all atoms** in the :class:`AtomGroup`.
 
@@ -1706,6 +1712,8 @@ class AtomGroup(object):
         from MDAnalysis.topology.core import build_residues
 
         self.set("resname", resname, conversion=str)
+
+    set_resname = deprecate(set_resnames, old_name='set_resname', new_name='set_resnames')
 
     def set_segids(self, segid):
         """Set the segids to *segid* for all atoms in the :class:`AtomGroup`.
@@ -1747,6 +1755,8 @@ class AtomGroup(object):
                     'segments',
                     SegmentGroup(segments))
 
+    set_segid = deprecate(set_segids, old_name='set_segid', new_name='set_segids')
+
     def set_masses(self, mass):
         """Set the atom masses to float *mass* for **all atoms** in the AtomGroup.
 
@@ -1762,6 +1772,8 @@ class AtomGroup(object):
            Made plural to make consistent with corresponding property
         """
         self.set("mass", mass, conversion=float, cache="masses")
+
+    set_mass = deprecate(set_masses, old_name='set_mass', new_name='set_masses')
 
     def set_types(self, atype):
         """Set the atom types to *atype* for **all atoms** in the AtomGroup.
@@ -1779,6 +1791,8 @@ class AtomGroup(object):
         """
         self.set("type", atype)
 
+    set_type = deprecate(set_types, old_name='set_type', new_name='set_types')
+
     def set_charges(self, charge):
         """Set the partial charges to float *charge* for **all atoms** in the AtomGroup.
 
@@ -1794,6 +1808,8 @@ class AtomGroup(object):
            Made plural to make consistent with corresponding property
         """
         self.set("charge", charge, conversion=float)
+
+    set_charge = deprecate(set_charges, old_name='set_charge', new_name='set_charges')
 
     def set_radii(self, radius):
         """Set the atom radii to float *radius* for **all atoms** in the AtomGroup.
@@ -1811,6 +1827,8 @@ class AtomGroup(object):
         """
         self.set("radius", radius, conversion=float)
 
+    set_radius = deprecate(set_radii, old_name='set_radius', new_name='set_radii')
+
     def set_bfactors(self, bfactor):
         """Set the atom bfactors to float *bfactor* for **all atoms** in the AtomGroup.
 
@@ -1827,6 +1845,8 @@ class AtomGroup(object):
         """
         self.set("bfactor", bfactor, conversion=float)
 
+    set_bfactor = deprecate(set_bfactors, old_name='set_bfactor', new_name='set_bfactors')
+
     def set_altLocs(self, altLoc):
         """Set the altLocs to *altLoc for **all atoms** in the AtomGroup.
 
@@ -1839,6 +1859,8 @@ class AtomGroup(object):
         """
         self.set("altLoc", altLoc, conversion=str)
 
+    set_altLoc = deprecate(set_altLocs, old_name='set_altLoc', new_name='set_altLocs')
+
     def set_serials(self, serial):
         """Set the serials to *serial* for **all atoms** in the AtomGroup.
 
@@ -1850,6 +1872,8 @@ class AtomGroup(object):
         .. versionadded:: 0.11.0
         """
         self.set("serial", serial, conversion=int)
+
+    set_serial = deprecate(set_serials, old_name='set_serial', new_name='set_serials')
 
     def center_of_geometry(self, **kwargs):
         """Center of geometry (also known as centroid) of the selection.
@@ -3186,6 +3210,8 @@ class ResidueGroup(AtomGroup):
         """
         super(ResidueGroup, self).set_resids(resid)
 
+    set_resid = deprecate(set_resids, old_name='set_resid', new_name='set_resids')
+
     def set_resnums(self, resnum):
         """Set the resnums to *resnum* for **all residues** in the :class:`ResidueGroup`.
 
@@ -3212,6 +3238,8 @@ class ResidueGroup(AtomGroup):
         """
         super(ResidueGroup, self).set_resnums(resnum)
 
+    set_resnum = deprecate(set_resnums, old_name='set_resnum', new_name='set_resnums')
+
     def set_resnames(self, resname):
         """Set the resnames to string *resname* for **all residues** in the
         :class:`ResidueGroup`.
@@ -3231,6 +3259,8 @@ class ResidueGroup(AtomGroup):
            Made plural to make consistent with corresponding property
         """
         super(ResidueGroup, self).set_resnames(resname)
+
+    set_resname = deprecate(set_resnames, old_name='set_resname', new_name='set_resnames')
 
     # All other AtomGroup.set_xxx() methods should just work as
     # ResidueGroup.set_xxx() because we overrode self.set(); the ones above
@@ -3399,6 +3429,8 @@ class SegmentGroup(ResidueGroup):
            Made plural to make consistent with corresponding property
         """
         super(SegmentGroup, self).set_segids(segid)
+
+    set_segid = deprecate(set_segids, old_name='set_segid', new_name='set_segids')
 
     def __getattr__(self, attr):
         if attr.startswith('s') and attr[1].isdigit():
