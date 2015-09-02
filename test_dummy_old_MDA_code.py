@@ -140,3 +140,41 @@ MDAnalysis.lib.distances.calc_torsions()
 result = MDAnalysis.lib.distances.calc_torsions()
 #dist.calc_torsions()
 dist.calc_torsions()
+
+#atomgroup method pluralizations
+#set_mass(new) --> set_masses(new)
+ag.set_mass(new)
+
+#set_charge(new) --> set_charges(new)
+ag.set_charge(new)
+
+#set_name(new) --> set_names(new)
+ag.set_name(new)
+
+#set_type(new) --> set_types(new)
+ag.set_type(new)
+
+#set_radius(new) --> set_radii(new)
+ag.set_radius(new)
+
+#set_bfactor(new) --> set_bfactors(new)
+ag.set_bfactor(new)
+
+#set_altloc(new) --> set_altlocs(new)
+ag.set_altloc(new)
+
+#set_serial(new) --> set_serials(new)
+ag.set_serial(new)
+
+#set_resid(new) --> set_resids(new)
+ag.set_resid(new)
+
+#set_resname(new) --> set_resnames(new)
+ag.set_resname(new)
+
+#set_resnum(new) --> set_resnums(new)
+ag.set_resnum(new)
+
+#set_segid(new) --> set_segids(new)
+ag.set_segid(new)
+
