@@ -178,3 +178,5 @@ ag.set_resnum(new)
 #set_segid(new) --> set_segids(new)
 ag.set_segid(new)
 
+#this test case has caused issues:
+g.set_resid(resid * numpy.ones(len(g)))

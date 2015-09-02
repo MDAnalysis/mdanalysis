@@ -16,7 +16,6 @@ class FixAgsetterpluralization(BaseFix):
                                             'set_type'|'set_radius'|'set_bfactor'|
                                             'set_altloc'|'set_serial'|'set_resid'|
                                             'set_resname'|'set_resnum'|'set_segid')>
-                                parens=trailer< '(' arg=any ')' >
                                 tail=any*>
     """
 
@@ -24,7 +23,6 @@ class FixAgsetterpluralization(BaseFix):
         head = results['head']
         method = results['method'][0]
         tail = results['tail']
-        argument = results['arg'].value
         syms = self.syms
         method_name = method.value
         head = [n.clone() for n in head]
@@ -35,7 +33,7 @@ class FixAgsetterpluralization(BaseFix):
             method_name = 'set_masses'
         else:
             method_name += 's' #standard plural conversion for all others
-        args = head + [pytree.Node(syms.trailer, [Dot(), Name(method_name, prefix = method.prefix), LParen(), Name(argument), RParen()])]
+        args = head + [pytree.Node(syms.trailer, [Dot(), Name(method_name, prefix = method.prefix)])] + tail
         new = pytree.Node(syms.power, args)
         return new
 
