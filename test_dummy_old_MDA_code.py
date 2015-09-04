@@ -180,3 +180,24 @@ ag.set_segid(new)
 
 #this test case has caused issues:
 g.set_resid(resid * numpy.ones(len(g)))
+
+#frame numbering is now 0-based:
+#ts.frame - 1 -> ts.frame - 0
+ts.frame - 1
+
+#ts.frame + 2 -> ts.frame + 3
+ts.frame + 2
+
+#ts.frame == 3 -> ts.frame == 2
+ts.frame == 3
+
+#ts.frame != 5 -> ts.frame != 4
+ts.frame != 5
+
+#+1
+[ts.frame for ts in self.trajectory[2:9:3]]
+
+#+1
+[ts.frame for ts in self.trajectory]
+
+assert_equal(self.ts.frame, 1, "rewinding to frame 1")
