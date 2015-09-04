@@ -750,13 +750,17 @@ class TestTopologyGroup(TestCase):
 
     def test_TG_indices_creation(self):
         """Create a TG from indices"""
-        bond = self.universe.bonds[0]
+        bonds = [(0, 1), (1, 2)]
 
-        tg = TopologyGroup.from_indices([bond.indices], self.universe.atoms,
+        tg = TopologyGroup.from_indices(bonds, self.universe.atoms,
                                         bondclass=Bond)
 
-        assert_equal(len(tg), 1)
-        assert_equal(bond.indices in tg.to_indices(), True)
+        assert_equal(len(tg), 2)
+        b1 = self.universe.atoms[[0, 1]].bond
+        b2 = self.universe.atoms[[1, 2]].bond
+        assert_(b1 in tg)
+        assert_(b2 in tg)
+        assert_equal(bonds, tg.to_indices())
 
     def test_TG_from_indices_roundtrip(self):
         """Round trip check of dumping indices then recreating"""
@@ -772,6 +776,49 @@ class TestTopologyGroup(TestCase):
         # instead...
         assert_equal(len(tg), len(tg2))
         assert_equal(tg.to_indices(), tg2.to_indices())
+
+    def test_TG_without_bondclass(self):
+        ag = self.universe.atoms
+
+        tg = TopologyGroup.from_indices([(0, 1), (1, 2), (2, 3)], ag)
+        assert_(len(tg) == 3)
+        assert_(type(tg[0]) == Bond)
+
+        tg = TopologyGroup.from_indices([(0, 1, 2), (1, 2, 3), (2, 3, 4)],
+                                        ag)
+        assert_(len(tg) == 3)
+        assert_(type(tg[0]) == Angle)
+
+        tg = TopologyGroup.from_indices([(0, 1, 2, 3), (1, 2, 3, 4)],
+                                        ag)
+        assert_(len(tg) == 2)
+        assert_(type(tg[0]) == Dihedral)
+
+    def test_force_bondclass(self):
+        # Make a TG of improper dihedral
+        tg = TopologyGroup.from_indices([(0, 1, 2, 3), (2, 3, 4, 6)],
+                                        self.universe.atoms,
+                                        bondclass=ImproperDihedral)
+        assert_(type(tg[0]) == ImproperDihedral)
+
+    def test_from_indices_nonglobal_idx(self):
+        idx = [(0, 1), (4, 5)]
+
+        ag = self.universe.atoms[100:]
+
+        tg = TopologyGroup.from_indices(idx, ag)
+
+        b1 = self.universe.atoms[[100, 101]].bond
+        b2 = self.universe.atoms[[104, 105]].bond
+
+        assert_(b1 in tg)
+        assert_(b2 in tg)
+
+    def test_from_indices_VE(self):
+        idx = [(0, 1, 2, 3, 4), (2, 3, 4, 5, 6)]
+
+        assert_raises(ValueError, TopologyGroup.from_indices,
+                      idx, self.universe.atoms)
 
 
 class TestTopologyGroup_Cython(TestCase):
