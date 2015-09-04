@@ -120,6 +120,8 @@ ag.principalAxes
 ag.packIntoBox 
 #asUniverse -> as_universe
 ag.asUniverse 
+#align_principalAxis -> align_principal_axis
+ag.align_principalAxis
 
 # from lib.distances
 #applyPBC -> apply_PBC
