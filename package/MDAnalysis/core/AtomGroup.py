@@ -2567,7 +2567,7 @@ class AtomGroup(object):
         self.transform(M)
         return M
 
-    def align_principalAxis(self, axis, vector):
+    def align_principal_axis(self, axis, vector):
         """Align principal axis with index *axis* with *vector*.
 
         :Arguments:
@@ -2581,7 +2581,7 @@ class AtomGroup(object):
         To align the long axis of a channel (the first principal axis,
         i.e. *axis* = 0) with the z-axis::
 
-          u.atoms.align_principalAxis(0, [0,0,1])
+          u.atoms.align_principal_axis(0, [0,0,1])
           u.atoms.write("aligned.pdb")
         """
         p = self.principal_axes()[axis]
@@ -2590,6 +2590,10 @@ class AtomGroup(object):
         #print "principal[%d] = %r" % (axis, p)
         #print "axis = %r, angle = %f deg" % (ax, angle)
         return self.rotateby(angle, ax)
+
+    align_principalAxis = deprecate(align_principal_axis,
+                                    old_name='align_principalAxis',
+                                    new_name='align_principal_axis')
 
     def pack_into_box(self, box=None, inplace=True):
         r"""Shift all atoms in this group to be within the primary unit cell.
