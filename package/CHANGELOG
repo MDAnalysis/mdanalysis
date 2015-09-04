@@ -147,6 +147,9 @@ The rules for this file:
     sparse matrices.
   * Fixed analysis.hole not using CPOINT (Issue #384)
   * Fixed XTC/TRR .dt rewinding the trajectory
+  * Fixed TopologyGroup.from_indices not guessing topology object class
+  * Fixed TopologyGroup.__contains__ failing if different instance of same
+    bond was queried.
 
 06/01/15  richardjgowers, caio s. souza, manuel.nuno.melo, orbeckst,
           sseyler

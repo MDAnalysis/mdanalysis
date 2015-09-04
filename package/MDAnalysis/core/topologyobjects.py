@@ -508,15 +508,17 @@ class TopologyGroup(object):
 
         :Arguments:
           *bondlist*
-            A list of list of indices.
+            A list of lists of indices.  For example `[(0, 1), (1, 2)]`
+            Note that these indices refer to the index of the Atoms
+            within the supplied AtomGroup, not their global index.
           *atomgroup*
             An AtomGroup which the indices from bondlist will be used on.
 
         :Keywords:
-          *bond*
+          *bondclass*
             The Class of the topology object to be made.
             If missing this will try and be guessed according to the number
-            of indices in each record.  This will only work for Bonds and Angles.
+            of indices in each record.
           *guessed*
             Whether or not the bonds were guessed. [``True``]
           *remove_duplicates*
@@ -527,6 +529,16 @@ class TopologyGroup(object):
         if remove_duplicates:
             # always have first index less than last
             bondlist = set([b if b[0] < b[-1] else b[::-1] for b in bondlist])
+
+        if bondclass is None:  # try and guess
+            try:
+                bondclass = {
+                    2:Bond,
+                    3:Angle,
+                    4:Dihedral
+                }[len(bondlist[0])]
+            except KeyError:
+                raise ValueError("Can't detect bondclass for provided indices")
 
         bonds = [bondclass([atomgroup[a] for a in entry], is_guessed=guessed)
                  for entry in bondlist]
@@ -794,7 +806,7 @@ class TopologyGroup(object):
 
     def __contains__(self, item):
         """Tests if this TopologyGroup contains a bond"""
-        return item in set(self.bondlist)
+        return item in self.bondlist
 
     def __repr__(self):
         return "<TopologyGroup containing {num} {type}s>".format(
