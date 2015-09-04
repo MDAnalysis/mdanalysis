@@ -15,7 +15,7 @@ class FixCamelcase(BaseFix):
                 trailer< dot = '.' method=('totalMass'|'totalCharge'|'centerOfGeometry'|
                                          'radiusOfGyration'|'shapeParameter'|'momentOfInertia'|
                                          'principalAxes'|'packIntoBox'|'asUniverse'|
-                                         'applyPBC')>
+                                         'applyPBC' | 'align_principalAxis')>
     """
 
     def transform(self, node, results):
