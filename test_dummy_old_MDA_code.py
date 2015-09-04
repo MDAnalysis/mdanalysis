@@ -196,6 +196,9 @@ ts.frame == 3
 #ts.frame != 5 -> ts.frame != 4
 ts.frame != 5
 
+#another
+ts.frame = 9
+
 #+1
 [ts.frame for ts in self.trajectory[2:9:3]]
 
@@ -203,3 +206,14 @@ ts.frame != 5
 [ts.frame for ts in self.trajectory]
 
 assert_equal(self.ts.frame, 1, "rewinding to frame 1")
+
+#decoy comment
+assert_almost_equal(ts.frame, 544)
+
+assert_almost_equal(ts.dummy, 544)
+
+#frame warning with indentation complexity:
+class Dummy(object):
+    assert_almost_equal(ts.frame, 544)
+
+    ts.frame = 77
