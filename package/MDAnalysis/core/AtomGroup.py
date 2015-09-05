@@ -4603,11 +4603,36 @@ def Merge(*args):
     atoms = [copy.copy(a) for gr in args for a in gr]
     for a in atoms:
         a.universe = u
+
     # adjust the atom numbering
     for i, a in enumerate(atoms):
         a.index = i
         a.serial = i + 1
     u.atoms = AtomGroup(atoms)
+
+    # move over the topology
+    offset = 0
+    tops = ['bonds', 'angles', 'dihedrals', 'impropers']
+    idx_lists = {t:[] for t in tops}
+    for ag in args:
+        # create a mapping scheme for this atomgroup
+        mapping = {a.index:i for i, a in enumerate(ag, start=offset)}
+        offset += len(ag)
+
+        for t in tops:
+            tg = getattr(ag, t)
+            # Create a topology group of only bonds that are within this ag
+            # ie we don't want bonds that extend out of the atomgroup
+            tg = tg.atomgroup_intersection(ag, strict=True)
+
+            # Map them so they refer to our new indices
+            new_idx = [tuple(map(lambda x:mapping[x], entry))
+                       for entry in tg.to_indices()]
+            idx_lists[t].extend(new_idx)
+
+    for t in tops:
+        u._topology[t] = idx_lists[t]
+
     # adjust the residue and segment numbering (removes any remaining references to the old universe)
     MDAnalysis.topology.core.build_residues(u.atoms)
     MDAnalysis.topology.core.build_segments(u.atoms)

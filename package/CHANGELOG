@@ -49,6 +49,8 @@ The rules for this file:
     cell as triclinic vectors (Issue #276)
   * Added setter to bfactors property (Issue #372)
   * Added AtomGroup altLocs and serials properties with setters. (Issue #372)
+  * MDAnalysis.core.AtomGroup.Merge now copies across bonding information
+    (Issue #249)
 
   Changes
   * Changed AtomGroup counting methods to properties with different
