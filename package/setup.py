@@ -277,6 +277,8 @@ if __name__ == '__main__':
                     'MDAnalysis.core',
                     'MDAnalysis.lib',
                     'MDAnalysis.lib.parallel',
+                    'MDAnalysis.migration',
+                    'MDAnalysis.migration.fixes',
                     'MDAnalysis.selections',
                     'MDAnalysis.topology',
                     'MDAnalysis.topology.tpr',
