@@ -170,3 +170,5 @@ import weakref
 _anchor_universes = weakref.WeakSet()
 _named_anchor_universes = weakref.WeakSet()
 del weakref
+
+from .migration.ten2eleven import ten2eleven
