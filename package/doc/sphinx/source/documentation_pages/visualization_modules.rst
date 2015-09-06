@@ -4,11 +4,14 @@
 Visualization modules
 *********************
 
-The MDAnalysis.visualization namespace contains code to carry out analyses which return data that is specifically-tailored for visualization.
+The MDAnalysis.visualization namespace contains code to carry out analyses
+which return data that is specifically-tailored for visualization.
 
-Please see the individual module documentation for additional references and citation information.
+Please see the individual module documentation for additional references and
+citation information.
 
-These modules are not imported by default; in order to use them one has to import them from :mod:`MDAnalysis.visualization`, for instance: ::
+These modules are not imported by default; in order to use them one has to
+import them from :mod:`MDAnalysis.visualization`, for instance: ::
 
     import MDAnalysis.visualization.streamlines
 

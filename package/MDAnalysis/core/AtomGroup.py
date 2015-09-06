@@ -84,33 +84,36 @@ name with a command such as ::
 
 will typically work as expected. When working with collections such as
 :class:`AtomGroup` or :class:`ResidueGroup` it is generally better to use
-provided setter methods such as :meth:`AtomGroup.set_resname` or
-:meth:`ResidueGroup.set_resname`.
+properties such as :attr:`AtomGroup.resnames` or :attr:`ResidueGroup.resnames`
+to modify their items' attributes.
 
-There are two cases when it is very important to use the setters:
+There are two cases when it is very important to use these collective
+properties:
 
-* changing *resid*: :meth:`AtomGroup.set_resid` and :meth:`ResidueGroup.set_resid`
-* changing *segid*: :meth:`AtomGroup.set_segid` and :meth:`ResidueGroup.set_segid`
+* changing *resid*: :attr:`AtomGroup.resids` and :attr:`ResidueGroup.resids`
+* changing *segid*: :attr:`AtomGroup.segids` and :attr:`ResidueGroup.segids`
 
 Because residues are determined by the :attr:`Atom.resid` and segments by
-:attr:`Atom.segid`, the above methods take extra care to rebuild the list of
-segments and residues.
+:attr:`Atom.segid`, the above properties take extra care to rebuild the list of
+segments and residues. Alternatively, the same effect can be obtained using
+the corresponding setter method, e.g. :meth:`AtomGroup.set_resids`.
 
 .. Note::
 
-   :meth:`AtomGroup.set_resid`, :meth:`ResidueGroup.set_resid`,
-   :meth:`AtomGroup.set_segid`, :meth:`ResidueGroup.set_segid` can change the
-   topology: they can split or merge residues or segments.
+   Setting any of
+   :attr:`AtomGroup.resids`, :attr:`ResidueGroup.resids`,
+   :attr:`AtomGroup.segids`, :attr:`ResidueGroup.segids` 
+   can change the topology: they can split or merge residues or segments.
 
 Splitting/merging of residues is probably not very useful because no chemical
 rearrangements are carried out. Manipulating segments might be more useful in
 order to add additional structure to a :class:`Universe` and provide instant
 segment selectors for interactive work::
 
-  u.select_atoms("protein").set_segid("protein")
-  u.select_atoms("resname POPE or resname POPC").set_segid("lipids")
-  u.select_atoms("resname SOL").set_segid("water")
-  u.select_atoms("resname NA or resname CL").set_segid("ions")
+  u.select_atoms("protein").set_segids("protein")
+  u.select_atoms("resname POPE or resname POPC").set_segids("lipids")
+  u.select_atoms("resname SOL").set_segids("water")
+  u.select_atoms("resname NA or resname CL").set_segids("ions")
 
   u.protein.n_residues
   water_oxygens = u.water.OW
@@ -122,15 +125,15 @@ N-terminus. Let's say that the first residue is really residue 10. In order to
 store the canonical residue IDs ("resnum") one could the use ::
 
   protein = u.select_atoms("protein").residues
-  protein.set_resnum(protein.resnums + 9)
+  protein.set_resnums(protein.resnums + 9)
 
 One can then use ``protein.select("resnum 42")`` to select the residue that has
 the canonical residue id 42 (instead of ``resid 33``).
 
-One can also read the resids directly from  an original PDB file::
+One can also read the resids directly from an original PDB file::
 
   orig = MDAnalysis.Universe("2jln.pdb")
-  protein.set_resnum(orig.select_atoms("protein").resids)
+  protein.set_resnums(orig.select_atoms("protein").resids)
 
 
 Working with Topologies
@@ -171,11 +174,11 @@ For example::
      ('C', 'C', 'O'),
      ('H', 'C', 'O')]
 
-There is only C-C-H bonds and no H-C-C bonds.  Selection however is
+There are only C-C-H bonds and no H-C-C bonds.  Selection however is
 aware that sometimes types are reversed::
 
-    u.angles.select_bonds(('H', 'C', 'C'))  # note reversal of type
-    >>> <TopologyGroup containing 7365 Angles>
+    >>> u.angles.select_bonds(('H', 'C', 'C'))  # note reversal of type
+    <TopologyGroup containing 7365 Angles>
 
 TopologyGroups can be combined and indexed::
 
@@ -804,6 +807,10 @@ class AtomGroup(object):
        The ``bond``, ``angle``, ``dihedral`` and ``improper`` methods were removed and replaced
        with properties of the same name which return the corresponding object.
        Deprecated ``selectAtoms`` in favour of ``select_atoms``.
+       Setters are now plural to match property names.
+       Properties referring to residue (``resids``, ``resnames``, ``resnums``)
+       or segment [``segids``] properties now yield arrays of length equal to
+       ``n_atoms``
     """
     # for generalized __getitem__ __iter__ and __len__
     # (override _containername for ResidueGroup and SegmentGroup)
