@@ -16,6 +16,18 @@ The rules for this file:
 
   * 0.11.0
 
+  This release brings large changes to many parts of the API and might
+  break many existing scripts. For a full guide on the API changes,
+  please see:
+
+  https://github.com/MDAnalysis/mdanalysis/wiki/MDAnalysis-0.11-unifying-release-user-guide
+
+  Migrating old scripts has been made easier with the introduction of
+  the ten2eleven tool which is part of the package.
+  Details on how to use this are available at:
+
+  https://github.com/MDAnalysis/mdanalysis/wiki/Migrating-MDAnalysis-code-with-ten2eleven.py
+
   API Changes
   * Changed AtomGroup counting methods to properties with different
     names: numberOfAtoms() to n_atoms, numberOfResidues() to
