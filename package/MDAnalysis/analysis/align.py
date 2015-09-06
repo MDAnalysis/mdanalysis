@@ -69,15 +69,15 @@ two structures, using :func:`rmsd`::
 
    >>> ref = Universe(PDB_small)
    >>> mobile = Universe(PSF,DCD)
-   >>> rmsd(mobile.atoms.CA.coordinates(), ref.atoms.CA.coordinates())
+   >>> rmsd(mobile.atoms.CA.positions, ref.atoms.CA.positions)
    18.858259026820352
 
 Note that in this example translations have not been removed. In order
 to look at the pure rotation one needs to superimpose the centres of
 mass (or geometry) first:
 
-   >>> ref0 =  ref.atoms.CA.coordinates() - ref.atoms.CA.center_of_mass()
-   >>> mobile0 = mobile.atoms.CA.coordinates() - mobile.atoms.CA.center_of_mass()
+   >>> ref0 =  ref.atoms.CA.positions - ref.atoms.CA.center_of_mass()
+   >>> mobile0 = mobile.atoms.CA.positions - mobile.atoms.CA.center_of_mass()
    >>> rmsd(mobile0, ref0)
     6.8093965864717951
 
@@ -106,9 +106,9 @@ Common usage
 
 To **fit a single structure** with :func:`alignto`::
 
-  >>> ref = Universe(PSF, PDB_small)
-  >>> mobile = Universe(PSF, DCD)     # we use the first frame
-  >>> alignto(mobile, ref, select="protein and name CA", mass_weighted=True)
+   >>> ref = Universe(PSF, PDB_small)
+   >>> mobile = Universe(PSF, DCD)     # we use the first frame
+   >>> alignto(mobile, ref, select="protein and name CA", mass_weighted=True)
 
 This will change *all* coordinates in *mobile* so that the protein
 C-alpha atoms are optimally superimposed (translation and rotation).

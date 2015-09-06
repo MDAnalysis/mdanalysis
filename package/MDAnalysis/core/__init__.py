@@ -41,7 +41,7 @@ A simple selection of all water oxygens within 4 A of the protein::
 calculation of simple properties. For more complicated analysis,
 obtain the coordinates as a numpy array ::
 
-  coords = water_shell.coordinates()
+  coords = water_shell.positions
 
 and write your own Python code.
 
