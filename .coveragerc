@@ -4,6 +4,7 @@ source = MDAnalysis
 exclude_lines =
     pragma: no cover
 omit =
+    */migration/*
     */analysis/*
     */visualization/*
     */MDAnalysis/tests/*
