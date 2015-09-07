@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.topology.core &mdash; MDAnalysis 0.11.0-dev documentation</title>
+    <title>MDAnalysis.topology.core &mdash; MDAnalysis 0.11.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -16,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.11.0-dev',
+        VERSION:     '0.11.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,14 +25,14 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.11.0-dev documentation"
+          title="Search within MDAnalysis 0.11.0 documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.11.0-dev documentation" href="../../../index.html" />
-    <link rel="up" title="MDAnalysis" href="../../MDAnalysis.html" /> 
+    <link rel="top" title="MDAnalysis 0.11.0 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -43,17 +41,16 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
-          <li><a href="../../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../../index.html">
               <img class="logo" src="../../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
             </a></p>
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../../search.html" method="get">
       <input type="text" name="q" />
@@ -72,7 +69,7 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <h1>Source code for MDAnalysis.topology.core</h1><div class="highlight"><pre>
 <span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
@@ -113,6 +110,7 @@
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">tables</span>
 <span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">distances</span>
 <span class="kn">from</span> <span class="nn">..lib.util</span> <span class="kn">import</span> <span class="n">cached</span>
+<span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">util</span>
 <span class="kn">from</span> <span class="nn">..core</span> <span class="kn">import</span> <span class="n">AtomGroup</span>
 
 
@@ -127,13 +125,16 @@
 <span class="sd">    :class:`~MDAnalysis.core.AtomGroup.Atom` instances, which record</span>
 <span class="sd">    to which residue and segment an atom belongs.</span>
 
-<span class="sd">    :Returns: structure dict, which associates a segname with a</span>
-<span class="sd">              :class:`~MDAnalysis.core.AtomGroup.Segment`</span>
+<span class="sd">    :Returns: List of :class:`~MDAnalysis.core.AtomGroup.Segment`</span>
+<span class="sd">              instances</span>
 
 <span class="sd">    .. versionchanged:: 0.9.0</span>
 <span class="sd">       Now allows resids in a given :class:`Segment` to be given in non sequential order.</span>
+<span class="sd">    .. versionchanged:: 0.11.0</span>
+<span class="sd">       Returns a list instead of a dict for consistency with the outputs of</span>
+<span class="sd">       :func:`build_residues`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">struc</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">struc</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
     <span class="n">resatomlist</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
     <span class="n">curr_segname</span> <span class="o">=</span> <span class="n">atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">segid</span>
 
@@ -145,7 +146,7 @@
             <span class="c"># Build the Segment we just left</span>
             <span class="n">residues</span> <span class="o">=</span> <span class="p">[</span><span class="n">AtomGroup</span><span class="o">.</span><span class="n">Residue</span><span class="p">(</span><span class="n">ats</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">resname</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">ats</span><span class="p">)</span>
                         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">ats</span> <span class="ow">in</span> <span class="n">resatomlist</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()]</span>
-            <span class="n">struc</span><span class="p">[</span><span class="n">curr_segname</span><span class="p">]</span> <span class="o">=</span> <span class="n">AtomGroup</span><span class="o">.</span><span class="n">Segment</span><span class="p">(</span><span class="n">curr_segname</span><span class="p">,</span> <span class="n">residues</span><span class="p">)</span>
+            <span class="n">struc</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">AtomGroup</span><span class="o">.</span><span class="n">Segment</span><span class="p">(</span><span class="n">curr_segname</span><span class="p">,</span> <span class="n">residues</span><span class="p">))</span>
 
             <span class="c"># Reset things and start again</span>
             <span class="n">resatomlist</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
@@ -155,7 +156,7 @@
     <span class="c"># Add the last segment</span>
     <span class="n">residues</span> <span class="o">=</span> <span class="p">[</span><span class="n">AtomGroup</span><span class="o">.</span><span class="n">Residue</span><span class="p">(</span><span class="n">ats</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">resname</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">ats</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">ats</span> <span class="ow">in</span> <span class="n">resatomlist</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()]</span>
-    <span class="n">struc</span><span class="p">[</span><span class="n">curr_segname</span><span class="p">]</span> <span class="o">=</span> <span class="n">AtomGroup</span><span class="o">.</span><span class="n">Segment</span><span class="p">(</span><span class="n">curr_segname</span><span class="p">,</span> <span class="n">residues</span><span class="p">)</span>
+    <span class="n">struc</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">AtomGroup</span><span class="o">.</span><span class="n">Segment</span><span class="p">(</span><span class="n">curr_segname</span><span class="p">,</span> <span class="n">residues</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">struc</span>
 
 </div>
@@ -183,69 +184,37 @@
     <span class="k">return</span> <span class="n">residues</span>
 
 </div>
-<div class="viewcode-block" id="get_parser_for"><a class="viewcode-back" href="../../../documentation_pages/topology/core.html#MDAnalysis.topology.core.get_parser_for">[docs]</a><span class="k">def</span> <span class="nf">get_parser_for</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">permissive</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">tformat</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="get_parser_for"><a class="viewcode-back" href="../../../documentation_pages/topology/core.html#MDAnalysis.topology.core.get_parser_for">[docs]</a><span class="k">def</span> <span class="nf">get_parser_for</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">permissive</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return the appropriate topology parser for *filename*.</span>
 
 <span class="sd">    Automatic detection is disabled when an explicit *format* is</span>
 <span class="sd">    provided.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_topology_parsers</span>
 
-    <span class="n">tformat</span> <span class="o">=</span> <span class="n">guess_format</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="n">tformat</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">tformat</span> <span class="o">==</span> <span class="s">&#39;PDB&#39;</span> <span class="ow">and</span> <span class="n">permissive</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">_topology_parsers</span><span class="p">[</span><span class="s">&#39;Permissive_PDB&#39;</span><span class="p">]</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">_topology_parsers</span><span class="p">[</span><span class="n">tformat</span><span class="p">]</span>
-
-</div>
-<div class="viewcode-block" id="guess_format"><a class="viewcode-back" href="../../../documentation_pages/topology/core.html#MDAnalysis.topology.core.guess_format">[docs]</a><span class="k">def</span> <span class="nf">guess_format</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Returns the type of topology file *filename*.</span>
-
-<span class="sd">    The current heuristic simply looks at the filename extension but</span>
-<span class="sd">    more complicated probes could be implemented here or in the</span>
-<span class="sd">    individual packages (e.g. as static methods).</span>
-
-<span class="sd">    If *format* is supplied then it overrides the auto detection.</span>
+<span class="sd">    :Raises:</span>
+<span class="sd">      *ValueError*</span>
+<span class="sd">        If no appropriate parser could be found.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_topology_parsers</span>
 
     <span class="k">if</span> <span class="n">format</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="c"># simple extension checking... something more complicated is left</span>
-        <span class="c"># for the ambitious</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">root</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">ext</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">):</span>
-                <span class="n">ext</span> <span class="o">=</span> <span class="n">ext</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-            <span class="n">format</span> <span class="o">=</span> <span class="n">ext</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
-        <span class="k">except</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                <span class="s">&quot;Cannot autodetect topology type for file &#39;{0}&#39; &quot;</span>
-                <span class="s">&quot;(file extension could not be parsed).</span><span class="se">\n</span><span class="s">&quot;</span>
-                <span class="s">&quot;           You can use &#39;Universe(topology, ..., topology_format=FORMAT)&#39; &quot;</span>
-                <span class="s">&quot;to explicitly specify the format and</span><span class="se">\n</span><span class="s">&quot;</span>
-                <span class="s">&quot;           override automatic detection. Known FORMATs are:</span><span class="se">\n</span><span class="s">&quot;</span>
-                <span class="s">&quot;           {1}</span><span class="se">\n</span><span class="s">&quot;</span>
-                <span class="s">&quot;           See http://docs.mdanalysis.org/documentation_pages/topology/init.html#supported-topology-formats</span><span class="se">\n</span><span class="s">&quot;</span>
-                <span class="s">&quot;           For missing formats, raise an issue at &quot;</span>
-                <span class="s">&quot;http://issues.mdanalysis.org&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">_topology_parsers</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
-                <span class="c">#TypeError: ....&quot;</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="c"># internally, formats are all uppercase</span>
-        <span class="n">format</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">format</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="n">format</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">guess_format</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="n">format</span> <span class="o">=</span> <span class="n">format</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">format</span> <span class="o">==</span> <span class="s">&#39;PDB&#39;</span> <span class="ow">and</span> <span class="n">permissive</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_topology_parsers</span><span class="p">[</span><span class="s">&#39;Permissive_PDB&#39;</span><span class="p">]</span>
 
-    <span class="c"># sanity check</span>
-    <span class="k">if</span> <span class="n">format</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_topology_parsers</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-            <span class="s">&quot;Unknown topology format &#39;{0}&#39; for file &#39;{1}&#39;.</span><span class="se">\n</span><span class="s">&quot;</span>
-            <span class="s">&quot;           The following FORMATs are implemented in MDAnalysis:</span><span class="se">\n</span><span class="s">&quot;</span>
-            <span class="s">&quot;           {2}</span><span class="se">\n</span><span class="s">&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_topology_parsers</span><span class="p">[</span><span class="n">format</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s">&quot;Cannot autodetect topology type for file &#39;{0}&#39; &quot;</span>
+            <span class="s">&quot;(file extension could not be parsed).</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;           You can use &#39;Universe(topology, ..., topology_format=FORMAT)&#39; &quot;</span>
+            <span class="s">&quot;to explicitly specify the format and</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;           override automatic detection. Known FORMATs are:</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;           {1}</span><span class="se">\n</span><span class="s">&quot;</span>
             <span class="s">&quot;           See http://docs.mdanalysis.org/documentation_pages/topology/init.html#supported-topology-formats</span><span class="se">\n</span><span class="s">&quot;</span>
-            <span class="s">&quot;           You can use &#39;Universe(topology, ..., topology_format=FORMAT)&#39; to explicitly</span><span class="se">\n</span><span class="s">&quot;</span>
-            <span class="s">&quot;           specify the format and override automatic detection.</span><span class="se">\n</span><span class="s">&quot;</span>
             <span class="s">&quot;           For missing formats, raise an issue at &quot;</span>
-            <span class="s">&quot;http://issues.mdanalysis.org&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">format</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">_topology_parsers</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
-            <span class="c">#TypeError: ....&quot;</span>
-    <span class="k">return</span> <span class="n">format</span>
+            <span class="s">&quot;http://issues.mdanalysis.org&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">_topology_parsers</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
 
 
 <span class="c"># following guess_* used by PDB parser</span></div>
@@ -530,7 +499,7 @@
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -539,12 +508,11 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
-          <li><a href="../../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
+    <div class="footer" role="contentinfo">
         &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
@@ -554,7 +522,7 @@
     Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Gorman Stock, Isaac Virshup,
     Zhuyi Xue, Carlos Yáñez S.,
     and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>
 </html>

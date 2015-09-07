@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.analysis.helanal &mdash; MDAnalysis 0.11.0-dev documentation</title>
+    <title>MDAnalysis.analysis.helanal &mdash; MDAnalysis 0.11.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -16,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.11.0-dev',
+        VERSION:     '0.11.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,14 +25,14 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.11.0-dev documentation"
+          title="Search within MDAnalysis 0.11.0 documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.11.0-dev documentation" href="../../../index.html" />
-    <link rel="up" title="MDAnalysis" href="../../MDAnalysis.html" /> 
+    <link rel="top" title="MDAnalysis 0.11.0 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -43,17 +41,16 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
-          <li><a href="../../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../../index.html">
               <img class="logo" src="../../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
             </a></p>
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../../search.html" method="get">
       <input type="text" name="q" />
@@ -72,7 +69,7 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <h1>Source code for MDAnalysis.analysis.helanal</h1><div class="highlight"><pre>
 <span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
@@ -175,10 +172,9 @@
 <span class="sd">   characteristics of alpha helices in globular proteins. *Biophysical Journal*</span>
 <span class="sd">   75(4):1935-1944.</span>
 
-<span class="sd">.. [Bansal2000] Bansal M, Kumar S, Velavan R. 2000. HELANAL - A program to</span>
-<span class="sd">   characterise helix geometry in proteins. *J Biomol Struct Dyn.*  17(5):811-9.</span>
-<span class="sd">   http://www.jbsdonline.com/c3003/c4003/HELANAL-A-Program-to-Characterize-Helix-Geometry-in-Proteins-p-811-820</span>
-<span class="sd">   -p10020.html</span>
+<span class="sd">.. [Bansal2000] Bansal M, Kumar S, Velavan R. 2000.</span>
+<span class="sd">   HELANAL - A program to characterise helix geometry in proteins.</span>
+<span class="sd">   *J Biomol Struct Dyn.*  17(5):811-819.</span>
 
 <span class="sd">Functions</span>
 <span class="sd">---------</span>
@@ -298,7 +294,7 @@
 
 <span class="sd">    :Keywords:</span>
 <span class="sd">       *selection*</span>
-<span class="sd">          selection string that selects Calpha atoms [&quot;name CA&quot;]</span>
+<span class="sd">          selection string that selects Calpha atoms [``&quot;name CA&quot;``]</span>
 <span class="sd">       *start*</span>
 <span class="sd">          start residue</span>
 <span class="sd">       *end*</span>
@@ -310,28 +306,28 @@
 <span class="sd">          stop analysis for time (ps) =&lt; *finish*; ``None`` goes to the</span>
 <span class="sd">          end of the trajectory [``None``]</span>
 <span class="sd">       *matrix_filename*</span>
-<span class="sd">          Output file- bending matrix [&quot;bending_matrix.dat&quot;]</span>
+<span class="sd">          Output file- bending matrix [``&quot;bending_matrix.dat&quot;``]</span>
 <span class="sd">       *origin_pdbfile*</span>
-<span class="sd">          Output file- origin pdb file [&quot;origin.pdb&quot;]</span>
+<span class="sd">          Output file- origin pdb file [``&quot;origin.pdb&quot;``]</span>
 <span class="sd">       *summary_filename*</span>
-<span class="sd">          Output file- all of the basic data [&quot;summary.txt&quot;]</span>
+<span class="sd">          Output file- all of the basic data [``&quot;summary.txt&quot;``]</span>
 <span class="sd">       *screw_filename*</span>
 <span class="sd">          Output file- local tilts of individual residues from 2 to n-1</span>
-<span class="sd">          [&quot;screw.xvg&quot;]</span>
+<span class="sd">          [``&quot;screw.xvg&quot;``]</span>
 <span class="sd">       *tilt_filename*</span>
 <span class="sd">          Output file- tilt of line of best fit applied to origin axes</span>
-<span class="sd">          [&quot;local_tilt.xvg&quot;]</span>
+<span class="sd">          [``&quot;local_tilt.xvg&quot;``]</span>
 <span class="sd">       *bend_filename*</span>
 <span class="sd">          Output file- local bend angles between successive local helix axes</span>
-<span class="sd">          [&quot;local_bend.xvg&quot;]</span>
+<span class="sd">          [``&quot;local_bend.xvg&quot;``]</span>
 <span class="sd">       *twist_filename*</span>
 <span class="sd">          Output file- local unit twist between successive helix turns</span>
-<span class="sd">          [&quot;unit_twist.xvg&quot;]</span>
+<span class="sd">          [``&quot;unit_twist.xvg&quot;``]</span>
 <span class="sd">       *prefix*</span>
 <span class="sd">          Prefix to add to all output file names; set to ``None`` to disable</span>
-<span class="sd">          [&quot;helanal__&quot;]</span>
+<span class="sd">          [``&quot;helanal__&quot;``]</span>
 <span class="sd">       *ref_axis*</span>
-<span class="sd">          Calculate tilt angle relative to the axis; if ``None`` then [0,0,1]</span>
+<span class="sd">          Calculate tilt angle relative to the axis; if ``None`` then ``[0,0,1]``</span>
 <span class="sd">          is chosen [``None``]</span>
 
 <span class="sd">    :Raises:</span>
@@ -845,7 +841,7 @@
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -854,12 +850,11 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
-          <li><a href="../../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
+    <div class="footer" role="contentinfo">
         &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
@@ -869,7 +864,7 @@
     Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Gorman Stock, Isaac Virshup,
     Zhuyi Xue, Carlos Yáñez S.,
     and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>
 </html>

@@ -1,0 +1,209 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>MDAnalysis.lib.NeighborSearch &mdash; MDAnalysis 0.11.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.11.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 0.11.0 documentation"
+          href="../../../_static/opensearch.xml"/>
+    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+    <link rel="top" title="MDAnalysis 0.11.0 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for MDAnalysis.lib.NeighborSearch</h1><div class="highlight"><pre>
+<span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
+<span class="c"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8</span>
+<span class="c">#</span>
+<span class="c"># MDAnalysis --- http://www.MDAnalysis.org</span>
+<span class="c"># Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein</span>
+<span class="c"># and contributors (see AUTHORS for the full list)</span>
+<span class="c">#</span>
+<span class="c"># Released under the GNU Public Licence, v2 or any higher version</span>
+<span class="c">#</span>
+<span class="c"># Please cite your use of MDAnalysis in published work:</span>
+<span class="c">#</span>
+<span class="c"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
+<span class="c">#</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Neighbor Search wrapper for MDAnalysis --- :mod: `MDAnalysis.lib.NeighborSearch`</span>
+<span class="sd">===============================================================================</span>
+
+<span class="sd">This module contains classes that allow neighbor searches directly with</span>
+<span class="sd">`AtomGroup` objects from `MDAnalysis`.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">from</span> <span class="nn">Bio.KDTree</span> <span class="kn">import</span> <span class="n">KDTree</span>
+
+<span class="kn">from</span> <span class="nn">MDAnalysis.core.AtomGroup</span> <span class="kn">import</span> <span class="n">AtomGroup</span>
+
+
+<div class="viewcode-block" id="AtomNeighborSearch"><a class="viewcode-back" href="../../../documentation_pages/lib/NeighborSearch.html#MDAnalysis.lib.NeighborSearch.AtomNeighborSearch">[docs]</a><span class="k">class</span> <span class="nc">AtomNeighborSearch</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;This class can be used to find all atoms/residues/segements within the</span>
+<span class="sd">    radius of a given query position.</span>
+
+<span class="sd">    This class is using the BioPython KDTree for the neighborsearch. This class</span>
+<span class="sd">    also does not apply PBC to the distance calculattions. So you have to ensure</span>
+<span class="sd">    yourself that the trajectory has been corrected for PBC artifacts.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom_group</span><span class="p">,</span> <span class="n">bucket_size</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :Arguments:</span>
+<span class="sd">         *atom_list*</span>
+<span class="sd">          list of atoms (:class: `~MDAnalysis.core.AtomGroup.AtomGroup`)</span>
+<span class="sd">         *bucket_size*</span>
+<span class="sd">          Number of entries in leafs of the KDTree. If you suffer poor</span>
+<span class="sd">          performance you can play around with this number. Increasing the</span>
+<span class="sd">          `bucket_size` will speed up the construction of the KDTree but</span>
+<span class="sd">          slow down the search.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atom_group</span> <span class="o">=</span> <span class="n">atom_group</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">atom_group</span><span class="p">,</span> <span class="s">&#39;coordinates&#39;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&#39;atom_group must have a coordinates() method&#39;</span>
+                            <span class="s">&#39;(eq a AtomGroup from a selection)&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kdtree</span> <span class="o">=</span> <span class="n">KDTree</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">bucket_size</span><span class="o">=</span><span class="n">bucket_size</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kdtree</span><span class="o">.</span><span class="n">set_coords</span><span class="p">(</span><span class="n">atom_group</span><span class="o">.</span><span class="n">coordinates</span><span class="p">())</span>
+
+<div class="viewcode-block" id="AtomNeighborSearch.search"><a class="viewcode-back" href="../../../documentation_pages/lib/NeighborSearch.html#MDAnalysis.lib.NeighborSearch.AtomNeighborSearch.search">[docs]</a>    <span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s">&#39;A&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return all atoms/residues/segments that are within *radius* of the</span>
+<span class="sd">        atoms in *atoms*.</span>
+
+<span class="sd">        :Arguments:</span>
+<span class="sd">         *atoms*</span>
+<span class="sd">          list of atoms (:class: `~MDAnalysis.core.AtomGroup.AtomGroup`)</span>
+<span class="sd">         *radius*</span>
+<span class="sd">          float. Radius for search in Angstrom.</span>
+<span class="sd">         *level* (optional)</span>
+<span class="sd">          char (A, R, S). Return atoms(A), residues(R) or segments(S) within</span>
+<span class="sd">          *radius* of *atoms*.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">atoms</span><span class="o">.</span><span class="n">coordinates</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">kdtree</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="n">radius</span><span class="p">)</span>
+            <span class="n">indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kdtree</span><span class="o">.</span><span class="n">get_indices</span><span class="p">())</span>
+        <span class="n">unique_idx</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">unique</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">indices</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">l</span><span class="p">])</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index2level</span><span class="p">(</span><span class="n">unique_idx</span><span class="p">,</span> <span class="n">level</span><span class="p">)</span>
+</div>
+    <span class="k">def</span> <span class="nf">_index2level</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">level</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Convert list of atom_indices in a AtomGroup to either the</span>
+<span class="sd">            Atoms or segments/residues containing these atoms.</span>
+
+<span class="sd">        :Arguments:</span>
+<span class="sd">         *indices*</span>
+<span class="sd">           list of atom indices</span>
+<span class="sd">         *level*</span>
+<span class="sd">          char (A, R, S). Return atoms(A), residues(R) or segments(S) within</span>
+<span class="sd">          *radius* of *atoms*.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">n_atom_list</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">atom_group</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">level</span> <span class="o">==</span> <span class="s">&#39;A&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">n_atom_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">[]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">AtomGroup</span><span class="p">(</span><span class="n">n_atom_list</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">level</span> <span class="o">==</span> <span class="s">&#39;R&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">residue</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">n_atom_list</span><span class="p">]))</span>
+        <span class="k">elif</span> <span class="n">level</span> <span class="o">==</span> <span class="s">&#39;S&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">segment</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">n_atom_list</span><span class="p">]))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&#39;{}: level not implemented&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">level</span><span class="p">))</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
+    David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
+    Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
+    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
+    Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
+    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Gorman Stock, Isaac Virshup,
+    Zhuyi Xue, Carlos Yáñez S.,
+    and Oliver Beckstein.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

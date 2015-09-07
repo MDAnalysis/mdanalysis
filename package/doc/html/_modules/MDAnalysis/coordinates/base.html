@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.coordinates.base &mdash; MDAnalysis 0.11.0-dev documentation</title>
+    <title>MDAnalysis.coordinates.base &mdash; MDAnalysis 0.11.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -16,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.11.0-dev',
+        VERSION:     '0.11.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,14 +25,14 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.11.0-dev documentation"
+          title="Search within MDAnalysis 0.11.0 documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.11.0-dev documentation" href="../../../index.html" />
-    <link rel="up" title="MDAnalysis" href="../../MDAnalysis.html" /> 
+    <link rel="top" title="MDAnalysis 0.11.0 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -43,17 +41,16 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
-          <li><a href="../../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../../index.html">
               <img class="logo" src="../../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
             </a></p>
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../../search.html" method="get">
       <input type="text" name="q" />
@@ -72,7 +69,7 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <h1>Source code for MDAnalysis.coordinates.base</h1><div class="highlight"><pre>
 <span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
@@ -198,6 +195,7 @@
 <span class="kn">import</span> <span class="nn">bisect</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">weakref</span>
 
 <span class="kn">from</span> <span class="nn">..core</span> <span class="kn">import</span> <span class="n">flags</span>
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">units</span>
@@ -206,7 +204,7 @@
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">NoDataError</span>
 
 
-<div class="viewcode-block" id="Timestep"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Timestep">[docs]</a><span class="k">class</span> <span class="nc">Timestep</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="Timestep"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.DCD.Timestep">[docs]</a><span class="k">class</span> <span class="nc">Timestep</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Timestep data for one frame</span>
 
 <span class="sd">    :Methods:</span>
@@ -225,7 +223,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">order</span> <span class="o">=</span> <span class="s">&#39;F&#39;</span>
 
-<div class="viewcode-block" id="Timestep.__init__"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Timestep.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Timestep.__init__"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.DCD.Timestep.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create a Timestep, representing a frame of a trajectory</span>
 
 <span class="sd">        :Arguments:</span>
@@ -279,7 +277,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init_unitcell</span><span class="p">()</span>
 </div>
     <span class="nd">@classmethod</span>
-<div class="viewcode-block" id="Timestep.from_timestep"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Timestep.from_timestep">[docs]</a>    <span class="k">def</span> <span class="nf">from_timestep</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Timestep.from_timestep"><a class="viewcode-back" href="../../../documentation_pages/coordinates/xdrfile/XTC.html#MDAnalysis.coordinates.DCD.Timestep.from_timestep">[docs]</a>    <span class="k">def</span> <span class="nf">from_timestep</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create a copy of another Timestep, in the format of this Timestep</span>
 
 <span class="sd">        .. versionadded:: 0.11.0</span>
@@ -301,19 +299,21 @@
         <span class="k">except</span> <span class="n">NoDataError</span><span class="p">:</span>
             <span class="k">pass</span>
 
-        <span class="k">for</span> <span class="n">att</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;_frame&#39;</span><span class="p">,</span> <span class="s">&#39;_time&#39;</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">att</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;_frame&#39;</span><span class="p">,):</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="nb">setattr</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">att</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">att</span><span class="p">))</span>
             <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
                 <span class="k">pass</span>
 
-        <span class="n">ts</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">time</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="s">&#39;_reader&#39;</span><span class="p">):</span>
+            <span class="n">other</span><span class="o">.</span><span class="n">_reader</span> <span class="o">=</span> <span class="n">weakref</span><span class="o">.</span><span class="n">ref</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">_reader</span><span class="p">())</span>
+
         <span class="n">ts</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">ts</span>
 </div>
     <span class="nd">@classmethod</span>
-<div class="viewcode-block" id="Timestep.from_coordinates"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Timestep.from_coordinates">[docs]</a>    <span class="k">def</span> <span class="nf">from_coordinates</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">positions</span><span class="p">,</span> <span class="n">velocities</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">forces</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Timestep.from_coordinates"><a class="viewcode-back" href="../../../documentation_pages/coordinates/xdrfile/XTC.html#MDAnalysis.coordinates.DCD.Timestep.from_coordinates">[docs]</a>    <span class="k">def</span> <span class="nf">from_coordinates</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">positions</span><span class="p">,</span> <span class="n">velocities</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">forces</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create an instance of this Timestep, from coordinate data</span>
 
 <span class="sd">        .. versionadded:: 0.11.0</span>
@@ -330,12 +330,12 @@
 
         <span class="k">return</span> <span class="n">ts</span>
 </div>
-<div class="viewcode-block" id="Timestep._init_unitcell"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Timestep._init_unitcell">[docs]</a>    <span class="k">def</span> <span class="nf">_init_unitcell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Timestep._init_unitcell"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.DCD.Timestep._init_unitcell">[docs]</a>    <span class="k">def</span> <span class="nf">_init_unitcell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create custom datastructure for :attr:`_unitcell`.&quot;&quot;&quot;</span>
         <span class="c"># override for other Timesteps</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">6</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="Timestep.__eq__"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Timestep.__eq__">[docs]</a>    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<div class="viewcode-block" id="Timestep.__eq__"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.DCD.Timestep.__eq__">[docs]</a>    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Compare with another Timestep</span>
 
 <span class="sd">        .. versionadded:: 0.11.0</span>
@@ -365,7 +365,7 @@
 
         <span class="k">return</span> <span class="bp">True</span>
 </div>
-<div class="viewcode-block" id="Timestep.__getitem__"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Timestep.__getitem__">[docs]</a>    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">):</span>
+<div class="viewcode-block" id="Timestep.__getitem__"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.DCD.Timestep.__getitem__">[docs]</a>    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get a selection of coordinates</span>
 
 <span class="sd">        ``ts[i]``</span>
@@ -388,7 +388,7 @@
     <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span>
 
-<div class="viewcode-block" id="Timestep.__iter__"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Timestep.__iter__">[docs]</a>    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Timestep.__iter__"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.DCD.Timestep.__iter__">[docs]</a>    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Iterate over coordinates</span>
 
 <span class="sd">        ``for x in ts``</span>
@@ -406,14 +406,14 @@
             <span class="n">tail</span> <span class="o">=</span> <span class="s">&quot; &gt;&quot;</span>
         <span class="k">return</span> <span class="n">desc</span> <span class="o">+</span> <span class="n">tail</span>
 
-<div class="viewcode-block" id="Timestep.copy"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Timestep.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Timestep.copy"><a class="viewcode-back" href="../../../documentation_pages/coordinates/xdrfile/XTC.html#MDAnalysis.coordinates.DCD.Timestep.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Make an independent (&quot;deep&quot;) copy of the whole :class:`Timestep`.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__deepcopy__</span><span class="p">()</span>
 </div>
     <span class="k">def</span> <span class="nf">__deepcopy__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">from_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Timestep.copy_slice"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Timestep.copy_slice">[docs]</a>    <span class="k">def</span> <span class="nf">copy_slice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sel</span><span class="p">):</span>
+<div class="viewcode-block" id="Timestep.copy_slice"><a class="viewcode-back" href="../../../documentation_pages/coordinates/xdrfile/XTC.html#MDAnalysis.coordinates.DCD.Timestep.copy_slice">[docs]</a>    <span class="k">def</span> <span class="nf">copy_slice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sel</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Make a new Timestep containing a subset of the original Timestep.</span>
 
 <span class="sd">        ``ts.copy_slice(slice(start, stop, skip))``</span>
@@ -448,21 +448,23 @@
             <span class="n">new_TS</span><span class="o">.</span><span class="n">forces</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forces</span><span class="p">[</span><span class="n">sel</span><span class="p">]</span>
         <span class="n">new_TS</span><span class="o">.</span><span class="n">_unitcell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
-        <span class="n">new_TS</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span>
         <span class="n">new_TS</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame</span>
 
-        <span class="k">for</span> <span class="n">att</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;_frame&#39;</span><span class="p">,</span> <span class="s">&#39;_time&#39;</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">att</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;_frame&#39;</span><span class="p">,):</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="nb">setattr</span><span class="p">(</span><span class="n">new_TS</span><span class="p">,</span> <span class="n">att</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">att</span><span class="p">))</span>
             <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
                 <span class="k">pass</span>
+
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;_reader&#39;</span><span class="p">):</span>
+            <span class="n">new_TS</span><span class="o">.</span><span class="n">_reader</span> <span class="o">=</span> <span class="n">weakref</span><span class="o">.</span><span class="n">ref</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_reader</span><span class="p">())</span>
 
         <span class="n">new_TS</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">new_TS</span>
 </div>
     <span class="nd">@property</span>
-<div class="viewcode-block" id="Timestep.n_atoms"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Timestep.n_atoms">[docs]</a>    <span class="k">def</span> <span class="nf">n_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">n_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;A read only view of the number of atoms this Timestep has</span>
 
 <span class="sd">        .. versionchanged:: 0.11.0</span>
@@ -473,7 +475,7 @@
         <span class="c"># - not sure if that is ever useful</span>
         <span class="c"># - not sure how to manage existing data upon extension</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_atoms</span>
-</div>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">has_positions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;A boolean of whether this Timestep has position data</span>
@@ -486,7 +488,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_positions</span>
 
     <span class="nd">@has_positions.setter</span>
-<div class="viewcode-block" id="Timestep.has_positions"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Timestep.has_positions">[docs]</a>    <span class="k">def</span> <span class="nf">has_positions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">has_positions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">val</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_positions</span><span class="p">:</span>
             <span class="c"># Setting this will always reallocate position data</span>
             <span class="c"># ie</span>
@@ -497,7 +499,7 @@
         <span class="k">elif</span> <span class="ow">not</span> <span class="n">val</span><span class="p">:</span>
             <span class="c"># Unsetting val won&#39;t delete the numpy array</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_has_positions</span> <span class="o">=</span> <span class="bp">False</span>
-</div>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">positions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;A record of the positions of all atoms in this Timestep</span>
@@ -522,10 +524,10 @@
             <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s">&quot;This Timestep has no positions&quot;</span><span class="p">)</span>
 
     <span class="nd">@positions.setter</span>
-<div class="viewcode-block" id="Timestep.positions"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Timestep.positions">[docs]</a>    <span class="k">def</span> <span class="nf">positions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">positions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">has_positions</span> <span class="o">=</span> <span class="bp">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">new</span>
-</div>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">_x</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;A view onto the x dimension of position data</span>
@@ -565,14 +567,14 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_velocities</span>
 
     <span class="nd">@has_velocities.setter</span>
-<div class="viewcode-block" id="Timestep.has_velocities"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Timestep.has_velocities">[docs]</a>    <span class="k">def</span> <span class="nf">has_velocities</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">has_velocities</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">val</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_velocities</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_velocities</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
                                         <span class="n">order</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_has_velocities</span> <span class="o">=</span> <span class="bp">True</span>
         <span class="k">elif</span> <span class="ow">not</span> <span class="n">val</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_has_velocities</span> <span class="o">=</span> <span class="bp">False</span>
-</div>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">velocities</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;A record of the velocities of all atoms in this Timestep</span>
@@ -596,10 +598,10 @@
             <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s">&quot;This Timestep has no velocities&quot;</span><span class="p">)</span>
 
     <span class="nd">@velocities.setter</span>
-<div class="viewcode-block" id="Timestep.velocities"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Timestep.velocities">[docs]</a>    <span class="k">def</span> <span class="nf">velocities</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">velocities</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">has_velocities</span> <span class="o">=</span> <span class="bp">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_velocities</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">new</span>
-</div>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">has_forces</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;A boolean of whether this Timestep has force data</span>
@@ -612,14 +614,14 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_forces</span>
 
     <span class="nd">@has_forces.setter</span>
-<div class="viewcode-block" id="Timestep.has_forces"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Timestep.has_forces">[docs]</a>    <span class="k">def</span> <span class="nf">has_forces</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">has_forces</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">val</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_forces</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_forces</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
                                     <span class="n">order</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_has_forces</span> <span class="o">=</span> <span class="bp">True</span>
         <span class="k">elif</span> <span class="ow">not</span> <span class="n">val</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_has_forces</span> <span class="o">=</span> <span class="bp">False</span>
-</div>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">forces</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;A record of the forces of all atoms in this Timestep</span>
@@ -643,10 +645,10 @@
             <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s">&quot;This Timestep has no forces&quot;</span><span class="p">)</span>
 
     <span class="nd">@forces.setter</span>
-<div class="viewcode-block" id="Timestep.forces"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Timestep.forces">[docs]</a>    <span class="k">def</span> <span class="nf">forces</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">forces</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">has_forces</span> <span class="o">=</span> <span class="bp">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_forces</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">new</span>
-</div>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;unitcell dimensions (*A*, *B*, *C*, *alpha*, *beta*, *gamma*)</span>
@@ -664,14 +666,14 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span>
 
     <span class="nd">@dimensions.setter</span>
-<div class="viewcode-block" id="Timestep.dimensions"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions">[docs]</a>    <span class="k">def</span> <span class="nf">dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">box</span>
-</div>
+
     <span class="nd">@property</span>
-<div class="viewcode-block" id="Timestep.volume"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Timestep.volume">[docs]</a>    <span class="k">def</span> <span class="nf">volume</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">volume</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;volume of the unitcell&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">core</span><span class="o">.</span><span class="n">box_volume</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
-</div>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">triclinic_dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;The unitcell dimensions represented as triclinic vectors</span>
@@ -703,13 +705,13 @@
         <span class="k">return</span> <span class="n">core</span><span class="o">.</span><span class="n">triclinic_vectors</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
 
     <span class="nd">@triclinic_dimensions.setter</span>
-<div class="viewcode-block" id="Timestep.triclinic_dimensions"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Timestep.triclinic_dimensions">[docs]</a>    <span class="k">def</span> <span class="nf">triclinic_dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">triclinic_dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set the unitcell for this Timestep as defined by triclinic vectors</span>
 
 <span class="sd">        .. versionadded:: 0.11.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="n">core</span><span class="o">.</span><span class="n">triclinic_box</span><span class="p">(</span><span class="o">*</span><span class="n">new</span><span class="p">)</span>
-</div>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">dt</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;The time difference in ps between timesteps</span>
@@ -722,17 +724,23 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;dt&#39;</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;Reader has no dt information, set to 1.0 ps&quot;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="mf">1.0</span>
+            <span class="k">pass</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;dt&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reader</span><span class="p">()</span><span class="o">.</span><span class="n">_get_dt</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">dt</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;Reader has no dt information, set to 1.0 ps&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mf">1.0</span>
 
     <span class="nd">@dt.setter</span>
     <span class="k">def</span> <span class="nf">dt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;dt&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">new</span>
 
     <span class="nd">@dt.deleter</span>
-<div class="viewcode-block" id="Timestep.dt"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dt">[docs]</a>    <span class="k">def</span> <span class="nf">dt</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">dt</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;dt&#39;</span><span class="p">]</span>
-</div>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;The time in ps of this timestep</span>
@@ -758,11 +766,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">new</span>
 
     <span class="nd">@time.deleter</span>
-<div class="viewcode-block" id="Timestep.time"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Timestep.time">[docs]</a>    <span class="k">def</span> <span class="nf">time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;time&#39;</span><span class="p">]</span>
 
-</div></div>
-<div class="viewcode-block" id="IObase"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.IObase">[docs]</a><span class="k">class</span> <span class="nc">IObase</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="IObase"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.DCD.IObase">[docs]</a><span class="k">class</span> <span class="nc">IObase</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Base class bundling common functionality for trajectory I/O.</span>
 
 <span class="sd">    .. versionchanged:: 0.8</span>
@@ -775,7 +783,7 @@
     <span class="c">#: ... for formats that support it)</span>
     <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;time&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span> <span class="s">&#39;length&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span> <span class="s">&#39;velocity&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">}</span>
 
-<div class="viewcode-block" id="IObase.convert_pos_from_native"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.IObase.convert_pos_from_native">[docs]</a>    <span class="k">def</span> <span class="nf">convert_pos_from_native</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+<div class="viewcode-block" id="IObase.convert_pos_from_native"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.DCD.IObase.convert_pos_from_native">[docs]</a>    <span class="k">def</span> <span class="nf">convert_pos_from_native</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;In-place conversion of coordinate array x from native units to base units.</span>
 
 <span class="sd">        By default, the input *x* is modified in place and also returned.</span>
@@ -795,7 +803,7 @@
         <span class="n">x</span> <span class="o">*=</span> <span class="n">f</span>
         <span class="k">return</span> <span class="n">x</span>
 </div>
-<div class="viewcode-block" id="IObase.convert_velocities_from_native"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.IObase.convert_velocities_from_native">[docs]</a>    <span class="k">def</span> <span class="nf">convert_velocities_from_native</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+<div class="viewcode-block" id="IObase.convert_velocities_from_native"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.DCD.IObase.convert_velocities_from_native">[docs]</a>    <span class="k">def</span> <span class="nf">convert_velocities_from_native</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;In-place conversion of velocities array *v* from native units to base units.</span>
 
 <span class="sd">        By default, the input *v* is modified in place and also returned.</span>
@@ -810,7 +818,7 @@
         <span class="n">v</span> <span class="o">*=</span> <span class="n">f</span>
         <span class="k">return</span> <span class="n">v</span>
 </div>
-<div class="viewcode-block" id="IObase.convert_forces_from_native"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.IObase.convert_forces_from_native">[docs]</a>    <span class="k">def</span> <span class="nf">convert_forces_from_native</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+<div class="viewcode-block" id="IObase.convert_forces_from_native"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.DCD.IObase.convert_forces_from_native">[docs]</a>    <span class="k">def</span> <span class="nf">convert_forces_from_native</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;In-place conversion of forces array *force* from native units to base units.</span>
 
 <span class="sd">        By default, the input *force* is modified in place and also returned.</span>
@@ -825,7 +833,7 @@
         <span class="n">force</span> <span class="o">*=</span> <span class="n">f</span>
         <span class="k">return</span> <span class="n">force</span>
 </div>
-<div class="viewcode-block" id="IObase.convert_time_from_native"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.IObase.convert_time_from_native">[docs]</a>    <span class="k">def</span> <span class="nf">convert_time_from_native</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+<div class="viewcode-block" id="IObase.convert_time_from_native"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.DCD.IObase.convert_time_from_native">[docs]</a>    <span class="k">def</span> <span class="nf">convert_time_from_native</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Convert time *t* from native units to base units.</span>
 
 <span class="sd">        By default, the input *t* is modified in place and also</span>
@@ -848,7 +856,7 @@
         <span class="n">t</span> <span class="o">*=</span> <span class="n">f</span>
         <span class="k">return</span> <span class="n">t</span>
 </div>
-<div class="viewcode-block" id="IObase.convert_pos_to_native"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.IObase.convert_pos_to_native">[docs]</a>    <span class="k">def</span> <span class="nf">convert_pos_to_native</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+<div class="viewcode-block" id="IObase.convert_pos_to_native"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.DCD.IObase.convert_pos_to_native">[docs]</a>    <span class="k">def</span> <span class="nf">convert_pos_to_native</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Conversion of coordinate array x from base units to native units.</span>
 
 <span class="sd">        By default, the input *x* is modified in place and also returned.</span>
@@ -868,7 +876,7 @@
         <span class="n">x</span> <span class="o">*=</span> <span class="n">f</span>
         <span class="k">return</span> <span class="n">x</span>
 </div>
-<div class="viewcode-block" id="IObase.convert_velocities_to_native"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.IObase.convert_velocities_to_native">[docs]</a>    <span class="k">def</span> <span class="nf">convert_velocities_to_native</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+<div class="viewcode-block" id="IObase.convert_velocities_to_native"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.DCD.IObase.convert_velocities_to_native">[docs]</a>    <span class="k">def</span> <span class="nf">convert_velocities_to_native</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;In-place conversion of coordinate array *v* from base units to native units.</span>
 
 <span class="sd">        By default, the input *v* is modified in place and also returned.</span>
@@ -883,7 +891,7 @@
         <span class="n">v</span> <span class="o">*=</span> <span class="n">f</span>
         <span class="k">return</span> <span class="n">v</span>
 </div>
-<div class="viewcode-block" id="IObase.convert_forces_to_native"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.IObase.convert_forces_to_native">[docs]</a>    <span class="k">def</span> <span class="nf">convert_forces_to_native</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+<div class="viewcode-block" id="IObase.convert_forces_to_native"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.DCD.IObase.convert_forces_to_native">[docs]</a>    <span class="k">def</span> <span class="nf">convert_forces_to_native</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;In-place conversion of force array *force* from base units to native units.</span>
 
 <span class="sd">        By default, the input *force* is modified in place and also returned.</span>
@@ -898,7 +906,7 @@
         <span class="n">force</span> <span class="o">*=</span> <span class="n">f</span>
         <span class="k">return</span> <span class="n">force</span>
 </div>
-<div class="viewcode-block" id="IObase.convert_time_to_native"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.IObase.convert_time_to_native">[docs]</a>    <span class="k">def</span> <span class="nf">convert_time_to_native</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+<div class="viewcode-block" id="IObase.convert_time_to_native"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.DCD.IObase.convert_time_to_native">[docs]</a>    <span class="k">def</span> <span class="nf">convert_time_to_native</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Convert time *t* from base units to native units.</span>
 
 <span class="sd">        By default, the input *t* is modified in place and also</span>
@@ -921,7 +929,7 @@
         <span class="n">t</span> <span class="o">*=</span> <span class="n">f</span>
         <span class="k">return</span> <span class="n">t</span>
 </div>
-<div class="viewcode-block" id="IObase.close"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.IObase.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="IObase.close"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.DCD.IObase.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Close the trajectory file.&quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
@@ -1138,7 +1146,7 @@
                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="Reader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Reader">[docs]</a><span class="k">class</span> <span class="nc">Reader</span><span class="p">(</span><span class="n">ProtoReader</span><span class="p">):</span>
+<div class="viewcode-block" id="Reader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.DCD.Reader">[docs]</a><span class="k">class</span> <span class="nc">Reader</span><span class="p">(</span><span class="n">ProtoReader</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Base class for trajectory readers that extends :class:`ProtoReader` with a :meth:`__del__` method.</span>
 
 <span class="sd">    New Readers should subclass :class:`Reader` and properly implement a</span>
@@ -1182,7 +1190,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
 </div>
-<div class="viewcode-block" id="ChainReader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ChainReader">[docs]</a><span class="k">class</span> <span class="nc">ChainReader</span><span class="p">(</span><span class="n">ProtoReader</span><span class="p">):</span>
+<div class="viewcode-block" id="ChainReader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.DCD.ChainReader">[docs]</a><span class="k">class</span> <span class="nc">ChainReader</span><span class="p">(</span><span class="n">ProtoReader</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Reader that concatenates multiple trajectories on the fly.</span>
 
 <span class="sd">    **Known issues**</span>
@@ -1344,19 +1352,19 @@
             <span class="k">return</span> <span class="bp">None</span>
 
     <span class="nd">@property</span>
-<div class="viewcode-block" id="ChainReader.frame"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ChainReader.frame">[docs]</a>    <span class="k">def</span> <span class="nf">frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Cumulative frame number of the current time step.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span>
-</div>
+
     <span class="nd">@property</span>
-<div class="viewcode-block" id="ChainReader.time"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ChainReader.time">[docs]</a>    <span class="k">def</span> <span class="nf">time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Cumulative time of the current frame in MDAnalysis time units (typically ps).&quot;&quot;&quot;</span>
         <span class="c"># currently a hack, should really use a list of trajectory lengths and delta * local_frame</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_delta</span>
         <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;No timestep information available. Set delta to fake a constant time step.&quot;</span><span class="p">)</span>
-</div>
+
     <span class="k">def</span> <span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Execute *method* with *kwargs* for all readers.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">reader</span><span class="o">.</span><span class="n">__getattribute__</span><span class="p">(</span><span class="n">method</span><span class="p">)(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">for</span> <span class="n">reader</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">readers</span><span class="p">]</span>
@@ -1388,10 +1396,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">__active_reader_index</span> <span class="o">=</span> <span class="n">i</span>
 
     <span class="nd">@property</span>
-<div class="viewcode-block" id="ChainReader.active_reader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ChainReader.active_reader">[docs]</a>    <span class="k">def</span> <span class="nf">active_reader</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">active_reader</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Reader instance from which frames are being read.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">readers</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__active_reader_index</span><span class="p">]</span>
-</div>
+
     <span class="k">def</span> <span class="nf">_read_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Position trajectory at frame index *frame* and return :class:`Timestep`.</span>
 
@@ -1431,7 +1439,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__chained_trajectories_iter</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span>
 
-<div class="viewcode-block" id="ChainReader.rewind"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ChainReader.rewind">[docs]</a>    <span class="k">def</span> <span class="nf">rewind</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ChainReader.rewind"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.DCD.ChainReader.rewind">[docs]</a>    <span class="k">def</span> <span class="nf">rewind</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set current frame to the beginning.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_rewind</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__chained_trajectories_iter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_chained_iterator</span><span class="p">()</span>
@@ -1462,14 +1470,14 @@
                <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="Writer"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Writer">[docs]</a><span class="k">class</span> <span class="nc">Writer</span><span class="p">(</span><span class="n">IObase</span><span class="p">):</span>
+<div class="viewcode-block" id="Writer"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.DCD.Writer">[docs]</a><span class="k">class</span> <span class="nc">Writer</span><span class="p">(</span><span class="n">IObase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Base class for trajectory writers.</span>
 
 <span class="sd">    See Trajectory API definition in :mod:`MDAnalysis.coordinates.__init__` for</span>
 <span class="sd">    the required attributes and methods.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="Writer.convert_dimensions_to_unitcell"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Writer.convert_dimensions_to_unitcell">[docs]</a>    <span class="k">def</span> <span class="nf">convert_dimensions_to_unitcell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
+<div class="viewcode-block" id="Writer.convert_dimensions_to_unitcell"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.DCD.Writer.convert_dimensions_to_unitcell">[docs]</a>    <span class="k">def</span> <span class="nf">convert_dimensions_to_unitcell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Read dimensions from timestep *ts* and return appropriate unitcell.</span>
 
 <span class="sd">        The default is to return ``[A,B,C,alpha,beta,gamma]``; if this</span>
@@ -1481,7 +1489,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_to_native</span><span class="p">(</span><span class="n">lengths</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">lengths</span><span class="p">,</span> <span class="n">angles</span><span class="p">])</span>
 </div>
-<div class="viewcode-block" id="Writer.write"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Writer.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+<div class="viewcode-block" id="Writer.write"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.DCD.Writer.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write current timestep, using the supplied *obj*.</span>
 
 <span class="sd">        The argument should be a :class:`~MDAnalysis.core.AtomGroup.AtomGroup` or</span>
@@ -1515,7 +1523,7 @@
             <span class="c"># no trajectory loaded yet or a Writer that does not need e.g. self.n_atoms</span>
             <span class="k">return</span> <span class="s">&quot;&lt; </span><span class="si">%s</span><span class="s"> </span><span class="si">%r</span><span class="s"> &gt;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Writer.has_valid_coordinates"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Writer.has_valid_coordinates">[docs]</a>    <span class="k">def</span> <span class="nf">has_valid_coordinates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">criteria</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="Writer.has_valid_coordinates"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.coordinates.DCD.Writer.has_valid_coordinates">[docs]</a>    <span class="k">def</span> <span class="nf">has_valid_coordinates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">criteria</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns ``True`` if all values are within limit values of their formats.</span>
 
 <span class="sd">        Due to rounding, the test is asymmetric (and *min* is supposed to be negative):</span>
@@ -1603,7 +1611,7 @@
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -1612,12 +1620,11 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
-          <li><a href="../../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
+    <div class="footer" role="contentinfo">
         &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
@@ -1627,7 +1634,7 @@
     Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Gorman Stock, Isaac Virshup,
     Zhuyi Xue, Carlos Yáñez S.,
     and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>
 </html>

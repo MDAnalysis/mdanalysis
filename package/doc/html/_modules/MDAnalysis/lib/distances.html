@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.lib.distances &mdash; MDAnalysis 0.11.0-dev documentation</title>
+    <title>MDAnalysis.lib.distances &mdash; MDAnalysis 0.11.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -16,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.11.0-dev',
+        VERSION:     '0.11.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,14 +25,14 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.11.0-dev documentation"
+          title="Search within MDAnalysis 0.11.0 documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.11.0-dev documentation" href="../../../index.html" />
-    <link rel="up" title="MDAnalysis" href="../../MDAnalysis.html" /> 
+    <link rel="top" title="MDAnalysis 0.11.0 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -43,17 +41,16 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
-          <li><a href="../../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../../index.html">
               <img class="logo" src="../../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
             </a></p>
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../../search.html" method="get">
       <input type="text" name="q" />
@@ -72,7 +69,7 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <h1>Source code for MDAnalysis.lib.distances</h1><div class="highlight"><pre>
 <span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-</span>
@@ -106,11 +103,12 @@
 <span class="sd">.. autofunction:: calc_bonds(atom1, atom2 [, box, [,result]])</span>
 <span class="sd">.. autofunction:: calc_angles(atom1, atom2, atom3 [,box [, result]])</span>
 <span class="sd">.. autofunction:: calc_dihedrals(atom1, atom2, atom3, atom4 [,box [, result]])</span>
-<span class="sd">.. autofunction:: applyPBC(coordinates, box)</span>
+<span class="sd">.. autofunction:: apply_PBC(coordinates, box)</span>
 <span class="sd">.. autofunction:: transform_RtoS(coordinates, box)</span>
 <span class="sd">.. autofunction:: transform_StoR(coordinates, box)</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">numpy.lib.utils</span> <span class="kn">import</span> <span class="n">deprecate</span>
 
 <span class="kn">from</span> <span class="nn">.mdamath</span> <span class="kn">import</span> <span class="n">triclinic_vectors</span><span class="p">,</span> <span class="n">triclinic_box</span>
 <span class="kn">from</span> <span class="nn">._distances</span> <span class="kn">import</span> <span class="p">(</span><span class="n">calc_distance_array</span><span class="p">,</span>
@@ -213,7 +211,7 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Input arrays must all be same shape&quot;</span>
                          <span class="s">&quot;Got {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">shape</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">arrays</span><span class="p">]))</span>
 
-<div class="viewcode-block" id="distance_array"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.lib.distances.distance_array">[docs]</a><span class="k">def</span> <span class="nf">distance_array</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="distance_array"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.distance_array">[docs]</a><span class="k">def</span> <span class="nf">distance_array</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Calculate all distances between a reference set and another configuration.</span>
 
 <span class="sd">    If there are *i* positions in reference, and *j* positions in configuration,</span>
@@ -285,7 +283,7 @@
     <span class="k">return</span> <span class="n">distances</span>
 
 </div>
-<div class="viewcode-block" id="self_distance_array"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.lib.distances.self_distance_array">[docs]</a><span class="k">def</span> <span class="nf">self_distance_array</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="self_distance_array"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.self_distance_array">[docs]</a><span class="k">def</span> <span class="nf">self_distance_array</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Calculate all distances within a configuration *reference*.</span>
 
 <span class="sd">    If a *box* is supplied then a minimum image convention is used before</span>
@@ -355,7 +353,7 @@
     <span class="k">return</span> <span class="n">distances</span>
 
 </div>
-<div class="viewcode-block" id="transform_RtoS"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.lib.distances.transform_RtoS">[docs]</a><span class="k">def</span> <span class="nf">transform_RtoS</span><span class="p">(</span><span class="n">inputcoords</span><span class="p">,</span> <span class="n">box</span><span class="p">):</span>
+<div class="viewcode-block" id="transform_RtoS"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.transform_RtoS">[docs]</a><span class="k">def</span> <span class="nf">transform_RtoS</span><span class="p">(</span><span class="n">inputcoords</span><span class="p">,</span> <span class="n">box</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Transform an array of coordinates from real space to S space (aka lambda space)</span>
 
 <span class="sd">    S space represents fractional space within the unit cell for this system</span>
@@ -398,7 +396,7 @@
     <span class="k">return</span> <span class="n">coords</span>
 
 </div>
-<div class="viewcode-block" id="transform_StoR"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.lib.distances.transform_StoR">[docs]</a><span class="k">def</span> <span class="nf">transform_StoR</span><span class="p">(</span><span class="n">inputcoords</span><span class="p">,</span> <span class="n">box</span><span class="p">):</span>
+<div class="viewcode-block" id="transform_StoR"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.transform_StoR">[docs]</a><span class="k">def</span> <span class="nf">transform_StoR</span><span class="p">(</span><span class="n">inputcoords</span><span class="p">,</span> <span class="n">box</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Transform an array of coordinates from S space into real space.</span>
 
 <span class="sd">    S space represents fractional space within the unit cell for this system</span>
@@ -435,7 +433,7 @@
     <span class="k">return</span> <span class="n">coords</span>
 
 </div>
-<div class="viewcode-block" id="calc_bonds"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.lib.distances.calc_bonds">[docs]</a><span class="k">def</span> <span class="nf">calc_bonds</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="calc_bonds"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.calc_bonds">[docs]</a><span class="k">def</span> <span class="nf">calc_bonds</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate all distances between a pair of atoms.  *atom1* and *atom2* are both</span>
 <span class="sd">    arrays of coordinates, where atom1[i] and atom2[i] represent a bond.</span>
@@ -510,7 +508,7 @@
     <span class="k">return</span> <span class="n">distances</span>
 
 </div>
-<div class="viewcode-block" id="calc_angles"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.lib.distances.calc_angles">[docs]</a><span class="k">def</span> <span class="nf">calc_angles</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">coords3</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="calc_angles"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.calc_angles">[docs]</a><span class="k">def</span> <span class="nf">calc_angles</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">coords3</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates the angle formed between three atoms, over a list of coordinates.</span>
 <span class="sd">    All *atom* inputs are lists of coordinates of equal length, with *atom2*</span>
@@ -587,7 +585,7 @@
     <span class="k">return</span> <span class="n">angles</span>
 
 </div>
-<div class="viewcode-block" id="calc_dihedrals"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.lib.distances.calc_dihedrals">[docs]</a><span class="k">def</span> <span class="nf">calc_dihedrals</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">coords3</span><span class="p">,</span> <span class="n">coords4</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="calc_dihedrals"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.calc_dihedrals">[docs]</a><span class="k">def</span> <span class="nf">calc_dihedrals</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">coords3</span><span class="p">,</span> <span class="n">coords4</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate the dihedral angle formed by four atoms, over a list of coordinates.</span>
 
@@ -637,6 +635,8 @@
 <span class="sd">    .. versionadded:: 0.8</span>
 <span class="sd">    .. versionchanged:: 0.9.0</span>
 <span class="sd">       Added optional box argument to account for periodic boundaries in calculation</span>
+<span class="sd">    .. versionchanged:: 0.11.0</span>
+<span class="sd">       Renamed from calc_torsions to calc_dihedrals</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">atom1</span> <span class="o">=</span> <span class="n">coords1</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="s">&#39;C&#39;</span><span class="p">)</span>
     <span class="n">atom2</span> <span class="o">=</span> <span class="n">coords2</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="s">&#39;C&#39;</span><span class="p">)</span>
@@ -674,12 +674,15 @@
         <span class="n">calc_dihedral</span><span class="p">(</span><span class="n">atom1</span><span class="p">,</span> <span class="n">atom2</span><span class="p">,</span> <span class="n">atom3</span><span class="p">,</span> <span class="n">atom4</span><span class="p">,</span> <span class="n">angles</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">angles</span>
-
 </div>
-<div class="viewcode-block" id="applyPBC"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.lib.distances.applyPBC">[docs]</a><span class="k">def</span> <span class="nf">applyPBC</span><span class="p">(</span><span class="n">incoords</span><span class="p">,</span> <span class="n">box</span><span class="p">):</span>
+<span class="n">calc_torsions</span> <span class="o">=</span> <span class="n">deprecate</span><span class="p">(</span><span class="n">calc_dihedrals</span><span class="p">,</span> <span class="n">old_name</span><span class="o">=</span><span class="s">&#39;calc_torsions&#39;</span><span class="p">,</span>
+                          <span class="n">new_name</span><span class="o">=</span><span class="s">&#39;calc_dihedrals&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="apply_PBC"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.apply_PBC">[docs]</a><span class="k">def</span> <span class="nf">apply_PBC</span><span class="p">(</span><span class="n">incoords</span><span class="p">,</span> <span class="n">box</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Moves a set of coordinates to all be within the primary unit cell</span>
 
-<span class="sd">    newcoords = applyPBC(coords, box)</span>
+<span class="sd">    newcoords = apply_PBC(coords, box)</span>
 
 <span class="sd">    :Arguments:</span>
 <span class="sd">        *coords*</span>
@@ -723,7 +726,9 @@
         <span class="n">box_inv</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">box</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
         <span class="n">triclinic_pbc</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">box_inv</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">coords</span></div>
+    <span class="k">return</span> <span class="n">coords</span>
+</div>
+<span class="n">applyPBC</span> <span class="o">=</span> <span class="n">deprecate</span><span class="p">(</span><span class="n">apply_PBC</span><span class="p">,</span> <span class="n">old_name</span><span class="o">=</span><span class="s">&#39;applyPBC&#39;</span><span class="p">,</span> <span class="n">new_name</span><span class="o">=</span><span class="s">&#39;apply_PBC&#39;</span><span class="p">)</span>
 </pre></div>
 
           </div>
@@ -731,7 +736,7 @@
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -740,12 +745,11 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
-          <li><a href="../../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
+    <div class="footer" role="contentinfo">
         &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
@@ -755,7 +759,7 @@
     Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Gorman Stock, Isaac Virshup,
     Zhuyi Xue, Carlos Yáñez S.,
     and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>
 </html>

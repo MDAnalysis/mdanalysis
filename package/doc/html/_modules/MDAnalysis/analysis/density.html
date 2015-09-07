@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.analysis.density &mdash; MDAnalysis 0.11.0-dev documentation</title>
+    <title>MDAnalysis.analysis.density &mdash; MDAnalysis 0.11.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -16,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.11.0-dev',
+        VERSION:     '0.11.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,14 +25,14 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.11.0-dev documentation"
+          title="Search within MDAnalysis 0.11.0 documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.11.0-dev documentation" href="../../../index.html" />
-    <link rel="up" title="MDAnalysis" href="../../MDAnalysis.html" /> 
+    <link rel="top" title="MDAnalysis 0.11.0 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -43,17 +41,16 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
-          <li><a href="../../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../../index.html">
               <img class="logo" src="../../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
             </a></p>
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../../search.html" method="get">
       <input type="text" name="q" />
@@ -72,7 +69,7 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <h1>Source code for MDAnalysis.analysis.density</h1><div class="highlight"><pre>
 <span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
@@ -178,7 +175,7 @@
 <span class="sd">        The &#39;gridData&#39; module from GridDataFormats could not be</span>
 <span class="sd">        imported. Please install it first.  You can try installing with</span>
 <span class="sd">        setuptools directly from the internet:</span>
-<span class="sd">    </span>
+
 <span class="sd">          easy_install GridDataFormats</span>
 
 <span class="sd">        Alternatively, download the package from</span>
@@ -191,6 +188,7 @@
 
 <span class="kn">import</span> <span class="nn">MDAnalysis</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.util</span> <span class="kn">import</span> <span class="n">fixedwidth_bins</span><span class="p">,</span> <span class="n">iterable</span><span class="p">,</span> <span class="n">asiterable</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.lib</span> <span class="kn">import</span> <span class="n">NeighborSearch</span> <span class="k">as</span> <span class="n">NS</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">NoDataError</span><span class="p">,</span> <span class="n">MissingDataWarning</span>
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">units</span>
 
@@ -659,7 +657,6 @@
     <span class="n">protein</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">sel2</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">use_kdtree</span><span class="p">:</span>
         <span class="c"># using faster hand-coded &#39;not within&#39; selection with kd-tree</span>
-        <span class="kn">import</span> <span class="nn">MDAnalysis.lib.KDTree.NeighborSearch</span> <span class="kn">as</span> <span class="nn">NS</span>
         <span class="kn">import</span> <span class="nn">MDAnalysis.core.AtomGroup</span>
 
         <span class="n">set_solvent</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">solvent</span><span class="p">)</span>  <span class="c"># need sets to do bulk = allsolvent - selection</span>
@@ -824,9 +821,9 @@
 <span class="sd">        that can be easily matched to a broader density distribution.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">asUniverse</span>
+        <span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">as_Universe</span>
 
-        <span class="n">u</span> <span class="o">=</span> <span class="n">asUniverse</span><span class="p">(</span><span class="n">pdb</span><span class="p">)</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="n">as_Universe</span><span class="p">(</span><span class="n">pdb</span><span class="p">)</span>
         <span class="n">group</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">atomselection</span><span class="p">)</span>
         <span class="n">coord</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Selected </span><span class="si">%d</span><span class="s"> atoms (</span><span class="si">%s</span><span class="s">) out of </span><span class="si">%d</span><span class="s"> total.&quot;</span> <span class="o">%</span>
@@ -935,7 +932,7 @@
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -944,12 +941,11 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
-          <li><a href="../../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
+    <div class="footer" role="contentinfo">
         &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
@@ -959,7 +955,7 @@
     Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Gorman Stock, Isaac Virshup,
     Zhuyi Xue, Carlos Yáñez S.,
     and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>
 </html>

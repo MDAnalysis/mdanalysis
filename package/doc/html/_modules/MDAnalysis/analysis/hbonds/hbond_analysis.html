@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.analysis.hbonds.hbond_analysis &mdash; MDAnalysis 0.11.0-dev documentation</title>
+    <title>MDAnalysis.analysis.hbonds.hbond_analysis &mdash; MDAnalysis 0.11.0 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -16,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '0.11.0-dev',
+        VERSION:     '0.11.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,14 +25,14 @@
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.11.0-dev documentation"
+          title="Search within MDAnalysis 0.11.0 documentation"
           href="../../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.11.0-dev documentation" href="../../../../index.html" />
-    <link rel="up" title="MDAnalysis" href="../../../MDAnalysis.html" /> 
+    <link rel="top" title="MDAnalysis 0.11.0 documentation" href="../../../../index.html" />
+    <link rel="up" title="Module code" href="../../../index.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -43,17 +41,16 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
-          <li><a href="../../../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../../../MDAnalysis.html" accesskey="U">MDAnalysis</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../../../index.html">
               <img class="logo" src="../../../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
             </a></p>
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../../../search.html" method="get">
       <input type="text" name="q" />
@@ -72,7 +69,7 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <h1>Source code for MDAnalysis.analysis.hbonds.hbond_analysis</h1><div class="highlight"><pre>
 <span class="c"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
@@ -393,10 +390,10 @@
 
 <span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">MissingDataWarning</span><span class="p">,</span> <span class="n">NoDataError</span><span class="p">,</span> <span class="n">SelectionError</span><span class="p">,</span> <span class="n">SelectionWarning</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.core.AtomGroup</span> <span class="kn">import</span> <span class="n">AtomGroup</span>
-<span class="kn">import</span> <span class="nn">MDAnalysis.lib.KDTree.NeighborSearch</span> <span class="kn">as</span> <span class="nn">NS</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.util</span> <span class="kn">import</span> <span class="n">parse_residue</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.mdamath</span> <span class="kn">import</span> <span class="n">norm</span><span class="p">,</span> <span class="n">angle</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.log</span> <span class="kn">import</span> <span class="n">ProgressMeter</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.lib.NeighborSearch</span> <span class="kn">import</span> <span class="n">AtomNeighborSearch</span>
 
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">logging</span>
@@ -824,20 +821,24 @@
     <span class="k">def</span> <span class="nf">_update_selection_2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_s2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selection2</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter_first</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s2</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s">&quot;Size of selection 2 before filtering: {0} atoms&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s2</span><span class="p">)))</span>
-            <span class="n">ns_selection_2</span> <span class="o">=</span> <span class="n">NS</span><span class="o">.</span><span class="n">AtomNeighborSearch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s2</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_s2</span> <span class="o">=</span> <span class="n">ns_selection_2</span><span class="o">.</span><span class="n">search_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s1</span><span class="p">,</span> <span class="mf">3.</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">distance</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s">&quot;Size of selection 2: {0} atoms&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s2</span><span class="p">)))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s">&#39;Size of selection 2 before filtering:&#39;</span>
+                              <span class="s">&#39; {} atoms&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s2</span><span class="p">)))</span>
+            <span class="n">ns_selection_2</span> <span class="o">=</span> <span class="n">AtomNeighborSearch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s2</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_s2</span> <span class="o">=</span> <span class="n">ns_selection_2</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s1</span><span class="p">,</span> <span class="mf">3.</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">distance</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s">&#39;Size of selection 2: {0} atoms&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s2</span><span class="p">)))</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s2</span><span class="p">:</span>
-             <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;Selection 2 &#39;{0}&#39; did not select any atoms.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selection2</span><span class="p">)[:</span><span class="mi">80</span><span class="p">]))</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;Selection 2 &quot;{}&quot; did not select any atoms.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selection2</span><span class="p">)[:</span><span class="mi">80</span><span class="p">]))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_s2_donors</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_s2_donors_h</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_s2_acceptors</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection1_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;donor&#39;</span><span class="p">,</span> <span class="s">&#39;both&#39;</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_s2_acceptors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s2</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s">&#39; or &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s">&#39;name </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">acceptors</span><span class="p">]))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_s2_acceptors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s2</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span>
+                <span class="s">&#39; or &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s">&#39;name </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">acceptors</span><span class="p">]))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s">&quot;Selection 2 acceptors: </span><span class="si">%d</span><span class="s">&quot;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s2_acceptors</span><span class="p">))</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection1_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;acceptor&#39;</span><span class="p">,</span> <span class="s">&#39;both&#39;</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_s2_donors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s2</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s">&#39; or &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s">&#39;name </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">donors</span><span class="p">]))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_s2_donors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s2</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span>
+                <span class="s">&#39; or &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s">&#39;name </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">donors</span><span class="p">]))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_s2_donors_h</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s2_donors</span><span class="p">):</span>
                 <span class="n">tmp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_bonded_hydrogens</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
@@ -943,11 +944,11 @@
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection1_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;donor&#39;</span><span class="p">,</span> <span class="s">&#39;both&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s2_acceptors</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s">&quot;Selection 1 Donors &lt;-&gt; Acceptors&quot;</span><span class="p">)</span>
-                <span class="n">ns_acceptors</span> <span class="o">=</span> <span class="n">NS</span><span class="o">.</span><span class="n">AtomNeighborSearch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s2_acceptors</span><span class="p">)</span>
+                <span class="n">ns_acceptors</span> <span class="o">=</span> <span class="n">AtomNeighborSearch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s2_acceptors</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">donor_h_set</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s1_donors_h</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                     <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s1_donors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
                     <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">donor_h_set</span><span class="p">:</span>
-                        <span class="n">res</span> <span class="o">=</span> <span class="n">ns_acceptors</span><span class="o">.</span><span class="n">search_list</span><span class="p">(</span><span class="n">AtomGroup</span><span class="p">([</span><span class="n">h</span><span class="p">]),</span> <span class="bp">self</span><span class="o">.</span><span class="n">distance</span><span class="p">)</span>
+                        <span class="n">res</span> <span class="o">=</span> <span class="n">ns_acceptors</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">AtomGroup</span><span class="p">([</span><span class="n">h</span><span class="p">]),</span> <span class="bp">self</span><span class="o">.</span><span class="n">distance</span><span class="p">)</span>
                         <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">res</span><span class="p">:</span>
                             <span class="n">angle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_angle</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
                             <span class="n">donor_atom</span> <span class="o">=</span> <span class="n">h</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">distance_type</span> <span class="o">!=</span> <span class="s">&#39;heavy&#39;</span> <span class="k">else</span> <span class="n">d</span>
@@ -962,11 +963,11 @@
                                 <span class="n">already_found</span><span class="p">[(</span><span class="n">h</span><span class="o">.</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> <span class="bp">True</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection1_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;acceptor&#39;</span><span class="p">,</span> <span class="s">&#39;both&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s1_acceptors</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">logger_debug</span><span class="p">(</span><span class="s">&quot;Selection 1 Acceptors &lt;-&gt; Donors&quot;</span><span class="p">)</span>
-                <span class="n">ns_acceptors</span> <span class="o">=</span> <span class="n">NS</span><span class="o">.</span><span class="n">AtomNeighborSearch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s1_acceptors</span><span class="p">)</span>
+                <span class="n">ns_acceptors</span> <span class="o">=</span> <span class="n">AtomNeighborSearch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s1_acceptors</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">donor_h_set</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s2_donors_h</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                     <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s2_donors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
                     <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">donor_h_set</span><span class="p">:</span>
-                        <span class="n">res</span> <span class="o">=</span> <span class="n">ns_acceptors</span><span class="o">.</span><span class="n">search_list</span><span class="p">(</span><span class="n">AtomGroup</span><span class="p">([</span><span class="n">h</span><span class="p">]),</span> <span class="bp">self</span><span class="o">.</span><span class="n">distance</span><span class="p">)</span>
+                        <span class="n">res</span> <span class="o">=</span> <span class="n">ns_acceptors</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">AtomGroup</span><span class="p">([</span><span class="n">h</span><span class="p">]),</span> <span class="bp">self</span><span class="o">.</span><span class="n">distance</span><span class="p">)</span>
                         <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">res</span><span class="p">:</span>
                             <span class="k">if</span> <span class="n">remove_duplicates</span> <span class="ow">and</span> <span class="p">(</span>
                                     <span class="p">(</span><span class="n">h</span><span class="o">.</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="ow">in</span> <span class="n">already_found</span>
@@ -1285,7 +1286,7 @@
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -1294,12 +1295,11 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
-          <li><a href="../../../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../../../MDAnalysis.html" >MDAnalysis</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
+    <div class="footer" role="contentinfo">
         &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
@@ -1309,7 +1309,7 @@
     Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Gorman Stock, Isaac Virshup,
     Zhuyi Xue, Carlos Yáñez S.,
     and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>
 </html>

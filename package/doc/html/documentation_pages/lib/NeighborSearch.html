@@ -1,0 +1,195 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>9.3. Neighbor Search wrapper for MDAnalysis — :mod: MDAnalysis.lib.NeighborSearch &mdash; MDAnalysis 0.11.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.11.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 0.11.0 documentation"
+          href="../../_static/opensearch.xml"/>
+    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+    <link rel="top" title="MDAnalysis 0.11.0 documentation" href="../../index.html" />
+    <link rel="up" title="9. MDAnalysis library" href="../lib_modules.html" />
+    <link rel="next" title="9.4. Setting up logging — MDAnalysis.lib.log" href="log.html" />
+    <link rel="prev" title="9.2. Distance calculation library — MDAnalysis.lib._distances" href="_distances.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="log.html" title="9.4. Setting up logging — MDAnalysis.lib.log"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="_distances.html" title="9.2. Distance calculation library — MDAnalysis.lib._distances"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../lib_modules.html" accesskey="U">9. MDAnalysis library</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="_distances.html"
+                        title="previous chapter">9.2. Distance calculation library &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.lib._distances</span></code></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="log.html"
+                        title="next chapter">9.4. Setting up logging &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.lib.log</span></code></a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/documentation_pages/lib/NeighborSearch.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <span class="target" id="module-MDAnalysis.lib.NeighborSearch"></span><div class="section" id="neighbor-search-wrapper-for-mdanalysis-mod-mdanalysis-lib-neighborsearch">
+<h1>9.3. Neighbor Search wrapper for MDAnalysis &#8212; :mod: <cite>MDAnalysis.lib.NeighborSearch</cite><a class="headerlink" href="#neighbor-search-wrapper-for-mdanalysis-mod-mdanalysis-lib-neighborsearch" title="Permalink to this headline">¶</a></h1>
+<p>This module contains classes that allow neighbor searches directly with
+<cite>AtomGroup</cite> objects from <cite>MDAnalysis</cite>.</p>
+<dl class="class">
+<dt id="MDAnalysis.lib.NeighborSearch.AtomNeighborSearch">
+<em class="property">class </em><code class="descclassname">MDAnalysis.lib.NeighborSearch.</code><code class="descname">AtomNeighborSearch</code><span class="sig-paren">(</span><em>atom_group</em>, <em>bucket_size=10</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/NeighborSearch.html#AtomNeighborSearch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.NeighborSearch.AtomNeighborSearch" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class can be used to find all atoms/residues/segements within the
+radius of a given query position.</p>
+<p>This class is using the BioPython KDTree for the neighborsearch. This class
+also does not apply PBC to the distance calculattions. So you have to ensure
+yourself that the trajectory has been corrected for PBC artifacts.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>atom_list</em></dt>
+<dd><p class="first last">list of atoms (:class: <cite>~MDAnalysis.core.AtomGroup.AtomGroup</cite>)</p>
+</dd>
+<dt><em>bucket_size</em></dt>
+<dd><p class="first last">Number of entries in leafs of the KDTree. If you suffer poor
+performance you can play around with this number. Increasing the
+<cite>bucket_size</cite> will speed up the construction of the KDTree but
+slow down the search.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="MDAnalysis.lib.NeighborSearch.AtomNeighborSearch.search">
+<code class="descname">search</code><span class="sig-paren">(</span><em>atoms</em>, <em>radius</em>, <em>level='A'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/NeighborSearch.html#AtomNeighborSearch.search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.NeighborSearch.AtomNeighborSearch.search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return all atoms/residues/segments that are within <em>radius</em> of the
+atoms in <em>atoms</em>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
+<dt><em>atoms</em></dt>
+<dd><p class="first last">list of atoms (:class: <cite>~MDAnalysis.core.AtomGroup.AtomGroup</cite>)</p>
+</dd>
+<dt><em>radius</em></dt>
+<dd><p class="first last">float. Radius for search in Angstrom.</p>
+</dd>
+<dt><em>level</em> (optional)</dt>
+<dd><p class="first last">char (A, R, S). Return atoms(A), residues(R) or segments(S) within
+<em>radius</em> of <em>atoms</em>.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="log.html" title="9.4. Setting up logging — MDAnalysis.lib.log"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="_distances.html" title="9.2. Distance calculation library — MDAnalysis.lib._distances"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../lib_modules.html" >9. MDAnalysis library</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+    Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
+    David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
+    Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
+    Benjamin Hall, Joe Jordan, Jinju Lu, Robert McGibbon, Alex Nesterenko,
+    Manuel Nuno Melo, Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
+    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Gorman Stock, Isaac Virshup,
+    Zhuyi Xue, Carlos Yáñez S.,
+    and Oliver Beckstein.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

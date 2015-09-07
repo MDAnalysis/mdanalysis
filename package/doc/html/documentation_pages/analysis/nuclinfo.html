@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>3.4.1. Nucleic acid analysis — MDAnalysis.analysis.nuclinfo &mdash; MDAnalysis 0.11.0-dev documentation</title>
+    <title>3.4.1. Nucleic acid analysis — MDAnalysis.analysis.nuclinfo &mdash; MDAnalysis 0.11.0 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.11.0-dev',
+        VERSION:     '0.11.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,16 +25,16 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.11.0-dev documentation"
+          title="Search within MDAnalysis 0.11.0 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.11.0-dev documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.11.0 documentation" href="../../index.html" />
     <link rel="up" title="3. Analysis modules" href="../analysis_modules.html" />
     <link rel="next" title="3.4.2. Generation and Analysis of X3DNA helicoidal parameter profiles — MDAnalysis.analysis.x3dna" href="x3dna.html" />
     <link rel="prev" title="3.3.2. Leaflet identification — MDAnalysis.analysis.leaflet" href="leaflet.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -51,18 +49,18 @@
         <li class="right" >
           <a href="leaflet.html" title="3.3.2. Leaflet identification — MDAnalysis.analysis.leaflet"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
-          <li><a href="../analysis_modules.html" accesskey="U">3. Analysis modules</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../analysis_modules.html" accesskey="U">3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="../../index.html">
               <img class="logo" src="../../_static/mdanalysis-logo-200x150.png" alt="Logo"/>
             </a></p>
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">3.4.1. Nucleic acid analysis &#8212; <tt class="docutils literal"><span class="pre">MDAnalysis.analysis.nuclinfo</span></tt></a><ul>
+<li><a class="reference internal" href="#">3.4.1. Nucleic acid analysis &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.analysis.nuclinfo</span></code></a><ul>
 <li><a class="reference internal" href="#distances">3.4.1.1. Distances</a></li>
 <li><a class="reference internal" href="#phases">3.4.1.2. Phases</a></li>
 <li><a class="reference internal" href="#dihedral-angles">3.4.1.3. Dihedral angles</a></li>
@@ -72,16 +70,18 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="leaflet.html"
-                        title="previous chapter">3.3.2. Leaflet identification &#8212; <tt class="docutils literal docutils literal docutils literal"><span class="pre">MDAnalysis.analysis.leaflet</span></tt></a></p>
+                        title="previous chapter">3.3.2. Leaflet identification &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.analysis.leaflet</span></code></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="x3dna.html"
-                        title="next chapter">3.4.2. Generation and Analysis of X3DNA helicoidal parameter profiles &#8212; <tt class="docutils literal docutils literal"><span class="pre">MDAnalysis.analysis.x3dna</span></tt></a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="../../_sources/documentation_pages/analysis/nuclinfo.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
+                        title="next chapter">3.4.2. Generation and Analysis of X3DNA helicoidal parameter profiles &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.analysis.x3dna</span></code></a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/documentation_pages/analysis/nuclinfo.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
       <input type="text" name="q" />
@@ -100,10 +100,10 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <span class="target" id="module-MDAnalysis.analysis.nuclinfo"></span><div class="section" id="nucleic-acid-analysis-mdanalysis-analysis-nuclinfo">
-<h1>3.4.1. Nucleic acid analysis &#8212; <a class="reference internal" href="#module-MDAnalysis.analysis.nuclinfo" title="MDAnalysis.analysis.nuclinfo"><tt class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.nuclinfo</span></tt></a><a class="headerlink" href="#nucleic-acid-analysis-mdanalysis-analysis-nuclinfo" title="Permalink to this headline">¶</a></h1>
+<h1>3.4.1. Nucleic acid analysis &#8212; <a class="reference internal" href="#module-MDAnalysis.analysis.nuclinfo" title="MDAnalysis.analysis.nuclinfo"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.analysis.nuclinfo</span></code></a><a class="headerlink" href="#nucleic-acid-analysis-mdanalysis-analysis-nuclinfo" title="Permalink to this headline">¶</a></h1>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -124,8 +124,8 @@ particular</p>
 <li>AS or CP phase angles,</li>
 <li>Watson-Crick N1-N3 distances, C2-O2 distances, N6-O4 distances, O6-N4 distances.</li>
 </ul>
-<p>For applications of this kind of analysis see <a class="reference internal" href="#denning2011">[Denning2011]</a> and <a class="reference internal" href="#denning2012">[Denning2012]</a>.</p>
-<p>All functions take a <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a> as an argument
+<p>For applications of this kind of analysis see <a class="reference internal" href="#denning2011" id="id1">[Denning2011]</a> and <a class="reference internal" href="#denning2012" id="id2">[Denning2012]</a>.</p>
+<p>All functions take a <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><code class="xref py py-class docutils literal"><span class="pre">Universe</span></code></a> as an argument
 together with further parameters that specify the base or bases in question. Angles are
 in degrees. The functions use standard CHARMM names for nucleic acids and atom names.</p>
 <p class="rubric">References</p>
@@ -150,7 +150,7 @@ doi: <a class="reference external" href="http://dx.doi.org/10.1021/ja211328g">10
 <h2>3.4.1.1. Distances<a class="headerlink" href="#distances" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.analysis.nuclinfo.wc_pair">
-<tt class="descclassname">MDAnalysis.analysis.nuclinfo.</tt><tt class="descname">wc_pair</tt><big>(</big><em>universe</em>, <em>i</em>, <em>bp</em>, <em>seg1='SYSTEM'</em>, <em>seg2='SYSTEM'</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#wc_pair"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.wc_pair" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.analysis.nuclinfo.</code><code class="descname">wc_pair</code><span class="sig-paren">(</span><em>universe</em>, <em>i</em>, <em>bp</em>, <em>seg1='SYSTEM'</em>, <em>seg2='SYSTEM'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#wc_pair"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.wc_pair" title="Permalink to this definition">¶</a></dt>
 <dd><p>Watson-Crick basepair distance for residue <em>i</em> with residue <em>bp</em>.</p>
 <p>The distance of the nitrogen atoms in a Watson-Crick hydrogen bond is
 computed.</p>
@@ -158,9 +158,9 @@ computed.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>universe</em></dt>
-<dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a> containing the trajectory</p>
+<dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><code class="xref py py-class docutils literal"><span class="pre">Universe</span></code></a> containing the trajectory</p>
 </dd>
 <dt><em>seg1</em></dt>
 <dd><p class="first last">segment id for first base</p>
@@ -183,13 +183,14 @@ computed.</p>
 <p class="first admonition-title">Note</p>
 <p class="last">If failure occurs be sure to check the segment identification.</p>
 </div>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.7.6.</span></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.6.</span></p>
+</div>
 </dd></dl>
 
 <dl class="function">
 <dt id="MDAnalysis.analysis.nuclinfo.minor_pair">
-<tt class="descclassname">MDAnalysis.analysis.nuclinfo.</tt><tt class="descname">minor_pair</tt><big>(</big><em>universe</em>, <em>i</em>, <em>bp</em>, <em>seg1='SYSTEM'</em>, <em>seg2='SYSTEM'</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#minor_pair"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.minor_pair" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.analysis.nuclinfo.</code><code class="descname">minor_pair</code><span class="sig-paren">(</span><em>universe</em>, <em>i</em>, <em>bp</em>, <em>seg1='SYSTEM'</em>, <em>seg2='SYSTEM'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#minor_pair"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.minor_pair" title="Permalink to this definition">¶</a></dt>
 <dd><p>Minor-Groove basepair distance for residue <em>i</em> with residue <em>bp</em>.</p>
 <p>The distance of the nitrogen and oxygen atoms in a Minor-groove hydrogen bond is
 computed.</p>
@@ -197,9 +198,9 @@ computed.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>universe</em></dt>
-<dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a> containing the trajectory</p>
+<dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><code class="xref py py-class docutils literal"><span class="pre">Universe</span></code></a> containing the trajectory</p>
 </dd>
 <dt><em>seg1</em></dt>
 <dd><p class="first last">segment id for first base</p>
@@ -222,13 +223,14 @@ computed.</p>
 <p class="first admonition-title">Note</p>
 <p class="last">If failure occurs be sure to check the segment identification.</p>
 </div>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.7.6.</span></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.6.</span></p>
+</div>
 </dd></dl>
 
 <dl class="function">
 <dt id="MDAnalysis.analysis.nuclinfo.major_pair">
-<tt class="descclassname">MDAnalysis.analysis.nuclinfo.</tt><tt class="descname">major_pair</tt><big>(</big><em>universe</em>, <em>i</em>, <em>bp</em>, <em>seg1='SYSTEM'</em>, <em>seg2='SYSTEM'</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#major_pair"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.major_pair" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.analysis.nuclinfo.</code><code class="descname">major_pair</code><span class="sig-paren">(</span><em>universe</em>, <em>i</em>, <em>bp</em>, <em>seg1='SYSTEM'</em>, <em>seg2='SYSTEM'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#major_pair"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.major_pair" title="Permalink to this definition">¶</a></dt>
 <dd><p>Major-Groove basepair distance for residue <em>i</em> with residue <em>bp</em>.</p>
 <p>The distance of the nitrogen and oxygen atoms in a Major-groove hydrogen bond is
 computed.</p>
@@ -236,9 +238,9 @@ computed.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>universe</em></dt>
-<dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a> containing the trajectory       <em>i</em></p>
+<dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><code class="xref py py-class docutils literal"><span class="pre">Universe</span></code></a> containing the trajectory       <em>i</em></p>
 </dd>
 <dt><em>seg1</em></dt>
 <dd><p class="first last">segment id for first base</p>
@@ -261,8 +263,9 @@ computed.</p>
 <p class="first admonition-title">Note</p>
 <p class="last">If failure occurs be sure to check the segment identification</p>
 </div>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.7.6.</span></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.6.</span></p>
+</div>
 </dd></dl>
 
 </div>
@@ -270,17 +273,17 @@ computed.</p>
 <h2>3.4.1.2. Phases<a class="headerlink" href="#phases" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.analysis.nuclinfo.phase_cp">
-<tt class="descclassname">MDAnalysis.analysis.nuclinfo.</tt><tt class="descname">phase_cp</tt><big>(</big><em>universe</em>, <em>seg</em>, <em>i</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#phase_cp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.phase_cp" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.analysis.nuclinfo.</code><code class="descname">phase_cp</code><span class="sig-paren">(</span><em>universe</em>, <em>seg</em>, <em>i</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#phase_cp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.phase_cp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pseudo-angle describing the phase of the ribose pucker for residue <em>i</em> using the CP method.</p>
 <p>The angle is computed by the positions of atoms in the ribose ring.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>universe</em></dt>
 <dd><blockquote class="first">
-<div><p><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a> containing the trajectory</p>
+<div><p><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><code class="xref py py-class docutils literal"><span class="pre">Universe</span></code></a> containing the trajectory</p>
 </div></blockquote>
 <dl class="last docutils">
 <dt><em>segid</em></dt>
@@ -296,22 +299,23 @@ computed.</p>
 </tr>
 </tbody>
 </table>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.7.6.</span></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.6.</span></p>
+</div>
 </dd></dl>
 
 <dl class="function">
 <dt id="MDAnalysis.analysis.nuclinfo.phase_as">
-<tt class="descclassname">MDAnalysis.analysis.nuclinfo.</tt><tt class="descname">phase_as</tt><big>(</big><em>universe</em>, <em>seg</em>, <em>i</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#phase_as"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.phase_as" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.analysis.nuclinfo.</code><code class="descname">phase_as</code><span class="sig-paren">(</span><em>universe</em>, <em>seg</em>, <em>i</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#phase_as"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.phase_as" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pseudo-angle describing the phase of the ribose pucker for residue <em>i</em> using the AS method</p>
 <p>The angle is computed by the position vector of atoms in the ribose ring.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>universe</em></dt>
-<dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a> containing the trajectory</p>
+<dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><code class="xref py py-class docutils literal"><span class="pre">Universe</span></code></a> containing the trajectory</p>
 </dd>
 <dt><em>segid</em></dt>
 <dd><p class="first last">segment identity of resid</p>
@@ -324,8 +328,9 @@ computed.</p>
 </tr>
 </tbody>
 </table>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.7.6.</span></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.6.</span></p>
+</div>
 </dd></dl>
 
 </div>
@@ -333,16 +338,16 @@ computed.</p>
 <h2>3.4.1.3. Dihedral angles<a class="headerlink" href="#dihedral-angles" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.analysis.nuclinfo.tors">
-<tt class="descclassname">MDAnalysis.analysis.nuclinfo.</tt><tt class="descname">tors</tt><big>(</big><em>universe</em>, <em>seg</em>, <em>i</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#tors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.tors" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.analysis.nuclinfo.</code><code class="descname">tors</code><span class="sig-paren">(</span><em>universe</em>, <em>seg</em>, <em>i</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#tors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.tors" title="Permalink to this definition">¶</a></dt>
 <dd><p>Backbone dihedrals includes alpha, beta, gamma, delta, epsilon, zeta, chi</p>
 <p>The dihedral is computed based on position atoms for resid <em>i</em>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>universe</em></dt>
-<dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a> containing the trajectory</p>
+<dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><code class="xref py py-class docutils literal"><span class="pre">Universe</span></code></a> containing the trajectory</p>
 </dd>
 <dt><em>segid</em></dt>
 <dd><p class="first last">segid of resid</p>
@@ -363,16 +368,16 @@ computed.</p>
 
 <dl class="function">
 <dt id="MDAnalysis.analysis.nuclinfo.tors_alpha">
-<tt class="descclassname">MDAnalysis.analysis.nuclinfo.</tt><tt class="descname">tors_alpha</tt><big>(</big><em>universe</em>, <em>seg</em>, <em>i</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#tors_alpha"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.tors_alpha" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.analysis.nuclinfo.</code><code class="descname">tors_alpha</code><span class="sig-paren">(</span><em>universe</em>, <em>seg</em>, <em>i</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#tors_alpha"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.tors_alpha" title="Permalink to this definition">¶</a></dt>
 <dd><p>alpha backbone dihedral</p>
 <p>The dihedral is computed based on position atoms for resid <em>i</em>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>universe</em></dt>
-<dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a> containing the trajectory</p>
+<dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><code class="xref py py-class docutils literal"><span class="pre">Universe</span></code></a> containing the trajectory</p>
 </dd>
 <dt><em>segid</em></dt>
 <dd><p class="first last">segid of resid</p>
@@ -385,22 +390,23 @@ computed.</p>
 </tr>
 </tbody>
 </table>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.7.6.</span></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.6.</span></p>
+</div>
 </dd></dl>
 
 <dl class="function">
 <dt id="MDAnalysis.analysis.nuclinfo.tors_beta">
-<tt class="descclassname">MDAnalysis.analysis.nuclinfo.</tt><tt class="descname">tors_beta</tt><big>(</big><em>universe</em>, <em>seg</em>, <em>i</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#tors_beta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.tors_beta" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.analysis.nuclinfo.</code><code class="descname">tors_beta</code><span class="sig-paren">(</span><em>universe</em>, <em>seg</em>, <em>i</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#tors_beta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.tors_beta" title="Permalink to this definition">¶</a></dt>
 <dd><p>beta  backbone dihedral</p>
 <p>The dihedral is computed based on position atoms for resid <em>i</em>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>universe</em></dt>
-<dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a> containing the trajectory</p>
+<dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><code class="xref py py-class docutils literal"><span class="pre">Universe</span></code></a> containing the trajectory</p>
 </dd>
 <dt><em>segid</em></dt>
 <dd><p class="first last">segid of resid</p>
@@ -413,13 +419,14 @@ computed.</p>
 </tr>
 </tbody>
 </table>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.7.6.</span></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.6.</span></p>
+</div>
 </dd></dl>
 
 <dl class="function">
 <dt id="MDAnalysis.analysis.nuclinfo.tors_gamma">
-<tt class="descclassname">MDAnalysis.analysis.nuclinfo.</tt><tt class="descname">tors_gamma</tt><big>(</big><em>universe</em>, <em>seg</em>, <em>i</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#tors_gamma"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.tors_gamma" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.analysis.nuclinfo.</code><code class="descname">tors_gamma</code><span class="sig-paren">(</span><em>universe</em>, <em>seg</em>, <em>i</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#tors_gamma"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.tors_gamma" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gamma backbone dihedral</p>
 <blockquote>
 <div>The dihedral is computed based on position atoms for resid <em>i</em>.</div></blockquote>
@@ -427,9 +434,9 @@ computed.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>universe</em></dt>
-<dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a> containing the trajectory</p>
+<dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><code class="xref py py-class docutils literal"><span class="pre">Universe</span></code></a> containing the trajectory</p>
 </dd>
 <dt><em>segid</em></dt>
 <dd><p class="first last">segid of resid</p>
@@ -442,22 +449,23 @@ computed.</p>
 </tr>
 </tbody>
 </table>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.7.6.</span></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.6.</span></p>
+</div>
 </dd></dl>
 
 <dl class="function">
 <dt id="MDAnalysis.analysis.nuclinfo.tors_delta">
-<tt class="descclassname">MDAnalysis.analysis.nuclinfo.</tt><tt class="descname">tors_delta</tt><big>(</big><em>universe</em>, <em>seg</em>, <em>i</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#tors_delta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.tors_delta" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.analysis.nuclinfo.</code><code class="descname">tors_delta</code><span class="sig-paren">(</span><em>universe</em>, <em>seg</em>, <em>i</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#tors_delta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.tors_delta" title="Permalink to this definition">¶</a></dt>
 <dd><p>delta backbone dihedral</p>
 <p>The dihedral is computed based on position atoms for resid <em>i</em>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>universe</em></dt>
-<dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a> containing the trajectory</p>
+<dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><code class="xref py py-class docutils literal"><span class="pre">Universe</span></code></a> containing the trajectory</p>
 </dd>
 <dt><em>segid</em></dt>
 <dd><p class="first last">segid of resid</p>
@@ -470,22 +478,23 @@ computed.</p>
 </tr>
 </tbody>
 </table>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.7.6.</span></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.6.</span></p>
+</div>
 </dd></dl>
 
 <dl class="function">
 <dt id="MDAnalysis.analysis.nuclinfo.tors_eps">
-<tt class="descclassname">MDAnalysis.analysis.nuclinfo.</tt><tt class="descname">tors_eps</tt><big>(</big><em>universe</em>, <em>seg</em>, <em>i</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#tors_eps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.tors_eps" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.analysis.nuclinfo.</code><code class="descname">tors_eps</code><span class="sig-paren">(</span><em>universe</em>, <em>seg</em>, <em>i</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#tors_eps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.tors_eps" title="Permalink to this definition">¶</a></dt>
 <dd><p>Epsilon backbone dihedral</p>
 <p>The dihedral is computed based on position atoms for resid <em>i</em>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>universe</em></dt>
-<dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a> containing the trajectory</p>
+<dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><code class="xref py py-class docutils literal"><span class="pre">Universe</span></code></a> containing the trajectory</p>
 </dd>
 <dt><em>segid</em></dt>
 <dd><p class="first last">segid of resid</p>
@@ -498,22 +507,23 @@ computed.</p>
 </tr>
 </tbody>
 </table>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.7.6.</span></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.6.</span></p>
+</div>
 </dd></dl>
 
 <dl class="function">
 <dt id="MDAnalysis.analysis.nuclinfo.tors_zeta">
-<tt class="descclassname">MDAnalysis.analysis.nuclinfo.</tt><tt class="descname">tors_zeta</tt><big>(</big><em>universe</em>, <em>seg</em>, <em>i</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#tors_zeta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.tors_zeta" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.analysis.nuclinfo.</code><code class="descname">tors_zeta</code><span class="sig-paren">(</span><em>universe</em>, <em>seg</em>, <em>i</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#tors_zeta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.tors_zeta" title="Permalink to this definition">¶</a></dt>
 <dd><p>Zeta backbone dihedral</p>
 <p>The dihedral is computed based on position atoms for resid <em>i</em>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments :</th><td class="field-body"><dl class="first last docutils">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>universe</em></dt>
-<dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a> containing the trajectory</p>
+<dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><code class="xref py py-class docutils literal"><span class="pre">Universe</span></code></a> containing the trajectory</p>
 </dd>
 <dt><em>segid</em></dt>
 <dd><p class="first last">segid of resid</p>
@@ -526,13 +536,14 @@ computed.</p>
 </tr>
 </tbody>
 </table>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.7.6.</span></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.6.</span></p>
+</div>
 </dd></dl>
 
 <dl class="function">
 <dt id="MDAnalysis.analysis.nuclinfo.tors_chi">
-<tt class="descclassname">MDAnalysis.analysis.nuclinfo.</tt><tt class="descname">tors_chi</tt><big>(</big><em>universe</em>, <em>seg</em>, <em>i</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#tors_chi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.tors_chi" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.analysis.nuclinfo.</code><code class="descname">tors_chi</code><span class="sig-paren">(</span><em>universe</em>, <em>seg</em>, <em>i</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#tors_chi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.tors_chi" title="Permalink to this definition">¶</a></dt>
 <dd><p>chi nucleic acid dihedral</p>
 <blockquote>
 <div><p>The dihedral is computed based on position atoms for resid <em>i</em>.</p>
@@ -542,7 +553,7 @@ computed.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>universe</em></dt>
-<dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a> containing the trajectory</p>
+<dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><code class="xref py py-class docutils literal"><span class="pre">Universe</span></code></a> containing the trajectory</p>
 </dd>
 <dt><em>segid</em></dt>
 <dd><p class="first last">segid of resid</p>
@@ -556,13 +567,14 @@ computed.</p>
 </tbody>
 </table>
 </div></blockquote>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.7.6.</span></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.6.</span></p>
+</div>
 </dd></dl>
 
 <dl class="function">
 <dt id="MDAnalysis.analysis.nuclinfo.hydroxyl">
-<tt class="descclassname">MDAnalysis.analysis.nuclinfo.</tt><tt class="descname">hydroxyl</tt><big>(</big><em>universe</em>, <em>seg</em>, <em>i</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#hydroxyl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.hydroxyl" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.analysis.nuclinfo.</code><code class="descname">hydroxyl</code><span class="sig-paren">(</span><em>universe</em>, <em>seg</em>, <em>i</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#hydroxyl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.hydroxyl" title="Permalink to this definition">¶</a></dt>
 <dd><p>2-hydroxyl dihedral. Useful only for RNA calculations.</p>
 <blockquote>
 <div><div class="admonition note">
@@ -576,7 +588,7 @@ documented by charmm force field parameters.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>universe</em></dt>
-<dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a> containing the trajectory</p>
+<dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><code class="xref py py-class docutils literal"><span class="pre">Universe</span></code></a> containing the trajectory</p>
 </dd>
 <dt><em>segid</em></dt>
 <dd><p class="first last">segid of resid</p>
@@ -590,13 +602,14 @@ documented by charmm force field parameters.</p>
 </tbody>
 </table>
 </div></blockquote>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.7.6.</span></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.6.</span></p>
+</div>
 </dd></dl>
 
 <dl class="function">
 <dt id="MDAnalysis.analysis.nuclinfo.pseudo_dihe_baseflip">
-<tt class="descclassname">MDAnalysis.analysis.nuclinfo.</tt><tt class="descname">pseudo_dihe_baseflip</tt><big>(</big><em>universe</em>, <em>bp1</em>, <em>bp2</em>, <em>i</em>, <em>seg1='SYSTEM'</em>, <em>seg2='SYSTEM'</em>, <em>seg3='SYSTEM'</em><big>)</big><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#pseudo_dihe_baseflip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.pseudo_dihe_baseflip" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.analysis.nuclinfo.</code><code class="descname">pseudo_dihe_baseflip</code><span class="sig-paren">(</span><em>universe</em>, <em>bp1</em>, <em>bp2</em>, <em>i</em>, <em>seg1='SYSTEM'</em>, <em>seg2='SYSTEM'</em>, <em>seg3='SYSTEM'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nuclinfo.html#pseudo_dihe_baseflip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.nuclinfo.pseudo_dihe_baseflip" title="Permalink to this definition">¶</a></dt>
 <dd><p>pseudo dihedral for flipped bases. Useful only for nucleic acid base flipping</p>
 <blockquote>
 <div><p>The dihedral is computed based on position atoms for resid <em>i</em></p>
@@ -611,7 +624,7 @@ documented by charmm force field parameters.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
 <dt><em>universe</em></dt>
-<dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><tt class="xref py py-class docutils literal"><span class="pre">Universe</span></tt></a> containing the trajectory</p>
+<dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><code class="xref py py-class docutils literal"><span class="pre">Universe</span></code></a> containing the trajectory</p>
 </dd>
 <dt><em>segid1</em></dt>
 <dd><p class="first last">segid of resid base pairing with bp2</p>
@@ -637,8 +650,9 @@ documented by charmm force field parameters.</p>
 </tbody>
 </table>
 </div></blockquote>
-<p class="versionadded">
-<span class="versionmodified">New in version 0.8.0.</span></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.8.0.</span></p>
+</div>
 </dd></dl>
 
 </div>
@@ -650,7 +664,7 @@ documented by charmm force field parameters.</p>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -665,11 +679,11 @@ documented by charmm force field parameters.</p>
         <li class="right" >
           <a href="leaflet.html" title="3.3.2. Leaflet identification — MDAnalysis.analysis.leaflet"
              >previous</a> |</li>
-        <li><a href="../../index.html">MDAnalysis 0.11.0-dev documentation</a> &raquo;</li>
-          <li><a href="../analysis_modules.html" >3. Analysis modules</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../analysis_modules.html" >3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
+    <div class="footer" role="contentinfo">
         &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
@@ -679,7 +693,7 @@ documented by charmm force field parameters.</p>
     Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, Gorman Stock, Isaac Virshup,
     Zhuyi Xue, Carlos Yáñez S.,
     and Oliver Beckstein.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>
 </html>
