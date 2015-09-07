@@ -8,8 +8,22 @@ The rules for this file:
   * don't ever delete anything.
   * keep the format consistent (79 char width, M/D/Y date format) and do not
     use tabs but use spaces for formatting
+  * accompany each entry with github issue/PR number (Issue #xyz)
 
 ------------------------------------------------------------------------------
+??/??/??
+
+  * 0.11.1
+
+API Changes
+
+Enhancements
+
+Changes
+
+Fixes
+
+
 09/07/15  tyler.je.reddy, richardjgowers, alejob, orbeckst, dotsdl,
         manuel.nuno.melo, cyanezstange, khuston, ivirshup, kain88-de,
         gormanstock
