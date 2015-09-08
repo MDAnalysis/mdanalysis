@@ -124,7 +124,7 @@ Analysis classes
 """
 
 from itertools import izip
-import numpy
+import numpy as np
 
 import MDAnalysis
 import MDAnalysis.lib.qcprot as qcp
@@ -176,15 +176,15 @@ def rmsd(a, b, weights=None, center=False):
     """
     if weights is not None:
         # weights are constructed as relative to the mean
-        relative_weights = numpy.asarray(weights) / numpy.mean(weights)
+        relative_weights = np.asarray(weights) / np.mean(weights)
     else:
         relative_weights = None
     if center:
         # make copies (do not change the user data!)
         # weights=None is equivalent to all weights 1
-        a = a - numpy.average(a, axis=0, weights=weights)
-        b = b - numpy.average(b, axis=0, weights=weights)
-    return qcp.CalcRMSDRotationalMatrix(a.T.astype(numpy.float64), b.T.astype(numpy.float64),
+        a = a - np.average(a, axis=0, weights=weights)
+        b = b - np.average(b, axis=0, weights=weights)
+    return qcp.CalcRMSDRotationalMatrix(a.T.astype(np.float64), b.T.astype(np.float64),
                                         a.shape[0], None, relative_weights)
 
 
@@ -323,8 +323,8 @@ class RMSD(object):
                                  "the same number of atoms: N_ref=%d, N_traj=%d" %
                                  (len(self.ref_atoms), len(self.traj_atoms)))
         logger.info("RMS calculation for %d atoms." % len(self.ref_atoms))
-        mass_mismatches = (numpy.absolute(self.ref_atoms.masses - self.traj_atoms.masses) > self.tol_mass)
-        if numpy.any(mass_mismatches):
+        mass_mismatches = (np.absolute(self.ref_atoms.masses - self.traj_atoms.masses) > self.tol_mass)
+        if np.any(mass_mismatches):
             # diagnostic output:
             logger.error("Atoms: reference | trajectory")
             for ar, at in izip(self.ref_atoms, self.traj_atoms):
@@ -406,12 +406,12 @@ class RMSD(object):
             ref_coordinates = self.ref_atoms.positions - ref_com  # makes a copy
             if self.groupselections_atoms:
                 groupselections_ref_coords_T_64 = [
-                    self.reference.select_atoms(*s['reference']).positions.T.astype(numpy.float64) for s in
+                    self.reference.select_atoms(*s['reference']).positions.T.astype(np.float64) for s in
                     self.groupselections]
         finally:
             # Move back to the original frame
             self.reference.trajectory[current_frame]
-        ref_coordinates_T_64 = ref_coordinates.T.astype(numpy.float64)
+        ref_coordinates_T_64 = ref_coordinates.T.astype(np.float64)
 
         # allocate the array for selection atom coords
         traj_coordinates = traj_atoms.coordinates().copy()
@@ -421,14 +421,14 @@ class RMSD(object):
             # R: rotation matrix that aligns r-r_com, x~-x~com
             #    (x~: selected coordinates, x: all coordinates)
             # Final transformed traj coordinates: x' = (x-x~_com)*R + ref_com
-            rot = numpy.zeros(9, dtype=numpy.float64)  # allocate space for calculation
-            R = numpy.matrix(rot.reshape(3, 3))
+            rot = np.zeros(9, dtype=np.float64)  # allocate space for calculation
+            R = np.matrix(rot.reshape(3, 3))
         else:
             rot = None
 
         # RMSD timeseries
-        nframes = len(numpy.arange(0, len(trajectory))[start:stop:step])
-        rmsd = numpy.zeros((nframes, 3 + len(self.groupselections_atoms)))
+        nframes = len(np.arange(0, len(trajectory))[start:stop:step])
+        rmsd = np.zeros((nframes, 3 + len(self.groupselections_atoms)))
 
         percentage = ProgressMeter(nframes, interval=10,
                                    format="RMSD %(rmsd)5.2f A at frame %(step)5d/%(numsteps)d  [%(percentage)5.1f%%]\r")
@@ -436,7 +436,7 @@ class RMSD(object):
         for k, ts in enumerate(trajectory[start:stop:step]):
             # shift coordinates for rotation fitting
             # selection is updated with the time frame
-            x_com = traj_atoms.center_of_mass().astype(numpy.float32)
+            x_com = traj_atoms.center_of_mass().astype(np.float32)
             traj_coordinates[:] = traj_atoms.coordinates() - x_com
 
             rmsd[k, :2] = ts.frame, trajectory.time
@@ -449,7 +449,7 @@ class RMSD(object):
                 # so that R acts **to the left** and can be broadcasted; we're saving
                 # one transpose. [orbeckst])
                 rmsd[k, 2] = qcp.CalcRMSDRotationalMatrix(ref_coordinates_T_64,
-                                                          traj_coordinates.T.astype(numpy.float64),
+                                                          traj_coordinates.T.astype(np.float64),
                                                           natoms, rot, weight)
                 R[:, :] = rot.reshape(3, 3)
 
@@ -463,13 +463,13 @@ class RMSD(object):
                 for igroup, (refpos, atoms) in enumerate(
                         izip(groupselections_ref_coords_T_64, self.groupselections_atoms), 3):
                     rmsd[k, igroup] = qcp.CalcRMSDRotationalMatrix(refpos,
-                                                                   atoms['mobile'].positions.T.astype(numpy.float64),
+                                                                   atoms['mobile'].positions.T.astype(np.float64),
                                                                    atoms['mobile'].n_atoms, None, weight)
             else:
                 # only calculate RMSD by setting the Rmatrix to None
                 # (no need to carry out the rotation as we already get the optimum RMSD)
                 rmsd[k, 2] = qcp.CalcRMSDRotationalMatrix(ref_coordinates_T_64,
-                                                          traj_coordinates.T.astype(numpy.float64),
+                                                          traj_coordinates.T.astype(np.float64),
                                                           natoms, None, weight)
 
             percentage.echo(ts.frame, rmsd=rmsd[k, 2])
@@ -481,13 +481,13 @@ class RMSD(object):
         If *filename* is not supplied then the default provided to the
         constructor is used.
 
-        The data are saved with :func:`numpy.savetxt`.
+        The data are saved with :func:`np.savetxt`.
         """
         filename = filename or self.filename
         if filename is not None:
             if self.rmsd is None:
                 raise NoDataError("rmsd has not been calculated yet")
-            numpy.savetxt(filename, self.rmsd)
+            np.savetxt(filename, self.rmsd)
             logger.info("Wrote RMSD timeseries  to file %r", filename)
         return filename
 
@@ -540,8 +540,8 @@ class RMSF(object):
                 [``False``]
 
         """
-        sumsquares = numpy.zeros((self.atomgroup.n_atoms, 3))
-        means = numpy.array(sumsquares)
+        sumsquares = np.zeros((self.atomgroup.n_atoms, 3))
+        means = np.array(sumsquares)
 
         if quiet:
             progout = None
@@ -560,7 +560,7 @@ class RMSF(object):
 
             percentage.echo(ts.frame)
 
-        rmsf = numpy.sqrt(sumsquares.sum(axis=1)/(k + 1))
+        rmsf = np.sqrt(sumsquares.sum(axis=1)/(k + 1))
 
         if not (rmsf >= 0).all():
             raise ValueError("Some RMSF values negative; overflow " +
@@ -574,4 +574,3 @@ class RMSF(object):
 
         """
         return self._rmsf
-

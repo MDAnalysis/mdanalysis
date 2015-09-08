@@ -312,7 +312,7 @@ Classes
 
 from collections import defaultdict
 import itertools
-import numpy
+import numpy as np
 
 from MDAnalysis import MissingDataWarning, NoDataError, SelectionError, SelectionWarning
 from MDAnalysis.core.AtomGroup import AtomGroup
@@ -823,7 +823,7 @@ class HydrogenBondAnalysis(object):
 
         logger.info("checking trajectory...")  # n_frames can take a while!
         try:
-            frames = numpy.arange(self.u.trajectory.n_frames)[self.traj_slice]
+            frames = np.arange(self.u.trajectory.n_frames)[self.traj_slice]
         except:
             logger.error("Problem reading trajectory or trajectory slice incompatible.")
             logger.exception()
@@ -918,9 +918,9 @@ class HydrogenBondAnalysis(object):
         """Calculate the angle (in degrees) between two atoms with H at apex."""
         v1 = h.pos - d.pos
         v2 = h.pos - a.pos
-        if numpy.all(v1 == v2):
+        if np.all(v1 == v2):
             return 0.0
-        return numpy.rad2deg(angle(v1, v2))
+        return np.rad2deg(angle(v1, v2))
 
     def calc_eucl_distance(self, a1, a2):
         """Calculate the Euclidean distance between two atoms. """
@@ -954,7 +954,7 @@ class HydrogenBondAnalysis(object):
             logger.warn(msg)
             return
 
-        num_records = numpy.sum([len(hframe) for hframe in self.timeseries])
+        num_records = np.sum([len(hframe) for hframe in self.timeseries])
         # build empty output table
         dtype = [
             ("time", float), ("donor_idx", int), ("acceptor_idx", int),
@@ -963,7 +963,7 @@ class HydrogenBondAnalysis(object):
             ("distance", float), ("angle", float)]
         # according to Lukas' notes below, using a recarray at this stage is ineffective
         # and speedups of ~x10 can be achieved by filling a standard array, like this:
-        out = numpy.empty((num_records,), dtype=dtype)
+        out = np.empty((num_records,), dtype=dtype)
         cursor = 0  # current row
         for t, hframe in itertools.izip(self.timesteps, self.timeseries):
             for donor_idx, acceptor_idx, donor, acceptor, distance, angle in hframe:
@@ -971,7 +971,7 @@ class HydrogenBondAnalysis(object):
                     parse_residue(acceptor) + (distance, angle)
                 cursor += 1
         assert cursor == num_records, "Internal Error: Not all HB records stored"
-        self.table = out.view(numpy.recarray)
+        self.table = out.view(np.recarray)
         logger.debug("HBond: Stored results as table with %(num_records)d entries.", vars())
 
     def save_table(self, filename="hbond_table.pickle"):
@@ -1002,11 +1002,11 @@ class HydrogenBondAnalysis(object):
             logger.warn(msg)
             return
 
-        out = numpy.empty((len(self.timesteps),), dtype=[('time', float), ('count', int)])
+        out = np.empty((len(self.timesteps),), dtype=[('time', float), ('count', int)])
         for cursor, time_count in enumerate(itertools.izip(self.timesteps,
                                                            itertools.imap(len, self.timeseries))):
             out[cursor] = time_count
-        return out.view(numpy.recarray)
+        return out.view(np.recarray)
 
     def count_by_type(self):
         """Counts the frequency of hydrogen bonds of a specific type.
@@ -1046,7 +1046,7 @@ class HydrogenBondAnalysis(object):
             ('acceptor_resnm', 'S4'), ('acceptor_resid', int), ('acceptor_atom', 'S4'),
             ('frequency', float)
         ]
-        out = numpy.empty((len(hbonds),), dtype=dtype)
+        out = np.empty((len(hbonds),), dtype=dtype)
 
         # float because of division later
         tsteps = float(len(self.timesteps))
@@ -1057,7 +1057,7 @@ class HydrogenBondAnalysis(object):
         # The recarray has not been used within the function, because accessing the
         # the elements of a recarray (3.65 us) is much slower then accessing those
         # of a ndarray (287 ns).
-        r = out.view(numpy.recarray)
+        r = out.view(np.recarray)
 
         # patch in donor heavy atom names (replaces '?' in the key)
         h2donor = self._donor_lookup_table_byindex()
@@ -1106,7 +1106,7 @@ class HydrogenBondAnalysis(object):
             ('donor_resnm', 'S4'), ('donor_resid', int), ('donor_heavy_atom', 'S4'), ('donor_atom', 'S4'),
             ('acceptor_resnm', 'S4'), ('acceptor_resid', int), ('acceptor_atom', 'S4'),
             ('time', float)]
-        out = numpy.empty((out_nrows,), dtype=dtype)
+        out = np.empty((out_nrows,), dtype=dtype)
 
         out_row = 0
         for (key, times) in hbonds.iteritems():
@@ -1118,7 +1118,7 @@ class HydrogenBondAnalysis(object):
         # The recarray has not been used within the function, because accessing the
         # the elements of a recarray (3.65 us) is much slower then accessing those
         # of a ndarray (287 ns).
-        r = out.view(numpy.recarray)
+        r = out.view(np.recarray)
 
         # patch in donor heavy atom names (replaces '?' in the key)
         h2donor = self._donor_lookup_table_byindex()

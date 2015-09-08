@@ -9,7 +9,7 @@ the translated and rotated coordinates.
 
 """
 
-import numpy
+import numpy as np
 import MDAnalysis
 from MDAnalysis.analysis.align import rms_fit_trj
 
@@ -34,7 +34,7 @@ if __name__ == '__main__':
                 mass_weighted=True, rmsdfile="output/rmsfit_rmsd.dat")
     print "Fitted trajectory: output/rmsfit.dcd"
 
-    rmsd = numpy.loadtxt("output/rmsfit_rmsd.dat")
+    rmsd = np.loadtxt("output/rmsfit_rmsd.dat")
     print "RMSD: output/rmsfit_rmsd.dat"
 
     if have_matplotlib:
@@ -44,5 +44,3 @@ if __name__ == '__main__':
         savefig("figures/rmsdfit_rmsd.pdf")
         savefig("figures/rmsdfit_rmsd.png")
         print "RMSD graph: figures/rmsdfit_rmsd.{pdf,png}"
-
-

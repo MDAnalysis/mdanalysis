@@ -76,7 +76,7 @@ directly needed to perform the analysis.
 
 # import copy #unused
 
-import numpy
+import numpy as np
 from numpy import linalg
 
 import os
@@ -209,10 +209,10 @@ class GNMAnalysis(object):
         #add the com from each bonus group to the ca_positions list
         for item in self.Bonus_groups:
             #bonus = self.u.select_atoms(item)
-            positions = numpy.vstack((positions, item.center_of_mass()))
+            positions = np.vstack((positions, item.center_of_mass()))
             natoms += 1
 
-        matrix = numpy.zeros((natoms, natoms), "float")
+        matrix = np.zeros((natoms, natoms), "float")
         [res_positions, grid, low_x, low_y, low_z] = generate_grid(positions, self.cutoff)
         icounter = 0
         for icounter in range(natoms):
@@ -314,7 +314,7 @@ class closeContactGNMAnalysis(GNMAnalysis):
         positions = self.ca.coordinates()
         [res_positions, grid, low_x, low_y, low_z] = generate_grid(positions, self.cutoff)
         residue_index_map = [resnum for [resnum, residue] in enumerate(self.ca.residues) for atom in residue]
-        matrix = numpy.zeros((nresidues, nresidues), "float")
+        matrix = np.zeros((nresidues, nresidues), "float")
         for icounter in range(natoms):
             neighbour_atoms = []
             for x in (-1, 0, 1):

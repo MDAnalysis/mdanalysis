@@ -31,7 +31,6 @@ Helper functions:
 
 """
 import os.path
-import numpy
 from numpy import sin, cos, sqrt
 from numpy import rad2deg, deg2rad
 
@@ -192,5 +191,3 @@ def writer(filename, n_atoms=None, **kwargs):
     Writer = get_writer_for(filename, format=kwargs.pop('format', None),
                             multiframe=kwargs.pop('multiframe', None))
     return Writer(filename, n_atoms=n_atoms, **kwargs)
-
-

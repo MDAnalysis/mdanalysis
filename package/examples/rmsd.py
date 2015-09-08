@@ -10,7 +10,7 @@ over a trajectory.
 
 """
 
-import numpy
+import numpy as np
 import MDAnalysis
 
 import sys
@@ -24,7 +24,7 @@ def rmsd_traj(traj, ref, **kwargs):
 
     frames = traj.trajectory
     nframes = len(frames)
-    rmsd = numpy.zeros((nframes,))
+    rmsd = np.zeros((nframes,))
 
     ref_atoms = ref.select_atoms(selections['reference'])
     traj_atoms = traj.select_atoms(selections['mobile'])
@@ -32,7 +32,7 @@ def rmsd_traj(traj, ref, **kwargs):
 
     # if performing a mass-weighted alignment/rmsd calculation
     # masses = ref_atoms.masses
-    #weight = masses/numpy.mean(masses)
+    #weight = masses/np.mean(masses)
 
     # reference centre of mass system
     ref_com = ref_atoms.center_of_mass()
@@ -53,7 +53,7 @@ def rmsd_traj(traj, ref, **kwargs):
         ### NOTE: If you're only interested in RMSD and never in the
         ###       transformation matrix then set 'R = None' instead of
         ###       allocating an array.
-        R = numpy.zeros((9,), dtype=numpy.float64)
+        R = np.zeros((9,), dtype=np.float64)
 
         # Need to transpose coordinates such that the coordinate array is
         # 3xN instead of Nx3. Also qcp requires that the dtype be float64
@@ -66,7 +66,7 @@ def rmsd_traj(traj, ref, **kwargs):
         ### only comment in if you want to manipulate or write out
         ### the fitted trajectory
         ###
-        ## R = numpy.matrix(R.reshape(3,3))
+        ## R = np.matrix(R.reshape(3,3))
         ##
         ###  Transform each atom in the trajectory (use inplace ops to avoid copying arrays)
         ## ts._pos   -= x_com

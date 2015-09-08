@@ -24,7 +24,7 @@ from MDAnalysis.core.AtomGroup import Atom, AtomGroup, as_Universe
 from MDAnalysis import NoDataError
 from MDAnalysis.core.AtomGroup import _PLURAL_PROPERTIES, _SINGULAR_PROPERTIES
 
-import numpy
+import numpy as np
 from numpy.testing import *
 from numpy import array, float32, rad2deg
 from nose.plugins.attrib import attr
@@ -186,7 +186,7 @@ class TestAtomGroup(TestCase):
         assert_equal(ag1._atoms, ag2._atoms)
 
     def test_getitem_nparray(self):
-        sel = numpy.arange(5)
+        sel = np.arange(5)
         ag1 = self.universe.atoms[sel]
         ag2 = AtomGroup([self.universe.atoms[i] for i in sel])
         assert_equal(ag1._atoms, ag2._atoms)
@@ -252,71 +252,71 @@ class TestAtomGroup(TestCase):
         assert_almost_equal(self.ag.total_mass(), 23582.043)
 
     def test_indices_ndarray(self):
-        assert_equal(isinstance(self.ag.indices, numpy.ndarray), True)
+        assert_equal(isinstance(self.ag.indices, np.ndarray), True)
 
     def test_indices(self):
         assert_array_equal(self.ag.indices[:5], array([0, 1, 2, 3, 4]))
 
     def test_resids_ndarray(self):
-        assert_equal(isinstance(self.ag.resids, numpy.ndarray), True)
+        assert_equal(isinstance(self.ag.resids, np.ndarray), True)
 
     def test_resids(self):
-        assert_array_equal(self.ag.residues.resids, numpy.arange(1, 215))
+        assert_array_equal(self.ag.residues.resids, np.arange(1, 215))
 
     def test_resnums_ndarray(self):
-        assert_equal(isinstance(self.ag.residues.resnums, numpy.ndarray), True)
+        assert_equal(isinstance(self.ag.residues.resnums, np.ndarray), True)
 
     def test_resnums(self):
-        assert_array_equal(self.ag.residues.resnums, numpy.arange(1, 215))
+        assert_array_equal(self.ag.residues.resnums, np.arange(1, 215))
 
     def test_resnames_ndarray(self):
-        assert_equal(isinstance(self.ag.residues.resnames, numpy.ndarray), True)
+        assert_equal(isinstance(self.ag.residues.resnames, np.ndarray), True)
 
     def test_resnames(self):
         resnames = self.ag.residues.resnames
-        assert_array_equal(resnames[0:3], numpy.array(["MET", "ARG", "ILE"]))
+        assert_array_equal(resnames[0:3], np.array(["MET", "ARG", "ILE"]))
 
     def test_names_ndarray(self):
-        assert_equal(isinstance(self.ag.names, numpy.ndarray), True)
+        assert_equal(isinstance(self.ag.names, np.ndarray), True)
 
     def test_names(self):
         names = self.ag.names
-        assert_array_equal(names[0:3], numpy.array(["N", "HT1", "HT2"]))
+        assert_array_equal(names[0:3], np.array(["N", "HT1", "HT2"]))
 
     def test_segids_ndarray(self):
-        assert_equal(isinstance(self.ag.segids, numpy.ndarray), True)
+        assert_equal(isinstance(self.ag.segids, np.ndarray), True)
 
     def test_segids(self):
         segids = self.ag.segids
-        assert_array_equal(segids[0], numpy.array(["4AKE"]))
+        assert_array_equal(segids[0], np.array(["4AKE"]))
 
     def test_masses_ndarray(self):
-        assert_equal(isinstance(self.ag.masses, numpy.ndarray), True)
+        assert_equal(isinstance(self.ag.masses, np.ndarray), True)
 
     def test_masses(self):
         masses = self.ag.masses
-        assert_array_equal(masses[0:3], numpy.array([14.007, 1.008, 1.008]))
+        assert_array_equal(masses[0:3], np.array([14.007, 1.008, 1.008]))
 
     def test_charges_ndarray(self):
-        assert_equal(isinstance(self.ag.charges, numpy.ndarray), True)
+        assert_equal(isinstance(self.ag.charges, np.ndarray), True)
 
     def test_charges(self):
         assert_array_almost_equal(self.ag.charges[1000:2000:200],
                                   array([-0.09, 0.09, -0.47, 0.51, 0.09]))
 
     def test_radii_ndarray(self):
-        assert_equal(isinstance(self.ag.radii, numpy.ndarray), True)
+        assert_equal(isinstance(self.ag.radii, np.ndarray), True)
 
     def test_radii(self):
         radii = self.ag.radii
-        assert_array_equal(radii[0:3], numpy.array([None, None, None]))
+        assert_array_equal(radii[0:3], np.array([None, None, None]))
 
     def test_bfactors_ndarray(self):
-        assert_equal(isinstance(self.ag.bfactors, numpy.ndarray), True)
+        assert_equal(isinstance(self.ag.bfactors, np.ndarray), True)
 
     def test_bfactors(self):
         bfactors = self.ag.bfactors  # property, not method!
-        assert_array_equal(bfactors[0:3], numpy.array([None, None, None]))
+        assert_array_equal(bfactors[0:3], np.array([None, None, None]))
 
     def test_sequence_string(self):
         p = self.universe.select_atoms("protein")
@@ -444,7 +444,7 @@ class TestAtomGroup(TestCase):
     # add new methods here...
     def test_packintobox_badshape(self):
         ag = self.universe.atoms[:10]
-        box = numpy.zeros(9, dtype=numpy.float32).reshape(3, 3)
+        box = np.zeros(9, dtype=np.float32).reshape(3, 3)
 
         def badpack(a):
             return a.pack_into_box(box=box)
@@ -468,7 +468,7 @@ class TestAtomGroup(TestCase):
         u.trajectory.rewind()  # just to make sure...
         ag = u.atoms[1000:2000:200]
 
-        ag.pack_into_box(box=numpy.array([5., 5., 5.], dtype=numpy.float32))  # Provide arbitrary box
+        ag.pack_into_box(box=np.array([5., 5., 5.], dtype=np.float32))  # Provide arbitrary box
         assert_array_almost_equal(ag.coordinates(),
                                   array(
                                       [
@@ -515,7 +515,7 @@ class TestAtomGroup(TestCase):
     def test_boolean_indexing(self):
         # index an array with a sequence of bools
         # issue #282
-        sel = numpy.array([True, False, True])
+        sel = np.array([True, False, True])
         ag = self.universe.atoms[10:13]
         ag2 = ag[sel]
         assert_equal(len(ag2), 2)
@@ -666,7 +666,7 @@ class TestAtomGroup(TestCase):
                             err_msg="failed to update atoms 12:42 position to new position")
         def set_badarr(pos=pos):
             # create wrong size array
-            badarr = numpy.random.random((pos.shape[0] - 1, pos.shape[1] - 1))
+            badarr = np.random.random((pos.shape[0] - 1, pos.shape[1] - 1))
             ag.positions = badarr
         assert_raises(ValueError, set_badarr)
 
@@ -704,10 +704,10 @@ class TestAtomGroup(TestCase):
         ag.set_resids(resid)
         # check individual atoms
         assert_equal([a.resid for a in ag],
-                     resid * numpy.ones(ag.n_atoms),
+                     resid * np.ones(ag.n_atoms),
                      err_msg="failed to set_resid atoms 12:42 to same resid")
         # check residues
-        assert_equal(ag.resids, 999 * numpy.ones(ag.n_residues),
+        assert_equal(ag.resids, 999 * np.ones(ag.n_residues),
                      err_msg="failed to set_resid of residues belonging to atoms 12:42 to same resid")
 
     def test_set_names(self):
@@ -720,13 +720,13 @@ class TestAtomGroup(TestCase):
     def test_set_resids(self):
         """test_set_resid: set AtomGroup resids on a per-atom basis"""
         ag = self.universe.select_atoms("bynum 12:42")
-        resids = numpy.array([a.resid for a in ag]) + 1000
+        resids = np.array([a.resid for a in ag]) + 1000
         ag.set_resids(resids)
         # check individual atoms
         assert_equal([a.resid for a in ag], resids,
                      err_msg="failed to set_resid atoms 12:42 to resids {0}".format(resids))
         # check residues
-        assert_equal(ag.residues.resids, numpy.unique(resids),
+        assert_equal(ag.residues.resids, np.unique(resids),
                      err_msg="failed to set_resid of residues belonging to atoms 12:42 to same resid")
 
     def test_merge_residues(self):
@@ -748,7 +748,7 @@ class TestAtomGroup(TestCase):
         ag.set_masses(mass)
         # check individual atoms
         assert_equal([a.mass for a in ag],
-                     mass * numpy.ones(ag.n_atoms),
+                     mass * np.ones(ag.n_atoms),
                      err_msg="failed to set_mass H* atoms in resid 12:42 to {0}".format(mass))
 
     def test_set_segids(self):
@@ -886,8 +886,8 @@ class TestAtomGroupNoTop(TestCase):
 
     def test_set_dimensions(self):
         u = MDAnalysis.Universe(PSF, DCD)
-        box = numpy.array([10, 11, 12, 90, 90, 90])
-        u.atoms.dimensions = numpy.array([10, 11, 12, 90, 90, 90])
+        box = np.array([10, 11, 12, 90, 90, 90])
+        u.atoms.dimensions = np.array([10, 11, 12, 90, 90, 90])
         assert_allclose(u.dimensions, box)
         assert_allclose(u.atoms.dimensions, box)
 
@@ -1058,36 +1058,36 @@ class TestResidueGroup(TestCase):
         rg.set_resids(resid)
         # check individual atoms
         assert_equal([a.resid for a in rg.atoms],
-                     resid * numpy.ones(rg.n_atoms),
+                     resid * np.ones(rg.n_atoms),
                      err_msg="failed to set_resid atoms 12:42 to same resid")
         # check residues
-        assert_equal(rg.resids, resid * numpy.ones(rg.n_residues),
+        assert_equal(rg.resids, resid * np.ones(rg.n_residues),
                      err_msg="failed to set_resid of residues belonging to atoms 12:42 to same resid")
 
     def test_set_resids(self):
         """test_set_resid: set ResidueGroup resids on a per-residue basis"""
         rg = self.universe.select_atoms("resid 10:18").residues
-        resids = numpy.array(rg.resids) + 1000
+        resids = np.array(rg.resids) + 1000
         rg.set_resids(resids)
         # check individual atoms
         for r, resid in itertools.izip(rg, resids):
             assert_equal([a.resid for a in r.atoms],
-                         resid * numpy.ones(r.n_atoms),
+                         resid * np.ones(r.n_atoms),
                          err_msg="failed to set_resid residues 10:18 to same resid in residue {0}\n"
                                  "(resids = {1}\nresidues = {2})".format(r, resids, rg))
         # check residues
         # NOTE: need to create a new selection because underlying Residue objects are not changed;
         #       only Atoms are changed, and Residues are rebuilt from Atoms.
         rgnew = self.universe.select_atoms("resid 1010:1018").residues
-        assert_equal(rgnew.resids, numpy.unique(resids),
+        assert_equal(rgnew.resids, np.unique(resids),
                      err_msg="failed to set_resid of residues belonging to residues 10:18 to new resids")
 
     def test_set_resids_updates_self(self):
         rg = self.universe.select_atoms("resid 10:18").residues
-        resids = numpy.array(rg.resids) + 1000
+        resids = np.array(rg.resids) + 1000
         rg.set_resids(resids)
         #rgnew = self.universe.select_atoms("resid 1000:1008").residues
-        assert_equal(rg.resids, numpy.unique(resids),
+        assert_equal(rg.resids, np.unique(resids),
                      err_msg="old selection was not changed in place after set_resid")
 
     def test_set_resnum_single(self):
@@ -1161,7 +1161,7 @@ class TestResidueGroup(TestCase):
         rg.set_masses(mass)
         # check individual atoms
         assert_equal([a.mass for a in rg.atoms],
-                     mass * numpy.ones(rg.n_atoms),
+                     mass * np.ones(rg.n_atoms),
                      err_msg="failed to set_mass H* atoms in resid 12:42 to {0}".format(mass))
 
 
@@ -1237,16 +1237,16 @@ class TestSegmentGroup(TestCase):
         g.set_resids(resid)
         # check individual atoms
         assert_equal([a.resid for a in g.atoms],
-                     resid * numpy.ones(g.n_atoms),
+                     resid * np.ones(g.n_atoms),
                      err_msg="failed to set_resid for segment to same resid")
         # check residues
-        assert_equal(g.residues.resids, resid * numpy.ones(g.n_residues),
+        assert_equal(g.residues.resids, resid * np.ones(g.n_residues),
                      err_msg="failed to set_resid of segments belonging to atoms 12:42 to same resid")
 
     def test_set_resids(self):
         g = self.universe.select_atoms("resid 10:18").segments
         resid = 999
-        g.set_resids(resid * numpy.ones(len(g)))
+        g.set_resids(resid * np.ones(len(g)))
         # note: all is now one residue... not meaningful but it is the correct behaviour
         assert_equal(g.resids, [resid],
                      err_msg="failed to set_resid  in Segment {0}".format(g))
@@ -1269,7 +1269,7 @@ class TestSegmentGroup(TestCase):
         g.set_masses(mass)
         # check individual atoms
         assert_equal([a.mass for a in g.atoms],
-                     mass * numpy.ones(g.n_atoms),
+                     mass * np.ones(g.n_atoms),
                      err_msg="failed to set_mass in segment of  H* atoms in resid 12:42 to {0}".format(mass))
 
     def test_set_segid_ValueError(self):
@@ -1286,7 +1286,7 @@ class TestAtomGroupVelocities(TestCase):
     @dec.slow
     def test_get_velocities(self):
         v = self.ag.get_velocities()
-        assert_(numpy.any(numpy.abs(v) > 1e-6), "velocities should be non-zero")
+        assert_(np.any(np.abs(v) > 1e-6), "velocities should be non-zero")
 
     def test_vel_src(self):
         assert_equal(self.universe.trajectory.ts.data['velocity_source'], 0)
@@ -1294,7 +1294,7 @@ class TestAtomGroupVelocities(TestCase):
     @dec.slow
     def test_velocities(self):
         ag = self.universe.atoms[42:45]
-        ref_v = numpy.array([
+        ref_v = np.array([
             [-3.61757946, -4.9867239, 2.46281552],
             [2.57792854, 3.25411797, -0.75065529],
             [13.91627216, 30.17778587, -12.16669178]])
@@ -1532,8 +1532,8 @@ class TestUniverse(TestCase):
 
     def test_set_dimensions(self):
         u = MDAnalysis.Universe(PSF, DCD)
-        box = numpy.array([10, 11, 12, 90, 90, 90])
-        u.dimensions = numpy.array([10, 11, 12, 90, 90, 90])
+        box = np.array([10, 11, 12, 90, 90, 90])
+        u.dimensions = np.array([10, 11, 12, 90, 90, 90])
         assert_allclose(u.dimensions, box)
 
 
@@ -1542,36 +1542,36 @@ class TestPBCFlag(TestCase):
         self.prec = 3
         self.universe = MDAnalysis.Universe(TRZ_psf, TRZ)
         self.ref_noPBC = {
-            'COG': numpy.array([4.23789883, 0.62429816, 2.43123484], dtype=float32),
-            'COM': numpy.array([4.1673783, 0.70507009, 2.21175832]),
+            'COG': np.array([4.23789883, 0.62429816, 2.43123484], dtype=float32),
+            'COM': np.array([4.1673783, 0.70507009, 2.21175832]),
             'ROG': 119.30368949900134, 'Shape': 0.6690026954813445,
             'Asph': 0.5305456387833748,
-            'MOI': numpy.array([
+            'MOI': np.array([
                 [152117.06620921, 55149.54042136, -26630.46034023],
                 [55149.54042136, 72869.64061494, 21998.1778074],
                 [-26630.46034023, 21998.1778074, 162388.70002471]]),
-            'BBox': numpy.array([[-75.74159241, -144.86634827, -94.47974396], [95.83090973, 115.11561584, 88.09812927]],
+            'BBox': np.array([[-75.74159241, -144.86634827, -94.47974396], [95.83090973, 115.11561584, 88.09812927]],
                                 dtype=float32),
-            'BSph': (173.40482, numpy.array([4.23789883, 0.62429816, 2.43123484], dtype=float32)),
-            'PAxes': numpy.array([
+            'BSph': (173.40482, np.array([4.23789883, 0.62429816, 2.43123484], dtype=float32)),
+            'PAxes': np.array([
                 [0.46294889, -0.85135849, 0.24671249],
                 [0.40611024, 0.45112859, 0.7947059],
                 [-0.78787867, -0.26771575, 0.55459488]])
         }
         self.ref_PBC = {
-            'COG': numpy.array([26.82960892, 31.5592289, 30.98238945], dtype=float32),
-            'COM': numpy.array([26.67781143, 31.2104336, 31.19796289]),
+            'COG': np.array([26.82960892, 31.5592289, 30.98238945], dtype=float32),
+            'COM': np.array([26.67781143, 31.2104336, 31.19796289]),
             'ROG': 27.713008969174918, 'Shape': 0.0017390512580463542,
             'Asph': 0.020601215358731016,
-            'MOI': numpy.array([
+            'MOI': np.array([
                 [7333.79167791, -211.8997285, -721.50785456],
                 [-211.8997285, 7059.07470427, -91.32156884],
                 [-721.50785456, -91.32156884, 6509.31735029]]),
-            'BBox': numpy.array(
+            'BBox': np.array(
                 [[1.45964116e-01, 1.85623169e-02, 4.31785583e-02], [5.53314018e+01, 5.54227829e+01, 5.54158211e+01]],
                 dtype=float32),
-            'BSph': (47.923367, numpy.array([26.82960892, 31.5592289, 30.98238945], dtype=float32)),
-            'PAxes': numpy.array([
+            'BSph': (47.923367, np.array([26.82960892, 31.5592289, 30.98238945], dtype=float32)),
+            'PAxes': np.array([
                 [-0.50622389, -0.18364489, -0.84262206],
                 [-0.07520116, -0.96394227, 0.25526473],
                 [-0.85911708, 0.19258726, 0.4741603]])
@@ -1845,7 +1845,7 @@ class TestWrap(TestCase):
         assert_raises(ValueError, self.ag.wrap, compound='residues', center='avacado')
 
     def test_wrap_box_fail(self):
-        assert_raises(ValueError, self.ag.wrap, box=numpy.array([0, 1]))
+        assert_raises(ValueError, self.ag.wrap, box=np.array([0, 1]))
 
     def _in_box(self, coords):
         """Check that a set of coordinates are 0.0 <= r <= box"""
@@ -1871,7 +1871,7 @@ class TestWrap(TestCase):
         ag = self.u.atoms[300:400]
         ag.wrap(compound='residues')
 
-        cen = numpy.vstack([r.center_of_mass() for r in ag.residues])
+        cen = np.vstack([r.center_of_mass() for r in ag.residues])
 
         assert_equal(self._in_box(cen), True)
 
@@ -1879,7 +1879,7 @@ class TestWrap(TestCase):
         ag = self.u.atoms[1000:1200]
         ag.wrap(compound='segments')
 
-        cen = numpy.vstack([s.center_of_mass() for s in ag.segments])
+        cen = np.vstack([s.center_of_mass() for s in ag.segments])
 
         assert_equal(self._in_box(cen), True)
 
@@ -1887,7 +1887,7 @@ class TestWrap(TestCase):
         ag = self.u.atoms[:250]
         ag.wrap(compound='fragments')
 
-        cen = numpy.vstack([f.center_of_mass() for f in ag.fragments])
+        cen = np.vstack([f.center_of_mass() for f in ag.fragments])
 
         assert_equal(self._in_box(cen), True)
 
