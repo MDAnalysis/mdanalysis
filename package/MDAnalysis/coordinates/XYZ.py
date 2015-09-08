@@ -340,7 +340,7 @@ class XYZReader(base.Reader):
             # stop when the cursor has reached the end of that block
             if counter == self.n_atoms:
                 ts._unitcell = np.zeros((6), np.float32)
-                ts._x[:] = x  # more efficient to do it this way to avoid re-creating the numpy arrays
+                ts._x[:] = x  # more efficient to do it this way to avoid re-creating the np arrays
                 ts._y[:] = y
                 ts._z[:] = z
                 ts.frame += 1

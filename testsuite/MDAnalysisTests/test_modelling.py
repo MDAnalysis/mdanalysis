@@ -23,9 +23,8 @@ import MDAnalysis.core.AtomGroup
 from MDAnalysis.core.AtomGroup import Atom, AtomGroup
 from MDAnalysis import NoDataError
 
-import numpy
+import numpy as np
 from numpy.testing import *
-from numpy import array, float32, rad2deg
 from nose.plugins.attrib import attr
 
 import os
@@ -231,7 +230,7 @@ class TestMergeTopology(object):
         # This shouldn't have topology as we merged single atoms
         ag1 = AtomGroup([self.u.atoms[1]])
         ag2 = AtomGroup([self.u.atoms[10]])
-        
+
         u2 = MDAnalysis.Merge(ag1, ag2)
 
         assert_(len(u2.atoms) == 2)

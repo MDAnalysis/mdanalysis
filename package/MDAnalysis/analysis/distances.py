@@ -30,7 +30,7 @@ have to be from the same :class:`~MDAnalysis.core.AtomGroup.Universe`.
 
 __all__ = ['distance_array', 'self_distance_array', 'contact_matrix', 'dist']
 
-import numpy
+import numpy as np
 from scipy import sparse
 
 from MDAnalysis.lib.distances import distance_array, self_distance_array
@@ -104,11 +104,11 @@ def dist(A, B, offset=0):
         off_A, off_B = offset
     except (TypeError, ValueError):
         off_A = off_B = int(offset)
-    residues_A = numpy.array(A.resids) + off_A
-    residues_B = numpy.array(B.resids) + off_B
+    residues_A = np.array(A.resids) + off_A
+    residues_B = np.array(B.resids) + off_B
     r = A.coordinates() - B.coordinates()
-    d = numpy.sqrt(numpy.sum(r * r, axis=1))
-    return numpy.array([residues_A, residues_B, d])
+    d = np.sqrt(np.sum(r * r, axis=1))
+    return np.array([residues_A, residues_B, d])
 
 
 def between(group, A, B, distance):

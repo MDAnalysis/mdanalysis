@@ -22,7 +22,7 @@ This module contains classes that allow neighbor searches directly with
 `AtomGroup` objects from `MDAnalysis`.
 """
 
-import numpy
+import numpy as np
 from Bio.KDTree import KDTree
 
 from MDAnalysis.core.AtomGroup import AtomGroup
@@ -73,7 +73,7 @@ class AtomNeighborSearch():
         for atom in atoms.coordinates():
             self.kdtree.search(atom, radius)
             indices.append(self.kdtree.get_indices())
-        unique_idx = numpy.unique([i for l in indices for i in l])
+        unique_idx = np.unique([i for l in indices for i in l])
         return self._index2level(unique_idx, level)
 
     def _index2level(self, indices, level):

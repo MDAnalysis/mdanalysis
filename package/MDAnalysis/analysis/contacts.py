@@ -145,7 +145,7 @@ import errno
 import warnings
 import bz2
 from itertools import izip
-import numpy
+import numpy as np
 import logging
 
 import MDAnalysis
@@ -278,9 +278,9 @@ class ContactAnalysis(object):
         self.qref = [self.qarray(dref[0]), self.qarray(dref[1])]
         self.nref = [self.qref[0].sum(), self.qref[1].sum()]
 
-        self.d = numpy.zeros_like(dref[0])
+        self.d = np.zeros_like(dref[0])
         self.q = self.qarray(self.d)
-        self._qtmp = numpy.zeros_like(self.q)  # pre-allocated array
+        self._qtmp = np.zeros_like(self.q)  # pre-allocated array
 
     def get_distance_array(self, g, **kwargs):
         """Calculate the self_distance_array for atoms in group *g*.
@@ -301,7 +301,7 @@ class ContactAnalysis(object):
             coordinates = g.positions
         else:
             # centroids per residue (but only including the selected atoms)
-            coordinates = numpy.array([residue.centroid() for residue in g.split("residue")])
+            coordinates = np.array([residue.centroid() for residue in g.split("residue")])
         return MDAnalysis.lib.distances.self_distance_array(coordinates, **kwargs)
 
     def output_exists(self, force=False):
@@ -347,7 +347,7 @@ class ContactAnalysis(object):
         finally:
             outbz2.close()
         if store:
-            self.timeseries = numpy.array(records).T
+            self.timeseries = np.array(records).T
         return self.output_bz2
 
     def qarray(self, d, out=None):
@@ -371,9 +371,9 @@ class ContactAnalysis(object):
         order to increase performance.
         """
         if out is None:
-            out = numpy.logical_and(q, self.qref[n])
+            out = np.logical_and(q, self.qref[n])
         else:
-            numpy.logical_and(q, self.qref[n], out)
+            np.logical_and(q, self.qref[n], out)
         contacts = out.sum()
         return contacts, float(contacts) / self.nref[n]
 
@@ -385,7 +385,7 @@ class ContactAnalysis(object):
                 if line.startswith('#'):
                     continue
                 records.append(map(float, line.split()))
-        self.timeseries = numpy.array(records).T
+        self.timeseries = np.array(records).T
 
     def plot(self, **kwargs):
         """Plot q1-q2."""
@@ -505,7 +505,7 @@ class ContactAnalysis1(object):
             default name "q1.dat.gz" the <q> file will be "q1.array.gz". The
             format is the matrix in column-row format, i.e. selection 1
             residues are the columns and selection 2 residues are rows. The
-            file can be read with :func:`numpy.loadtxt`.  ["q1.dat.gz"]
+            file can be read with :func:`np.loadtxt`.  ["q1.dat.gz"]
 
         The function calculates the percentage of native contacts q1
         along a trajectory. "Contacts" are defined as the number of atoms
@@ -559,14 +559,14 @@ class ContactAnalysis1(object):
         self.nref = self.qref.sum()
 
         # setup arrays for the trajectory
-        self.d = numpy.zeros_like(dref)
+        self.d = np.zeros_like(dref)
         self.q = self.qarray(self.d)
-        self._qtmp = numpy.zeros_like(self.q)  # pre-allocated array
+        self._qtmp = np.zeros_like(self.q)  # pre-allocated array
 
-        self.qavg = numpy.zeros(shape=self.q.shape, dtype=numpy.float64)
+        self.qavg = np.zeros(shape=self.q.shape, dtype=np.float64)
 
     def _return_tuple2(self, x, name):
-        if not isinstance(x, (tuple, list, numpy.ndarray)):
+        if not isinstance(x, (tuple, list, np.ndarray)):
             t = (x,)
         else:
             t = x
@@ -629,10 +629,10 @@ class ContactAnalysis1(object):
                     records.append((frame, q1, n1))
                 out.write("%(frame)4d  %(q1)8.6f %(n1)5d\n" % vars())
         if store:
-            self.timeseries = numpy.array(records).T
+            self.timeseries = np.array(records).T
         n_frames = len(range(total_frames)[start_frame:end_frame:step_value])
         self.qavg /= n_frames
-        numpy.savetxt(self.outarray, self.qavg, fmt="%8.6f")
+        np.savetxt(self.outarray, self.qavg, fmt="%8.6f")
         return self.output
 
     def qarray(self, d, out=None):
@@ -666,9 +666,9 @@ class ContactAnalysis1(object):
         This method is typically only used internally.
         """
         if out is None:
-            out = numpy.logical_and(q, self.qref)
+            out = np.logical_and(q, self.qref)
         else:
-            numpy.logical_and(q, self.qref, out)
+            np.logical_and(q, self.qref, out)
         contacts = out.sum()
         return contacts, float(contacts) / self.nref
 
@@ -680,9 +680,9 @@ class ContactAnalysis1(object):
                 if line.startswith('#'):
                     continue
                 records.append(map(float, line.split()))
-        self.timeseries = numpy.array(records).T
+        self.timeseries = np.array(records).T
         try:
-            self.qavg = numpy.loadtxt(self.outarray)
+            self.qavg = np.loadtxt(self.outarray)
         except IOError as err:
             if err.errno != errno.ENOENT:
                 raise

@@ -27,8 +27,6 @@ One could identify group 1 and 2 as upper and lower leaflet by
 comparing the median of the centres of masses; this is left as an
 exercise...
 """
-import numpy
-import MDAnalysis
 from MDAnalysis.analysis.leaflet import LeafletFinder
 
 
@@ -46,6 +44,3 @@ if __name__ == "__main__":
     macrovmd = PDB + ".vmd"
     L.write_vmd(macrovmd)
     print "Load macros for vmd from file %r" % macrovmd
-    
-
-

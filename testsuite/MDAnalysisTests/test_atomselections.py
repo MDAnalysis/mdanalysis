@@ -17,8 +17,8 @@ import MDAnalysis
 import MDAnalysis.core.Selection
 from MDAnalysis.tests.datafiles import PSF, DCD, PRMpbc, TRJpbc_bz2, PSF_NAMD, PDB_NAMD, GRO, NUCL, TPR, XTC
 
+import numpy as np
 from numpy.testing import *
-from numpy import array, float32, arange
 from nose.plugins.attrib import attr
 
 from MDAnalysisTests.plugins.knownfailure import knownfailure
@@ -101,7 +101,7 @@ class TestSelectionsCHARMM(TestCase):
         assert_equal(len(sel), 1)
         assert_equal(sel.resnames, ['GLY'])
         assert_array_almost_equal(sel.coordinates(),
-                                  array([[20.38685226, -3.44224262, -5.92158318]], dtype=float32))
+                                  np.array([[20.38685226, -3.44224262, -5.92158318]], dtype=np.float32))
 
     def test_type(self):
         sel = self.universe.select_atoms("type 1")
@@ -168,7 +168,7 @@ class TestSelectionsCHARMM(TestCase):
         """Test the 'same ... as' construct (Issue 217)"""
         sel = self.universe.select_atoms("same resname as resid 10 or resid 11")
         assert_equal(len(sel), 331, "Found a wrong number of atoms with same resname as resids 10 or 11")
-        target_resids = array([ 7, 8, 10, 11, 12, 14, 17, 25, 32, 37, 38, 42, 46,
+        target_resids = np.array([ 7, 8, 10, 11, 12, 14, 17, 25, 32, 37, 38, 42, 46,
                                49, 55, 56, 66, 73, 80, 85, 93, 95, 99, 100, 122, 127,
                               130, 144, 150, 176, 180, 186, 188, 189, 194, 198, 203, 207, 214])
         assert_array_equal(sel.residues.resids, target_resids, "Found wrong residues with same resname as resids 10 or 11")
@@ -179,17 +179,17 @@ class TestSelectionsCHARMM(TestCase):
         self.universe.residues[100:150].set_segids("B")
         self.universe.residues[150:].set_segids("C")
 
-        target_resids = arange(100)+1 
+        target_resids = np.arange(100)+1
         sel = self.universe.select_atoms("same segment as resid 10")
         assert_equal(len(sel), 1520, "Found a wrong number of atoms in the same segment of resid 10")
         assert_array_equal(sel.residues.resids, target_resids, "Found wrong residues in the same segment of resid 10")
 
-        target_resids = arange(100,150)+1 
+        target_resids = np.arange(100,150)+1
         sel = self.universe.select_atoms("same segment as resid 110")
         assert_equal(len(sel), 797, "Found a wrong number of atoms in the same segment of resid 110")
         assert_array_equal(sel.residues.resids, target_resids, "Found wrong residues in the same segment of resid 110")
 
-        target_resids = arange(150,self.universe.atoms.n_residues)+1
+        target_resids = np.arange(150,self.universe.atoms.n_residues)+1
         sel = self.universe.select_atoms("same segment as resid 160")
         assert_equal(len(sel), 1024, "Found a wrong number of atoms in the same segment of resid 160")
         assert_array_equal(sel.residues.resids, target_resids, "Found wrong residues in the same segment of resid 160")
@@ -331,7 +331,7 @@ class TestSelectionsGRO(TestCase):
         #  be converted to the exact same floats, at least in the same machine.
         sel = self.universe.select_atoms("same x as bynum 1 or bynum 10")
         assert_equal(len(sel), 12, "Found a wrong number of atoms with same x as ids 1 or 10")
-        target_ids = array([ 0, 8, 9, 224, 643, 3515, 11210, 14121, 18430, 25418, 35811, 43618])
+        target_ids = np.array([ 0, 8, 9, 224, 643, 3515, 11210, 14121, 18430, 25418, 35811, 43618])
         assert_array_equal(sel.indices, target_ids, "Found wrong atoms with same x as ids 1 or 10")
 
     def test_cylayer(self):
@@ -381,7 +381,7 @@ class TestSelectionsNucleicAcids(TestCase):
         assert_equal(rna.n_atoms, rna.n_residues * 5 - 1)
         # -1 because this is a single strand of RNA and on P is missing at the 5' end
 
-    # todo: need checks for other selection resnames such as DT DA DG DC DU 
+    # todo: need checks for other selection resnames such as DT DA DG DC DU
 
     def test_nucleicbase(self):
         rna = self.universe.select_atoms("nucleicbase")

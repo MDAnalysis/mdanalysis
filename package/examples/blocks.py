@@ -13,7 +13,7 @@ correlated data. 91(1):461-466, 1989.
 
 """
 
-import numpy
+import numpy as np
 import MDAnalysis
 
 
@@ -24,9 +24,9 @@ def blocked(universe, nblocks, analyze):
         a = []
         for ts in u.trajectory[block * size:(block + 1) * size]:
             a.append(analyze(universe))
-        blocks.append(numpy.average(a))
-    blockaverage = numpy.average(blocks)
-    blockstd = numpy.std(blocks)
+        blocks.append(np.average(a))
+    blockaverage = np.average(blocks)
+    blockstd = np.std(blocks)
 
     return nblocks, size, blockaverage, blockstd
 
@@ -52,7 +52,7 @@ if __name__ == "__main__":
     results = []
     for nblocks in xrange(2, 10):
         results.append(blocked(u, nblocks, rgyr))
-    r = numpy.array(results)
+    r = np.array(results)
 
     if have_matplotlib:
         subplot(211)

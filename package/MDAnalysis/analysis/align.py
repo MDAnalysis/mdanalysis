@@ -159,7 +159,7 @@ normal users.
 import os.path
 import itertools
 
-import numpy
+import numpy as np
 
 import MDAnalysis.lib.qcprot as qcp
 from MDAnalysis.exceptions import SelectionError, SelectionWarning
@@ -214,11 +214,11 @@ def rotation_matrix(a, b, weights=None):
     """
     if not weights is None:
         # weights are constructed as relative to the mean
-        weights = numpy.asarray(weights) / numpy.mean(weights)
-    rot = numpy.zeros(9, dtype=numpy.float64)
-    rmsd = qcp.CalcRMSDRotationalMatrix(a.T.astype(numpy.float64), b.T.astype(numpy.float64),
+        weights = np.asarray(weights) / np.mean(weights)
+    rot = np.zeros(9, dtype=np.float64)
+    rmsd = qcp.CalcRMSDRotationalMatrix(a.T.astype(np.float64), b.T.astype(np.float64),
                                         b.shape[0], rot, weights)
-    return numpy.matrix(rot.reshape(3, 3)), rmsd
+    return np.matrix(rot.reshape(3, 3)), rmsd
 
 
 def alignto(mobile, reference, select="all", mass_weighted=False,
@@ -324,7 +324,7 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
                                                  tol_mass=tol_mass, strict=strict)
 
     if mass_weighted:
-        weights = ref_atoms.masses / numpy.mean(ref_atoms.masses)
+        weights = ref_atoms.masses / np.mean(ref_atoms.masses)
         ref_com = ref_atoms.center_of_mass()
         mobile_com = mobile_atoms.center_of_mass()
     else:
@@ -469,8 +469,7 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
         weight = None
 
     # reference centre of mass system
-    # (compatibility with pre 1.0 numpy: explicitly cast coords to float32)
-    ref_com = ref_atoms.center_of_mass().astype(numpy.float32)
+    ref_com = ref_atoms.center_of_mass()
     ref_coordinates = ref_atoms.coordinates() - ref_com
 
     # allocate the array for selection atom coords
@@ -478,13 +477,13 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
 
     # RMSD timeseries
     nframes = len(frames)
-    rmsd = numpy.zeros((nframes,))
+    rmsd = np.zeros((nframes,))
 
     # R: rotation matrix that aligns r-r_com, x~-x~com
     #    (x~: selected coordinates, x: all coordinates)
     # Final transformed traj coordinates: x' = (x-x~_com)*R + ref_com
-    rot = numpy.zeros(9, dtype=numpy.float64)  # allocate space for calculation
-    R = numpy.matrix(rot.reshape(3, 3))
+    rot = np.zeros(9, dtype=np.float64)  # allocate space for calculation
+    R = np.matrix(rot.reshape(3, 3))
 
     percentage = ProgressMeter(nframes, interval=10, quiet=quiet,
                                format="Fitted frame %(step)5d/%(numsteps)d  [%(percentage)5.1f%%]\r")
@@ -492,7 +491,7 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
     for k, ts in enumerate(frames):
         # shift coordinates for rotation fitting
         # selection is updated with the time frame
-        x_com = traj_atoms.center_of_mass().astype(numpy.float32)
+        x_com = traj_atoms.center_of_mass().astype(np.float32)
         traj_coordinates[:] = traj_atoms.coordinates() - x_com
 
         # Need to transpose coordinates such that the coordinate array is
@@ -500,8 +499,8 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
         # (I think we swapped the position of ref and traj in CalcRMSDRotationalMatrix
         # so that R acts **to the left** and can be broadcasted; we're saving
         # one transpose. [orbeckst])
-        rmsd[k] = qcp.CalcRMSDRotationalMatrix(ref_coordinates.T.astype(numpy.float64),
-                                               traj_coordinates.T.astype(numpy.float64),
+        rmsd[k] = qcp.CalcRMSDRotationalMatrix(ref_coordinates.T.astype(np.float64),
+                                               traj_coordinates.T.astype(np.float64),
                                                natoms, rot, weight)
         R[:, :] = rot.reshape(3, 3)
 
@@ -516,7 +515,7 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
     logger.info("Wrote %d RMS-fitted coordinate frames to file %r",
                 frames.n_frames, filename)
     if not rmsdfile is None:
-        numpy.savetxt(rmsdfile, rmsd)
+        np.savetxt(rmsdfile, rmsd)
         logger.info("Wrote RMSD timeseries  to file %r", rmsdfile)
 
     if quiet:
@@ -639,7 +638,7 @@ def fasta2select(fastafilename, is_aligned=False,
     import Bio.SeqIO
     import Bio.AlignIO
     import Bio.Alphabet
-    import numpy
+    import numpy as np
 
     protein_gapped = Bio.Alphabet.Gapped(Bio.Alphabet.IUPAC.protein)
     if is_aligned:
@@ -684,9 +683,9 @@ def fasta2select(fastafilename, is_aligned=False,
             # residues in the alignment
             GAP = a.seq.alphabet.gap_char
             length = len(a.seq) - a.seq.count(GAP)
-            orig_resids[iseq] = numpy.arange(1, length + 1)
+            orig_resids[iseq] = np.arange(1, length + 1)
         else:
-            orig_resids[iseq] = numpy.asarray(orig_resids[iseq])
+            orig_resids[iseq] = np.asarray(orig_resids[iseq])
     # add offsets to the sequence <--> resid translation table
     seq2resids = [resids + offset for resids, offset in zip(orig_resids, offsets)]
     del orig_resids
@@ -721,11 +720,11 @@ def fasta2select(fastafilename, is_aligned=False,
         """
         # could maybe use Bio.PDB.StructureAlignment instead?
         nseq = len(alignment)
-        t = numpy.zeros((nseq, alignment.get_alignment_length()), dtype=int)
+        t = np.zeros((nseq, alignment.get_alignment_length()), dtype=int)
         for iseq, a in enumerate(alignment):
             GAP = a.seq.alphabet.gap_char
-            t[iseq, :] = seq2resids[iseq][numpy.cumsum(numpy.where(
-                numpy.array(list(a.seq)) == GAP, 0, 1)) - 1]
+            t[iseq, :] = seq2resids[iseq][np.cumsum(np.where(
+                np.array(list(a.seq)) == GAP, 0, 1)) - 1]
             # -1 because seq2resid is index-1 based (resids start at 1)
 
         def resid(nseq, ipos, t=t):
@@ -757,7 +756,7 @@ def fasta2select(fastafilename, is_aligned=False,
 
         res_list.append([template % resid(iseq, ipos) for iseq in xrange(nseq)])
 
-    sel = numpy.array(res_list).transpose()
+    sel = np.array(res_list).transpose()
 
     ref_selection = " or ".join(sel[0])
     target_selection = " or ".join(sel[1])
@@ -865,14 +864,14 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
         #                               one_alignment_only=True)
 
         # For now, just remove the residues that don't have matching numbers
-        rsize1 = numpy.array([r.n_atoms for r in ag1.residues])
-        rsize2 = numpy.array([r.n_atoms for r in ag2.residues])
-        rsize_mismatches = numpy.absolute(rsize1 - rsize2)
+        rsize1 = np.array([r.n_atoms for r in ag1.residues])
+        rsize2 = np.array([r.n_atoms for r in ag2.residues])
+        rsize_mismatches = np.absolute(rsize1 - rsize2)
         mismatch_mask = (rsize_mismatches > 0)
-        if numpy.any(mismatch_mask):
+        if np.any(mismatch_mask):
             if strict:
                 # diagnostics
-                mismatch_resindex = numpy.arange(ag1.n_residues)[mismatch_mask]
+                mismatch_resindex = np.arange(ag1.n_residues)[mismatch_mask]
                 def log_mismatch(number, ag, rsize, mismatch_resindex=mismatch_resindex):
                     logger.error("Offending residues: group {0}: {1}".format(
                             number,
@@ -889,21 +888,21 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
                 raise SelectionError("Different number of atoms in some residues. "
                                      "(Use strict=False to attempt using matching atoms only.)")
 
-            def get_atoms_byres(g, match_mask=numpy.logical_not(mismatch_mask)):
+            def get_atoms_byres(g, match_mask=np.logical_not(mismatch_mask)):
                 # not pretty... but need to do things on a per-atom basis in order
                 # to preserve original selection
                 ag = g.atoms
                 good = ag.resids[match_mask]
-                resids = numpy.array([a.resid for a in ag])  # resid for each atom
-                ix_good = numpy.in1d(resids, good)   # boolean array for all matching atoms
-                return ag[numpy.arange(len(ag))[ix_good]]   # workaround for missing boolean indexing
+                resids = np.array([a.resid for a in ag])  # resid for each atom
+                ix_good = np.in1d(resids, good)   # boolean array for all matching atoms
+                return ag[np.arange(len(ag))[ix_good]]   # workaround for missing boolean indexing
             _ag1 = get_atoms_byres(ag1)
             _ag2 = get_atoms_byres(ag2)
 
             # diagnostics
             # (ugly workaround for missing boolean indexing of AtomGroup)
             # note: ag[arange(len(ag))[boolean]] is ~2x faster than ag[where[boolean]]
-            mismatch_resindex = numpy.arange(ag1.n_residues)[mismatch_mask]
+            mismatch_resindex = np.arange(ag1.n_residues)[mismatch_mask]
             logger.warn("Removed {0} residues with non-matching numbers of atoms".format(
                     mismatch_mask.sum()))
             logger.debug("Removed residue ids: group 1: {0}".format(ag1.resids[mismatch_resindex]))
@@ -913,13 +912,13 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
             ag2 = _ag2
             del _ag1, _ag2
 
-    mass_mismatches = (numpy.absolute(ag1.masses - ag2.masses) > tol_mass)
-    if numpy.any(mass_mismatches):
+    mass_mismatches = (np.absolute(ag1.masses - ag2.masses) > tol_mass)
+    if np.any(mass_mismatches):
         # Test 2 failed.
         # diagnostic output:
         # (ugly workaround because boolean indexing is not yet working for atomgroups)
         assert ag1.n_atoms == ag2.n_atoms
-        mismatch_atomindex = numpy.arange(ag1.n_atoms)[mass_mismatches]
+        mismatch_atomindex = np.arange(ag1.n_atoms)[mass_mismatches]
 
         logger.error("Atoms: reference | trajectory")
         for ar, at in itertools.izip(ag1[mismatch_atomindex], ag2[mismatch_atomindex]):

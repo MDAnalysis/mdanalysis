@@ -47,7 +47,7 @@ cholesterol. Adjust it so that it selects one atom from each head
 group.
 """
 
-import numpy
+import numpy as np
 import MDAnalysis
 from MDAnalysis.analysis.leaflet import LeafletFinder, optimize_cutoff
 
@@ -59,7 +59,7 @@ def get_membrane_parameters(universe, leafletfinder):
     L1 = L.group(1)
 
     parameters = {}
-    parameters['thickness'] = numpy.abs((L1.centroid() - L0.centroid())[2])  # z coordinate
+    parameters['thickness'] = np.abs((L1.centroid() - L0.centroid())[2])  # z coordinate
     parameters['zmem'] = 0.5 * (L1.centroid() + L0.centroid())[2]  # z coordinate
     return parameters
 

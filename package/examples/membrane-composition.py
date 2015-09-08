@@ -26,7 +26,7 @@ group.
 import MDAnalysis
 from MDAnalysis.analysis.leaflet import LeafletFinder, optimize_cutoff
 
-import numpy
+import numpy as np
 
 if __name__ == "__main__":
     import errno
@@ -60,7 +60,7 @@ if __name__ == "__main__":
                         max_imbalance=0.2,
                         # PO-lipids (and CHOL for CG) but not CHARMM K+
                         selection="(name P* or name ROH) and not name POT")
-    # TODO: selection should be set based on the identities of lipids. 
+    # TODO: selection should be set based on the identities of lipids.
     # combined with fingerprinting in the future to do this automagically;
     #       Hard coded for now.
 
@@ -106,7 +106,7 @@ if __name__ == "__main__":
     for groupindex in xrange(len(LF.components)):
         resnames = [a.resname for a in LF.groups(groupindex)]
         # there CERTAINLY is a better way to count occurrences than this...
-        keys = numpy.unique(resnames)
+        keys = np.unique(resnames)
         for k in keys:
             count = resnames.count(k)
             print " %2d  %5s  %6d" % (groupindex, k, count)
