@@ -16,7 +16,7 @@
 import numpy as np
 import numpy.random
 from numpy.testing import *
-from numpy import pi, sin, cos
+
 
 from MDAnalysisTests.datafiles import PSF, Make_Whole
 
@@ -153,17 +153,17 @@ class TestGeometryFunctions(TestCase):
         self.e1 = np.array([1., 0, 0])
         self.e2 = np.array([0, 1., 0])
         self.e3 = np.array([0, 0, 1.])
-        self.a = np.array([cos(pi / 3), sin(pi / 3), 0])
+        self.a = np.array([np.cos(np.pi / 3), np.sin(np.pi / 3), 0])
         self.null = np.zeros(3)
 
     def testAngleUnitvectors(self):
-        assert_equal(mdamath.angle(self.e1, self.e2), pi / 2)
-        assert_equal(mdamath.angle(self.e1, self.a), pi / 3)
+        assert_equal(mdamath.angle(self.e1, self.e2), np.pi / 2)
+        assert_equal(mdamath.angle(self.e1, self.a), np.pi / 3)
 
     def testAngleVectors(self):
-        assert_equal(mdamath.angle(2 * self.e1, self.e2), pi / 2)
-        assert_equal(mdamath.angle(-2 * self.e1, self.e2), pi - pi / 2)
-        assert_equal(mdamath.angle(23.3 * self.e1, self.a), pi / 3)
+        assert_equal(mdamath.angle(2 * self.e1, self.e2), np.pi / 2)
+        assert_equal(mdamath.angle(-2 * self.e1, self.e2), np.pi - np.pi / 2)
+        assert_equal(mdamath.angle(23.3 * self.e1, self.a), np.pi / 3)
 
     def testAngleNullVector(self):
         assert_equal(mdamath.angle(self.e1, self.null), np.nan)
@@ -172,13 +172,13 @@ class TestGeometryFunctions(TestCase):
         assert_equal(mdamath.angle(self.a, self.a), 0.0)
 
     def testAnglePi(self):
-        assert_almost_equal(mdamath.angle(-2.3456e7 * self.e1, 3.4567e-6 * self.e1), pi)
+        assert_almost_equal(mdamath.angle(-2.3456e7 * self.e1, 3.4567e-6 * self.e1), np.pi)
         assert_almost_equal(mdamath.angle(2.3456e7 * self.e1, 3.4567e-6 * self.e1), 0.0)
 
     def testAngleRandom(self):
-        for x in np.random.uniform(0, pi, 20):
+        for x in np.random.uniform(0, np.pi, 20):
             r = np.random.uniform(0, 1000)
-            v = r * np.array([cos(x), sin(x), 0])
+            v = r * np.array([np.cos(x), np.sin(x), 0])
             assert_almost_equal(mdamath.angle(self.e1, v), x, 6)
 
     def testNorm(self):
@@ -189,9 +189,9 @@ class TestGeometryFunctions(TestCase):
         assert_equal(mdamath.norm(self.null), 0.0)
 
     def testNormRandom(self):
-        for x in np.random.uniform(0, pi, 20):
+        for x in np.random.uniform(0, np.pi, 20):
             r = np.random.uniform(0, 1000)
-            v = r * np.array([cos(x), sin(x), 0])
+            v = r * np.array([np.cos(x), np.sin(x), 0])
             assert_almost_equal(mdamath.norm(v), r, 6)
 
     def testNormal(self):
@@ -209,7 +209,7 @@ class TestGeometryFunctions(TestCase):
         ab = self.e1
         bc = ab + self.e2
         cd = bc + self.e3
-        assert_almost_equal(mdamath.dihedral(ab, bc, cd), -pi / 2)
+        assert_almost_equal(mdamath.dihedral(ab, bc, cd), -np.pi / 2)
 
 class TestMakeWhole(object):
     """Set up a simple system:

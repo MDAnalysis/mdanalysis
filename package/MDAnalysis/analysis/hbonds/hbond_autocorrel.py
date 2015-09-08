@@ -140,7 +140,6 @@ Examples
 
 """
 import numpy as np
-from numpy import exp
 import warnings
 from itertools import izip
 
@@ -472,12 +471,12 @@ class HydrogenBondAutoCorrel(object):
         def double(x, A1, tau1, tau2):
             """ Sum of two exponential functions """
             A2 = 1 - A1
-            return A1 * exp(-x / tau1) + A2 * exp(-x / tau2)
+            return A1 * np.exp(-x / tau1) + A2 * np.exp(-x / tau2)
 
         def triple(x, A1, A2, tau1, tau2, tau3):
             """ Sum of three exponential functions """
             A3 = 1 - (A1 + A2)
-            return A1 * exp(-x / tau1) + A2 * exp(-x / tau2) + A3 * exp(-x / tau3)
+            return A1 * np.exp(-x / tau1) + A2 * np.exp(-x / tau2) + A3 * np.exp(-x / tau3)
 
         if self.bond_type is 'continuous':
             self._my_solve = double

@@ -30,9 +30,6 @@ Helper functions:
 .. autofunction:: get_writer_for
 
 """
-import os.path
-from numpy import sin, cos, sqrt
-from numpy import rad2deg, deg2rad
 
 from ..lib import util
 from ..lib.mdamath import triclinic_box, triclinic_vectors, box_volume

@@ -118,15 +118,6 @@ import numpy as np
 # - vecscale(v,a) --> a*c
 # - vecadd(a,b) --> a+b
 # - vecsub(a,b) --> a-b
-try:
-    from numpy import rad2deg, deg2rad  # numpy 1.3+
-except ImportError:
-    def rad2deg(x):  # no need for the numpy out=[] argument
-        return 180.0 * x / np.pi
-
-    def deg2rad(x):  # no need for the numpy out=[] argument
-        return x * np.pi / 180.0
-
 import MDAnalysis
 from MDAnalysis import FinishTimeException
 
@@ -182,17 +173,14 @@ def wrapangle(angle):
     return angle
 
 
-from numpy import mean
-
-
 def sample_sd(a, dummy):
     return np.std(a, ddof=1)
 
 
 def mean_abs_dev(a, mean_a=None):
     if mean_a is None:
-        mean_a = mean(a)
-    return mean(np.fabs(a - mean_a))
+        mean_a = np.mean(a)
+    return np.mean(np.fabs(a - mean_a))
 
 
 try:
@@ -343,7 +331,7 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
 
         for i in range(len(local_helix_axes)):
             for j in range(i + 1, len(local_helix_axes)):
-                angle = rad2deg(np.arccos(vecscaler(local_helix_axes[i], local_helix_axes[j])))
+                angle = np.rad2deg(np.arccos(vecscaler(local_helix_axes[i], local_helix_axes[j])))
                 global_bending_matrix[i][j].append(angle)
                 #global_bending_matrix[j][i].append(angle)
                 #global_bending_matrix[i][i].append(0.)
@@ -353,7 +341,7 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
         global_twist += twist
         global_rnou += rnou
         #global_screw.append(local_screw_angles)
-        global_fitted_tilts.append(rad2deg(fit_tilt))
+        global_fitted_tilts.append(np.rad2deg(fit_tilt))
 
         #print out rotations across the helix to a file
         with open(twist_filename, "a") as twist_output:
@@ -377,11 +365,11 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
         with open(tilt_filename, "a") as tilt_output:
             print >> tilt_output, frame,
             for tilt in local_helix_axes:
-                print >> tilt_output, rad2deg(vecangle(tilt, ref_axis)),
+                print >> tilt_output, np.rad2deg(vecangle(tilt, ref_axis)),
             print >> tilt_output, ""
 
         with open(fitted_tilt_filename, "a") as tilt_output:
-            print >> tilt_output, frame, rad2deg(fit_tilt)
+            print >> tilt_output, frame, np.rad2deg(fit_tilt)
 
         if len(global_bending) == 0:
             global_bending = [[] for item in bending_angles]
@@ -559,7 +547,7 @@ def helanal_main(pdbfile, selection="name CA", start=None, end=None, ref_axis=No
             if (i == j).all():
                 angle = 0.
             else:
-                angle = rad2deg(np.arccos(vecscaler(i, j)))
+                angle = np.rad2deg(np.arccos(vecscaler(i, j)))
             string_angle = "%6.0f\t" % angle
             #print string_angle,
             #print ''
@@ -653,7 +641,7 @@ def main_loop(positions, ref_axis=None):
         costheta = vecscaler(dv13, dv24) / (dmag * emag)
         #rnou is the number of residues per turn
         current_twist = np.arccos(costheta)
-        twist.append(rad2deg(current_twist))
+        twist.append(np.rad2deg(current_twist))
         rnou.append(2 * np.pi / current_twist)
         #radius of local helix cylinder radmag
 
@@ -690,15 +678,15 @@ def main_loop(positions, ref_axis=None):
     bending_angles = [0 for item in range(len(local_helix_axes) - 3)]
     for axis in xrange(len(local_helix_axes) - 3):
         angle = np.arccos(vecscaler(local_helix_axes[axis], local_helix_axes[axis + 3]))
-        bending_angles[axis] = rad2deg(angle)
+        bending_angles[axis] = np.rad2deg(angle)
         #TESTED- angles are correct
-        #print rad2deg(angle)
+        #print np.rad2deg(angle)
 
     local_screw_angles = []
     #Calculate rotation angles for (+1) to (n-1)
     fit_vector, fit_tilt = vector_of_best_fit(origins)
     for item in location_rotation_vectors:
-        local_screw_tmp = rad2deg(rotation_angle(fit_vector, ref_axis, item))
+        local_screw_tmp = np.rad2deg(rotation_angle(fit_vector, ref_axis, item))
         #print local_screw_tmp
         local_screw_angles.append(local_screw_tmp)
 

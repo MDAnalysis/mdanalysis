@@ -26,7 +26,6 @@ from MDAnalysis.core.AtomGroup import _PLURAL_PROPERTIES, _SINGULAR_PROPERTIES
 
 import numpy as np
 from numpy.testing import *
-from numpy import array, float32, rad2deg
 from nose.plugins.attrib import attr
 
 import os
@@ -43,7 +42,8 @@ class TestAtom(TestCase):
         """Set up the standard AdK system in implicit solvent."""
         self.universe = MDAnalysis.Universe(PSF, DCD)
         self.atom = self.universe.atoms[1000]  # Leu67:CG
-        self.known_pos = array([3.94543672, -12.4060812, -7.26820087], dtype=float32)
+        self.known_pos = np.array([3.94543672, -12.4060812, -7.26820087],
+                                  dtype=np.float32)
 
     def tearDown(self):
         del self.universe
@@ -222,25 +222,25 @@ class TestAtomGroup(TestCase):
 
     def test_center_of_geometry(self):
         assert_array_almost_equal(self.ag.center_of_geometry(),
-                                  array([-0.04223963, 0.0141824, -0.03505163], dtype=float32))
+                                  np.array([-0.04223963, 0.0141824, -0.03505163],
+                                           dtype=np.float32))
 
     def test_center_of_mass(self):
         assert_array_almost_equal(self.ag.center_of_mass(),
-                                  array([-0.01094035, 0.05727601, -0.12885778]))
+                                  np.array([-0.01094035, 0.05727601, -0.12885778]))
 
     def test_coordinates(self):
         assert_array_almost_equal(self.ag.coordinates()[1000:2000:200],
-                                  array(
-                                      [
-                                          [3.94543672, -12.4060812, -7.26820087],
-                                          [13.21632767, 5.879035, -14.67914867],
-                                          [12.07735443, -9.00604534, 4.09301519],
-                                          [11.35541916, 7.0690732, -0.32511973],
-                                          [-13.26763439, 4.90658951, 10.6880455]], dtype=float32))
+                                  np.array([[3.94543672, -12.4060812, -7.26820087],
+                                            [13.21632767, 5.879035, -14.67914867],
+                                            [12.07735443, -9.00604534, 4.09301519],
+                                            [11.35541916, 7.0690732, -0.32511973],
+                                            [-13.26763439, 4.90658951, 10.6880455]],
+                                           dtype=np.float32))
 
     def test_principal_axes(self):
         assert_array_almost_equal(self.ag.principal_axes(),
-                                  array([
+                                  np.array([
                                       [-9.99925632e-01, 1.21546132e-02, 9.98264877e-04],
                                       [1.20986911e-02, 9.98951474e-01, -4.41539838e-02],
                                       [1.53389276e-03, 4.41386224e-02, 9.99024239e-01]]))
@@ -255,7 +255,7 @@ class TestAtomGroup(TestCase):
         assert_equal(isinstance(self.ag.indices, np.ndarray), True)
 
     def test_indices(self):
-        assert_array_equal(self.ag.indices[:5], array([0, 1, 2, 3, 4]))
+        assert_array_equal(self.ag.indices[:5], np.array([0, 1, 2, 3, 4]))
 
     def test_resids_ndarray(self):
         assert_equal(isinstance(self.ag.resids, np.ndarray), True)
@@ -302,7 +302,7 @@ class TestAtomGroup(TestCase):
 
     def test_charges(self):
         assert_array_almost_equal(self.ag.charges[1000:2000:200],
-                                  array([-0.09, 0.09, -0.47, 0.51, 0.09]))
+                                  np.array([-0.09, 0.09, -0.47, 0.51, 0.09]))
 
     def test_radii_ndarray(self):
         assert_equal(isinstance(self.ag.radii, np.ndarray), True)
@@ -470,13 +470,13 @@ class TestAtomGroup(TestCase):
 
         ag.pack_into_box(box=np.array([5., 5., 5.], dtype=np.float32))  # Provide arbitrary box
         assert_array_almost_equal(ag.coordinates(),
-                                  array(
+                                  np.array(
                                       [
                                           [3.94543672, 2.5939188, 2.73179913],
                                           [3.21632767, 0.879035, 0.32085133],
                                           [2.07735443, 0.99395466, 4.09301519],
                                           [1.35541916, 2.0690732, 4.67488003],
-                                          [1.73236561, 4.90658951, 0.6880455]], dtype=float32))
+                                          [1.73236561, 4.90658951, 0.6880455]], dtype=np.float32))
 
     def test_residues(self):
         u = self.universe
@@ -1542,7 +1542,7 @@ class TestPBCFlag(TestCase):
         self.prec = 3
         self.universe = MDAnalysis.Universe(TRZ_psf, TRZ)
         self.ref_noPBC = {
-            'COG': np.array([4.23789883, 0.62429816, 2.43123484], dtype=float32),
+            'COG': np.array([4.23789883, 0.62429816, 2.43123484], dtype=np.float32),
             'COM': np.array([4.1673783, 0.70507009, 2.21175832]),
             'ROG': 119.30368949900134, 'Shape': 0.6690026954813445,
             'Asph': 0.5305456387833748,
@@ -1551,15 +1551,15 @@ class TestPBCFlag(TestCase):
                 [55149.54042136, 72869.64061494, 21998.1778074],
                 [-26630.46034023, 21998.1778074, 162388.70002471]]),
             'BBox': np.array([[-75.74159241, -144.86634827, -94.47974396], [95.83090973, 115.11561584, 88.09812927]],
-                                dtype=float32),
-            'BSph': (173.40482, np.array([4.23789883, 0.62429816, 2.43123484], dtype=float32)),
+                                dtype=np.float32),
+            'BSph': (173.40482, np.array([4.23789883, 0.62429816, 2.43123484], dtype=np.float32)),
             'PAxes': np.array([
                 [0.46294889, -0.85135849, 0.24671249],
                 [0.40611024, 0.45112859, 0.7947059],
                 [-0.78787867, -0.26771575, 0.55459488]])
         }
         self.ref_PBC = {
-            'COG': np.array([26.82960892, 31.5592289, 30.98238945], dtype=float32),
+            'COG': np.array([26.82960892, 31.5592289, 30.98238945], dtype=np.float32),
             'COM': np.array([26.67781143, 31.2104336, 31.19796289]),
             'ROG': 27.713008969174918, 'Shape': 0.0017390512580463542,
             'Asph': 0.020601215358731016,
@@ -1569,8 +1569,8 @@ class TestPBCFlag(TestCase):
                 [-721.50785456, -91.32156884, 6509.31735029]]),
             'BBox': np.array(
                 [[1.45964116e-01, 1.85623169e-02, 4.31785583e-02], [5.53314018e+01, 5.54227829e+01, 5.54158211e+01]],
-                dtype=float32),
-            'BSph': (47.923367, np.array([26.82960892, 31.5592289, 30.98238945], dtype=float32)),
+                dtype=np.float32),
+            'BSph': (47.923367, np.array([26.82960892, 31.5592289, 30.98238945], dtype=np.float32)),
             'PAxes': np.array([
                 [-0.50622389, -0.18364489, -0.84262206],
                 [-0.07520116, -0.96394227, 0.25526473],

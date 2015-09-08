@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from MDAnalysis import *
 import Numeric
-from numpy import *
 from numpy import linalg
 
 system = AtomGroup.Universe(".psf", ".dcd")
