@@ -46,16 +46,8 @@ class Mock(object):
 # documentation root, use os.path.abspath to make it absolute, like shown
 # here.
 
-# Little trick to make sure sphinx use the dev build if present
-build_path = "../../../build/lib.%s-%s-%s" % (platform.system().lower(),
-                                              platform.machine(),
-                                              ".".join(platform.python_version_tuple()[:2]))
-build_path = os.path.abspath(build_path)
-if os.path.exists(build_path):
-    sys.path.insert(0, build_path)
-
-#sys.path.insert(0, os.path.abspath('.'))
-#sys.path.insert(0, '../../../MDAnalysis/analysis/')
+# make sure sphinx always uses the current branch
+sys.path.insert(0, os.path.abspath('../../..'))
 
 # -- General configuration -----------------------------------------------------
 
