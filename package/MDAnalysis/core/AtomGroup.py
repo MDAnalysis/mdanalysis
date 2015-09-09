@@ -1697,6 +1697,11 @@ class AtomGroup(object):
         """
         self.set("resnum", resnum)
 
+        # set the resnum for each of the residues in this AtomGroup's
+        # ResidueGroup
+        for residue in self.residues:
+            residue.resnum = residue[0].resnum
+
     set_resnum = deprecate(set_resnums, old_name='set_resnum', new_name='set_resnums')
 
     def set_resnames(self, resname):
@@ -1716,9 +1721,12 @@ class AtomGroup(object):
         .. versionchanged:: 0.11.0
            Made plural to make consistent with corresponding property
         """
-        from MDAnalysis.topology.core import build_residues
-
         self.set("resname", resname, conversion=str)
+
+        # set the resname for each of the residues in this AtomGroup's
+        # ResidueGroup
+        for residue in self.residues:
+            residue.resname = residue[0].resname
 
     set_resname = deprecate(set_resnames, old_name='set_resname', new_name='set_resnames')
 
