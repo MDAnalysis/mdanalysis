@@ -620,7 +620,10 @@ class PrimitivePDBReader(base.Reader):
                     self.ts._pos[pos] = map(float, [line[30:38], line[38:46], line[46:54]])
                     pos += 1
                     # TODO import bfactors - might these change?
-                    occupancy = float(line[54:60])
+                    try:
+                        occupancy = float(line[54:60])
+                    except:
+                        occupancy = 1
                     self._occupancy.append(occupancy)
                     continue
 
