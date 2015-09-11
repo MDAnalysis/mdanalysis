@@ -46,16 +46,8 @@ class Mock(object):
 # documentation root, use os.path.abspath to make it absolute, like shown
 # here.
 
-# Little trick to make sure sphinx use the dev build if present
-build_path = "../../../build/lib.%s-%s-%s" % (platform.system().lower(),
-                                              platform.machine(),
-                                              ".".join(platform.python_version_tuple()[:2]))
-build_path = os.path.abspath(build_path)
-if os.path.exists(build_path):
-    sys.path.insert(0, build_path)
-
-#sys.path.insert(0, os.path.abspath('.'))
-#sys.path.insert(0, '../../../MDAnalysis/analysis/')
+# make sure sphinx always uses the current branch
+sys.path.insert(0, os.path.abspath('../../..'))
 
 # -- General configuration -----------------------------------------------------
 
@@ -65,7 +57,8 @@ if os.path.exists(build_path):
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.intersphinx',
-              'sphinx.ext.mathjax', 'sphinx.ext.viewcode']
+              'sphinx.ext.mathjax', 'sphinx.ext.viewcode',
+              'sphinx.ext.napoleon',]
 mathjax_path = 'https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'
 
 # Add any paths that contain templates here, relative to this directory.

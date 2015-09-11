@@ -36,18 +36,27 @@ import numpy as np
 
 from ..exceptions import NoDataError
 
+
 # geometric functions
 def norm(v):
-    r"""Returns the length of a vector, ``sqrt(v.v)``.
+    r"""Calculate the norm of a vector v.
 
-    .. math::
+    .. math:: v = \sqrt{\mathbf{v}\cdot\mathbf{v}}
 
-       v = \sqrt{\mathbf{v}\cdot\mathbf{v}}
+    This version is faster then numpy.linalg.norm because it only works for a
+    single vector and therefore can skip a lot of the additional fuss
+    linalg.norm does.
 
-    Faster than :func:`numpy.linalg.norm` because no frills.
+    Parameters
+    ----------
+    v: array_like
+        1D array of shape (N) for a vector of length N
 
-    .. versionchanged:: 0.11.0
-       Moved into lib.mdamath
+    Returns
+    -------
+    float
+        norm of the vector
+
     """
     return np.sqrt(np.dot(v, v))
 
