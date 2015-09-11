@@ -1164,3 +1164,67 @@ def cached(key):
         return wrapper
 
     return cached_lookup
+
+
+def blocks_of(a, n, m):
+    """Extract a view of (n, m) blocks along the diagonal of the array `a`
+ 
+    Parameters
+    ----------
+    a : array_like
+        starting array
+    n : int
+        size of block in first dimension
+    m : int
+        size of block in second dimension
+
+ 
+    Returns
+    -------
+      (nblocks, n, m) view of the original array. 
+      Where nblocks is the number of times the miniblock fits in the original.
+
+    Raises
+    ------
+      ValueError
+        If the supplied `n` and `m` don't divide `a` into an integer number
+        of blocks.
+ 
+    Examples
+    --------
+    >>> arr = np.arange(16).reshape(4, 4)
+    >>> view = blocks_of(arr, 2, 2)
+    >>> view[:] = 100
+    >>> arr
+    array([[100,   1,   2,   3],
+           [  4, 100,   6,   7],
+           [  8,   9, 100,  11],
+           [ 12,  13,  14, 100]])
+
+    Notes
+    -----
+      n, m must divide a into an identical integer number of blocks.
+ 
+      Uses strides so probably requires that the array is C contiguous
+ 
+      Returns a view, so editing this modifies the original array
+
+    .. versionadded:: 0.11.1
+    """
+    # based on: 
+    # http://stackoverflow.com/a/10862636
+    # but generalised to handle non square blocks.
+
+    nblocks = a.shape[0] / n
+    nblocks2 = a.shape[1] / m
+ 
+    if not nblocks == nblocks2:
+        raise ValueError("Must divide into same number of blocks in both"
+                         " directions.  Got {} by {}"
+                         "".format(nblocks, nblocks2))
+ 
+    new_shape = (nblocks, n, m)
+    new_strides = (n * a.strides[0] + m * a.strides[1],
+                   a.strides[0], a.strides[1])
+ 
+    return np.lib.stride_tricks.as_strided(a, new_shape, new_strides)

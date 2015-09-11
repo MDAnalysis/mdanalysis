@@ -657,3 +657,56 @@ class TestGuessFormat(object):
         s = cStringIO.StringIO('this is a very fun file')
 
         assert_raises(ValueError, util.guess_format, s)
+
+
+class TestBlocksOf(object):
+    def test_blocks_of_1(self):
+        arr = np.arange(16).reshape(4, 4)
+
+        view = util.blocks_of(arr, 1, 1)
+
+        # should return a (4, 1, 1) view
+        # ie 4 lots of 1x1
+        assert_(view.shape == (4, 1, 1))
+        assert_array_almost_equal(view, np.array([[[0]], [[5]], [[10]], [[15]]]))
+
+        # Change my view, check changes are reflected in arr
+        view[:] = 1001
+
+        assert_array_almost_equal(arr,
+                                  np.array([[1001, 1, 2, 3],
+                                            [4, 1001, 6, 7],
+                                            [8, 9, 1001, 11],
+                                            [12, 13, 14, 1001]]))
+
+    def test_blocks_of_2(self):
+        arr = np.arange(16).reshape(4, 4)
+
+        view = util.blocks_of(arr, 2, 2)
+
+        # should return (2, 2, 2)
+        assert_(view.shape == (2, 2, 2))
+        assert_array_almost_equal(view, np.array([[[0, 1], [4, 5]],
+                                                  [[10, 11], [14, 15]]]))
+
+        view[0] = 100
+        view[1] = 200
+
+        assert_array_almost_equal(arr,
+                                  np.array([[100, 100, 2, 3],
+                                            [100, 100, 6, 7],
+                                            [8, 9, 200, 200],
+                                            [12, 13, 200, 200]]))
+
+    def test_blocks_of_3(self):
+        # testing non square array
+        arr = np.arange(32).reshape(8, 4)
+
+        view = util.blocks_of(arr, 2, 1)
+
+        assert_(view.shape == (4, 2, 1))
+
+    def test_blocks_of_VE(self):
+        arr = np.arange(16).reshape(4, 4)
+
+        assert_raises(ValueError, util.blocks_of, arr, 2, 1)
