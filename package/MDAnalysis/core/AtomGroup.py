@@ -606,6 +606,29 @@ class Atom(object):
             raise NoDataError("Timestep does not contain velocities")
 
     @property
+    def occupancy(self):
+        """Access occupancy values.
+
+        If available can have a value between 0 and 1
+
+        :Returns: float
+
+        .. versionadded:: 0.12"""
+        try:
+            return self.universe.coord.data['occupancy'][self.index]
+        except KeyError:
+            raise NoDataError('Timestep does not contain occupancy')
+
+    @occupancy.setter
+    def occupancy(self, _occupancy):
+        """Set occupancy for atom"""
+        try:
+            self.universe.coord.data['occupancy'][self.index] = _occupancy
+        except:
+            raise NoDataError('Occupancies not defined for AtomGroup of '
+                              'this Atom')
+
+    @property
     def force(self):
         """Current force of the atom.
 
@@ -1127,6 +1150,18 @@ class AtomGroup(object):
         return np.sum(self.masses, axis=0)
 
     totalMass = deprecate(total_mass, old_name='totalMass', new_name='total_mass')
+
+    @property
+    def occupancy(self):
+        """Access occupancies of atoms
+
+        If available can have a value between 0 and 1
+
+        :Returns: ndarray containing occupancies
+
+        .. versionadded:: 0.12.0
+        """
+        return self.universe.coord.data['occupancy'][self.indices]
 
     @property
     def charges(self):
