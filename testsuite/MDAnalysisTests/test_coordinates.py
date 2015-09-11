@@ -3212,3 +3212,14 @@ class TestIncompletePDB(object):
     def test_reading_trajectory(self):
         for ts in self.u.trajectory:
             pass
+
+    def test_occupancy(self):
+        occupancy = self.u.atoms.occupancy
+        assert_array_almost_equal(occupancy,
+                                  np.ones(len(occupancy)))
+
+    def test_set_occupancy(self):
+        for atom in self.u.atoms:
+            atom.occupancy = 0
+        assert_almost_equal(self.u.atoms.occupancy,
+                            np.zeros(self.u.atoms.n_atoms))
