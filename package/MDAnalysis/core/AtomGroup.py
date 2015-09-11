@@ -611,7 +611,10 @@ class Atom(object):
 
         If available can have a value between 0 and 1
 
-        :Returns: float
+        Returns
+        -------
+        float
+            occupancy of Atom
 
         .. versionadded:: 0.12"""
         try:
@@ -621,12 +624,17 @@ class Atom(object):
 
     @occupancy.setter
     def occupancy(self, _occupancy):
-        """Set occupancy for atom"""
+        """Set occupancy for an atom
+
+        If no occupancies are set in the universe of the atom the occupancy
+        of the other atoms will be set to 1.
+        """
         try:
             self.universe.coord.data['occupancy'][self.index] = _occupancy
         except:
-            raise NoDataError('Occupancies not defined for AtomGroup of '
-                              'this Atom')
+            n_atoms = self.universe.coord.n_atoms
+            self.universe.coord.data['occupancy'] = np.ones(n_atoms)
+            self.universe.coord.data['occupancy'][self.index] = _occupancy
 
     @property
     def force(self):
@@ -1157,7 +1165,10 @@ class AtomGroup(object):
 
         If available can have a value between 0 and 1
 
-        :Returns: ndarray containing occupancies
+        Returns
+        -------
+        ndarray
+            occupancies for all atoms in AtomGroup
 
         .. versionadded:: 0.12.0
         """
