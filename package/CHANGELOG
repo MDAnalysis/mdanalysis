@@ -19,7 +19,7 @@ API Changes
 
 Enhancements
 
- * XYZReader now supports frame indexing
+ * XYZReader now supports frame indexing (Issue #428)
 
 Changes
 
