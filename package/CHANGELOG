@@ -1,3 +1,4 @@
+# -*- tab-width: 2; indent-tabs-mode: nil; coding: utf-8 -*-
 ======================
  MDAnalysis CHANGELOG
 ======================
@@ -17,7 +18,11 @@ The rules for this file:
 
 API Changes
 
+  * Added PrimitivePDBReader now imports occupancies into the `TimeStep` object.
+
 Enhancements
+
+  * Changed `Atom` and `AtomGroup` now expose occupancy value of available.
 
 Changes
 
