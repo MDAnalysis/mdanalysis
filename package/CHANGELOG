@@ -11,13 +11,15 @@ The rules for this file:
   * accompany each entry with github issue/PR number (Issue #xyz)
 
 ------------------------------------------------------------------------------
-??/??/??
+??/??/?? richardjgowers
 
   * 0.11.1
 
 API Changes
 
 Enhancements
+
+ * XYZReader now supports frame indexing
 
 Changes
 
