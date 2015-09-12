@@ -10,6 +10,7 @@
 #
 # Additional environment variables set in .travis.yml
 #  GH_REPOSITORY     repo to full from and push to
+#  GH_DOC_BRANCH     branch from which the docs are built
 #  GIT_CI_USER       name of the user to push docs as
 #  GIT_CI_EMAIL      email of the user to push docs as
 #  MDA_DOCDIR        path to the docdir from top of repo
@@ -39,14 +40,14 @@ git config user.name "${GIT_CI_USER}"
 git config user.email "${GIT_CI_EMAIL}"
 
 git remote add upstream "https://${GH_TOKEN}@${GH_REPOSITORY}"
-git fetch upstream
+git fetch --depth 50 upstream ${GH_DOC_BRANCH} gh-pages
 git reset upstream/gh-pages
 
 touch .
 touch .nojekyll
 
 git add -A .
-git commit -m "rebuilt html docs with sphinx at ${rev}"
+git commit -m "rebuilt html docs from branch ${GH_DOC_BRANCH} with sphinx at ${rev}"
 git push -q upstream HEAD:gh-pages
 
 
