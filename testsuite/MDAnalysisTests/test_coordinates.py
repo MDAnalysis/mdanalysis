@@ -3214,12 +3214,17 @@ class TestIncompletePDB(object):
             pass
 
     def test_occupancy(self):
-        occupancy = self.u.atoms.occupancy
-        assert_array_almost_equal(occupancy,
+        occupancy = self.u.atoms.occupancies
+        assert_array_almost_equal(occupancies,
                                   np.ones(len(occupancy)))
 
     def test_set_occupancy(self):
         for atom in self.u.atoms:
             atom.occupancy = 0
-        assert_almost_equal(self.u.atoms.occupancy,
+        assert_almost_equal(self.u.atoms.occupancies,
+                            np.zeros(self.u.atoms.n_atoms))
+
+    def test_set_occupancies(self):
+        self.u.atoms.occupancies = 0.0
+        assert_almost_equal(self.u.atoms.occupancies,
                             np.zeros(self.u.atoms.n_atoms))

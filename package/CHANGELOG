@@ -14,15 +14,17 @@ The rules for this file:
 ------------------------------------------------------------------------------
 ??/??/??
 
-  * 0.11.1
+  * 0.11.1 kain88-de, richardjgowers
 
 API Changes
 
-  * Added PrimitivePDBReader now imports occupancies into the `TimeStep` object.
+  * PrimitivePDBReader now imports occupancies into the `TimeStep` object.
+    (Issue #396)
 
 Enhancements
 
-  * Changed `Atom` and `AtomGroup` now expose occupancy value of available.
+  * `Atom` and `AtomGroup` now expose occupancy value as `occupancy` and
+    `occupancies` properties (Issue #396)
 
 Changes
 
