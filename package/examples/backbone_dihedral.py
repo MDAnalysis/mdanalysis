@@ -10,7 +10,7 @@ Calculating backbone dihedrals of a protein, using timeseries functionality
 
 """
 
-import numpy
+import numpy as np
 
 from MDAnalysis import Universe, collection, Timeseries
 from MDAnalysis.tests.datafiles import PSF, DCD
@@ -51,16 +51,16 @@ collection.compute(universe.trajectory)
 phi = []
 psi = []
 for data_phi in collection[0::2]:
-    dih = numpy.rad2deg(data_phi[0])
+    dih = np.rad2deg(data_phi[0])
     phi.append([dih.mean(), dih.std()])
 for data_psi in collection[1::2]:
-    dih = numpy.rad2deg(data_psi[0])
+    dih = np.rad2deg(data_psi[0])
     psi.append([dih.mean(), dih.std()])
 
 # making an array for phi and psi data
-res = numpy.arange(2, numresidues - 1)
-phi = numpy.array(phi)
-psi = numpy.array(psi)
+res = np.arange(2, numresidues - 1)
+phi = np.array(phi)
+psi = np.array(psi)
 
 # plotting and saving the dihe for each resid
 if have_matplotlib:

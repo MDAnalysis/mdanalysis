@@ -24,7 +24,7 @@ import MDAnalysis.analysis.waterdynamics
 from MDAnalysis import SelectionError, SelectionWarning, FinishTimeException
 
 from numpy.testing import *
-import numpy
+import numpy as np
 import nose
 from nose.plugins.attrib import attr
 
@@ -40,26 +40,26 @@ from MDAnalysisTests import executable_not_found_runtime
 
 class TestContactMatrix(TestCase):
     def setUp(self):
-        self.coord = numpy.array([[1, 1, 1],
+        self.coord = np.array([[1, 1, 1],
                                   [5, 5, 5],
                                   [1.1, 1.1, 1.1],
                                   [11, 11, 11],  # neighboring image with pbc
                                   [21, 21, 21]],  # non neighboring image with pbc
-                                 dtype=numpy.float32)
-        self.box = numpy.array([10, 10, 10], dtype=numpy.float32)
+                                 dtype=np.float32)
+        self.box = np.array([10, 10, 10], dtype=np.float32)
         self.shape = (5, 5)
-        self.res_no_pbc = numpy.array([[1, 0, 1, 0, 0],
+        self.res_no_pbc = np.array([[1, 0, 1, 0, 0],
                                        [0, 1, 0, 0, 0],
                                        [1, 0, 1, 0, 0],
                                        [0, 0, 0, 1, 0],
-                                       [0, 0, 0, 0, 1]], dtype=numpy.bool)
-        self.res_pbc = numpy.array([[1, 0, 1, 1, 1],
+                                       [0, 0, 0, 0, 1]], dtype=np.bool)
+        self.res_pbc = np.array([[1, 0, 1, 1, 1],
                                     [0, 1, 0, 0, 0],
                                     [1, 0, 1, 1, 1],
                                     [1, 0, 1, 1, 1],
-                                    [1, 0, 1, 1, 1]], dtype=numpy.bool)
+                                    [1, 0, 1, 1, 1]], dtype=np.bool)
 
-    def test_numpy(self):
+    def test_np(self):
         contacts = MDAnalysis.analysis.distances.contact_matrix(
             self.coord, cutoff=1, returntype="numpy")
         assert_equal(contacts.shape, self.shape,
@@ -177,7 +177,7 @@ class TestRMSF(TestCase):
     def test_rmsf(self):
         rmsfs = MDAnalysis.analysis.rms.RMSF(self.universe.select_atoms('name CA'))
         rmsfs.run(quiet=True)
-        test_rmsfs = numpy.load(rmsfArray)
+        test_rmsfs = np.load(rmsfArray)
 
         assert_almost_equal(rmsfs.rmsf, test_rmsfs, 5,
                             err_msg="error: rmsf profile should match test " +
@@ -217,8 +217,8 @@ class TestHydrogenBondAnalysis(TestCase):
         # ideal helix with 1 proline:
         self.values = {
             'num_bb_hbonds':  u.atoms.n_residues - u.SYSTEM.PRO.n_residues - 4,
-            'donor_resid': numpy.array([5,  6,  8,  9, 10, 11, 12, 13]),
-            'acceptor_resnm': numpy.array(['ALA', 'ALA', 'ALA', 'ALA', 'ALA', 'PRO', 'ALA', 'ALA']),
+            'donor_resid': np.array([5,  6,  8,  9, 10, 11, 12, 13]),
+            'acceptor_resnm': np.array(['ALA', 'ALA', 'ALA', 'ALA', 'ALA', 'PRO', 'ALA', 'ALA']),
             }
 
     def _run(self, **kwargs):
@@ -239,7 +239,7 @@ class TestHydrogenBondAnalysis(TestCase):
         h.generate_table()
         assert_equal(len(h.table),
                      self.values['num_bb_hbonds'], "wrong number of backbone hydrogen bonds in table")
-        assert_(isinstance(h.table, numpy.core.records.recarray))
+        assert_(isinstance(h.table, np.core.records.recarray))
         assert_array_equal(h.table.donor_resid, self.values['donor_resid'])
         assert_array_equal(h.table.acceptor_resnm, self.values['acceptor_resnm'])
 
@@ -283,8 +283,8 @@ class TestHydrogenBondAnalysisHeavyFail(TestHydrogenBondAnalysisHeavy):
         super(TestHydrogenBondAnalysisHeavyFail, self).setUp()
         self.kwargs["distance"] = 3.0
         self.values['num_bb_hbonds'] = 0  # no H-bonds with a D-A distance < 3.0 A (they start at 3.05 A)
-        self.values['donor_resid'] = numpy.array([])
-        self.values['acceptor_resnm'] = numpy.array([], dtype="|S3")
+        self.values['donor_resid'] = np.array([])
+        self.values['acceptor_resnm'] = np.array([], dtype="|S3")
 
 
 class TestHydrogenBondAnalysisChecking(object):

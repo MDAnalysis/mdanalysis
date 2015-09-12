@@ -331,8 +331,8 @@ class XYZReader(base.Reader):
                 self.ts._pos[i] = map(float, f.readline().split()[1:4])
             ts.frame += 1
             return ts
-        except (ValueError, IndexError) as E:
-            raise EOFError(E)
+        except (ValueError, IndexError) as err:
+            raise EOFError(err)
 
     def rewind(self):
         """reposition on first frame"""

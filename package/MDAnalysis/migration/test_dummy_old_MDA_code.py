@@ -83,21 +83,21 @@ from MDAnalysis.core import parallel
 
 # These methods are now properties returning an object
 #AtomGroup.bond() -> AtomGroup.bond.value()
-AtomGroup.bond() 
+AtomGroup.bond()
 #AtomGroup.angle() -> AtomGroup.angle.value()
-AtomGroup.angle() 
+AtomGroup.angle()
 #AtomGroup.torsion() -> AtomGroup.dihedral.value()
-AtomGroup.torsion() 
+AtomGroup.torsion()
 #AtomGroup.improper() -> AtomGroup.improper.value()
-AtomGroup.improper() 
+AtomGroup.improper()
 
 #atomgroup, atom and universe torsion to dihedral conversions
 #AtomGroup.torsions -> AtomGroup.dihedrals
-AtomGroup.torsions 
+AtomGroup.torsions
 #Atom.torsions -> Atom.dihedrals
-Atom.torsions 
+Atom.torsions
 #Universe.torsions -> Universe.dihedrals
-Universe.torsions 
+Universe.torsions
 
 #camelcase fixes
 
@@ -105,27 +105,27 @@ Universe.torsions
 #totalMass -> total_mass
 ag.totalMass
 #totalCharge -> total_charge
-ag.totalCharge 
+ag.totalCharge
 #centerOfGeometry -> center_of_geometry
-ag.centerOfGeometry 
+ag.centerOfGeometry
 #radiusOfGyration -> radius_of_gyration
-ag.radiusOfGyration 
+ag.radiusOfGyration
 #shapeParameter -> shape_parameter
-ag.shapeParameter 
+ag.shapeParameter
 #momentOfInertia -> moment_of_inertia
-ag.momentOfInertia 
+ag.momentOfInertia
 #principalAxes -> principal_axes
-ag.principalAxes 
+ag.principalAxes
 #packIntoBox -> pack_into_box
-ag.packIntoBox 
+ag.packIntoBox
 #asUniverse -> as_universe
-ag.asUniverse 
+ag.asUniverse
 #align_principalAxis -> align_principal_axis
 ag.align_principalAxis
 
 # from lib.distances
 #applyPBC -> apply_PBC
-lib.distances.applyPBC 
+lib.distances.applyPBC
 
 #frame_count = universe.trajectory.numframes
 frame_count = universe.trajectory.numframes
@@ -181,7 +181,7 @@ ag.set_resnum(new)
 ag.set_segid(new)
 
 #this test case has caused issues:
-g.set_resid(resid * numpy.ones(len(g)))
+g.set_resid(resid * np.ones(len(g)))
 
 #frame numbering is now 0-based:
 #ts.frame - 1 -> ts.frame - 0

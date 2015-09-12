@@ -13,7 +13,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-import numpy
+import numpy as np
 from numpy.testing import *
 
 import MDAnalysis
@@ -284,10 +284,10 @@ class TestStreamIO(TestCase, RefAdKSmall):
         u = MDAnalysis.Universe(streamData.as_NamedStream('GRO'))
         assert_equal(u.atoms.n_atoms, 6)
         assert_almost_equal(u.atoms[3].position,
-                            10. * numpy.array([1.275, 0.053, 0.622]), 3,  # manually convert nm -> A
+                            10. * np.array([1.275, 0.053, 0.622]), 3,  # manually convert nm -> A
                             err_msg="wrong coordinates for water 2 OW")
         assert_almost_equal(u.atoms[3].velocity,
-                            10. * numpy.array([0.2519, 0.3140, -0.1734]), 3,  # manually convert nm/ps -> A/ps
+                            10. * np.array([0.2519, 0.3140, -0.1734]), 3,  # manually convert nm/ps -> A/ps
                             err_msg="wrong velocity for water 2 OW")
 
     def test_MOL2Reader(self):
@@ -307,5 +307,5 @@ class TestStreamIO(TestCase, RefAdKSmall):
         assert_equal(u.trajectory.frame, 1)  # !!!! ???
         u.trajectory.next()  # frame 2
         assert_equal(u.trajectory.frame, 2)
-        assert_almost_equal(u.atoms[2].position, numpy.array([0.45600, 18.48700, 16.26500]), 3,
+        assert_almost_equal(u.atoms[2].position, np.array([0.45600, 18.48700, 16.26500]), 3,
                             err_msg="wrong coordinates for atom CA at frame 2")

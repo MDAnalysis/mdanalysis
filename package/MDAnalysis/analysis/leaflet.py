@@ -50,7 +50,7 @@ algorithm.
 
 """
 
-import numpy
+import numpy as np
 import MDAnalysis
 import networkx as NX
 import distances
@@ -253,7 +253,7 @@ def optimize_cutoff(universe, selection, dmin=10.0, dmax=20.0, step=0.5,
     """
     kwargs.pop('cutoff', None)  # not used, so we filter it
     _sizes = []
-    for cutoff in numpy.arange(dmin, dmax, step):
+    for cutoff in np.arange(dmin, dmax, step):
         LF = LeafletFinder(universe, selection, cutoff=cutoff, **kwargs)
         # heuristic:
         #  1) N > 1
@@ -263,12 +263,12 @@ def optimize_cutoff(universe, selection, dmin=10.0, dmax=20.0, step=0.5,
             continue
         n0 = float(sizes[0])  # sizes of two biggest groups ...
         n1 = float(sizes[1])  # ... assumed to be the leaflets
-        imbalance = numpy.abs(n0 - n1) / (n0 + n1)
+        imbalance = np.abs(n0 - n1) / (n0 + n1)
         # print "sizes: %(sizes)r; imbalance=%(imbalance)f" % vars()
         if imbalance > max_imbalance:
             continue
         _sizes.append((cutoff, len(LF.sizes())))
-    results = numpy.rec.fromrecords(_sizes, names="cutoff,N")
+    results = np.rec.fromrecords(_sizes, names="cutoff,N")
     del _sizes
     results.sort(order=["N", "cutoff"])  # sort ascending by N, then cutoff
     return results[0]  # (cutoff,N) with N>1 and shortest cutoff

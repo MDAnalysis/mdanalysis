@@ -38,7 +38,7 @@ except ImportError:
 
 import MDAnalysis
 import multiprocessing
-import numpy
+import numpy as np
 import scipy
 
 
@@ -46,7 +46,7 @@ def produce_grid(tuple_of_limits, grid_spacing):
     '''Produce a grid for the simulation system based on the tuple of Cartesian Coordinate limits calculated in an
     earlier step.'''
     x_min, x_max, y_min, y_max = tuple_of_limits
-    grid = numpy.mgrid[x_min:x_max:grid_spacing, y_min:y_max:grid_spacing]
+    grid = np.mgrid[x_min:x_max:grid_spacing, y_min:y_max:grid_spacing]
     return grid
 
 
@@ -56,7 +56,7 @@ def split_grid(grid, num_cores):
 
     # produce an array containing the cartesian coordinates of all vertices in the grid:
     x_array, y_array = grid
-    grid_vertex_cartesian_array = numpy.dstack((x_array, y_array))
+    grid_vertex_cartesian_array = np.dstack((x_array, y_array))
     #the grid_vertex_cartesian_array has N_rows, with each row corresponding to a column of coordinates in the grid (
     # so a given row has shape N_rows, 2); overall shape (N_columns_in_grid, N_rows_in_a_column, 2)
     #although I'll eventually want a pure numpy/scipy/vector-based solution, for now I'll allow loops to simplify the
@@ -84,8 +84,8 @@ def split_grid(grid, num_cores):
         current_column += 1
     #split the list of square vertices [[v1,v2,v3,v4],[v1,v2,v3,v4],...,...] into roughly equally-sized sublists to
     # be distributed over the available cores on the system:
-    list_square_vertex_arrays_per_core = numpy.array_split(list_all_squares_in_grid, num_cores)
-    list_parent_index_values = numpy.array_split(list_parent_index_values, num_cores)
+    list_square_vertex_arrays_per_core = np.array_split(list_all_squares_in_grid, num_cores)
+    list_parent_index_values = np.array_split(list_parent_index_values, num_cores)
     return [list_square_vertex_arrays_per_core, list_parent_index_values, current_row, current_column]
 
 
@@ -102,7 +102,7 @@ def per_core_work(coordinate_file_path, trajectory_file_path, list_square_vertex
         list_indices_point_in_polygon = []
         for square_vertices in vertex_coord_list:
             path_object = matplotlib.path.Path(square_vertices)
-            index_list_in_polygon = numpy.where(path_object.contains_points(relevant_particle_coordinate_array_xy))
+            index_list_in_polygon = np.where(path_object.contains_points(relevant_particle_coordinate_array_xy))
             list_indices_point_in_polygon.append(index_list_in_polygon)
         return list_indices_point_in_polygon
 
@@ -113,7 +113,7 @@ def per_core_work(coordinate_file_path, trajectory_file_path, list_square_vertex
                 list_centroids_this_frame.append('empty')
             else:
                 current_coordinate_array_in_square = relevant_particle_coordinate_array_xy[indices]
-                current_square_indices_centroid = numpy.average(current_coordinate_array_in_square, axis=0)
+                current_square_indices_centroid = np.average(current_coordinate_array_in_square, axis=0)
                 list_centroids_this_frame.append(current_square_indices_centroid)
         return list_centroids_this_frame  # a list of numpy xy centroid arrays for this frame
 
@@ -138,14 +138,14 @@ def per_core_work(coordinate_file_path, trajectory_file_path, list_square_vertex
                 if square_1_centroid == 'empty' or square_2_centroid == 'empty':
                     xy_deltas_to_write.append([0, 0])
                 else:
-                    xy_deltas_to_write.append(numpy.subtract(square_1_centroid, square_2_centroid).tolist())
+                    xy_deltas_to_write.append(np.subtract(square_1_centroid, square_2_centroid).tolist())
 
-            #xy_deltas_to_write = numpy.subtract(numpy.array(
-            # list_centroids_this_frame_using_indices_from_last_frame),numpy.array(list_previous_frame_centroids))
-            xy_deltas_to_write = numpy.array(xy_deltas_to_write)
+            #xy_deltas_to_write = np.subtract(np.array(
+            # list_centroids_this_frame_using_indices_from_last_frame),np.array(list_previous_frame_centroids))
+            xy_deltas_to_write = np.array(xy_deltas_to_write)
             #now filter the array to only contain distances in the range [-8,8] as a placeholder for dealing with PBC
             #  issues (Matthieu seemed to use a limit of 8 as well);
-            xy_deltas_to_write = numpy.clip(xy_deltas_to_write, -maximum_delta_magnitude, maximum_delta_magnitude)
+            xy_deltas_to_write = np.clip(xy_deltas_to_write, -maximum_delta_magnitude, maximum_delta_magnitude)
 
             #with the xy and dx,dy values calculated I need to set the values from this frame to previous frame
             # values in anticipation of the next frame:
@@ -163,7 +163,7 @@ def per_core_work(coordinate_file_path, trajectory_file_path, list_square_vertex
 def generate_streamlines(coordinate_file_path, trajectory_file_path, grid_spacing, MDA_selection, start_frame,
                          end_frame, xmin, xmax, ymin, ymax, maximum_delta_magnitude, num_cores='maximum'):
     '''Produce the x and y components of a 2D streamplot data set.
-    
+
     :Parameters:
         **coordinate_file_path** : str
             Absolute path to the coordinate file
@@ -202,27 +202,27 @@ def generate_streamlines(coordinate_file_path, trajectory_file_path, grid_spacin
             :math:`\\frac {\\sum \\sqrt[]{dx^2 + dy^2}} {N}`
         **standard_deviation_of_displacement** : float
             standard deviation of :math:`\\sqrt[]{dx^2 + dy^2}`
-            
+
     :Examples:
 
     ::
 
-        import matplotlib, matplotlib.pyplot, numpy
+        import matplotlib, matplotlib.pyplot, np
         import MDAnalysis, MDAnalysis.visualization.streamlines
         u1, v1, average_displacement,standard_deviation_of_displacement =
         MDAnalysis.visualization.streamlines.generate_streamlines('testing.gro','testing_filtered.xtc',grid_spacing =
         20, MDA_selection = 'name PO4',start_frame=2,end_frame=3,xmin=-8.73000049591,xmax= 1225.96008301,
         ymin= -12.5799999237, ymax=1224.34008789,maximum_delta_magnitude = 1.0,num_cores=16)
-        x = numpy.linspace(0,1200,61)
-        y = numpy.linspace(0,1200,61)
-        speed = numpy.sqrt(u1*u1 + v1*v1)
+        x = np.linspace(0,1200,61)
+        y = np.linspace(0,1200,61)
+        speed = np.sqrt(u1*u1 + v1*v1)
         fig = matplotlib.pyplot.figure()
         ax = fig.add_subplot(111,aspect='equal')
         ax.set_xlabel('x ($\AA$)')
         ax.set_ylabel('y ($\AA$)')
         ax.streamplot(x,y,u1,v1,density=(10,10),color=speed,linewidth=3*speed/speed.max())
         fig.savefig('testing_streamline.png',dpi=300)
-    
+
     .. image:: testing_streamline.png
 
     .. [Chavent2014] Chavent, M.\*, Reddy, T.\*, Dahl, C.E., Goose, J., Jobard, B., and Sansom, M.S.P. (2014)
@@ -236,7 +236,7 @@ def generate_streamlines(coordinate_file_path, trajectory_file_path, grid_spacin
     else:
         num_cores = num_cores  # use the value specified by the user
         #assert isinstance(num_cores,(int,long)), "The number of specified cores must (of course) be an integer."
-    numpy.seterr(all='warn', over='raise')
+    np.seterr(all='warn', over='raise')
     parent_list_deltas = []  # collect all data from child processes here
 
     def log_result_to_parent(delta_array):
@@ -254,8 +254,8 @@ def generate_streamlines(coordinate_file_path, trajectory_file_path, grid_spacin
             index_sublist, maximum_delta_magnitude), callback=log_result_to_parent)
     pool.close()
     pool.join()
-    dx_array = numpy.zeros((total_rows, total_columns))
-    dy_array = numpy.zeros((total_rows, total_columns))
+    dx_array = np.zeros((total_rows, total_columns))
+    dy_array = np.zeros((total_rows, total_columns))
     #the parent_list_deltas is shaped like this: [ ([row_index,column_index],[dx,dy]), ... (...),...,]
     for index_array, delta_array in parent_list_deltas:  # go through the list in the parent process and assign to the
     #  appropriate positions in the dx and dy matrices:
@@ -273,9 +273,9 @@ def generate_streamlines(coordinate_file_path, trajectory_file_path, grid_spacin
             dy_array[index_1, index_2] = delta_array[1]
 
     #at Matthieu's request, we now want to calculate the average and standard deviation of the displacement values:
-    displacement_array = numpy.sqrt(dx_array ** 2 + dy_array ** 2)
-    average_displacement = numpy.average(displacement_array)
-    standard_deviation_of_displacement = numpy.std(displacement_array)
+    displacement_array = np.sqrt(dx_array ** 2 + dy_array ** 2)
+    average_displacement = np.average(displacement_array)
+    standard_deviation_of_displacement = np.std(displacement_array)
 
     return (dx_array, dy_array, average_displacement, standard_deviation_of_displacement)
 

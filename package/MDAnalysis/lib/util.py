@@ -160,7 +160,7 @@ import re
 import io
 import warnings
 from functools import wraps
-import numpy
+import numpy as np
 
 from ..exceptions import StreamWarning
 
@@ -410,9 +410,9 @@ def isstream(obj):
             return False
     # Must have at least one complete set of alternative_methods
     alternative_results = [
-        numpy.all([hasmethod(obj, m) for m in alternatives])
+        np.all([hasmethod(obj, m) for m in alternatives])
         for alternatives in alternative_methods]
-    return numpy.any(alternative_results)
+    return np.any(alternative_results)
 
 
 def which(program):
@@ -1005,13 +1005,13 @@ def fixedwidth_bins(delta, xmin, xmax):
 
     The dict contains 'Nbins', 'delta', 'min', and 'max'.
     """
-    if not numpy.all(xmin < xmax):
+    if not np.all(xmin < xmax):
         raise ValueError('Boundaries are not sane: should be xmin < xmax.')
-    _delta = numpy.asarray(delta, dtype=numpy.float_)
-    _xmin = numpy.asarray(xmin, dtype=numpy.float_)
-    _xmax = numpy.asarray(xmax, dtype=numpy.float_)
+    _delta = np.asarray(delta, dtype=np.float_)
+    _xmin = np.asarray(xmin, dtype=np.float_)
+    _xmax = np.asarray(xmax, dtype=np.float_)
     _length = _xmax - _xmin
-    N = numpy.ceil(_length / _delta).astype(numpy.int_)  # number of bins
+    N = np.ceil(_length / _delta).astype(np.int_)  # number of bins
     dx = 0.5 * (N * _delta - _length)  # add half of the excess to each end
     return {'Nbins': N, 'delta': _delta, 'min': _xmin - dx, 'max': _xmax + dx}
 

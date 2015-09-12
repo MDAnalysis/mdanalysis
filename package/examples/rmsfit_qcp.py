@@ -13,7 +13,7 @@ Requires MDAnalysis http://www.mdanalysis.org
 
 """
 
-import numpy
+import numpy as np
 import MDAnalysis as mda
 from MDAnalysis.tests.datafiles import PSF, DCD, PDB_small
 import pyqcprot as qcp
@@ -27,7 +27,7 @@ selections = {'reference': select, 'target': select}
 
 frames = traj.trajectory
 nframes = len(frames)
-rmsd = numpy.zeros((nframes,))
+rmsd = np.zeros((nframes,))
 
 # Setup writer to write aligned dcd file
 writer = mda.coordinates.DCD.DCDWriter(
@@ -43,7 +43,7 @@ natoms = traj_atoms.numberOfAtoms()
 
 # if performing a mass-weighted alignment/rmsd calculation
 # masses = ref_atoms.masses
-#weight = masses/numpy.mean(masses)
+#weight = masses/np.mean(masses)
 
 # reference centre of mass system
 ref_com = ref_atoms.center_of_mass()
@@ -52,7 +52,7 @@ ref_coordinates = ref_atoms.coordinates() - ref_com
 # allocate the array for selection atom coords
 traj_coordinates = traj_atoms.coordinates().copy()
 
-# R: rotation matrix that aligns r-r_com, x~-x~com   
+# R: rotation matrix that aligns r-r_com, x~-x~com
 #    (x~: selected coordinates, x: all coordinates)
 # Final transformed traj coordinates: x' = (x-x~_com)*R + ref_com
 for k, ts in enumerate(frames):
@@ -60,14 +60,14 @@ for k, ts in enumerate(frames):
     # selection is updated with the time frame
     x_com = traj_atoms.center_of_mass()
     traj_coordinates[:] = traj_atoms.coordinates() - x_com
-    R = numpy.zeros((9,), dtype=numpy.float64)
+    R = np.zeros((9,), dtype=np.float64)
     # Need to transpose coordinates such that the coordinate array is
     # 3xN instead of Nx3. Also qcp requires that the dtype be float64
     a = ref_coordinates.T.astype('float64')
     b = traj_coordinates.T.astype('float64')
     rmsd[k] = qcp.CalcRMSDRotationalMatrix(a, b, natoms, R, None)
 
-    R = numpy.matrix(R.reshape(3, 3))
+    R = np.matrix(R.reshape(3, 3))
 
     # Transform each atom in the trajectory (use inplace ops to avoid copying arrays)
     ts._pos -= x_com
@@ -75,4 +75,4 @@ for k, ts in enumerate(frames):
     ts._pos += ref_com
     writer.write(traj.atoms)  # write whole input trajectory system
 
-numpy.savetxt('rmsd.out', rmsd)
+np.savetxt('rmsd.out', rmsd)

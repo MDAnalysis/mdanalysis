@@ -79,7 +79,7 @@ if sys.version_info[:2] < (2, 7):
 
 try:
     # Obtain the numpy include directory.  This logic works across numpy versions.
-    import numpy
+    import numpy as np
 except ImportError:
     print("*** package 'numpy' not found ***")
     print("MDAnalysis requires a version of NumPy (>=1.5.0), even for setup.")
@@ -87,9 +87,9 @@ except ImportError:
     sys.exit(-1)
 
 try:
-    numpy_include = numpy.get_include()
+    numpy_include = np.get_include()
 except AttributeError:
-    numpy_include = numpy.get_numpy_include()
+    numpy_include = np.get_numpy_include()
 
 include_dirs = [numpy_include]
 

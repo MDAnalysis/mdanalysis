@@ -1,3 +1,4 @@
+# -*- tab-width: 2; indent-tabs-mode: nil; coding: utf-8 -*-
 ======================
  MDAnalysis CHANGELOG
 ======================
@@ -11,15 +12,20 @@ The rules for this file:
   * accompany each entry with github issue/PR number (Issue #xyz)
 
 ------------------------------------------------------------------------------
-??/??/?? richardjgowers
+??/??/?? kain88-de, richardjgowers
 
   * 0.11.1
 
 API Changes
 
+  * PrimitivePDBReader now imports occupancies into the `TimeStep` object.
+    (Issue #396)
+
 Enhancements
 
- * XYZReader now supports frame indexing (Issue #428)
+  * `Atom` and `AtomGroup` now expose occupancy value as `occupancy` and
+    `occupancies` properties (Issue #396)
+  * XYZReader now supports frame indexing (Issue #428)
 
 Changes
 

@@ -40,7 +40,7 @@ cdef eigen4x4sym(double* mat, double* eval, double* evec):
 
 c_numpy.import_array()
 
-import numpy
+import numpy as np
 import warnings
 def rms_rotation_matrix(c_numpy.ndarray conf, c_numpy.ndarray ref, c_numpy.ndarray weights):
     ''' Computes the weighted RMS rotation matrix between a reference set of coordinates and a comparison set.
@@ -62,21 +62,21 @@ def rms_rotation_matrix(c_numpy.ndarray conf, c_numpy.ndarray ref, c_numpy.ndarr
     if conf.dimensions[0] != ref.dimensions[0]:
         raise Exception("Error: RMS fit - conformation and reference don't have the same number of atoms")
     n_atoms = conf.dimensions[0]
-    ref_cms = numpy.zeros((3,), numpy.float64)
+    ref_cms = np.zeros((3,), np.float64)
     for i from 0 <= i < n_atoms:
         ref_cms = ref_cms + ref[i]
     ref_cms = ref_cms / n_atoms
-    pos = numpy.zeros((3,), numpy.float64)
+    pos = np.zeros((3,), np.float64)
     possq = 0.
-    cross = numpy.zeros((3,3), numpy.float64)
+    cross = np.zeros((3,3), np.float64)
     for i from 0 <= i < n_atoms:
         r = conf[i]
         r_ref = ref[i]-ref_cms
         w = weights[i]
         pos = pos + w*r
-        possq = possq + w*numpy.add.reduce(r*r) + w*numpy.add.reduce(r_ref*r_ref)
-        cross = cross + w*r[:, numpy.newaxis]*r_ref[numpy.newaxis, :]
-    k = numpy.zeros((4,4), numpy.float64)
+        possq = possq + w*np.add.reduce(r*r) + w*np.add.reduce(r_ref*r_ref)
+        cross = cross + w*r[:, np.newaxis]*r_ref[np.newaxis, :]
+    k = np.zeros((4,4), np.float64)
     k[0, 0] = -cross[0, 0]-cross[1, 1]-cross[2, 2]
     k[0, 1] = cross[1, 2]-cross[2, 1]
     k[0, 2] = cross[2, 0]-cross[0, 2]
@@ -92,13 +92,13 @@ def rms_rotation_matrix(c_numpy.ndarray conf, c_numpy.ndarray ref, c_numpy.ndarr
             k[i, j] = k[j, i]
     k = 2.*k
     for i from 0 <= i < 4:
-        k[i, i] = k[i, i] + possq - numpy.add.reduce(pos*pos)
-    e = numpy.zeros((4,), numpy.float64)
-    v = numpy.zeros((4,4), numpy.float64)
+        k[i, i] = k[i, i] + possq - np.add.reduce(pos*pos)
+    e = np.zeros((4,), np.float64)
+    v = np.zeros((4,4), np.float64)
     i = eigen4x4sym(<double*>k.data, <double*>e.data, <double*>v.data)
     v = v[0]
     # Quaternion def: v = qw + iqx + jqy + kqz
-    mat = numpy.zeros((3,3), numpy.float64)
+    mat = np.zeros((3,3), np.float64)
     mat[0,0] = 1 - 2*v[2]*v[2] - 2*v[3]*v[3]
     mat[0,1] = 2*v[1]*v[2] - 2*v[0]*v[3]
     mat[0,2] = 2*v[1]*v[3] + 2*v[0]*v[2]
@@ -108,4 +108,4 @@ def rms_rotation_matrix(c_numpy.ndarray conf, c_numpy.ndarray ref, c_numpy.ndarr
     mat[2,0] = 2*v[1]*v[3] - 2*v[0]*v[2]
     mat[2,1] = 2*v[2]*v[3] + 2*v[0]*v[1]
     mat[2,2] = 1 - 2*v[1]*v[1] - 2*v[2]*v[2]
-    return numpy.matrix(mat, copy=False)
+    return np.matrix(mat, copy=False)

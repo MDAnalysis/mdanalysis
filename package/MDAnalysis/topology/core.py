@@ -28,7 +28,7 @@ module. They are mostly of use to developers.
 from __future__ import print_function
 # Global imports
 import os.path
-import numpy
+import numpy as np
 from collections import defaultdict
 from itertools import izip
 
@@ -278,7 +278,7 @@ def guess_bonds(atoms, coords, **kwargs):
         # 20,000 atoms = 1.6 Gb memory
         dist = distances.distance_array(coords[i][None, :], coords[i + 1:],
                                         box=box)[0]
-        idx = numpy.where((dist > lower_bound) & (dist <= max_d))[0]
+        idx = np.where((dist > lower_bound) & (dist <= max_d))[0]
 
         for a in idx:
             atom_j = atoms[i + 1 + a]
@@ -418,6 +418,3 @@ def guess_atom_charge(atomname):
     """
     # TODO: do something slightly smarter, at least use name/element
     return 0.0
-
-
-

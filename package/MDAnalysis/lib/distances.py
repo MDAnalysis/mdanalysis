@@ -396,7 +396,7 @@ def calc_bonds(coords1, coords2, box=None, result=None):
 
     :Returns:
        *bondlengths*
-          Numpy array with the length between each pair in coords1 and coords2
+          numpy array with the length between each pair in coords1 and coords2
 
     .. versionadded:: 0.8
     """

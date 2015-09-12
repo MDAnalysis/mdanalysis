@@ -173,7 +173,7 @@ Classes, methods, and functions
 
 """
 
-import numpy
+import numpy as np
 
 import MDAnalysis
 import MDAnalysis.analysis.align
@@ -247,9 +247,9 @@ def hausdorff(P,Q, N=None):
         axis = (1,2)
     else:
         axis = 1
-    d = numpy.array([sqnorm(p - Q, axis) for p in P])
-    return ( max( numpy.amax(numpy.amin(d, axis=0)),             \
-                  numpy.amax(numpy.amin(d, axis=1)) ) / N  )**0.5
+    d = np.array([sqnorm(p - Q, axis) for p in P])
+    return ( max( np.amax(np.amin(d, axis=0)),             \
+                  np.amax(np.amin(d, axis=1)) ) / N  )**0.5
 
 
 def discrete_frechet(P,Q, N=None):
@@ -276,10 +276,10 @@ def discrete_frechet(P,Q, N=None):
      >>> u = Universe(PSF,DCD)
      >>> mid = len(u.trajectory)/2
      >>> ca = u.select_atoms('name CA')
-     >>> P = numpy.array([
+     >>> P = np.array([
      ...                ca.positions for _ in u.trajectory[:mid:]
      ...              ]) # first half of trajectory
-     >>> Q = numpy.array([
+     >>> Q = np.array([
      ...                ca.positions for _ in u.trajectory[mid::]
      ...              ]) # second half of trajectory
      >>> discrete_frechet(P,Q)
@@ -293,8 +293,8 @@ def discrete_frechet(P,Q, N=None):
     else:
         axis = 1
     Np, Nq = len(P), len(Q)
-    d = numpy.array([sqnorm(p - Q, axis) for p in P])
-    ca = -numpy.ones((Np, Nq))
+    d = np.array([sqnorm(p - Q, axis) for p in P])
+    ca = -np.ones((Np, Nq))
 
     def c(i, j):
         """Compute the coupling distance for two partial paths formed by *P* and
@@ -342,7 +342,7 @@ def sqnorm(v, axis=None):
     :Returns:
       float, the sum of the squares of the elements of *v* along *axis*
     """
-    return numpy.sum(v*v, axis=axis)
+    return np.sum(v*v, axis=axis)
 
 
 class PDBToBinaryTraj(object):
@@ -503,9 +503,9 @@ class Path(object):
         atoms = u.select_atoms(select)
         frames.rewind()
         if flat:
-            return numpy.array([atoms.positions.flatten() for _ in frames])
+            return np.array([atoms.positions.flatten() for _ in frames])
         else:
-            return numpy.array([atoms.positions for _ in frames])
+            return np.array([atoms.positions for _ in frames])
 
 
     def run(self, align=False, filename=None, postfix='_fit', rmsdfile=None,
@@ -781,7 +781,7 @@ class PSA(object):
 
         metric_func = get_path_metric_func(metric)
         npaths = len(self.paths)
-        D = numpy.zeros((npaths,npaths))
+        D = np.zeros((npaths,npaths))
         for i in xrange(0, npaths-1):
             for j in xrange(i+1, npaths):
                 P = self.paths[i][start:stop:step]
@@ -810,8 +810,8 @@ class PSA(object):
         outfile = os.path.join(head, filename)
         if self.D is None:
             raise NoDataError("Distance matrix has not been calculated yet")
-        numpy.save(outfile + '.npy', self.D)
-        numpy.savetxt(outfile + '.dat', self.D)
+        np.save(outfile + '.npy', self.D)
+        np.savetxt(outfile + '.dat', self.D)
         logger.info("Wrote distance matrix to file %r.npz", outfile)
         logger.info("Wrote distance matrix to file %r.dat", outfile)
         return filename
@@ -835,7 +835,7 @@ class PSA(object):
         path_names = []
         for i, path in enumerate(self.paths):
             current_outfile = "{}{:03n}.npy".format(outfile, i+1)
-            numpy.save(current_outfile, self.paths[i])
+            np.save(current_outfile, self.paths[i])
             path_names.append(current_outfile)
             logger.info("Wrote path to file %r", current_outfile)
         self.path_names = path_names
@@ -851,10 +851,10 @@ class PSA(object):
         if not os.path.exists(self._paths_pkl):
             raise NoDataError("Fitted trajectories cannot be loaded; save file" +
                               "{} does not exist.".format(self._paths_pkl))
-        self.path_names = numpy.load(self._paths_pkl)
-        self.paths = [numpy.load(pname) for pname in self.path_names]
+        self.path_names = np.load(self._paths_pkl)
+        self.paths = [np.load(pname) for pname in self.path_names]
         if os.path.exists(self._labels_pkl):
-            self.labels = numpy.load(self._labels_pkl)
+            self.labels = np.load(self._labels_pkl)
         print("Loaded paths from " + self._paths_pkl)
 
 
@@ -899,15 +899,15 @@ class PSA(object):
         rowidx = colidx = dgram['leaves'] # get row-wise ordering from clustering
         ax_dgram.invert_yaxis() # Place origin at up left (from low left)
 
-        minDist, maxDist = 0, numpy.max(distMatrix)
+        minDist, maxDist = 0, np.max(distMatrix)
         clustMatrix = distMatrix[rowidx,:]
         clustMatrix = clustMatrix[:,colidx]
         im = ax_hmap.matshow(clustMatrix, aspect='auto', origin='lower',        \
                     cmap=cm.YlGn, vmin=minDist, vmax=maxDist)
         ax_hmap.invert_yaxis() # Place origin at upper left (from lower left)
         ax_hmap.locator_params(nbins=npaths)
-        ax_hmap.set_xticks(numpy.arange(npaths), minor=True)
-        ax_hmap.set_yticks(numpy.arange(npaths), minor=True)
+        ax_hmap.set_xticks(np.arange(npaths), minor=True)
+        ax_hmap.set_yticks(np.arange(npaths), minor=True)
         ax_hmap.tick_params(axis='x', which='both', labelleft='off',            \
                         labelright='off', labeltop='on', labelsize=0)
         ax_hmap.tick_params(axis='y', which='both', labelleft='on',             \
@@ -921,7 +921,7 @@ class PSA(object):
                 minor=True)
 
         ax_color = fig.add_axes(cbar_loc)
-        colorbar(im, cax=ax_color, ticks=numpy.linspace(minDist, maxDist, 10),  \
+        colorbar(im, cax=ax_color, ticks=np.linspace(minDist, maxDist, 10),  \
                 format="%0.2f")
         ax_color.tick_params(labelsize=labelsize)
 
