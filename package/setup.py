@@ -264,10 +264,10 @@ def extensions(config):
     include_dirs = [get_numpy_include]
 
     dcd = MDAExtension('coordinates._dcdmodule',
-                    ['MDAnalysis/coordinates/src/dcd.c'],
-                    include_dirs=include_dirs + ['MDAnalysis/coordinates/include'],
-                    define_macros=define_macros,
-                    extra_compile_args=extra_compile_args)
+                       ['MDAnalysis/coordinates/src/dcd.c'],
+                       include_dirs=include_dirs + ['MDAnalysis/coordinates/include'],
+                       define_macros=define_macros,
+                       extra_compile_args=extra_compile_args)
     dcd_time = MDAExtension('coordinates.dcdtimeseries',
                          ['MDAnalysis/coordinates/dcdtimeseries' + source_suffix],
                          include_dirs=include_dirs + ['MDAnalysis/coordinates/include'],
@@ -291,23 +291,21 @@ def extensions(config):
                           include_dirs=include_dirs,
                           extra_compile_args=["-O3", "-ffast-math"])
     transformation = MDAExtension('lib._transformations',
-                               ['MDAnalysis/lib/src/transformations/transformations.c'],
-                               libraries=['m'],
-                               define_macros=define_macros,
-                               include_dirs=include_dirs,
-                               extra_compile_args=extra_compile_args)
-    xdr = MDAExtension('coordinates.xdrfile._libxdrfile2',
-                    sources=['MDAnalysis/coordinates/xdrfile/src/' + f
-                           for f in ('libxdrfile2_wrap.c',
-                                     'xdrfile.c',
-                                     'xdrfile_trr.c',
-                                     'xdrfile_xtc.c')
-                    ],
-                    include_dirs=include_dirs,
-                    define_macros=largefile_macros)
+                                  ['MDAnalysis/lib/src/transformations/transformations.c'],
+                                  libraries=['m'],
+                                  define_macros=define_macros,
+                                  include_dirs=include_dirs,
+                                  extra_compile_args=extra_compile_args)
+    xtc = MDAExtension('lib.formats.xtc',
+                       sources=['MDAnalysis/lib/formats/xtc.pyx',
+                                'MDAnalysis/lib/formats/src/xdrfile.c',
+                                'MDAnalysis/lib/formats/src/xdrfile_xtc.c'],
+                       include_dirs=include_dirs + ['MDAnalysis/lib/formats/include',
+                                                    'MDAnalysis/lib/formats'],
+                       define_macros=largefile_macros)
 
     extensions = [dcd, dcd_time, distances, distances_omp, qcprot,
-                  transformation, xdr]
+                  transformation, xtc]
     if use_cython:
         extensions = cythonize(extensions)
     return extensions
