@@ -1672,6 +1672,18 @@ class AtomGroup(object):
     # override for ResidueGroup, SegmentGroup accordingly
     set = _set_atoms
 
+    def set_occupancies(self, occupancies):
+        """Set the occupancy for *all atoms* in the AtomGroup
+
+        If *value* is a sequence of the same length as the :class:`AtomGroup`
+        then each :attr:`Atom.name` is set to the corresponding value. If
+        *value* is neither of length 1 (or a scalar) nor of the length of the
+        :class:`AtomGroup` then a :exc:`ValueError` is raised.
+
+        .. versionadded:: 0.11.1
+        """
+        self.occupancies = occupancies
+
     def set_names(self, name):
         """Set the atom names to string for *all atoms* in the AtomGroup.
 
