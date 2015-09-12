@@ -27,7 +27,7 @@ install:
 # command to run tests
 script:
   - ./testsuite/MDAnalysisTests/mda_nosetests -v --with-coverage --cover-package MDAnalysis --processes=2 --process-timeout=120 --with-memleak
-  - test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "develop" && cd ./package/doc/sphinx && make clean html || true
+  - test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "develop" && cd ./package && python setup.py build_ext --inplace && cd ./doc/sphinx && make clean html || true
 after_success:
   - coveralls
   - test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "develop" && bash ./maintainer/deploy_docs.sh
