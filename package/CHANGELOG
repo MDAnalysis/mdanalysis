@@ -12,9 +12,9 @@ The rules for this file:
   * accompany each entry with github issue/PR number (Issue #xyz)
 
 ------------------------------------------------------------------------------
-??/??/??
+??/??/?? kain88-de, richardjgowers
 
-  * 0.11.1 kain88-de, richardjgowers
+  * 0.11.1
 
 API Changes
 
@@ -25,6 +25,7 @@ Enhancements
 
   * `Atom` and `AtomGroup` now expose occupancy value as `occupancy` and
     `occupancies` properties (Issue #396)
+  * XYZReader now supports frame indexing (Issue #428)
 
 Changes
 

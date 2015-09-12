@@ -173,15 +173,10 @@ class TestXYZReader(TestCase, Ref2r9r):
         frames = [ts.frame for ts in trj_iter]
         assert_equal(frames, np.arange(self.universe.trajectory.n_frames))
 
-    def test_slice_raises_TypeError(self):
-        def trj_iter():
-            return list(self.universe.trajectory[::2])
+    def test_slice(self):
+        frames = [ts.frame for ts in self.universe.trajectory[::2]]
+        assert_equal(frames, np.arange(len(self.universe.trajectory))[::2])
 
-        assert_raises(TypeError, trj_iter)
-
-        # for whenever full slicing is implemented ...
-        #frames = [ts.frame-1 for ts in trj_iter()]
-        #assert_equal(frames, np.arange(self.universe.trajectory.n_frames, step=2))
 
 class TestXYZReaderAsTopology(object):
     """Test that an XYZ file can act as its own topology"""
@@ -239,11 +234,9 @@ class TestCompressedXYZReader(TestCase, Ref2r9r):
         frames = [ts.frame for ts in trj_iter]
         assert_equal(frames, np.arange(self.universe.trajectory.n_frames))
 
-    def test_slice_raises_TypeError(self):
-        def trj_iter():
-            return list(self.universe.trajectory[::2])
-
-        assert_raises(TypeError, trj_iter)
+    def test_slice(self):
+        frames = [ts.frame for ts in self.universe.trajectory[::2]]
+        assert_equal(frames, np.arange(len(self.universe.trajectory))[::2])
 
     def test_rewind(self):
         self.universe.trajectory.rewind()
