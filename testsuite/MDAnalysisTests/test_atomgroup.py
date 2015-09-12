@@ -327,6 +327,11 @@ class TestAtomGroup(TestCase):
         bfactors = self.ag.bfactors  # property, not method!
         assert_array_equal(bfactors[0:3], np.array([None, None, None]))
 
+    def test_occupancies(self):
+        assert_raises(NoDataError, getattr, self.ag, 'occupancies')
+        self.ag.occupancies = 0.25
+        assert_array_almost_equal(self.ag.occupancies, np.ones(len(self.ag)) * 0.25)
+
     def test_sequence_string(self):
         p = self.universe.select_atoms("protein")
         assert_equal(p.residues.sequence(format="string"), self.ref_adk_sequence)
@@ -1993,24 +1998,6 @@ class TestGuessBonds(TestCase):
 class TestAtomGroupProperties(object):
     """Test working with the properties of Atoms via AtomGroups
 
-    list of properties:
-    - name x
-    - altLoc x
-    - type x
-    - mass x
-    - charge x
-    - radius x
-    - bfactor x
-    - serial x
-
-    Residue/Segment related ones:
-    - resname
-    - resid
-    - resnum
-    - residue?
-    - segid?
-    - segment?
-
     Check that:
     - getting properties from AG matches the Atom values
     - setting properties from AG changes the Atom
@@ -2062,6 +2049,7 @@ class TestAtomGroupProperties(object):
 
     def test_attributes(self):
         u = MDAnalysis.Universe(PSF, DCD)
+        u.atoms.occupancies = 1.0
         master = u.atoms
         idx = [0, 1, 4, 7, 11, 14]
         ag = master[idx]
@@ -2076,7 +2064,8 @@ class TestAtomGroupProperties(object):
                 ('charge', 'charges', 'float', ag.set_charges),
                 ('mass', 'masses', 'float', ag.set_masses),
                 ('radius', 'radii', 'float', ag.set_radii),
-                ('bfactor', 'bfactors', 'float', ag.set_bfactors)
+                ('bfactor', 'bfactors', 'float', ag.set_bfactors),
+                ('occupancy', 'occupancies', 'float', ag.set_occupancies)
         ):
             vals = self.get_new(att_type)
             yield self._check_plural, att, atts

@@ -447,7 +447,8 @@ _PLURAL_PROPERTIES = {'index': 'indices',
                       'resnum': 'resnums',
                       'altLoc': 'altLocs',
                       'serial': 'serials',
-                      'value': 'values'}
+                      'value': 'values',
+                      'occupancy': 'occupancies'}
 # And the return route
 _SINGULAR_PROPERTIES = {v: k for k, v in _PLURAL_PROPERTIES.items()}
 
@@ -479,6 +480,8 @@ class Atom(object):
        Changed references to :class:`Universe` to be weak.
        Renamed atom.number to atom.index
        Renamed atom.torsions to atom.dihedrals
+    .. versionchanged:: 0.11.1
+       Added occupancy property. Can get and set.
     """
 
     __slots__ = (
@@ -616,7 +619,8 @@ class Atom(object):
         float
             occupancy of Atom
 
-        .. versionadded:: 0.12"""
+        .. versionadded:: 0.11.1
+        """
         try:
             return self.universe.coord.data['occupancy'][self.index]
         except KeyError:
@@ -631,7 +635,7 @@ class Atom(object):
         """
         try:
             self.universe.coord.data['occupancy'][self.index] = _occupancy
-        except:
+        except KeyError:
             n_atoms = self.universe.coord.n_atoms
             self.universe.coord.data['occupancy'] = np.ones(n_atoms)
             self.universe.coord.data['occupancy'][self.index] = _occupancy
@@ -842,6 +846,8 @@ class AtomGroup(object):
        Properties referring to residue (``resids``, ``resnames``, ``resnums``)
        or segment [``segids``] properties now yield arrays of length equal to
        ``n_atoms``
+    .. versionchanged:: 0.11.1
+       Added occupancies property
     """
     # for generalized __getitem__ __iter__ and __len__
     # (override _containername for ResidueGroup and SegmentGroup)
@@ -1160,7 +1166,7 @@ class AtomGroup(object):
     totalMass = deprecate(total_mass, old_name='totalMass', new_name='total_mass')
 
     @property
-    def occupancy(self):
+    def occupancies(self):
         """Access occupancies of atoms
 
         If available can have a value between 0 and 1
@@ -1170,10 +1176,21 @@ class AtomGroup(object):
         ndarray
             occupancies for all atoms in AtomGroup
 
-        .. versionadded:: 0.12.0
+        .. versionadded:: 0.11.1
         """
-        return self.universe.coord.data['occupancy'][self.indices]
+        try:
+            return self.universe.coord.data['occupancy'][self.indices]
+        except KeyError:
+            raise NoDataError('Timestep does not contain occupancy')
 
+    @occupancies.setter
+    def occupancies(self, new):
+        try:
+            self.universe.coord.data['occupancy'][self.indices] = new
+        except KeyError:
+            n_atoms = self.universe.coord.n_atoms
+            self.universe.coord.data['occupancy'] = np.ones(n_atoms)
+            self.universe.coord.data['occupancy'][self.indices] = new
     @property
     def charges(self):
         """Array of partial charges of the atoms (as defined in the topology)
@@ -1654,6 +1671,18 @@ class AtomGroup(object):
 
     # override for ResidueGroup, SegmentGroup accordingly
     set = _set_atoms
+
+    def set_occupancies(self, occupancies):
+        """Set the occupancy for *all atoms* in the AtomGroup
+
+        If *value* is a sequence of the same length as the :class:`AtomGroup`
+        then each :attr:`Atom.name` is set to the corresponding value. If
+        *value* is neither of length 1 (or a scalar) nor of the length of the
+        :class:`AtomGroup` then a :exc:`ValueError` is raised.
+
+        .. versionadded:: 0.11.1
+        """
+        self.occupancies = occupancies
 
     def set_names(self, name):
         """Set the atom names to string for *all atoms* in the AtomGroup.
