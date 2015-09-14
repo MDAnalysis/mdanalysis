@@ -74,11 +74,11 @@ MDAnalysis issue tracker.)
 .. _`MDAnalysis.analysis`: http://docs.mdanalysis.org/documentation_pages/analysis_modules.html
 .. _`MDAnalysis.visualization`: http://docs.mdanalysis.org/documentation_pages/visualization_modules.html
 
-.. |usergroup| image:: https://img.shields.io/badge/-User%20Google%20Group-lightgrey.svg
+.. |usergroup| image:: https://img.shields.io/badge/Google%20Group-Users-lightgrey.svg
    :alt: User Google Group
    :target: http://users.mdanalysis.org
    
-.. |developergroup| image:: https://img.shields.io/badge/-Developer%20Google%20Group-lightgrey.svg
+.. |developergroup| image:: https://img.shields.io/badge/Google%20Group-Developers-lightgrey.svg
    :alt: Developer Google Group
    :target: http://developers.mdanalysis.org
    
