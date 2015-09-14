@@ -303,9 +303,16 @@ def extensions(config):
                        include_dirs=include_dirs + ['MDAnalysis/lib/formats/include',
                                                     'MDAnalysis/lib/formats'],
                        define_macros=largefile_macros)
+    trr = MDAExtension('lib.formats.trr',
+                       sources=['MDAnalysis/lib/formats/trr.pyx',
+                                'MDAnalysis/lib/formats/src/xdrfile.c',
+                                'MDAnalysis/lib/formats/src/xdrfile_trr.c'],
+                       include_dirs=include_dirs + ['MDAnalysis/lib/formats/include',
+                                                    'MDAnalysis/lib/formats'],
+                       define_macros=largefile_macros)
 
     extensions = [dcd, dcd_time, distances, distances_omp, qcprot,
-                  transformation, xtc]
+                  transformation, xtc, trr]
     if use_cython:
         extensions = cythonize(extensions)
     return extensions

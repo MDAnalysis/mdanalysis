@@ -27,7 +27,16 @@ cdef extern from 'include/xdrfile_trr.h':
                  matrix box, rvec *x, rvec *v, rvec *f, int *has_prop)
     int write_trr(XDRFILE *xfp, int natoms, int step, float time, float _lambda,
                   matrix box, rvec *x, rvec *v, rvec *f)
+    int read_trr_n_frames(char *fn, int *n_frames, int *est_nframes, int64_t **offsets);
 
+
+
+cdef extern from 'include/xdrfile_trr.h':
+    int read_trr_natoms(char *fname, int *natoms)
+    int read_trr(XDRFILE *xfp, int natoms, int *step, float *time, float *_lambda,
+                 matrix box, rvec *x, rvec *v, rvec *f, int *has_prop)
+    int write_trr(XDRFILE *xfp, int natoms, int step, float time, float _lambda,
+                  matrix box, rvec *x, rvec *v, rvec *f)
 
 cdef enum:
     EOK = 0
