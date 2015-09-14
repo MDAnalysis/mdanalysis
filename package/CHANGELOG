@@ -12,7 +12,7 @@ The rules for this file:
   * accompany each entry with github issue/PR number (Issue #xyz)
 
 ------------------------------------------------------------------------------
-??/??/?? kain88-de, richardjgowers
+??/??/?? kain88-de, richardjgowers, dotsdl
 
   * 0.11.1
 
@@ -28,6 +28,8 @@ Enhancements
   * XYZReader now supports frame indexing (Issue #428)
 
 Changes
+  * An AtomGroup with 0 atoms now yields an `IndexError` on call to
+    `AtomGroup.write` (Issue #434)
 
 Fixes
 

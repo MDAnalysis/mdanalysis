@@ -2911,6 +2911,10 @@ class AtomGroup(object):
         import MDAnalysis.coordinates
         import MDAnalysis.selections
 
+        # check that AtomGroup actually has any atoms (Issue #434)
+        if len(self.atoms) == 0:
+            raise IndexError("Cannot write an AtomGroup with 0 atoms")
+
         trj = self.universe.trajectory  # unified trajectory API
         frame = trj.ts.frame
 
