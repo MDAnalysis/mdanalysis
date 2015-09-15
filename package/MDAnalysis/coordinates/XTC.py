@@ -1,75 +1,117 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
-#
-# MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
-#
-# Released under the GNU Public Licence, v2 or any higher version
-#
-# Please cite your use of MDAnalysis in published work:
-#
-# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
-# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
-# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
-#
+import errno
+
+from . import base
+from ..lib.formats.xtc import XTCFile
+from ..lib.mdamath import triclinic_box, triclinic_vectors
 
 
-"""
-Gromacs XTC file IO --- :mod:`MDAnalysis.coordinates.XTC`
-=========================================================
+class XTCReader(base.Reader):
+    format = 'XTC'
+    units = {'time': 'ps', 'length': 'nm'}
 
-The Gromacs `XTC trajectory format`_ is a format with lossy
-compression. Coordinates are only stored with a fixed precision (by
-default, 1/1000 of a nm). The XTC format can only store
-*coordinates*. Its main advantage is that it requires less disk space
-than e.g. TRR or DCD trajectories and the loss of precision is usually
-not a problem.
+    def __init__(self, filename, convert_units=True, sub=None, **kwargs):
+        super(XTCReader, self).__init__(filename, convert_units=convert_units,
+                                        **kwargs)
+        self._xtc = XTCFile(filename)
 
-If one wants to store Gromacs trajectories without loss of precision
-or with velocities and/or forces then one should use the TRR format
-(see module :mod:`~MDAnalysis.coordinates.TRR`).
+        self.n_frames = len(self._xtc)
+        xyz, box, step, time, prec = self._xtc.read()
+        try:
+            xtc_frame = self._xtc.read()
+            time_2 = xtc_frame[3]
+        except:
+            time_2 = 2 * time
+        self._sub = sub
+        if sub is not None:
+            self.n_atoms = len(sub)
+        else:
+            self.n_atoms = self._xtc.n_atoms
 
-The XTC I/O interface uses
-:mod:`~MDAnalysis.coordinates.xdrfile.libxdrfile2` to implement random
-access to frames. This works by initially building an internal index
-of all frames and then using this index for direct seeks. Building the
-index is triggered by
-:func:`~MDAnalysis.coordinates.xdrfile.libxdrfile2.read_xtc_n_frames`,
-which typically happens when one accesses the
-:attr:`XTCReader.n_frames` attribute for the first time. Building the
-index may take many minutes for large trajectories but afterwards
-access is faster than with native Gromacs tools.
+        self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
+        self.ts.frame = 0  # 0-based frame number as starting frame
+        self._frame = -1
+        if self._sub is not None:
+            xyz = xyz[self._sub]
+        self.ts._pos = xyz
+        self.ts.time = time
+        self.ts.dt = time_2 - time
+        self.ts.dimensions = triclinic_box(*box)
 
-.. _XTC trajectory format:
-   http://www.gromacs.org/Documentation/File_Formats/.xtc_File
+        if self.convert_units:
+            self.convert_pos_from_native(self.ts._pos)
+            self.convert_pos_from_native(self.ts._unitcell[:3])
 
-.. versionchanged:: 0.8.0
-   The XTC I/O interface now uses
-   :mod:`~MDAnalysis.coordinates.xdrfile.libxdrfile2`, which has
-   seeking and indexing capabilities. Note that unlike
-   :mod:`~MDAnalysis.coordinates.xdrfile.libxdrfile` before it,
-   :mod:`~MDAnalysis.coordinates.xdrfile.libxdrfile2` is distributed
-   under the GNU GENERAL PUBLIC LICENSE, version 2 (or higher).
-   :class:`~MDAnalysis.coordinates.XTC.Timestep` now correctly
-   deals with presence/absence of coordinate/velocity/force
-   information on a per-frame basis.
+        self.rewind()
 
-Module reference
-----------------
+    def close(self):
+        self._xtc.close()
 
-.. autoclass:: Timestep
-   :members:
-   :inherited-members:
+    def Writer(self, filename, n_atoms=None, **kwargs):
+        if n_atoms is None:
+            n_atoms = self.n_atoms
+        return XTCWriter(filename, n_atoms=n_atoms, **kwargs)
 
-.. autoclass:: XTCReader
-   :members:
-   :inherited-members:
+    def rewind(self):
+        self._read_frame(0)
 
-.. autoclass:: XTCWriter
-   :members:
-   :inherited-members:
+    def _reopen(self):
+        self.ts.frame = 0
+        self._frame = -1
+        self._xtc.close()
+        self._xtc.open(self._xtc.fname, 'r')
 
-"""
+    def _read_frame(self, i):
+        self._xtc.seek(i)
+        self.ts.frame = i - 1
+        self._frame = i - 1
+        return self._read_next_timestep()
 
-from .xdrfile.XTC import XTCReader, XTCWriter, Timestep
+    def _read_next_timestep(self, ts=None):
+        if self._frame == self.n_frames - 1:
+            raise IOError(errno.EIO, 'trying to go over trajectory limit')
+        xyz, box, step, time, prec = self._xtc.read()
+        self._frame += 1
+
+        if ts is None:
+            ts = self.ts
+
+        if self._sub is not None:
+            xyz = xyz[self._sub]
+
+        ts._pos = xyz
+        ts.frame = self._frame
+        ts.time = time
+        if self.convert_units:
+            self.convert_pos_from_native(ts._pos)
+
+        return ts
+
+
+class XTCWriter(base.Writer):
+    format = 'XTC'
+    units = {'time': None, 'length': 'nm'}
+
+    def __init__(self, filename, n_atoms, convert_units=True, **kwargs):
+        self._convert_units = convert_units
+        self._xtc = XTCFile(filename, 'w')
+        self.n_atoms = n_atoms
+
+    def close(self):
+        self._xtc.close()
+
+    def __del__(self):
+        self.close()
+
+    def write_next_timestep(self, ts):
+        xyz = ts._pos.copy()
+        time = ts.time
+        step = ts.frame
+        dimensions = ts.dimensions
+
+        if self._convert_units:
+            xyz = self.convert_pos_to_native(xyz, inplace=False)
+            dimensions = self.convert_dimensions_to_unitcell(ts, inplace=False)
+
+        box = triclinic_vectors(dimensions)
+
+        self._xtc.write(xyz, box, step, time)
