@@ -214,7 +214,7 @@ Classes, methods, and functions
 
 """
 
-import numpy
+import numpy as np
 
 import MDAnalysis
 import MDAnalysis.analysis.align
@@ -267,7 +267,7 @@ def sqnorm(v, axis=None):
     :Returns:
       float, the sum of the squares of the elements of *v* along *axes*
     """
-    return numpy.sum(v*v, axis=axis)
+    return np.sum(v*v, axis=axis)
 
 
 def get_msd_matrix(P, Q, axis=None):
@@ -290,7 +290,7 @@ def get_msd_matrix(P, Q, axis=None):
       :class:`numpy.ndarray` of pairwise MSDs between points in *P* and points
       in *Q*
     """
-    return numpy.asarray([sqnorm(p - Q, axis=axis) for p in P])
+    return np.asarray([sqnorm(p - Q, axis=axis) for p in P])
 
 
 def get_coord_axes(path):
@@ -364,8 +364,8 @@ def hausdorff(P, Q):
     """
     N, axis = get_coord_axes(P)
     d = get_msd_matrix(P, Q, axis=axis)
-    return ( max( numpy.amax(numpy.amin(d, axis=0)),             \
-                  numpy.amax(numpy.amin(d, axis=1)) ) / N  )**0.5
+    return ( max( np.amax(np.amin(d, axis=0)),                                  \
+                  np.amax(np.amin(d, axis=1)) ) / N  )**0.5
 
 
 def hausdorff_wavg(P, Q):
@@ -484,9 +484,9 @@ def hausdorff_neighbors(P, Q):
     d = get_msd_matrix(P, Q, axis=axis)
     nearest_neighbors =                                                         \
             {'frames' :                                                         \
-                (numpy.argmin(d, axis=1), numpy.argmin(d, axis=0)),             \
+                (np.argmin(d, axis=1), np.argmin(d, axis=0)),                   \
              'distances' :                                                      \
-                ((numpy.amin(d,axis=1)/N)**0.5, (numpy.amin(d, axis=0)/N)**0.5),\
+                ((np.amin(d,axis=1)/N)**0.5, (np.amin(d, axis=0)/N)**0.5),      \
             }
     return nearest_neighbors
 
@@ -512,10 +512,10 @@ def discrete_frechet(P, Q):
      >>> u = Universe(PSF,DCD)
      >>> mid = len(u.trajectory)/2
      >>> ca = u.select_atoms('name CA')
-     >>> P = numpy.array([
+     >>> P = np.array([
      ...                ca.positions for _ in u.trajectory[:mid:]
      ...              ]) # first half of trajectory
-     >>> Q = numpy.array([
+     >>> Q = np.array([
      ...                ca.positions for _ in u.trajectory[mid::]
      ...              ]) # second half of trajectory
      >>> discrete_frechet(P,Q)
@@ -526,7 +526,7 @@ def discrete_frechet(P, Q):
     N, axis = get_coord_axes(P)
     Np, Nq = len(P), len(Q)
     d = get_msd_matrix(P, Q, axis=axis)
-    ca = -numpy.ones((Np, Nq))
+    ca = -np.ones((Np, Nq))
 
     def c(i, j):
         """Compute the coupling distance for two partial paths formed by *P* and
@@ -777,9 +777,9 @@ class Path(object):
         self.natoms = len(atoms)
         frames.rewind()
         if flat:
-            return numpy.array([atoms.positions.flatten() for _ in frames])
+            return np.array([atoms.positions.flatten() for _ in frames])
         else:
-            return numpy.array([atoms.positions for _ in frames])
+            return np.array([atoms.positions for _ in frames])
 
 
     def run(self, align=False, filename=None, postfix='_fit', rmsdfile=None,
@@ -983,11 +983,11 @@ class PSAPair(object):
         max_nn_dist_P = max(nn_dist_P)
         max_nn_dist_Q = max(nn_dist_Q)
         if max_nn_dist_P > max_nn_dist_Q:
-            max_nn_idx_P = numpy.argmax(nn_dist_P)
+            max_nn_idx_P = np.argmax(nn_dist_P)
             self.hausdorff_pair['frames'] = max_nn_idx_P, nn_idx_P[max_nn_idx_P]
             self.hausdorff_pair['distance']  = max_nn_dist_P
         else:
-            max_nn_idx_Q = numpy.argmax(nn_dist_Q)
+            max_nn_idx_Q = np.argmax(nn_dist_Q)
             self.hausdorff_pair['frames'] = nn_idx_Q[max_nn_idx_Q], max_nn_idx_Q
             self.hausdorff_pair['distance'] = max_nn_dist_Q
 
@@ -1307,7 +1307,7 @@ class PSA(object):
         else:
             metric_func = metric
         numpaths = self.npaths
-        D = numpy.zeros((numpaths,numpaths))
+        D = np.zeros((numpaths,numpaths))
 
         for i in xrange(0, numpaths-1):
             for j in xrange(i+1, numpaths):
@@ -1387,8 +1387,8 @@ class PSA(object):
         outfile = os.path.join(head, filename)
         if self.D is None:
             raise NoDataError("Distance matrix has not been calculated yet")
-        numpy.save(outfile + '.npy', self.D)
-        numpy.savetxt(outfile + '.dat', self.D)
+        np.save(outfile + '.npy', self.D)
+        np.savetxt(outfile + '.dat', self.D)
         logger.info("Wrote distance matrix to file %r.npz", outfile)
         logger.info("Wrote distance matrix to file %r.dat", outfile)
         return filename
@@ -1412,7 +1412,7 @@ class PSA(object):
         path_names = []
         for i, path in enumerate(self.paths):
             current_outfile = "{}{:03n}.npy".format(outfile, i+1)
-            numpy.save(current_outfile, self.paths[i])
+            np.save(current_outfile, self.paths[i])
             path_names.append(current_outfile)
             logger.info("Wrote path to file %r", current_outfile)
         self.path_names = path_names
@@ -1428,10 +1428,10 @@ class PSA(object):
         if not os.path.exists(self._paths_pkl):
             raise NoDataError("Fitted trajectories cannot be loaded; save file" +
                               "{} does not exist.".format(self._paths_pkl))
-        self.path_names = numpy.load(self._paths_pkl)
-        self.paths = [numpy.load(pname) for pname in self.path_names]
+        self.path_names = np.load(self._paths_pkl)
+        self.paths = [np.load(pname) for pname in self.path_names]
         if os.path.exists(self._labels_pkl):
-            self.labels = numpy.load(self._labels_pkl)
+            self.labels = np.load(self._labels_pkl)
         print("Loaded paths from " + self._paths_pkl)
 
 
@@ -1482,15 +1482,15 @@ class PSA(object):
         rowidx = colidx = dgram['leaves'] # get row-wise ordering from clustering
         ax_dgram.invert_yaxis() # Place origin at up left (from low left)
 
-        minDist, maxDist = 0, numpy.max(dist_matrix)
+        minDist, maxDist = 0, np.max(dist_matrix)
         dist_matrix_clus = dist_matrix[rowidx,:]
         dist_matrix_clus = dist_matrix_clus[:,colidx]
         im = ax_hmap.matshow(dist_matrix_clus, aspect='auto', origin='lower',   \
                     cmap=cm.YlGn, vmin=minDist, vmax=maxDist)
         ax_hmap.invert_yaxis() # Place origin at upper left (from lower left)
         ax_hmap.locator_params(nbins=npaths)
-        ax_hmap.set_xticks(numpy.arange(npaths), minor=True)
-        ax_hmap.set_yticks(numpy.arange(npaths), minor=True)
+        ax_hmap.set_xticks(np.arange(npaths), minor=True)
+        ax_hmap.set_yticks(np.arange(npaths), minor=True)
         ax_hmap.tick_params(axis='x', which='both', labelleft='off',            \
                         labelright='off', labeltop='on', labelsize=0)
         ax_hmap.tick_params(axis='y', which='both', labelleft='on',             \
@@ -1504,7 +1504,7 @@ class PSA(object):
                 minor=True)
 
         ax_color = fig.add_axes(cbar_loc)
-        colorbar(im, cax=ax_color, ticks=numpy.linspace(minDist, maxDist, 10),  \
+        colorbar(im, cax=ax_color, ticks=np.linspace(minDist, maxDist, 10),  \
                 format="%0.1f")
         ax_color.tick_params(labelsize=labelsize)
 
@@ -1649,8 +1649,8 @@ class PSA(object):
         nn_dist_P, nn_dist_Q = self.NN[idx]['distances']
         frames_P = len(nn_dist_P)
         frames_Q = len(nn_dist_Q)
-        progress_P = numpy.asarray(range(frames_P))/(1.0*frames_P)
-        progress_Q = numpy.asarray(range(frames_Q))/(1.0*frames_Q)
+        progress_P = np.asarray(range(frames_P))/(1.0*frames_P)
+        progress_Q = np.asarray(range(frames_Q))/(1.0*frames_Q)
 
         ax.plot(progress_P, nn_dist_P, color=colors[0], lw=1.5, label=labels[0])
         ax.plot(progress_Q, nn_dist_Q, color=colors[1], lw=1.5, label=labels[1])

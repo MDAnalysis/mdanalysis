@@ -5,7 +5,7 @@
 #   http://dx.doi.org/10.1063/1.1826056
 
 from math import *
-import numpy
+import numpy as np
 from MDAnalysis import *
 
 # NOTE: set TOPOLOGY and TRAJECTORY to your data: should be a membrane
@@ -33,11 +33,11 @@ for ts in universe.trajectory:
     nframes += 1
     # Recenter z coordinates
     z = universe.atoms.coordinates()[:, 2]
-    z -= numpy.average(z)
+    z -= np.average(z)
     if charge_dist is None:
-        charge_dist, edges = numpy.histogramdd(z, bins=numbins, range=[(zmin, zmax)], weights=charges)
+        charge_dist, edges = np.histogramdd(z, bins=numbins, range=[(zmin, zmax)], weights=charges)
     else:
-        newhist, edges = numpy.histogramdd(z, bins=numbins, range=[(zmin, zmax)], weights=charges)
+        newhist, edges = np.histogramdd(z, bins=numbins, range=[(zmin, zmax)], weights=charges)
         charge_dist += newhist
 
 # Normalize charge distribution
@@ -55,8 +55,8 @@ zpos -= min(zpos)
 binwidth = zbox / float(numbins)
 binvolume = xbox * ybox * binwidth
 
-sum_q_binwidth = numpy.add.accumulate(charge_dist * binwidth)
-sum_z_q_binwidth = numpy.add.accumulate(zpos * charge_dist * binwidth)
+sum_q_binwidth = np.add.accumulate(charge_dist * binwidth)
+sum_z_q_binwidth = np.add.accumulate(zpos * charge_dist * binwidth)
 
 phi = zpos * sum_q_binwidth - sum_z_q_binwidth
 

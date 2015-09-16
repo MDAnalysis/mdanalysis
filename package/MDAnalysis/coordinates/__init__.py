@@ -685,7 +685,6 @@ PDB). In theses cases, the kind of writer is selected with the
 (or the writer itself).
 
 .. autodata:: _trajectory_readers
-.. autodata:: _topology_coordinates_readers
 .. autodata:: _compressed_formats
 .. autodata:: _frame_writers
 .. autodata:: _trajectory_writers
@@ -747,24 +746,6 @@ _trajectory_readers = {
 
 #: formats of readers that can also handle gzip or bzip2 compressed files
 _compressed_formats = ['XYZ', 'TRJ', 'MDCRD', 'PQR', 'PDBQT']
-
-#: readers of files that contain both topology/atom data and coordinates
-#: (currently only the keys are used)
-_topology_coordinates_readers = {
-    'PDB': PDB.PrimitivePDBReader,  # FIXME: should be able to use BioPython PDBReader for topolgy if permissive=False!
-    'XPDB': PDB.ExtendedPDBReader,
-    'PDBQT': PDBQT.PDBQTReader,
-    'GRO': GRO.GROReader,
-    'CRD': CRD.CRDReader,
-    'CONFIG': DLPoly.ConfigReader,
-    'HISTORY': DLPoly.HistoryReader,
-    'PQR': PQR.PQRReader,
-    'DMS': DMS.DMSReader,
-    'MOL2': MOL2.MOL2Reader,
-    'DATA': LAMMPS.DATAReader,
-    'GMS': GMS.GMSReader,
-    'XYZ': XYZ.XYZReader,
-}
 
 #: frame writers: export to single frame formats such as PDB, gro, crd
 #: Signature::

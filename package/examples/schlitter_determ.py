@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 from MDAnalysis import *
 import Numeric
-import numpy
-from numpy import *
 from numpy import linalg
 
 system = AtomGroup.Universe(".psf", ".dcd")
@@ -25,7 +23,7 @@ num_coor = len(asel) * 3
 ca_pos = system.dcd.timeseries(asel, skip=skip, format='fac')
 
 #---------------------------------
-# converting angstroms to meters and merging the xyz of timeseries 
+# converting angstroms to meters and merging the xyz of timeseries
 #---------------------------------
 ca = (1e-10) * (Numeric.reshape(ca_pos, (num_ts, -1)))
 #print "ca", shape(ca)

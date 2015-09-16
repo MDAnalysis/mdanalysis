@@ -23,7 +23,7 @@ For the example provided below, the backbone dihedrals and WC distances
 
 """
 
-import numpy
+import numpy as np
 import MDAnalysis
 
 from MDAnalysis.analysis import nuclinfo
@@ -63,21 +63,21 @@ class TestNuclinfo(TestCase):
         assert_almost_equal(minor, 3.7739358, err_msg="Watson-Crick distance does not match expected value.")
 
     def test_torsions(self):
-        nucl_acid = numpy.array(nuclinfo.tors(self.universe, "RNAA", 4), dtype=numpy.float32)
-        expected_nucl_acid = numpy.array(
+        nucl_acid = np.array(nuclinfo.tors(self.universe, "RNAA", 4), dtype=np.float32)
+        expected_nucl_acid = np.array(
             [296.45596313, 177.79353333, 48.67910767, 81.81109619, 205.58882141, 286.37353516, 198.09187317],
-            dtype=numpy.float32)
+            dtype=np.float32)
         assert_almost_equal(nucl_acid, expected_nucl_acid, self.prec,
                             err_msg="Backbone torsion does not have expected values for "
                                     "alpha, beta, gamma, epsilon, zeta, chi.")
 
     def test_hydroxyl(self):
-        hydroxyls = numpy.array([nuclinfo.hydroxyl(self.universe,
+        hydroxyls = np.array([nuclinfo.hydroxyl(self.universe,
                                                    self.universe.atoms.segids[0], resid)
                                  for resid in (7, 10, 11, 22)])
-        expected_hydroxyls = numpy.array(
+        expected_hydroxyls = np.array(
             [ 122.73991394,  123.34986115,  123.20658112,  122.57156372],
-            dtype=numpy.float32)
+            dtype=np.float32)
         assert_array_almost_equal(hydroxyls, expected_hydroxyls, self.prec,
                                   err_msg="RNA hydroxyl dihedrals do not match")
 

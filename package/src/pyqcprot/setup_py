@@ -2,7 +2,7 @@ from distutils.core import setup
 from distutils.extension import Extension
 from Cython.Distutils import build_ext
 
-import numpy
+import numpy as np
 try:
     numpy_include = numpy.get_include()
 except AttributeError:

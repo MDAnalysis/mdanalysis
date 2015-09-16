@@ -29,7 +29,7 @@ Multicore 3D streamplot Python library for MDAnalysis --- :mod:`MDAnalysis.visua
 
 import MDAnalysis
 import multiprocessing
-import numpy
+import numpy as np
 import numpy.testing
 import scipy
 import scipy.spatial.distance
@@ -58,7 +58,7 @@ def produce_grid(tuple_of_limits, grid_spacing):
     '''Produce a grid for the simulation system based on the tuple of Cartesian Coordinate limits calculated in an
     earlier step.'''
     x_min, x_max, y_min, y_max, z_min, z_max = tuple_of_limits
-    grid = numpy.mgrid[x_min:x_max:grid_spacing, y_min:y_max:grid_spacing, z_min:z_max:grid_spacing]
+    grid = np.mgrid[x_min:x_max:grid_spacing, y_min:y_max:grid_spacing, z_min:z_max:grid_spacing]
     return grid
 
 
@@ -90,7 +90,7 @@ def split_grid(grid, num_cores):
                                                               ordered_list_per_sheet_y_values,
                                                               ordered_list_per_sheet_z_values):
         ordered_list_cartesian_coordinates_per_sheet.append(zip(x_sheet_coords, y_sheet_coords, z_sheet_coords))
-    array_ordered_cartesian_coords_per_sheet = numpy.array(ordered_list_cartesian_coordinates_per_sheet)
+    array_ordered_cartesian_coords_per_sheet = np.array(ordered_list_cartesian_coordinates_per_sheet)
     #now I'm going to want to build cubes in an ordered fashion, and in such a way that I can track the index /
     # centroid of each cube for domain decomposition / reconstruction and mayavi mlab.flow() input
     #cubes will be formed from N - 1 base sheets combined with subsequent sheets
@@ -121,9 +121,9 @@ def split_grid(grid, num_cores):
                     next_two_vertices_base_sheet, next_two_vertices_top_sheet
                 ]:
                     current_list_cube_vertices.extend(vertex_set)
-                vertex_array = numpy.array(current_list_cube_vertices)
+                vertex_array = np.array(current_list_cube_vertices)
                 assert vertex_array.shape == (8, 3), "vertex_array has incorrect shape"
-                cube_centroid = numpy.average(numpy.array(current_list_cube_vertices), axis=0)
+                cube_centroid = np.average(np.array(current_list_cube_vertices), axis=0)
                 dictionary_cubes_centroids_indices[cube_counter] = {
                     'centroid': cube_centroid,
                     'vertex_list': current_list_cube_vertices}
@@ -137,8 +137,8 @@ def split_grid(grid, num_cores):
     total_cubes = len(dictionary_cubes_centroids_indices)
 
     #produce an array of pseudo cube indices (actually the dictionary keys which are cube numbers in string format):
-    pseudo_cube_indices = numpy.arange(0, total_cubes)
-    sublist_of_cube_indices_per_core = numpy.array_split(pseudo_cube_indices, num_cores)
+    pseudo_cube_indices = np.arange(0, total_cubes)
+    sublist_of_cube_indices_per_core = np.array_split(pseudo_cube_indices, num_cores)
     #now, the split of pseudoindices seems to work well, and the above sublist_of_cube_indices_per_core is a list of
     # arrays of cube numbers / keys in the original dictionary
     #now I think I'll try to produce a list of dictionaries that each contain their assigned cubes based on the above
@@ -169,24 +169,24 @@ def per_core_work(start_frame_coord_array, end_frame_coord_array, dictionary_cub
         '''Determine if an array of coordinates are within a cube.'''
         #the simulation particle point can't be more than half the cube side length away from the cube centroid in
         # any given dimension:
-        array_cube_vertices = numpy.array(list_cube_vertices)
+        array_cube_vertices = np.array(list_cube_vertices)
         cube_half_side_length = scipy.spatial.distance.pdist(array_cube_vertices, 'euclidean').min() / 2.0
         array_cube_vertex_distances_from_centroid = scipy.spatial.distance.cdist(array_cube_vertices,
-                                                                                 cube_centroid[numpy.newaxis, :])
-        numpy.testing.assert_almost_equal(array_cube_vertex_distances_from_centroid.min(),
+                                                                                 cube_centroid[np.newaxis, :])
+        np.testing.assert_almost_equal(array_cube_vertex_distances_from_centroid.min(),
                                           array_cube_vertex_distances_from_centroid.max(), decimal=4,
                                           err_msg="not all cube vertex to centroid distances are the same, "
                                                   "so not a true cube")
-        absolute_delta_coords = numpy.absolute(numpy.subtract(array_point_coordinates, cube_centroid))
+        absolute_delta_coords = np.absolute(np.subtract(array_point_coordinates, cube_centroid))
         absolute_delta_x_coords = absolute_delta_coords[..., 0]
-        indices_delta_x_acceptable = numpy.where(absolute_delta_x_coords <= cube_half_side_length)
+        indices_delta_x_acceptable = np.where(absolute_delta_x_coords <= cube_half_side_length)
         absolute_delta_y_coords = absolute_delta_coords[..., 1]
-        indices_delta_y_acceptable = numpy.where(absolute_delta_y_coords <= cube_half_side_length)
+        indices_delta_y_acceptable = np.where(absolute_delta_y_coords <= cube_half_side_length)
         absolute_delta_z_coords = absolute_delta_coords[..., 2]
-        indices_delta_z_acceptable = numpy.where(absolute_delta_z_coords <= cube_half_side_length)
-        intersection_xy_acceptable_arrays = numpy.intersect1d(indices_delta_x_acceptable[0],
+        indices_delta_z_acceptable = np.where(absolute_delta_z_coords <= cube_half_side_length)
+        intersection_xy_acceptable_arrays = np.intersect1d(indices_delta_x_acceptable[0],
                                                               indices_delta_y_acceptable[0])
-        overall_indices_points_in_current_cube = numpy.intersect1d(intersection_xy_acceptable_arrays,
+        overall_indices_points_in_current_cube = np.intersect1d(intersection_xy_acceptable_arrays,
                                                                    indices_delta_z_acceptable[0])
         return overall_indices_points_in_current_cube
 
@@ -201,7 +201,7 @@ def per_core_work(start_frame_coord_array, end_frame_coord_array, dictionary_cub
                                                cube['centroid'])
             cube['start_frame_index_list_in_cube'] = index_list_in_cube
             if len(index_list_in_cube) > 0:  # if there's at least one particle in this cube
-                centroid_particles_in_cube = numpy.average(array_simulation_particle_coordinates[index_list_in_cube],
+                centroid_particles_in_cube = np.average(array_simulation_particle_coordinates[index_list_in_cube],
                                                            axis=0)
                 cube['centroid_of_particles_first_frame'] = centroid_particles_in_cube
             else:  # empty cube
@@ -220,7 +220,7 @@ def per_core_work(start_frame_coord_array, end_frame_coord_array, dictionary_cub
             else:  # there was at least one particle in the starting cube so we can get dx,dy,dz centroid values
                 new_coordinate_array_for_particles_starting_in_this_cube = array_simulation_particle_coordinates[
                     cube['start_frame_index_list_in_cube']]
-                new_centroid_for_particles_starting_in_this_cube = numpy.average(
+                new_centroid_for_particles_starting_in_this_cube = np.average(
                     new_coordinate_array_for_particles_starting_in_this_cube, axis=0)
                 cube['centroid_of_paticles_final_frame'] = new_centroid_for_particles_starting_in_this_cube
                 delta_centroid_array_this_cube = new_centroid_for_particles_starting_in_this_cube - cube[
@@ -263,7 +263,7 @@ def generate_streamlines_3d(coordinate_file_path, trajectory_file_path, grid_spa
                             end_frame, xmin, xmax, ymin, ymax, zmin, zmax, maximum_delta_magnitude=2.0,
                             num_cores='maximum'):
     '''Produce the x, y and z components of a 3D streamplot data set.
-    
+
     :Parameters:
         **coordinate_file_path** : str
             Absolute path to the coordinate file
@@ -296,7 +296,7 @@ def generate_streamlines_3d(coordinate_file_path, trajectory_file_path, grid_spa
             treated as excessively large displacements crossing the periodic boundary)
         **num_cores** : int, optional
             The number of cores to use. (Default 'maximum' uses all available cores)
-        
+
     :Returns:
         **dx_array** : array of floats
             An array object containing the displacements in the x direction
@@ -304,12 +304,12 @@ def generate_streamlines_3d(coordinate_file_path, trajectory_file_path, grid_spa
             An array object containing the displacements in the y direction
         **dz_array** : array of floats
             An array object containing the displacements in the z direction
-    
+
     :Examples:
 
     ::
 
-        import numpy
+        import np as np
         import MDAnalysis
         import MDAnalysis.visualization.streamlines_3D
         import mayavi, mayavi.mlab
@@ -323,18 +323,18 @@ def generate_streamlines_3d(coordinate_file_path, trajectory_file_path, grid_spa
         x1, y1, z1 = MDAnalysis.visualization.streamlines_3D.generate_streamlines_3d('testing.gro',
         'testing_filtered.xtc',xmin=x_lower,xmax=x_upper,ymin=y_lower,ymax=y_upper,zmin=z_lower,zmax=z_upper,
         grid_spacing = grid_spacing_value, MDA_selection = 'name PO4',start_frame=2,end_frame=3,num_cores='maximum')
-        x,y,z = numpy.mgrid[x_lower:x_upper:x1.shape[0]*1j,y_lower:y_upper:y1.shape[1]*1j,z_lower:z_upper:z1.shape[
+        x,y,z = np.mgrid[x_lower:x_upper:x1.shape[0]*1j,y_lower:y_upper:y1.shape[1]*1j,z_lower:z_upper:z1.shape[
         2]*1j]
 
         #plot with mayavi:
         fig = mayavi.mlab.figure(bgcolor=(1.0,1.0,1.0),size=(800,800),fgcolor=(0, 0, 0))
-        for z_value in numpy.arange(z_lower,z_upper,grid_spacing_value):
+        for z_value in np.arange(z_lower,z_upper,grid_spacing_value):
             st = mayavi.mlab.flow(x,y,z,x1,y1,z1,line_width=1,seedtype='plane',integration_direction='both')
             st.streamline_type = 'tube'
             st.tube_filter.radius = 2
-            st.seed.widget.origin = numpy.array([ x_lower,  y_upper,   z_value])
-            st.seed.widget.point1 = numpy.array([ x_upper, y_upper,  z_value])
-            st.seed.widget.point2 = numpy.array([ x_lower, y_lower,  z_value])
+            st.seed.widget.origin = np.array([ x_lower,  y_upper,   z_value])
+            st.seed.widget.point1 = np.array([ x_upper, y_upper,  z_value])
+            st.seed.widget.point2 = np.array([ x_lower, y_lower,  z_value])
             st.seed.widget.resolution = int(x1.shape[0])
             st.seed.widget.enabled = False
         mayavi.mlab.axes(extent = [0,1200,0,1200,-300,300])
@@ -351,7 +351,7 @@ def generate_streamlines_3d(coordinate_file_path, trajectory_file_path, grid_spa
     else:
         num_cores = num_cores  # use the value specified by the user
         # assert isinstance(num_cores,(int,long)), "The number of specified cores must (of course) be an integer."
-    numpy.seterr(all='warn', over='raise')
+    np.seterr(all='warn', over='raise')
     parent_cube_dictionary = {}  # collect all data from child processes here
 
     def log_result_to_parent(process_dict):
@@ -381,14 +381,14 @@ def generate_streamlines_3d(coordinate_file_path, trajectory_file_path, grid_spa
     pool.join()
     #so, at this stage the parent process now has a single dictionary with all the cube objects updated from all
     # available cores
-    #the 3D streamplot (i.e, mayavi flow() function) will require separate 3D numpy arrays for dx,dy,dz
+    #the 3D streamplot (i.e, mayavi flow() function) will require separate 3D np arrays for dx,dy,dz
     #the shape of each 3D array will unfortunately have to match the mgrid data structure (bit of a pain): (
     # num_sheets - 1, num_sheets - 1, cubes_per_column)
     cubes_per_sheet = int(float(total_cubes) / float(num_sheets - 1))
     #produce dummy zero arrays for dx,dy,dz of the appropriate shape:
-    dx_array = numpy.zeros(delta_array_shape)
-    dy_array = numpy.zeros(delta_array_shape)
-    dz_array = numpy.zeros(delta_array_shape)
+    dx_array = np.zeros(delta_array_shape)
+    dy_array = np.zeros(delta_array_shape)
+    dz_array = np.zeros(delta_array_shape)
     #now use the parent cube dictionary to correctly substitute in dx,dy,dz values
     current_sheet = 0  # which is also the current row
     y_index_current_sheet = 0  # sub row

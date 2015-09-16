@@ -113,20 +113,11 @@ Functions
 import sys
 import os
 
-import numpy
+import numpy as np
 # replace CartesianToolkit with NumPy
 # - vecscale(v,a) --> a*c
 # - vecadd(a,b) --> a+b
 # - vecsub(a,b) --> a-b
-try:
-    from numpy import rad2deg, deg2rad  # numpy 1.3+
-except ImportError:
-    def rad2deg(x):  # no need for the numpy out=[] argument
-        return 180.0 * x / numpy.pi
-
-    def deg2rad(x):  # no need for the numpy out=[] argument
-        return x * numpy.pi / 180.0
-
 import MDAnalysis
 from MDAnalysis import FinishTimeException
 
@@ -136,16 +127,16 @@ def center(coordinates):
 
     Coordinates must be "list of cartesians", i.e. a Nx3 array.
     """
-    return numpy.mean(coordinates, axis=0)
+    return np.mean(coordinates, axis=0)
 
 
 def veclength(v):
     """Length of vector *v*."""
-    # note: this is 3 times faster than numpy.linalg.norm
-    return numpy.sqrt(numpy.dot(v, v))
+    # note: this is 3 times faster than np.linalg.norm
+    return np.sqrt(np.dot(v, v))
 
 
-vecscaler = numpy.dot
+vecscaler = np.dot
 
 
 def vecnorm(a):
@@ -159,8 +150,8 @@ def vecangle(a, b):
     If one of the lengths is 0 then the angle is returned as 0
     (instead of `nan`).
     """
-    angle = numpy.arccos(numpy.dot(a, b) / (veclength(a) * veclength(b)))
-    if numpy.isnan(angle):
+    angle = np.arccos(np.dot(a, b) / (veclength(a) * veclength(b)))
+    if np.isnan(angle):
         return 0.0
     return angle
 
@@ -170,29 +161,26 @@ def vecdist(a, b):
     return veclength(a - b)
 
 
-veccross = numpy.cross
+veccross = np.cross
 
 
 def wrapangle(angle):
     """Wrap angle (in radians) to be within -pi < angle =< pi"""
-    if angle > numpy.pi:
-        angle -= 2 * numpy.pi
-    elif angle <= -numpy.pi:
-        angle += 2 * numpy.pi
+    if angle > np.pi:
+        angle -= 2 * np.pi
+    elif angle <= -np.pi:
+        angle += 2 * np.pi
     return angle
 
 
-from numpy import mean
-
-
 def sample_sd(a, dummy):
-    return numpy.std(a, ddof=1)
+    return np.std(a, ddof=1)
 
 
 def mean_abs_dev(a, mean_a=None):
     if mean_a is None:
-        mean_a = mean(a)
-    return mean(numpy.fabs(a - mean_a))
+        mean_a = np.mean(a)
+    return np.mean(np.fabs(a - mean_a))
 
 
 try:
@@ -262,11 +250,11 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
 
     """
     if ref_axis is None:
-        ref_axis = numpy.array([0., 0., 1.])
+        ref_axis = np.array([0., 0., 1.])
     else:
         # enable MDA API so that one can use a tuple of atoms or AtomGroup with
         # two atoms
-        ref_axis = numpy.asarray(ref_axis)
+        ref_axis = np.asarray(ref_axis)
 
     if start is None and end is None:
         pass
@@ -343,7 +331,7 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
 
         for i in range(len(local_helix_axes)):
             for j in range(i + 1, len(local_helix_axes)):
-                angle = rad2deg(numpy.arccos(vecscaler(local_helix_axes[i], local_helix_axes[j])))
+                angle = np.rad2deg(np.arccos(vecscaler(local_helix_axes[i], local_helix_axes[j])))
                 global_bending_matrix[i][j].append(angle)
                 #global_bending_matrix[j][i].append(angle)
                 #global_bending_matrix[i][i].append(0.)
@@ -353,7 +341,7 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
         global_twist += twist
         global_rnou += rnou
         #global_screw.append(local_screw_angles)
-        global_fitted_tilts.append(rad2deg(fit_tilt))
+        global_fitted_tilts.append(np.rad2deg(fit_tilt))
 
         #print out rotations across the helix to a file
         with open(twist_filename, "a") as twist_output:
@@ -377,11 +365,11 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
         with open(tilt_filename, "a") as tilt_output:
             print >> tilt_output, frame,
             for tilt in local_helix_axes:
-                print >> tilt_output, rad2deg(vecangle(tilt, ref_axis)),
+                print >> tilt_output, np.rad2deg(vecangle(tilt, ref_axis)),
             print >> tilt_output, ""
 
         with open(fitted_tilt_filename, "a") as tilt_output:
-            print >> tilt_output, frame, rad2deg(fit_tilt)
+            print >> tilt_output, frame, np.rad2deg(fit_tilt)
 
         if len(global_bending) == 0:
             global_bending = [[] for item in bending_angles]
@@ -559,7 +547,7 @@ def helanal_main(pdbfile, selection="name CA", start=None, end=None, ref_axis=No
             if (i == j).all():
                 angle = 0.
             else:
-                angle = rad2deg(numpy.arccos(vecscaler(i, j)))
+                angle = np.rad2deg(np.arccos(vecscaler(i, j)))
             string_angle = "%6.0f\t" % angle
             #print string_angle,
             #print ''
@@ -623,9 +611,9 @@ def main_loop(positions, ref_axis=None):
     # rewrite in cython?
 
     if ref_axis is None:
-        ref_axis = numpy.array([0., 0., 1.])
+        ref_axis = np.array([0., 0., 1.])
     else:
-        ref_axis = numpy.asarray(ref_axis)
+        ref_axis = np.asarray(ref_axis)
     twist = []
     rnou = []
     height = []
@@ -652,9 +640,9 @@ def main_loop(positions, ref_axis=None):
 
         costheta = vecscaler(dv13, dv24) / (dmag * emag)
         #rnou is the number of residues per turn
-        current_twist = numpy.arccos(costheta)
-        twist.append(rad2deg(current_twist))
-        rnou.append(2 * numpy.pi / current_twist)
+        current_twist = np.arccos(costheta)
+        twist.append(np.rad2deg(current_twist))
+        rnou.append(2 * np.pi / current_twist)
         #radius of local helix cylinder radmag
 
         costheta1 = 1.0 - costheta
@@ -664,7 +652,7 @@ def main_loop(positions, ref_axis=None):
         current_height = vecscaler(vec23, current_uloc)
         height.append(current_height)
         #TESTED- Twists etc correct
-        #print current_twist*180/numpy.pi, 2*numpy.pi/current_twist, height
+        #print current_twist*180/np.pi, 2*np.pi/current_twist, height
 
         dv13 = vecnorm(dv13)
         dv24 = vecnorm(dv24)
@@ -689,16 +677,16 @@ def main_loop(positions, ref_axis=None):
 
     bending_angles = [0 for item in range(len(local_helix_axes) - 3)]
     for axis in xrange(len(local_helix_axes) - 3):
-        angle = numpy.arccos(vecscaler(local_helix_axes[axis], local_helix_axes[axis + 3]))
-        bending_angles[axis] = rad2deg(angle)
+        angle = np.arccos(vecscaler(local_helix_axes[axis], local_helix_axes[axis + 3]))
+        bending_angles[axis] = np.rad2deg(angle)
         #TESTED- angles are correct
-        #print rad2deg(angle)
+        #print np.rad2deg(angle)
 
     local_screw_angles = []
     #Calculate rotation angles for (+1) to (n-1)
     fit_vector, fit_tilt = vector_of_best_fit(origins)
     for item in location_rotation_vectors:
-        local_screw_tmp = rad2deg(rotation_angle(fit_vector, ref_axis, item))
+        local_screw_tmp = np.rad2deg(rotation_angle(fit_vector, ref_axis, item))
         #print local_screw_tmp
         local_screw_angles.append(local_screw_tmp)
 
@@ -712,17 +700,17 @@ def rotation_angle(helix_vector, axis_vector, rotation_vector):
     alt_screw_angle = vecangle(second_reference_vector, rotation_vector)
     updown = veccross(reference_vector, rotation_vector)
 
-    if screw_angle > numpy.pi / 4 and screw_angle < 3 * numpy.pi / 4:
+    if screw_angle > np.pi / 4 and screw_angle < 3 * np.pi / 4:
         pass
     else:
-        if screw_angle < numpy.pi / 4 and alt_screw_angle < numpy.pi / 2:
-            screw_angle = numpy.pi / 2 - alt_screw_angle
-        elif screw_angle < numpy.pi / 4 and alt_screw_angle > numpy.pi / 2:
-            screw_angle = alt_screw_angle - numpy.pi / 2
-        elif screw_angle > 3 * numpy.pi / 4 and alt_screw_angle < numpy.pi / 2:
-            screw_angle = numpy.pi / 2 + alt_screw_angle
-        elif screw_angle > 3 * numpy.pi / 4 and alt_screw_angle > numpy.pi / 2:
-            screw_angle = 3 * numpy.pi / 2 - alt_screw_angle
+        if screw_angle < np.pi / 4 and alt_screw_angle < np.pi / 2:
+            screw_angle = np.pi / 2 - alt_screw_angle
+        elif screw_angle < np.pi / 4 and alt_screw_angle > np.pi / 2:
+            screw_angle = alt_screw_angle - np.pi / 2
+        elif screw_angle > 3 * np.pi / 4 and alt_screw_angle < np.pi / 2:
+            screw_angle = np.pi / 2 + alt_screw_angle
+        elif screw_angle > 3 * np.pi / 4 and alt_screw_angle > np.pi / 2:
+            screw_angle = 3 * np.pi / 2 - alt_screw_angle
         else:
             print "\nBig Screw Up"
 
@@ -732,28 +720,28 @@ def rotation_angle(helix_vector, axis_vector, rotation_vector):
 
     helix_dot_rehelix = vecangle(updown, helix_vector)
 
-    #if ( helix_dot_rehelix < numpy.pi/2 and helix_dot_rehelix >= 0 )or helix_dot_rehelix <-numpy.pi/2:
-    if (numpy.pi / 2 > helix_dot_rehelix > -numpy.pi / 2) or (helix_dot_rehelix > 3 * numpy.pi / 2):
+    #if ( helix_dot_rehelix < np.pi/2 and helix_dot_rehelix >= 0 )or helix_dot_rehelix <-np.pi/2:
+    if (np.pi / 2 > helix_dot_rehelix > -np.pi / 2) or (helix_dot_rehelix > 3 * np.pi / 2):
         screw_angle = 0 - screw_angle
-        #print "Same     ", helix_dot_rehelix*180/numpy.pi
+        #print "Same     ", helix_dot_rehelix*180/np.pi
     else:
-        #print "Different", helix_dot_rehelix*180/numpy.pi
+        #print "Different", helix_dot_rehelix*180/np.pi
         pass
 
     return screw_angle
 
 
 def vector_of_best_fit(origins):
-    origins = numpy.asarray(origins)
+    origins = np.asarray(origins)
     centroids = center(origins)
-    M = numpy.matrix(origins - centroids)
+    M = np.matrix(origins - centroids)
     A = M.transpose() * M
-    u, s, vh = numpy.linalg.linalg.svd(A)
+    u, s, vh = np.linalg.linalg.svd(A)
     vector = vh[0].tolist()[0]
     #Correct vector to face towards first residues
     rough_helix = origins[0] - centroids
     agreement = vecangle(rough_helix, vector)
-    if agreement < numpy.pi / 2 and agreement > -numpy.pi / 2:
+    if agreement < np.pi / 2 and agreement > -np.pi / 2:
         pass
     else:
         vector = vh[0] * -1

@@ -172,7 +172,7 @@ Utilities
 
 """
 
-import numpy
+import numpy as np
 
 import glob
 import os
@@ -283,7 +283,7 @@ class BaseHOLE(object):
         kw = {}
         frames = kwargs.pop('frames', None)
         if frames is None:
-            frames = numpy.sort(self.profiles.keys()[::kwargs.pop('step', 1)])
+            frames = np.sort(self.profiles.keys()[::kwargs.pop('step', 1)])
         else:
             frames = asiterable(frames)
         kw['frames'] = frames
@@ -297,7 +297,7 @@ class BaseHOLE(object):
         color = kwargs.pop('color', None)
         if color is None:
             cmap = kwargs.pop('cmap', matplotlib.cm.jet)
-            normalize = matplotlib.colors.normalize(vmin=numpy.min(frames), vmax=numpy.max(frames))
+            normalize = matplotlib.colors.normalize(vmin=np.min(frames), vmax=np.max(frames))
             colors = cmap(normalize(frames))
         else:
             colors = cycle(asiterable(color))
@@ -401,12 +401,12 @@ class BaseHOLE(object):
                 # does not seem to work with masked arrays but with nan hack!
                 # http://stackoverflow.com/questions/4913306/python-matplotlib-mplot3d-how-do-i-set-a-maximum-value
                 # -for-the-z-axis
-                #radius = numpy.ma.masked_greater(profile.radius, rmax)
-                #rxncoord = numpy.ma.array(profile.rxncoord, mask=radius.mask)
+                #radius = np.ma.masked_greater(profile.radius, rmax)
+                #rxncoord = np.ma.array(profile.rxncoord, mask=radius.mask)
                 rxncoord = profile.rxncoord
                 radius = profile.radius.copy()
-                radius[radius > rmax] = numpy.nan
-            ax.plot(rxncoord, frame * numpy.ones_like(rxncoord), radius, **kwargs)
+                radius[radius > rmax] = np.nan
+            ax.plot(rxncoord, frame * np.ones_like(rxncoord), radius, **kwargs)
 
         ax.set_xlabel(r"pore coordinate $z$")
         ax.set_ylabel(ylabel)
@@ -418,7 +418,7 @@ class BaseHOLE(object):
         f = []
         for q, profile in self:
             f.append([q, profile.radius.min()])
-        return numpy.array(f)
+        return np.array(f)
 
     def sorted_profiles_iter(self):
         """Return an iterator over profiles sorted by frame/order parameter *q*.
@@ -963,7 +963,7 @@ class HOLE(BaseHOLE):
                     else:
                         # end of records (empty line)
                         read_data = False
-                        frame_hole_output = numpy.rec.fromrecords(records, formats="i4,f8,f8",
+                        frame_hole_output = np.rec.fromrecords(records, formats="i4,f8,f8",
                                                                   names="frame,rxncoord,radius")
                         # store the profile
                         self.profiles[hole_profile_no] = frame_hole_output
@@ -976,7 +976,7 @@ class HOLE(BaseHOLE):
                             if not os.path.exists(rundir):
                                 os.makedirs(rundir)
                             frame_hole_txt = os.path.join(rundir, "radii_%s_%04d.dat.gz" % (run, hole_profile_no))
-                            numpy.savetxt(frame_hole_txt, frame_hole_output)
+                            np.savetxt(frame_hole_txt, frame_hole_output)
                             logger.debug("Finished with frame %d, saved as %r", hole_profile_no, frame_hole_txt)
                         continue
                         # if we get here then we haven't found anything interesting
@@ -1078,12 +1078,12 @@ class HOLEtraj(BaseHOLE):
         * If ``None``: assign frame numbers from trajectory
         """
         if isinstance(data, basestring):
-            q = numpy.loadtxt(data)
+            q = np.loadtxt(data)
         elif data is None:
             # frame numbers
-            q = numpy.arange(1, self.universe.trajectory.n_frames + 1)
+            q = np.arange(1, self.universe.trajectory.n_frames + 1)
         else:
-            q = numpy.asarray(data)
+            q = np.asarray(data)
 
         if len(q.shape) != 1:
             raise TypeError("Order parameter array must be 1D.")

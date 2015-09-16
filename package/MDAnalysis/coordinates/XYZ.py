@@ -75,11 +75,12 @@ import errno
 import numpy as np
 import itertools
 
-import MDAnalysis
 from . import base
 from ..core import flags
 from ..lib import util
+from ..lib.util import cached
 from ..exceptions import NoDataError
+from ..version import __version__
 
 
 class XYZWriter(base.Writer):
@@ -128,7 +129,7 @@ class XYZWriter(base.Writer):
         self.convert_units = convert_units if convert_units is not None else flags['convert_lengths']
         self.atomnames = self._get_atomnames(kwargs.pop('atoms', "X"))
         self.remark = kwargs.pop('remark',
-                                 "Written by {0} (release {1})".format(self.__class__.__name__, MDAnalysis.__version__))
+                                 "Written by {0} (release {1})".format(self.__class__.__name__, __version__))
 
         self.xyz = util.anyopen(self.filename, 'w')  # can also be gz, bz2
 
@@ -250,7 +251,6 @@ class XYZReader(base.Reader):
     # exact agreement (measured to three decimal places). bzipped and
     # gzipped versions of the XYZ file were also tested
 
-    # this will be overidden when an instance is created and the file extension checked
     format = "XYZ"
     # these are assumed!
     units = {'time': 'ps', 'length': 'Angstrom'}
@@ -259,99 +259,85 @@ class XYZReader(base.Reader):
     def __init__(self, filename, **kwargs):
         super(XYZReader, self).__init__(filename, **kwargs)
 
-        # the filename has been parsed to be either be foo.xyz or foo.xyz.bz2 by coordinates::core.py
-        # so the last file extension will tell us if it is bzipped or not
+        # the filename has been parsed to be either be foo.xyz or foo.xyz.bz2 by
+        # coordinates::core.py so the last file extension will tell us if it is
+        # bzipped or not
         root, ext = os.path.splitext(self.filename)
         self.xyzfile = util.anyopen(self.filename, "r")
         self.compression = ext[1:] if ext[1:] != "xyz" else None
+        self._cache = dict()
 
-        # note that, like for xtc and trr files, _n_atoms and _n_frames are used quasi-private variables
-        # to prevent the properties being recalculated
-        # this is because there is no indexing so the way it measures the number of frames is to read the whole file!
-        self._n_atoms = self._read_xyz_natoms(self.filename)
-        self._n_frames = None
-
-        self.ts = self._Timestep(self._n_atoms, **self._ts_kwargs)
-
-        #        Haven't quite figured out where to start with all the self._reopen() etc.
-        #        (Also cannot just use seek() or reset() because that would break with urllib2.urlopen() streams)
+        self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
+        # Haven't quite figured out where to start with all the self._reopen()
+        # etc.
+        # (Also cannot just use seek() or reset() because that would break
+        # with urllib2.urlopen() streams)
         self._read_next_timestep()
 
     @property
+    @cached('n_atoms')
     def n_atoms(self):
         """number of atoms in a frame"""
-        return self._n_atoms
-
-    def _read_xyz_natoms(self, filename):
-        # this assumes that this is only called once at startup and that the filestream is already open
-        # (FRAGILE)
         with util.anyopen(self.filename, 'r') as f:
             n = f.readline()
         # need to check type of n
         return int(n)
 
     @property
+    @cached('n_frames')
     def n_frames(self):
-        if not self._n_frames is None:  # return cached value
-            return self._n_frames
         try:
-            self._n_frames = self._read_xyz_n_frames(self.filename)
+            return self._read_xyz_n_frames()
         except IOError:
             return 0
-        else:
-            return self._n_frames
 
-    def _read_xyz_n_frames(self, filename):
-        # the number of lines in the XYZ file will be 2 greater than the number of atoms
+    def _read_xyz_n_frames(self):
+        # the number of lines in the XYZ file will be 2 greater than the
+        # number of atoms
         linesPerFrame = self.n_atoms + 2
         counter = 0
-        # step through the file (assuming xyzfile has an iterator)
+        offsets = []
+
         with util.anyopen(self.filename, 'r') as f:
-            for i in f:
-                counter = counter + 1
+            line = True
+            while line:
+                if not counter % linesPerFrame:
+                    offsets.append(f.tell())
+                line = f.readline()
+                counter += 1
 
         # need to check this is an integer!
         n_frames = int(counter / linesPerFrame)
+        self._offsets = offsets
         return n_frames
+
+    def _read_frame(self, frame):
+        self.xyzfile.seek(self._offsets[frame])
+        self.ts.frame = frame - 1  # gets +1'd in next
+        return self._read_next_timestep()
 
     def _read_next_timestep(self, ts=None):
         # check that the timestep object exists
         if ts is None:
             ts = self.ts
-        # check that the xyzfile object exists; if not reopen the trajectory
-        if self.xyzfile is None:
-            self.open_trajectory()
-        x = []
-        y = []
-        z = []
 
-        # we assume that there are only two header lines per frame
-        counter = -2
-        for line in self.xyzfile:
-            counter += 1
-            if counter > 0:
-                # assume the XYZ file is space delimited rather than being fixed format
-                # (this could lead to problems where there is no gap e.g 9.768-23.4567)
-                words = line.split()
-                x.append(float(words[1]))
-                y.append(float(words[2]))
-                z.append(float(words[3]))
+        f = self.xyzfile
 
-            # stop when the cursor has reached the end of that block
-            if counter == self.n_atoms:
-                ts._unitcell = np.zeros((6), np.float32)
-                ts._x[:] = x  # more efficient to do it this way to avoid re-creating the numpy arrays
-                ts._y[:] = y
-                ts._z[:] = z
-                ts.frame += 1
-                return ts
-
-        raise EOFError
+        try:
+            # we assume that there are only two header lines per frame
+            f.readline()
+            f.readline()
+            for i in xrange(self.n_atoms):
+                self.ts._pos[i] = map(float, f.readline().split()[1:4])
+            ts.frame += 1
+            return ts
+        except (ValueError, IndexError) as err:
+            raise EOFError(err)
 
     def rewind(self):
         """reposition on first frame"""
         self._reopen()
-        # the next method is inherited from the Reader Class and calls _read_next_timestep
+        # the next method calls _read_next_timestep
         self.next()
 
     def _reopen(self):
@@ -360,7 +346,8 @@ class XYZReader(base.Reader):
 
     def open_trajectory(self):
         if self.xyzfile is not None:
-            raise IOError(errno.EALREADY, 'XYZ file already opened', self.filename)
+            raise IOError(
+                errno.EALREADY, 'XYZ file already opened', self.filename)
 
         self.xyzfile = util.anyopen(self.filename, "r")
 

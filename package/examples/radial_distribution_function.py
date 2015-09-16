@@ -18,7 +18,7 @@ Profiling shows that the computational bottleneck is the
 
 from itertools import izip
 
-import numpy
+import numpy as np
 
 from MDAnalysis import *
 from MDAnalysis.lib.distances import *  # #distance_array
@@ -50,12 +50,12 @@ dmin, dmax = 0.0, 8.0
 nbins = 80
 
 # set up rdf
-rdf, edges = numpy.histogram([0], bins=nbins, range=(dmin, dmax))
+rdf, edges = np.histogram([0], bins=nbins, range=(dmin, dmax))
 rdf *= 0
-rdf = rdf.astype(numpy.float64)  # avoid possible problems with '/' later on
+rdf = rdf.astype(np.float64)  # avoid possible problems with '/' later on
 
 n = solvent.numberOfAtoms()
-dist = numpy.zeros((n * (n - 1) / 2,), dtype=numpy.float64)
+dist = np.zeros((n * (n - 1) / 2,), dtype=np.float64)
 
 print "Start: n = %d, size of dist = %d " % (n, len(dist))
 
@@ -70,7 +70,7 @@ for ts in universe.trajectory:
     # DISABLE:
     box = None
     self_distance_array(coor, box, result=dist)  # use pre-allocated array, box not fully correct!!
-    new_rdf, edges = numpy.histogram(dist, bins=nbins, range=(dmin, dmax))
+    new_rdf, edges = np.histogram(dist, bins=nbins, range=(dmin, dmax))
     rdf += new_rdf
 print
 
@@ -79,7 +79,7 @@ boxvolume /= numframes  # average volume
 
 # Normalize RDF
 radii = 0.5 * (edges[1:] + edges[:-1])
-vol = (4. / 3.) * numpy.pi * (numpy.power(edges[1:], 3) - numpy.power(edges[:-1], 3))
+vol = (4. / 3.) * np.pi * (np.power(edges[1:], 3) - np.power(edges[:-1], 3))
 # normalization to the average density n/boxvolume in the simulation
 density = n / boxvolume
 # This is inaccurate when solutes take up substantial amount

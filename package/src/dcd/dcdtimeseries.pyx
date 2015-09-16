@@ -57,7 +57,7 @@ ctypedef struct dcdhandle:
 cdef extern from "correl.h":
     void copyseries(int frame, char *data, int *strides, float *tempX, float *tempY, float *tempZ, char* datacode, int numdata, int* atomlist, int* atomcounts, int lowerb, double *aux)
 
-import numpy
+import numpy as np
 
 def __read_timecorrel(object self, object atoms, object atomcounts, object format, object auxdata, int sizedata, int lowerb, int upperb, int start, int stop, int skip):
     cdef dcdhandle* dcd
@@ -76,18 +76,19 @@ def __read_timecorrel(object self, object atoms, object atomcounts, object forma
     if numdata==0:
         raise Exception("No data requested, timeseries is empty")
     fmtstr = PyString_AsString(format)
-    atomlist = numpy.array(atoms, numpy.int32)
-    atomcountslist = numpy.array(atomcounts, numpy.int32)
-    auxlist = numpy.array(auxdata, numpy.float64)
+
+    atomlist = np.array(atoms, np.int32)
+    atomcountslist = np.array(atomcounts, np.int32)
+    auxlist = np.array(auxdata, np.float64)
     #print "atomlist", atomlist
     #print "atomcountslist", atomcountslist
     #print "formatcode", fmtstr
     cdef int range
     range = upperb - lowerb + 1
     # Create data list
-    #data = numpy.zeros((n_frames, sizedata), numpy.float64)
-    data = numpy.zeros((sizedata, n_frames), numpy.float64)
-    temp = numpy.zeros((3, range), numpy.float32)
+    #data = np.zeros((n_frames, sizedata), np.float64)
+    data = np.zeros((sizedata, n_frames), np.float64)
+    temp = np.zeros((3, range), np.float32)
     tempX = <float*>(temp.data+0*temp.strides[0])
     tempY = <float*>(temp.data+1*temp.strides[0])
     tempZ = <float*>(temp.data+2*temp.strides[0])
@@ -146,14 +147,14 @@ def __read_timeseries(object self, object atoms, int skip):
     n_atoms = len(atoms)
     if n_atoms==0:
         raise Exception("No atoms passed into __read_timeseries function")
-    atomlist = numpy.array(atoms)
+    atomlist = np.array(atoms)
     cdef int lowerb, upperb, range
     lowerb = atoms[0]
     upperb = atoms[-1]
     range = upperb - lowerb + 1
     # Create atom list
-    coord = numpy.zeros((n_atoms, n_frames, 3), numpy.float64)
-    temp = numpy.zeros((3, range), numpy.float32)
+    coord = np.zeros((n_atoms, n_frames, 3), np.float64)
+    temp = np.zeros((3, range), np.float32)
     tempX = <float*>(temp.data+0*temp.strides[0])
     tempY = <float*>(temp.data+1*temp.strides[0])
     tempZ = <float*>(temp.data+2*temp.strides[0])

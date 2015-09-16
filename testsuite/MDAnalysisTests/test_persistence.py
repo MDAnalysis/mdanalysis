@@ -19,7 +19,7 @@ from MDAnalysis.tests.datafiles import PSF, DCD, PDB_small, GRO, XTC, TRR
 import MDAnalysis.core.AtomGroup
 from MDAnalysis.core.AtomGroup import AtomGroup
 
-import numpy
+import numpy as np
 from numpy.testing import *
 
 import os
@@ -117,7 +117,7 @@ class TestEmptyAtomGroupPickle(TestCase):
 class _GromacsReader_offsets(TestCase):
     # This base class assumes same lengths and dt for XTC and TRR test cases!
     filename = None
-    ref_unitcell = numpy.array([80.017, 80.017, 80.017, 60., 60., 90.], dtype=numpy.float32)
+    ref_unitcell = np.array([80.017, 80.017, 80.017, 60., 60., 90.], dtype=np.float32)
     ref_volume = 362270.0  # computed with Gromacs: 362.26999999999998 nm**3 * 1000 A**3/nm**3
     ref_offsets = None
 
@@ -137,7 +137,7 @@ class _GromacsReader_offsets(TestCase):
         self.trajectory = self.universe.trajectory
         self.prec = 3
         self.ts = self.universe.coord
-        
+
         # dummy output file
         ext = os.path.splitext(self.filename)[1]
         fd, self.outfile = tempfile.mkstemp(suffix=ext)
@@ -186,7 +186,7 @@ class _GromacsReader_offsets(TestCase):
         # build offsets
         self.trajectory.n_frames
         assert_equal((self.trajectory._offsets is None), False)
-    
+
         # check that stored offsets present
         assert_equal(os.path.exists(self.trajectory._offset_filename()), True)
 
@@ -200,7 +200,7 @@ class _GromacsReader_offsets(TestCase):
 
         # check that stored offsets ctime matches that of trajectory file
         assert_equal(saved_offsets['ctime'], os.path.getctime(self.traj))
-    
+
     @dec.slow
     def test_persistent_offsets_size_match(self):
         # build offsets
@@ -238,7 +238,7 @@ class _GromacsReader_offsets(TestCase):
             warnings.simplefilter("ignore")  # Drop the warnings silently
             u = MDAnalysis.Universe(self.top, self.traj)
             assert_equal((u.trajectory._offsets is None), True)
-        
+
     @dec.slow
     def test_persistent_offsets_size_mismatch(self):
         # build offsets
@@ -254,7 +254,7 @@ class _GromacsReader_offsets(TestCase):
 
         u = MDAnalysis.Universe(self.top, self.traj)
         assert_equal((u.trajectory._offsets is None), True)
-        
+
     @dec.slow
     def test_persistent_offsets_last_frame_wrong(self):
         # build offsets
@@ -280,8 +280,8 @@ class _GromacsReader_offsets(TestCase):
 
         # check that if directory is read-only offsets aren't stored
         os.unlink(self.trajectory._offset_filename())
-        for root, dirs, files in os.walk(self.tmpdir, topdown=False):  
-            for item in dirs:  
+        for root, dirs, files in os.walk(self.tmpdir, topdown=False):
+            for item in dirs:
                 os.chmod(os.path.join(root, item), 0444)
             for item in files:
                 os.chmod(os.path.join(root, item), 0444)
@@ -311,11 +311,11 @@ class _GromacsReader_offsets(TestCase):
 
 class TestXTCReader_offsets(_GromacsReader_offsets):
     filename = XTC
-    ref_offsets = numpy.array([0,  165188,  330364,  495520,  660708,  825872,  991044, 1156212,
+    ref_offsets = np.array([0,  165188,  330364,  495520,  660708,  825872,  991044, 1156212,
                             1321384, 1486544])
 
 
 class TestTRRReader_offsets(_GromacsReader_offsets):
     filename = TRR
-    ref_offsets = numpy.array([0,  1144464,  2288928,  3433392,  4577856,  5722320,
+    ref_offsets = np.array([0,  1144464,  2288928,  3433392,  4577856,  5722320,
                        6866784,  8011248,  9155712, 10300176])

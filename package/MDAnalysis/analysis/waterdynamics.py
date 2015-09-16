@@ -281,7 +281,7 @@ Classes
 """
 
 import MDAnalysis.analysis.hbonds
-import numpy
+import numpy as np
 import multiprocessing
 import itertools
 
@@ -599,12 +599,12 @@ class WaterOrientationalRelaxation(object):
             HHVectorp = H1tp.position - H2tp.position
             dipVectorp = ((H1tp.position + H2tp.position)*0.5)-Otp.position
 
-            normOHVector0 = numpy.linalg.norm(OHVector0)
-            normOHVectorp = numpy.linalg.norm(OHVectorp)
-            normHHVector0 = numpy.linalg.norm(HHVector0)
-            normHHVectorp = numpy.linalg.norm(HHVectorp)
-            normdipVector0 = numpy.linalg.norm(dipVector0)
-            normdipVectorp = numpy.linalg.norm(dipVectorp)
+            normOHVector0 = np.linalg.norm(OHVector0)
+            normOHVectorp = np.linalg.norm(OHVectorp)
+            normHHVector0 = np.linalg.norm(HHVector0)
+            normHHVectorp = np.linalg.norm(HHVectorp)
+            normdipVector0 = np.linalg.norm(dipVector0)
+            normdipVectorp = np.linalg.norm(dipVectorp)
 
             unitOHVector0 = [OHVector0[0]/normOHVector0,OHVector0[1]/normOHVector0,OHVector0[2]/normOHVector0]
             unitOHVectorp = [OHVectorp[0]/normOHVectorp,OHVectorp[1]/normOHVectorp,OHVectorp[2]/normOHVectorp]
@@ -613,9 +613,9 @@ class WaterOrientationalRelaxation(object):
             unitdipVector0 = [dipVector0[0]/normdipVector0,dipVector0[1]/normdipVector0,dipVector0[2]/normdipVector0]
             unitdipVectorp = [dipVectorp[0]/normdipVectorp,dipVectorp[1]/normdipVectorp,dipVectorp[2]/normdipVectorp]
 
-            valOH += self.lg2(numpy.dot(unitOHVector0,unitOHVectorp))
-            valHH += self.lg2(numpy.dot(unitHHVector0,unitHHVectorp))
-            valdip +=  self.lg2(numpy.dot(unitdipVector0,unitdipVectorp))
+            valOH += self.lg2(np.dot(unitOHVector0,unitOHVectorp))
+            valHH += self.lg2(np.dot(unitHHVector0,unitHHVectorp))
+            valdip +=  self.lg2(np.dot(unitdipVector0,unitdipVectorp))
             n += 1
         valOH = valOH/n
         valHH = valHH/n
@@ -712,7 +712,7 @@ class AngularDistribution(object):
              Axis to create angle with the vector (HH, OH or dipole) and calculate cosine theta ['z']. Options: 'x',
              'y', 'z'
 
-    .. _numpy.histogram: http://docs.scipy.org/doc/numpy/reference/generated/numpy.histogram.html
+    .. _numpy.histogram: http://docs.scipy.org/doc/np/reference/generated/np.histogram.html
 
 
     """
@@ -742,9 +742,9 @@ class AngularDistribution(object):
             HHVector0 = H1t0 - H2t0
             dipVector0 = (H1t0 + H2t0)*0.5 - Ot0
 
-            unitOHVector0 = OHVector0/numpy.linalg.norm(OHVector0, axis = 1)[:,None]
-            unitHHVector0 = HHVector0/numpy.linalg.norm(HHVector0, axis = 1)[:,None]
-            unitdipVector0 = dipVector0/numpy.linalg.norm(dipVector0, axis = 1)[:,None]
+            unitOHVector0 = OHVector0/np.linalg.norm(OHVector0, axis = 1)[:,None]
+            unitHHVector0 = HHVector0/np.linalg.norm(HHVector0, axis = 1)[:,None]
+            unitdipVector0 = dipVector0/np.linalg.norm(dipVector0, axis = 1)[:,None]
 
             j=0
             while j < len(line)/3:
@@ -779,9 +779,9 @@ class AngularDistribution(object):
         lencosThetaHH = len(cosThetaHH)
         lencosThetadip = len(cosThetadip)
         histInterval = bins
-        histcosThetaOH = numpy.histogram(cosThetaOH,histInterval, normed  = True)
-        histcosThetaHH = numpy.histogram(cosThetaHH,histInterval, normed  = True)
-        histcosThetadip = numpy.histogram(cosThetadip,histInterval, normed  = True)
+        histcosThetaOH = np.histogram(cosThetaOH,histInterval, normed  = True)
+        histcosThetaHH = np.histogram(cosThetaHH,histInterval, normed  = True)
+        histcosThetadip = np.histogram(cosThetadip,histInterval, normed  = True)
 
         return (histcosThetaOH,histcosThetaHH,histcosThetadip)
 
@@ -902,7 +902,7 @@ class  MeanSquareDisplacement(object):
             #position oxygen
             OVector = Ot0 - Otp
             #here it is the difference with waterdynamics.WaterOrientationalRelaxation
-            valO += numpy.dot(OVector, OVector)
+            valO += np.dot(OVector, OVector)
             n += 1
         valO = valO/n
         return (valO)

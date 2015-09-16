@@ -15,7 +15,7 @@
 #
 
 import MDAnalysis
-import numpy
+import numpy as np
 from numpy.testing import *
 from nose.plugins.attrib import attr
 
@@ -38,14 +38,14 @@ class TestAtom_ForceVelocity(TestCase):
         assert_equal(self.a.velocity, self.u.atoms.velocities[0])
 
     def test_atom_force_set(self):
-        ref = numpy.arange(3)
+        ref = np.arange(3)
         self.a.force = ref
 
         assert_equal(self.a.force, ref)
         assert_equal(self.u.atoms.forces[0], ref)
 
     def test_atom_velocity_set(self):
-        ref = numpy.arange(3)
+        ref = np.arange(3)
         self.a.velocity = ref
 
         assert_equal(self.a.velocity, ref)
@@ -55,13 +55,13 @@ class TestAtom_ForceVelocity(TestCase):
 class TestGROVelocities(TestCase):
     def setUp(self):
         #reference velocities for the full 6-atom test case:
-        self.reference_velocities = numpy.array(
+        self.reference_velocities = np.array(
             [[-101.227, -0.57999998, 0.43400002],
              [8.08500004, 3.19099998, -7.79099989],
              [-9.04500008, -26.46899986, 13.17999935],
              [2.51899981, 3.1400001, -1.73399997],
              [-10.64100075, -11.34899998, 0.257],
-             [19.42700005, -8.21600056, -0.24399999]], dtype=numpy.float32)
+             [19.42700005, -8.21600056, -0.24399999]], dtype=np.float32)
         self.prec = 3
 
     def testParse_velocities(self):
@@ -93,8 +93,8 @@ class TestTRRForces(TestCase):
         # extracted protein forces with g_traj into cobrotoxin_protein_forces.xvg.bz2
         # and manually averaged over 918 atoms and 3 time steps
         # native units: kJ/(mol*nm)
-        self.reference_mean_protein_force_native = numpy.array(
-            [3.4609879271822823, -0.63302345167392804, -1.0587882545813336], dtype=numpy.float32)
+        self.reference_mean_protein_force_native = np.array(
+            [3.4609879271822823, -0.63302345167392804, -1.0587882545813336], dtype=np.float32)
         # MDAnalysis units of kJ/(mol*A)
         self.reference_mean_protein_force = self.reference_mean_protein_force_native / 10
         self.prec = 6
@@ -106,7 +106,7 @@ class TestTRRForces(TestCase):
     def testForces(self):
         protein = self.universe.select_atoms("protein")
         assert_equal(len(protein), 918)
-        mean_F = numpy.mean([protein.forces.mean(axis=0) for ts in self.universe.trajectory], axis=0)
+        mean_F = np.mean([protein.forces.mean(axis=0) for ts in self.universe.trajectory], axis=0)
         assert_almost_equal(mean_F, self.reference_mean_protein_force, self.prec,
                             err_msg="mean force on protein over whole trajectory does not match")
 

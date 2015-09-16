@@ -26,7 +26,7 @@ Currently all atom arrays are handled internally as sets, but returned as AtomGr
 """
 
 import re
-import numpy
+import numpy as np
 from numpy.lib.utils import deprecate
 from Bio.KDTree import KDTree
 
@@ -167,14 +167,14 @@ class AroundSelection(Selection):
         sel_atoms = self.sel._apply(group)
         # list needed for back-indexing
         sys_atoms_list = [a for a in (self._group_atoms - sel_atoms)]
-        sel_indices = numpy.array([a.index for a in sel_atoms], dtype=int)
-        sys_indices = numpy.array([a.index for a in sys_atoms_list], dtype=int)
+        sel_indices = np.array([a.index for a in sel_atoms], dtype=int)
+        sys_indices = np.array([a.index for a in sys_atoms_list], dtype=int)
         sel_coor = Selection.coord[sel_indices]
 
         kdtree = KDTree(dim=3, bucket_size=10)
         kdtree.set_coords(Selection.coord[sys_indices])
         found_indices = []
-        for atom in numpy.array(sel_coor):
+        for atom in np.array(sel_coor):
             kdtree.search(atom, self.cutoff)
             found_indices.append(kdtree.get_indices())
 
@@ -182,7 +182,7 @@ class AroundSelection(Selection):
         # for list in found_indices:
         #     for i in list:
         #         yield sys_atoms_list[i]
-        # converting found_indices to a numpy array won't reallt work since
+        # converting found_indices to a np array won't reallt work since
         # each we will find a different number of neighbors for each center in
         # sel_coor.
         res_atoms = [sys_atoms_list[i] for list in found_indices for i in list]
@@ -191,8 +191,8 @@ class AroundSelection(Selection):
     def _apply_distmat(self, group):
         sel_atoms = self.sel._apply(group)  # group is wrong, should be universe (?!)
         sys_atoms_list = [a for a in (self._group_atoms - sel_atoms)]  # list needed for back-indexing
-        sel_indices = numpy.array([a.index for a in sel_atoms], dtype=int)
-        sys_indices = numpy.array([a.index for a in sys_atoms_list], dtype=int)
+        sel_indices = np.array([a.index for a in sel_atoms], dtype=int)
+        sys_indices = np.array([a.index for a in sys_atoms_list], dtype=int)
         sel_coor = Selection.coord[sel_indices]
         sys_coor = Selection.coord[sys_indices]
         if self.periodic:
@@ -203,7 +203,7 @@ class AroundSelection(Selection):
         dist = distances.distance_array(sys_coor, sel_coor, box)
         res_atoms = [
             sys_atoms_list[i] for i in
-            numpy.any(dist <= self.cutoff, axis=1).nonzero()[0]]  # make list numpy array and use fancy indexing?
+            np.any(dist <= self.cutoff, axis=1).nonzero()[0]]  # make list np array and use fancy indexing?
         return set(res_atoms)
 
     def __repr__(self):
@@ -229,12 +229,12 @@ class SphericalLayerSelection(Selection):
     def _apply_KDTree(self, group):
         """Selection using KDTree but periodic = True not supported.
         """
-        sys_indices = numpy.array([a.index for a in self._group_atoms_list])
+        sys_indices = np.array([a.index for a in self._group_atoms_list])
         sys_coor = Selection.coord[sys_indices]
         # group is wrong, should be universe (?!)
         sel_atoms = self.sel._apply(group)
         sel_CoG = AtomGroup(sel_atoms).center_of_geometry()
-        self.ref = numpy.array((sel_CoG[0], sel_CoG[1], sel_CoG[2]))
+        self.ref = np.array((sel_CoG[0], sel_CoG[1], sel_CoG[2]))
         if self.periodic:
             pass  # or warn? -- no periodic functionality with KDTree search
         kdtree = KDTree(dim=3, bucket_size=10)
@@ -291,11 +291,11 @@ class SphericalZoneSelection(Selection):
         """Selection using KDTree but periodic = True not supported.
         (KDTree routine is ca 15% slower than the distance matrix one)
         """
-        sys_indices = numpy.array([a.index for a in self._group_atoms_list])
+        sys_indices = np.array([a.index for a in self._group_atoms_list])
         sys_coor = Selection.coord[sys_indices]
         sel_atoms = self.sel._apply(group)  # group is wrong, should be universe (?!)
         sel_CoG = AtomGroup(sel_atoms).center_of_geometry()
-        self.ref = numpy.array((sel_CoG[0], sel_CoG[1], sel_CoG[2]))
+        self.ref = np.array((sel_CoG[0], sel_CoG[1], sel_CoG[2]))
         if self.periodic:
             pass  # or warn? -- no periodic functionality with KDTree search
 
@@ -344,8 +344,8 @@ class _CylindricalSelection(Selection):
         sel_CoG = AtomGroup(sel_atoms).center_of_geometry()
         coords = AtomGroup(Selection._group_atoms_list).positions
 
-        if self.periodic and not numpy.any(Selection.coord.dimensions[:3]==0):
-            if not numpy.allclose(Selection.coord.dimensions[3:],(90.,90.,90.)):
+        if self.periodic and not np.any(Selection.coord.dimensions[:3]==0):
+            if not np.allclose(Selection.coord.dimensions[3:],(90.,90.,90.)):
                 is_triclinic = True
                 box = triclinic_vectors(Selection.coord.dimensions).diagonal()
             else:
@@ -377,17 +377,17 @@ class _CylindricalSelection(Selection):
         # rectangular parallelepiped that contains the cylinder.
         lim_min = sel_CoG - [self.exRadius, self.exRadius, -zmin]
         lim_max = sel_CoG + [self.exRadius, self.exRadius, zmax]
-        mask_sel = numpy.all((coords >= lim_min) * (coords <= lim_max), axis=1)
-        mask_ndxs = numpy.where(mask_sel)[0]
+        mask_sel = np.all((coords >= lim_min) * (coords <= lim_max), axis=1)
+        mask_ndxs = np.where(mask_sel)[0]
         # Now we do the circular part
         xy_vecs = coords[mask_ndxs,:2] - sel_CoG[:2]
-        xy_norms = numpy.sum(xy_vecs**2, axis=1)
+        xy_norms = np.sum(xy_vecs**2, axis=1)
         try: # Generic for both 'Layer' and 'Zone' cases
             circ_sel = (xy_norms <= self.exRadiusSq) * (xy_norms >= self.inRadiusSq)
         except AttributeError:
             circ_sel = (xy_norms <= self.exRadiusSq)
         mask_sel[mask_ndxs] = circ_sel
-        ndxs = numpy.where(mask_sel)[0]
+        ndxs = np.where(mask_sel)[0]
         res_atoms = set(Selection._group_atoms_list[ndx] for ndx in ndxs)
         return res_atoms
 
@@ -419,7 +419,7 @@ class CylindricalLayerSelection(_CylindricalSelection):
 class PointSelection(Selection):
     def __init__(self, x, y, z, cutoff, periodic=None):
         Selection.__init__(self)
-        self.ref = numpy.array((float(x), float(y), float(z)))
+        self.ref = np.array((float(x), float(y), float(z)))
         self.cutoff = float(cutoff)
         self.cutoffsq = float(cutoff) * float(cutoff)
         if periodic is None:
@@ -436,32 +436,32 @@ class PointSelection(Selection):
         """Selection using KDTree but periodic = True not supported.
         (KDTree routine is ca 15% slower than the distance matrix one)
         """
-        sys_indices = numpy.array([a.index for a in self._group_atoms_list])
+        sys_indices = np.array([a.index for a in self._group_atoms_list])
         sys_coor = Selection.coord[sys_indices]
         if self.periodic:
             pass  # or warn? -- no periodic functionality with KDTree search
 
         CNS = CoordinateNeighborSearch(sys_coor)  # cache the KDTree for this selection/frame?
         found_indices = CNS.search(self.ref, self.cutoff)
-        res_atoms = [self._group_atoms_list[i] for i in found_indices]  # make list numpy array and use fancy indexing?
+        res_atoms = [self._group_atoms_list[i] for i in found_indices]  # make list np array and use fancy indexing?
         return set(res_atoms)
 
     def _apply_distmat(self, group):
         """Selection that computes all distances."""
-        sys_indices = numpy.array([a.index for a in self._group_atoms_list])
+        sys_indices = np.array([a.index for a in self._group_atoms_list])
         sys_coor = Selection.coord[sys_indices]
-        ref_coor = self.ref[numpy.newaxis, ...]
+        ref_coor = self.ref[np.newaxis, ...]
         # Fix: Arrarys need to be converted to dtype=float32 to work with distance_array
-        sys_coor = numpy.asarray(sys_coor, dtype=numpy.float32)
-        ref_coor = numpy.asarray(ref_coor, dtype=numpy.float32)
+        sys_coor = np.asarray(sys_coor, dtype=np.float32)
+        ref_coor = np.asarray(ref_coor, dtype=np.float32)
         if self.periodic:
             box = group.dimensions[:3]
         else:
             box = None
 
         dist = distances.distance_array(sys_coor, ref_coor, box)
-        res_atoms = [self._group_atoms_list[i] for i in numpy.any(dist <= self.cutoff, axis=1).nonzero()[0]]
-        # make list numpy array and use fancy indexing?
+        res_atoms = [self._group_atoms_list[i] for i in np.any(dist <= self.cutoff, axis=1).nonzero()[0]]
+        # make list np array and use fancy indexing?
         return set(res_atoms)
 
     def __repr__(self):
@@ -519,7 +519,7 @@ class SelgroupSelection(Selection):
         self._grp = selgroup
 
     def _apply(self, group):
-        common = numpy.intersect1d(group.atoms.indices, self._grp.atoms.indices)
+        common = np.intersect1d(group.atoms.indices, self._grp.atoms.indices)
         res_atoms = [i for i in self._grp if i.index in common]
         return set(res_atoms)
 
@@ -814,15 +814,15 @@ class PropertySelection(Selection):
         self.abs = abs
 
     def _apply(self, group):
-        # For efficiency, get a reference to the actual numpy position arrays
+        # For efficiency, get a reference to the actual np position arrays
         if self.prop in ("x", "y", "z"):
             p = getattr(Selection.coord, '_' + self.prop)
-            indices = numpy.array([a.index for a in group.atoms])
+            indices = np.array([a.index for a in group.atoms])
             if not self.abs:
-                # XXX Hack for difference in numpy.nonzero between version < 1. and version > 1
-                res = numpy.nonzero(self.operator(p[indices], self.value))
+                # XXX Hack for difference in np.nonzero between version < 1. and version > 1
+                res = np.nonzero(self.operator(p[indices], self.value))
             else:
-                res = numpy.nonzero(self.operator(numpy.abs(p[indices]), self.value))
+                res = np.nonzero(self.operator(np.abs(p[indices]), self.value))
             if type(res) == tuple:
                 res = res[0]
             result_set = [group.atoms[i] for i in res]
@@ -864,9 +864,9 @@ class SameSelection(Selection):
             result_set = (a for a in Selection._group_atoms if getattr(a, self.prop) in props)
         elif self.prop in ("x", "y", "z"):
             p = getattr(Selection.coord, "_"+self.prop)
-            res_indices = numpy.array([a.index for a in res])
-            sel_indices = numpy.array([a.index for a in Selection._group_atoms])
-            result_set = group.atoms[numpy.where(numpy.in1d(p[sel_indices], p[res_indices]))[0]]._atoms
+            res_indices = np.array([a.index for a in res])
+            sel_indices = np.array([a.index for a in Selection._group_atoms])
+            result_set = group.atoms[np.where(np.in1d(p[sel_indices], p[res_indices]))[0]]._atoms
         else:
             self.__error(self.prop, expected=False)
         return set(result_set)
@@ -1103,9 +1103,9 @@ class SelectionParser:
             oper = self.__consume_token()
             value = float(self.__consume_token())
             ops = dict([
-                (self.GT, numpy.greater), (self.LT, numpy.less),
-                (self.GE, numpy.greater_equal), (self.LE, numpy.less_equal),
-                (self.EQ, numpy.equal), (self.NE, numpy.not_equal)])
+                (self.GT, np.greater), (self.LT, np.less),
+                (self.GE, np.greater_equal), (self.LE, np.less_equal),
+                (self.EQ, np.equal), (self.NE, np.not_equal)])
             if oper in ops.keys():
                 return self.classdict[op](prop, ops[oper], value, abs)
         elif op == self.ATOM:

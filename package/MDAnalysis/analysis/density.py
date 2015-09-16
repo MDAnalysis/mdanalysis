@@ -84,7 +84,7 @@ Classes and Functions
 """
 from __future__ import print_function
 
-import numpy
+import numpy as np
 import sys
 import os
 import os.path
@@ -303,10 +303,10 @@ class Density(Grid):
             warnings.warn(msg)
             return
 
-        dedges = map(numpy.diff, self.edges)
+        dedges = map(np.diff, self.edges)
         D = len(self.edges)
         for i in xrange(D):
-            shape = numpy.ones(D, int)
+            shape = np.ones(D, int)
             shape[i] = len(dedges[i])
             self.grid /= dedges[i].reshape(shape)
         self.parameters['isDensity'] = True
@@ -496,15 +496,15 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
     # ideal solution would use images: implement 'looking across the
     # periodic boundaries' but that gets complicate when the box
     # rotates due to RMS fitting.
-    smin = numpy.min(coord, axis=0) - padding
-    smax = numpy.max(coord, axis=0) + padding
+    smin = np.min(coord, axis=0) - padding
+    smax = np.max(coord, axis=0) + padding
 
     BINS = fixedwidth_bins(delta, smin, smax)
     arange = zip(BINS['min'], BINS['max'])
     bins = BINS['Nbins']
 
     # create empty grid with the right dimensions (and get the edges)
-    grid, edges = numpy.histogramdd(numpy.zeros((1, 3)), bins=bins, range=arange, normed=False)
+    grid, edges = np.histogramdd(np.zeros((1, 3)), bins=bins, range=arange, normed=False)
     grid *= 0.0
     h = grid.copy()
 
@@ -514,7 +514,7 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
         coord = current_coordinates()
         if len(coord) == 0:
             continue
-        h[:], edges[:] = numpy.histogramdd(coord, bins=bins, range=arange, normed=False)
+        h[:], edges[:] = np.histogramdd(coord, bins=bins, range=arange, normed=False)
         grid += h  # accumulate average histogram
     print("")
     n_frames = u.trajectory.n_frames / u.trajectory.skip
@@ -604,14 +604,14 @@ def notwithin_coordinates_factory(universe, sel1, sel2, cutoff, not_within=True,
         # slower distance matrix based (calculate all with all distances first)
         import MDAnalysis.analysis.distances
 
-        dist = numpy.zeros((len(solvent), len(protein)), dtype=numpy.float64)
+        dist = np.zeros((len(solvent), len(protein)), dtype=np.float64)
         box = None  # as long as s_coor is not minimum-image remapped
         if not_within is True:  # default
-            compare = numpy.greater
-            aggregatefunc = numpy.all
+            compare = np.greater
+            aggregatefunc = np.all
         else:
-            compare = numpy.less_equal
-            aggregatefunc = numpy.any
+            compare = np.less_equal
+            aggregatefunc = np.any
 
         def notwithin_coordinates(cutoff=cutoff):
             s_coor = solvent.coordinates()
@@ -641,7 +641,7 @@ def Bfactor2RMSF(B):
 
     .. [Willis1975]  BTM Willis and AW Pryor. *Thermal vibrations in crystallography*. Cambridge Univ. Press, 1975
     """
-    return numpy.sqrt(3. * B / 8.) / numpy.pi
+    return np.sqrt(3. * B / 8.) / np.pi
 
 
 def density_from_PDB(pdb, **kwargs):
@@ -754,17 +754,17 @@ class BfactorDensityCreator(object):
         coord = group.coordinates()
         logger.info("Selected %d atoms (%s) out of %d total." %
                     (coord.shape[0], atomselection, len(u.atoms)))
-        smin = numpy.min(coord, axis=0) - padding
-        smax = numpy.max(coord, axis=0) + padding
+        smin = np.min(coord, axis=0) - padding
+        smax = np.max(coord, axis=0) + padding
 
         BINS = fixedwidth_bins(delta, smin, smax)
         arange = zip(BINS['min'], BINS['max'])
         bins = BINS['Nbins']
 
         # get edges by doing a fake run
-        grid, self.edges = numpy.histogramdd(numpy.zeros((1, 3)),
+        grid, self.edges = np.histogramdd(np.zeros((1, 3)),
                                              bins=bins, range=arange, normed=False)
-        self.delta = numpy.diag(map(lambda e: (e[-1] - e[0]) / (len(e) - 1), self.edges))
+        self.delta = np.diag(map(lambda e: (e[-1] - e[0]) / (len(e) - 1), self.edges))
         self.midpoints = map(lambda e: 0.5 * (e[:-1] + e[1:]), self.edges)
         self.origin = map(lambda m: m[0], self.midpoints)
         n_frames = 1
@@ -772,7 +772,7 @@ class BfactorDensityCreator(object):
         if sigma is None:
             # histogram individually, and smear out at the same time
             # with the appropriate B-factor
-            if numpy.any(group.bfactors == 0.0):
+            if np.any(group.bfactors == 0.0):
                 wmsg = "Some B-factors are Zero (will be skipped)."
                 logger.warn(wmsg)
                 warnings.warn(wmsg, category=MissingDataWarning)
@@ -781,7 +781,7 @@ class BfactorDensityCreator(object):
             self.g = self._smear_rmsf(coord, grid, self.edges, rmsf)
         else:
             # histogram 'delta functions'
-            grid, self.edges = numpy.histogramdd(coord, bins=bins, range=arange, normed=False)
+            grid, self.edges = np.histogramdd(coord, bins=bins, range=arange, normed=False)
             logger.info("Histogrammed %6d atoms from pdb." % len(group.atoms))
             # just a convolution of the density with a Gaussian
             self.g = self._smear_sigma(grid, sigma)
@@ -813,11 +813,11 @@ class BfactorDensityCreator(object):
         # (not optimized -- just to test the principle; faster approach could use
         # convolution of the whole density with a single Gaussian via FFTs:
         # rho_smeared = F^-1[ F[g]*F[rho] ]
-        g = numpy.zeros(grid.shape)  # holds the smeared out density
-        pos = numpy.where(grid != 0)  # position in histogram (as bin numbers)
+        g = np.zeros(grid.shape)  # holds the smeared out density
+        pos = np.where(grid != 0)  # position in histogram (as bin numbers)
         for iwat in xrange(len(pos[0])):  # super-ugly loop
             p = tuple([wp[iwat] for wp in pos])
-            g += grid[p] * numpy.fromfunction(self._gaussian, grid.shape, dtype=numpy.int, p=p, sigma=sigma)
+            g += grid[p] * np.fromfunction(self._gaussian, grid.shape, dtype=np.int, p=p, sigma=sigma)
             print("Smearing out atom position %4d/%5d with RMSF %4.2f A\r" % \
                   (iwat + 1, len(pos[0]), sigma),)
         return g
@@ -825,12 +825,12 @@ class BfactorDensityCreator(object):
     def _smear_rmsf(self, coordinates, grid, edges, rmsf):
         # smear out each water with its individual Gaussian
         # (slower than smear_sigma)
-        g = numpy.zeros(grid.shape)  # holds the smeared out density
+        g = np.zeros(grid.shape)  # holds the smeared out density
         N, D = coordinates.shape
         for iwat, coord in enumerate(coordinates):
             if rmsf[iwat] == 0:
                 continue
-            g += numpy.fromfunction(self._gaussian_cartesian, grid.shape, dtype=numpy.int,
+            g += np.fromfunction(self._gaussian_cartesian, grid.shape, dtype=np.int,
                                     c=coord, sigma=rmsf[iwat])
             print("Smearing out atom position %4d/%5d with RMSF %4.2f A\r" % \
                   (iwat + 1, N, rmsf[iwat]),)
@@ -842,7 +842,7 @@ class BfactorDensityCreator(object):
         x = self.delta[0, 0] * (i - p[0])  # in Angstrom
         y = self.delta[1, 1] * (j - p[1])
         z = self.delta[2, 2] * (k - p[2])
-        return (2 * numpy.pi * sigma) ** (-1.5) * numpy.exp(-(x * x + y * y + z * z) / (2 * sigma * sigma))
+        return (2 * np.pi * sigma) ** (-1.5) * np.exp(-(x * x + y * y + z * z) / (2 * sigma * sigma))
 
     def _gaussian_cartesian(self, i, j, k, c, sigma):
         # i,j,k can be numpy arrays
@@ -850,4 +850,4 @@ class BfactorDensityCreator(object):
         x = self.origin[0] + self.delta[0, 0] * i - c[0]  # in Angstrom
         y = self.origin[1] + self.delta[1, 1] * j - c[1]
         z = self.origin[2] + self.delta[2, 2] * k - c[2]
-        return (2 * numpy.pi * sigma) ** (-1.5) * numpy.exp(-(x * x + y * y + z * z) / (2 * sigma * sigma))
+        return (2 * np.pi * sigma) ** (-1.5) * np.exp(-(x * x + y * y + z * z) / (2 * sigma * sigma))

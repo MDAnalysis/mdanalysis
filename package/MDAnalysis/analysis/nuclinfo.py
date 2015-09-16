@@ -99,7 +99,7 @@ Dihedral angles
 
 """
 
-import numpy
+import numpy as np
 from math import pi, sin, cos, atan2, sqrt, pow
 
 from MDAnalysis.lib import mdamath
@@ -248,14 +248,14 @@ def phase_cp(universe, seg, i):
     R2 = ((r1 * cos(2 * pi * 0.0 / 5.0)) + (r2 * cos(2 * pi * 1.0 / 5.0)) +
           (r3 * cos(2 * pi * 2.0 / 5.0)) + (r4 * cos(2 * pi * 3.0 / 5.0)) + (r5 * cos(2 * pi * 4.0 / 5.0)))
 
-    x = numpy.cross(R1[0], R2[0])
+    x = np.cross(R1[0], R2[0])
     n = x / sqrt(pow(x[0], 2) + pow(x[1], 2) + pow(x[2], 2))
 
-    r1_d = numpy.dot(r1, n)
-    r2_d = numpy.dot(r2, n)
-    r3_d = numpy.dot(r3, n)
-    r4_d = numpy.dot(r4, n)
-    r5_d = numpy.dot(r5, n)
+    r1_d = np.dot(r1, n)
+    r2_d = np.dot(r2, n)
+    r3_d = np.dot(r3, n)
+    r4_d = np.dot(r4, n)
+    r5_d = np.dot(r5, n)
 
     D = ((r1_d * sin(4 * pi * 0.0 / 5.0)) + (r2_d * sin(4 * pi * 1.0 / 5.0)) +
          (r3_d * sin(4 * pi * 2.0 / 5.0)) + (r4_d * sin(4 * pi * 3.0 / 5.0)) + (r5_d * sin(4 * pi * 4.0 / 5.0))) \
@@ -605,7 +605,7 @@ def pseudo_dihe_baseflip(universe, bp1, bp2, i, seg1="SYSTEM", seg2="SYSTEM", se
     bf3 = universe.select_atoms(" ( segid %s and resid %s and nucleicsugar ) " % (seg3, i))
     x = [bf1.center_of_mass(), bf2.center_of_mass(), bf3.center_of_mass(), bf4.center_of_mass()]
     pseudo = mdamath.dihedral(x[0] - x[1], x[1] - x[2], x[2] - x[3])
-    pseudo = numpy.rad2deg(pseudo)
+    pseudo = np.rad2deg(pseudo)
     if pseudo < 0:
         pseudo = pseudo + 360
     return pseudo

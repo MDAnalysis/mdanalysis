@@ -6,7 +6,7 @@ Requires MDAnalysis http://www.mdanalysis.org
 
 """
 
-import numpy
+import numpy as np
 import MDAnalysis as mda
 from MDAnalysis.tests.datafiles import PSF, DCD, PDB_small
 import pyqcprot as qcp
@@ -45,7 +45,7 @@ ref_coordinates = ref_atoms.coordinates() - ref_com
 # allocate the array for selection atom coords
 traj_coordinates = traj_atoms.coordinates().copy()
 
-# R: rotation matrix that aligns r-r_com, x~-x~com   
+# R: rotation matrix that aligns r-r_com, x~-x~com
 #    (x~: selected coordinates, x: all coordinates)
 # Final transformed traj coordinates: x' = (x-x~_com)*R + ref_com
 for k,ts in enumerate(frames):
@@ -57,11 +57,11 @@ for k,ts in enumerate(frames):
     # Need to transpose coordinates such that the coordinate array is
     # 3xN instead of Nx3. Also qcp requires that the dtype be float64
     a = ref_coordinates.T.astype('float64')
-    b = traj_coordinates.T.astype('float64')    
+    b = traj_coordinates.T.astype('float64')
     rmsd[k] = qcp.CalcRMSDRotationalMatrix(a,b,natoms,R,None)
-    
+
     R = numpy.matrix(R.reshape(3,3))
-    
+
     # Transform each atom in the trajectory (use inplace ops to avoid copying arrays)
     ts._pos   -= x_com
     ts._pos[:] = ts._pos * R # R acts to the left & is broadcasted N times.

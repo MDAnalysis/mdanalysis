@@ -139,8 +139,7 @@ Examples
 
 
 """
-import numpy
-from numpy import exp
+import numpy as np
 import warnings
 from itertools import izip
 
@@ -224,7 +223,7 @@ class HydrogenBondAutoCorrel(object):
             raise ValueError(
                 "bond_type must be either 'continuous' or 'intermittent'")
 
-        self.a_crit = numpy.deg2rad(angle_crit)
+        self.a_crit = np.deg2rad(angle_crit)
         self.d_crit = dist_crit
         self.pbc = pbc
         self.sample_time = sample_time
@@ -261,9 +260,9 @@ class HydrogenBondAutoCorrel(object):
                           " frames in trajectory ({})"
                           .format(self.nruns, n_frames), RuntimeWarning)
 
-        self._starts = numpy.arange(0, n_frames, n_frames / numruns, dtype=int)
+        self._starts = np.arange(0, n_frames, n_frames / numruns, dtype=int)
         # limit stop points using clip
-        self._stops = numpy.clip(self._starts + req_frames, 0, n_frames)
+        self._stops = np.clip(self._starts + req_frames, 0, n_frames)
 
         self._skip = req_frames / self.nsamples
         if self._skip == 0:  # If nsamples > req_frames
@@ -283,12 +282,12 @@ class HydrogenBondAutoCorrel(object):
         if not self.solution['results'] is None and not force:
             return
 
-        master_results = numpy.zeros_like(numpy.arange(self._starts[0],
+        master_results = np.zeros_like(np.arange(self._starts[0],
                                                        self._stops[0],
                                                        self._skip),
-                                          dtype=numpy.float32)
+                                          dtype=np.float32)
         # for normalising later
-        counter = numpy.zeros_like(master_results, dtype=numpy.float32)
+        counter = np.zeros_like(master_results, dtype=np.float32)
 
         pm = ProgressMeter(self.nruns, interval=1,
                            format="Performing run %(step)5d/%(numsteps)d"
@@ -297,7 +296,7 @@ class HydrogenBondAutoCorrel(object):
         for i, (start, stop) in enumerate(izip(self._starts, self._stops)):
             pm.echo(i + 1)
 
-            # needed else trj seek thinks a numpy.int64 isn't an int?
+            # needed else trj seek thinks a np.int64 isn't an int?
             results = self._single_run(int(start), int(stop))
 
             nresults = len(results)
@@ -310,9 +309,9 @@ class HydrogenBondAutoCorrel(object):
 
         master_results /= counter
 
-        self.solution['time'] = numpy.arange(
+        self.solution['time'] = np.arange(
             len(master_results),
-            dtype=numpy.float32) * self.u.trajectory.dt * self._skip
+            dtype=np.float32) * self.u.trajectory.dt * self._skip
         self.solution['results'] = master_results
 
     def _single_run(self, start, stop):
@@ -329,22 +328,22 @@ class HydrogenBondAutoCorrel(object):
             d[self.exclusions] = self.d_crit + 1.0
 
         # find which partners satisfy distance criteria
-        hidx, aidx = numpy.where(d < self.d_crit)
+        hidx, aidx = np.where(d < self.d_crit)
 
         a = calc_angles(self.d.positions[hidx], self.h.positions[hidx],
                         self.a.positions[aidx], box=box)
         # from amongst those, who also satisfiess angle crit
-        idx2 = numpy.where(a > self.a_crit)
+        idx2 = np.where(a > self.a_crit)
         hidx = hidx[idx2]
         aidx = aidx[idx2]
 
         nbonds = len(hidx)  # number of hbonds at t=0
-        results = numpy.zeros_like(numpy.arange(start, stop, self._skip),
-                                   dtype=numpy.float32)
+        results = np.zeros_like(np.arange(start, stop, self._skip),
+                                   dtype=np.float32)
 
         if self.time_cut:
             # counter for time criteria
-            count = numpy.zeros(nbonds, dtype=numpy.float64)
+            count = np.zeros(nbonds, dtype=np.float64)
 
         for i, ts in enumerate(self.u.trajectory[start:stop:self._skip]):
             box = self.u.dimensions if self.pbc else None
@@ -359,8 +358,8 @@ class HydrogenBondAutoCorrel(object):
 
             if self.bond_type is 'continuous':
                 # Remove losers for continuous definition
-                hidx = hidx[numpy.where(winners)]
-                aidx = aidx[numpy.where(winners)]
+                hidx = hidx[np.where(winners)]
+                aidx = aidx[np.where(winners)]
             elif self.bond_type is 'intermittent':
                 if self.time_cut:
                     # Add to counter of where losers are
@@ -384,16 +383,16 @@ class HydrogenBondAutoCorrel(object):
 
     def save_results(self, filename='hbond_autocorrel'):
         """
-        Saves the results to a numpy zipped array (.npz, see numpy.savez)
+        Saves the results to a numpy zipped array (.npz, see np.savez)
 
-        This can be loaded using numpy.load(filename)
+        This can be loaded using np.load(filename)
 
         :Keywords:
           *filename*
             The desired filename [hbond_autocorrel]
         """
         if not self.solution['results'] is None:
-            numpy.savez(filename, time=self.solution['time'],
+            np.savez(filename, time=self.solution['time'],
                         results=self.solution['results'])
         else:
             raise ValueError(
@@ -436,8 +435,8 @@ class HydrogenBondAutoCorrel(object):
 
         # Prevents an odd bug with leastsq where it expects
         # double precision data sometimes...
-        time = self.solution['time'].astype(numpy.float64)
-        results = self.solution['results'].astype(numpy.float64)
+        time = self.solution['time'].astype(np.float64)
+        results = self.solution['results'].astype(np.float64)
 
         def within_bounds(p):
             """Returns True/False if boundary conditions are met or not.
@@ -472,12 +471,12 @@ class HydrogenBondAutoCorrel(object):
         def double(x, A1, tau1, tau2):
             """ Sum of two exponential functions """
             A2 = 1 - A1
-            return A1 * exp(-x / tau1) + A2 * exp(-x / tau2)
+            return A1 * np.exp(-x / tau1) + A2 * np.exp(-x / tau2)
 
         def triple(x, A1, A2, tau1, tau2, tau3):
             """ Sum of three exponential functions """
             A3 = 1 - (A1 + A2)
-            return A1 * exp(-x / tau1) + A2 * exp(-x / tau2) + A3 * exp(-x / tau3)
+            return A1 * np.exp(-x / tau1) + A2 * np.exp(-x / tau2) + A3 * np.exp(-x / tau3)
 
         if self.bond_type is 'continuous':
             self._my_solve = double

@@ -13,10 +13,10 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-import numpy
+import numpy as np
 import numpy.random
 from numpy.testing import *
-from numpy import pi, sin, cos
+
 
 from MDAnalysisTests.datafiles import PSF, Make_Whole
 
@@ -100,7 +100,7 @@ class TestIterable(TestCase):
         assert_equal(util.iterable(xrange(3)), True)
 
     def test_arrays(self):
-        assert_equal(util.iterable(numpy.array([1, 2, 3])), True)
+        assert_equal(util.iterable(np.array([1, 2, 3])), True)
 
     def test_scalars(self):
         assert_equal(util.iterable(123), False)
@@ -150,48 +150,48 @@ class TestFilename(TestCase):
 
 class TestGeometryFunctions(TestCase):
     def setUp(self):
-        self.e1 = numpy.array([1., 0, 0])
-        self.e2 = numpy.array([0, 1., 0])
-        self.e3 = numpy.array([0, 0, 1.])
-        self.a = numpy.array([cos(pi / 3), sin(pi / 3), 0])
-        self.null = numpy.zeros(3)
+        self.e1 = np.array([1., 0, 0])
+        self.e2 = np.array([0, 1., 0])
+        self.e3 = np.array([0, 0, 1.])
+        self.a = np.array([np.cos(np.pi / 3), np.sin(np.pi / 3), 0])
+        self.null = np.zeros(3)
 
     def testAngleUnitvectors(self):
-        assert_equal(mdamath.angle(self.e1, self.e2), pi / 2)
-        assert_equal(mdamath.angle(self.e1, self.a), pi / 3)
+        assert_equal(mdamath.angle(self.e1, self.e2), np.pi / 2)
+        assert_equal(mdamath.angle(self.e1, self.a), np.pi / 3)
 
     def testAngleVectors(self):
-        assert_equal(mdamath.angle(2 * self.e1, self.e2), pi / 2)
-        assert_equal(mdamath.angle(-2 * self.e1, self.e2), pi - pi / 2)
-        assert_equal(mdamath.angle(23.3 * self.e1, self.a), pi / 3)
+        assert_equal(mdamath.angle(2 * self.e1, self.e2), np.pi / 2)
+        assert_equal(mdamath.angle(-2 * self.e1, self.e2), np.pi - np.pi / 2)
+        assert_equal(mdamath.angle(23.3 * self.e1, self.a), np.pi / 3)
 
     def testAngleNullVector(self):
-        assert_equal(mdamath.angle(self.e1, self.null), numpy.nan)
+        assert_equal(mdamath.angle(self.e1, self.null), np.nan)
 
     def testAngleColinear(self):
         assert_equal(mdamath.angle(self.a, self.a), 0.0)
 
     def testAnglePi(self):
-        assert_almost_equal(mdamath.angle(-2.3456e7 * self.e1, 3.4567e-6 * self.e1), pi)
+        assert_almost_equal(mdamath.angle(-2.3456e7 * self.e1, 3.4567e-6 * self.e1), np.pi)
         assert_almost_equal(mdamath.angle(2.3456e7 * self.e1, 3.4567e-6 * self.e1), 0.0)
 
     def testAngleRandom(self):
-        for x in numpy.random.uniform(0, pi, 20):
-            r = numpy.random.uniform(0, 1000)
-            v = r * numpy.array([cos(x), sin(x), 0])
+        for x in np.random.uniform(0, np.pi, 20):
+            r = np.random.uniform(0, 1000)
+            v = r * np.array([np.cos(x), np.sin(x), 0])
             assert_almost_equal(mdamath.angle(self.e1, v), x, 6)
 
     def testNorm(self):
         assert_equal(mdamath.norm(self.e3), 1)
-        assert_equal(mdamath.norm(self.a), numpy.linalg.norm(self.a))
+        assert_equal(mdamath.norm(self.a), np.linalg.norm(self.a))
 
     def testNormNullVector(self):
         assert_equal(mdamath.norm(self.null), 0.0)
 
     def testNormRandom(self):
-        for x in numpy.random.uniform(0, pi, 20):
-            r = numpy.random.uniform(0, 1000)
-            v = r * numpy.array([cos(x), sin(x), 0])
+        for x in np.random.uniform(0, np.pi, 20):
+            r = np.random.uniform(0, 1000)
+            v = r * np.array([np.cos(x), np.sin(x), 0])
             assert_almost_equal(mdamath.norm(v), r, 6)
 
     def testNormal(self):
@@ -209,7 +209,7 @@ class TestGeometryFunctions(TestCase):
         ab = self.e1
         bc = ab + self.e2
         cd = bc + self.e3
-        assert_almost_equal(mdamath.dihedral(ab, bc, cd), -pi / 2)
+        assert_almost_equal(mdamath.dihedral(ab, bc, cd), -np.pi / 2)
 
 class TestMakeWhole(object):
     """Set up a simple system:
@@ -292,13 +292,13 @@ class TestMakeWhole(object):
 
         assert_array_almost_equal(self.u.atoms[:4].positions, refpos)
         assert_array_almost_equal(self.u.atoms[4].position,
-                                  numpy.array([110.0, 50.0, 0.0]))
+                                  np.array([110.0, 50.0, 0.0]))
         assert_array_almost_equal(self.u.atoms[5].position,
-                                  numpy.array([110.0, 60.0, 0.0]))
+                                  np.array([110.0, 60.0, 0.0]))
         assert_array_almost_equal(self.u.atoms[6].position,
-                                  numpy.array([110.0, 40.0, 0.0]))
+                                  np.array([110.0, 40.0, 0.0]))
         assert_array_almost_equal(self.u.atoms[7].position,
-                                  numpy.array([120.0, 50.0, 0.0]))
+                                  np.array([120.0, 50.0, 0.0]))
 
     def test_solve_2(self):
         # use but specify the center atom
@@ -310,13 +310,13 @@ class TestMakeWhole(object):
 
         assert_array_almost_equal(self.u.atoms[4:8].positions, refpos)
         assert_array_almost_equal(self.u.atoms[0].position,
-                                  numpy.array([-20.0, 50.0, 0.0]))
+                                  np.array([-20.0, 50.0, 0.0]))
         assert_array_almost_equal(self.u.atoms[1].position,
-                                  numpy.array([-10.0, 50.0, 0.0]))
+                                  np.array([-10.0, 50.0, 0.0]))
         assert_array_almost_equal(self.u.atoms[2].position,
-                                  numpy.array([-10.0, 60.0, 0.0]))
+                                  np.array([-10.0, 60.0, 0.0]))
         assert_array_almost_equal(self.u.atoms[3].position,
-                                  numpy.array([-10.0, 40.0, 0.0]))
+                                  np.array([-10.0, 40.0, 0.0]))
 
     def test_solve_3(self):
         # put in a chunk that doesn't need any work
@@ -340,11 +340,11 @@ class TestMakeWhole(object):
 
         assert_array_almost_equal(self.u.atoms[7].position, refpos)
         assert_array_almost_equal(self.u.atoms[4].position,
-                                  numpy.array([110.0, 50.0, 0.0]))
+                                  np.array([110.0, 50.0, 0.0]))
         assert_array_almost_equal(self.u.atoms[5].position,
-                                  numpy.array([110.0, 60.0, 0.0]))
+                                  np.array([110.0, 60.0, 0.0]))
         assert_array_almost_equal(self.u.atoms[6].position,
-                                  numpy.array([110.0, 40.0, 0.0]))
+                                  np.array([110.0, 40.0, 0.0]))
 
 
 class Class_with_Caches(object):
