@@ -31,6 +31,7 @@ Note that the files are actually located in a separate package,
 
 __all__ = [
     "PSF", "DCD", "CRD",  # CHARMM (AdK example, DIMS trajectory from JMB 2009 paper)
+    "DCD2", # CHARMM (DIMS(1) AdK trajectory from PLOS Comput Biol 2015 methods comparison)
     "PSF_notop", "PSF_BAD",  # Same as PSF but no bonds etc, malformed version of previous
     "DCD_empty",
     "PSF_TRICLINIC", "DCD_TRICLINIC",  # CHARMM c36 new unitcell, NPT 125 TIP3P (box vectors, see Issue 187 for details)
@@ -92,6 +93,7 @@ PSF = resource_filename(__name__, 'data/adk.psf')
 PSF_notop = resource_filename(__name__, 'data/adk_notop.psf')
 PSF_BAD = resource_filename(__name__, 'data/adk_notop_BAD.psf')
 DCD = resource_filename(__name__, 'data/adk_dims.dcd')
+DCD2 = resource_filename(__name__, 'data/adk_dims2.dcd')
 DCD_empty = resource_filename(__name__, 'data/empty.dcd')
 CRD = resource_filename(__name__, 'data/adk_open.crd')
 PSF_TRICLINIC = resource_filename(__name__, 'data/tip125_tric_C36.psf')
