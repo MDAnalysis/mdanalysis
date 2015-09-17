@@ -1720,6 +1720,14 @@ class TestDCDReader(_TestDCD):
         frames = [ts.frame for ts in self.dcd[5:17:3]]
         assert_equal(frames, [5, 8, 11, 14], "slicing dcd [5:17:3]")
 
+    def test_list_trajectory(self):
+        frames = [ts.frame for ts in self.dcd[[0, 3, 4, 5]]]
+        assert_equal(frames, [0, 3, 4, 5])
+
+    def test_array_trajectory(self):
+        frames = [ts.frame for ts in self.dcd[np.array([0, 3, 4, 5])]]
+        assert_equal(frames, [0, 3, 4, 5])
+
     def test_reverse_dcd(self):
         frames = [ts.frame for ts in self.dcd[20:5:-1]]
         assert_equal(frames, range(20, 5, -1), "reversing dcd [20:5:-1]")
