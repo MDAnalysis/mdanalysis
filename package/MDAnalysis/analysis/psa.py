@@ -1574,8 +1574,8 @@ class PSA(object):
         dist_matrix_clus = dist_matrix[rowidx,:]
         dist_matrix_clus = dist_matrix_clus[:,colidx]
 
-        aspect_ratio = 1.25
         clf()
+        aspect_ratio = 1.25
         fig = figure(figsize=(figsize*aspect_ratio, figsize))
         ax_hmap = fig.add_subplot(111)
         ax_hmap = sns.heatmap(dist_matrix_clus,                                 \
@@ -1616,8 +1616,14 @@ class PSA(object):
              string, save figure to *filename* [``None``]
           *idx*
              integer, index of path (pair) comparison to plot [``0``]
+          *labels*
+             (string, string), pair of names to label nearest neighbor distance
+             curves [``('Path 1', 'Path 2')``]
           *figsize*
              float, set the vertical size of plot in inches [``6.5``]
+          *multiplot*
+             boolean, set to ``True`` to enable plotting multiple nearest
+             neighbor distances on the same figure [``False``]
           *aspect_ratio*
              float, set the ratio of width to height of the plot [``1.75``]
           *labelsize*
@@ -1643,7 +1649,8 @@ class PSA(object):
 
         if not multiplot:
             clf()
-        fig = figure(1, figsize=(figsize, figsize/aspect_ratio))
+        aspect_ratio = 1.5
+        fig = figure(1, figsize=(figsize*aspect_ratio, figsize))
         ax = fig.add_subplot(111)
 
         nn_dist_P, nn_dist_Q = self.NN[idx]['distances']
