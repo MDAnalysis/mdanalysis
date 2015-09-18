@@ -1,123 +1,157 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
-#
-# MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
-#
-# Released under the GNU Public Licence, v2 or any higher version
-#
-# Please cite your use of MDAnalysis in published work:
-#
-# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
-# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
-# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
-#
+import errno
 
-"""
-Gromacs TRR file IO --- :mod:`MDAnalysis.coordinates.TRR`
-=========================================================
-
-The Gromacs `TRR trajectory format`_ is a lossless format like
-e.g. the DCD format (see :mod:`~MDAnalysis.coordinates.DCD`) and
-unlike the :mod:`~MDAnalysis.coordinates.XTC` format, which stores
-reduced precision coordinates. Therefore, if one wants to convert
-*to* Gromacs trajectories without loss of precision then one should
-use the TRR format.
-
-The TRR format can store *velocities* and *forces* in addition to
-coordinates. It is also used by other Gromacs tools to store and
-process other data such as modes from a principal component analysis.
-
-The TRR I/O interface uses :mod:`~MDAnalysis.coordinates.xdrfile.libxdrfile2`
-to implement random access to frames. This works by initially building an
-internal index of all frames and then using this index for direct
-seeks. Building the index is triggered by
-:func:`~MDAnalysis.coordinates.xdrfile.libxdrfile2.read_trr_n_frames`, which
-typically happens when one accesses the :attr:`TRRReader.n_frames` attribute
-for the first time. Building the index may take many minutes for large
-trajectories but afterwards access is faster than with native Gromacs tools.
+from . import base
+from ..lib.formats.trr import TRRFile
+from ..lib.mdamath import triclinic_box, triclinic_vectors
 
 
-.. _TRR trajectory format:
-   http://www.gromacs.org/Documentation/File_Formats/.trr_File
+class TRRReader(base.Reader):
+    format = 'TRR'
+    units = {'time': 'ps', 'length': 'nm', 'velocity': 'nm/ps',
+             'force': 'kJ/(mol*nm)'}
 
-.. versionchanged:: 0.8.0
-   The TRR I/O interface now uses
-   :mod:`~MDAnalysis.coordinates.xdrfile.libxdrfile2`, which has seeking and
-   indexing capabilities. Note that unlike
-   :mod:`~MDAnalysis.coordinates.xdrfile.libxdrfile` before it,
-   :mod:`~MDAnalysis.coordinates.xdrfile.libxdrfile2` is distributed under the
-   GNU GENERAL PUBLIC LICENSE, version 2 (or higher).
-   :class:`~MDAnalysis.coordinates.TRR.Timestep` now correctly deals
-   with presence/absence of coordinate/velocity/force information on a
-   per-frame basis.
+    def __init__(self, filename, convert_units=True, sub=None, **kwargs):
+        super(TRRReader, self).__init__(filename, convert_units=convert_units,
+                                        **kwargs)
+        self._trr = TRRFile(filename)
+
+        self.n_frames = len(self._trr)
+        self._sub = sub
+        trr_frame = self._trr.read()
+        try:
+            trr_frame_2 = self._trr.read()
+            time_2 = trr_frame_2.time
+        except:
+            time_2 = trr_frame.time
+
+        if sub is not None:
+            self.n_atoms = len(sub)
+        else:
+            self.n_atoms = self._trr.n_atoms
+        self._trr.seek(0)
+
+        self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
+        self._frame = 0
+        self.ts = self.frame_to_ts(trr_frame, self.ts)
+
+        self.ts.dt = time_2 - trr_frame.time
+        self.ts.dimensions = triclinic_box(*trr_frame.box)
+
+        if self.convert_units:
+            self.convert_pos_from_native(self.ts.dimensions[:3])
+
+        self.rewind()
+
+    def frame_to_ts(self, frame, ts):
+        ts.has_positions = frame.hasx
+        ts.has_velocities = frame.hasv
+        ts.has_forces = frame.hasf
+
+        if ts.has_positions:
+            if self._sub is not None:
+                ts.positions = frame.x[self._sub]
+            else:
+                ts.positios = frame.x
+            if self.convert_units:
+                self.convert_pos_from_native(ts.positions)
+
+        if ts.has_velocities:
+            if self._sub is not None:
+                ts.velocities = frame.v[self._sub]
+            else:
+                ts.velocities = frame.v
+            if self.convert_units:
+                self.convert_velocities_from_native(ts.velocities)
+
+        if ts.has_forces:
+            if self._sub is not None:
+                ts.forces = frame.f[self._sub]
+            else:
+                ts.forces = frame.f
+            if self.convert_units:
+                self.convert_forces_from_native(ts.forces)
+
+        ts.time = frame.time
+        ts.frame = self._frame
+        ts.data['step'] = frame.step
+
+        return ts
+
+    def close(self):
+        self._trr.close()
+
+    def Writer(self, filename, n_atoms=None, **kwargs):
+        if n_atoms is None:
+            n_atoms = self.n_atoms
+        return TRRWriter(filename, n_atoms=n_atoms, **kwargs)
+
+    def rewind(self):
+        self._read_frame(0)
+
+    def _reopen(self):
+        self.ts.frame = 0
+        self._frame = -1
+        self._trr.close()
+        self._trr.open(self._trr.fname, 'r')
+
+    def _read_frame(self, i):
+        self._trr.seek(i)
+        self._frame = i - 1
+        return self._read_next_timestep()
+
+    def _read_next_timestep(self, ts=None):
+        if self._frame == self.n_frames - 1:
+            raise IOError(errno.EIO, 'trying to go over trajectory limit')
+        if ts is None:
+            ts = self.ts
+        trr_frame = self._trr.read()
+        self._frame += 1
+        ts = self.frame_to_ts(trr_frame, ts)
+
+        return ts
 
 
-Tips and Tricks
----------------
+class TRRWriter(base.Writer):
+    format = 'TRR'
+    units = {'time': 'ps', 'length': 'nm', 'velocity': 'nm/ps',
+             'force': 'kJ/(mol*nm)'}
 
-Filling a TRR with PCA modes
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def __init__(self, filename, n_atoms, convert_units=True, **kwargs):
+        self._convert_units = convert_units
+        self._trr = TRRFile(filename, 'w')
+        self.n_atoms = n_atoms
 
-The following `recipe by Ramon Crehuet`_ shows how to convert modes
-stored in a NumPy-like array (e.g. from a PCA analysis with MMTK_) to
-a TRR usable by Gromacs. The idea is to manually fill a
-:class:`~MDAnalysis.coordinates.xdrfile.TRR.Timestep` with the desired
-values and then write it to a file with the appropriate
-:class:`~MDAnalysis.coordinates.xdrfile.TRR.TRRWriter`. In order to
-respect the Gromacs format for modes in a TRR file, one must write the
-average coordinates in the first frame of the TRR and the modes into
-subsequent ones. The mode number is stored in the
-:attr:`~MDAnalysis.coordinates.xdrfile.TRR.Timestep.step` attribute
-and the mode coordinates are filling the
-:attr:`~MDAnalysis.coordinates.xdrfile.TRR.Timestep.positions` attribute of
-:class:`~MDAnalysis.coordinates.xdrfile.TRR.Timestep`::
+    def close(self):
+        self._trr.close()
 
-   # 'modes' is a mode object with M PCs, similar to a MxNx3 array
-   # 'xav' the average coordinates, a Nx3 array for N atoms
+    def __del__(self):
+        self.close()
 
-   N = len(xav)   # number of atoms, i.e. number of coordinates
+    def write_next_timestep(self, ts):
+        xyz = None
+        if ts.has_positions:
+            xyz = ts.positions.copy()
+            if self._convert_units:
+                self.convert_pos_to_native(xyz)
 
-   W = Writer('pca.trr', n_atoms=N)            # TRR writer
-   ts = MDAnalysis.coordinates.TRR.Timestep(N)  # TRR time step
-                                                # N of atoms is passed.
-   for frame,mode in enumerate(modes[4:16]):
-       ts.lmbda = -1
+        velo = None
+        if ts.has_velocities:
+            velo = ts.velocities.copy()
+            if self._convert_units:
+                self.convert_velocities_to_native(velo)
 
-       ts.frame = frame         # manually change the frame number
-       ts._frame = frame - 1
+        forces = None
+        if ts.has_forces:
+            forces = ts.forces.copy()
+            if self._convert_units:
+                self.convert_forces_to_native(forces)
 
-       if frame<=1:
-          ts.positions = xav
-       else:
-          ts.positions = mode.scaledToNorm(1.).array*10   # nm to angstroms
-       if frame <= 1:
-          ts.time = frame-1
-       else:
-          ts.time = mode.frequency
-       W.write(ts)             # converts angstrom to nm for gmx
+        time = ts.time
+        step = ts.frame
 
-    W.close()
+        if self._convert_units:
+            dimensions = self.convert_dimensions_to_unitcell(ts, inplace=False)
 
-.. _MMTK: http://dirac.cnrs-orleans.fr/Manuals/MMTK/index.html
+        box = triclinic_vectors(dimensions)
 
-.. _`recipe by Ramon Crehuet`: https://github.com/MDAnalysis/mdanalysis/issues/79
-
-Module reference
-----------------
-
-.. autoclass:: Timestep
-   :members:
-   :inherited-members:
-
-.. autoclass:: TRRReader
-   :members:
-   :inherited-members:
-
-.. autoclass:: TRRWriter
-   :members:
-   :inherited-members:
-"""
-
-from .xdrfile.TRR import TRRReader, TRRWriter, Timestep
+        self._trr.write(xyz, velo, forces, box, step, time, 1, self.n_atoms)
