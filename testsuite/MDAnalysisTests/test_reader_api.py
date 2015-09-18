@@ -115,7 +115,7 @@ class _Multi(object):
     n_frames = 10
     n_atoms = 10
     readerclass = AmazingMultiFrameReader
-    reference = np.array([i for i in range(10)])
+    reference = np.arange(10)
    
 
 class TestMultiFrameReader(_Multi, _TestReader):
@@ -182,6 +182,22 @@ class TestMultiFrameReader(_Multi, _TestReader):
 
     def test_getitem_array_ints(self):
         sl = np.array([0, 1, 4, 5])
+        self._check_slice(sl)
+
+    def test_getitem_backwards_ints(self):
+        sl = [5, 1, 6, 2, 7, 3, 8]
+        self._check_slice(sl)
+
+    def test_getitem_backwards_ints_array(self):
+        sl = np.array([5, 1, 6, 2, 7, 3, 8])
+        self._check_slice(sl)
+
+    def test_getitem_repeated_indices(self):
+        sl = [0, 1, 1, 1, 0, 0, 2, 3, 4]
+        self._check_slice(sl)
+
+    def test_getitem_repeated_indices_array(self):
+        sl = np.array([0, 1, 1, 1, 0, 0, 2, 3, 4])
         self._check_slice(sl)
 
     def test_list_TE(self):
