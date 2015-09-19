@@ -26,11 +26,13 @@ Enhancements
   * `Atom` and `AtomGroup` now expose occupancy value as `occupancy` and
     `occupancies` properties (Issue #396)
   * XYZReader now supports frame indexing (Issue #428)
-  * `PSA` now includes Hausdorff pairs analysis and associated nearest neighbor
+  * `PSA` changed to `PSAnalysis` to reduce namespace clutter
+  * `PSAnalysis` now includes Hausdorff pairs analysis and associated nearest
+    neighbor
     plotting method
   * New class `PSAPair` added to MDAnalysis.analysis.psa for handling
     Hausdorff pairs analysis
-  * `PSA` can now generate annotated heat maps
+  * `PSAnalysis` can now generate annotated heat maps
   * Added three new distance functions to MDAnalysis.analysis.psa
   * Additional getters added to `Path` and `PSA`
   * MSD matrix function now globally available in MDAnalysis.analysis.psa
