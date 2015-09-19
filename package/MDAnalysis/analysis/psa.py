@@ -160,7 +160,7 @@ Classes, methods, and functions
       dict, contains the frame indices of the Hausdorff pair for each path in
       *this* :class:`PSAPair` and the corresponding (Hausdorff) distance
 
-.. autoclass:: PSA
+.. autoclass:: PSAnalysis
    :members:
 
    .. attribute:: universes
@@ -175,7 +175,7 @@ Classes, methods, and functions
 
       string, selection for
       :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.select_atoms` to select frame
-      from :attr:`PSA.u_reference`
+      from :attr:`PSAnalysis.u_reference`
 
    .. attribute:: path_select
 
@@ -189,7 +189,8 @@ Classes, methods, and functions
 
    .. attribute:: filename
 
-      string, name of file to store calculated distance matrix (:attr:`PSA.D`)
+      string, name of file to store calculated distance matrix
+      (:attr:`PSAnalysis.D`)
 
    .. attribute:: paths
 
@@ -198,7 +199,8 @@ Classes, methods, and functions
 
    .. attribute:: D
 
-      string, name of file to store calculated distance matrix (:attr:`PSA.D`)
+      string, name of file to store calculated distance matrix
+      (:attr:`PSAnalysis.D`)
 
 
 .. Markup definitions
@@ -640,10 +642,10 @@ class Path(object):
     trajectory to a reference structure, (2) convert fitted time series to a
     :class:`numpy.ndarray` representation of :attr:`Path.path`.
 
-    The analysis is performed with :meth:`PSA.run` and stores the result
-    in the :class:`numpy.ndarray` distance matrix :attr:`PSA.D`. :meth:`PSA.run`
-    also generates a fitted trajectory and path from alignment of the original
-    trajectories to a reference structure.
+    The analysis is performed with :meth:`PSAnalysis.run` and stores the result
+    in the :class:`numpy.ndarray` distance matrix :attr:`PSAnalysis.D`.
+    :meth:`PSAnalysis.run` also generates a fitted trajectory and path from
+    alignment of the original trajectories to a reference structure.
 
     .. versionadded:: 0.9.1
     """
@@ -753,8 +755,8 @@ class Path(object):
              :attr:`Path.path`; if ``None`` then :attr:`Path.path_select`
              is used, else it is overridden by *select* [``None``]
           *flat*
-             represent :attr:`Path.path` as a 2D (|2D|) :class:`numpy.ndarray`; if
-             ``False`` then :attr:`Path.path` is a 3D (|3D|)
+             represent :attr:`Path.path` as a 2D (|2D|) :class:`numpy.ndarray`;
+             if ``False`` then :attr:`Path.path` is a 3D (|3D|)
              :class:`numpy.ndarray` [``False``]
 
         :Returns:
@@ -820,7 +822,7 @@ class Path(object):
              Reject match if the atomic masses for matched atoms differ by more
              than *tol_mass* [0.1]
           *flat*
-             represent :attr:`Path.path` with a 2D (|2D|) :class:`numpy.ndarray`;
+             represent :attr:`Path.path` with 2D (|2D|) :class:`numpy.ndarray`;
              if ``False`` then :attr:`Path.path` is a 3D (|3D|)
              :class:`numpy.ndarray` [``False``]
 
@@ -858,10 +860,11 @@ class PSAPair(object):
     :meth:`PSAPair.compute_nearest_neighbors` and stores the result
     in a dictionary (:attr:`nearest_neighbors`): each path has a
     :class:`numpy.ndarray` of the frames of its nearest neighbors, and a
-    :class:`numpy.ndarray` of its nearest neighbor distances :attr:`PSA.D`. For
-    example, *nearest_neighbors['frames']* is a pair of :class:`numpy.ndarray`,
-    the first being the frames of the nearest neighbors of the first path, *i*,
-    the second being those of the second path, *j*.
+    :class:`numpy.ndarray` of its nearest neighbor distances
+    :attr:`PSAnalysis.D`. For example, *nearest_neighbors['frames']* is a pair
+    of :class:`numpy.ndarray`, the first being the frames of the nearest
+    neighbors of the first path, *i*, the second being those of the second path,
+    *j*.
 
     The Hausdorff pair for the pair of paths is found by calling
     :meth:`find_hausdorff_pair` (locates the nearest neighbor pair having the
@@ -1078,13 +1081,13 @@ class PSAPair(object):
             raise NoDataError(err_str)
 
 
-class PSA(object):
+class PSAnalysis(object):
     """Perform Path Similarity Analysis (PSA) on a set of trajectories.
 
-    The analysis is performed with :meth:`PSA.run` and stores the result
-    in the :class:`numpy.ndarray` distance matrix :attr:`PSA.D`. :meth:`PSA.run`
-    also generates a fitted trajectory and path from alignment of the original
-    trajectories to a reference structure.
+    The analysis is performed with :meth:`PSAnalysis.run` and stores the result
+    in the :class:`numpy.ndarray` distance matrix :attr:`PSAnalysis.D`.
+    :meth:`PSAnalysis.run` also generates a fitted trajectory and path from
+    alignment of the original trajectories to a reference structure.
 
     .. versionadded:: 0.8
     """
@@ -1206,8 +1209,8 @@ class PSA(object):
 
         :Keywords:
           *align*
-             Align trajectories to atom selection :attr:`PSA.ref_select` of
-             :attr:`PSA.u_reference` [``False``]
+             Align trajectories to atom selection :attr:`PSAnalysis.ref_select`
+             of :attr:`PSAnalysis.u_reference` [``False``]
           *filename*
              strings representing base filename for fitted trajectories and
              paths [``None``]
@@ -1222,23 +1225,25 @@ class PSA(object):
           *ref_frame*
              frame index to select frame from *reference*
           *flat*
-             represent :attr:`Path.path` as a 2D (|2D|) :class:`numpy.ndarray`; if
-             ``False`` then :attr:`Path.path` is a 3D (|3D|)
+             represent :attr:`Path.path` as a 2D (|2D|) :class:`numpy.ndarray`;
+             if ``False`` then :attr:`Path.path` is a 3D (|3D|)
              :class:`numpy.ndarray` [``False``]
           *save*
              boolean; if ``True``, pickle list of names for fitted trajectories
              [``True``]
           *store*
              boolean; if ``True`` then writes each path (:class:`numpy.ndarray`)
-             in :attr:`PSA.paths` to compressed npz (numpy) files [``False``]
+             in :attr:`PSAnalysis.paths` to compressed npz (numpy) files
+             [``False``]
 
         The fitted trajectories are written to new files in the
-        "/trj_fit" subdirectory in :attr:`PSA.targetdir` named
+        "/trj_fit" subdirectory in :attr:`PSAnalysis.targetdir` named
         "filename(*trajectory*)XXX*infix*_psa", where "XXX" is a number between
         000 and 999; the extension of each file is the same as its original.
         Optionally, the trajectories can also be saved in numpy compressed npz
-        format in the "/paths" subdirectory in :attr:`PSA.targetdir` for
-        persistence and can be accessed as the attribute :attr:`PSA.paths`.
+        format in the "/paths" subdirectory in :attr:`PSAnalysis.targetdir` for
+        persistence and can be accessed as the attribute
+        :attr:`PSAnalysis.paths`.
         """
         align = kwargs.pop('align', False)
         filename = kwargs.pop('filename', 'fitted')
@@ -1281,20 +1286,20 @@ class PSA(object):
         the distance matrix.
 
         A number of parameters can be changed from the defaults. The
-        result is stored as the array :attr:`PSA.D`.
+        result is stored as the array :attr:`PSAnalysis.D`.
 
         :Keywords:
           *metric*
              selection string specifying the path metric to measure pairwise
-             distances among :attr:`PSA.paths` [``'hausdorff'``]
+             distances among :attr:`PSAnalysis.paths` [``'hausdorff'``]
           *start*, *stop*, *step*
              start and stop frame index with step size: analyze
              ``trajectory[start:stop:step]`` [``None``]
           *store*
-             boolean; if ``True`` then writes :attr:`PSA.D` to text and
+             boolean; if ``True`` then writes :attr:`PSAnalysis.D` to text and
              compressed npz (numpy) files [``True``]
           *filename*
-             string, filename to save :attr:`PSA.D`
+             string, filename to save :attr:`PSAnalysis.D`
         """
         metric = kwargs.pop('metric', 'hausdorff')
         start = kwargs.pop('start', None)
@@ -1322,7 +1327,7 @@ class PSA(object):
 
     def run_pairs_analysis(self, **kwargs):
         """Perform PSA Hausdorff (nearest neighbor) pairs analysis on all unique
-        pairs of paths in :attr:`PSA.paths`.
+        pairs of paths in :attr:`PSAnalysis.paths`.
 
         Partial results can be stored in separate lists, where each list is
         indexed according to distance vector convention (i.e., element *(i,j)*
@@ -1340,10 +1345,10 @@ class PSA(object):
              ``trajectory[start:stop:step]`` [``None``]
           *neighbors*
              boolean; if ``True``, then stores dictionary of nearest neighbor
-             frames/distances in :attr:`PSA.NN` [``False``]
+             frames/distances in :attr:`PSAnalysis.NN` [``False``]
           *hausdorff_pairs*
              boolean; if ``True``, then stores dictionary of Hausdorff pair
-             frames/distances in :attr:`PSA.HP` [``False``]
+             frames/distances in :attr:`PSAnalysis.HP` [``False``]
         """
         start = kwargs.pop('start', None)
         stop = kwargs.pop('stop', None)
@@ -1371,8 +1376,8 @@ class PSA(object):
 
 
     def save_result(self, filename=None):
-        """Save distance matrix :attr:`PSA.D` to a numpy compressed npz file and
-        text file.
+        """Save distance matrix :attr:`PSAnalysis.D` to a numpy compressed npz
+        file and text file.
 
         :Arguments:
           *filename*
@@ -1380,7 +1385,7 @@ class PSA(object):
 
         The data are saved with :func:`numpy.savez_compressed` and
         :func:`numpy.savetxt` in the directory specified by
-        :attr:`PSA.targetdir`.
+        :attr:`PSAnalysis.targetdir`.
         """
         filename = filename or 'psa_distances'
         head = self.targetdir + self.datadirs['distance_matrices']
@@ -1395,14 +1400,14 @@ class PSA(object):
 
 
     def save_paths(self, filename=None):
-        """Save fitted :attr:`PSA.paths` to numpy compressed npz files.
+        """Save fitted :attr:`PSAnalysis.paths` to numpy compressed npz files.
 
         :Arguments:
           *filename*
              string, specifies filename [``None``]
 
         The data are saved with :func:`numpy.savez_compressed` in the directory
-        specified by :attr:`PSA.targetdir`.
+        specified by :attr:`PSAnalysis.targetdir`.
         """
         filename = filename or 'path_psa'
         head = self.targetdir + self.datadirs['paths']
@@ -1423,7 +1428,7 @@ class PSA(object):
 
     def load(self):
         """Load fitted paths specified by 'psa_path-names.pkl' in
-        :attr:`PSA.targetdir`.
+        :attr:`PSAnalysis.targetdir`.
         """
         if not os.path.exists(self._paths_pkl):
             raise NoDataError("Fitted trajectories cannot be loaded; save file" +
@@ -1439,7 +1444,7 @@ class PSA(object):
              distance_sort=False, figsize=4.5, labelsize=12):
         """Plot a clustered distance matrix using method *linkage* along with
         the corresponding dendrogram. Rows (and columns) are identified using
-        the list of strings specified by :attr:`PSA.labels`.
+        the list of strings specified by :attr:`PSAnalysis.labels`.
 
         :Arguments:
           *filename*
@@ -1463,7 +1468,7 @@ class PSA(object):
         from matplotlib.pyplot import figure, colorbar, cm, savefig, clf
 
         if self.D is None:
-            err_str = "No distance data; do 'PSA.run(store=True)' first."
+            err_str = "No distance data; do 'PSAnalysis.run(store=True)' first."
             raise ValueError(err_str)
         npaths = len(self.D)
         dist_matrix = self.D
@@ -1537,7 +1542,7 @@ class PSA(object):
                                figsize=8, annot_size=6.5):
         """Plot a clustered distance matrix using method *linkage* with
         annotated distances in the matrix. Rows (and columns) are identified
-        using the list of strings specified by :attr:`PSA.labels`.
+        using the list of strings specified by :attr:`PSAnalysis.labels`.
 
         :Arguments:
           *filename*
@@ -1580,7 +1585,7 @@ class PSA(object):
             )
 
         if self.D is None:
-            err_str = "No distance data; do 'PSA.run(store=True)' first."
+            err_str = "No distance data; do 'PSAnalysis.run(store=True)' first."
             raise ValueError(err_str)
         dist_matrix = self.D
 
@@ -1679,7 +1684,7 @@ class PSA(object):
         if self.NN is None:
             err_str =                                                           \
                     + "No nearest neighbor data; run "                          \
-                    + "'PSA.run_nearest_neighbors()' first."
+                    + "'PSAnalysis.run_nearest_neighbors()' first."
             raise ValueError(err_str)
 
         sns.set_style('whitegrid')
@@ -1783,13 +1788,14 @@ class PSA(object):
         """Return the number of atoms used to construct the :class:`Path`s in
         :class:`PSA`.
 
-        Must run :method:`PSA.generate_paths()` prior to calling this method.
+        Must run :method:`PSAnalysis.generate_paths()` prior to calling this
+        method.
 
         :Returns:
           int, the number of atoms in :class:`PSA`'s :class:`Path`s'
         """
         if self.natoms is None:
-            err_str = "No path data; do 'PSA.generate_paths()' first."
+            err_str = "No path data; do 'PSAnalysis.generate_paths()' first."
             raise ValueError(err_str)
         return self.natoms
 
@@ -1797,13 +1803,14 @@ class PSA(object):
     def get_num_paths(self):
         """Return the number of paths in :class:`PSA`.
 
-        Must run :method:`PSA.generate_paths()` prior to calling this method.
+        Must run :method:`PSAnalysis.generate_paths()` prior to calling this
+        method.
 
         :Returns:
           int, the number of paths in :class:`PSA`
         """
         if self.npaths is None:
-            err_str = "No path data; do 'PSA.generate_paths()' first."
+            err_str = "No path data; do 'PSAnalysis.generate_paths()' first."
             raise ValueError(err_str)
         return self.npaths
 
@@ -1811,14 +1818,15 @@ class PSA(object):
     def get_paths(self):
         """Return the paths in :class:`PSA`.
 
-        Must run :method:`PSA.generate_paths()` prior to calling this method.
+        Must run :method:`PSAnalysis.generate_paths()` prior to calling this
+        method.
 
         :Returns:
           list of :class:`numpy.ndarray` representations of paths in
           :class:`PSA`
         """
         if self.paths is None:
-            err_str = "No path data; do 'PSA.generate_paths()' first."
+            err_str = "No path data; do 'PSAnalysis.generate_paths()' first."
             raise ValueError(err_str)
         return self.paths
 
@@ -1826,7 +1834,8 @@ class PSA(object):
     def get_pairwise_distances(self, vectorform=False):
         """Return the distance matrix (or vector) of pairwise path distances.
 
-        Must run :method:`PSA.run(store=True)` prior to calling this method.
+        Must run :method:`PSAnalysis.run(store=True)` prior to calling this
+        method.
 
         :Arguments:
           *vectorform*
@@ -1837,7 +1846,7 @@ class PSA(object):
           vector)
         """
         if self.D is None:
-            err_str = "No distance data; do 'PSA.run(store=True)' first."
+            err_str = "No distance data; do 'PSAnalysis.run(store=True)' first."
             raise ValueError(err_str)
         if vectorform:
             from scipy.spatial.distance import squareform
@@ -1849,7 +1858,7 @@ class PSA(object):
     def get_psa_pairs(self):
         """Get the :class:`PSAPair`s for each pair of paths.
 
-        Must run :method:`PSA.run_pairs_analysis()` prior to calling this
+        Must run :method:`PSAnalysis.run_pairs_analysis()` prior to calling this
         method.
 
         :Returns:
@@ -1857,7 +1866,7 @@ class PSA(object):
         """
         if self.psa_pairs is None:
             err_str = "No nearest neighbors data; do"                           \
-                    + " 'PSA.run_pairs_analysis()' first."
+                    + " 'PSAnalysis.run_pairs_analysis()' first."
             raise ValueError(err_str)
         return self.psa_pairs
 
@@ -1866,15 +1875,16 @@ class PSA(object):
     def all_hausdorff_pairs(self):
         """Get the Hausdorff pair for each (unique) pairs of paths.
 
-        Must run :method:`PSA.run_pairs_analysis(hausdorff_pairs=True)` prior to
-        calling this method.
+        Must run :method:`PSAnalysis.run_pairs_analysis(hausdorff_pairs=True)`
+        prior to calling this method.
 
         :Returns:
           list of all Hausdorff pairs (in distance vector order)
         """
         if self.HP is None:
-            err_str = "No Hausdorff pairs data; do"                             \
-                    + " 'PSA.run_pairs_analysis(hausdorff_pairs=True)' first."
+            err_str = "No Hausdorff pairs data; do "                            \
+                    + "'PSAnalysis.run_pairs_analysis(hausdorff_pairs=True)' "  \
+                    + "first."
             raise ValueError(err_str)
         return self.HP
 
@@ -1882,14 +1892,14 @@ class PSA(object):
     def all_nearest_neighbors(self):
         """Get the nearest neighbors for each (unique) pair of paths.
 
-        Must run :method:`PSA.run_pairs_analysis(neighbors=True)` prior to
-        calling this method.
+        Must run :method:`PSAnalysis.run_pairs_analysis(neighbors=True)` prior
+        to calling this method.
 
         :Returns:
           list of all nearest neighbors (in distance vector order)
         """
         if self.NN is None:
             err_str = "No nearest neighbors data; do"                           \
-                    + " 'PSA.run_pairs_analysis(neighbors=True)' first."
+                    + " 'PSAnalysis.run_pairs_analysis(neighbors=True)' first."
             raise ValueError(err_str)
         return self.NN

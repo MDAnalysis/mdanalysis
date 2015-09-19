@@ -21,6 +21,7 @@ import MDAnalysis.analysis.hbonds
 import MDAnalysis.analysis.helanal
 import MDAnalysis.analysis.rms
 import MDAnalysis.analysis.waterdynamics
+import MDAnalysis.analysis.psa
 from MDAnalysis import SelectionError, SelectionWarning, FinishTimeException
 
 from numpy.testing import *
