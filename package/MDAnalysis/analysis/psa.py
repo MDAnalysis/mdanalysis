@@ -1558,7 +1558,26 @@ class PSA(object):
         keyword arguments are passed on to :func:`pylab.imshow`.
         """
         from matplotlib.pylab import figure, colorbar, cm, savefig, clf
-        import seaborn.apionly as sns
+
+        try:
+            import seaborn.apionly as sns
+        except ImportError:
+            raise ImportError(
+                """ERROR --- The seaborn package cannot be found!
+
+                The seaborn API could not be imported. Please install it first.
+                You can try installing with pip directly from the
+                internet:
+
+                  pip install seaborn
+
+                Alternatively, download the package from
+
+                  http://pypi.python.org/pypi/seaborn/
+
+                and install in the usual manner.
+                """
+            )
 
         if self.D is None:
             err_str = "No distance data; do 'PSA.run(store=True)' first."
@@ -1635,14 +1654,32 @@ class PSA(object):
         keyword arguments are passed on to :func:`pylab.imshow`.
         """
         from matplotlib.pyplot import figure, savefig, tight_layout, clf, show
-        import seaborn.apionly as sns
+        try:
+            import seaborn.apionly as sns
+        except ImportError:
+            raise ImportError(
+                """ERROR --- The seaborn package cannot be found!
+
+                The seaborn API could not be imported. Please install it first.
+                You can try installing with pip directly from the
+                internet:
+
+                  pip install seaborn
+
+                Alternatively, download the package from
+
+                  http://pypi.python.org/pypi/seaborn/
+
+                and install in the usual manner.
+                """
+            )
 
         colors = sns.xkcd_palette(["cherry", "windows blue"])
 
         if self.NN is None:
             err_str =                                                           \
-                    + "No nearest neighbor data; run"                           \
-                    + " 'PSA.run_nearest_neighbors()' first."
+                    + "No nearest neighbor data; run "                          \
+                    + "'PSA.run_nearest_neighbors()' first."
             raise ValueError(err_str)
 
         sns.set_style('whitegrid')
