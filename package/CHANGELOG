@@ -34,7 +34,7 @@ Enhancements
     Hausdorff pairs analysis
   * `PSAnalysis` can now generate annotated heat maps
   * Added three new distance functions to MDAnalysis.analysis.psa
-  * Additional getters added to `Path` and `PSA`
+  * Additional getters added to `Path` and `PSAnalysis`
   * MSD matrix function now globally available in MDAnalysis.analysis.psa
   * Function for obtaining coordinate axes from numpy trajectories now
     globally available in MDAnalysis.analysis.psa

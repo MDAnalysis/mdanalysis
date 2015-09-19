@@ -557,14 +557,14 @@ class TestWaterdynamics(TestCase):
         assert_equal(round(sp.timeseries[1],5), 1.0)
 
 
-class TestPSA(TestCase):
+class TestPSAnalysis(TestCase):
     def setUp(self):
         self.iu1 = np.triu_indices(3, k=1)
         self.universe1 = MDAnalysis.Universe(PSF, DCD)
         self.universe2 = MDAnalysis.Universe(PSF, DCD2)
         self.universe_rev = MDAnalysis.Universe(PSF, DCD)
         self.universes = [self.universe1, self.universe2, self.universe_rev]
-        self.psa = MDAnalysis.analysis.psa.PSA(self.universes,                  \
+        self.psa = MDAnalysis.analysis.psa.PSAnalysis(self.universes,           \
                                                path_select='name CA')
         self.psa.generate_paths(align=True)
         self.psa.paths[-1] = self.psa.paths[-1][::-1,:,:] # reverse third path
