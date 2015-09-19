@@ -913,7 +913,7 @@ class PSAPair(object):
         self.nearest_neighbors = {'frames' : None, 'distances' : None}
 
         # Set by self.getHausdorffPair
-        self.hausdorff_pair = {'frame' : (None, None), 'distance' : None}
+        self.hausdorff_pair = {'frames' : (None, None), 'distance' : None}
 
 
     def _dvec_idx(self, i, j):
@@ -1196,9 +1196,9 @@ class PSA(object):
         self.npaths = None
         self.paths = None
         self.D = None   # pairwise distances
-        self.NN = None # (distance vector) list of all nearest neighbors pairs
-        self.HP = None # (distance vector) list of all Hausdorff pairs
-        self.PP = None # (distance vector) list of all PSAPairs
+        self.HP = None # (distance vector order) list of all Hausdorff pairs
+        self.NN = None # (distance vector order) list of all nearest neighbors
+        self.psa_pairs = None # (distance vector order) list of all PSAPairs
 
 
     def generate_paths(self, **kwargs):
@@ -1354,7 +1354,7 @@ class PSA(object):
         numpaths = self.npaths
         self.NN = [] # list of nearest neighbors pairs
         self.HP = [] # list of Hausdorff pairs
-        self.PP = [] # list of PSAPairs
+        self.psa_pairs = [] # list of PSAPairs
 
         for i in xrange(0, numpaths-1):
             for j in xrange(i+1, numpaths):
@@ -1363,7 +1363,7 @@ class PSA(object):
                 Q = self.paths[j][start:stop:step]
                 pp.compute_nearest_neighbors(P, Q, self.natoms)
                 pp.find_hausdorff_pair()
-                self.PP.append(pp)
+                self.psa_pairs.append(pp)
                 if neighbors:
                     self.NN.append(pp.get_nearest_neighbors())
                 if hausdorff_pairs:
@@ -1605,7 +1605,7 @@ class PSA(object):
 
 
     def plot_nearest_neighbors(self, filename=None, idx=0,                      \
-                               labels=('Path 1', 'Path 2'), figsize=6.5,        \
+                               labels=('Path 1', 'Path 2'), figsize=4.5,        \
                                multiplot=False, aspect_ratio=1.75,              \
                                labelsize=12):
         """Plot nearest neighbor distances as a function of normalized frame
@@ -1620,7 +1620,7 @@ class PSA(object):
              (string, string), pair of names to label nearest neighbor distance
              curves [``('Path 1', 'Path 2')``]
           *figsize*
-             float, set the vertical size of plot in inches [``6.5``]
+             float, set the vertical size of plot in inches [``4.5``]
           *multiplot*
              boolean, set to ``True`` to enable plotting multiple nearest
              neighbor distances on the same figure [``False``]
@@ -1634,8 +1634,8 @@ class PSA(object):
         suffix determines the file type, e.g. pdf, png, eps, ...). All other
         keyword arguments are passed on to :func:`pylab.imshow`.
         """
-        from matplotlib.pyplot import figure, savefig, tight_layout, clf
-        import seaborn as sns
+        from matplotlib.pyplot import figure, savefig, tight_layout, clf, show
+        import seaborn.apionly as sns
 
         colors = sns.xkcd_palette(["cherry", "windows blue"])
 
@@ -1649,8 +1649,7 @@ class PSA(object):
 
         if not multiplot:
             clf()
-        aspect_ratio = 1.5
-        fig = figure(1, figsize=(figsize*aspect_ratio, figsize))
+        fig = figure(figsize=(figsize*aspect_ratio, figsize))
         ax = fig.add_subplot(111)
 
         nn_dist_P, nn_dist_Q = self.NN[idx]['distances']
@@ -1674,6 +1673,7 @@ class PSA(object):
             head = self.targetdir + self.datadirs['plots']
             outfile = os.path.join(head, filename)
             savefig(outfile, dpi=300, bbox_inches='tight')
+        show()
 
 
     def cluster(self, distArray, method='ward', count_sort=False,               \
@@ -1809,7 +1809,24 @@ class PSA(object):
             return self.D
 
 
-    def get_hausdorff_pairs(self):
+    def get_psa_pairs(self):
+        """Get the :class:`PSAPair`s for each pair of paths.
+
+        Must run :method:`PSA.run_pairs_analysis()` prior to calling this
+        method.
+
+        :Returns:
+          list of all :class:`PSAPair` objects (in distance vector order)
+        """
+        if self.psa_pairs is None:
+            err_str = "No nearest neighbors data; do"                           \
+                    + " 'PSA.run_pairs_analysis()' first."
+            raise ValueError(err_str)
+        return self.psa_pairs
+
+
+    @property
+    def all_hausdorff_pairs(self):
         """Get the Hausdorff pair for each (unique) pairs of paths.
 
         Must run :method:`PSA.run_pairs_analysis(hausdorff_pairs=True)` prior to
@@ -1824,8 +1841,8 @@ class PSA(object):
             raise ValueError(err_str)
         return self.HP
 
-
-    def get_nearest_neighbors(self):
+    @property
+    def all_nearest_neighbors(self):
         """Get the nearest neighbors for each (unique) pair of paths.
 
         Must run :method:`PSA.run_pairs_analysis(neighbors=True)` prior to
@@ -1839,19 +1856,3 @@ class PSA(object):
                     + " 'PSA.run_pairs_analysis(neighbors=True)' first."
             raise ValueError(err_str)
         return self.NN
-
-
-    def get_psa_pairs(self):
-        """Get the :class:`PSAPair`s for each pair of paths.
-
-        Must run :method:`PSA.run_pairs_analysis()` prior to calling this
-        method.
-
-        :Returns:
-          list of all :class:`PSAPair` objects (in distance vector order)
-        """
-        if self.PP is None:
-            err_str = "No nearest neighbors data; do"                           \
-                    + " 'PSA.run_pairs_analysis()' first."
-            raise ValueError(err_str)
-        return self.PP
