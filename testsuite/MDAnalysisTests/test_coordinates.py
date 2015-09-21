@@ -1732,7 +1732,7 @@ class TestDCDReader(_TestDCD):
         frames = [ts.frame for ts in self.dcd[[0, 4, 2, 3, 0, 1]]]
         assert_equal(frames, [0, 4, 2, 3, 0, 1])
 
-    def test_list_reverse_trajectory(self):
+    def test_list_repeated_trajectory(self):
         frames = [ts.frame for ts in self.dcd[[0, 0, 1, 1, 2, 1, 1]]]
         assert_equal(frames, [0, 0, 1, 1, 2, 1, 1])
 
