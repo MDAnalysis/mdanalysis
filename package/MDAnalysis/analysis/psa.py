@@ -1768,6 +1768,8 @@ class PSAnalysis(object):
         """Return the number of atoms used to construct the :class:`Path`s in
         :class:`PSA`.
 
+        .. note::
+
         Must run :method:`PSAnalysis.generate_paths()` prior to calling this
         method.
 
@@ -1782,6 +1784,8 @@ class PSAnalysis(object):
 
     def get_num_paths(self):
         """Return the number of paths in :class:`PSA`.
+
+        .. note::
 
         Must run :method:`PSAnalysis.generate_paths()` prior to calling this
         method.
@@ -1798,6 +1802,8 @@ class PSAnalysis(object):
     def get_paths(self):
         """Return the paths in :class:`PSA`.
 
+        .. note::
+
         Must run :method:`PSAnalysis.generate_paths()` prior to calling this
         method.
 
@@ -1813,6 +1819,8 @@ class PSAnalysis(object):
 
     def get_pairwise_distances(self, vectorform=False):
         """Return the distance matrix (or vector) of pairwise path distances.
+
+        .. note::
 
         Must run :method:`PSAnalysis.run(store=True)` prior to calling this
         method.
@@ -1852,6 +1860,8 @@ class PSAnalysis(object):
         using :attr:`PSAPair.hausdorff_pair` with the keys 'frames' and
         'distance'.
 
+        .. note::
+
         Must run :method:`PSAnalysis.run_pairs_analysis()` prior to calling this
         method.
 
@@ -1875,6 +1885,8 @@ class PSAnalysis(object):
         :method:`PSAnalysis.psa_pairs` and :attr:`PSAPair.hausdorff_pair` for
         more information about accessing Hausdorff pair data.
 
+        .. note::
+
         Must run :method:`PSAnalysis.run_pairs_analysis(hausdorff_pairs=True)`
         prior to calling this method.
 
@@ -1897,6 +1909,8 @@ class PSAnalysis(object):
         distances between a pair of paths. See :method:`PSAnalysis.psa_pairs`
         and :attr:`PSAPair.nearest_neighbors` for more information about
         accessing nearest neighbor data.
+
+        .. note::
 
         Must run :method:`PSAnalysis.run_pairs_analysis(neighbors=True)` prior
         to calling this method.
