@@ -306,6 +306,7 @@ if __name__ == '__main__':
               'analysis': [
                   'matplotlib',
                   'scipy',  # sparse contact matrix
+                  'seaborn', # for annotated heat map and nearest neighbor plotting in PSA
               ],
           },
           test_suite="MDAnalysisTests",
