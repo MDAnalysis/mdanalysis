@@ -1855,6 +1855,7 @@ class PSAnalysis(object):
             return self.D
 
 
+    @property
     def get_psa_pairs(self):
         """Get the :class:`PSAPair`s for each pair of paths.
 
