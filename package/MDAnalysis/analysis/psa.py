@@ -598,26 +598,6 @@ def dist_mat_to_vec(N, i, j):
                 + " less than integer N = {:d} such that j >= i+1.".format(N)
         raise ValueError(err_str)
 
-# TODO
-# def dist_vec_to_mat(N, idx):
-#     """Convert a distance vector index to row and column indices in the (upper
-#     triangle of the) corresponding distance matrix.
-
-#     The distance vector index, *idx*, is converted to row and column indices of
-#     the distance matrix of size *N*-by-*N*.
-
-#     :Arguments:
-#       *N*
-#          int, size of the corresponding distance matrix (of shape *N*-by-*N*)
-#       *idx*
-#          int, row index of the distance matrix
-
-#     :Returns:
-#       (int, int), row/column indices (of the distance vector element) in the
-#       corresponding distance matrix
-#     """
-#     return (N*i) + j - (i+2)*(i+1)/2
-
 
 class PDBToBinaryTraj(object):
 
@@ -1856,8 +1836,21 @@ class PSAnalysis(object):
 
 
     @property
-    def get_psa_pairs(self):
-        """Get the :class:`PSAPair`s for each pair of paths.
+    def psa_pairs(self):
+        """Get the list of :class:`PSAPair`s for each pair of paths.
+
+        :method:`psa_pairs` is a list of :class:`PSAPair` whose elements are
+        pairs of paths that have been compared using
+        :method:`PSAnalysis.run_pairs_analysis()`. Each :class:`PSAPair`
+        contains nearest neighbor and Hausdorff pair information specific to a
+        pair of paths. The nearest neighbor frames and distances for a
+        :class:`PSAPair` can be accessed in the nearest neighbor dictionary
+        using the keys 'frames' and 'distances', respectively. E.g.,
+        :attr:`PSAPair.nearest_neighbors['distances']` returns a *pair* of
+        :class:`numpy.ndarray` corresponding to the nearest neighbor distances
+        for each path. Similarly, Hausdorff pair information can be accessed
+        using :attr:`PSAPair.hausdorff_pair` with the keys 'frames' and
+        'distance'.
 
         Must run :method:`PSAnalysis.run_pairs_analysis()` prior to calling this
         method.
@@ -1873,8 +1866,14 @@ class PSAnalysis(object):
 
 
     @property
-    def all_hausdorff_pairs(self):
+    def hausdorff_pairs(self):
         """Get the Hausdorff pair for each (unique) pairs of paths.
+
+        This method returns a list of Hausdorff pair information, where each
+        element is a dictionary containing the pair of frames and the
+        (Hausdorff) distance between a pair of paths. See
+        :method:`PSAnalysis.psa_pairs` and :attr:`PSAPair.hausdorff_pair` for
+        more information about accessing Hausdorff pair data.
 
         Must run :method:`PSAnalysis.run_pairs_analysis(hausdorff_pairs=True)`
         prior to calling this method.
@@ -1890,8 +1889,14 @@ class PSAnalysis(object):
         return self.HP
 
     @property
-    def all_nearest_neighbors(self):
+    def nearest_neighbors(self):
         """Get the nearest neighbors for each (unique) pair of paths.
+
+        This method returns a list of nearest neighbor information, where each
+        element is a dictionary containing the nearest neighbor frames and
+        distances between a pair of paths. See :method:`PSAnalysis.psa_pairs`
+        and :attr:`PSAPair.nearest_neighbors` for more information about
+        accessing nearest neighbor data.
 
         Must run :method:`PSAnalysis.run_pairs_analysis(neighbors=True)` prior
         to calling this method.
