@@ -26,6 +26,8 @@ Enhancements
   * `Atom` and `AtomGroup` now expose occupancy value as `occupancy` and
     `occupancies` properties (Issue #396)
   * XYZReader now supports frame indexing (Issue #428)
+  * Reader objects can now be sliced using lists and arrays of indices
+    (Issue #437)
   * `PSA` changed to `PSAnalysis` to reduce namespace clutter (Issue #438)
   * `PSAnalysis` now includes Hausdorff pairs analysis and associated nearest
     neighbor plotting method (Issue #438)
