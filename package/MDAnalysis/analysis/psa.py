@@ -1179,9 +1179,9 @@ class PSAnalysis(object):
         self.npaths = None
         self.paths = None
         self.D = None   # pairwise distances
-        self.HP = None # (distance vector order) list of all Hausdorff pairs
-        self.NN = None # (distance vector order) list of all nearest neighbors
-        self.psa_pairs = None # (distance vector order) list of all PSAPairs
+        self._HP = None # (distance vector order) list of all Hausdorff pairs
+        self._NN = None # (distance vector order) list of all nearest neighbors
+        self._psa_pairs = None # (distance vector order) list of all PSAPairs
 
 
     def generate_paths(self, **kwargs):
@@ -1337,9 +1337,9 @@ class PSAnalysis(object):
         hausdorff_pairs = kwargs.pop('hausdorff_pairs', False)
 
         numpaths = self.npaths
-        self.NN = [] # list of nearest neighbors pairs
-        self.HP = [] # list of Hausdorff pairs
-        self.psa_pairs = [] # list of PSAPairs
+        self._NN = [] # list of nearest neighbors pairs
+        self._HP = [] # list of Hausdorff pairs
+        self._psa_pairs = [] # list of PSAPairs
 
         for i in xrange(0, numpaths-1):
             for j in xrange(i+1, numpaths):
@@ -1348,11 +1348,11 @@ class PSAnalysis(object):
                 Q = self.paths[j][start:stop:step]
                 pp.compute_nearest_neighbors(P, Q, self.natoms)
                 pp.find_hausdorff_pair()
-                self.psa_pairs.append(pp)
+                self._psa_pairs.append(pp)
                 if neighbors:
-                    self.NN.append(pp.get_nearest_neighbors())
+                    self._NN.append(pp.get_nearest_neighbors())
                 if hausdorff_pairs:
-                    self.HP.append(pp.get_hausdorff_pair())
+                    self._HP.append(pp.get_hausdorff_pair())
 
 
     def save_result(self, filename=None):
@@ -1661,7 +1661,7 @@ class PSAnalysis(object):
 
         colors = sns.xkcd_palette(["cherry", "windows blue"])
 
-        if self.NN is None:
+        if self._NN is None:
             err_str =                                                           \
                     + "No nearest neighbor data; run "                          \
                     + "'PSAnalysis.run_nearest_neighbors()' first."
@@ -1674,7 +1674,7 @@ class PSAnalysis(object):
         fig = figure(figsize=(figsize*aspect_ratio, figsize))
         ax = fig.add_subplot(111)
 
-        nn_dist_P, nn_dist_Q = self.NN[idx]['distances']
+        nn_dist_P, nn_dist_Q = self._NN[idx]['distances']
         frames_P = len(nn_dist_P)
         frames_Q = len(nn_dist_Q)
         progress_P = np.asarray(range(frames_P))/(1.0*frames_P)
@@ -1858,11 +1858,11 @@ class PSAnalysis(object):
         :Returns:
           list of all :class:`PSAPair` objects (in distance vector order)
         """
-        if self.psa_pairs is None:
+        if self._psa_pairs is None:
             err_str = "No nearest neighbors data; do"                           \
                     + " 'PSAnalysis.run_pairs_analysis()' first."
             raise ValueError(err_str)
-        return self.psa_pairs
+        return self._psa_pairs
 
 
     @property
@@ -1881,12 +1881,12 @@ class PSAnalysis(object):
         :Returns:
           list of all Hausdorff pairs (in distance vector order)
         """
-        if self.HP is None:
+        if self._HP is None:
             err_str = "No Hausdorff pairs data; do "                            \
                     + "'PSAnalysis.run_pairs_analysis(hausdorff_pairs=True)' "  \
                     + "first."
             raise ValueError(err_str)
-        return self.HP
+        return self._HP
 
     @property
     def nearest_neighbors(self):
@@ -1904,8 +1904,8 @@ class PSAnalysis(object):
         :Returns:
           list of all nearest neighbors (in distance vector order)
         """
-        if self.NN is None:
+        if self._NN is None:
             err_str = "No nearest neighbors data; do"                           \
                     + " 'PSAnalysis.run_pairs_analysis(neighbors=True)' first."
             raise ValueError(err_str)
-        return self.NN
+        return self._NN
