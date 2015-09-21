@@ -12,7 +12,7 @@ The rules for this file:
   * accompany each entry with github issue/PR number (Issue #xyz)
 
 ------------------------------------------------------------------------------
-??/??/?? kain88-de, richardjgowers, dotsdl
+??/??/?? kain88-de, richardjgowers, dotsdl, sseyler
 
   * 0.11.1
 
@@ -28,6 +28,18 @@ Enhancements
   * XYZReader now supports frame indexing (Issue #428)
   * Reader objects can now be sliced using lists and arrays of indices
     (Issue #437)
+  * `PSA` changed to `PSAnalysis` to reduce namespace clutter (Issue #438)
+  * `PSAnalysis` now includes Hausdorff pairs analysis and associated nearest
+    neighbor plotting method (Issue #438)
+  * New class `PSAPair` added to MDAnalysis.analysis.psa for handling
+    Hausdorff pairs analysis (Issue #438)
+  * `PSAnalysis` can now generate annotated heat maps (Issue #438)
+  * Added three new distance functions to MDAnalysis.analysis.psa (Issue #438)
+  * Additional getters added to `Path` and `PSAnalysis` (Issue #438)
+  * MSD matrix function now globally available in MDAnalysis.analysis.psa
+    (Issue #438)
+  * Function for obtaining coordinate axes from numpy trajectories now
+    globally available in MDAnalysis.analysis.psa (Issue #438)
 
 Changes
   * An AtomGroup with 0 atoms now yields an `IndexError` on call to
