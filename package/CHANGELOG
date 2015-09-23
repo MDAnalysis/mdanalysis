@@ -44,7 +44,9 @@ Changes
     `AtomGroup.write` (Issue #434)
 
 Fixes
-
+  * Fixed minor issue in lib.mdamath.make_whole where if all bonds
+    were correctly sized, it wouldn't notice that multiple fragments
+    had been given. (Issue #445)
 
 09/07/15  tyler.je.reddy, richardjgowers, alejob, orbeckst, dotsdl,
         manuel.nuno.melo, cyanezstange, khuston, ivirshup, kain88-de,
