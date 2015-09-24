@@ -533,9 +533,9 @@ class Atom(object):
         return hash(self.index)
 
     def __add__(self, other):
-        if not (isinstance(other, Atom) or isinstance(other, AtomGroup)):
-            raise TypeError('Can only concatenate Atoms (not "{0}")'
-                            ' to AtomGroup'.format(other.__class__.__name__))
+        if not isinstance(other, (Atom, AtomGroup)):
+            raise TypeError('Can only add Atoms or AtomGroups (not "{0}")'
+                            ' to Atom'.format(other.__class__.__name__))
         if isinstance(other, Atom):
             return AtomGroup([self, other])
         else:
@@ -1020,9 +1020,14 @@ class AtomGroup(object):
         cls = self._cls
 
         # consistent with the way list indexing/slicing behaves:
-        if np.dtype(type(item)) == np.dtype(int):
-            return container[item]
-        elif type(item) == slice:
+        if isinstance(item, int):
+            try:
+                return container[item]
+            except IndexError:
+                raise IndexError(
+                    "Index {} is out of bounds for AtomGroup with size {}"
+                    "".format(item, len(self)))
+        elif isinstance(item, slice):
             return cls(container[item])
         elif isinstance(item, (np.ndarray, list)):
             # advanced slicing, requires array or list
@@ -1032,7 +1037,7 @@ class AtomGroup(object):
             except IndexError:  # zero length item
                 pass
             return cls([container[i] for i in item])
-        elif type(item) == str:
+        elif isinstance(item, str):
             return self._get_named_atom(item)
         else:
             raise TypeError("Cannot slice with type: {0}".format(type(item)))
@@ -1072,8 +1077,8 @@ class AtomGroup(object):
             return other in self._atoms
 
     def __add__(self, other):
-        if not (isinstance(other, Atom) or isinstance(other, AtomGroup)):
-            raise TypeError('Can only concatenate AtomGroup (not "{0}") to'
+        if not isinstance(other, (Atom, AtomGroup)):
+            raise TypeError('Can only concatenate Atom or AtomGroup (not "{0}") to'
                             ' AtomGroup'.format(other.__class__.__name__))
         if isinstance(other, AtomGroup):
             return AtomGroup(self._atoms + other._atoms)
