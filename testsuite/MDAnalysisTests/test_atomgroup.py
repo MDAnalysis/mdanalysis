@@ -128,6 +128,66 @@ class TestAtom(TestCase):
         assert self.universe.atoms[1].occupancy == 1
 
 
+class TestAtomComparisons(object):
+    """Test the comparison operators for Atom"""
+    def setUp(self):
+        self.at1 = Atom(1, 'a', 'ta', 'rn', 1, 's1', 0.01, 0.01)
+        self.at2 = Atom(2, 'a', 'ta', 'rn', 1, 's1', 0.01, 0.01)
+        self.at3 = Atom(3, 'a', 'ta', 'rn', 1, 's1', 0.01, 0.01)
+        self.at4 = Atom(4, 'a', 'ta', 'rn', 1, 's1', 0.01, 0.01)
+
+    def tearDown(self):
+        del self.at1
+        del self.at2
+        del self.at3
+        del self.at4
+
+    def test_lt(self):
+        assert_((self.at1 < self.at2) == True)
+        assert_((self.at3 < self.at2) == False)
+        assert_((self.at2 < self.at2) == False)
+
+    def test_gt(self):
+        assert_((self.at2 > self.at1) == True)
+        assert_((self.at2 > self.at3) == False)
+        assert_((self.at2 > self.at2) == False)
+
+    def test_eq(self):
+        assert_((self.at2 == self.at2) == True)
+        assert_((self.at2 == self.at3) == False)
+
+        # We only check index of atom, so these are equal
+        # despite being different objects.
+        pseudo_at2 = Atom(2, 'b', 'tb', 'rm', 2, 's2', 0.02, 0.02)
+        assert_((self.at2 == pseudo_at2) == True)
+
+    def test_neq(self):
+        assert_((self.at2 != self.at3) == True)
+        assert_((self.at2 != self.at2) == False)
+
+    def test_geq(self):
+        assert_((self.at2 >= self.at1) == True)
+        assert_((self.at2 >= self.at2) == True)
+        assert_((self.at2 >= self.at3) == False)
+
+    def test_leq(self):
+        assert_((self.at2 <= self.at3) == True)
+        assert_((self.at2 <= self.at2) == True)
+        assert_((self.at2 <= self.at1) == False)
+
+    def test_sorting_1(self):
+        l = [self.at1, self.at2, self.at3, self.at4]
+        assert_(sorted(l) == l)
+
+    def test_sorting_2(self):
+        l = [self.at2, self.at3, self.at1, self.at4]
+        assert_(sorted(l) == [self.at1, self.at2, self.at3, self.at4])
+
+    def test_sorting_3(self):
+        l = [self.at2, self.at2, self.at3, self.at1]
+        assert_(sorted(l) == [self.at1, self.at2, self.at2, self.at3])
+
+
 class TestAtomNoForceNoVel(TestCase):
     def setUp(self):
         self.u = MDAnalysis.Universe(XYZ_mini)
