@@ -48,6 +48,8 @@ Classes
 """
 from __future__ import absolute_import
 
+import warnings
+
 from ..core.AtomGroup import Atom
 from .core import get_atom_mass, guess_atom_element
 from ..lib.util import openany
@@ -97,7 +99,12 @@ class PrimitivePDBParser(TopologyReader):
                 if record.startswith('END'):
                     break
                 elif line[:6] in ('ATOM  ', 'HETATM'):
-                    serial = int(line[6:11])
+                    try:
+                        serial = int(line[6:11])
+                    except ValueError:
+                        # serial can become '***' when they get too high
+                        self._wrapped_serials = True
+                        serial = None
                     name = line[12:16].strip()
                     altLoc = line[16:17].strip()
                     resName = line[17:21].strip()
@@ -139,6 +146,12 @@ class PrimitivePDBParser(TopologyReader):
         # ie do one pass through the file only        
         # Problem is that in multiframe PDB, the CONECT is at end of file,
         # so the "break" call happens before bonds are reached.
+
+        # If the serials wrapped, this won't work
+        if hasattr(self, '_wrapped_serials'):
+            warnings.warn("Invalid atom serials were present, bonds will not"
+                          " be parsed")
+            return tuple([])
 
         # Mapping between the atom array indicies a.index and atom ids
         # (serial) in the original PDB file
