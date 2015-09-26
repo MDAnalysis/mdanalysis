@@ -418,6 +418,7 @@ import copy
 import logging
 import os.path
 import weakref
+import functools
 
 # Local imports
 import MDAnalysis
@@ -453,7 +454,7 @@ _PLURAL_PROPERTIES = {'index': 'indices',
 _SINGULAR_PROPERTIES = {v: k for k, v in _PLURAL_PROPERTIES.items()}
 
 
-
+@functools.total_ordering
 class Atom(object):
     """A class representing a single atom.
 
@@ -523,8 +524,8 @@ class Atom(object):
                     altloc="" if not self.altLoc
                     else " and altloc {0}".format(self.altLoc)))
 
-    def __cmp__(self, other):
-        return cmp(self.index, other.index)
+    def __lt__(self, other):
+        return self.index < other.index
 
     def __eq__(self, other):
         return self.index == other.index
