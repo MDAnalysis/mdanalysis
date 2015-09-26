@@ -33,7 +33,7 @@ from MDAnalysisTests.datafiles import (
     DCD_NAMD_TRICLINIC, GMS_ASYMOPT, GMS_SYMOPT, GMS_ASYMSURF, XYZ_mini,
     PFncdf_Top, PFncdf_Trj, INPCRD, XYZ_five, two_water_gro, DLP_CONFIG,
     DLP_CONFIG_order, DLP_CONFIG_minimal, DLP_HISTORY, DLP_HISTORY_order,
-    DLP_HISTORY_minimal)
+    DLP_HISTORY_minimal, PDB_xlserial)
 
 from MDAnalysisTests.plugins.knownfailure import knownfailure
 
@@ -3237,3 +3237,23 @@ class TestIncompletePDB(object):
         self.u.atoms.occupancies = 0.0
         assert_almost_equal(self.u.atoms.occupancies,
                             np.zeros(self.u.atoms.n_atoms))
+
+
+class TestPDBXLSerial(object):
+    """For Issue #446"""
+    def setUp(self):
+        self.u = mda.Universe(PDB_xlserial)
+
+    def tearDown(self):
+        del self.u
+
+    def test_load(self):
+        # Check that universe loads ok, should be 4 atoms
+        assert_(len(self.u.atoms) == 4)
+
+    def test_serials(self):
+        # These should be none
+        assert_(self.u.atoms[0].serial == 99998)
+        assert_(self.u.atoms[1].serial == 99999)
+        assert_(self.u.atoms[2].serial == None)
+        assert_(self.u.atoms[3].serial == None)
