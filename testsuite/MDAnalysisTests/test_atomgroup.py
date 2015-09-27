@@ -111,7 +111,7 @@ class TestAtom(TestCase):
         def lookup_uni(a):
             return a.universe
 
-        assert_raises(AttributeError, lookup_uni, at)
+        assert_raises(NoDataError, lookup_uni, at)
 
     def test_bonded_atoms(self):
         at = self.universe.atoms[0]

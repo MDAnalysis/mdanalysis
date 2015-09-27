@@ -509,12 +509,7 @@ class Atom(object):
         self.radius = radius
         self.bfactor = bfactor
         self.serial = serial
-        # Beware: Atoms hold only weakrefs to the universe, enforced
-        #  throught the Atom.universe setter.
-        if universe is None:
-            self._universe = None
-        else:
-            self.universe = universe
+        self._universe = universe
 
     def __repr__(self):
         return ("<Atom {idx}: {name} of type {t} of resname {rname}, "
@@ -675,18 +670,15 @@ class Atom(object):
 
     @property
     def universe(self):
-        """a pointer back to the Universe"""
-        # Beware: Atoms hold only weakrefs to the universe. We call them to get hard references.
-        if self._universe is not None and self._universe() is not None:
-            return self._universe()
+        """A pointer back to the Universe of this Atom"""
+        if self._universe is None:
+            raise NoDataError("This Atom does not belong to a Universe")
         else:
-            raise AttributeError(
-                "Atom {0} is not assigned to a Universe".format(self.index))
+            return self._universe
 
     @universe.setter
-    def universe(self, universe):
-        # Beware: Atoms hold only weakrefs to the universe
-        self._universe = weakref.ref(universe)
+    def universe(self, new):
+        self._universe = new
 
     @property
     def bonded_atoms(self):
@@ -995,7 +987,7 @@ class AtomGroup(object):
         """The universe to which the atoms belong (read-only)."""
         try:
             return self._atoms[0].universe
-        except (AttributeError, IndexError):
+        except (NoDataError, IndexError):
             return None
 
     def __len__(self):
@@ -4600,11 +4592,6 @@ class Universe(object):
         else:
             return False
 
-    # A __del__ method can be added to the Universe, but bear in mind that for
-    # that to work objects under Universe that hold backreferences to it can
-    # only do so using weakrefs. (Issue #297)
-    #def __del__(self):
-    #    pass
 
 def as_Universe(*args, **kwargs):
     """Return a universe from the input arguments.

@@ -20,6 +20,10 @@ API Changes
 
   * PrimitivePDBReader now imports occupancies into the `TimeStep` object.
     (Issue #396)
+  * Atoms without a Universe now return NoDataError instead of
+    AttributeError
+  * Atoms now keep a strong reference to Universe, meaning they
+    no become orphaned when the Universe goes out of scope (Issue #297)
 
 Enhancements
 
