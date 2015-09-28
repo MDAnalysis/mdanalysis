@@ -2137,3 +2137,38 @@ class TestAtomGroupProperties(object):
             yield self._check_ag_matches_atom, att, atts, ag
             yield self._change_atom_check_ag, att, vals, ag
             yield self._change_ag_check_atoms, att, vals, ag, ag_set
+
+
+class TestOrphans(object):
+    """Test moving Universes out of scope and having A/AG persist
+
+    Atoms and AtomGroups from other scopes should work, namely:
+      - should have access to Universe
+      - should be able to use the Reader (coordinates)
+    """
+    def test_atom(self):
+        u = MDAnalysis.Universe(two_water_gro)
+
+        def getter():
+            u2 = MDAnalysis.Universe(two_water_gro)
+            return u2.atoms[1]
+
+        at = getter()
+
+        assert_(at is not u.atoms[1])
+        assert_(len(at.universe.atoms) == len(u.atoms))
+        assert_array_almost_equal(at.position, u.atoms[1].position)
+
+    def test_atomgroup(self):
+        u = MDAnalysis.Universe(two_water_gro)
+
+        def getter():
+            u2 = MDAnalysis.Universe(two_water_gro)
+            return u2.atoms[:4]
+
+        ag = getter()
+        ag2 = u.atoms[:4]
+        assert_(ag is not ag2)
+        assert_(len(ag.universe.atoms) == len(u.atoms))
+        assert_array_almost_equal(ag.positions, ag2.positions)
+
