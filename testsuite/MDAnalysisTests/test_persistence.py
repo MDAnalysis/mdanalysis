@@ -23,6 +23,7 @@ import numpy as np
 from numpy.testing import *
 
 import os
+import gc
 import shutil
 import cPickle
 import tempfile
@@ -58,6 +59,17 @@ class TestAtomGroupPickle(TestCase):
         # Can unpickle
         assert_array_equal(self.ag_n.indices, newag.indices)
         assert_(newag.universe is self.universe_n, "Unpickled AtomGroup on wrong Universe.")
+
+    def test_unpickle_missing(self):
+        # we kill the universes and ag's
+        self.tearDown()
+        # and make sure they're very dead
+        gc.collect()
+        # we shouldn't be able to unpickle
+        assert_raises(RuntimeError, cPickle.loads, self.pickle_str)
+        assert_raises(RuntimeError, cPickle.loads, self.pickle_str_n)
+        # must reset these, otherwise tearDown fails
+        self.setUp()
 
     def test_unpickle_noanchor(self):
         # Shouldn't unpickle if the universe is removed from the anchors

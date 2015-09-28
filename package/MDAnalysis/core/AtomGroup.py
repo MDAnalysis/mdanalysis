@@ -1105,9 +1105,9 @@ class AtomGroup(object):
                 self.__init__(test_universe.atoms[indices]._atoms)
                 return
         raise RuntimeError(("Couldn't find a suitable Universe to unpickle AtomGroup "
-                "onto. (needed a universe with {}{} atoms, topology filename: {}, and "
-                "trajectory filename: {}").format(
-                        "anchor_name: {}, ".format(anchor_name) if anchor_name is not None else "",
+                "onto. (needed a universe with {}{} atoms, topology filename: '{}', and "
+                "trajectory filename: '{}')").format(
+                        "anchor_name: '{}', ".format(anchor_name) if anchor_name is not None else "",
                         *state[2:]))
 
     @property
