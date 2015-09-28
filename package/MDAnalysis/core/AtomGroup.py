@@ -1083,14 +1083,17 @@ class AtomGroup(object):
             n_atoms=len(self))
 
     def __getstate__(self):
-        if self.universe is None:
+        try:
+            universe = self.universe
+        except NoDataError:
             return None, None, None, None, None
+
         try: # We want to get the ChainReader case, where the trajectory has multiple filenames
-            fname = self.universe.trajectory.filenames
+            fname = universe.trajectory.filenames
         except AttributeError:
-            fname = self.universe.trajectory.filename
-        return (self.indices, self.universe.anchor_name, len(self.universe.atoms),
-                self.universe.filename, fname)
+            fname = universe.trajectory.filename
+        return (self.indices, universe.anchor_name, len(universe.atoms),
+                universe.filename, fname)
 
     def __setstate__(self, state):
         indices, anchor_name, universe_n_atoms = state[:3]
@@ -1105,9 +1108,9 @@ class AtomGroup(object):
                 self.__init__(test_universe.atoms[indices]._atoms)
                 return
         raise RuntimeError(("Couldn't find a suitable Universe to unpickle AtomGroup "
-                "onto. (needed a universe with {}{} atoms, topology filename: {}, and "
-                "trajectory filename: {}").format(
-                        "anchor_name: {}, ".format(anchor_name) if anchor_name is not None else "",
+                "onto. (needed a universe with {}{} atoms, topology filename: '{}', and "
+                "trajectory filename: '{}')").format(
+                        "anchor_name: '{}', ".format(anchor_name) if anchor_name is not None else "",
                         *state[2:]))
 
     @property
