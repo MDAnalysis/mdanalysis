@@ -22,6 +22,8 @@ API Changes
     (Issue #396)
   * Atoms without a Universe now return NoDataError instead of
     AttributeError
+  * AtomGroups of zero length or containing Atoms with no Universe raise
+    a NoDataError when trying to access Universe
   * Atoms now keep a strong reference to Universe, meaning they
     no become orphaned when the Universe goes out of scope (Issue #297)
 

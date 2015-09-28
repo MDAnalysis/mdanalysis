@@ -987,8 +987,8 @@ class AtomGroup(object):
         """The universe to which the atoms belong (read-only)."""
         try:
             return self._atoms[0].universe
-        except (NoDataError, IndexError):
-            return None
+        except IndexError:
+            raise NoDataError("Zero length AtomGroup have no Universe")
 
     def __len__(self):
         """Number of atoms in the group"""

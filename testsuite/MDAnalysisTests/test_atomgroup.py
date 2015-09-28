@@ -425,11 +425,15 @@ class TestAtomGroup(TestCase):
             self.universe.atoms.sequence()
         assert_raises(ValueError, wrong_res)
 
-    def test_no_uni(self):
+    def test_no_uni_1(self):
         at1 = Atom(1, 'dave', 'C', 'a', 1, 1, 0.1, 0.0)
         at2 = Atom(2, 'dave', 'C', 'a', 1, 1, 0.1, 0.0)
         ag = AtomGroup([at1, at2])
-        assert_equal(ag.universe, None)
+        assert_raises(NoDataError, getattr, ag, 'universe')
+
+    def test_no_uni_2(self):
+        ag = AtomGroup([])
+        assert_raises(NoDataError, getattr, ag, 'universe')
 
     def test_bad_add_AG(self):
         def bad_add():
@@ -2153,11 +2157,11 @@ class TestOrphans(object):
             u2 = MDAnalysis.Universe(two_water_gro)
             return u2.atoms[1]
 
-        at = getter()
+        atom = getter()
 
-        assert_(at is not u.atoms[1])
-        assert_(len(at.universe.atoms) == len(u.atoms))
-        assert_array_almost_equal(at.position, u.atoms[1].position)
+        assert_(atom is not u.atoms[1])
+        assert_(len(atom.universe.atoms) == len(u.atoms))
+        assert_array_almost_equal(atom.position, u.atoms[1].position)
 
     def test_atomgroup(self):
         u = MDAnalysis.Universe(two_water_gro)
