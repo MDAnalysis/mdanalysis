@@ -172,7 +172,7 @@ def detect_openmp():
 
 
 if __name__ == '__main__':
-    RELEASE = "0.11.1-dev"  # NOTE: keep in sync with MDAnalysis.__version__ in version.py
+    RELEASE = "0.12.0-dev"  # NOTE: keep in sync with MDAnalysis.__version__ in version.py
     with open("SUMMARY.txt") as summary:
         LONG_DESCRIPTION = summary.read()
     CLASSIFIERS = [

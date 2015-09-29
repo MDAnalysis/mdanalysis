@@ -10,11 +10,12 @@ The rules for this file:
   * keep the format consistent (79 char width, M/D/Y date format) and do not
     use tabs but use spaces for formatting
   * accompany each entry with github issue/PR number (Issue #xyz)
+  * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
 ??/??/?? kain88-de, richardjgowers, dotsdl, sseyler
 
-  * 0.11.1
+  * 0.12.0
 
 API Changes
 
@@ -25,7 +26,7 @@ API Changes
   * AtomGroups of zero length or containing Atoms with no Universe raise
     a NoDataError when trying to access Universe
   * Atoms now keep a strong reference to Universe, meaning they
-    no become orphaned when the Universe goes out of scope (Issue #297)
+    do not become orphaned when the Universe goes out of scope (Issue #297)
 
 Enhancements
 
