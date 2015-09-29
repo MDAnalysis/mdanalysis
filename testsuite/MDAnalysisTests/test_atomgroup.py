@@ -392,6 +392,12 @@ class TestAtomGroup(TestCase):
         self.ag.occupancies = 0.25
         assert_array_almost_equal(self.ag.occupancies, np.ones(len(self.ag)) * 0.25)
 
+    def test_sequence_from_atoms(self):
+        p = self.universe.select_atoms("protein")
+        assert_equal(p.sequence(format="string"),
+                     p.residues.sequence(format="string"),
+                     err_msg="sequence() yields different results for residues and atoms")
+
     def test_sequence_string(self):
         p = self.universe.select_atoms("protein")
         assert_equal(p.residues.sequence(format="string"), self.ref_adk_sequence)
@@ -419,8 +425,7 @@ class TestAtomGroup(TestCase):
     def test_sequence_nonIUPACresname(self):
         """test_sequence_nonIUPACresname: non recognized amino acids raise ValueError"""
         # fake non-IUPAC residue name for this test
-        self.universe.select_atoms("resname MET").set_resnames("MSE")
-        self.universe.atoms._rebuild_caches()
+        self.universe.select_atoms("resname MET").residues.set_resnames("MSE")
         def wrong_res():
             self.universe.atoms.sequence()
         assert_raises(ValueError, wrong_res)
