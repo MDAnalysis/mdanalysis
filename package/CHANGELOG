@@ -13,7 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? kain88-de, richardjgowers, dotsdl, sseyler
+??/??/?? kain88-de, richardjgowers, dotsdl, sseyler, orbeckst
 
   * 0.12.0
 
@@ -35,7 +35,6 @@ Enhancements
   * XYZReader now supports frame indexing (Issue #428)
   * Reader objects can now be sliced using lists and arrays of indices
     (Issue #437)
-  * `PSA` changed to `PSAnalysis` to reduce namespace clutter (Issue #438)
   * `PSAnalysis` now includes Hausdorff pairs analysis and associated nearest
     neighbor plotting method (Issue #438)
   * New class `PSAPair` added to MDAnalysis.analysis.psa for handling
@@ -51,6 +50,7 @@ Enhancements
 Changes
   * An AtomGroup with 0 atoms now yields an `IndexError` on call to
     `AtomGroup.write` (Issue #434)
+  * `PSA` changed to `PSAnalysis` to reduce namespace clutter (Issue #438)
 
 Fixes
   * Fixed minor issue in lib.mdamath.make_whole where if all bonds
@@ -58,6 +58,7 @@ Fixes
     had been given. (Issue #445)
   * Fixed issue with PDB Topology parsing where if serials went
     over 100k, they wrapped to '***', breaking the parser (Issue #446)
+  * Fixed AtomGroup.sequence() (Issue #451)
 
 09/07/15  tyler.je.reddy, richardjgowers, alejob, orbeckst, dotsdl,
         manuel.nuno.melo, cyanezstange, khuston, ivirshup, kain88-de,

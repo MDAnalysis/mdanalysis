@@ -1473,7 +1473,7 @@ class AtomGroup(object):
             raise TypeError("Unknown format='{0}': must be one of: {1}".format(
                     format, ", ".join(formats)))
         try:
-            sequence = "".join([util.convert_aa_code(r) for r in self.resnames])
+            sequence = "".join([util.convert_aa_code(r) for r in self.residues.resnames])
         except KeyError as err:
             raise ValueError("AtomGroup contains a residue name '{0}' that "
                              "does not have a IUPAC protein 1-letter "
@@ -1792,8 +1792,6 @@ class AtomGroup(object):
         .. versionchanged:: 0.11.0
            Made plural to make consistent with corresponding property
         """
-        from MDAnalysis.topology.core import build_residues
-
         self.set("resname", resname, conversion=str)
 
     set_resname = deprecate(set_resnames, old_name='set_resname', new_name='set_resnames')
