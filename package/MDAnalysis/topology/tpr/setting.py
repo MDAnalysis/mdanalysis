@@ -31,34 +31,37 @@ The currently read file format versions are defined in
 """
 
 #: Gromacs TPR file format versions that can be read by the TPRParser.
-SUPPORTED_VERSIONS = (58, 73, 83)
+SUPPORTED_VERSIONS = (58, 73, 83, 100, 103)
 
 # Some constants
 STRLEN = 4096
 BIG_STRLEN = 1048576
 DIM = 3
-NR_RBDIHS = 6  # include/types/idef.h
+NR_RBDIHS = 6  # <gromacs-5.1-dir>/src/gromacs/topology/idef.h
+NR_CBTDIHS = 6  # <gromacs-5.1-dir>/src/gromacs/topology/idef.h
+NR_FOURDIHS = 4  # <gromacs-5.1-dir>/src/gromacs/topology/idef.h
 egcNR = 10  # include/types/topolog.h
-TPX_TAG_RELEASE = "release"  # <gromacs-4.6.1-dir>/src/gmxlib/tpxio.c
-tpx_version = 83  # <gromacs-4.6.1-dir>/src/gmxlib/tpxio.c
-tpx_generation = 24  # <gromacs-4.6.1-dir>/src/gmxlib/tpxio.c
+TPX_TAG_RELEASE = "release"  # <gromacs-5.1-dir>/src/gromacs/fileio/tpxio.c
+tpx_version = 103    # <gromacs-5.1-dir>/src/gromacs/fileio/tpxio.c
+tpx_generation = 26  # <gromacs-5.1-dir>/src/gromacs/fileio/tpxio.c
+tpxv_RestrictedBendingAndCombinedAngleTorsionPotentials = 98
 
 
 #: Function types from ``<gromacs_dir>/include/types/idef.h``
 (
     F_BONDS, F_G96BONDS, F_MORSE, F_CUBICBONDS,
     F_CONNBONDS, F_HARMONIC, F_FENEBONDS, F_TABBONDS,
-    F_TABBONDSNC, F_RESTRBONDS, F_ANGLES, F_G96ANGLES,
+    F_TABBONDSNC, F_RESTRBONDS, F_ANGLES, F_G96ANGLES, F_RESTRANGLES,
     F_LINEAR_ANGLES, F_CROSS_BOND_BONDS, F_CROSS_BOND_ANGLES, F_UREY_BRADLEY,
-    F_QUARTIC_ANGLES, F_TABANGLES, F_PDIHS, F_RBDIHS,
+    F_QUARTIC_ANGLES, F_TABANGLES, F_PDIHS, F_RBDIHS, F_RESTRDIHS, F_CBTDIHS,
     F_FOURDIHS, F_IDIHS, F_PIDIHS, F_TABDIHS,
     F_CMAP, F_GB12, F_GB13, F_GB14,
     F_GBPOL, F_NPSOLVATION, F_LJ14, F_COUL14,
     F_LJC14_Q, F_LJC_PAIRS_NB, F_LJ, F_BHAM,
     F_LJ_LR, F_BHAM_LR, F_DISPCORR, F_COUL_SR,
-    F_COUL_LR, F_RF_EXCL, F_COUL_RECIP, F_DPD,
+    F_COUL_LR, F_RF_EXCL, F_COUL_RECIP, F_LJ_RECIP, F_DPD,
     F_POLARIZATION, F_WATER_POL, F_THOLE_POL, F_ANHARM_POL,
-    F_POSRES, F_DISRES, F_DISRESVIOL, F_ORIRES,
+    F_POSRES, F_FBPOSRES, F_DISRES, F_DISRESVIOL, F_ORIRES,
     F_ORIRESDEV, F_ANGRES, F_ANGRESZ, F_DIHRES,
     F_DIHRESVIOL, F_CONSTR, F_CONSTRNC, F_SETTLE,
     F_VSITE2, F_VSITE3, F_VSITE3FD, F_VSITE3FAD,
@@ -67,27 +70,29 @@ tpx_generation = 24  # <gromacs-4.6.1-dir>/src/gmxlib/tpxio.c
     F_ETOT, F_ECONSERVED, F_TEMP, F_VTEMP_NOLONGERUSED,
     F_PDISPCORR, F_PRES, F_DHDL_CON, F_DVDL,
     F_DKDL, F_DVDL_COUL, F_DVDL_VDW, F_DVDL_BONDED,
-    F_DVDL_RESTRAINT, F_DVDL_TEMPERATURE, F_NRE) = range(87)
+    F_DVDL_RESTRAINT, F_DVDL_TEMPERATURE, F_NRE) = range(92)
 
 #: Function types from ``<gromacs_dir>/src/gmxlib/tpxio.c``
 ftupd = [
-    (20, F_CUBICBONDS), (20, F_CONNBONDS), (20, F_HARMONIC),
-    (34, F_FENEBONDS), (43, F_TABBONDS), (43, F_TABBONDSNC),
-    (70, F_RESTRBONDS), (76, F_LINEAR_ANGLES), (30, F_CROSS_BOND_BONDS),
-    (30, F_CROSS_BOND_ANGLES), (30, F_UREY_BRADLEY), (34, F_QUARTIC_ANGLES),
-    (43, F_TABANGLES), (26, F_FOURDIHS), (26, F_PIDIHS),
-    (43, F_TABDIHS), (65, F_CMAP), (60, F_GB12),
-    (61, F_GB13), (61, F_GB14), (72, F_GBPOL),
+    (20, F_CUBICBONDS), (20, F_CONNBONDS), (20, F_HARMONIC), (34, F_FENEBONDS),
+    (43, F_TABBONDS), (43, F_TABBONDSNC), (70, F_RESTRBONDS),
+    (tpxv_RestrictedBendingAndCombinedAngleTorsionPotentials, F_RESTRANGLES),
+    (76, F_LINEAR_ANGLES), (30, F_CROSS_BOND_BONDS), (30, F_CROSS_BOND_ANGLES),
+    (30, F_UREY_BRADLEY), (34, F_QUARTIC_ANGLES), (43, F_TABANGLES),
+    (tpxv_RestrictedBendingAndCombinedAngleTorsionPotentials, F_RESTRDIHS),
+    (tpxv_RestrictedBendingAndCombinedAngleTorsionPotentials, F_CBTDIHS),
+    (26, F_FOURDIHS), (26, F_PIDIHS), (43, F_TABDIHS), (65, F_CMAP),
+    (60, F_GB12), (61, F_GB13), (61, F_GB14), (72, F_GBPOL),
     (72, F_NPSOLVATION), (41, F_LJC14_Q), (41, F_LJC_PAIRS_NB),
-    (32, F_BHAM_LR), (32, F_RF_EXCL), (32, F_COUL_RECIP),
-    (46, F_DPD), (30, F_POLARIZATION), (36, F_THOLE_POL),
+    (32, F_BHAM_LR), (32, F_RF_EXCL), (32, F_COUL_RECIP), (93, F_LJ_RECIP),
+    (46, F_DPD), (30, F_POLARIZATION), (36, F_THOLE_POL), (90, F_FBPOSRES),
     (22, F_DISRESVIOL), (22, F_ORIRES), (22, F_ORIRESDEV),
     (26, F_DIHRES), (26, F_DIHRESVIOL), (49, F_VSITE4FDN),
     (50, F_VSITEN), (46, F_COM_PULL), (20, F_EQM),
     (46, F_ECONSERVED), (69, F_VTEMP_NOLONGERUSED), (66, F_PDISPCORR),
     (54, F_DHDL_CON), (76, F_ANHARM_POL), (79, F_DVDL_COUL),
     (79, F_DVDL_VDW,), (79, F_DVDL_BONDED,), (79, F_DVDL_RESTRAINT),
-    (79, F_DVDL_TEMPERATURE), (54, F_DHDL_CON)
+    (79, F_DVDL_TEMPERATURE),
 ]
 
 #: Interaction types from ``<gromacs_dir>/gmxlib/ifunc.c``
@@ -104,6 +109,7 @@ interaction_types = [
     ("RESTRAINTPOT", "Restraint Pot.", 2),
     ("ANGLES", "Angle", 3),
     ("G96ANGLES", "G96Angle", 3),
+    ("RESTRANGLES", "Restricted Angles", 3),
     ("LINEAR_ANGLES", "Lin. Angle", 3),
     ("CROSS_BOND_BOND", "Bond-Cross", 3),
     ("CROSS_BOND_ANGLE", "BA-Cross", 3),
@@ -112,6 +118,8 @@ interaction_types = [
     ("TABANGLES", "Tab. Angles", 3),
     ("PDIHS", "Proper Dih.", 4),
     ("RBDIHS", "Ryckaert-Bell.", 4),
+    ("RESTRDIHS", "Restricted Dih.", 4),
+    ("CBTDIHS", "CBT Dih.", 4),
     ("FOURDIHS", "Fourier Dih.", 4),
     ("IDIHS", "Improper Dih.", 4),
     ("PIDIHS", "Improper Dih.", 4),
@@ -135,12 +143,14 @@ interaction_types = [
     ("COUL_LR", "Coulomb (LR)", None),
     ("RF_EXCL", "RF excl.", None),
     ("COUL_RECIP", "Coul. recip.", None),
+    ("LJ_RECIP", "LJ recip.", None),
     ("DPD", "DPD", None),
     ("POLARIZATION", "Polarization", 2),
     ("WATERPOL", "Water Pol.", 5),
     ("THOLE", "Thole Pol.", 4),
     ("ANHARM_POL", "Anharm. Pol.", 2),
     ("POSRES", "Position Rest.", 1),
+    ("FBPOSRES", "Flat-bottom posres", 1),
     ("DISRES", "Dis. Rest.", 2),
     ("DISRESVIOL", "D.R.Viol. (nm)", None),
     ("ORIRES", "Orient. Rest.", 2),
