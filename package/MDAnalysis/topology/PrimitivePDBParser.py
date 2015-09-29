@@ -88,8 +88,9 @@ class PrimitivePDBParser(TopologyReader):
     def _parseatoms(self):
         iatom = 0
         atoms = []
-        
+
         with openany(self.filename) as f:
+            resid_prev = 0  # resid looping hack
             for i, line in enumerate(f):
                 line = line.strip()  # Remove extra spaces
                 if len(line) == 0:  # Skip line if empty
@@ -111,8 +112,14 @@ class PrimitivePDBParser(TopologyReader):
                     chainID = line[21:22].strip()  # empty chainID is a single space ' '!
                     if self.format == "XPDB":  # fugly but keeps code DRY
                         resSeq = int(line[22:27])  # extended non-standard format used by VMD
+                        resid = resSeq
                     else:
                         resSeq = int(line[22:26])
+                        resid = resSeq
+
+                        while resid - resid_prev < -5000:
+                            resid += 10000
+                        resid_prev = resid
                         # insertCode = _c(27, 27, str)  # not used
                         # occupancy = float(line[54:60])
                     try:
@@ -130,11 +137,12 @@ class PrimitivePDBParser(TopologyReader):
                     mass = get_atom_mass(elem)
                     # charge = guess_atom_charge(name)
                     charge = 0.0
-                    
-                    atom = Atom(iatom, name, atomtype, resName, resSeq,
+
+                    atom = Atom(iatom, name, atomtype, resName, resid,
                                 segid, mass, charge,
                                 bfactor=tempFactor, serial=serial,
-                                altLoc=altLoc, universe=self._u)
+                                altLoc=altLoc, universe=self._u,
+                                resnum=resSeq)
                     iatom += 1
                     atoms.append(atom)
 

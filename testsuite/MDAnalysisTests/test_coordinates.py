@@ -1665,6 +1665,15 @@ class TestPDBReaderBig(TestCase, RefAdK):
         assert_almost_equal(self.universe.coord.volume, self.ref_volume, 0,
                             err_msg="wrong volume for unitcell (rhombic dodecahedron)")
 
+    def test_n_residues(self):
+        # Should have first 10000 residues, then another 1302
+        assert_(len(self.universe.residues) == 10000 + 1302)
+
+    def test_first_residue(self):
+        # First residue is a MET, shouldn't be smushed together
+        # with a water
+        assert_(len(self.universe.residues[0]) == 19)
+
 
 @attr('issue')
 def TestDCD_Issue32():
