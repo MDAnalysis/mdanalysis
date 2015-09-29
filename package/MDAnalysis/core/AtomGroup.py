@@ -509,12 +509,7 @@ class Atom(object):
         self.radius = radius
         self.bfactor = bfactor
         self.serial = serial
-        # Beware: Atoms hold only weakrefs to the universe, enforced
-        #  throught the Atom.universe setter.
-        if universe is None:
-            self._universe = None
-        else:
-            self.universe = universe
+        self._universe = universe
 
     def __repr__(self):
         return ("<Atom {idx}: {name} of type {t} of resname {rname}, "
@@ -675,18 +670,15 @@ class Atom(object):
 
     @property
     def universe(self):
-        """a pointer back to the Universe"""
-        # Beware: Atoms hold only weakrefs to the universe. We call them to get hard references.
-        if self._universe is not None and self._universe() is not None:
-            return self._universe()
+        """A pointer back to the Universe of this Atom"""
+        if self._universe is None:
+            raise NoDataError("This Atom does not belong to a Universe")
         else:
-            raise AttributeError(
-                "Atom {0} is not assigned to a Universe".format(self.index))
+            return self._universe
 
     @universe.setter
-    def universe(self, universe):
-        # Beware: Atoms hold only weakrefs to the universe
-        self._universe = weakref.ref(universe)
+    def universe(self, new):
+        self._universe = new
 
     @property
     def bonded_atoms(self):
@@ -995,8 +987,8 @@ class AtomGroup(object):
         """The universe to which the atoms belong (read-only)."""
         try:
             return self._atoms[0].universe
-        except (AttributeError, IndexError):
-            return None
+        except IndexError:
+            raise NoDataError("Zero length AtomGroup have no Universe")
 
     def __len__(self):
         """Number of atoms in the group"""
@@ -1091,14 +1083,17 @@ class AtomGroup(object):
             n_atoms=len(self))
 
     def __getstate__(self):
-        if self.universe is None:
+        try:
+            universe = self.universe
+        except NoDataError:
             return None, None, None, None, None
+
         try: # We want to get the ChainReader case, where the trajectory has multiple filenames
-            fname = self.universe.trajectory.filenames
+            fname = universe.trajectory.filenames
         except AttributeError:
-            fname = self.universe.trajectory.filename
-        return (self.indices, self.universe.anchor_name, len(self.universe.atoms),
-                self.universe.filename, fname)
+            fname = universe.trajectory.filename
+        return (self.indices, universe.anchor_name, len(universe.atoms),
+                universe.filename, fname)
 
     def __setstate__(self, state):
         indices, anchor_name, universe_n_atoms = state[:3]
@@ -1113,9 +1108,9 @@ class AtomGroup(object):
                 self.__init__(test_universe.atoms[indices]._atoms)
                 return
         raise RuntimeError(("Couldn't find a suitable Universe to unpickle AtomGroup "
-                "onto. (needed a universe with {}{} atoms, topology filename: {}, and "
-                "trajectory filename: {}").format(
-                        "anchor_name: {}, ".format(anchor_name) if anchor_name is not None else "",
+                "onto. (needed a universe with {}{} atoms, topology filename: '{}', and "
+                "trajectory filename: '{}')").format(
+                        "anchor_name: '{}', ".format(anchor_name) if anchor_name is not None else "",
                         *state[2:]))
 
     @property
@@ -4600,11 +4595,6 @@ class Universe(object):
         else:
             return False
 
-    # A __del__ method can be added to the Universe, but bear in mind that for
-    # that to work objects under Universe that hold backreferences to it can
-    # only do so using weakrefs. (Issue #297)
-    #def __del__(self):
-    #    pass
 
 def as_Universe(*args, **kwargs):
     """Return a universe from the input arguments.

@@ -111,7 +111,7 @@ class TestAtom(TestCase):
         def lookup_uni(a):
             return a.universe
 
-        assert_raises(AttributeError, lookup_uni, at)
+        assert_raises(NoDataError, lookup_uni, at)
 
     def test_bonded_atoms(self):
         at = self.universe.atoms[0]
@@ -425,11 +425,15 @@ class TestAtomGroup(TestCase):
             self.universe.atoms.sequence()
         assert_raises(ValueError, wrong_res)
 
-    def test_no_uni(self):
+    def test_no_uni_1(self):
         at1 = Atom(1, 'dave', 'C', 'a', 1, 1, 0.1, 0.0)
         at2 = Atom(2, 'dave', 'C', 'a', 1, 1, 0.1, 0.0)
         ag = AtomGroup([at1, at2])
-        assert_equal(ag.universe, None)
+        assert_raises(NoDataError, getattr, ag, 'universe')
+
+    def test_no_uni_2(self):
+        ag = AtomGroup([])
+        assert_raises(NoDataError, getattr, ag, 'universe')
 
     def test_bad_add_AG(self):
         def bad_add():
@@ -2137,3 +2141,38 @@ class TestAtomGroupProperties(object):
             yield self._check_ag_matches_atom, att, atts, ag
             yield self._change_atom_check_ag, att, vals, ag
             yield self._change_ag_check_atoms, att, vals, ag, ag_set
+
+
+class TestOrphans(object):
+    """Test moving Universes out of scope and having A/AG persist
+
+    Atoms and AtomGroups from other scopes should work, namely:
+      - should have access to Universe
+      - should be able to use the Reader (coordinates)
+    """
+    def test_atom(self):
+        u = MDAnalysis.Universe(two_water_gro)
+
+        def getter():
+            u2 = MDAnalysis.Universe(two_water_gro)
+            return u2.atoms[1]
+
+        atom = getter()
+
+        assert_(atom is not u.atoms[1])
+        assert_(len(atom.universe.atoms) == len(u.atoms))
+        assert_array_almost_equal(atom.position, u.atoms[1].position)
+
+    def test_atomgroup(self):
+        u = MDAnalysis.Universe(two_water_gro)
+
+        def getter():
+            u2 = MDAnalysis.Universe(two_water_gro)
+            return u2.atoms[:4]
+
+        ag = getter()
+        ag2 = u.atoms[:4]
+        assert_(ag is not ag2)
+        assert_(len(ag.universe.atoms) == len(u.atoms))
+        assert_array_almost_equal(ag.positions, ag2.positions)
+
