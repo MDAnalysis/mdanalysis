@@ -49,6 +49,8 @@ Fixes
   * Fixed minor issue in lib.mdamath.make_whole where if all bonds
     were correctly sized, it wouldn't notice that multiple fragments
     had been given. (Issue #445)
+  * Fixed issue with PDB Topology parsing where if serials went
+    over 100k, they wrapped to '***', breaking the parser (Issue #446)
 
 09/07/15  tyler.je.reddy, richardjgowers, alejob, orbeckst, dotsdl,
         manuel.nuno.melo, cyanezstange, khuston, ivirshup, kain88-de,
