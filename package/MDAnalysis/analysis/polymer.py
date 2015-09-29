@@ -30,7 +30,7 @@ import numpy as np
 import logging
 
 from ..lib.util import blocks_of
-
+from ..lib.distances import calc_bonds
 
 logger = logging.getLogger(__name__)
 
@@ -153,3 +153,12 @@ class PersistenceLength(_AnalysisBase):
         norm *= len(self._atomgroups) * len(self.frames)
 
         self._results /= norm
+
+    def _calc_bond_length(self):
+        # calculate average bond length
+        bs = []
+        for ag in self._atomgroups:
+            pos = ag.positions
+            b = calc_bonds(pos[:-1], pos[1:]).mean()
+            bs.append(b)
+        self._lb = np.mean(bs)
