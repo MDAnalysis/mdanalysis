@@ -92,13 +92,16 @@ class _AnalysisBase(object):
 
 
 class PersistenceLength(_AnalysisBase):
-    """Calculate the persistence length for polymer chains
+    r"""Calculate the persistence length for polymer chains
+
+    The persistence length is the length at which two points on the polymer
+    chain become decorrelated.
 
     Notes
     -----
     This analysis requires that the trajectory supports indexing
 
-    .. versionadded:: 0.11.1
+    .. versionadded:: 0.12.0
     """
     def __init__(self, atomgroups, **kwargs):
         """Calculate the persistence length for polymer chains
@@ -114,7 +117,6 @@ class PersistenceLength(_AnalysisBase):
             Last frame of trajectory to analyse, Default: -1
         skip : int, optional
             Step between frames to analyse, Default: 1
-
         """
         self._atomgroups = atomgroups
 
@@ -152,13 +154,67 @@ class PersistenceLength(_AnalysisBase):
         norm = np.linspace(n - 1, 1, n - 1)
         norm *= len(self._atomgroups) * len(self.frames)
 
-        self._results /= norm
+        self.results = self._results / norm
+        self._calc_bond_length()
 
     def _calc_bond_length(self):
-        # calculate average bond length
+        """calculate average bond length"""
         bs = []
         for ag in self._atomgroups:
             pos = ag.positions
             b = calc_bonds(pos[:-1], pos[1:]).mean()
             bs.append(b)
         self._lb = np.mean(bs)
+
+    def fit(self):
+        """Fit the results to an exponential decay"""
+        from scipy.optimize import curve_fit
+
+        try:
+            results = self.results
+        except AttributeError:
+            raise ValueError("Use the run method first")
+        self.x = np.arange(len(self.results)) * self._lb
+
+        self.lp = fit_exponential_decay(self.x, self.results)
+
+        self.fit = np.exp(-self.x/self.lp)
+
+    def plot(self):
+        """Oooh fancy"""
+        import matplotlib.pyplot as plt
+
+        plt.plot(self.x, self.results, 'ro')
+        plt.plot(self.x, self.fit)
+        plt.show()
+
+
+def fit_exponential_decay(x, y):
+    r"""Fit a function to an exponential decay
+
+    .. math::  y = \exp(-x/a)
+
+    Parameters
+    ----------
+    x, y : array_like
+      The two arrays of data
+
+    Returns
+    -------
+    a : float
+      The coefficient *a* for this decay
+
+    Notes
+    -----
+    Requires scipy
+    """
+    from scipy.optimize import curve_fit
+
+    def expfunc(x, a):
+        return np.exp(-x/a)
+
+    a = curve_fit(expfunc, x, y)[0][0]
+
+    return a
+
+    
