@@ -84,6 +84,7 @@ __all__ = [
     "waterPSF","waterDCD","rmsfArray",
     "HoomdXMLdata",
     "Make_Whole",  # for testing the function lib.mdamath.make_whole, has 9 atoms
+    "Plength",
 ]
 
 from pkg_resources import resource_filename
@@ -234,3 +235,5 @@ rmsfArray = resource_filename(__name__, 'data/adk_oplsaa_CA_rmsf.npy')
 HoomdXMLdata = resource_filename(__name__, 'data/C12x64.xml.bz2')
 
 Make_Whole = resource_filename(__name__, 'data/make_whole.gro')
+
+Plength = resource_filename(__name__, 'data/plength.gro')

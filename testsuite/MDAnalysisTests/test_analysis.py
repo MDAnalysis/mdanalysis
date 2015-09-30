@@ -21,6 +21,7 @@ import MDAnalysis.analysis.hbonds
 import MDAnalysis.analysis.helanal
 import MDAnalysis.analysis.rms
 import MDAnalysis.analysis.waterdynamics
+from MDAnalysis.analysis import polymer
 from MDAnalysis import SelectionError, SelectionWarning, FinishTimeException
 
 from numpy.testing import *
@@ -34,7 +35,7 @@ import tempfile
 import itertools
 import warnings
 
-from MDAnalysisTests.datafiles import PSF, DCD, FASTA, PDB_helix, PDB_HOLE, XTC_HOLE, GRO, XTC, waterDCD, waterPSF, rmsfArray
+from MDAnalysisTests.datafiles import PSF, DCD, FASTA, PDB_helix, PDB_HOLE, XTC_HOLE, GRO, XTC, waterDCD, waterPSF, rmsfArray, Plength
 from MDAnalysisTests import executable_not_found_runtime
 
 
@@ -553,3 +554,58 @@ class TestWaterdynamics(TestCase):
         sp = MDAnalysis.analysis.waterdynamics.SurvivalProbability(self.universe, self.selection1, 0, 6, 3)
         sp.run(quiet=True)
         assert_equal(round(sp.timeseries[1],5), 1.0)
+
+
+class TestPersistenceLength(object):
+    def setUp(self):
+        self.u = MDAnalysis.Universe(Plength)
+
+    def tearDown(self):
+        del self.u
+
+    def test_ag_VE(self):
+        ags = [self.u.atoms[:10], self.u.atoms[10:110]]
+        assert_raises(ValueError, polymer.PersistenceLength, ags)
+
+    def _make_p(self):
+        ags = [r.select_atoms('type C or type N')
+               for r in self.u.residues]
+
+        p = polymer.PersistenceLength(ags)
+        return p
+
+    def test_run(self):
+        p = self._make_p()
+        p.run()
+
+        assert_(len(p.results) == 280)
+        assert_almost_equal(p.lb, 1.485, 3)
+
+    def test_fit(self):
+        p = self._make_p()
+        p.run()
+        p.fit()
+
+        assert_almost_equal(p.lp, 6.504, 3)
+        assert_(len(p.fit) == len(p.results))
+
+
+class TestFitExponential(object):
+    def setUp(self):
+        self.x = np.linspace(0, 250, 251)
+        self.a_ref = 20.0
+        self.y = np.exp(-self.x/self.a_ref)
+
+    def tearDown(self):
+        del self.x
+        del self.a_ref
+        del self.y
+
+    def test_fit_simple(self):
+        a = polymer.fit_exponential_decay(self.x, self.y)
+        assert_(a == self.a_ref)
+
+    def test_fit_noisy(self):
+        y2 = self.y + (np.random.random(len(self.y)) - 0.5) * 0.05
+        a = polymer.fit_exponential_decay(self.x, y2)
+        assert_(np.rint(a) == self.a_ref)

@@ -164,7 +164,7 @@ class PersistenceLength(_AnalysisBase):
             pos = ag.positions
             b = calc_bonds(pos[:-1], pos[1:]).mean()
             bs.append(b)
-        self._lb = np.mean(bs)
+        self.lb = np.mean(bs)
 
     def fit(self):
         """Fit the results to an exponential decay"""
@@ -174,7 +174,7 @@ class PersistenceLength(_AnalysisBase):
             results = self.results
         except AttributeError:
             raise ValueError("Use the run method first")
-        self.x = np.arange(len(self.results)) * self._lb
+        self.x = np.arange(len(self.results)) * self.lb
 
         self.lp = fit_exponential_decay(self.x, self.results)
 
