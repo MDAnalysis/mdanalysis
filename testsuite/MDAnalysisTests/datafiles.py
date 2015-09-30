@@ -31,6 +31,7 @@ Note that the files are actually located in a separate package,
 
 __all__ = [
     "PSF", "DCD", "CRD",  # CHARMM (AdK example, DIMS trajectory from JMB 2009 paper)
+    "DCD2", # CHARMM (AdK example, DIMS trajectory from PLOS Comput Biol paper)
     "PSF_notop", "PSF_BAD",  # Same as PSF but no bonds etc, malformed version of previous
     "DCD_empty",
     "PSF_TRICLINIC", "DCD_TRICLINIC",  # CHARMM c36 new unitcell, NPT 125 TIP3P (box vectors, see Issue 187 for details)
@@ -47,6 +48,7 @@ __all__ = [
     "INC_PDB",  # incomplete PDB file (Issue #396)
     "PDB", "GRO", "XTC", "TRR", "TPR", "GRO_velocity",  # Gromacs (AdK)
     "PDB_xvf", "TPR_xvf", "TRR_xvf",  # Gromacs coords/veloc/forces (cobrotoxin, OPLS-AA, Gromacs 4.5.5 tpr)
+    "PDB_xlserial",
     "TPR400", "TPR402", "TPR403", "TPR404", "TPR405", "TPR406", "TPR407",
     "TPR450", "TPR451", "TPR452", "TPR453", "TPR454", "TPR455", "TPR455Double",
     "TPR460", "TPR461",
@@ -97,6 +99,7 @@ DCD_empty = resource_filename(__name__, 'data/empty.dcd')
 CRD = resource_filename(__name__, 'data/adk_open.crd')
 PSF_TRICLINIC = resource_filename(__name__, 'data/tip125_tric_C36.psf')
 DCD_TRICLINIC = resource_filename(__name__, 'data/tip125_tric_C36.dcd')
+DCD2 = resource_filename(__name__, 'data/adk_dims2.dcd')
 
 PSF_NAMD = resource_filename(__name__, 'data/namd_cgenff.psf')
 PDB_NAMD = resource_filename(__name__, 'data/namd_cgenff.pdb')
@@ -122,6 +125,7 @@ TPR = resource_filename(__name__, 'data/adk_oplsaa.tpr')
 PDB_sub_dry = resource_filename(__name__, 'data/cobrotoxin_dry_neutral_0.pdb')
 TRR_sub_sol = resource_filename(__name__, 'data/cobrotoxin.trr')
 PDB_sub_sol = resource_filename(__name__, 'data/cobrotoxin.pdb')
+PDB_xlserial = resource_filename(__name__, 'data/xl_serial.pdb')
 
 PDB_xvf = resource_filename(__name__, 'data/cobrotoxin.pdb')
 TPR_xvf = resource_filename(__name__, 'data/cobrotoxin.tpr')

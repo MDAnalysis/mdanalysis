@@ -41,6 +41,7 @@ from __future__ import absolute_import
 import numpy as np
 import logging
 import string
+import functools
 
 from ..core.AtomGroup import Atom
 from ..lib.util import openany, conv_float
@@ -375,6 +376,7 @@ class DATAParser(TopologyReader):
         return nitems, ntypes, box
 
 
+@functools.total_ordering
 class LAMMPSAtom(object):  # pragma: no cover
     __slots__ = ("index", "name", "type", "chainid", "charge", "mass", "_positions")
 
@@ -390,8 +392,8 @@ class LAMMPSAtom(object):  # pragma: no cover
         return "<LAMMPSAtom " + repr(self.index + 1) + ": name " + repr(self.type) + " of chain " + repr(
             self.chainid) + ">"
 
-    def __cmp__(self, other):
-        return cmp(self.index, other.index)
+    def __lt__(self, other):
+        return self.index < other.index
 
     def __eq__(self, other):
         return self.index == other.index

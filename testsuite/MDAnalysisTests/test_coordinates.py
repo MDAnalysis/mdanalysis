@@ -19,23 +19,21 @@ import MDAnalysis as mda
 import MDAnalysis.coordinates
 import MDAnalysis.coordinates.core
 from MDAnalysis import NoDataError
-from MDAnalysis.coordinates.base import Timestep
 
 import numpy as np
-import cPickle
 from numpy.testing import *
 from nose.plugins.attrib import attr
 
 from MDAnalysisTests.datafiles import (
-    PSF, DCD, DCD_empty, PDB_small, XPDB_small, PDB_closed, PDB_multiframe, PDB_full,
-    PDB, CRD, XTC, TRR, GRO, DMS, CONECT, INC_PDB,
-    XYZ, XYZ_bz2, XYZ_psf, PRM, TRJ, TRJ_bz2, PRMpbc, TRJpbc_bz2, PRMncdf, NCDF, PQR,
-    PDB_sub_dry, TRR_sub_sol, PDB_sub_sol, TRZ, TRZ_psf, LAMMPSdata, LAMMPSdata_mini,
-    PSF_TRICLINIC, DCD_TRICLINIC, PSF_NAMD_TRICLINIC, DCD_NAMD_TRICLINIC,
-    GMS_ASYMOPT, GMS_SYMOPT, GMS_ASYMSURF, XYZ_mini, PFncdf_Top, PFncdf_Trj,
-    INPCRD, XYZ_five, two_water_gro,
-    DLP_CONFIG, DLP_CONFIG_order, DLP_CONFIG_minimal,
-    DLP_HISTORY, DLP_HISTORY_order, DLP_HISTORY_minimal)
+    PSF, DCD, DCD_empty, PDB_small, XPDB_small, PDB_closed, PDB_multiframe,
+    PDB_full, PDB, CRD, XTC, TRR, GRO, DMS, CONECT, INC_PDB, XYZ, XYZ_bz2,
+    XYZ_psf, PRM, TRJ, TRJ_bz2, PRMpbc, TRJpbc_bz2, PRMncdf, NCDF, PQR,
+    PDB_sub_dry, TRR_sub_sol, PDB_sub_sol, TRZ, TRZ_psf, LAMMPSdata,
+    LAMMPSdata_mini, PSF_TRICLINIC, DCD_TRICLINIC, PSF_NAMD_TRICLINIC,
+    DCD_NAMD_TRICLINIC, GMS_ASYMOPT, GMS_SYMOPT, GMS_ASYMSURF, XYZ_mini,
+    PFncdf_Top, PFncdf_Trj, INPCRD, XYZ_five, two_water_gro, DLP_CONFIG,
+    DLP_CONFIG_order, DLP_CONFIG_minimal, DLP_HISTORY, DLP_HISTORY_order,
+    DLP_HISTORY_minimal, PDB_xlserial)
 
 from MDAnalysisTests.plugins.knownfailure import knownfailure
 
@@ -72,7 +70,8 @@ class RefAdKSmall(object):
     ref_charmm_Hcharges = [0.33] + 203 * [0.31]
     ref_charmm_ArgCAcharges = 13 * [0.07]
     ref_charmm_ProNcharges = 10 * [-0.29]
-    ref_unitcell = np.array([80.017, 80.017, 80.017, 60., 60., 90.], dtype=np.float32)
+    ref_unitcell = np.array([80.017, 80.017, 80.017, 60., 60., 90.],
+                            dtype=np.float32)
     ref_volume = 0.0
 
 
@@ -121,12 +120,12 @@ class Ref4e43(object):
              "2 SITE"]
     compnd = ["MOL_ID: 1;",
               "2 MOLECULE: PROTEASE;",
-              "3 CHAIN: A, B;",                                                    
+              "3 CHAIN: A, B;",
               "4 ENGINEERED: YES;",
               "5 MUTATION: YES;",
-              "6 MOL_ID: 2;",                                      
+              "6 MOL_ID: 2;",
               "7 MOLECULE: RANDOM PEPTIDE;",
-              "8 CHAIN: C;",                                   
+              "8 CHAIN: C;",
               "9 ENGINEERED: YES;",
               "10 OTHER_DETAILS: UNKNOWN IMPURITY",
         ]
@@ -174,15 +173,10 @@ class TestXYZReader(TestCase, Ref2r9r):
         frames = [ts.frame for ts in trj_iter]
         assert_equal(frames, np.arange(self.universe.trajectory.n_frames))
 
-    def test_slice_raises_TypeError(self):
-        def trj_iter():
-            return list(self.universe.trajectory[::2])
+    def test_slice(self):
+        frames = [ts.frame for ts in self.universe.trajectory[::2]]
+        assert_equal(frames, np.arange(len(self.universe.trajectory))[::2])
 
-        assert_raises(TypeError, trj_iter)
-
-        # for whenever full slicing is implemented ...
-        #frames = [ts.frame-1 for ts in trj_iter()]
-        #assert_equal(frames, np.arange(self.universe.trajectory.n_frames, step=2))
 
 class TestXYZReaderAsTopology(object):
     """Test that an XYZ file can act as its own topology"""
@@ -240,11 +234,9 @@ class TestCompressedXYZReader(TestCase, Ref2r9r):
         frames = [ts.frame for ts in trj_iter]
         assert_equal(frames, np.arange(self.universe.trajectory.n_frames))
 
-    def test_slice_raises_TypeError(self):
-        def trj_iter():
-            return list(self.universe.trajectory[::2])
-
-        assert_raises(TypeError, trj_iter)
+    def test_slice(self):
+        frames = [ts.frame for ts in self.universe.trajectory[::2]]
+        assert_equal(frames, np.arange(len(self.universe.trajectory))[::2])
 
     def test_rewind(self):
         self.universe.trajectory.rewind()
@@ -636,7 +628,7 @@ class TestINPCRDReader(TestCase):
                         [7.1129439, 4.6170351, -7.9729560]])
         for ref, val in itertools.izip(ref_pos, ts._pos):
             assert_allclose(ref, val)
-    
+
     def test_reader(self):
         from MDAnalysis.coordinates.INPCRD import INPReader
 
@@ -651,7 +643,7 @@ class TestINPCRDReader(TestCase):
         self._check_ts(u.trajectory.ts)
 
     def test_universe_restrt(self):
-        u = MDAnalysis.Universe(XYZ_five, INPCRD, format='RESTRT') 
+        u = MDAnalysis.Universe(XYZ_five, INPCRD, format='RESTRT')
         self._check_ts(u.trajectory.ts)
 
 
@@ -820,7 +812,7 @@ class _PDBMetadata(TestCase, Ref4e43):
 
     def setUp(self):
         self.universe = mda.Universe(self.filename, permissive=self.permissive)
-        
+
     def tearDown(self):
         del self.universe
 
@@ -1014,21 +1006,21 @@ class TestGMSReader(TestCase):
                 err_msg="Wrong number of frames read from GAMESS C1 surface")
 
     def test_step5distances_asymopt(self):
-        '''TestGMSReader: C1 optimization: 
+        '''TestGMSReader: C1 optimization:
             distance between 1st and 4th atoms changes after 5 steps '''
         desired = -0.0484664
         assert_almost_equal(self.__calcFD(self.u_aso), desired, decimal=5,
                 err_msg="Wrong 1-4 atom distance change after 5 steps for GAMESS C1 optimization")
 
     def test_step5distances_symopt(self):
-        '''TestGMSReader: Symmetry-input optimization: 
+        '''TestGMSReader: Symmetry-input optimization:
             distance between 1st and 4th atoms changes after 5 steps '''
         desired = 0.227637
         assert_almost_equal(self.__calcFD(self.u_so), desired, decimal=5,
                 err_msg="Wrong 1-4 atom distance change after 5 steps for GAMESS D4H optimization")
 
     def test_step5distances_asymsurf(self):
-        '''TestGMSReader: Symmetry-input potential-energy surface: 
+        '''TestGMSReader: Symmetry-input potential-energy surface:
             distance between 1st and 4th atoms changes after 5 steps '''
         desired = -0.499996
         assert_almost_equal(self.__calcFD(self.u_ass), desired, decimal=5,
@@ -1673,6 +1665,15 @@ class TestPDBReaderBig(TestCase, RefAdK):
         assert_almost_equal(self.universe.coord.volume, self.ref_volume, 0,
                             err_msg="wrong volume for unitcell (rhombic dodecahedron)")
 
+    def test_n_residues(self):
+        # Should have first 10000 residues, then another 1302
+        assert_(len(self.universe.residues) == 10000 + 1302)
+
+    def test_first_residue(self):
+        # First residue is a MET, shouldn't be smushed together
+        # with a water
+        assert_(len(self.universe.residues[0]) == 19)
+
 
 @attr('issue')
 def TestDCD_Issue32():
@@ -1727,6 +1728,22 @@ class TestDCDReader(_TestDCD):
     def test_slice_dcd(self):
         frames = [ts.frame for ts in self.dcd[5:17:3]]
         assert_equal(frames, [5, 8, 11, 14], "slicing dcd [5:17:3]")
+
+    def test_list_trajectory(self):
+        frames = [ts.frame for ts in self.dcd[[0, 3, 4, 5]]]
+        assert_equal(frames, [0, 3, 4, 5])
+
+    def test_array_trajectory(self):
+        frames = [ts.frame for ts in self.dcd[np.array([0, 3, 4, 5])]]
+        assert_equal(frames, [0, 3, 4, 5])
+
+    def test_list_reverse_trajectory(self):
+        frames = [ts.frame for ts in self.dcd[[0, 4, 2, 3, 0, 1]]]
+        assert_equal(frames, [0, 4, 2, 3, 0, 1])
+
+    def test_list_repeated_trajectory(self):
+        frames = [ts.frame for ts in self.dcd[[0, 0, 1, 1, 2, 1, 1]]]
+        assert_equal(frames, [0, 0, 1, 1, 2, 1, 1])
 
     def test_reverse_dcd(self):
         frames = [ts.frame for ts in self.dcd[20:5:-1]]
@@ -3124,7 +3141,7 @@ class _DLHistory(object):
                         [-6.787470785, -6.912685099, -6.922156843]])
         for ts, r in itertools.izip(self.u.trajectory, ref):
             assert_allclose(self.u.atoms[0].pos, r)
-        
+
     def test_velocity(self):
         ref = np.array([[1.109901682, -1.500264697, 4.752251711],
                         [-1.398479696, 2.091141311, 1.957430003],
@@ -3209,3 +3226,43 @@ class TestIncompletePDB(object):
         assert 'VAL' in self.u.atoms.resnames
         assert 'LYS' in self.u.atoms.resnames
         assert 'PHE' in self.u.atoms.resnames
+
+    def test_reading_trajectory(self):
+        for ts in self.u.trajectory:
+            pass
+
+    def test_occupancy(self):
+        occupancies = self.u.atoms.occupancies
+        assert_array_almost_equal(occupancies,
+                                  np.ones(len(occupancies)))
+
+    def test_set_occupancy(self):
+        for atom in self.u.atoms:
+            atom.occupancy = 0
+        assert_almost_equal(self.u.atoms.occupancies,
+                            np.zeros(self.u.atoms.n_atoms))
+
+    def test_set_occupancies(self):
+        self.u.atoms.occupancies = 0.0
+        assert_almost_equal(self.u.atoms.occupancies,
+                            np.zeros(self.u.atoms.n_atoms))
+
+
+class TestPDBXLSerial(object):
+    """For Issue #446"""
+    def setUp(self):
+        self.u = mda.Universe(PDB_xlserial)
+
+    def tearDown(self):
+        del self.u
+
+    def test_load(self):
+        # Check that universe loads ok, should be 4 atoms
+        assert_(len(self.u.atoms) == 4)
+
+    def test_serials(self):
+        # These should be none
+        assert_(self.u.atoms[0].serial == 99998)
+        assert_(self.u.atoms[1].serial == 99999)
+        assert_(self.u.atoms[2].serial == None)
+        assert_(self.u.atoms[3].serial == None)

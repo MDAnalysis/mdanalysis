@@ -239,7 +239,7 @@ class PDBReader(base.SingleFrameReader):
               the ``primitive=True`` keyword for :class:`Universe`).
 
     .. versionchanged:: 0.11.0
-       * Frames now 0-based instead of 1-based. 
+       * Frames now 0-based instead of 1-based.
        * All PDB header metadata parsed by the reader is available in
          the dict :attr:`metadata`.
 
@@ -396,16 +396,16 @@ class PrimitivePDBReader(base.Reader):
      - *CRYST1* for unitcell A,B,C, alpha,beta,gamma
      - *ATOM* or *HETATM* for serial,name,resName,chainID,resSeq,x,y,z,occupancy,tempFactor
      - *HEADER* (:attr:`header`), *TITLE* (:attr:`title`), *COMPND*
-       (:attr:`compound`), *REMARK* (:attr:`remarks`) 
+       (:attr:`compound`), *REMARK* (:attr:`remarks`)
      - all other lines are ignored
 
     Reads multi-`MODEL`_ PDB files as trajectories.
 
-    .. _PDB-formatted: 
+    .. _PDB-formatted:
        http://www.wwpdb.org/documentation/file-format-content/format33/v3.3.html
-    .. _PDB coordinate section: 
+    .. _PDB coordinate section:
        http://www.wwpdb.org/documentation/format32/sect9.html
-    .. _MODEL: 
+    .. _MODEL:
        http://www.wwpdb.org/documentation/format32/sect9.html#MODEL
 
     =============  ============  ===========  =============================================
@@ -477,9 +477,9 @@ class PrimitivePDBReader(base.Reader):
         frames = {}
 
         self.ts = self._Timestep(self._n_atoms, **self._ts_kwargs)
-        
+
         pos = 0  # atom position for filling coordinates array
-        self._occupancy = []
+        occupancy = np.ones(self._n_atoms)
         with util.openany(filename, 'r') as pdbfile:
             for i, line in enumerate(pdbfile):
                 line = line.strip()  # Remove extra spaces
@@ -498,7 +498,7 @@ class PrimitivePDBReader(base.Reader):
                     # classification = line[10:50]
                     # date = line[50:59]
                     # idCode = line[62:66]
-                    header = line[10:66] 
+                    header = line[10:66]
                     continue
                 elif record == 'TITLE':
                     l = line[8:80].strip()
@@ -520,18 +520,16 @@ class PrimitivePDBReader(base.Reader):
                     if len(frames) > 1:
                         continue
                     self.ts._pos[pos] = map(float, [line[30:38], line[38:46], line[46:54]])
-                    pos += 1
                     try:
-                        occupancy = float(line[54:60])
+                        occupancy[pos] = float(line[54:60])
                     except ValueError:
                         pass
-                    else:
-                        self._occupancy.append(occupancy)
+                    pos += 1
 
         self.header = header
         self.title = title
         self.compound = compound
-        self.remarks = remarks        
+        self.remarks = remarks
 
         if pos != self._n_atoms:
             raise ValueError("Read an incorrect number of atoms\n"
@@ -540,6 +538,7 @@ class PrimitivePDBReader(base.Reader):
         self.n_atoms = pos
 
         self.ts.frame = 0  # 0-based frame number as starting frame
+        self.ts.data['occupancy'] = occupancy
 
         if self.convert_units:
             self.convert_pos_from_native(self.ts._pos)  # in-place !
@@ -598,30 +597,35 @@ class PrimitivePDBReader(base.Reader):
             # single frame file, we already have the timestep
             return self.ts
 
-        # TODO: only open file once and leave the file open; then seek back and forth;
-        #       should improve performance substantially
+        # TODO: only open file once and leave the file open; then seek back and
+        #       forth; should improve performance substantially
         pos = 0
-        self._occupancy = []
+        occupancy = np.ones(self._n_atoms)
         with util.openany(self.filename, 'r') as f:
             for i in xrange(line):
                 f.next()  # forward to frame
             for line in f:
                 if line[:6] == 'ENDMDL':
                     break
-                # NOTE - CRYST1 line won't be found if it comes before the MODEL line,
-                # which is sometimes the case, e.g. output from gromacs trjconv
+                # NOTE - CRYST1 line won't be found if it comes before the MODEL
+                # line, which is sometimes the case, e.g. output from gromacs
+                # trjconv
                 elif line[:6] == 'CRYST1':
                     A, B, C = map(float, [line[6:15], line[15:24], line[24:33]])
-                    alpha, beta, gamma = map(float, [line[33:40], line[40:47], line[47:54]])
+                    alpha, beta, gamma = map(float, [line[33:40], line[40:47],
+                                                     line[47:54]])
                     self.ts._unitcell[:] = A, B, C, alpha, beta, gamma
                     continue
                 elif line[:6] in ('ATOM  ', 'HETATM'):
                     # we only care about coordinates
-                    self.ts._pos[pos] = map(float, [line[30:38], line[38:46], line[46:54]])
-                    pos += 1
+                    self.ts._pos[pos] = map(float, [line[30:38], line[38:46],
+                                                    line[46:54]])
                     # TODO import bfactors - might these change?
-                    occupancy = float(line[54:60])
-                    self._occupancy.append(occupancy)
+                    try:
+                        occupancy[pos] = float(line[54:60])
+                    except:
+                        pass
+                    pos += 1
                     continue
 
         # check if atom number changed
@@ -634,6 +638,7 @@ class PrimitivePDBReader(base.Reader):
             self.convert_pos_from_native(self.ts._pos)  # in-place !
             self.convert_pos_from_native(self.ts._unitcell[:3])  # in-place ! (only lengths)
         self.ts.frame = frame
+        self.ts.data['occupancy'] = occupancy
         return self.ts
 
 

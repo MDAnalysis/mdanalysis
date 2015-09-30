@@ -111,12 +111,81 @@ class TestAtom(TestCase):
         def lookup_uni(a):
             return a.universe
 
-        assert_raises(AttributeError, lookup_uni, at)
+        assert_raises(NoDataError, lookup_uni, at)
 
     def test_bonded_atoms(self):
         at = self.universe.atoms[0]
         ref = [b.partner(at) for b in at.bonds]
         assert_equal(ref, list(at.bonded_atoms))
+
+    @raises(NoDataError)
+    def test_undefined_occupancy(self):
+        self.universe.atoms[0].occupancy
+
+    def test_set_undefined_occupancy(self):
+        self.universe.atoms[0].occupancy = .5
+        assert self.universe.atoms[0].occupancy == .5
+        assert self.universe.atoms[1].occupancy == 1
+
+
+class TestAtomComparisons(object):
+    """Test the comparison operators for Atom"""
+    def setUp(self):
+        self.at1 = Atom(1, 'a', 'ta', 'rn', 1, 's1', 0.01, 0.01)
+        self.at2 = Atom(2, 'a', 'ta', 'rn', 1, 's1', 0.01, 0.01)
+        self.at3 = Atom(3, 'a', 'ta', 'rn', 1, 's1', 0.01, 0.01)
+        self.at4 = Atom(4, 'a', 'ta', 'rn', 1, 's1', 0.01, 0.01)
+
+    def tearDown(self):
+        del self.at1
+        del self.at2
+        del self.at3
+        del self.at4
+
+    def test_lt(self):
+        assert_((self.at1 < self.at2) == True)
+        assert_((self.at3 < self.at2) == False)
+        assert_((self.at2 < self.at2) == False)
+
+    def test_gt(self):
+        assert_((self.at2 > self.at1) == True)
+        assert_((self.at2 > self.at3) == False)
+        assert_((self.at2 > self.at2) == False)
+
+    def test_eq(self):
+        assert_((self.at2 == self.at2) == True)
+        assert_((self.at2 == self.at3) == False)
+
+        # We only check index of atom, so these are equal
+        # despite being different objects.
+        pseudo_at2 = Atom(2, 'b', 'tb', 'rm', 2, 's2', 0.02, 0.02)
+        assert_((self.at2 == pseudo_at2) == True)
+
+    def test_neq(self):
+        assert_((self.at2 != self.at3) == True)
+        assert_((self.at2 != self.at2) == False)
+
+    def test_geq(self):
+        assert_((self.at2 >= self.at1) == True)
+        assert_((self.at2 >= self.at2) == True)
+        assert_((self.at2 >= self.at3) == False)
+
+    def test_leq(self):
+        assert_((self.at2 <= self.at3) == True)
+        assert_((self.at2 <= self.at2) == True)
+        assert_((self.at2 <= self.at1) == False)
+
+    def test_sorting_1(self):
+        l = [self.at1, self.at2, self.at3, self.at4]
+        assert_(sorted(l) == l)
+
+    def test_sorting_2(self):
+        l = [self.at2, self.at3, self.at1, self.at4]
+        assert_(sorted(l) == [self.at1, self.at2, self.at3, self.at4])
+
+    def test_sorting_3(self):
+        l = [self.at2, self.at2, self.at3, self.at1]
+        assert_(sorted(l) == [self.at1, self.at2, self.at2, self.at3])
 
 
 class TestAtomNoForceNoVel(TestCase):
@@ -318,6 +387,17 @@ class TestAtomGroup(TestCase):
         bfactors = self.ag.bfactors  # property, not method!
         assert_array_equal(bfactors[0:3], np.array([None, None, None]))
 
+    def test_occupancies(self):
+        assert_raises(NoDataError, getattr, self.ag, 'occupancies')
+        self.ag.occupancies = 0.25
+        assert_array_almost_equal(self.ag.occupancies, np.ones(len(self.ag)) * 0.25)
+
+    def test_sequence_from_atoms(self):
+        p = self.universe.select_atoms("protein")
+        assert_equal(p.sequence(format="string"),
+                     p.residues.sequence(format="string"),
+                     err_msg="sequence() yields different results for residues and atoms")
+
     def test_sequence_string(self):
         p = self.universe.select_atoms("protein")
         assert_equal(p.residues.sequence(format="string"), self.ref_adk_sequence)
@@ -345,17 +425,20 @@ class TestAtomGroup(TestCase):
     def test_sequence_nonIUPACresname(self):
         """test_sequence_nonIUPACresname: non recognized amino acids raise ValueError"""
         # fake non-IUPAC residue name for this test
-        self.universe.select_atoms("resname MET").set_resnames("MSE")
-        self.universe.atoms._rebuild_caches()
+        self.universe.select_atoms("resname MET").residues.set_resnames("MSE")
         def wrong_res():
             self.universe.atoms.sequence()
         assert_raises(ValueError, wrong_res)
 
-    def test_no_uni(self):
+    def test_no_uni_1(self):
         at1 = Atom(1, 'dave', 'C', 'a', 1, 1, 0.1, 0.0)
         at2 = Atom(2, 'dave', 'C', 'a', 1, 1, 0.1, 0.0)
         ag = AtomGroup([at1, at2])
-        assert_equal(ag.universe, None)
+        assert_raises(NoDataError, getattr, ag, 'universe')
+
+    def test_no_uni_2(self):
+        ag = AtomGroup([])
+        assert_raises(NoDataError, getattr, ag, 'universe')
 
     def test_bad_add_AG(self):
         def bad_add():
@@ -1367,6 +1450,10 @@ class _WriteAtoms(TestCase):
         assert_array_almost_equal(self.universe.atoms.coordinates(), u2.atoms.coordinates(), self.precision,
                                   err_msg="atom coordinate mismatch between original and %s file" % self.ext)
 
+    def test_write_empty_atomgroup(self):
+        sel = self.universe.select_atoms('name doesntexist')
+        assert_raises(IndexError, sel.write, self.outfile)
+
     def test_write_selection(self):
         CA = self.universe.select_atoms('name CA')
         CA.write(self.outfile)
@@ -1984,24 +2071,6 @@ class TestGuessBonds(TestCase):
 class TestAtomGroupProperties(object):
     """Test working with the properties of Atoms via AtomGroups
 
-    list of properties:
-    - name x
-    - altLoc x
-    - type x
-    - mass x
-    - charge x
-    - radius x
-    - bfactor x
-    - serial x
-
-    Residue/Segment related ones:
-    - resname
-    - resid
-    - resnum
-    - residue?
-    - segid?
-    - segment?
-
     Check that:
     - getting properties from AG matches the Atom values
     - setting properties from AG changes the Atom
@@ -2053,6 +2122,7 @@ class TestAtomGroupProperties(object):
 
     def test_attributes(self):
         u = MDAnalysis.Universe(PSF, DCD)
+        u.atoms.occupancies = 1.0
         master = u.atoms
         idx = [0, 1, 4, 7, 11, 14]
         ag = master[idx]
@@ -2067,7 +2137,8 @@ class TestAtomGroupProperties(object):
                 ('charge', 'charges', 'float', ag.set_charges),
                 ('mass', 'masses', 'float', ag.set_masses),
                 ('radius', 'radii', 'float', ag.set_radii),
-                ('bfactor', 'bfactors', 'float', ag.set_bfactors)
+                ('bfactor', 'bfactors', 'float', ag.set_bfactors),
+                ('occupancy', 'occupancies', 'float', ag.set_occupancies)
         ):
             vals = self.get_new(att_type)
             yield self._check_plural, att, atts
@@ -2075,3 +2146,38 @@ class TestAtomGroupProperties(object):
             yield self._check_ag_matches_atom, att, atts, ag
             yield self._change_atom_check_ag, att, vals, ag
             yield self._change_ag_check_atoms, att, vals, ag, ag_set
+
+
+class TestOrphans(object):
+    """Test moving Universes out of scope and having A/AG persist
+
+    Atoms and AtomGroups from other scopes should work, namely:
+      - should have access to Universe
+      - should be able to use the Reader (coordinates)
+    """
+    def test_atom(self):
+        u = MDAnalysis.Universe(two_water_gro)
+
+        def getter():
+            u2 = MDAnalysis.Universe(two_water_gro)
+            return u2.atoms[1]
+
+        atom = getter()
+
+        assert_(atom is not u.atoms[1])
+        assert_(len(atom.universe.atoms) == len(u.atoms))
+        assert_array_almost_equal(atom.position, u.atoms[1].position)
+
+    def test_atomgroup(self):
+        u = MDAnalysis.Universe(two_water_gro)
+
+        def getter():
+            u2 = MDAnalysis.Universe(two_water_gro)
+            return u2.atoms[:4]
+
+        ag = getter()
+        ag2 = u.atoms[:4]
+        assert_(ag is not ag2)
+        assert_(len(ag.universe.atoms) == len(u.atoms))
+        assert_array_almost_equal(ag.positions, ag2.positions)
+

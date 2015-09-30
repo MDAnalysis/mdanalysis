@@ -48,6 +48,8 @@ Classes
 """
 from __future__ import absolute_import
 
+import warnings
+
 from ..core.AtomGroup import Atom
 from .core import get_atom_mass, guess_atom_element
 from ..lib.util import openany
@@ -86,8 +88,9 @@ class PrimitivePDBParser(TopologyReader):
     def _parseatoms(self):
         iatom = 0
         atoms = []
-        
+
         with openany(self.filename) as f:
+            resid_prev = 0  # resid looping hack
             for i, line in enumerate(f):
                 line = line.strip()  # Remove extra spaces
                 if len(line) == 0:  # Skip line if empty
@@ -97,15 +100,26 @@ class PrimitivePDBParser(TopologyReader):
                 if record.startswith('END'):
                     break
                 elif line[:6] in ('ATOM  ', 'HETATM'):
-                    serial = int(line[6:11])
+                    try:
+                        serial = int(line[6:11])
+                    except ValueError:
+                        # serial can become '***' when they get too high
+                        self._wrapped_serials = True
+                        serial = None
                     name = line[12:16].strip()
                     altLoc = line[16:17].strip()
                     resName = line[17:21].strip()
                     chainID = line[21:22].strip()  # empty chainID is a single space ' '!
                     if self.format == "XPDB":  # fugly but keeps code DRY
                         resSeq = int(line[22:27])  # extended non-standard format used by VMD
+                        resid = resSeq
                     else:
                         resSeq = int(line[22:26])
+                        resid = resSeq
+
+                        while resid - resid_prev < -5000:
+                            resid += 10000
+                        resid_prev = resid
                         # insertCode = _c(27, 27, str)  # not used
                         # occupancy = float(line[54:60])
                     try:
@@ -123,11 +137,12 @@ class PrimitivePDBParser(TopologyReader):
                     mass = get_atom_mass(elem)
                     # charge = guess_atom_charge(name)
                     charge = 0.0
-                    
-                    atom = Atom(iatom, name, atomtype, resName, resSeq,
+
+                    atom = Atom(iatom, name, atomtype, resName, resid,
                                 segid, mass, charge,
                                 bfactor=tempFactor, serial=serial,
-                                altLoc=altLoc, universe=self._u)
+                                altLoc=altLoc, universe=self._u,
+                                resnum=resSeq)
                     iatom += 1
                     atoms.append(atom)
 
@@ -139,6 +154,12 @@ class PrimitivePDBParser(TopologyReader):
         # ie do one pass through the file only        
         # Problem is that in multiframe PDB, the CONECT is at end of file,
         # so the "break" call happens before bonds are reached.
+
+        # If the serials wrapped, this won't work
+        if hasattr(self, '_wrapped_serials'):
+            warnings.warn("Invalid atom serials were present, bonds will not"
+                          " be parsed")
+            return tuple([])
 
         # Mapping between the atom array indicies a.index and atom ids
         # (serial) in the original PDB file

@@ -36,18 +36,27 @@ import numpy as np
 
 from ..exceptions import NoDataError
 
+
 # geometric functions
 def norm(v):
-    r"""Returns the length of a vector, ``sqrt(v.v)``.
+    r"""Calculate the norm of a vector v.
 
-    .. math::
+    .. math:: v = \sqrt{\mathbf{v}\cdot\mathbf{v}}
 
-       v = \sqrt{\mathbf{v}\cdot\mathbf{v}}
+    This version is faster then numpy.linalg.norm because it only works for a
+    single vector and therefore can skip a lot of the additional fuss
+    linalg.norm does.
 
-    Faster than :func:`numpy.linalg.norm` because no frills.
+    Parameters
+    ----------
+    v: array_like
+        1D array of shape (N) for a vector of length N
 
-    .. versionchanged:: 0.11.0
-       Moved into lib.mdamath
+    Returns
+    -------
+    float
+        norm of the vector
+
     """
     return np.sqrt(np.dot(v, v))
 
@@ -257,7 +266,7 @@ def make_whole(atomgroup, reference_atom=None):
       *atomgroup*
         The :class:`MDAnalysis.core.AtomGroup.AtomGroup` to work with.
         The positions of this are modified in place.  All these atoms
-        must belong in the same molecule.
+        must belong in the same molecule or fragment.
 
     :Keywords:
       *reference_atom*
@@ -321,6 +330,18 @@ def make_whole(atomgroup, reference_atom=None):
     if not atomgroup.bonds:
         raise NoDataError("The atomgroup is required to have bonds")
 
+    if reference_atom is None:
+        ref = atomgroup[0]
+    else:
+        ref = reference_atom
+        # Sanity check
+        if not ref in atomgroup:
+            raise ValueError("Reference atom not in atomgroup")
+
+    # Check all of atomgroup is accessible from ref
+    if not _is_contiguous(atomgroup, ref):
+        raise ValueError("atomgroup not contiguous from bonds")
+
     # Not sure if this is actually a requirement...
     # I think application of pbc would need to be changed for triclinic boxes
     # but that's all?  How does minimum bond length criteria change?
@@ -337,24 +358,13 @@ def make_whole(atomgroup, reference_atom=None):
     if bondlengths.min() * 1.4 > box_length:
         raise ValueError("Box lengths are too small relative to bond lengths")
 
+    # All checks done, let's continue
     # If bond lengths don't change after pbc applied, then no bonds
     # straddle the box boundaries
     if np.allclose(atomgroup.bonds.bonds(), bondlengths):
         return
     # Can't reuse this calculation of bond lengths as we're changing
     # stuff as we go.
-
-    if reference_atom is None:
-        ref = atomgroup[0]
-    else:
-        ref = reference_atom
-        # Sanity check
-        if not ref in atomgroup:
-            raise ValueError("Reference atom not in atomgroup")
-
-    # Check all of atomgroup is accessible from ref
-    if not _is_contiguous(atomgroup, ref):
-        raise ValueError("atomgroup not contiguous from bonds")
 
     processed = set()  # Who have I already done?
     ref_points = set([ref])  # Who is safe to use as reference point?

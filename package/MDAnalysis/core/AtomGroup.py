@@ -418,6 +418,7 @@ import copy
 import logging
 import os.path
 import weakref
+import functools
 
 # Local imports
 import MDAnalysis
@@ -447,12 +448,13 @@ _PLURAL_PROPERTIES = {'index': 'indices',
                       'resnum': 'resnums',
                       'altLoc': 'altLocs',
                       'serial': 'serials',
-                      'value': 'values'}
+                      'value': 'values',
+                      'occupancy': 'occupancies'}
 # And the return route
 _SINGULAR_PROPERTIES = {v: k for k, v in _PLURAL_PROPERTIES.items()}
 
 
-
+@functools.total_ordering
 class Atom(object):
     """A class representing a single atom.
 
@@ -479,6 +481,8 @@ class Atom(object):
        Changed references to :class:`Universe` to be weak.
        Renamed atom.number to atom.index
        Renamed atom.torsions to atom.dihedrals
+    .. versionchanged:: 0.11.1
+       Added occupancy property. Can get and set.
     """
 
     __slots__ = (
@@ -505,12 +509,7 @@ class Atom(object):
         self.radius = radius
         self.bfactor = bfactor
         self.serial = serial
-        # Beware: Atoms hold only weakrefs to the universe, enforced
-        #  throught the Atom.universe setter.
-        if universe is None:
-            self._universe = None
-        else:
-            self.universe = universe
+        self._universe = universe
 
     def __repr__(self):
         return ("<Atom {idx}: {name} of type {t} of resname {rname}, "
@@ -520,8 +519,8 @@ class Atom(object):
                     altloc="" if not self.altLoc
                     else " and altloc {0}".format(self.altLoc)))
 
-    def __cmp__(self, other):
-        return cmp(self.index, other.index)
+    def __lt__(self, other):
+        return self.index < other.index
 
     def __eq__(self, other):
         return self.index == other.index
@@ -530,9 +529,9 @@ class Atom(object):
         return hash(self.index)
 
     def __add__(self, other):
-        if not (isinstance(other, Atom) or isinstance(other, AtomGroup)):
-            raise TypeError('Can only concatenate Atoms (not "{0}")'
-                            ' to AtomGroup'.format(other.__class__.__name__))
+        if not isinstance(other, (Atom, AtomGroup)):
+            raise TypeError('Can only add Atoms or AtomGroups (not "{0}")'
+                            ' to Atom'.format(other.__class__.__name__))
         if isinstance(other, Atom):
             return AtomGroup([self, other])
         else:
@@ -606,6 +605,38 @@ class Atom(object):
             raise NoDataError("Timestep does not contain velocities")
 
     @property
+    def occupancy(self):
+        """Access occupancy values.
+
+        If available can have a value between 0 and 1
+
+        Returns
+        -------
+        float
+            occupancy of Atom
+
+        .. versionadded:: 0.11.1
+        """
+        try:
+            return self.universe.coord.data['occupancy'][self.index]
+        except KeyError:
+            raise NoDataError('Timestep does not contain occupancy')
+
+    @occupancy.setter
+    def occupancy(self, _occupancy):
+        """Set occupancy for an atom
+
+        If no occupancies are set in the universe of the atom the occupancy
+        of the other atoms will be set to 1.
+        """
+        try:
+            self.universe.coord.data['occupancy'][self.index] = _occupancy
+        except KeyError:
+            n_atoms = self.universe.coord.n_atoms
+            self.universe.coord.data['occupancy'] = np.ones(n_atoms)
+            self.universe.coord.data['occupancy'][self.index] = _occupancy
+
+    @property
     def force(self):
         """Current force of the atom.
 
@@ -639,18 +670,15 @@ class Atom(object):
 
     @property
     def universe(self):
-        """a pointer back to the Universe"""
-        # Beware: Atoms hold only weakrefs to the universe. We call them to get hard references.
-        if self._universe is not None and self._universe() is not None:
-            return self._universe()
+        """A pointer back to the Universe of this Atom"""
+        if self._universe is None:
+            raise NoDataError("This Atom does not belong to a Universe")
         else:
-            raise AttributeError(
-                "Atom {0} is not assigned to a Universe".format(self.index))
+            return self._universe
 
     @universe.setter
-    def universe(self, universe):
-        # Beware: Atoms hold only weakrefs to the universe
-        self._universe = weakref.ref(universe)
+    def universe(self, new):
+        self._universe = new
 
     @property
     def bonded_atoms(self):
@@ -811,6 +839,8 @@ class AtomGroup(object):
        Properties referring to residue (``resids``, ``resnames``, ``resnums``)
        or segment [``segids``] properties now yield arrays of length equal to
        ``n_atoms``
+    .. versionchanged:: 0.11.1
+       Added occupancies property
     """
     # for generalized __getitem__ __iter__ and __len__
     # (override _containername for ResidueGroup and SegmentGroup)
@@ -957,8 +987,8 @@ class AtomGroup(object):
         """The universe to which the atoms belong (read-only)."""
         try:
             return self._atoms[0].universe
-        except (AttributeError, IndexError):
-            return None
+        except IndexError:
+            raise NoDataError("Zero length AtomGroup have no Universe")
 
     def __len__(self):
         """Number of atoms in the group"""
@@ -983,9 +1013,14 @@ class AtomGroup(object):
         cls = self._cls
 
         # consistent with the way list indexing/slicing behaves:
-        if np.dtype(type(item)) == np.dtype(int):
-            return container[item]
-        elif type(item) == slice:
+        if isinstance(item, int):
+            try:
+                return container[item]
+            except IndexError:
+                raise IndexError(
+                    "Index {} is out of bounds for AtomGroup with size {}"
+                    "".format(item, len(self)))
+        elif isinstance(item, slice):
             return cls(container[item])
         elif isinstance(item, (np.ndarray, list)):
             # advanced slicing, requires array or list
@@ -995,7 +1030,7 @@ class AtomGroup(object):
             except IndexError:  # zero length item
                 pass
             return cls([container[i] for i in item])
-        elif type(item) == str:
+        elif isinstance(item, str):
             return self._get_named_atom(item)
         else:
             raise TypeError("Cannot slice with type: {0}".format(type(item)))
@@ -1035,8 +1070,8 @@ class AtomGroup(object):
             return other in self._atoms
 
     def __add__(self, other):
-        if not (isinstance(other, Atom) or isinstance(other, AtomGroup)):
-            raise TypeError('Can only concatenate AtomGroup (not "{0}") to'
+        if not isinstance(other, (Atom, AtomGroup)):
+            raise TypeError('Can only concatenate Atom or AtomGroup (not "{0}") to'
                             ' AtomGroup'.format(other.__class__.__name__))
         if isinstance(other, AtomGroup):
             return AtomGroup(self._atoms + other._atoms)
@@ -1048,14 +1083,17 @@ class AtomGroup(object):
             n_atoms=len(self))
 
     def __getstate__(self):
-        if self.universe is None:
+        try:
+            universe = self.universe
+        except NoDataError:
             return None, None, None, None, None
+
         try: # We want to get the ChainReader case, where the trajectory has multiple filenames
-            fname = self.universe.trajectory.filenames
+            fname = universe.trajectory.filenames
         except AttributeError:
-            fname = self.universe.trajectory.filename
-        return (self.indices, self.universe.anchor_name, len(self.universe.atoms),
-                self.universe.filename, fname)
+            fname = universe.trajectory.filename
+        return (self.indices, universe.anchor_name, len(universe.atoms),
+                universe.filename, fname)
 
     def __setstate__(self, state):
         indices, anchor_name, universe_n_atoms = state[:3]
@@ -1070,9 +1108,9 @@ class AtomGroup(object):
                 self.__init__(test_universe.atoms[indices]._atoms)
                 return
         raise RuntimeError(("Couldn't find a suitable Universe to unpickle AtomGroup "
-                "onto. (needed a universe with {}{} atoms, topology filename: {}, and "
-                "trajectory filename: {}").format(
-                        "anchor_name: {}, ".format(anchor_name) if anchor_name is not None else "",
+                "onto. (needed a universe with {}{} atoms, topology filename: '{}', and "
+                "trajectory filename: '{}')").format(
+                        "anchor_name: '{}', ".format(anchor_name) if anchor_name is not None else "",
                         *state[2:]))
 
     @property
@@ -1128,6 +1166,32 @@ class AtomGroup(object):
 
     totalMass = deprecate(total_mass, old_name='totalMass', new_name='total_mass')
 
+    @property
+    def occupancies(self):
+        """Access occupancies of atoms
+
+        If available can have a value between 0 and 1
+
+        Returns
+        -------
+        ndarray
+            occupancies for all atoms in AtomGroup
+
+        .. versionadded:: 0.11.1
+        """
+        try:
+            return self.universe.coord.data['occupancy'][self.indices]
+        except KeyError:
+            raise NoDataError('Timestep does not contain occupancy')
+
+    @occupancies.setter
+    def occupancies(self, new):
+        try:
+            self.universe.coord.data['occupancy'][self.indices] = new
+        except KeyError:
+            n_atoms = self.universe.coord.n_atoms
+            self.universe.coord.data['occupancy'] = np.ones(n_atoms)
+            self.universe.coord.data['occupancy'][self.indices] = new
     @property
     def charges(self):
         """Array of partial charges of the atoms (as defined in the topology)
@@ -1409,7 +1473,7 @@ class AtomGroup(object):
             raise TypeError("Unknown format='{0}': must be one of: {1}".format(
                     format, ", ".join(formats)))
         try:
-            sequence = "".join([util.convert_aa_code(r) for r in self.resnames])
+            sequence = "".join([util.convert_aa_code(r) for r in self.residues.resnames])
         except KeyError as err:
             raise ValueError("AtomGroup contains a residue name '{0}' that "
                              "does not have a IUPAC protein 1-letter "
@@ -1609,6 +1673,18 @@ class AtomGroup(object):
     # override for ResidueGroup, SegmentGroup accordingly
     set = _set_atoms
 
+    def set_occupancies(self, occupancies):
+        """Set the occupancy for *all atoms* in the AtomGroup
+
+        If *value* is a sequence of the same length as the :class:`AtomGroup`
+        then each :attr:`Atom.name` is set to the corresponding value. If
+        *value* is neither of length 1 (or a scalar) nor of the length of the
+        :class:`AtomGroup` then a :exc:`ValueError` is raised.
+
+        .. versionadded:: 0.11.1
+        """
+        self.occupancies = occupancies
+
     def set_names(self, name):
         """Set the atom names to string for *all atoms* in the AtomGroup.
 
@@ -1716,8 +1792,6 @@ class AtomGroup(object):
         .. versionchanged:: 0.11.0
            Made plural to make consistent with corresponding property
         """
-        from MDAnalysis.topology.core import build_residues
-
         self.set("resname", resname, conversion=str)
 
     set_resname = deprecate(set_resnames, old_name='set_resname', new_name='set_resnames')
@@ -2836,6 +2910,10 @@ class AtomGroup(object):
         import MDAnalysis.coordinates
         import MDAnalysis.selections
 
+        # check that AtomGroup actually has any atoms (Issue #434)
+        if len(self.atoms) == 0:
+            raise IndexError("Cannot write an AtomGroup with 0 atoms")
+
         trj = self.universe.trajectory  # unified trajectory API
         frame = trj.ts.frame
 
@@ -3676,7 +3754,8 @@ class Universe(object):
                 # or if file is known as a topology & coordinate file, use that
                 if fmt is None:
                     fmt = util.guess_format(self.filename)
-                if fmt in MDAnalysis.coordinates._topology_coordinates_readers:
+                if (fmt in MDAnalysis.coordinates._trajectory_readers
+                    and fmt in MDAnalysis.topology._topology_parsers):
                     coordinatefile = self.filename
             # Fix by SB: make sure coordinatefile is never an empty tuple
             if len(coordinatefile) == 0:
@@ -4514,11 +4593,6 @@ class Universe(object):
         else:
             return False
 
-    # A __del__ method can be added to the Universe, but bear in mind that for
-    # that to work objects under Universe that hold backreferences to it can
-    # only do so using weakrefs. (Issue #297)
-    #def __del__(self):
-    #    pass
 
 def as_Universe(*args, **kwargs):
     """Return a universe from the input arguments.

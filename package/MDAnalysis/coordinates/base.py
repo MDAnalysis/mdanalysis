@@ -985,21 +985,34 @@ class ProtoReader(IObase):
 
         .. Note:: *frame* is a 0-based frame index.
         """
-        if (np.dtype(type(frame)) != np.dtype(int)) and (type(frame) != slice):
-            raise TypeError("The frame index (0-based) must be either an integer or a slice")
-        if (np.dtype(type(frame)) == np.dtype(int)):
-            if (frame < 0):
-                # Interpret similar to a sequence
-                frame = len(self) + frame
-            if (frame < 0) or (frame >= len(self)):
-                raise IndexError("Index %d exceeds length of trajectory (%d)." % (frame, len(self)))
-            return self._read_frame(frame)  # REPLACE WITH APPROPRIATE IMPLEMENTATION
-        elif type(frame) == slice:  # if frame is a slice object
-            start, stop, step = self._check_slice_indices(frame.start, frame.stop, frame.step)
+        def apply_limits(frame):
+            if frame < 0:
+                frame += len(self)
+            if frame < 0 or frame >= len(self):
+                raise IndexError("Index {} exceeds length of trajectory ({})."
+                                 "".format(frame, len(self)))
+            return frame
+
+        if isinstance(frame, int):
+            frame = apply_limits(frame)
+            return self._read_frame(frame)
+        elif isinstance(frame, (list, np.ndarray)):
+            def listiter(frames):
+                for f in frames:
+                    if not isinstance(f, int):
+                        raise TypeError("Frames indices must be integers")
+                    yield self._read_frame(apply_limits(f))
+            return listiter(frame)
+        elif isinstance(frame, slice):
+            start, stop, step = self._check_slice_indices(
+                frame.start, frame.stop, frame.step)
             if start == 0 and stop == len(self) and step == 1:
                 return self.__iter__()
             else:
                 return self._sliced_iter(start, stop, step)
+        else:
+            raise TypeError("Trajectories must be an indexed using an integer,"
+                            " slice or list of indices")
 
     def _read_frame(self, frame):
         """Move to *frame* and fill timestep with data."""

@@ -23,6 +23,8 @@ and https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
     - renamed test_selections.py to test_atomselections.py
     - new test_selections.py is now testing MDAnalysis.selections
       (Issue #353)
+    - Added new DIMS DCD test datafile
+    - Added tests for PSAnalysis
 
 02/11/2012 orbeckst, seb-buch
 

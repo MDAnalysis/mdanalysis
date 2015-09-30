@@ -346,6 +346,15 @@ class TestMakeWhole(object):
         assert_array_almost_equal(self.u.atoms[6].position,
                                   np.array([110.0, 40.0, 0.0]))
 
+    def test_double_frag_short_bonds(self):
+        # previous bug where if two fragments are given
+        # but all bonds were short, the algorithm didn't
+        # complain
+        self._load_bonds()
+        res = self.u.residues[0]
+        mdamath.make_whole(res)
+        assert_raises(ValueError, mdamath.make_whole, self.u.atoms)
+
 
 class Class_with_Caches(object):
     def __init__(self):
