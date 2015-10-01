@@ -47,6 +47,11 @@ approximate Gromacs release numbers are listed in the table
                              4.5.3, 4.5.4, 4.5.5
 
    83         24             4.6, 4.6.1           yes
+
+   100        26             5.0, 5.0.1, 5.0.2,   yes
+                             5.0.3,5.0.4, 5.0.5
+
+   103        26             5.1                  yes
    ========== ============== ==================== =====
 
 For further discussion and notes see `Issue 2`_. Also add a comment to

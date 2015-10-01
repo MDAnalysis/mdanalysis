@@ -51,7 +51,7 @@ __all__ = [
     "PDB_xlserial",
     "TPR400", "TPR402", "TPR403", "TPR404", "TPR405", "TPR406", "TPR407",
     "TPR450", "TPR451", "TPR452", "TPR453", "TPR454", "TPR455", "TPR455Double",
-    "TPR460", "TPR461",
+    "TPR460", "TPR461", "TPR502", "TPR504", "TPR505", "TPR510",
     "PDB_sub_sol", "PDB_sub_dry",  # TRRReader sub selection
     "TRR_sub_sol",
     "XYZ", "XYZ_psf", "XYZ_bz2",
@@ -145,6 +145,10 @@ TPR452 = resource_filename(__name__, 'data/tprs/2lyz_gmx_4.5.2.tpr')
 TPR453 = resource_filename(__name__, 'data/tprs/2lyz_gmx_4.5.3.tpr')
 TPR454 = resource_filename(__name__, 'data/tprs/2lyz_gmx_4.5.4.tpr')
 TPR455 = resource_filename(__name__, 'data/tprs/2lyz_gmx_4.5.5.tpr')
+TPR502 = resource_filename(__name__, 'data/tprs/2lyz_gmx_5.0.2.tpr')
+TPR504 = resource_filename(__name__, 'data/tprs/2lyz_gmx_5.0.4.tpr')
+TPR505 = resource_filename(__name__, 'data/tprs/2lyz_gmx_5.0.5.tpr')
+TPR510 = resource_filename(__name__, 'data/tprs/2lyz_gmx_5.1.tpr')
 # double precision
 TPR455Double = resource_filename(__name__, 'data/tprs/drew_gmx_4.5.5.double.tpr')
 TPR460 = resource_filename(__name__, 'data/tprs/ab42_gmx_4.6.tpr')

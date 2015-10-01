@@ -262,6 +262,9 @@ def do_iparams(data, functypes, fver):
             S.F_HARMONIC, S.F_IDIHS
         ]:
             do_harm(data)
+        elif i in [S.F_RESTRANGLES]:
+            data.unpack_real()  # harmonic.rA
+            data.unpack_real()  # harmonic.krA
         elif i in [S.F_LINEAR_ANGLES]:
             data.unpack_real()  # linangle.klinA
             data.unpack_real()  # linangle.aA
@@ -375,6 +378,9 @@ def do_iparams(data, functypes, fver):
                 data.unpack_real()  # pdihs_cpB
                 data.unpack_int()  # pdihs_mult
 
+        elif i in [S.F_RESTRDIHS]:
+            data.unpack_real()  # pdihs.phiA
+            data.unpack_real()  # pdihs.cpA
         elif i in [S.F_DISRES]:
             data.unpack_int()  # disres.label
             data.unpack_int()  # disres.type
@@ -411,6 +417,15 @@ def do_iparams(data, functypes, fver):
             else:
                 do_rvec(data)  # posres.pos0B
                 do_rvec(data)  # posres.fcB
+
+        elif i in [S.F_FBPOSRES]:
+            data.unpack_int()   # fbposres.geom
+            do_rvec(data)       # fbposres.pos0
+            data.unpack_real()  # fbposres.r
+            data.unpack_real()  # fbposres.k
+
+        elif i in [S.F_CBTDIHS]:
+            ndo_real(data, S.NR_CBTDIHS)  # cbtdihs.cbtcA
 
         elif i in [S.F_RBDIHS]:
             ndo_real(data, S.NR_RBDIHS)  # iparams_rbdihs_rbcA

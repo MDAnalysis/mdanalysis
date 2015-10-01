@@ -46,6 +46,7 @@ Enhancements
     (Issue #438)
   * Function for obtaining coordinate axes from numpy trajectories now
     globally available in MDAnalysis.analysis.psa (Issue #438)
+  * TPR parser updated for Gromacs 5.0.x and 5.1 (Issue #456)
 
 Changes
   * An AtomGroup with 0 atoms now yields an `IndexError` on call to

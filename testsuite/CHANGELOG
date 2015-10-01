@@ -25,6 +25,7 @@ and https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
       (Issue #353)
     - Added new DIMS DCD test datafile
     - Added tests for PSAnalysis
+    - Update TPR parser tests for Gromacs 5
 
 02/11/2012 orbeckst, seb-buch
 
