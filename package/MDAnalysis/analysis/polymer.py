@@ -40,21 +40,21 @@ class _AnalysisBase(object):
 
     Defines common functions for setting up frames to analyse
     """
-    def _setup_frames(self, **kwargs):
+    def _setup_frames(self, trajectory, start=0, stop=-1, skip=1):
         """Look for the keywords which control trajectory iteration
         and build the list of frames to analyse.
 
         Returns an array of the identified frames
         """
-        self._trajectory = kwargs.pop('traj', None)
-        if self._trajectory is None:
-            raise ValueError("Must supply the 'traj' keyword")
+        # We already have some nice frame checking in base.Reader
+        # we should really pull that into lib so everyone can enjoy
+
+        self._trajectory = trajectory
 
         nframes = len(self._trajectory)
 
-        start = kwargs.pop('start', 0)
-        stop = kwargs.pop('stop', nframes)
-        skip = kwargs.pop('skip', 1)
+        if stop < 0:
+            stop += nframes
 
         logger.debug("_setup_frames")
         logger.debug(" * settings: start {} stop {} skip {}".format(
@@ -126,8 +126,8 @@ class PersistenceLength(_AnalysisBase):
         if not all([l == chainlength for l in lens]):
             raise ValueError("Not all AtomGroups were the same size")
 
-        kwargs.update({'traj': atomgroups[0].universe.trajectory})
-        self._setup_frames(**kwargs)
+        self._setup_frames(atomgroups[0].universe.trajectory,
+                           **kwargs)
 
         self._results = np.zeros(chainlength - 1, dtype=np.float32)
 
@@ -208,6 +208,8 @@ def fit_exponential_decay(x, y):
 
     Notes
     -----
+    This function assumes that data starts at 1.0 and decays to 0.0
+
     Requires scipy
     """
     from scipy.optimize import curve_fit
