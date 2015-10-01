@@ -246,7 +246,8 @@ def _test_is_in_topology(name, elements, topology_section, topology_path):
     """
     universe = MDAnalysis.Universe(topology_path)
     for element in elements:
-        assert element in universe._topology[topology_section]
+        assert element in universe._topology[topology_section], \
+            'Interaction type "{}" not found'.format(name)
 
 
 def test_all_bonds():
