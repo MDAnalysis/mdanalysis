@@ -351,10 +351,6 @@ class TestSelectionsXTC(TestCase):
     def setUp(self):
         self.universe = MDAnalysis.Universe(TPR,XTC)
 
-    # Issue #352
-    # Fails because bonds are constraints, not harmonic bonds
-    # so no "bonds" are detected, so no fragments can be made
-    @knownfailure()
     def test_same_fragment(self):
         """Test the 'same ... as' construct (Issue 217)"""
         # This test comes here because it's a system with solvent, and thus multiple fragments.
