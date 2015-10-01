@@ -16,11 +16,13 @@
 from MDAnalysis.tests.datafiles import TPR, \
     TPR400, TPR402, TPR403, TPR404, TPR405, TPR406, TPR407, \
     TPR450, TPR451, TPR452, TPR453, TPR454, TPR455, TPR455Double, \
-    TPR460, TPR461, TPR502, TPR504, TPR505, TPR510
+    TPR460, TPR461, TPR502, TPR504, TPR505, TPR510, TPR510_bonded
 
-from numpy.testing import dec
+from numpy.testing import TestCase, dec
 from test_topology import _TestTopology
 import MDAnalysis.topology.TPRParser
+
+import functools
 
 
 @dec.slow
@@ -236,3 +238,64 @@ class TPR510(TPRBase):
 
 class TestTPR510(_TestTopology, TPR510):
     """Testing TPR version 103"""
+
+
+def _test_is_in_topology(name, elements, topology_section, topology_path):
+    """
+    Test if an interaction appears as expected in the topology
+    """
+    universe = MDAnalysis.Universe(topology_path)
+    for element in elements:
+        assert element in universe._topology[topology_section]
+
+
+def test_all_bonds():
+    """Test that all bond types are parsed as expected"""
+    topology = TPR510_bonded
+    bonds = {'BONDS':[(0, 1)], 'G96BONDS':[(1, 2)], 'MORSE':[(2, 3)],
+             'CUBICBONDS':[(3, 4)], 'CONNBONDS':[(4, 5)], 'HARMONIC':[(5, 6)],
+             'FENEBONDS':[(6, 7)], 'RESTRAINTPOT':[(7, 8)],
+             'TABBONDS':[(8, 9)], 'TABBONDSNC':[(9, 10)],
+             'CONSTR':[(10, 11)], 'CONSTRNC':[(11, 12)],}
+    bond_type_in_topology = functools.partial(_test_is_in_topology,
+                                              topology_section='bonds',
+                                              topology_path=topology)
+    for bond_type, elements in bonds.items():
+        yield (bond_type_in_topology, bond_type, elements)
+
+
+def test_all_angles():
+    topology = TPR510_bonded
+    angles = {'ANGLES':[(0, 1, 2)], 'G96ANGLES':[(1, 2, 3)],
+              'CROSS_BOND_BOND':[(2, 3, 4)], 'CROSS_BOND_ANGLE':[(3, 4, 5)],
+              'UREY_BRADLEY':[(4, 5, 6)], 'QANGLES':[(5, 6, 7)],
+              'RESTRANGLES':[(6, 7, 8)], 'TABANGLES':[(7, 8, 9)],}
+    angle_type_in_topology = functools.partial(_test_is_in_topology,
+                                               topology_section='angles',
+                                               topology_path=topology)
+    for angle_type, elements in angles.items():
+        yield (angle_type_in_topology, angle_type, elements)
+
+
+def test_all_dihedrals():
+    topology = TPR510_bonded
+    dihs = {'PDIHS':[(0, 1, 2, 3), (1, 2, 3, 4), (7, 8, 9, 10)],
+            'RBDIHS':[(4, 5, 6, 7)], 'RESTRDIHS':[(8, 9, 10, 11)],
+            'CBTDIHS':[(9, 10, 11, 12)], 'FOURDIHS':[(6, 7, 8, 9)],
+            'TABDIHS':[(10, 11, 12, 13)],}
+    dih_type_in_topology = functools.partial(_test_is_in_topology,
+                                             topology_section='dihedrals',
+                                             topology_path=topology)
+    for dih_type, elements in dihs.items():
+        yield (dih_type_in_topology, dih_type, elements)
+
+
+def test_all_impropers():
+    topology = TPR510_bonded
+    imprs = {'IDIHS':[(2, 3, 4, 5), (3, 4, 5, 6)], 'PIDIHS':[(5, 6, 7, 8)]}
+    impr_type_in_topology = functools.partial(_test_is_in_topology,
+                                              topology_section='impropers',
+                                              topology_path=topology)
+    for impr_type, elements in imprs.items():
+        yield (impr_type_in_topology, impr_type, elements)
+
