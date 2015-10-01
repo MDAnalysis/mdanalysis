@@ -166,7 +166,7 @@ class PersistenceLength(_AnalysisBase):
             bs.append(b)
         self.lb = np.mean(bs)
 
-    def fit(self):
+    def perform_fit(self):
         """Fit the results to an exponential decay"""
         from scipy.optimize import curve_fit
 
@@ -183,7 +183,9 @@ class PersistenceLength(_AnalysisBase):
     def plot(self):
         """Oooh fancy"""
         import matplotlib.pyplot as plt
-
+        plt.ylabel('C(x)')
+        plt.xlabel('x')
+        plt.xlim([0.0, 40 * self.lb])
         plt.plot(self.x, self.results, 'ro')
         plt.plot(self.x, self.fit)
         plt.show()
