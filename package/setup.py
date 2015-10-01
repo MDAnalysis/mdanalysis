@@ -72,18 +72,27 @@ import tempfile
 
 # Make sure I have the right Python version.
 if sys.version_info[:2] < (2, 7):
-    print("MDAnalysis requires Python 2.7 or better. Python %d.%d detected" %
+    print('MDAnalysis requires Python 2.7 or better. Python %d.%d detected' %
           sys.version_info[:2])
-    print("Please upgrade your version of Python.")
+    print('Please upgrade your version of Python.')
     sys.exit(-1)
 
+if sys.version_info[0] < 3:
+    import ConfigParser as configparser
+    open_kwargs = {}
+else:
+    import configparser
+    open_kwargs = {'encoding': 'utf-8'}
+
 try:
-    # Obtain the numpy include directory.  This logic works across numpy versions.
+    # Obtain the numpy include directory. This logic works across numpy
+    # versions.
     import numpy as np
 except ImportError:
-    print("*** package 'numpy' not found ***")
-    print("MDAnalysis requires a version of NumPy (>=1.5.0), even for setup.")
-    print("Please get it from http://numpy.scipy.org/ or install it through your package manager.")
+    print('*** package "numpy" not found ***')
+    print('MDAnalysis requires a version of NumPy (>=1.5.0), even for setup.')
+    print('Please get it from http://numpy.scipy.org/ or install it through '
+          'your package manager.')
     sys.exit(-1)
 
 try:
@@ -170,24 +179,27 @@ def detect_openmp():
         print("Did not detect OpenMP support.")
     return hasopenmp, needs_gomp
 
+if os.path.exists('setup.cfg'):
+    config = configparser.SafeConfigparser()
+    config.read('setup.cfg')
+    try:
+        use_cython = config.get('options', 'use_cython')
+    except:
+        pass
 
-if __name__ == '__main__':
-    RELEASE = "0.12.0-dev"  # NOTE: keep in sync with MDAnalysis.__version__ in version.py
-    with open("SUMMARY.txt") as summary:
-        LONG_DESCRIPTION = summary.read()
-    CLASSIFIERS = [
-        'Development Status :: 4 - Beta',
-        'Environment :: Console',
-        'Intended Audience :: Science/Research',
-        'License :: OSI Approved :: GNU General Public License (GPL)',
-        'Operating System :: POSIX',
-        'Operating System :: MacOS :: MacOS X',
-        'Programming Language :: Python',
-        'Programming Language :: C',
-        'Topic :: Scientific/Engineering :: Bio-Informatics',
-        'Topic :: Scientific/Engineering :: Chemistry',
-        'Topic :: Software Development :: Libraries :: Python Modules',
-    ]
+
+def extensions(config):
+    use_cython = True
+    use_openmp = True
+
+    try:
+        use_cython = config.get('options', 'use_cython')
+    except:
+        pass
+    try:
+        use_openmp = config.get('options', 'use_openmp')
+    except:
+        pass
 
     if 'DEBUG_CFLAGS' in os.environ:
         extra_compile_args = '\
