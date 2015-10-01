@@ -1196,10 +1196,10 @@ def blocks_of(a, n, m):
     >>> view = blocks_of(arr, 2, 2)
     >>> view[:] = 100
     >>> arr
-    array([[100,   1,   2,   3],
-           [  4, 100,   6,   7],
-           [  8,   9, 100,  11],
-           [ 12,  13,  14, 100]])
+    array([[100, 100,   2,   3],
+           [100, 100,   6,   7],
+           [  8,   9, 100, 100],
+           [ 12,  13, 100, 100]])
 
     Notes
     -----
@@ -1209,7 +1209,7 @@ def blocks_of(a, n, m):
  
       Returns a view, so editing this modifies the original array
 
-    .. versionadded:: 0.11.1
+    .. versionadded:: 0.12.0
     """
     # based on: 
     # http://stackoverflow.com/a/10862636
