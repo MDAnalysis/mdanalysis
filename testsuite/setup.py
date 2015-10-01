@@ -102,7 +102,9 @@ For details see the report for `Issue 87`_.
           package_data={'MDAnalysisTests':
               [
                   'data/*.psf', 'data/*.dcd', 'data/*.pdb',
-                  'data/tprs/*.tpr', 'data/tprs/all_bonded/*.tpr', 'data/*.tpr',
+                  'data/tprs/*.tpr', 'data/tprs/all_bonded/*.tpr',
+                  'data/tprs/all_bonded/*.gro', 'data/tprs/all_bonded/*.top',
+                  'data/tprs/all_bonded/*.mdp', 'data/*.tpr',
                   'data/*.gro', 'data/*.xtc', 'data/*.trr', 'data/*npy',
                   'data/*.crd', 'data/*.xyz',
                   'data/*.prmtop', 'data/*.top', 'data/*.trj', 'data/*.mdcrd', 'data/*.ncdf',
