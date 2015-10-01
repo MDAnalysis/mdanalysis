@@ -45,27 +45,8 @@ By changing the code below you can also switch to a standard distutils
 installation.
 """
 from __future__ import print_function
-# ------------------------------------------------------------
-# selection of the installation system
-# ------------------------------------------------------------
-#
-# Standard distutils-based installation:
-#
-# #from distutils.core import setup, Extension
-
-# setuptools ("EasyInstall") installation:
-#
-# If you want EasyInstall features then enable the next three lines and comment
-# out the preceding line 'from distutils.core import ...'
-#
-from ez_setup import use_setuptools
-
-use_setuptools()
 from setuptools import setup, Extension
 from distutils.ccompiler import new_compiler
-#
-# ------------------------------------------------------------
-
 import os
 import sys
 import shutil
