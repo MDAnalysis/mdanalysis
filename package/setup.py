@@ -3,8 +3,9 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
 # MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver
+# Beckstein and contributors (see AUTHORS for the full list)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
@@ -50,7 +51,7 @@ from __future__ import print_function
 #
 # Standard distutils-based installation:
 #
-##from distutils.core import setup, Extension
+# #from distutils.core import setup, Extension
 
 # setuptools ("EasyInstall") installation:
 #
@@ -63,7 +64,7 @@ use_setuptools()
 from setuptools import setup, Extension
 from distutils.ccompiler import new_compiler
 #
-#------------------------------------------------------------
+# ------------------------------------------------------------
 
 import os
 import sys
@@ -105,14 +106,13 @@ include_dirs = ['include', numpy_include]
 # Handle cython modules
 try:
     from Cython.Distutils import build_ext
-
-    use_cython = True
+    cython_found = True
     cmdclass = {'build_ext': build_ext}
 except ImportError:
-    use_cython = False
+    cython_found = False
     cmdclass = {}
 
-if use_cython:
+if cython_found:
     # cython has to be >=0.16 to support cython.parallel
     import Cython
     from distutils.version import LooseVersion
@@ -121,7 +121,8 @@ if use_cython:
 
     if not LooseVersion(Cython.__version__) >= LooseVersion(required_version):
         raise ImportError(
-            "Cython version {0} (found {1}) is required because it offers a handy parallelisation module".format(
+            "Cython version {0} (found {1}) is required because it offers "
+            "a handy parallelisation module".format(
                 required_version, Cython.__version__))
     del Cython
     del LooseVersion
@@ -152,7 +153,7 @@ def hasfunction(cc, funcname, include=None, extra_postargs=None):
             objects = cc.compile([fname], output_dir=tmpdir,
                                  extra_postargs=extra_postargs)
             cc.link_executable(objects, os.path.join(tmpdir, "a.out"))
-        except Exception as e:
+        except Exception:
             return False
         return True
     finally:
@@ -211,7 +212,8 @@ def extensions(config):
         extra_compile_args = ''
         define_macros = []
 
-    # Needed for large-file seeking under 32bit systems (for xtc/trr indexing and access).
+    # Needed for large-file seeking under 32bit systems (for xtc/trr indexing
+    # and access).
     largefile_macros = [
         ('_LARGEFILE_SOURCE', None),
         ('_LARGEFILE64_SOURCE', None),
@@ -219,71 +221,98 @@ def extensions(config):
     ]
 
     has_openmp, needs_gomp = detect_openmp()
-    parallel_args = ['-fopenmp'] if has_openmp else []
-    parallel_libraries = ['gomp'] if needs_gomp else []
-    parallel_macros = [('PARALLEL', None)] if has_openmp else []
+    parallel_args = ['-fopenmp'] if has_openmp and use_openmp else []
+    parallel_libraries = ['gomp'] if needs_gomp and use_openmp else []
+    parallel_macros = [('PARALLEL', None)] if has_openmp and use_openmp else []
 
-    extensions = [
-        Extension('coordinates._dcdmodule',
-                  ['MDAnalysis/coordinates/src/dcd.c'],
-                  include_dirs=include_dirs + ['MDAnalysis/coordinates/include'],
-                  define_macros=define_macros,
-                  extra_compile_args=extra_compile_args),
-        Extension('coordinates.dcdtimeseries',
-                  ['MDAnalysis/coordinates/dcdtimeseries.%s' % ("pyx" if use_cython else "c")],
-                  include_dirs=include_dirs + ['MDAnalysis/coordinates/include'],
-                  define_macros=define_macros,
-                  extra_compile_args=extra_compile_args),
-        Extension('lib._distances',
-                  ['MDAnalysis/lib/distances.%s' % ("pyx" if use_cython else "c")],
-                  include_dirs=include_dirs + ['MDAnalysis/lib/include'],
-                  libraries=['m'],
-                  define_macros=define_macros,
-                  extra_compile_args=extra_compile_args),
-        Extension('lib._distances_openmp',
-                  ['MDAnalysis/lib/distances_openmp.%s' %('pyx' if use_cython else 'c')],
-                  include_dirs=include_dirs + ['MDAnalysis/lib/include'],
-                  libraries=['m'] + parallel_libraries,
-                  define_macros=define_macros + parallel_macros,
-                  extra_compile_args=parallel_args,
-                  extra_link_args=parallel_args),
-        Extension("lib.parallel.distances",
-                  ['MDAnalysis/lib/distances_parallel.%s' % ("pyx" if use_cython else "c")],
-                  include_dirs=include_dirs,
-                  libraries=['m'] + parallel_libraries,
-                  extra_compile_args=parallel_args,
-                  extra_link_args=parallel_args),
-        Extension('lib.qcprot',
-                  ['MDAnalysis/lib/src/pyqcprot/pyqcprot.%s' % ("pyx" if use_cython else "c")],
-                  include_dirs=include_dirs,
-                  extra_compile_args=["-O3", "-ffast-math"]),
-        Extension('lib._transformations',
-                  ['MDAnalysis/lib/src/transformations/transformations.c'],
-                  libraries=['m'],
-                  define_macros=define_macros,
-                  include_dirs=include_dirs,
-                  extra_compile_args=extra_compile_args),
-        Extension('coordinates.xdrfile._libxdrfile2',
-                  sources=['MDAnalysis/coordinates/xdrfile/src/' + f
+    if use_cython:
+        if not cython_found:
+            print("Couldn't find Cython installation. "
+                  "Not recompiling cython extension")
+            use_cython = False
+
+    source_suffix = '.pyx' if use_cython else '.c'
+
+    dcd = Extension('coordinates._dcdmodule',
+                    ['MDAnalysis/coordinates/src/dcd.c'],
+                    include_dirs=include_dirs + ['MDAnalysis/coordinates/include'],
+                    define_macros=define_macros,
+                    extra_compile_args=extra_compile_args)
+    dcd_time = Extension('coordinates.dcdtimeseries',
+                         ['MDAnalysis/coordinates/dcdtimeseries' + source_suffix],
+                         include_dirs=include_dirs + ['MDAnalysis/coordinates/include'],
+                         define_macros=define_macros,
+                         extra_compile_args=extra_compile_args)
+    distances = Extension('lib._distances',
+                          ['MDAnalysis/lib/distances' + source_suffix],
+                          include_dirs=include_dirs + ['MDAnalysis/lib/include'],
+                          libraries=['m'],
+                          define_macros=define_macros,
+                          extra_compile_args=extra_compile_args)
+    distances_omp = Extension('lib._distances_openmp',
+                              ['MDAnalysis/lib/distances_openmp' + source_suffix],
+                              include_dirs=include_dirs + ['MDAnalysis/lib/include'],
+                              libraries=['m'] + parallel_libraries,
+                              define_macros=define_macros + parallel_macros,
+                              extra_compile_args=parallel_args,
+                              extra_link_args=parallel_args)
+    parallel_dist = Extension("lib.parallel.distances",
+                              ['MDAnalysis/lib/distances_parallel' + source_suffix],
+                              include_dirs=include_dirs,
+                              libraries=['m'] + parallel_libraries,
+                              extra_compile_args=parallel_args,
+                              extra_link_args=parallel_args)
+    qcprot = Extension('lib.qcprot',
+                       ['MDAnalysis/lib/src/pyqcprot/pyqcprot' + source_suffix],
+                       include_dirs=include_dirs,
+                       extra_compile_args=["-O3", "-ffast-math"])
+    transformation = Extension('lib._transformations',
+                               ['MDAnalysis/lib/src/transformations/transformations.c'],
+                               libraries=['m'],
+                               define_macros=define_macros,
+                               include_dirs=include_dirs,
+                               extra_compile_args=extra_compile_args)
+    xdr = Extension('coordinates.xdrfile._libxdrfile2',
+                    sources=['MDAnalysis/coordinates/xdrfile/src/' + f
                            for f in ('libxdrfile2_wrap.c',
                                      'xdrfile.c',
                                      'xdrfile_trr.c',
                                      'xdrfile_xtc.c')
-                  ],
-                  include_dirs=include_dirs,
-                  define_macros=largefile_macros),
+                    ],
+                    define_macros=largefile_macros)
+
+    return [dcd, dcd_time, distances, distances_omp, parallel_dist, qcprot,
+            transformation, xdr]
+
+if __name__ == '__main__':
+    # NOTE: keep in sync with MDAnalysis.__version__ in version.py
+    RELEASE = "0.12.0-dev"
+    with open("SUMMARY.txt") as summary:
+        LONG_DESCRIPTION = summary.read()
+    CLASSIFIERS = [
+        'Development Status :: 4 - Beta',
+        'Environment :: Console',
+        'Intended Audience :: Science/Research',
+        'License :: OSI Approved :: GNU General Public License (GPL)',
+        'Operating System :: POSIX',
+        'Operating System :: MacOS :: MacOS X',
+        'Programming Language :: Python',
+        'Programming Language :: C',
+        'Topic :: Scientific/Engineering :: Bio-Informatics',
+        'Topic :: Scientific/Engineering :: Chemistry',
+        'Topic :: Software Development :: Libraries :: Python Modules',
     ]
 
     setup(name='MDAnalysis',
           version=RELEASE,
-          description='An object-oriented toolkit to analyze molecular dynamics trajectories generated by CHARMM, '
-                      'Gromacs, NAMD, LAMMPS, or Amber.',
+          description='An object-oriented toolkit to analyze molecular '
+          'dynamics trajectories generated by CHARMM, Gromacs, NAMD, LAMMPS, or Amber.',
           author='Naveen Michaud-Agrawal',
           author_email='naveen.michaudagrawal@gmail.com',
           url='http://www.mdanalysis.org',
           requires=['numpy (>=1.5.0)', 'biopython',
-              'networkx (>=1.0)', 'scipy',
-              'GridDataFormats'],
+                    'networkx (>=1.0)', 'scipy',
+                    'GridDataFormats'],
           provides=['MDAnalysis'],
           license='GPL 2',
           packages=['MDAnalysis',
@@ -304,7 +333,7 @@ def extensions(config):
                     'MDAnalysis.visualization'],
           package_dir={'MDAnalysis': 'MDAnalysis'},
           ext_package='MDAnalysis',
-          ext_modules=extensions,
+          ext_modules=extensions(config),
           classifiers=CLASSIFIERS,
           long_description=LONG_DESCRIPTION,
           cmdclass=cmdclass,
@@ -333,4 +362,4 @@ def extensions(config):
               'MDAnalysisTests==%s' % RELEASE,  # same as this release!
           ],
           zip_safe=False,  # as a zipped egg the *.so files are not found (at least in Ubuntu/Linux)
-          )
+    )
