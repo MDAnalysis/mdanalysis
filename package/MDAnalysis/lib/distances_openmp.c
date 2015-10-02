@@ -443,8 +443,8 @@ static const char *__pyx_filename;
 
 
 static const char *__pyx_f[] = {
-  "src/numtools/distances_openmp.pyx",
-  "src/numtools/c_numpy.pxd",
+  "MDAnalysis/lib/distances_openmp.pyx",
+  "include/c_numpy.pxd",
 };
 
 /*--- Type declarations ---*/
@@ -630,7 +630,7 @@ static char __pyx_k_calc_bond_distance_triclinic[] = "calc_bond_distance_triclin
 static char __pyx_k_calc_distance_array_triclinic[] = "calc_distance_array_triclinic";
 static char __pyx_k_calc_self_distance_array_ortho[] = "calc_self_distance_array_ortho";
 static char __pyx_k_Parallel_distance_calculation_l[] = "\nParallel distance calculation library --- :mod:`MDAnalysis.lib._distances_openmp`\n=================================================================================\n\n\nContains OpenMP versions of the contents of \"calc_distances.h\"\n";
-static char __pyx_k_home_richard_code_mdanalysis_pa[] = "/home/richard/code/mdanalysis/package/src/numtools/distances_openmp.pyx";
+static char __pyx_k_home_richard_code_mdanalysis_pa[] = "/home/richard/code/mdanalysis/package/MDAnalysis/lib/distances_openmp.pyx";
 static char __pyx_k_calc_self_distance_array_triclin[] = "calc_self_distance_array_triclinic";
 static PyObject *__pyx_n_s_box;
 static PyObject *__pyx_n_s_box_inverse;
@@ -706,7 +706,7 @@ static PyObject *__pyx_codeobj__32;
 static PyObject *__pyx_codeobj__34;
 static PyObject *__pyx_codeobj__36;
 
-/* "src/numtools/distances_openmp.pyx":54
+/* "MDAnalysis/lib/distances_openmp.pyx":54
  *     void _triclinic_pbc(coordinate* coords, int numcoords, coordinate* box, float* box_inverse)
  * 
  * def calc_distance_array(c_numpy.ndarray ref, c_numpy.ndarray conf,             # <<<<<<<<<<<<<<
@@ -799,7 +799,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_calc_distance_array(CYTHON_UN
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("calc_distance_array", 0);
 
-  /* "src/numtools/distances_openmp.pyx":57
+  /* "MDAnalysis/lib/distances_openmp.pyx":57
  *                         c_numpy.ndarray result):
  *     cdef int confnum, refnum
  *     confnum = conf.dimensions[0]             # <<<<<<<<<<<<<<
@@ -808,7 +808,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_calc_distance_array(CYTHON_UN
  */
   __pyx_v_confnum = (__pyx_v_conf->dimensions[0]);
 
-  /* "src/numtools/distances_openmp.pyx":58
+  /* "MDAnalysis/lib/distances_openmp.pyx":58
  *     cdef int confnum, refnum
  *     confnum = conf.dimensions[0]
  *     refnum = ref.dimensions[0]             # <<<<<<<<<<<<<<
@@ -817,7 +817,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_calc_distance_array(CYTHON_UN
  */
   __pyx_v_refnum = (__pyx_v_ref->dimensions[0]);
 
-  /* "src/numtools/distances_openmp.pyx":60
+  /* "MDAnalysis/lib/distances_openmp.pyx":60
  *     refnum = ref.dimensions[0]
  * 
  *     _calc_distance_array(<coordinate*>ref.data, refnum,             # <<<<<<<<<<<<<<
@@ -826,7 +826,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_calc_distance_array(CYTHON_UN
  */
   _calc_distance_array(((coordinate *)__pyx_v_ref->data), __pyx_v_refnum, ((coordinate *)__pyx_v_conf->data), __pyx_v_confnum, ((double *)__pyx_v_result->data));
 
-  /* "src/numtools/distances_openmp.pyx":54
+  /* "MDAnalysis/lib/distances_openmp.pyx":54
  *     void _triclinic_pbc(coordinate* coords, int numcoords, coordinate* box, float* box_inverse)
  * 
  * def calc_distance_array(c_numpy.ndarray ref, c_numpy.ndarray conf,             # <<<<<<<<<<<<<<
@@ -841,7 +841,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_calc_distance_array(CYTHON_UN
   return __pyx_r;
 }
 
-/* "src/numtools/distances_openmp.pyx":64
+/* "MDAnalysis/lib/distances_openmp.pyx":64
  *                          <double*>result.data)
  * 
  * def calc_distance_array_ortho(c_numpy.ndarray ref, c_numpy.ndarray conf,             # <<<<<<<<<<<<<<
@@ -944,7 +944,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_2calc_distance_array_ortho(CY
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("calc_distance_array_ortho", 0);
 
-  /* "src/numtools/distances_openmp.pyx":68
+  /* "MDAnalysis/lib/distances_openmp.pyx":68
  *                               c_numpy.ndarray result):
  *     cdef int confnum, refnum
  *     confnum = conf.dimensions[0]             # <<<<<<<<<<<<<<
@@ -953,7 +953,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_2calc_distance_array_ortho(CY
  */
   __pyx_v_confnum = (__pyx_v_conf->dimensions[0]);
 
-  /* "src/numtools/distances_openmp.pyx":69
+  /* "MDAnalysis/lib/distances_openmp.pyx":69
  *     cdef int confnum, refnum
  *     confnum = conf.dimensions[0]
  *     refnum = ref.dimensions[0]             # <<<<<<<<<<<<<<
@@ -962,7 +962,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_2calc_distance_array_ortho(CY
  */
   __pyx_v_refnum = (__pyx_v_ref->dimensions[0]);
 
-  /* "src/numtools/distances_openmp.pyx":71
+  /* "MDAnalysis/lib/distances_openmp.pyx":71
  *     refnum = ref.dimensions[0]
  * 
  *     _calc_distance_array_ortho(<coordinate*>ref.data, refnum,             # <<<<<<<<<<<<<<
@@ -971,7 +971,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_2calc_distance_array_ortho(CY
  */
   _calc_distance_array_ortho(((coordinate *)__pyx_v_ref->data), __pyx_v_refnum, ((coordinate *)__pyx_v_conf->data), __pyx_v_confnum, ((float *)__pyx_v_box->data), ((double *)__pyx_v_result->data));
 
-  /* "src/numtools/distances_openmp.pyx":64
+  /* "MDAnalysis/lib/distances_openmp.pyx":64
  *                          <double*>result.data)
  * 
  * def calc_distance_array_ortho(c_numpy.ndarray ref, c_numpy.ndarray conf,             # <<<<<<<<<<<<<<
@@ -986,7 +986,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_2calc_distance_array_ortho(CY
   return __pyx_r;
 }
 
-/* "src/numtools/distances_openmp.pyx":76
+/* "MDAnalysis/lib/distances_openmp.pyx":76
  *                                <double*>result.data)
  * 
  * def calc_distance_array_triclinic(c_numpy.ndarray ref, c_numpy.ndarray conf,             # <<<<<<<<<<<<<<
@@ -1089,7 +1089,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_4calc_distance_array_triclini
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("calc_distance_array_triclinic", 0);
 
-  /* "src/numtools/distances_openmp.pyx":80
+  /* "MDAnalysis/lib/distances_openmp.pyx":80
  *                                   c_numpy.ndarray result):
  *     cdef int confnum, refnum
  *     confnum = conf.dimensions[0]             # <<<<<<<<<<<<<<
@@ -1098,7 +1098,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_4calc_distance_array_triclini
  */
   __pyx_v_confnum = (__pyx_v_conf->dimensions[0]);
 
-  /* "src/numtools/distances_openmp.pyx":81
+  /* "MDAnalysis/lib/distances_openmp.pyx":81
  *     cdef int confnum, refnum
  *     confnum = conf.dimensions[0]
  *     refnum = ref.dimensions[0]             # <<<<<<<<<<<<<<
@@ -1107,7 +1107,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_4calc_distance_array_triclini
  */
   __pyx_v_refnum = (__pyx_v_ref->dimensions[0]);
 
-  /* "src/numtools/distances_openmp.pyx":83
+  /* "MDAnalysis/lib/distances_openmp.pyx":83
  *     refnum = ref.dimensions[0]
  * 
  *     _calc_distance_array_triclinic(<coordinate*>ref.data, refnum,             # <<<<<<<<<<<<<<
@@ -1116,7 +1116,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_4calc_distance_array_triclini
  */
   _calc_distance_array_triclinic(((coordinate *)__pyx_v_ref->data), __pyx_v_refnum, ((coordinate *)__pyx_v_conf->data), __pyx_v_confnum, ((coordinate *)__pyx_v_box->data), ((double *)__pyx_v_result->data));
 
-  /* "src/numtools/distances_openmp.pyx":76
+  /* "MDAnalysis/lib/distances_openmp.pyx":76
  *                                <double*>result.data)
  * 
  * def calc_distance_array_triclinic(c_numpy.ndarray ref, c_numpy.ndarray conf,             # <<<<<<<<<<<<<<
@@ -1131,7 +1131,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_4calc_distance_array_triclini
   return __pyx_r;
 }
 
-/* "src/numtools/distances_openmp.pyx":88
+/* "MDAnalysis/lib/distances_openmp.pyx":88
  *                                    <double*>result.data)
  * 
  * def calc_self_distance_array(c_numpy.ndarray ref,             # <<<<<<<<<<<<<<
@@ -1214,7 +1214,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_6calc_self_distance_array(CYT
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("calc_self_distance_array", 0);
 
-  /* "src/numtools/distances_openmp.pyx":91
+  /* "MDAnalysis/lib/distances_openmp.pyx":91
  *                              c_numpy.ndarray result):
  *     cdef int refnum, distnum
  *     refnum = ref.dimensions[0]             # <<<<<<<<<<<<<<
@@ -1223,7 +1223,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_6calc_self_distance_array(CYT
  */
   __pyx_v_refnum = (__pyx_v_ref->dimensions[0]);
 
-  /* "src/numtools/distances_openmp.pyx":92
+  /* "MDAnalysis/lib/distances_openmp.pyx":92
  *     cdef int refnum, distnum
  *     refnum = ref.dimensions[0]
  *     distnum = (refnum*(refnum-1))/2             # <<<<<<<<<<<<<<
@@ -1232,7 +1232,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_6calc_self_distance_array(CYT
  */
   __pyx_v_distnum = __Pyx_div_long((__pyx_v_refnum * (__pyx_v_refnum - 1)), 2);
 
-  /* "src/numtools/distances_openmp.pyx":94
+  /* "MDAnalysis/lib/distances_openmp.pyx":94
  *     distnum = (refnum*(refnum-1))/2
  * 
  *     _calc_self_distance_array(<coordinate*>ref.data, refnum,             # <<<<<<<<<<<<<<
@@ -1241,7 +1241,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_6calc_self_distance_array(CYT
  */
   _calc_self_distance_array(((coordinate *)__pyx_v_ref->data), __pyx_v_refnum, ((double *)__pyx_v_result->data), __pyx_v_distnum);
 
-  /* "src/numtools/distances_openmp.pyx":88
+  /* "MDAnalysis/lib/distances_openmp.pyx":88
  *                                    <double*>result.data)
  * 
  * def calc_self_distance_array(c_numpy.ndarray ref,             # <<<<<<<<<<<<<<
@@ -1256,7 +1256,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_6calc_self_distance_array(CYT
   return __pyx_r;
 }
 
-/* "src/numtools/distances_openmp.pyx":97
+/* "MDAnalysis/lib/distances_openmp.pyx":97
  *                               <double*>result.data, distnum)
  * 
  * def calc_self_distance_array_ortho(c_numpy.ndarray ref,             # <<<<<<<<<<<<<<
@@ -1349,7 +1349,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_8calc_self_distance_array_ort
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("calc_self_distance_array_ortho", 0);
 
-  /* "src/numtools/distances_openmp.pyx":101
+  /* "MDAnalysis/lib/distances_openmp.pyx":101
  *                                    c_numpy.ndarray result):
  *     cdef int refnum, distnum
  *     refnum = ref.dimensions[0]             # <<<<<<<<<<<<<<
@@ -1358,7 +1358,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_8calc_self_distance_array_ort
  */
   __pyx_v_refnum = (__pyx_v_ref->dimensions[0]);
 
-  /* "src/numtools/distances_openmp.pyx":102
+  /* "MDAnalysis/lib/distances_openmp.pyx":102
  *     cdef int refnum, distnum
  *     refnum = ref.dimensions[0]
  *     distnum = (refnum*(refnum-1))/2             # <<<<<<<<<<<<<<
@@ -1367,7 +1367,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_8calc_self_distance_array_ort
  */
   __pyx_v_distnum = __Pyx_div_long((__pyx_v_refnum * (__pyx_v_refnum - 1)), 2);
 
-  /* "src/numtools/distances_openmp.pyx":104
+  /* "MDAnalysis/lib/distances_openmp.pyx":104
  *     distnum = (refnum*(refnum-1))/2
  * 
  *     _calc_self_distance_array_ortho(<coordinate*>ref.data, refnum,             # <<<<<<<<<<<<<<
@@ -1376,7 +1376,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_8calc_self_distance_array_ort
  */
   _calc_self_distance_array_ortho(((coordinate *)__pyx_v_ref->data), __pyx_v_refnum, ((float *)__pyx_v_box->data), ((double *)__pyx_v_result->data), __pyx_v_distnum);
 
-  /* "src/numtools/distances_openmp.pyx":97
+  /* "MDAnalysis/lib/distances_openmp.pyx":97
  *                               <double*>result.data, distnum)
  * 
  * def calc_self_distance_array_ortho(c_numpy.ndarray ref,             # <<<<<<<<<<<<<<
@@ -1391,7 +1391,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_8calc_self_distance_array_ort
   return __pyx_r;
 }
 
-/* "src/numtools/distances_openmp.pyx":108
+/* "MDAnalysis/lib/distances_openmp.pyx":108
  *                                     <double*>result.data, distnum)
  * 
  * def calc_self_distance_array_triclinic(c_numpy.ndarray ref,             # <<<<<<<<<<<<<<
@@ -1484,7 +1484,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_10calc_self_distance_array_tr
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("calc_self_distance_array_triclinic", 0);
 
-  /* "src/numtools/distances_openmp.pyx":112
+  /* "MDAnalysis/lib/distances_openmp.pyx":112
  *                                        c_numpy.ndarray result):
  *     cdef int refnum, distnum
  *     refnum = ref.dimensions[0]             # <<<<<<<<<<<<<<
@@ -1493,7 +1493,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_10calc_self_distance_array_tr
  */
   __pyx_v_refnum = (__pyx_v_ref->dimensions[0]);
 
-  /* "src/numtools/distances_openmp.pyx":113
+  /* "MDAnalysis/lib/distances_openmp.pyx":113
  *     cdef int refnum, distnum
  *     refnum = ref.dimensions[0]
  *     distnum = (refnum*(refnum-1))/2             # <<<<<<<<<<<<<<
@@ -1502,7 +1502,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_10calc_self_distance_array_tr
  */
   __pyx_v_distnum = __Pyx_div_long((__pyx_v_refnum * (__pyx_v_refnum - 1)), 2);
 
-  /* "src/numtools/distances_openmp.pyx":115
+  /* "MDAnalysis/lib/distances_openmp.pyx":115
  *     distnum = (refnum*(refnum-1))/2
  * 
  *     _calc_self_distance_array_triclinic(<coordinate*>ref.data, refnum,             # <<<<<<<<<<<<<<
@@ -1511,7 +1511,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_10calc_self_distance_array_tr
  */
   _calc_self_distance_array_triclinic(((coordinate *)__pyx_v_ref->data), __pyx_v_refnum, ((coordinate *)__pyx_v_box->data), ((double *)__pyx_v_result->data), __pyx_v_distnum);
 
-  /* "src/numtools/distances_openmp.pyx":108
+  /* "MDAnalysis/lib/distances_openmp.pyx":108
  *                                     <double*>result.data, distnum)
  * 
  * def calc_self_distance_array_triclinic(c_numpy.ndarray ref,             # <<<<<<<<<<<<<<
@@ -1526,7 +1526,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_10calc_self_distance_array_tr
   return __pyx_r;
 }
 
-/* "src/numtools/distances_openmp.pyx":119
+/* "MDAnalysis/lib/distances_openmp.pyx":119
  *                                         <double*>result.data, distnum)
  * 
  * def coord_transform(c_numpy.ndarray coords,             # <<<<<<<<<<<<<<
@@ -1608,7 +1608,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_12coord_transform(CYTHON_UNUS
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("coord_transform", 0);
 
-  /* "src/numtools/distances_openmp.pyx":122
+  /* "MDAnalysis/lib/distances_openmp.pyx":122
  *                     c_numpy.ndarray box):
  *     cdef int numcoords
  *     numcoords = coords.dimensions[0]             # <<<<<<<<<<<<<<
@@ -1617,7 +1617,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_12coord_transform(CYTHON_UNUS
  */
   __pyx_v_numcoords = (__pyx_v_coords->dimensions[0]);
 
-  /* "src/numtools/distances_openmp.pyx":124
+  /* "MDAnalysis/lib/distances_openmp.pyx":124
  *     numcoords = coords.dimensions[0]
  * 
  *     _coord_transform(<coordinate*> coords.data, numcoords,             # <<<<<<<<<<<<<<
@@ -1626,7 +1626,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_12coord_transform(CYTHON_UNUS
  */
   _coord_transform(((coordinate *)__pyx_v_coords->data), __pyx_v_numcoords, ((coordinate *)__pyx_v_box->data));
 
-  /* "src/numtools/distances_openmp.pyx":119
+  /* "MDAnalysis/lib/distances_openmp.pyx":119
  *                                         <double*>result.data, distnum)
  * 
  * def coord_transform(c_numpy.ndarray coords,             # <<<<<<<<<<<<<<
@@ -1641,7 +1641,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_12coord_transform(CYTHON_UNUS
   return __pyx_r;
 }
 
-/* "src/numtools/distances_openmp.pyx":127
+/* "MDAnalysis/lib/distances_openmp.pyx":127
  *                      <coordinate*> box.data)
  * 
  * def calc_bond_distance(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -1733,7 +1733,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_14calc_bond_distance(CYTHON_U
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("calc_bond_distance", 0);
 
-  /* "src/numtools/distances_openmp.pyx":131
+  /* "MDAnalysis/lib/distances_openmp.pyx":131
  *                        c_numpy.ndarray results):
  *     cdef int numcoords
  *     numcoords = coords1.dimensions[0]             # <<<<<<<<<<<<<<
@@ -1742,7 +1742,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_14calc_bond_distance(CYTHON_U
  */
   __pyx_v_numcoords = (__pyx_v_coords1->dimensions[0]);
 
-  /* "src/numtools/distances_openmp.pyx":133
+  /* "MDAnalysis/lib/distances_openmp.pyx":133
  *     numcoords = coords1.dimensions[0]
  * 
  *     _calc_bond_distance(<coordinate*> coords1.data, <coordinate*> coords2.data,             # <<<<<<<<<<<<<<
@@ -1751,7 +1751,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_14calc_bond_distance(CYTHON_U
  */
   _calc_bond_distance(((coordinate *)__pyx_v_coords1->data), ((coordinate *)__pyx_v_coords2->data), __pyx_v_numcoords, ((double *)__pyx_v_results->data));
 
-  /* "src/numtools/distances_openmp.pyx":127
+  /* "MDAnalysis/lib/distances_openmp.pyx":127
  *                      <coordinate*> box.data)
  * 
  * def calc_bond_distance(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -1766,7 +1766,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_14calc_bond_distance(CYTHON_U
   return __pyx_r;
 }
 
-/* "src/numtools/distances_openmp.pyx":137
+/* "MDAnalysis/lib/distances_openmp.pyx":137
  *                         <double*>results.data)
  * 
  * def calc_bond_distance_ortho(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -1868,7 +1868,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_16calc_bond_distance_ortho(CY
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("calc_bond_distance_ortho", 0);
 
-  /* "src/numtools/distances_openmp.pyx":142
+  /* "MDAnalysis/lib/distances_openmp.pyx":142
  *                              c_numpy.ndarray results):
  *     cdef int numcoords
  *     numcoords = coords1.dimensions[0]             # <<<<<<<<<<<<<<
@@ -1877,7 +1877,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_16calc_bond_distance_ortho(CY
  */
   __pyx_v_numcoords = (__pyx_v_coords1->dimensions[0]);
 
-  /* "src/numtools/distances_openmp.pyx":144
+  /* "MDAnalysis/lib/distances_openmp.pyx":144
  *     numcoords = coords1.dimensions[0]
  * 
  *     _calc_bond_distance_ortho(<coordinate*> coords1.data, <coordinate*> coords2.data,             # <<<<<<<<<<<<<<
@@ -1886,7 +1886,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_16calc_bond_distance_ortho(CY
  */
   _calc_bond_distance_ortho(((coordinate *)__pyx_v_coords1->data), ((coordinate *)__pyx_v_coords2->data), __pyx_v_numcoords, ((float *)__pyx_v_box->data), ((double *)__pyx_v_results->data));
 
-  /* "src/numtools/distances_openmp.pyx":137
+  /* "MDAnalysis/lib/distances_openmp.pyx":137
  *                         <double*>results.data)
  * 
  * def calc_bond_distance_ortho(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -1901,7 +1901,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_16calc_bond_distance_ortho(CY
   return __pyx_r;
 }
 
-/* "src/numtools/distances_openmp.pyx":149
+/* "MDAnalysis/lib/distances_openmp.pyx":149
  *                               <double*>results.data)
  * 
  * def calc_bond_distance_triclinic(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -2003,7 +2003,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_18calc_bond_distance_triclini
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("calc_bond_distance_triclinic", 0);
 
-  /* "src/numtools/distances_openmp.pyx":154
+  /* "MDAnalysis/lib/distances_openmp.pyx":154
  *                                  c_numpy.ndarray results):
  *     cdef int numcoords
  *     numcoords = coords1.dimensions[0]             # <<<<<<<<<<<<<<
@@ -2012,7 +2012,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_18calc_bond_distance_triclini
  */
   __pyx_v_numcoords = (__pyx_v_coords1->dimensions[0]);
 
-  /* "src/numtools/distances_openmp.pyx":156
+  /* "MDAnalysis/lib/distances_openmp.pyx":156
  *     numcoords = coords1.dimensions[0]
  * 
  *     _calc_bond_distance_triclinic(<coordinate*> coords1.data, <coordinate*> coords2.data,             # <<<<<<<<<<<<<<
@@ -2021,7 +2021,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_18calc_bond_distance_triclini
  */
   _calc_bond_distance_triclinic(((coordinate *)__pyx_v_coords1->data), ((coordinate *)__pyx_v_coords2->data), __pyx_v_numcoords, ((coordinate *)__pyx_v_box->data), ((double *)__pyx_v_results->data));
 
-  /* "src/numtools/distances_openmp.pyx":149
+  /* "MDAnalysis/lib/distances_openmp.pyx":149
  *                               <double*>results.data)
  * 
  * def calc_bond_distance_triclinic(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -2036,7 +2036,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_18calc_bond_distance_triclini
   return __pyx_r;
 }
 
-/* "src/numtools/distances_openmp.pyx":161
+/* "MDAnalysis/lib/distances_openmp.pyx":161
  *                                   <double*>results.data)
  * 
  * def calc_angle(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -2138,7 +2138,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_20calc_angle(CYTHON_UNUSED Py
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("calc_angle", 0);
 
-  /* "src/numtools/distances_openmp.pyx":166
+  /* "MDAnalysis/lib/distances_openmp.pyx":166
  *                c_numpy.ndarray results):
  *     cdef int numcoords
  *     numcoords = coords1.dimensions[0]             # <<<<<<<<<<<<<<
@@ -2147,7 +2147,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_20calc_angle(CYTHON_UNUSED Py
  */
   __pyx_v_numcoords = (__pyx_v_coords1->dimensions[0]);
 
-  /* "src/numtools/distances_openmp.pyx":168
+  /* "MDAnalysis/lib/distances_openmp.pyx":168
  *     numcoords = coords1.dimensions[0]
  * 
  *     _calc_angle(<coordinate*> coords1.data, <coordinate*> coords2.data,             # <<<<<<<<<<<<<<
@@ -2156,7 +2156,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_20calc_angle(CYTHON_UNUSED Py
  */
   _calc_angle(((coordinate *)__pyx_v_coords1->data), ((coordinate *)__pyx_v_coords2->data), ((coordinate *)__pyx_v_coords3->data), __pyx_v_numcoords, ((double *)__pyx_v_results->data));
 
-  /* "src/numtools/distances_openmp.pyx":161
+  /* "MDAnalysis/lib/distances_openmp.pyx":161
  *                                   <double*>results.data)
  * 
  * def calc_angle(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -2171,7 +2171,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_20calc_angle(CYTHON_UNUSED Py
   return __pyx_r;
 }
 
-/* "src/numtools/distances_openmp.pyx":173
+/* "MDAnalysis/lib/distances_openmp.pyx":173
  *                 <double*>results.data)
  * 
  * def calc_angle_ortho(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -2283,7 +2283,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_22calc_angle_ortho(CYTHON_UNU
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("calc_angle_ortho", 0);
 
-  /* "src/numtools/distances_openmp.pyx":179
+  /* "MDAnalysis/lib/distances_openmp.pyx":179
  *                      c_numpy.ndarray results):
  *     cdef int numcoords
  *     numcoords = coords1.dimensions[0]             # <<<<<<<<<<<<<<
@@ -2292,7 +2292,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_22calc_angle_ortho(CYTHON_UNU
  */
   __pyx_v_numcoords = (__pyx_v_coords1->dimensions[0]);
 
-  /* "src/numtools/distances_openmp.pyx":181
+  /* "MDAnalysis/lib/distances_openmp.pyx":181
  *     numcoords = coords1.dimensions[0]
  * 
  *     _calc_angle_ortho(<coordinate*> coords1.data, <coordinate*> coords2.data,             # <<<<<<<<<<<<<<
@@ -2301,7 +2301,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_22calc_angle_ortho(CYTHON_UNU
  */
   _calc_angle_ortho(((coordinate *)__pyx_v_coords1->data), ((coordinate *)__pyx_v_coords2->data), ((coordinate *)__pyx_v_coords3->data), __pyx_v_numcoords, ((float *)__pyx_v_box->data), ((double *)__pyx_v_results->data));
 
-  /* "src/numtools/distances_openmp.pyx":173
+  /* "MDAnalysis/lib/distances_openmp.pyx":173
  *                 <double*>results.data)
  * 
  * def calc_angle_ortho(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -2316,7 +2316,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_22calc_angle_ortho(CYTHON_UNU
   return __pyx_r;
 }
 
-/* "src/numtools/distances_openmp.pyx":187
+/* "MDAnalysis/lib/distances_openmp.pyx":187
  *                       <double*>results.data)
  * 
  * def calc_angle_triclinic(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -2428,7 +2428,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_24calc_angle_triclinic(CYTHON
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("calc_angle_triclinic", 0);
 
-  /* "src/numtools/distances_openmp.pyx":193
+  /* "MDAnalysis/lib/distances_openmp.pyx":193
  *                          c_numpy.ndarray results):
  *     cdef int numcoords
  *     numcoords = coords1.dimensions[0]             # <<<<<<<<<<<<<<
@@ -2437,7 +2437,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_24calc_angle_triclinic(CYTHON
  */
   __pyx_v_numcoords = (__pyx_v_coords1->dimensions[0]);
 
-  /* "src/numtools/distances_openmp.pyx":195
+  /* "MDAnalysis/lib/distances_openmp.pyx":195
  *     numcoords = coords1.dimensions[0]
  * 
  *     _calc_angle_triclinic(<coordinate*> coords1.data, <coordinate*> coords2.data,             # <<<<<<<<<<<<<<
@@ -2446,7 +2446,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_24calc_angle_triclinic(CYTHON
  */
   _calc_angle_triclinic(((coordinate *)__pyx_v_coords1->data), ((coordinate *)__pyx_v_coords2->data), ((coordinate *)__pyx_v_coords3->data), __pyx_v_numcoords, ((coordinate *)__pyx_v_box->data), ((double *)__pyx_v_results->data));
 
-  /* "src/numtools/distances_openmp.pyx":187
+  /* "MDAnalysis/lib/distances_openmp.pyx":187
  *                       <double*>results.data)
  * 
  * def calc_angle_triclinic(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -2461,7 +2461,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_24calc_angle_triclinic(CYTHON
   return __pyx_r;
 }
 
-/* "src/numtools/distances_openmp.pyx":201
+/* "MDAnalysis/lib/distances_openmp.pyx":201
  *                           <double*>results.data)
  * 
  * def calc_dihedral(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -2573,7 +2573,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_26calc_dihedral(CYTHON_UNUSED
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("calc_dihedral", 0);
 
-  /* "src/numtools/distances_openmp.pyx":207
+  /* "MDAnalysis/lib/distances_openmp.pyx":207
  *                  c_numpy.ndarray results):
  *     cdef int numcoords
  *     numcoords = coords1.dimensions[0]             # <<<<<<<<<<<<<<
@@ -2582,7 +2582,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_26calc_dihedral(CYTHON_UNUSED
  */
   __pyx_v_numcoords = (__pyx_v_coords1->dimensions[0]);
 
-  /* "src/numtools/distances_openmp.pyx":209
+  /* "MDAnalysis/lib/distances_openmp.pyx":209
  *     numcoords = coords1.dimensions[0]
  * 
  *     _calc_dihedral(<coordinate*> coords1.data, <coordinate*> coords2.data,             # <<<<<<<<<<<<<<
@@ -2591,7 +2591,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_26calc_dihedral(CYTHON_UNUSED
  */
   _calc_dihedral(((coordinate *)__pyx_v_coords1->data), ((coordinate *)__pyx_v_coords2->data), ((coordinate *)__pyx_v_coords3->data), ((coordinate *)__pyx_v_coords4->data), __pyx_v_numcoords, ((double *)__pyx_v_results->data));
 
-  /* "src/numtools/distances_openmp.pyx":201
+  /* "MDAnalysis/lib/distances_openmp.pyx":201
  *                           <double*>results.data)
  * 
  * def calc_dihedral(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -2606,7 +2606,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_26calc_dihedral(CYTHON_UNUSED
   return __pyx_r;
 }
 
-/* "src/numtools/distances_openmp.pyx":214
+/* "MDAnalysis/lib/distances_openmp.pyx":214
  *                   <double*>results.data)
  * 
  * def calc_dihedral_ortho(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -2728,7 +2728,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_28calc_dihedral_ortho(CYTHON_
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("calc_dihedral_ortho", 0);
 
-  /* "src/numtools/distances_openmp.pyx":221
+  /* "MDAnalysis/lib/distances_openmp.pyx":221
  *                        c_numpy.ndarray results):
  *     cdef int numcoords
  *     numcoords = coords1.dimensions[0]             # <<<<<<<<<<<<<<
@@ -2737,7 +2737,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_28calc_dihedral_ortho(CYTHON_
  */
   __pyx_v_numcoords = (__pyx_v_coords1->dimensions[0]);
 
-  /* "src/numtools/distances_openmp.pyx":223
+  /* "MDAnalysis/lib/distances_openmp.pyx":223
  *     numcoords = coords1.dimensions[0]
  * 
  *     _calc_dihedral_ortho(<coordinate*> coords1.data, <coordinate*> coords2.data,             # <<<<<<<<<<<<<<
@@ -2746,7 +2746,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_28calc_dihedral_ortho(CYTHON_
  */
   _calc_dihedral_ortho(((coordinate *)__pyx_v_coords1->data), ((coordinate *)__pyx_v_coords2->data), ((coordinate *)__pyx_v_coords3->data), ((coordinate *)__pyx_v_coords4->data), __pyx_v_numcoords, ((float *)__pyx_v_box->data), ((double *)__pyx_v_results->data));
 
-  /* "src/numtools/distances_openmp.pyx":214
+  /* "MDAnalysis/lib/distances_openmp.pyx":214
  *                   <double*>results.data)
  * 
  * def calc_dihedral_ortho(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -2761,7 +2761,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_28calc_dihedral_ortho(CYTHON_
   return __pyx_r;
 }
 
-/* "src/numtools/distances_openmp.pyx":229
+/* "MDAnalysis/lib/distances_openmp.pyx":229
  *                         <double*>results.data)
  * 
  * def calc_dihedral_triclinic(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -2883,7 +2883,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_30calc_dihedral_triclinic(CYT
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("calc_dihedral_triclinic", 0);
 
-  /* "src/numtools/distances_openmp.pyx":236
+  /* "MDAnalysis/lib/distances_openmp.pyx":236
  *                            c_numpy.ndarray results):
  *     cdef int numcoords
  *     numcoords = coords1.dimensions[0]             # <<<<<<<<<<<<<<
@@ -2892,7 +2892,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_30calc_dihedral_triclinic(CYT
  */
   __pyx_v_numcoords = (__pyx_v_coords1->dimensions[0]);
 
-  /* "src/numtools/distances_openmp.pyx":238
+  /* "MDAnalysis/lib/distances_openmp.pyx":238
  *     numcoords = coords1.dimensions[0]
  * 
  *     _calc_dihedral_triclinic(<coordinate*> coords1.data, <coordinate*> coords2.data,             # <<<<<<<<<<<<<<
@@ -2901,7 +2901,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_30calc_dihedral_triclinic(CYT
  */
   _calc_dihedral_triclinic(((coordinate *)__pyx_v_coords1->data), ((coordinate *)__pyx_v_coords2->data), ((coordinate *)__pyx_v_coords3->data), ((coordinate *)__pyx_v_coords4->data), __pyx_v_numcoords, ((coordinate *)__pyx_v_box->data), ((double *)__pyx_v_results->data));
 
-  /* "src/numtools/distances_openmp.pyx":229
+  /* "MDAnalysis/lib/distances_openmp.pyx":229
  *                         <double*>results.data)
  * 
  * def calc_dihedral_triclinic(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -2916,7 +2916,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_30calc_dihedral_triclinic(CYT
   return __pyx_r;
 }
 
-/* "src/numtools/distances_openmp.pyx":244
+/* "MDAnalysis/lib/distances_openmp.pyx":244
  *                             <double*>results.data)
  * 
  * def ortho_pbc(c_numpy.ndarray coords,             # <<<<<<<<<<<<<<
@@ -3008,7 +3008,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_32ortho_pbc(CYTHON_UNUSED PyO
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("ortho_pbc", 0);
 
-  /* "src/numtools/distances_openmp.pyx":247
+  /* "MDAnalysis/lib/distances_openmp.pyx":247
  *               c_numpy.ndarray box, c_numpy.ndarray box_inverse):
  *     cdef int numcoords
  *     numcoords = coords.dimensions[0]             # <<<<<<<<<<<<<<
@@ -3017,7 +3017,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_32ortho_pbc(CYTHON_UNUSED PyO
  */
   __pyx_v_numcoords = (__pyx_v_coords->dimensions[0]);
 
-  /* "src/numtools/distances_openmp.pyx":249
+  /* "MDAnalysis/lib/distances_openmp.pyx":249
  *     numcoords = coords.dimensions[0]
  * 
  *     _ortho_pbc(<coordinate*> coords.data, numcoords,             # <<<<<<<<<<<<<<
@@ -3026,7 +3026,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_32ortho_pbc(CYTHON_UNUSED PyO
  */
   _ortho_pbc(((coordinate *)__pyx_v_coords->data), __pyx_v_numcoords, ((float *)__pyx_v_box->data), ((float *)__pyx_v_box_inverse->data));
 
-  /* "src/numtools/distances_openmp.pyx":244
+  /* "MDAnalysis/lib/distances_openmp.pyx":244
  *                             <double*>results.data)
  * 
  * def ortho_pbc(c_numpy.ndarray coords,             # <<<<<<<<<<<<<<
@@ -3041,7 +3041,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_32ortho_pbc(CYTHON_UNUSED PyO
   return __pyx_r;
 }
 
-/* "src/numtools/distances_openmp.pyx":252
+/* "MDAnalysis/lib/distances_openmp.pyx":252
  *                <float*>box.data, <float*>box_inverse.data)
  * 
  * def triclinic_pbc(c_numpy.ndarray coords,             # <<<<<<<<<<<<<<
@@ -3133,7 +3133,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_34triclinic_pbc(CYTHON_UNUSED
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("triclinic_pbc", 0);
 
-  /* "src/numtools/distances_openmp.pyx":255
+  /* "MDAnalysis/lib/distances_openmp.pyx":255
  *                   c_numpy.ndarray box, c_numpy.ndarray box_inverse):
  *     cdef int numcoords
  *     numcoords = coords.dimensions[0]             # <<<<<<<<<<<<<<
@@ -3142,7 +3142,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_34triclinic_pbc(CYTHON_UNUSED
  */
   __pyx_v_numcoords = (__pyx_v_coords->dimensions[0]);
 
-  /* "src/numtools/distances_openmp.pyx":257
+  /* "MDAnalysis/lib/distances_openmp.pyx":257
  *     numcoords = coords.dimensions[0]
  * 
  *     _triclinic_pbc(<coordinate*> coords.data, numcoords,             # <<<<<<<<<<<<<<
@@ -3150,7 +3150,7 @@ static PyObject *__pyx_pf_3lib_17_distances_openmp_34triclinic_pbc(CYTHON_UNUSED
  */
   _triclinic_pbc(((coordinate *)__pyx_v_coords->data), __pyx_v_numcoords, ((coordinate *)__pyx_v_box->data), ((float *)__pyx_v_box_inverse->data));
 
-  /* "src/numtools/distances_openmp.pyx":252
+  /* "MDAnalysis/lib/distances_openmp.pyx":252
  *                <float*>box.data, <float*>box_inverse.data)
  * 
  * def triclinic_pbc(c_numpy.ndarray coords,             # <<<<<<<<<<<<<<
@@ -3235,7 +3235,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "src/numtools/distances_openmp.pyx":54
+  /* "MDAnalysis/lib/distances_openmp.pyx":54
  *     void _triclinic_pbc(coordinate* coords, int numcoords, coordinate* box, float* box_inverse)
  * 
  * def calc_distance_array(c_numpy.ndarray ref, c_numpy.ndarray conf,             # <<<<<<<<<<<<<<
@@ -3247,7 +3247,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GIVEREF(__pyx_tuple_);
   __pyx_codeobj__2 = (PyObject*)__Pyx_PyCode_New(3, 0, 5, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple_, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_calc_distance_array, 54, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 54; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "src/numtools/distances_openmp.pyx":64
+  /* "MDAnalysis/lib/distances_openmp.pyx":64
  *                          <double*>result.data)
  * 
  * def calc_distance_array_ortho(c_numpy.ndarray ref, c_numpy.ndarray conf,             # <<<<<<<<<<<<<<
@@ -3259,7 +3259,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GIVEREF(__pyx_tuple__3);
   __pyx_codeobj__4 = (PyObject*)__Pyx_PyCode_New(4, 0, 6, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__3, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_calc_distance_array_ortho, 64, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 64; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "src/numtools/distances_openmp.pyx":76
+  /* "MDAnalysis/lib/distances_openmp.pyx":76
  *                                <double*>result.data)
  * 
  * def calc_distance_array_triclinic(c_numpy.ndarray ref, c_numpy.ndarray conf,             # <<<<<<<<<<<<<<
@@ -3271,7 +3271,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GIVEREF(__pyx_tuple__5);
   __pyx_codeobj__6 = (PyObject*)__Pyx_PyCode_New(4, 0, 6, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__5, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_calc_distance_array_triclinic, 76, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 76; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "src/numtools/distances_openmp.pyx":88
+  /* "MDAnalysis/lib/distances_openmp.pyx":88
  *                                    <double*>result.data)
  * 
  * def calc_self_distance_array(c_numpy.ndarray ref,             # <<<<<<<<<<<<<<
@@ -3283,7 +3283,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GIVEREF(__pyx_tuple__7);
   __pyx_codeobj__8 = (PyObject*)__Pyx_PyCode_New(2, 0, 4, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__7, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_calc_self_distance_array, 88, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 88; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "src/numtools/distances_openmp.pyx":97
+  /* "MDAnalysis/lib/distances_openmp.pyx":97
  *                               <double*>result.data, distnum)
  * 
  * def calc_self_distance_array_ortho(c_numpy.ndarray ref,             # <<<<<<<<<<<<<<
@@ -3295,7 +3295,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GIVEREF(__pyx_tuple__9);
   __pyx_codeobj__10 = (PyObject*)__Pyx_PyCode_New(3, 0, 5, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__9, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_calc_self_distance_array_ortho, 97, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 97; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "src/numtools/distances_openmp.pyx":108
+  /* "MDAnalysis/lib/distances_openmp.pyx":108
  *                                     <double*>result.data, distnum)
  * 
  * def calc_self_distance_array_triclinic(c_numpy.ndarray ref,             # <<<<<<<<<<<<<<
@@ -3307,7 +3307,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GIVEREF(__pyx_tuple__11);
   __pyx_codeobj__12 = (PyObject*)__Pyx_PyCode_New(3, 0, 5, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__11, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_calc_self_distance_array_triclin, 108, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 108; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "src/numtools/distances_openmp.pyx":119
+  /* "MDAnalysis/lib/distances_openmp.pyx":119
  *                                         <double*>result.data, distnum)
  * 
  * def coord_transform(c_numpy.ndarray coords,             # <<<<<<<<<<<<<<
@@ -3319,7 +3319,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GIVEREF(__pyx_tuple__13);
   __pyx_codeobj__14 = (PyObject*)__Pyx_PyCode_New(2, 0, 3, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__13, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_coord_transform, 119, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__14)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 119; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "src/numtools/distances_openmp.pyx":127
+  /* "MDAnalysis/lib/distances_openmp.pyx":127
  *                      <coordinate*> box.data)
  * 
  * def calc_bond_distance(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -3331,7 +3331,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GIVEREF(__pyx_tuple__15);
   __pyx_codeobj__16 = (PyObject*)__Pyx_PyCode_New(3, 0, 4, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__15, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_calc_bond_distance, 127, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__16)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 127; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "src/numtools/distances_openmp.pyx":137
+  /* "MDAnalysis/lib/distances_openmp.pyx":137
  *                         <double*>results.data)
  * 
  * def calc_bond_distance_ortho(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -3343,7 +3343,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GIVEREF(__pyx_tuple__17);
   __pyx_codeobj__18 = (PyObject*)__Pyx_PyCode_New(4, 0, 5, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__17, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_calc_bond_distance_ortho, 137, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__18)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 137; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "src/numtools/distances_openmp.pyx":149
+  /* "MDAnalysis/lib/distances_openmp.pyx":149
  *                               <double*>results.data)
  * 
  * def calc_bond_distance_triclinic(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -3355,7 +3355,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GIVEREF(__pyx_tuple__19);
   __pyx_codeobj__20 = (PyObject*)__Pyx_PyCode_New(4, 0, 5, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__19, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_calc_bond_distance_triclinic, 149, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__20)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "src/numtools/distances_openmp.pyx":161
+  /* "MDAnalysis/lib/distances_openmp.pyx":161
  *                                   <double*>results.data)
  * 
  * def calc_angle(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -3367,7 +3367,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GIVEREF(__pyx_tuple__21);
   __pyx_codeobj__22 = (PyObject*)__Pyx_PyCode_New(4, 0, 5, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__21, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_calc_angle, 161, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__22)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "src/numtools/distances_openmp.pyx":173
+  /* "MDAnalysis/lib/distances_openmp.pyx":173
  *                 <double*>results.data)
  * 
  * def calc_angle_ortho(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -3379,7 +3379,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GIVEREF(__pyx_tuple__23);
   __pyx_codeobj__24 = (PyObject*)__Pyx_PyCode_New(5, 0, 6, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__23, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_calc_angle_ortho, 173, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__24)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 173; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "src/numtools/distances_openmp.pyx":187
+  /* "MDAnalysis/lib/distances_openmp.pyx":187
  *                       <double*>results.data)
  * 
  * def calc_angle_triclinic(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -3391,7 +3391,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GIVEREF(__pyx_tuple__25);
   __pyx_codeobj__26 = (PyObject*)__Pyx_PyCode_New(5, 0, 6, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__25, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_calc_angle_triclinic, 187, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__26)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 187; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "src/numtools/distances_openmp.pyx":201
+  /* "MDAnalysis/lib/distances_openmp.pyx":201
  *                           <double*>results.data)
  * 
  * def calc_dihedral(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -3403,7 +3403,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GIVEREF(__pyx_tuple__27);
   __pyx_codeobj__28 = (PyObject*)__Pyx_PyCode_New(5, 0, 6, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__27, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_calc_dihedral, 201, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__28)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 201; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "src/numtools/distances_openmp.pyx":214
+  /* "MDAnalysis/lib/distances_openmp.pyx":214
  *                   <double*>results.data)
  * 
  * def calc_dihedral_ortho(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -3415,7 +3415,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GIVEREF(__pyx_tuple__29);
   __pyx_codeobj__30 = (PyObject*)__Pyx_PyCode_New(6, 0, 7, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__29, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_calc_dihedral_ortho, 214, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__30)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 214; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "src/numtools/distances_openmp.pyx":229
+  /* "MDAnalysis/lib/distances_openmp.pyx":229
  *                         <double*>results.data)
  * 
  * def calc_dihedral_triclinic(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -3427,7 +3427,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GIVEREF(__pyx_tuple__31);
   __pyx_codeobj__32 = (PyObject*)__Pyx_PyCode_New(6, 0, 7, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__31, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_calc_dihedral_triclinic, 229, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__32)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 229; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "src/numtools/distances_openmp.pyx":244
+  /* "MDAnalysis/lib/distances_openmp.pyx":244
  *                             <double*>results.data)
  * 
  * def ortho_pbc(c_numpy.ndarray coords,             # <<<<<<<<<<<<<<
@@ -3439,7 +3439,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GIVEREF(__pyx_tuple__33);
   __pyx_codeobj__34 = (PyObject*)__Pyx_PyCode_New(3, 0, 4, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__33, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_richard_code_mdanalysis_pa, __pyx_n_s_ortho_pbc, 244, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__34)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 244; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "src/numtools/distances_openmp.pyx":252
+  /* "MDAnalysis/lib/distances_openmp.pyx":252
  *                <float*>box.data, <float*>box_inverse.data)
  * 
  * def triclinic_pbc(c_numpy.ndarray coords,             # <<<<<<<<<<<<<<
@@ -3550,7 +3550,7 @@ PyMODINIT_FUNC PyInit__distances_openmp(void)
   /*--- Function import code ---*/
   /*--- Execution code ---*/
 
-  /* "src/numtools/distances_openmp.pyx":27
+  /* "MDAnalysis/lib/distances_openmp.pyx":27
  * 
  * cimport c_numpy
  * c_numpy.import_array()             # <<<<<<<<<<<<<<
@@ -3559,7 +3559,7 @@ PyMODINIT_FUNC PyInit__distances_openmp(void)
  */
   import_array();
 
-  /* "src/numtools/distances_openmp.pyx":54
+  /* "MDAnalysis/lib/distances_openmp.pyx":54
  *     void _triclinic_pbc(coordinate* coords, int numcoords, coordinate* box, float* box_inverse)
  * 
  * def calc_distance_array(c_numpy.ndarray ref, c_numpy.ndarray conf,             # <<<<<<<<<<<<<<
@@ -3571,7 +3571,7 @@ PyMODINIT_FUNC PyInit__distances_openmp(void)
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_calc_distance_array, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 54; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "src/numtools/distances_openmp.pyx":64
+  /* "MDAnalysis/lib/distances_openmp.pyx":64
  *                          <double*>result.data)
  * 
  * def calc_distance_array_ortho(c_numpy.ndarray ref, c_numpy.ndarray conf,             # <<<<<<<<<<<<<<
@@ -3583,7 +3583,7 @@ PyMODINIT_FUNC PyInit__distances_openmp(void)
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_calc_distance_array_ortho, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 64; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "src/numtools/distances_openmp.pyx":76
+  /* "MDAnalysis/lib/distances_openmp.pyx":76
  *                                <double*>result.data)
  * 
  * def calc_distance_array_triclinic(c_numpy.ndarray ref, c_numpy.ndarray conf,             # <<<<<<<<<<<<<<
@@ -3595,7 +3595,7 @@ PyMODINIT_FUNC PyInit__distances_openmp(void)
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_calc_distance_array_triclinic, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 76; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "src/numtools/distances_openmp.pyx":88
+  /* "MDAnalysis/lib/distances_openmp.pyx":88
  *                                    <double*>result.data)
  * 
  * def calc_self_distance_array(c_numpy.ndarray ref,             # <<<<<<<<<<<<<<
@@ -3607,7 +3607,7 @@ PyMODINIT_FUNC PyInit__distances_openmp(void)
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_calc_self_distance_array, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 88; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "src/numtools/distances_openmp.pyx":97
+  /* "MDAnalysis/lib/distances_openmp.pyx":97
  *                               <double*>result.data, distnum)
  * 
  * def calc_self_distance_array_ortho(c_numpy.ndarray ref,             # <<<<<<<<<<<<<<
@@ -3619,7 +3619,7 @@ PyMODINIT_FUNC PyInit__distances_openmp(void)
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_calc_self_distance_array_ortho, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 97; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "src/numtools/distances_openmp.pyx":108
+  /* "MDAnalysis/lib/distances_openmp.pyx":108
  *                                     <double*>result.data, distnum)
  * 
  * def calc_self_distance_array_triclinic(c_numpy.ndarray ref,             # <<<<<<<<<<<<<<
@@ -3631,7 +3631,7 @@ PyMODINIT_FUNC PyInit__distances_openmp(void)
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_calc_self_distance_array_triclin, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 108; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "src/numtools/distances_openmp.pyx":119
+  /* "MDAnalysis/lib/distances_openmp.pyx":119
  *                                         <double*>result.data, distnum)
  * 
  * def coord_transform(c_numpy.ndarray coords,             # <<<<<<<<<<<<<<
@@ -3643,7 +3643,7 @@ PyMODINIT_FUNC PyInit__distances_openmp(void)
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_coord_transform, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 119; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "src/numtools/distances_openmp.pyx":127
+  /* "MDAnalysis/lib/distances_openmp.pyx":127
  *                      <coordinate*> box.data)
  * 
  * def calc_bond_distance(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -3655,7 +3655,7 @@ PyMODINIT_FUNC PyInit__distances_openmp(void)
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_calc_bond_distance, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 127; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "src/numtools/distances_openmp.pyx":137
+  /* "MDAnalysis/lib/distances_openmp.pyx":137
  *                         <double*>results.data)
  * 
  * def calc_bond_distance_ortho(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -3667,7 +3667,7 @@ PyMODINIT_FUNC PyInit__distances_openmp(void)
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_calc_bond_distance_ortho, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 137; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "src/numtools/distances_openmp.pyx":149
+  /* "MDAnalysis/lib/distances_openmp.pyx":149
  *                               <double*>results.data)
  * 
  * def calc_bond_distance_triclinic(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -3679,7 +3679,7 @@ PyMODINIT_FUNC PyInit__distances_openmp(void)
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_calc_bond_distance_triclinic, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "src/numtools/distances_openmp.pyx":161
+  /* "MDAnalysis/lib/distances_openmp.pyx":161
  *                                   <double*>results.data)
  * 
  * def calc_angle(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -3691,7 +3691,7 @@ PyMODINIT_FUNC PyInit__distances_openmp(void)
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_calc_angle, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "src/numtools/distances_openmp.pyx":173
+  /* "MDAnalysis/lib/distances_openmp.pyx":173
  *                 <double*>results.data)
  * 
  * def calc_angle_ortho(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -3703,7 +3703,7 @@ PyMODINIT_FUNC PyInit__distances_openmp(void)
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_calc_angle_ortho, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 173; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "src/numtools/distances_openmp.pyx":187
+  /* "MDAnalysis/lib/distances_openmp.pyx":187
  *                       <double*>results.data)
  * 
  * def calc_angle_triclinic(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -3715,7 +3715,7 @@ PyMODINIT_FUNC PyInit__distances_openmp(void)
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_calc_angle_triclinic, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 187; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "src/numtools/distances_openmp.pyx":201
+  /* "MDAnalysis/lib/distances_openmp.pyx":201
  *                           <double*>results.data)
  * 
  * def calc_dihedral(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -3727,7 +3727,7 @@ PyMODINIT_FUNC PyInit__distances_openmp(void)
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_calc_dihedral, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 201; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "src/numtools/distances_openmp.pyx":214
+  /* "MDAnalysis/lib/distances_openmp.pyx":214
  *                   <double*>results.data)
  * 
  * def calc_dihedral_ortho(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -3739,7 +3739,7 @@ PyMODINIT_FUNC PyInit__distances_openmp(void)
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_calc_dihedral_ortho, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 214; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "src/numtools/distances_openmp.pyx":229
+  /* "MDAnalysis/lib/distances_openmp.pyx":229
  *                         <double*>results.data)
  * 
  * def calc_dihedral_triclinic(c_numpy.ndarray coords1,             # <<<<<<<<<<<<<<
@@ -3751,7 +3751,7 @@ PyMODINIT_FUNC PyInit__distances_openmp(void)
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_calc_dihedral_triclinic, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 229; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "src/numtools/distances_openmp.pyx":244
+  /* "MDAnalysis/lib/distances_openmp.pyx":244
  *                             <double*>results.data)
  * 
  * def ortho_pbc(c_numpy.ndarray coords,             # <<<<<<<<<<<<<<
@@ -3763,7 +3763,7 @@ PyMODINIT_FUNC PyInit__distances_openmp(void)
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_ortho_pbc, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 244; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "src/numtools/distances_openmp.pyx":252
+  /* "MDAnalysis/lib/distances_openmp.pyx":252
  *                <float*>box.data, <float*>box_inverse.data)
  * 
  * def triclinic_pbc(c_numpy.ndarray coords,             # <<<<<<<<<<<<<<
@@ -3775,7 +3775,7 @@ PyMODINIT_FUNC PyInit__distances_openmp(void)
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_triclinic_pbc, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 252; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "src/numtools/distances_openmp.pyx":1
+  /* "MDAnalysis/lib/distances_openmp.pyx":1
  * # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-             # <<<<<<<<<<<<<<
  * # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
  * #

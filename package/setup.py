@@ -91,7 +91,7 @@ try:
 except AttributeError:
     numpy_include = np.get_numpy_include()
 
-include_dirs = [numpy_include]
+include_dirs = ['include', numpy_include]
 
 # Handle cython modules
 try:
@@ -212,45 +212,51 @@ if __name__ == '__main__':
     parallel_macros = [('PARALLEL', None)] if has_openmp else []
 
     extensions = [
-        Extension('coordinates._dcdmodule', ['src/dcd/dcd.c'],
-                  include_dirs=include_dirs + ['src/dcd/include'],
+        Extension('coordinates._dcdmodule',
+                  ['MDAnalysis/coordinates/src/dcd.c'],
+                  include_dirs=include_dirs + ['MDAnalysis/coordinates/include'],
                   define_macros=define_macros,
                   extra_compile_args=extra_compile_args),
-        Extension('coordinates.dcdtimeseries', ['src/dcd/dcdtimeseries.%s' % ("pyx" if use_cython else "c")],
-                  include_dirs=include_dirs + ['src/dcd/include'],
+        Extension('coordinates.dcdtimeseries',
+                  ['MDAnalysis/coordinates/dcdtimeseries.%s' % ("pyx" if use_cython else "c")],
+                  include_dirs=include_dirs + ['MDAnalysis/coordinates/include'],
                   define_macros=define_macros,
                   extra_compile_args=extra_compile_args),
-        Extension('lib._distances', ['src/numtools/distances.%s' % ("pyx" if use_cython else "c")],
-                  include_dirs=include_dirs + ['src/numtools'],
+        Extension('lib._distances',
+                  ['MDAnalysis/lib/distances.%s' % ("pyx" if use_cython else "c")],
+                  include_dirs=include_dirs + ['MDAnalysis/lib/include'],
                   libraries=['m'],
                   define_macros=define_macros,
                   extra_compile_args=extra_compile_args),
-        Extension('lib._distances_openmp', ['src/numtools/distances_openmp.%s' %('pyx' if use_cython else 'c')],
-                  include_dirs=include_dirs + ['src/numtools'],
+        Extension('lib._distances_openmp',
+                  ['MDAnalysis/lib/distances_openmp.%s' %('pyx' if use_cython else 'c')],
+                  include_dirs=include_dirs + ['MDAnalysis/lib/include'],
                   libraries=['m'] + parallel_libraries,
                   define_macros=define_macros + parallel_macros,
                   extra_compile_args=parallel_args,
                   extra_link_args=parallel_args),
         Extension("lib.parallel.distances",
-                  ['src/numtools/distances_parallel.%s' % ("pyx" if use_cython else "c")],
+                  ['MDAnalysis/lib/distances_parallel.%s' % ("pyx" if use_cython else "c")],
                   include_dirs=include_dirs,
                   libraries=['m'] + parallel_libraries,
                   extra_compile_args=parallel_args,
                   extra_link_args=parallel_args),
-        Extension('lib.qcprot', ['src/pyqcprot/pyqcprot.%s' % ("pyx" if use_cython else "c")],
+        Extension('lib.qcprot',
+                  ['MDAnalysis/lib/src/pyqcprot/pyqcprot.%s' % ("pyx" if use_cython else "c")],
                   include_dirs=include_dirs,
                   extra_compile_args=["-O3", "-ffast-math"]),
-        Extension('lib._transformations', ['src/transformations/transformations.c'],
+        Extension('lib._transformations',
+                  ['MDAnalysis/lib/src/transformations/transformations.c'],
                   libraries=['m'],
                   define_macros=define_macros,
                   include_dirs=include_dirs,
                   extra_compile_args=extra_compile_args),
         Extension('coordinates.xdrfile._libxdrfile2',
-                  sources=[
-                      'src/xdrfile/libxdrfile2_wrap.c',
-                      'src/xdrfile/xdrfile.c',
-                      'src/xdrfile/xdrfile_trr.c',
-                      'src/xdrfile/xdrfile_xtc.c'
+                  sources=['MDAnalysis/coordinates/xdrfile/src/' + f
+                           for f in ('libxdrfile2_wrap.c',
+                                     'xdrfile.c',
+                                     'xdrfile_trr.c',
+                                     'xdrfile_xtc.c')
                   ],
                   include_dirs=include_dirs,
                   define_macros=largefile_macros),
