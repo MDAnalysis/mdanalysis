@@ -4,22 +4,26 @@ class TestPQRReader(_SingleFrameReader):
         self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
 
     def test_total_charge(self):
-        assert_almost_equal(self.universe.atoms.total_charge(), self.ref_charmm_totalcharge, 3,
-                            "Total charge (in CHARMM) does not match expected value.")
+        assert_almost_equal(
+            self.universe.atoms.total_charge(), self.ref_charmm_totalcharge, 3,
+            "Total charge (in CHARMM) does not match expected value.")
 
     def test_hydrogenCharges(self):
-        assert_almost_equal(self.universe.atoms.H.charges, self.ref_charmm_Hcharges, 3,
+        assert_almost_equal(self.universe.atoms.H.charges,
+                            self.ref_charmm_Hcharges, 3,
                             "Charges for H atoms do not match.")
 
     # Note that the whole system gets the sysID 'SYSTEM' for the PQR file (when read with
     # a PSF it is 's4AKE')
     def test_ArgCACharges(self):
-        assert_almost_equal(self.universe.SYSTEM.ARG.CA.charges, self.ref_charmm_ArgCAcharges, 3,
-                            "Charges for CA atoms in Arg residues do not match.")
+        assert_almost_equal(
+            self.universe.SYSTEM.ARG.CA.charges, self.ref_charmm_ArgCAcharges,
+            3, "Charges for CA atoms in Arg residues do not match.")
 
     def test_ProNCharges(self):
-        assert_almost_equal(self.universe.SYSTEM.PRO.N.charges, self.ref_charmm_ProNcharges, 3,
-                            "Charges for N atoms in Pro residues do not match.")
+        assert_almost_equal(
+            self.universe.SYSTEM.PRO.N.charges, self.ref_charmm_ProNcharges, 3,
+            "Charges for N atoms in Pro residues do not match.")
 
 
 class TestPQRWriter(TestCase, RefAdKSmall):
@@ -42,12 +46,24 @@ class TestPQRWriter(TestCase, RefAdKSmall):
         self.universe.atoms.write(self.outfile)
         u = mda.Universe(self.outfile)
         assert_equal(u.segments.segids[0], 'SYSTEM')
-        assert_almost_equal(u.atoms.coordinates(), self.universe.atoms.coordinates(), self.prec,
-                            err_msg="Writing PQR file with PQRWriter does not reproduce original coordinates")
-        assert_almost_equal(u.atoms.charges, self.universe.atoms.charges, self.prec,
-                            err_msg="Writing PQR file with PQRWriter does not reproduce original charges")
-        assert_almost_equal(u.atoms.radii, self.universe.atoms.radii, self.prec,
-                            err_msg="Writing PQR file with PQRWriter does not reproduce original radii")
+        assert_almost_equal(
+            u.atoms.coordinates(),
+            self.universe.atoms.coordinates(),
+            self.prec,
+            err_msg=
+            "Writing PQR file with PQRWriter does not reproduce original coordinates")
+        assert_almost_equal(
+            u.atoms.charges,
+            self.universe.atoms.charges,
+            self.prec,
+            err_msg=
+            "Writing PQR file with PQRWriter does not reproduce original charges")
+        assert_almost_equal(
+            u.atoms.radii,
+            self.universe.atoms.radii,
+            self.prec,
+            err_msg=
+            "Writing PQR file with PQRWriter does not reproduce original radii")
 
     def test_write_withChainID(self):
         self.universe.atoms.set_segids('A')
@@ -55,21 +71,36 @@ class TestPQRWriter(TestCase, RefAdKSmall):
         self.universe.atoms.write(self.outfile)
         u = mda.Universe(self.outfile)
         assert_equal(u.segments.segids[0], 'A')
-        assert_almost_equal(u.atoms.coordinates(), self.universe.atoms.coordinates(), self.prec,
-                            err_msg="Writing PQR file with PQRWriter does not reproduce original coordinates")
-        assert_almost_equal(u.atoms.charges, self.universe.atoms.charges, self.prec,
-                            err_msg="Writing PQR file with PQRWriter does not reproduce original charges")
-        assert_almost_equal(u.atoms.radii, self.universe.atoms.radii, self.prec,
-                            err_msg="Writing PQR file with PQRWriter does not reproduce original radii")
+        assert_almost_equal(
+            u.atoms.coordinates(),
+            self.universe.atoms.coordinates(),
+            self.prec,
+            err_msg=
+            "Writing PQR file with PQRWriter does not reproduce original coordinates")
+        assert_almost_equal(
+            u.atoms.charges,
+            self.universe.atoms.charges,
+            self.prec,
+            err_msg=
+            "Writing PQR file with PQRWriter does not reproduce original charges")
+        assert_almost_equal(
+            u.atoms.radii,
+            self.universe.atoms.radii,
+            self.prec,
+            err_msg=
+            "Writing PQR file with PQRWriter does not reproduce original radii")
 
     def test_timestep_not_modified_by_writer(self):
         ts = self.universe.trajectory.ts
         x = ts._pos.copy()
         self.universe.atoms.write(self.outfile)
-        assert_equal(ts._pos, x, err_msg="Positions in Timestep were modified by writer.")
+        assert_equal(ts._pos,
+                     x,
+                     err_msg="Positions in Timestep were modified by writer.")
 
     def test_total_charge(self):
         self.universe.atoms.write(self.outfile)
         u = mda.Universe(self.outfile)
-        assert_almost_equal(u.atoms.total_charge(), self.ref_charmm_totalcharge, 3,
-                            "Total charge (in CHARMM) does not match expected value.")
+        assert_almost_equal(
+            u.atoms.total_charge(), self.ref_charmm_totalcharge, 3,
+            "Total charge (in CHARMM) does not match expected value.")

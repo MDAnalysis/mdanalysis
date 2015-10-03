@@ -49,17 +49,16 @@ def atom_distance(a, b):
     return np.sqrt(np.sum(r ** 2))
 
 
-
-
 class TestINPCRDReader(TestCase):
     """Test reading Amber restart coordinate files"""
+
     def _check_ts(self, ts):
         # Check a ts has the right values in
-        ref_pos = np.array([[6.6528795, 6.6711416, -8.5963255],
-                        [7.3133773, 5.8359736, -8.8294175],
-                        [8.3254058, 6.2227613, -8.7098593],
-                        [7.0833200, 5.5038197, -9.8417650],
-                        [7.1129439, 4.6170351, -7.9729560]])
+        ref_pos = np.array([[6.6528795, 6.6711416, -8.5963255
+                             ], [7.3133773, 5.8359736, -8.8294175
+                                 ], [8.3254058, 6.2227613, -8.7098593
+                             ], [7.0833200, 5.5038197, -9.8417650],
+                            [7.1129439, 4.6170351, -7.9729560]])
         for ref, val in itertools.izip(ref_pos, ts._pos):
             assert_allclose(ref, val)
 
@@ -80,17 +79,12 @@ class TestINPCRDReader(TestCase):
         u = MDAnalysis.Universe(XYZ_five, INPCRD, format='RESTRT')
         self._check_ts(u.trajectory.ts)
 
-
-
-
-
-
-
 ### Does not implement Reader.remarks, Reader.header, Reader.title, Reader.compounds
 ### because the PDB header data in trajectory.metadata are already parsed; should perhaps
 ### update the PrimitivePDBReader to do the same. [orbeckst]
 #class TestPDBReader_Metadata(_PDBMetadata):
 #    permissive = False
+
 
 class TestPSF_CRDReader(_SingleFrameReader):
     def setUp(self):
@@ -107,28 +101,8 @@ class TestPSF_PDBReader(TestPDBReader):
     def test_uses_Biopython(self):
         from MDAnalysis.coordinates.PDB import PDBReader
 
-        assert_(isinstance(self.universe.trajectory, PDBReader), "failed to choose Biopython PDBReader")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        assert_(isinstance(self.universe.trajectory, PDBReader),
+                "failed to choose Biopython PDBReader")
 
 
 class TestChainReader(TestCase):
@@ -153,22 +127,26 @@ class TestChainReader(TestCase):
         assert_equal(self.trajectory.ts.frame, 1, "loading frame 2")
 
     def test_n_atoms(self):
-        assert_equal(self.universe.trajectory.n_atoms, 3341, "wrong number of atoms")
+        assert_equal(self.universe.trajectory.n_atoms, 3341,
+                     "wrong number of atoms")
 
     def test_n_frames(self):
-        assert_equal(self.universe.trajectory.n_frames, 3 * 98 + 4, "wrong number of frames in chained dcd")
+        assert_equal(self.universe.trajectory.n_frames, 3 * 98 + 4,
+                     "wrong number of frames in chained dcd")
 
     def test_iteration(self):
         for ts in self.trajectory:
             pass  # just forward to last frame
-        assert_equal(self.trajectory.n_frames - 1, ts.frame,
-                     "iteration yielded wrong number of frames (%d), should be %d"
-                     % (ts.frame, self.trajectory.n_frames))
+        assert_equal(
+            self.trajectory.n_frames - 1, ts.frame,
+            "iteration yielded wrong number of frames (%d), should be %d" %
+            (ts.frame, self.trajectory.n_frames))
 
     def test_jump_lastframe_trajectory(self):
         self.trajectory[-1]
         #print self.trajectory.ts, self.trajectory.ts.frame
-        assert_equal(self.trajectory.ts.frame + 1, self.trajectory.n_frames, "indexing last frame with trajectory[-1]")
+        assert_equal(self.trajectory.ts.frame + 1, self.trajectory.n_frames,
+                     "indexing last frame with trajectory[-1]")
 
     def test_slice_trajectory(self):
         frames = [ts.frame for ts in self.trajectory[5:17:3]]
@@ -189,13 +167,17 @@ class TestChainReader(TestCase):
         # forward to frame where we repeat original dcd again:
         # dcd:0..97 crd:98 dcd:99..196
         self.trajectory[99]
-        assert_array_equal(self.universe.atoms.coordinates(), coord0,
-                           "coordinates at frame 1 and 100 should be the same!")
+        assert_array_equal(
+            self.universe.atoms.coordinates(), coord0,
+            "coordinates at frame 1 and 100 should be the same!")
 
-    @knownfailure("time attribute not implemented for chained reader", ValueError)
+    @knownfailure("time attribute not implemented for chained reader",
+                  ValueError)
     def test_time(self):
         self.trajectory[30]  # index is 0-based but frames are 1-based
-        assert_almost_equal(self.universe.trajectory.time, 31.0, 5,
+        assert_almost_equal(self.universe.trajectory.time,
+                            31.0,
+                            5,
                             err_msg="wrong time of frame")
 
     @dec.slow
@@ -207,9 +189,13 @@ class TestChainReader(TestCase):
         W.close()
         self.universe.trajectory.rewind()
         u = MDAnalysis.Universe(PSF, self.outfile)
-        for (ts_orig, ts_new) in itertools.izip(self.universe.trajectory, u.trajectory):
-            assert_almost_equal(ts_orig._pos, ts_new._pos, self.prec,
-                                err_msg="Coordinates disagree at frame %d" % ts_orig.frame)
+        for (ts_orig, ts_new) in itertools.izip(self.universe.trajectory,
+                                                u.trajectory):
+            assert_almost_equal(
+                ts_orig._pos,
+                ts_new._pos,
+                self.prec,
+                err_msg="Coordinates disagree at frame %d" % ts_orig.frame)
 
 
 class TestChainReaderFormats(TestCase):
@@ -217,7 +203,8 @@ class TestChainReaderFormats(TestCase):
 
     @attr('issue')
     def test_set_all_format_tuples(self):
-        universe = MDAnalysis.Universe(GRO, [(PDB, 'pdb'), (XTC, 'xtc'), (TRR, 'trr')])
+        universe = MDAnalysis.Universe(GRO, [(PDB, 'pdb'), (XTC, 'xtc'),
+                                             (TRR, 'trr')])
         assert_equal(universe.trajectory.n_frames, 21)
 
     @attr('issue')
@@ -227,5 +214,7 @@ class TestChainReaderFormats(TestCase):
 
     @attr('issue')
     def test_set_all_formats(self):
-        universe = MDAnalysis.Universe(PSF, [PDB_small, PDB_closed], format='pdb')
+        universe = MDAnalysis.Universe(PSF,
+                                       [PDB_small, PDB_closed],
+                                       format='pdb')
         assert_equal(universe.trajectory.n_frames, 2)

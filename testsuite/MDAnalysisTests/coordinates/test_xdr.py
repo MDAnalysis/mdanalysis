@@ -26,18 +26,22 @@ class TestTRRReader_Sub(TestCase):
         load solvated trajectory into universe with unsolvated protein.
         """
         self.udry.load_new(TRR_sub_sol, sub=self.sub)
-        assert_array_almost_equal(self.pos, self.udry.atoms.positions,
+        assert_array_almost_equal(self.pos,
+                                  self.udry.atoms.positions,
                                   err_msg="positions differ")
-        assert_array_almost_equal(self.vel, self.udry.atoms.velocities,
+        assert_array_almost_equal(self.vel,
+                                  self.udry.atoms.velocities,
                                   err_msg="positions differ")
-        assert_array_almost_equal(self.force, self.udry.atoms.forces,
+        assert_array_almost_equal(self.force,
+                                  self.udry.atoms.forces,
                                   err_msg="positions differ")
 
 
 class _GromacsReader(TestCase):
     # This base class assumes same lengths and dt for XTC and TRR test cases!
     filename = None
-    ref_unitcell = np.array([80.017, 80.017, 80.017, 60., 60., 90.], dtype=np.float32)
+    ref_unitcell = np.array([80.017, 80.017, 80.017, 60., 60., 90.],
+                            dtype=np.float32)
     ref_volume = 362270.0  # computed with Gromacs: 362.26999999999998 nm**3 * 1000 A**3/nm**3
 
     def setUp(self):
@@ -60,8 +64,9 @@ class _GromacsReader(TestCase):
 
     @dec.slow
     def test_flag_convert_lengths(self):
-        assert_equal(mda.core.flags['convert_lengths'], True,
-                     "MDAnalysis.core.flags['convert_lengths'] should be True by default")
+        assert_equal(
+            mda.core.flags['convert_lengths'], True,
+            "MDAnalysis.core.flags['convert_lengths'] should be True by default")
 
     @dec.slow
     def test_rewind_xdrtrj(self):
@@ -82,7 +87,8 @@ class _GromacsReader(TestCase):
     @dec.slow
     def test_jump_lastframe_xdrtrj(self):
         self.trajectory[-1]
-        assert_equal(self.ts.frame, 9, "indexing last frame with trajectory[-1]")
+        assert_equal(self.ts.frame, 9,
+                     "indexing last frame with trajectory[-1]")
 
     @dec.slow
     def test_slice_xdrtrj(self):
@@ -96,7 +102,8 @@ class _GromacsReader(TestCase):
 
     @dec.slow
     def test_coordinates(self):
-        ca_nm = np.array([[6.043369675, 7.385184479, 1.381425762]], dtype=np.float32)
+        ca_nm = np.array([[6.043369675, 7.385184479, 1.381425762]],
+                         dtype=np.float32)
         # coordinates in the base unit (needed for True)
         ca_Angstrom = ca_nm * 10.0
         U = self.universe
@@ -107,8 +114,11 @@ class _GromacsReader(TestCase):
         assert_equal(self.ts.frame, 2, "failed to step to frame 3")
         ca = U.select_atoms('name CA and resid 122')
         # low precision match (2 decimals in A, 3 in nm) because the above are the trr coords
-        assert_array_almost_equal(ca.coordinates(), ca_Angstrom, 2,
-                                  err_msg="coords of Ca of resid 122 do not match for frame 3")
+        assert_array_almost_equal(
+            ca.coordinates(),
+            ca_Angstrom,
+            2,
+            err_msg="coords of Ca of resid 122 do not match for frame 3")
 
     @dec.slow
     @attr('issue')
@@ -116,19 +126,28 @@ class _GromacsReader(TestCase):
         """Test that xtc/trr unitcell is read correctly (Issue 34)"""
         self.universe.trajectory.rewind()
         uc = self.ts.dimensions
-        assert_array_almost_equal(uc, self.ref_unitcell, self.prec,
-                                  err_msg="unit cell dimensions (rhombic dodecahedron)")
+        assert_array_almost_equal(
+            uc,
+            self.ref_unitcell,
+            self.prec,
+            err_msg="unit cell dimensions (rhombic dodecahedron)")
 
     @dec.slow
     def test_volume(self):
         # need to reduce precision for test (nm**3 <--> A**3)
         self.universe.trajectory.rewind()
         vol = self.ts.volume
-        assert_array_almost_equal(vol, self.ref_volume, 0, err_msg="unit cell volume (rhombic dodecahedron)")
+        assert_array_almost_equal(
+            vol,
+            self.ref_volume,
+            0,
+            err_msg="unit cell volume (rhombic dodecahedron)")
 
     @dec.slow
     def test_dt(self):
-        assert_almost_equal(self.universe.trajectory.dt, 100.0, 4,
+        assert_almost_equal(self.universe.trajectory.dt,
+                            100.0,
+                            4,
                             err_msg="wrong timestep dt")
 
     @dec.slow
@@ -136,7 +155,9 @@ class _GromacsReader(TestCase):
         # test_totaltime(): need to reduce precision because dt is only precise
         # to ~4 decimals and accumulating the inaccuracy leads to even lower
         # precision in the totaltime (consequence of fixing Issue 64)
-        assert_almost_equal(self.universe.trajectory.totaltime, 1000.0, 3,
+        assert_almost_equal(self.universe.trajectory.totaltime,
+                            1000.0,
+                            3,
                             err_msg="wrong total length of trajectory")
 
     @dec.slow
@@ -147,7 +168,9 @@ class _GromacsReader(TestCase):
     @dec.slow
     def test_time(self):
         self.trajectory[4]
-        assert_almost_equal(self.universe.trajectory.time, 400.0, 3,
+        assert_almost_equal(self.universe.trajectory.time,
+                            400.0,
+                            3,
                             err_msg="wrong time of frame")
 
     @dec.slow
@@ -168,7 +191,8 @@ class _GromacsReader(TestCase):
         u = MDAnalysis.Universe(GRO, self.outfile)
         assert_equal(u.trajectory.n_frames, 2)
         # prec = 6: TRR test fails; here I am generous and take self.prec = 3...
-        assert_almost_equal(u.atoms.coordinates(), self.universe.atoms.coordinates(), self.prec)
+        assert_almost_equal(u.atoms.coordinates(),
+                            self.universe.atoms.coordinates(), self.prec)
 
     @dec.slow
     def test_EOFraisesIOErrorEIO(self):
@@ -180,7 +204,8 @@ class _GromacsReader(TestCase):
         try:
             go_beyond_EOF()
         except IOError as err:
-            assert_equal(err.errno, errno.EIO, "IOError produces wrong error code")
+            assert_equal(err.errno, errno.EIO,
+                         "IOError produces wrong error code")
 
 
 class TestXTCReader(_GromacsReader):
@@ -197,8 +222,14 @@ class TestXTCReaderClass(TestCase):
                 frames = [ts.frame for ts in trj]
         except:
             raise AssertionError("with_statement not working for XTCReader")
-        assert_equal(N, 10, err_msg="with_statement: XTCReader reads wrong number of frames")
-        assert_array_equal(frames, np.arange(0, N), err_msg="with_statement: XTCReader does not read all frames")
+        assert_equal(
+            N,
+            10,
+            err_msg="with_statement: XTCReader reads wrong number of frames")
+        assert_array_equal(
+            frames,
+            np.arange(0, N),
+            err_msg="with_statement: XTCReader does not read all frames")
 
 
 class TestTRRReader(_GromacsReader):
@@ -212,24 +243,38 @@ class TestTRRReader(_GromacsReader):
         #      v[47676]={ 2.70593e-08,  1.08052e-06,  6.97028e-07}
         v_native = np.array(
             [
-                [-7.86469e-01, 1.57479e+00, 2.79722e-01],
-                [2.70593e-08, 1.08052e-06, 6.97028e-07]
-            ], dtype=np.float32)
+                [-7.86469e-01, 1.57479e+00, 2.79722e-01
+                 ], [2.70593e-08, 1.08052e-06, 6.97028e-07]
+            ],
+            dtype=np.float32)
 
         # velocities in the MDA base unit A/ps (needed for True)
         v_base = v_native * 10.0
         self.universe.trajectory.rewind()
         assert_equal(self.ts.frame, 0, "failed to read frame 1")
 
-        assert_array_almost_equal(self.universe.trajectory.ts._velocities[[47675, 47676]], v_base, self.prec,
-                                  err_msg="ts._velocities for indices 47675,47676 do not match known values")
+        assert_array_almost_equal(
+            self.universe.trajectory.ts._velocities[[47675, 47676]],
+            v_base,
+            self.prec,
+            err_msg=
+            "ts._velocities for indices 47675,47676 do not match known values")
 
-        assert_array_almost_equal(self.universe.atoms.velocities[[47675, 47676]], v_base, self.prec,
-                                  err_msg="velocities for indices 47675,47676 do not match known values")
+        assert_array_almost_equal(
+            self.universe.atoms.velocities[[47675, 47676]],
+            v_base,
+            self.prec,
+            err_msg=
+            "velocities for indices 47675,47676 do not match known values")
 
         for index, v_known in zip([47675, 47676], v_base):
-            assert_array_almost_equal(self.universe.atoms[index].velocity, v_known, self.prec,
-                                      err_msg="atom[%d].velocity does not match known values" % index)
+            assert_array_almost_equal(
+                self.universe.atoms[index].velocity,
+                v_known,
+                self.prec,
+                err_msg="atom[%d].velocity does not match known values" %
+                index)
+
 
 class _XDRNoConversion(TestCase):
     filename = None
@@ -245,7 +290,8 @@ class _XDRNoConversion(TestCase):
     @dec.slow
     def test_coordinates(self):
         # note: these are the native coordinates in nm
-        ca_nm = np.array([[6.043369675, 7.385184479, 1.381425762]], dtype=np.float32)
+        ca_nm = np.array([[6.043369675, 7.385184479, 1.381425762]],
+                         dtype=np.float32)
         U = self.universe
         T = U.trajectory
         T.rewind()
@@ -254,9 +300,13 @@ class _XDRNoConversion(TestCase):
         assert_equal(self.ts.frame, 2, "failed to step to frame 3")
         ca = U.select_atoms('name CA and resid 122')
         # low precision match because we also look at the trr: only 3 decimals in nm in xtc!
-        assert_array_almost_equal(ca.coordinates(), ca_nm, 3,
-                                  err_msg="native coords of Ca of resid 122 do not match for frame 3 "
-                                          "with convert_units=False")
+        assert_array_almost_equal(
+            ca.coordinates(),
+            ca_nm,
+            3,
+            err_msg=
+            "native coords of Ca of resid 122 do not match for frame 3 "
+            "with convert_units=False")
 
 
 class TestXTCNoConversion(_XDRNoConversion):
@@ -302,11 +352,16 @@ class _GromacsWriter(TestCase):
         uw = mda.Universe(GRO, self.outfile)
 
         # check that the coordinates are identical for each time step
-        for orig_ts, written_ts in itertools.izip(self.universe.trajectory, uw.trajectory):
-            assert_array_almost_equal(written_ts._pos, orig_ts._pos, 3,
-                                      err_msg="coordinate mismatch between original and written trajectory at frame "
-                                              "%d (orig) vs %d (written)" % (
-                                      orig_ts.frame, written_ts.frame))
+        for orig_ts, written_ts in itertools.izip(self.universe.trajectory,
+                                                  uw.trajectory):
+            assert_array_almost_equal(
+                written_ts._pos,
+                orig_ts._pos,
+                3,
+                err_msg=
+                "coordinate mismatch between original and written trajectory at frame "
+                "%d (orig) vs %d (written)" % (
+                    orig_ts.frame, written_ts.frame))
 
     @dec.slow
     def test_timestep_not_modified_by_writer(self):
@@ -322,8 +377,12 @@ class _GromacsWriter(TestCase):
         W.write_next_timestep(ts)
         W.close()
 
-        assert_equal(ts._pos, x, err_msg="Positions in Timestep were modified by writer.")
-        assert_equal(ts.time, time, err_msg="Time in Timestep was modified by writer.")
+        assert_equal(ts._pos,
+                     x,
+                     err_msg="Positions in Timestep were modified by writer.")
+        assert_equal(ts.time,
+                     time,
+                     err_msg="Time in Timestep was modified by writer.")
 
 
 class TestXTCWriter(_GromacsWriter):
@@ -343,11 +402,16 @@ class TestTRRWriter(_GromacsWriter):
         uw = mda.Universe(GRO, self.outfile)
 
         # check that the velocities are identical for each time step
-        for orig_ts, written_ts in itertools.izip(self.universe.trajectory, uw.trajectory):
-            assert_array_almost_equal(written_ts._velocities, orig_ts._velocities, 3,
-                                      err_msg="velocities mismatch between original and written trajectory at frame "
-                                              "%d (orig) vs %d (written)" % (
-                                      orig_ts.frame, written_ts.frame))
+        for orig_ts, written_ts in itertools.izip(self.universe.trajectory,
+                                                  uw.trajectory):
+            assert_array_almost_equal(
+                written_ts._velocities,
+                orig_ts._velocities,
+                3,
+                err_msg=
+                "velocities mismatch between original and written trajectory at frame "
+                "%d (orig) vs %d (written)" % (
+                    orig_ts.frame, written_ts.frame))
 
     def test_gaps(self):
         """Tests the writing and reading back of TRRs with gaps in any of the coordinates/velocities properties."""
@@ -366,20 +430,29 @@ class TestTRRWriter(_GromacsWriter):
 
         # check that the velocities are identical for each time step, except for the gaps
         # (that we must make sure to raise exceptions on).
-        for orig_ts, written_ts in itertools.izip(self.universe.trajectory, uw.trajectory):
+        for orig_ts, written_ts in itertools.izip(self.universe.trajectory,
+                                                  uw.trajectory):
             if ts.frame % 4:
-                assert_array_almost_equal(written_ts.positions, orig_ts.positions, 3,
-                                          err_msg="coordinates mismatch between original and written trajectory at "
-                                                  "frame {0} (orig) vs {1} (written)".format(
-                                                      orig_ts.frame, written_ts.frame))
+                assert_array_almost_equal(
+                    written_ts.positions,
+                    orig_ts.positions,
+                    3,
+                    err_msg=
+                    "coordinates mismatch between original and written trajectory at "
+                    "frame {0} (orig) vs {1} (written)".format(
+                        orig_ts.frame, written_ts.frame))
             else:
                 assert_raises(NoDataError, getattr, written_ts, 'positions')
 
             if ts.frame % 2:
-                assert_array_almost_equal(written_ts.velocities, orig_ts.velocities, 3,
-                                          err_msg="velocities mismatch between original and written trajectory at "
-                                                  "frame {0} (orig) vs {1} (written)".format(
-                                                      orig_ts.frame, written_ts.frame))
+                assert_array_almost_equal(
+                    written_ts.velocities,
+                    orig_ts.velocities,
+                    3,
+                    err_msg=
+                    "velocities mismatch between original and written trajectory at "
+                    "frame {0} (orig) vs {1} (written)".format(
+                        orig_ts.frame, written_ts.frame))
             else:
                 assert_raises(NoDataError, getattr, written_ts, 'velocities')
 
@@ -423,9 +496,13 @@ class _GromacsWriterIssue101(TestCase):
         with self.Writer(self.outfile, u.atoms.n_atoms) as W:
             W.write(u.atoms)
         w = MDAnalysis.Universe(filename, self.outfile)
-        assert_equal(w.trajectory.n_frames, 1, "single frame trajectory has wrong number of frames")
-        assert_almost_equal(w.atoms.coordinates(), u.atoms.coordinates(), self.prec,
-                            err_msg="coordinates do not match for %r" % filename)
+        assert_equal(w.trajectory.n_frames, 1,
+                     "single frame trajectory has wrong number of frames")
+        assert_almost_equal(
+            w.atoms.coordinates(),
+            u.atoms.coordinates(),
+            self.prec,
+            err_msg="coordinates do not match for %r" % filename)
 
 
 class TestXTCWriterSingleFrame(_GromacsWriterIssue101):
@@ -446,7 +523,8 @@ class _GromacsWriterIssue117(TestCase):
         self.universe = mda.Universe(PRMncdf, NCDF)
         fd, self.outfile = tempfile.mkstemp(suffix=self.ext)
         os.close(fd)
-        self.Writer = MDAnalysis.Writer(self.outfile, n_atoms=self.universe.atoms.n_atoms)
+        self.Writer = MDAnalysis.Writer(self.outfile,
+                                        n_atoms=self.universe.atoms.n_atoms)
 
     def tearDown(self):
         try:
@@ -467,11 +545,16 @@ class _GromacsWriterIssue117(TestCase):
         uw = MDAnalysis.Universe(PRMncdf, self.outfile)
 
         # check that the coordinates are identical for each time step
-        for orig_ts, written_ts in itertools.izip(self.universe.trajectory, uw.trajectory):
-            assert_array_almost_equal(written_ts._pos, orig_ts._pos, self.prec,
-                                      err_msg="coordinate mismatch between original and written trajectory at frame "
-                                              "%d (orig) vs %d (written)" % (
-                                      orig_ts.frame, written_ts.frame))
+        for orig_ts, written_ts in itertools.izip(self.universe.trajectory,
+                                                  uw.trajectory):
+            assert_array_almost_equal(
+                written_ts._pos,
+                orig_ts._pos,
+                self.prec,
+                err_msg=
+                "coordinate mismatch between original and written trajectory at frame "
+                "%d (orig) vs %d (written)" % (
+                    orig_ts.frame, written_ts.frame))
 
 
 class TestXTCWriterIssue117(_GromacsWriterIssue117):
@@ -488,6 +571,10 @@ def test_triclinic_box():
     """Test coordinates.core.triclinic_box() (Issue 61)"""
     unitcell = np.array([80.017, 55, 100.11, 60.00, 30.50, 90.00])
     box = MDAnalysis.coordinates.core.triclinic_vectors(unitcell)
-    new_unitcell = MDAnalysis.coordinates.core.triclinic_box(box[0], box[1], box[2])
-    assert_array_almost_equal(new_unitcell, unitcell, 3,
-                              err_msg="unitcell round-trip connversion failed (Issue 61)")
+    new_unitcell = MDAnalysis.coordinates.core.triclinic_box(box[0], box[1],
+                                                             box[2])
+    assert_array_almost_equal(
+        new_unitcell,
+        unitcell,
+        3,
+        err_msg="unitcell round-trip connversion failed (Issue 61)")

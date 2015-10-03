@@ -8,13 +8,16 @@ class TestXYZReader(TestCase, Ref2r9r):
 
     def test_load_xyz(self):
         U = self.universe
-        assert_equal(len(U.atoms), self.ref_n_atoms, "load Universe from PSF and XYZ")
+        assert_equal(len(U.atoms), self.ref_n_atoms,
+                     "load Universe from PSF and XYZ")
 
     def test_n_atoms(self):
-        assert_equal(self.universe.trajectory.n_atoms, self.ref_n_atoms, "wrong number of atoms")
+        assert_equal(self.universe.trajectory.n_atoms, self.ref_n_atoms,
+                     "wrong number of atoms")
 
     def test_n_frames(self):
-        assert_equal(self.universe.trajectory.n_frames, self.ref_n_frames, "wrong number of frames in xyz")
+        assert_equal(self.universe.trajectory.n_frames, self.ref_n_frames,
+                     "wrong number of frames in xyz")
 
     def test_sum_centres_of_geometry(self):
         centreOfGeometry = 0
@@ -23,8 +26,12 @@ class TestXYZReader(TestCase, Ref2r9r):
             sel = self.universe.select_atoms("all")
             centreOfGeometry += sum(sel.center_of_geometry())
 
-        assert_almost_equal(centreOfGeometry, self.ref_sum_centre_of_geometry, self.prec,
-                            err_msg="sum of centers of geometry over the trajectory do not match")
+        assert_almost_equal(
+            centreOfGeometry,
+            self.ref_sum_centre_of_geometry,
+            self.prec,
+            err_msg=
+            "sum of centers of geometry over the trajectory do not match")
 
     def test_full_slice(self):
         trj_iter = self.universe.trajectory[:]
@@ -38,6 +45,7 @@ class TestXYZReader(TestCase, Ref2r9r):
 
 class TestXYZReaderAsTopology(object):
     """Test that an XYZ file can act as its own topology"""
+
     def setUp(self):
         self.universe = mda.Universe(XYZ_mini)
 
@@ -45,19 +53,21 @@ class TestXYZReaderAsTopology(object):
         del self.universe
 
     def test_coords(self):
-        ref = np.array([[0.0, 0.0, 0.0],
-                        [1.0, 1.0, 1.0],
-                        [2.0, 2.0, 2.0]],
+        ref = np.array([[0.0, 0.0, 0.0], [1.0, 1.0, 1.0], [2.0, 2.0, 2.0]],
                        dtype=np.float32)
         assert_array_almost_equal(self.universe.atoms.positions, ref)
 
     def test_rewind(self):
         self.universe.trajectory.rewind()
-        assert_equal(self.universe.trajectory.ts.frame, 0, "rewinding to frame 0")
+        assert_equal(self.universe.trajectory.ts.frame, 0,
+                     "rewinding to frame 0")
 
     def test_dt(self):
-        assert_almost_equal(self.universe.trajectory.dt, 1.0, 4,
+        assert_almost_equal(self.universe.trajectory.dt,
+                            1.0,
+                            4,
                             err_msg="wrong timestep dt")
+
 
 class TestCompressedXYZReader(TestCase, Ref2r9r):
     def setUp(self):
@@ -69,13 +79,16 @@ class TestCompressedXYZReader(TestCase, Ref2r9r):
 
     def test_load_xyz(self):
         U = self.universe
-        assert_equal(len(U.atoms), self.ref_n_atoms, "load Universe from PSF and XYZ")
+        assert_equal(len(U.atoms), self.ref_n_atoms,
+                     "load Universe from PSF and XYZ")
 
     def test_n_atoms(self):
-        assert_equal(self.universe.trajectory.n_atoms, self.ref_n_atoms, "wrong number of atoms")
+        assert_equal(self.universe.trajectory.n_atoms, self.ref_n_atoms,
+                     "wrong number of atoms")
 
     def test_n_frames(self):
-        assert_equal(self.universe.trajectory.n_frames, self.ref_n_frames, "wrong number of frames in xyz")
+        assert_equal(self.universe.trajectory.n_frames, self.ref_n_frames,
+                     "wrong number of frames in xyz")
 
     def test_sum_centres_of_geometry(self):
         centreOfGeometry = 0
@@ -84,8 +97,12 @@ class TestCompressedXYZReader(TestCase, Ref2r9r):
             sel = self.universe.select_atoms("all")
             centreOfGeometry += sum(sel.center_of_geometry())
 
-        assert_almost_equal(centreOfGeometry, self.ref_sum_centre_of_geometry, self.prec,
-                            err_msg="sum of centers of geometry over the trajectory do not match")
+        assert_almost_equal(
+            centreOfGeometry,
+            self.ref_sum_centre_of_geometry,
+            self.prec,
+            err_msg=
+            "sum of centers of geometry over the trajectory do not match")
 
     def test_full_slice(self):
         trj_iter = self.universe.trajectory[:]
@@ -98,7 +115,8 @@ class TestCompressedXYZReader(TestCase, Ref2r9r):
 
     def test_rewind(self):
         self.universe.trajectory.rewind()
-        assert_equal(self.universe.trajectory.ts.frame, 0, "rewinding to frame 0")
+        assert_equal(self.universe.trajectory.ts.frame, 0,
+                     "rewinding to frame 0")
 
     def test_next(self):
         self.universe.trajectory.rewind()
@@ -106,7 +124,9 @@ class TestCompressedXYZReader(TestCase, Ref2r9r):
         assert_equal(self.universe.trajectory.ts.frame, 1, "loading frame 1")
 
     def test_dt(self):
-        assert_almost_equal(self.universe.trajectory.dt, 1.0, 4,
+        assert_almost_equal(self.universe.trajectory.dt,
+                            1.0,
+                            4,
                             err_msg="wrong timestep dt")
 
 
@@ -152,8 +172,13 @@ class TestXYZWriter(TestCase, Ref2r9r):
         uw = mda.Universe(XYZ_psf, self.outfile)
         assert_equal(self.universe.trajectory.n_frames, uw.trajectory.n_frames)
         # check that the trajectories are identical for each time step
-        for orig_ts, written_ts in itertools.izip(self.universe.trajectory, uw.trajectory):
-            assert_array_almost_equal(written_ts._pos, orig_ts._pos, self.prec,
-                                      err_msg="coordinate mismatch between original and written trajectory at frame "
-                                              "%d (orig) vs %d (written)" % (
-                                      orig_ts.frame, written_ts.frame))
+        for orig_ts, written_ts in itertools.izip(self.universe.trajectory,
+                                                  uw.trajectory):
+            assert_array_almost_equal(
+                written_ts._pos,
+                orig_ts._pos,
+                self.prec,
+                err_msg=
+                "coordinate mismatch between original and written trajectory at frame "
+                "%d (orig) vs %d (written)" % (
+                    orig_ts.frame, written_ts.frame))

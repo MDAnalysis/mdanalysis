@@ -10,8 +10,8 @@ class _DLPConfig(object):
         del self.ts
 
     def test_read_unitcell(self):
-        ref = np.array([[18.6960000000, 0.0000000000, 0.0000000000],
-                        [0.0000000000, 18.6960000000, 0.0000000000],
+        ref = np.array([[18.6960000000, 0.0000000000, 0.0000000000
+                         ], [0.0000000000, 18.6960000000, 0.0000000000],
                         [0.0000000000, 0.0000000000, 18.6960000000]])
         assert_allclose(self.ts._unitcell, ref)
 
@@ -37,6 +37,7 @@ class TestConfigReader(_DLPConfig):
 
 class TestConfigOrder(_DLPConfig):
     f = DLP_CONFIG_order
+
 
 class TestConfigMinimal(_DLPConfig):
     f = DLP_CONFIG_minimal
@@ -82,6 +83,7 @@ class _DLPConfig2(object):
 class TestConfigReader2(_DLPConfig2):
     f = DLP_CONFIG_order
 
+
 class TestConfigReaderMinimal2(_DLPConfig2):
     f = DLP_CONFIG_minimal
 
@@ -117,35 +119,35 @@ class _DLHistory(object):
         assert_equal(nums, [2])
 
     def test_position(self):
-        ref = np.array([[-7.595541651, -7.898808509, -7.861763110],
-                        [-7.019565641, -7.264933320, -7.045213551],
+        ref = np.array([[-7.595541651, -7.898808509, -7.861763110
+                         ], [-7.019565641, -7.264933320, -7.045213551],
                         [-6.787470785, -6.912685099, -6.922156843]])
         for ts, r in itertools.izip(self.u.trajectory, ref):
             assert_allclose(self.u.atoms[0].pos, r)
 
     def test_velocity(self):
-        ref = np.array([[1.109901682, -1.500264697, 4.752251711],
-                        [-1.398479696, 2.091141311, 1.957430003],
+        ref = np.array([[1.109901682, -1.500264697, 4.752251711
+                         ], [-1.398479696, 2.091141311, 1.957430003],
                         [0.2570827995, -0.7146878577, -3.547444215]])
         for ts, r in itertools.izip(self.u.trajectory, ref):
             assert_allclose(self.u.atoms[0].velocity, r)
 
     def test_force(self):
-        ref = np.array([[-2621.386432, 1579.334443, 1041.103241],
-                        [-1472.262341, 2450.379615, -8149.916193],
+        ref = np.array([[-2621.386432, 1579.334443, 1041.103241
+                         ], [-1472.262341, 2450.379615, -8149.916193],
                         [2471.802059, -3828.467296, 3596.679326]])
         for ts, r in itertools.izip(self.u.trajectory, ref):
             assert_allclose(self.u.atoms[0].force, r)
 
     def test_unitcell(self):
-        ref1 = np.array([[18.6796195135, 0.0000058913, -0.0000139999],
-                        [0.0000058913, 18.6794658887, -0.0000016255],
-                        [-0.0000139999, -0.0000016255, 18.6797229304]])
-        ref2 = np.array([[17.2277221163, -0.0044216126, -0.0003229237],
-                         [-0.0044205826, 17.2124253987, 0.0019439244],
+        ref1 = np.array([[18.6796195135, 0.0000058913, -0.0000139999
+                          ], [0.0000058913, 18.6794658887, -0.0000016255],
+                         [-0.0000139999, -0.0000016255, 18.6797229304]])
+        ref2 = np.array([[17.2277221163, -0.0044216126, -0.0003229237
+                          ], [-0.0044205826, 17.2124253987, 0.0019439244],
                          [-0.0003226531, 0.0019445826, 17.2416976104]])
-        ref3 = np.array([[16.5435673205, -0.0108424742, 0.0014935464],
-                         [-0.0108333201, 16.5270298891, 0.0011094612],
+        ref3 = np.array([[16.5435673205, -0.0108424742, 0.0014935464
+                          ], [-0.0108333201, 16.5270298891, 0.0011094612],
                          [0.0014948739, 0.0011058349, 16.5725517831]])
         for ts, r in itertools.izip(self.u.trajectory, [ref1, ref2, ref3]):
             assert_allclose(ts._unitcell, r)
@@ -154,8 +156,10 @@ class _DLHistory(object):
 class TestDLPolyHistory(_DLHistory):
     f = DLP_HISTORY
 
+
 class TestDLPolyHistoryOrder(_DLHistory):
     f = DLP_HISTORY_order
+
 
 class TestDLPolyHistoryMinimal(_DLHistory):
     f = DLP_HISTORY_minimal

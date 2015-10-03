@@ -5,30 +5,40 @@ class _TRJReaderTest(TestCase):
 
     def test_load_prm(self):
         U = self.universe
-        assert_equal(len(U.atoms), self.ref_n_atoms, "load Universe from PRM and TRJ")
+        assert_equal(len(U.atoms), self.ref_n_atoms,
+                     "load Universe from PRM and TRJ")
 
     def test_n_atoms(self):
-        assert_equal(self.universe.trajectory.n_atoms, self.ref_n_atoms, "wrong number of atoms")
+        assert_equal(self.universe.trajectory.n_atoms, self.ref_n_atoms,
+                     "wrong number of atoms")
 
     def test_n_frames(self):
-        assert_equal(self.universe.trajectory.n_frames, self.ref_n_frames, "wrong number of frames in xyz")
+        assert_equal(self.universe.trajectory.n_frames, self.ref_n_frames,
+                     "wrong number of frames in xyz")
 
     def test_periodic(self):
         assert_equal(self.universe.trajectory.periodic, self.ref_periodic)
 
     def test_amber_proteinselection(self):
         protein = self.universe.select_atoms('protein')
-        assert_equal(protein.n_atoms, self.ref_proteinatoms, "error in protein selection (HIS or termini?)")
+        assert_equal(protein.n_atoms, self.ref_proteinatoms,
+                     "error in protein selection (HIS or termini?)")
 
     def test_sum_centres_of_geometry(self):
         protein = self.universe.select_atoms('protein')
-        total = np.sum([protein.center_of_geometry() for ts in self.universe.trajectory])
-        assert_almost_equal(total, self.ref_sum_centre_of_geometry, self.prec,
-                            err_msg="sum of centers of geometry over the trajectory do not match")
+        total = np.sum([protein.center_of_geometry() for ts in
+                        self.universe.trajectory])
+        assert_almost_equal(
+            total,
+            self.ref_sum_centre_of_geometry,
+            self.prec,
+            err_msg=
+            "sum of centers of geometry over the trajectory do not match")
 
     def test_initial_frame_is_0(self):
         assert_equal(self.universe.trajectory.ts.frame, 0,
-                     "initial frame is not 0 but {0}".format(self.universe.trajectory.ts.frame))
+                     "initial frame is not 0 but {0}".format(
+                         self.universe.trajectory.ts.frame))
 
     def test_starts_with_first_frame(self):
         """Test that coordinate arrays are filled as soon as the trajectory has been opened."""
@@ -39,7 +49,8 @@ class _TRJReaderTest(TestCase):
         trj = self.universe.trajectory
         trj.next()
         trj.next()  # for readers that do not support indexing
-        assert_equal(trj.ts.frame, 2, "failed to forward to frame 2 (frameindex 2)")
+        assert_equal(trj.ts.frame, 2,
+                     "failed to forward to frame 2 (frameindex 2)")
         trj.rewind()
         assert_equal(trj.ts.frame, 0, "failed to rewind to first frame")
         assert_(np.any(self.universe.atoms.coordinates() > 0),

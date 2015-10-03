@@ -20,22 +20,29 @@ class TestDMSReader(TestCase):
 
     def test_coords_atom_0(self):
         # Desired coordinates taken directly from the SQLite file. Check unit conversion
-        coords_0 = np.array([-11.0530004501343, 26.6800003051758, 12.7419996261597, ], dtype=np.float32)
+        coords_0 = np.array([-11.0530004501343,
+                             26.6800003051758,
+                             12.7419996261597, ],
+                            dtype=np.float32)
         assert_array_equal(self.universe.atoms[0].pos, coords_0)
 
     def test_n_frames(self):
-        assert_equal(self.universe.trajectory.n_frames, 1, "wrong number of frames in pdb")
+        assert_equal(self.universe.trajectory.n_frames, 1,
+                     "wrong number of frames in pdb")
 
     def test_time(self):
-        assert_equal(self.universe.trajectory.time, 0.0, "wrong time of the frame")
+        assert_equal(self.universe.trajectory.time, 0.0,
+                     "wrong time of the frame")
 
     def test_frame(self):
-        assert_equal(self.universe.trajectory.frame, 0,
-                     "wrong frame number (0-based, should be 0 for single frame readers)")
+        assert_equal(
+            self.universe.trajectory.frame, 0,
+            "wrong frame number (0-based, should be 0 for single frame readers)")
 
     def test_frame_index_0(self):
         self.universe.trajectory[0]
-        assert_equal(self.universe.trajectory.ts.frame, 0, "frame number for frame index 0 should be 0")
+        assert_equal(self.universe.trajectory.ts.frame, 0,
+                     "frame number for frame index 0 should be 0")
 
     def test_frame_index_1_raises_IndexError(self):
         def go_to_2(traj=self.universe.trajectory):

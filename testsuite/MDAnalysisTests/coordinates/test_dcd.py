@@ -26,8 +26,14 @@ class TestDCDReaderClass(TestCase):
                 frames = [ts.frame for ts in trj]
         except:
             raise AssertionError("with_statement not working for DCDReader")
-        assert_equal(N, 98, err_msg="with_statement: DCDReader reads wrong number of frames")
-        assert_array_equal(frames, np.arange(0, N), err_msg="with_statement: DCDReader does not read all frames")
+        assert_equal(
+            N,
+            98,
+            err_msg="with_statement: DCDReader reads wrong number of frames")
+        assert_array_equal(
+            frames,
+            np.arange(0, N),
+            err_msg="with_statement: DCDReader does not read all frames")
 
 
 class TestDCDReader(_TestDCD):
@@ -73,20 +79,26 @@ class TestDCDReader(_TestDCD):
         assert_equal(frames, range(20, 5, -1), "reversing dcd [20:5:-1]")
 
     def test_n_atoms(self):
-        assert_equal(self.universe.trajectory.n_atoms, 3341, "wrong number of atoms")
+        assert_equal(self.universe.trajectory.n_atoms, 3341,
+                     "wrong number of atoms")
 
     def test_n_frames(self):
-        assert_equal(self.universe.trajectory.n_frames, 98, "wrong number of frames in dcd")
+        assert_equal(self.universe.trajectory.n_frames, 98,
+                     "wrong number of frames in dcd")
 
     def test_dt(self):
-        assert_almost_equal(self.universe.trajectory.dt, 1.0, 4,
+        assert_almost_equal(self.universe.trajectory.dt,
+                            1.0,
+                            4,
                             err_msg="wrong timestep dt")
 
     def test_totaltime(self):
         # test_totaltime(): need to reduce precision because dt is only precise
         # to ~4 decimals and accumulating the inaccuracy leads to even lower
         # precision in the totaltime (consequence of fixing Issue 64)
-        assert_almost_equal(self.universe.trajectory.totaltime, 98.0, 3,
+        assert_almost_equal(self.universe.trajectory.totaltime,
+                            98.0,
+                            3,
                             err_msg="wrong total length of AdK trajectory")
 
     def test_frame(self):
@@ -95,12 +107,18 @@ class TestDCDReader(_TestDCD):
 
     def test_time(self):
         self.dcd[15]  # index is 0-based and frames are 0-based
-        assert_almost_equal(self.universe.trajectory.time, 15.0, 5,
+        assert_almost_equal(self.universe.trajectory.time,
+                            15.0,
+                            5,
                             err_msg="wrong time of frame")
 
     def test_volume(self):
-        assert_almost_equal(self.ts.volume, 0.0, 3,
-                            err_msg="wrong volume for unitcell (no unitcell in DCD so this should be 0)")
+        assert_almost_equal(
+            self.ts.volume,
+            0.0,
+            3,
+            err_msg=
+            "wrong volume for unitcell (no unitcell in DCD so this should be 0)")
 
 
 class TestDCDWriter(TestCase):
@@ -131,21 +149,29 @@ class TestDCDWriter(TestCase):
         uw = mda.Universe(PSF, self.outfile)
 
         # check that the coordinates are identical for each time step
-        for orig_ts, written_ts in itertools.izip(self.universe.trajectory, uw.trajectory):
-            assert_array_almost_equal(written_ts._pos, orig_ts._pos, 3,
-                                      err_msg="coordinate mismatch between original and written trajectory at frame "
-                                              "%d (orig) vs %d (written)" % (
-                                      orig_ts.frame, written_ts.frame))
+        for orig_ts, written_ts in itertools.izip(self.universe.trajectory,
+                                                  uw.trajectory):
+            assert_array_almost_equal(
+                written_ts._pos,
+                orig_ts._pos,
+                3,
+                err_msg=
+                "coordinate mismatch between original and written trajectory at frame "
+                "%d (orig) vs %d (written)" % (
+                    orig_ts.frame, written_ts.frame))
 
     def test_dt(self):
         DT = 5.0
         t = self.universe.trajectory
-        with self.Writer(self.outfile, t.n_atoms, dt=DT) as W:  # set time step to 5 ps
+        with self.Writer(self.outfile,
+                         t.n_atoms,
+                         dt=DT) as W:  # set time step to 5 ps
             for ts in self.universe.trajectory:
                 W.write_next_timestep(ts)
 
         uw = mda.Universe(PSF, self.outfile)
-        assert_almost_equal(uw.trajectory.totaltime, uw.trajectory.n_frames * DT, 5)
+        assert_almost_equal(uw.trajectory.totaltime,
+                            uw.trajectory.n_frames * DT, 5)
         times = np.array([uw.trajectory.time for ts in uw.trajectory])
         frames = np.array([ts.frame for ts in uw.trajectory])
         assert_array_almost_equal(times, frames * DT, 5)
@@ -160,11 +186,16 @@ class TestDCDWriter(TestCase):
         uw = mda.Universe(PSF, self.outfile)
 
         # check that the coordinates are identical for each time step
-        for orig_ts, written_ts in itertools.izip(self.universe.trajectory, uw.trajectory):
-            assert_array_almost_equal(written_ts._pos, orig_ts._pos, 3,
-                                      err_msg="coordinate mismatch between original and written trajectory at frame "
-                                              "%d (orig) vs %d (written)" % (
-                                      orig_ts.frame, written_ts.frame))
+        for orig_ts, written_ts in itertools.izip(self.universe.trajectory,
+                                                  uw.trajectory):
+            assert_array_almost_equal(
+                written_ts._pos,
+                orig_ts._pos,
+                3,
+                err_msg=
+                "coordinate mismatch between original and written trajectory at frame "
+                "%d (orig) vs %d (written)" % (
+                    orig_ts.frame, written_ts.frame))
 
     def test_single_frame(self):
         u = MDAnalysis.Universe(PSF, CRD)
@@ -172,8 +203,11 @@ class TestDCDWriter(TestCase):
         W.write(u.atoms)
         W.close()
         w = MDAnalysis.Universe(PSF, self.outfile)
-        assert_equal(w.trajectory.n_frames, 1, "single frame trajectory has wrong number of frames")
-        assert_almost_equal(w.atoms.coordinates(), u.atoms.coordinates(), 3,
+        assert_equal(w.trajectory.n_frames, 1,
+                     "single frame trajectory has wrong number of frames")
+        assert_almost_equal(w.atoms.coordinates(),
+                            u.atoms.coordinates(),
+                            3,
                             err_msg="coordinates do not match")
 
     def test_with_statement(self):
@@ -184,8 +218,12 @@ class TestDCDWriter(TestCase):
         except AttributeError:  # misses __exit__
             raise AssertionError("DCDWriter: does not support with statement")
         w = MDAnalysis.Universe(PSF, self.outfile)
-        assert_equal(w.trajectory.n_frames, 1, "with_statement: single frame trajectory has wrong number of frames")
-        assert_almost_equal(w.atoms.coordinates(), u.atoms.coordinates(), 3,
+        assert_equal(
+            w.trajectory.n_frames, 1,
+            "with_statement: single frame trajectory has wrong number of frames")
+        assert_almost_equal(w.atoms.coordinates(),
+                            u.atoms.coordinates(),
+                            3,
                             err_msg="with_statement: coordinates do not match")
 
 
@@ -227,8 +265,11 @@ class TestDCDWriter_Issue59(TestCase):
         xtc.trajectory.rewind()
         dcd.trajectory.rewind()
 
-        assert_array_almost_equal(xtc.atoms.coordinates(), dcd.atoms.coordinates(), 3,
-                                  err_msg="XTC -> DCD: DCD coordinates are messed up (Issue 59)")
+        assert_array_almost_equal(
+            xtc.atoms.coordinates(),
+            dcd.atoms.coordinates(),
+            3,
+            err_msg="XTC -> DCD: DCD coordinates are messed up (Issue 59)")
 
     def test_OtherWriter(self):
         dcd = self.u
@@ -241,12 +282,20 @@ class TestDCDWriter_Issue59(TestCase):
         xtc.trajectory.rewind()
         dcd.trajectory.rewind()
 
-        assert_array_almost_equal(dcd.atoms.coordinates(), xtc.atoms.coordinates(), 2,
-                                  err_msg="DCD -> XTC: coordinates are messed up (frame %d)" % dcd.trajectory.frame)
+        assert_array_almost_equal(
+            dcd.atoms.coordinates(),
+            xtc.atoms.coordinates(),
+            2,
+            err_msg="DCD -> XTC: coordinates are messed up (frame %d)" %
+            dcd.trajectory.frame)
         xtc.trajectory[3]
         dcd.trajectory[3]
-        assert_array_almost_equal(dcd.atoms.coordinates(), xtc.atoms.coordinates(), 2,
-                                  err_msg="DCD -> XTC: coordinates are messed up (frame %d)" % dcd.trajectory.frame)
+        assert_array_almost_equal(
+            dcd.atoms.coordinates(),
+            xtc.atoms.coordinates(),
+            2,
+            err_msg="DCD -> XTC: coordinates are messed up (frame %d)" %
+            dcd.trajectory.frame)
 
 
 class _TestDCDReader_TriclinicUnitcell(TestCase):
@@ -265,9 +314,16 @@ class _TestDCDReader_TriclinicUnitcell(TestCase):
     @attr('issue')
     def test_read_triclinic(self):
         """test reading of triclinic unitcell (Issue 187) for NAMD or new CHARMM format (at least since c36b2)"""
-        for ts, box in itertools.izip(self.u.trajectory, self.ref_dimensions[:, 1:]):
-            assert_array_almost_equal(ts.dimensions, box, 4,
-                                      err_msg="box dimensions A,B,C,alpha,beta,gamma not identical at frame {0}".format(ts.frame))
+        for ts, box in itertools.izip(self.u.trajectory,
+                                      self.ref_dimensions[:, 1:]):
+            assert_array_almost_equal(
+                ts.dimensions,
+                box,
+                4,
+                err_msg=
+                "box dimensions A,B,C,alpha,beta,gamma not identical at frame {0}".format(
+                    ts.frame))
+
     @attr('issue')
     def test_write_triclinic(self):
         """test writing of triclinic unitcell (Issue 187) for NAMD or new CHARMM format (at least since c36b2)"""
@@ -275,15 +331,25 @@ class _TestDCDReader_TriclinicUnitcell(TestCase):
             for ts in self.u.trajectory:
                 w.write(ts)
         w = MDAnalysis.Universe(self.topology, self.dcd)
-        for ts_orig, ts_copy in itertools.izip(self.u.trajectory, w.trajectory):
-            assert_almost_equal(ts_orig.dimensions, ts_copy.dimensions, 4,
-                                err_msg="DCD->DCD: unit cell dimensions wrong at frame {0}".format(ts_orig.frame))
+        for ts_orig, ts_copy in itertools.izip(self.u.trajectory,
+                                               w.trajectory):
+            assert_almost_equal(
+                ts_orig.dimensions,
+                ts_copy.dimensions,
+                4,
+                err_msg=
+                "DCD->DCD: unit cell dimensions wrong at frame {0}".format(
+                    ts_orig.frame))
         del w
 
-class TestDCDReader_CHARMM_Unitcell(_TestDCDReader_TriclinicUnitcell, RefCHARMMtriclinicDCD):
+
+class TestDCDReader_CHARMM_Unitcell(_TestDCDReader_TriclinicUnitcell,
+                                    RefCHARMMtriclinicDCD):
     pass
 
-class TestDCDReader_NAMD_Unitcell(_TestDCDReader_TriclinicUnitcell, RefNAMDtriclinicDCD):
+
+class TestDCDReader_NAMD_Unitcell(_TestDCDReader_TriclinicUnitcell,
+                                  RefNAMDtriclinicDCD):
     pass
 
 
@@ -310,14 +376,24 @@ class TestNCDF2DCD(TestCase):
     @attr('issue')
     def test_unitcell(self):
         """NCDFReader: Test that DCDWriter correctly writes the CHARMM unit cell"""
-        for ts_orig, ts_copy in itertools.izip(self.u.trajectory, self.w.trajectory):
-            assert_almost_equal(ts_orig.dimensions, ts_copy.dimensions, 3,
-                                err_msg="NCDF->DCD: unit cell dimensions wrong at frame %d" % ts_orig.frame)
+        for ts_orig, ts_copy in itertools.izip(self.u.trajectory,
+                                               self.w.trajectory):
+            assert_almost_equal(
+                ts_orig.dimensions,
+                ts_copy.dimensions,
+                3,
+                err_msg="NCDF->DCD: unit cell dimensions wrong at frame %d" %
+                ts_orig.frame)
 
     def test_coordinates(self):
-        for ts_orig, ts_copy in itertools.izip(self.u.trajectory, self.w.trajectory):
-            assert_almost_equal(self.u.atoms.positions, self.w.atoms.positions, 3,
-                                err_msg="NCDF->DCD: coordinates wrong at frame %d" % ts_orig.frame)
+        for ts_orig, ts_copy in itertools.izip(self.u.trajectory,
+                                               self.w.trajectory):
+            assert_almost_equal(
+                self.u.atoms.positions,
+                self.w.atoms.positions,
+                3,
+                err_msg="NCDF->DCD: coordinates wrong at frame %d" %
+                ts_orig.frame)
 
 
 class TestDCDCorrel(_TestDCD):
@@ -332,7 +408,8 @@ class TestDCDCorrel(_TestDCD):
         ca = self.universe.s4AKE.CA
         ca_termini = mda.core.AtomGroup.AtomGroup([ca[0], ca[-1]])
         # note that this is not quite phi... HN should be C of prec. residue
-        phi151 = self.universe.select_atoms('resid 151').select_atoms('name HN', 'name N', 'name CA', 'name CB')
+        phi151 = self.universe.select_atoms('resid 151').select_atoms(
+            'name HN', 'name N', 'name CA', 'name CB')
         C.addTimeseries(TS.Atom('v', ca_termini))  # 0
         C.addTimeseries(TS.Bond(ca_termini))  # 1
         C.addTimeseries(TS.Bond([ca[0], ca[-1]]))  # 2
@@ -365,40 +442,48 @@ class TestDCDCorrel(_TestDCD):
     def test_Angle(self):
         C = self.collection
         avg_angle = 1.9111695972912988
-        assert_almost_equal(C[3].__data__.mean(), avg_angle,
+        assert_almost_equal(C[3].__data__.mean(),
+                            avg_angle,
                             err_msg="Correl: average Angle")
 
     def test_Dihedral(self):
         C = self.collection
         avg_phi151 = 0.0088003870749735619
-        assert_almost_equal(C[4].__data__.mean(), avg_phi151,
+        assert_almost_equal(C[4].__data__.mean(),
+                            avg_phi151,
                             err_msg="Correl: average Dihedral")
 
     def test_scalarDistance(self):
         C = self.collection
         avg_dist = 9.7960210987736236
-        assert_almost_equal(C[5].__data__.mean(), avg_dist,
+        assert_almost_equal(C[5].__data__.mean(),
+                            avg_dist,
                             err_msg="Correl: average scalar Distance")
 
     def test_CenterOfMass(self):
         C = self.collection
         avg_com_ca = np.array([0.0043688, -0.27812258, 0.0284051])
         avg_com_all = np.array([-0.10086529, -0.16357276, 0.12724672])
-        assert_array_almost_equal(C[6].__data__.mean(axis=1), avg_com_ca,
+        assert_array_almost_equal(C[6].__data__.mean(axis=1),
+                                  avg_com_ca,
                                   err_msg="Correl: average CA CenterOfMass")
-        assert_almost_equal(C[8].__data__.mean(axis=1), avg_com_all,
+        assert_almost_equal(C[8].__data__.mean(axis=1),
+                            avg_com_all,
                             err_msg="Correl: average all CenterOfMass")
 
     def test_CenterOfGeometry(self):
         C = self.collection
         avg_cog_all = np.array([-0.13554797, -0.20521885, 0.2118998])
-        assert_almost_equal(C[9].__data__.mean(axis=1), avg_cog_all,
+        assert_almost_equal(C[9].__data__.mean(axis=1),
+                            avg_cog_all,
                             err_msg="Correl: average all CenterOfGeometry")
 
     def test_CA_COMeqCOG(self):
         C = self.collection
-        assert_array_almost_equal(C[6].__data__, C[7].__data__,
-                                  err_msg="Correl: CA CentreOfMass == CenterOfGeometry")
+        assert_array_almost_equal(
+            C[6].__data__,
+            C[7].__data__,
+            err_msg="Correl: CA CentreOfMass == CenterOfGeometry")
 
     def test_clear(self):
         C = self.collection
@@ -413,7 +498,8 @@ def compute_correl_references():
     all = universe.atoms
     ca = universe.s4AKE.CA
     ca_termini = mda.core.AtomGroup.AtomGroup([ca[0], ca[-1]])
-    phi151 = universe.select_atoms('resid 151').select_atoms('name HN', 'name N', 'name CA', 'name CB')
+    phi151 = universe.select_atoms('resid 151').select_atoms(
+        'name HN', 'name N', 'name CA', 'name CB')
 
     C = MDAnalysis.collection
     C.clear()
