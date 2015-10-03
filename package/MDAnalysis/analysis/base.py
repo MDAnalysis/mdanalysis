@@ -31,35 +31,16 @@ logger = logging.getLogger(__name__)
 
 
 class AnalysisBase(object):
-    """Base class for defining multi frame analysis
-
-    Defines common functions for setting up frames to analyse
-    """
-    def _setup_frames(self, trajectory, start=0, stop=-1, skip=1):
-        """Look for the keywords which control trajectory iteration
-        and build the list of frames to analyse.
-
-        Returns an array of the identified frames
-        """
-        # We already have some nice frame checking in base.Reader
-        # we should really pull that into lib so everyone can enjoy
-
+    """Base class for defining multi frame analysis"""
+    def _setup_frames(self, trajectory, start=None,
+                      stop=None, step=None):
         self._trajectory = trajectory
-
-        nframes = len(self._trajectory)
-
-        if stop < 0:
-            stop += nframes
-
-        logger.debug("_setup_frames")
-        logger.debug(" * settings: start {} stop {} skip {}".format(
-            start, stop, skip))
-
-        frames = xrange(start, stop+1, skip)
-
-        logger.debug(" * identified frames:\n"
-                     " * {}".format(frames))
-        self.frames = frames
+        start, stop, step = trajectory._check_slice_indices(
+            start, stop, step)
+        self.start = start
+        self.stop = stop
+        self.step = step
+        self.nframes = len(xrange(start, stop, step))
 
     def _single_frame(self):
         """Calculate data from a single frame of trajectory
@@ -76,11 +57,11 @@ class AnalysisBase(object):
         pass
 
     def run(self):
-        for frame in self.frames:
-            logger.info("Seeking frame {}".format(frame))
-            self._ts = self._trajectory[frame]
-            print("Doing frame {} of {}".format(frame, self.frames[-1]))
-            logger.info("--> Doing single frame")
+        """Perform the calculation"""
+        for i, ts in enumerate(
+                self._trajectory[self.start:self.stop:self.step]):
+            self._ts = ts
+            logger.info("--> Doing frame {} of {}".format(i+1, self.nframes))
             self._single_frame()
         logger.info("Applying normalisation")
         self._normalise()

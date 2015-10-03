@@ -48,7 +48,8 @@ class PersistenceLength(AnalysisBase):
 
     .. versionadded:: 0.12.0
     """
-    def __init__(self, atomgroups, **kwargs):
+    def __init__(self, atomgroups,
+                 start=None, stop=None, step=None):
         """Calculate the persistence length for polymer chains
 
         Parameters
@@ -60,7 +61,7 @@ class PersistenceLength(AnalysisBase):
             First frame of trajectory to analyse, Default: 0
         stop : int, optional
             Last frame of trajectory to analyse, Default: -1
-        skip : int, optional
+        step : int, optional
             Step between frames to analyse, Default: 1
         """
         self._atomgroups = atomgroups
@@ -72,7 +73,7 @@ class PersistenceLength(AnalysisBase):
             raise ValueError("Not all AtomGroups were the same size")
 
         self._setup_frames(atomgroups[0].universe.trajectory,
-                           **kwargs)
+                           start, stop, step)
 
         self._results = np.zeros(chainlength - 1, dtype=np.float32)
 
@@ -97,7 +98,7 @@ class PersistenceLength(AnalysisBase):
         n = len(self._atomgroups[0])
 
         norm = np.linspace(n - 1, 1, n - 1)
-        norm *= len(self._atomgroups) * len(self.frames)
+        norm *= len(self._atomgroups) * self.nframes
 
         self.results = self._results / norm
         self._calc_bond_length()
