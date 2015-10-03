@@ -629,7 +629,7 @@ class TestPersistenceLength(object):
     def test_fit(self):
         p = self._make_p()
         p.run()
-        p.fit()
+        p.perform_fit()
 
         assert_almost_equal(p.lp, 6.504, 3)
         assert_(len(p.fit) == len(p.results))

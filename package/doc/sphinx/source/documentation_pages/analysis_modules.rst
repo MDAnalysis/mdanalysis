@@ -31,6 +31,14 @@ has to import them from :mod:`MDAnalysis.analysis`, for instance ::
 .. _networkx: http://networkx.lanl.gov/
 
 
+Building blocks for Analysis
+============================
+
+.. toctree::
+   :maxdepth: 1
+
+   analysis/base
+
 
 Distances and contacts
 ======================
@@ -70,6 +78,14 @@ Nucleic acids
 
    analysis/nuclinfo
    analysis/x3dna
+
+Polymers
+========
+
+.. toctree::
+   :maxdepth: 1
+
+   analysis/polymer
 
 
 Structure

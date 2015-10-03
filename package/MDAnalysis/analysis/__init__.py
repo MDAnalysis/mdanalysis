@@ -95,9 +95,9 @@ Available analysis modules
 """
 
 __all__ = [
-    'align', 'contacts', 'density', 'distances',
+    'align', 'base', 'contacts', 'density', 'distances',
     'gnm', 'hbonds', 'helanal', 'hole', 'leaflet',
-    'nuclinfo', 'psa', 'rms', 'waterdynamics',
+    'nuclinfo', 'polymer', 'psa', 'rms', 'waterdynamics',
     'x3dna',
 ]
 
