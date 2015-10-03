@@ -102,6 +102,36 @@ if cython_found:
     del LooseVersion
 
 
+class Config(object):
+    """Config wrapper class to get build options
+
+    This class looks for options in the environment variables and the
+    'setup.cfg' file. The order how we look for an option is.
+
+    1. Environment Variable
+    2. set in 'setup.cfg'
+    3. given default
+
+    Environment variables should start with 'MDA_' and be all uppercase.
+
+    """
+
+    def __init__(self, fname='setup.cfg'):
+        if os.path.exists(fname):
+            self.config = configparser.SafeConfigParser()
+            self.config.read(fname)
+
+    def get(self, option_name, default=None):
+        environ_name = 'MDA_' + option_name.upper()
+        if environ_name in os.environ:
+            return os.environ[environ_name]
+        try:
+            option = self.config.get('options', option_name)
+            return option
+        except:
+            return default
+
+
 def get_numpy_include():
     try:
         numpy_include = np.get_include()
@@ -164,19 +194,10 @@ def detect_openmp():
 
 
 def extensions(config):
-    use_cython = True
-    use_openmp = True
+    use_cython = config.get('use_cython', default=True)
+    use_openmp = config.get('use_openmp', default=True)
 
-    try:
-        use_cython = config.get('options', 'use_cython')
-    except:
-        pass
-    try:
-        use_openmp = config.get('options', 'use_openmp')
-    except:
-        pass
-
-    if 'DEBUG_CFLAGS' in os.environ:
+    if config.get('debug_cflags', default=False):
         extra_compile_args = '\
             -std=c99 -pedantic -Wall -Wcast-align -Wcast-qual -Wpointer-arith \
             -Wchar-subscripts -Winline -Wnested-externs -Wbad-function-cast \
@@ -280,13 +301,7 @@ if __name__ == '__main__':
         'Topic :: Software Development :: Libraries :: Python Modules',
     ]
 
-    if os.path.exists('setup.cfg'):
-        config = configparser.SafeConfigParser()
-        config.read('setup.cfg')
-        try:
-            use_cython = config.get('options', 'use_cython')
-        except:
-            pass
+    config = Config()
 
     setup(name='MDAnalysis',
           version=RELEASE,
