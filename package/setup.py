@@ -292,8 +292,7 @@ if __name__ == '__main__':
           author_email='naveen.michaudagrawal@gmail.com',
           url='http://www.mdanalysis.org',
           requires=['numpy (>=1.5.0)', 'biopython',
-                    'networkx (>=1.0)', 'scipy',
-                    'GridDataFormats'],
+                    'networkx (>=1.0)', 'GridDataFormats'],
           provides=['MDAnalysis'],
           license='GPL 2',
           packages=['MDAnalysis',
@@ -333,6 +332,7 @@ if __name__ == '__main__':
                                           # and netcdf-4
               'analysis': [
                   'matplotlib',
+                  'scipy',
                   'seaborn',  # for annotated heat map and nearest neighbor
                               # plotting in PSA
               ],
