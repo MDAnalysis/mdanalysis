@@ -45,7 +45,7 @@ By changing the code below you can also switch to a standard distutils
 installation.
 """
 from __future__ import print_function
-from setuptools import setup, Extension
+from setuptools import setup, Extension, find_packages
 from distutils.ccompiler import new_compiler
 import os
 import sys
@@ -77,13 +77,6 @@ except ImportError:
           'your package manager.')
     sys.exit(-1)
 
-try:
-    numpy_include = np.get_include()
-except AttributeError:
-    numpy_include = np.get_numpy_include()
-
-include_dirs = ['include', numpy_include]
-
 # Handle cython modules
 try:
     from Cython.Distutils import build_ext
@@ -107,6 +100,14 @@ if cython_found:
                 required_version, Cython.__version__))
     del Cython
     del LooseVersion
+
+
+def get_numpy_include():
+    try:
+        numpy_include = np.get_include()
+    except AttributeError:
+        numpy_include = np.get_numpy_include()
+    return numpy_include
 
 
 def hasfunction(cc, funcname, include=None, extra_postargs=None):
@@ -206,6 +207,8 @@ def extensions(config):
 
     source_suffix = '.pyx' if use_cython else '.c'
 
+    include_dirs = [get_numpy_include()]
+
     dcd = Extension('coordinates._dcdmodule',
                     ['MDAnalysis/coordinates/src/dcd.c'],
                     include_dirs=include_dirs + ['MDAnalysis/coordinates/include'],
@@ -252,6 +255,7 @@ def extensions(config):
                                      'xdrfile_trr.c',
                                      'xdrfile_xtc.c')
                     ],
+                    include_dirs=include_dirs,
                     define_macros=largefile_macros)
 
     return [dcd, dcd_time, distances, distances_omp, parallel_dist, qcprot,
@@ -297,22 +301,7 @@ if __name__ == '__main__':
                     'networkx (>=1.0)', 'GridDataFormats'],
           provides=['MDAnalysis'],
           license='GPL 2',
-          packages=['MDAnalysis',
-                    'MDAnalysis.analysis',
-                    'MDAnalysis.analysis.hbonds',
-                    'MDAnalysis.coordinates',
-                    'MDAnalysis.coordinates.xdrfile',
-                    'MDAnalysis.coordinates.pdb',
-                    'MDAnalysis.core',
-                    'MDAnalysis.lib',
-                    'MDAnalysis.lib.parallel',
-                    'MDAnalysis.migration',
-                    'MDAnalysis.migration.fixes',
-                    'MDAnalysis.selections',
-                    'MDAnalysis.topology',
-                    'MDAnalysis.topology.tpr',
-                    'MDAnalysis.tests',
-                    'MDAnalysis.visualization'],
+          packages=find_packages(),
           package_dir={'MDAnalysis': 'MDAnalysis'},
           ext_package='MDAnalysis',
           ext_modules=extensions(config),
@@ -342,7 +331,7 @@ if __name__ == '__main__':
           test_suite="MDAnalysisTests",
           tests_require=[
               'nose>=1.3.7',
-              'MDAnalysisTests==%s' % RELEASE,  # same as this release!
+              'MDAnalysisTests=={}'.format(RELEASE),  # same as this release!
           ],
           zip_safe=False,  # as a zipped egg the *.so files are not found (at
                            # least in Ubuntu/Linux)
