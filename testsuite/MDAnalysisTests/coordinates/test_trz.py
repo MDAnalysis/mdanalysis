@@ -1,3 +1,16 @@
+import itertools
+import MDAnalysis as mda
+import os
+
+from numpy.testing import (assert_equal, assert_array_almost_equal,
+                           assert_almost_equal)
+import tempfile
+from unittest import TestCase
+
+from MDAnalysisTests.coordinates.reference import RefTRZ
+from MDAnalysisTests.datafiles import (TRZ_psf, TRZ, two_water_gro)
+
+
 class TestTRZReader(TestCase, RefTRZ):
     def setUp(self):
         self.universe = mda.Universe(TRZ_psf, TRZ)
@@ -51,9 +64,10 @@ class TestTRZReader(TestCase, RefTRZ):
                             self.prec)
 
     def test_volume(self):
-        assert_almost_equal(self.ts.volume, self.ref_volume, 1,
-                            "wrong volume for trz")  # Lower precision here because errors seem to accumulate and
+        # Lower precision here because errors seem to accumulate and
         # throw this off (is rounded value**3)
+        assert_almost_equal(self.ts.volume, self.ref_volume, 1,
+                            "wrong volume for trz")
 
     def test_unitcell(self):
         assert_almost_equal(self.ts.dimensions, self.ref_dimensions, self.prec,
@@ -81,7 +95,7 @@ class TestTRZReader(TestCase, RefTRZ):
         fd, self.outfile = tempfile.mkstemp(suffix='.trz')
         os.close(fd)
         W = self.trz.Writer(self.outfile)
-        assert_equal(isinstance(W, MDAnalysis.coordinates.TRZ.TRZWriter), True)
+        assert_equal(isinstance(W, mda.coordinates.TRZ.TRZWriter), True)
         assert_equal(W.n_atoms, self.trz.n_atoms)
         try:
             os.unlink(self.outfile)
@@ -92,7 +106,7 @@ class TestTRZReader(TestCase, RefTRZ):
         fd, self.outfile = tempfile.mkstemp(suffix='.trz')
         os.close(fd)
         W = self.trz.Writer(self.outfile, n_atoms=100)
-        assert_equal(isinstance(W, MDAnalysis.coordinates.TRZ.TRZWriter), True)
+        assert_equal(isinstance(W, mda.coordinates.TRZ.TRZWriter), True)
         assert_equal(W.n_atoms, 100)
         try:
             os.unlink(self.outfile)
@@ -106,7 +120,7 @@ class TestTRZWriter(TestCase, RefTRZ):
         self.prec = 3
         fd, self.outfile = tempfile.mkstemp(suffix='.trz')
         os.close(fd)
-        self.Writer = MDAnalysis.coordinates.TRZ.TRZWriter
+        self.Writer = mda.coordinates.TRZ.TRZWriter
 
     def tearDown(self):
         del self.universe
@@ -131,33 +145,23 @@ class TestTRZWriter(TestCase, RefTRZ):
 
         for orig_ts, written_ts in itertools.izip(self.universe.trajectory,
                                                   uw.trajectory):
-            assert_array_almost_equal(
-                orig_ts._pos,
-                written_ts._pos,
-                self.prec,
-                err_msg=
-                "Coordinate mismatch between orig and written at frame %d" %
-                orig_ts.frame)
-            assert_array_almost_equal(
-                orig_ts._velocities,
-                written_ts._velocities,
-                self.prec,
-                err_msg=
-                "Coordinate mismatch between orig and written at frame %d" %
-                orig_ts.frame)
-            assert_array_almost_equal(
-                orig_ts._unitcell,
-                written_ts._unitcell,
-                self.prec,
-                err_msg=
-                "Unitcell mismatch between orig and written at frame %d" %
-                orig_ts.frame)
+            assert_array_almost_equal(orig_ts._pos, written_ts._pos, self.prec,
+                                      err_msg="Coordinate mismatch between "
+                                      "orig and written at frame %d" %
+                                      orig_ts.frame)
+            assert_array_almost_equal(orig_ts._velocities,
+                                      written_ts._velocities, self.prec,
+                                      err_msg="Coordinate mismatch between "
+                                      "orig and written at frame %d" %
+                                      orig_ts.frame)
+            assert_array_almost_equal(orig_ts._unitcell, written_ts._unitcell,
+                                      self.prec, err_msg="Unitcell mismatch "
+                                      "between orig and written at frame %d" %
+                                      orig_ts.frame)
             for att in orig_ts.data:
-                assert_array_almost_equal(
-                    orig_ts.data[att],
-                    written_ts.data[att],
-                    self.prec,
-                    err_msg="TS equal failed for %s" % att)
+                assert_array_almost_equal(orig_ts.data[att],
+                                          written_ts.data[att], self.prec,
+                                          err_msg="TS equal failed for %s" % att)
 
 
 class TestTRZWriter2(object):
@@ -174,8 +178,8 @@ class TestTRZWriter2(object):
     def test_writer_trz_from_other(self):
         fd, self.outfile = tempfile.mkstemp(suffix='.trz')
         os.close(fd)
-        W = MDAnalysis.coordinates.TRZ.TRZWriter(self.outfile,
-                                                 n_atoms=len(self.u.atoms))
+        W = mda.coordinates.TRZ.TRZWriter(self.outfile,
+                                          n_atoms=len(self.u.atoms))
 
         W.write(self.u.trajectory.ts)
         W.close()
@@ -187,10 +191,12 @@ class TestTRZWriter2(object):
 
 
 class TestWrite_Partial_Timestep(TestCase):
-    """Test writing a partial timestep made by passing only an atomgroup to Writer. (Issue 163)
+    """Test writing a partial timestep made by passing only an atomgroup to
+    Writer. (Issue 163)
 
-    The contents of the AtomGroup.ts are checked in test_atomgroup, this test just checks that Writer
-    is receiving this information properly.
+    The contents of the AtomGroup.ts are checked in test_atomgroup, this test
+    just checks that Writer is receiving this information properly.
+
     """
 
     def setUp(self):
@@ -199,7 +205,7 @@ class TestWrite_Partial_Timestep(TestCase):
         self.prec = 3
         fd, self.outfile = tempfile.mkstemp(suffix='.pdb')
         os.close(fd)
-        self.Writer = MDAnalysis.Writer(self.outfile, n_atoms=len(self.ag))
+        self.Writer = mda.Writer(self.outfile, n_atoms=len(self.ag))
 
     def tearDown(self):
         del self.universe

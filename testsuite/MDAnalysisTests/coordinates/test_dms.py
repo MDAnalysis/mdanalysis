@@ -1,3 +1,12 @@
+import MDAnalysis as mda
+import numpy as np
+
+from numpy.testing import (assert_equal, assert_array_equal, assert_raises)
+from unittest import TestCase
+
+from MDAnalysisTests.datafiles import (DMS)
+
+
 class TestDMSReader(TestCase):
     def setUp(self):
         self.universe = mda.Universe(DMS)
@@ -19,7 +28,8 @@ class TestDMSReader(TestCase):
         assert_equal(len(self.universe.atoms), 3341)
 
     def test_coords_atom_0(self):
-        # Desired coordinates taken directly from the SQLite file. Check unit conversion
+        # Desired coordinates taken directly from the SQLite file. Check unit
+        # conversion
         coords_0 = np.array([-11.0530004501343,
                              26.6800003051758,
                              12.7419996261597, ],
@@ -35,9 +45,8 @@ class TestDMSReader(TestCase):
                      "wrong time of the frame")
 
     def test_frame(self):
-        assert_equal(
-            self.universe.trajectory.frame, 0,
-            "wrong frame number (0-based, should be 0 for single frame readers)")
+        assert_equal(self.universe.trajectory.frame, 0, "wrong frame number "
+                     "(0-based, should be 0 for single frame readers)")
 
     def test_frame_index_0(self):
         self.universe.trajectory[0]

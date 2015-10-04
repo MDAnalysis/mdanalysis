@@ -1,6 +1,23 @@
+import itertools
+import MDAnalysis as mda
+import numpy as np
+import os
+
+from nose.plugins.attrib import attr
+from numpy.testing import (assert_equal, assert_array_equal, assert_raises,
+                           assert_almost_equal, assert_array_almost_equal)
+import tempfile
+from unittest import TestCase
+
+from MDAnalysisTests.datafiles import (DCD, PSF, DCD_empty, CRD, PRMncdf, NCDF)
+from MDAnalysisTests.coordinates.reference import (RefCHARMMtriclinicDCD,
+                                                   RefNAMDtriclinicDCD)
+
+
 @attr('issue')
 def TestDCD_Issue32():
-    """Test for Issue 32: 0-size dcds lead to a segfault: now caught with IOError"""
+    """Test for Issue 32: 0-size dcds lead to a segfault: now caught with
+    IOError"""
     assert_raises(IOError, mda.Universe, PSF, DCD_empty)
 
 
@@ -113,12 +130,9 @@ class TestDCDReader(_TestDCD):
                             err_msg="wrong time of frame")
 
     def test_volume(self):
-        assert_almost_equal(
-            self.ts.volume,
-            0.0,
-            3,
-            err_msg=
-            "wrong volume for unitcell (no unitcell in DCD so this should be 0)")
+        assert_almost_equal(self.ts.volume, 0.0, 3,
+                            err_msg="wrong volume for unitcell (no unitcell "
+                            "in DCD so this should be 0)")
 
 
 class TestDCDWriter(TestCase):
@@ -127,7 +141,7 @@ class TestDCDWriter(TestCase):
         ext = ".dcd"
         fd, self.outfile = tempfile.mkstemp(suffix=ext)
         os.close(fd)
-        self.Writer = MDAnalysis.coordinates.DCD.DCDWriter
+        self.Writer = mda.coordinates.DCD.DCDWriter
 
     def tearDown(self):
         try:
@@ -151,14 +165,11 @@ class TestDCDWriter(TestCase):
         # check that the coordinates are identical for each time step
         for orig_ts, written_ts in itertools.izip(self.universe.trajectory,
                                                   uw.trajectory):
-            assert_array_almost_equal(
-                written_ts._pos,
-                orig_ts._pos,
-                3,
-                err_msg=
-                "coordinate mismatch between original and written trajectory at frame "
-                "%d (orig) vs %d (written)" % (
-                    orig_ts.frame, written_ts.frame))
+            assert_array_almost_equal(written_ts._pos, orig_ts._pos, 3,
+                                      err_msg="coordinate mismatch between "
+                                      "original and written trajectory at "
+                                      "frame %d (orig) vs %d (written)" % (
+                                          orig_ts.frame, written_ts.frame))
 
     def test_dt(self):
         DT = 5.0
@@ -188,21 +199,18 @@ class TestDCDWriter(TestCase):
         # check that the coordinates are identical for each time step
         for orig_ts, written_ts in itertools.izip(self.universe.trajectory,
                                                   uw.trajectory):
-            assert_array_almost_equal(
-                written_ts._pos,
-                orig_ts._pos,
-                3,
-                err_msg=
-                "coordinate mismatch between original and written trajectory at frame "
-                "%d (orig) vs %d (written)" % (
-                    orig_ts.frame, written_ts.frame))
+            assert_array_almost_equal(written_ts._pos, orig_ts._pos, 3,
+                                      err_msg="coordinate mismatch between "
+                                      "original and written trajectory at "
+                                      "frame %d (orig) vs %d (written)" % (
+                                          orig_ts.frame, written_ts.frame))
 
     def test_single_frame(self):
-        u = MDAnalysis.Universe(PSF, CRD)
-        W = MDAnalysis.Writer(self.outfile, u.atoms.n_atoms)
+        u = mda.Universe(PSF, CRD)
+        W = mda.Writer(self.outfile, u.atoms.n_atoms)
         W.write(u.atoms)
         W.close()
-        w = MDAnalysis.Universe(PSF, self.outfile)
+        w = mda.Universe(PSF, self.outfile)
         assert_equal(w.trajectory.n_frames, 1,
                      "single frame trajectory has wrong number of frames")
         assert_almost_equal(w.atoms.coordinates(),
@@ -211,16 +219,16 @@ class TestDCDWriter(TestCase):
                             err_msg="coordinates do not match")
 
     def test_with_statement(self):
-        u = MDAnalysis.Universe(PSF, CRD)
+        u = mda.Universe(PSF, CRD)
         try:
-            with MDAnalysis.Writer(self.outfile, u.atoms.n_atoms) as W:
+            with mda.Writer(self.outfile, u.atoms.n_atoms) as W:
                 W.write(u.atoms)
         except AttributeError:  # misses __exit__
             raise AssertionError("DCDWriter: does not support with statement")
-        w = MDAnalysis.Universe(PSF, self.outfile)
-        assert_equal(
-            w.trajectory.n_frames, 1,
-            "with_statement: single frame trajectory has wrong number of frames")
+        w = mda.Universe(PSF, self.outfile)
+        assert_equal(w.trajectory.n_frames, 1,
+                     "with_statement: single frame trajectory has wrong "
+                     "number of frames")
         assert_almost_equal(w.atoms.coordinates(),
                             u.atoms.coordinates(),
                             3,
@@ -230,10 +238,10 @@ class TestDCDWriter(TestCase):
 class TestDCDWriter_Issue59(TestCase):
     def setUp(self):
         """Generate input xtc."""
-        self.u = MDAnalysis.Universe(PSF, DCD)
+        self.u = mda.Universe(PSF, DCD)
         fd, self.xtc = tempfile.mkstemp(suffix='.xtc')
         os.close(fd)
-        wXTC = MDAnalysis.Writer(self.xtc, self.u.atoms.n_atoms)
+        wXTC = mda.Writer(self.xtc, self.u.atoms.n_atoms)
         for ts in self.u.trajectory:
             wXTC.write(ts)
         wXTC.close()
@@ -252,15 +260,15 @@ class TestDCDWriter_Issue59(TestCase):
     @attr('issue')
     def test_issue59(self):
         """Test writing of XTC to DCD (Issue 59)"""
-        xtc = MDAnalysis.Universe(PSF, self.xtc)
+        xtc = mda.Universe(PSF, self.xtc)
         fd, self.dcd = tempfile.mkstemp(suffix='.dcd')
         os.close(fd)
-        wDCD = MDAnalysis.Writer(self.dcd, xtc.atoms.n_atoms)
+        wDCD = mda.Writer(self.dcd, xtc.atoms.n_atoms)
         for ts in xtc.trajectory:
             wDCD.write(ts)
         wDCD.close()
 
-        dcd = MDAnalysis.Universe(PSF, self.dcd)
+        dcd = mda.Universe(PSF, self.dcd)
 
         xtc.trajectory.rewind()
         dcd.trajectory.rewind()
@@ -278,7 +286,7 @@ class TestDCDWriter_Issue59(TestCase):
             wXTC.write(ts)
         wXTC.close()
 
-        xtc = MDAnalysis.Universe(PSF, self.xtc)
+        xtc = mda.Universe(PSF, self.xtc)
         xtc.trajectory.rewind()
         dcd.trajectory.rewind()
 
@@ -300,7 +308,7 @@ class TestDCDWriter_Issue59(TestCase):
 
 class _TestDCDReader_TriclinicUnitcell(TestCase):
     def setUp(self):
-        self.u = MDAnalysis.Universe(self.topology, self.trajectory)
+        self.u = mda.Universe(self.topology, self.trajectory)
         fd, self.dcd = tempfile.mkstemp(suffix='.dcd')
         os.close(fd)
 
@@ -313,33 +321,28 @@ class _TestDCDReader_TriclinicUnitcell(TestCase):
 
     @attr('issue')
     def test_read_triclinic(self):
-        """test reading of triclinic unitcell (Issue 187) for NAMD or new CHARMM format (at least since c36b2)"""
+        """test reading of triclinic unitcell (Issue 187) for NAMD or new
+        CHARMM format (at least since c36b2)"""
         for ts, box in itertools.izip(self.u.trajectory,
                                       self.ref_dimensions[:, 1:]):
-            assert_array_almost_equal(
-                ts.dimensions,
-                box,
-                4,
-                err_msg=
-                "box dimensions A,B,C,alpha,beta,gamma not identical at frame {0}".format(
-                    ts.frame))
+            assert_array_almost_equal(ts.dimensions, box, 4,
+                                      err_msg="box dimensions A,B,C,alpha,"
+                                      "beta,gamma not identical at frame "
+                                      "{}".format(ts.frame))
 
     @attr('issue')
     def test_write_triclinic(self):
-        """test writing of triclinic unitcell (Issue 187) for NAMD or new CHARMM format (at least since c36b2)"""
+        """test writing of triclinic unitcell (Issue 187) for NAMD or new
+        CHARMM format (at least since c36b2)"""
         with self.u.trajectory.OtherWriter(self.dcd) as w:
             for ts in self.u.trajectory:
                 w.write(ts)
-        w = MDAnalysis.Universe(self.topology, self.dcd)
+        w = mda.Universe(self.topology, self.dcd)
         for ts_orig, ts_copy in itertools.izip(self.u.trajectory,
                                                w.trajectory):
-            assert_almost_equal(
-                ts_orig.dimensions,
-                ts_copy.dimensions,
-                4,
-                err_msg=
-                "DCD->DCD: unit cell dimensions wrong at frame {0}".format(
-                    ts_orig.frame))
+            assert_almost_equal(ts_orig.dimensions, ts_copy.dimensions, 4,
+                                err_msg="DCD->DCD: unit cell dimensions wrong "
+                                "at frame {0}".format(ts_orig.frame))
         del w
 
 
@@ -355,15 +358,15 @@ class TestDCDReader_NAMD_Unitcell(_TestDCDReader_TriclinicUnitcell,
 
 class TestNCDF2DCD(TestCase):
     def setUp(self):
-        self.u = MDAnalysis.Universe(PRMncdf, NCDF)
+        self.u = mda.Universe(PRMncdf, NCDF)
         # create the DCD
         fd, self.dcd = tempfile.mkstemp(suffix='.dcd')
         os.close(fd)
-        DCD = MDAnalysis.Writer(self.dcd, n_atoms=self.u.atoms.n_atoms)
+        DCD = mda.Writer(self.dcd, n_atoms=self.u.atoms.n_atoms)
         for ts in self.u.trajectory:
             DCD.write(ts)
         DCD.close()
-        self.w = MDAnalysis.Universe(PRMncdf, self.dcd)
+        self.w = mda.Universe(PRMncdf, self.dcd)
 
     def tearDown(self):
         try:
@@ -375,7 +378,8 @@ class TestNCDF2DCD(TestCase):
 
     @attr('issue')
     def test_unitcell(self):
-        """NCDFReader: Test that DCDWriter correctly writes the CHARMM unit cell"""
+        """NCDFReader: Test that DCDWriter correctly writes the CHARMM
+        unit cell"""
         for ts_orig, ts_copy in itertools.izip(self.u.trajectory,
                                                self.w.trajectory):
             assert_almost_equal(
@@ -493,7 +497,7 @@ class TestDCDCorrel(_TestDCD):
 
 # notes:
 def compute_correl_references():
-    universe = MDAnalysis.Universe(PSF, DCD)
+    universe = mda.Universe(PSF, DCD)
 
     all = universe.atoms
     ca = universe.s4AKE.CA
@@ -501,7 +505,7 @@ def compute_correl_references():
     phi151 = universe.select_atoms('resid 151').select_atoms(
         'name HN', 'name N', 'name CA', 'name CB')
 
-    C = MDAnalysis.collection
+    C = mda.collection
     C.clear()
 
     C.addTimeseries(TS.Atom('v', ca_termini))  # 0

@@ -1,3 +1,14 @@
+import MDAnalysis as mda
+import numpy as np
+
+from numpy.testing import (assert_equal, assert_,
+                           assert_almost_equal, assert_raises)
+from unittest import TestCase
+
+from MDAnalysisTests.coordinates.reference import RefACHE, RefCappedAla
+from MDAnalysisTests.datafiles import (PRM, TRJ, TRJ_bz2, PRMpbc, TRJpbc_bz2)
+
+
 class _TRJReaderTest(TestCase):
     # use as a base class (override setUp()) and mixin a reference
     def tearDown(self):
@@ -28,12 +39,9 @@ class _TRJReaderTest(TestCase):
         protein = self.universe.select_atoms('protein')
         total = np.sum([protein.center_of_geometry() for ts in
                         self.universe.trajectory])
-        assert_almost_equal(
-            total,
-            self.ref_sum_centre_of_geometry,
-            self.prec,
-            err_msg=
-            "sum of centers of geometry over the trajectory do not match")
+        assert_almost_equal(total, self.ref_sum_centre_of_geometry, self.prec,
+                            err_msg="sum of centers of geometry over the "
+                            "trajectory do not match")
 
     def test_initial_frame_is_0(self):
         assert_equal(self.universe.trajectory.ts.frame, 0,
@@ -41,7 +49,8 @@ class _TRJReaderTest(TestCase):
                          self.universe.trajectory.ts.frame))
 
     def test_starts_with_first_frame(self):
-        """Test that coordinate arrays are filled as soon as the trajectory has been opened."""
+        """Test that coordinate arrays are filled as soon as the trajectory
+        has been opened."""
         assert_(np.any(self.universe.atoms.coordinates() > 0),
                 "Reader does not populate coordinates() right away.")
 

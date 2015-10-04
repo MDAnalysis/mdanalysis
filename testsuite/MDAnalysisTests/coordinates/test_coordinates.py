@@ -14,39 +14,20 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-import MDAnalysis
-import MDAnalysis as mda
-import MDAnalysis.coordinates
-import MDAnalysis.coordinates.core
-from MDAnalysis import NoDataError
-
-import numpy as np
-from numpy.testing import *
-from nose.plugins.attrib import attr
-
-from MDAnalysisTests.datafiles import (
-    PSF, DCD, DCD_empty, PDB_small, XPDB_small, PDB_closed, PDB_multiframe,
-    PDB_full, PDB, CRD, XTC, TRR, GRO, DMS, CONECT, INC_PDB, XYZ, XYZ_bz2,
-    XYZ_psf, PRM, TRJ, TRJ_bz2, PRMpbc, TRJpbc_bz2, PRMncdf, NCDF, PQR,
-    PDB_sub_dry, TRR_sub_sol, PDB_sub_sol, TRZ, TRZ_psf, LAMMPSdata,
-    LAMMPSdata_mini, PSF_TRICLINIC, DCD_TRICLINIC, PSF_NAMD_TRICLINIC,
-    DCD_NAMD_TRICLINIC, GMS_ASYMOPT, GMS_SYMOPT, GMS_ASYMSURF, XYZ_mini,
-    PFncdf_Top, PFncdf_Trj, INPCRD, XYZ_five, two_water_gro, DLP_CONFIG,
-    DLP_CONFIG_order, DLP_CONFIG_minimal, DLP_HISTORY, DLP_HISTORY_order,
-    DLP_HISTORY_minimal, PDB_xlserial)
-
-from MDAnalysisTests.plugins.knownfailure import knownfailure
-
-import os
-import errno
-import tempfile
 import itertools
+import MDAnalysis as mda
+import numpy as np
+import os
 
+from nose.plugins.attrib import attr
+from numpy.testing import (assert_allclose, assert_equal, assert_array_equal,
+                           assert_almost_equal, dec)
+import tempfile
+from unittest import TestCase
 
-def atom_distance(a, b):
-    """Calculate the distance between two atoms a and b."""
-    r = a.position - b.position
-    return np.sqrt(np.sum(r ** 2))
+from MDAnalysisTests.datafiles import (PDB, INPCRD, XYZ_five, PSF, CRD, DCD,
+                                       GRO, XTC, TRR, PDB_small, PDB_closed)
+from MDAnalysisTests.plugins.knownfailure import knownfailure
 
 
 class TestINPCRDReader(TestCase):
@@ -54,10 +35,10 @@ class TestINPCRDReader(TestCase):
 
     def _check_ts(self, ts):
         # Check a ts has the right values in
-        ref_pos = np.array([[6.6528795, 6.6711416, -8.5963255
-                             ], [7.3133773, 5.8359736, -8.8294175
-                                 ], [8.3254058, 6.2227613, -8.7098593
-                             ], [7.0833200, 5.5038197, -9.8417650],
+        ref_pos = np.array([[6.6528795, 6.6711416, -8.5963255],
+                            [7.3133773, 5.8359736, -8.8294175],
+                            [8.3254058, 6.2227613, -8.7098593],
+                            [7.0833200, 5.5038197, -9.8417650],
                             [7.1129439, 4.6170351, -7.9729560]])
         for ref, val in itertools.izip(ref_pos, ts._pos):
             assert_allclose(ref, val)
@@ -71,38 +52,13 @@ class TestINPCRDReader(TestCase):
         self._check_ts(r.ts)
 
     def test_universe_inpcrd(self):
-        u = MDAnalysis.Universe(XYZ_five, INPCRD)
+        u = mda.Universe(XYZ_five, INPCRD)
 
         self._check_ts(u.trajectory.ts)
 
     def test_universe_restrt(self):
-        u = MDAnalysis.Universe(XYZ_five, INPCRD, format='RESTRT')
+        u = mda.Universe(XYZ_five, INPCRD, format='RESTRT')
         self._check_ts(u.trajectory.ts)
-
-### Does not implement Reader.remarks, Reader.header, Reader.title, Reader.compounds
-### because the PDB header data in trajectory.metadata are already parsed; should perhaps
-### update the PrimitivePDBReader to do the same. [orbeckst]
-#class TestPDBReader_Metadata(_PDBMetadata):
-#    permissive = False
-
-
-class TestPSF_CRDReader(_SingleFrameReader):
-    def setUp(self):
-        self.universe = mda.Universe(PSF, CRD)
-        self.prec = 5  # precision in CRD (at least we are writing %9.5f)
-
-
-class TestPSF_PDBReader(TestPDBReader):
-    def setUp(self):
-        # mda.core.flags['permissive_pdb_reader'] = False
-        self.universe = mda.Universe(PSF, PDB_small, permissive=False)
-        self.prec = 3  # 3 decimals in PDB spec http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
-
-    def test_uses_Biopython(self):
-        from MDAnalysis.coordinates.PDB import PDBReader
-
-        assert_(isinstance(self.universe.trajectory, PDBReader),
-                "failed to choose Biopython PDBReader")
 
 
 class TestChainReader(TestCase):
@@ -144,7 +100,6 @@ class TestChainReader(TestCase):
 
     def test_jump_lastframe_trajectory(self):
         self.trajectory[-1]
-        #print self.trajectory.ts, self.trajectory.ts.frame
         assert_equal(self.trajectory.ts.frame + 1, self.trajectory.n_frames,
                      "indexing last frame with trajectory[-1]")
 
@@ -182,13 +137,14 @@ class TestChainReader(TestCase):
 
     @dec.slow
     def test_write_dcd(self):
-        """test that ChainReader written dcd (containing crds) is correct (Issue 81)"""
-        W = MDAnalysis.Writer(self.outfile, self.universe.atoms.n_atoms)
+        """test that ChainReader written dcd (containing crds) is correct
+        (Issue 81)"""
+        W = mda.Writer(self.outfile, self.universe.atoms.n_atoms)
         for ts in self.universe.trajectory:
             W.write(self.universe)
         W.close()
         self.universe.trajectory.rewind()
-        u = MDAnalysis.Universe(PSF, self.outfile)
+        u = mda.Universe(PSF, self.outfile)
         for (ts_orig, ts_new) in itertools.izip(self.universe.trajectory,
                                                 u.trajectory):
             assert_almost_equal(
@@ -203,18 +159,16 @@ class TestChainReaderFormats(TestCase):
 
     @attr('issue')
     def test_set_all_format_tuples(self):
-        universe = MDAnalysis.Universe(GRO, [(PDB, 'pdb'), (XTC, 'xtc'),
-                                             (TRR, 'trr')])
+        universe = mda.Universe(GRO, [(PDB, 'pdb'), (XTC, 'xtc'),
+                                      (TRR, 'trr')])
         assert_equal(universe.trajectory.n_frames, 21)
 
     @attr('issue')
     def test_set_one_format_tuple(self):
-        universe = MDAnalysis.Universe(PSF, [(PDB_small, 'pdb'), DCD])
+        universe = mda.Universe(PSF, [(PDB_small, 'pdb'), DCD])
         assert_equal(universe.trajectory.n_frames, 99)
 
     @attr('issue')
     def test_set_all_formats(self):
-        universe = MDAnalysis.Universe(PSF,
-                                       [PDB_small, PDB_closed],
-                                       format='pdb')
+        universe = mda.Universe(PSF, [PDB_small, PDB_closed], format='pdb')
         assert_equal(universe.trajectory.n_frames, 2)

@@ -1,7 +1,9 @@
 import numpy as np
 
-from MDAnalysisTests.datafiles import PDB_small, PDB, PDB_full, LAMMPSdata
-from MDAnalysisTests.datafiles import LAMMPSdata_mini
+from MDAnalysisTests.datafiles import (PDB_small, PDB, PDB_full, LAMMPSdata,
+                                       LAMMPSdata_mini, PSF_TRICLINIC,
+                                       DCD_TRICLINIC, PSF_NAMD_TRICLINIC,
+                                       DCD_NAMD_TRICLINIC)
 
 
 class RefAdKSmall(object):
@@ -205,8 +207,8 @@ class RefCHARMMtriclinicDCD(object):
     topology = PSF_TRICLINIC
     trajectory = DCD_TRICLINIC
     # time(ps) A B C alpha beta gamma (length in Angstrome, angles in degrees)
+    # dcd starts at t = 1ps
     ref_dimensions = np.array([
-        # [  0.     ,  35.     ,  35.     ,  35.     ,  90.     ,  60.     ,         45.     ], # dcd starts at t=1ps
         [1., 35.44604, 35.06156, 34.1585, 91.32802, 61.73521, 44.40703],
         [2., 34.65957, 34.22689, 33.09897, 90.56206, 61.79192, 44.14549],
         [3., 34.52772, 34.66422, 33.53881, 90.55859, 63.11228, 40.14044],

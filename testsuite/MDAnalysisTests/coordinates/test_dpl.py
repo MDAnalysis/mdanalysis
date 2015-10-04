@@ -1,6 +1,17 @@
+import itertools
+import MDAnalysis as mda
+import numpy as np
+
+from numpy.testing import (assert_equal, assert_raises, assert_allclose)
+
+from MDAnalysisTests.datafiles import (DLP_CONFIG, DLP_CONFIG_minimal,
+                                       DLP_CONFIG_order, DLP_HISTORY,
+                                       DLP_HISTORY_minimal, DLP_HISTORY_order)
+
+
 class _DLPConfig(object):
     def setUp(self):
-        self.r = MDAnalysis.coordinates.DLPoly.ConfigReader
+        self.r = mda.coordinates.DLPoly.ConfigReader
         rd = self.rd = self.r(self.f)
         self.ts = rd.ts
 
@@ -165,10 +176,10 @@ class TestDLPolyHistoryMinimal(_DLHistory):
     f = DLP_HISTORY_minimal
 
     def test_velocity(self):
-        assert_raises(NoDataError, getattr, self.u.atoms[0], 'velocity')
+        assert_raises(mda.NoDataError, getattr, self.u.atoms[0], 'velocity')
 
     def test_force(self):
-        assert_raises(NoDataError, getattr, self.u.atoms[0], 'force')
+        assert_raises(mda.NoDataError, getattr, self.u.atoms[0], 'force')
 
     def test_unitcell(self):
         pass

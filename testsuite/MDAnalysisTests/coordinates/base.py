@@ -1,3 +1,12 @@
+import MDAnalysis as mda
+import numpy as np
+
+from numpy.testing import assert_equal, assert_raises, assert_almost_equal
+from unittest import TestCase
+
+from MDAnalysisTests.coordinates.reference import RefAdKSmall
+
+
 class _SingleFrameReader(TestCase, RefAdKSmall):
     # see TestPDBReader how to set up!
 
@@ -5,10 +14,11 @@ class _SingleFrameReader(TestCase, RefAdKSmall):
         del self.universe
 
     def test_flag_permissive_pdb_reader(self):
-        """test_flag_permissive_pdb_reader: permissive_pdb_reader==True enables primitive PDB reader"""
-        assert_equal(
-            mda.core.flags['permissive_pdb_reader'], True,
-            "'permissive_pdb_reader' flag should be True as MDAnalysis default")
+        """test_flag_permissive_pdb_reader: permissive_pdb_reader==True enables
+        primitive PDB reader"""
+        assert_equal(mda.core.flags['permissive_pdb_reader'], True,
+                     "'permissive_pdb_reader' flag should be True as "
+                     "MDAnalysis default")
 
     def test_load_file(self):
         U = self.universe
@@ -36,7 +46,8 @@ class _SingleFrameReader(TestCase, RefAdKSmall):
     def test_frame(self):
         assert_equal(
             self.universe.trajectory.frame, 0,
-            "wrong frame number (0-based, should be 0 for single frame readers)")
+            "wrong frame number (0-based, should be 0 for single frame "
+            "readers)")
 
     def test_frame_index_0(self):
         self.universe.trajectory[0]
@@ -50,7 +61,8 @@ class _SingleFrameReader(TestCase, RefAdKSmall):
         assert_raises(IndexError, go_to_2)
 
     def test_dt(self):
-        """testing that accessing universe.trajectory.dt gives 1.0 (the default)"""
+        """testing that accessing universe.trajectory.dt gives 1.0
+        (the default)"""
         assert_equal(1.0, self.universe.trajectory.dt)
 
     def test_coordinates(self):
@@ -64,7 +76,7 @@ class _SingleFrameReader(TestCase, RefAdKSmall):
     def test_distances(self):
         NTERM = self.universe.atoms.N[0]
         CTERM = self.universe.atoms.C[-1]
-        d = atom_distance(NTERM, CTERM)
+        d = mda.lib.mdamath.norm(NTERM.position - CTERM.position)
         assert_almost_equal(d,
                             self.ref_distances['endtoend'],
                             self.prec,
@@ -76,6 +88,7 @@ class _SingleFrameReader(TestCase, RefAdKSmall):
         assert_equal(frames, np.arange(self.universe.trajectory.n_frames))
 
     def test_last_slice(self):
-        trj_iter = self.universe.trajectory[-1:]  # should be same as above: only 1 frame!
+        # should be same as above: only 1 frame!
+        trj_iter = self.universe.trajectory[-1:]
         frames = [ts.frame for ts in trj_iter]
         assert_equal(frames, np.arange(self.universe.trajectory.n_frames))

@@ -1,3 +1,17 @@
+import itertools
+import MDAnalysis as mda
+import numpy as np
+import os
+
+from numpy.testing import (assert_equal, assert_array_almost_equal,
+                           assert_almost_equal)
+import tempfile
+from unittest import TestCase
+
+from MDAnalysisTests.coordinates.reference import Ref2r9r
+from MDAnalysisTests.datafiles import (XYZ, XYZ_psf, XYZ_bz2, XYZ_mini)
+
+
 class TestXYZReader(TestCase, Ref2r9r):
     def setUp(self):
         self.universe = mda.Universe(XYZ_psf, XYZ)
@@ -26,12 +40,9 @@ class TestXYZReader(TestCase, Ref2r9r):
             sel = self.universe.select_atoms("all")
             centreOfGeometry += sum(sel.center_of_geometry())
 
-        assert_almost_equal(
-            centreOfGeometry,
-            self.ref_sum_centre_of_geometry,
-            self.prec,
-            err_msg=
-            "sum of centers of geometry over the trajectory do not match")
+        assert_almost_equal(centreOfGeometry, self.ref_sum_centre_of_geometry,
+                            self.prec, err_msg="sum of centers of geometry "
+                            "over the trajectory do not match")
 
     def test_full_slice(self):
         trj_iter = self.universe.trajectory[:]
@@ -97,12 +108,9 @@ class TestCompressedXYZReader(TestCase, Ref2r9r):
             sel = self.universe.select_atoms("all")
             centreOfGeometry += sum(sel.center_of_geometry())
 
-        assert_almost_equal(
-            centreOfGeometry,
-            self.ref_sum_centre_of_geometry,
-            self.prec,
-            err_msg=
-            "sum of centers of geometry over the trajectory do not match")
+        assert_almost_equal(centreOfGeometry, self.ref_sum_centre_of_geometry,
+                            self.prec, err_msg="sum of centers of geometry "
+                            "over the trajectory do not match")
 
     def test_full_slice(self):
         trj_iter = self.universe.trajectory[:]
@@ -137,7 +145,7 @@ class TestXYZWriter(TestCase, Ref2r9r):
         ext = ".xyz"
         fd, self.outfile = tempfile.mkstemp(suffix=ext)
         os.close(fd)
-        self.Writer = MDAnalysis.coordinates.XYZ.XYZWriter
+        self.Writer = mda.coordinates.XYZ.XYZWriter
 
     def tearDown(self):
         try:
@@ -174,11 +182,8 @@ class TestXYZWriter(TestCase, Ref2r9r):
         # check that the trajectories are identical for each time step
         for orig_ts, written_ts in itertools.izip(self.universe.trajectory,
                                                   uw.trajectory):
-            assert_array_almost_equal(
-                written_ts._pos,
-                orig_ts._pos,
-                self.prec,
-                err_msg=
-                "coordinate mismatch between original and written trajectory at frame "
-                "%d (orig) vs %d (written)" % (
-                    orig_ts.frame, written_ts.frame))
+            assert_array_almost_equal(written_ts._pos, orig_ts._pos, self.prec,
+                                      err_msg="coordinate mismatch between "
+                                      "original and written trajectory at "
+                                      "frame %d (orig) vs %d (written)" % (
+                                           orig_ts.frame, written_ts.frame))

@@ -1,3 +1,12 @@
+import MDAnalysis as mda
+import numpy as np
+
+from numpy.testing import (assert_equal, assert_almost_equal)
+from unittest import TestCase
+
+from MDAnalysisTests.datafiles import (GMS_ASYMOPT, GMS_ASYMSURF, GMS_SYMOPT)
+
+
 class TestGMSReader(TestCase):
     ''' Test cases for GAMESS output log-files '''
 
@@ -29,34 +38,25 @@ class TestGMSReader(TestCase):
         '''TestGMSReader: C1 optimization:
             distance between 1st and 4th atoms changes after 5 steps '''
         desired = -0.0484664
-        assert_almost_equal(
-            self.__calcFD(self.u_aso),
-            desired,
-            decimal=5,
-            err_msg=
-            "Wrong 1-4 atom distance change after 5 steps for GAMESS C1 optimization")
+        assert_almost_equal(self.__calcFD(self.u_aso), desired, decimal=5,
+                            err_msg="Wrong 1-4 atom distance change after "
+                            "5 steps for GAMESS C1 optimization")
 
     def test_step5distances_symopt(self):
         '''TestGMSReader: Symmetry-input optimization:
             distance between 1st and 4th atoms changes after 5 steps '''
         desired = 0.227637
-        assert_almost_equal(
-            self.__calcFD(self.u_so),
-            desired,
-            decimal=5,
-            err_msg=
-            "Wrong 1-4 atom distance change after 5 steps for GAMESS D4H optimization")
+        assert_almost_equal(self.__calcFD(self.u_so), desired, decimal=5,
+                            err_msg="Wrong 1-4 atom distance change after 5 "
+                            "steps for GAMESS D4H optimization")
 
     def test_step5distances_asymsurf(self):
         '''TestGMSReader: Symmetry-input potential-energy surface:
             distance between 1st and 4th atoms changes after 5 steps '''
         desired = -0.499996
-        assert_almost_equal(
-            self.__calcFD(self.u_ass),
-            desired,
-            decimal=5,
-            err_msg=
-            "Wrong 1-4 atom distance change after 5 steps for GAMESS C1 surface")
+        assert_almost_equal(self.__calcFD(self.u_ass), desired, decimal=5,
+                            err_msg="Wrong 1-4 atom distance change after 5 "
+                            "steps for GAMESS C1 surface")
 
     def __calcFD(self, u):
         u.trajectory.rewind()

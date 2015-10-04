@@ -1,3 +1,20 @@
+import itertools
+import MDAnalysis as mda
+import numpy as np
+import os
+
+from nose.plugins.attrib import attr
+from numpy.testing import (assert_equal, assert_array_almost_equal,
+                           assert_almost_equal, assert_raises)
+from unittest import TestCase
+import tempfile
+
+from MDAnalysisTests.datafiles import (PRMncdf, NCDF, PFncdf_Top, PFncdf_Trj,
+                                       GRO, TRR, XYZ_mini)
+from MDAnalysisTests.coordinates.test_trj import _TRJReaderTest
+from MDAnalysisTests.coordinates.reference import (RefVGV,)
+
+
 class TestNCDFReader(_TRJReaderTest, RefVGV):
     def setUp(self):
         self.universe = mda.Universe(PRMncdf, NCDF)
@@ -85,7 +102,7 @@ class TestNCDFWriter(TestCase, RefVGV):
         os.close(fd)
         fd, self.outtop = tempfile.mkstemp(suffix=".pdb")
         os.close(fd)
-        self.Writer = MDAnalysis.coordinates.TRJ.NCDFWriter
+        self.Writer = mda.coordinates.TRJ.NCDFWriter
 
     def tearDown(self):
         for f in self.outfile, self.outtop:
@@ -116,21 +133,15 @@ class TestNCDFWriter(TestCase, RefVGV):
         # check that the trajectories are identical for each time step
         for orig_ts, written_ts in itertools.izip(self.universe.trajectory,
                                                   uw.trajectory):
-            assert_array_almost_equal(
-                written_ts._pos,
-                orig_ts._pos,
-                self.prec,
-                err_msg=
-                "coordinate mismatch between original and written trajectory at frame "
-                "%d (orig) vs %d (written)" % (
-                    orig_ts.frame, written_ts.frame))
+            assert_array_almost_equal(written_ts._pos, orig_ts._pos, self.prec,
+                                      err_msg="coordinate mismatch between "
+                                      "original and written trajectory at "
+                                      "frame %d (orig) vs %d (written)" % (
+                                          orig_ts.frame, written_ts.frame))
             # not a good test because in the example trajectory all times are 0
-            assert_almost_equal(
-                orig_ts.time,
-                written_ts.time,
-                self.prec,
-                err_msg="Time for step {0} are not the same.".format(
-                    orig_ts.frame))
+            assert_almost_equal(orig_ts.time, written_ts.time, self.prec,
+                                err_msg="Time for step {0} are not the "
+                                "same.".format(orig_ts.frame))
             assert_array_almost_equal(written_ts.dimensions,
                                       orig_ts.dimensions,
                                       self.prec,
@@ -138,38 +149,30 @@ class TestNCDFWriter(TestCase, RefVGV):
 
     @attr('slow')
     def test_TRR2NCDF(self):
-        trr = MDAnalysis.Universe(GRO, TRR)
+        trr = mda.Universe(GRO, TRR)
         W = self.Writer(self.outfile, trr.trajectory.n_atoms, velocities=True)
         for ts in trr.trajectory:
             W.write_next_timestep(ts)
         W.close()
 
-        uw = MDAnalysis.Universe(GRO, self.outfile)
+        uw = mda.Universe(GRO, self.outfile)
 
         for orig_ts, written_ts in itertools.izip(trr.trajectory,
                                                   uw.trajectory):
-            assert_array_almost_equal(
-                written_ts._pos,
-                orig_ts._pos,
-                self.prec,
-                err_msg=
-                "coordinate mismatch between original and written trajectory at frame "
-                "%d (orig) vs %d (written)" % (
-                    orig_ts.frame, written_ts.frame))
-            assert_array_almost_equal(
-                written_ts._velocities,
-                orig_ts._velocities,
-                self.prec,
-                err_msg=
-                "velocity mismatch between original and written trajectory at frame %d "
-                "(orig) vs %d (written)" % (
-                    orig_ts.frame, written_ts.frame))
-            assert_almost_equal(
-                orig_ts.time,
-                written_ts.time,
-                self.prec,
-                err_msg="Time for step {0} are not the same.".format(
-                    orig_ts.frame))
+            assert_array_almost_equal(written_ts._pos, orig_ts._pos, self.prec,
+                                      err_msg="coordinate mismatch between "
+                                      "original and written trajectory at "
+                                      "frame %d (orig) vs %d (written)" % (
+                                          orig_ts.frame, written_ts.frame))
+            assert_array_almost_equal(written_ts._velocities,
+                                      orig_ts._velocities, self.prec,
+                                      err_msg="velocity mismatch between "
+                                      "original and written trajectory at "
+                                      "frame %d (orig) vs %d (written)" % (
+                                          orig_ts.frame, written_ts.frame))
+            assert_almost_equal(orig_ts.time, written_ts.time, self.prec,
+                                err_msg="Time for step {0} are not the "
+                                "same.".format(orig_ts.frame))
             assert_array_almost_equal(written_ts.dimensions,
                                       orig_ts.dimensions,
                                       self.prec,
@@ -186,25 +189,19 @@ class TestNCDFWriter(TestCase, RefVGV):
             W.write(p)
         W.close()
 
-        uw = MDAnalysis.Universe(self.outtop, self.outfile)
+        uw = mda.Universe(self.outtop, self.outfile)
         pw = uw.atoms
 
         for orig_ts, written_ts in itertools.izip(self.universe.trajectory,
                                                   uw.trajectory):
-            assert_array_almost_equal(
-                p.positions,
-                pw.positions,
-                self.prec,
-                err_msg=
-                "coordinate mismatch between original and written trajectory at frame "
-                "%d (orig) vs %d (written)" % (
-                    orig_ts.frame, written_ts.frame))
-            assert_almost_equal(
-                orig_ts.time,
-                written_ts.time,
-                self.prec,
-                err_msg="Time for step {0} are not the same.".format(
-                    orig_ts.frame))
+            assert_array_almost_equal(p.positions, pw.positions, self.prec,
+                                      err_msg="coordinate mismatch between "
+                                      "original and written trajectory at "
+                                      "frame %d (orig) vs %d (written)" % (
+                                          orig_ts.frame, written_ts.frame))
+            assert_almost_equal(orig_ts.time, written_ts.time, self.prec,
+                                err_msg="Time for step {0} are not the "
+                                "same.".format(orig_ts.frame))
             assert_array_almost_equal(written_ts.dimensions,
                                       orig_ts.dimensions,
                                       self.prec,
@@ -221,18 +218,18 @@ class TestNCDFWriterVelsForces(TestCase):
         self.top = XYZ_mini
         self.n_atoms = 3
 
-        self.ts1 = MDAnalysis.coordinates.TRJ.Timestep(self.n_atoms,
-                                                       velocities=True,
-                                                       forces=True)
+        self.ts1 = mda.coordinates.TRJ.Timestep(self.n_atoms,
+                                                velocities=True,
+                                                forces=True)
         self.ts1._pos[:] = np.arange(self.n_atoms * 3).reshape(self.n_atoms, 3)
         self.ts1._velocities[:] = np.arange(self.n_atoms * 3).reshape(
             self.n_atoms, 3) + 100
         self.ts1._forces[:] = np.arange(self.n_atoms * 3).reshape(self.n_atoms,
                                                                   3) + 200
 
-        self.ts2 = MDAnalysis.coordinates.TRJ.Timestep(self.n_atoms,
-                                                       velocities=True,
-                                                       forces=True)
+        self.ts2 = mda.coordinates.TRJ.Timestep(self.n_atoms,
+                                                velocities=True,
+                                                forces=True)
         self.ts2._pos[:] = np.arange(self.n_atoms * 3).reshape(self.n_atoms,
                                                                3) + 300
         self.ts2._velocities[:] = np.arange(self.n_atoms * 3).reshape(
@@ -253,31 +250,32 @@ class TestNCDFWriterVelsForces(TestCase):
     def _write_ts(self, pos, vel, force):
         """Write the two reference timesteps, then open them up and check values
 
-        pos vel and force are bools which define whether these properties should
-        be in TS
+        pos vel and force are bools which define whether these properties
+        should be in TS
+
         """
-        with MDAnalysis.Writer(self.outfile,
-                               n_atoms=self.n_atoms,
-                               velocities=vel,
-                               forces=force) as w:
+        with mda.Writer(self.outfile,
+                        n_atoms=self.n_atoms,
+                        velocities=vel,
+                        forces=force) as w:
             w.write(self.ts1)
             w.write(self.ts2)
 
-        u = MDAnalysis.Universe(self.top, self.outfile)
+        u = mda.Universe(self.top, self.outfile)
         for ts, ref_ts in itertools.izip(u.trajectory, [self.ts1, self.ts2]):
             if pos:
                 assert_almost_equal(ts._pos, ref_ts._pos, self.prec)
             else:
-                assert_raises(NoDataError, getattr, ts, 'positions')
+                assert_raises(mda.NoDataError, getattr, ts, 'positions')
             if vel:
                 assert_almost_equal(ts._velocities, ref_ts._velocities,
                                     self.prec)
             else:
-                assert_raises(NoDataError, getattr, ts, 'velocities')
+                assert_raises(mda.NoDataError, getattr, ts, 'velocities')
             if force:
                 assert_almost_equal(ts._forces, ref_ts._forces, self.prec)
             else:
-                assert_raises(NoDataError, getattr, ts, 'forces')
+                assert_raises(mda.NoDataError, getattr, ts, 'forces')
 
         u.trajectory.close()
 

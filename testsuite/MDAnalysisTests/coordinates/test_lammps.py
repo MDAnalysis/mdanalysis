@@ -1,3 +1,13 @@
+import MDAnalysis as mda
+
+
+from numpy.testing import (assert_equal, assert_raises)
+from unittest import TestCase
+
+from MDAnalysisTests.coordinates.reference import (RefLAMMPSData,
+                                                   RefLAMMPSDataMini)
+
+
 def test_datareader_VE():
     from MDAnalysis.coordinates.LAMMPS import DATAReader
     assert_raises(ValueError, DATAReader, 'filename')
@@ -10,7 +20,7 @@ class _TestLammpsData_Coords(TestCase):
     """
 
     def setUp(self):
-        self.u = MDAnalysis.Universe(self.filename)
+        self.u = mda.Universe(self.filename)
 
     def tearDown(self):
         del self.u
@@ -35,7 +45,7 @@ class _TestLammpsData_Coords(TestCase):
 
     def test_seek_2(self):
         ts = self.u.trajectory[0]
-        assert_equal(type(ts), MDAnalysis.coordinates.base.Timestep)
+        assert_equal(type(ts), mda.coordinates.base.Timestep)
 
     def test_iter(self):
         # Check that iterating works, but only gives a single frame
