@@ -46,7 +46,7 @@ from __future__ import print_function
 from ez_setup import use_setuptools
 
 use_setuptools()
-from setuptools import setup, Extension
+from setuptools import setup, Extension, find_packages
 #
 #------------------------------------------------------------
 
@@ -96,7 +96,7 @@ For details see the report for `Issue 87`_.
           author_email='naveen.michaudagrawal@gmail.com',
           url='http://www.mdanalysis.org',
           license='GPL 2',
-          packages=['MDAnalysisTests', 'MDAnalysisTests.plugins'],
+          packages=find_packages(),
           package_dir={'MDAnalysisTests': 'MDAnalysisTests',
                        'MDAnalysisTests.plugins': 'MDAnalysisTests/plugins'},
           package_data={'MDAnalysisTests':
