@@ -1,7 +1,7 @@
-import itertools
 import MDAnalysis as mda
 import numpy as np
 import os
+from six.moves import zip
 
 from nose.plugins.attrib import attr
 from numpy.testing import (assert_equal, assert_array_equal, assert_raises,
@@ -163,8 +163,8 @@ class TestDCDWriter(TestCase):
         uw = mda.Universe(PSF, self.outfile)
 
         # check that the coordinates are identical for each time step
-        for orig_ts, written_ts in itertools.izip(self.universe.trajectory,
-                                                  uw.trajectory):
+        for orig_ts, written_ts in zip(self.universe.trajectory,
+                                       uw.trajectory):
             assert_array_almost_equal(written_ts._pos, orig_ts._pos, 3,
                                       err_msg="coordinate mismatch between "
                                       "original and written trajectory at "
@@ -197,8 +197,8 @@ class TestDCDWriter(TestCase):
         uw = mda.Universe(PSF, self.outfile)
 
         # check that the coordinates are identical for each time step
-        for orig_ts, written_ts in itertools.izip(self.universe.trajectory,
-                                                  uw.trajectory):
+        for orig_ts, written_ts in zip(self.universe.trajectory,
+                                       uw.trajectory):
             assert_array_almost_equal(written_ts._pos, orig_ts._pos, 3,
                                       err_msg="coordinate mismatch between "
                                       "original and written trajectory at "
@@ -323,8 +323,8 @@ class _TestDCDReader_TriclinicUnitcell(TestCase):
     def test_read_triclinic(self):
         """test reading of triclinic unitcell (Issue 187) for NAMD or new
         CHARMM format (at least since c36b2)"""
-        for ts, box in itertools.izip(self.u.trajectory,
-                                      self.ref_dimensions[:, 1:]):
+        for ts, box in zip(self.u.trajectory,
+                           self.ref_dimensions[:, 1:]):
             assert_array_almost_equal(ts.dimensions, box, 4,
                                       err_msg="box dimensions A,B,C,alpha,"
                                       "beta,gamma not identical at frame "
@@ -338,8 +338,8 @@ class _TestDCDReader_TriclinicUnitcell(TestCase):
             for ts in self.u.trajectory:
                 w.write(ts)
         w = mda.Universe(self.topology, self.dcd)
-        for ts_orig, ts_copy in itertools.izip(self.u.trajectory,
-                                               w.trajectory):
+        for ts_orig, ts_copy in zip(self.u.trajectory,
+                                    w.trajectory):
             assert_almost_equal(ts_orig.dimensions, ts_copy.dimensions, 4,
                                 err_msg="DCD->DCD: unit cell dimensions wrong "
                                 "at frame {0}".format(ts_orig.frame))
@@ -380,8 +380,8 @@ class TestNCDF2DCD(TestCase):
     def test_unitcell(self):
         """NCDFReader: Test that DCDWriter correctly writes the CHARMM
         unit cell"""
-        for ts_orig, ts_copy in itertools.izip(self.u.trajectory,
-                                               self.w.trajectory):
+        for ts_orig, ts_copy in zip(self.u.trajectory,
+                                    self.w.trajectory):
             assert_almost_equal(
                 ts_orig.dimensions,
                 ts_copy.dimensions,
@@ -390,8 +390,8 @@ class TestNCDF2DCD(TestCase):
                 ts_orig.frame)
 
     def test_coordinates(self):
-        for ts_orig, ts_copy in itertools.izip(self.u.trajectory,
-                                               self.w.trajectory):
+        for ts_orig, ts_copy in zip(self.u.trajectory,
+                                    self.w.trajectory):
             assert_almost_equal(
                 self.u.atoms.positions,
                 self.w.atoms.positions,

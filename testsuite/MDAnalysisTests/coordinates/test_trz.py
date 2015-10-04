@@ -1,6 +1,6 @@
-import itertools
 import MDAnalysis as mda
 import os
+from six.moves import zip
 
 from numpy.testing import (assert_equal, assert_array_almost_equal,
                            assert_almost_equal)
@@ -143,8 +143,8 @@ class TestTRZWriter(TestCase, RefTRZ):
 
         uw = mda.Universe(TRZ_psf, self.outfile)
 
-        for orig_ts, written_ts in itertools.izip(self.universe.trajectory,
-                                                  uw.trajectory):
+        for orig_ts, written_ts in zip(self.universe.trajectory,
+                                       uw.trajectory):
             assert_array_almost_equal(orig_ts._pos, written_ts._pos, self.prec,
                                       err_msg="Coordinate mismatch between "
                                       "orig and written at frame %d" %

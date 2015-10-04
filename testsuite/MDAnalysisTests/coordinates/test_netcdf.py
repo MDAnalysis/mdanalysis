@@ -1,7 +1,7 @@
-import itertools
 import MDAnalysis as mda
 import numpy as np
 import os
+from six.moves import zip
 
 from nose.plugins.attrib import attr
 from numpy.testing import (assert_equal, assert_array_almost_equal,
@@ -131,8 +131,8 @@ class TestNCDFWriter(TestCase, RefVGV):
         uw = mda.Universe(PRMncdf, self.outfile)
 
         # check that the trajectories are identical for each time step
-        for orig_ts, written_ts in itertools.izip(self.universe.trajectory,
-                                                  uw.trajectory):
+        for orig_ts, written_ts in zip(self.universe.trajectory,
+                                       uw.trajectory):
             assert_array_almost_equal(written_ts._pos, orig_ts._pos, self.prec,
                                       err_msg="coordinate mismatch between "
                                       "original and written trajectory at "
@@ -157,8 +157,8 @@ class TestNCDFWriter(TestCase, RefVGV):
 
         uw = mda.Universe(GRO, self.outfile)
 
-        for orig_ts, written_ts in itertools.izip(trr.trajectory,
-                                                  uw.trajectory):
+        for orig_ts, written_ts in zip(trr.trajectory,
+                                       uw.trajectory):
             assert_array_almost_equal(written_ts._pos, orig_ts._pos, self.prec,
                                       err_msg="coordinate mismatch between "
                                       "original and written trajectory at "
@@ -192,8 +192,8 @@ class TestNCDFWriter(TestCase, RefVGV):
         uw = mda.Universe(self.outtop, self.outfile)
         pw = uw.atoms
 
-        for orig_ts, written_ts in itertools.izip(self.universe.trajectory,
-                                                  uw.trajectory):
+        for orig_ts, written_ts in zip(self.universe.trajectory,
+                                       uw.trajectory):
             assert_array_almost_equal(p.positions, pw.positions, self.prec,
                                       err_msg="coordinate mismatch between "
                                       "original and written trajectory at "
@@ -262,7 +262,7 @@ class TestNCDFWriterVelsForces(TestCase):
             w.write(self.ts2)
 
         u = mda.Universe(self.top, self.outfile)
-        for ts, ref_ts in itertools.izip(u.trajectory, [self.ts1, self.ts2]):
+        for ts, ref_ts in zip(u.trajectory, [self.ts1, self.ts2]):
             if pos:
                 assert_almost_equal(ts._pos, ref_ts._pos, self.prec)
             else:

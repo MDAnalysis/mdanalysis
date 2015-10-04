@@ -1,6 +1,7 @@
 import MDAnalysis as mda
 import numpy as np
 import os
+from six.moves import zip
 
 from nose.plugins.attrib import attr
 from numpy.testing import (assert_equal, assert_, dec,

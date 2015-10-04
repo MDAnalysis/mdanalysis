@@ -1,7 +1,7 @@
-import itertools
 import MDAnalysis as mda
 import numpy as np
 import os
+from six.moves import zip
 
 from numpy.testing import (assert_equal, assert_array_almost_equal,
                            assert_almost_equal)
@@ -180,8 +180,8 @@ class TestXYZWriter(TestCase, Ref2r9r):
         uw = mda.Universe(XYZ_psf, self.outfile)
         assert_equal(self.universe.trajectory.n_frames, uw.trajectory.n_frames)
         # check that the trajectories are identical for each time step
-        for orig_ts, written_ts in itertools.izip(self.universe.trajectory,
-                                                  uw.trajectory):
+        for orig_ts, written_ts in zip(self.universe.trajectory,
+                                       uw.trajectory):
             assert_array_almost_equal(written_ts._pos, orig_ts._pos, self.prec,
                                       err_msg="coordinate mismatch between "
                                       "original and written trajectory at "

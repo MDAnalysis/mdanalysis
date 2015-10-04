@@ -14,10 +14,10 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-import itertools
 import MDAnalysis as mda
 import numpy as np
 import os
+from six.moves import zip
 
 from nose.plugins.attrib import attr
 from numpy.testing import (assert_allclose, assert_equal, assert_array_equal,
@@ -40,7 +40,7 @@ class TestINPCRDReader(TestCase):
                             [8.3254058, 6.2227613, -8.7098593],
                             [7.0833200, 5.5038197, -9.8417650],
                             [7.1129439, 4.6170351, -7.9729560]])
-        for ref, val in itertools.izip(ref_pos, ts._pos):
+        for ref, val in zip(ref_pos, ts._pos):
             assert_allclose(ref, val)
 
     def test_reader(self):
@@ -145,8 +145,8 @@ class TestChainReader(TestCase):
         W.close()
         self.universe.trajectory.rewind()
         u = mda.Universe(PSF, self.outfile)
-        for (ts_orig, ts_new) in itertools.izip(self.universe.trajectory,
-                                                u.trajectory):
+        for (ts_orig, ts_new) in zip(self.universe.trajectory,
+                                     u.trajectory):
             assert_almost_equal(
                 ts_orig._pos,
                 ts_new._pos,

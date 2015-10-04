@@ -1,8 +1,8 @@
 import errno
-import itertools
 import MDAnalysis as mda
 import numpy as np
 import os
+from six.moves import zip
 
 from nose.plugins.attrib import attr
 from numpy.testing import (assert_equal, assert_array_almost_equal, dec,
@@ -364,8 +364,8 @@ class _GromacsWriter(TestCase):
         uw = mda.Universe(GRO, self.outfile)
 
         # check that the coordinates are identical for each time step
-        for orig_ts, written_ts in itertools.izip(self.universe.trajectory,
-                                                  uw.trajectory):
+        for orig_ts, written_ts in zip(self.universe.trajectory,
+                                       uw.trajectory):
             assert_array_almost_equal(written_ts._pos, orig_ts._pos, 3,
                                       err_msg="coordinate mismatch between "
                                       "original and written trajectory at "
@@ -412,8 +412,8 @@ class TestTRRWriter(_GromacsWriter):
         uw = mda.Universe(GRO, self.outfile)
 
         # check that the velocities are identical for each time step
-        for orig_ts, written_ts in itertools.izip(self.universe.trajectory,
-                                                  uw.trajectory):
+        for orig_ts, written_ts in zip(self.universe.trajectory,
+                                       uw.trajectory):
             assert_array_almost_equal(written_ts._velocities,
                                       orig_ts._velocities, 3,
                                       err_msg="velocities mismatch between "
@@ -440,8 +440,8 @@ class TestTRRWriter(_GromacsWriter):
 
         # check that the velocities are identical for each time step, except
         # for the gaps (that we must make sure to raise exceptions on).
-        for orig_ts, written_ts in itertools.izip(self.universe.trajectory,
-                                                  uw.trajectory):
+        for orig_ts, written_ts in zip(self.universe.trajectory,
+                                       uw.trajectory):
             if ts.frame % 4:
                 assert_array_almost_equal(written_ts.positions,
                                           orig_ts.positions, 3,
@@ -555,8 +555,8 @@ class _GromacsWriterIssue117(TestCase):
         uw = mda.Universe(PRMncdf, self.outfile)
 
         # check that the coordinates are identical for each time step
-        for orig_ts, written_ts in itertools.izip(self.universe.trajectory,
-                                                  uw.trajectory):
+        for orig_ts, written_ts in zip(self.universe.trajectory,
+                                       uw.trajectory):
             assert_array_almost_equal(written_ts._pos, orig_ts._pos,
                                       self.prec, err_msg="coordinate mismatch "
                                       "between original and written "
