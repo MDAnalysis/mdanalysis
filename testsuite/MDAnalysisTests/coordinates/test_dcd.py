@@ -6,7 +6,7 @@ from six.moves import zip
 from nose.plugins.attrib import attr
 from numpy.testing import (assert_equal, assert_array_equal, assert_raises,
                            assert_almost_equal, assert_array_almost_equal)
-import tempfile
+import tempdir
 from unittest import TestCase
 
 from MDAnalysisTests.datafiles import (DCD, PSF, DCD_empty, CRD, PRMncdf, NCDF)
@@ -139,8 +139,8 @@ class TestDCDWriter(TestCase):
     def setUp(self):
         self.universe = mda.Universe(PSF, DCD)
         ext = ".dcd"
-        fd, self.outfile = tempfile.mkstemp(suffix=ext)
-        os.close(fd)
+        self.tmpdir = tempdir.TempDir()
+        self.outfile = self.tmpdir.name + '/dcd-writer' + ext
         self.Writer = mda.coordinates.DCD.DCDWriter
 
     def tearDown(self):
@@ -150,6 +150,7 @@ class TestDCDWriter(TestCase):
             pass
         del self.universe
         del self.Writer
+        del self.tmpdir
 
     @attr('issue')
     def test_write_trajectory(self):
@@ -239,8 +240,8 @@ class TestDCDWriter_Issue59(TestCase):
     def setUp(self):
         """Generate input xtc."""
         self.u = mda.Universe(PSF, DCD)
-        fd, self.xtc = tempfile.mkstemp(suffix='.xtc')
-        os.close(fd)
+        self.tmpdir = tempdir.TempDir()
+        self.xtc = self.tmpdir.name + '/dcd-writer-issue59-test.xtc'
         wXTC = mda.Writer(self.xtc, self.u.atoms.n_atoms)
         for ts in self.u.trajectory:
             wXTC.write(ts)
@@ -256,13 +257,13 @@ class TestDCDWriter_Issue59(TestCase):
         except (AttributeError, OSError):
             pass
         del self.u
+        del self.tmpdir
 
     @attr('issue')
     def test_issue59(self):
         """Test writing of XTC to DCD (Issue 59)"""
         xtc = mda.Universe(PSF, self.xtc)
-        fd, self.dcd = tempfile.mkstemp(suffix='.dcd')
-        os.close(fd)
+        self.dcd = self.tmpdir.name + '/dcd-writer-issue59-test.dcd'
         wDCD = mda.Writer(self.dcd, xtc.atoms.n_atoms)
         for ts in xtc.trajectory:
             wDCD.write(ts)
@@ -309,8 +310,8 @@ class TestDCDWriter_Issue59(TestCase):
 class _TestDCDReader_TriclinicUnitcell(TestCase):
     def setUp(self):
         self.u = mda.Universe(self.topology, self.trajectory)
-        fd, self.dcd = tempfile.mkstemp(suffix='.dcd')
-        os.close(fd)
+        self.tempdir = tempdir.TempDir()
+        self.dcd = self.tempdir.name + '/dcd-reader-triclinic.dcd'
 
     def tearDown(self):
         try:
@@ -318,6 +319,7 @@ class _TestDCDReader_TriclinicUnitcell(TestCase):
         except (AttributeError, OSError):
             pass
         del self.u
+        del self.tempdir
 
     @attr('issue')
     def test_read_triclinic(self):
@@ -360,8 +362,8 @@ class TestNCDF2DCD(TestCase):
     def setUp(self):
         self.u = mda.Universe(PRMncdf, NCDF)
         # create the DCD
-        fd, self.dcd = tempfile.mkstemp(suffix='.dcd')
-        os.close(fd)
+        self.tmpdir = tempdir.TempDir()
+        self.dcd = self.tmpdir.name + '/ncdf-2-dcd.dcd'
         DCD = mda.Writer(self.dcd, n_atoms=self.u.atoms.n_atoms)
         for ts in self.u.trajectory:
             DCD.write(ts)
@@ -375,6 +377,7 @@ class TestNCDF2DCD(TestCase):
             pass
         del self.u
         del self.w
+        del self.tmpdir
 
     @attr('issue')
     def test_unitcell(self):

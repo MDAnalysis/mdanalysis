@@ -8,7 +8,7 @@ from nose.plugins.attrib import attr
 from numpy.testing import (assert_equal, assert_array_almost_equal, dec,
                            assert_almost_equal, assert_raises,
                            assert_array_equal)
-import tempfile
+import tempdir
 from unittest import TestCase
 
 from MDAnalysisTests.datafiles import (PDB_sub_dry, PDB_sub_sol, TRR_sub_sol,
@@ -70,8 +70,8 @@ class _GromacsReader(TestCase):
         self.ts = self.universe.coord
         # dummy output file
         ext = os.path.splitext(self.filename)[1]
-        fd, self.outfile = tempfile.mkstemp(suffix=ext)
-        os.close(fd)
+        self.tmpdir = tempdir.TempDir()
+        self.outfile = self.tmpdir.name + '/xdr-reader-test' + ext
 
     def tearDown(self):
         try:
@@ -79,6 +79,7 @@ class _GromacsReader(TestCase):
         except:
             pass
         del self.universe
+        del self.tmpdir
 
     @dec.slow
     def test_flag_convert_lengths(self):
@@ -339,8 +340,8 @@ class _GromacsWriter(TestCase):
     def setUp(self):
         self.universe = mda.Universe(GRO, self.infilename)
         ext = os.path.splitext(self.infilename)[1]
-        fd, self.outfile = tempfile.mkstemp(suffix=ext)
-        os.close(fd)
+        self.tmpdir = tempdir.TempDir()
+        self.outfile = self.tmpdir.name + '/xdr-writer-test' + ext
         self.Writer = self.Writers[ext]
 
     def tearDown(self):
@@ -350,6 +351,7 @@ class _GromacsWriter(TestCase):
             pass
         del self.universe
         del self.Writer
+        del self.tmpdir
 
     @dec.slow
     @attr('issue')
@@ -476,8 +478,8 @@ class _GromacsWriterIssue101(TestCase):
     prec = 3
 
     def setUp(self):
-        fd, self.outfile = tempfile.mkstemp(suffix=self.ext)
-        os.close(fd)
+        self.tmpdir = tempdir.TempDir()
+        self.outfile = self.tmpdir.name + '/xdr-writer-issue101' + self.ext
         self.Writer = self.Writers[self.ext]
 
     def tearDown(self):
@@ -486,6 +488,7 @@ class _GromacsWriterIssue101(TestCase):
         except:
             pass
         del self.Writer
+        del self.tmpdir
 
     @dec.slow
     @attr('issue')
@@ -531,8 +534,8 @@ class _GromacsWriterIssue117(TestCase):
 
     def setUp(self):
         self.universe = mda.Universe(PRMncdf, NCDF)
-        fd, self.outfile = tempfile.mkstemp(suffix=self.ext)
-        os.close(fd)
+        self.tmpdir = tempdir.TempDir()
+        self.outfile = self.tmpdir.name + '/xdr-writer-issue117' + self.ext
         self.Writer = mda.Writer(self.outfile,
                                  n_atoms=self.universe.atoms.n_atoms)
 

@@ -4,7 +4,8 @@ from six.moves import zip
 
 from numpy.testing import (assert_equal, assert_array_almost_equal,
                            assert_almost_equal)
-import tempfile
+import tempdir
+
 from unittest import TestCase
 
 from MDAnalysisTests.coordinates.reference import RefTRZ
@@ -92,34 +93,34 @@ class TestTRZReader(TestCase, RefTRZ):
                             "wrong time value in trz")
 
     def test_get_writer(self):
-        fd, self.outfile = tempfile.mkstemp(suffix='.trz')
-        os.close(fd)
-        W = self.trz.Writer(self.outfile)
-        assert_equal(isinstance(W, mda.coordinates.TRZ.TRZWriter), True)
-        assert_equal(W.n_atoms, self.trz.n_atoms)
-        try:
-            os.unlink(self.outfile)
-        except OSError:
-            pass
+        with tempdir.in_tempdir():
+            self.outfile = 'test-trz-writer.trz'
+            W = self.trz.Writer(self.outfile)
+            assert_equal(isinstance(W, mda.coordinates.TRZ.TRZWriter), True)
+            assert_equal(W.n_atoms, self.trz.n_atoms)
+            try:
+                os.unlink(self.outfile)
+            except OSError:
+                pass
 
     def test_get_writer_2(self):
-        fd, self.outfile = tempfile.mkstemp(suffix='.trz')
-        os.close(fd)
-        W = self.trz.Writer(self.outfile, n_atoms=100)
-        assert_equal(isinstance(W, mda.coordinates.TRZ.TRZWriter), True)
-        assert_equal(W.n_atoms, 100)
-        try:
-            os.unlink(self.outfile)
-        except OSError:
-            pass
+        with tempdir.in_tempdir():
+            self.outfile = 'test-trz-writer-1.trz'
+            W = self.trz.Writer(self.outfile, n_atoms=100)
+            assert_equal(isinstance(W, mda.coordinates.TRZ.TRZWriter), True)
+            assert_equal(W.n_atoms, 100)
+            try:
+                os.unlink(self.outfile)
+            except OSError:
+                pass
 
 
 class TestTRZWriter(TestCase, RefTRZ):
     def setUp(self):
         self.universe = mda.Universe(TRZ_psf, TRZ)
         self.prec = 3
-        fd, self.outfile = tempfile.mkstemp(suffix='.trz')
-        os.close(fd)
+        self.tmpdir = tempdir.TempDir()
+        self.outfile = self.tmpdir.name + '/test-trz-writer.trz'
         self.Writer = mda.coordinates.TRZ.TRZWriter
 
     def tearDown(self):
@@ -130,6 +131,7 @@ class TestTRZWriter(TestCase, RefTRZ):
         except OSError:
             pass
         del self.Writer
+        del self.tmpdir
 
     def test_write_trajectory(self):
         t = self.universe.trajectory
@@ -170,24 +172,20 @@ class TestTRZWriter2(object):
 
     def tearDown(self):
         del self.u
-        try:
-            os.unlink(self.outfile)
-        except OSError:
-            pass
 
     def test_writer_trz_from_other(self):
-        fd, self.outfile = tempfile.mkstemp(suffix='.trz')
-        os.close(fd)
-        W = mda.coordinates.TRZ.TRZWriter(self.outfile,
-                                          n_atoms=len(self.u.atoms))
+        with tempdir.in_tempdir():
+            outfile = 'trz-writer-2.trz'
+            W = mda.coordinates.TRZ.TRZWriter(outfile,
+                                              n_atoms=len(self.u.atoms))
 
-        W.write(self.u.trajectory.ts)
-        W.close()
+            W.write(self.u.trajectory.ts)
+            W.close()
 
-        u2 = mda.Universe(two_water_gro, self.outfile)
+            u2 = mda.Universe(two_water_gro, outfile)
 
-        assert_array_almost_equal(self.u.atoms.positions, u2.atoms.positions,
-                                  3)
+            assert_array_almost_equal(self.u.atoms.positions,
+                                      u2.atoms.positions, 3)
 
 
 class TestWrite_Partial_Timestep(TestCase):
@@ -203,8 +201,8 @@ class TestWrite_Partial_Timestep(TestCase):
         self.universe = mda.Universe(TRZ_psf, TRZ)
         self.ag = self.universe.select_atoms('name N')
         self.prec = 3
-        fd, self.outfile = tempfile.mkstemp(suffix='.pdb')
-        os.close(fd)
+        self.tmpdir = tempdir.TempDir()
+        self.outfile = self.tmpdir.name + '/partial-write-test.pdb'
         self.Writer = mda.Writer(self.outfile, n_atoms=len(self.ag))
 
     def tearDown(self):
@@ -216,6 +214,7 @@ class TestWrite_Partial_Timestep(TestCase):
         except OSError:
             pass
         del self.Writer
+        del self.tmpdir
 
     def test_write_trajectory(self):
         self.Writer.write(self.ag)

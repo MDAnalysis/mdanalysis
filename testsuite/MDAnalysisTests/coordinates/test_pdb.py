@@ -7,8 +7,8 @@ from nose.plugins.attrib import attr
 from numpy.testing import (assert_equal, assert_, dec,
                            assert_array_almost_equal,
                            assert_almost_equal, assert_raises)
+import tempdir
 from unittest import TestCase
-import tempfile
 
 from MDAnalysisTests.coordinates.reference import (RefAdKSmall, Ref4e43,
                                                    RefAdK)
@@ -165,8 +165,8 @@ class TestPrimitivePDBWriter(TestCase):
         # http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
         self.prec = 3
         ext = ".pdb"
-        fd, self.outfile = tempfile.mkstemp(suffix=ext)
-        os.close(fd)
+        self.tmpdir = tempdir.TempDir()
+        self.outfile = self.tmpdir.name + '/primitive-pdb-writer' + ext
 
     def tearDown(self):
         try:
@@ -174,6 +174,7 @@ class TestPrimitivePDBWriter(TestCase):
         except OSError:
             pass
         del self.universe, self.universe2
+        del self.tmpdir
 
     def test_writer(self):
         "Test writing from a single frame PDB file to a PDB file." ""
@@ -308,15 +309,15 @@ class TestMultiPDBReader(TestCase):
         assert_equal(len(conect.atoms), 1890)
         assert_equal(len(conect.bonds), 1922)
 
-        try:
-            fd, outfile = tempfile.mkstemp(suffix=".pdb")
-            os.close(fd)
-            self.conect.atoms.write(outfile, bonds="conect")
-            u1 = mda.Universe(outfile, guess_bonds=True)
-        finally:
-            os.unlink(outfile)
-        assert_equal(len(u1.atoms), 1890)
-        assert_equal(len(u1.bonds), 1922)
+        with tempdir.in_tempdir():
+            try:
+                outfile = 'test-pdb-hbonds.pdb'
+                self.conect.atoms.write(outfile, bonds="conect")
+                u1 = mda.Universe(outfile, guess_bonds=True)
+            finally:
+                os.unlink(outfile)
+            assert_equal(len(u1.atoms), 1890)
+            assert_equal(len(u1.bonds), 1922)
 
     @attr('slow')
     def test_conect_bonds_all(self):
@@ -324,15 +325,15 @@ class TestMultiPDBReader(TestCase):
         assert_equal(len(conect.atoms), 1890)
         assert_equal(len(conect.bonds), 1922)
 
-        try:
-            fd, outfile = tempfile.mkstemp(suffix=".pdb")
-            os.close(fd)
-            self.conect.atoms.write(outfile, bonds="all")
-            u2 = mda.Universe(outfile, guess_bonds=True)
-        finally:
-            os.unlink(outfile)
-        assert_equal(len(u2.atoms), 1890)
-        assert_equal(len([b for b in u2.bonds if not b.is_guessed]), 1922)
+        with tempdir.in_tempdir():
+            try:
+                outfile = 'pdb-connect-bonds.pdb'
+                self.conect.atoms.write(outfile, bonds="all")
+                u2 = mda.Universe(outfile, guess_bonds=True)
+            finally:
+                os.unlink(outfile)
+            assert_equal(len(u2.atoms), 1890)
+            assert_equal(len([b for b in u2.bonds if not b.is_guessed]), 1922)
 
         #assert_equal(len([b for b in conect.bonds if not b.is_guessed]), 1922)
 
@@ -406,10 +407,9 @@ class TestMultiPDBWriter(TestCase):
         # http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
         self.prec = 3
         ext = ".pdb"
-        fd, self.outfile = tempfile.mkstemp(suffix=ext)
-        os.close(fd)
-        fd, self.outfile2 = tempfile.mkstemp(suffix=ext)
-        os.close(fd)
+        self.tmpdir = tempdir.TempDir()
+        self.outfile = self.tmpdir.name + '/multiwriter-test-1' + ext
+        self.outfile2 = self.tmpdir.name + '/multiwriter-test-2' + ext
 
     def tearDown(self):
         try:
@@ -421,6 +421,7 @@ class TestMultiPDBWriter(TestCase):
         except OSError:
             pass
         del self.universe, self.multiverse, self.universe2
+        del self.tmpdir
 
     @attr('slow')
     def test_write_atomselection(self):

@@ -22,7 +22,7 @@ from six.moves import zip
 from nose.plugins.attrib import attr
 from numpy.testing import (assert_allclose, assert_equal, assert_array_equal,
                            assert_almost_equal, dec)
-import tempfile
+import tempdir
 from unittest import TestCase
 
 from MDAnalysisTests.datafiles import (PDB, INPCRD, XYZ_five, PSF, CRD, DCD,
@@ -62,13 +62,14 @@ class TestINPCRDReader(TestCase):
 
 
 class TestChainReader(TestCase):
+
     def setUp(self):
         self.universe = mda.Universe(PSF, [DCD, CRD, DCD, CRD, DCD, CRD, CRD])
         self.trajectory = self.universe.trajectory
         self.prec = 3
         # dummy output DCD file
-        fd, self.outfile = tempfile.mkstemp(suffix=".dcd")
-        os.close(fd)
+        self.tmpdir = tempdir.TempDir()
+        self.outfile = self.tmpdir.name + '/chain-reader.dcd'
 
     def tearDown(self):
         try:
@@ -76,6 +77,7 @@ class TestChainReader(TestCase):
         except:
             pass
         del self.universe
+        del self.tmpdir
 
     def test_next_trajectory(self):
         self.trajectory.rewind()

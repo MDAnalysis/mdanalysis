@@ -6,7 +6,7 @@ from nose.plugins.attrib import attr
 from numpy.testing import (assert_equal, assert_almost_equal, dec,
                            assert_array_almost_equal, assert_raises)
 from unittest import TestCase
-import tempfile
+import tempdir
 
 from MDAnalysisTests.datafiles import (GRO)
 from MDAnalysisTests.coordinates.reference import RefAdK
@@ -157,15 +157,14 @@ class TestGROReaderNoConversion(TestCase, RefAdK):
             err_msg="wrong volume for unitcell (rhombic dodecahedron)")
 
 
-class TestGROWriter(TestCase):
+class TestGROWriter(TestCase, tempdir.TempDir):
     def setUp(self):
         self.universe = mda.Universe(GRO)
         self.prec = 2  # 3 decimals in file in nm but MDAnalysis is in A
         ext = ".gro"
-        fd, self.outfile = tempfile.mkstemp(suffix=ext)
-        os.close(fd)
-        fd, self.outfile2 = tempfile.mkstemp(suffix=ext)
-        os.close(fd)
+        self.tmpdir = tempdir.TempDir()
+        self.outfile = self.tmpdir.name + '/gro-writer' + ext
+        self.outfile2 = self.tmpdir.name + '/gro-writer2' + ext
 
     def tearDown(self):
         try:
@@ -177,6 +176,7 @@ class TestGROWriter(TestCase):
         except OSError:
             pass
         del self.universe
+        del self.tmpdir
 
     @dec.slow
     def test_writer(self):

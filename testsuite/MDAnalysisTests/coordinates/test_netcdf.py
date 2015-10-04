@@ -6,8 +6,8 @@ from six.moves import zip
 from nose.plugins.attrib import attr
 from numpy.testing import (assert_equal, assert_array_almost_equal,
                            assert_almost_equal, assert_raises)
+import tempdir
 from unittest import TestCase
-import tempfile
 
 from MDAnalysisTests.datafiles import (PRMncdf, NCDF, PFncdf_Top, PFncdf_Trj,
                                        GRO, TRR, XYZ_mini)
@@ -98,10 +98,9 @@ class TestNCDFWriter(TestCase, RefVGV):
         self.universe = mda.Universe(PRMncdf, NCDF)
         self.prec = 6
         ext = ".ncdf"
-        fd, self.outfile = tempfile.mkstemp(suffix=ext)
-        os.close(fd)
-        fd, self.outtop = tempfile.mkstemp(suffix=".pdb")
-        os.close(fd)
+        self.tmpdir = tempdir.TempDir()
+        self.outfile = self.tmpdir.name + '/ncdf-writer-1' + ext
+        self.outtop = self.tmpdir.name + '/ncdf-writer-top.pdb'
         self.Writer = mda.coordinates.TRJ.NCDFWriter
 
     def tearDown(self):
@@ -112,6 +111,7 @@ class TestNCDFWriter(TestCase, RefVGV):
                 pass
         del self.universe
         del self.Writer
+        del self.tmpdir
 
     def test_write_trajectory(self):
         t = self.universe.trajectory
@@ -212,8 +212,8 @@ class TestNCDFWriterVelsForces(TestCase):
     """Test writing NCDF trajectories with a mixture of options"""
 
     def setUp(self):
-        fd, self.outfile = tempfile.mkstemp(suffix='.ncdf')
-        os.close(fd)
+        self.tmpdir = tempdir.TempDir()
+        self.outfile = self.tmpdir.name + '/ncdf-write-vels-force.ncdf'
         self.prec = 3
         self.top = XYZ_mini
         self.n_atoms = 3
@@ -246,6 +246,7 @@ class TestNCDFWriterVelsForces(TestCase):
         del self.n_atoms
         del self.ts1
         del self.ts2
+        del self.tmpdir
 
     def _write_ts(self, pos, vel, force):
         """Write the two reference timesteps, then open them up and check values

@@ -5,7 +5,7 @@ from six.moves import zip
 
 from numpy.testing import (assert_equal, assert_array_almost_equal,
                            assert_almost_equal)
-import tempfile
+import tempdir
 from unittest import TestCase
 
 from MDAnalysisTests.coordinates.reference import Ref2r9r
@@ -143,8 +143,8 @@ class TestXYZWriter(TestCase, Ref2r9r):
         self.universe = mda.Universe(XYZ_psf, XYZ_bz2)
         self.prec = 3  # 4 decimals in xyz file
         ext = ".xyz"
-        fd, self.outfile = tempfile.mkstemp(suffix=ext)
-        os.close(fd)
+        self.tmpdir = tempdir.TempDir()
+        self.outfile = self.tmpdir.name + '/xyz-writer' + ext
         self.Writer = mda.coordinates.XYZ.XYZWriter
 
     def tearDown(self):
@@ -153,6 +153,7 @@ class TestXYZWriter(TestCase, Ref2r9r):
         except OSError:
             pass
         del self.universe
+        del self.tmpdir
 
     def test_write_trajectory_timestep(self):
         W = self.Writer(self.outfile)

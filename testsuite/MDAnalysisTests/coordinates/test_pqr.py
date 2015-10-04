@@ -3,7 +3,7 @@ import os
 
 from numpy.testing import (assert_almost_equal, assert_equal)
 from unittest import TestCase
-import tempfile
+import tempdir
 
 from MDAnalysisTests.coordinates.reference import (RefAdKSmall)
 from MDAnalysisTests.coordinates.base import _SingleFrameReader
@@ -45,8 +45,8 @@ class TestPQRWriter(TestCase, RefAdKSmall):
         self.universe = mda.Universe(PQR)
         self.prec = 3
         ext = ".pqr"
-        fd, self.outfile = tempfile.mkstemp(suffix=ext)
-        os.close(fd)
+        self.tmpdir = tempdir.TempDir()
+        self.outfile = self.tmpdir.name + '/pqr-writer-test' + ext
 
     def tearDown(self):
         try:
@@ -54,6 +54,7 @@ class TestPQRWriter(TestCase, RefAdKSmall):
         except OSError:
             pass
         del self.universe
+        del self.tmpdir
 
     def test_writer_noChainID(self):
         assert_equal(self.universe.segments.segids[0], 'SYSTEM')
