@@ -59,11 +59,15 @@ Enhancements
   * Function for obtaining coordinate axes from numpy trajectories now
     globally available in MDAnalysis.analysis.psa (Issue #438)
   * TPR parser updated for Gromacs 5.0.x and 5.1 (Issue #456)
+  * Setup.py now looks for some configuration values in a config file. Each
+    config option can also be changed via environment variables if they are
+    prefixed with 'MDA_'. Current options are 'use_cython', 'ues_openmp', 'debug_cflags'
 
 Changes
   * An AtomGroup with 0 atoms now yields an `IndexError` on call to
     `AtomGroup.write` (Issue #434)
   * `PSA` changed to `PSAnalysis` to reduce namespace clutter (Issue #438)
+  * To build with debug-symbols use 'MDA_DEBUG_CFLAGS' instead of 'MDA_DEBUG_CFLAGS'
 
 Fixes
   * Fixed minor issue in lib.mdamath.make_whole where if all bonds
@@ -76,6 +80,7 @@ Fixes
     10,000. The original resid is stored as Atom.resnum (Issue #454)
   * Fixed TPR topology parser to treat all bonded interactions available in
     Gromacs 5.1 (Issue #222 and #352, pull request #463).
+  * Fixed OpenMP detection on Linux/OSX #459
 
 09/07/15  tyler.je.reddy, richardjgowers, alejob, orbeckst, dotsdl,
         manuel.nuno.melo, cyanezstange, khuston, ivirshup, kain88-de,

@@ -148,13 +148,12 @@ def hasfunction(cc, funcname, include=None, extra_postargs=None):
     try:
         try:
             fname = os.path.join(tmpdir, 'funcname.c')
-            f = open(fname, 'w')
-            if include is not None:
-                f.write('#include %s\n' % include)
-            f.write('int main(void) {\n')
-            f.write('    %s;\n' % funcname)
-            f.write('}\n')
-            f.close()
+            with open(fname, 'w') as f:
+                if include is not None:
+                    f.write('#include %s\n' % include)
+                f.write('int main(void) {\n')
+                f.write('    %s;\n' % funcname)
+                f.write('}\n')
             # Redirect stderr to /dev/null to hide any error messages
             # from the compiler.
             # This will have to be changed if we ever have to check
@@ -178,19 +177,18 @@ def hasfunction(cc, funcname, include=None, extra_postargs=None):
 
 def detect_openmp():
     """Does this compiler support OpenMP parallelization?"""
-    compiler = new_compiler()
     print("Attempting to autodetect OpenMP support... ", end="")
-    hasopenmp = hasfunction(compiler, 'omp_get_num_threads()')
-    needs_gomp = hasopenmp
-    if not hasopenmp:
-        compiler.add_library('gomp')
-        hasopenmp = hasfunction(compiler, 'omp_get_num_threads()')
-        needs_gomp = hasopenmp
+    compiler = new_compiler()
+    compiler.add_library('gomp')
+    include = '<omp.h>'
+    extra_postargs = ['-fopenmp']
+    hasopenmp = hasfunction(compiler, 'omp_get_num_threads()', include=include,
+                            extra_postargs=extra_postargs)
     if hasopenmp:
         print("Compiler supports OpenMP")
     else:
         print("Did not detect OpenMP support.")
-    return hasopenmp, needs_gomp
+    return hasopenmp
 
 
 def extensions(config):
@@ -215,9 +213,13 @@ def extensions(config):
         ('_FILE_OFFSET_BITS', '64')
     ]
 
-    has_openmp, needs_gomp = detect_openmp()
+    has_openmp = detect_openmp()
+
+    if use_openmp and not has_openmp:
+        print('No openmp compatible compiler found default to serial build.')
+
     parallel_args = ['-fopenmp'] if has_openmp and use_openmp else []
-    parallel_libraries = ['gomp'] if needs_gomp and use_openmp else []
+    parallel_libraries = ['gomp'] if has_openmp and use_openmp else []
     parallel_macros = [('PARALLEL', None)] if has_openmp and use_openmp else []
 
     if use_cython:
