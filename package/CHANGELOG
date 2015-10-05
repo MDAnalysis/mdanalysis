@@ -15,7 +15,7 @@ The rules for this file:
 ------------------------------------------------------------------------------
 10/??/15
 
-  * 0.12.1
+  * 0.12.1 kain88-de
 
 API Changes
 
@@ -24,6 +24,7 @@ Enhancements
 Changes
 
 Fixes
+  * Fixed OpenMP detection on Linux/OSX #459
 
 10/04/15 kain88-de, richardjgowers, dotsdl, sseyler, orbeckst, jbarnoud
 
@@ -80,7 +81,6 @@ Fixes
     10,000. The original resid is stored as Atom.resnum (Issue #454)
   * Fixed TPR topology parser to treat all bonded interactions available in
     Gromacs 5.1 (Issue #222 and #352, pull request #463).
-  * Fixed OpenMP detection on Linux/OSX #459
 
 09/07/15  tyler.je.reddy, richardjgowers, alejob, orbeckst, dotsdl,
         manuel.nuno.melo, cyanezstange, khuston, ivirshup, kain88-de,
