@@ -13,7 +13,7 @@ Also see https://github.com/MDAnalysis/mdanalysis/wiki/MDAnalysisTests
 and https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
 
 ------------------------------------------------------------------------------
-??/??/2015 manuel.nuno.melo, orbeckst
+09/07/2015 manuel.nuno.melo, orbeckst
   * 0.11.0
 
     - Overhaul of the test subsystem.
