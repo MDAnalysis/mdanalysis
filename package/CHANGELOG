@@ -13,6 +13,18 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
+10/??/15
+
+  * 0.12.1
+
+API Changes
+
+Enhancements
+
+Changes
+
+Fixes
+
 10/04/15 kain88-de, richardjgowers, dotsdl, sseyler, orbeckst, jbarnoud
 
   * 0.12.0

@@ -284,7 +284,7 @@ def extensions(config):
 
 if __name__ == '__main__':
     # NOTE: keep in sync with MDAnalysis.__version__ in version.py
-    RELEASE = "0.12.0"
+    RELEASE = "0.12.1-dev"
     with open("SUMMARY.txt") as summary:
         LONG_DESCRIPTION = summary.read()
     CLASSIFIERS = [
