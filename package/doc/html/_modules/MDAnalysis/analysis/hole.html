@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.analysis.hole &mdash; MDAnalysis 0.11.0 documentation</title>
+    <title>MDAnalysis.analysis.hole &mdash; MDAnalysis 0.12.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.11.0',
+        VERSION:     '0.12.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.11.0 documentation"
+          title="Search within MDAnalysis 0.12.0 documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.11.0 documentation" href="../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.12.0 documentation" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
   <body role="document">
@@ -41,7 +41,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>
@@ -246,7 +246,7 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 
 <span class="kn">import</span> <span class="nn">glob</span>
 <span class="kn">import</span> <span class="nn">os</span>
@@ -357,7 +357,7 @@
         <span class="n">kw</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">frames</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;frames&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">frames</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">frames</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="o">.</span><span class="n">keys</span><span class="p">()[::</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;step&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)])</span>
+            <span class="n">frames</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="o">.</span><span class="n">keys</span><span class="p">()[::</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;step&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">frames</span> <span class="o">=</span> <span class="n">asiterable</span><span class="p">(</span><span class="n">frames</span><span class="p">)</span>
         <span class="n">kw</span><span class="p">[</span><span class="s">&#39;frames&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">frames</span>
@@ -371,7 +371,7 @@
         <span class="n">color</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;color&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">color</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">cmap</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;cmap&#39;</span><span class="p">,</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">jet</span><span class="p">)</span>
-            <span class="n">normalize</span> <span class="o">=</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">frames</span><span class="p">),</span> <span class="n">vmax</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">frames</span><span class="p">))</span>
+            <span class="n">normalize</span> <span class="o">=</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">frames</span><span class="p">),</span> <span class="n">vmax</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">frames</span><span class="p">))</span>
             <span class="n">colors</span> <span class="o">=</span> <span class="n">cmap</span><span class="p">(</span><span class="n">normalize</span><span class="p">(</span><span class="n">frames</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">colors</span> <span class="o">=</span> <span class="n">cycle</span><span class="p">(</span><span class="n">asiterable</span><span class="p">(</span><span class="n">color</span><span class="p">))</span>
@@ -475,12 +475,12 @@
                 <span class="c"># does not seem to work with masked arrays but with nan hack!</span>
                 <span class="c"># http://stackoverflow.com/questions/4913306/python-matplotlib-mplot3d-how-do-i-set-a-maximum-value</span>
                 <span class="c"># -for-the-z-axis</span>
-                <span class="c">#radius = numpy.ma.masked_greater(profile.radius, rmax)</span>
-                <span class="c">#rxncoord = numpy.ma.array(profile.rxncoord, mask=radius.mask)</span>
+                <span class="c">#radius = np.ma.masked_greater(profile.radius, rmax)</span>
+                <span class="c">#rxncoord = np.ma.array(profile.rxncoord, mask=radius.mask)</span>
                 <span class="n">rxncoord</span> <span class="o">=</span> <span class="n">profile</span><span class="o">.</span><span class="n">rxncoord</span>
                 <span class="n">radius</span> <span class="o">=</span> <span class="n">profile</span><span class="o">.</span><span class="n">radius</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-                <span class="n">radius</span><span class="p">[</span><span class="n">radius</span> <span class="o">&gt;</span> <span class="n">rmax</span><span class="p">]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">nan</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">rxncoord</span><span class="p">,</span> <span class="n">frame</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">rxncoord</span><span class="p">),</span> <span class="n">radius</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="n">radius</span><span class="p">[</span><span class="n">radius</span> <span class="o">&gt;</span> <span class="n">rmax</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">rxncoord</span><span class="p">,</span> <span class="n">frame</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">rxncoord</span><span class="p">),</span> <span class="n">radius</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s">r&quot;pore coordinate $z$&quot;</span><span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">ylabel</span><span class="p">)</span>
@@ -492,7 +492,7 @@
         <span class="n">f</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">q</span><span class="p">,</span> <span class="n">profile</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
             <span class="n">f</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">q</span><span class="p">,</span> <span class="n">profile</span><span class="o">.</span><span class="n">radius</span><span class="o">.</span><span class="n">min</span><span class="p">()])</span>
-        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">sorted_profiles_iter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return an iterator over profiles sorted by frame/order parameter *q*.</span>
@@ -1037,7 +1037,7 @@
                     <span class="k">else</span><span class="p">:</span>
                         <span class="c"># end of records (empty line)</span>
                         <span class="n">read_data</span> <span class="o">=</span> <span class="bp">False</span>
-                        <span class="n">frame_hole_output</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">rec</span><span class="o">.</span><span class="n">fromrecords</span><span class="p">(</span><span class="n">records</span><span class="p">,</span> <span class="n">formats</span><span class="o">=</span><span class="s">&quot;i4,f8,f8&quot;</span><span class="p">,</span>
+                        <span class="n">frame_hole_output</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">rec</span><span class="o">.</span><span class="n">fromrecords</span><span class="p">(</span><span class="n">records</span><span class="p">,</span> <span class="n">formats</span><span class="o">=</span><span class="s">&quot;i4,f8,f8&quot;</span><span class="p">,</span>
                                                                   <span class="n">names</span><span class="o">=</span><span class="s">&quot;frame,rxncoord,radius&quot;</span><span class="p">)</span>
                         <span class="c"># store the profile</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="p">[</span><span class="n">hole_profile_no</span><span class="p">]</span> <span class="o">=</span> <span class="n">frame_hole_output</span>
@@ -1050,7 +1050,7 @@
                             <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">rundir</span><span class="p">):</span>
                                 <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">rundir</span><span class="p">)</span>
                             <span class="n">frame_hole_txt</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">rundir</span><span class="p">,</span> <span class="s">&quot;radii_</span><span class="si">%s</span><span class="s">_</span><span class="si">%04d</span><span class="s">.dat.gz&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">run</span><span class="p">,</span> <span class="n">hole_profile_no</span><span class="p">))</span>
-                            <span class="n">numpy</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">frame_hole_txt</span><span class="p">,</span> <span class="n">frame_hole_output</span><span class="p">)</span>
+                            <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">frame_hole_txt</span><span class="p">,</span> <span class="n">frame_hole_output</span><span class="p">)</span>
                             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;Finished with frame </span><span class="si">%d</span><span class="s">, saved as </span><span class="si">%r</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">hole_profile_no</span><span class="p">,</span> <span class="n">frame_hole_txt</span><span class="p">)</span>
                         <span class="k">continue</span>
                         <span class="c"># if we get here then we haven&#39;t found anything interesting</span>
@@ -1152,12 +1152,12 @@
 <span class="sd">        * If ``None``: assign frame numbers from trajectory</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
-            <span class="n">q</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">data</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="c"># frame numbers</span>
-            <span class="n">q</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">n_frames</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">n_frames</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">q</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;Order parameter array must be 1D.&quot;</span><span class="p">)</span>
@@ -1236,12 +1236,12 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman, Jonathan Barnoud,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,

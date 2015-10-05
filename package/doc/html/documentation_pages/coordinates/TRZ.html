@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.18. TRZ trajectory I/O — MDAnalysis.coordinates.TRZ &mdash; MDAnalysis 0.11.0 documentation</title>
+    <title>5.18. TRZ trajectory I/O — MDAnalysis.coordinates.TRZ &mdash; MDAnalysis 0.12.0 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.11.0',
+        VERSION:     '0.12.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.11.0 documentation"
+          title="Search within MDAnalysis 0.12.0 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.11.0 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.12.0 documentation" href="../../index.html" />
     <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
     <link rel="next" title="5.19. Base classes — MDAnalysis.coordinates.base" href="base.html" />
     <link rel="prev" title="5.17. XYZ trajectory reader — MDAnalysis.coordinates.XYZ" href="XYZ.html" /> 
@@ -49,7 +49,7 @@
         <li class="right" >
           <a href="XYZ.html" title="5.17. XYZ trajectory reader — MDAnalysis.coordinates.XYZ"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -106,11 +106,7 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
-<dt><em>n_atoms</em></dt>
-<dd><p class="first last">The total number of atoms this Timestep describes</p>
-</dd>
-</dl>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>*n_atoms*</strong> &#8211; The total number of atoms this Timestep describes</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
@@ -210,7 +206,7 @@ the has_* attribute</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Data:</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Data:</th><td class="field-body"><dl class="first last docutils">
 <dt>ts</dt>
 <dd><p class="first last"><a class="reference internal" href="#MDAnalysis.coordinates.TRZ.Timestep" title="MDAnalysis.coordinates.TRZ.Timestep"><code class="xref py py-class docutils literal"><span class="pre">Timestep</span></code></a> object
 containing coordinates of current frame</p>
@@ -218,24 +214,33 @@ containing coordinates of current frame</p>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Methods:</th><td class="field-body"><dl class="first last docutils">
-<dt><code class="docutils literal"><span class="pre">len(trz)</span></code></dt>
-<dd><p class="first last">returns the number of frames</p>
-</dd>
-<dt><code class="docutils literal"><span class="pre">for</span> <span class="pre">ts</span> <span class="pre">in</span> <span class="pre">trz</span></code></dt>
-<dd><p class="first last">iterates through the trajectory</p>
-</dd>
-<dt><code class="docutils literal"><span class="pre">for</span> <span class="pre">ts</span> <span class="pre">in</span> <span class="pre">trz[start:stop:skip]</span></code></dt>
-<dd><p class="first last">iterate through a trajectory using slicing</p>
-</dd>
-<dt><code class="docutils literal"><span class="pre">trz[i]</span></code></dt>
-<dd><p class="first last">random access of a trajectory frame</p>
-</dd>
-</dl>
-</td>
-</tr>
 </tbody>
 </table>
+<dl class="method">
+<dt>
+<code class="descname">``len(trz)``</code></dt>
+<dd><p>returns the number of frames</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">``for ts in trz``</code></dt>
+<dd><p>iterates through the trajectory</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">``for ts in trz[start</code></dt>
+<dd><p>stop:skip]``
+iterate through a trajectory using slicing</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">``trz[i]``</code></dt>
+<dd><p>random access of a trajectory frame</p>
+</dd></dl>
+
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.11.0: </span>Frames now 0-based instead of 1-based
 Extra data (Temperature, Energies, Pressures, etc) now read
@@ -247,17 +252,11 @@ Now passes a weakref of self to ts (ts._reader)</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
-<dt><em>trzfilename</em></dt>
-<dd><p class="first last">name of input file</p>
-</dd>
-<dt><em>n_atoms</em></dt>
-<dd><p class="first last">number of atoms in trajectory, must taken from topology file!</p>
-</dd>
-<dt><em>convert_units</em></dt>
-<dd><p class="first last">converts units to MDAnalysis defaults</p>
-</dd>
-</dl>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>*trzfilename*</strong> &#8211; name of input file</li>
+<li><strong>*n_atoms*</strong> &#8211; number of atoms in trajectory, must taken from topology file!</li>
+<li><strong>*convert_units*</strong> &#8211; converts units to MDAnalysis defaults</li>
+</ul>
 </td>
 </tr>
 </tbody>
@@ -304,27 +303,20 @@ Now passes a weakref of self to ts (ts._reader)</p>
 <dt id="MDAnalysis.coordinates.TRZ.TRZWriter">
 <em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.TRZ.</code><code class="descname">TRZWriter</code><span class="sig-paren">(</span><em>filename</em>, <em>n_atoms</em>, <em>title='TRZ'</em>, <em>convert_units=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRZ.html#TRZWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.TRZWriter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Writes a TRZ format trajectory.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Methods:</th><td class="field-body"><code class="docutils literal"><span class="pre">W</span> <span class="pre">=</span> <span class="pre">TRZWriter(trzfilename,</span> <span class="pre">n_atoms,</span> <span class="pre">title='TRZ')</span></code></td>
-</tr>
-</tbody>
-</table>
+<dl class="method">
+<dt>
+<code class="descname">``W = TRZWriter(trzfilename, n_atoms, title='TRZ')``</code></dt>
+<dd></dd></dl>
+
 <p>Create a TRZWriter</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
-<dt><em>filename</em></dt>
-<dd><p class="first last">name of output file</p>
-</dd>
-<dt><em>n_atoms</em></dt>
-<dd><p class="first last">number of atoms in trajectory</p>
-</dd>
-</dl>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>*filename*</strong> &#8211; name of output file</li>
+<li><strong>*n_atoms*</strong> &#8211; number of atoms in trajectory</li>
+</ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
@@ -357,7 +349,7 @@ the value of <code class="xref py py-data docutils literal"><span class="pre">MD
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Data:</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Data:</th><td class="field-body"><dl class="first last docutils">
 <dt>ts</dt>
 <dd><p class="first last"><a class="reference internal" href="#MDAnalysis.coordinates.TRZ.Timestep" title="MDAnalysis.coordinates.TRZ.Timestep"><code class="xref py py-class docutils literal"><span class="pre">Timestep</span></code></a> object
 containing coordinates of current frame</p>
@@ -365,24 +357,33 @@ containing coordinates of current frame</p>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Methods:</th><td class="field-body"><dl class="first last docutils">
-<dt><code class="docutils literal"><span class="pre">len(trz)</span></code></dt>
-<dd><p class="first last">returns the number of frames</p>
-</dd>
-<dt><code class="docutils literal"><span class="pre">for</span> <span class="pre">ts</span> <span class="pre">in</span> <span class="pre">trz</span></code></dt>
-<dd><p class="first last">iterates through the trajectory</p>
-</dd>
-<dt><code class="docutils literal"><span class="pre">for</span> <span class="pre">ts</span> <span class="pre">in</span> <span class="pre">trz[start:stop:skip]</span></code></dt>
-<dd><p class="first last">iterate through a trajectory using slicing</p>
-</dd>
-<dt><code class="docutils literal"><span class="pre">trz[i]</span></code></dt>
-<dd><p class="first last">random access of a trajectory frame</p>
-</dd>
-</dl>
-</td>
-</tr>
 </tbody>
 </table>
+<dl class="method">
+<dt>
+<code class="descname">``len(trz)``</code></dt>
+<dd><p>returns the number of frames</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">``for ts in trz``</code></dt>
+<dd><p>iterates through the trajectory</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">``for ts in trz[start</code></dt>
+<dd><p>stop:skip]``
+iterate through a trajectory using slicing</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">``trz[i]``</code></dt>
+<dd><p>random access of a trajectory frame</p>
+</dd></dl>
+
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.11.0: </span>Frames now 0-based instead of 1-based
 Extra data (Temperature, Energies, Pressures, etc) now read
@@ -394,17 +395,11 @@ Now passes a weakref of self to ts (ts._reader)</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
-<dt><em>trzfilename</em></dt>
-<dd><p class="first last">name of input file</p>
-</dd>
-<dt><em>n_atoms</em></dt>
-<dd><p class="first last">number of atoms in trajectory, must taken from topology file!</p>
-</dd>
-<dt><em>convert_units</em></dt>
-<dd><p class="first last">converts units to MDAnalysis defaults</p>
-</dd>
-</dl>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>*trzfilename*</strong> &#8211; name of input file</li>
+<li><strong>*n_atoms*</strong> &#8211; number of atoms in trajectory, must taken from topology file!</li>
+<li><strong>*convert_units*</strong> &#8211; converts units to MDAnalysis defaults</li>
+</ul>
 </td>
 </tr>
 </tbody>
@@ -451,27 +446,20 @@ Now passes a weakref of self to ts (ts._reader)</p>
 <dt>
 <em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.TRZ.</code><code class="descname">TRZWriter</code><span class="sig-paren">(</span><em>filename</em>, <em>n_atoms</em>, <em>title='TRZ'</em>, <em>convert_units=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRZ.html#TRZWriter"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>Writes a TRZ format trajectory.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Methods:</th><td class="field-body"><code class="docutils literal"><span class="pre">W</span> <span class="pre">=</span> <span class="pre">TRZWriter(trzfilename,</span> <span class="pre">n_atoms,</span> <span class="pre">title='TRZ')</span></code></td>
-</tr>
-</tbody>
-</table>
+<dl class="method">
+<dt>
+<code class="descname">``W = TRZWriter(trzfilename, n_atoms, title='TRZ')``</code></dt>
+<dd></dd></dl>
+
 <p>Create a TRZWriter</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
-<dt><em>filename</em></dt>
-<dd><p class="first last">name of output file</p>
-</dd>
-<dt><em>n_atoms</em></dt>
-<dd><p class="first last">number of atoms in trajectory</p>
-</dd>
-</dl>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>*filename*</strong> &#8211; name of output file</li>
+<li><strong>*n_atoms*</strong> &#8211; number of atoms in trajectory</li>
+</ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
@@ -505,11 +493,7 @@ the value of <code class="xref py py-data docutils literal"><span class="pre">MD
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
-<dt><em>n_atoms</em></dt>
-<dd><p class="first last">The total number of atoms this Timestep describes</p>
-</dd>
-</dl>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>*n_atoms*</strong> &#8211; The total number of atoms this Timestep describes</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
@@ -570,12 +554,12 @@ the has_* attribute</p>
         <li class="right" >
           <a href="XYZ.html" title="5.17. XYZ trajectory reader — MDAnalysis.coordinates.XYZ"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman, Jonathan Barnoud,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,

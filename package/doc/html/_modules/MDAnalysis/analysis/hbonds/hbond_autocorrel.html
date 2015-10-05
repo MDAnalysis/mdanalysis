@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.analysis.hbonds.hbond_autocorrel &mdash; MDAnalysis 0.11.0 documentation</title>
+    <title>MDAnalysis.analysis.hbonds.hbond_autocorrel &mdash; MDAnalysis 0.12.0 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '0.11.0',
+        VERSION:     '0.12.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.11.0 documentation"
+          title="Search within MDAnalysis 0.12.0 documentation"
           href="../../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.11.0 documentation" href="../../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.12.0 documentation" href="../../../../index.html" />
     <link rel="up" title="Module code" href="../../../index.html" /> 
   </head>
   <body role="document">
@@ -41,7 +41,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>
@@ -213,8 +213,7 @@
 
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">numpy</span>
-<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">exp</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">izip</span>
 
@@ -298,7 +297,7 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s">&quot;bond_type must be either &#39;continuous&#39; or &#39;intermittent&#39;&quot;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">a_crit</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">angle_crit</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">a_crit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">angle_crit</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">d_crit</span> <span class="o">=</span> <span class="n">dist_crit</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pbc</span> <span class="o">=</span> <span class="n">pbc</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sample_time</span> <span class="o">=</span> <span class="n">sample_time</span>
@@ -335,9 +334,9 @@
                           <span class="s">&quot; frames in trajectory ({})&quot;</span>
                           <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nruns</span><span class="p">,</span> <span class="n">n_frames</span><span class="p">),</span> <span class="ne">RuntimeWarning</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_starts</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_frames</span><span class="p">,</span> <span class="n">n_frames</span> <span class="o">/</span> <span class="n">numruns</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_starts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_frames</span><span class="p">,</span> <span class="n">n_frames</span> <span class="o">/</span> <span class="n">numruns</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
         <span class="c"># limit stop points using clip</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_stops</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_starts</span> <span class="o">+</span> <span class="n">req_frames</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">n_frames</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stops</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_starts</span> <span class="o">+</span> <span class="n">req_frames</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">n_frames</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_skip</span> <span class="o">=</span> <span class="n">req_frames</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">nsamples</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_skip</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>  <span class="c"># If nsamples &gt; req_frames</span>
@@ -357,12 +356,12 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s">&#39;results&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">force</span><span class="p">:</span>
             <span class="k">return</span>
 
-        <span class="n">master_results</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_starts</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="n">master_results</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_starts</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
                                                        <span class="bp">self</span><span class="o">.</span><span class="n">_stops</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
                                                        <span class="bp">self</span><span class="o">.</span><span class="n">_skip</span><span class="p">),</span>
-                                          <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+                                          <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
         <span class="c"># for normalising later</span>
-        <span class="n">counter</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">master_results</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="n">counter</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">master_results</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
 
         <span class="n">pm</span> <span class="o">=</span> <span class="n">ProgressMeter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nruns</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                            <span class="n">format</span><span class="o">=</span><span class="s">&quot;Performing run </span><span class="si">%(step)5d</span><span class="s">/</span><span class="si">%(numsteps)d</span><span class="s">&quot;</span>
@@ -371,7 +370,7 @@
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">izip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_starts</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stops</span><span class="p">)):</span>
             <span class="n">pm</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
 
-            <span class="c"># needed else trj seek thinks a numpy.int64 isn&#39;t an int?</span>
+            <span class="c"># needed else trj seek thinks a np.int64 isn&#39;t an int?</span>
             <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_single_run</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">start</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">stop</span><span class="p">))</span>
 
             <span class="n">nresults</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
@@ -384,9 +383,9 @@
 
         <span class="n">master_results</span> <span class="o">/=</span> <span class="n">counter</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s">&#39;time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s">&#39;time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span>
             <span class="nb">len</span><span class="p">(</span><span class="n">master_results</span><span class="p">),</span>
-            <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">dt</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_skip</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">dt</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_skip</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s">&#39;results&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">master_results</span>
 </div>
     <span class="k">def</span> <span class="nf">_single_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">):</span>
@@ -403,22 +402,22 @@
             <span class="n">d</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">exclusions</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">d_crit</span> <span class="o">+</span> <span class="mf">1.0</span>
 
         <span class="c"># find which partners satisfy distance criteria</span>
-        <span class="n">hidx</span><span class="p">,</span> <span class="n">aidx</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">d</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">d_crit</span><span class="p">)</span>
+        <span class="n">hidx</span><span class="p">,</span> <span class="n">aidx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">d</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">d_crit</span><span class="p">)</span>
 
         <span class="n">a</span> <span class="o">=</span> <span class="n">calc_angles</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">d</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">hidx</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">h</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">hidx</span><span class="p">],</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">aidx</span><span class="p">],</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
         <span class="c"># from amongst those, who also satisfiess angle crit</span>
-        <span class="n">idx2</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">a</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">a_crit</span><span class="p">)</span>
+        <span class="n">idx2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">a</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">a_crit</span><span class="p">)</span>
         <span class="n">hidx</span> <span class="o">=</span> <span class="n">hidx</span><span class="p">[</span><span class="n">idx2</span><span class="p">]</span>
         <span class="n">aidx</span> <span class="o">=</span> <span class="n">aidx</span><span class="p">[</span><span class="n">idx2</span><span class="p">]</span>
 
         <span class="n">nbonds</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">hidx</span><span class="p">)</span>  <span class="c"># number of hbonds at t=0</span>
-        <span class="n">results</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_skip</span><span class="p">),</span>
-                                   <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_skip</span><span class="p">),</span>
+                                   <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_cut</span><span class="p">:</span>
             <span class="c"># counter for time criteria</span>
-            <span class="n">count</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nbonds</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+            <span class="n">count</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nbonds</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ts</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_skip</span><span class="p">]):</span>
             <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">dimensions</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pbc</span> <span class="k">else</span> <span class="bp">None</span>
@@ -433,8 +432,8 @@
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bond_type</span> <span class="ow">is</span> <span class="s">&#39;continuous&#39;</span><span class="p">:</span>
                 <span class="c"># Remove losers for continuous definition</span>
-                <span class="n">hidx</span> <span class="o">=</span> <span class="n">hidx</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">winners</span><span class="p">)]</span>
-                <span class="n">aidx</span> <span class="o">=</span> <span class="n">aidx</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">winners</span><span class="p">)]</span>
+                <span class="n">hidx</span> <span class="o">=</span> <span class="n">hidx</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">winners</span><span class="p">)]</span>
+                <span class="n">aidx</span> <span class="o">=</span> <span class="n">aidx</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">winners</span><span class="p">)]</span>
             <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">bond_type</span> <span class="ow">is</span> <span class="s">&#39;intermittent&#39;</span><span class="p">:</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_cut</span><span class="p">:</span>
                     <span class="c"># Add to counter of where losers are</span>
@@ -458,16 +457,16 @@
 
 <div class="viewcode-block" id="HydrogenBondAutoCorrel.save_results"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hbond_autocorrel.html#MDAnalysis.analysis.hbonds.hbond_autocorrel.HydrogenBondAutoCorrel.save_results">[docs]</a>    <span class="k">def</span> <span class="nf">save_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s">&#39;hbond_autocorrel&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Saves the results to a numpy zipped array (.npz, see numpy.savez)</span>
+<span class="sd">        Saves the results to a numpy zipped array (.npz, see np.savez)</span>
 
-<span class="sd">        This can be loaded using numpy.load(filename)</span>
+<span class="sd">        This can be loaded using np.load(filename)</span>
 
 <span class="sd">        :Keywords:</span>
 <span class="sd">          *filename*</span>
 <span class="sd">            The desired filename [hbond_autocorrel]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s">&#39;results&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">numpy</span><span class="o">.</span><span class="n">savez</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s">&#39;time&#39;</span><span class="p">],</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">savez</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s">&#39;time&#39;</span><span class="p">],</span>
                         <span class="n">results</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s">&#39;results&#39;</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
@@ -510,8 +509,8 @@
 
         <span class="c"># Prevents an odd bug with leastsq where it expects</span>
         <span class="c"># double precision data sometimes...</span>
-        <span class="n">time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
-        <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s">&#39;results&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s">&#39;results&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">within_bounds</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
             <span class="sd">&quot;&quot;&quot;Returns True/False if boundary conditions are met or not.</span>
@@ -546,12 +545,12 @@
         <span class="k">def</span> <span class="nf">double</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">A1</span><span class="p">,</span> <span class="n">tau1</span><span class="p">,</span> <span class="n">tau2</span><span class="p">):</span>
             <span class="sd">&quot;&quot;&quot; Sum of two exponential functions &quot;&quot;&quot;</span>
             <span class="n">A2</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">A1</span>
-            <span class="k">return</span> <span class="n">A1</span> <span class="o">*</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span> <span class="o">/</span> <span class="n">tau1</span><span class="p">)</span> <span class="o">+</span> <span class="n">A2</span> <span class="o">*</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span> <span class="o">/</span> <span class="n">tau2</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">A1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span> <span class="o">/</span> <span class="n">tau1</span><span class="p">)</span> <span class="o">+</span> <span class="n">A2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span> <span class="o">/</span> <span class="n">tau2</span><span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">triple</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">A1</span><span class="p">,</span> <span class="n">A2</span><span class="p">,</span> <span class="n">tau1</span><span class="p">,</span> <span class="n">tau2</span><span class="p">,</span> <span class="n">tau3</span><span class="p">):</span>
             <span class="sd">&quot;&quot;&quot; Sum of three exponential functions &quot;&quot;&quot;</span>
             <span class="n">A3</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="n">A1</span> <span class="o">+</span> <span class="n">A2</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">A1</span> <span class="o">*</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span> <span class="o">/</span> <span class="n">tau1</span><span class="p">)</span> <span class="o">+</span> <span class="n">A2</span> <span class="o">*</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span> <span class="o">/</span> <span class="n">tau2</span><span class="p">)</span> <span class="o">+</span> <span class="n">A3</span> <span class="o">*</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span> <span class="o">/</span> <span class="n">tau3</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">A1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span> <span class="o">/</span> <span class="n">tau1</span><span class="p">)</span> <span class="o">+</span> <span class="n">A2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span> <span class="o">/</span> <span class="n">tau2</span><span class="p">)</span> <span class="o">+</span> <span class="n">A3</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span> <span class="o">/</span> <span class="n">tau3</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bond_type</span> <span class="ow">is</span> <span class="s">&#39;continuous&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_my_solve</span> <span class="o">=</span> <span class="n">double</span>
@@ -610,12 +609,12 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman, Jonathan Barnoud,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,

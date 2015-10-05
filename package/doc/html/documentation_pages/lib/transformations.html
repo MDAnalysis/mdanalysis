@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>9.7. Homogeneous Transformation Matrices and Quaternions — MDAnalysis.lib.transformations &mdash; MDAnalysis 0.11.0 documentation</title>
+    <title>9.7. Homogeneous Transformation Matrices and Quaternions — MDAnalysis.lib.transformations &mdash; MDAnalysis 0.12.0 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.11.0',
+        VERSION:     '0.12.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.11.0 documentation"
+          title="Search within MDAnalysis 0.12.0 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.11.0 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.12.0 documentation" href="../../index.html" />
     <link rel="up" title="9. MDAnalysis library" href="../lib_modules.html" />
     <link rel="next" title="9.8. Fast QCP RMSD structure alignment — MDAnalysis.lib.qcprot" href="qcprot.html" />
     <link rel="prev" title="9.6. Parallel algorithms for MDAnalysis" href="parallel.html" /> 
@@ -49,7 +49,7 @@
         <li class="right" >
           <a href="parallel.html" title="9.6. Parallel algorithms for MDAnalysis"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../lib_modules.html" accesskey="U">9. MDAnalysis library</a> &raquo;</li> 
       </ul>
     </div>
@@ -62,10 +62,7 @@
   <ul>
 <li><a class="reference internal" href="#">9.7. Homogeneous Transformation Matrices and Quaternions &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.lib.transformations</span></code></a><ul>
 <li><a class="reference internal" href="#requirements">9.7.1. Requirements</a></li>
-<li><a class="reference internal" href="#notes">9.7.2. Notes</a></li>
-<li><a class="reference internal" href="#references">9.7.3. References</a></li>
-<li><a class="reference internal" href="#examples">9.7.4. Examples</a></li>
-<li><a class="reference internal" href="#functions">9.7.5. Functions</a></li>
+<li><a class="reference internal" href="#functions">9.7.2. Functions</a></li>
 </ul>
 </li>
 </ul>
@@ -132,9 +129,7 @@ Laboratory for Fluorescence Dynamics, University of California, Irvine</td>
 <li><a class="reference external" href="http://www.lfd.uci.edu/~gohlke/">transformations.c 2010.04.10</a>
 (optional implementation of some functions in C)</li>
 </ul>
-</div>
-<div class="section" id="notes">
-<h2>9.7.2. Notes<a class="headerlink" href="#notes" title="Permalink to this headline">¶</a></h2>
+<p class="rubric">Notes</p>
 <p>The API is not stable yet and is expected to change between revisions.</p>
 <p>This Python code is not optimized for speed. Refer to the transformations.c
 module for a faster implementation of some functions.</p>
@@ -167,9 +162,7 @@ by &#8216;z&#8217;, or &#8216;z&#8217; is followed by &#8216;x&#8217;. Otherwise
 <li>frame : rotations are applied to static (0) or rotating (1) frame.</li>
 </ul>
 </div></blockquote>
-</div>
-<div class="section" id="references">
-<h2>9.7.3. References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
+<p class="rubric">References</p>
 <ol class="arabic simple">
 <li>Matrices and transformations. Ronald Goldman.
 In &#8220;Graphics Gems I&#8221;, pp 472-475. Morgan Kaufmann, 1990.</li>
@@ -200,9 +193,7 @@ J Mol Graph Mod, 25(5):595-604</li>
 <li>New method for extracting the quaternion from a rotation matrix.
 Itzhack Y Bar-Itzhack, J Guid Contr Dynam. 2000. 23(6): 1085-1087.</li>
 </ol>
-</div>
-<div class="section" id="examples">
-<h2>9.7.4. Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<p class="rubric">Examples</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span> <span class="o">=</span> <span class="mf">0.123</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.234</span><span class="p">,</span> <span class="mf">2.345</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">origin</span><span class="p">,</span> <span class="n">xaxis</span><span class="p">,</span> <span class="n">yaxis</span><span class="p">,</span> <span class="n">zaxis</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">I</span> <span class="o">=</span> <span class="n">identity_matrix</span><span class="p">()</span>
@@ -248,7 +239,7 @@ Itzhack Y Bar-Itzhack, J Guid Contr Dynam. 2000. 23(6): 1085-1087.</li>
 </div>
 </div>
 <div class="section" id="functions">
-<h2>9.7.5. Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<h2>9.7.2. Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.11.0: </span>Transformations library moved from MDAnalysis.core.transformations to
 MDAnalysis.lib.transformations</p>
@@ -258,12 +249,12 @@ MDAnalysis.lib.transformations</p>
 <em class="property">class </em><code class="descclassname">MDAnalysis.lib.transformations.</code><code class="descname">Arcball</code><span class="sig-paren">(</span><em>initial=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/transformations.html#Arcball"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.transformations.Arcball" title="Permalink to this definition">¶</a></dt>
 <dd><p>Virtual Trackball Control.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">ball</span> <span class="o">=</span> <span class="n">Arcball</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ball</span> <span class="o">=</span> <span class="n">Arcball</span><span class="p">(</span><span class="n">initial</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ball</span> <span class="o">=</span> <span class="n">Arcball</span><span class="p">(</span><span class="n">initial</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ball</span><span class="o">.</span><span class="n">place</span><span class="p">([</span><span class="mi">320</span><span class="p">,</span> <span class="mi">320</span><span class="p">],</span> <span class="mi">320</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ball</span><span class="o">.</span><span class="n">down</span><span class="p">([</span><span class="mi">500</span><span class="p">,</span> <span class="mi">250</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ball</span><span class="o">.</span><span class="n">drag</span><span class="p">([</span><span class="mi">475</span><span class="p">,</span> <span class="mi">275</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">R</span> <span class="o">=</span> <span class="n">ball</span><span class="o">.</span><span class="n">matrix</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">numpy</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">R</span><span class="p">),</span> <span class="mf">3.90583455</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">R</span><span class="p">),</span> <span class="mf">3.90583455</span><span class="p">)</span>
 <span class="go">True</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ball</span> <span class="o">=</span> <span class="n">Arcball</span><span class="p">(</span><span class="n">initial</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ball</span><span class="o">.</span><span class="n">place</span><span class="p">([</span><span class="mi">320</span><span class="p">,</span> <span class="mi">320</span><span class="p">],</span> <span class="mi">320</span><span class="p">)</span>
@@ -272,7 +263,7 @@ MDAnalysis.lib.transformations</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ball</span><span class="o">.</span><span class="n">down</span><span class="p">([</span><span class="mi">400</span><span class="p">,</span> <span class="mi">200</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ball</span><span class="o">.</span><span class="n">drag</span><span class="p">([</span><span class="mi">200</span><span class="p">,</span> <span class="mi">400</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">R</span> <span class="o">=</span> <span class="n">ball</span><span class="o">.</span><span class="n">matrix</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">numpy</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">R</span><span class="p">),</span> <span class="mf">0.2055924</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">R</span><span class="p">),</span> <span class="mf">0.2055924</span><span class="p">)</span>
 <span class="go">True</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ball</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
 </pre></div>
@@ -354,11 +345,11 @@ angles : list of Euler angles about static x, y, z axes
 translate : translation vector along x, y, z axes
 perspective : perspective partition of matrix</dd>
 </dl>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">scale</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">shear</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">angles</span> <span class="o">=</span> <span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">trans</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">persp</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">scale</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">shear</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">angles</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trans</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">persp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">M0</span> <span class="o">=</span> <span class="n">compose_matrix</span><span class="p">(</span><span class="n">scale</span><span class="p">,</span> <span class="n">shear</span><span class="p">,</span> <span class="n">angles</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">persp</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">decompose_matrix</span><span class="p">(</span><span class="n">M0</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">M1</span> <span class="o">=</span> <span class="n">compose_matrix</span><span class="p">(</span><span class="o">*</span><span class="n">result</span><span class="p">)</span>
@@ -372,10 +363,10 @@ perspective : perspective partition of matrix</dd>
 <dt id="MDAnalysis.lib.transformations.concatenate_matrices">
 <code class="descclassname">MDAnalysis.lib.transformations.</code><code class="descname">concatenate_matrices</code><span class="sig-paren">(</span><em>*matrices</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/transformations.html#concatenate_matrices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.transformations.concatenate_matrices" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return concatenation of series of transformation matrices.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">M</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span> <span class="o">-</span> <span class="mf">0.5</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">numpy</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">concatenate_matrices</span><span class="p">(</span><span class="n">M</span><span class="p">))</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span> <span class="o">-</span> <span class="mf">0.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">concatenate_matrices</span><span class="p">(</span><span class="n">M</span><span class="p">))</span>
 <span class="go">True</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">numpy</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">M</span><span class="o">.</span><span class="n">T</span><span class="p">),</span> <span class="n">concatenate_matrices</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">M</span><span class="o">.</span><span class="n">T</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">M</span><span class="o">.</span><span class="n">T</span><span class="p">),</span> <span class="n">concatenate_matrices</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">M</span><span class="o">.</span><span class="n">T</span><span class="p">))</span>
 <span class="go">True</span>
 </pre></div>
 </div>
@@ -399,7 +390,7 @@ perspective : perspective partition of matrix</dd>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">T0</span> <span class="o">=</span> <span class="n">translation_matrix</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">scale</span><span class="p">,</span> <span class="n">shear</span><span class="p">,</span> <span class="n">angles</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">persp</span> <span class="o">=</span> <span class="n">decompose_matrix</span><span class="p">(</span><span class="n">T0</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">T1</span> <span class="o">=</span> <span class="n">translation_matrix</span><span class="p">(</span><span class="n">trans</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">numpy</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">T0</span><span class="p">,</span> <span class="n">T1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">T0</span><span class="p">,</span> <span class="n">T1</span><span class="p">)</span>
 <span class="go">True</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">S</span> <span class="o">=</span> <span class="n">scale_matrix</span><span class="p">(</span><span class="mf">0.123</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">scale</span><span class="p">,</span> <span class="n">shear</span><span class="p">,</span> <span class="n">angles</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">persp</span> <span class="o">=</span> <span class="n">decompose_matrix</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
@@ -408,7 +399,7 @@ perspective : perspective partition of matrix</dd>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">R0</span> <span class="o">=</span> <span class="n">euler_matrix</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">scale</span><span class="p">,</span> <span class="n">shear</span><span class="p">,</span> <span class="n">angles</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">persp</span> <span class="o">=</span> <span class="n">decompose_matrix</span><span class="p">(</span><span class="n">R0</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">R1</span> <span class="o">=</span> <span class="n">euler_matrix</span><span class="p">(</span><span class="o">*</span><span class="n">angles</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">numpy</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">R0</span><span class="p">,</span> <span class="n">R1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">R0</span><span class="p">,</span> <span class="n">R1</span><span class="p">)</span>
 <span class="go">True</span>
 </pre></div>
 </div>
@@ -419,7 +410,7 @@ perspective : perspective partition of matrix</dd>
 <code class="descclassname">MDAnalysis.lib.transformations.</code><code class="descname">euler_from_quaternion</code><span class="sig-paren">(</span><em>quaternion</em>, <em>axes='sxyz'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/transformations.html#euler_from_quaternion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.transformations.euler_from_quaternion" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return Euler angles from quaternion for specified axis sequence.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">angles</span> <span class="o">=</span> <span class="n">euler_from_quaternion</span><span class="p">([</span><span class="mf">0.99810947</span><span class="p">,</span> <span class="mf">0.06146124</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">numpy</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">angles</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.123</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">angles</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.123</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
 <span class="go">True</span>
 </pre></div>
 </div>
@@ -431,10 +422,10 @@ perspective : perspective partition of matrix</dd>
 <dd><p>Return projection plane and perspective point from projection matrix.</p>
 <p>Return values are same as arguments for projection_matrix function:
 point, normal, direction, perspective, and pseudo.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">point</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">normal</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">direct</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">persp</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">point</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">normal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">direct</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">persp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">P0</span> <span class="o">=</span> <span class="n">projection_matrix</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">normal</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">projection_from_matrix</span><span class="p">(</span><span class="n">P0</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">P1</span> <span class="o">=</span> <span class="n">projection_matrix</span><span class="p">(</span><span class="o">*</span><span class="n">result</span><span class="p">)</span>
@@ -483,8 +474,8 @@ point, normal, direction, perspective, and pseudo.</p>
 <dt id="MDAnalysis.lib.transformations.reflection_from_matrix">
 <code class="descclassname">MDAnalysis.lib.transformations.</code><code class="descname">reflection_from_matrix</code><span class="sig-paren">(</span><em>matrix</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/transformations.html#reflection_from_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.transformations.reflection_from_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return mirror plane point and normal vector from reflection matrix.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">v0</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">v1</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">v0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">M0</span> <span class="o">=</span> <span class="n">reflection_matrix</span><span class="p">(</span><span class="n">v0</span><span class="p">,</span> <span class="n">v1</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">point</span><span class="p">,</span> <span class="n">normal</span> <span class="o">=</span> <span class="n">reflection_from_matrix</span><span class="p">(</span><span class="n">M0</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">M1</span> <span class="o">=</span> <span class="n">reflection_matrix</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">normal</span><span class="p">)</span>
@@ -499,8 +490,8 @@ point, normal, direction, perspective, and pseudo.</p>
 <code class="descclassname">MDAnalysis.lib.transformations.</code><code class="descname">rotation_from_matrix</code><span class="sig-paren">(</span><em>matrix</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/transformations.html#rotation_from_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.transformations.rotation_from_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return rotation angle and axis from rotation matrix.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">angle</span> <span class="o">=</span> <span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">direc</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">point</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">direc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">point</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">R0</span> <span class="o">=</span> <span class="n">rotation_matrix</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="n">direc</span><span class="p">,</span> <span class="n">point</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">angle</span><span class="p">,</span> <span class="n">direc</span><span class="p">,</span> <span class="n">point</span> <span class="o">=</span> <span class="n">rotation_from_matrix</span><span class="p">(</span><span class="n">R0</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">R1</span> <span class="o">=</span> <span class="n">rotation_matrix</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="n">direc</span><span class="p">,</span> <span class="n">point</span><span class="p">)</span>
@@ -521,8 +512,8 @@ point, normal, direction, perspective, and pseudo.</p>
 <code class="descclassname">MDAnalysis.lib.transformations.</code><code class="descname">scale_from_matrix</code><span class="sig-paren">(</span><em>matrix</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/transformations.html#scale_from_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.transformations.scale_from_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return scaling factor, origin and direction from scaling matrix.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">factor</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">*</span> <span class="mi">10</span> <span class="o">-</span> <span class="mi">5</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">origin</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">direct</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">origin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">direct</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">S0</span> <span class="o">=</span> <span class="n">scale_matrix</span><span class="p">(</span><span class="n">factor</span><span class="p">,</span> <span class="n">origin</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">factor</span><span class="p">,</span> <span class="n">origin</span><span class="p">,</span> <span class="n">direction</span> <span class="o">=</span> <span class="n">scale_from_matrix</span><span class="p">(</span><span class="n">S0</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">S1</span> <span class="o">=</span> <span class="n">scale_matrix</span><span class="p">(</span><span class="n">factor</span><span class="p">,</span> <span class="n">origin</span><span class="p">,</span> <span class="n">direction</span><span class="p">)</span>
@@ -542,9 +533,9 @@ point, normal, direction, perspective, and pseudo.</p>
 <code class="descclassname">MDAnalysis.lib.transformations.</code><code class="descname">shear_from_matrix</code><span class="sig-paren">(</span><em>matrix</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/transformations.html#shear_from_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.transformations.shear_from_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return shear angle, direction and plane from shear matrix.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">angle</span> <span class="o">=</span> <span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="mi">4</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">direct</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">point</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">normal</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">direct</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">direct</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">point</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">normal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">direct</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">S0</span> <span class="o">=</span> <span class="n">shear_matrix</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="n">direct</span><span class="p">,</span> <span class="n">point</span><span class="p">,</span> <span class="n">normal</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">angle</span><span class="p">,</span> <span class="n">direct</span><span class="p">,</span> <span class="n">point</span><span class="p">,</span> <span class="n">normal</span> <span class="o">=</span> <span class="n">shear_from_matrix</span><span class="p">(</span><span class="n">S0</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">S1</span> <span class="o">=</span> <span class="n">shear_matrix</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="n">direct</span><span class="p">,</span> <span class="n">point</span><span class="p">,</span> <span class="n">normal</span><span class="p">)</span>
@@ -558,9 +549,9 @@ point, normal, direction, perspective, and pseudo.</p>
 <dt id="MDAnalysis.lib.transformations.translation_from_matrix">
 <code class="descclassname">MDAnalysis.lib.transformations.</code><code class="descname">translation_from_matrix</code><span class="sig-paren">(</span><em>matrix</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/transformations.html#translation_from_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.transformations.translation_from_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return translation vector from translation matrix.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">v0</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">v0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">v1</span> <span class="o">=</span> <span class="n">translation_from_matrix</span><span class="p">(</span><span class="n">translation_matrix</span><span class="p">(</span><span class="n">v0</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">numpy</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">v0</span><span class="p">,</span> <span class="n">v1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">v0</span><span class="p">,</span> <span class="n">v1</span><span class="p">)</span>
 <span class="go">True</span>
 </pre></div>
 </div>
@@ -590,12 +581,12 @@ point, normal, direction, perspective, and pseudo.</p>
         <li class="right" >
           <a href="parallel.html" title="9.6. Parallel algorithms for MDAnalysis"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../lib_modules.html" >9. MDAnalysis library</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman, Jonathan Barnoud,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,

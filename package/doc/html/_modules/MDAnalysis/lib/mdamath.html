@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.lib.mdamath &mdash; MDAnalysis 0.11.0 documentation</title>
+    <title>MDAnalysis.lib.mdamath &mdash; MDAnalysis 0.12.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.11.0',
+        VERSION:     '0.12.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.11.0 documentation"
+          title="Search within MDAnalysis 0.12.0 documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.11.0 documentation" href="../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.12.0 documentation" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
   <body role="document">
@@ -41,7 +41,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>
@@ -110,18 +110,27 @@
 
 <span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">NoDataError</span>
 
+
 <span class="c"># geometric functions</span>
 <div class="viewcode-block" id="norm"><a class="viewcode-back" href="../../../documentation_pages/lib/mdamath.html#MDAnalysis.lib.mdamath.norm">[docs]</a><span class="k">def</span> <span class="nf">norm</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
-    <span class="sd">r&quot;&quot;&quot;Returns the length of a vector, ``sqrt(v.v)``.</span>
+    <span class="sd">r&quot;&quot;&quot;Calculate the norm of a vector v.</span>
 
-<span class="sd">    .. math::</span>
+<span class="sd">    .. math:: v = \sqrt{\mathbf{v}\cdot\mathbf{v}}</span>
 
-<span class="sd">       v = \sqrt{\mathbf{v}\cdot\mathbf{v}}</span>
+<span class="sd">    This version is faster then numpy.linalg.norm because it only works for a</span>
+<span class="sd">    single vector and therefore can skip a lot of the additional fuss</span>
+<span class="sd">    linalg.norm does.</span>
 
-<span class="sd">    Faster than :func:`numpy.linalg.norm` because no frills.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    v: array_like</span>
+<span class="sd">        1D array of shape (N) for a vector of length N</span>
 
-<span class="sd">    .. versionchanged:: 0.11.0</span>
-<span class="sd">       Moved into lib.mdamath</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        norm of the vector</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
 
@@ -331,7 +340,7 @@
 <span class="sd">      *atomgroup*</span>
 <span class="sd">        The :class:`MDAnalysis.core.AtomGroup.AtomGroup` to work with.</span>
 <span class="sd">        The positions of this are modified in place.  All these atoms</span>
-<span class="sd">        must belong in the same molecule.</span>
+<span class="sd">        must belong in the same molecule or fragment.</span>
 
 <span class="sd">    :Keywords:</span>
 <span class="sd">      *reference_atom*</span>
@@ -395,6 +404,18 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">bonds</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s">&quot;The atomgroup is required to have bonds&quot;</span><span class="p">)</span>
 
+    <span class="k">if</span> <span class="n">reference_atom</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">ref</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ref</span> <span class="o">=</span> <span class="n">reference_atom</span>
+        <span class="c"># Sanity check</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ref</span> <span class="ow">in</span> <span class="n">atomgroup</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Reference atom not in atomgroup&quot;</span><span class="p">)</span>
+
+    <span class="c"># Check all of atomgroup is accessible from ref</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_is_contiguous</span><span class="p">(</span><span class="n">atomgroup</span><span class="p">,</span> <span class="n">ref</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;atomgroup not contiguous from bonds&quot;</span><span class="p">)</span>
+
     <span class="c"># Not sure if this is actually a requirement...</span>
     <span class="c"># I think application of pbc would need to be changed for triclinic boxes</span>
     <span class="c"># but that&#39;s all?  How does minimum bond length criteria change?</span>
@@ -411,24 +432,13 @@
     <span class="k">if</span> <span class="n">bondlengths</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">*</span> <span class="mf">1.4</span> <span class="o">&gt;</span> <span class="n">box_length</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Box lengths are too small relative to bond lengths&quot;</span><span class="p">)</span>
 
+    <span class="c"># All checks done, let&#39;s continue</span>
     <span class="c"># If bond lengths don&#39;t change after pbc applied, then no bonds</span>
     <span class="c"># straddle the box boundaries</span>
     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">bonds</span><span class="o">.</span><span class="n">bonds</span><span class="p">(),</span> <span class="n">bondlengths</span><span class="p">):</span>
         <span class="k">return</span>
     <span class="c"># Can&#39;t reuse this calculation of bond lengths as we&#39;re changing</span>
     <span class="c"># stuff as we go.</span>
-
-    <span class="k">if</span> <span class="n">reference_atom</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="n">ref</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">ref</span> <span class="o">=</span> <span class="n">reference_atom</span>
-        <span class="c"># Sanity check</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">ref</span> <span class="ow">in</span> <span class="n">atomgroup</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Reference atom not in atomgroup&quot;</span><span class="p">)</span>
-
-    <span class="c"># Check all of atomgroup is accessible from ref</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">_is_contiguous</span><span class="p">(</span><span class="n">atomgroup</span><span class="p">,</span> <span class="n">ref</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;atomgroup not contiguous from bonds&quot;</span><span class="p">)</span>
 
     <span class="n">processed</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>  <span class="c"># Who have I already done?</span>
     <span class="n">ref_points</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">ref</span><span class="p">])</span>  <span class="c"># Who is safe to use as reference point?</span>
@@ -481,12 +491,12 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman, Jonathan Barnoud,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,

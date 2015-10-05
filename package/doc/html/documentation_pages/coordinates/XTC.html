@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.16. Gromacs XTC file IO — MDAnalysis.coordinates.XTC &mdash; MDAnalysis 0.11.0 documentation</title>
+    <title>5.16. Gromacs XTC file IO — MDAnalysis.coordinates.XTC &mdash; MDAnalysis 0.12.0 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.11.0',
+        VERSION:     '0.12.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.11.0 documentation"
+          title="Search within MDAnalysis 0.12.0 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.11.0 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.12.0 documentation" href="../../index.html" />
     <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
     <link rel="next" title="5.17. XYZ trajectory reader — MDAnalysis.coordinates.XYZ" href="XYZ.html" />
     <link rel="prev" title="5.15. Gromacs TRR file IO — MDAnalysis.coordinates.TRR" href="TRR.html" /> 
@@ -49,7 +49,7 @@
         <li class="right" >
           <a href="TRR.html" title="5.15. Gromacs TRR file IO — MDAnalysis.coordinates.TRR"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -142,6 +142,58 @@ information on a per-frame basis.</p>
 <p><span class="versionmodified">Changed in version 0.11.0: </span>Attributes status, lmbda, prec all stored in the <code class="xref py py-attr docutils literal"><span class="pre">data</span></code> dictionary
 Native frame number now stored as <cite>_frame</cite>, was <cite>step</cite></p>
 </div>
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.XTC.Timestep.__delattr__">
+<code class="descname">__delattr__</code><a class="headerlink" href="#MDAnalysis.coordinates.XTC.Timestep.__delattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__delattr__(&#8216;name&#8217;) &lt;==&gt; del x.name</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.XTC.Timestep.__format__">
+<code class="descname">__format__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XTC.Timestep.__format__" title="Permalink to this definition">¶</a></dt>
+<dd><p>default object formatter</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.XTC.Timestep.__getattribute__">
+<code class="descname">__getattribute__</code><a class="headerlink" href="#MDAnalysis.coordinates.XTC.Timestep.__getattribute__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__getattribute__(&#8216;name&#8217;) &lt;==&gt; x.name</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.XTC.Timestep.__hash__">
+<code class="descname">__hash__</code><a class="headerlink" href="#MDAnalysis.coordinates.XTC.Timestep.__hash__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.XTC.Timestep.__reduce__">
+<code class="descname">__reduce__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XTC.Timestep.__reduce__" title="Permalink to this definition">¶</a></dt>
+<dd><p>helper for pickle</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.XTC.Timestep.__reduce_ex__">
+<code class="descname">__reduce_ex__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XTC.Timestep.__reduce_ex__" title="Permalink to this definition">¶</a></dt>
+<dd><p>helper for pickle</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.XTC.Timestep.__setattr__">
+<code class="descname">__setattr__</code><a class="headerlink" href="#MDAnalysis.coordinates.XTC.Timestep.__setattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__setattr__(&#8216;name&#8217;, value) &lt;==&gt; x.name = value</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.XTC.Timestep.__sizeof__">
+<code class="descname">__sizeof__</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; int<a class="headerlink" href="#MDAnalysis.coordinates.XTC.Timestep.__sizeof__" title="Permalink to this definition">¶</a></dt>
+<dd><p>size of object in memory, in bytes</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.XTC.Timestep.__str__">
+<code class="descname">__str__</code><a class="headerlink" href="#MDAnalysis.coordinates.XTC.Timestep.__str__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="method">
 <dt id="MDAnalysis.coordinates.XTC.Timestep.copy">
 <code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Timestep.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.XTC.Timestep.copy" title="Permalink to this definition">¶</a></dt>
@@ -212,16 +264,12 @@ weren&#8217;t originally present.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A numpy.ndarray of shape (n_atoms, 3) of force data for each
-atom</p>
-</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A numpy.ndarray of shape (n_atoms, 3) of force data for each
+atom</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><dl class="first last docutils">
-<dt><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.NoDataError</span></code></dt>
-<dd><p class="first last">When the Timestep does not contain force information</p>
-</dd>
-</dl>
-</td>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-exc docutils literal"><span class="pre">:class</span></code> &#8211;
+<cite>MDAnalysis.NoDataError</cite>
+When the Timestep does not contain force information</td>
 </tr>
 </tbody>
 </table>
@@ -300,16 +348,12 @@ weren&#8217;t originally present.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A numpy.ndarray of shape (n_atoms, 3) of position data for each
-atom</p>
-</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A numpy.ndarray of shape (n_atoms, 3) of position data for each
+atom</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><dl class="first last docutils">
-<dt><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.exceptions.NoDataError</span></code></a></dt>
-<dd><p class="first last">If the Timestep has no position data</p>
-</dd>
-</dl>
-</td>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-exc docutils literal"><span class="pre">:class</span></code> &#8211;
+<cite>MDAnalysis.exceptions.NoDataError</cite>
+If the Timestep has no position data</td>
 </tr>
 </tbody>
 </table>
@@ -382,16 +426,12 @@ weren&#8217;t originally present.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A numpy.ndarray of shape (n_atoms, 3) of velocity data for each
-atom</p>
-</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A numpy.ndarray of shape (n_atoms, 3) of velocity data for each
+atom</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><dl class="first last docutils">
-<dt><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.exceptions.NoDataError</span></code></a></dt>
-<dd><p class="first last">When the Timestep does not contain velocity information</p>
-</dd>
-</dl>
-</td>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-exc docutils literal"><span class="pre">:class</span></code> &#8211;
+<cite>MDAnalysis.exceptions.NoDataError</cite>
+When the Timestep does not contain velocity information</td>
 </tr>
 </tbody>
 </table>
@@ -419,11 +459,7 @@ atom</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
-<dt><em>filename</em></dt>
-<dd><p class="first last">the name of the trr file.</p>
-</dd>
-</dl>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>*filename*</strong> &#8211; the name of the trr file.</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
@@ -472,11 +508,7 @@ available). <em>n_atoms</em> is always set from <code class="xref py py-attr doc
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
-<dt><em>filename</em></dt>
-<dd><p class="first last">filename of the output trajectory</p>
-</dd>
-</dl>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>*filename*</strong> &#8211; filename of the output trajectory</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first docutils">
@@ -502,6 +534,58 @@ for TRR) [1000.0]</p>
 <p><span class="versionmodified">Changed in version 0.11.0: </span>Changed &#8220;delta&#8221; keyword to &#8220;dt&#8221;</p>
 </div>
 </dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.XTC.XTCReader.__delattr__">
+<code class="descname">__delattr__</code><a class="headerlink" href="#MDAnalysis.coordinates.XTC.XTCReader.__delattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__delattr__(&#8216;name&#8217;) &lt;==&gt; del x.name</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.XTC.XTCReader.__format__">
+<code class="descname">__format__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XTC.XTCReader.__format__" title="Permalink to this definition">¶</a></dt>
+<dd><p>default object formatter</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.XTC.XTCReader.__getattribute__">
+<code class="descname">__getattribute__</code><a class="headerlink" href="#MDAnalysis.coordinates.XTC.XTCReader.__getattribute__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__getattribute__(&#8216;name&#8217;) &lt;==&gt; x.name</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.XTC.XTCReader.__hash__">
+<code class="descname">__hash__</code><a class="headerlink" href="#MDAnalysis.coordinates.XTC.XTCReader.__hash__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.XTC.XTCReader.__reduce__">
+<code class="descname">__reduce__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XTC.XTCReader.__reduce__" title="Permalink to this definition">¶</a></dt>
+<dd><p>helper for pickle</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.XTC.XTCReader.__reduce_ex__">
+<code class="descname">__reduce_ex__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XTC.XTCReader.__reduce_ex__" title="Permalink to this definition">¶</a></dt>
+<dd><p>helper for pickle</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.XTC.XTCReader.__setattr__">
+<code class="descname">__setattr__</code><a class="headerlink" href="#MDAnalysis.coordinates.XTC.XTCReader.__setattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__setattr__(&#8216;name&#8217;, value) &lt;==&gt; x.name = value</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.XTC.XTCReader.__sizeof__">
+<code class="descname">__sizeof__</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; int<a class="headerlink" href="#MDAnalysis.coordinates.XTC.XTCReader.__sizeof__" title="Permalink to this definition">¶</a></dt>
+<dd><p>size of object in memory, in bytes</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.XTC.XTCReader.__str__">
+<code class="descname">__str__</code><a class="headerlink" href="#MDAnalysis.coordinates.XTC.XTCReader.__str__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.XTC.XTCReader.close">
@@ -644,12 +728,8 @@ avoid loading out-of-date offsets.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
-<dt><em>filename</em></dt>
-<dd><p class="first last">filename of pickle file saved with <code class="xref py py-meth docutils literal"><span class="pre">save_offsets()</span></code> 
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>*filename*</strong> &#8211; filename of pickle file saved with <code class="xref py py-meth docutils literal"><span class="pre">save_offsets()</span></code>
 with the frame offsets for the loaded trajectory</p>
-</dd>
-</dl>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first docutils">
@@ -745,12 +825,7 @@ to.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
-<dt><em>filename</em></dt>
-<dd><p class="first last">filename in which to save the frame offsets</p>
-</dd>
-</dl>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>*filename*</strong> &#8211; filename in which to save the frame offsets</td>
 </tr>
 </tbody>
 </table>
@@ -781,14 +856,10 @@ time = <code class="xref py py-attr docutils literal"><span class="pre">Timestep
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
-<dt><em>filename</em></dt>
-<dd><p class="first last">name of output file</p>
-</dd>
-<dt><em>n_atoms</em></dt>
-<dd><p class="first last">number of atoms in trajectory file</p>
-</dd>
-</dl>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>*filename*</strong> &#8211; name of output file</li>
+<li><strong>*n_atoms*</strong> &#8211; number of atoms in trajectory file</li>
+</ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
@@ -828,6 +899,58 @@ depending on the properties available in the <a class="reference internal" href=
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.11.0: </span>Keyword &#8220;delta&#8221; renamed to &#8220;dt&#8221;</p>
 </div>
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.XTC.XTCWriter.__delattr__">
+<code class="descname">__delattr__</code><a class="headerlink" href="#MDAnalysis.coordinates.XTC.XTCWriter.__delattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__delattr__(&#8216;name&#8217;) &lt;==&gt; del x.name</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.XTC.XTCWriter.__format__">
+<code class="descname">__format__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XTC.XTCWriter.__format__" title="Permalink to this definition">¶</a></dt>
+<dd><p>default object formatter</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.XTC.XTCWriter.__getattribute__">
+<code class="descname">__getattribute__</code><a class="headerlink" href="#MDAnalysis.coordinates.XTC.XTCWriter.__getattribute__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__getattribute__(&#8216;name&#8217;) &lt;==&gt; x.name</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.XTC.XTCWriter.__hash__">
+<code class="descname">__hash__</code><a class="headerlink" href="#MDAnalysis.coordinates.XTC.XTCWriter.__hash__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.XTC.XTCWriter.__reduce__">
+<code class="descname">__reduce__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XTC.XTCWriter.__reduce__" title="Permalink to this definition">¶</a></dt>
+<dd><p>helper for pickle</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.XTC.XTCWriter.__reduce_ex__">
+<code class="descname">__reduce_ex__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XTC.XTCWriter.__reduce_ex__" title="Permalink to this definition">¶</a></dt>
+<dd><p>helper for pickle</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.XTC.XTCWriter.__setattr__">
+<code class="descname">__setattr__</code><a class="headerlink" href="#MDAnalysis.coordinates.XTC.XTCWriter.__setattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__setattr__(&#8216;name&#8217;, value) &lt;==&gt; x.name = value</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.XTC.XTCWriter.__sizeof__">
+<code class="descname">__sizeof__</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; int<a class="headerlink" href="#MDAnalysis.coordinates.XTC.XTCWriter.__sizeof__" title="Permalink to this definition">¶</a></dt>
+<dd><p>size of object in memory, in bytes</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.XTC.XTCWriter.__str__">
+<code class="descname">__str__</code><a class="headerlink" href="#MDAnalysis.coordinates.XTC.XTCWriter.__str__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="method">
 <dt id="MDAnalysis.coordinates.XTC.XTCWriter.convert_dimensions_to_unitcell">
 <code class="descname">convert_dimensions_to_unitcell</code><span class="sig-paren">(</span><em>ts</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XTC.XTCWriter.convert_dimensions_to_unitcell" title="Permalink to this definition">¶</a></dt>
@@ -943,14 +1066,10 @@ returned.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
-<dt><em>criteria</em></dt>
-<dd><p class="first last">dictionary containing the <em>max</em> and <em>min</em> values in native units</p>
-</dd>
-<dt><em>x</em></dt>
-<dd><p class="first last"><code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of <code class="docutils literal"><span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">z)</span></code> coordinates of atoms selected to be written out.</p>
-</dd>
-</dl>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>*criteria*</strong> &#8211; dictionary containing the <em>max</em> and <em>min</em> values in native units</li>
+<li><strong>*x*</strong> &#8211; <code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of <code class="docutils literal"><span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">z)</span></code> coordinates of atoms selected to be written out.</li>
+</ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">boolean</p>
@@ -1007,12 +1126,12 @@ be written to trajectory file</p>
         <li class="right" >
           <a href="TRR.html" title="5.15. Gromacs TRR file IO — MDAnalysis.coordinates.TRR"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman, Jonathan Barnoud,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>8.1.1. 2D Streamplot &mdash; MDAnalysis 0.11.0 documentation</title>
+    <title>8.1.1. 2D Streamplot &mdash; MDAnalysis 0.12.0 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.11.0',
+        VERSION:     '0.12.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.11.0 documentation"
+          title="Search within MDAnalysis 0.12.0 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.11.0 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.12.0 documentation" href="../../index.html" />
     <link rel="up" title="8. Visualization modules" href="../visualization_modules.html" />
     <link rel="next" title="8.1.2. 3D Streamplot" href="streamlines_3D.html" />
     <link rel="prev" title="8. Visualization modules" href="../visualization_modules.html" /> 
@@ -49,7 +49,7 @@
         <li class="right" >
           <a href="../visualization_modules.html" title="8. Visualization modules"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../visualization_modules.html" accesskey="U">8. Visualization modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -119,51 +119,39 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>coordinate_file_path</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">Absolute path to the coordinate file</p>
-</dd>
-<dt><strong>trajectory_file_path</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">Absolute path to the trajectory file. It will normally be desirable to filter the trajectory with a tool
-such as GROMACS g_filter (see <a class="reference internal" href="#chavent2014" id="id2">[Chavent2014]</a>)</p>
-</dd>
-<dt><strong>grid_spacing</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">The spacing between grid lines (angstroms)</p>
-</dd>
-<dt><strong>MDA_selection</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">MDAnalysis selection string</p>
-</dd>
-<dt><strong>start_frame</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
-<dd><p class="first last">First frame number to parse</p>
-</dd>
-<dt><strong>end_frame</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
-<dd><p class="first last">Last frame number to parse</p>
-</dd>
-<dt><strong>xmin</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Minimum coordinate boundary for x-axis (angstroms)</p>
-</dd>
-<dt><strong>xmax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Maximum coordinate boundary for x-axis (angstroms)</p>
-</dd>
-<dt><strong>ymin</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Minimum coordinate boundary for y-axis (angstroms)</p>
-</dd>
-<dt><strong>ymax</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Maximum coordinate boundary for y-axis (angstroms)</p>
-</dd>
-<dt><strong>maximum_delta_magnitude</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Absolute value of the largest displacement tolerated for the centroid of a group of particles (
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>**coordinate_file_path**</strong> &#8211; str
+Absolute path to the coordinate file</li>
+<li><strong>**trajectory_file_path**</strong> &#8211; str
+Absolute path to the trajectory file. It will normally be desirable to filter the trajectory with a tool
+such as GROMACS g_filter (see <a class="reference internal" href="#chavent2014" id="id2">[Chavent2014]</a>)</li>
+<li><strong>**grid_spacing**</strong> &#8211; float
+The spacing between grid lines (angstroms)</li>
+<li><strong>**MDA_selection**</strong> &#8211; str
+MDAnalysis selection string</li>
+<li><strong>**start_frame**</strong> &#8211; int
+First frame number to parse</li>
+<li><strong>**end_frame**</strong> &#8211; int
+Last frame number to parse</li>
+<li><strong>**xmin**</strong> &#8211; float
+Minimum coordinate boundary for x-axis (angstroms)</li>
+<li><strong>**xmax**</strong> &#8211; float
+Maximum coordinate boundary for x-axis (angstroms)</li>
+<li><strong>**ymin**</strong> &#8211; float
+Minimum coordinate boundary for y-axis (angstroms)</li>
+<li><strong>**ymax**</strong> &#8211; float
+Maximum coordinate boundary for y-axis (angstroms)</li>
+<li><strong>**maximum_delta_magnitude**</strong> &#8211; float
+Absolute value of the largest displacement tolerated for the centroid of a group of particles (
 angstroms). Values above this displacement will not count in the streamplot (treated as excessively large
-displacements crossing the periodic boundary)</p>
-</dd>
-<dt><strong>num_cores</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
-<dd><p class="first last">The number of cores to use. (Default &#8216;maximum&#8217; uses all available cores)</p>
-</dd>
-</dl>
+displacements crossing the periodic boundary)</li>
+<li><strong>**num_cores**</strong> &#8211; int, optional
+The number of cores to use. (Default &#8216;maximum&#8217; uses all available cores)</li>
+</ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>dx_array</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array of floats</span></dt>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><dl class="docutils">
+<dt>array of floats</dt>
 <dd><p class="first last">An array object containing the displacements in the x direction</p>
 </dd>
 <dt><strong>dy_array</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array of floats</span></dt>
@@ -176,21 +164,25 @@ displacements crossing the periodic boundary)</p>
 <dd><p class="first last">standard deviation of <span class="math">\(\sqrt[]{dx^2 + dy^2}\)</span></p>
 </dd>
 </dl>
+</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Examples:</th><td class="field-body"></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><strong>dx_array</strong></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Examples:</th><td class="field-body"></td>
 </tr>
 </tbody>
 </table>
-<div class="highlight-python"><div class="highlight"><pre>import matplotlib, matplotlib.pyplot, numpy
+<div class="highlight-python"><div class="highlight"><pre>import matplotlib, matplotlib.pyplot, np
 import MDAnalysis, MDAnalysis.visualization.streamlines
 u1, v1, average_displacement,standard_deviation_of_displacement =
 MDAnalysis.visualization.streamlines.generate_streamlines(&#39;testing.gro&#39;,&#39;testing_filtered.xtc&#39;,grid_spacing =
 20, MDA_selection = &#39;name PO4&#39;,start_frame=2,end_frame=3,xmin=-8.73000049591,xmax= 1225.96008301,
 ymin= -12.5799999237, ymax=1224.34008789,maximum_delta_magnitude = 1.0,num_cores=16)
-x = numpy.linspace(0,1200,61)
-y = numpy.linspace(0,1200,61)
-speed = numpy.sqrt(u1*u1 + v1*v1)
+x = np.linspace(0,1200,61)
+y = np.linspace(0,1200,61)
+speed = np.sqrt(u1*u1 + v1*v1)
 fig = matplotlib.pyplot.figure()
 ax = fig.add_subplot(111,aspect=&#39;equal&#39;)
 ax.set_xlabel(&#39;x ($\AA$)&#39;)
@@ -235,12 +227,12 @@ fig.savefig(&#39;testing_streamline.png&#39;,dpi=300)
         <li class="right" >
           <a href="../visualization_modules.html" title="8. Visualization modules"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../visualization_modules.html" >8. Visualization modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman, Jonathan Barnoud,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,

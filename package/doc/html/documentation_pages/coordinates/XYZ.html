@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.17. XYZ trajectory reader — MDAnalysis.coordinates.XYZ &mdash; MDAnalysis 0.11.0 documentation</title>
+    <title>5.17. XYZ trajectory reader — MDAnalysis.coordinates.XYZ &mdash; MDAnalysis 0.12.0 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.11.0',
+        VERSION:     '0.12.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.11.0 documentation"
+          title="Search within MDAnalysis 0.12.0 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.11.0 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.12.0 documentation" href="../../index.html" />
     <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
     <link rel="next" title="5.18. TRZ trajectory I/O — MDAnalysis.coordinates.TRZ" href="TRZ.html" />
     <link rel="prev" title="5.16. Gromacs XTC file IO — MDAnalysis.coordinates.XTC" href="XTC.html" /> 
@@ -49,7 +49,7 @@
         <li class="right" >
           <a href="XTC.html" title="5.16. Gromacs XTC file IO — MDAnalysis.coordinates.XTC"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -154,25 +154,28 @@ at the moment</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Data:</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Data:</th><td class="field-body"><dl class="first last docutils">
 <dt><code class="xref py py-attr docutils literal"><span class="pre">ts</span></code></dt>
 <dd><p class="first last">Timestep object containing coordinates of current frame</p>
 </dd>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Methods:</th><td class="field-body"><dl class="first last docutils">
-<dt><code class="docutils literal"><span class="pre">len(xyz)</span></code></dt>
-<dd><p class="first last">return number of frames in xyz</p>
-</dd>
-<dt><code class="docutils literal"><span class="pre">for</span> <span class="pre">ts</span> <span class="pre">in</span> <span class="pre">xyz:</span></code></dt>
-<dd><p class="first last">iterate through trajectory</p>
-</dd>
-</dl>
-</td>
-</tr>
 </tbody>
 </table>
+<dl class="method">
+<dt>
+<code class="descname">``len(xyz)``</code></dt>
+<dd><p>return number of frames in xyz</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">``for ts in xyz</code></dt>
+<dd><p>``
+iterate through trajectory</p>
+</dd></dl>
+
 <p>The XYZ file format follows VMD&#8217;s <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html">xyzplugin</a> and is also described
 under <a class="reference internal" href="#xyz-format"><span>XYZ format</span></a>.</p>
 <div class="versionchanged">
@@ -188,11 +191,7 @@ under <a class="reference internal" href="#xyz-format"><span>XYZ format</span></
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
-<dt><em>filename</em></dt>
-<dd><p class="first last">filename of the output DCD trajectory</p>
-</dd>
-</dl>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>*filename*</strong> &#8211; filename of the output DCD trajectory</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first docutils">
@@ -240,13 +239,9 @@ the VMD implementation for the molfile <a class="reference external" href="http:
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
-<dt><em>filename</em></dt>
-<dd><p class="first last">file name of trajectory file. If it ends with &#8220;gz&#8221; then the file
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>*filename*</strong> &#8211; file name of trajectory file. If it ends with &#8220;gz&#8221; then the file
 will be gzip-compressed; if it ends with &#8220;bz2&#8221; it will be bzip2
 compressed.</p>
-</dd>
-</dl>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
@@ -288,13 +283,8 @@ to the value of the <em>atoms</em> keyword supplied to the
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
-<dt><em>obj</em></dt>
-<dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></code></a> or
-<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><code class="xref py py-class docutils literal"><span class="pre">Universe</span></code></a></p>
-</dd>
-</dl>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>*obj*</strong> &#8211; <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></code></a> or
+<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><code class="xref py py-class docutils literal"><span class="pre">Universe</span></code></a></td>
 </tr>
 </tbody>
 </table>
@@ -332,12 +322,12 @@ to the value of the <em>atoms</em> keyword supplied to the
         <li class="right" >
           <a href="XTC.html" title="5.16. Gromacs XTC file IO — MDAnalysis.coordinates.XTC"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman, Jonathan Barnoud,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>6.6. Base classes for the selection writers &mdash; MDAnalysis 0.11.0 documentation</title>
+    <title>6.6. Base classes for the selection writers &mdash; MDAnalysis 0.12.0 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.11.0',
+        VERSION:     '0.12.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.11.0 documentation"
+          title="Search within MDAnalysis 0.12.0 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.11.0 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.12.0 documentation" href="../../index.html" />
     <link rel="up" title="6. Selection exporters" href="../selections_modules.html" />
     <link rel="next" title="7. Core modules" href="../core_modules.html" />
     <link rel="prev" title="6.5. Jmol selections" href="jmol.html" /> 
@@ -49,7 +49,7 @@
         <li class="right" >
           <a href="jmol.html" title="6.5. Jmol selections"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../selections_modules.html" accesskey="U">6. Selection exporters</a> &raquo;</li> 
       </ul>
     </div>
@@ -118,26 +118,16 @@ of a normal file (using <a class="reference internal" href="../lib/util.html#MDA
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
-<dt><em>filename</em></dt>
-<dd><p class="first last">output file</p>
-</dd>
-<dt><em>mode</em></dt>
-<dd><p class="first last">overwrite (&#8220;w&#8221;) for every write, append (&#8220;a&#8221;) to existing
-file, or overwrite an existing file and then append (&#8220;wa&#8221;) [&#8220;wa&#8221;]</p>
-</dd>
-<dt><em>numterms</em></dt>
-<dd><p class="first last">number of individual index numbers per line for output
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>*filename*</strong> &#8211; output file</li>
+<li><strong>*mode*</strong> &#8211; overwrite (&#8220;w&#8221;) for every write, append (&#8220;a&#8221;) to existing
+file, or overwrite an existing file and then append (&#8220;wa&#8221;) [&#8220;wa&#8221;]</li>
+<li><strong>*numterms*</strong> &#8211; number of individual index numbers per line for output
 formats that write multiple entries in one line. If set
-to 0 or <code class="docutils literal"><span class="pre">False</span></code> then no special formatting is done  [8]</p>
-</dd>
-<dt><em>preamble</em></dt>
-<dd><p class="first last">string that is written as a comment at the top of the file []</p>
-</dd>
-<dt><em>kwargs</em></dt>
-<dd><p class="first last">use as defaults for <a class="reference internal" href="#MDAnalysis.selections.base.SelectionWriter.write" title="MDAnalysis.selections.base.SelectionWriter.write"><code class="xref py py-meth docutils literal"><span class="pre">write()</span></code></a></p>
-</dd>
-</dl>
+to 0 or <code class="docutils literal"><span class="pre">False</span></code> then no special formatting is done  [8]</li>
+<li><strong>*preamble*</strong> &#8211; string that is written as a comment at the top of the file []</li>
+<li><strong>*kwargs*</strong> &#8211; use as defaults for <a class="reference internal" href="#MDAnalysis.selections.base.SelectionWriter.write" title="MDAnalysis.selections.base.SelectionWriter.write"><code class="xref py py-meth docutils literal"><span class="pre">write()</span></code></a></li>
+</ul>
 </td>
 </tr>
 </tbody>
@@ -150,26 +140,16 @@ to 0 or <code class="docutils literal"><span class="pre">False</span></code> the
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
-<dt><em>filename</em></dt>
-<dd><p class="first last">output file</p>
-</dd>
-<dt><em>mode</em></dt>
-<dd><p class="first last">overwrite (&#8220;w&#8221;) for every write, append (&#8220;a&#8221;) to existing
-file, or overwrite an existing file and then append (&#8220;wa&#8221;) [&#8220;wa&#8221;]</p>
-</dd>
-<dt><em>numterms</em></dt>
-<dd><p class="first last">number of individual index numbers per line for output
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>*filename*</strong> &#8211; output file</li>
+<li><strong>*mode*</strong> &#8211; overwrite (&#8220;w&#8221;) for every write, append (&#8220;a&#8221;) to existing
+file, or overwrite an existing file and then append (&#8220;wa&#8221;) [&#8220;wa&#8221;]</li>
+<li><strong>*numterms*</strong> &#8211; number of individual index numbers per line for output
 formats that write multiple entries in one line. If set
-to 0 or <code class="docutils literal"><span class="pre">False</span></code> then no special formatting is done  [8]</p>
-</dd>
-<dt><em>preamble</em></dt>
-<dd><p class="first last">string that is written as a comment at the top of the file []</p>
-</dd>
-<dt><em>kwargs</em></dt>
-<dd><p class="first last">use as defaults for <a class="reference internal" href="#MDAnalysis.selections.base.SelectionWriter.write" title="MDAnalysis.selections.base.SelectionWriter.write"><code class="xref py py-meth docutils literal"><span class="pre">write()</span></code></a></p>
-</dd>
-</dl>
+to 0 or <code class="docutils literal"><span class="pre">False</span></code> then no special formatting is done  [8]</li>
+<li><strong>*preamble*</strong> &#8211; string that is written as a comment at the top of the file []</li>
+<li><strong>*kwargs*</strong> &#8211; use as defaults for <a class="reference internal" href="#MDAnalysis.selections.base.SelectionWriter.write" title="MDAnalysis.selections.base.SelectionWriter.write"><code class="xref py py-meth docutils literal"><span class="pre">write()</span></code></a></li>
+</ul>
 </td>
 </tr>
 </tbody>
@@ -228,24 +208,16 @@ comments into the file.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
-<dt><em>selection</em></dt>
-<dd><p class="first last">a <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.AtomGroup</span></code></a></p>
-</dd>
-<dt><em>number</em></dt>
-<dd><p class="first last">selection will be named &#8220;mdanalysis&lt;number&gt;&#8221;
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>*selection*</strong> &#8211; a <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.AtomGroup</span></code></a></li>
+<li><strong>*number*</strong> &#8211; selection will be named &#8220;mdanalysis&lt;number&gt;&#8221;
 (<code class="docutils literal"><span class="pre">None</span></code> auto increments between writes; useful
-when appending) [<code class="docutils literal"><span class="pre">None</span></code>]</p>
-</dd>
-<dt><em>name</em></dt>
-<dd><p class="first last">selection will be named <em>name</em> (instead of numbered)
-[<code class="docutils literal"><span class="pre">None</span></code>]</p>
-</dd>
-<dt><em>frame</em></dt>
-<dd><p class="first last">write selection of this frame (or the current one if
-<code class="docutils literal"><span class="pre">None</span></code> [<code class="docutils literal"><span class="pre">None</span></code>]</p>
-</dd>
-</dl>
+when appending) [<code class="docutils literal"><span class="pre">None</span></code>]</li>
+<li><strong>*name*</strong> &#8211; selection will be named <em>name</em> (instead of numbered)
+[<code class="docutils literal"><span class="pre">None</span></code>]</li>
+<li><strong>*frame*</strong> &#8211; write selection of this frame (or the current one if
+<code class="docutils literal"><span class="pre">None</span></code> [<code class="docutils literal"><span class="pre">None</span></code>]</li>
+</ul>
 </td>
 </tr>
 </tbody>
@@ -285,12 +257,12 @@ when appending) [<code class="docutils literal"><span class="pre">None</span></c
         <li class="right" >
           <a href="jmol.html" title="6.5. Jmol selections"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../selections_modules.html" >6. Selection exporters</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman, Jonathan Barnoud,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,

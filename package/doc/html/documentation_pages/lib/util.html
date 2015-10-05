@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>9.9. Helper functions — MDAnalysis.lib.util &mdash; MDAnalysis 0.11.0 documentation</title>
+    <title>9.9. Helper functions — MDAnalysis.lib.util &mdash; MDAnalysis 0.12.0 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.11.0',
+        VERSION:     '0.12.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.11.0 documentation"
+          title="Search within MDAnalysis 0.12.0 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.11.0 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.12.0 documentation" href="../../index.html" />
     <link rel="up" title="9. MDAnalysis library" href="../lib_modules.html" />
     <link rel="next" title="10. Version information for MDAnalysis — MDAnalysis.version" href="../version.html" />
     <link rel="prev" title="9.8. Fast QCP RMSD structure alignment — MDAnalysis.lib.qcprot" href="qcprot.html" /> 
@@ -49,7 +49,7 @@
         <li class="right" >
           <a href="qcprot.html" title="9.8. Fast QCP RMSD structure alignment — MDAnalysis.lib.qcprot"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../lib_modules.html" accesskey="U">9. MDAnalysis library</a> &raquo;</li> 
       </ul>
     </div>
@@ -119,22 +119,17 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
-<dt><em>name</em></dt>
-<dd><p class="first last">filename; extension is replaced unless keep=True;
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>*name*</strong> &#8211; filename; extension is replaced unless keep=True;
 <em>name</em> can also be a <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><code class="xref py py-class docutils literal"><span class="pre">NamedStream</span></code></a> (and its
-<code class="xref py py-attr docutils literal"><span class="pre">NamedStream.name</span></code> will be changed accordingly)</p>
-</dd>
-<dt><em>ext</em></dt>
-<dd><p class="first last">extension</p>
-</dd>
-<dt><em>keep</em></dt>
-<dd><ul class="first last simple">
+<code class="xref py py-attr docutils literal"><span class="pre">NamedStream.name</span></code> will be changed accordingly)</li>
+<li><strong>*ext*</strong> &#8211; extension</li>
+<li><strong>*keep*</strong> &#8211; <ul>
 <li><code class="docutils literal"><span class="pre">False</span></code>: replace existing extension with <em>ext</em>;</li>
 <li><code class="docutils literal"><span class="pre">True</span></code>: keep old extension if one existed</li>
 </ul>
-</dd>
-</dl>
+</li>
+</ul>
 </td>
 </tr>
 </tbody>
@@ -164,19 +159,13 @@ default, a stream is reset to its start if possible (via
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
-<dt><em>datasource</em></dt>
-<dd><p class="first last">a file (from <code class="xref py py-class docutils literal"><span class="pre">file</span></code> or <a class="reference external" href="http://docs.python.org/library/functions.html#open" title="(in Python v2.7)"><code class="xref py py-func docutils literal"><span class="pre">open()</span></code></a>) or a stream (e.g. from
-<a class="reference external" href="http://docs.python.org/library/urllib2.html#urllib2.urlopen" title="(in Python v2.7)"><code class="xref py py-func docutils literal"><span class="pre">urllib2.urlopen()</span></code></a> or <code class="xref py py-class docutils literal"><span class="pre">cStringIO.StringIO</span></code>)</p>
-</dd>
-<dt><em>mode</em></dt>
-<dd><p class="first last">&#8216;r&#8217; or &#8216;w&#8217; or &#8216;a&#8217;, more complicated modes (&#8216;r+&#8217;, &#8216;w+&#8217; are not supported because
-only the first letter is looked at) [<code class="docutils literal"><span class="pre">'r'</span></code>]</p>
-</dd>
-<dt><em>reset</em></dt>
-<dd><p class="first last">try to read (<em>mode</em> &#8216;r&#8217;) the stream from the start [<code class="docutils literal"><span class="pre">True</span></code>]</p>
-</dd>
-</dl>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>*datasource*</strong> &#8211; a file (from <code class="xref py py-class docutils literal"><span class="pre">file</span></code> or <a class="reference external" href="http://docs.python.org/library/functions.html#open" title="(in Python v2.7)"><code class="xref py py-func docutils literal"><span class="pre">open()</span></code></a>) or a stream (e.g. from
+<a class="reference external" href="http://docs.python.org/library/urllib2.html#urllib2.urlopen" title="(in Python v2.7)"><code class="xref py py-func docutils literal"><span class="pre">urllib2.urlopen()</span></code></a> or <code class="xref py py-class docutils literal"><span class="pre">cStringIO.StringIO</span></code>)</li>
+<li><strong>*mode*</strong> &#8211; &#8216;r&#8217; or &#8216;w&#8217; or &#8216;a&#8217;, more complicated modes (&#8216;r+&#8217;, &#8216;w+&#8217; are not supported because
+only the first letter is looked at) [<code class="docutils literal"><span class="pre">'r'</span></code>]</li>
+<li><strong>*reset*</strong> &#8211; try to read (<em>mode</em> &#8216;r&#8217;) the stream from the start [<code class="docutils literal"><span class="pre">True</span></code>]</li>
+</ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">tuple <code class="docutils literal"><span class="pre">stream</span></code> which is a file-like object</p>
@@ -227,7 +216,7 @@ and can work around compressed format extensions</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><em>ValueError</em></td>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-exc docutils literal"><span class="pre">*ValueError*</span></code> &#8211;</td>
 </tr>
 </tbody>
 </table>
@@ -337,14 +326,10 @@ the keyword <em>reset</em> is set to <code class="docutils literal"><span class=
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
-<dt><em>stream</em></dt>
-<dd><p class="first last">open stream (e.g. <code class="xref py py-class docutils literal"><span class="pre">file</span></code> or <a class="reference external" href="http://docs.python.org/library/stringio.html#cStringIO.StringIO" title="(in Python v2.7)"><code class="xref py py-func docutils literal"><span class="pre">cStringIO.StringIO()</span></code></a>)</p>
-</dd>
-<dt><em>filename</em></dt>
-<dd><p class="first last">the filename that should be associated with the stream</p>
-</dd>
-</dl>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>*stream*</strong> &#8211; open stream (e.g. <code class="xref py py-class docutils literal"><span class="pre">file</span></code> or <a class="reference external" href="http://docs.python.org/library/stringio.html#cStringIO.StringIO" title="(in Python v2.7)"><code class="xref py py-func docutils literal"><span class="pre">cStringIO.StringIO()</span></code></a>)</li>
+<li><strong>*filename*</strong> &#8211; the filename that should be associated with the stream</li>
+</ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
@@ -365,6 +350,12 @@ the stream</strong> [<code class="docutils literal"><span class="pre">False</spa
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.9.0.</span></p>
 </div>
+<dl class="method">
+<dt id="MDAnalysis.lib.util.NamedStream.__del__">
+<code class="descname">__del__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#NamedStream.__del__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream.__del__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Always closes the stream.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="MDAnalysis.lib.util.NamedStream.close">
 <code class="descname">close</code><span class="sig-paren">(</span><em>force=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#NamedStream.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.NamedStream.close" title="Permalink to this definition">¶</a></dt>
@@ -490,15 +481,9 @@ supplied). The current file position is not changed.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
-<dt><em>obj</em></dt>
-<dd><p class="first last">stream or string</p>
-</dd>
-</dl>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>*obj*</strong> &#8211; stream or string</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><code class="docutils literal"><span class="pre">True</span></code> is <em>obj</em> is a stream, <code class="docutils literal"><span class="pre">False</span></code> otherwise</p>
-</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><code class="docutils literal"><span class="pre">True</span></code> is <em>obj</em> is a stream, <code class="docutils literal"><span class="pre">False</span></code> otherwise</td>
 </tr>
 </tbody>
 </table>
@@ -547,6 +532,12 @@ supplied). The current file position is not changed.</p>
 <p>Strings are stripped of leading and trailing white space.</p>
 <p>Set up the reader with the FORTRAN format string.</p>
 <p>The string <em>fmt</em> should look like &#8216;2I10,2X,A8,2X,A8,3F20.10,2X,A8,2X,A8,F20.10&#8217;.</p>
+<dl class="method">
+<dt id="MDAnalysis.lib.util.FORTRANReader.__len__">
+<code class="descname">__len__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#FORTRANReader.__len__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.FORTRANReader.__len__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns number of entries.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="MDAnalysis.lib.util.FORTRANReader.number_of_matches">
 <code class="descname">number_of_matches</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#FORTRANReader.number_of_matches"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.FORTRANReader.number_of_matches" title="Permalink to this definition">¶</a></dt>
@@ -638,17 +629,14 @@ forms.</p>
 <dt id="MDAnalysis.lib.util.parse_residue">
 <code class="descclassname">MDAnalysis.lib.util.</code><code class="descname">parse_residue</code><span class="sig-paren">(</span><em>residue</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#parse_residue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.parse_residue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process residue string.</p>
-<dl class="docutils">
-<dt>Examples:</dt>
-<dd><ul class="first last simple">
+<p class="rubric">Examples</p>
+<ul class="simple">
 <li>&#8220;LYS300:HZ1&#8221; &#8211;&gt; (&#8220;LYS&#8221;, 300, &#8220;HZ1&#8221;)</li>
 <li>&#8220;K300:HZ1&#8221; &#8211;&gt; (&#8220;LYS&#8221;, 300, &#8220;HZ1&#8221;)</li>
 <li>&#8220;K300&#8221; &#8211;&gt; (&#8220;LYS&#8221;, 300, None)</li>
 <li>&#8220;4GB300:H6O&#8221; &#8211;&gt; (&#8220;4GB&#8221;, 300, &#8220;H6O&#8221;)</li>
 <li>&#8220;4GB300&#8221; &#8211;&gt; (&#8220;4GB&#8221;, 300, None)</li>
 </ul>
-</dd>
-</dl>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -745,12 +733,12 @@ close it.</td></tr>
         <li class="right" >
           <a href="qcprot.html" title="9.8. Fast QCP RMSD structure alignment — MDAnalysis.lib.qcprot"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../lib_modules.html" >9. MDAnalysis library</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman, Jonathan Barnoud,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,

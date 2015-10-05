@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.analysis.align &mdash; MDAnalysis 0.11.0 documentation</title>
+    <title>MDAnalysis.analysis.align &mdash; MDAnalysis 0.12.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.11.0',
+        VERSION:     '0.12.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.11.0 documentation"
+          title="Search within MDAnalysis 0.12.0 documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.11.0 documentation" href="../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.12.0 documentation" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
   <body role="document">
@@ -41,7 +41,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>
@@ -233,7 +233,7 @@
 <span class="kn">import</span> <span class="nn">os.path</span>
 <span class="kn">import</span> <span class="nn">itertools</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 
 <span class="kn">import</span> <span class="nn">MDAnalysis.lib.qcprot</span> <span class="kn">as</span> <span class="nn">qcp</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.exceptions</span> <span class="kn">import</span> <span class="n">SelectionError</span><span class="p">,</span> <span class="n">SelectionWarning</span>
@@ -288,11 +288,11 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">weights</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
         <span class="c"># weights are constructed as relative to the mean</span>
-        <span class="n">weights</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
-    <span class="n">rot</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
-    <span class="n">rmsd</span> <span class="o">=</span> <span class="n">qcp</span><span class="o">.</span><span class="n">CalcRMSDRotationalMatrix</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span> <span class="n">b</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
+    <span class="n">rot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="n">rmsd</span> <span class="o">=</span> <span class="n">qcp</span><span class="o">.</span><span class="n">CalcRMSDRotationalMatrix</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span> <span class="n">b</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
                                         <span class="n">b</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">rot</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">rot</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span> <span class="n">rmsd</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">rot</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span> <span class="n">rmsd</span>
 
 </div>
 <div class="viewcode-block" id="alignto"><a class="viewcode-back" href="../../../documentation_pages/analysis/align.html#MDAnalysis.analysis.align.alignto">[docs]</a><span class="k">def</span> <span class="nf">alignto</span><span class="p">(</span><span class="n">mobile</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s">&quot;all&quot;</span><span class="p">,</span> <span class="n">mass_weighted</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
@@ -398,7 +398,7 @@
                                                  <span class="n">tol_mass</span><span class="o">=</span><span class="n">tol_mass</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="n">strict</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">mass_weighted</span><span class="p">:</span>
-        <span class="n">weights</span> <span class="o">=</span> <span class="n">ref_atoms</span><span class="o">.</span><span class="n">masses</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">ref_atoms</span><span class="o">.</span><span class="n">masses</span><span class="p">)</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="n">ref_atoms</span><span class="o">.</span><span class="n">masses</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">ref_atoms</span><span class="o">.</span><span class="n">masses</span><span class="p">)</span>
         <span class="n">ref_com</span> <span class="o">=</span> <span class="n">ref_atoms</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">()</span>
         <span class="n">mobile_com</span> <span class="o">=</span> <span class="n">mobile_atoms</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">()</span>
     <span class="k">else</span><span class="p">:</span>
@@ -543,8 +543,7 @@
         <span class="n">weight</span> <span class="o">=</span> <span class="bp">None</span>
 
     <span class="c"># reference centre of mass system</span>
-    <span class="c"># (compatibility with pre 1.0 numpy: explicitly cast coords to float32)</span>
-    <span class="n">ref_com</span> <span class="o">=</span> <span class="n">ref_atoms</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">ref_com</span> <span class="o">=</span> <span class="n">ref_atoms</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">()</span>
     <span class="n">ref_coordinates</span> <span class="o">=</span> <span class="n">ref_atoms</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span> <span class="o">-</span> <span class="n">ref_com</span>
 
     <span class="c"># allocate the array for selection atom coords</span>
@@ -552,13 +551,13 @@
 
     <span class="c"># RMSD timeseries</span>
     <span class="n">nframes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">frames</span><span class="p">)</span>
-    <span class="n">rmsd</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nframes</span><span class="p">,))</span>
+    <span class="n">rmsd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nframes</span><span class="p">,))</span>
 
     <span class="c"># R: rotation matrix that aligns r-r_com, x~-x~com</span>
     <span class="c">#    (x~: selected coordinates, x: all coordinates)</span>
     <span class="c"># Final transformed traj coordinates: x&#39; = (x-x~_com)*R + ref_com</span>
-    <span class="n">rot</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>  <span class="c"># allocate space for calculation</span>
-    <span class="n">R</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">rot</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+    <span class="n">rot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>  <span class="c"># allocate space for calculation</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">rot</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
 
     <span class="n">percentage</span> <span class="o">=</span> <span class="n">ProgressMeter</span><span class="p">(</span><span class="n">nframes</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="n">quiet</span><span class="p">,</span>
                                <span class="n">format</span><span class="o">=</span><span class="s">&quot;Fitted frame </span><span class="si">%(step)5d</span><span class="s">/</span><span class="si">%(numsteps)d</span><span class="s">  [</span><span class="si">%(percentage)5.1f%%</span><span class="s">]</span><span class="se">\r</span><span class="s">&quot;</span><span class="p">)</span>
@@ -566,7 +565,7 @@
     <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">ts</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">frames</span><span class="p">):</span>
         <span class="c"># shift coordinates for rotation fitting</span>
         <span class="c"># selection is updated with the time frame</span>
-        <span class="n">x_com</span> <span class="o">=</span> <span class="n">traj_atoms</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="n">x_com</span> <span class="o">=</span> <span class="n">traj_atoms</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
         <span class="n">traj_coordinates</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">traj_atoms</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span> <span class="o">-</span> <span class="n">x_com</span>
 
         <span class="c"># Need to transpose coordinates such that the coordinate array is</span>
@@ -574,8 +573,8 @@
         <span class="c"># (I think we swapped the position of ref and traj in CalcRMSDRotationalMatrix</span>
         <span class="c"># so that R acts **to the left** and can be broadcasted; we&#39;re saving</span>
         <span class="c"># one transpose. [orbeckst])</span>
-        <span class="n">rmsd</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">qcp</span><span class="o">.</span><span class="n">CalcRMSDRotationalMatrix</span><span class="p">(</span><span class="n">ref_coordinates</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
-                                               <span class="n">traj_coordinates</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
+        <span class="n">rmsd</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">qcp</span><span class="o">.</span><span class="n">CalcRMSDRotationalMatrix</span><span class="p">(</span><span class="n">ref_coordinates</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
+                                               <span class="n">traj_coordinates</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
                                                <span class="n">natoms</span><span class="p">,</span> <span class="n">rot</span><span class="p">,</span> <span class="n">weight</span><span class="p">)</span>
         <span class="n">R</span><span class="p">[:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">rot</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 
@@ -590,7 +589,7 @@
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Wrote </span><span class="si">%d</span><span class="s"> RMS-fitted coordinate frames to file </span><span class="si">%r</span><span class="s">&quot;</span><span class="p">,</span>
                 <span class="n">frames</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">rmsdfile</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="n">numpy</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">rmsdfile</span><span class="p">,</span> <span class="n">rmsd</span><span class="p">)</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">rmsdfile</span><span class="p">,</span> <span class="n">rmsd</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Wrote RMSD timeseries  to file </span><span class="si">%r</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">rmsdfile</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">quiet</span><span class="p">:</span>
@@ -713,7 +712,7 @@
     <span class="kn">import</span> <span class="nn">Bio.SeqIO</span>
     <span class="kn">import</span> <span class="nn">Bio.AlignIO</span>
     <span class="kn">import</span> <span class="nn">Bio.Alphabet</span>
-    <span class="kn">import</span> <span class="nn">numpy</span>
+    <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 
     <span class="n">protein_gapped</span> <span class="o">=</span> <span class="n">Bio</span><span class="o">.</span><span class="n">Alphabet</span><span class="o">.</span><span class="n">Gapped</span><span class="p">(</span><span class="n">Bio</span><span class="o">.</span><span class="n">Alphabet</span><span class="o">.</span><span class="n">IUPAC</span><span class="o">.</span><span class="n">protein</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">is_aligned</span><span class="p">:</span>
@@ -758,9 +757,9 @@
             <span class="c"># residues in the alignment</span>
             <span class="n">GAP</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">seq</span><span class="o">.</span><span class="n">alphabet</span><span class="o">.</span><span class="n">gap_char</span>
             <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">seq</span><span class="p">)</span> <span class="o">-</span> <span class="n">a</span><span class="o">.</span><span class="n">seq</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">GAP</span><span class="p">)</span>
-            <span class="n">orig_resids</span><span class="p">[</span><span class="n">iseq</span><span class="p">]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">length</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">orig_resids</span><span class="p">[</span><span class="n">iseq</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">length</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">orig_resids</span><span class="p">[</span><span class="n">iseq</span><span class="p">]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">orig_resids</span><span class="p">[</span><span class="n">iseq</span><span class="p">])</span>
+            <span class="n">orig_resids</span><span class="p">[</span><span class="n">iseq</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">orig_resids</span><span class="p">[</span><span class="n">iseq</span><span class="p">])</span>
     <span class="c"># add offsets to the sequence &lt;--&gt; resid translation table</span>
     <span class="n">seq2resids</span> <span class="o">=</span> <span class="p">[</span><span class="n">resids</span> <span class="o">+</span> <span class="n">offset</span> <span class="k">for</span> <span class="n">resids</span><span class="p">,</span> <span class="n">offset</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">orig_resids</span><span class="p">,</span> <span class="n">offsets</span><span class="p">)]</span>
     <span class="k">del</span> <span class="n">orig_resids</span>
@@ -795,11 +794,11 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c"># could maybe use Bio.PDB.StructureAlignment instead?</span>
         <span class="n">nseq</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">alignment</span><span class="p">)</span>
-        <span class="n">t</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nseq</span><span class="p">,</span> <span class="n">alignment</span><span class="o">.</span><span class="n">get_alignment_length</span><span class="p">()),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nseq</span><span class="p">,</span> <span class="n">alignment</span><span class="o">.</span><span class="n">get_alignment_length</span><span class="p">()),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">iseq</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">alignment</span><span class="p">):</span>
             <span class="n">GAP</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">seq</span><span class="o">.</span><span class="n">alphabet</span><span class="o">.</span><span class="n">gap_char</span>
-            <span class="n">t</span><span class="p">[</span><span class="n">iseq</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">seq2resids</span><span class="p">[</span><span class="n">iseq</span><span class="p">][</span><span class="n">numpy</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
-                <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">seq</span><span class="p">))</span> <span class="o">==</span> <span class="n">GAP</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">t</span><span class="p">[</span><span class="n">iseq</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">seq2resids</span><span class="p">[</span><span class="n">iseq</span><span class="p">][</span><span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">seq</span><span class="p">))</span> <span class="o">==</span> <span class="n">GAP</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
             <span class="c"># -1 because seq2resid is index-1 based (resids start at 1)</span>
 
         <span class="k">def</span> <span class="nf">resid</span><span class="p">(</span><span class="n">nseq</span><span class="p">,</span> <span class="n">ipos</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="p">):</span>
@@ -831,7 +830,7 @@
 
         <span class="n">res_list</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">template</span> <span class="o">%</span> <span class="n">resid</span><span class="p">(</span><span class="n">iseq</span><span class="p">,</span> <span class="n">ipos</span><span class="p">)</span> <span class="k">for</span> <span class="n">iseq</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">nseq</span><span class="p">)])</span>
 
-    <span class="n">sel</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">res_list</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+    <span class="n">sel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">res_list</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
 
     <span class="n">ref_selection</span> <span class="o">=</span> <span class="s">&quot; or &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sel</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     <span class="n">target_selection</span> <span class="o">=</span> <span class="s">&quot; or &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sel</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
@@ -939,14 +938,14 @@
         <span class="c">#                               one_alignment_only=True)</span>
 
         <span class="c"># For now, just remove the residues that don&#39;t have matching numbers</span>
-        <span class="n">rsize1</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">r</span><span class="o">.</span><span class="n">n_atoms</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">ag1</span><span class="o">.</span><span class="n">residues</span><span class="p">])</span>
-        <span class="n">rsize2</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">r</span><span class="o">.</span><span class="n">n_atoms</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">ag2</span><span class="o">.</span><span class="n">residues</span><span class="p">])</span>
-        <span class="n">rsize_mismatches</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">rsize1</span> <span class="o">-</span> <span class="n">rsize2</span><span class="p">)</span>
+        <span class="n">rsize1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">r</span><span class="o">.</span><span class="n">n_atoms</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">ag1</span><span class="o">.</span><span class="n">residues</span><span class="p">])</span>
+        <span class="n">rsize2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">r</span><span class="o">.</span><span class="n">n_atoms</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">ag2</span><span class="o">.</span><span class="n">residues</span><span class="p">])</span>
+        <span class="n">rsize_mismatches</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">rsize1</span> <span class="o">-</span> <span class="n">rsize2</span><span class="p">)</span>
         <span class="n">mismatch_mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">rsize_mismatches</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">numpy</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mismatch_mask</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mismatch_mask</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">strict</span><span class="p">:</span>
                 <span class="c"># diagnostics</span>
-                <span class="n">mismatch_resindex</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">ag1</span><span class="o">.</span><span class="n">n_residues</span><span class="p">)[</span><span class="n">mismatch_mask</span><span class="p">]</span>
+                <span class="n">mismatch_resindex</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">ag1</span><span class="o">.</span><span class="n">n_residues</span><span class="p">)[</span><span class="n">mismatch_mask</span><span class="p">]</span>
                 <span class="k">def</span> <span class="nf">log_mismatch</span><span class="p">(</span><span class="n">number</span><span class="p">,</span> <span class="n">ag</span><span class="p">,</span> <span class="n">rsize</span><span class="p">,</span> <span class="n">mismatch_resindex</span><span class="o">=</span><span class="n">mismatch_resindex</span><span class="p">):</span>
                     <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;Offending residues: group {0}: {1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                             <span class="n">number</span><span class="p">,</span>
@@ -963,21 +962,21 @@
                 <span class="k">raise</span> <span class="n">SelectionError</span><span class="p">(</span><span class="s">&quot;Different number of atoms in some residues. &quot;</span>
                                      <span class="s">&quot;(Use strict=False to attempt using matching atoms only.)&quot;</span><span class="p">)</span>
 
-            <span class="k">def</span> <span class="nf">get_atoms_byres</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">match_mask</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">mismatch_mask</span><span class="p">)):</span>
+            <span class="k">def</span> <span class="nf">get_atoms_byres</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">match_mask</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">mismatch_mask</span><span class="p">)):</span>
                 <span class="c"># not pretty... but need to do things on a per-atom basis in order</span>
                 <span class="c"># to preserve original selection</span>
                 <span class="n">ag</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">atoms</span>
                 <span class="n">good</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">resids</span><span class="p">[</span><span class="n">match_mask</span><span class="p">]</span>
-                <span class="n">resids</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">resid</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">ag</span><span class="p">])</span>  <span class="c"># resid for each atom</span>
-                <span class="n">ix_good</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">resids</span><span class="p">,</span> <span class="n">good</span><span class="p">)</span>   <span class="c"># boolean array for all matching atoms</span>
-                <span class="k">return</span> <span class="n">ag</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ag</span><span class="p">))[</span><span class="n">ix_good</span><span class="p">]]</span>   <span class="c"># workaround for missing boolean indexing</span>
+                <span class="n">resids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">resid</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">ag</span><span class="p">])</span>  <span class="c"># resid for each atom</span>
+                <span class="n">ix_good</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">resids</span><span class="p">,</span> <span class="n">good</span><span class="p">)</span>   <span class="c"># boolean array for all matching atoms</span>
+                <span class="k">return</span> <span class="n">ag</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ag</span><span class="p">))[</span><span class="n">ix_good</span><span class="p">]]</span>   <span class="c"># workaround for missing boolean indexing</span>
             <span class="n">_ag1</span> <span class="o">=</span> <span class="n">get_atoms_byres</span><span class="p">(</span><span class="n">ag1</span><span class="p">)</span>
             <span class="n">_ag2</span> <span class="o">=</span> <span class="n">get_atoms_byres</span><span class="p">(</span><span class="n">ag2</span><span class="p">)</span>
 
             <span class="c"># diagnostics</span>
             <span class="c"># (ugly workaround for missing boolean indexing of AtomGroup)</span>
             <span class="c"># note: ag[arange(len(ag))[boolean]] is ~2x faster than ag[where[boolean]]</span>
-            <span class="n">mismatch_resindex</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">ag1</span><span class="o">.</span><span class="n">n_residues</span><span class="p">)[</span><span class="n">mismatch_mask</span><span class="p">]</span>
+            <span class="n">mismatch_resindex</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">ag1</span><span class="o">.</span><span class="n">n_residues</span><span class="p">)[</span><span class="n">mismatch_mask</span><span class="p">]</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;Removed {0} residues with non-matching numbers of atoms&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="n">mismatch_mask</span><span class="o">.</span><span class="n">sum</span><span class="p">()))</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;Removed residue ids: group 1: {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ag1</span><span class="o">.</span><span class="n">resids</span><span class="p">[</span><span class="n">mismatch_resindex</span><span class="p">]))</span>
@@ -987,13 +986,13 @@
             <span class="n">ag2</span> <span class="o">=</span> <span class="n">_ag2</span>
             <span class="k">del</span> <span class="n">_ag1</span><span class="p">,</span> <span class="n">_ag2</span>
 
-    <span class="n">mass_mismatches</span> <span class="o">=</span> <span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">ag1</span><span class="o">.</span><span class="n">masses</span> <span class="o">-</span> <span class="n">ag2</span><span class="o">.</span><span class="n">masses</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">tol_mass</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">numpy</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mass_mismatches</span><span class="p">):</span>
+    <span class="n">mass_mismatches</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">ag1</span><span class="o">.</span><span class="n">masses</span> <span class="o">-</span> <span class="n">ag2</span><span class="o">.</span><span class="n">masses</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">tol_mass</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mass_mismatches</span><span class="p">):</span>
         <span class="c"># Test 2 failed.</span>
         <span class="c"># diagnostic output:</span>
         <span class="c"># (ugly workaround because boolean indexing is not yet working for atomgroups)</span>
         <span class="k">assert</span> <span class="n">ag1</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">==</span> <span class="n">ag2</span><span class="o">.</span><span class="n">n_atoms</span>
-        <span class="n">mismatch_atomindex</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">ag1</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">)[</span><span class="n">mass_mismatches</span><span class="p">]</span>
+        <span class="n">mismatch_atomindex</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">ag1</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">)[</span><span class="n">mass_mismatches</span><span class="p">]</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;Atoms: reference | trajectory&quot;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">ar</span><span class="p">,</span> <span class="n">at</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">izip</span><span class="p">(</span><span class="n">ag1</span><span class="p">[</span><span class="n">mismatch_atomindex</span><span class="p">],</span> <span class="n">ag2</span><span class="p">[</span><span class="n">mismatch_atomindex</span><span class="p">]):</span>
@@ -1021,12 +1020,12 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman, Jonathan Barnoud,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,

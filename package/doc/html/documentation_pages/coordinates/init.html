@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.1. Trajectory Readers and Writers — MDAnalysis.coordinates &mdash; MDAnalysis 0.11.0 documentation</title>
+    <title>5.1. Trajectory Readers and Writers — MDAnalysis.coordinates &mdash; MDAnalysis 0.12.0 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.11.0',
+        VERSION:     '0.12.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.11.0 documentation"
+          title="Search within MDAnalysis 0.12.0 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.11.0 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.12.0 documentation" href="../../index.html" />
     <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
     <link rel="next" title="5.2. CRD structure files in MDAnalysis — MDAnalysis.coordinates.CRD" href="CRD.html" />
     <link rel="prev" title="5. Coordinates modules" href="../coordinates_modules.html" /> 
@@ -49,7 +49,7 @@
         <li class="right" >
           <a href="../coordinates_modules.html" title="5. Coordinates modules"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -849,13 +849,6 @@ PDB). In theses cases, the kind of writer is selected with the
 </dd></dl>
 
 <dl class="data">
-<dt id="MDAnalysis.coordinates.__init__._topology_coordinates_readers">
-<code class="descclassname">MDAnalysis.coordinates.__init__.</code><code class="descname">_topology_coordinates_readers</code><em class="property"> = {'DMS': &lt;class 'MDAnalysis.coordinates.DMS.DMSReader'&gt;, 'CRD': &lt;class 'MDAnalysis.coordinates.CRD.CRDReader'&gt;, 'GMS': &lt;class 'MDAnalysis.coordinates.GMS.GMSReader'&gt;, 'GRO': &lt;class 'MDAnalysis.coordinates.GRO.GROReader'&gt;, 'DATA': &lt;class 'MDAnalysis.coordinates.LAMMPS.DATAReader'&gt;, 'PDB': &lt;class 'MDAnalysis.coordinates.PDB.PrimitivePDBReader'&gt;, 'HISTORY': &lt;class 'MDAnalysis.coordinates.DLPoly.HistoryReader'&gt;, 'XPDB': &lt;class 'MDAnalysis.coordinates.PDB.ExtendedPDBReader'&gt;, 'MOL2': &lt;class 'MDAnalysis.coordinates.MOL2.MOL2Reader'&gt;, 'PDBQT': &lt;class 'MDAnalysis.coordinates.PDBQT.PDBQTReader'&gt;, 'PQR': &lt;class 'MDAnalysis.coordinates.PQR.PQRReader'&gt;, 'CONFIG': &lt;class 'MDAnalysis.coordinates.DLPoly.ConfigReader'&gt;, 'XYZ': &lt;class 'MDAnalysis.coordinates.XYZ.XYZReader'&gt;}</em><a class="headerlink" href="#MDAnalysis.coordinates.__init__._topology_coordinates_readers" title="Permalink to this definition">¶</a></dt>
-<dd><p>readers of files that contain both topology/atom data and coordinates
-(currently only the keys are used)</p>
-</dd></dl>
-
-<dl class="data">
 <dt id="MDAnalysis.coordinates.__init__._compressed_formats">
 <code class="descclassname">MDAnalysis.coordinates.__init__.</code><code class="descname">_compressed_formats</code><em class="property"> = ['XYZ', 'TRJ', 'MDCRD', 'PQR', 'PDBQT']</em><a class="headerlink" href="#MDAnalysis.coordinates.__init__._compressed_formats" title="Permalink to this definition">¶</a></dt>
 <dd><p>formats of readers that can also handle gzip or bzip2 compressed files</p>
@@ -910,12 +903,12 @@ Signature:</p>
         <li class="right" >
           <a href="../coordinates_modules.html" title="5. Coordinates modules"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman, Jonathan Barnoud,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,

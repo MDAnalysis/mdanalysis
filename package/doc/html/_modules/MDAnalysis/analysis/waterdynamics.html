@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.analysis.waterdynamics &mdash; MDAnalysis 0.11.0 documentation</title>
+    <title>MDAnalysis.analysis.waterdynamics &mdash; MDAnalysis 0.12.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.11.0',
+        VERSION:     '0.12.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.11.0 documentation"
+          title="Search within MDAnalysis 0.12.0 documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.11.0 documentation" href="../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.12.0 documentation" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
   <body role="document">
@@ -41,7 +41,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>
@@ -355,7 +355,7 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">MDAnalysis.analysis.hbonds</span>
-<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">multiprocessing</span>
 <span class="kn">import</span> <span class="nn">itertools</span>
 
@@ -673,12 +673,12 @@
             <span class="n">HHVectorp</span> <span class="o">=</span> <span class="n">H1tp</span><span class="o">.</span><span class="n">position</span> <span class="o">-</span> <span class="n">H2tp</span><span class="o">.</span><span class="n">position</span>
             <span class="n">dipVectorp</span> <span class="o">=</span> <span class="p">((</span><span class="n">H1tp</span><span class="o">.</span><span class="n">position</span> <span class="o">+</span> <span class="n">H2tp</span><span class="o">.</span><span class="n">position</span><span class="p">)</span><span class="o">*</span><span class="mf">0.5</span><span class="p">)</span><span class="o">-</span><span class="n">Otp</span><span class="o">.</span><span class="n">position</span>
 
-            <span class="n">normOHVector0</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">OHVector0</span><span class="p">)</span>
-            <span class="n">normOHVectorp</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">OHVectorp</span><span class="p">)</span>
-            <span class="n">normHHVector0</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">HHVector0</span><span class="p">)</span>
-            <span class="n">normHHVectorp</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">HHVectorp</span><span class="p">)</span>
-            <span class="n">normdipVector0</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">dipVector0</span><span class="p">)</span>
-            <span class="n">normdipVectorp</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">dipVectorp</span><span class="p">)</span>
+            <span class="n">normOHVector0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">OHVector0</span><span class="p">)</span>
+            <span class="n">normOHVectorp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">OHVectorp</span><span class="p">)</span>
+            <span class="n">normHHVector0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">HHVector0</span><span class="p">)</span>
+            <span class="n">normHHVectorp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">HHVectorp</span><span class="p">)</span>
+            <span class="n">normdipVector0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">dipVector0</span><span class="p">)</span>
+            <span class="n">normdipVectorp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">dipVectorp</span><span class="p">)</span>
 
             <span class="n">unitOHVector0</span> <span class="o">=</span> <span class="p">[</span><span class="n">OHVector0</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">normOHVector0</span><span class="p">,</span><span class="n">OHVector0</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="n">normOHVector0</span><span class="p">,</span><span class="n">OHVector0</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">/</span><span class="n">normOHVector0</span><span class="p">]</span>
             <span class="n">unitOHVectorp</span> <span class="o">=</span> <span class="p">[</span><span class="n">OHVectorp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">normOHVectorp</span><span class="p">,</span><span class="n">OHVectorp</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="n">normOHVectorp</span><span class="p">,</span><span class="n">OHVectorp</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">/</span><span class="n">normOHVectorp</span><span class="p">]</span>
@@ -687,9 +687,9 @@
             <span class="n">unitdipVector0</span> <span class="o">=</span> <span class="p">[</span><span class="n">dipVector0</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">normdipVector0</span><span class="p">,</span><span class="n">dipVector0</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="n">normdipVector0</span><span class="p">,</span><span class="n">dipVector0</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">/</span><span class="n">normdipVector0</span><span class="p">]</span>
             <span class="n">unitdipVectorp</span> <span class="o">=</span> <span class="p">[</span><span class="n">dipVectorp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">normdipVectorp</span><span class="p">,</span><span class="n">dipVectorp</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="n">normdipVectorp</span><span class="p">,</span><span class="n">dipVectorp</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">/</span><span class="n">normdipVectorp</span><span class="p">]</span>
 
-            <span class="n">valOH</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lg2</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">unitOHVector0</span><span class="p">,</span><span class="n">unitOHVectorp</span><span class="p">))</span>
-            <span class="n">valHH</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lg2</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">unitHHVector0</span><span class="p">,</span><span class="n">unitHHVectorp</span><span class="p">))</span>
-            <span class="n">valdip</span> <span class="o">+=</span>  <span class="bp">self</span><span class="o">.</span><span class="n">lg2</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">unitdipVector0</span><span class="p">,</span><span class="n">unitdipVectorp</span><span class="p">))</span>
+            <span class="n">valOH</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lg2</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">unitOHVector0</span><span class="p">,</span><span class="n">unitOHVectorp</span><span class="p">))</span>
+            <span class="n">valHH</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lg2</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">unitHHVector0</span><span class="p">,</span><span class="n">unitHHVectorp</span><span class="p">))</span>
+            <span class="n">valdip</span> <span class="o">+=</span>  <span class="bp">self</span><span class="o">.</span><span class="n">lg2</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">unitdipVector0</span><span class="p">,</span><span class="n">unitdipVectorp</span><span class="p">))</span>
             <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="n">valOH</span> <span class="o">=</span> <span class="n">valOH</span><span class="o">/</span><span class="n">n</span>
         <span class="n">valHH</span> <span class="o">=</span> <span class="n">valHH</span><span class="o">/</span><span class="n">n</span>
@@ -786,7 +786,7 @@
 <span class="sd">             Axis to create angle with the vector (HH, OH or dipole) and calculate cosine theta [&#39;z&#39;]. Options: &#39;x&#39;,</span>
 <span class="sd">             &#39;y&#39;, &#39;z&#39;</span>
 
-<span class="sd">    .. _numpy.histogram: http://docs.scipy.org/doc/numpy/reference/generated/numpy.histogram.html</span>
+<span class="sd">    .. _numpy.histogram: http://docs.scipy.org/doc/np/reference/generated/np.histogram.html</span>
 
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -816,9 +816,9 @@
             <span class="n">HHVector0</span> <span class="o">=</span> <span class="n">H1t0</span> <span class="o">-</span> <span class="n">H2t0</span>
             <span class="n">dipVector0</span> <span class="o">=</span> <span class="p">(</span><span class="n">H1t0</span> <span class="o">+</span> <span class="n">H2t0</span><span class="p">)</span><span class="o">*</span><span class="mf">0.5</span> <span class="o">-</span> <span class="n">Ot0</span>
 
-            <span class="n">unitOHVector0</span> <span class="o">=</span> <span class="n">OHVector0</span><span class="o">/</span><span class="n">numpy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">OHVector0</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)[:,</span><span class="bp">None</span><span class="p">]</span>
-            <span class="n">unitHHVector0</span> <span class="o">=</span> <span class="n">HHVector0</span><span class="o">/</span><span class="n">numpy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">HHVector0</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)[:,</span><span class="bp">None</span><span class="p">]</span>
-            <span class="n">unitdipVector0</span> <span class="o">=</span> <span class="n">dipVector0</span><span class="o">/</span><span class="n">numpy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">dipVector0</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)[:,</span><span class="bp">None</span><span class="p">]</span>
+            <span class="n">unitOHVector0</span> <span class="o">=</span> <span class="n">OHVector0</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">OHVector0</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)[:,</span><span class="bp">None</span><span class="p">]</span>
+            <span class="n">unitHHVector0</span> <span class="o">=</span> <span class="n">HHVector0</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">HHVector0</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)[:,</span><span class="bp">None</span><span class="p">]</span>
+            <span class="n">unitdipVector0</span> <span class="o">=</span> <span class="n">dipVector0</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">dipVector0</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)[:,</span><span class="bp">None</span><span class="p">]</span>
 
             <span class="n">j</span><span class="o">=</span><span class="mi">0</span>
             <span class="k">while</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">:</span>
@@ -853,9 +853,9 @@
         <span class="n">lencosThetaHH</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cosThetaHH</span><span class="p">)</span>
         <span class="n">lencosThetadip</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cosThetadip</span><span class="p">)</span>
         <span class="n">histInterval</span> <span class="o">=</span> <span class="n">bins</span>
-        <span class="n">histcosThetaOH</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">cosThetaOH</span><span class="p">,</span><span class="n">histInterval</span><span class="p">,</span> <span class="n">normed</span>  <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
-        <span class="n">histcosThetaHH</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">cosThetaHH</span><span class="p">,</span><span class="n">histInterval</span><span class="p">,</span> <span class="n">normed</span>  <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
-        <span class="n">histcosThetadip</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">cosThetadip</span><span class="p">,</span><span class="n">histInterval</span><span class="p">,</span> <span class="n">normed</span>  <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
+        <span class="n">histcosThetaOH</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">cosThetaOH</span><span class="p">,</span><span class="n">histInterval</span><span class="p">,</span> <span class="n">normed</span>  <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
+        <span class="n">histcosThetaHH</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">cosThetaHH</span><span class="p">,</span><span class="n">histInterval</span><span class="p">,</span> <span class="n">normed</span>  <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
+        <span class="n">histcosThetadip</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">cosThetadip</span><span class="p">,</span><span class="n">histInterval</span><span class="p">,</span> <span class="n">normed</span>  <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="p">(</span><span class="n">histcosThetaOH</span><span class="p">,</span><span class="n">histcosThetaHH</span><span class="p">,</span><span class="n">histcosThetadip</span><span class="p">)</span>
 
@@ -976,7 +976,7 @@
             <span class="c">#position oxygen</span>
             <span class="n">OVector</span> <span class="o">=</span> <span class="n">Ot0</span> <span class="o">-</span> <span class="n">Otp</span>
             <span class="c">#here it is the difference with waterdynamics.WaterOrientationalRelaxation</span>
-            <span class="n">valO</span> <span class="o">+=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">OVector</span><span class="p">,</span> <span class="n">OVector</span><span class="p">)</span>
+            <span class="n">valO</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">OVector</span><span class="p">,</span> <span class="n">OVector</span><span class="p">)</span>
             <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="n">valO</span> <span class="o">=</span> <span class="n">valO</span><span class="o">/</span><span class="n">n</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">valO</span><span class="p">)</span>
@@ -1163,12 +1163,12 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman, Jonathan Barnoud,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,

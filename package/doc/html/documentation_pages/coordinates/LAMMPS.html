@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.9. LAMMPS DCD trajectory I/O — MDAnalysis.coordinates.LAMMPS &mdash; MDAnalysis 0.11.0 documentation</title>
+    <title>5.9. LAMMPS DCD trajectory I/O — MDAnalysis.coordinates.LAMMPS &mdash; MDAnalysis 0.12.0 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.11.0',
+        VERSION:     '0.12.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.11.0 documentation"
+          title="Search within MDAnalysis 0.12.0 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.11.0 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.12.0 documentation" href="../../index.html" />
     <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
     <link rel="next" title="5.10. MOL2 file format — MDAnalysis.coordinates.MOL2" href="MOL2.html" />
     <link rel="prev" title="5.8. INPCRD structure files in MDAnalysis — MDAnalysis.coordinates.INPCRD" href="INPCRD.html" /> 
@@ -49,7 +49,7 @@
         <li class="right" >
           <a href="INPCRD.html" title="5.8. INPCRD structure files in MDAnalysis — MDAnalysis.coordinates.INPCRD"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -158,11 +158,7 @@ available). <em>n_atoms</em> is always set from <code class="xref py py-attr doc
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
-<dt><em>filename</em></dt>
-<dd><p class="first last">filename of the output DCD trajectory</p>
-</dd>
-</dl>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>*filename*</strong> &#8211; filename of the output DCD trajectory</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first docutils">
@@ -205,6 +201,58 @@ according to the CHARMM format. The time between two frames would be
 <p class="last"><a class="reference internal" href="#MDAnalysis.coordinates.LAMMPS.DCDWriter" title="MDAnalysis.coordinates.LAMMPS.DCDWriter"><code class="xref py py-class docutils literal"><span class="pre">DCDWriter</span></code></a> has detailed argument description</p>
 </div>
 </dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.LAMMPS.DCDReader.__delattr__">
+<code class="descname">__delattr__</code><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDReader.__delattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__delattr__(&#8216;name&#8217;) &lt;==&gt; del x.name</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.LAMMPS.DCDReader.__format__">
+<code class="descname">__format__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDReader.__format__" title="Permalink to this definition">¶</a></dt>
+<dd><p>default object formatter</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.LAMMPS.DCDReader.__getattribute__">
+<code class="descname">__getattribute__</code><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDReader.__getattribute__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__getattribute__(&#8216;name&#8217;) &lt;==&gt; x.name</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.LAMMPS.DCDReader.__hash__">
+<code class="descname">__hash__</code><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDReader.__hash__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.LAMMPS.DCDReader.__reduce__">
+<code class="descname">__reduce__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDReader.__reduce__" title="Permalink to this definition">¶</a></dt>
+<dd><p>helper for pickle</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.LAMMPS.DCDReader.__reduce_ex__">
+<code class="descname">__reduce_ex__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDReader.__reduce_ex__" title="Permalink to this definition">¶</a></dt>
+<dd><p>helper for pickle</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.LAMMPS.DCDReader.__setattr__">
+<code class="descname">__setattr__</code><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDReader.__setattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__setattr__(&#8216;name&#8217;, value) &lt;==&gt; x.name = value</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.LAMMPS.DCDReader.__sizeof__">
+<code class="descname">__sizeof__</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; int<a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDReader.__sizeof__" title="Permalink to this definition">¶</a></dt>
+<dd><p>size of object in memory, in bytes</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.LAMMPS.DCDReader.__str__">
+<code class="descname">__str__</code><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDReader.__str__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.LAMMPS.DCDReader.convert_forces_from_native">
@@ -312,14 +360,10 @@ returned.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
-<dt><em>timeseries</em></dt>
-<dd><p class="first last"><a class="reference internal" href="../core/Timeseries.html#MDAnalysis.core.Timeseries.TimeseriesCollection" title="MDAnalysis.core.Timeseries.TimeseriesCollection"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.Timeseries.TimeseriesCollection</span></code></a></p>
-</dd>
-<dt><em>start, stop, skip</em></dt>
-<dd><p class="first last">subset of trajectory to use, with start and stop being inclusive</p>
-</dd>
-</dl>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>*timeseries*</strong> &#8211; <a class="reference internal" href="../core/Timeseries.html#MDAnalysis.core.Timeseries.TimeseriesCollection" title="MDAnalysis.core.Timeseries.TimeseriesCollection"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.Timeseries.TimeseriesCollection</span></code></a></li>
+<li><strong>stop, skip*</strong> (<em>*start,</em>) &#8211; subset of trajectory to use, with start and stop being inclusive</li>
+</ul>
 </td>
 </tr>
 </tbody>
@@ -361,21 +405,15 @@ time = <code class="xref py py-attr docutils literal"><span class="pre">Timestep
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
-<dt><em>asel</em></dt>
-<dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></code></a> object</p>
-</dd>
-<dt><em>start, stop, skip</em></dt>
-<dd><p class="first last">range of trajectory to access, start and stop are inclusive</p>
-</dd>
-<dt><em>format</em></dt>
-<dd><p class="first last">the order/shape of the return data array, corresponding
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>*asel*</strong> &#8211; <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></code></a> object</li>
+<li><strong>stop, skip*</strong> (<em>*start,</em>) &#8211; range of trajectory to access, start and stop are inclusive</li>
+<li><strong>*format*</strong> &#8211; the order/shape of the return data array, corresponding
 to (a)tom, (f)rame, (c)oordinates all six combinations
 of &#8216;a&#8217;, &#8216;f&#8217;, &#8216;c&#8217; are allowed ie &#8220;fac&#8221; - return array
 where the shape is (frame, number of atoms,
-coordinates)</p>
-</dd>
-</dl>
+coordinates)</li>
+</ul>
 </td>
 </tr>
 </tbody>
@@ -398,6 +436,58 @@ coordinates)</p>
 arguments <em>timeunit</em> and <em>lengthunit</em>. The defaults are &#8220;ps&#8221; and
 &#8220;Angstrom&#8221;. See <a class="reference internal" href="../units.html#module-MDAnalysis.units" title="MDAnalysis.units"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.units</span></code></a> for other recognized
 values.</p>
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.LAMMPS.DCDWriter.__delattr__">
+<code class="descname">__delattr__</code><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDWriter.__delattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__delattr__(&#8216;name&#8217;) &lt;==&gt; del x.name</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.LAMMPS.DCDWriter.__format__">
+<code class="descname">__format__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDWriter.__format__" title="Permalink to this definition">¶</a></dt>
+<dd><p>default object formatter</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.LAMMPS.DCDWriter.__getattribute__">
+<code class="descname">__getattribute__</code><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDWriter.__getattribute__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__getattribute__(&#8216;name&#8217;) &lt;==&gt; x.name</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.LAMMPS.DCDWriter.__hash__">
+<code class="descname">__hash__</code><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDWriter.__hash__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.LAMMPS.DCDWriter.__reduce__">
+<code class="descname">__reduce__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDWriter.__reduce__" title="Permalink to this definition">¶</a></dt>
+<dd><p>helper for pickle</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.LAMMPS.DCDWriter.__reduce_ex__">
+<code class="descname">__reduce_ex__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDWriter.__reduce_ex__" title="Permalink to this definition">¶</a></dt>
+<dd><p>helper for pickle</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.LAMMPS.DCDWriter.__setattr__">
+<code class="descname">__setattr__</code><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDWriter.__setattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__setattr__(&#8216;name&#8217;, value) &lt;==&gt; x.name = value</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.LAMMPS.DCDWriter.__sizeof__">
+<code class="descname">__sizeof__</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; int<a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDWriter.__sizeof__" title="Permalink to this definition">¶</a></dt>
+<dd><p>size of object in memory, in bytes</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.LAMMPS.DCDWriter.__str__">
+<code class="descname">__str__</code><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDWriter.__str__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="method">
 <dt id="MDAnalysis.coordinates.LAMMPS.DCDWriter.close">
 <code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/DCD.html#DCDWriter.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDWriter.close" title="Permalink to this definition">¶</a></dt>
@@ -523,14 +613,10 @@ returned.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
-<dt><em>criteria</em></dt>
-<dd><p class="first last">dictionary containing the <em>max</em> and <em>min</em> values in native units</p>
-</dd>
-<dt><em>x</em></dt>
-<dd><p class="first last"><code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of <code class="docutils literal"><span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">z)</span></code> coordinates of atoms selected to be written out.</p>
-</dd>
-</dl>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>*criteria*</strong> &#8211; dictionary containing the <em>max</em> and <em>min</em> values in native units</li>
+<li><strong>*x*</strong> &#8211; <code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of <code class="docutils literal"><span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">z)</span></code> coordinates of atoms selected to be written out.</li>
+</ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">boolean</p>
@@ -594,6 +680,58 @@ available). <em>n_atoms</em> is always set from <code class="xref py py-attr doc
 <code class="descname">Writer</code><span class="sig-paren">(</span><em>filename</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DATAReader.Writer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a trajectory writer with the same properties as this trajectory.</p>
 </dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.LAMMPS.DATAReader.__delattr__">
+<code class="descname">__delattr__</code><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DATAReader.__delattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__delattr__(&#8216;name&#8217;) &lt;==&gt; del x.name</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.LAMMPS.DATAReader.__format__">
+<code class="descname">__format__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DATAReader.__format__" title="Permalink to this definition">¶</a></dt>
+<dd><p>default object formatter</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.LAMMPS.DATAReader.__getattribute__">
+<code class="descname">__getattribute__</code><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DATAReader.__getattribute__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__getattribute__(&#8216;name&#8217;) &lt;==&gt; x.name</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.LAMMPS.DATAReader.__hash__">
+<code class="descname">__hash__</code><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DATAReader.__hash__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.LAMMPS.DATAReader.__reduce__">
+<code class="descname">__reduce__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DATAReader.__reduce__" title="Permalink to this definition">¶</a></dt>
+<dd><p>helper for pickle</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.LAMMPS.DATAReader.__reduce_ex__">
+<code class="descname">__reduce_ex__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DATAReader.__reduce_ex__" title="Permalink to this definition">¶</a></dt>
+<dd><p>helper for pickle</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.LAMMPS.DATAReader.__setattr__">
+<code class="descname">__setattr__</code><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DATAReader.__setattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__setattr__(&#8216;name&#8217;, value) &lt;==&gt; x.name = value</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.LAMMPS.DATAReader.__sizeof__">
+<code class="descname">__sizeof__</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; int<a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DATAReader.__sizeof__" title="Permalink to this definition">¶</a></dt>
+<dd><p>size of object in memory, in bytes</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.LAMMPS.DATAReader.__str__">
+<code class="descname">__str__</code><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DATAReader.__str__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.LAMMPS.DATAReader.convert_forces_from_native">
@@ -746,12 +884,12 @@ time = <code class="xref py py-attr docutils literal"><span class="pre">Timestep
         <li class="right" >
           <a href="INPCRD.html" title="5.8. INPCRD structure files in MDAnalysis — MDAnalysis.coordinates.INPCRD"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman, Jonathan Barnoud,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,

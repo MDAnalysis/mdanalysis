@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.coordinates.XYZ &mdash; MDAnalysis 0.11.0 documentation</title>
+    <title>MDAnalysis.coordinates.XYZ &mdash; MDAnalysis 0.12.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.11.0',
+        VERSION:     '0.12.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.11.0 documentation"
+          title="Search within MDAnalysis 0.12.0 documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.11.0 documentation" href="../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.12.0 documentation" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
   <body role="document">
@@ -41,7 +41,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>
@@ -149,11 +149,12 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">itertools</span>
 
-<span class="kn">import</span> <span class="nn">MDAnalysis</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">base</span>
 <span class="kn">from</span> <span class="nn">..core</span> <span class="kn">import</span> <span class="n">flags</span>
 <span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">util</span>
+<span class="kn">from</span> <span class="nn">..lib.util</span> <span class="kn">import</span> <span class="n">cached</span>
 <span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">NoDataError</span>
+<span class="kn">from</span> <span class="nn">..version</span> <span class="kn">import</span> <span class="n">__version__</span>
 
 
 <div class="viewcode-block" id="XYZWriter"><a class="viewcode-back" href="../../../documentation_pages/coordinates/XYZ.html#MDAnalysis.coordinates.XYZ.XYZWriter">[docs]</a><span class="k">class</span> <span class="nc">XYZWriter</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">Writer</span><span class="p">):</span>
@@ -202,7 +203,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span> <span class="o">=</span> <span class="n">convert_units</span> <span class="k">if</span> <span class="n">convert_units</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="k">else</span> <span class="n">flags</span><span class="p">[</span><span class="s">&#39;convert_lengths&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">atomnames</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_atomnames</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;atoms&#39;</span><span class="p">,</span> <span class="s">&quot;X&quot;</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">remark</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;remark&#39;</span><span class="p">,</span>
-                                 <span class="s">&quot;Written by {0} (release {1})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">__version__</span><span class="p">))</span>
+                                 <span class="s">&quot;Written by {0} (release {1})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="n">__version__</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">xyz</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">anyopen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span>  <span class="c"># can also be gz, bz2</span>
 
@@ -324,7 +325,6 @@
     <span class="c"># exact agreement (measured to three decimal places). bzipped and</span>
     <span class="c"># gzipped versions of the XYZ file were also tested</span>
 
-    <span class="c"># this will be overidden when an instance is created and the file extension checked</span>
     <span class="n">format</span> <span class="o">=</span> <span class="s">&quot;XYZ&quot;</span>
     <span class="c"># these are assumed!</span>
     <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;time&#39;</span><span class="p">:</span> <span class="s">&#39;ps&#39;</span><span class="p">,</span> <span class="s">&#39;length&#39;</span><span class="p">:</span> <span class="s">&#39;Angstrom&#39;</span><span class="p">}</span>
@@ -333,99 +333,85 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">XYZReader</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-        <span class="c"># the filename has been parsed to be either be foo.xyz or foo.xyz.bz2 by coordinates::core.py</span>
-        <span class="c"># so the last file extension will tell us if it is bzipped or not</span>
+        <span class="c"># the filename has been parsed to be either be foo.xyz or foo.xyz.bz2 by</span>
+        <span class="c"># coordinates::core.py so the last file extension will tell us if it is</span>
+        <span class="c"># bzipped or not</span>
         <span class="n">root</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">xyzfile</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">anyopen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">compression</span> <span class="o">=</span> <span class="n">ext</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="k">if</span> <span class="n">ext</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">!=</span> <span class="s">&quot;xyz&quot;</span> <span class="k">else</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
 
-        <span class="c"># note that, like for xtc and trr files, _n_atoms and _n_frames are used quasi-private variables</span>
-        <span class="c"># to prevent the properties being recalculated</span>
-        <span class="c"># this is because there is no indexing so the way it measures the number of frames is to read the whole file!</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_n_atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_xyz_natoms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_n_frames</span> <span class="o">=</span> <span class="bp">None</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Timestep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_atoms</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_ts_kwargs</span><span class="p">)</span>
-
-        <span class="c">#        Haven&#39;t quite figured out where to start with all the self._reopen() etc.</span>
-        <span class="c">#        (Also cannot just use seek() or reset() because that would break with urllib2.urlopen() streams)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Timestep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_ts_kwargs</span><span class="p">)</span>
+        <span class="c"># Haven&#39;t quite figured out where to start with all the self._reopen()</span>
+        <span class="c"># etc.</span>
+        <span class="c"># (Also cannot just use seek() or reset() because that would break</span>
+        <span class="c"># with urllib2.urlopen() streams)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_timestep</span><span class="p">()</span>
 
     <span class="nd">@property</span>
+    <span class="nd">@cached</span><span class="p">(</span><span class="s">&#39;n_atoms&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">n_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;number of atoms in a frame&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_atoms</span>
-
-    <span class="k">def</span> <span class="nf">_read_xyz_natoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
-        <span class="c"># this assumes that this is only called once at startup and that the filestream is already open</span>
-        <span class="c"># (FRAGILE)</span>
         <span class="k">with</span> <span class="n">util</span><span class="o">.</span><span class="n">anyopen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">n</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
         <span class="c"># need to check type of n</span>
         <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
 
     <span class="nd">@property</span>
+    <span class="nd">@cached</span><span class="p">(</span><span class="s">&#39;n_frames&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">n_frames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_frames</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>  <span class="c"># return cached value</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_frames</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_n_frames</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_xyz_n_frames</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_xyz_n_frames</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
             <span class="k">return</span> <span class="mi">0</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_frames</span>
 
-    <span class="k">def</span> <span class="nf">_read_xyz_n_frames</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
-        <span class="c"># the number of lines in the XYZ file will be 2 greater than the number of atoms</span>
+    <span class="k">def</span> <span class="nf">_read_xyz_n_frames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c"># the number of lines in the XYZ file will be 2 greater than the</span>
+        <span class="c"># number of atoms</span>
         <span class="n">linesPerFrame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">+</span> <span class="mi">2</span>
         <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="c"># step through the file (assuming xyzfile has an iterator)</span>
+        <span class="n">offsets</span> <span class="o">=</span> <span class="p">[]</span>
+
         <span class="k">with</span> <span class="n">util</span><span class="o">.</span><span class="n">anyopen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
-                <span class="n">counter</span> <span class="o">=</span> <span class="n">counter</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="k">while</span> <span class="n">line</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">counter</span> <span class="o">%</span> <span class="n">linesPerFrame</span><span class="p">:</span>
+                    <span class="n">offsets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">tell</span><span class="p">())</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+                <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
 
         <span class="c"># need to check this is an integer!</span>
         <span class="n">n_frames</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">counter</span> <span class="o">/</span> <span class="n">linesPerFrame</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_offsets</span> <span class="o">=</span> <span class="n">offsets</span>
         <span class="k">return</span> <span class="n">n_frames</span>
+
+    <span class="k">def</span> <span class="nf">_read_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xyzfile</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_offsets</span><span class="p">[</span><span class="n">frame</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">frame</span> <span class="o">-</span> <span class="mi">1</span>  <span class="c"># gets +1&#39;d in next</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_timestep</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_read_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="c"># check that the timestep object exists</span>
         <span class="k">if</span> <span class="n">ts</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span>
-        <span class="c"># check that the xyzfile object exists; if not reopen the trajectory</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">xyzfile</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">open_trajectory</span><span class="p">()</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">z</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="c"># we assume that there are only two header lines per frame</span>
-        <span class="n">counter</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span>
-        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">xyzfile</span><span class="p">:</span>
-            <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="k">if</span> <span class="n">counter</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="c"># assume the XYZ file is space delimited rather than being fixed format</span>
-                <span class="c"># (this could lead to problems where there is no gap e.g 9.768-23.4567)</span>
-                <span class="n">words</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-                <span class="n">x</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">words</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
-                <span class="n">y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">words</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
-                <span class="n">z</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">words</span><span class="p">[</span><span class="mi">3</span><span class="p">]))</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xyzfile</span>
 
-            <span class="c"># stop when the cursor has reached the end of that block</span>
-            <span class="k">if</span> <span class="n">counter</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">:</span>
-                <span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">6</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-                <span class="n">ts</span><span class="o">.</span><span class="n">_x</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">x</span>  <span class="c"># more efficient to do it this way to avoid re-creating the numpy arrays</span>
-                <span class="n">ts</span><span class="o">.</span><span class="n">_y</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">y</span>
-                <span class="n">ts</span><span class="o">.</span><span class="n">_z</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">z</span>
-                <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="k">return</span> <span class="n">ts</span>
-
-        <span class="k">raise</span> <span class="ne">EOFError</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c"># we assume that there are only two header lines per frame</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">:</span><span class="mi">4</span><span class="p">])</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">return</span> <span class="n">ts</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">IndexError</span><span class="p">)</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">EOFError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
 
 <div class="viewcode-block" id="XYZReader.rewind"><a class="viewcode-back" href="../../../documentation_pages/coordinates/XYZ.html#MDAnalysis.coordinates.XYZ.XYZReader.rewind">[docs]</a>    <span class="k">def</span> <span class="nf">rewind</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;reposition on first frame&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reopen</span><span class="p">()</span>
-        <span class="c"># the next method is inherited from the Reader Class and calls _read_next_timestep</span>
+        <span class="c"># the next method calls _read_next_timestep</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
 </div>
     <span class="k">def</span> <span class="nf">_reopen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -434,7 +420,8 @@
 
     <span class="k">def</span> <span class="nf">open_trajectory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">xyzfile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="n">errno</span><span class="o">.</span><span class="n">EALREADY</span><span class="p">,</span> <span class="s">&#39;XYZ file already opened&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span>
+                <span class="n">errno</span><span class="o">.</span><span class="n">EALREADY</span><span class="p">,</span> <span class="s">&#39;XYZ file already opened&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">xyzfile</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">anyopen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">)</span>
 
@@ -482,12 +469,12 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman, Jonathan Barnoud,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.analysis.gnm &mdash; MDAnalysis 0.11.0 documentation</title>
+    <title>MDAnalysis.analysis.gnm &mdash; MDAnalysis 0.12.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.11.0',
+        VERSION:     '0.12.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.11.0 documentation"
+          title="Search within MDAnalysis 0.12.0 documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.11.0 documentation" href="../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.12.0 documentation" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
   <body role="document">
@@ -41,7 +41,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>
@@ -150,7 +150,7 @@
 
 <span class="c"># import copy #unused</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">linalg</span>
 
 <span class="kn">import</span> <span class="nn">os</span>
@@ -283,10 +283,10 @@
         <span class="c">#add the com from each bonus group to the ca_positions list</span>
         <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">Bonus_groups</span><span class="p">:</span>
             <span class="c">#bonus = self.u.select_atoms(item)</span>
-            <span class="n">positions</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">positions</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">()))</span>
+            <span class="n">positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">positions</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">()))</span>
             <span class="n">natoms</span> <span class="o">+=</span> <span class="mi">1</span>
 
-        <span class="n">matrix</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">natoms</span><span class="p">,</span> <span class="n">natoms</span><span class="p">),</span> <span class="s">&quot;float&quot;</span><span class="p">)</span>
+        <span class="n">matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">natoms</span><span class="p">,</span> <span class="n">natoms</span><span class="p">),</span> <span class="s">&quot;float&quot;</span><span class="p">)</span>
         <span class="p">[</span><span class="n">res_positions</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">low_x</span><span class="p">,</span> <span class="n">low_y</span><span class="p">,</span> <span class="n">low_z</span><span class="p">]</span> <span class="o">=</span> <span class="n">generate_grid</span><span class="p">(</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span><span class="p">)</span>
         <span class="n">icounter</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">for</span> <span class="n">icounter</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">natoms</span><span class="p">):</span>
@@ -388,7 +388,7 @@
         <span class="n">positions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ca</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span>
         <span class="p">[</span><span class="n">res_positions</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">low_x</span><span class="p">,</span> <span class="n">low_y</span><span class="p">,</span> <span class="n">low_z</span><span class="p">]</span> <span class="o">=</span> <span class="n">generate_grid</span><span class="p">(</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span><span class="p">)</span>
         <span class="n">residue_index_map</span> <span class="o">=</span> <span class="p">[</span><span class="n">resnum</span> <span class="k">for</span> <span class="p">[</span><span class="n">resnum</span><span class="p">,</span> <span class="n">residue</span><span class="p">]</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ca</span><span class="o">.</span><span class="n">residues</span><span class="p">)</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">residue</span><span class="p">]</span>
-        <span class="n">matrix</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nresidues</span><span class="p">,</span> <span class="n">nresidues</span><span class="p">),</span> <span class="s">&quot;float&quot;</span><span class="p">)</span>
+        <span class="n">matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nresidues</span><span class="p">,</span> <span class="n">nresidues</span><span class="p">),</span> <span class="s">&quot;float&quot;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">icounter</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">natoms</span><span class="p">):</span>
             <span class="n">neighbour_atoms</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
@@ -431,12 +431,12 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman, Jonathan Barnoud,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,

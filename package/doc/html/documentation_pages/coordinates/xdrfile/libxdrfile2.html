@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.21.4. The Gromacs XTC/TRR library libxdrfile2 &mdash; MDAnalysis 0.11.0 documentation</title>
+    <title>5.21.4. The Gromacs XTC/TRR library libxdrfile2 &mdash; MDAnalysis 0.12.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.11.0',
+        VERSION:     '0.12.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.11.0 documentation"
+          title="Search within MDAnalysis 0.12.0 documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.11.0 documentation" href="../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.12.0 documentation" href="../../../index.html" />
     <link rel="up" title="5.21. NumPy access to Gromacs XDR trajectories — MDAnalysis.coordinates.xdrfile" href="../xdrfile.html" />
     <link rel="next" title="5.21.5. Status codes and symbols — statno" href="statno.html" />
     <link rel="prev" title="5.21.3. Common high-level Gromacs XDR functionality — MDAnalysis.coordinates.xdrfile.core" href="core.html" /> 
@@ -49,7 +49,7 @@
         <li class="right" >
           <a href="core.html" title="5.21.3. Common high-level Gromacs XDR functionality — MDAnalysis.coordinates.xdrfile.core"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="../xdrfile.html" accesskey="U">5.21. NumPy access to Gromacs XDR trajectories &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.xdrfile</span></code></a> &raquo;</li> 
       </ul>
@@ -305,7 +305,7 @@ functions.</p>
 <dd><p>Close the xdrfile pointed to by <em>XDRFILE</em>.</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
-<p class="last">Closing an already closed file will lead to a 
+<p class="last">Closing an already closed file will lead to a
 crash with a double-free pointer error.</p>
 </div>
 </dd></dl>
@@ -334,7 +334,7 @@ multiplied by <em>precision</em> and truncated to the integer part. A typical va
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-exc docutils literal"><span class="pre">IOError</span></code> if the supplied filed is not a XTC 
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-exc docutils literal"><span class="pre">IOError</span></code> if the supplied filed is not a XTC
 or if it is not readable.</p>
 </td>
 </tr>
@@ -345,7 +345,7 @@ or if it is not readable.</p>
 <dl class="function">
 <dt id="MDAnalysis.coordinates.xdrfile.libxdrfile2.read_xtc_n_frames">
 <code class="descclassname">MDAnalysis.coordinates.xdrfile.libxdrfile2.</code><code class="descname">read_xtc_n_frames</code><span class="sig-paren">(</span><em>fn) -&gt; (n_frames</em>, <em>offsets</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/coordinates/xdrfile/libxdrfile2.html#read_xtc_n_frames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.libxdrfile2.read_xtc_n_frames" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read through the whole trajectory headers to obtain the total number of frames. 
+<dd><p>Read through the whole trajectory headers to obtain the total number of frames.
 The process is speeded up by reading frame headers for the amount of data in the frame,
 and then skipping directly to the next header. An array of frame offsets is also
 returned, which can later be used to seek direcly to arbitrary frames in the trajectory.</p>
@@ -374,7 +374,7 @@ returned, which can later be used to seek direcly to arbitrary frames in the tra
 </dl>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-exc docutils literal"><span class="pre">IOError</span></code> if the supplied filed is not a XTC 
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-exc docutils literal"><span class="pre">IOError</span></code> if the supplied filed is not a XTC
 or if it is not readable.</p>
 </td>
 </tr>
@@ -449,7 +449,7 @@ values)</p>
 <dd><p class="first last">time step in ps</p>
 </dd>
 <dt><em>box</em></dt>
-<dd><p class="first last">numpy <code class="docutils literal"><span class="pre">array((DIM,DIM),dtype=numpy.float32)</span></code> which contains 
+<dd><p class="first last">numpy <code class="docutils literal"><span class="pre">array((DIM,DIM),dtype=numpy.float32)</span></code> which contains
 the unit cell box vectors</p>
 </dd>
 <dt><em>x</em></dt>
@@ -462,7 +462,7 @@ which contains the coordinates from the frame</p>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><em>status</em>, integer status (0 = OK), see the <code class="docutils literal"><span class="pre">libxdrfile2.exdr*</span></code> 
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><em>status</em>, integer status (0 = OK), see the <code class="docutils literal"><span class="pre">libxdrfile2.exdr*</span></code>
 constants under <a class="reference internal" href="#status-symbols">Status symbols</a> for other values)</p>
 </td>
 </tr>
@@ -473,8 +473,8 @@ constants under <a class="reference internal" href="#status-symbols">Status symb
 </div>
 <div class="section" id="trr-functions">
 <h3>5.21.4.2.4. TRR functions<a class="headerlink" href="#trr-functions" title="Permalink to this headline">¶</a></h3>
-<p>TRR is the <a class="reference external" href="http://www.gromacs.org">Gromacs</a> native full-feature trajectory storage format. It can contain position 
-coordinates, velocities and forces, and the lambda value for free energy perturbation 
+<p>TRR is the <a class="reference external" href="http://www.gromacs.org">Gromacs</a> native full-feature trajectory storage format. It can contain position
+coordinates, velocities and forces, and the lambda value for free energy perturbation
 calculations. Velocities and forces are optional in the sense that they can be all zero.</p>
 <dl class="function">
 <dt id="MDAnalysis.coordinates.xdrfile.libxdrfile2.read_trr_natoms">
@@ -502,7 +502,7 @@ or if it is not readable.</p>
 <dl class="function">
 <dt id="MDAnalysis.coordinates.xdrfile.libxdrfile2.read_trr_n_frames">
 <code class="descclassname">MDAnalysis.coordinates.xdrfile.libxdrfile2.</code><code class="descname">read_trr_n_frames</code><span class="sig-paren">(</span><em>fn) -&gt; (n_frames</em>, <em>offsets</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/coordinates/xdrfile/libxdrfile2.html#read_trr_n_frames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.xdrfile.libxdrfile2.read_trr_n_frames" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read through the whole trajectory headers to obtain the total number of frames. 
+<dd><p>Read through the whole trajectory headers to obtain the total number of frames.
 The process is speeded up by reading frame headers for the amount of data in the frame,
 and then skipping directly to the next header. An array of frame offsets is also
 returned, which can later be used to seek direcly to arbitrary frames in the trajectory.</p>
@@ -573,7 +573,7 @@ which is updated with the <strong>forces</strong> from the frame</p>
 <dt>a tuple containing:</dt>
 <dd><dl class="first last docutils">
 <dt><em>status</em></dt>
-<dd><p class="first last">integer status (0 = exdrOK), see the <code class="docutils literal"><span class="pre">libxdrfile2.exdr*</span></code> constants 
+<dd><p class="first last">integer status (0 = exdrOK), see the <code class="docutils literal"><span class="pre">libxdrfile2.exdr*</span></code> constants
 under <a class="reference internal" href="#status-symbols">Status symbols</a> for other values)</p>
 </dd>
 <dt><em>step</em></dt>
@@ -625,7 +625,7 @@ under <a class="reference internal" href="#status-symbols">Status symbols</a> fo
 <dd><p class="first last">free energy lambda value (typically 0.0)</p>
 </dd>
 <dt><em>box</em></dt>
-<dd><p class="first last">numpy <code class="docutils literal"><span class="pre">array((DIM,DIM),dtype=numpy.float32)</span></code> which contains 
+<dd><p class="first last">numpy <code class="docutils literal"><span class="pre">array((DIM,DIM),dtype=numpy.float32)</span></code> which contains
 the unit cell box vectors</p>
 </dd>
 <dt><em>x</em></dt>
@@ -654,7 +654,7 @@ corresponding property to be skipped when writing to file.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><em>status</em>, integer status (0 = OK), see the <code class="docutils literal"><span class="pre">libxdrfile2.exdr*</span></code> 
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><em>status</em>, integer status (0 = OK), see the <code class="docutils literal"><span class="pre">libxdrfile2.exdr*</span></code>
 constants under <a class="reference internal" href="#status-symbols">Status symbols</a> for other values)</td>
 </tr>
 </tbody>
@@ -686,13 +686,13 @@ constants under <a class="reference internal" href="#status-symbols">Status symb
         <li class="right" >
           <a href="core.html" title="5.21.3. Common high-level Gromacs XDR functionality — MDAnalysis.coordinates.xdrfile.core"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="../xdrfile.html" >5.21. NumPy access to Gromacs XDR trajectories &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.coordinates.xdrfile</span></code></a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman, Jonathan Barnoud,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,

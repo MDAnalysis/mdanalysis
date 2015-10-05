@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>3.3.2. Leaflet identification — MDAnalysis.analysis.leaflet &mdash; MDAnalysis 0.11.0 documentation</title>
+    <title>3.3.2. Leaflet identification — MDAnalysis.analysis.leaflet &mdash; MDAnalysis 0.12.0 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.11.0',
+        VERSION:     '0.12.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.11.0 documentation"
+          title="Search within MDAnalysis 0.12.0 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.11.0 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.12.0 documentation" href="../../index.html" />
     <link rel="up" title="3. Analysis modules" href="../analysis_modules.html" />
     <link rel="next" title="3.4.1. Nucleic acid analysis — MDAnalysis.analysis.nuclinfo" href="nuclinfo.html" />
     <link rel="prev" title="3.3.1. Generation and Analysis of HOLE pore profiles — MDAnalysis.analysis.hole" href="hole.html" /> 
@@ -49,7 +49,7 @@
         <li class="right" >
           <a href="hole.html" title="3.3.1. Generation and Analysis of HOLE pore profiles — MDAnalysis.analysis.hole"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../analysis_modules.html" accesskey="U">3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -155,17 +155,13 @@ instance. Similarly, all atoms in the first leaflet are then</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
-<dt><em>universe</em></dt>
-<dd><p class="first last"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></code> or a PDB file name.</p>
-</dd>
-<dt><em>selection</em></dt>
-<dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.AtomGroup</span></code></a> or a
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>*universe*</strong> &#8211; <code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></code> or a PDB file name.</li>
+<li><strong>*selection*</strong> &#8211; <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.AtomGroup</span></code></a> or a
 <code class="xref py py-meth docutils literal"><span class="pre">MDAnalysis.Universe.select_atoms()</span></code> selection string
 for atoms that define the lipid head groups, e.g.
-universe.atoms.PO4 or &#8220;name PO4&#8221; or &#8220;name P*&#8221;</p>
-</dd>
-</dl>
+universe.atoms.PO4 or &#8220;name PO4&#8221; or &#8220;name P*&#8221;</li>
+</ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
@@ -255,23 +251,13 @@ balanced numbers of lipids.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
-<dt><em>universe</em></dt>
-<dd><p class="first last"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></code> instance</p>
-</dd>
-<dt><em>selection</em></dt>
-<dd><p class="first last">selection string as used for <a class="reference internal" href="#MDAnalysis.analysis.leaflet.LeafletFinder" title="MDAnalysis.analysis.leaflet.LeafletFinder"><code class="xref py py-class docutils literal"><span class="pre">LeafletFinder</span></code></a></p>
-</dd>
-<dt><em>dmin</em>, <em>dmax</em>, <em>step</em></dt>
-<dd><p class="first last">scan cutoffs from <em>dmin</em> to <em>dmax</em> at stepsize*step (in Angstroms)</p>
-</dd>
-<dt><em>max_imbalance</em></dt>
-<dd><p class="first last">tuning parameter for the balancing heuristic (2) [0.2]</p>
-</dd>
-<dt><em>kwargs</em></dt>
-<dd><p class="first last">other arguments for  <a class="reference internal" href="#MDAnalysis.analysis.leaflet.LeafletFinder" title="MDAnalysis.analysis.leaflet.LeafletFinder"><code class="xref py py-class docutils literal"><span class="pre">LeafletFinder</span></code></a></p>
-</dd>
-</dl>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>*universe*</strong> &#8211; <code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></code> instance</li>
+<li><strong>*selection*</strong> &#8211; selection string as used for <a class="reference internal" href="#MDAnalysis.analysis.leaflet.LeafletFinder" title="MDAnalysis.analysis.leaflet.LeafletFinder"><code class="xref py py-class docutils literal"><span class="pre">LeafletFinder</span></code></a></li>
+<li><strong>dmax, step</strong> (<em>*dmin*,</em>) &#8211; scan cutoffs from <em>dmin</em> to <em>dmax</em> at stepsize*step (in Angstroms)</li>
+<li><strong>*max_imbalance*</strong> &#8211; tuning parameter for the balancing heuristic (2) [0.2]</li>
+<li><strong>*kwargs*</strong> &#8211; other arguments for  <a class="reference internal" href="#MDAnalysis.analysis.leaflet.LeafletFinder" title="MDAnalysis.analysis.leaflet.LeafletFinder"><code class="xref py py-class docutils literal"><span class="pre">LeafletFinder</span></code></a></li>
+</ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><code class="docutils literal"><span class="pre">(cutoff,N)</span></code> optimum cutoff and number of groups found</p>
@@ -308,12 +294,12 @@ can be found; needs to be made more robust</p>
         <li class="right" >
           <a href="hole.html" title="3.3.1. Generation and Analysis of HOLE pore profiles — MDAnalysis.analysis.hole"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../analysis_modules.html" >3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman, Jonathan Barnoud,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,

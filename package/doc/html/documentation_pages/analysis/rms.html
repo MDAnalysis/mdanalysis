@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>3.1.4. Calculating root mean square quantities — MDAnalysis.analysis.rms &mdash; MDAnalysis 0.11.0 documentation</title>
+    <title>3.1.4. Calculating root mean square quantities — MDAnalysis.analysis.rms &mdash; MDAnalysis 0.12.0 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.11.0',
+        VERSION:     '0.12.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.11.0 documentation"
+          title="Search within MDAnalysis 0.12.0 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.11.0 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.12.0 documentation" href="../../index.html" />
     <link rel="up" title="3. Analysis modules" href="../analysis_modules.html" />
     <link rel="next" title="3.1.5. Calculating path similarity — MDAnalysis.analysis.psa" href="psa.html" />
     <link rel="prev" title="3.1.3. Distance analysis — MDAnalysis.analysis.distances" href="distances.html" /> 
@@ -49,7 +49,7 @@
         <li class="right" >
           <a href="distances.html" title="3.1.3. Distance analysis — MDAnalysis.analysis.distances"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../analysis_modules.html" accesskey="U">3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -61,12 +61,11 @@
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">3.1.4. Calculating root mean square quantities &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.analysis.rms</span></code></a><ul>
-<li><a class="reference internal" href="#examples">3.1.4.1. Examples</a><ul>
-<li><a class="reference internal" href="#calculating-rmsd-for-multiple-domains">3.1.4.1.1. Calculating RMSD for multiple domains</a></li>
+<li><a class="reference internal" href="#calculating-rmsd-for-multiple-domains">3.1.4.1. Calculating RMSD for multiple domains</a><ul>
+<li><a class="reference internal" href="#functions">3.1.4.1.1. Functions</a></li>
+<li><a class="reference internal" href="#analysis-classes">3.1.4.1.2. Analysis classes</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#functions">3.1.4.2. Functions</a></li>
-<li><a class="reference internal" href="#analysis-classes">3.1.4.3. Analysis classes</a></li>
 </ul>
 </li>
 </ul>
@@ -142,10 +141,9 @@ implemented in
 <dd>implements the fast RMSD algorithm.</dd>
 </dl>
 </div>
-<div class="section" id="examples">
-<h2>3.1.4.1. Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<p class="rubric">Examples</p>
 <div class="section" id="calculating-rmsd-for-multiple-domains">
-<h3>3.1.4.1.1. Calculating RMSD for multiple domains<a class="headerlink" href="#calculating-rmsd-for-multiple-domains" title="Permalink to this headline">¶</a></h3>
+<h2>3.1.4.1. Calculating RMSD for multiple domains<a class="headerlink" href="#calculating-rmsd-for-multiple-domains" title="Permalink to this headline">¶</a></h2>
 <p>In this example we will globally fit a protein to a reference
 structure and investigate the relative movements of domains by
 computing the RMSD of the domains to the reference. The example is a
@@ -191,10 +189,8 @@ using backbone atoms</li>
 <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s">&quot;rmsd_all_CORE_LID_NMP_ref1AKE.pdf&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-</div>
 <div class="section" id="functions">
-<h2>3.1.4.2. Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<h3>3.1.4.1.1. Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="MDAnalysis.analysis.rms.rmsd">
 <code class="descclassname">MDAnalysis.analysis.rms.</code><code class="descname">rmsd</code><span class="sig-paren">(</span><em>a</em>, <em>b</em>, <em>weights=None</em>, <em>center=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/rms.html#rmsd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.rms.rmsd" title="Permalink to this definition">¶</a></dt>
@@ -214,9 +210,8 @@ the center.</p>
 for a weighted RMSD calculation.</p>
 <p>The function uses Douglas Theobald&#8217;s fast QCP algorithm
 <a class="reference internal" href="../lib/qcprot.html#theobald2005" id="id3">[Theobald2005]</a> to calculate the RMSD.</p>
-<dl class="docutils">
-<dt>Example::</dt>
-<dd><div class="first last highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">)</span>
+<p class="rubric">Example</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">bb</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s">&#39;backbone&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">bb</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span>  <span class="c"># coordinates of first frame</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>      <span class="c"># forward to last frame</span>
@@ -225,13 +220,11 @@ for a weighted RMSD calculation.</p>
 <span class="go">6.8342494129169804</span>
 </pre></div>
 </div>
-</dd>
-</dl>
 </dd></dl>
 
 </div>
 <div class="section" id="analysis-classes">
-<h2>3.1.4.3. Analysis classes<a class="headerlink" href="#analysis-classes" title="Permalink to this headline">¶</a></h2>
+<h3>3.1.4.1.2. Analysis classes<a class="headerlink" href="#analysis-classes" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="MDAnalysis.analysis.rms.RMSD">
 <em class="property">class </em><code class="descclassname">MDAnalysis.analysis.rms.</code><code class="descname">RMSD</code><span class="sig-paren">(</span><em>traj</em>, <em>reference=None</em>, <em>select='all'</em>, <em>groupselections=None</em>, <em>filename='rmsd.dat'</em>, <em>mass_weighted=False</em>, <em>tol_mass=0.1</em>, <em>ref_frame=0</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/rms.html#RMSD"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.rms.RMSD" title="Permalink to this definition">¶</a></dt>
@@ -253,18 +246,13 @@ all frames in the trajectory in <em>universe</em>.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
-<dt><em>traj</em></dt>
-<dd><p class="first last">universe (<code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></code> object) that contains a
-trajectory</p>
-</dd>
-<dt><em>reference</em></dt>
-<dd><p class="first last">reference coordinates; <code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></code> object; if <code class="docutils literal"><span class="pre">None</span></code>
-the <em>traj</em> is used (uses the current time step of the object) [<code class="docutils literal"><span class="pre">None</span></code>]</p>
-</dd>
-<dt><em>select</em></dt>
-<dd><p class="first">The selection to operate on; can be one of:</p>
-<ol class="arabic simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>*traj*</strong> &#8211; universe (<code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></code> object) that contains a
+trajectory</li>
+<li><strong>*reference*</strong> &#8211; reference coordinates; <code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></code> object; if <code class="docutils literal"><span class="pre">None</span></code>
+the <em>traj</em> is used (uses the current time step of the object) [<code class="docutils literal"><span class="pre">None</span></code>]</li>
+<li><strong>*select*</strong> &#8211; <p>The selection to operate on; can be one of:</p>
+<ol class="arabic">
 <li>any valid selection string for
 <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.select_atoms" title="MDAnalysis.core.AtomGroup.AtomGroup.select_atoms"><code class="xref py py-meth docutils literal"><span class="pre">select_atoms()</span></code></a> that produces identical
 selections in <em>mobile</em> and <em>reference</em>; or</li>
@@ -273,33 +261,24 @@ selections in <em>mobile</em> and <em>reference</em>; or</li>
 dictionary based on a <a class="reference external" href="http://www.clustal.org/">ClustalW</a> or <a class="reference external" href="http://www.compbio.dundee.ac.uk/manuals/stamp.4.2/">STAMP</a> sequence alignment); or</li>
 <li>a tuple <code class="docutils literal"><span class="pre">(sel1,</span> <span class="pre">sel2)</span></code></li>
 </ol>
-<p class="last">When using 2. or 3. with <em>sel1</em> and <em>sel2</em> then these selections can also each be
+<p>When using 2. or 3. with <em>sel1</em> and <em>sel2</em> then these selections can also each be
 a list of selection strings (to generate a AtomGroup with defined atom order as
 described under <a class="reference internal" href="../selections.html#ordered-selections-label"><span>Ordered selections</span></a>).</p>
-</dd>
-<dt><em>groupselections</em></dt>
-<dd><p class="first">A list of selections as described for <em>select</em>. Each selection describes additional
+</li>
+<li><strong>*groupselections*</strong> &#8211; <p>A list of selections as described for <em>select</em>. Each selection describes additional
 RMSDs to be computed <em>after the structures have be superpositioned</em> according to <em>select</em>.
 The output contains one additional column for each selection. [<code class="docutils literal"><span class="pre">None</span></code>]</p>
-<div class="last admonition note">
+<div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Experimental feature. Only limited error checking implemented.</p>
 </div>
-</dd>
-<dt><em>filename</em></dt>
-<dd><p class="first last">If set, <em>filename</em> can be used to write the results with <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD.save" title="MDAnalysis.analysis.rms.RMSD.save"><code class="xref py py-meth docutils literal"><span class="pre">RMSD.save()</span></code></a> [<code class="docutils literal"><span class="pre">None</span></code>]</p>
-</dd>
-<dt><em>mass_weighted</em></dt>
-<dd><p class="first last">do a mass-weighted RMSD fit</p>
-</dd>
-<dt><em>tol_mass</em></dt>
-<dd><p class="first last">Reject match if the atomic masses for matched atoms differ by more than
-<em>tol_mass</em> [0.1]</p>
-</dd>
-<dt><em>ref_frame</em></dt>
-<dd><p class="first last">frame index to select frame from <em>reference</em> [0]</p>
-</dd>
-</dl>
+</li>
+<li><strong>*filename*</strong> &#8211; If set, <em>filename</em> can be used to write the results with <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD.save" title="MDAnalysis.analysis.rms.RMSD.save"><code class="xref py py-meth docutils literal"><span class="pre">RMSD.save()</span></code></a> [<code class="docutils literal"><span class="pre">None</span></code>]</li>
+<li><strong>*mass_weighted*</strong> &#8211; do a mass-weighted RMSD fit</li>
+<li><strong>*tol_mass*</strong> &#8211; Reject match if the atomic masses for matched atoms differ by more than
+<em>tol_mass</em> [0.1]</li>
+<li><strong>*ref_frame*</strong> &#8211; frame index to select frame from <em>reference</em> [0]</li>
+</ul>
 </td>
 </tr>
 </tbody>
@@ -355,7 +334,7 @@ result is stored as the array <a class="reference internal" href="#MDAnalysis.an
 <dd><p>Save RMSD from <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD.rmsd" title="MDAnalysis.analysis.rms.RMSD.rmsd"><code class="xref py py-attr docutils literal"><span class="pre">RMSD.rmsd</span></code></a> to text file <em>filename</em>.</p>
 <p>If <em>filename</em> is not supplied then the default provided to the
 constructor is used.</p>
-<p>The data are saved with <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.savetxt.html#numpy.savetxt" title="(in NumPy v1.9)"><code class="xref py py-func docutils literal"><span class="pre">numpy.savetxt()</span></code></a>.</p>
+<p>The data are saved with <code class="xref py py-func docutils literal"><span class="pre">np.savetxt()</span></code>.</p>
 </dd></dl>
 
 </dd></dl>
@@ -376,12 +355,7 @@ coordinates as-is.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
-<dt><em>atomgroup</em></dt>
-<dd><p class="first last">AtomGroup to obtain RMSF for</p>
-</dd>
-</dl>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>*atomgroup*</strong> &#8211; AtomGroup to obtain RMSF for</td>
 </tr>
 </tbody>
 </table>
@@ -445,6 +419,7 @@ output; <code class="docutils literal"><span class="pre">None</span></code> for 
 
 </div>
 </div>
+</div>
 
 
           </div>
@@ -467,12 +442,12 @@ output; <code class="docutils literal"><span class="pre">None</span></code> for 
         <li class="right" >
           <a href="distances.html" title="3.1.3. Distance analysis — MDAnalysis.analysis.distances"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../analysis_modules.html" >3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman, Jonathan Barnoud,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,

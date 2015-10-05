@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>3.6.1. Generating densities from trajectories — MDAnalysis.analysis.density &mdash; MDAnalysis 0.11.0 documentation</title>
+    <title>3.6.1. Generating densities from trajectories — MDAnalysis.analysis.density &mdash; MDAnalysis 0.12.0 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.11.0',
+        VERSION:     '0.12.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.11.0 documentation"
+          title="Search within MDAnalysis 0.12.0 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.11.0 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.12.0 documentation" href="../../index.html" />
     <link rel="up" title="3. Analysis modules" href="../analysis_modules.html" />
     <link rel="next" title="3.6.2. Water dynamics analysis — MDAnalysis.analysis.waterdynamics" href="waterdynamics.html" />
     <link rel="prev" title="3.5.2. HELANAL — analysis of protein helices" href="helanal.html" /> 
@@ -49,7 +49,7 @@
         <li class="right" >
           <a href="helanal.html" title="3.5.2. HELANAL — analysis of protein helices"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../analysis_modules.html" accesskey="U">3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -229,48 +229,91 @@ that the length- and the density unit correspond to each other.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
-<dt><em>grid</em></dt>
-<dd><p class="first last">histogram or density, typically a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a></p>
-</dd>
-<dt><em>edges</em></dt>
-<dd><p class="first last">list of arrays, the lower and upper bin edges along the axes</p>
-</dd>
-<dt><em>parameters</em></dt>
-<dd><p class="first">dictionary of class parameters; saved with
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>*grid*</strong> &#8211; histogram or density, typically a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a></li>
+<li><strong>*edges*</strong> &#8211; list of arrays, the lower and upper bin edges along the axes</li>
+<li><strong>*parameters*</strong> &#8211; <p>dictionary of class parameters; saved with
 <a class="reference internal" href="#MDAnalysis.analysis.density.Density.save" title="MDAnalysis.analysis.density.Density.save"><code class="xref py py-meth docutils literal"><span class="pre">Density.save()</span></code></a>. The following keys are meaningful to
 the class. Meaning of the values are listed:</p>
-<blockquote class="last">
-<div><p><em>isDensity</em></p>
 <blockquote>
-<div><ul class="simple">
+<div><em>isDensity</em><blockquote>
+<div><ul>
 <li><code class="docutils literal"><span class="pre">False</span></code>: grid is a histogram with counts [default]</li>
 <li><code class="docutils literal"><span class="pre">True</span></code>: a density</li>
 </ul>
 <p>Applying <code class="xref py py-meth docutils literal"><span class="pre">Density.make_density`()</span></code> sets it to <code class="docutils literal"><span class="pre">True</span></code>.</p>
 </div></blockquote>
 </div></blockquote>
-</dd>
-<dt><em>units</em></dt>
-<dd><p class="first">A dict with the keys</p>
-<ul class="simple">
+</li>
+<li><strong>*units*</strong> &#8211; <p>A dict with the keys</p>
+<ul>
 <li><em>length</em>:  physical unit of grid edges (Angstrom or nm) [Angstrom]</li>
 <li><em>density</em>: unit of the density if <code class="docutils literal"><span class="pre">isDensity</span> <span class="pre">==</span> <span class="pre">True</span></code> or <code class="docutils literal"><span class="pre">None</span></code>
 otherwise; the default is &#8220;Angstrom^{-3}&#8221; for densities (meaning A^-3).</li>
 </ul>
-<p class="last">(Actually, the default unit is the value of
+<p>(Actually, the default unit is the value of
 <code class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.core.flags['length_unit']</span></code>; in most cases this is &#8220;Angstrom&#8221;.)</p>
-</dd>
-<dt><em>metadata</em></dt>
-<dd><p class="first last">a user defined dictionary of arbitrary values associated with the
+</li>
+<li><strong>*metadata*</strong> &#8211; a user defined dictionary of arbitrary values associated with the
 density; the class does not touch <code class="xref py py-attr docutils literal"><span class="pre">Density.metadata</span></code> but
-stores it with <a class="reference internal" href="#MDAnalysis.analysis.density.Density.save" title="MDAnalysis.analysis.density.Density.save"><code class="xref py py-meth docutils literal"><span class="pre">Density.save()</span></code></a></p>
-</dd>
-</dl>
+stores it with <a class="reference internal" href="#MDAnalysis.analysis.density.Density.save" title="MDAnalysis.analysis.density.Density.save"><code class="xref py py-meth docutils literal"><span class="pre">Density.save()</span></code></a></li>
+</ul>
 </td>
 </tr>
 </tbody>
 </table>
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.density.Density.__delattr__">
+<code class="descname">__delattr__</code><a class="headerlink" href="#MDAnalysis.analysis.density.Density.__delattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__delattr__(&#8216;name&#8217;) &lt;==&gt; del x.name</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.density.Density.__format__">
+<code class="descname">__format__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.density.Density.__format__" title="Permalink to this definition">¶</a></dt>
+<dd><p>default object formatter</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.density.Density.__getattribute__">
+<code class="descname">__getattribute__</code><a class="headerlink" href="#MDAnalysis.analysis.density.Density.__getattribute__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__getattribute__(&#8216;name&#8217;) &lt;==&gt; x.name</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.density.Density.__hash__">
+<code class="descname">__hash__</code><a class="headerlink" href="#MDAnalysis.analysis.density.Density.__hash__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.density.Density.__reduce__">
+<code class="descname">__reduce__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.density.Density.__reduce__" title="Permalink to this definition">¶</a></dt>
+<dd><p>helper for pickle</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.density.Density.__reduce_ex__">
+<code class="descname">__reduce_ex__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.density.Density.__reduce_ex__" title="Permalink to this definition">¶</a></dt>
+<dd><p>helper for pickle</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.density.Density.__setattr__">
+<code class="descname">__setattr__</code><a class="headerlink" href="#MDAnalysis.analysis.density.Density.__setattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__setattr__(&#8216;name&#8217;, value) &lt;==&gt; x.name = value</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.density.Density.__sizeof__">
+<code class="descname">__sizeof__</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; int<a class="headerlink" href="#MDAnalysis.analysis.density.Density.__sizeof__" title="Permalink to this definition">¶</a></dt>
+<dd><p>size of object in memory, in bytes</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.density.Density.__str__">
+<code class="descname">__str__</code><a class="headerlink" href="#MDAnalysis.analysis.density.Density.__str__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="method">
 <dt id="MDAnalysis.analysis.density.Density.centers">
 <code class="descname">centers</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.density.Density.centers" title="Permalink to this definition">¶</a></dt>
@@ -336,14 +379,14 @@ stores it with <a class="reference internal" href="#MDAnalysis.analysis.density.
 </tr>
 </tbody>
 </table>
-<p>Note:</p>
-<blockquote>
-<div><ol class="arabic simple">
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<ol class="last arabic simple">
 <li>This only works if the initial length unit is provided.</li>
 <li>Conversions always go back to unity so there can be rounding
 and floating point artifacts for multiple conversions.</li>
 </ol>
-</div></blockquote>
+</div>
 <p>There may be some undesirable cross-interactions with <a class="reference internal" href="#MDAnalysis.analysis.density.Density.convert_length" title="MDAnalysis.analysis.density.Density.convert_length"><code class="xref py py-meth docutils literal"><span class="pre">convert_length()</span></code></a>...</p>
 </dd></dl>
 
@@ -403,7 +446,7 @@ modified, <a class="reference internal" href="#MDAnalysis.analysis.density.Grid.
 <dl class="docutils">
 <dt>Example usage for resampling::</dt>
 <dd><div class="first last highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">XX</span><span class="p">,</span><span class="n">YY</span><span class="p">,</span><span class="n">ZZ</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">mgrid</span><span class="p">[</span><span class="mi">40</span><span class="p">:</span><span class="mi">75</span><span class="p">:</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">96</span><span class="p">:</span><span class="mi">150</span><span class="p">:</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">20</span><span class="p">:</span><span class="mi">50</span><span class="p">:</span><span class="mf">0.5</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">FF</span> <span class="o">=</span> <span class="n">interpolated</span><span class="p">(</span><span class="n">XX</span><span class="p">,</span><span class="n">YY</span><span class="p">,</span><span class="n">ZZ</span><span class="p">)</span>            
+<span class="gp">&gt;&gt;&gt; </span><span class="n">FF</span> <span class="o">=</span> <span class="n">interpolated</span><span class="p">(</span><span class="n">XX</span><span class="p">,</span><span class="n">YY</span><span class="p">,</span><span class="n">ZZ</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd>
@@ -477,11 +520,7 @@ regenerated from the saved data with</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
-<dt>universe</dt>
-<dd><p class="first last"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></code> object with a trajectory</p>
-</dd>
-</dl>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>universe</strong> &#8211; <code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></code> object with a trajectory</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first docutils">
@@ -535,16 +574,12 @@ in Angstroem [2.0]</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
-<dt>topology file</dt>
-<dd><p class="first last">any topology file understood by MDAnalysis</p>
-</dd>
-<dt>trajectory</dt>
-<dd><p class="first last">any trajectory (coordinate) file understood by MDAnalysis;
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>file</strong> (<em>topology</em>) &#8211; any topology file understood by MDAnalysis</li>
+<li><strong>trajectory</strong> &#8211; any trajectory (coordinate) file understood by MDAnalysis;
 if reading a single PDB file it is sufficient to just
-provide it once as a single argument</p>
-</dd>
-</dl>
+provide it once as a single argument</li>
+</ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first docutils">
@@ -606,12 +641,8 @@ calculated as described for <a class="reference internal" href="#MDAnalysis.anal
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
-<dt><em>pdb</em></dt>
-<dd><p class="first last">PDB file (should have the temperatureFactor set); ANISO
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>*pdb*</strong> &#8211; PDB file (should have the temperatureFactor set); ANISO
 records are currently <em>not</em> processed</p>
-</dd>
-</dl>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first docutils">
@@ -688,31 +719,19 @@ sigma is taken as sqrt(3.*B/8.)/pi (see <code class="xref py py-func docutils li
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
-<dt>pdb</dt>
-<dd><p class="first last">PDB file or <code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></code>; a PDB is read with the
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>pdb</strong> &#8211; PDB file or <code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.Universe</span></code>; a PDB is read with the
 simpl PDB reader. If the Bio.PDB reader is required, either set
 the <em>permissive_pdb_reader</em> flag to <code class="docutils literal"><span class="pre">False</span></code> in
 <code class="xref py py-data docutils literal"><span class="pre">MDAnalysis.core.flags</span></code> or supply a Universe
-that was created with the <cite>permissive</cite> = <code class="docutils literal"><span class="pre">False</span></code> keyword.</p>
-</dd>
-<dt>atomselection</dt>
-<dd><p class="first last">selection string (MDAnalysis syntax) for the species to be analyzed</p>
-</dd>
-<dt>delta</dt>
-<dd><p class="first last">bin size for the density grid in Angstroem (same in x,y,z) [1.0]</p>
-</dd>
-<dt>metadata</dt>
-<dd><p class="first last">dictionary of additional data to be saved with the object</p>
-</dd>
-<dt>padding</dt>
-<dd><p class="first last">increase histogram dimensions by padding (on top of initial box size)</p>
-</dd>
-<dt>sigma</dt>
-<dd><p class="first last">width (in Angstrom) of the gaussians that are used to build up the
-density; if None then uses B-factors from pdb</p>
-</dd>
-</dl>
+that was created with the <cite>permissive</cite> = <code class="docutils literal"><span class="pre">False</span></code> keyword.</li>
+<li><strong>atomselection</strong> &#8211; selection string (MDAnalysis syntax) for the species to be analyzed</li>
+<li><strong>delta</strong> &#8211; bin size for the density grid in Angstroem (same in x,y,z) [1.0]</li>
+<li><strong>metadata</strong> &#8211; dictionary of additional data to be saved with the object</li>
+<li><strong>padding</strong> &#8211; increase histogram dimensions by padding (on top of initial box size)</li>
+<li><strong>sigma</strong> &#8211; width (in Angstrom) of the gaussians that are used to build up the
+density; if None then uses B-factors from pdb</li>
+</ul>
 </td>
 </tr>
 </tbody>
@@ -755,34 +774,224 @@ g.load(filename)</dd>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
-<dt>grid       </dt>
-<dd><p class="first last">histogram or density, defined on numpy nD array</p>
-</dd>
-<dt>edges</dt>
-<dd><p class="first last">list of arrays, the lower and upper bin edges along the axes
-(both are output by numpy.histogramdd())</p>
-</dd>
-<dt>origin</dt>
-<dd><p class="first last">cartesian coordinates of the center of grid[0,0,...,0]</p>
-</dd>
-<dt>delta</dt>
-<dd><p class="first last">Either n x n array containing the cell lengths in each dimension, 
-or n x 1 array for rectangular arrays.</p>
-</dd>
-<dt>metadata</dt>
-<dd><p class="first last">a user defined dictionary of arbitrary values
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>grid</strong> &#8211; histogram or density, defined on numpy nD array</li>
+<li><strong>edges</strong> &#8211; list of arrays, the lower and upper bin edges along the axes
+(both are output by numpy.histogramdd())</li>
+<li><strong>origin</strong> &#8211; cartesian coordinates of the center of grid[0,0,...,0]</li>
+<li><strong>delta</strong> &#8211; Either n x n array containing the cell lengths in each dimension,
+or n x 1 array for rectangular arrays.</li>
+<li><strong>metadata</strong> &#8211; a user defined dictionary of arbitrary values
 associated with the density; the class does not touch
-metadata[] but stores it with save()</p>
-</dd>
-<dt>interpolation_spline_order</dt>
-<dd><p class="first last">order of interpolation function for resampling; cubic splines = 3 [3]</p>
-</dd>
-</dl>
+metadata[] but stores it with save()</li>
+<li><strong>interpolation_spline_order</strong> &#8211; order of interpolation function for resampling; cubic splines = 3 [3]</li>
+</ul>
 </td>
 </tr>
 </tbody>
 </table>
+<dl class="method">
+<dt id="MDAnalysis.analysis.density.Grid.__add__">
+<code class="descname">__add__</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.density.Grid.__add__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new <a class="reference internal" href="#MDAnalysis.analysis.density.Grid" title="MDAnalysis.analysis.density.Grid"><code class="xref py py-class docutils literal"><span class="pre">Grid</span></code></a> with the point-wise sum of the data.</p>
+<p>g.__add__(h) &lt;==&gt; g + h</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><a class="reference internal" href="#MDAnalysis.analysis.density.Grid" title="MDAnalysis.analysis.density.Grid"><code class="xref py py-class docutils literal"><span class="pre">Grid</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.density.Grid.__delattr__">
+<code class="descname">__delattr__</code><a class="headerlink" href="#MDAnalysis.analysis.density.Grid.__delattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__delattr__(&#8216;name&#8217;) &lt;==&gt; del x.name</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.density.Grid.__div__">
+<code class="descname">__div__</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.density.Grid.__div__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new <a class="reference internal" href="#MDAnalysis.analysis.density.Grid" title="MDAnalysis.analysis.density.Grid"><code class="xref py py-class docutils literal"><span class="pre">Grid</span></code></a> with the point-wise quotient of the data.</p>
+<p>g.__div__(h) &lt;==&gt; g/h</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><a class="reference internal" href="#MDAnalysis.analysis.density.Grid" title="MDAnalysis.analysis.density.Grid"><code class="xref py py-class docutils literal"><span class="pre">Grid</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.density.Grid.__format__">
+<code class="descname">__format__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.density.Grid.__format__" title="Permalink to this definition">¶</a></dt>
+<dd><p>default object formatter</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.density.Grid.__getattribute__">
+<code class="descname">__getattribute__</code><a class="headerlink" href="#MDAnalysis.analysis.density.Grid.__getattribute__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__getattribute__(&#8216;name&#8217;) &lt;==&gt; x.name</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.density.Grid.__hash__">
+<code class="descname">__hash__</code><a class="headerlink" href="#MDAnalysis.analysis.density.Grid.__hash__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.density.Grid.__mul__">
+<code class="descname">__mul__</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.density.Grid.__mul__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new <a class="reference internal" href="#MDAnalysis.analysis.density.Grid" title="MDAnalysis.analysis.density.Grid"><code class="xref py py-class docutils literal"><span class="pre">Grid</span></code></a> with the point-wise product of the data.</p>
+<p>g.__mul__(h) &lt;==&gt; g * h</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><a class="reference internal" href="#MDAnalysis.analysis.density.Grid" title="MDAnalysis.analysis.density.Grid"><code class="xref py py-class docutils literal"><span class="pre">Grid</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.density.Grid.__pow__">
+<code class="descname">__pow__</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.density.Grid.__pow__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new <a class="reference internal" href="#MDAnalysis.analysis.density.Grid" title="MDAnalysis.analysis.density.Grid"><code class="xref py py-class docutils literal"><span class="pre">Grid</span></code></a> with the point-wise power of the data.</p>
+<p>g.__pow__(h) &lt;==&gt; numpy.power(g, h)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><a class="reference internal" href="#MDAnalysis.analysis.density.Grid" title="MDAnalysis.analysis.density.Grid"><code class="xref py py-class docutils literal"><span class="pre">Grid</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.density.Grid.__radd__">
+<code class="descname">__radd__</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.density.Grid.__radd__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new <a class="reference internal" href="#MDAnalysis.analysis.density.Grid" title="MDAnalysis.analysis.density.Grid"><code class="xref py py-class docutils literal"><span class="pre">Grid</span></code></a> with the point-wise sum of the data.</p>
+<p>g.__add__(h) &lt;==&gt; h + g</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><a class="reference internal" href="#MDAnalysis.analysis.density.Grid" title="MDAnalysis.analysis.density.Grid"><code class="xref py py-class docutils literal"><span class="pre">Grid</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.density.Grid.__rdiv__">
+<code class="descname">__rdiv__</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.density.Grid.__rdiv__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new <a class="reference internal" href="#MDAnalysis.analysis.density.Grid" title="MDAnalysis.analysis.density.Grid"><code class="xref py py-class docutils literal"><span class="pre">Grid</span></code></a> with the point-wise quotient of the data.</p>
+<p>g.__div__(h) &lt;==&gt; h/g</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><a class="reference internal" href="#MDAnalysis.analysis.density.Grid" title="MDAnalysis.analysis.density.Grid"><code class="xref py py-class docutils literal"><span class="pre">Grid</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.density.Grid.__reduce__">
+<code class="descname">__reduce__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.density.Grid.__reduce__" title="Permalink to this definition">¶</a></dt>
+<dd><p>helper for pickle</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.density.Grid.__reduce_ex__">
+<code class="descname">__reduce_ex__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.density.Grid.__reduce_ex__" title="Permalink to this definition">¶</a></dt>
+<dd><p>helper for pickle</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.density.Grid.__rmul__">
+<code class="descname">__rmul__</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.density.Grid.__rmul__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new <a class="reference internal" href="#MDAnalysis.analysis.density.Grid" title="MDAnalysis.analysis.density.Grid"><code class="xref py py-class docutils literal"><span class="pre">Grid</span></code></a> with the point-wise product of the data.</p>
+<p>g.__mul__(h) &lt;==&gt; h * g</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><a class="reference internal" href="#MDAnalysis.analysis.density.Grid" title="MDAnalysis.analysis.density.Grid"><code class="xref py py-class docutils literal"><span class="pre">Grid</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.density.Grid.__rpow__">
+<code class="descname">__rpow__</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.density.Grid.__rpow__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new <a class="reference internal" href="#MDAnalysis.analysis.density.Grid" title="MDAnalysis.analysis.density.Grid"><code class="xref py py-class docutils literal"><span class="pre">Grid</span></code></a> with the point-wise power of the data.</p>
+<p>g.__pow__(h) &lt;==&gt; numpy.power(h, g)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><a class="reference internal" href="#MDAnalysis.analysis.density.Grid" title="MDAnalysis.analysis.density.Grid"><code class="xref py py-class docutils literal"><span class="pre">Grid</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.density.Grid.__rsub__">
+<code class="descname">__rsub__</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.density.Grid.__rsub__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new <a class="reference internal" href="#MDAnalysis.analysis.density.Grid" title="MDAnalysis.analysis.density.Grid"><code class="xref py py-class docutils literal"><span class="pre">Grid</span></code></a> with the point-wise difference of the data.</p>
+<p>g.__sub__(h) &lt;==&gt; h - g</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><a class="reference internal" href="#MDAnalysis.analysis.density.Grid" title="MDAnalysis.analysis.density.Grid"><code class="xref py py-class docutils literal"><span class="pre">Grid</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.density.Grid.__setattr__">
+<code class="descname">__setattr__</code><a class="headerlink" href="#MDAnalysis.analysis.density.Grid.__setattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__setattr__(&#8216;name&#8217;, value) &lt;==&gt; x.name = value</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.density.Grid.__sizeof__">
+<code class="descname">__sizeof__</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; int<a class="headerlink" href="#MDAnalysis.analysis.density.Grid.__sizeof__" title="Permalink to this definition">¶</a></dt>
+<dd><p>size of object in memory, in bytes</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.density.Grid.__str__">
+<code class="descname">__str__</code><a class="headerlink" href="#MDAnalysis.analysis.density.Grid.__str__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.density.Grid.__sub__">
+<code class="descname">__sub__</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.density.Grid.__sub__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new <a class="reference internal" href="#MDAnalysis.analysis.density.Grid" title="MDAnalysis.analysis.density.Grid"><code class="xref py py-class docutils literal"><span class="pre">Grid</span></code></a> with the point-wise difference of the data.</p>
+<p>g.__sub__(h) &lt;==&gt; g - h</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><a class="reference internal" href="#MDAnalysis.analysis.density.Grid" title="MDAnalysis.analysis.density.Grid"><code class="xref py py-class docutils literal"><span class="pre">Grid</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="method">
 <dt id="MDAnalysis.analysis.density.Grid.centers">
 <code class="descname">centers</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.density.Grid.centers" title="Permalink to this definition">¶</a></dt>
@@ -837,7 +1046,7 @@ modified, <a class="reference internal" href="#MDAnalysis.analysis.density.Grid.
 <dl class="docutils">
 <dt>Example usage for resampling::</dt>
 <dd><div class="first last highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">XX</span><span class="p">,</span><span class="n">YY</span><span class="p">,</span><span class="n">ZZ</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">mgrid</span><span class="p">[</span><span class="mi">40</span><span class="p">:</span><span class="mi">75</span><span class="p">:</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">96</span><span class="p">:</span><span class="mi">150</span><span class="p">:</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">20</span><span class="p">:</span><span class="mi">50</span><span class="p">:</span><span class="mf">0.5</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">FF</span> <span class="o">=</span> <span class="n">interpolated</span><span class="p">(</span><span class="n">XX</span><span class="p">,</span><span class="n">YY</span><span class="p">,</span><span class="n">ZZ</span><span class="p">)</span>            
+<span class="gp">&gt;&gt;&gt; </span><span class="n">FF</span> <span class="o">=</span> <span class="n">interpolated</span><span class="p">(</span><span class="n">XX</span><span class="p">,</span><span class="n">YY</span><span class="p">,</span><span class="n">ZZ</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd>
@@ -912,12 +1121,12 @@ regenerated from the saved data with</p>
         <li class="right" >
           <a href="helanal.html" title="3.5.2. HELANAL — analysis of protein helices"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../analysis_modules.html" >3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman, Jonathan Barnoud,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,

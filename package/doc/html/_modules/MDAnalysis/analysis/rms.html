@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.analysis.rms &mdash; MDAnalysis 0.11.0 documentation</title>
+    <title>MDAnalysis.analysis.rms &mdash; MDAnalysis 0.12.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.11.0',
+        VERSION:     '0.12.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.11.0 documentation"
+          title="Search within MDAnalysis 0.12.0 documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.11.0 documentation" href="../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.12.0 documentation" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
   <body role="document">
@@ -41,7 +41,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>
@@ -198,7 +198,7 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">izip</span>
-<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 
 <span class="kn">import</span> <span class="nn">MDAnalysis</span>
 <span class="kn">import</span> <span class="nn">MDAnalysis.lib.qcprot</span> <span class="kn">as</span> <span class="nn">qcp</span>
@@ -250,15 +250,15 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">weights</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
         <span class="c"># weights are constructed as relative to the mean</span>
-        <span class="n">relative_weights</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
+        <span class="n">relative_weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">relative_weights</span> <span class="o">=</span> <span class="bp">None</span>
     <span class="k">if</span> <span class="n">center</span><span class="p">:</span>
         <span class="c"># make copies (do not change the user data!)</span>
         <span class="c"># weights=None is equivalent to all weights 1</span>
-        <span class="n">a</span> <span class="o">=</span> <span class="n">a</span> <span class="o">-</span> <span class="n">numpy</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span>
-        <span class="n">b</span> <span class="o">=</span> <span class="n">b</span> <span class="o">-</span> <span class="n">numpy</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">qcp</span><span class="o">.</span><span class="n">CalcRMSDRotationalMatrix</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span> <span class="n">b</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">a</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">b</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">qcp</span><span class="o">.</span><span class="n">CalcRMSDRotationalMatrix</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span> <span class="n">b</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
                                         <span class="n">a</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">None</span><span class="p">,</span> <span class="n">relative_weights</span><span class="p">)</span>
 
 </div>
@@ -397,8 +397,8 @@
                                  <span class="s">&quot;the same number of atoms: N_ref=</span><span class="si">%d</span><span class="s">, N_traj=</span><span class="si">%d</span><span class="s">&quot;</span> <span class="o">%</span>
                                  <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">traj_atoms</span><span class="p">)))</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;RMS calculation for </span><span class="si">%d</span><span class="s"> atoms.&quot;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span><span class="p">))</span>
-        <span class="n">mass_mismatches</span> <span class="o">=</span> <span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span><span class="o">.</span><span class="n">masses</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">traj_atoms</span><span class="o">.</span><span class="n">masses</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol_mass</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">numpy</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mass_mismatches</span><span class="p">):</span>
+        <span class="n">mass_mismatches</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span><span class="o">.</span><span class="n">masses</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">traj_atoms</span><span class="o">.</span><span class="n">masses</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol_mass</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mass_mismatches</span><span class="p">):</span>
             <span class="c"># diagnostic output:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;Atoms: reference | trajectory&quot;</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">ar</span><span class="p">,</span> <span class="n">at</span> <span class="ow">in</span> <span class="n">izip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">traj_atoms</span><span class="p">):</span>
@@ -480,12 +480,12 @@
             <span class="n">ref_coordinates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span><span class="o">.</span><span class="n">positions</span> <span class="o">-</span> <span class="n">ref_com</span>  <span class="c"># makes a copy</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">groupselections_atoms</span><span class="p">:</span>
                 <span class="n">groupselections_ref_coords_T_64</span> <span class="o">=</span> <span class="p">[</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="o">*</span><span class="n">s</span><span class="p">[</span><span class="s">&#39;reference&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">positions</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="o">*</span><span class="n">s</span><span class="p">[</span><span class="s">&#39;reference&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">positions</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">groupselections</span><span class="p">]</span>
         <span class="k">finally</span><span class="p">:</span>
             <span class="c"># Move back to the original frame</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">current_frame</span><span class="p">]</span>
-        <span class="n">ref_coordinates_T_64</span> <span class="o">=</span> <span class="n">ref_coordinates</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">ref_coordinates_T_64</span> <span class="o">=</span> <span class="n">ref_coordinates</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
 
         <span class="c"># allocate the array for selection atom coords</span>
         <span class="n">traj_coordinates</span> <span class="o">=</span> <span class="n">traj_atoms</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -495,14 +495,14 @@
             <span class="c"># R: rotation matrix that aligns r-r_com, x~-x~com</span>
             <span class="c">#    (x~: selected coordinates, x: all coordinates)</span>
             <span class="c"># Final transformed traj coordinates: x&#39; = (x-x~_com)*R + ref_com</span>
-            <span class="n">rot</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>  <span class="c"># allocate space for calculation</span>
-            <span class="n">R</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">rot</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+            <span class="n">rot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>  <span class="c"># allocate space for calculation</span>
+            <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">rot</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">rot</span> <span class="o">=</span> <span class="bp">None</span>
 
         <span class="c"># RMSD timeseries</span>
-        <span class="n">nframes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">trajectory</span><span class="p">))[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">:</span><span class="n">step</span><span class="p">])</span>
-        <span class="n">rmsd</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nframes</span><span class="p">,</span> <span class="mi">3</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">groupselections_atoms</span><span class="p">)))</span>
+        <span class="n">nframes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">trajectory</span><span class="p">))[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">:</span><span class="n">step</span><span class="p">])</span>
+        <span class="n">rmsd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nframes</span><span class="p">,</span> <span class="mi">3</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">groupselections_atoms</span><span class="p">)))</span>
 
         <span class="n">percentage</span> <span class="o">=</span> <span class="n">ProgressMeter</span><span class="p">(</span><span class="n">nframes</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
                                    <span class="n">format</span><span class="o">=</span><span class="s">&quot;RMSD </span><span class="si">%(rmsd)5.2f</span><span class="s"> A at frame </span><span class="si">%(step)5d</span><span class="s">/</span><span class="si">%(numsteps)d</span><span class="s">  [</span><span class="si">%(percentage)5.1f%%</span><span class="s">]</span><span class="se">\r</span><span class="s">&quot;</span><span class="p">)</span>
@@ -510,7 +510,7 @@
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">ts</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">trajectory</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">:</span><span class="n">step</span><span class="p">]):</span>
             <span class="c"># shift coordinates for rotation fitting</span>
             <span class="c"># selection is updated with the time frame</span>
-            <span class="n">x_com</span> <span class="o">=</span> <span class="n">traj_atoms</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+            <span class="n">x_com</span> <span class="o">=</span> <span class="n">traj_atoms</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
             <span class="n">traj_coordinates</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">traj_atoms</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span> <span class="o">-</span> <span class="n">x_com</span>
 
             <span class="n">rmsd</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="p">,</span> <span class="n">trajectory</span><span class="o">.</span><span class="n">time</span>
@@ -523,7 +523,7 @@
                 <span class="c"># so that R acts **to the left** and can be broadcasted; we&#39;re saving</span>
                 <span class="c"># one transpose. [orbeckst])</span>
                 <span class="n">rmsd</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">qcp</span><span class="o">.</span><span class="n">CalcRMSDRotationalMatrix</span><span class="p">(</span><span class="n">ref_coordinates_T_64</span><span class="p">,</span>
-                                                          <span class="n">traj_coordinates</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
+                                                          <span class="n">traj_coordinates</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
                                                           <span class="n">natoms</span><span class="p">,</span> <span class="n">rot</span><span class="p">,</span> <span class="n">weight</span><span class="p">)</span>
                 <span class="n">R</span><span class="p">[:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">rot</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 
@@ -537,13 +537,13 @@
                 <span class="k">for</span> <span class="n">igroup</span><span class="p">,</span> <span class="p">(</span><span class="n">refpos</span><span class="p">,</span> <span class="n">atoms</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
                         <span class="n">izip</span><span class="p">(</span><span class="n">groupselections_ref_coords_T_64</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">groupselections_atoms</span><span class="p">),</span> <span class="mi">3</span><span class="p">):</span>
                     <span class="n">rmsd</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="n">igroup</span><span class="p">]</span> <span class="o">=</span> <span class="n">qcp</span><span class="o">.</span><span class="n">CalcRMSDRotationalMatrix</span><span class="p">(</span><span class="n">refpos</span><span class="p">,</span>
-                                                                   <span class="n">atoms</span><span class="p">[</span><span class="s">&#39;mobile&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">positions</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
+                                                                   <span class="n">atoms</span><span class="p">[</span><span class="s">&#39;mobile&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">positions</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
                                                                    <span class="n">atoms</span><span class="p">[</span><span class="s">&#39;mobile&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="n">weight</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c"># only calculate RMSD by setting the Rmatrix to None</span>
                 <span class="c"># (no need to carry out the rotation as we already get the optimum RMSD)</span>
                 <span class="n">rmsd</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">qcp</span><span class="o">.</span><span class="n">CalcRMSDRotationalMatrix</span><span class="p">(</span><span class="n">ref_coordinates_T_64</span><span class="p">,</span>
-                                                          <span class="n">traj_coordinates</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
+                                                          <span class="n">traj_coordinates</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
                                                           <span class="n">natoms</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="n">weight</span><span class="p">)</span>
 
             <span class="n">percentage</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="p">,</span> <span class="n">rmsd</span><span class="o">=</span><span class="n">rmsd</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
@@ -555,13 +555,13 @@
 <span class="sd">        If *filename* is not supplied then the default provided to the</span>
 <span class="sd">        constructor is used.</span>
 
-<span class="sd">        The data are saved with :func:`numpy.savetxt`.</span>
+<span class="sd">        The data are saved with :func:`np.savetxt`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span>
         <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rmsd</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s">&quot;rmsd has not been calculated yet&quot;</span><span class="p">)</span>
-            <span class="n">numpy</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rmsd</span><span class="p">)</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rmsd</span><span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Wrote RMSD timeseries  to file </span><span class="si">%r</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">filename</span>
 
@@ -614,8 +614,8 @@
 <span class="sd">                [``False``]</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">sumsquares</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
-        <span class="n">means</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sumsquares</span><span class="p">)</span>
+        <span class="n">sumsquares</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+        <span class="n">means</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sumsquares</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">quiet</span><span class="p">:</span>
             <span class="n">progout</span> <span class="o">=</span> <span class="bp">None</span>
@@ -634,7 +634,7 @@
 
             <span class="n">percentage</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
 
-        <span class="n">rmsf</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">sumsquares</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">rmsf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">sumsquares</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">rmsf</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Some RMSF values negative; overflow &quot;</span> <span class="o">+</span>
@@ -647,8 +647,8 @@
         <span class="sd">&quot;&quot;&quot;RMSF data; only available after using :meth:`RMSF.run`</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rmsf</span>
-</pre></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rmsf</span></div>
+</pre></div>
 
           </div>
         </div>
@@ -664,12 +664,12 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman, Jonathan Barnoud,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,

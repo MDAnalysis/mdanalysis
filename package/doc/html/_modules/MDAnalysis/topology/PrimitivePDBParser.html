@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.topology.PrimitivePDBParser &mdash; MDAnalysis 0.11.0 documentation</title>
+    <title>MDAnalysis.topology.PrimitivePDBParser &mdash; MDAnalysis 0.12.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.11.0',
+        VERSION:     '0.12.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.11.0 documentation"
+          title="Search within MDAnalysis 0.12.0 documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.11.0 documentation" href="../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.12.0 documentation" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
   <body role="document">
@@ -41,7 +41,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>
@@ -122,6 +122,8 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
 
+<span class="kn">import</span> <span class="nn">warnings</span>
+
 <span class="kn">from</span> <span class="nn">..core.AtomGroup</span> <span class="kn">import</span> <span class="n">Atom</span>
 <span class="kn">from</span> <span class="nn">.core</span> <span class="kn">import</span> <span class="n">get_atom_mass</span><span class="p">,</span> <span class="n">guess_atom_element</span>
 <span class="kn">from</span> <span class="nn">..lib.util</span> <span class="kn">import</span> <span class="n">openany</span>
@@ -160,8 +162,9 @@
     <span class="k">def</span> <span class="nf">_parseatoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">iatom</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">atoms</span> <span class="o">=</span> <span class="p">[]</span>
-        
+
         <span class="k">with</span> <span class="n">openany</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">resid_prev</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c"># resid looping hack</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
                 <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>  <span class="c"># Remove extra spaces</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>  <span class="c"># Skip line if empty</span>
@@ -171,15 +174,26 @@
                 <span class="k">if</span> <span class="n">record</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;END&#39;</span><span class="p">):</span>
                     <span class="k">break</span>
                 <span class="k">elif</span> <span class="n">line</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;ATOM  &#39;</span><span class="p">,</span> <span class="s">&#39;HETATM&#39;</span><span class="p">):</span>
-                    <span class="n">serial</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="mi">11</span><span class="p">])</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">serial</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="mi">11</span><span class="p">])</span>
+                    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                        <span class="c"># serial can become &#39;***&#39; when they get too high</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_wrapped_serials</span> <span class="o">=</span> <span class="bp">True</span>
+                        <span class="n">serial</span> <span class="o">=</span> <span class="bp">None</span>
                     <span class="n">name</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">12</span><span class="p">:</span><span class="mi">16</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
                     <span class="n">altLoc</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">16</span><span class="p">:</span><span class="mi">17</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
                     <span class="n">resName</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">17</span><span class="p">:</span><span class="mi">21</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
                     <span class="n">chainID</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">21</span><span class="p">:</span><span class="mi">22</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>  <span class="c"># empty chainID is a single space &#39; &#39;!</span>
                     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span> <span class="o">==</span> <span class="s">&quot;XPDB&quot;</span><span class="p">:</span>  <span class="c"># fugly but keeps code DRY</span>
                         <span class="n">resSeq</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">22</span><span class="p">:</span><span class="mi">27</span><span class="p">])</span>  <span class="c"># extended non-standard format used by VMD</span>
+                        <span class="n">resid</span> <span class="o">=</span> <span class="n">resSeq</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">resSeq</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">22</span><span class="p">:</span><span class="mi">26</span><span class="p">])</span>
+                        <span class="n">resid</span> <span class="o">=</span> <span class="n">resSeq</span>
+
+                        <span class="k">while</span> <span class="n">resid</span> <span class="o">-</span> <span class="n">resid_prev</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mi">5000</span><span class="p">:</span>
+                            <span class="n">resid</span> <span class="o">+=</span> <span class="mi">10000</span>
+                        <span class="n">resid_prev</span> <span class="o">=</span> <span class="n">resid</span>
                         <span class="c"># insertCode = _c(27, 27, str)  # not used</span>
                         <span class="c"># occupancy = float(line[54:60])</span>
                     <span class="k">try</span><span class="p">:</span>
@@ -197,11 +211,12 @@
                     <span class="n">mass</span> <span class="o">=</span> <span class="n">get_atom_mass</span><span class="p">(</span><span class="n">elem</span><span class="p">)</span>
                     <span class="c"># charge = guess_atom_charge(name)</span>
                     <span class="n">charge</span> <span class="o">=</span> <span class="mf">0.0</span>
-                    
-                    <span class="n">atom</span> <span class="o">=</span> <span class="n">Atom</span><span class="p">(</span><span class="n">iatom</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">atomtype</span><span class="p">,</span> <span class="n">resName</span><span class="p">,</span> <span class="n">resSeq</span><span class="p">,</span>
+
+                    <span class="n">atom</span> <span class="o">=</span> <span class="n">Atom</span><span class="p">(</span><span class="n">iatom</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">atomtype</span><span class="p">,</span> <span class="n">resName</span><span class="p">,</span> <span class="n">resid</span><span class="p">,</span>
                                 <span class="n">segid</span><span class="p">,</span> <span class="n">mass</span><span class="p">,</span> <span class="n">charge</span><span class="p">,</span>
                                 <span class="n">bfactor</span><span class="o">=</span><span class="n">tempFactor</span><span class="p">,</span> <span class="n">serial</span><span class="o">=</span><span class="n">serial</span><span class="p">,</span>
-                                <span class="n">altLoc</span><span class="o">=</span><span class="n">altLoc</span><span class="p">,</span> <span class="n">universe</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_u</span><span class="p">)</span>
+                                <span class="n">altLoc</span><span class="o">=</span><span class="n">altLoc</span><span class="p">,</span> <span class="n">universe</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_u</span><span class="p">,</span>
+                                <span class="n">resnum</span><span class="o">=</span><span class="n">resSeq</span><span class="p">)</span>
                     <span class="n">iatom</span> <span class="o">+=</span> <span class="mi">1</span>
                     <span class="n">atoms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span>
 
@@ -213,6 +228,12 @@
         <span class="c"># ie do one pass through the file only        </span>
         <span class="c"># Problem is that in multiframe PDB, the CONECT is at end of file,</span>
         <span class="c"># so the &quot;break&quot; call happens before bonds are reached.</span>
+
+        <span class="c"># If the serials wrapped, this won&#39;t work</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;_wrapped_serials&#39;</span><span class="p">):</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&quot;Invalid atom serials were present, bonds will not&quot;</span>
+                          <span class="s">&quot; be parsed&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="nb">tuple</span><span class="p">([])</span>
 
         <span class="c"># Mapping between the atom array indicies a.index and atom ids</span>
         <span class="c"># (serial) in the original PDB file</span>
@@ -247,12 +268,12 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman, Jonathan Barnoud,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.core.AtomGroup &mdash; MDAnalysis 0.11.0 documentation</title>
+    <title>MDAnalysis.core.AtomGroup &mdash; MDAnalysis 0.12.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.11.0',
+        VERSION:     '0.12.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.11.0 documentation"
+          title="Search within MDAnalysis 0.12.0 documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.11.0 documentation" href="../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.12.0 documentation" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
   <body role="document">
@@ -41,7 +41,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>
@@ -176,7 +176,7 @@
 
 <span class="sd">   Setting any of</span>
 <span class="sd">   :attr:`AtomGroup.resids`, :attr:`ResidueGroup.resids`,</span>
-<span class="sd">   :attr:`AtomGroup.segids`, :attr:`ResidueGroup.segids` </span>
+<span class="sd">   :attr:`AtomGroup.segids`, :attr:`ResidueGroup.segids`</span>
 <span class="sd">   can change the topology: they can split or merge residues or segments.</span>
 
 <span class="sd">Splitting/merging of residues is probably not very useful because no chemical</span>
@@ -483,7 +483,7 @@
 
 <span class="c"># Global imports</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">numpy.linalg</span> <span class="kn">import</span> <span class="n">eig</span>
 <span class="kn">from</span> <span class="nn">numpy.lib.utils</span> <span class="kn">import</span> <span class="n">deprecate</span>
 <span class="kn">import</span> <span class="nn">itertools</span>
@@ -492,6 +492,7 @@
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">os.path</span>
 <span class="kn">import</span> <span class="nn">weakref</span>
+<span class="kn">import</span> <span class="nn">functools</span>
 
 <span class="c"># Local imports</span>
 <span class="kn">import</span> <span class="nn">MDAnalysis</span>
@@ -521,12 +522,13 @@
                       <span class="s">&#39;resnum&#39;</span><span class="p">:</span> <span class="s">&#39;resnums&#39;</span><span class="p">,</span>
                       <span class="s">&#39;altLoc&#39;</span><span class="p">:</span> <span class="s">&#39;altLocs&#39;</span><span class="p">,</span>
                       <span class="s">&#39;serial&#39;</span><span class="p">:</span> <span class="s">&#39;serials&#39;</span><span class="p">,</span>
-                      <span class="s">&#39;value&#39;</span><span class="p">:</span> <span class="s">&#39;values&#39;</span><span class="p">}</span>
+                      <span class="s">&#39;value&#39;</span><span class="p">:</span> <span class="s">&#39;values&#39;</span><span class="p">,</span>
+                      <span class="s">&#39;occupancy&#39;</span><span class="p">:</span> <span class="s">&#39;occupancies&#39;</span><span class="p">}</span>
 <span class="c"># And the return route</span>
 <span class="n">_SINGULAR_PROPERTIES</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span> <span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">_PLURAL_PROPERTIES</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
 
 
-
+<span class="nd">@functools.total_ordering</span>
 <div class="viewcode-block" id="Atom"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.Atom">[docs]</a><span class="k">class</span> <span class="nc">Atom</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A class representing a single atom.</span>
 
@@ -553,6 +555,8 @@
 <span class="sd">       Changed references to :class:`Universe` to be weak.</span>
 <span class="sd">       Renamed atom.number to atom.index</span>
 <span class="sd">       Renamed atom.torsions to atom.dihedrals</span>
+<span class="sd">    .. versionchanged:: 0.11.1</span>
+<span class="sd">       Added occupancy property. Can get and set.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">__slots__</span> <span class="o">=</span> <span class="p">(</span>
@@ -579,12 +583,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">=</span> <span class="n">radius</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bfactor</span> <span class="o">=</span> <span class="n">bfactor</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">serial</span> <span class="o">=</span> <span class="n">serial</span>
-        <span class="c"># Beware: Atoms hold only weakrefs to the universe, enforced</span>
-        <span class="c">#  throught the Atom.universe setter.</span>
-        <span class="k">if</span> <span class="n">universe</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_universe</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">universe</span> <span class="o">=</span> <span class="n">universe</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_universe</span> <span class="o">=</span> <span class="n">universe</span>
 
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span><span class="s">&quot;&lt;Atom {idx}: {name} of type {t} of resname {rname}, &quot;</span>
@@ -594,8 +593,8 @@
                     <span class="n">altloc</span><span class="o">=</span><span class="s">&quot;&quot;</span> <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">altLoc</span>
                     <span class="k">else</span> <span class="s">&quot; and altloc {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">altLoc</span><span class="p">)))</span>
 
-    <span class="k">def</span> <span class="nf">__cmp__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">cmp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">&lt;</span> <span class="n">other</span><span class="o">.</span><span class="n">index</span>
 
     <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">index</span>
@@ -604,9 +603,9 @@
         <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Atom</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">AtomGroup</span><span class="p">)):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&#39;Can only concatenate Atoms (not &quot;{0}&quot;)&#39;</span>
-                            <span class="s">&#39; to AtomGroup&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="p">(</span><span class="n">Atom</span><span class="p">,</span> <span class="n">AtomGroup</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&#39;Can only add Atoms or AtomGroups (not &quot;{0}&quot;)&#39;</span>
+                            <span class="s">&#39; to Atom&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">))</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Atom</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">AtomGroup</span><span class="p">([</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
@@ -680,6 +679,38 @@
             <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s">&quot;Timestep does not contain velocities&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">occupancy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Access occupancy values.</span>
+
+<span class="sd">        If available can have a value between 0 and 1</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            occupancy of Atom</span>
+
+<span class="sd">        .. versionadded:: 0.11.1</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">coord</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;occupancy&#39;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s">&#39;Timestep does not contain occupancy&#39;</span><span class="p">)</span>
+
+    <span class="nd">@occupancy.setter</span>
+    <span class="k">def</span> <span class="nf">occupancy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_occupancy</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set occupancy for an atom</span>
+
+<span class="sd">        If no occupancies are set in the universe of the atom the occupancy</span>
+<span class="sd">        of the other atoms will be set to 1.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">coord</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;occupancy&#39;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">_occupancy</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">n_atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">coord</span><span class="o">.</span><span class="n">n_atoms</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">coord</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;occupancy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">coord</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;occupancy&#39;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">_occupancy</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">force</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Current force of the atom.</span>
 
@@ -713,18 +744,15 @@
 </div>
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">universe</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;a pointer back to the Universe&quot;&quot;&quot;</span>
-        <span class="c"># Beware: Atoms hold only weakrefs to the universe. We call them to get hard references.</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_universe</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="p">()</span>
+        <span class="sd">&quot;&quot;&quot;A pointer back to the Universe of this Atom&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_universe</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s">&quot;This Atom does not belong to a Universe&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
-                <span class="s">&quot;Atom {0} is not assigned to a Universe&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">))</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_universe</span>
 
     <span class="nd">@universe.setter</span>
-    <span class="k">def</span> <span class="nf">universe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">):</span>
-        <span class="c"># Beware: Atoms hold only weakrefs to the universe</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_universe</span> <span class="o">=</span> <span class="n">weakref</span><span class="o">.</span><span class="n">ref</span><span class="p">(</span><span class="n">universe</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">universe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_universe</span> <span class="o">=</span> <span class="n">new</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">bonded_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -885,6 +913,8 @@
 <span class="sd">       Properties referring to residue (``resids``, ``resnames``, ``resnums``)</span>
 <span class="sd">       or segment [``segids``] properties now yield arrays of length equal to</span>
 <span class="sd">       ``n_atoms``</span>
+<span class="sd">    .. versionchanged:: 0.11.1</span>
+<span class="sd">       Added occupancies property</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># for generalized __getitem__ __iter__ and __len__</span>
     <span class="c"># (override _containername for ResidueGroup and SegmentGroup)</span>
@@ -1031,17 +1061,17 @@
         <span class="sd">&quot;&quot;&quot;The universe to which the atoms belong (read-only).&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">universe</span>
-        <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">IndexError</span><span class="p">):</span>
-            <span class="k">return</span> <span class="bp">None</span>
+        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s">&quot;Zero length AtomGroup have no Universe&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="AtomGroup.__len__"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.__len__">[docs]</a>    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Number of atoms in the group&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_container</span><span class="p">)</span>
-
+</div>
     <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_container</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+<div class="viewcode-block" id="AtomGroup.__getitem__"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.__getitem__">[docs]</a>    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return element (index) or group (slicing).</span>
 
 <span class="sd">        .. versionchanged:: 0.8</span>
@@ -1057,23 +1087,28 @@
         <span class="n">cls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cls</span>
 
         <span class="c"># consistent with the way list indexing/slicing behaves:</span>
-        <span class="k">if</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">item</span><span class="p">))</span> <span class="o">==</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="nb">int</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">container</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
-        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="o">==</span> <span class="nb">slice</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">container</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span>
+                    <span class="s">&quot;Index {} is out of bounds for AtomGroup with size {}&quot;</span>
+                    <span class="s">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)))</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">slice</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">cls</span><span class="p">(</span><span class="n">container</span><span class="p">[</span><span class="n">item</span><span class="p">])</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
             <span class="c"># advanced slicing, requires array or list</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">bool_</span><span class="p">):</span>
-                    <span class="n">item</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">item</span><span class="p">))[</span><span class="n">item</span><span class="p">]</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">bool_</span><span class="p">):</span>
+                    <span class="n">item</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">item</span><span class="p">))[</span><span class="n">item</span><span class="p">]</span>
             <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>  <span class="c"># zero length item</span>
                 <span class="k">pass</span>
             <span class="k">return</span> <span class="n">cls</span><span class="p">([</span><span class="n">container</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">item</span><span class="p">])</span>
-        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_named_atom</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;Cannot slice with type: {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">item</span><span class="p">)))</span>
-
+</div>
     <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_named_atom</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
@@ -1109,8 +1144,8 @@
             <span class="k">return</span> <span class="n">other</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span>
 
     <span class="k">def</span> <span class="nf">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Atom</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">AtomGroup</span><span class="p">)):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&#39;Can only concatenate AtomGroup (not &quot;{0}&quot;) to&#39;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="p">(</span><span class="n">Atom</span><span class="p">,</span> <span class="n">AtomGroup</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&#39;Can only concatenate Atom or AtomGroup (not &quot;{0}&quot;) to&#39;</span>
                             <span class="s">&#39; AtomGroup&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">))</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">AtomGroup</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">AtomGroup</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">_atoms</span><span class="p">)</span>
@@ -1122,21 +1157,24 @@
             <span class="n">n_atoms</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">universe</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span>
+        <span class="k">except</span> <span class="n">NoDataError</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span>
+
         <span class="k">try</span><span class="p">:</span> <span class="c"># We want to get the ChainReader case, where the trajectory has multiple filenames</span>
-            <span class="n">fname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">filenames</span>
+            <span class="n">fname</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">filenames</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-            <span class="n">fname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">filename</span>
-        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">anchor_name</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">),</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span>
+            <span class="n">fname</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">filename</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span> <span class="n">universe</span><span class="o">.</span><span class="n">anchor_name</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">),</span>
+                <span class="n">universe</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
         <span class="n">indices</span><span class="p">,</span> <span class="n">anchor_name</span><span class="p">,</span> <span class="n">universe_n_atoms</span> <span class="o">=</span> <span class="n">state</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">indices</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__init__</span><span class="p">([])</span>
             <span class="k">return</span>
-        <span class="k">if</span> <span class="n">numpy</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">universe_n_atoms</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">universe_n_atoms</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Trying to unpickle an inconsistent AtomGroup&quot;</span><span class="p">)</span>
         <span class="n">lookup_set</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">_anchor_universes</span> <span class="k">if</span> <span class="n">anchor_name</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">_named_anchor_universes</span>
         <span class="k">for</span> <span class="n">test_universe</span> <span class="ow">in</span> <span class="n">lookup_set</span><span class="p">:</span>
@@ -1144,9 +1182,9 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">test_universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span><span class="o">.</span><span class="n">_atoms</span><span class="p">)</span>
                 <span class="k">return</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">((</span><span class="s">&quot;Couldn&#39;t find a suitable Universe to unpickle AtomGroup &quot;</span>
-                <span class="s">&quot;onto. (needed a universe with {}{} atoms, topology filename: {}, and &quot;</span>
-                <span class="s">&quot;trajectory filename: {}&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                        <span class="s">&quot;anchor_name: {}, &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">anchor_name</span><span class="p">)</span> <span class="k">if</span> <span class="n">anchor_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="k">else</span> <span class="s">&quot;&quot;</span><span class="p">,</span>
+                <span class="s">&quot;onto. (needed a universe with {}{} atoms, topology filename: &#39;{}&#39;, and &quot;</span>
+                <span class="s">&quot;trajectory filename: &#39;{}&#39;)&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="s">&quot;anchor_name: &#39;{}&#39;, &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">anchor_name</span><span class="p">)</span> <span class="k">if</span> <span class="n">anchor_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="k">else</span> <span class="s">&quot;&quot;</span><span class="p">,</span>
                         <span class="o">*</span><span class="n">state</span><span class="p">[</span><span class="mi">2</span><span class="p">:]))</span>
 
     <span class="nd">@property</span>
@@ -1179,7 +1217,7 @@
 <span class="sd">        .. versionchanged:: 0.11.0</span>
 <span class="sd">           Now a property</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">atom</span><span class="o">.</span><span class="n">index</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">atom</span><span class="o">.</span><span class="n">index</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="p">])</span>
 
     <span class="nd">@property</span>
     <span class="nd">@cached</span><span class="p">(</span><span class="s">&#39;masses&#39;</span><span class="p">)</span>
@@ -1189,7 +1227,7 @@
 <span class="sd">        .. versionchanged:: 0.11.0</span>
 <span class="sd">           Now a property</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">atom</span><span class="o">.</span><span class="n">mass</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">atom</span><span class="o">.</span><span class="n">mass</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="p">])</span>
 
     <span class="nd">@masses.setter</span>
     <span class="k">def</span> <span class="nf">masses</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
@@ -1198,10 +1236,36 @@
 
 <div class="viewcode-block" id="AtomGroup.total_mass"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.total_mass">[docs]</a>    <span class="k">def</span> <span class="nf">total_mass</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Total mass of the selection (masses are taken from the topology or guessed).&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">masses</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">masses</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 </div>
     <span class="n">totalMass</span> <span class="o">=</span> <span class="n">deprecate</span><span class="p">(</span><span class="n">total_mass</span><span class="p">,</span> <span class="n">old_name</span><span class="o">=</span><span class="s">&#39;totalMass&#39;</span><span class="p">,</span> <span class="n">new_name</span><span class="o">=</span><span class="s">&#39;total_mass&#39;</span><span class="p">)</span>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">occupancies</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Access occupancies of atoms</span>
+
+<span class="sd">        If available can have a value between 0 and 1</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ndarray</span>
+<span class="sd">            occupancies for all atoms in AtomGroup</span>
+
+<span class="sd">        .. versionadded:: 0.11.1</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">coord</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;occupancy&#39;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s">&#39;Timestep does not contain occupancy&#39;</span><span class="p">)</span>
+
+    <span class="nd">@occupancies.setter</span>
+    <span class="k">def</span> <span class="nf">occupancies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">coord</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;occupancy&#39;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">]</span> <span class="o">=</span> <span class="n">new</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">n_atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">coord</span><span class="o">.</span><span class="n">n_atoms</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">coord</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;occupancy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">coord</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;occupancy&#39;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">]</span> <span class="o">=</span> <span class="n">new</span>
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">charges</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Array of partial charges of the atoms (as defined in the topology)</span>
@@ -1209,7 +1273,7 @@
 <span class="sd">        .. versionchanged:: 0.11.0</span>
 <span class="sd">           Now a property</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">atom</span><span class="o">.</span><span class="n">charge</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">atom</span><span class="o">.</span><span class="n">charge</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="p">])</span>
 
     <span class="nd">@charges.setter</span>
     <span class="k">def</span> <span class="nf">charges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
@@ -1217,7 +1281,7 @@
 
 <div class="viewcode-block" id="AtomGroup.total_charge"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.total_charge">[docs]</a>    <span class="k">def</span> <span class="nf">total_charge</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Sum of all partial charges (must be defined in topology).&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">charges</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">charges</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 </div>
     <span class="n">totalCharge</span> <span class="o">=</span> <span class="n">deprecate</span><span class="p">(</span><span class="n">total_charge</span><span class="p">,</span> <span class="n">old_name</span><span class="o">=</span><span class="s">&#39;totalCharge&#39;</span><span class="p">,</span> <span class="n">new_name</span><span class="o">=</span><span class="s">&#39;total_charge&#39;</span><span class="p">)</span>
 
@@ -1230,7 +1294,7 @@
 <span class="sd">        .. versionchanged:: 0.11.0</span>
 <span class="sd">           Now a property</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="p">])</span>
 
     <span class="nd">@names.setter</span>
     <span class="k">def</span> <span class="nf">names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
@@ -1244,7 +1308,7 @@
 <span class="sd">        .. versionchanged:: 0.11.0</span>
 <span class="sd">           Now a property</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">type</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">type</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="p">])</span>
 
     <span class="nd">@types.setter</span>
     <span class="k">def</span> <span class="nf">types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
@@ -1257,7 +1321,7 @@
 <span class="sd">        .. versionchanged:: 0.11.0</span>
 <span class="sd">           Now a property</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">atom</span><span class="o">.</span><span class="n">radius</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">atom</span><span class="o">.</span><span class="n">radius</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="p">])</span>
 
     <span class="nd">@radii.setter</span>
     <span class="k">def</span> <span class="nf">radii</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
@@ -1267,7 +1331,7 @@
     <span class="k">def</span> <span class="nf">bfactors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Crystallographic B-factors (from PDB) in A**2.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">atom</span><span class="o">.</span><span class="n">bfactor</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">atom</span><span class="o">.</span><span class="n">bfactor</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="p">])</span>
 
     <span class="nd">@bfactors.setter</span>
     <span class="k">def</span> <span class="nf">bfactors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
@@ -1279,7 +1343,7 @@
 
 <span class="sd">        .. versionadded:: 0.11.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">atom</span><span class="o">.</span><span class="n">altLoc</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">atom</span><span class="o">.</span><span class="n">altLoc</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="p">])</span>
 
     <span class="nd">@altLocs.setter</span>
     <span class="k">def</span> <span class="nf">altLocs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
@@ -1291,7 +1355,7 @@
 
 <span class="sd">        .. versionadded:: 0.11.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">atom</span><span class="o">.</span><span class="n">serial</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">atom</span><span class="o">.</span><span class="n">serial</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="p">])</span>
 
     <span class="nd">@serials.setter</span>
     <span class="k">def</span> <span class="nf">serials</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
@@ -1350,7 +1414,7 @@
 <span class="sd">        .. versionchanged:: 0.11.0</span>
 <span class="sd">           Now a property and returns array of length `len(self)`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">resid</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">resid</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="p">])</span>
 
     <span class="nd">@resids.setter</span>
     <span class="k">def</span> <span class="nf">resids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
@@ -1365,7 +1429,7 @@
 <span class="sd">        .. versionchanged:: 0.11.0</span>
 <span class="sd">           Now a property and returns array of length `len(self)`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">resname</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">resname</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="p">])</span>
 
     <span class="nd">@resnames.setter</span>
     <span class="k">def</span> <span class="nf">resnames</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
@@ -1381,7 +1445,7 @@
 <span class="sd">        .. versionchanged:: 0.11.0</span>
 <span class="sd">           Now a property and returns array of length `len(self)`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">resnum</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">resnum</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="p">])</span>
 
     <span class="nd">@resnums.setter</span>
     <span class="k">def</span> <span class="nf">resnums</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
@@ -1396,7 +1460,7 @@
 <span class="sd">        .. versionchanged:: 0.11.0</span>
 <span class="sd">           Now a property and returns array of length `len(self)`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">segid</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">segid</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="p">])</span>
 
     <span class="nd">@segids.setter</span>
     <span class="k">def</span> <span class="nf">segids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
@@ -1483,7 +1547,7 @@
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;Unknown format=&#39;{0}&#39;: must be one of: {1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="n">format</span><span class="p">,</span> <span class="s">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">formats</span><span class="p">)))</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">sequence</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">util</span><span class="o">.</span><span class="n">convert_aa_code</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">resnames</span><span class="p">])</span>
+            <span class="n">sequence</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">util</span><span class="o">.</span><span class="n">convert_aa_code</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">residues</span><span class="o">.</span><span class="n">resnames</span><span class="p">])</span>
         <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;AtomGroup contains a residue name &#39;{0}&#39; that &quot;</span>
                              <span class="s">&quot;does not have a IUPAC protein 1-letter &quot;</span>
@@ -1683,6 +1747,18 @@
     <span class="c"># override for ResidueGroup, SegmentGroup accordingly</span>
     <span class="nb">set</span> <span class="o">=</span> <span class="n">_set_atoms</span>
 
+<div class="viewcode-block" id="AtomGroup.set_occupancies"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.set_occupancies">[docs]</a>    <span class="k">def</span> <span class="nf">set_occupancies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">occupancies</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the occupancy for *all atoms* in the AtomGroup</span>
+
+<span class="sd">        If *value* is a sequence of the same length as the :class:`AtomGroup`</span>
+<span class="sd">        then each :attr:`Atom.name` is set to the corresponding value. If</span>
+<span class="sd">        *value* is neither of length 1 (or a scalar) nor of the length of the</span>
+<span class="sd">        :class:`AtomGroup` then a :exc:`ValueError` is raised.</span>
+
+<span class="sd">        .. versionadded:: 0.11.1</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">occupancies</span> <span class="o">=</span> <span class="n">occupancies</span>
+</div>
 <div class="viewcode-block" id="AtomGroup.set_names"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.set_names">[docs]</a>    <span class="k">def</span> <span class="nf">set_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set the atom names to string for *all atoms* in the AtomGroup.</span>
 
@@ -1790,8 +1866,6 @@
 <span class="sd">        .. versionchanged:: 0.11.0</span>
 <span class="sd">           Made plural to make consistent with corresponding property</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">MDAnalysis.topology.core</span> <span class="kn">import</span> <span class="n">build_residues</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s">&quot;resname&quot;</span><span class="p">,</span> <span class="n">resname</span><span class="p">,</span> <span class="n">conversion</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
 </div>
     <span class="n">set_resname</span> <span class="o">=</span> <span class="n">deprecate</span><span class="p">(</span><span class="n">set_resnames</span><span class="p">,</span> <span class="n">old_name</span><span class="o">=</span><span class="s">&#39;set_resname&#39;</span><span class="p">,</span> <span class="n">new_name</span><span class="o">=</span><span class="s">&#39;set_resnames&#39;</span><span class="p">)</span>
@@ -1971,9 +2045,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">pbc</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;pbc&#39;</span><span class="p">,</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s">&#39;use_pbc&#39;</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">pbc</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pack_into_box</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pack_into_box</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span>
 </div>
     <span class="n">centerOfGeometry</span> <span class="o">=</span> <span class="n">deprecate</span><span class="p">(</span><span class="n">center_of_geometry</span><span class="p">,</span> <span class="n">old_name</span><span class="o">=</span><span class="s">&#39;centerOfGeometry&#39;</span><span class="p">,</span>
                                  <span class="n">new_name</span><span class="o">=</span><span class="s">&#39;center_of_geometry&#39;</span><span class="p">)</span>
@@ -1995,10 +2069,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">pbc</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;pbc&#39;</span><span class="p">,</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s">&#39;use_pbc&#39;</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">pbc</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pack_into_box</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">masses</span><span class="p">[:,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">newaxis</span><span class="p">],</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pack_into_box</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">masses</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">],</span>
                              <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_mass</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">positions</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">masses</span><span class="p">[:,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">newaxis</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_mass</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">positions</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">masses</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_mass</span><span class="p">()</span>
 </div>
     <span class="n">centerOfMass</span> <span class="o">=</span> <span class="n">deprecate</span><span class="p">(</span><span class="n">center_of_mass</span><span class="p">,</span> <span class="n">old_name</span><span class="o">=</span><span class="s">&#39;centerOfMass&#39;</span><span class="p">,</span> <span class="n">new_name</span><span class="o">=</span><span class="s">&#39;center_of_mass&#39;</span><span class="p">)</span>
 
@@ -2021,8 +2095,8 @@
             <span class="n">recenteredpos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pack_into_box</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">(</span><span class="n">pbc</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">recenteredpos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">positions</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">(</span><span class="n">pbc</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
-        <span class="n">rog_sq</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">masses</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">recenteredpos</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_mass</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">rog_sq</span><span class="p">)</span>
+        <span class="n">rog_sq</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">masses</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">recenteredpos</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_mass</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">rog_sq</span><span class="p">)</span>
 </div>
     <span class="n">radiusOfGyration</span> <span class="o">=</span> <span class="n">deprecate</span><span class="p">(</span><span class="n">radius_of_gyration</span><span class="p">,</span> <span class="n">old_name</span><span class="o">=</span><span class="s">&#39;radiusOfGyration&#39;</span><span class="p">,</span> <span class="n">new_name</span><span class="o">=</span><span class="s">&#39;radius_of_gyration&#39;</span><span class="p">)</span>
 
@@ -2048,13 +2122,13 @@
             <span class="n">recenteredpos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pack_into_box</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">(</span><span class="n">pbc</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">recenteredpos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">positions</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">(</span><span class="n">pbc</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
-        <span class="n">tensor</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+        <span class="n">tensor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
         <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">recenteredpos</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-            <span class="n">tensor</span> <span class="o">+=</span> <span class="n">masses</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">recenteredpos</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="p">:],</span>
+            <span class="n">tensor</span> <span class="o">+=</span> <span class="n">masses</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">recenteredpos</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="p">:],</span>
                                               <span class="n">recenteredpos</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="p">:])</span>
         <span class="n">tensor</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_mass</span><span class="p">()</span>
-        <span class="n">eig_vals</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigvalsh</span><span class="p">(</span><span class="n">tensor</span><span class="p">)</span>
-        <span class="n">shape</span> <span class="o">=</span> <span class="mf">27.0</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">eig_vals</span> <span class="o">-</span> <span class="n">numpy</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">eig_vals</span><span class="p">))</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">eig_vals</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="n">eig_vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigvalsh</span><span class="p">(</span><span class="n">tensor</span><span class="p">)</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="mf">27.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">eig_vals</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">eig_vals</span><span class="p">))</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">eig_vals</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">shape</span>
 </div>
     <span class="n">shapeParameter</span> <span class="o">=</span> <span class="n">deprecate</span><span class="p">(</span><span class="n">shape_parameter</span><span class="p">,</span> <span class="n">old_name</span><span class="o">=</span><span class="s">&#39;shapeParameter&#39;</span><span class="p">,</span> <span class="n">new_name</span><span class="o">=</span><span class="s">&#39;shape_parameter&#39;</span><span class="p">)</span>
@@ -2081,18 +2155,18 @@
             <span class="n">recenteredpos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pack_into_box</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">(</span><span class="n">pbc</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">recenteredpos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">positions</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">(</span><span class="n">pbc</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
-        <span class="n">tensor</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+        <span class="n">tensor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
         <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">recenteredpos</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-            <span class="n">tensor</span> <span class="o">+=</span> <span class="n">masses</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">recenteredpos</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="p">:],</span>
+            <span class="n">tensor</span> <span class="o">+=</span> <span class="n">masses</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">recenteredpos</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="p">:],</span>
                                               <span class="n">recenteredpos</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="p">:])</span>
         <span class="n">tensor</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_mass</span><span class="p">()</span>
-        <span class="n">eig_vals</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigvalsh</span><span class="p">(</span><span class="n">tensor</span><span class="p">)</span>
-        <span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="mf">3.0</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">eig_vals</span> <span class="o">-</span> <span class="n">numpy</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">eig_vals</span><span class="p">),</span> <span class="mi">2</span><span class="p">))</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">power</span><span class="p">(</span>
-            <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">eig_vals</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">eig_vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigvalsh</span><span class="p">(</span><span class="n">tensor</span><span class="p">)</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="mf">3.0</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">eig_vals</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">eig_vals</span><span class="p">),</span> <span class="mi">2</span><span class="p">))</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">eig_vals</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">shape</span>
 </div>
 <div class="viewcode-block" id="AtomGroup.moment_of_inertia"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.moment_of_inertia">[docs]</a>    <span class="k">def</span> <span class="nf">moment_of_inertia</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Tensor of inertia as 3x3 NumPy array.</span>
+        <span class="sd">&quot;&quot;&quot;Tensor of inertia as 3x3 numpy array.</span>
 
 <span class="sd">        :Keywords:</span>
 <span class="sd">          *pbc*</span>
@@ -2121,7 +2195,7 @@
         <span class="c"># Ixy = Iyx = -1*sum(m_i*x_i*y_i)</span>
         <span class="c"># Ixz = Izx = -1*sum(m_i*x_i*z_i)</span>
         <span class="c"># Iyz = Izy = -1*sum(m_i*y_i*z_i)</span>
-        <span class="n">tens</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">tens</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
         <span class="c"># xx</span>
         <span class="n">tens</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">masses</span> <span class="o">*</span> <span class="p">(</span><span class="n">pos</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">pos</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">pos</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">pos</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]))</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
         <span class="c"># xy &amp; yx</span>
@@ -2166,7 +2240,7 @@
             <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pack_into_box</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">x</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)])</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">x</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)])</span>
 </div>
 <div class="viewcode-block" id="AtomGroup.bsphere"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.bsphere">[docs]</a>    <span class="k">def</span> <span class="nf">bsphere</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the bounding sphere of the selection.</span>
@@ -2193,7 +2267,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span>
             <span class="n">centroid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">center_of_geometry</span><span class="p">(</span><span class="n">pbc</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
-        <span class="n">R</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">centroid</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)))</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">centroid</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)))</span>
         <span class="k">return</span> <span class="n">R</span><span class="p">,</span> <span class="n">centroid</span>
 </div>
     <span class="nd">@property</span>
@@ -2289,14 +2363,14 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">eigenval</span><span class="p">,</span> <span class="n">eigenvec</span> <span class="o">=</span> <span class="n">eig</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">moment_of_inertia</span><span class="p">(</span><span class="n">pbc</span><span class="o">=</span><span class="bp">False</span><span class="p">))</span>
         <span class="c"># Sort</span>
-        <span class="n">indices</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">eigenval</span><span class="p">)</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">eigenval</span><span class="p">)</span>
         <span class="c"># Return transposed in more logical form. See Issue 33.</span>
         <span class="k">return</span> <span class="n">eigenvec</span><span class="p">[:,</span> <span class="n">indices</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
 </div>
     <span class="n">principalAxes</span> <span class="o">=</span> <span class="n">deprecate</span><span class="p">(</span><span class="n">principal_axes</span><span class="p">,</span> <span class="n">old_name</span><span class="o">=</span><span class="s">&#39;principalAxes&#39;</span><span class="p">,</span> <span class="n">new_name</span><span class="o">=</span><span class="s">&#39;principal_axes&#39;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="AtomGroup.get_positions"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.get_positions">[docs]</a>    <span class="k">def</span> <span class="nf">get_positions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get a NumPy array of the coordinates.</span>
+<div class="viewcode-block" id="AtomGroup.get_positions"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.get_positions">[docs]</a>    <span class="k">def</span> <span class="nf">get_positions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get a numpy array of the coordinates.</span>
 
 <span class="sd">        :Keywords:</span>
 <span class="sd">           *ts*</span>
@@ -2312,9 +2386,9 @@
 <span class="sd">               passing coordinates to C-code it can be necessary to use</span>
 <span class="sd">               a copy [``False``]</span>
 <span class="sd">           *dtype*</span>
-<span class="sd">               NumPy Data type of the array; the default is usually</span>
+<span class="sd">               numpy Data type of the array; the default is usually</span>
 <span class="sd">               entirely appropriate. Most C-code actually requires the</span>
-<span class="sd">               default  [:class:`numpy.float32`]</span>
+<span class="sd">               default  [:class:`np.float32`]</span>
 
 <span class="sd">        Coordinates can also be directly obtained from the attribute</span>
 <span class="sd">        :attr:`~AtomGroup.positions`.</span>
@@ -2329,10 +2403,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">ts</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span>
-        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">],</span> <span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">],</span> <span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
 </div>
     <span class="n">coordinates</span> <span class="o">=</span> <span class="n">get_positions</span>
-    <span class="sd">&quot;&quot;&quot;NumPy array of the coordinates.</span>
+    <span class="sd">&quot;&quot;&quot;Np array of the coordinates.</span>
 
 <span class="sd">    .. SeeAlso:: :attr:`~AtomGroup.positions` and :meth:`~AtomGroup.get_positions`</span>
 
@@ -2347,7 +2421,7 @@
 
 <span class="sd">        :Arguments:</span>
 <span class="sd">           *coords*</span>
-<span class="sd">               a Nx3 NumPy :class:`numpy.ndarray` where N is the number of</span>
+<span class="sd">               a Nx3 :class:`numpy.ndarray` where N is the number of</span>
 <span class="sd">               atoms in this atom group.</span>
 
 <span class="sd">        :Keywords:</span>
@@ -2359,7 +2433,7 @@
 
 <span class="sd">           If the group contains N atoms and *coord* is a single point (i.e. an</span>
 <span class="sd">           array of length 3) then all N atom positions are set to *coord* (due</span>
-<span class="sd">           to NumPy&#39;s broadcasting rules), as described for</span>
+<span class="sd">           to numpy&#39;s broadcasting rules), as described for</span>
 <span class="sd">           :attr:`~AtomGroup.positions`.</span>
 
 <span class="sd">        See also :meth:`~AtomGroup.get_positions` and attribute access through</span>
@@ -2385,8 +2459,8 @@
 
 <span class="s">                .. versionadded:: 0.7.6&quot;&quot;&quot;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="AtomGroup.get_velocities"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.get_velocities">[docs]</a>    <span class="k">def</span> <span class="nf">get_velocities</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;NumPy array of the velocities.</span>
+<div class="viewcode-block" id="AtomGroup.get_velocities"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.get_velocities">[docs]</a>    <span class="k">def</span> <span class="nf">get_velocities</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;numpy array of the velocities.</span>
 
 <span class="sd">        Raises a :exc:`NoDataError` if the underlying</span>
 <span class="sd">        :class:`~MDAnalysis.coordinates.base.Timestep` does not contain</span>
@@ -2400,7 +2474,7 @@
         <span class="k">if</span> <span class="n">ts</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">velocities</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">],</span> <span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">velocities</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">],</span> <span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="n">NoDataError</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s">&quot;Timestep does not contain velocities&quot;</span><span class="p">)</span>
 </div>
@@ -2424,7 +2498,7 @@
             <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s">&quot;Timestep does not contain velocities&quot;</span><span class="p">)</span>
 </div>
     <span class="n">velocities</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">get_velocities</span><span class="p">,</span> <span class="n">set_velocities</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span><span class="se">\</span>
-<span class="s">        NumPy array of the velocities of the atoms in the group.</span>
+<span class="s">        numpy array of the velocities of the atoms in the group.</span>
 
 <span class="s">        If the trajectory does not contain velocity information then a</span>
 <span class="s">        :exc:`~MDAnalysis.NoDataError` is raised.</span>
@@ -2437,9 +2511,9 @@
 <span class="s">           Became an attribute.</span>
 <span class="s">    &quot;&quot;&quot;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="AtomGroup.get_forces"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.get_forces">[docs]</a>    <span class="k">def</span> <span class="nf">get_forces</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">):</span>
+<div class="viewcode-block" id="AtomGroup.get_forces"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.get_forces">[docs]</a>    <span class="k">def</span> <span class="nf">get_forces</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get a NumPy array of the atomic forces (if available).</span>
+<span class="sd">        Get a numpy array of the atomic forces (if available).</span>
 <span class="sd">        Currently only supported for Gromacs .trr trajectories.</span>
 
 <span class="sd">        :Keywords:</span>
@@ -2456,9 +2530,9 @@
 <span class="sd">               passing coordinates to C-code it can be necessary to use</span>
 <span class="sd">               a copy [``False``]</span>
 <span class="sd">           *dtype*</span>
-<span class="sd">               NumPy Data type of the array; the default is usually</span>
+<span class="sd">               numpy data type of the array; the default is usually</span>
 <span class="sd">               entirely appropriate. Most C-code actually requires the</span>
-<span class="sd">               default  [:class:`numpy.float32`]</span>
+<span class="sd">               default  [:class:`np.float32`]</span>
 
 <span class="sd">        Forces can also be directly obtained from the attribute</span>
 <span class="sd">        :attr:`~AtomGroup.forces`.</span>
@@ -2471,7 +2545,7 @@
         <span class="k">if</span> <span class="n">ts</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">forces</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">],</span> <span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">forces</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">],</span> <span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="n">NoDataError</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s">&quot;Timestep does not contain forces&quot;</span><span class="p">)</span>
 </div>
@@ -2480,7 +2554,7 @@
 
 <span class="sd">        :Arguments:</span>
 <span class="sd">           *forces*</span>
-<span class="sd">               a Nx3 NumPy :class:`numpy.ndarray` where N is the number of</span>
+<span class="sd">               a Nx3 numpy :class:`numpy.ndarray` where N is the number of</span>
 <span class="sd">               atoms in this atom group.</span>
 
 <span class="sd">        :Keywords:</span>
@@ -2492,7 +2566,7 @@
 
 <span class="sd">           If the group contains N atoms and *force* is a single vector (i.e. an</span>
 <span class="sd">           array of length 3) then all N atom positions are set to *force* (due</span>
-<span class="sd">           to NumPy&#39;s broadcasting rules), as described for</span>
+<span class="sd">           to numpy&#39;s broadcasting rules), as described for</span>
 <span class="sd">           :attr:`~AtomGroup.forces`.</span>
 
 <span class="sd">        See also :meth:`~AtomGroup.get_forces` and attribute access through</span>
@@ -2542,7 +2616,7 @@
         <span class="c"># changes the coordinates (in place)</span>
         <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">positions</span>
         <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">indices</span>
-        <span class="n">x</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">R</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+        <span class="n">x</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">R</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
         <span class="n">x</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">+=</span> <span class="n">t</span>
         <span class="k">return</span> <span class="n">R</span>
 </div>
@@ -2571,7 +2645,7 @@
             <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span> <span class="o">=</span> <span class="n">sel1</span><span class="o">.</span><span class="n">centroid</span><span class="p">(),</span> <span class="n">sel2</span><span class="o">.</span><span class="n">centroid</span><span class="p">()</span>
             <span class="n">vector</span> <span class="o">=</span> <span class="n">x2</span> <span class="o">-</span> <span class="n">x1</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">AttributeError</span><span class="p">):</span>
-            <span class="n">vector</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+            <span class="n">vector</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
         <span class="c"># changes the coordinates (in place)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">]</span> <span class="o">+=</span> <span class="n">vector</span>
         <span class="k">return</span> <span class="n">vector</span>
@@ -2588,7 +2662,7 @@
 
 <span class="sd">            \mathbf{x}&#39; = \mathsf{R}\mathbf{x}</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">R</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
         <span class="c"># changes the coordinates (in place)</span>
         <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">positions</span>
         <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">indices</span>
@@ -2627,23 +2701,23 @@
 <span class="sd">        :Returns: The 4x4 matrix which consists of the rotation matrix ``M[:3,:3]``</span>
 <span class="sd">                  and the translation vector ``M[:3,3]``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">alpha</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">sel1</span><span class="p">,</span> <span class="n">sel2</span> <span class="o">=</span> <span class="n">axis</span>
             <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span> <span class="o">=</span> <span class="n">sel1</span><span class="o">.</span><span class="n">centroid</span><span class="p">(),</span> <span class="n">sel2</span><span class="o">.</span><span class="n">centroid</span><span class="p">()</span>
             <span class="n">v</span> <span class="o">=</span> <span class="n">x2</span> <span class="o">-</span> <span class="n">x1</span>
-            <span class="n">n</span> <span class="o">=</span> <span class="n">v</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="n">v</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">point</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
                 <span class="n">point</span> <span class="o">=</span> <span class="n">x1</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">AttributeError</span><span class="p">):</span>
-            <span class="n">n</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">point</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">centroid</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">p</span> <span class="o">=</span> <span class="n">point</span><span class="o">.</span><span class="n">centroid</span><span class="p">()</span>
             <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-                <span class="n">p</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
         <span class="n">M</span> <span class="o">=</span> <span class="n">transformations</span><span class="o">.</span><span class="n">rotation_matrix</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">point</span><span class="o">=</span><span class="n">p</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">M</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">M</span>
@@ -2666,7 +2740,7 @@
 <span class="sd">          u.atoms.write(&quot;aligned.pdb&quot;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">principal_axes</span><span class="p">()[</span><span class="n">axis</span><span class="p">]</span>
-        <span class="n">angle</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">mdamath</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">vector</span><span class="p">))</span>
+        <span class="n">angle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">mdamath</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">vector</span><span class="p">))</span>
         <span class="n">ax</span> <span class="o">=</span> <span class="n">transformations</span><span class="o">.</span><span class="n">rotaxis</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">vector</span><span class="p">)</span>
         <span class="c">#print &quot;principal[%d] = %r&quot; % (axis, p)</span>
         <span class="c">#print &quot;axis = %r, angle = %f deg&quot; % (ax, angle)</span>
@@ -2795,13 +2869,13 @@
                              <span class="s">&quot;or &#39;fragments&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">compound</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="n">center</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;com&#39;</span><span class="p">,</span> <span class="s">&#39;centerofmass&#39;</span><span class="p">):</span>
-            <span class="n">centers</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">o</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">()</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">objects</span><span class="p">])</span>
+            <span class="n">centers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">o</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">()</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">objects</span><span class="p">])</span>
         <span class="k">elif</span> <span class="n">center</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;cog&#39;</span><span class="p">,</span> <span class="s">&#39;centroid&#39;</span><span class="p">,</span> <span class="s">&#39;centerofgeometry&#39;</span><span class="p">):</span>
-            <span class="n">centers</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">o</span><span class="o">.</span><span class="n">center_of_geometry</span><span class="p">()</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">objects</span><span class="p">])</span>
+            <span class="n">centers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">o</span><span class="o">.</span><span class="n">center_of_geometry</span><span class="p">()</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">objects</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Unrecognised center definition: {0}&quot;</span>
                              <span class="s">&quot;Please use one of &#39;com&#39; or &#39;cog&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">center</span><span class="p">))</span>
-        <span class="n">centers</span> <span class="o">=</span> <span class="n">centers</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="n">centers</span> <span class="o">=</span> <span class="n">centers</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span>
@@ -2857,7 +2931,7 @@
         <span class="c"># more complicated groupings</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="c"># use own list comprehension to avoid sorting/compression by eg self.resids</span>
-            <span class="n">ids</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">getattr</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="n">accessors</span><span class="p">[</span><span class="n">level</span><span class="p">])</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">])</span>
+            <span class="n">ids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">getattr</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="n">accessors</span><span class="p">[</span><span class="n">level</span><span class="p">])</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">])</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;level = &#39;{0}&#39; not supported, must be one of {1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="n">level</span><span class="p">,</span> <span class="n">accessors</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
@@ -2865,7 +2939,7 @@
         <span class="c"># now sort the resids so that it doesn&#39;t matter if the AG contains</span>
         <span class="c"># atoms in random order (i.e. non-sequential resids); groupby needs</span>
         <span class="c"># presorted keys!</span>
-        <span class="n">idx</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span>
         <span class="n">sorted_ids</span> <span class="o">=</span> <span class="n">ids</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
         <span class="c"># group (index, key) and then pull out the index for each group to form AtomGroups</span>
         <span class="c"># by indexing self (using advanced slicing eg g[[1,2,3]]</span>
@@ -2909,6 +2983,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">import</span> <span class="nn">MDAnalysis.coordinates</span>
         <span class="kn">import</span> <span class="nn">MDAnalysis.selections</span>
+
+        <span class="c"># check that AtomGroup actually has any atoms (Issue #434)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s">&quot;Cannot write an AtomGroup with 0 atoms&quot;</span><span class="p">)</span>
 
         <span class="n">trj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span>  <span class="c"># unified trajectory API</span>
         <span class="n">frame</span> <span class="o">=</span> <span class="n">trj</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span>
@@ -3224,7 +3302,7 @@
 <span class="sd">        .. versionchanged:: 0.11.0</span>
 <span class="sd">           Now a property and returns array of length `len(self)`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">r</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">residues</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">r</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">residues</span><span class="p">])</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">resnames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -3235,7 +3313,7 @@
 <span class="sd">        .. versionchanged:: 0.11.0</span>
 <span class="sd">           Now a property and returns array of length `len(self)`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">r</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">residues</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">r</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">residues</span><span class="p">])</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">resnums</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -3247,7 +3325,7 @@
 <span class="sd">        .. versionchanged:: 0.11.0</span>
 <span class="sd">           Now a property and returns array of length `len(self)`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">r</span><span class="o">.</span><span class="n">resnum</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">residues</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">r</span><span class="o">.</span><span class="n">resnum</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">residues</span><span class="p">])</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">segids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -3262,7 +3340,7 @@
 <span class="sd">           Now a property and returns array of length `len(self)`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c"># a bit of a hack to use just</span>
-        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">segid</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">residues</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">segid</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">residues</span><span class="p">])</span>
 
 <div class="viewcode-block" id="ResidueGroup.set_resids"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.ResidueGroup.set_resids">[docs]</a>    <span class="k">def</span> <span class="nf">set_resids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resid</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set the resids to integer *resid* for **all residues** in the</span>
@@ -3488,7 +3566,7 @@
 <span class="sd">        .. versionchanged:: 0.11.0</span>
 <span class="sd">           Now a property and returns array of length `len(self)`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">s</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">segments</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">s</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">segments</span><span class="p">])</span>
 
 <div class="viewcode-block" id="SegmentGroup.set_segids"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.SegmentGroup.set_segids">[docs]</a>    <span class="k">def</span> <span class="nf">set_segids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">segid</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set the segids to *segid* for all atoms in the :class:`SegmentGroup`.</span>
@@ -3750,7 +3828,8 @@
                 <span class="c"># or if file is known as a topology &amp; coordinate file, use that</span>
                 <span class="k">if</span> <span class="n">fmt</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
                     <span class="n">fmt</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">guess_format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">_topology_coordinates_readers</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">fmt</span> <span class="ow">in</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">_trajectory_readers</span>
+                    <span class="ow">and</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">topology</span><span class="o">.</span><span class="n">_topology_parsers</span><span class="p">):</span>
                     <span class="n">coordinatefile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span>
             <span class="c"># Fix by SB: make sure coordinatefile is never an empty tuple</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">coordinatefile</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -4588,11 +4667,6 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">False</span>
 
-    <span class="c"># A __del__ method can be added to the Universe, but bear in mind that for</span>
-    <span class="c"># that to work objects under Universe that hold backreferences to it can</span>
-    <span class="c"># only do so using weakrefs. (Issue #297)</span>
-    <span class="c">#def __del__(self):</span>
-    <span class="c">#    pass</span>
 </div>
 <div class="viewcode-block" id="as_Universe"><a class="viewcode-back" href="../../../documentation_pages/core/AtomGroup.html#MDAnalysis.core.AtomGroup.as_Universe">[docs]</a><span class="k">def</span> <span class="nf">as_Universe</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return a universe from the input arguments.</span>
@@ -4670,7 +4744,7 @@
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;cannot merge empty AtomGroup&quot;</span><span class="p">)</span>
 
-    <span class="n">coords</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">args</span><span class="p">])</span>
+    <span class="n">coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">coordinates</span><span class="p">()</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">args</span><span class="p">])</span>
     <span class="n">trajectory</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">Reader</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
     <span class="n">ts</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">Timestep</span><span class="o">.</span><span class="n">from_coordinates</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
     <span class="nb">setattr</span><span class="p">(</span><span class="n">trajectory</span><span class="p">,</span> <span class="s">&quot;ts&quot;</span><span class="p">,</span> <span class="n">ts</span><span class="p">)</span>
@@ -4735,12 +4809,12 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman, Jonathan Barnoud,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,

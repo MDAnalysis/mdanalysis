@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.3. DCD trajectory I/O — MDAnalysis.coordinates.DCD &mdash; MDAnalysis 0.11.0 documentation</title>
+    <title>5.3. DCD trajectory I/O — MDAnalysis.coordinates.DCD &mdash; MDAnalysis 0.12.0 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.11.0',
+        VERSION:     '0.12.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.11.0 documentation"
+          title="Search within MDAnalysis 0.12.0 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.11.0 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.12.0 documentation" href="../../index.html" />
     <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
     <link rel="next" title="5.4. DL_Poly format reader MDAnalysis.coordinates.DLPoly" href="DLPoly.html" />
     <link rel="prev" title="5.2. CRD structure files in MDAnalysis — MDAnalysis.coordinates.CRD" href="CRD.html" /> 
@@ -49,7 +49,7 @@
         <li class="right" >
           <a href="CRD.html" title="5.2. CRD structure files in MDAnalysis — MDAnalysis.coordinates.CRD"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -144,11 +144,7 @@ Trajectory API.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
-<dt><em>n_atoms</em></dt>
-<dd><p class="first last">The total number of atoms this Timestep describes</p>
-</dd>
-</dl>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>*n_atoms*</strong> &#8211; The total number of atoms this Timestep describes</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
@@ -178,6 +174,58 @@ is set, then <cite>dt</cite> will be ignored.</p>
 Can add and remove position/velocity/force information by using
 the has_* attribute</p>
 </div>
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.DCD.Timestep.__delattr__">
+<code class="descname">__delattr__</code><a class="headerlink" href="#MDAnalysis.coordinates.DCD.Timestep.__delattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__delattr__(&#8216;name&#8217;) &lt;==&gt; del x.name</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.DCD.Timestep.__format__">
+<code class="descname">__format__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.Timestep.__format__" title="Permalink to this definition">¶</a></dt>
+<dd><p>default object formatter</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.DCD.Timestep.__getattribute__">
+<code class="descname">__getattribute__</code><a class="headerlink" href="#MDAnalysis.coordinates.DCD.Timestep.__getattribute__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__getattribute__(&#8216;name&#8217;) &lt;==&gt; x.name</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.DCD.Timestep.__hash__">
+<code class="descname">__hash__</code><a class="headerlink" href="#MDAnalysis.coordinates.DCD.Timestep.__hash__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.DCD.Timestep.__reduce__">
+<code class="descname">__reduce__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.Timestep.__reduce__" title="Permalink to this definition">¶</a></dt>
+<dd><p>helper for pickle</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.DCD.Timestep.__reduce_ex__">
+<code class="descname">__reduce_ex__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.Timestep.__reduce_ex__" title="Permalink to this definition">¶</a></dt>
+<dd><p>helper for pickle</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.DCD.Timestep.__setattr__">
+<code class="descname">__setattr__</code><a class="headerlink" href="#MDAnalysis.coordinates.DCD.Timestep.__setattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__setattr__(&#8216;name&#8217;, value) &lt;==&gt; x.name = value</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.DCD.Timestep.__sizeof__">
+<code class="descname">__sizeof__</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; int<a class="headerlink" href="#MDAnalysis.coordinates.DCD.Timestep.__sizeof__" title="Permalink to this definition">¶</a></dt>
+<dd><p>size of object in memory, in bytes</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.DCD.Timestep.__str__">
+<code class="descname">__str__</code><a class="headerlink" href="#MDAnalysis.coordinates.DCD.Timestep.__str__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="method">
 <dt id="MDAnalysis.coordinates.DCD.Timestep.copy">
 <code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Timestep.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.DCD.Timestep.copy" title="Permalink to this definition">¶</a></dt>
@@ -271,16 +319,12 @@ weren&#8217;t originally present.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A numpy.ndarray of shape (n_atoms, 3) of force data for each
-atom</p>
-</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A numpy.ndarray of shape (n_atoms, 3) of force data for each
+atom</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><dl class="first last docutils">
-<dt><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.NoDataError</span></code></dt>
-<dd><p class="first last">When the Timestep does not contain force information</p>
-</dd>
-</dl>
-</td>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-exc docutils literal"><span class="pre">:class</span></code> &#8211;
+<cite>MDAnalysis.NoDataError</cite>
+When the Timestep does not contain force information</td>
 </tr>
 </tbody>
 </table>
@@ -359,16 +403,12 @@ weren&#8217;t originally present.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A numpy.ndarray of shape (n_atoms, 3) of position data for each
-atom</p>
-</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A numpy.ndarray of shape (n_atoms, 3) of position data for each
+atom</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><dl class="first last docutils">
-<dt><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.exceptions.NoDataError</span></code></a></dt>
-<dd><p class="first last">If the Timestep has no position data</p>
-</dd>
-</dl>
-</td>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-exc docutils literal"><span class="pre">:class</span></code> &#8211;
+<cite>MDAnalysis.exceptions.NoDataError</cite>
+If the Timestep has no position data</td>
 </tr>
 </tbody>
 </table>
@@ -441,16 +481,12 @@ weren&#8217;t originally present.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A numpy.ndarray of shape (n_atoms, 3) of velocity data for each
-atom</p>
-</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A numpy.ndarray of shape (n_atoms, 3) of velocity data for each
+atom</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><dl class="first last docutils">
-<dt><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.exceptions.NoDataError</span></code></a></dt>
-<dd><p class="first last">When the Timestep does not contain velocity information</p>
-</dd>
-</dl>
-</td>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-exc docutils literal"><span class="pre">:class</span></code> &#8211;
+<cite>MDAnalysis.exceptions.NoDataError</cite>
+When the Timestep does not contain velocity information</td>
 </tr>
 </tbody>
 </table>
@@ -475,40 +511,59 @@ atom</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Data:</th><td class="field-body"><dl class="first docutils">
+<tr class="field-odd field"><th class="field-name">Data:</th><td class="field-body"><dl class="first last docutils">
 <dt>ts</dt>
 <dd><p class="first last"><a class="reference internal" href="#MDAnalysis.coordinates.DCD.Timestep" title="MDAnalysis.coordinates.DCD.Timestep"><code class="xref py py-class docutils literal"><span class="pre">Timestep</span></code></a> object containing coordinates of current frame</p>
 </dd>
 </dl>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Methods:</th><td class="field-body"><dl class="first last docutils">
-<dt><code class="docutils literal"><span class="pre">dcd</span> <span class="pre">=</span> <span class="pre">DCD(dcdfilename)</span></code></dt>
-<dd><p class="first last">open dcd file and read header</p>
-</dd>
-<dt><code class="docutils literal"><span class="pre">len(dcd)</span></code></dt>
-<dd><p class="first last">return number of frames in dcd</p>
-</dd>
-<dt><code class="docutils literal"><span class="pre">for</span> <span class="pre">ts</span> <span class="pre">in</span> <span class="pre">dcd:</span></code></dt>
-<dd><p class="first last">iterate through trajectory</p>
-</dd>
-<dt><code class="docutils literal"><span class="pre">for</span> <span class="pre">ts</span> <span class="pre">in</span> <span class="pre">dcd[start:stop:skip]:</span></code></dt>
-<dd><p class="first last">iterate through a trajectory</p>
-</dd>
-<dt><code class="docutils literal"><span class="pre">dcd[i]</span></code></dt>
-<dd><p class="first last">random access into the trajectory (i corresponds to frame number)</p>
-</dd>
-<dt><code class="docutils literal"><span class="pre">data</span> <span class="pre">=</span> <span class="pre">dcd.timeseries(...)</span></code></dt>
-<dd><p class="first last">retrieve a subset of coordinate information for a group of atoms</p>
-</dd>
-<dt><code class="docutils literal"><span class="pre">data</span> <span class="pre">=</span> <span class="pre">dcd.correl(...)</span></code></dt>
-<dd><p class="first last">populate a <code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.Timeseries.Collection</span></code> object with computed timeseries</p>
-</dd>
-</dl>
-</td>
-</tr>
 </tbody>
 </table>
+<dl class="method">
+<dt>
+<code class="descname">``dcd = DCD(dcdfilename)``</code></dt>
+<dd><p>open dcd file and read header</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">``len(dcd)``</code></dt>
+<dd><p>return number of frames in dcd</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">``for ts in dcd</code></dt>
+<dd><p>``
+iterate through trajectory</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">``for ts in dcd[start</code></dt>
+<dd><p>stop:skip]:``
+iterate through a trajectory</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">``dcd[i]``</code></dt>
+<dd><p>random access into the trajectory (i corresponds to frame number)</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">``data = dcd.timeseries(...)``</code></dt>
+<dd><p>retrieve a subset of coordinate information for a group of atoms</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">``data = dcd.correl(...)``</code></dt>
+<dd><p>populate a <code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.Timeseries.Collection</span></code> object with computed timeseries</p>
+</dd></dl>
+
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">The DCD file format is not well defined. In particular, NAMD
@@ -551,11 +606,7 @@ available). <em>n_atoms</em> is always set from <code class="xref py py-attr doc
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
-<dt><em>filename</em></dt>
-<dd><p class="first last">filename of the output DCD trajectory</p>
-</dd>
-</dl>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>*filename*</strong> &#8211; filename of the output DCD trajectory</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first docutils">
@@ -598,6 +649,58 @@ according to the CHARMM format. The time between two frames would be
 <p class="last"><a class="reference internal" href="#MDAnalysis.coordinates.DCD.DCDWriter" title="MDAnalysis.coordinates.DCD.DCDWriter"><code class="xref py py-class docutils literal"><span class="pre">DCDWriter</span></code></a> has detailed argument description</p>
 </div>
 </dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.DCD.DCDReader.__delattr__">
+<code class="descname">__delattr__</code><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.__delattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__delattr__(&#8216;name&#8217;) &lt;==&gt; del x.name</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.DCD.DCDReader.__format__">
+<code class="descname">__format__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.__format__" title="Permalink to this definition">¶</a></dt>
+<dd><p>default object formatter</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.DCD.DCDReader.__getattribute__">
+<code class="descname">__getattribute__</code><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.__getattribute__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__getattribute__(&#8216;name&#8217;) &lt;==&gt; x.name</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.DCD.DCDReader.__hash__">
+<code class="descname">__hash__</code><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.__hash__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.DCD.DCDReader.__reduce__">
+<code class="descname">__reduce__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.__reduce__" title="Permalink to this definition">¶</a></dt>
+<dd><p>helper for pickle</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.DCD.DCDReader.__reduce_ex__">
+<code class="descname">__reduce_ex__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.__reduce_ex__" title="Permalink to this definition">¶</a></dt>
+<dd><p>helper for pickle</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.DCD.DCDReader.__setattr__">
+<code class="descname">__setattr__</code><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.__setattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__setattr__(&#8216;name&#8217;, value) &lt;==&gt; x.name = value</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.DCD.DCDReader.__sizeof__">
+<code class="descname">__sizeof__</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; int<a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.__sizeof__" title="Permalink to this definition">¶</a></dt>
+<dd><p>size of object in memory, in bytes</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.DCD.DCDReader.__str__">
+<code class="descname">__str__</code><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.__str__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.DCD.DCDReader.convert_forces_from_native">
@@ -705,14 +808,10 @@ returned.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
-<dt><em>timeseries</em></dt>
-<dd><p class="first last"><a class="reference internal" href="../core/Timeseries.html#MDAnalysis.core.Timeseries.TimeseriesCollection" title="MDAnalysis.core.Timeseries.TimeseriesCollection"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.Timeseries.TimeseriesCollection</span></code></a></p>
-</dd>
-<dt><em>start, stop, skip</em></dt>
-<dd><p class="first last">subset of trajectory to use, with start and stop being inclusive</p>
-</dd>
-</dl>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>*timeseries*</strong> &#8211; <a class="reference internal" href="../core/Timeseries.html#MDAnalysis.core.Timeseries.TimeseriesCollection" title="MDAnalysis.core.Timeseries.TimeseriesCollection"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.Timeseries.TimeseriesCollection</span></code></a></li>
+<li><strong>stop, skip*</strong> (<em>*start,</em>) &#8211; subset of trajectory to use, with start and stop being inclusive</li>
+</ul>
 </td>
 </tr>
 </tbody>
@@ -754,21 +853,15 @@ time = <code class="xref py py-attr docutils literal"><span class="pre">Timestep
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
-<dt><em>asel</em></dt>
-<dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></code></a> object</p>
-</dd>
-<dt><em>start, stop, skip</em></dt>
-<dd><p class="first last">range of trajectory to access, start and stop are inclusive</p>
-</dd>
-<dt><em>format</em></dt>
-<dd><p class="first last">the order/shape of the return data array, corresponding
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>*asel*</strong> &#8211; <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></code></a> object</li>
+<li><strong>stop, skip*</strong> (<em>*start,</em>) &#8211; range of trajectory to access, start and stop are inclusive</li>
+<li><strong>*format*</strong> &#8211; the order/shape of the return data array, corresponding
 to (a)tom, (f)rame, (c)oordinates all six combinations
 of &#8216;a&#8217;, &#8216;f&#8217;, &#8216;c&#8217; are allowed ie &#8220;fac&#8221; - return array
 where the shape is (frame, number of atoms,
-coordinates)</p>
-</dd>
-</dl>
+coordinates)</li>
+</ul>
 </td>
 </tr>
 </tbody>
@@ -794,14 +887,11 @@ coordinates)</p>
 </pre></div>
 </div>
 <p>Keywords are available to set some of the low-level attributes of the DCD.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Methods:</th><td class="field-body"><code class="docutils literal"><span class="pre">d</span> <span class="pre">=</span> <span class="pre">DCDWriter(dcdfilename,</span> <span class="pre">n_atoms,</span> <span class="pre">start,</span> <span class="pre">step,</span> <span class="pre">delta,</span> <span class="pre">remarks)</span></code></td>
-</tr>
-</tbody>
-</table>
+<dl class="method">
+<dt>
+<code class="descname">``d = DCDWriter(dcdfilename, n_atoms, start, step, delta, remarks)``</code></dt>
+<dd></dd></dl>
+
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p>The Writer will write the <strong>unit cell information</strong> to the DCD in a
@@ -868,6 +958,58 @@ according to the CHARMM format. The time between two frames would be
 <em>dt</em> keyword (see above) to just tell the writer that it should
 record &#8220;There are dt ps between each frame&#8221;.</p>
 </div>
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.DCD.DCDWriter.__delattr__">
+<code class="descname">__delattr__</code><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.__delattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__delattr__(&#8216;name&#8217;) &lt;==&gt; del x.name</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.DCD.DCDWriter.__format__">
+<code class="descname">__format__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.__format__" title="Permalink to this definition">¶</a></dt>
+<dd><p>default object formatter</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.DCD.DCDWriter.__getattribute__">
+<code class="descname">__getattribute__</code><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.__getattribute__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__getattribute__(&#8216;name&#8217;) &lt;==&gt; x.name</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.DCD.DCDWriter.__hash__">
+<code class="descname">__hash__</code><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.__hash__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.DCD.DCDWriter.__reduce__">
+<code class="descname">__reduce__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.__reduce__" title="Permalink to this definition">¶</a></dt>
+<dd><p>helper for pickle</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.DCD.DCDWriter.__reduce_ex__">
+<code class="descname">__reduce_ex__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.__reduce_ex__" title="Permalink to this definition">¶</a></dt>
+<dd><p>helper for pickle</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.DCD.DCDWriter.__setattr__">
+<code class="descname">__setattr__</code><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.__setattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__setattr__(&#8216;name&#8217;, value) &lt;==&gt; x.name = value</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.DCD.DCDWriter.__sizeof__">
+<code class="descname">__sizeof__</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; int<a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.__sizeof__" title="Permalink to this definition">¶</a></dt>
+<dd><p>size of object in memory, in bytes</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.DCD.DCDWriter.__str__">
+<code class="descname">__str__</code><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.__str__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="method">
 <dt id="MDAnalysis.coordinates.DCD.DCDWriter.close">
 <code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/DCD.html#DCDWriter.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDWriter.close" title="Permalink to this definition">¶</a></dt>
@@ -993,14 +1135,10 @@ returned.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
-<dt><em>criteria</em></dt>
-<dd><p class="first last">dictionary containing the <em>max</em> and <em>min</em> values in native units</p>
-</dd>
-<dt><em>x</em></dt>
-<dd><p class="first last"><code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of <code class="docutils literal"><span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">z)</span></code> coordinates of atoms selected to be written out.</p>
-</dd>
-</dl>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>*criteria*</strong> &#8211; dictionary containing the <em>max</em> and <em>min</em> values in native units</li>
+<li><strong>*x*</strong> &#8211; <code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of <code class="docutils literal"><span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">z)</span></code> coordinates of atoms selected to be written out.</li>
+</ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">boolean</p>
@@ -1061,12 +1199,12 @@ if no coordinates to be written.</p>
         <li class="right" >
           <a href="CRD.html" title="5.2. CRD structure files in MDAnalysis — MDAnalysis.coordinates.CRD"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman, Jonathan Barnoud,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,

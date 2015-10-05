@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>9.5. Mathematical helper functions — MDAnalysis.lib.mdamath &mdash; MDAnalysis 0.11.0 documentation</title>
+    <title>9.5. Mathematical helper functions — MDAnalysis.lib.mdamath &mdash; MDAnalysis 0.12.0 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.11.0',
+        VERSION:     '0.12.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.11.0 documentation"
+          title="Search within MDAnalysis 0.12.0 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.11.0 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.12.0 documentation" href="../../index.html" />
     <link rel="up" title="9. MDAnalysis library" href="../lib_modules.html" />
     <link rel="next" title="9.6. Parallel algorithms for MDAnalysis" href="parallel.html" />
     <link rel="prev" title="9.4. Setting up logging — MDAnalysis.lib.log" href="log.html" /> 
@@ -49,7 +49,7 @@
         <li class="right" >
           <a href="log.html" title="9.4. Setting up logging — MDAnalysis.lib.log"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../lib_modules.html" accesskey="U">9. MDAnalysis library</a> &raquo;</li> 
       </ul>
     </div>
@@ -110,13 +110,24 @@
 <dl class="function">
 <dt id="MDAnalysis.lib.mdamath.norm">
 <code class="descclassname">MDAnalysis.lib.mdamath.</code><code class="descname">norm</code><span class="sig-paren">(</span><em>v</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/mdamath.html#norm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.mdamath.norm" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the length of a vector, <code class="docutils literal"><span class="pre">sqrt(v.v)</span></code>.</p>
+<dd><p>Calculate the norm of a vector v.</p>
 <div class="math">
 \[v = \sqrt{\mathbf{v}\cdot\mathbf{v}}\]</div>
-<p>Faster than <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.linalg.norm.html#numpy.linalg.norm" title="(in NumPy v1.9)"><code class="xref py py-func docutils literal"><span class="pre">numpy.linalg.norm()</span></code></a> because no frills.</p>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.11.0: </span>Moved into lib.mdamath</p>
-</div>
+<p>This version is faster then numpy.linalg.norm because it only works for a
+single vector and therefore can skip a lot of the additional fuss
+linalg.norm does.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>v</strong> (<em>array_like</em>) &#8211; 1D array of shape (N) for a vector of length N</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">norm of the vector</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)">float</a></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -190,17 +201,11 @@ vectors</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
-<dt><em>dimensions</em></dt>
-<dd><p class="first last">list of box lengths and angles (in degrees) such as
-[A,B,C,alpha,beta,gamma]</p>
-</dd>
-</dl>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>*dimensions*</strong> &#8211; list of box lengths and angles (in degrees) such as
+[A,B,C,alpha,beta,gamma]</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">numpy 3x3 array B, with B[0] = first box vector,
-B[1] = second vector, B[2] third box vector.</p>
-</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">numpy 3x3 array B, with B[0] = first box vector,
+B[1] = second vector, B[2] third box vector.</td>
 </tr>
 </tbody>
 </table>
@@ -224,17 +229,11 @@ triclinic box vectors from <a class="reference internal" href="#MDAnalysis.lib.m
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
-<dt><em>dimensions</em></dt>
-<dd><p class="first last">list of box lengths and angles (in degrees) such as
-[A,B,C,alpha,beta,gamma]</p>
-</dd>
-</dl>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>*dimensions*</strong> &#8211; list of box lengths and angles (in degrees) such as
+[A,B,C,alpha,beta,gamma]</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">numpy 3x3 array B, with B[0] = first box vector,
-B[1] = second vector, B[2] third box vector.</p>
-</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">numpy 3x3 array B, with B[0] = first box vector,
+B[1] = second vector, B[2] third box vector.</td>
 </tr>
 </tbody>
 </table>
@@ -248,13 +247,9 @@ B[1] = second vector, B[2] third box vector.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
-<dt><em>atomgroup</em></dt>
-<dd><p class="first last">The <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.AtomGroup</span></code></a> to work with.
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>*atomgroup*</strong> &#8211; The <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.AtomGroup</span></code></a> to work with.
 The positions of this are modified in place.  All these atoms
-must belong in the same molecule.</p>
-</dd>
-</dl>
+must belong in the same molecule or fragment.</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first docutils">
@@ -268,17 +263,17 @@ Defaults to atom 0 in the atomgroup.</p>
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><code class="docutils literal"><span class="pre">None</span></code>.  Atom positions are modified in place</p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><dl class="first last docutils">
-<dt><cite>NoDataError</cite></dt>
-<dd><p class="first last">if there are no bonds present.
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last">
+<li><p class="first">:exc:<code class="docutils literal"><span class="pre">NoDataError</span></code> &#8211;</p>
+<p>if there are no bonds present.
 (See <a class="reference internal" href="../topology/core.html#MDAnalysis.topology.core.guess_bonds" title="MDAnalysis.topology.core.guess_bonds"><code class="xref py py-func docutils literal"><span class="pre">guess_bonds()</span></code></a>)</p>
-</dd>
-<dt><cite>ValueError</cite></dt>
-<dd><p class="first last">if the algorithm fails to work.  This is usually
+</li>
+<li><p class="first">:exc:<code class="docutils literal"><span class="pre">ValueError</span></code> &#8211;</p>
+<p>if the algorithm fails to work.  This is usually
 caused by the atomgroup not being a single fragment.
 (ie the molecule can&#8217;t be traversed by following bonds)</p>
-</dd>
-</dl>
+</li>
+</ul>
 </td>
 </tr>
 </tbody>
@@ -349,17 +344,11 @@ triclinic box vectors from <a class="reference internal" href="#MDAnalysis.lib.m
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
-<dt><em>dimensions</em></dt>
-<dd><p class="first last">list of box lengths and angles (in degrees) such as
-[A,B,C,alpha,beta,gamma]</p>
-</dd>
-</dl>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>*dimensions*</strong> &#8211; list of box lengths and angles (in degrees) such as
+[A,B,C,alpha,beta,gamma]</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">numpy 3x3 array B, with B[0] = first box vector,
-B[1] = second vector, B[2] third box vector.</p>
-</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">numpy 3x3 array B, with B[0] = first box vector,
+B[1] = second vector, B[2] third box vector.</td>
 </tr>
 </tbody>
 </table>
@@ -395,13 +384,9 @@ A----&gt;B
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
-<dt><em>atomgroup</em></dt>
-<dd><p class="first last">The <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.AtomGroup</span></code></a> to work with.
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>*atomgroup*</strong> &#8211; The <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.core.AtomGroup.AtomGroup</span></code></a> to work with.
 The positions of this are modified in place.  All these atoms
-must belong in the same molecule.</p>
-</dd>
-</dl>
+must belong in the same molecule or fragment.</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first docutils">
@@ -415,17 +400,17 @@ Defaults to atom 0 in the atomgroup.</p>
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><code class="docutils literal"><span class="pre">None</span></code>.  Atom positions are modified in place</p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><dl class="first last docutils">
-<dt><cite>NoDataError</cite></dt>
-<dd><p class="first last">if there are no bonds present.
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last">
+<li><p class="first">:exc:<code class="docutils literal"><span class="pre">NoDataError</span></code> &#8211;</p>
+<p>if there are no bonds present.
 (See <a class="reference internal" href="../topology/core.html#MDAnalysis.topology.core.guess_bonds" title="MDAnalysis.topology.core.guess_bonds"><code class="xref py py-func docutils literal"><span class="pre">guess_bonds()</span></code></a>)</p>
-</dd>
-<dt><cite>ValueError</cite></dt>
-<dd><p class="first last">if the algorithm fails to work.  This is usually
+</li>
+<li><p class="first">:exc:<code class="docutils literal"><span class="pre">ValueError</span></code> &#8211;</p>
+<p>if the algorithm fails to work.  This is usually
 caused by the atomgroup not being a single fragment.
 (ie the molecule can&#8217;t be traversed by following bonds)</p>
-</dd>
-</dl>
+</li>
+</ul>
 </td>
 </tr>
 </tbody>
@@ -477,13 +462,24 @@ such as calculating the center of mass of the molecule.</p>
 <dl class="function">
 <dt>
 <code class="descclassname">MDAnalysis.lib.mdamath.</code><code class="descname">norm</code><span class="sig-paren">(</span><em>v</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/mdamath.html#norm"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p>Returns the length of a vector, <code class="docutils literal"><span class="pre">sqrt(v.v)</span></code>.</p>
+<dd><p>Calculate the norm of a vector v.</p>
 <div class="math">
 \[v = \sqrt{\mathbf{v}\cdot\mathbf{v}}\]</div>
-<p>Faster than <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.linalg.norm.html#numpy.linalg.norm" title="(in NumPy v1.9)"><code class="xref py py-func docutils literal"><span class="pre">numpy.linalg.norm()</span></code></a> because no frills.</p>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.11.0: </span>Moved into lib.mdamath</p>
-</div>
+<p>This version is faster then numpy.linalg.norm because it only works for a
+single vector and therefore can skip a lot of the additional fuss
+linalg.norm does.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>v</strong> (<em>array_like</em>) &#8211; 1D array of shape (N) for a vector of length N</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">norm of the vector</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)">float</a></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -538,17 +534,11 @@ vectors</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
-<dt><em>dimensions</em></dt>
-<dd><p class="first last">list of box lengths and angles (in degrees) such as
-[A,B,C,alpha,beta,gamma]</p>
-</dd>
-</dl>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>*dimensions*</strong> &#8211; list of box lengths and angles (in degrees) such as
+[A,B,C,alpha,beta,gamma]</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">numpy 3x3 array B, with B[0] = first box vector,
-B[1] = second vector, B[2] third box vector.</p>
-</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">numpy 3x3 array B, with B[0] = first box vector,
+B[1] = second vector, B[2] third box vector.</td>
 </tr>
 </tbody>
 </table>
@@ -585,12 +575,12 @@ i.e. parallel to (1,0,0).</p>
         <li class="right" >
           <a href="log.html" title="9.4. Setting up logging — MDAnalysis.lib.log"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../lib_modules.html" >9. MDAnalysis library</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman, Jonathan Barnoud,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,

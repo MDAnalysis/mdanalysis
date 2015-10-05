@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.topology.tpr.utils &mdash; MDAnalysis 0.11.0 documentation</title>
+    <title>MDAnalysis.topology.tpr.utils &mdash; MDAnalysis 0.12.0 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '0.11.0',
+        VERSION:     '0.12.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.11.0 documentation"
+          title="Search within MDAnalysis 0.12.0 documentation"
           href="../../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.11.0 documentation" href="../../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.12.0 documentation" href="../../../../index.html" />
     <link rel="up" title="Module code" href="../../../index.html" /> 
   </head>
   <body role="document">
@@ -41,7 +41,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>
@@ -336,6 +336,9 @@
             <span class="n">S</span><span class="o">.</span><span class="n">F_HARMONIC</span><span class="p">,</span> <span class="n">S</span><span class="o">.</span><span class="n">F_IDIHS</span>
         <span class="p">]:</span>
             <span class="n">do_harm</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">S</span><span class="o">.</span><span class="n">F_RESTRANGLES</span><span class="p">]:</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c"># harmonic.rA</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c"># harmonic.krA</span>
         <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">S</span><span class="o">.</span><span class="n">F_LINEAR_ANGLES</span><span class="p">]:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c"># linangle.klinA</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c"># linangle.aA</span>
@@ -449,6 +452,9 @@
                 <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c"># pdihs_cpB</span>
                 <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># pdihs_mult</span>
 
+        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">S</span><span class="o">.</span><span class="n">F_RESTRDIHS</span><span class="p">]:</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c"># pdihs.phiA</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c"># pdihs.cpA</span>
         <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">S</span><span class="o">.</span><span class="n">F_DISRES</span><span class="p">]:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># disres.label</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c"># disres.type</span>
@@ -485,6 +491,15 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">do_rvec</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>  <span class="c"># posres.pos0B</span>
                 <span class="n">do_rvec</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>  <span class="c"># posres.fcB</span>
+
+        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">S</span><span class="o">.</span><span class="n">F_FBPOSRES</span><span class="p">]:</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>   <span class="c"># fbposres.geom</span>
+            <span class="n">do_rvec</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>       <span class="c"># fbposres.pos0</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c"># fbposres.r</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c"># fbposres.k</span>
+
+        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">S</span><span class="o">.</span><span class="n">F_CBTDIHS</span><span class="p">]:</span>
+            <span class="n">ndo_real</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">S</span><span class="o">.</span><span class="n">NR_CBTDIHS</span><span class="p">)</span>  <span class="c"># cbtdihs.cbtcA</span>
 
         <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">S</span><span class="o">.</span><span class="n">F_RBDIHS</span><span class="p">]:</span>
             <span class="n">ndo_real</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">S</span><span class="o">.</span><span class="n">NR_RBDIHS</span><span class="p">)</span>  <span class="c"># iparams_rbdihs_rbcA</span>
@@ -566,7 +581,7 @@
 
     <span class="c">#### start: MDAnalysis specific</span>
     <span class="c"># these may not be available for certain molecules, e.g. tip4p</span>
-    <span class="n">bonds</span><span class="p">,</span> <span class="n">angles</span><span class="p">,</span> <span class="n">dihs</span><span class="p">,</span> <span class="n">impr</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span>
+    <span class="n">bonds</span><span class="p">,</span> <span class="n">angles</span><span class="p">,</span> <span class="n">dihs</span><span class="p">,</span> <span class="n">impr</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">ilist</span> <span class="ow">in</span> <span class="n">ilists</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">ilist</span><span class="o">.</span><span class="n">nr</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">ik_obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">InteractionKind</span><span class="p">(</span><span class="o">*</span><span class="n">ilist</span><span class="o">.</span><span class="n">ik</span><span class="p">)</span>
@@ -574,20 +589,28 @@
 
             <span class="c"># the following if..elif..else statement needs to be updated as new</span>
             <span class="c"># type of interactions become interested</span>
-            <span class="k">if</span> <span class="n">ik_obj</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;BONDS&#39;</span><span class="p">]:</span>
-                <span class="n">bonds</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">ik_obj</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">ias</span><span class="p">))</span>
-            <span class="k">elif</span> <span class="n">ik_obj</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;ANGLES&#39;</span><span class="p">]:</span>
-                <span class="n">angles</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">ik_obj</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">ias</span><span class="p">))</span>
-            <span class="k">elif</span> <span class="n">ik_obj</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;RBDIHS&#39;</span><span class="p">]:</span>
-                <span class="n">dihs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">ik_obj</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">ias</span><span class="p">))</span>
-            <span class="k">elif</span> <span class="n">ik_obj</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;PDIHS&#39;</span><span class="p">,</span> <span class="s">&#39;VSITE3&#39;</span><span class="p">]:</span>
-                <span class="c"># this is possible a bug in gromacs, the so-named Proper Dih is</span>
-                <span class="c"># actually Improper Dih</span>
-                <span class="n">impr</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">ik_obj</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">ias</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">ik_obj</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;BONDS&#39;</span><span class="p">,</span> <span class="s">&#39;G96BONDS&#39;</span><span class="p">,</span> <span class="s">&#39;MORSE&#39;</span><span class="p">,</span> <span class="s">&#39;CUBICBONDS&#39;</span><span class="p">,</span>
+                               <span class="s">&#39;CONNBONDS&#39;</span><span class="p">,</span> <span class="s">&#39;HARMONIC&#39;</span><span class="p">,</span> <span class="s">&#39;FENEBONDS&#39;</span><span class="p">,</span>
+                               <span class="s">&#39;RESTRAINTPOT&#39;</span><span class="p">,</span> <span class="s">&#39;CONSTR&#39;</span><span class="p">,</span> <span class="s">&#39;CONSTRNC&#39;</span><span class="p">,</span>
+                               <span class="s">&#39;TABBONDS&#39;</span><span class="p">,</span> <span class="s">&#39;TABBONDSNC&#39;</span><span class="p">]:</span>
+                <span class="n">bonds</span> <span class="o">+=</span> <span class="nb">list</span><span class="p">(</span><span class="n">ik_obj</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">ias</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">ik_obj</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;ANGLES&#39;</span><span class="p">,</span> <span class="s">&#39;G96ANGLES&#39;</span><span class="p">,</span> <span class="s">&#39;CROSS_BOND_BOND&#39;</span><span class="p">,</span>
+                                 <span class="s">&#39;CROSS_BOND_ANGLE&#39;</span><span class="p">,</span> <span class="s">&#39;UREY_BRADLEY&#39;</span><span class="p">,</span> <span class="s">&#39;QANGLES&#39;</span><span class="p">,</span>
+                                 <span class="s">&#39;RESTRANGLES&#39;</span><span class="p">,</span> <span class="s">&#39;TABANGLES&#39;</span><span class="p">]:</span>
+                <span class="n">angles</span> <span class="o">+=</span> <span class="nb">list</span><span class="p">(</span><span class="n">ik_obj</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">ias</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">ik_obj</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;PDIHS&#39;</span><span class="p">,</span> <span class="s">&#39;RBDIHS&#39;</span><span class="p">,</span> <span class="s">&#39;RESTRDIHS&#39;</span><span class="p">,</span> <span class="s">&#39;CBTDIHS&#39;</span><span class="p">,</span>
+                                 <span class="s">&#39;FOURDIHS&#39;</span><span class="p">,</span> <span class="s">&#39;TABDIHS&#39;</span><span class="p">]:</span>
+                <span class="n">dihs</span> <span class="o">+=</span> <span class="nb">list</span><span class="p">(</span><span class="n">ik_obj</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">ias</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">ik_obj</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;IDIHS&#39;</span><span class="p">,</span> <span class="s">&#39;PIDIHS&#39;</span><span class="p">]:</span>
+                <span class="n">impr</span> <span class="o">+=</span> <span class="nb">list</span><span class="p">(</span><span class="n">ik_obj</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">ias</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c"># other interaction types are not interested at the moment</span>
                 <span class="k">pass</span>
 
+    <span class="n">bonds</span> <span class="o">=</span> <span class="n">bonds</span> <span class="k">if</span> <span class="n">bonds</span> <span class="k">else</span> <span class="bp">None</span>
+    <span class="n">angles</span> <span class="o">=</span> <span class="n">angles</span> <span class="k">if</span> <span class="n">angles</span> <span class="k">else</span> <span class="bp">None</span>
+    <span class="n">dihs</span> <span class="o">=</span> <span class="n">dihs</span> <span class="k">if</span> <span class="n">dihs</span> <span class="k">else</span> <span class="bp">None</span>
+    <span class="n">impr</span> <span class="o">=</span> <span class="n">impr</span> <span class="k">if</span> <span class="n">impr</span> <span class="k">else</span> <span class="bp">None</span>
     <span class="n">moltype</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">MoleculeKind</span><span class="p">(</span><span class="n">molname</span><span class="p">,</span> <span class="n">atomkinds</span><span class="p">,</span> <span class="n">bonds</span><span class="p">,</span> <span class="n">angles</span><span class="p">,</span> <span class="n">dihs</span><span class="p">,</span> <span class="n">impr</span><span class="p">)</span>
     <span class="c">#### end: MDAnalysis specific</span>
 
@@ -1022,12 +1045,12 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman, Jonathan Barnoud,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,

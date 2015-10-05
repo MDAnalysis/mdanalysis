@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>3.2.2. Hydrogen bond autocorrelation — MDAnalysis.analysis.hbonds.hbond_autocorrel &mdash; MDAnalysis 0.11.0 documentation</title>
+    <title>3.2.2. Hydrogen bond autocorrelation — MDAnalysis.analysis.hbonds.hbond_autocorrel &mdash; MDAnalysis 0.12.0 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.11.0',
+        VERSION:     '0.12.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.11.0 documentation"
+          title="Search within MDAnalysis 0.12.0 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.11.0 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.12.0 documentation" href="../../index.html" />
     <link rel="up" title="3. Analysis modules" href="../analysis_modules.html" />
     <link rel="next" title="3.3.1. Generation and Analysis of HOLE pore profiles — MDAnalysis.analysis.hole" href="hole.html" />
     <link rel="prev" title="3.2.1. Hydrogen Bond analysis — MDAnalysis.analysis.hbonds.hbond_analysis" href="hbond_analysis.html" /> 
@@ -49,7 +49,7 @@
         <li class="right" >
           <a href="hbond_analysis.html" title="3.2.1. Hydrogen Bond analysis — MDAnalysis.analysis.hbonds.hbond_analysis"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../analysis_modules.html" accesskey="U">3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -230,28 +230,18 @@ used.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
-<dt><em>universe</em></dt>
-<dd><p class="first last">The MDA universe</p>
-</dd>
-<dt><em>hydrogens</em></dt>
-<dd><p class="first last">AtomGroup of Hydrogens which can form hydrogen bonds</p>
-</dd>
-<dt><em>acceptors</em></dt>
-<dd><p class="first last">AtomGroup of all Acceptor atoms</p>
-</dd>
-<dt><em>donors</em></dt>
-<dd><p class="first last">The atoms which are connected to the hydrogens.  This group
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>*universe*</strong> &#8211; The MDA universe</li>
+<li><strong>*hydrogens*</strong> &#8211; AtomGroup of Hydrogens which can form hydrogen bonds</li>
+<li><strong>*acceptors*</strong> &#8211; AtomGroup of all Acceptor atoms</li>
+<li><strong>*donors*</strong> &#8211; The atoms which are connected to the hydrogens.  This group
 must be identical in length to the hydrogen group and matched,
 ie hydrogens[1] is bonded to donors[0].
 For many cases, this will mean a donor appears twice in this
-group.</p>
-</dd>
-<dt><em>bond_type</em></dt>
-<dd><p class="first last">Which definition of hydrogen bond lifetime to consider, either
-&#8216;continuous&#8217; or &#8216;intermittent&#8217;.</p>
-</dd>
-</dl>
+group.</li>
+<li><strong>*bond_type*</strong> &#8211; Which definition of hydrogen bond lifetime to consider, either
+&#8216;continuous&#8217; or &#8216;intermittent&#8217;.</li>
+</ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
@@ -352,8 +342,8 @@ solution dict</p>
 <dl class="method">
 <dt id="MDAnalysis.analysis.hbonds.hbond_autocorrel.HydrogenBondAutoCorrel.save_results">
 <code class="descname">save_results</code><span class="sig-paren">(</span><em>filename='hbond_autocorrel'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hbonds/hbond_autocorrel.html#HydrogenBondAutoCorrel.save_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_autocorrel.HydrogenBondAutoCorrel.save_results" title="Permalink to this definition">¶</a></dt>
-<dd><p>Saves the results to a numpy zipped array (.npz, see numpy.savez)</p>
-<p>This can be loaded using numpy.load(filename)</p>
+<dd><p>Saves the results to a numpy zipped array (.npz, see np.savez)</p>
+<p>This can be loaded using np.load(filename)</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -395,12 +385,12 @@ solution dict</p>
         <li class="right" >
           <a href="hbond_analysis.html" title="3.2.1. Hydrogen Bond analysis — MDAnalysis.analysis.hbonds.hbond_analysis"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../analysis_modules.html" >3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman, Jonathan Barnoud,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,

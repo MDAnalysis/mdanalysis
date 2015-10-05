@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.coordinates.PDB &mdash; MDAnalysis 0.11.0 documentation</title>
+    <title>MDAnalysis.coordinates.PDB &mdash; MDAnalysis 0.12.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.11.0',
+        VERSION:     '0.12.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.11.0 documentation"
+          title="Search within MDAnalysis 0.12.0 documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.11.0 documentation" href="../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.12.0 documentation" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
   <body role="document">
@@ -41,7 +41,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>
@@ -313,7 +313,7 @@
 <span class="sd">              the ``primitive=True`` keyword for :class:`Universe`).</span>
 
 <span class="sd">    .. versionchanged:: 0.11.0</span>
-<span class="sd">       * Frames now 0-based instead of 1-based. </span>
+<span class="sd">       * Frames now 0-based instead of 1-based.</span>
 <span class="sd">       * All PDB header metadata parsed by the reader is available in</span>
 <span class="sd">         the dict :attr:`metadata`.</span>
 
@@ -470,16 +470,16 @@
 <span class="sd">     - *CRYST1* for unitcell A,B,C, alpha,beta,gamma</span>
 <span class="sd">     - *ATOM* or *HETATM* for serial,name,resName,chainID,resSeq,x,y,z,occupancy,tempFactor</span>
 <span class="sd">     - *HEADER* (:attr:`header`), *TITLE* (:attr:`title`), *COMPND*</span>
-<span class="sd">       (:attr:`compound`), *REMARK* (:attr:`remarks`) </span>
+<span class="sd">       (:attr:`compound`), *REMARK* (:attr:`remarks`)</span>
 <span class="sd">     - all other lines are ignored</span>
 
 <span class="sd">    Reads multi-`MODEL`_ PDB files as trajectories.</span>
 
-<span class="sd">    .. _PDB-formatted: </span>
+<span class="sd">    .. _PDB-formatted:</span>
 <span class="sd">       http://www.wwpdb.org/documentation/file-format-content/format33/v3.3.html</span>
-<span class="sd">    .. _PDB coordinate section: </span>
+<span class="sd">    .. _PDB coordinate section:</span>
 <span class="sd">       http://www.wwpdb.org/documentation/format32/sect9.html</span>
-<span class="sd">    .. _MODEL: </span>
+<span class="sd">    .. _MODEL:</span>
 <span class="sd">       http://www.wwpdb.org/documentation/format32/sect9.html#MODEL</span>
 
 <span class="sd">    =============  ============  ===========  =============================================</span>
@@ -551,9 +551,9 @@
         <span class="n">frames</span> <span class="o">=</span> <span class="p">{}</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Timestep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_atoms</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_ts_kwargs</span><span class="p">)</span>
-        
+
         <span class="n">pos</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c"># atom position for filling coordinates array</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_occupancy</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">occupancy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_atoms</span><span class="p">)</span>
         <span class="k">with</span> <span class="n">util</span><span class="o">.</span><span class="n">openany</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">pdbfile</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pdbfile</span><span class="p">):</span>
                 <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>  <span class="c"># Remove extra spaces</span>
@@ -572,7 +572,7 @@
                     <span class="c"># classification = line[10:50]</span>
                     <span class="c"># date = line[50:59]</span>
                     <span class="c"># idCode = line[62:66]</span>
-                    <span class="n">header</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">10</span><span class="p">:</span><span class="mi">66</span><span class="p">]</span> 
+                    <span class="n">header</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">10</span><span class="p">:</span><span class="mi">66</span><span class="p">]</span>
                     <span class="k">continue</span>
                 <span class="k">elif</span> <span class="n">record</span> <span class="o">==</span> <span class="s">&#39;TITLE&#39;</span><span class="p">:</span>
                     <span class="n">l</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">8</span><span class="p">:</span><span class="mi">80</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
@@ -594,18 +594,16 @@
                     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">frames</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
                         <span class="k">continue</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="p">[</span><span class="n">line</span><span class="p">[</span><span class="mi">30</span><span class="p">:</span><span class="mi">38</span><span class="p">],</span> <span class="n">line</span><span class="p">[</span><span class="mi">38</span><span class="p">:</span><span class="mi">46</span><span class="p">],</span> <span class="n">line</span><span class="p">[</span><span class="mi">46</span><span class="p">:</span><span class="mi">54</span><span class="p">]])</span>
-                    <span class="n">pos</span> <span class="o">+=</span> <span class="mi">1</span>
                     <span class="k">try</span><span class="p">:</span>
-                        <span class="n">occupancy</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">54</span><span class="p">:</span><span class="mi">60</span><span class="p">])</span>
+                        <span class="n">occupancy</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">54</span><span class="p">:</span><span class="mi">60</span><span class="p">])</span>
                     <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
                         <span class="k">pass</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_occupancy</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">occupancy</span><span class="p">)</span>
+                    <span class="n">pos</span> <span class="o">+=</span> <span class="mi">1</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">header</span> <span class="o">=</span> <span class="n">header</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">title</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">compound</span> <span class="o">=</span> <span class="n">compound</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">remarks</span> <span class="o">=</span> <span class="n">remarks</span>        
+        <span class="bp">self</span><span class="o">.</span><span class="n">remarks</span> <span class="o">=</span> <span class="n">remarks</span>
 
         <span class="k">if</span> <span class="n">pos</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_atoms</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Read an incorrect number of atoms</span><span class="se">\n</span><span class="s">&quot;</span>
@@ -614,6 +612,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">=</span> <span class="n">pos</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c"># 0-based frame number as starting frame</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;occupancy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">occupancy</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_from_native</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">)</span>  <span class="c"># in-place !</span>
@@ -672,30 +671,35 @@
             <span class="c"># single frame file, we already have the timestep</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span>
 
-        <span class="c"># TODO: only open file once and leave the file open; then seek back and forth;</span>
-        <span class="c">#       should improve performance substantially</span>
+        <span class="c"># TODO: only open file once and leave the file open; then seek back and</span>
+        <span class="c">#       forth; should improve performance substantially</span>
         <span class="n">pos</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_occupancy</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">occupancy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_atoms</span><span class="p">)</span>
         <span class="k">with</span> <span class="n">util</span><span class="o">.</span><span class="n">openany</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
                 <span class="n">f</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>  <span class="c"># forward to frame</span>
             <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">line</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;ENDMDL&#39;</span><span class="p">:</span>
                     <span class="k">break</span>
-                <span class="c"># NOTE - CRYST1 line won&#39;t be found if it comes before the MODEL line,</span>
-                <span class="c"># which is sometimes the case, e.g. output from gromacs trjconv</span>
+                <span class="c"># NOTE - CRYST1 line won&#39;t be found if it comes before the MODEL</span>
+                <span class="c"># line, which is sometimes the case, e.g. output from gromacs</span>
+                <span class="c"># trjconv</span>
                 <span class="k">elif</span> <span class="n">line</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;CRYST1&#39;</span><span class="p">:</span>
                     <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="p">[</span><span class="n">line</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="mi">15</span><span class="p">],</span> <span class="n">line</span><span class="p">[</span><span class="mi">15</span><span class="p">:</span><span class="mi">24</span><span class="p">],</span> <span class="n">line</span><span class="p">[</span><span class="mi">24</span><span class="p">:</span><span class="mi">33</span><span class="p">]])</span>
-                    <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="p">[</span><span class="n">line</span><span class="p">[</span><span class="mi">33</span><span class="p">:</span><span class="mi">40</span><span class="p">],</span> <span class="n">line</span><span class="p">[</span><span class="mi">40</span><span class="p">:</span><span class="mi">47</span><span class="p">],</span> <span class="n">line</span><span class="p">[</span><span class="mi">47</span><span class="p">:</span><span class="mi">54</span><span class="p">]])</span>
+                    <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="p">[</span><span class="n">line</span><span class="p">[</span><span class="mi">33</span><span class="p">:</span><span class="mi">40</span><span class="p">],</span> <span class="n">line</span><span class="p">[</span><span class="mi">40</span><span class="p">:</span><span class="mi">47</span><span class="p">],</span>
+                                                     <span class="n">line</span><span class="p">[</span><span class="mi">47</span><span class="p">:</span><span class="mi">54</span><span class="p">]])</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span>
                     <span class="k">continue</span>
                 <span class="k">elif</span> <span class="n">line</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;ATOM  &#39;</span><span class="p">,</span> <span class="s">&#39;HETATM&#39;</span><span class="p">):</span>
                     <span class="c"># we only care about coordinates</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="p">[</span><span class="n">line</span><span class="p">[</span><span class="mi">30</span><span class="p">:</span><span class="mi">38</span><span class="p">],</span> <span class="n">line</span><span class="p">[</span><span class="mi">38</span><span class="p">:</span><span class="mi">46</span><span class="p">],</span> <span class="n">line</span><span class="p">[</span><span class="mi">46</span><span class="p">:</span><span class="mi">54</span><span class="p">]])</span>
-                    <span class="n">pos</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="p">[</span><span class="n">line</span><span class="p">[</span><span class="mi">30</span><span class="p">:</span><span class="mi">38</span><span class="p">],</span> <span class="n">line</span><span class="p">[</span><span class="mi">38</span><span class="p">:</span><span class="mi">46</span><span class="p">],</span>
+                                                    <span class="n">line</span><span class="p">[</span><span class="mi">46</span><span class="p">:</span><span class="mi">54</span><span class="p">]])</span>
                     <span class="c"># TODO import bfactors - might these change?</span>
-                    <span class="n">occupancy</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">54</span><span class="p">:</span><span class="mi">60</span><span class="p">])</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_occupancy</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">occupancy</span><span class="p">)</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">occupancy</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">54</span><span class="p">:</span><span class="mi">60</span><span class="p">])</span>
+                    <span class="k">except</span><span class="p">:</span>
+                        <span class="k">pass</span>
+                    <span class="n">pos</span> <span class="o">+=</span> <span class="mi">1</span>
                     <span class="k">continue</span>
 
         <span class="c"># check if atom number changed</span>
@@ -708,6 +712,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_from_native</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">)</span>  <span class="c"># in-place !</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_from_native</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>  <span class="c"># in-place ! (only lengths)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">frame</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s">&#39;occupancy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">occupancy</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span>
 
 </div>
@@ -1399,12 +1404,12 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman, Jonathan Barnoud,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,

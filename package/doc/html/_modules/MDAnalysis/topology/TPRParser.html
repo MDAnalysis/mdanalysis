@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.topology.TPRParser &mdash; MDAnalysis 0.11.0 documentation</title>
+    <title>MDAnalysis.topology.TPRParser &mdash; MDAnalysis 0.12.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.11.0',
+        VERSION:     '0.12.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.11.0 documentation"
+          title="Search within MDAnalysis 0.12.0 documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.11.0 documentation" href="../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.12.0 documentation" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
   <body role="document">
@@ -41,7 +41,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>
@@ -97,8 +97,7 @@
 <span class="sd">============================================</span>
 
 <span class="sd">The :mod:`~MDAnalysis.topology.TPRParser` module allows reading of a</span>
-<span class="sd">Gromacs_ portable run input file (a `TPR file`_). At the moment, only</span>
-<span class="sd">atom information is read and used to build a minimal topology. Because</span>
+<span class="sd">Gromacs_ portable run input file (a `TPR file`_). Because</span>
 <span class="sd">the file format of the TPR file is changing rapidly, not all versions</span>
 <span class="sd">are currently supported. The known working versions and the</span>
 <span class="sd">approximate Gromacs release numbers are listed in the table</span>
@@ -121,11 +120,35 @@
 <span class="sd">                             4.5.3, 4.5.4, 4.5.5</span>
 
 <span class="sd">   83         24             4.6, 4.6.1           yes</span>
+
+<span class="sd">   100        26             5.0, 5.0.1, 5.0.2,   yes</span>
+<span class="sd">                             5.0.3,5.0.4, 5.0.5</span>
+
+<span class="sd">   103        26             5.1                  yes</span>
 <span class="sd">   ========== ============== ==================== =====</span>
 
 <span class="sd">For further discussion and notes see `Issue 2`_. Also add a comment to</span>
 <span class="sd">`Issue 2`_ if a new or different TPR file format version should be</span>
 <span class="sd">supported.</span>
+
+<span class="sd">Bonded interactions available in Gromacs are described in table 5.5 of the</span>
+<span class="sd">`Gromacs manual`_. The following ones are used to build the topology (see</span>
+<span class="sd">`Issue 463`_):</span>
+
+<span class="sd">* bonds: regular bonds (type 1), G96 bonds (type 2), Morse (type 3),</span>
+<span class="sd">  cubic bonds (type 4), connections (type 5), harmonic potentials (type 6),</span>
+<span class="sd">  FENE bonds (type 7), restraint potentials (type 10),</span>
+<span class="sd">  tabulated potential with exclusion/connection (type 8),</span>
+<span class="sd">  tabulated potential without exclusion/connection (type 9), constraints with</span>
+<span class="sd">  exclusion/connection (type 1), constraints without exclusion/connection (type</span>
+<span class="sd">  2)</span>
+<span class="sd">* angles: regular angles (type 1), G96 angles (type 2), cross bond-bond</span>
+<span class="sd">  (type3), cross-bond-angle (type 4), Urey-Bradley (type 5), quartic angles</span>
+<span class="sd">  (type 6), restricted bending potential (type 10), tabulated angles (type 8)</span>
+<span class="sd">* dihedrals: proper dihedrals (type 1 and type 9), Ryckaert-Bellemans dihedrals</span>
+<span class="sd">  (type 3), Fourier dihedrals (type 5), restricted dihedrals (type 10),</span>
+<span class="sd">  combined bending-torsion potentials (type 11), tabulated dihedral (type 8)</span>
+<span class="sd">* impropers: improper dihedrals (type 2), periodic improper dihedrals (type 4)</span>
 
 
 <span class="sd">Classes</span>
@@ -145,17 +168,10 @@
 
 <span class="sd">* Atoms: number, name, type, resname, resid, segid, mass, charge,</span>
 <span class="sd">  [residue, segment, radius, bfactor, resnum]</span>
-
-<span class="sd">* Bonds:</span>
-
-<span class="sd">* Angels:</span>
-
-<span class="sd">* Dihedrals:</span>
-
-<span class="sd">* Impropers:</span>
-
-<span class="sd">Potential Bug: in the result of :program:`gmxdump`, the &quot;Proper Dih.:&quot;</span>
-<span class="sd">section is actually a list of Improper Dih.</span>
+<span class="sd">* Bonds</span>
+<span class="sd">* Angels</span>
+<span class="sd">* Dihedrals</span>
+<span class="sd">* Impropers</span>
 
 <span class="sd">This tpr parser is written according to the following files</span>
 
@@ -165,19 +181,22 @@
 <span class="sd">- :file:`{gromacs_dir}/src/gmxlib/gmxfio_xdr.c`</span>
 <span class="sd">- :file:`{gromacs_dir}/include/gmxfiofio.h`</span>
 
+<span class="sd">or their equivalent in more recent versions of Gromacs.</span>
+
 <span class="sd">The function :func:`read_tpxheader` is based on the</span>
 <span class="sd">`TPRReaderDevelopment`_ notes.  Functions with names starting with</span>
 <span class="sd">``read_`` or ``do_`` are trying to be similar to those in</span>
 <span class="sd">:file:`gmxdump.c` or :file:`tpxio.c`, those with ``extract_`` are new.</span>
 
 <span class="sd">Wherever ``fver_err(fver)`` is used, it means the tpx version problem</span>
-<span class="sd">haven&#39;t be resolved for those other than 58 and 73 (or gromacs version</span>
-<span class="sd">before 4.x)</span>
+<span class="sd">has not been solved. Versions prior to Gromacs 4.0.x are not supported.</span>
 
 <span class="sd">.. Links</span>
 <span class="sd">.. _Gromacs: http://www.gromacs.org</span>
+<span class="sd">.. _`Gromacs manual`: http://manual.gromacs.org/documentation/5.1/manual-5.1.pdf</span>
 <span class="sd">.. _TPR file: http://manual.gromacs.org/current/online/tpr.html</span>
 <span class="sd">.. _`Issue 2`: https://github.com/MDAnalysis/mdanalysis/issues/2</span>
+<span class="sd">.. _`Issue 463`: https://github.com/MDAnalysis/mdanalysis/pull/463</span>
 <span class="sd">.. _TPRReaderDevelopment: https://github.com/MDAnalysis/mdanalysis/wiki/TPRReaderDevelopment</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
@@ -311,12 +330,12 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman, Jonathan Barnoud,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,

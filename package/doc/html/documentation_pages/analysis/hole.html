@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>3.3.1. Generation and Analysis of HOLE pore profiles — MDAnalysis.analysis.hole &mdash; MDAnalysis 0.11.0 documentation</title>
+    <title>3.3.1. Generation and Analysis of HOLE pore profiles — MDAnalysis.analysis.hole &mdash; MDAnalysis 0.12.0 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.11.0',
+        VERSION:     '0.12.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.11.0 documentation"
+          title="Search within MDAnalysis 0.12.0 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.11.0 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.12.0 documentation" href="../../index.html" />
     <link rel="up" title="3. Analysis modules" href="../analysis_modules.html" />
     <link rel="next" title="3.3.2. Leaflet identification — MDAnalysis.analysis.leaflet" href="leaflet.html" />
     <link rel="prev" title="3.2.2. Hydrogen bond autocorrelation — MDAnalysis.analysis.hbonds.hbond_autocorrel" href="hbond_autocorrel.html" /> 
@@ -49,7 +49,7 @@
         <li class="right" >
           <a href="hbond_autocorrel.html" title="3.2.2. Hydrogen bond autocorrelation — MDAnalysis.analysis.hbonds.hbond_autocorrel"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../analysis_modules.html" accesskey="U">3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -61,15 +61,14 @@
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">3.3.1. Generation and Analysis of HOLE pore profiles &#8212; <code class="docutils literal"><span class="pre">MDAnalysis.analysis.hole</span></code></a><ul>
-<li><a class="reference internal" href="#examples">3.3.1.1. Examples</a><ul>
-<li><a class="reference internal" href="#single-structure">3.3.1.1.1. Single structure</a></li>
-<li><a class="reference internal" href="#trajectory">3.3.1.1.2. Trajectory</a></li>
-<li><a class="reference internal" href="#trajectory-with-rmsd-as-order-parameter">3.3.1.1.3. Trajectory with RMSD as order parameter</a></li>
+<li><a class="reference internal" href="#single-structure">3.3.1.1. Single structure</a></li>
+<li><a class="reference internal" href="#trajectory">3.3.1.2. Trajectory</a></li>
+<li><a class="reference internal" href="#trajectory-with-rmsd-as-order-parameter">3.3.1.3. Trajectory with RMSD as order parameter</a><ul>
+<li><a class="reference internal" href="#data-structures">3.3.1.3.1. Data structures</a></li>
+<li><a class="reference internal" href="#analysis">3.3.1.3.2. Analysis</a></li>
+<li><a class="reference internal" href="#utilities">3.3.1.3.3. Utilities</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#data-structures">3.3.1.2. Data structures</a></li>
-<li><a class="reference internal" href="#analysis">3.3.1.3. Analysis</a></li>
-<li><a class="reference internal" href="#utilities">3.3.1.4. Utilities</a></li>
 </ul>
 </li>
 </ul>
@@ -142,10 +141,9 @@ structural models. J.Mol.Graph., 14:354–360, 1996.
 URL <a class="reference external" href="http://www.smartsci.uk/hole/">http://www.smartsci.uk/hole/</a></td></tr>
 </tbody>
 </table>
-<div class="section" id="examples">
-<h2>3.3.1.1. Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<p class="rubric">Examples</p>
 <div class="section" id="single-structure">
-<h3>3.3.1.1.1. Single structure<a class="headerlink" href="#single-structure" title="Permalink to this headline">¶</a></h3>
+<h2>3.3.1.1. Single structure<a class="headerlink" href="#single-structure" title="Permalink to this headline">¶</a></h2>
 <p>Gramicidin A (gA) channel:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">MDAnalysis.analysis.hole</span> <span class="kn">import</span> <span class="n">HOLE</span><span class="p">,</span> <span class="n">HOLEtraj</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PDB_HOLE</span>
@@ -158,7 +156,7 @@ URL <a class="reference external" href="http://www.smartsci.uk/hole/">http://www
 </div>
 </div>
 <div class="section" id="trajectory">
-<h3>3.3.1.1.2. Trajectory<a class="headerlink" href="#trajectory" title="Permalink to this headline">¶</a></h3>
+<h2>3.3.1.2. Trajectory<a class="headerlink" href="#trajectory" title="Permalink to this headline">¶</a></h2>
 <p>Analyzing a trajectory:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">psf</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">)</span>
 <span class="n">H</span> <span class="o">=</span> <span class="n">HOLEtraj</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
@@ -172,7 +170,7 @@ can also be indexed by an arbitrary order parameter as shown in the
 next example.</p>
 </div>
 <div class="section" id="trajectory-with-rmsd-as-order-parameter">
-<h3>3.3.1.1.3. Trajectory with RMSD as order parameter<a class="headerlink" href="#trajectory-with-rmsd-as-order-parameter" title="Permalink to this headline">¶</a></h3>
+<h2>3.3.1.3. Trajectory with RMSD as order parameter<a class="headerlink" href="#trajectory-with-rmsd-as-order-parameter" title="Permalink to this headline">¶</a></h2>
 <p>In order to classify the HOLE profiles the RMSD to a reference
 structure is calculated for each trajectory frame (e.g. using the
 <a class="reference internal" href="rms.html#MDAnalysis.analysis.rms.RMSD" title="MDAnalysis.analysis.rms.RMSD"><code class="xref py py-class docutils literal"><span class="pre">MDAnalysis.analysis.rms.RMSD</span></code></a> analysis class). Then the HOLE
@@ -202,10 +200,8 @@ iterate over the sorted profiles (see <a class="reference internal" href="#MDAna
    <span class="k">print</span> <span class="s">&quot;min(R) = </span><span class="si">%g</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">profile</span><span class="o">.</span><span class="n">radius</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
 </pre></div>
 </div>
-</div>
-</div>
 <div class="section" id="data-structures">
-<h2>3.3.1.2. Data structures<a class="headerlink" href="#data-structures" title="Permalink to this headline">¶</a></h2>
+<h3>3.3.1.3.1. Data structures<a class="headerlink" href="#data-structures" title="Permalink to this headline">¶</a></h3>
 <p>A profile is stored as a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.recarray</span></code></a>:</p>
 <div class="highlight-python"><div class="highlight"><pre>frame   rxncoord   radius
 </pre></div>
@@ -233,7 +229,7 @@ be stored in the dict.</p>
 </div>
 </div>
 <div class="section" id="analysis">
-<h2>3.3.1.3. Analysis<a class="headerlink" href="#analysis" title="Permalink to this headline">¶</a></h2>
+<h3>3.3.1.3.2. Analysis<a class="headerlink" href="#analysis" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="MDAnalysis.analysis.hole.HOLE">
 <em class="property">class </em><code class="descclassname">MDAnalysis.analysis.hole.</code><code class="descname">HOLE</code><span class="sig-paren">(</span><em>filename</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hole.html#HOLE"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLE" title="Permalink to this definition">¶</a></dt>
@@ -263,9 +259,7 @@ data such as <a class="reference internal" href="#MDAnalysis.analysis.hole.HOLE.
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><p class="first"><em>filename</em></p>
-<blockquote>
-<div><p>The <em>filename</em> is used as input for HOLE in the &#8220;COORD&#8221; card of
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>*filename*</strong> &#8211; <p>The <em>filename</em> is used as input for HOLE in the &#8220;COORD&#8221; card of
 the input file.  It specifies the name of a PDB co-ordinate file
 to be used. This must be in Brookhaven protein databank format
 or something closely approximating this. Both ATOM and HETATM
@@ -292,7 +286,7 @@ conditions to be useful).</p>
 from a CHARMM binary dynamics DCD coordinate file - using the
 <em>dcd</em> keyword or use <a class="reference internal" href="#MDAnalysis.analysis.hole.HOLEtraj" title="MDAnalysis.analysis.hole.HOLEtraj"><code class="xref py py-class docutils literal"><span class="pre">HOLEtraj</span></code></a>.</p>
 </div>
-</div></blockquote>
+</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first docutils">
@@ -473,6 +467,63 @@ that the order is random; one needs to sort the keys first.</p>
 <code class="descname">HOLE_MAX_LENGTH</code><em class="property"> = 70</em><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLE.HOLE_MAX_LENGTH" title="Permalink to this definition">¶</a></dt>
 <dd><p>Maximum number of characters in a filename (limitation of HOLE)</p>
 </dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.hole.HOLE.__delattr__">
+<code class="descname">__delattr__</code><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLE.__delattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__delattr__(&#8216;name&#8217;) &lt;==&gt; del x.name</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.hole.HOLE.__format__">
+<code class="descname">__format__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLE.__format__" title="Permalink to this definition">¶</a></dt>
+<dd><p>default object formatter</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.hole.HOLE.__getattribute__">
+<code class="descname">__getattribute__</code><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLE.__getattribute__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__getattribute__(&#8216;name&#8217;) &lt;==&gt; x.name</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.hole.HOLE.__hash__">
+<code class="descname">__hash__</code><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLE.__hash__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.hole.HOLE.__reduce__">
+<code class="descname">__reduce__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLE.__reduce__" title="Permalink to this definition">¶</a></dt>
+<dd><p>helper for pickle</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.hole.HOLE.__reduce_ex__">
+<code class="descname">__reduce_ex__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLE.__reduce_ex__" title="Permalink to this definition">¶</a></dt>
+<dd><p>helper for pickle</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.hole.HOLE.__repr__">
+<code class="descname">__repr__</code><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLE.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.hole.HOLE.__setattr__">
+<code class="descname">__setattr__</code><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLE.__setattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__setattr__(&#8216;name&#8217;, value) &lt;==&gt; x.name = value</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.hole.HOLE.__sizeof__">
+<code class="descname">__sizeof__</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; int<a class="headerlink" href="#MDAnalysis.analysis.hole.HOLE.__sizeof__" title="Permalink to this definition">¶</a></dt>
+<dd><p>size of object in memory, in bytes</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.hole.HOLE.__str__">
+<code class="descname">__str__</code><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLE.__str__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.hole.HOLE.check_and_fix_long_filename">
@@ -680,38 +731,27 @@ each frame and runs HOLE on the frame.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
-<dt><em>universe</em></dt>
-<dd><p class="first last">The input trajectory as part of a
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>*universe*</strong> &#8211; The input trajectory as part of a
 <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><code class="xref py py-class docutils literal"><span class="pre">Universe</span></code></a>. trajectory is
 converted to a sequence of PDB files and HOLE is run on each
 individual file. (Use the <em>start</em>, <em>stop</em>, and <em>step</em> keywords
-to slice the trajectory.)</p>
-</dd>
-<dt><em>orderparameters</em></dt>
-<dd><p class="first last">Sequence or text file with list of numbers corresponding to the
-frames in the trajectory.</p>
-</dd>
-<dt><em>start</em>, <em>stop</em>, <em>step</em></dt>
-<dd><p class="first last">frame indices to slice the trajectory as
-<code class="docutils literal"><span class="pre">universe.trajectory[start,</span> <span class="pre">stop,</span> <span class="pre">step]</span></code></p>
-</dd>
-<dt><em>selection</em></dt>
-<dd><p class="first last">selection string for <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe.select_atoms" title="MDAnalysis.core.AtomGroup.Universe.select_atoms"><code class="xref py py-meth docutils literal"><span class="pre">select_atoms()</span></code></a> to select
-the group of atoms that is to be analysed by HOLE [&#8220;protein&#8221;]</p>
-</dd>
-<dt><em>cpoint</em></dt>
-<dd><p class="first">Point inside the pore.</p>
+to slice the trajectory.)</li>
+<li><strong>*orderparameters*</strong> &#8211; Sequence or text file with list of numbers corresponding to the
+frames in the trajectory.</li>
+<li><strong>stop, step</strong> (<em>*start*,</em>) &#8211; frame indices to slice the trajectory as
+<code class="docutils literal"><span class="pre">universe.trajectory[start,</span> <span class="pre">stop,</span> <span class="pre">step]</span></code></li>
+<li><strong>*selection*</strong> &#8211; selection string for <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe.select_atoms" title="MDAnalysis.core.AtomGroup.Universe.select_atoms"><code class="xref py py-meth docutils literal"><span class="pre">select_atoms()</span></code></a> to select
+the group of atoms that is to be analysed by HOLE [&#8220;protein&#8221;]</li>
+<li><strong>*cpoint*</strong> &#8211; <p>Point inside the pore.</p>
 <p>If set to <code class="docutils literal"><span class="pre">True</span></code> then <em>cpoint</em> is guessed as the
 <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup.center_of_geometry" title="MDAnalysis.core.AtomGroup.AtomGroup.center_of_geometry"><code class="xref py py-meth docutils literal"><span class="pre">center_of_geometry()</span></code></a> of
 the <em>selection</em> from the first frame of the trajectory.</p>
-<p class="last">If <em>cpoint</em> is not set or set to <code class="docutils literal"><span class="pre">None</span></code> then HOLE guesses it
+<p>If <em>cpoint</em> is not set or set to <code class="docutils literal"><span class="pre">None</span></code> then HOLE guesses it
 with its own algorithm (for each individual frame). [<code class="docutils literal"><span class="pre">None</span></code>]</p>
-</dd>
-<dt><em>kwargs</em></dt>
-<dd><p class="first last">All other keywords are passed on to <a class="reference internal" href="#MDAnalysis.analysis.hole.HOLE" title="MDAnalysis.analysis.hole.HOLE"><code class="xref py py-class docutils literal"><span class="pre">HOLE</span></code></a> (see there for description).</p>
-</dd>
-</dl>
+</li>
+<li><strong>*kwargs*</strong> &#8211; All other keywords are passed on to <a class="reference internal" href="#MDAnalysis.analysis.hole.HOLE" title="MDAnalysis.analysis.hole.HOLE"><code class="xref py py-class docutils literal"><span class="pre">HOLE</span></code></a> (see there for description).</li>
+</ul>
 </td>
 </tr>
 </tbody>
@@ -724,6 +764,63 @@ HOLE profiles, indexed by the frame number or the order
 parameter (if <em>orderparameters</em> was supplied). Note that the
 order is random; one needs to sort the keys first.</p>
 </dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.hole.HOLEtraj.__delattr__">
+<code class="descname">__delattr__</code><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLEtraj.__delattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__delattr__(&#8216;name&#8217;) &lt;==&gt; del x.name</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.hole.HOLEtraj.__format__">
+<code class="descname">__format__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLEtraj.__format__" title="Permalink to this definition">¶</a></dt>
+<dd><p>default object formatter</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.hole.HOLEtraj.__getattribute__">
+<code class="descname">__getattribute__</code><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLEtraj.__getattribute__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__getattribute__(&#8216;name&#8217;) &lt;==&gt; x.name</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.hole.HOLEtraj.__hash__">
+<code class="descname">__hash__</code><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLEtraj.__hash__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.hole.HOLEtraj.__reduce__">
+<code class="descname">__reduce__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLEtraj.__reduce__" title="Permalink to this definition">¶</a></dt>
+<dd><p>helper for pickle</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.hole.HOLEtraj.__reduce_ex__">
+<code class="descname">__reduce_ex__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLEtraj.__reduce_ex__" title="Permalink to this definition">¶</a></dt>
+<dd><p>helper for pickle</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.hole.HOLEtraj.__repr__">
+<code class="descname">__repr__</code><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLEtraj.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.hole.HOLEtraj.__setattr__">
+<code class="descname">__setattr__</code><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLEtraj.__setattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__setattr__(&#8216;name&#8217;, value) &lt;==&gt; x.name = value</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.hole.HOLEtraj.__sizeof__">
+<code class="descname">__sizeof__</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; int<a class="headerlink" href="#MDAnalysis.analysis.hole.HOLEtraj.__sizeof__" title="Permalink to this definition">¶</a></dt>
+<dd><p>size of object in memory, in bytes</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.hole.HOLEtraj.__str__">
+<code class="descname">__str__</code><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLEtraj.__str__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.hole.HOLEtraj.guess_cpoint">
@@ -865,7 +962,7 @@ The data file can be written with the convenience function <a class="reference i
 
 </div>
 <div class="section" id="utilities">
-<h2>3.3.1.4. Utilities<a class="headerlink" href="#utilities" title="Permalink to this headline">¶</a></h2>
+<h3>3.3.1.3.3. Utilities<a class="headerlink" href="#utilities" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="MDAnalysis.analysis.hole.write_simplerad2">
 <code class="descclassname">MDAnalysis.analysis.hole.</code><code class="descname">write_simplerad2</code><span class="sig-paren">(</span><em>filename='simple2.rad'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hole.html#write_simplerad2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.hole.write_simplerad2" title="Permalink to this definition">¶</a></dt>
@@ -892,6 +989,7 @@ The data file can be written with the convenience function <a class="reference i
 
 </div>
 </div>
+</div>
 
 
           </div>
@@ -914,12 +1012,12 @@ The data file can be written with the convenience function <a class="reference i
         <li class="right" >
           <a href="hbond_autocorrel.html" title="3.2.2. Hydrogen bond autocorrelation — MDAnalysis.analysis.hbonds.hbond_autocorrel"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../analysis_modules.html" >3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman, Jonathan Barnoud,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,

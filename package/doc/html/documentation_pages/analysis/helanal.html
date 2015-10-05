@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>3.5.2. HELANAL — analysis of protein helices &mdash; MDAnalysis 0.11.0 documentation</title>
+    <title>3.5.2. HELANAL — analysis of protein helices &mdash; MDAnalysis 0.12.0 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.11.0',
+        VERSION:     '0.12.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.11.0 documentation"
+          title="Search within MDAnalysis 0.12.0 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.11.0 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.12.0 documentation" href="../../index.html" />
     <link rel="up" title="3. Analysis modules" href="../analysis_modules.html" />
     <link rel="next" title="3.6.1. Generating densities from trajectories — MDAnalysis.analysis.density" href="density.html" />
     <link rel="prev" title="3.5.1. Elastic network analysis of MD trajectories — MDAnalysis.analysis.gnm" href="gnm.html" /> 
@@ -49,7 +49,7 @@
         <li class="right" >
           <a href="gnm.html" title="3.5.1. Elastic network analysis of MD trajectories — MDAnalysis.analysis.gnm"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../analysis_modules.html" accesskey="U">3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -62,8 +62,7 @@
   <ul>
 <li><a class="reference internal" href="#">3.5.2. HELANAL &#8212; analysis of protein helices</a><ul>
 <li><a class="reference internal" href="#background">3.5.2.1. Background</a></li>
-<li><a class="reference internal" href="#references">3.5.2.2. References</a></li>
-<li><a class="reference internal" href="#functions">3.5.2.3. Functions</a></li>
+<li><a class="reference internal" href="#functions">3.5.2.2. Functions</a></li>
 </ul>
 </li>
 </ul>
@@ -155,9 +154,7 @@ line, by least squares method. Based on the relative goodness of line and
 circle fit to local helix origins, the helix is <em>classified as being linear or
 curved</em>. A helix is classified as being <em>kinked</em>, if at least one local bending
 angle in the middle of the helix is greater than 20 degrees.</p>
-</div>
-<div class="section" id="references">
-<h2>3.5.2.2. References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
+<p class="rubric">References</p>
 <table class="docutils citation" frame="void" id="sugeta1967" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
@@ -192,7 +189,7 @@ HELANAL - A program to characterise helix geometry in proteins.
 </table>
 </div>
 <div class="section" id="functions">
-<h2>3.5.2.3. Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<h2>3.5.2.2. Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.analysis.helanal.helanal_trajectory">
 <code class="descclassname">MDAnalysis.analysis.helanal.</code><code class="descname">helanal_trajectory</code><span class="sig-paren">(</span><em>universe</em>, <em>selection='name CA'</em>, <em>start=None</em>, <em>end=None</em>, <em>begin=None</em>, <em>finish=None</em>, <em>matrix_filename='bending_matrix.dat'</em>, <em>origin_pdbfile='origin.pdb'</em>, <em>summary_filename='summary.txt'</em>, <em>screw_filename='screw.xvg'</em>, <em>tilt_filename='local_tilt.xvg'</em>, <em>fitted_tilt_filename='fit_tilt.xvg'</em>, <em>bend_filename='local_bend.xvg'</em>, <em>twist_filename='unit_twist.xvg'</em>, <em>prefix='helanal_'</em>, <em>ref_axis=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/helanal.html#helanal_trajectory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.helanal.helanal_trajectory" title="Permalink to this definition">¶</a></dt>
@@ -206,11 +203,7 @@ helix, e.g. with &#8220;name CA and resid 1:20&#8221; or use start=1, stop=20.</
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
-<dt><em>universe</em></dt>
-<dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><code class="xref py py-class docutils literal"><span class="pre">Universe</span></code></a></p>
-</dd>
-</dl>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>*universe*</strong> &#8211; <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><code class="xref py py-class docutils literal"><span class="pre">Universe</span></code></a></p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first docutils">
@@ -267,11 +260,8 @@ is chosen [<code class="docutils literal"><span class="pre">None</span></code>]<
 </dl>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><dl class="first last docutils">
-<dt>FinishTimeException</dt>
-<dd><p class="first last">If the specified finish time precedes the specified start time or current time stamp of trajectory object.</p>
-</dd>
-</dl>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first"><code class="xref py py-exc docutils literal"><span class="pre">FinishTimeException</span></code> &#8211;</p>
+<p class="last">If the specified finish time precedes the specified start time or current time stamp of trajectory object.</p>
 </td>
 </tr>
 </tbody>
@@ -313,12 +303,12 @@ the helix, e.g. with &#8220;name CA and resid 1:20&#8221;.</p>
         <li class="right" >
           <a href="gnm.html" title="3.5.1. Elastic network analysis of MD trajectories — MDAnalysis.analysis.gnm"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../analysis_modules.html" >3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman, Jonathan Barnoud,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,

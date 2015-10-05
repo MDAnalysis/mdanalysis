@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>7.1. Core functions of MDAnalysis &mdash; MDAnalysis 0.11.0 documentation</title>
+    <title>7.1. Core functions of MDAnalysis &mdash; MDAnalysis 0.12.0 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.11.0',
+        VERSION:     '0.12.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.11.0 documentation"
+          title="Search within MDAnalysis 0.12.0 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.11.0 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.12.0 documentation" href="../../index.html" />
     <link rel="up" title="7. Core modules" href="../core_modules.html" />
     <link rel="next" title="7.2. Fundamental building blocks — MDAnalysis.core.AtomGroup" href="AtomGroup.html" />
     <link rel="prev" title="7. Core modules" href="../core_modules.html" /> 
@@ -49,7 +49,7 @@
         <li class="right" >
           <a href="../core_modules.html" title="7. Core modules"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../core_modules.html" accesskey="U">7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -338,29 +338,22 @@ instance as an argument.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
-<dt><em>name</em></dt>
-<dd><p class="first last">name of the flag, must be a legal python name</p>
-</dd>
-<dt><em>default</em></dt>
-<dd><p class="first last">default value</p>
-</dd>
-<dt><em>mapping</em></dt>
-<dd><p class="first last">dict that maps allowed input values to canonical values;
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>*name*</strong> &#8211; name of the flag, must be a legal python name</li>
+<li><strong>*default*</strong> &#8211; default value</li>
+<li><strong>*mapping*</strong> &#8211; dict that maps allowed input values to canonical values;
 if <code class="docutils literal"><span class="pre">None</span></code> then no argument checking will be performed and
-all values are directly set.</p>
-</dd>
-<dt><em>doc</em></dt>
-<dd><p class="first">doc string; may contain string interpolation mappings for:</p>
+all values are directly set.</li>
+<li><strong>*doc*</strong> &#8211; <p>doc string; may contain string interpolation mappings for:</p>
 <div class="highlight-python"><div class="highlight"><pre>%%(name)s        name of the flag
 %%(default)r     default value
 %%(value)r       current value
 %%(mapping)r     mapping
 </pre></div>
 </div>
-<p class="last">Doc strings are generated dynamically and reflect the current state.</p>
-</dd>
-</dl>
+<p>Doc strings are generated dynamically and reflect the current state.</p>
+</li>
+</ul>
 </td>
 </tr>
 </tbody>
@@ -398,12 +391,12 @@ all values are directly set.</p>
         <li class="right" >
           <a href="../core_modules.html" title="7. Core modules"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../core_modules.html" >7. Core modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman, Jonathan Barnoud,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,

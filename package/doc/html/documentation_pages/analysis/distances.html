@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>3.1.3. Distance analysis — MDAnalysis.analysis.distances &mdash; MDAnalysis 0.11.0 documentation</title>
+    <title>3.1.3. Distance analysis — MDAnalysis.analysis.distances &mdash; MDAnalysis 0.12.0 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.11.0',
+        VERSION:     '0.12.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.11.0 documentation"
+          title="Search within MDAnalysis 0.12.0 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.11.0 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.12.0 documentation" href="../../index.html" />
     <link rel="up" title="3. Analysis modules" href="../analysis_modules.html" />
     <link rel="next" title="3.1.4. Calculating root mean square quantities — MDAnalysis.analysis.rms" href="rms.html" />
     <link rel="prev" title="3.1.2. Native contacts analysis — MDAnalysis.analysis.contacts" href="contacts.html" /> 
@@ -49,7 +49,7 @@
         <li class="right" >
           <a href="contacts.html" title="3.1.2. Native contacts analysis — MDAnalysis.analysis.contacts"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../analysis_modules.html" accesskey="U">3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -118,35 +118,24 @@ filled. This can speed up calculations.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
-<dt><em>reference</em></dt>
-<dd><p class="first last">reference coordinate array (must be numpy.float32)</p>
-</dd>
-<dt><em>configuration</em></dt>
-<dd><p class="first last">configuration coordinate array (must be numpy.float32)</p>
-</dd>
-<dt><em>box</em></dt>
-<dd><p class="first last">cell dimensions (minimum image convention is applied)
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>*reference*</strong> &#8211; reference coordinate array (must be numpy.float32)</li>
+<li><strong>*configuration*</strong> &#8211; configuration coordinate array (must be numpy.float32)</li>
+<li><strong>*box*</strong> &#8211; cell dimensions (minimum image convention is applied)
 or None [<code class="docutils literal"><span class="pre">None</span></code>].
 Cell dimensions must be in an identical to format to those returned
 by <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>,
-[lx, ly, lz, alpha, beta, gamma]</p>
-</dd>
-<dt><em>result</em></dt>
-<dd><p class="first last">optional preallocated result array which must have the
+[lx, ly, lz, alpha, beta, gamma]</li>
+<li><strong>*result*</strong> &#8211; optional preallocated result array which must have the
 shape (len(ref), len(conf)) and dtype=numpy.float64.
 Avoids creating the array which saves time when the function
-is called repeatedly. [<code class="docutils literal"><span class="pre">None</span></code>]</p>
-</dd>
-</dl>
+is called repeatedly. [<code class="docutils literal"><span class="pre">None</span></code>]</li>
+</ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><em>d</em></dt>
-<dd><p class="first last">(len(reference),len(configuration)) numpy array with the distances d[i,j]
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><em>d</em>
+(len(reference),len(configuration)) numpy array with the distances d[i,j]
 between reference coordinates i and configuration coordinates j</p>
-</dd>
-</dl>
 </td>
 </tr>
 </tbody>
@@ -171,38 +160,30 @@ is filled. This can speed up calculations.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
-<dt><em>ref</em></dt>
-<dd><p class="first last">reference coordinate array with N=len(ref) coordinates</p>
-</dd>
-<dt><em>box</em></dt>
-<dd><p class="first last">cell dimensions (minimum image convention is applied)
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>*ref*</strong> &#8211; reference coordinate array with N=len(ref) coordinates</li>
+<li><strong>*box*</strong> &#8211; cell dimensions (minimum image convention is applied)
 or None [<code class="docutils literal"><span class="pre">None</span></code>]
 Cell dimensions must be in an identical to format to those returned
 by <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>,
-[lx, ly, lz, alpha, beta, gamma]</p>
-</dd>
-<dt><em>result</em></dt>
-<dd><p class="first last">optional preallocated result array which must have the shape
+[lx, ly, lz, alpha, beta, gamma]</li>
+<li><strong>*result*</strong> &#8211; optional preallocated result array which must have the shape
 (N*(N-1)/2,) and dtype <code class="docutils literal"><span class="pre">numpy.float64</span></code>. Avoids creating
 the array which saves time when the function is called
-repeatedly. [<code class="docutils literal"><span class="pre">None</span></code>]</p>
-</dd>
-</dl>
+repeatedly. [<code class="docutils literal"><span class="pre">None</span></code>]</li>
+</ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><em>d</em></dt>
-<dd><p class="first">N*(N-1)/2 numpy 1D array with the distances dist[i,j] between ref
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><p><em>d</em>
+N*(N-1)/2 numpy 1D array with the distances dist[i,j] between ref
 coordinates i and j at position d[k]. Loop through d:</p>
-<div class="last highlight-python"><div class="highlight"><pre><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">N</span><span class="p">):</span>
         <span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="n">dist</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
 </pre></div>
 </div>
-</dd>
-</dl>
+</p>
 </td>
 </tr>
 </tbody>
@@ -242,12 +223,8 @@ comparison with PDB numbering.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first docutils">
-<dt><em>A</em>, <em>B</em></dt>
-<dd><p class="first last"><a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></code></a> with the
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>B</strong> (<em>*A*,</em>) &#8211; <a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.AtomGroup" title="MDAnalysis.core.AtomGroup.AtomGroup"><code class="xref py py-class docutils literal"><span class="pre">AtomGroup</span></code></a> with the
 same number of atoms</p>
-</dd>
-</dl>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first docutils">
@@ -294,12 +271,12 @@ offset is added to each resid.</p>
         <li class="right" >
           <a href="contacts.html" title="3.1.2. Native contacts analysis — MDAnalysis.analysis.contacts"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../analysis_modules.html" >3. Analysis modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman, Jonathan Barnoud,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,

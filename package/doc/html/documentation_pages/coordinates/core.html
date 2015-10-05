@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.20. Common functions for coordinate reading — MDAnalysis.coordinates.core &mdash; MDAnalysis 0.11.0 documentation</title>
+    <title>5.20. Common functions for coordinate reading — MDAnalysis.coordinates.core &mdash; MDAnalysis 0.12.0 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.11.0',
+        VERSION:     '0.12.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.11.0 documentation"
+          title="Search within MDAnalysis 0.12.0 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.11.0 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.12.0 documentation" href="../../index.html" />
     <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
     <link rel="next" title="5.21. NumPy access to Gromacs XDR trajectories — MDAnalysis.coordinates.xdrfile" href="xdrfile.html" />
     <link rel="prev" title="5.19. Base classes — MDAnalysis.coordinates.base" href="base.html" /> 
@@ -49,7 +49,7 @@
         <li class="right" >
           <a href="base.html" title="5.19. Base classes — MDAnalysis.coordinates.base"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -118,18 +118,12 @@ their documentation for details.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
-<dt><em>filename</em></dt>
-<dd><p class="first last">filename of the input trajectory or coordinate file</p>
-</dd>
-<dt><em>permissive</em></dt>
-<dd><p class="first last">If set to <code class="docutils literal"><span class="pre">True</span></code>, a reader is selected that is more tolerant of the
-input (currently only implemented for PDB). [<code class="docutils literal"><span class="pre">False</span></code>]</p>
-</dd>
-<dt><em>kwargs</em></dt>
-<dd><p class="first last">Keyword arguments for the selected Reader class.</p>
-</dd>
-</dl>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>*filename*</strong> &#8211; filename of the input trajectory or coordinate file</li>
+<li><strong>*permissive*</strong> &#8211; If set to <code class="docutils literal"><span class="pre">True</span></code>, a reader is selected that is more tolerant of the
+input (currently only implemented for PDB). [<code class="docutils literal"><span class="pre">False</span></code>]</li>
+<li><strong>*kwargs*</strong> &#8211; Keyword arguments for the selected Reader class.</li>
+</ul>
 </td>
 </tr>
 </tbody>
@@ -144,46 +138,36 @@ input (currently only implemented for PDB). [<code class="docutils literal"><spa
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
-<dt><em>filename</em></dt>
-<dd><p class="first last">Output filename of the trajectory; the extension determines the
-format.</p>
-</dd>
-<dt><em>n_atoms</em></dt>
-<dd><p class="first last">The number of atoms in the output trajectory; can be ommitted
-for single-frame writers.</p>
-</dd>
-<dt><em>multiframe</em></dt>
-<dd><p class="first last"><code class="docutils literal"><span class="pre">True</span></code>: write a trajectory with multiple frames; <code class="docutils literal"><span class="pre">False</span></code>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>*filename*</strong> &#8211; Output filename of the trajectory; the extension determines the
+format.</li>
+<li><strong>*n_atoms*</strong> &#8211; The number of atoms in the output trajectory; can be ommitted
+for single-frame writers.</li>
+<li><strong>*multiframe*</strong> &#8211; <code class="docutils literal"><span class="pre">True</span></code>: write a trajectory with multiple frames; <code class="docutils literal"><span class="pre">False</span></code>
 only write a single frame snapshot; <code class="docutils literal"><span class="pre">None</span></code> first try to get
-a multiframe writer and then fall back to single frame [<code class="docutils literal"><span class="pre">None</span></code>]</p>
-</dd>
-<dt><em>kwargs</em></dt>
-<dd><p class="first">Keyword arguments for the writer; all trajectory Writers accept
+a multiframe writer and then fall back to single frame [<code class="docutils literal"><span class="pre">None</span></code>]</li>
+<li><strong>*kwargs*</strong> &#8211; <p>Keyword arguments for the writer; all trajectory Writers accept
 at least</p>
 <blockquote>
 <div><dl class="docutils">
 <dt><em>start</em></dt>
-<dd><p class="first last">starting time [0]</p>
-</dd>
+<dd>starting time [0]</dd>
 <dt><em>step</em></dt>
-<dd><p class="first last">step size in frames [1]</p>
-</dd>
+<dd>step size in frames [1]</dd>
 <dt><em>delta</em></dt>
-<dd><p class="first last">length of time between two frames, in ps [1.0]</p>
-</dd>
+<dd>length of time between two frames, in ps [1.0]</dd>
 </dl>
 </div></blockquote>
 <p>Some readers accept additional arguments, which need to be looked
 up in the documentation of the reader.</p>
-<div class="last admonition seealso">
+<div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><a class="reference internal" href="DCD.html#MDAnalysis.coordinates.DCD.DCDWriter" title="MDAnalysis.coordinates.DCD.DCDWriter"><code class="xref py py-class docutils literal"><span class="pre">DCDWriter</span></code></a> for DCD
 trajectories or <a class="reference internal" href="XTC.html#MDAnalysis.coordinates.XTC.XTCWriter" title="MDAnalysis.coordinates.XTC.XTCWriter"><code class="xref py py-class docutils literal"><span class="pre">XTCWriter</span></code></a>
 and <a class="reference internal" href="TRR.html#MDAnalysis.coordinates.TRR.TRRWriter" title="MDAnalysis.coordinates.TRR.TRRWriter"><code class="xref py py-class docutils literal"><span class="pre">TRRWriter</span></code></a> for Gromacs.</p>
 </div>
-</dd>
-</dl>
+</li>
+</ul>
 </td>
 </tr>
 </tbody>
@@ -215,21 +199,15 @@ used.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><dl class="first last docutils">
-<dt><em>filename</em></dt>
-<dd><p class="first last">The filename for the trajectory is examined for its extension and
-the Writer is chosen accordingly.</p>
-</dd>
-<dt><em>format</em></dt>
-<dd><p class="first last">If no <em>filename</em> is supplied then the format can be explicitly set;
-possible values are &#8220;DCD&#8221;, &#8220;XTC&#8221;, &#8220;TRR&#8221;; &#8220;PDB&#8221;, &#8220;CRD&#8221;, &#8220;GRO&#8221;.</p>
-</dd>
-<dt><em>multiframe</em></dt>
-<dd><p class="first last"><code class="docutils literal"><span class="pre">True</span></code>: write multiple frames to the trajectory; <code class="docutils literal"><span class="pre">False</span></code>: only
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>*filename*</strong> &#8211; The filename for the trajectory is examined for its extension and
+the Writer is chosen accordingly.</li>
+<li><strong>*format*</strong> &#8211; If no <em>filename</em> is supplied then the format can be explicitly set;
+possible values are &#8220;DCD&#8221;, &#8220;XTC&#8221;, &#8220;TRR&#8221;; &#8220;PDB&#8221;, &#8220;CRD&#8221;, &#8220;GRO&#8221;.</li>
+<li><strong>*multiframe*</strong> &#8211; <code class="docutils literal"><span class="pre">True</span></code>: write multiple frames to the trajectory; <code class="docutils literal"><span class="pre">False</span></code>: only
 write a single coordinate frame; <code class="docutils literal"><span class="pre">None</span></code>: first try trajectory (multi
-frame writers), then the single frame ones. Default is <code class="docutils literal"><span class="pre">None</span></code>.</p>
-</dd>
-</dl>
+frame writers), then the single frame ones. Default is <code class="docutils literal"><span class="pre">None</span></code>.</li>
+</ul>
 </td>
 </tr>
 </tbody>
@@ -263,12 +241,12 @@ behaviour.</p>
         <li class="right" >
           <a href="base.html" title="5.19. Base classes — MDAnalysis.coordinates.base"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.11.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman,
+        &copy; Copyright 2005-2015, Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua Adelman, Jonathan Barnoud,
     Christian Beckstein (logo), Alejandro Bernardin, Sébastien Buchoux,
     David Caplan, Matthieu Chavent, Xavier Deupi, Jan Domański, David L. Dotson
     Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar,
