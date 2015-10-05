@@ -1,11 +1,14 @@
-include src/dcd/*
-include src/dcd/include/*
-include src/numtools/*
-include src/KDTree/*
-include src/xdrfile/*
-include src/pyqcprot/*
-include src/transformations/*
+global-include *.pyx
+global-include *.pxd
+global-include *.c
+global-include *.h
+include MDAnalysis/coordinates/xdrfile/src/*
+include MDAnalysis/lib/src/pyqcprot/*
+include MDAnalysis/lib/src/transformations/*
 recursive-include doc * 
-include README INSTALL CHANGELOG LICENSE AUTHORS TODO SUMMARY.txt
-include ez_setup.py setup.py setup.cfg.template
+include README INSTALL CHANGELOG LICENSE AUTHORS SUMMARY.txt
+include setup.py
 recursive-include examples *
+global-exclude *.pyc
+global-exclude *.pyo
+global-exclude *.pyd
