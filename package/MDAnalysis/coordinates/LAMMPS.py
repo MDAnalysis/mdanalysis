@@ -95,7 +95,7 @@ class DCDWriter(DCD.DCDWriter):
     """Write a LAMMPS_ DCD trajectory.
 
     The units can be set from the constructor with the keyword
-    arguments *timeunit* and *lengthunit*. The defaults are "ps" and
+    arguments *timeunit* and *lengthunit*. The defaults are "fs" and
     "Angstrom". See :mod:`MDAnalysis.units` for other recognized
     values.
     """
