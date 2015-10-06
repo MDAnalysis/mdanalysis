@@ -1,6 +1,7 @@
 import numpy as np
 
 from MDAnalysisTests.datafiles import (PDB_small, PDB, PDB_full, LAMMPSdata,
+                                       LAMMPSdata2, LAMMPSdcd2,
                                        LAMMPSdata_mini, PSF_TRICLINIC,
                                        DCD_TRICLINIC, PSF_NAMD_TRICLINIC,
                                        DCD_NAMD_TRICLINIC)
@@ -192,6 +193,17 @@ class RefLAMMPSData(object):
                            ],
                           dtype=np.float32)
 
+class RefLAMMPSDataDCD(object):
+    format = "LAMMPS"
+    topology = LAMMPSdata2
+    trajectory = LAMMPSdcd2
+    n_atoms = 12421
+    n_frames = 5
+    dt = 0.5  # ps per frame
+    mean_dimensions = np.array(
+        [ 50.66186142,  47.18824387,  52.33762741,
+          90.        ,  90.        ,  90.        ], dtype=np.float32)
+
 
 class RefLAMMPSDataMini(object):
     filename = LAMMPSdata_mini
@@ -231,3 +243,4 @@ class RefNAMDtriclinicDCD(object):
     ref_dimensions = np.array([
         [1., 38.426594, 38.393101, 44.759800, 90.000000, 90.000000, 60.028915],
     ])
+

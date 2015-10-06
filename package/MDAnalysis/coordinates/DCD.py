@@ -192,6 +192,7 @@ class DCDWriter(base.Writer):
     .. _Issue 187: https://github.com/MDAnalysis/mdanalysis/issues/187
     """
     format = 'DCD'
+    flavor = 'CHARMM'
     units = {'time': 'AKMA', 'length': 'Angstrom'}
 
     def __init__(self, filename, n_atoms, start=0, step=1,
@@ -399,6 +400,7 @@ class DCDReader(base.Reader):
        Removed skip keyword and functionality
     """
     format = 'DCD'
+    flavor = 'CHARMM'
     units = {'time': 'AKMA', 'length': 'Angstrom'}
     _Timestep = Timestep
 
@@ -426,7 +428,7 @@ class DCDReader(base.Reader):
         # Convert delta to ps
         delta = mdaunits.convert(self.delta, self.units['time'], 'ps')
 
-        self._ts_kwargs.update({'dt':self.skip_timestep * delta})
+        self._ts_kwargs.setdefault('dt', self.skip_timestep * delta)
         self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
         # Read in the first timestep
         self._read_next_timestep()
@@ -480,7 +482,6 @@ class DCDReader(base.Reader):
         if ts is None:
             ts = self.ts
         ts._frame = self._read_next_frame(ts._x, ts._y, ts._z, ts._unitcell, 1)
-
         ts.frame += 1
         return ts
 
@@ -493,7 +494,6 @@ class DCDReader(base.Reader):
         self._jump_to_frame(frame)
         ts = self.ts
         ts._frame = self._read_next_frame(ts._x, ts._y, ts._z, ts._unitcell, 1)
-
         ts.frame = frame
         return ts
 
@@ -592,7 +592,8 @@ class DCDReader(base.Reader):
 
     @property
     def dt(self):
-        return self.skip_timestep * self.convert_time_from_native(self.delta)
+        """Time between two trajectory frames in picoseconds."""
+        return self.ts.dt
 
 
 DCDReader._read_dcd_header = types.MethodType(_dcdmodule.__read_dcd_header, None, DCDReader)

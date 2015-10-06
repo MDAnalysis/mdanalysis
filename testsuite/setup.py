@@ -115,7 +115,7 @@ For details see the report for `Issue 87`_.
                   'data/*.trz',
                   'data/mol2/*.mol2',
                   'data/capping/*.gro', 'data/capping/*.pdb',
-                  'data/*.data',
+                  'data/lammps/*.data', 'data/lammps/*.data.bz2', 'data/lammps/*.dcd', 'lammps/*.trz',
                   'data/gms/*.xyz', 'data/gms/*.gms', 'data/gms/*.gms.gz',
                   'data/*.inpcrd',
                   'data/dlpoly/CONFIG*',

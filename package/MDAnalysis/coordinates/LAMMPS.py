@@ -22,32 +22,52 @@ Classes to read and write LAMMPS_ DCD binary
 trajectories. Trajectories can be read regardless of system-endianness
 as this is auto-detected.
 
-LAMMPS can write DCD_ trajectories but unlike a `CHARMM trajectory`_
+LAMMPS can `write DCD`_ trajectories but unlike a `CHARMM trajectory`_
 (which is often called a DCD even though CHARMM itself calls them
 "trj") the time unit is not fixed to be the AKMA_ time unit (20 AKMA
 is 0.978 picoseconds or 1 AKMA = 4.888821e-14 s) but can depend on
-settings in LAMMPS. The most common case appears to be that the time
-step is actually recorded in picoseconds. Other cases are unit-less
-Lennard-Jones time units.
+settings in LAMMPS. The most common case for biomolecular simulations
+appears to be that the time step is recorded in femtoseconds (command
+`units real`_ in the input file) and lengths in ångströms. Other cases
+are unit-less Lennard-Jones time units.
 
 This presents a problem for MDAnalysis because it cannot autodetect
 the unit from the file. By default we are assuming that the unit for
-length is the ångström and for the time is the picosecond. If this is
-not true then the user *should supply the appropriate units* in the as
+length is the ångström and for the time is the femtosecond. If this is
+not true then the user *should supply the appropriate units* in the
 keywords *timeunit* and/or *lengthunit* to :class:`DCDWriter` and
-:class:`DCDReader`.
+:class:`~MDAnalysis.core.AtomGroup.Universe` (which then calls
+:class:`DCDReader`).
+
+.. Rubric:: Example: Loading a LAMMPS simulation
+
+To load a LAMMPS simulation from a LAMMPS data file (using the
+:class:`~MDAnalysis.topology.LAMMPSParser.DATAParser`) together with a
+LAMMPS DCD with "*real*" provide the keyword *format="LAMMPS*"::
+
+  u = MDAnalysis.Universe("lammps.data", "lammps_real.dcd", format="LAMMPS")
+
+If the trajectory uses *units nano* then use ::
+
+  u = MDAnalysis.Universe("lammps.data", "lammps_nano.dcd", format="LAMMPS",
+                          lengthunit="nm", timeunit="ns")
 
 .. Note::
 
-   Lennard-Jones units are not implemented. See
-   :mod:`MDAnalysis.units` for other recognized values.
+   Lennard-Jones units are not implemented. See :mod:`MDAnalysis.units` for
+   other recognized values and the documentation for the LAMMPS `units
+   command`_.
 
-.. SeeAlso:: For further discussion follow the reports for `Issue 84`_ and `Issue 64`_.
+.. SeeAlso::
+
+   For further discussion follow the reports for `Issue 84`_ and `Issue 64`_.
 
 .. _LAMMPS: http://lammps.sandia.gov/
-.. _DCD: http://lammps.sandia.gov/doc/dump.html
+.. _write DCD: http://lammps.sandia.gov/doc/dump.html
 .. _CHARMM trajectory: http://www.charmm.org/documentation/c36b1/dynamc.html#%20Trajectory
 .. _AKMA: http://www.charmm.org/documentation/c36b1/usage.html#%20AKMA
+.. _units real: http://lammps.sandia.gov/doc/units.html
+.. _units command: http://lammps.sandia.gov/doc/units.html
 .. _`Issue 64`: https://github.com/MDAnalysis/mdanalysis/issues/64
 .. _`Issue 84`: https://github.com/MDAnalysis/mdanalysis/issues/84
 
@@ -79,10 +99,11 @@ class DCDWriter(DCD.DCDWriter):
     "Angstrom". See :mod:`MDAnalysis.units` for other recognized
     values.
     """
-    format = "DCD"
+    format = 'DCD'
+    flavor = 'LAMMPS'
 
     def __init__(self, *args, **kwargs):
-        self.units = {'time': 'ps', 'length': 'Angstrom'}  # must be instance level
+        self.units = {'time': 'fs', 'length': 'Angstrom'}  # must be instance level
         self.units['time'] = kwargs.pop('timeunit', self.units['time'])
         self.units['length'] = kwargs.pop('lengthunit', self.units['length'])
         for unit_type, unit in self.units.items():
@@ -98,14 +119,17 @@ class DCDReader(DCD.DCDReader):
     """Read a LAMMPS_ DCD trajectory.
 
     The units can be set from the constructor with the keyword
-    arguments *timeunit* and *lengthunit*. The defaults are "ps" and
-    "Angstrom". See :mod:`MDAnalysis.units` for other recognized
-    values.
+    arguments *timeunit* and *lengthunit*. The defaults are "fs" and
+    "Angstrom", corresponding to LAMMPS `units style`_ "**real**". See
+    :mod:`MDAnalysis.units` for other recognized values.
+
+    .. _units style: http://lammps.sandia.gov/doc/units.html
     """
-    format = "DCD"
+    format = 'DCD'
+    flavor = 'LAMMPS'
 
     def __init__(self, dcdfilename, **kwargs):
-        self.units = {'time': 'ps', 'length': 'Angstrom'}  # must be instance level
+        self.units = {'time': 'fs', 'length': 'Angstrom'}  # must be instance level
         self.units['time'] = kwargs.pop('timeunit', self.units['time'])
         self.units['length'] = kwargs.pop('lengthunit', self.units['length'])
         for unit_type, unit in self.units.items():
