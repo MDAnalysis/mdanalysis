@@ -592,7 +592,8 @@ class DCDReader(base.Reader):
 
     @property
     def dt(self):
-        return self.skip_timestep * self.convert_time_from_native(self.delta)
+        """Time between two trajectory frames in picoseconds."""
+        return self.ts.dt
 
 
 DCDReader._read_dcd_header = types.MethodType(_dcdmodule.__read_dcd_header, None, DCDReader)

@@ -140,6 +140,8 @@ def test_DCDReader_set_dt(dt=100., frame=3):
                         err_msg="setting time step dt={0} failed: "
                         "actually used dt={1}".format(
             dt, u.trajectory._ts_kwargs['dt']))
+    assert_almost_equal(u.trajectory.dt, dt,
+                        err_msg="trajectory.dt does not match set dt")
 
 class TestDCDWriter(TestCase):
     def setUp(self):
