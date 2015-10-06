@@ -1,8 +1,10 @@
+import os
 import numpy as np
 
 import MDAnalysis as mda
 
 from numpy.testing import (assert_equal, assert_almost_equal, assert_raises)
+import tempdir
 from unittest import TestCase
 
 from MDAnalysisTests.coordinates.reference import (RefLAMMPSData,
@@ -63,10 +65,13 @@ class TestLammpsDataMini_Coords(_TestLammpsData_Coords, RefLAMMPSDataMini):
 
 # need more tests of the LAMMPS DCDReader
 
-class TestLAMPPSDCDReader(TestCase, RefLAMMPSDataDCD):
+class TestLAMMPSDCDReader(TestCase, RefLAMMPSDataDCD):
     def setUp(self):
         self.u = mda.Universe(self.topology, self.trajectory,
                               format=self.format)
+
+    def tearDown(self):
+        del self.u
 
     def get_frame_from_end(self, offset):
         iframe = self.u.trajectory.n_frames - 1 - offset
@@ -103,3 +108,69 @@ class TestLAMPPSDCDReader(TestCase, RefLAMMPSDataDCD):
                             err_msg="setting time step dt={0} failed: "
                             "actually used dt={1}".format(
                 dt, u.trajectory._ts_kwargs['dt']))
+
+    def test_wrong_time_unit(self):
+        def wrong_load(unit="nm"):
+            return mda.Universe(self.topology, self.trajectory, format=self.format,
+                                timeunit=unit)
+        assert_raises(TypeError, wrong_load)
+
+    def test_wrong_unit(self):
+        def wrong_load(unit="GARBAGE"):
+            return mda.Universe(self.topology, self.trajectory, format=self.format,
+                                timeunit=unit)
+        assert_raises(ValueError, wrong_load)
+
+
+class TestLAMMPSDCDWriter(TestCase, RefLAMMPSDataDCD):
+    def setUp(self):
+        self.u = mda.Universe(self.topology, self.trajectory,
+                              format=self.format)
+        # dummy output file
+        ext = os.path.splitext(self.trajectory)[1]
+        self.tmpdir = tempdir.TempDir()
+        self.outfile = os.path.join(self.tmpdir.name,  'lammps-writer-test' + ext)
+
+    def tearDown(self):
+        try:
+            os.unlink(self.outfile)
+        except:
+            pass
+        del self.u
+        del self.tmpdir
+
+    def test_Writer(self, n_frames=3):
+        W = mda.Writer(self.outfile, n_atoms=self.u.atoms.n_atoms,
+                       format=self.format)
+        with self.u.trajectory.OtherWriter(self.outfile) as w:
+            for ts in self.u.trajectory[:n_frames]:
+                w.write(ts)
+        short = mda.Universe(self.topology, self.outfile)
+        assert_equal(short.trajectory.n_frames, n_frames,
+                     err_msg="number of frames mismatch")
+        assert_almost_equal(short.trajectory[n_frames - 1].positions,
+                            self.u.trajectory[n_frames - 1].positions,
+                            6, err_msg="coordinate mismatch between corresponding frames")
+
+
+
+    def test_OtherWriter(self):
+        times = []
+        with self.u.trajectory.OtherWriter(self.outfile) as w:
+            for ts in self.u.trajectory[::-1]:
+                times.append(ts.time)
+                w.write(ts)
+        # note: the reversed trajectory records times in increasing
+        #       steps, and NOT reversed, i.e. the time markers are not
+        #       attached to their frames. This could be considered a bug
+        #       but DCD has no way to store timestamps. Right now, we'll simply
+        #       test that this is the case and pass.
+        reversed = mda.Universe(self.topology, self.outfile)
+        assert_equal(reversed.trajectory.n_frames, self.u.trajectory.n_frames,
+                     err_msg="number of frames mismatch")
+        rev_times = [ts.time for ts in reversed.trajectory]
+        assert_almost_equal(rev_times, times[::-1], 6,
+                            err_msg="time steps of written DCD mismatch")
+        assert_almost_equal(reversed.trajectory[-1].positions,
+                            self.u.trajectory[0].positions,
+                            6, err_msg="coordinate mismatch between corresponding frames")
