@@ -77,6 +77,7 @@ __all__ = [
     "mol2_molecules", "mol2_molecule", "mol2_broken_molecule",
     "capping_input", "capping_output", "capping_ace", "capping_nma",
     "LAMMPSdata", "trz4data", "LAMMPSdata_mini",
+    "LAMMPSdata2", "LAMMPSdcd2",
     "unordered_res",  # pdb file with resids non sequential
     "GMS_ASYMOPT",  # GAMESS C1  optimization
     "GMS_SYMOPT",   # GAMESS D4h optimization
@@ -214,12 +215,11 @@ capping_output = resource_filename(__name__, "data/capping/maestro_aaqaa_capped.
 capping_ace = resource_filename(__name__, "data/capping/ace.pdb")
 capping_nma = resource_filename(__name__, "data/capping/nma.pdb")
 
-trz4data = resource_filename(__name__, "data/datatest.trz")
-LAMMPSdata = resource_filename(__name__, "data/datatest.data")
-LAMMPSdata_mini = resource_filename(__name__, "data/mini.data")
-
-LAMMPSdata2 = resource_filename(__name__, "data/lammps2.data")
-LAMMPSdcd2 = resource_filename(__name__, "data/lammps2.dcd")
+trz4data = resource_filename(__name__, "data/lammps/datatest.trz")
+LAMMPSdata = resource_filename(__name__, "data/lammps/datatest.data")
+LAMMPSdata_mini = resource_filename(__name__, "data/lammps/mini.data")
+LAMMPSdata2 = resource_filename(__name__, "data/lammps/ifabp_apo_100mM.data.bz2")
+LAMMPSdcd2 = resource_filename(__name__, "data/lammps/ifabp_apo_100mM.dcd")
 
 unordered_res = resource_filename(__name__, "data/unordered_res.pdb")
 

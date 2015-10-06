@@ -426,7 +426,7 @@ class DCDReader(base.Reader):
         # Convert delta to ps
         delta = mdaunits.convert(self.delta, self.units['time'], 'ps')
 
-        self._ts_kwargs.update({'dt':self.skip_timestep * delta})
+        self._ts_kwargs.setdefault('dt', self.skip_timestep * delta)
         self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
         # Read in the first timestep
         self._read_next_timestep()
@@ -480,7 +480,6 @@ class DCDReader(base.Reader):
         if ts is None:
             ts = self.ts
         ts._frame = self._read_next_frame(ts._x, ts._y, ts._z, ts._unitcell, 1)
-
         ts.frame += 1
         return ts
 
@@ -493,7 +492,6 @@ class DCDReader(base.Reader):
         self._jump_to_frame(frame)
         ts = self.ts
         ts._frame = self._read_next_frame(ts._x, ts._y, ts._z, ts._unitcell, 1)
-
         ts.frame = frame
         return ts
 

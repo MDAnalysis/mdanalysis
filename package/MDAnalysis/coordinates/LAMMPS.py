@@ -98,14 +98,17 @@ class DCDReader(DCD.DCDReader):
     """Read a LAMMPS_ DCD trajectory.
 
     The units can be set from the constructor with the keyword
-    arguments *timeunit* and *lengthunit*. The defaults are "ps" and
-    "Angstrom". See :mod:`MDAnalysis.units` for other recognized
-    values.
+    arguments *timeunit* and *lengthunit*. The defaults are "fs" and
+    "Angstrom", corresponding to LAMMPS `units style`_ "**real**". See
+    :mod:`MDAnalysis.units` for other recognized values.
+
+    .. _units style: http://lammps.sandia.gov/doc/units.html
+    ..
     """
     format = "DCD"
 
     def __init__(self, dcdfilename, **kwargs):
-        self.units = {'time': 'ps', 'length': 'Angstrom'}  # must be instance level
+        self.units = {'time': 'fs', 'length': 'Angstrom'}  # must be instance level
         self.units['time'] = kwargs.pop('timeunit', self.units['time'])
         self.units['length'] = kwargs.pop('lengthunit', self.units['length'])
         for unit_type, unit in self.units.items():

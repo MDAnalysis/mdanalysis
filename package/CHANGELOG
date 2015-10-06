@@ -15,7 +15,7 @@ The rules for this file:
 ------------------------------------------------------------------------------
 10/??/15
 
-  * 0.12.1 kain88-de
+  * 0.12.1 kain88-de, orbeckst
 
 API Changes
 
@@ -25,6 +25,10 @@ Changes
 
 Fixes
   * Fixed OpenMP detection on Linux/OSX #459
+  * Fixed reading of LAMMPS trajectory times: default unit ought
+    to be fs and not ps
+  * Fixed setting of dt for DCDReader (and LAMMPS DCDReader) with
+    keyword argument Universe(..., dt=<dt>)
 
 10/04/15 kain88-de, richardjgowers, dotsdl, sseyler, orbeckst, jbarnoud
 
