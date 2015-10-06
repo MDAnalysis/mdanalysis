@@ -3,7 +3,8 @@ import numpy as np
 
 import MDAnalysis as mda
 
-from numpy.testing import (assert_equal, assert_almost_equal, assert_raises)
+from numpy.testing import (assert_equal, assert_almost_equal, assert_raises,
+                           assert_)
 import tempdir
 from unittest import TestCase
 
@@ -12,7 +13,7 @@ from MDAnalysisTests.coordinates.reference import (RefLAMMPSData,
                                                    RefLAMMPSDataDCD)
 
 
-def test_datareader_VE():
+def test_datareader_ValueError():
     from MDAnalysis.coordinates.LAMMPS import DATAReader
     assert_raises(ValueError, DATAReader, 'filename')
 
@@ -66,12 +67,17 @@ class TestLammpsDataMini_Coords(_TestLammpsData_Coords, RefLAMMPSDataMini):
 # need more tests of the LAMMPS DCDReader
 
 class TestLAMMPSDCDReader(TestCase, RefLAMMPSDataDCD):
+    flavor = 'LAMMPS'
+
     def setUp(self):
         self.u = mda.Universe(self.topology, self.trajectory,
                               format=self.format)
 
     def tearDown(self):
         del self.u
+
+    def test_Reader_is_LAMMPS(self):
+        assert_(self.u.trajectory.flavor, self.flavor)
 
     def get_frame_from_end(self, offset):
         iframe = self.u.trajectory.n_frames - 1 - offset
@@ -123,6 +129,8 @@ class TestLAMMPSDCDReader(TestCase, RefLAMMPSDataDCD):
 
 
 class TestLAMMPSDCDWriter(TestCase, RefLAMMPSDataDCD):
+    flavor = 'LAMMPS'
+
     def setUp(self):
         self.u = mda.Universe(self.topology, self.trajectory,
                               format=self.format)
@@ -139,6 +147,11 @@ class TestLAMMPSDCDWriter(TestCase, RefLAMMPSDataDCD):
         del self.u
         del self.tmpdir
 
+    def test_Writer_is_LAMMPS(self):
+        with mda.Writer(self.outfile, n_atoms=self.u.atoms.n_atoms,
+                       format=self.format) as W:
+            assert_(W.flavor, self.flavor)
+
     def test_Writer(self, n_frames=3):
         W = mda.Writer(self.outfile, n_atoms=self.u.atoms.n_atoms,
                        format=self.format)
@@ -152,7 +165,9 @@ class TestLAMMPSDCDWriter(TestCase, RefLAMMPSDataDCD):
                             self.u.trajectory[n_frames - 1].positions,
                             6, err_msg="coordinate mismatch between corresponding frames")
 
-
+    def test_OtherWriter_is_LAMMPS(self):
+        with self.u.trajectory.OtherWriter(self.outfile) as W:
+            assert_(W.flavor, self.flavor)
 
     def test_OtherWriter(self):
         times = []
@@ -174,3 +189,50 @@ class TestLAMMPSDCDWriter(TestCase, RefLAMMPSDataDCD):
         assert_almost_equal(reversed.trajectory[-1].positions,
                             self.u.trajectory[0].positions,
                             6, err_msg="coordinate mismatch between corresponding frames")
+
+class TestLAMMPSDCDWriterClass(TestCase):
+    flavor = 'LAMMPS'
+
+    def setUp(self):
+        # dummy output file
+        ext = ".dcd"
+        self.tmpdir = tempdir.TempDir()
+        self.outfile = os.path.join(self.tmpdir.name,  'lammps-writer-test' + ext)
+
+    def tearDown(self):
+        try:
+            os.unlink(self.outfile)
+        except:
+            pass
+        del self.tmpdir
+
+    def test_Writer_is_LAMMPS(self):
+        with mda.coordinates.LAMMPS.DCDWriter(self.outfile, n_atoms=10) as W:
+            assert_(W.flavor, self.flavor)
+
+    def test_open(self):
+        def open_dcd():
+            try:
+                with mda.coordinates.LAMMPS.DCDWriter(self.outfile, n_atoms=10):
+                    pass
+            except Exception:
+                return False
+            else:
+                return True
+        assert_(open_dcd(), True)
+
+    def test_wrong_time_unit(self):
+        def wrong_load(unit="nm"):
+                with mda.coordinates.LAMMPS.DCDWriter(self.outfile, n_atoms=10,
+                                                      timeunit=unit):
+                    pass
+        assert_raises(TypeError, wrong_load)
+
+    def test_wrong_unit(self):
+        def wrong_load(unit="GARBAGE"):
+                with mda.coordinates.LAMMPS.DCDWriter(self.outfile, n_atoms=10,
+                                                      timeunit=unit):
+                    pass
+        assert_raises(ValueError, wrong_load)
+
+

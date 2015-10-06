@@ -192,6 +192,7 @@ class DCDWriter(base.Writer):
     .. _Issue 187: https://github.com/MDAnalysis/mdanalysis/issues/187
     """
     format = 'DCD'
+    flavor = 'CHARMM'
     units = {'time': 'AKMA', 'length': 'Angstrom'}
 
     def __init__(self, filename, n_atoms, start=0, step=1,
@@ -399,6 +400,7 @@ class DCDReader(base.Reader):
        Removed skip keyword and functionality
     """
     format = 'DCD'
+    flavor = 'CHARMM'
     units = {'time': 'AKMA', 'length': 'Angstrom'}
     _Timestep = Timestep
 

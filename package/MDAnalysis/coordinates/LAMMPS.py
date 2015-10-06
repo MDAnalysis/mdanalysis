@@ -79,10 +79,11 @@ class DCDWriter(DCD.DCDWriter):
     "Angstrom". See :mod:`MDAnalysis.units` for other recognized
     values.
     """
-    format = "DCD"
+    format = 'DCD'
+    flavor = 'LAMMPS'
 
     def __init__(self, *args, **kwargs):
-        self.units = {'time': 'ps', 'length': 'Angstrom'}  # must be instance level
+        self.units = {'time': 'fs', 'length': 'Angstrom'}  # must be instance level
         self.units['time'] = kwargs.pop('timeunit', self.units['time'])
         self.units['length'] = kwargs.pop('lengthunit', self.units['length'])
         for unit_type, unit in self.units.items():
@@ -105,7 +106,8 @@ class DCDReader(DCD.DCDReader):
     .. _units style: http://lammps.sandia.gov/doc/units.html
     ..
     """
-    format = "DCD"
+    format = 'DCD'
+    flavor = 'LAMMPS'
 
     def __init__(self, dcdfilename, **kwargs):
         self.units = {'time': 'fs', 'length': 'Angstrom'}  # must be instance level
