@@ -94,7 +94,7 @@ class PersistenceLength(AnalysisBase):
             for i in xrange(n-1):
                 self._results[:(n-1)-i] += inner_pr[i, i:]
 
-    def _normalise(self):
+    def _conclude(self):
         n = len(self._atomgroups[0])
 
         norm = np.linspace(n - 1, 1, n - 1)

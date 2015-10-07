@@ -49,7 +49,11 @@ class AnalysisBase(object):
         """
         pass
 
-    def _normalise(self):
+    def _prepare(self):
+        """Set things up before the analysis loop begins"""
+        pass
+
+    def _conclude(self):
         """Finalise the results you've gathered.
 
         Called at the end of the run() method to finish everything up.
@@ -58,12 +62,14 @@ class AnalysisBase(object):
 
     def run(self):
         """Perform the calculation"""
+        logger.info("Starting preparation")
+        self._prepare()
         for i, ts in enumerate(
                 self._trajectory[self.start:self.stop:self.step]):
             self._ts = ts
             logger.info("--> Doing frame {} of {}".format(i+1, self.nframes))
             self._single_frame()
-        logger.info("Applying normalisation")
-        self._normalise()
+        logger.info("Finishing up")
+        self._conclude()
 
 
