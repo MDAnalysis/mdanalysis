@@ -45,7 +45,7 @@ script:
   - |
      test ${TRAVIS_PULL_REQUEST} == "false" && \
      test ${TRAVIS_BRANCH} == ${GH_DOC_BRANCH} && \
-     test "${TRAVIS_BUILD_NUMBER}.1" == "${TRAVIS_JOB_NUMBER}" && \
+     test ${MASTER} == true && \
      (cd ./package && python setup.py build_ext --inplace) && \
      (cd ./package/doc/sphinx && make clean html) || \
      true
@@ -54,6 +54,6 @@ after_success:
   - |
      test ${TRAVIS_PULL_REQUEST} == "false" && \
      test ${TRAVIS_BRANCH} == ${GH_DOC_BRANCH} && \
-     test "${TRAVIS_BUILD_NUMBER}.1" == "${TRAVIS_JOB_NUMBER}" && \
+     test ${MASTER} == true && \
      bash ./maintainer/deploy_docs.sh
 
