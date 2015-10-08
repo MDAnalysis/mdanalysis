@@ -14,8 +14,11 @@ from MDAnalysisTests.datafiles import (PRMncdf, NCDF, PFncdf_Top, PFncdf_Trj,
 from MDAnalysisTests.coordinates.test_trj import _TRJReaderTest
 from MDAnalysisTests.coordinates.reference import (RefVGV,)
 
+from MDAnalysisTests.plugins.knownfailure import knownfailure
+
 
 class TestNCDFReader(_TRJReaderTest, RefVGV):
+    @knownfailure(exc_type=ImportError, mightpass=True)
     def setUp(self):
         self.universe = mda.Universe(PRMncdf, NCDF)
         self.prec = 3
@@ -37,7 +40,7 @@ class TestNCDFReader2(TestCase):
 
     Contributed by Albert Solernou
     """
-
+    @knownfailure(exc_type=ImportError, mightpass=True)
     def setUp(self):
         self.u = mda.Universe(PFncdf_Top, PFncdf_Trj)
         self.prec = 3
@@ -94,6 +97,7 @@ class TestNCDFReader2(TestCase):
 
 
 class TestNCDFWriter(TestCase, RefVGV):
+    @knownfailure(exc_type=ImportError, mightpass=True)
     def setUp(self):
         self.universe = mda.Universe(PRMncdf, NCDF)
         self.prec = 6
@@ -211,6 +215,7 @@ class TestNCDFWriter(TestCase, RefVGV):
 class TestNCDFWriterVelsForces(TestCase):
     """Test writing NCDF trajectories with a mixture of options"""
 
+    @knownfailure(exc_type=ImportError, mightpass=True)
     def setUp(self):
         self.tmpdir = tempdir.TempDir()
         self.outfile = self.tmpdir.name + '/ncdf-write-vels-force.ncdf'
