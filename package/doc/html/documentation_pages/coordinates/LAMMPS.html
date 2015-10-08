@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>5.9. LAMMPS DCD trajectory I/O — MDAnalysis.coordinates.LAMMPS &mdash; MDAnalysis 0.12.0 documentation</title>
+    <title>5.9. LAMMPS DCD trajectory I/O — MDAnalysis.coordinates.LAMMPS &mdash; MDAnalysis 0.12.1 documentation</title>
     
     <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.12.0',
+        VERSION:     '0.12.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.12.0 documentation"
+          title="Search within MDAnalysis 0.12.1 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.12.0 documentation" href="../../index.html" />
+    <link rel="top" title="MDAnalysis 0.12.1 documentation" href="../../index.html" />
     <link rel="up" title="5. Coordinates modules" href="../coordinates_modules.html" />
     <link rel="next" title="5.10. MOL2 file format — MDAnalysis.coordinates.MOL2" href="MOL2.html" />
     <link rel="prev" title="5.8. INPCRD structure files in MDAnalysis — MDAnalysis.coordinates.INPCRD" href="INPCRD.html" /> 
@@ -49,7 +49,7 @@
         <li class="right" >
           <a href="INPCRD.html" title="5.8. INPCRD structure files in MDAnalysis — MDAnalysis.coordinates.INPCRD"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.12.1 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../coordinates_modules.html" accesskey="U">5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>
@@ -105,23 +105,38 @@
 <p>Classes to read and write <a class="reference external" href="http://lammps.sandia.gov/">LAMMPS</a> DCD binary
 trajectories. Trajectories can be read regardless of system-endianness
 as this is auto-detected.</p>
-<p>LAMMPS can write <a class="reference external" href="http://lammps.sandia.gov/doc/dump.html">DCD</a> trajectories but unlike a <a class="reference external" href="http://www.charmm.org/documentation/c36b1/dynamc.html#%20Trajectory">CHARMM trajectory</a>
+<p>LAMMPS can <a class="reference external" href="http://lammps.sandia.gov/doc/dump.html">write DCD</a> trajectories but unlike a <a class="reference external" href="http://www.charmm.org/documentation/c36b1/dynamc.html#%20Trajectory">CHARMM trajectory</a>
 (which is often called a DCD even though CHARMM itself calls them
 &#8220;trj&#8221;) the time unit is not fixed to be the <a class="reference external" href="http://www.charmm.org/documentation/c36b1/usage.html#%20AKMA">AKMA</a> time unit (20 AKMA
 is 0.978 picoseconds or 1 AKMA = 4.888821e-14 s) but can depend on
-settings in LAMMPS. The most common case appears to be that the time
-step is actually recorded in picoseconds. Other cases are unit-less
-Lennard-Jones time units.</p>
+settings in LAMMPS. The most common case for biomolecular simulations
+appears to be that the time step is recorded in femtoseconds (command
+<a class="reference external" href="http://lammps.sandia.gov/doc/units.html">units real</a> in the input file) and lengths in ångströms. Other cases
+are unit-less Lennard-Jones time units.</p>
 <p>This presents a problem for MDAnalysis because it cannot autodetect
 the unit from the file. By default we are assuming that the unit for
-length is the ångström and for the time is the picosecond. If this is
-not true then the user <em>should supply the appropriate units</em> in the as
+length is the ångström and for the time is the femtosecond. If this is
+not true then the user <em>should supply the appropriate units</em> in the
 keywords <em>timeunit</em> and/or <em>lengthunit</em> to <a class="reference internal" href="#MDAnalysis.coordinates.LAMMPS.DCDWriter" title="MDAnalysis.coordinates.LAMMPS.DCDWriter"><code class="xref py py-class docutils literal"><span class="pre">DCDWriter</span></code></a> and
-<a class="reference internal" href="#MDAnalysis.coordinates.LAMMPS.DCDReader" title="MDAnalysis.coordinates.LAMMPS.DCDReader"><code class="xref py py-class docutils literal"><span class="pre">DCDReader</span></code></a>.</p>
+<a class="reference internal" href="../core/AtomGroup.html#MDAnalysis.core.AtomGroup.Universe" title="MDAnalysis.core.AtomGroup.Universe"><code class="xref py py-class docutils literal"><span class="pre">Universe</span></code></a> (which then calls
+<a class="reference internal" href="#MDAnalysis.coordinates.LAMMPS.DCDReader" title="MDAnalysis.coordinates.LAMMPS.DCDReader"><code class="xref py py-class docutils literal"><span class="pre">DCDReader</span></code></a>).</p>
+<p class="rubric">Example: Loading a LAMMPS simulation</p>
+<p>To load a LAMMPS simulation from a LAMMPS data file (using the
+<a class="reference internal" href="../topology/LAMMPSParser.html#MDAnalysis.topology.LAMMPSParser.DATAParser" title="MDAnalysis.topology.LAMMPSParser.DATAParser"><code class="xref py py-class docutils literal"><span class="pre">DATAParser</span></code></a>) together with a
+LAMMPS DCD with &#8220;<em>real</em>&#8221; provide the keyword <em>format=&#8221;LAMMPS</em>&#8221;:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="s">&quot;lammps.data&quot;</span><span class="p">,</span> <span class="s">&quot;lammps_real.dcd&quot;</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&quot;LAMMPS&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If the trajectory uses <em>units nano</em> then use</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="s">&quot;lammps.data&quot;</span><span class="p">,</span> <span class="s">&quot;lammps_nano.dcd&quot;</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&quot;LAMMPS&quot;</span><span class="p">,</span>
+                        <span class="n">lengthunit</span><span class="o">=</span><span class="s">&quot;nm&quot;</span><span class="p">,</span> <span class="n">timeunit</span><span class="o">=</span><span class="s">&quot;ns&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Lennard-Jones units are not implemented. See
-<a class="reference internal" href="../units.html#module-MDAnalysis.units" title="MDAnalysis.units"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.units</span></code></a> for other recognized values.</p>
+<p class="last">Lennard-Jones units are not implemented. See <a class="reference internal" href="../units.html#module-MDAnalysis.units" title="MDAnalysis.units"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.units</span></code></a> for
+other recognized values and the documentation for the LAMMPS <a class="reference external" href="http://lammps.sandia.gov/doc/units.html">units
+command</a>.</p>
 </div>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
@@ -134,9 +149,9 @@ keywords <em>timeunit</em> and/or <em>lengthunit</em> to <a class="reference int
 <em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.LAMMPS.</code><code class="descname">DCDReader</code><span class="sig-paren">(</span><em>dcdfilename</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/LAMMPS.html#DCDReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDReader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read a <a class="reference external" href="http://lammps.sandia.gov/">LAMMPS</a> DCD trajectory.</p>
 <p>The units can be set from the constructor with the keyword
-arguments <em>timeunit</em> and <em>lengthunit</em>. The defaults are &#8220;ps&#8221; and
-&#8220;Angstrom&#8221;. See <a class="reference internal" href="../units.html#module-MDAnalysis.units" title="MDAnalysis.units"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.units</span></code></a> for other recognized
-values.</p>
+arguments <em>timeunit</em> and <em>lengthunit</em>. The defaults are &#8220;fs&#8221; and
+&#8220;Angstrom&#8221;, corresponding to LAMMPS <a class="reference external" href="http://lammps.sandia.gov/doc/units.html">units style</a> &#8220;<strong>real</strong>&#8221;. See
+<a class="reference internal" href="../units.html#module-MDAnalysis.units" title="MDAnalysis.units"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.units</span></code></a> for other recognized values.</p>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.LAMMPS.DCDReader.OtherWriter">
 <code class="descname">OtherWriter</code><span class="sig-paren">(</span><em>filename</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDReader.OtherWriter" title="Permalink to this definition">¶</a></dt>
@@ -371,6 +386,12 @@ returned.</p>
 </dd></dl>
 
 <dl class="attribute">
+<dt id="MDAnalysis.coordinates.LAMMPS.DCDReader.dt">
+<code class="descname">dt</code><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDReader.dt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Time between two trajectory frames in picoseconds.</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="MDAnalysis.coordinates.LAMMPS.DCDReader.frame">
 <code class="descname">frame</code><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDReader.frame" title="Permalink to this definition">¶</a></dt>
 <dd><p>Frame number of the current time step.</p>
@@ -433,7 +454,7 @@ coordinates)</li>
 <em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.LAMMPS.</code><code class="descname">DCDWriter</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/LAMMPS.html#DCDWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDWriter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write a <a class="reference external" href="http://lammps.sandia.gov/">LAMMPS</a> DCD trajectory.</p>
 <p>The units can be set from the constructor with the keyword
-arguments <em>timeunit</em> and <em>lengthunit</em>. The defaults are &#8220;ps&#8221; and
+arguments <em>timeunit</em> and <em>lengthunit</em>. The defaults are &#8220;fs&#8221; and
 &#8220;Angstrom&#8221;. See <a class="reference internal" href="../units.html#module-MDAnalysis.units" title="MDAnalysis.units"><code class="xref py py-mod docutils literal"><span class="pre">MDAnalysis.units</span></code></a> for other recognized
 values.</p>
 <dl class="attribute">
@@ -884,7 +905,7 @@ time = <code class="xref py py-attr docutils literal"><span class="pre">Timestep
         <li class="right" >
           <a href="INPCRD.html" title="5.8. INPCRD structure files in MDAnalysis — MDAnalysis.coordinates.INPCRD"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">MDAnalysis 0.12.1 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../coordinates_modules.html" >5. Coordinates modules</a> &raquo;</li> 
       </ul>
     </div>

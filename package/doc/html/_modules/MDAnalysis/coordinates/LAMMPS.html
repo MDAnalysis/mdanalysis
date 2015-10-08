@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>MDAnalysis.coordinates.LAMMPS &mdash; MDAnalysis 0.12.0 documentation</title>
+    <title>MDAnalysis.coordinates.LAMMPS &mdash; MDAnalysis 0.12.1 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.12.0',
+        VERSION:     '0.12.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.12.0 documentation"
+          title="Search within MDAnalysis 0.12.1 documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-    <link rel="top" title="MDAnalysis 0.12.0 documentation" href="../../../index.html" />
+    <link rel="top" title="MDAnalysis 0.12.1 documentation" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
   <body role="document">
@@ -41,7 +41,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.12.1 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>
@@ -96,32 +96,52 @@
 <span class="sd">trajectories. Trajectories can be read regardless of system-endianness</span>
 <span class="sd">as this is auto-detected.</span>
 
-<span class="sd">LAMMPS can write DCD_ trajectories but unlike a `CHARMM trajectory`_</span>
+<span class="sd">LAMMPS can `write DCD`_ trajectories but unlike a `CHARMM trajectory`_</span>
 <span class="sd">(which is often called a DCD even though CHARMM itself calls them</span>
 <span class="sd">&quot;trj&quot;) the time unit is not fixed to be the AKMA_ time unit (20 AKMA</span>
 <span class="sd">is 0.978 picoseconds or 1 AKMA = 4.888821e-14 s) but can depend on</span>
-<span class="sd">settings in LAMMPS. The most common case appears to be that the time</span>
-<span class="sd">step is actually recorded in picoseconds. Other cases are unit-less</span>
-<span class="sd">Lennard-Jones time units.</span>
+<span class="sd">settings in LAMMPS. The most common case for biomolecular simulations</span>
+<span class="sd">appears to be that the time step is recorded in femtoseconds (command</span>
+<span class="sd">`units real`_ in the input file) and lengths in ångströms. Other cases</span>
+<span class="sd">are unit-less Lennard-Jones time units.</span>
 
 <span class="sd">This presents a problem for MDAnalysis because it cannot autodetect</span>
 <span class="sd">the unit from the file. By default we are assuming that the unit for</span>
-<span class="sd">length is the ångström and for the time is the picosecond. If this is</span>
-<span class="sd">not true then the user *should supply the appropriate units* in the as</span>
+<span class="sd">length is the ångström and for the time is the femtosecond. If this is</span>
+<span class="sd">not true then the user *should supply the appropriate units* in the</span>
 <span class="sd">keywords *timeunit* and/or *lengthunit* to :class:`DCDWriter` and</span>
-<span class="sd">:class:`DCDReader`.</span>
+<span class="sd">:class:`~MDAnalysis.core.AtomGroup.Universe` (which then calls</span>
+<span class="sd">:class:`DCDReader`).</span>
+
+<span class="sd">.. Rubric:: Example: Loading a LAMMPS simulation</span>
+
+<span class="sd">To load a LAMMPS simulation from a LAMMPS data file (using the</span>
+<span class="sd">:class:`~MDAnalysis.topology.LAMMPSParser.DATAParser`) together with a</span>
+<span class="sd">LAMMPS DCD with &quot;*real*&quot; provide the keyword *format=&quot;LAMMPS*&quot;::</span>
+
+<span class="sd">  u = MDAnalysis.Universe(&quot;lammps.data&quot;, &quot;lammps_real.dcd&quot;, format=&quot;LAMMPS&quot;)</span>
+
+<span class="sd">If the trajectory uses *units nano* then use ::</span>
+
+<span class="sd">  u = MDAnalysis.Universe(&quot;lammps.data&quot;, &quot;lammps_nano.dcd&quot;, format=&quot;LAMMPS&quot;,</span>
+<span class="sd">                          lengthunit=&quot;nm&quot;, timeunit=&quot;ns&quot;)</span>
 
 <span class="sd">.. Note::</span>
 
-<span class="sd">   Lennard-Jones units are not implemented. See</span>
-<span class="sd">   :mod:`MDAnalysis.units` for other recognized values.</span>
+<span class="sd">   Lennard-Jones units are not implemented. See :mod:`MDAnalysis.units` for</span>
+<span class="sd">   other recognized values and the documentation for the LAMMPS `units</span>
+<span class="sd">   command`_.</span>
 
-<span class="sd">.. SeeAlso:: For further discussion follow the reports for `Issue 84`_ and `Issue 64`_.</span>
+<span class="sd">.. SeeAlso::</span>
+
+<span class="sd">   For further discussion follow the reports for `Issue 84`_ and `Issue 64`_.</span>
 
 <span class="sd">.. _LAMMPS: http://lammps.sandia.gov/</span>
-<span class="sd">.. _DCD: http://lammps.sandia.gov/doc/dump.html</span>
+<span class="sd">.. _write DCD: http://lammps.sandia.gov/doc/dump.html</span>
 <span class="sd">.. _CHARMM trajectory: http://www.charmm.org/documentation/c36b1/dynamc.html#%20Trajectory</span>
 <span class="sd">.. _AKMA: http://www.charmm.org/documentation/c36b1/usage.html#%20AKMA</span>
+<span class="sd">.. _units real: http://lammps.sandia.gov/doc/units.html</span>
+<span class="sd">.. _units command: http://lammps.sandia.gov/doc/units.html</span>
 <span class="sd">.. _`Issue 64`: https://github.com/MDAnalysis/mdanalysis/issues/64</span>
 <span class="sd">.. _`Issue 84`: https://github.com/MDAnalysis/mdanalysis/issues/84</span>
 
@@ -149,14 +169,15 @@
     <span class="sd">&quot;&quot;&quot;Write a LAMMPS_ DCD trajectory.</span>
 
 <span class="sd">    The units can be set from the constructor with the keyword</span>
-<span class="sd">    arguments *timeunit* and *lengthunit*. The defaults are &quot;ps&quot; and</span>
+<span class="sd">    arguments *timeunit* and *lengthunit*. The defaults are &quot;fs&quot; and</span>
 <span class="sd">    &quot;Angstrom&quot;. See :mod:`MDAnalysis.units` for other recognized</span>
 <span class="sd">    values.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">format</span> <span class="o">=</span> <span class="s">&quot;DCD&quot;</span>
+    <span class="n">format</span> <span class="o">=</span> <span class="s">&#39;DCD&#39;</span>
+    <span class="n">flavor</span> <span class="o">=</span> <span class="s">&#39;LAMMPS&#39;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;time&#39;</span><span class="p">:</span> <span class="s">&#39;ps&#39;</span><span class="p">,</span> <span class="s">&#39;length&#39;</span><span class="p">:</span> <span class="s">&#39;Angstrom&#39;</span><span class="p">}</span>  <span class="c"># must be instance level</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;time&#39;</span><span class="p">:</span> <span class="s">&#39;fs&#39;</span><span class="p">,</span> <span class="s">&#39;length&#39;</span><span class="p">:</span> <span class="s">&#39;Angstrom&#39;</span><span class="p">}</span>  <span class="c"># must be instance level</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s">&#39;time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;timeunit&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s">&#39;time&#39;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s">&#39;length&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;lengthunit&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s">&#39;length&#39;</span><span class="p">])</span>
         <span class="k">for</span> <span class="n">unit_type</span><span class="p">,</span> <span class="n">unit</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -172,14 +193,17 @@
     <span class="sd">&quot;&quot;&quot;Read a LAMMPS_ DCD trajectory.</span>
 
 <span class="sd">    The units can be set from the constructor with the keyword</span>
-<span class="sd">    arguments *timeunit* and *lengthunit*. The defaults are &quot;ps&quot; and</span>
-<span class="sd">    &quot;Angstrom&quot;. See :mod:`MDAnalysis.units` for other recognized</span>
-<span class="sd">    values.</span>
+<span class="sd">    arguments *timeunit* and *lengthunit*. The defaults are &quot;fs&quot; and</span>
+<span class="sd">    &quot;Angstrom&quot;, corresponding to LAMMPS `units style`_ &quot;**real**&quot;. See</span>
+<span class="sd">    :mod:`MDAnalysis.units` for other recognized values.</span>
+
+<span class="sd">    .. _units style: http://lammps.sandia.gov/doc/units.html</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">format</span> <span class="o">=</span> <span class="s">&quot;DCD&quot;</span>
+    <span class="n">format</span> <span class="o">=</span> <span class="s">&#39;DCD&#39;</span>
+    <span class="n">flavor</span> <span class="o">=</span> <span class="s">&#39;LAMMPS&#39;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dcdfilename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;time&#39;</span><span class="p">:</span> <span class="s">&#39;ps&#39;</span><span class="p">,</span> <span class="s">&#39;length&#39;</span><span class="p">:</span> <span class="s">&#39;Angstrom&#39;</span><span class="p">}</span>  <span class="c"># must be instance level</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;time&#39;</span><span class="p">:</span> <span class="s">&#39;fs&#39;</span><span class="p">,</span> <span class="s">&#39;length&#39;</span><span class="p">:</span> <span class="s">&#39;Angstrom&#39;</span><span class="p">}</span>  <span class="c"># must be instance level</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s">&#39;time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;timeunit&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s">&#39;time&#39;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s">&#39;length&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;lengthunit&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s">&#39;length&#39;</span><span class="p">])</span>
         <span class="k">for</span> <span class="n">unit_type</span><span class="p">,</span> <span class="n">unit</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -231,7 +255,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.12.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">MDAnalysis 0.12.1 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
