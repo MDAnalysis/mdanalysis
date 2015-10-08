@@ -43,6 +43,13 @@ def check_atom_type(atype, aname):
 def check_atom_element(element, aname):
     assert_equal(guess_atom_element(aname), element)
 
+def test_atom_element_IE():
+    """Issue #476
+    guess_atom_element raises IndexError when given
+    name that is a single digit ('1')
+    """
+    assert_equal(guess_atom_element('1'), '1')
+
 
 class _TestGuessAtomType(object):
     atype = None
