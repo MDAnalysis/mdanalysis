@@ -817,6 +817,7 @@ class TestTRJ(_TestTimestepInterface):
 
 
 class TestNCDF(_TestTimestepInterface):
+    @knownfailure(exc_type=ImportError, mightpass=True)
     def setUp(self):
         u = self.u = mda.Universe(PRMncdf, NCDF)
         self.ts = u.trajectory.ts

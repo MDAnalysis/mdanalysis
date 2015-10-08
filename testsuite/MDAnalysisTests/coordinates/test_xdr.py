@@ -14,6 +14,8 @@ from unittest import TestCase
 from MDAnalysisTests.datafiles import (PDB_sub_dry, PDB_sub_sol, TRR_sub_sol,
                                        TRR, XTC, GRO, PDB, CRD, PRMncdf, NCDF)
 
+from MDAnalysisTests.plugins.knownfailure import knownfailure
+
 
 class TestTRRReader_Sub(TestCase):
     def setUp(self):
@@ -532,6 +534,7 @@ class _GromacsWriterIssue117(TestCase):
     ext = None
     prec = 5
 
+    @knownfailure(exc_type=ImportError, mightpass=True)
     def setUp(self):
         self.universe = mda.Universe(PRMncdf, NCDF)
         self.tmpdir = tempdir.TempDir()
