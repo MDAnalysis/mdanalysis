@@ -175,7 +175,10 @@ def guess_atom_element(atomname):
     except KeyError:
         if atomname[0].isdigit():
             # catch 1HH etc
-            return atomname[1]
+            try:
+                return atomname[1]
+            except IndexError:
+                pass
         return atomname[0]
 
 

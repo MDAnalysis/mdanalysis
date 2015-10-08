@@ -15,7 +15,7 @@ The rules for this file:
 ------------------------------------------------------------------------------
 10/??/15
 
-  * 0.12.1 kain88-de, orbeckst
+  * 0.12.1 kain88-de, orbeckst, richardjgowers
 
 API Changes
 
@@ -29,6 +29,8 @@ Fixes
     to be fs and not ps
   * Fixed setting of dt for DCDReader (and LAMMPS DCDReader) with
     keyword argument Universe(..., dt=<dt>)
+  * Fixed a bug in topology.core.guess_atom_element where a
+    single digit atom name would raise an IndexError (#476)
 
 10/04/15 kain88-de, richardjgowers, dotsdl, sseyler, orbeckst, jbarnoud
 
