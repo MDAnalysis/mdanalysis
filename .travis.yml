@@ -33,7 +33,7 @@ before_install:
 install:
   - conda create --yes -q -n pyenv mkl python=2.7 numpy=1.9.1 scipy=0.14.0 nose=1.3.7 sphinx=1.3
   - source activate pyenv
-  - if [ $OPTDEPS == true ]; then conda install --yes python=$TRAVIS_PYTHON_VERSION cython biopython matplotlib networkx netcdf4; else conda install --yes python=$TRAVIS_PYTHON_VERSION cython biopython matplotlib networkx; fi
+  - if $OPTDEPS; then conda install --yes python=$TRAVIS_PYTHON_VERSION cython biopython matplotlib networkx netcdf4; else conda install --yes python=$TRAVIS_PYTHON_VERSION cython biopython matplotlib networkx; fi
   - pip install package/
   - pip install testsuite/
   - pip install coveralls tempdir
@@ -45,7 +45,7 @@ script:
   - |
      test ${TRAVIS_PULL_REQUEST} == "false" && \
      test ${TRAVIS_BRANCH} == ${GH_DOC_BRANCH} && \
-     test ${MASTER} == true && \
+     test ${MASTER} == "true" && \
      (cd ./package && python setup.py build_ext --inplace) && \
      (cd ./package/doc/sphinx && make clean html) || \
      true
@@ -54,6 +54,6 @@ after_success:
   - |
      test ${TRAVIS_PULL_REQUEST} == "false" && \
      test ${TRAVIS_BRANCH} == ${GH_DOC_BRANCH} && \
-     test ${MASTER} == true && \
+     test ${MASTER} == "true" && \
      bash ./maintainer/deploy_docs.sh
 
