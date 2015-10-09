@@ -31,6 +31,7 @@ Fixes
     keyword argument Universe(..., dt=<dt>)
   * Fixed a bug in topology.core.guess_atom_element where a
     single digit atom name would raise an IndexError (#476)
+  * Fixed numpy -> np in LeafletFinder
 
 10/04/15 kain88-de, richardjgowers, dotsdl, sseyler, orbeckst, jbarnoud
 
