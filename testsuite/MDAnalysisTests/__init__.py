@@ -178,9 +178,7 @@ def executable_not_found(*args):
     return lambda: executable_not_found_runtime(*args)
 
 def module_not_found(module):
-    sys.stderr.write("Outer\n")
     def module_not_found_runtime(module):
-        sys.stderr.write("Inner\n")
         try:
             importlib.import_module(module)
         except ImportError:
