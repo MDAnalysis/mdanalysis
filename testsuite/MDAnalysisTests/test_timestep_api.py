@@ -26,10 +26,11 @@ _TestTimestepInterface tests the Readers are correctly using Timesteps
 import itertools
 import numpy as np
 from numpy.testing import (TestCase, assert_raises, assert_equal, assert_allclose,
-                           assert_array_almost_equal, assert_)
+                           assert_array_almost_equal, assert_, dec)
 from nose.plugins.attrib import attr
 from nose.tools import assert_not_equal
 from MDAnalysisTests.plugins.knownfailure import knownfailure
+from MDAnalysisTests import module_not_found
 
 import MDAnalysis as mda
 from MDAnalysis.lib.mdamath import triclinic_vectors
@@ -817,6 +818,7 @@ class TestTRJ(_TestTimestepInterface):
 
 
 class TestNCDF(_TestTimestepInterface):
+    @dec.skipif(module_not_found("netCDF4"), "Test skipped because netCDF is not available.")
     def setUp(self):
         u = self.u = mda.Universe(PRMncdf, NCDF)
         self.ts = u.trajectory.ts

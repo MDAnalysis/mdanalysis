@@ -37,7 +37,7 @@ import warnings
 import shutil
 
 from MDAnalysisTests.datafiles import PSF, DCD, DCD2, FASTA, PDB_helix, PDB_HOLE, XTC_HOLE, GRO, XTC, waterDCD, waterPSF, rmsfArray
-from MDAnalysisTests import executable_not_found_runtime
+from MDAnalysisTests import executable_not_found
 
 
 class TestContactMatrix(TestCase):
@@ -396,7 +396,7 @@ class TestAlignmentProcessing(TestCase):
         assert_equal(len(sel['mobile']), 30623, err_msg="selection string has unexpected length")
 
     @attr('issue')
-    @dec.skipif(executable_not_found_runtime("clustalw2"),
+    @dec.skipif(executable_not_found("clustalw2"),
                 msg="Test skipped because clustalw executable not found")
     def test_fasta2select_ClustalW(self):
         """test align.fasta2select() with calling ClustalW (Issue 113)"""
@@ -437,7 +437,7 @@ class TestHoleModule(TestCase):
     @attr('slow')
     @attr('issue')
     @dec.skipif(rlimits_missing, msg="Test skipped because platform does not allow setting rlimits")
-    @dec.skipif(executable_not_found_runtime("hole"), msg="Test skipped because HOLE not found")
+    @dec.skipif(executable_not_found("hole"), msg="Test skipped because HOLE not found")
     def test_hole_module_fd_closure(self):
         """Issue 129: ensure low level file descriptors to PDB files used by Hole program are properly closed"""
         # If Issue 129 isn't resolved, this function will produce an OSError on

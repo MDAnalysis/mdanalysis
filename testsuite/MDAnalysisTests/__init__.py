@@ -117,6 +117,7 @@ from os.path import dirname
 # We get our nose from the plugins so that version-checking needs only be done there.
 from MDAnalysisTests.plugins import nose, loaded_plugins
 import sys
+import importlib
 # This is a de facto test for numpy's version, since we don't actually need assert_ here.
 #  Should we be clean about this and just call distutils to compare version strings?
 try:
@@ -149,7 +150,7 @@ def run(*args, **kwargs):
     return nose.run_exit(*args, **kwargs)
 
 
-def executable_not_found_runtime(*args):
+def executable_not_found(*args):
     """Factory function that returns a :func:`executable_not_found`.
 
     The returned function has its input set to *args* but is only
@@ -157,13 +158,13 @@ def executable_not_found_runtime(*args):
 
     To be used as the argument of::
 
-      @dec.skipif(executable_not_found_runtime("binary_name"), msg="skip test because binary_name not available")
+      @dec.skipif(executable_not_found("binary_name"), msg="skip test because binary_name not available")
       ...
     """
     # This must come here so that MDAnalysis isn't imported prematurely, which spoils
     #  coverage accounting (see Issue 344).
     import MDAnalysis.lib.util
-    def executable_not_found(*args):
+    def executable_not_found_runtime(*args):
         """Return ``True`` if not at least one of the executables in args can be found.
 
         ``False`` otherwise (i.e. at least one was found).
@@ -174,4 +175,16 @@ def executable_not_found_runtime(*args):
                 break
         return not found
 
-    return lambda: executable_not_found(*args)
+    return lambda: executable_not_found_runtime(*args)
+
+def module_not_found(module):
+    sys.stderr.write("Outer\n")
+    def module_not_found_runtime(module):
+        sys.stderr.write("Inner\n")
+        try:
+            importlib.import_module(module)
+        except ImportError:
+            return True
+        else:
+            return False
+    return lambda: module_not_found_runtime(module)
