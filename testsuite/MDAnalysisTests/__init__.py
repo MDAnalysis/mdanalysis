@@ -151,38 +151,27 @@ def run(*args, **kwargs):
 
 
 def executable_not_found(*args):
-    """Factory function that returns a :func:`executable_not_found`.
+    """Return ``True`` if none of the executables in args can be found.
 
-    The returned function has its input set to *args* but is only
-    evaluated at run time.
+    ``False`` otherwise (i.e. at least one was found).
 
     To be used as the argument of::
 
-      @dec.skipif(executable_not_found("binary_name"), msg="skip test because binary_name not available")
-      ...
+    @dec.skipif(executable_not_found("binary_name"), msg="skip test because binary_name not available")
     """
-    # This must come here so that MDAnalysis isn't imported prematurely, which spoils
-    #  coverage accounting (see Issue 344).
+    # This must come here so that MDAnalysis isn't imported prematurely,
+    #  which spoils coverage accounting (see Issue 344).
     import MDAnalysis.lib.util
-    def executable_not_found_runtime(*args):
-        """Return ``True`` if not at least one of the executables in args can be found.
+    for name in args:
+        if MDAnalysis.lib.util.which(name) is not None:
+            return False
+    return True
 
-        ``False`` otherwise (i.e. at least one was found).
-        """
-        for name in args:
-            found = MDAnalysis.lib.util.which(name) is not None
-            if found:
-                break
-        return not found
-
-    return lambda: executable_not_found_runtime(*args)
 
 def module_not_found(module):
-    def module_not_found_runtime(module):
-        try:
-            importlib.import_module(module)
-        except ImportError:
-            return True
-        else:
-            return False
-    return lambda: module_not_found_runtime(module)
+    try:
+        importlib.import_module(module)
+    except ImportError:
+        return True
+    else:
+        return False
