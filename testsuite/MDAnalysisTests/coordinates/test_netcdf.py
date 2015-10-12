@@ -5,9 +5,10 @@ from six.moves import zip
 
 from nose.plugins.attrib import attr
 from numpy.testing import (assert_equal, assert_array_almost_equal,
-                           assert_almost_equal, assert_raises)
+                           assert_almost_equal, assert_raises, dec)
 import tempdir
 from unittest import TestCase
+from MDAnalysisTests import module_not_found
 
 from MDAnalysisTests.datafiles import (PRMncdf, NCDF, PFncdf_Top, PFncdf_Trj,
                                        GRO, TRR, XYZ_mini)
@@ -16,6 +17,7 @@ from MDAnalysisTests.coordinates.reference import (RefVGV,)
 
 
 class TestNCDFReader(_TRJReaderTest, RefVGV):
+    @dec.skipif(module_not_found("netCDF4"), "Test skipped because netCDF is not available.")
     def setUp(self):
         self.universe = mda.Universe(PRMncdf, NCDF)
         self.prec = 3
@@ -38,6 +40,7 @@ class TestNCDFReader2(TestCase):
     Contributed by Albert Solernou
     """
 
+    @dec.skipif(module_not_found("netCDF4"), "Test skipped because netCDF is not available.")
     def setUp(self):
         self.u = mda.Universe(PFncdf_Top, PFncdf_Trj)
         self.prec = 3
@@ -94,6 +97,7 @@ class TestNCDFReader2(TestCase):
 
 
 class TestNCDFWriter(TestCase, RefVGV):
+    @dec.skipif(module_not_found("netCDF4"), "Test skipped because netCDF is not available.")
     def setUp(self):
         self.universe = mda.Universe(PRMncdf, NCDF)
         self.prec = 6
@@ -211,6 +215,7 @@ class TestNCDFWriter(TestCase, RefVGV):
 class TestNCDFWriterVelsForces(TestCase):
     """Test writing NCDF trajectories with a mixture of options"""
 
+    @dec.skipif(module_not_found("netCDF4"), "Test skipped because netCDF is not available.")
     def setUp(self):
         self.tmpdir = tempdir.TempDir()
         self.outfile = self.tmpdir.name + '/ncdf-write-vels-force.ncdf'
