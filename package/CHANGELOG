@@ -13,6 +13,23 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
+--/--/-- kain88-de
+
+  * 0.xx.x
+
+API Changes
+
+  * XYZWriter can now be used as a container format for different protein models
+    as well as a normal trajectory. If `n_atoms` is None (default) MDAnalysis
+    assumes that it is used as a container and won't give a warning if the
+    number of atoms differs between frames.
+
+Enhancement
+
+Changes
+
+Fixes
+
 10/08/15
 
   * 0.12.1 kain88-de, orbeckst, richardjgowers
