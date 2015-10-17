@@ -13,7 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
---/--/-- kain88-de
+--/--/-- kain88-de, richardjgowers
 
   * 0.xx.x
 
@@ -29,6 +29,8 @@ Enhancement
 Changes
 
 Fixes
+  * Fixed analysis.density modules requiring the defunct `skip` attribute
+    on trajectories. (Issue #489)
 
 10/08/15
 
