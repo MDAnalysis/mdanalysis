@@ -13,7 +13,8 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
---/--/-- tyler.je.reddy, kain88-de, richardjgowers, manuel.nuno.melo
+--/--/-- tyler.je.reddy, kain88-de, richardjgowers, manuel.nuno.melo, 
+         orbeckst
 
   * 0.xx.x
 
@@ -40,6 +41,8 @@ Fixes
   * ten2eleven camelcase fixer now deals with centerOfMass (Issue #470)
   * ten2eleven will now convert numatoms to n_atoms argument
     for writer() functions (Issue #470)
+  * Fixed non-compliant Amber NCDFWriter (Issue #488)
+
 
 10/08/15
 

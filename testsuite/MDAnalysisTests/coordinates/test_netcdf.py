@@ -5,6 +5,7 @@ from six.moves import zip
 
 from nose.plugins.attrib import attr
 from numpy.testing import (assert_equal, assert_array_almost_equal,
+                           assert_array_equal,
                            assert_almost_equal, assert_raises, dec)
 import tempdir
 from unittest import TestCase
@@ -106,7 +107,7 @@ class _NCDFWriterTest(TestCase):
     @dec.skipif(module_not_found("netCDF4"), "Test skipped because netCDF is not available.")
     def setUp(self):
         self.universe = mda.Universe(self.topology, self.filename)
-        self.prec = 6
+        self.prec = 5
         ext = ".ncdf"
         self.tmpdir = tempdir.TempDir()
         self.outfile = os.path.join(self.tmpdir.name, 'ncdf-writer-1' + ext)
@@ -125,8 +126,9 @@ class _NCDFWriterTest(TestCase):
 
     def test_write_trajectory(self):
         t = self.universe.trajectory
-        W = self.Writer(self.outfile, t.n_atoms, dt=t.dt)
-        self._copy_traj(W)
+        with self.Writer(self.outfile, t.n_atoms, dt=t.dt) as W:
+            self._copy_traj(W)
+        self._check_new_traj()
 
     def test_OtherWriter(self):
         t = self.universe.trajectory
@@ -160,7 +162,33 @@ class _NCDFWriterTest(TestCase):
         # check that the NCDF data structures are the same
         nc_orig = self.universe.trajectory.trjfile
         nc_copy = uw.trajectory.trjfile
-        
+
+        for k, dim in nc_orig.dimensions.items():
+            try:
+                dim_new = nc_copy.dimensions[k]
+            except KeyError:
+                raise AssertionError("NCDFWriter did not write "
+                                     "dimension '{}'".format(k))
+            else:
+                assert_equal(len(dim), len(dim_new),
+                             err_msg="Dimension '{}' size mismatch".format(k))
+                
+
+        for k, v in nc_orig.variables.items():
+            try:
+                v_new = nc_copy.variables[k]
+            except KeyError:
+                raise AssertionError("NCDFWriter did not write "
+                                     "variable '{}'".format(k))
+            else:
+                try:
+                    assert_array_almost_equal(v[:], v_new[:], self.prec,
+                                              err_msg="Variable '{}' not "
+                                              "written correctly".format(k))
+                except TypeError:
+                    assert_array_equal(v[:], v_new[:],
+                                              err_msg="Variable {} not written "
+                                    "correctly".format(k))
 
     @attr('slow')
     def test_TRR2NCDF(self):
@@ -263,7 +291,6 @@ class TestNCDFWriterVelsForces(TestCase):
         except:
             pass
 
-        del self.n_atoms
         del self.ts1
         del self.ts2
         del self.tmpdir
