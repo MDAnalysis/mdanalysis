@@ -23,8 +23,12 @@ API Changes
     as well as a normal trajectory. If `n_atoms` is None (default) MDAnalysis
     assumes that it is used as a container and won't give a warning if the
     number of atoms differs between frames.
+  * GROWriter.fmt strings updated to use format style (Issue #494)
 
 Enhancement
+
+  * GRO file reading approximately 50% faster for large files (Issue #212)
+  * GRO file writing now will write velocities where possible (Issue #494)
 
 Changes
 

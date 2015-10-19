@@ -8,7 +8,7 @@ from numpy.testing import (assert_equal, assert_almost_equal, dec,
 from unittest import TestCase
 import tempdir
 
-from MDAnalysisTests.datafiles import (GRO)
+from MDAnalysisTests.datafiles import (GRO, GRO_velocity)
 from MDAnalysisTests.coordinates.reference import RefAdK
 
 
@@ -232,3 +232,26 @@ class TestGROWriter(TestCase, tempdir.TempDir):
         assert_raises(ValueError, u.atoms.write, self.outfile2,
                       convert_units=False)
         del u
+
+
+class TestGROWriterVels(object):
+    def setUp(self):
+        self.tmpdir = tempdir.TempDir()
+        self.outfile = self.tmpdir.name + '/gro-writervels.gro'
+
+    def tearDown(self):
+        try:
+            os.unlink(self.outfile)
+        except OSError:
+            pass
+        del self.tmpdir
+
+    def test_write_velocities(self):
+        u = mda.Universe(GRO_velocity)
+
+        u.atoms.write(self.outfile)
+
+        u2 = mda.Universe(self.outfile)
+        
+        assert_array_almost_equal(u.atoms.velocities,
+                                  u2.atoms.velocities)
