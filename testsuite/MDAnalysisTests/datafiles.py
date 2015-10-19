@@ -181,6 +181,9 @@ NCDF = resource_filename(__name__, 'data/Amber/bala.ncdf')
 PRM12 = resource_filename(__name__, 'data/Amber/anti.top')
 TRJ12_bz2 = resource_filename(__name__, 'data/Amber/anti_md1.mdcrd.bz2')
 
+PRM7 =  resource_filename(__name__, 'data/Amber/tz2.truncoct.parm7.bz2')
+NCDFtruncoct =  resource_filename(__name__, 'data/Amber/tz2.truncoct.nc')
+
 PQR = resource_filename(__name__, 'data/adk_open.pqr')
 
 PDBQT_input = resource_filename(__name__, 'data/pdbqt_inputpdbqt.pdbqt')

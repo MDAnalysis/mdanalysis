@@ -108,6 +108,7 @@ For details see the report for `Issue 87`_.
                   'data/*.gro', 'data/*.xtc', 'data/*.trr', 'data/*npy',
                   'data/*.crd', 'data/*.xyz',
                   'data/Amber/*.prmtop', 'data/Amber/*.top',
+                  'data/Amber/*.parm7', 'data/Amber/*.parm7.bz2',
                   'data/Amber/*.trj', 'data/Amber/*.mdcrd',
                   'data/Amber/*.ncdf', 'data/Amber/*.nc',
                   'data/*.pqr', 'data/*.pdbqt', 'data/*.bz2',
