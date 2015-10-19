@@ -89,43 +89,35 @@ class GROReader(base.SingleFrameReader):
     _Timestep = Timestep
 
     def _read_first_frame(self):
-        coords_list = []
-        velocities_list = []
-
         with util.openany(self.filename, 'r') as grofile:
             # Read first two lines to get number of atoms
             grofile.readline()
-            total_atnums = int(grofile.readline())
+            self.n_atoms = n_atoms = int(grofile.readline())
             # and the third line to get the spacing between coords (cs)
             # (dependent upon the GRO file precision)
-            cs = grofile.readline()[25:].find('.') + 1
+            first_atomline = grofile.readline()
+            cs = first_atomline[25:].find('.') + 1
+            has_velocities = first_atomline[20:].count('.') > 3
+
+            self.ts = ts = self._Timestep(n_atoms,
+                                          velocities=has_velocities,
+                                          **self._ts_kwargs)
+
             grofile.seek(0)
-            for linenum, line in enumerate(grofile):
-                # Should work with any precision
-                if linenum not in (0, 1, total_atnums + 2):
-                    coords_list.append(
-                        np.array((
-                            float(line[20:20 + cs]),
-                            float(line[20 + cs:20 + (cs * 2)]),
-                            float(line[20 + (cs * 2):20 + (cs * 3)]))))
-                    # if there are enough decimals to indicate the presence of velocities
-                    if line[20:].count('.') > 3:
-                        velocities_list.append(
-                            np.array((
-                                float(line[20 + (cs * 3):20 + (cs * 4)]),
-                                float(line[20 + (cs * 4):20 + (cs * 5)]),
-                                float(line[20 + (cs * 5):20 + (cs * 6)]))))
-                # Unit cell footer
-                elif linenum == total_atnums + 2:
+            for pos, line in enumerate(grofile, start=-2):
+                # 2 header lines, 1 box line at end
+                if pos == n_atoms:
                     unitcell = np.array(map(float, line.split()))
+                    continue
+                if pos < 0:
+                    continue
+                for i in xrange(3):
+                    ts._pos[pos, i] = float(line[20 + cs*i: 20 + cs*(i+1)])
 
-        self.n_atoms = len(coords_list)
-        vels = np.array(velocities_list, dtype=np.float32) if velocities_list else None
-
-        self.ts = self._Timestep.from_coordinates(
-            np.array(coords_list),
-            velocities=vels,
-            **self._ts_kwargs)
+                if not has_velocities:
+                    continue
+                for i, j in enumerate(xrange(3, 6)):
+                    ts._velocities[pos, i] = float(line[20+cs*j:20+cs*(j+1)])
 
         self.ts.frame = 0  # 0-based frame number
 

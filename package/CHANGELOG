@@ -26,6 +26,8 @@ API Changes
 
 Enhancement
 
+  * GRO file reading approximately 50% faster for large files (Issue #212)
+
 Changes
 
 Fixes
