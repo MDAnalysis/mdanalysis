@@ -1,2 +1,0 @@
-.. automodule:: MDAnalysis.topology.PDBParser
-
