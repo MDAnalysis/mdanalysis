@@ -13,13 +13,12 @@ from MDAnalysisTests import module_not_found
 from MDAnalysisTests.datafiles import (PRMncdf, NCDF, PFncdf_Top, PFncdf_Trj,
                                        GRO, TRR, XYZ_mini)
 from MDAnalysisTests.coordinates.test_trj import _TRJReaderTest
-from MDAnalysisTests.coordinates.reference import (RefVGV,)
+from MDAnalysisTests.coordinates.reference import (RefVGV, RefTZ2)
 
-
-class TestNCDFReader(_TRJReaderTest, RefVGV):
+class _NCDFReaderTest(_TRJReaderTest):
     @dec.skipif(module_not_found("netCDF4"), "Test skipped because netCDF is not available.")
     def setUp(self):
-        self.universe = mda.Universe(PRMncdf, NCDF)
+        self.universe = mda.Universe(self.topology, self.filename)
         self.prec = 3
 
     def test_slice_iteration(self):
@@ -32,6 +31,13 @@ class TestNCDFReader(_TRJReaderTest, RefVGV):
         data = self.universe.trajectory.trjfile
         assert_equal(data.Conventions, 'AMBER')
         assert_equal(data.ConventionVersion, '1.0')
+
+
+class TestNCDFReader(_NCDFReaderTest, RefVGV):
+    pass
+
+class TestNCDFReaderTZ2(_NCDFReaderTest, RefTZ2):
+    pass
 
 
 class TestNCDFReader2(TestCase):
@@ -96,15 +102,15 @@ class TestNCDFReader2(TestCase):
         assert_almost_equal(ref, self.u.trajectory[1].time, self.prec)
 
 
-class TestNCDFWriter(TestCase, RefVGV):
+class _NCDFWriterTest(TestCase):
     @dec.skipif(module_not_found("netCDF4"), "Test skipped because netCDF is not available.")
     def setUp(self):
-        self.universe = mda.Universe(PRMncdf, NCDF)
+        self.universe = mda.Universe(self.topology, self.filename)
         self.prec = 6
         ext = ".ncdf"
         self.tmpdir = tempdir.TempDir()
-        self.outfile = self.tmpdir.name + '/ncdf-writer-1' + ext
-        self.outtop = self.tmpdir.name + '/ncdf-writer-top.pdb'
+        self.outfile = os.path.join(self.tmpdir.name, 'ncdf-writer-1' + ext)
+        self.outtop = os.path.join(self.tmpdir.name, 'ncdf-writer-top.pdb')
         self.Writer = mda.coordinates.TRJ.NCDFWriter
 
     def tearDown(self):
@@ -124,15 +130,16 @@ class TestNCDFWriter(TestCase, RefVGV):
 
     def test_OtherWriter(self):
         t = self.universe.trajectory
-        W = t.OtherWriter(self.outfile)
-        self._copy_traj(W)
+        with t.OtherWriter(self.outfile) as W:
+            self._copy_traj(W)
+        self._check_new_traj()
 
     def _copy_traj(self, writer):
         for ts in self.universe.trajectory:
             writer.write_next_timestep(ts)
-        writer.close()
 
-        uw = mda.Universe(PRMncdf, self.outfile)
+    def _check_new_traj(self):
+        uw = mda.Universe(self.topology, self.outfile)
 
         # check that the trajectories are identical for each time step
         for orig_ts, written_ts in zip(self.universe.trajectory,
@@ -150,14 +157,18 @@ class TestNCDFWriter(TestCase, RefVGV):
                                       orig_ts.dimensions,
                                       self.prec,
                                       err_msg="unitcells are not identical")
+        # check that the NCDF data structures are the same
+        nc_orig = self.universe.trajectory.trjfile
+        nc_copy = uw.trajectory.trjfile
+        
 
     @attr('slow')
     def test_TRR2NCDF(self):
         trr = mda.Universe(GRO, TRR)
-        W = self.Writer(self.outfile, trr.trajectory.n_atoms, velocities=True)
-        for ts in trr.trajectory:
-            W.write_next_timestep(ts)
-        W.close()
+        with self.Writer(self.outfile, trr.trajectory.n_atoms,
+                         velocities=True) as W:
+            for ts in trr.trajectory:
+                W.write_next_timestep(ts)
 
         uw = mda.Universe(GRO, self.outfile)
 
@@ -188,10 +199,9 @@ class TestNCDFWriter(TestCase, RefVGV):
         """test to write NCDF from AtomGroup (Issue 116)"""
         p = self.universe.select_atoms("not resname WAT")
         p.write(self.outtop)
-        W = self.Writer(self.outfile, n_atoms=p.n_atoms)
-        for ts in self.universe.trajectory:
-            W.write(p)
-        W.close()
+        with self.Writer(self.outfile, n_atoms=p.n_atoms) as W:
+            for ts in self.universe.trajectory:
+                W.write(p)
 
         uw = mda.Universe(self.outtop, self.outfile)
         pw = uw.atoms
@@ -211,6 +221,11 @@ class TestNCDFWriter(TestCase, RefVGV):
                                       self.prec,
                                       err_msg="unitcells are not identical")
 
+class TestNCDFWriter(_NCDFWriterTest, RefVGV):
+    pass
+
+class TestNCDFWriterTZ2(_NCDFWriterTest, RefTZ2):
+    pass
 
 class TestNCDFWriterVelsForces(TestCase):
     """Test writing NCDF trajectories with a mixture of options"""

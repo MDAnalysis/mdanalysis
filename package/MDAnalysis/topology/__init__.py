@@ -65,8 +65,8 @@ The following table lists the currently supported topology formats.
                                  :mod:`MDAnalysis.topology.GROParser`
 
    AMBER             top,        simple AMBER format reader (only supports a subset
-                     prmtop      of flags);
-                                 :mod:`MDAnalysis.topology.TOPParser`
+                     prmtop,     of flags);
+                     parm7       :mod:`MDAnalysis.topology.TOPParser`
 
    DESRES [#a]_      dms         DESRES molecular sturcture reader (only supports
                                  the atom and bond records);
@@ -273,6 +273,7 @@ _topology_parsers = {'PSF': PSFParser.PSFParser,
                      'CRD': CRDParser.CRDParser,
                      'TOP': TOPParser.TOPParser,
                      'PRMTOP': TOPParser.TOPParser,
+                     'PARM7': TOPParser.TOPParser,                     
                      'PDBQT': PDBQTParser.PDBQTParser,
                      'TPR': TPRParser.TPRParser,
                      'DMS': DMSParser.DMSParser,
