@@ -21,6 +21,37 @@ GRO file format --- :mod:`MDAnalysis.coordinates.GRO`
 Classes to read and write Gromacs_ GRO_ coordinate files; see the notes on the
 `GRO format`_ which includes a conversion routine for the box.
 
+GROWriter format strings
+------------------------
+
+The GROWriter class has a .fmt attribute, which is a dictionary of different
+strings for writing lines in .gro files.  These are as follows:
+
+n_atoms
+  For the first line of the gro file, supply the number of atoms in the system.
+  Eg: fmt['n_atoms'].format(42)
+
+xyz
+  An atom line without velocities.  Requires that the 'resid', 'resname',
+  'name', 'index' and 'pos' keys be supplied.
+  Eg: fmt['xyz'].format(resid=1, resname='SOL', name='OW2', index=2,
+      pos=(0.0, 1.0, 2.0))
+
+xyz_v
+  As above, but with velocities.  Needs an additional keyword 'vel'.
+
+box_orthorhombic
+  The final line of the gro file which gives box dimensions.  Requires
+  the box keyword to be given, which should be the three cartesian dimensions.
+  Eg: fmt['box_orthorhombic'].format(box=(10.0, 10.0, 10.0))
+
+box_triclinic
+  As above, but for a non orthorhombic box. Requires the box keyword, but this
+  time as a length 9 vector.  This is a flattened version of the (3,3) triclinic
+  vector representation of the unit cell.  The rearrangement into the odd
+  gromacs order is done automatically.
+
+
 .. _Gromacs: http://www.gromacs.org
 .. _GRO: http://manual.gromacs.org/current/online/gro.html
 .. _GRO format: http://chembytes.wikidot.com/g-grofile
@@ -33,6 +64,7 @@ from ..core import flags
 from . import base
 from ..lib import util
 from .core import triclinic_box, triclinic_vectors
+from ..exceptions import NoDataError
 
 
 class Timestep(base.Timestep):
@@ -160,6 +192,12 @@ class GROWriter(base.Writer):
 
     .. versionchanged:: 0.11.0
        Frames now 0-based instead of 1-based
+    .. versionchanged:: 0.13.0
+       Now strictly writes positions with 3dp precision
+       and velocities with 4dp
+       Removed the `convert_dimensions_to_unitcell` method,
+       use `Timestep.triclinic_dimensions` instead
+       Now now writes velocities where possible
     """
 
     format = 'GRO'
@@ -208,11 +246,6 @@ class GROWriter(base.Writer):
 
         .. versionchanged:: 0.7.6
            resName and atomName are truncated to a maximum of 5 characters
-        .. versionchanged:: 0.13.0
-           GROWriter strictly writes positions with 3dp precision
-           and velocities with 4dp
-           Removed the `convert_dimensions_to_unitcell` method,
-           use `Timestep.triclinic_dimensions` instead
         """
         # write() method that complies with the Trajectory API
         u = selection.universe
@@ -221,16 +254,31 @@ class GROWriter(base.Writer):
         else:
             frame = u.trajectory.ts.frame
 
-        atoms = selection.atoms  # make sure to use atoms (Issue 46)
-        coordinates = atoms.coordinates()  # can write from selection == Universe (Issue 49)
+        # make sure to use atoms (Issue 46)
+        atoms = selection.atoms
+        # can write from selection == Universe (Issue 49)
+        coordinates = atoms.positions
+
+        try:
+            velocities = atoms.velocities
+        except NoDataError:
+            has_velocities = False
+        else:
+            has_velocities = True
+
         if self.convert_units:
-            # Convert back to nm from Angstroms, inplace because coordinates is already a copy
+            # Convert back to nm from Angstroms,
+            # inplace because coordinates is already a copy
             self.convert_pos_to_native(coordinates)
-        # check if any coordinates are illegal (checks the coordinates in native nm!)
+            if has_velocities:
+               self.convert_velocities_to_native(velocities) 
+        # check if any coordinates are illegal
+        # (checks the coordinates in native nm!)
         if not self.has_valid_coordinates(self.gro_coor_limits, coordinates):
-            raise ValueError("GRO files must have coordinate values between %.3f and %.3f nm:"
-                             "No file was written." %
-                             (self.gro_coor_limits["min"], self.gro_coor_limits["max"]))
+            raise ValueError("GRO files must have coordinate values between "
+                             "{0:.3f} and {1:.3f} nm: No file was written."
+                             "".format(self.gro_coor_limits["min"],
+                                       self.gro_coor_limits["max"]))
 
         with util.openany(self.filename, 'w') as output_gro:
             # Header
@@ -238,14 +286,23 @@ class GROWriter(base.Writer):
             output_gro.write(self.fmt['n_atoms'].format(len(atoms)))
             # Atom descriptions and coords
             for atom_index, atom in enumerate(atoms):
-                output_gro.write(self.fmt['xyz'].format(
-                    resid=atom.resid,
-                    resname=atom.resname,
-                    index=atom_index+1,
-                    name=atom.name,
-                    pos=coordinates[atom_index]
-                    )
-                )
+                if has_velocities:
+                    output_gro.write(self.fmt['xyz_v'].format(
+                        resid=atom.resid,
+                        resname=atom.resname,
+                        index=atom_index+1,
+                        name=atom.name,
+                        pos=coordinates[atom_index],
+                        vel=velocities[atom_index],
+                    ))
+                else:
+                    output_gro.write(self.fmt['xyz'].format(
+                        resid=atom.resid,
+                        resname=atom.resname,
+                        index=atom_index+1,
+                        name=atom.name,
+                        pos=coordinates[atom_index]
+                    ))
 
             # Footer: box dimensions
             if np.all(u.trajectory.ts.dimensions[3:] == [90., 90., 90.]):
