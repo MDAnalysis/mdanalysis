@@ -163,20 +163,20 @@ class GROWriter(base.Writer):
     """
 
     format = 'GRO'
-    units = {'time': None, 'length': 'nm'}
+    units = {'time': None, 'length': 'nm', 'velocity': 'nm/ps'}
     gro_coor_limits = {'min': -999.9995, 'max': 9999.9995}
 
     #: format strings for the GRO file (all include newline); precision
     #: of 3 decimal places is hard-coded here.
     fmt = {
-        'n_atoms': "%5d\n",  # number of atoms
+        'n_atoms': "{0:5d}\n",  # number of atoms
         # coordinates output format, see http://chembytes.wikidot.com/g-grofile
-        'xyz_v': "%5s%-5s%5s%5s%8.3f%8.3f%8.3f%8.4f%8.4f%8.4f\n",  # coordinates and velocities
-        'xyz': "%5s%-5s%5s%5s%8.3f%8.3f%8.3f\n",  # coordinates only
+        'xyz': "{resid:>5d}{resname:<5.5s}{name:>5.5s}{index:>5d}{pos[0]:8.3f}{pos[1]:8.3f}{pos[2]:8.3f}\n",
         # unitcell
-        'box_orthorhombic': "%10.5f%10.5f%10.5f\n",
-        'box_triclinic': "%10.5f%10.5f%10.5f%10.5f%10.5f%10.5f%10.5f%10.5f%10.5f\n",
+        'box_orthorhombic': "{box[0]:10.5f}{box[1]:10.5f}{box[2]:10.5f}\n",
+        'box_triclinic': "{box[0]:10.5f}{box[4]:10.5f}{box[8]:10.5f}{box[1]:10.5f}{box[2]:10.5f}{box[3]:10.5f}{box[5]:10.5f}{box[6]:10.5f}{box[7]:10.5f}\n"
     }
+    fmt['xyz_v'] = fmt['xyz'][:-1] + "{vel[0]:8.4f}{vel[1]:8.4f}{vel[2]:8.4f}\n"
 
     def __init__(self, filename, convert_units=None, **kwargs):
         """Set up a GROWriter with a precision of 3 decimal places.
@@ -190,10 +190,6 @@ class GROWriter(base.Writer):
         if convert_units is None:
             convert_units = flags['convert_lengths']
         self.convert_units = convert_units  # convert length and time to base units
-
-    def convert_dimensions_to_unitcell(self, ts):
-        """Read dimensions from timestep *ts* and return appropriate unitcell"""
-        return self.convert_pos_to_native(triclinic_vectors(ts.dimensions))
 
     def write(self, selection, frame=None):
         """Write selection at current trajectory frame to file.
@@ -212,16 +208,18 @@ class GROWriter(base.Writer):
 
         .. versionchanged:: 0.7.6
            resName and atomName are truncated to a maximum of 5 characters
+        .. versionchanged:: 0.13.0
+           GROWriter strictly writes positions with 3dp precision
+           and velocities with 4dp
+           Removed the `convert_dimensions_to_unitcell` method,
+           use `Timestep.triclinic_dimensions` instead
         """
         # write() method that complies with the Trajectory API
         u = selection.universe
         if frame is not None:
             u.trajectory[frame]  # advance to frame
         else:
-            try:
-                frame = u.trajectory.ts.frame
-            except AttributeError:
-                frame = 0  # should catch cases when we are analyzing a single GRO (?)
+            frame = u.trajectory.ts.frame
 
         atoms = selection.atoms  # make sure to use atoms (Issue 46)
         coordinates = atoms.coordinates()  # can write from selection == Universe (Issue 49)
@@ -237,28 +235,30 @@ class GROWriter(base.Writer):
         with util.openany(self.filename, 'w') as output_gro:
             # Header
             output_gro.write('Written by MDAnalysis\n')
-            output_gro.write(self.fmt['n_atoms'] % len(atoms))
+            output_gro.write(self.fmt['n_atoms'].format(len(atoms)))
             # Atom descriptions and coords
             for atom_index, atom in enumerate(atoms):
-                c = coordinates[atom_index]
-                output_line = self.fmt['xyz'] % (
-                    str(atom.resid)[-5:],  # truncate highest digits on overflow
-                    atom.resname.strip()[:5],
-                    atom.name.strip()[:5],
-                    str(atom.index + 1)[-5:],  # index (1-based), truncate highest digits on overflow
-                    c[0], c[1], c[2],  # coords - outputted with 3 d.p.
+                output_gro.write(self.fmt['xyz'].format(
+                    resid=atom.resid,
+                    resname=atom.resname,
+                    index=atom_index+1,
+                    name=atom.name,
+                    pos=coordinates[atom_index]
+                    )
                 )
-                output_gro.write(output_line)
 
             # Footer: box dimensions
-            box = self.convert_dimensions_to_unitcell(u.trajectory.ts)
             if np.all(u.trajectory.ts.dimensions[3:] == [90., 90., 90.]):
+                box = self.convert_pos_to_native(
+                    u.coord.dimensions[:3], inplace=False)
                 # orthorhombic cell, only lengths along axes needed in gro
-                output_gro.write(self.fmt['box_orthorhombic'] % (box[0, 0], box[1, 1], box[2, 2]))
+                output_gro.write(self.fmt['box_orthorhombic'].format(
+                    box=box)
+                )
             else:
                 # full output
-                output_gro.write(self.fmt['box_triclinic'] %
-                                 (box[0, 0], box[1, 1], box[2, 2],
-                                 box[0, 1], box[0, 2],
-                                 box[1, 0], box[1, 2],
-                                 box[2, 0], box[2, 1]))
+                box = self.convert_pos_to_native(
+                    u.coord.triclinic_dimensions.flatten(), inplace=False)
+                output_gro.write(self.fmt['box_triclinic'].format(
+                    box=box)
+                )
