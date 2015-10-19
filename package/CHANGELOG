@@ -13,7 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
---/--/-- kain88-de, richardjgowers
+--/--/-- kain88-de, richardjgowers, manuel.nuno.melo
 
   * 0.xx.x
 
@@ -29,6 +29,7 @@ Enhancement
 Changes
 
 Fixes
+  * Fixed unpickling errors due to lingering dead universes. (Issue #487)
   * Fixed analysis.density modules requiring the defunct `skip` attribute
     on trajectories. (Issue #489)
 
