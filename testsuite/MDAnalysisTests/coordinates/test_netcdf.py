@@ -65,7 +65,7 @@ class _NCDFReaderTest(_TRJReaderTest):
         assert_almost_equal(ref, self.universe.trajectory.ts.dt, self.prec)
 
     def test_get_writer(self):
-        with self.universe.trajectory.Writer('out.ncdf') as w: 
+        with self.universe.trajectory.Writer('out.ncdf') as w:
             assert_(w.n_atoms == len(self.universe.atoms))
             assert_(w.remarks.startswith('AMBER NetCDF format'))
 
@@ -96,7 +96,7 @@ class TestNCDFReader2(TestCase):
     Contributed by Albert Solernou
     """
 
-    @dec.skipif(module_not_found("netCDF4"), "Test skipped because netCDF is not available.")
+    @dec.skipif(module_not_found("scipy.io.netcdf"), "Test skipped because scipy.io.netcdf is not available.")
     def setUp(self):
         self.u = mda.Universe(PFncdf_Top, PFncdf_Trj)
         self.prec = 3
@@ -234,26 +234,25 @@ class _NCDFWriterTest(TestCase):
                 dim_new = nc_copy.dimensions[k]
             except KeyError:
                 raise AssertionError("NCDFWriter did not write "
-                                     "dimension '{}'".format(k))
+                                     "dimension '{0}'".format(k))
             else:
                 assert_equal(len(dim), len(dim_new),
                              err_msg="Dimension '{0}' size mismatch".format(k))
-
 
         for k, v in nc_orig.variables.items():
             try:
                 v_new = nc_copy.variables[k]
             except KeyError:
                 raise AssertionError("NCDFWriter did not write "
-                                     "variable '{}'".format(k))
+                                     "variable '{0}'".format(k))
             else:
                 try:
                     assert_array_almost_equal(v[:], v_new[:], self.prec,
-                                              err_msg="Variable '{}' not "
+                                              err_msg="Variable '{0}' not "
                                               "written correctly".format(k))
                 except TypeError:
                     assert_array_equal(v[:], v_new[:],
-                                              err_msg="Variable {} not written "
+                                              err_msg="Variable {0} not written "
                                     "correctly".format(k))
 
     @attr('slow')
@@ -271,14 +270,14 @@ class _NCDFWriterTest(TestCase):
             assert_array_almost_equal(written_ts._pos, orig_ts._pos, self.prec,
                                       err_msg="coordinate mismatch between "
                                       "original and written trajectory at "
-                                      "frame %d (orig) vs %d (written)" % (
-                                          orig_ts.frame, written_ts.frame))
+                                      "frame {0} (orig) vs {1} (written)".format(
+                    orig_ts.frame, written_ts.frame))
             assert_array_almost_equal(written_ts._velocities,
                                       orig_ts._velocities, self.prec,
                                       err_msg="velocity mismatch between "
                                       "original and written trajectory at "
-                                      "frame %d (orig) vs %d (written)" % (
-                                          orig_ts.frame, written_ts.frame))
+                                      "frame {0} (orig) vs {1} (written)".format(
+                    orig_ts.frame, written_ts.frame))
             assert_almost_equal(orig_ts.time, written_ts.time, self.prec,
                                 err_msg="Time for step {0} are not the "
                                 "same.".format(orig_ts.frame))
@@ -324,7 +323,7 @@ class TestNCDFWriterTZ2(_NCDFWriterTest, RefTZ2):
 class TestNCDFWriterVelsForces(TestCase):
     """Test writing NCDF trajectories with a mixture of options"""
 
-    @dec.skipif(module_not_found("netCDF4"), "Test skipped because netCDF is not available.")
+    @dec.skipif(module_not_found("scipy.io.netcdf"), "Test skipped because scipy.io.netcdf is not available.")
     def setUp(self):
         self.tmpdir = tempdir.TempDir()
         self.outfile = self.tmpdir.name + '/ncdf-write-vels-force.ncdf'

@@ -145,18 +145,6 @@ from ..lib import util
 
 logger = logging.getLogger("MDAnalysis.coordinates.AMBER")
 
-try:
-    import netCDF4 as netcdf
-except ImportError:
-    # Just to notify the user; the module will still load. However, NCDFReader
-    # and NCDFWriter will raise a proper ImportError if they are called without
-    # the netCDF4 library present. See Issue 122 for a discussion.
-    logger.debug(
-        "Failed to import netCDF4; AMBER NETCDFReader/Writer will not work. "
-        "Install netCDF4 from https://github.com/Unidata/netcdf4-python.")
-    logger.debug(
-        "See also https://github.com/MDAnalysis/mdanalysis/wiki/netcdf")
-
 
 class Timestep(base.Timestep):
     """AMBER trajectory Timestep.
@@ -433,19 +421,15 @@ class NCDFReader(base.ReaderBase):
 
     def __init__(self, filename, n_atoms=None, **kwargs):
         try:
-            import netCDF4 as netcdf
+            from scipy.io import netcdf
         except ImportError:
-            errmsg = ("netCDF4 package missing.\n"
-                      "netcdf4-python with the netCDF and HDF5 libraries must"
-                      " be installed for the AMBER ncdf Reader.\n"
-                      "See installation instructions at "
-                      "https://github.com/MDAnalysis/mdanalysis/wiki/netcdf")
-            logger.fatal(errmsg)
-            raise ImportError(errmsg)
+            logger.fatal("scipy.io.netcdf must be installed for the AMBER ncdf Reader.")
+            raise ImportError("scipy.io.netcdf package missing but is required "
+                              "for the Amber Reader.")
 
         super(NCDFReader, self).__init__(filename, **kwargs)
 
-        self.trjfile = netcdf.Dataset(self.filename)
+        self.trjfile = netcdf.netcdf_file(self.filename)
 
         if not ('AMBER' in self.trjfile.Conventions.split(',') or
                 'AMBER' in self.trjfile.Conventions.split()):
@@ -462,10 +446,15 @@ class NCDFReader(base.ReaderBase):
             warnings.warn(wmsg)
             logger.warn(wmsg)
 
-        self.n_atoms = len(self.trjfile.dimensions['atom'])
-        self.n_frames = len(self.trjfile.dimensions['frame'])
-        # also records time steps in data.variables['time'] and unit
-        # but my example only has 0
+        self.n_atoms = self.trjfile.dimensions['atom']
+        self.n_frames = self.trjfile.dimensions['frame']
+        # example trajectory when read with scipy.io.netcdf has
+        # dimensions['frame'] == None (indicating a record dimension that can
+        # grow) whereas if read with netCDF4 I get len(dimensions['frame']) ==
+        # 10: in any case, we need to get the number of frames from somewhere
+        # such as the time variable:
+        if self.n_frames is None:
+            self.n_frames = self.trjfile.variables['time'].shape[0]
 
         try:
             self.remarks = self.trjfile.title
@@ -481,22 +470,20 @@ class NCDFReader(base.ReaderBase):
         # hacked into MDAnalysis.units)
         if self.trjfile.variables['time'].units != "picosecond":
             raise NotImplementedError(
-                "NETCDFReader currently assumes that the trajectory was "
-                "written with a time unit of picoseconds and "
-                "not {0}.".format(self.trjfile.variables['time'].units))
+                "NETCDFReader currently assumes that the trajectory was written "
+                "with a time unit of picoseconds and not {0}.".format(
+                    self.trjfile.variables['time'].units))
         if self.trjfile.variables['coordinates'].units != "angstrom":
             raise NotImplementedError(
-                "NETCDFReader currently assumes that the trajectory was "
-                "written with a length unit of Angstroem and "
-                "not {0}.".format(self.trjfile.variables['coordinates'].units))
+                "NETCDFReader currently assumes that the trajectory was written "
+                "with a length unit of Angstroem and not {0}.".format(
+                    self.trjfile.variables['coordinates'].units))
         if hasattr(self.trjfile.variables['coordinates'], 'scale_factor'):
             raise NotImplementedError("scale_factors are not implemented")
-        if n_atoms is not None:
-            if n_atoms != self.n_atoms:
-                raise ValueError(
-                    "Supplied n_atoms ({0}) != natom from ncdf ({1}). Note: "
-                    "n_atoms can be None and then the ncdf value is used!"
-                    "".format(n_atoms, self.n_atoms))
+        if n_atoms is not None and n_atoms != self.n_atoms:
+            raise ValueError("Supplied n_atoms ({0}) != natom from ncdf ({1}). "
+                             "Note: n_atoms can be None and then the ncdf value "
+                             "is used!".format(n_atoms, self.n_atoms))
 
         self.has_velocities = 'velocities' in self.trjfile.variables
         self.has_forces = 'forces' in self.trjfile.variables
@@ -518,9 +505,12 @@ class NCDFReader(base.ReaderBase):
 
         if self.trjfile is None:
             raise IOError("Trajectory is closed")
+        if np.dtype(type(frame)) != np.dtype(int):
+            # convention... for netcdf could also be a slice
+            raise TypeError("frame must be a positive integer or zero")
         if frame >= self.n_frames or frame < 0:
-            raise IndexError("frame index must be 0 <= frame < {0}"
-                             "".format(self.n_frames))
+            raise IndexError("frame index must be 0 <= frame < {0}".format(
+                self.n_frames))
         # note: self.trjfile.variables['coordinates'].shape == (frames, n_atoms, 3)
         ts._pos[:] = self.trjfile.variables['coordinates'][frame]
         ts.time = self.trjfile.variables['time'][frame]
@@ -564,7 +554,12 @@ class NCDFReader(base.ReaderBase):
         return t1 - t0
 
     def close(self):
-        """Close trajectory; any further access will raise an :exc:`IOError`"""
+        """Close trajectory; any further access will raise an :exc:`IOError`.
+
+        .. Note:: The underlying :mod:`scipy.io.netcdf` module open netcdf
+                  files with `mmap()`. Hence *any* reference to an array
+                  *must* be removed before the file can be closed.
+        """
         if self.trjfile is not None:
             self.trjfile.close()
             self.trjfile = None
@@ -710,28 +705,18 @@ class NCDFWriter(base.WriterBase):
            https://storage.googleapis.com/google-code-attachments/mdanalysis/issue-109/comment-2/netcdf4storage.py
         """
         try:
-            import netCDF4 as netcdf
+            from scipy.io import netcdf
         except ImportError:
-            logger.fatal("netcdf4-python with the netCDF and HDF5 libraries "
-                         "must be installed for the AMBER ncdf Writer."
-                         "See installation instructions at "
-                         "https://github.com/MDAnalysis/mdanalysis/wiki/netcdf")
-            raise ImportError(
-                "netCDF4 package missing.\n"
-                "netcdf4-python with the netCDF and HDF5 libraries must be "
-                "installed for the AMBER ncdf Writer.\n"
-                "See installation instructions at "
-                "https://github.com/MDAnalysis/mdanalysis/wiki/netcdf")
+            logger.fatal("scipy.io.netcdf must be installed for the AMBER ncdf Reader.")
+            raise ImportError("scipy.io.netcdf package missing but is required "
+                              "for the Amber Reader.")
 
         if not self._first_frame:
             raise IOError(
                 errno.EIO,
                 "Attempt to write to closed file {0}".format(self.filename))
 
-        ncfile = netcdf.Dataset(self.filename,
-                                clobber=True,
-                                mode='w',
-                                format='NETCDF3_64BIT')
+        ncfile = netcdf.netcdf_file(self.filename, mode='w', version=2)
 
         # Set global attributes.
         setattr(ncfile, 'program', 'MDAnalysis.coordinates.TRJ.NCDFWriter')
@@ -751,39 +736,28 @@ class NCDFWriter(base.WriterBase):
         ncfile.createDimension('label', 5)  # needed for cell_angular
 
         # Create variables.
-        coords = ncfile.createVariable('coordinates',
-                                       'f4', ('frame', 'atom', 'spatial'),
-                                       zlib=self.zlib,
-                                       complevel=self.cmplevel)
+        coords = ncfile.createVariable('coordinates', 'f4',
+                                       ('frame', 'atom', 'spatial'))
         setattr(coords, 'units', 'angstrom')
 
         spatial = ncfile.createVariable('spatial', 'c', ('spatial', ))
         spatial[:] = np.asarray(list('xyz'))
 
-        time = ncfile.createVariable('time',
-                                     'f4', ('frame', ),
-                                     zlib=self.zlib,
-                                     complevel=self.cmplevel)
+        time = ncfile.createVariable('time', 'f4', ('frame',))
         setattr(time, 'units', 'picosecond')
 
         self.periodic = periodic
         if self.periodic:
-            cell_lengths = ncfile.createVariable('cell_lengths',
-                                                 'f8',
-                                                 ('frame', 'cell_spatial'),
-                                                 zlib=self.zlib,
-                                                 complevel=self.cmplevel)
+            cell_lengths = ncfile.createVariable('cell_lengths', 'f8',
+                                                 ('frame', 'cell_spatial'))
             setattr(cell_lengths, 'units', 'angstrom')
 
             cell_spatial = ncfile.createVariable('cell_spatial', 'c',
                                                  ('cell_spatial', ))
             cell_spatial[:] = np.asarray(list('abc'))
 
-            cell_angles = ncfile.createVariable('cell_angles',
-                                                'f8',
-                                                ('frame', 'cell_angular'),
-                                                zlib=self.zlib,
-                                                complevel=self.cmplevel)
+            cell_angles = ncfile.createVariable('cell_angles', 'f8',
+                                                ('frame', 'cell_angular'))
             setattr(cell_angles, 'units', 'degrees')
 
             cell_angular = ncfile.createVariable('cell_angular', 'c',
@@ -793,16 +767,12 @@ class NCDFWriter(base.WriterBase):
 
         # These properties are optional, and are specified on Writer creation
         if self.has_velocities:
-            velocs = ncfile.createVariable('velocities',
-                                           'f8', ('frame', 'atom', 'spatial'),
-                                           zlib=self.zlib,
-                                           complevel=self.cmplevel)
+            velocs = ncfile.createVariable('velocities', 'f4',
+                                           ('frame', 'atom', 'spatial'))
             setattr(velocs, 'units', 'angstrom/picosecond')
         if self.has_forces:
-            forces = ncfile.createVariable('forces',
-                                           'f8', ('frame', 'atom', 'spatial'),
-                                           zlib=self.zlib,
-                                           complevel=self.cmplevel)
+            forces = ncfile.createVariable('forces', 'f4',
+                                           ('frame', 'atom', 'spatial'))
             setattr(forces, 'units', 'kilocalorie/mole/angstrom')
 
         ncfile.sync()

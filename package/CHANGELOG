@@ -368,6 +368,7 @@ Changes
     before trying to deduce the format from file extension. (Issue #712)
 
 Fixes
+
   * Syntax error corrected in psa.py (Issue #738)
   * XDR file seeking and telling working again for large files (Issue #677).
   * ContactAnalysis1 run method now starts at frame index 0 by default (Issue #624)
@@ -437,6 +438,8 @@ Changes
   * removed superfluous analysis.density.density_from_trajectory();
     use density_from_Universe(TOPOL, TRAJ) instead.
   * MOL2Writer.write now only writes a single frame (Issue #521)
+  * use scipy.io.netcdf pure python implementation for reading of Amber
+    netcdf3 trajctories instead of netCDF4 + netcdf lib (see also Issue #488)
 
 Fixes
 
