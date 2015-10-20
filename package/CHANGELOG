@@ -37,6 +37,8 @@ Fixes
   * Fixed analysis.density modules requiring the defunct `skip` attribute
     on trajectories. (Issue #489)
   * ten2eleven camelcase fixer now deals with centerOfMass (Issue #470)
+  * ten2eleven will now convert numatoms to n_atoms argument
+    for writer() functions (Issue #470)
 
 10/08/15
 
