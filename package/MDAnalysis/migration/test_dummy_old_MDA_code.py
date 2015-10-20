@@ -108,6 +108,8 @@ ag.totalMass
 ag.totalCharge
 #centerOfGeometry -> center_of_geometry
 ag.centerOfGeometry
+#centerOfMass -> center_of_mass
+ag.centerOfMass
 #radiusOfGyration -> radius_of_gyration
 ag.radiusOfGyration
 #shapeParameter -> shape_parameter
