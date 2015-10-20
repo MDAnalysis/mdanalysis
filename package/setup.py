@@ -120,7 +120,7 @@ class Config(object):
         except:
             return default
 
-class MDAExtension(Extension):
+class MDAExtension(Extension, object):
     """Derived class to cleanly handle setup-time dependencies (numpy)
     """
     # The only setup-time numpy dependency comes when setting up its
@@ -136,7 +136,7 @@ class MDAExtension(Extension):
         except KeyError:
             self._mda_include_dir_args = []
         self._mda_include_dirs = []
-        Extension.__init__(self, *args, **kwargs)
+        super(MDAExtension, self).__init__(*args, **kwargs)
 
     @property
     def include_dirs(self):
@@ -156,6 +156,10 @@ def get_numpy_include():
     try:
         # Obtain the numpy include directory. This logic works across numpy
         # versions.
+        # setuptools forgets to unset numpy's setup flag and we get a crippled
+        # version of it unless we do it ourselves.
+        import __builtin__
+        __builtin__.__NUMPY_SETUP__ = False
         import numpy as np
     except ImportError:
         print('*** package "numpy" not found ***')
