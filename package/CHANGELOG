@@ -13,7 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
---/--/-- kain88-de, richardjgowers, manuel.nuno.melo
+--/--/-- tyler.je.reddy, kain88-de, richardjgowers, manuel.nuno.melo
 
   * 0.xx.x
 
@@ -31,6 +31,7 @@ Enhancement
   * GRO file writing now will write velocities where possible (Issue #494)
 
 Changes
+  * built html doc files are no longer version controlled (Issue #491)
 
 Fixes
   * Fixed unpickling errors due to lingering dead universes. (Issue #487)
