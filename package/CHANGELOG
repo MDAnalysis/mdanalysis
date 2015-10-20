@@ -36,6 +36,7 @@ Fixes
   * Fixed unpickling errors due to lingering dead universes. (Issue #487)
   * Fixed analysis.density modules requiring the defunct `skip` attribute
     on trajectories. (Issue #489)
+  * ten2eleven camelcase fixer now deals with centerOfMass (Issue #470)
 
 10/08/15
 
