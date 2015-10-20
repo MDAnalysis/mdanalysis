@@ -146,10 +146,10 @@ class MDAExtension(Extension):
                     self._mda_include_dirs.append(item()) #The numpy callable
                 except TypeError:
                     self._mda_include_dirs.append(item) 
-        return _mda_include_dirs
+        return self._mda_include_dirs
 
     @include_dirs.setter
-    def include_dirs(self):
+    def include_dirs(self, val):
         pass
 
 def get_numpy_include():
