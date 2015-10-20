@@ -33,6 +33,7 @@ Enhancement
 Changes
 
 Fixes
+  * Fixed setup-time dependency on numpy that broke pip installs. (Issue #479)
   * Fixed unpickling errors due to lingering dead universes. (Issue #487)
   * Fixed analysis.density modules requiring the defunct `skip` attribute
     on trajectories. (Issue #489)

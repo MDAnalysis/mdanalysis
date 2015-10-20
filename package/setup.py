@@ -66,17 +66,6 @@ else:
     import configparser
     open_kwargs = {'encoding': 'utf-8'}
 
-try:
-    # Obtain the numpy include directory. This logic works across numpy
-    # versions.
-    import numpy as np
-except ImportError:
-    print('*** package "numpy" not found ***')
-    print('MDAnalysis requires a version of NumPy (>=1.5.0), even for setup.')
-    print('Please get it from http://numpy.scipy.org/ or install it through '
-          'your package manager.')
-    sys.exit(-1)
-
 # Handle cython modules
 try:
     from Cython.Distutils import build_ext
@@ -131,8 +120,49 @@ class Config(object):
         except:
             return default
 
+class MDAExtension(Extension):
+    """Derived class to cleanly handle setup-time dependencies (numpy)
+    """
+    # The only setup-time numpy dependency comes when setting up its
+    #  include dir.
+    # The actual numpy import and call can be delayed until after pip
+    #  has figured it must install numpy.
+    # This is accomplished by passing the get_numpy_include function
+    #  as one of the include_dirs. This derived Extension class takes
+    #  care of calling it when needed.
+    def __init__(self, *args, **kwargs):
+        try:
+            self._mda_include_dir_args = kwargs.pop("include_dirs")
+        except KeyError:
+            self._mda_include_dir_args = []
+        self._mda_include_dirs = []
+        Extension.__init__(self, *args, **kwargs)
+
+    @property
+    def include_dirs(self):
+        if not self._mda_include_dirs:
+            for item in self._mda_include_dir_args:
+                try:
+                    self._mda_include_dirs.append(item()) #The numpy callable
+                except TypeError:
+                    self._mda_include_dirs.append(item) 
+        return self._mda_include_dirs
+
+    @include_dirs.setter
+    def include_dirs(self, val):
+        pass
 
 def get_numpy_include():
+    try:
+        # Obtain the numpy include directory. This logic works across numpy
+        # versions.
+        import numpy as np
+    except ImportError:
+        print('*** package "numpy" not found ***')
+        print('MDAnalysis requires a version of NumPy (>=1.5.0), even for setup.')
+        print('Please get it from http://numpy.scipy.org/ or install it through '
+              'your package manager.')
+        sys.exit(-1)
     try:
         numpy_include = np.get_include()
     except AttributeError:
@@ -230,48 +260,49 @@ def extensions(config):
 
     source_suffix = '.pyx' if use_cython else '.c'
 
-    include_dirs = [get_numpy_include()]
+    # The callable is passed so that it is only evaluated at install time.
+    include_dirs = [get_numpy_include]
 
-    dcd = Extension('coordinates._dcdmodule',
+    dcd = MDAExtension('coordinates._dcdmodule',
                     ['MDAnalysis/coordinates/src/dcd.c'],
                     include_dirs=include_dirs + ['MDAnalysis/coordinates/include'],
                     define_macros=define_macros,
                     extra_compile_args=extra_compile_args)
-    dcd_time = Extension('coordinates.dcdtimeseries',
+    dcd_time = MDAExtension('coordinates.dcdtimeseries',
                          ['MDAnalysis/coordinates/dcdtimeseries' + source_suffix],
                          include_dirs=include_dirs + ['MDAnalysis/coordinates/include'],
                          define_macros=define_macros,
                          extra_compile_args=extra_compile_args)
-    distances = Extension('lib._distances',
+    distances = MDAExtension('lib._distances',
                           ['MDAnalysis/lib/distances' + source_suffix],
                           include_dirs=include_dirs + ['MDAnalysis/lib/include'],
                           libraries=['m'],
                           define_macros=define_macros,
                           extra_compile_args=extra_compile_args)
-    distances_omp = Extension('lib._distances_openmp',
+    distances_omp = MDAExtension('lib._distances_openmp',
                               ['MDAnalysis/lib/distances_openmp' + source_suffix],
                               include_dirs=include_dirs + ['MDAnalysis/lib/include'],
                               libraries=['m'] + parallel_libraries,
                               define_macros=define_macros + parallel_macros,
                               extra_compile_args=parallel_args,
                               extra_link_args=parallel_args)
-    parallel_dist = Extension("lib.parallel.distances",
+    parallel_dist = MDAExtension("lib.parallel.distances",
                               ['MDAnalysis/lib/distances_parallel' + source_suffix],
                               include_dirs=include_dirs,
                               libraries=['m'] + parallel_libraries,
                               extra_compile_args=parallel_args,
                               extra_link_args=parallel_args)
-    qcprot = Extension('lib.qcprot',
+    qcprot = MDAExtension('lib.qcprot',
                        ['MDAnalysis/lib/src/pyqcprot/pyqcprot' + source_suffix],
                        include_dirs=include_dirs,
                        extra_compile_args=["-O3", "-ffast-math"])
-    transformation = Extension('lib._transformations',
+    transformation = MDAExtension('lib._transformations',
                                ['MDAnalysis/lib/src/transformations/transformations.c'],
                                libraries=['m'],
                                define_macros=define_macros,
                                include_dirs=include_dirs,
                                extra_compile_args=extra_compile_args)
-    xdr = Extension('coordinates.xdrfile._libxdrfile2',
+    xdr = MDAExtension('coordinates.xdrfile._libxdrfile2',
                     sources=['MDAnalysis/coordinates/xdrfile/src/' + f
                            for f in ('libxdrfile2_wrap.c',
                                      'xdrfile.c',
@@ -327,7 +358,11 @@ if __name__ == '__main__':
                     'networkx (>=1.0)', 'GridDataFormats'],
           # all standard requirements are available through PyPi and
           # typically can be installed without difficulties through setuptools
+          setup_requires=[
+              'numpy>=1.5.0',
+          ],
           install_requires=[
+              'numpy>=1.5.0',
               'biopython>=1.59',
               'networkx>=1.0',
               'GridDataFormats>=0.2.2',
