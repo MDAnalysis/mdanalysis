@@ -418,6 +418,7 @@ import copy
 import logging
 import os.path
 import weakref
+import gc
 import functools
 
 # Local imports
@@ -1101,8 +1102,14 @@ class AtomGroup(object):
             self.__init__([])
             return
         if np.max(indices) >= universe_n_atoms:
-            raise ValueError("Trying to unpickle an inconsistent AtomGroup")
-        lookup_set = MDAnalysis._anchor_universes if anchor_name is None else MDAnalysis._named_anchor_universes
+            raise ValueError("Trying to unpickle an inconsistent AtomGroup: "
+                      "it has higher indices than the universe it refers to.")
+        lookup_set = (MDAnalysis._anchor_universes if anchor_name is None
+                      else MDAnalysis._named_anchor_universes)
+        # Universes that go out-of-scope but haven't been garbage-collected
+        #  yet may be (wrongly) brought back to life by unpickling onto them.
+        # gc.collect() makes sure all is clean (Issue 487).
+        gc.collect()
         for test_universe in lookup_set:
             if test_universe._matches_unpickling(*state[1:]):
                 self.__init__(test_universe.atoms[indices]._atoms)

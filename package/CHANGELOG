@@ -13,7 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
---/--/-- tyler.je.reddy, kain88-de, richardjgowers
+--/--/-- tyler.je.reddy, kain88-de, richardjgowers, manuel.nuno.melo
 
   * 0.xx.x
 
@@ -23,13 +23,18 @@ API Changes
     as well as a normal trajectory. If `n_atoms` is None (default) MDAnalysis
     assumes that it is used as a container and won't give a warning if the
     number of atoms differs between frames.
+  * GROWriter.fmt strings updated to use format style (Issue #494)
 
 Enhancement
+
+  * GRO file reading approximately 50% faster for large files (Issue #212)
+  * GRO file writing now will write velocities where possible (Issue #494)
 
 Changes
   * built html doc files are no longer version controlled (Issue #491)
 
 Fixes
+  * Fixed unpickling errors due to lingering dead universes. (Issue #487)
   * Fixed analysis.density modules requiring the defunct `skip` attribute
     on trajectories. (Issue #489)
 
