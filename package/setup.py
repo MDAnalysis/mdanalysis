@@ -121,7 +121,7 @@ class Config(object):
             return default
 
 class MDAExtension(Extension, object):
-    """Derived class to cleanly handle setup-time dependencies (numpy)
+    """Derived class to cleanly handle setup-time (numpy) dependencies.
     """
     # The only setup-time numpy dependency comes when setting up its
     #  include dir.
@@ -131,10 +131,6 @@ class MDAExtension(Extension, object):
     #  as one of the include_dirs. This derived Extension class takes
     #  care of calling it when needed.
     def __init__(self, *args, **kwargs):
-        try:
-            self._mda_include_dir_args = kwargs.pop("include_dirs")
-        except KeyError:
-            self._mda_include_dir_args = []
         self._mda_include_dirs = []
         super(MDAExtension, self).__init__(*args, **kwargs)
 
@@ -150,7 +146,7 @@ class MDAExtension(Extension, object):
 
     @include_dirs.setter
     def include_dirs(self, val):
-        pass
+        self._mda_include_dir_args = val
 
 def get_numpy_include():
     try:
