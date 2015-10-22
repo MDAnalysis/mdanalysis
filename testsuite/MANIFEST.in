@@ -4,5 +4,6 @@ include ez_setup.py setup.py
 include MDAnalysisTests/mda_nosetests
 include MDAnalysisTests/data/gms/*.inp
 include MDAnalysisTests/data/lammps/*.in
+include MDAnalysisTests/data/Amber/*
 global-exclude *~
 global-exclude *.pkl

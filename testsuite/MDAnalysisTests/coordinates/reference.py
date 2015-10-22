@@ -1,5 +1,6 @@
 import numpy as np
 
+from MDAnalysisTests import datafiles
 from MDAnalysisTests.datafiles import (PDB_small, PDB, PDB_full, LAMMPSdata,
                                        LAMMPSdata2, LAMMPSdcd2,
                                        LAMMPSdata_mini, PSF_TRICLINIC,
@@ -17,7 +18,7 @@ class RefAdKSmall(object):
        All distances must be in ANGSTROEM as this is the MDAnalysis
        default unit. All readers must return Angstroem by default.
     """
-    filename = PDB_small
+    filename = datafiles.PDB_small
     ref_coordinates = {
         # G11:CA, copied frm adk_open.pdb
         'A10CA': np.array([-1.198, 7.937, 22.654]),
@@ -44,7 +45,7 @@ class RefAdK(object):
        All distances must be in ANGSTROEM as this is the MDAnalysis
        default unit. All readers must return Angstroem by default.
     """
-    filename = PDB
+    filename = datafiles.PDB
     ref_coordinates = {
         # Angstroem as MDAnalysis unit!!
         'A10CA': np.array([62.97600174, 62.08800125, 20.2329998]),
@@ -76,7 +77,7 @@ class Ref2r9r(object):
 
 class Ref4e43(object):
     """Mixin class for a clean Protein Databank PDB file"""
-    filename = PDB_full
+    filename = datafiles.PDB_full
     header = 'HYDROLASE                               11-MAR-12   4E43'
     title = ['HIV PROTEASE (PR) DIMER WITH ACETATE IN EXO SITE AND PEPTIDE '
              'IN ACTIVE', '2 SITE']
@@ -158,12 +159,27 @@ class RefVGV(object):
       ref_sum_centre_of_geometry = np.sum([protein.center_of_geometry()
                                            for ts in w.trajectory])
     """
+    topology = datafiles.PRMncdf
+    filename = datafiles.NCDF
     ref_n_atoms = 2661
     ref_proteinatoms = 50
     ref_sum_centre_of_geometry = 1552.9125
     ref_n_frames = 30
     ref_periodic = True
 
+class RefTZ2(object):
+    """Reference values for the cpptraj testcase tz2.truncoct.nc
+
+    Used under the GPL v3.
+    """
+    topology = datafiles.PRM7
+    filename = datafiles.NCDFtruncoct
+    ref_n_atoms = 5827
+    ref_proteinatoms = 217
+    ref_sum_centre_of_geometry = -68.575745
+    ref_n_frames = 10
+    ref_periodic = True
+    
 
 class RefTRZ(object):
     #    ref_coordinates = {}
