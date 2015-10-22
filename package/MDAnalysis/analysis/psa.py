@@ -1298,7 +1298,8 @@ class PSAnalysis(object):
             for j in xrange(i+1, numpaths):
                 P = self.paths[i][start:stop:step]
                 Q = self.paths[j][start:stop:step]
-                D[i,j] = D[j,i] = metric_func(P, Q)
+                D[i,j] = metric_func(P, Q)
+                D[j,i] = D[i,j]
         self.D = D
         if store:
             filename = kwargs.pop('filename', str(metric))
