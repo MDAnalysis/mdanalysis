@@ -54,11 +54,13 @@ preserve the triangle inequality.
 
 .. Rubric:: References
 
-.. [Seyler2015] Sean L. Seyler, Avishek Kumar, Michael F. Thorpe, Oliver Beckstein.
-   *Path Similarity Analysis: a Method for Quantifying Macromolecular
-   Pathways.* `arXiv:1505.04807`_ (2015).
 
-.. _`arXiv:1505.04807`: http://arxiv.org/abs/1505.04807
+.. [Seyler2015] Seyler SL, Kumar A, Thorpe MF, Beckstein O (2015)
+                Path Similarity Analysis: A Method for Quantifying
+                Macromolecular Pathways. PLoS Comput Biol 11(10): e1004568.
+                doi: `10.1371/journal.pcbi.1004568`_
+
+.. _`10.1371/journal.pcbi.1004568`: http://dx.doi.org/10.1371/journal.pcbi.1004568
 .. _`PSAnalysisTutorial`: https://github.com/Becksteinlab/PSAnalysisTutorial
 
 
