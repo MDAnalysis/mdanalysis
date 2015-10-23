@@ -20,7 +20,7 @@ Availability
 
 **Source code** is available from http://www.mdanalysis.org under the
 `GNU Public Licence, version 2`_, together with the `online
-documentation`_. **Packages** can be downloaded from 
+documentation`_. **Packages** can be downloaded from
 
   http://pypi.python.org/pypi/MDAnalysis/
 
@@ -28,6 +28,12 @@ or installed/upgraded via PyPI (using either `easy_install`_ or `pip`_)::
 
   easy_install -U MDAnalysis
   pip install --upgrade MDAnalysis
+
+By default MDAnalysis does not install every dependency needed to run every
+analysis available in the analysis module or read netcdf Amber_ trajectories.
+To install and update these dependencies as well run.
+
+  pip install --upgrade 'MDAnalysis[analysis, AMBER]
 
 Please report **bugs** or **enhancement requests** through the `Issue
 Tracker`_. Questions can also be asked on the `mdnalysis-discussion mailing

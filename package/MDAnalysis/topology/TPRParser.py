@@ -23,8 +23,7 @@ Gromacs portable run input TPR format parser
 ============================================
 
 The :mod:`~MDAnalysis.topology.TPRParser` module allows reading of a
-Gromacs_ portable run input file (a `TPR file`_). At the moment, only
-atom information is read and used to build a minimal topology. Because
+Gromacs_ portable run input file (a `TPR file`_). Because
 the file format of the TPR file is changing rapidly, not all versions
 are currently supported. The known working versions and the
 approximate Gromacs release numbers are listed in the table
@@ -47,11 +46,35 @@ approximate Gromacs release numbers are listed in the table
                              4.5.3, 4.5.4, 4.5.5
 
    83         24             4.6, 4.6.1           yes
+
+   100        26             5.0, 5.0.1, 5.0.2,   yes
+                             5.0.3,5.0.4, 5.0.5
+
+   103        26             5.1                  yes
    ========== ============== ==================== =====
 
 For further discussion and notes see `Issue 2`_. Also add a comment to
 `Issue 2`_ if a new or different TPR file format version should be
 supported.
+
+Bonded interactions available in Gromacs are described in table 5.5 of the
+`Gromacs manual`_. The following ones are used to build the topology (see
+`Issue 463`_):
+
+* bonds: regular bonds (type 1), G96 bonds (type 2), Morse (type 3),
+  cubic bonds (type 4), connections (type 5), harmonic potentials (type 6),
+  FENE bonds (type 7), restraint potentials (type 10),
+  tabulated potential with exclusion/connection (type 8),
+  tabulated potential without exclusion/connection (type 9), constraints with
+  exclusion/connection (type 1), constraints without exclusion/connection (type
+  2)
+* angles: regular angles (type 1), G96 angles (type 2), cross bond-bond
+  (type3), cross-bond-angle (type 4), Urey-Bradley (type 5), quartic angles
+  (type 6), restricted bending potential (type 10), tabulated angles (type 8)
+* dihedrals: proper dihedrals (type 1 and type 9), Ryckaert-Bellemans dihedrals
+  (type 3), Fourier dihedrals (type 5), restricted dihedrals (type 10),
+  combined bending-torsion potentials (type 11), tabulated dihedral (type 8)
+* impropers: improper dihedrals (type 2), periodic improper dihedrals (type 4)
 
 
 Classes
@@ -71,17 +94,10 @@ parser. Currently the following sections of the topology are parsed:
 
 * Atoms: number, name, type, resname, resid, segid, mass, charge,
   [residue, segment, radius, bfactor, resnum]
-
-* Bonds:
-
-* Angels:
-
-* Dihedrals:
-
-* Impropers:
-
-Potential Bug: in the result of :program:`gmxdump`, the "Proper Dih.:"
-section is actually a list of Improper Dih.
+* Bonds
+* Angels
+* Dihedrals
+* Impropers
 
 This tpr parser is written according to the following files
 
@@ -91,19 +107,22 @@ This tpr parser is written according to the following files
 - :file:`{gromacs_dir}/src/gmxlib/gmxfio_xdr.c`
 - :file:`{gromacs_dir}/include/gmxfiofio.h`
 
+or their equivalent in more recent versions of Gromacs.
+
 The function :func:`read_tpxheader` is based on the
 `TPRReaderDevelopment`_ notes.  Functions with names starting with
 ``read_`` or ``do_`` are trying to be similar to those in
 :file:`gmxdump.c` or :file:`tpxio.c`, those with ``extract_`` are new.
 
 Wherever ``fver_err(fver)`` is used, it means the tpx version problem
-haven't be resolved for those other than 58 and 73 (or gromacs version
-before 4.x)
+has not been solved. Versions prior to Gromacs 4.0.x are not supported.
 
 .. Links
 .. _Gromacs: http://www.gromacs.org
+.. _`Gromacs manual`: http://manual.gromacs.org/documentation/5.1/manual-5.1.pdf
 .. _TPR file: http://manual.gromacs.org/current/online/tpr.html
 .. _`Issue 2`: https://github.com/MDAnalysis/mdanalysis/issues/2
+.. _`Issue 463`: https://github.com/MDAnalysis/mdanalysis/pull/463
 .. _TPRReaderDevelopment: https://github.com/MDAnalysis/mdanalysis/wiki/TPRReaderDevelopment
 """
 from __future__ import absolute_import

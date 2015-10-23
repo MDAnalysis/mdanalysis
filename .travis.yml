@@ -22,7 +22,7 @@ install:
   - conda install --yes python=$TRAVIS_PYTHON_VERSION cython biopython matplotlib networkx netcdf4
   - pip install package/
   - pip install testsuite/
-  - pip install coveralls
+  - pip install coveralls tempdir
   - chmod +x testsuite/MDAnalysisTests/mda_nosetests
 # command to run tests
 script:
@@ -41,7 +41,7 @@ after_success:
      test ${TRAVIS_BRANCH} == ${GH_DOC_BRANCH} && \
      test "${TRAVIS_BUILD_NUMBER}.1" == "${TRAVIS_JOB_NUMBER}" && \
      bash ./maintainer/deploy_docs.sh
-  
+
 env:
    global:
       - secure: "HIj3p+p2PV8DBVg/KGUx6n83KwB0ASE5FwOn0SMB9zxnzAqe8sapwdBQdMdq0sXB7xT1spJqRxuxOMVEVn35BNLu7bxMLfa4287C8YXcomnvmv9xruxAsjsIewnNQ80vtPVbQddBPxa4jKbqgPby5QhhAP8KANAqYe44pIV70fY="

@@ -46,7 +46,7 @@ from __future__ import print_function
 from ez_setup import use_setuptools
 
 use_setuptools()
-from setuptools import setup, Extension
+from setuptools import setup, Extension, find_packages
 #
 #------------------------------------------------------------
 
@@ -63,7 +63,7 @@ if sys.version_info[:2] < (2, 6):
 
 
 if __name__ == '__main__':
-    RELEASE = "0.12.0-dev"  # this must be in-sync with MDAnalysis
+    RELEASE = "0.13.0-dev0"  # this must be in-sync with MDAnalysis
     LONG_DESCRIPTION = \
         """MDAnalysis is a tool for analyzing molecular dynamics trajectories.
 
@@ -96,16 +96,23 @@ For details see the report for `Issue 87`_.
           author_email='naveen.michaudagrawal@gmail.com',
           url='http://www.mdanalysis.org',
           license='GPL 2',
-          packages=['MDAnalysisTests', 'MDAnalysisTests.plugins'],
+          packages=find_packages(),
           package_dir={'MDAnalysisTests': 'MDAnalysisTests',
                        'MDAnalysisTests.plugins': 'MDAnalysisTests/plugins'},
           package_data={'MDAnalysisTests':
               [
                   'data/*.psf', 'data/*.dcd', 'data/*.pdb',
-                  'data/tprs/*.tpr', 'data/*.tpr',
+                  'data/tprs/*.tpr', 'data/tprs/all_bonded/*.tpr',
+                  'data/tprs/all_bonded/*.gro', 'data/tprs/all_bonded/*.top',
+                  'data/tprs/all_bonded/*.mdp', 'data/*.tpr',
                   'data/*.gro', 'data/*.xtc', 'data/*.trr', 'data/*npy',
                   'data/*.crd', 'data/*.xyz',
-                  'data/*.prmtop', 'data/*.top', 'data/*.trj', 'data/*.mdcrd', 'data/*.ncdf',
+                  'data/Amber/*.bz2',
+                  'data/Amber/*.prmtop', 'data/Amber/*.top',
+                  'data/Amber/*.parm7',
+                  'data/Amber/*.trj', 'data/Amber/*.mdcrd',
+                  'data/Amber/*.ncdf', 'data/Amber/*.nc',
+                  'data/Amber/*.inpcrd',
                   'data/*.pqr', 'data/*.pdbqt', 'data/*.bz2',
                   'data/*.fasta',
                   'data/*.dms',
@@ -113,7 +120,9 @@ For details see the report for `Issue 87`_.
                   'data/*.trz',
                   'data/mol2/*.mol2',
                   'data/capping/*.gro', 'data/capping/*.pdb',
-                  'data/*.data',
+                  'data/lammps/*.data', 'data/lammps/*.data.bz2',
+                  'data/lammps/*.dcd', 'data/lammps/*.trz',
+                  'data/lammps/*.inp',
                   'data/gms/*.xyz', 'data/gms/*.gms', 'data/gms/*.gms.gz',
                   'data/*.inpcrd',
                   'data/dlpoly/CONFIG*',
@@ -127,6 +136,7 @@ For details see the report for `Issue 87`_.
               'MDAnalysis==%s' % RELEASE,  # same as this release!
               'numpy>=1.5',
               'nose>=1.3.7',
+              'tempdir',
           ],
           zip_safe=False,  # had 'KeyError' as zipped egg (2MB savings are not worth the trouble)
           )

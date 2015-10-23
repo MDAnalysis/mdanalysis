@@ -13,7 +13,7 @@ Also see https://github.com/MDAnalysis/mdanalysis/wiki/MDAnalysisTests
 and https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
 
 ------------------------------------------------------------------------------
-??/??/2015 manuel.nuno.melo, orbeckst
+09/07/2015 manuel.nuno.melo, orbeckst
   * 0.11.0
 
     - Overhaul of the test subsystem.
@@ -25,6 +25,7 @@ and https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
       (Issue #353)
     - Added new DIMS DCD test datafile
     - Added tests for PSAnalysis
+    - Update TPR parser tests for Gromacs 5
 
 02/11/2012 orbeckst, seb-buch
 

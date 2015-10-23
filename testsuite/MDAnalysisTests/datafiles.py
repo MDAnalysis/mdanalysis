@@ -51,7 +51,8 @@ __all__ = [
     "PDB_xlserial",
     "TPR400", "TPR402", "TPR403", "TPR404", "TPR405", "TPR406", "TPR407",
     "TPR450", "TPR451", "TPR452", "TPR453", "TPR454", "TPR455", "TPR455Double",
-    "TPR460", "TPR461",
+    "TPR460", "TPR461", "TPR502", "TPR504", "TPR505", "TPR510",
+    "TPR510_bonded",
     "PDB_sub_sol", "PDB_sub_dry",  # TRRReader sub selection
     "TRR_sub_sol",
     "XYZ", "XYZ_psf", "XYZ_bz2",
@@ -76,6 +77,7 @@ __all__ = [
     "mol2_molecules", "mol2_molecule", "mol2_broken_molecule",
     "capping_input", "capping_output", "capping_ace", "capping_nma",
     "LAMMPSdata", "trz4data", "LAMMPSdata_mini",
+    "LAMMPSdata2", "LAMMPSdcd2",
     "unordered_res",  # pdb file with resids non sequential
     "GMS_ASYMOPT",  # GAMESS C1  optimization
     "GMS_SYMOPT",   # GAMESS D4h optimization
@@ -146,10 +148,16 @@ TPR452 = resource_filename(__name__, 'data/tprs/2lyz_gmx_4.5.2.tpr')
 TPR453 = resource_filename(__name__, 'data/tprs/2lyz_gmx_4.5.3.tpr')
 TPR454 = resource_filename(__name__, 'data/tprs/2lyz_gmx_4.5.4.tpr')
 TPR455 = resource_filename(__name__, 'data/tprs/2lyz_gmx_4.5.5.tpr')
+TPR502 = resource_filename(__name__, 'data/tprs/2lyz_gmx_5.0.2.tpr')
+TPR504 = resource_filename(__name__, 'data/tprs/2lyz_gmx_5.0.4.tpr')
+TPR505 = resource_filename(__name__, 'data/tprs/2lyz_gmx_5.0.5.tpr')
+TPR510 = resource_filename(__name__, 'data/tprs/2lyz_gmx_5.1.tpr')
 # double precision
 TPR455Double = resource_filename(__name__, 'data/tprs/drew_gmx_4.5.5.double.tpr')
 TPR460 = resource_filename(__name__, 'data/tprs/ab42_gmx_4.6.tpr')
 TPR461 = resource_filename(__name__, 'data/tprs/ab42_gmx_4.6.1.tpr')
+# all bonded interactions
+TPR510_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_5.1.tpr')
 
 XYZ_psf = resource_filename(__name__, 'data/2r9r-1b.psf')
 XYZ_bz2 = resource_filename(__name__, 'data/2r9r-1b.xyz.bz2')
@@ -157,22 +165,25 @@ XYZ = resource_filename(__name__, 'data/2r9r-1b.xyz')
 XYZ_mini = resource_filename(__name__, 'data/mini.xyz')
 XYZ_five = resource_filename(__name__, 'data/five.xyz')
 
-PRM = resource_filename(__name__, 'data/ache.prmtop')
-TRJ = resource_filename(__name__, 'data/ache.mdcrd')
-INPCRD = resource_filename(__name__, 'data/test.inpcrd')
-TRJ_bz2 = resource_filename(__name__, 'data/ache.mdcrd.bz2')
-PFncdf_Top = resource_filename(__name__, 'data/posfor.top')
-PFncdf_Trj = resource_filename(__name__, 'data/posfor.ncdf')
+PRM = resource_filename(__name__, 'data/Amber/ache.prmtop')
+TRJ = resource_filename(__name__, 'data/Amber/ache.mdcrd')
+INPCRD = resource_filename(__name__, 'data/Amber/test.inpcrd')
+TRJ_bz2 = resource_filename(__name__, 'data/Amber/ache.mdcrd.bz2')
+PFncdf_Top = resource_filename(__name__, 'data/Amber/posfor.top')
+PFncdf_Trj = resource_filename(__name__, 'data/Amber/posfor.ncdf')
 
-PRMpbc = resource_filename(__name__, 'data/capped-ala.prmtop')
-TRJpbc_bz2 = resource_filename(__name__, 'data/capped-ala.mdcrd.bz2')
+PRMpbc = resource_filename(__name__, 'data/Amber/capped-ala.prmtop')
+TRJpbc_bz2 = resource_filename(__name__, 'data/Amber/capped-ala.mdcrd.bz2')
 
-PRMncdf = resource_filename(__name__, 'data/bala.prmtop')
-TRJncdf = resource_filename(__name__, 'data/bala.trj')
-NCDF = resource_filename(__name__, 'data/bala.ncdf')
+PRMncdf = resource_filename(__name__, 'data/Amber/bala.prmtop')
+TRJncdf = resource_filename(__name__, 'data/Amber/bala.trj')
+NCDF = resource_filename(__name__, 'data/Amber/bala.ncdf')
 
-PRM12 = resource_filename(__name__, 'data/anti.top')
-TRJ12_bz2 = resource_filename(__name__, 'data/anti_md1.mdcrd.bz2')
+PRM12 = resource_filename(__name__, 'data/Amber/anti.top')
+TRJ12_bz2 = resource_filename(__name__, 'data/Amber/anti_md1.mdcrd.bz2')
+
+PRM7 =  resource_filename(__name__, 'data/Amber/tz2.truncoct.parm7.bz2')
+NCDFtruncoct =  resource_filename(__name__, 'data/Amber/tz2.truncoct.nc')
 
 PQR = resource_filename(__name__, 'data/adk_open.pqr')
 
@@ -208,12 +219,11 @@ capping_output = resource_filename(__name__, "data/capping/maestro_aaqaa_capped.
 capping_ace = resource_filename(__name__, "data/capping/ace.pdb")
 capping_nma = resource_filename(__name__, "data/capping/nma.pdb")
 
-trz4data = resource_filename(__name__, "data/datatest.trz")
-LAMMPSdata = resource_filename(__name__, "data/datatest.data")
-LAMMPSdata_mini = resource_filename(__name__, "data/mini.data")
-
-LAMMPSdata2 = resource_filename(__name__, "data/lammps2.data")
-LAMMPSdcd2 = resource_filename(__name__, "data/lammps2.dcd")
+trz4data = resource_filename(__name__, "data/lammps/datatest.trz")
+LAMMPSdata = resource_filename(__name__, "data/lammps/datatest.data")
+LAMMPSdata_mini = resource_filename(__name__, "data/lammps/mini.data")
+LAMMPSdata2 = resource_filename(__name__, "data/lammps/ifabp_apo_100mM.data.bz2")
+LAMMPSdcd2 = resource_filename(__name__, "data/lammps/ifabp_apo_100mM.dcd")
 
 unordered_res = resource_filename(__name__, "data/unordered_res.pdb")
 

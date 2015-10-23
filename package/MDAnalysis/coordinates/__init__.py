@@ -172,10 +172,10 @@ also recognized when they are compressed with :program:`gzip` or
    |               | mdcrd     |       | periodic box is autodetected (*experimental*).       |
    |               |           |       | Module :mod:`MDAnalysis.coordinates.TRJ`             |
    +---------------+-----------+-------+------------------------------------------------------+
-   | AMBER         | inpcrd    | r     | formatted (ASCII) coordinate/restart file            |
+   | AMBER         | inpcrd,   | r     | formatted (ASCII) coordinate/restart file            |
    |               | restrt    |       | Module :mod:`MDAnalysis.coordinates.INPCRD`          |
    +---------------+-----------+-------+------------------------------------------------------+
-   | AMBER         | ncdf      |  r/w  | binary (NetCDF) trajectories are fully supported with|
+   | AMBER         | ncdf, nc  |  r/w  | binary (NetCDF) trajectories are fully supported with|
    |               |           |       | optional `netcdf4-python`_ module (coordinates and   |
    |               |           |       | velocities). Module :mod:`MDAnalysis.coordinates.TRJ`|
    +---------------+-----------+-------+------------------------------------------------------+
@@ -777,6 +777,7 @@ _trajectory_writers = {
     'LAMMPS': LAMMPS.DCDWriter,
     'PDB': PDB.MultiPDBWriter,
     'NCDF': TRJ.NCDFWriter,
+    'NC': TRJ.NCDFWriter,
     'TRZ': TRZ.TRZWriter,
     'XYZ': XYZ.XYZWriter,
     'MOL2': MOL2.MOL2Writer,

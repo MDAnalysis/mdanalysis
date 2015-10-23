@@ -262,6 +262,9 @@ def do_iparams(data, functypes, fver):
             S.F_HARMONIC, S.F_IDIHS
         ]:
             do_harm(data)
+        elif i in [S.F_RESTRANGLES]:
+            data.unpack_real()  # harmonic.rA
+            data.unpack_real()  # harmonic.krA
         elif i in [S.F_LINEAR_ANGLES]:
             data.unpack_real()  # linangle.klinA
             data.unpack_real()  # linangle.aA
@@ -375,6 +378,9 @@ def do_iparams(data, functypes, fver):
                 data.unpack_real()  # pdihs_cpB
                 data.unpack_int()  # pdihs_mult
 
+        elif i in [S.F_RESTRDIHS]:
+            data.unpack_real()  # pdihs.phiA
+            data.unpack_real()  # pdihs.cpA
         elif i in [S.F_DISRES]:
             data.unpack_int()  # disres.label
             data.unpack_int()  # disres.type
@@ -411,6 +417,15 @@ def do_iparams(data, functypes, fver):
             else:
                 do_rvec(data)  # posres.pos0B
                 do_rvec(data)  # posres.fcB
+
+        elif i in [S.F_FBPOSRES]:
+            data.unpack_int()   # fbposres.geom
+            do_rvec(data)       # fbposres.pos0
+            data.unpack_real()  # fbposres.r
+            data.unpack_real()  # fbposres.k
+
+        elif i in [S.F_CBTDIHS]:
+            ndo_real(data, S.NR_CBTDIHS)  # cbtdihs.cbtcA
 
         elif i in [S.F_RBDIHS]:
             ndo_real(data, S.NR_RBDIHS)  # iparams_rbdihs_rbcA
@@ -492,7 +507,7 @@ def do_moltype(data, symtab, fver):
 
     #### start: MDAnalysis specific
     # these may not be available for certain molecules, e.g. tip4p
-    bonds, angles, dihs, impr = None, None, None, None
+    bonds, angles, dihs, impr = [], [], [], []
     for ilist in ilists:
         if ilist.nr > 0:
             ik_obj = obj.InteractionKind(*ilist.ik)
@@ -500,20 +515,28 @@ def do_moltype(data, symtab, fver):
 
             # the following if..elif..else statement needs to be updated as new
             # type of interactions become interested
-            if ik_obj.name in ['BONDS']:
-                bonds = list(ik_obj.process(ias))
-            elif ik_obj.name in ['ANGLES']:
-                angles = list(ik_obj.process(ias))
-            elif ik_obj.name in ['RBDIHS']:
-                dihs = list(ik_obj.process(ias))
-            elif ik_obj.name in ['PDIHS', 'VSITE3']:
-                # this is possible a bug in gromacs, the so-named Proper Dih is
-                # actually Improper Dih
-                impr = list(ik_obj.process(ias))
+            if ik_obj.name in ['BONDS', 'G96BONDS', 'MORSE', 'CUBICBONDS',
+                               'CONNBONDS', 'HARMONIC', 'FENEBONDS',
+                               'RESTRAINTPOT', 'CONSTR', 'CONSTRNC',
+                               'TABBONDS', 'TABBONDSNC']:
+                bonds += list(ik_obj.process(ias))
+            elif ik_obj.name in ['ANGLES', 'G96ANGLES', 'CROSS_BOND_BOND',
+                                 'CROSS_BOND_ANGLE', 'UREY_BRADLEY', 'QANGLES',
+                                 'RESTRANGLES', 'TABANGLES']:
+                angles += list(ik_obj.process(ias))
+            elif ik_obj.name in ['PDIHS', 'RBDIHS', 'RESTRDIHS', 'CBTDIHS',
+                                 'FOURDIHS', 'TABDIHS']:
+                dihs += list(ik_obj.process(ias))
+            elif ik_obj.name in ['IDIHS', 'PIDIHS']:
+                impr += list(ik_obj.process(ias))
             else:
                 # other interaction types are not interested at the moment
                 pass
 
+    bonds = bonds if bonds else None
+    angles = angles if angles else None
+    dihs = dihs if dihs else None
+    impr = impr if impr else None
     moltype = obj.MoleculeKind(molname, atomkinds, bonds, angles, dihs, impr)
     #### end: MDAnalysis specific
 

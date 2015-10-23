@@ -13,7 +13,59 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? kain88-de, richardjgowers, dotsdl, sseyler, orbeckst
+--/--/-- tyler.je.reddy, kain88-de, richardjgowers, manuel.nuno.melo, 
+         orbeckst
+
+  * 0.xx.x
+
+API Changes
+
+  * XYZWriter can now be used as a container format for different protein models
+    as well as a normal trajectory. If `n_atoms` is None (default) MDAnalysis
+    assumes that it is used as a container and won't give a warning if the
+    number of atoms differs between frames.
+  * GROWriter.fmt strings updated to use format style (Issue #494)
+
+Enhancement
+
+  * GRO file reading approximately 50% faster for large files (Issue #212)
+  * GRO file writing now will write velocities where possible (Issue #494)
+
+Changes
+  * built html doc files are no longer version controlled (Issue #491)
+
+Fixes
+  * Fixed setup-time dependency on numpy that broke pip installs. (Issue #479)
+  * Fixed unpickling errors due to lingering dead universes. (Issue #487)
+  * Fixed analysis.density modules requiring the defunct `skip` attribute
+    on trajectories. (Issue #489)
+  * ten2eleven camelcase fixer now deals with centerOfMass (Issue #470)
+  * ten2eleven will now convert numatoms to n_atoms argument
+    for writer() functions (Issue #470)
+  * Fixed non-compliant Amber NCDFWriter (Issue #488)
+
+
+10/08/15
+
+  * 0.12.1 kain88-de, orbeckst, richardjgowers
+
+API Changes
+
+Enhancements
+
+Changes
+
+Fixes
+  * Fixed OpenMP detection on Linux/OSX #459
+  * Fixed reading of LAMMPS trajectory times: default unit ought
+    to be fs and not ps
+  * Fixed setting of dt for DCDReader (and LAMMPS DCDReader) with
+    keyword argument Universe(..., dt=<dt>)
+  * Fixed a bug in topology.core.guess_atom_element where a
+    single digit atom name would raise an IndexError (#476)
+  * Fixed numpy -> np in LeafletFinder
+
+10/04/15 kain88-de, richardjgowers, dotsdl, sseyler, orbeckst, jbarnoud
 
   * 0.12.0
 
@@ -46,11 +98,16 @@ Enhancements
     (Issue #438)
   * Function for obtaining coordinate axes from numpy trajectories now
     globally available in MDAnalysis.analysis.psa (Issue #438)
+  * TPR parser updated for Gromacs 5.0.x and 5.1 (Issue #456)
+  * Setup.py now looks for some configuration values in a config file. Each
+    config option can also be changed via environment variables if they are
+    prefixed with 'MDA_'. Current options are 'use_cython', 'ues_openmp', 'debug_cflags'
 
 Changes
   * An AtomGroup with 0 atoms now yields an `IndexError` on call to
     `AtomGroup.write` (Issue #434)
   * `PSA` changed to `PSAnalysis` to reduce namespace clutter (Issue #438)
+  * To build with debug-symbols use 'MDA_DEBUG_CFLAGS' instead of 'MDA_DEBUG_CFLAGS'
 
 Fixes
   * Fixed minor issue in lib.mdamath.make_whole where if all bonds
@@ -61,6 +118,8 @@ Fixes
   * Fixed AtomGroup.sequence() (Issue #451)
   * Fixed PrimitivePDBParser not detecting when resids had looped over
     10,000. The original resid is stored as Atom.resnum (Issue #454)
+  * Fixed TPR topology parser to treat all bonded interactions available in
+    Gromacs 5.1 (Issue #222 and #352, pull request #463).
 
 09/07/15  tyler.je.reddy, richardjgowers, alejob, orbeckst, dotsdl,
         manuel.nuno.melo, cyanezstange, khuston, ivirshup, kain88-de,
