@@ -3,7 +3,7 @@ import numpy as np
 
 from numpy.testing import assert_array_almost_equal, raises
 
-from MDAnalysisTests.coordinates.data import get_file
+from MDAnalysisTests.datafiles import COORDINATES_XYZ, COORDINATES_XYZ_BZ2
 from MDAnalysisTests.coordinates.base import (BaseReaderTest, BaseReference,
                                               BaseWriterTest)
 
@@ -11,9 +11,9 @@ from MDAnalysisTests.coordinates.base import (BaseReaderTest, BaseReference,
 class XYZReference(BaseReference):
     def __init__(self):
         super(XYZReference, self).__init__()
-        self.trajectory = get_file('test.xyz')
+        self.trajectory = COORDINATES_XYZ
         # XYZ is it's own Topology
-        self.topology = get_file('test.xyz')
+        self.topology = COORDINATES_XYZ
         self.reader = mda.coordinates.XYZ.XYZReader
         self.writer = mda.coordinates.XYZ.XYZWriter
         self.ext = 'xyz'
@@ -76,7 +76,7 @@ class TestXYZWriter(BaseWriterTest):
 class XYZ_BZ_Reference(XYZReference):
     def __init__(self):
         super(XYZ_BZ_Reference, self).__init__()
-        self.trajectory = get_file('test.xyz.bz2')
+        self.trajectory = COORDINATES_XYZ_BZ2
         self.ext = 'xyz.bz2'
 
 
