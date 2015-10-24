@@ -46,7 +46,7 @@ class PersistenceLength(AnalysisBase):
     -----
     This analysis requires that the trajectory supports indexing
 
-    .. versionadded:: 0.12.0
+    .. versionadded:: 0.13.0
     """
     def __init__(self, atomgroups,
                  start=None, stop=None, step=None):

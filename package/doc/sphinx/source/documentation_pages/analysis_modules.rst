@@ -96,6 +96,7 @@ Structure
 
    analysis/gnm
    analysis/helanal
+   analysis/rdf
 
 
 Volumetric analysis

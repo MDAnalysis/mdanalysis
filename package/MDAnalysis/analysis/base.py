@@ -31,7 +31,37 @@ logger = logging.getLogger(__name__)
 
 
 class AnalysisBase(object):
-    """Base class for defining multi frame analysis"""
+    """Base class for defining multi frame analysis
+
+    The analysis base class is designed as a template for creating
+    multiframe analysis.  
+
+    The class implements the following methods:
+
+    _setup_frames(trajectory, start=None, stop=None, step=None)
+      Pass a Reader object and define the desired iteration pattern
+      through the trajectory
+      
+    run
+      The user facing run method.  Calls the analysis methods
+      defined below
+
+    Your analysis can implement the following methods, which are
+    called from run:
+
+    _prepare
+      Called before iteration on the trajectory has begun.
+      Data structures can be set up at this time, however most
+      error checking should be done in the __init__
+
+    _single_frame
+      Called after the trajectory is moved onto each new frame.
+
+    _conclude
+      Called once iteration on the trajectory is finished.
+      Apply normalisation and averaging to results here.
+
+    """
     def _setup_frames(self, trajectory, start=None,
                       stop=None, step=None):
         self._trajectory = trajectory
