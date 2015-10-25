@@ -128,6 +128,8 @@ For details see the report for `Issue 87`_.
                   'data/dlpoly/CONFIG*',
                   'data/dlpoly/HISTORY*',
                   'data/*.xml',
+                  'data/coordinates/*xyz',
+                  'data/coordinates/*xyz.bz2',
               ],
           },
           classifiers=CLASSIFIERS,

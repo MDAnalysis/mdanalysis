@@ -88,9 +88,15 @@ __all__ = [
     "waterPSF","waterDCD","rmsfArray",
     "HoomdXMLdata",
     "Make_Whole",  # for testing the function lib.mdamath.make_whole, has 9 atoms
+    "COORDINATES_XYZ",
+    "COORDINATES_XYZ_BZ2",
 ]
 
 from pkg_resources import resource_filename
+
+COORDINATES_XYZ = resource_filename(__name__, 'data/coordinates/test.xyz')
+COORDINATES_XYZ_BZ2 = resource_filename(
+    __name__, 'data/coordinates/test.xyz.bz2')
 
 PSF = resource_filename(__name__, 'data/adk.psf')
 PSF_notop = resource_filename(__name__, 'data/adk_notop.psf')
