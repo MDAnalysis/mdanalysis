@@ -303,7 +303,7 @@ class BaseTimestepTest(TestCase):
     name = "base"  # for error messages only
     size = 10  # size of arrays, 10 is enough to allow slicing etc
     # each coord is unique
-    refpos = np.arange(size * 3, dtype=np.float32).reshape(size, 3)
+    refpos = np.arange(size * 3, dtype=np.float32).reshape(size, 3) * 1.234
     has_box = True
     set_box = True  # whether you can set dimensions info.
     # If you can set box, what the underlying unitcell should be

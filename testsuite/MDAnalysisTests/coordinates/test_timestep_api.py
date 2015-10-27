@@ -23,10 +23,8 @@ _TestTimestep tests the functionality of a Timestep in isolation
 _TestTimestepInterface tests the Readers are correctly using Timesteps
 """
 
-import itertools
 import numpy as np
 from numpy.testing import (TestCase, assert_raises, assert_equal,
-                           assert_allclose,
                            assert_array_almost_equal, assert_, dec)
 from nose.plugins.attrib import attr
 from nose.tools import assert_not_equal
@@ -51,7 +49,6 @@ from MDAnalysisTests.datafiles import (
     )
 
 from MDAnalysisTests.coordinates.base import BaseTimestepTest
-# Subclass this and change values where necessary for each format's Timestep.
 
 
 # Can add in custom tests for a given Timestep here!
@@ -63,24 +60,27 @@ class TestBaseTimestep(BaseTimestepTest):
 
 # using test generator, don't change to TestCase
 class TestTimestepEquality(object):
-    def test_check_equal(self):
-        ts1 = mda.coordinates.base.Timestep(10)
-        ts1.positions = np.arange(30).reshape(10, 3)
-
-        ts2 = mda.coordinates.base.Timestep(10)
-        ts2.positions = np.arange(30).reshape(10, 3)
-
-        assert_(ts1 == ts2)
-        assert_(ts2 == ts1)
+    def _get_pos(self):
+        # Get generic reference positions
+        return np.arange(30).reshape(10, 3) * 1.234
 
     def _check_ts(self, a, b, err_msg):
         assert_(a == b, err_msg)
         assert_(b == a, err_msg)
 
+    def test_check_equal(self):
+        ts1 = mda.coordinates.base.Timestep(10)
+        ts1.positions = self._get_pos()
+
+        ts2 = mda.coordinates.base.Timestep(10)
+        ts2.positions = self._get_pos()
+
+        self._check_ts(ts1, ts2, 'Failed on base timestep')
+
     def test_other_timestep(self):
         # use a subclass to base.Timestep to check it works
         ts1 = mda.coordinates.base.Timestep(10)
-        ts1.positions = np.arange(30).reshape(10, 3)
+        ts1.positions = self._get_pos()
 
         # can't do TRR Timestep here as it always has vels and forces
         # so isn't actually equal to a position only timestep
@@ -91,26 +91,25 @@ class TestTimestepEquality(object):
                         mda.coordinates.TRZ.Timestep,
                         mda.coordinates.XTC.Timestep]:
             ts2 = otherTS(10)
-            ts2.positions = np.arange(30).reshape(10, 3)
+            ts2.positions = self._get_pos()
             yield self._check_ts, ts1, ts2, "Failed on {0}".format(otherTS)
 
     def test_trr_timestep(self):
         ts1 = mda.coordinates.base.Timestep(10, velocities=True, forces=True)
-        ts1.positions = np.arange(30).reshape(10, 3)
-        ts1.velocities = np.arange(30).reshape(10, 3) + 10.0
-        ts1.forces = np.arange(30).reshape(10, 3) + 100.0
+        ts1.positions = self._get_pos()
+        ts1.velocities = self._get_pos() + 10.0
+        ts1.forces = self._get_pos() + 100.0
 
         ts2 = mda.coordinates.TRR.Timestep(10)
-        ts2.positions = np.arange(30).reshape(10, 3)
-        ts2.velocities = np.arange(30).reshape(10, 3) + 10.0
-        ts2.forces = np.arange(30).reshape(10, 3) + 100.0
+        ts2.positions = self._get_pos()
+        ts2.velocities = self._get_pos() + 10.0
+        ts2.forces = self._get_pos() + 100.0
 
         self._check_ts(ts1, ts2, "Failed on TRR Timestep")
 
-
     def test_wrong_class(self):
         ts1 = mda.coordinates.base.Timestep(10)
-        ts1.positions = np.arange(30).reshape(10, 3)
+        ts1.positions = self._get_pos()
 
         b = tuple([0, 1, 2, 3])
 
@@ -119,10 +118,10 @@ class TestTimestepEquality(object):
 
     def test_wrong_frame(self):
         ts1 = mda.coordinates.base.Timestep(10)
-        ts1.positions = np.arange(30).reshape(10, 3)
+        ts1.positions = self._get_pos()
 
         ts2 = mda.coordinates.base.Timestep(10)
-        ts2.positions = np.arange(30).reshape(10, 3)
+        ts2.positions = self._get_pos()
         ts2.frame = 987
 
         assert_(ts1 != ts2)
@@ -130,7 +129,7 @@ class TestTimestepEquality(object):
 
     def test_wrong_n_atoms(self):
         ts1 = mda.coordinates.base.Timestep(10)
-        ts1.positions = np.arange(30).reshape(10, 3)
+        ts1.positions = self._get_pos()
 
         ts3 = mda.coordinates.base.Timestep(20)
 
@@ -139,10 +138,10 @@ class TestTimestepEquality(object):
 
     def test_wrong_pos(self):
         ts1 = mda.coordinates.base.Timestep(10)
-        ts1.positions = np.arange(30).reshape(10, 3)
+        ts1.positions = self._get_pos()
 
         ts2 = mda.coordinates.base.Timestep(10)
-        ts2.positions = np.arange(30).reshape(10, 3) + 1.0
+        ts2.positions = self._get_pos() + 1.0
 
         assert_(ts1 != ts2)
         assert_(ts2 != ts1)
@@ -151,8 +150,8 @@ class TestTimestepEquality(object):
         ts1 = mda.coordinates.base.Timestep(10, velocities=True)
         ts2 = mda.coordinates.base.Timestep(10, velocities=True)
 
-        ts1.velocities = np.arange(30).reshape(10, 3)
-        ts2.velocities = np.arange(30).reshape(10, 3)
+        ts1.velocities = self._get_pos()
+        ts2.velocities = self._get_pos()
 
         assert_(ts1 == ts2)
         assert_(ts2 == ts1)
@@ -161,7 +160,7 @@ class TestTimestepEquality(object):
         ts1 = mda.coordinates.base.Timestep(10, velocities=True)
         ts2 = mda.coordinates.base.Timestep(10, velocities=False)
 
-        ts1.velocities = np.arange(30).reshape(10, 3)
+        ts1.velocities = self._get_pos()
 
         assert_(ts1 != ts2)
         assert_(ts2 != ts1)
@@ -170,8 +169,8 @@ class TestTimestepEquality(object):
         ts1 = mda.coordinates.base.Timestep(10, velocities=True)
         ts2 = mda.coordinates.base.Timestep(10, velocities=True)
 
-        ts1.velocities = np.arange(30).reshape(10, 3)
-        ts2.velocities = np.arange(30).reshape(10, 3) + 1.0
+        ts1.velocities = self._get_pos()
+        ts2.velocities = self._get_pos() + 1.0
 
         assert_(ts1 != ts2)
         assert_(ts2 != ts1)
@@ -180,8 +179,8 @@ class TestTimestepEquality(object):
         ts1 = mda.coordinates.base.Timestep(10, forces=True)
         ts2 = mda.coordinates.base.Timestep(10, forces=True)
 
-        ts1.forces = np.arange(30).reshape(10, 3)
-        ts2.forces = np.arange(30).reshape(10, 3)
+        ts1.forces = self._get_pos()
+        ts2.forces = self._get_pos()
 
         assert_(ts1 == ts2)
         assert_(ts2 == ts1)
@@ -190,7 +189,7 @@ class TestTimestepEquality(object):
         ts1 = mda.coordinates.base.Timestep(10, forces=True)
         ts2 = mda.coordinates.base.Timestep(10, forces=False)
 
-        ts1.forces = np.arange(30).reshape(10, 3)
+        ts1.forces = self._get_pos()
 
         assert_(ts1 != ts2)
         assert_(ts2 != ts1)
@@ -199,8 +198,8 @@ class TestTimestepEquality(object):
         ts1 = mda.coordinates.base.Timestep(10, forces=True)
         ts2 = mda.coordinates.base.Timestep(10, forces=True)
 
-        ts1.forces = np.arange(30).reshape(10, 3)
-        ts2.forces = np.arange(30).reshape(10, 3) + 1.0
+        ts1.forces = self._get_pos()
+        ts2.forces = self._get_pos() + 1.0
 
         assert_(ts1 != ts2)
         assert_(ts2 != ts1)
@@ -353,6 +352,8 @@ class TestXYZ(BaseTimestepInterfaceTest):
         self.ts = u.trajectory.ts
 
 
+# TODO: Merge these tests into BaseTimestepTest
+#       and move to per-format style
 class TestTimestepCopy(object):
     """Test copy and copy_slice methods on Timestep"""
     formats = [
