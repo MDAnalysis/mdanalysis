@@ -1,12 +1,15 @@
-import MDAnalysis as mda
 import numpy as np
 from six.moves import zip
-from MDAnalysis.coordinates.base import Timestep
-
-from numpy.testing import (assert_equal, assert_raises, assert_almost_equal,
-                           assert_array_almost_equal, raises)
+from nose.plugins.attrib import attr
 from unittest import TestCase
 import tempdir
+from numpy.testing import (assert_equal, assert_raises, assert_almost_equal,
+                           assert_array_almost_equal, raises, assert_allclose)
+
+import MDAnalysis as mda
+from MDAnalysis.coordinates.base import Timestep
+from MDAnalysis import NoDataError
+from MDAnalysis.lib.mdamath import triclinic_vectors
 
 from MDAnalysisTests.coordinates.reference import RefAdKSmall
 
@@ -285,6 +288,316 @@ class BaseWriterTest(object):
         outfile = self.tmp_file('write-none')
         with self.ref.writer(outfile) as w:
             w.write(None)
+
+
+class BaseTimestepTest(TestCase):
+    """Test all the base functionality of a Timestep
+
+    All Timesteps must pass these tests!
+
+    These test the Timestep independent of the Reader which it
+    comes into contact with.  Failures here are the Timesteps fault.
+    """
+    # define the class made in test
+    Timestep = mda.coordinates.base.Timestep
+    name = "base"  # for error messages only
+    size = 10  # size of arrays, 10 is enough to allow slicing etc
+    # each coord is unique
+    refpos = np.arange(size * 3, dtype=np.float32).reshape(size, 3)
+    has_box = True
+    set_box = True  # whether you can set dimensions info.
+    # If you can set box, what the underlying unitcell should be
+    # if dimensions are:
+    newbox = np.array([10., 11., 12., 90., 90., 90.])
+    unitcell = np.array([10., 11., 12., 90., 90., 90.])
+    ref_volume = 1320.  # what the volume is after setting newbox
+
+    def setUp(self):
+        self.ts = self.Timestep(self.size)
+        self.ts.frame += 1
+        self.ts.positions = self.refpos
+
+    def tearDown(self):
+        del self.ts
+
+    def test_getitem(self):
+        assert_equal(self.ts[1], self.refpos[1])
+
+    def test_getitem_neg(self):
+        assert_equal(self.ts[-1], self.refpos[-1])
+
+    def test_getitem_neg_IE(self):
+        assert_raises(IndexError, self.ts.__getitem__, -(self.size + 1))
+
+    def test_getitem_pos_IE(self):
+        assert_raises(IndexError, self.ts.__getitem__, (self.size + 1))
+
+    def test_getitem_slice(self):
+        assert_equal(len(self.ts[:2]), len(self.refpos[:2]))
+        assert_allclose(self.ts[:2], self.refpos[:2])
+
+    def test_getitem_slice2(self):
+        assert_equal(len(self.ts[1::2]), len(self.refpos[1::2]))
+        assert_allclose(self.ts[1::2], self.refpos[1::2])
+
+    def test_getitem_ndarray(self):
+        sel = np.array([0, 1, 4])
+        assert_equal(len(self.ts[sel]), len(self.refpos[sel]))
+        assert_allclose(self.ts[sel], self.refpos[sel])
+
+    def test_getitem_TE(self):
+        assert_raises(TypeError, self.ts.__getitem__, 'string')
+
+    def test_len(self):
+        assert_equal(len(self.ts), self.size)
+
+    def test_iter(self):
+        for a, b in zip(self.ts, self.refpos):
+            assert_allclose(a, b)
+        assert_equal(len(list(self.ts)), self.size)
+
+    def test_repr(self):
+        assert_equal(type(repr(self.ts)), str)
+
+    # Test copy done as separate test
+
+    # Dimensions has 2 possible cases
+    # Timestep doesn't do dimensions,
+    # should raise NotImplementedError for .dimension and .volume
+    # Timestep does do them, should return values properly
+    def test_dimensions(self):
+        if self.has_box:
+            assert_allclose(self.ts.dimensions, np.zeros(6, dtype=np.float32))
+        else:
+            assert_raises(NotImplementedError, getattr, self.ts, "dimensions")
+
+    def test_dimensions_set_box(self):
+        if self.set_box:
+            self.ts.dimensions = self.newbox
+            assert_allclose(self.ts._unitcell, self.unitcell)
+            assert_allclose(self.ts.dimensions, self.newbox)
+        else:
+            pass
+
+    def test_volume(self):
+        if self.has_box and self.set_box:
+            self.ts.dimensions = self.newbox
+            assert_equal(self.ts.volume, self.ref_volume)
+        elif self.has_box and not self.set_box:
+            pass  # How to test volume of box when I don't set unitcell first?
+        else:
+            assert_raises(NotImplementedError, getattr, self.ts, "volume")
+
+    def test_triclinic_vectors(self):
+        assert_allclose(self.ts.triclinic_dimensions,
+                        triclinic_vectors(self.ts.dimensions))
+
+    def test_set_triclinic_vectors(self):
+        ref_vec = triclinic_vectors(self.newbox)
+        self.ts.triclinic_dimensions = ref_vec
+        assert_equal(self.ts.dimensions, self.newbox)
+        assert_allclose(self.ts._unitcell, self.unitcell)
+
+    @attr('issue')
+    def test_coordinate_getter_shortcuts(self):
+        """testing that reading _x, _y, and _z works as expected
+        # (Issue 224) (TestTimestep)"""
+        assert_allclose(self.ts._x, self.ts._pos[:,0])
+        assert_allclose(self.ts._y, self.ts._pos[:,1])
+        assert_allclose(self.ts._z, self.ts._pos[:,2])
+
+    def test_coordinate_setter_shortcuts(self):
+        # Check that _x _y and _z are read only
+        for coordinate in ('_x', '_y', '_z'):
+            random_positions = np.arange(self.size).astype(np.float32)
+            assert_raises(AttributeError, setattr,
+                          self.ts, coordinate, random_positions)
+
+    # n_atoms should be a read only property
+    # all Timesteps require this attribute
+    def test_n_atoms(self):
+        assert_equal(self.ts.n_atoms, self.ts._n_atoms)
+
+    def test_n_atoms_readonly(self):
+        assert_raises(AttributeError, self.ts.__setattr__, 'n_atoms', 20)
+
+    def test_n_atoms_presence(self):
+        assert_equal(hasattr(self.ts, '_n_atoms'), True)
+
+    def test_unitcell_presence(self):
+        assert_equal(hasattr(self.ts, '_unitcell'), True)
+
+    def test_data_presence(self):
+        assert_equal(hasattr(self.ts, 'data'), True)
+        assert_equal(isinstance(self.ts.data, dict), True)
+
+    def test_allocate_velocities(self):
+        assert_equal(self.ts.has_velocities, False)
+        assert_raises(NoDataError, getattr, self.ts, 'velocities')
+
+        self.ts.has_velocities = True
+        assert_equal(self.ts.has_velocities, True)
+        assert_equal(self.ts.velocities.shape, (self.ts.n_atoms, 3))
+
+    def test_allocate_forces(self):
+        assert_equal(self.ts.has_forces, False)
+        assert_raises(NoDataError, getattr, self.ts, 'forces')
+
+        self.ts.has_forces = True
+        assert_equal(self.ts.has_forces, True)
+        assert_equal(self.ts.forces.shape, (self.ts.n_atoms, 3))
+
+    def test_velocities_remove(self):
+        ts = self.Timestep(10, velocities=True)
+        ts.frame += 1
+        assert_equal(ts.has_velocities, True)
+
+        ts.has_velocities = False
+        assert_equal(ts.has_velocities, False)
+        assert_raises(NoDataError, getattr, ts, 'velocities')
+
+    def test_forces_remove(self):
+        ts = self.Timestep(10, forces=True)
+        ts.frame += 1
+        assert_equal(ts.has_forces, True)
+
+        ts.has_forces = False
+        assert_equal(ts.has_forces, False)
+        assert_raises(NoDataError, getattr, ts, 'forces')
+
+    def test_from_coordinates_1(self):
+        ts = self.Timestep.from_coordinates(self.refpos)
+
+        assert_equal(len(ts), self.size)
+        assert_array_almost_equal(ts.positions, self.refpos)
+        assert_raises(NoDataError, getattr, ts, 'velocities')
+        assert_raises(NoDataError, getattr, ts, 'forces')
+
+    def test_from_coordinates_2(self):
+        refvel = self.refpos + 10
+
+        ts = self.Timestep.from_coordinates(self.refpos, velocities=refvel)
+
+        assert_equal(len(ts), self.size)
+        assert_array_almost_equal(ts.positions, self.refpos)
+        assert_array_almost_equal(ts.velocities, refvel)
+        assert_raises(NoDataError, getattr, ts, 'forces')
+
+    def test_from_coordinates_3(self):
+        reffor = self.refpos + 10
+
+        ts = self.Timestep.from_coordinates(self.refpos, forces=reffor)
+
+        assert_equal(len(ts), self.size)
+        assert_array_almost_equal(ts.positions, self.refpos)
+        assert_raises(NoDataError, getattr, ts, 'velocities')
+        assert_array_almost_equal(ts.forces, reffor)
+
+    def test_from_coordinates_4(self):
+        refvel = self.refpos + 20
+        reffor = self.refpos + 10
+
+        ts = self.Timestep.from_coordinates(self.refpos, velocities=refvel,
+                                            forces=reffor)
+
+        assert_equal(len(ts), self.size)
+        assert_array_almost_equal(ts.positions, self.refpos)
+        assert_array_almost_equal(ts.velocities, refvel)
+        assert_array_almost_equal(ts.forces, reffor)
+
+    # Time related tests
+    def test_supply_dt(self):
+        # Check that this gets stored in data properly
+        ts = self.Timestep(20, dt=0.04)
+
+        assert_equal(ts.data['dt'], 0.04)
+        assert_equal(ts.dt, 0.04)
+
+    def test_redefine_dt(self):
+        ts = self.Timestep(20, dt=0.04)
+        assert_equal(ts.data['dt'], 0.04)
+        assert_equal(ts.dt, 0.04)
+        ts.dt = refdt = 0.46
+        assert_equal(ts.data['dt'], refdt)
+        assert_equal(ts.dt, refdt)
+
+    def test_delete_dt(self):
+        ts = self.Timestep(20, dt=0.04)
+        assert_equal(ts.data['dt'], 0.04)
+        assert_equal(ts.dt, 0.04)
+        del ts.dt
+        assert_equal('dt' in ts.data, False)
+        assert_equal(ts.dt, 1.0)  # default value
+
+    def test_supply_time_offset(self):
+        ts = self.Timestep(20, time_offset=100.0)
+
+        assert_equal(ts.data['time_offset'], 100.0)
+
+    def test_time(self):
+        ts = self.Timestep(20)
+        ts.frame = 0
+        ts.time = reftime = 1234.0
+
+        assert_equal(ts.time, reftime)
+
+    def test_delete_time(self):
+        ts = self.Timestep(20)
+        ts.frame = 0
+        ts.time = reftime = 1234.0
+
+        assert_equal(ts.time, reftime)
+        del ts.time
+        assert_equal(ts.time, 0.0)  # default to 1.0 (dt) * 0 (frame)
+
+    def test_time_with_offset(self):
+        ref_offset = 2345.0
+        ts = self.Timestep(20, time_offset=ref_offset)
+        ts.frame = 0
+        ts.time = reftime = 1234.0
+
+        assert_equal(ts.time, reftime + ref_offset)
+
+    def test_dt(self):
+        ref_dt = 45.0
+        ts = self.Timestep(20, dt=ref_dt)
+
+        for i in range(10):
+            ts.frame = i
+            assert_equal(ts.time, i * ref_dt)
+
+    def test_change_dt(self):
+        ref_dt = 45.0
+        ts = self.Timestep(20, dt=ref_dt)
+
+        for i in range(10):
+            ts.frame = i
+            assert_equal(ts.time, i * ref_dt)
+
+        ts.dt = ref_dt = 77.0
+
+        for i in range(10):
+            ts.frame = i
+            assert_equal(ts.time, i * ref_dt)
+
+    def test_dt_with_offset(self):
+        ref_dt = 45.0
+        ref_offset = 2345.0
+        ts = self.Timestep(20, dt=ref_dt, time_offset=ref_offset)
+
+        for i in range(10):
+            ts.frame = i
+            assert_equal(ts.time, i * ref_dt + ref_offset)
+
+    def test_time_overrides_dt_with_offset(self):
+        ref_dt = 45.0
+        ref_offset = 2345.0
+        ts = self.Timestep(20, dt=ref_dt, time_offset=ref_offset)
+
+        ts.frame = 0
+        ts.time = reftime = 456.7
+
+        assert_equal(ts.time, reftime + ref_offset)
 
 
 def assert_timestep_almost_equal(A, B, decimal=6, verbose=True):
