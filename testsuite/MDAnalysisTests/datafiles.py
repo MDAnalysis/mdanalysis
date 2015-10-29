@@ -101,6 +101,9 @@ __all__ = [
     "COORDINATES_XYZ",
     "COORDINATES_XYZ_BZ2",
     "Martini_membrane_gro", # for testing the leaflet finder
+    "COORDINATES_XTC",
+    "COORDINATES_TRR",
+    "COORDINATES_TOPOLOGY",
 ]
 
 from pkg_resources import resource_filename
@@ -108,6 +111,9 @@ from pkg_resources import resource_filename
 COORDINATES_XYZ = resource_filename(__name__, 'data/coordinates/test.xyz')
 COORDINATES_XYZ_BZ2 = resource_filename(
     __name__, 'data/coordinates/test.xyz.bz2')
+COORDINATES_XTC = resource_filename(__name__, 'data/coordinates/test.xtc')
+COORDINATES_TRR = resource_filename(__name__, 'data/coordinates/test.trr')
+COORDINATES_TOPOLOGY = resource_filename(__name__, 'data/coordinates/test_topology.pdb')
 
 PSF = resource_filename(__name__, 'data/adk.psf')
 PSF_notop = resource_filename(__name__, 'data/adk_notop.psf')
