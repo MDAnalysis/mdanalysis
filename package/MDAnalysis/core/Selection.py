@@ -468,34 +468,6 @@ class PointSelection(Selection):
         return "<'PointSelection' " + repr(self.cutoff) + " Ang around " + repr(self.ref) + ">"
 
 
-class CompositeSelection(Selection):
-    def __init__(self, name=None, type=None, resname=None, resid=None, segid=None):
-        Selection.__init__(self)
-        self.name = name
-        self.type = type
-        self.resname = resname
-        self.resid = resid
-        self.segid = segid
-
-    def _apply(self, group):
-        res = []
-        for a in group.atoms:
-            add = True
-            if self.name is not None and a.name != self.name:
-                add = False
-            if self.type is not None and a.type != self.type:
-                add = False
-            if self.resname is not None and a.resname != self.resname:
-                add = False
-            if self.resid is not None and a.resid != self.resid:
-                add = False
-            if self.segid is not None and a.segid != self.segid:
-                add = False
-            if add:
-                res.append(a)
-        return set(res)
-
-
 class AtomSelection(Selection):
     def __init__(self, name, resid, segid):
         Selection.__init__(self)
