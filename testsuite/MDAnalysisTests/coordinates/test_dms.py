@@ -69,6 +69,7 @@ class TestDMSTimestep(BaseTimestepTest):
     unitcell = {'x':np.array([10., 0, 0]),
                 'y':np.array([0, 11., 0]),
                 'z':np.array([0, 0, 12.])}
+    uni_args = (DMS,)
 
     def test_dimensions_set_box(self):
         self.ts.dimensions = self.newbox

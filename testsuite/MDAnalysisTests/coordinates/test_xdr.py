@@ -605,6 +605,7 @@ class TestXTCTimestep(BaseTimestepTest):
     unitcell = np.array([[10., 0., 0.],
                          [0., 11., 0.],
                          [0., 0., 12.]])
+    uni_args = (PDB, XTC)
 
 
 class TestTRRTimestep(BaseTimestepTest):
@@ -615,6 +616,7 @@ class TestTRRTimestep(BaseTimestepTest):
     unitcell = np.array([[10., 0., 0.],
                          [0., 11., 0.],
                          [0., 0., 12.]])
+    uni_args = (GRO, TRR)
 
     def test_velocities_remove(self):
         # This test is different because TRR requires that the
@@ -695,3 +697,16 @@ class TestTRRTimestep(BaseTimestepTest):
         self.ts.forces = self.refpos + 101
         assert_equal(self.ts.has_forces, True)
         assert_array_almost_equal(self.ts.forces, self.refpos + 101)
+
+    def test_trr_timestep(self):
+        ts1 = mda.coordinates.base.Timestep(10, velocities=True, forces=True)
+        ts1.positions = self._get_pos()
+        ts1.velocities = self._get_pos() + 10.0
+        ts1.forces = self._get_pos() + 100.0
+
+        ts2 = mda.coordinates.TRR.Timestep(10)
+        ts2.positions = self._get_pos()
+        ts2.velocities = self._get_pos() + 10.0
+        ts2.forces = self._get_pos() + 100.0
+
+        self._check_ts_equal(ts1, ts2, "Failed on TRR Timestep")

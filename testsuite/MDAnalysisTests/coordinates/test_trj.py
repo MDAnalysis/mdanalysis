@@ -108,3 +108,4 @@ class TestTRJTimestep(BaseTimestepTest):
     has_box = True
     set_box = True
     unitcell = np.array([10., 11., 12., 90., 90., 90.])
+    uni_args = (PRM, TRJ)
