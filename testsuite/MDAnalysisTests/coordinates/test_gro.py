@@ -10,6 +10,7 @@ import tempdir
 
 from MDAnalysisTests.datafiles import (GRO, GRO_velocity)
 from MDAnalysisTests.coordinates.reference import RefAdK
+from MDAnalysisTests.coordinates.base import BaseTimestepTest
 
 
 class TestGROReader(TestCase, RefAdK):
@@ -255,3 +256,24 @@ class TestGROWriterVels(object):
         
         assert_array_almost_equal(u.atoms.velocities,
                                   u2.atoms.velocities)
+
+
+class TestGROTimestep(BaseTimestepTest):
+    Timestep = mda.coordinates.GRO.Timestep
+    name = "GRO"
+    has_box = True
+    set_box = True
+    unitcell = np.array([10., 11., 12.,
+                         0., 0., 0.,
+                         0., 0., 0.])
+
+    def test_unitcell_set2(self):
+        box = np.array([80.017, 80.017, 80.017, 60.00, 60.00, 90.00],
+                       dtype=np.float32)
+
+        ref = np.array([80.00515747, 80.00515747, 56.57218552,  # v1x, v2y, v3z
+                        0., 0.,  # v1y v1z
+                        0., 0.,  # v2x v2y
+                        40.00257874, 40.00257874],dtype=np.float32)  # v3x, v3y
+        self.ts.dimensions = box
+        assert_array_almost_equal(self.ts._unitcell, ref, decimal=2)
