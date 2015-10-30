@@ -14,12 +14,15 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import MDAnalysis
+import MDAnalysis as mda
 import MDAnalysis.core.Selection
 from MDAnalysis.tests.datafiles import PSF, DCD, PRMpbc, TRJpbc_bz2, PSF_NAMD, PDB_NAMD, GRO, NUCL, TPR, XTC
 
 import numpy as np
 from numpy.testing import *
 from nose.plugins.attrib import attr
+
+from MDAnalysis.lib.distances import distance_array
 
 from MDAnalysisTests.plugins.knownfailure import knownfailure
 
@@ -388,3 +391,37 @@ class TestSelectionsNucleicAcids(TestCase):
         rna = self.universe.select_atoms("nucleicsugar")
         assert_equal(rna.n_residues, 23)
         assert_equal(rna.n_atoms, rna.n_residues * 5)
+
+
+class TestPointSelection(object):
+    def setUp(self):
+        self.u = mda.Universe(GRO)
+
+    def tearDown(self):
+        del self.u
+
+    def test_point(self):
+        # The example selection
+        ag = self.u.select_atoms('point 5.0 5.0 5.0 3.5')
+
+        d = distance_array(np.array([[5.0, 5.0, 5.0]], dtype=np.float32),
+                           self.u.atoms.positions,
+                           box=self.u.dimensions)
+
+        idx = np.where(d < 3.5)[1]
+
+        assert_equal(set(ag.indices), set(idx))
+
+    def test_point_2(self):
+        ag1 = self.u.atoms[:10000]
+
+        ag2 = ag1.select_atoms('point 5.0 5.0 5.0 3.5')
+
+        d = distance_array(np.array([[5.0, 5.0, 5.0]], dtype=np.float32),
+                           ag1.positions,
+                           box=self.u.dimensions)
+
+        idx = np.where(d < 3.5)[1]
+
+        assert_equal(set(ag2.indices), set(idx))
+
