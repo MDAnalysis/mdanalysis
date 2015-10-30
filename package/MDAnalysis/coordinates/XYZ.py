@@ -207,7 +207,10 @@ class XYZWriter(base.Writer):
             # update atom names
             self.atomnames = atoms.names
         else:
-            ts = obj
+            if isinstance(obj, base.Timestep):
+                ts = obj
+            else:
+                raise TypeError("No Timestep found in obj argument")
 
         self.write_next_timestep(ts)
 
@@ -219,7 +222,6 @@ class XYZWriter(base.Writer):
                                   'trajectory file')
             else:
                 ts = self.ts
-
 
         if self.n_atoms is not None:
             if self.n_atoms != ts.n_atoms:
