@@ -425,3 +425,67 @@ class TestPointSelection(object):
 
         assert_equal(set(ag2.indices), set(idx))
 
+
+class TestPropSelection(object):
+    plurals = {'mass': 'masses',
+               'charge': 'charges'}
+
+    def _check_lt(self, prop, ag):
+        setattr(ag[::2], self.plurals[prop], 500.0)
+
+        sel = ag.select_atoms('prop {} < 500.0'.format(prop))
+
+        assert_equal(set(sel.indices),
+                     set(ag[getattr(ag, self.plurals[prop]) < 500.0].indices))
+
+    def _check_le(self, prop, ag):
+        setattr(ag[::2], self.plurals[prop], 500.0)
+
+        sel = ag.select_atoms('prop {} <= 500.0'.format(prop))
+
+        assert_equal(set(sel.indices),
+                     set(ag[getattr(ag, self.plurals[prop]) <= 500.0].indices))
+
+    def _check_gt(self, prop, ag):
+        setattr(ag[::2], self.plurals[prop], 500.0)
+
+        sel = ag.select_atoms('prop {} > 500.0'.format(prop))
+
+        assert_equal(set(sel.indices),
+                     set(ag[getattr(ag, self.plurals[prop]) > 500.0].indices))
+
+    def _check_ge(self, prop, ag):
+        setattr(ag[::2], self.plurals[prop], 500.0)
+
+        sel = ag.select_atoms('prop {} >= 500.0'.format(prop))
+
+        assert_equal(set(sel.indices),
+                     set(ag[getattr(ag, self.plurals[prop]) >= 500.0].indices))
+
+    def _check_eq(self, prop, ag):
+        setattr(ag[::2], self.plurals[prop], 500.0)
+
+        sel = ag.select_atoms('prop {} == 500.0'.format(prop))
+
+        assert_equal(set(sel.indices),
+                     set(ag[getattr(ag, self.plurals[prop]) == 500.0].indices))
+
+    def _check_ne(self, prop, ag):
+        setattr(ag[::2], self.plurals[prop], 500.0)
+
+        sel = ag.select_atoms('prop {} != 500.0'.format(prop))
+
+        assert_equal(set(sel.indices),
+                     set(ag[getattr(ag, self.plurals[prop]) != 500.0].indices))
+
+    def test_props(self):
+        u = mda.Universe(GRO)
+
+        for prop in ['mass', 'charge']:
+            for ag in [u.atoms, u.atoms[:100]]:
+                yield self._check_lt, prop, ag
+                yield self._check_le, prop, ag
+                yield self._check_gt, prop, ag
+                yield self._check_ge, prop, ag
+                yield self._check_eq, prop, ag
+                yield self._check_ne, prop, ag
