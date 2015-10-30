@@ -695,7 +695,7 @@ class NucleicSelection(Selection):
     * recognized (CHARMM in Gromacs): 'DA', 'DU', 'DC', 'DG', 'DT'
 
     .. versionchanged:: 0.8
-       additional Gromacs selections (see also :class:`NucleicXstalSelection`)
+       additional Gromacs selections
     """
     nucl_res = dict([(x, None) for x in [
         'ADE', 'URA', 'CYT', 'GUA', 'THY', 'DA', 'DC', 'DG', 'DT', 'RA',
@@ -767,38 +767,6 @@ class NucleicSugarSelection(NucleicSelection):
 
     def __repr__(self):
         return "<'NucleicSugarSelection' >"
-
-
-class CASelection(BackboneSelection):
-    """Select atoms named CA in protein residues (supposed to be the C-alphas)
-    """
-
-    def _apply(self, group):
-        return set([a for a in group.atoms if (a.name == "CA" and a.resname in self.prot_res)])
-
-    def __repr__(self):
-        return "<'CASelection' >"
-
-
-class BondedSelection(Selection):
-    def __init__(self, sel):
-        Selection.__init__(self)
-        self.sel = sel
-
-    def _apply(self, group):
-        res = self.sel._apply(group)
-        # Find all the atoms bonded to each
-        sel = []
-        for atom in res:
-            for b1, b2 in group._bonds:
-                if atom.index == b1:
-                    sel.append(group.atoms[b2])
-                elif atom.index == b2:
-                    sel.append(group.atoms[b1])
-        return set(sel)
-
-    def __repr__(self):
-        return "<'BondedSelection' to " + repr(self.sel) + " >"
 
 
 class PropertySelection(Selection):
@@ -910,7 +878,6 @@ class SelectionParser:
     CYZONE = 'cyzone'
     POINT = 'point'
     BYRES = 'byres'
-    BONDED = 'bonded'
     BYNUM = 'bynum'
     PROP = 'prop'
     ATOM = 'atom'
@@ -925,7 +892,6 @@ class SelectionParser:
     TYPE = 'type'
     PROTEIN = 'protein'
     NUCLEIC = 'nucleic'
-    NUCLEICXSTAL = 'nucleicxstal'
     BB = 'backbone'
     NBB = 'nucleicbackbone'
     BASE = 'nucleicbase'
@@ -943,23 +909,51 @@ class SelectionParser:
     FULLSELGROUP = 'fullgroup'
 
     classdict = dict([
-        (ALL, AllSelection), (NOT, NotSelection), (AND, AndSelection), (OR, OrSelection),
-        (SEGID, SegmentNameSelection), (RESID, ResidueIDSelection), (RESNUM, ResnumSelection),
-        (RESNAME, ResidueNameSelection), (NAME, AtomNameSelection), (ALTLOC, AltlocSelection),
-        (TYPE, AtomTypeSelection), (BYRES, ByResSelection),
-        (BYNUM, ByNumSelection), (PROP, PropertySelection),
-        (AROUND, AroundSelection), (SPHLAYER, SphericalLayerSelection), (SPHZONE, SphericalZoneSelection),
-        (CYLAYER, CylindricalLayerSelection), (CYZONE, CylindricalZoneSelection),
-        (POINT, PointSelection), (NUCLEIC, NucleicSelection), (PROTEIN, ProteinSelection),
-        (BB, BackboneSelection), (NBB, NucleicBackboneSelection),
-        (BASE, BaseSelection), (SUGAR, NucleicSugarSelection),
-        #(BONDED, BondedSelection), not supported yet, need a better way to walk the bond lists
-        (ATOM, AtomSelection), (SELGROUP, SelgroupSelection), (FULLSELGROUP, FullSelgroupSelection),
-        (SAME, SameSelection), (GLOBAL, GlobalSelection)])
+        (ALL, AllSelection),
+        (NOT, NotSelection),
+        (AND, AndSelection),
+        (OR, OrSelection),
+        (SEGID, SegmentNameSelection),
+        (RESID, ResidueIDSelection),
+        (RESNUM, ResnumSelection),
+        (RESNAME, ResidueNameSelection),
+        (NAME, AtomNameSelection),
+        (ALTLOC, AltlocSelection),
+        (TYPE, AtomTypeSelection),
+        (BYRES, ByResSelection),
+        (BYNUM, ByNumSelection),
+        (PROP, PropertySelection),
+        (AROUND, AroundSelection),
+        (SPHLAYER, SphericalLayerSelection),
+        (SPHZONE, SphericalZoneSelection),
+        (CYLAYER, CylindricalLayerSelection),
+        (CYZONE, CylindricalZoneSelection),
+        (POINT, PointSelection),
+        (NUCLEIC, NucleicSelection),
+        (PROTEIN, ProteinSelection),
+        (BB, BackboneSelection),
+        (NBB, NucleicBackboneSelection),
+        (BASE, BaseSelection),
+        (SUGAR, NucleicSugarSelection),
+        (ATOM, AtomSelection),
+        (SELGROUP, SelgroupSelection),
+        (FULLSELGROUP, FullSelgroupSelection),
+        (SAME, SameSelection),
+        (GLOBAL, GlobalSelection)])
     associativity = dict([(AND, "left"), (OR, "left")])
     precedence = dict(
-        [(AROUND, 1), (SPHLAYER, 1), (SPHZONE, 1), (CYLAYER, 1), (CYZONE, 1), (POINT, 1), (BYRES, 1), (BONDED, 1),
-            (SAME, 1), (AND, 3), (OR, 3), (NOT, 5), (GLOBAL, 5)])
+        [(AROUND, 1),
+         (SPHLAYER, 1),
+         (SPHZONE, 1),
+         (CYLAYER, 1),
+         (CYZONE, 1),
+         (POINT, 1),
+         (BYRES, 1),
+         (SAME, 1),
+         (AND, 3),
+         (OR, 3),
+         (NOT, 5),
+         (GLOBAL, 5)])
 
     # Borg pattern: http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/66531
     _shared_state = {}
@@ -1047,9 +1041,6 @@ class SelectionParser:
             y = self.__consume_token()
             z = self.__consume_token()
             return self.classdict[op](float(dist), float(x), float(y), float(z))
-        elif op == self.BONDED:
-            exp = self.__parse_expression(self.precedence[op])
-            return self.classdict[op](exp)
         elif op == self.LPAREN:
             exp = self.__parse_expression(0)
             self.__expect(self.RPAREN)
@@ -1068,8 +1059,6 @@ class SelectionParser:
         elif op == self.PROTEIN:
             return self.classdict[op]()
         elif op == self.NUCLEIC:
-            return self.classdict[op]()
-        elif op == self.NUCLEICXSTAL:
             return self.classdict[op]()
         elif op == self.ALL:
             return self.classdict[op]()
