@@ -43,6 +43,8 @@ Fixes
   * ten2eleven will now convert numatoms to n_atoms argument
     for writer() functions (Issue #470)
   * Fixed non-compliant Amber NCDFWriter (Issue #488)
+  * Fixed many Timestep methods failing when positions weren't present
+    (Issue #512)
 
 
 10/08/15

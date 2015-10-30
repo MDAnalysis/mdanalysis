@@ -266,6 +266,7 @@ class TestGROTimestep(BaseTimestepTest):
     unitcell = np.array([10., 11., 12.,
                          0., 0., 0.,
                          0., 0., 0.])
+    uni_args = (GRO,)
 
     def test_unitcell_set2(self):
         box = np.array([80.017, 80.017, 80.017, 60.00, 60.00, 90.00],

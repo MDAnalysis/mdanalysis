@@ -208,8 +208,11 @@ class Timestep(object):
 
         .. versionadded:: 0.11.0
         """
-        ts = cls(other.n_atoms, velocities=other.has_velocities,
-                 forces=other.has_forces, **kwargs)
+        ts = cls(other.n_atoms,
+                 positions=other.has_positions,
+                 velocities=other.has_velocities,
+                 forces=other.has_forces,
+                 **kwargs)
         ts.frame = other.frame
         ts.dimensions = other.dimensions
         try:
@@ -225,6 +228,8 @@ class Timestep(object):
         except NoDataError:
             pass
 
+        # Optional attributes that don't live in .data
+        # should probably iron out these last kinks
         for att in ('_frame',):
             try:
                 setattr(ts, att, getattr(other, att))
@@ -239,16 +244,37 @@ class Timestep(object):
         return ts
 
     @classmethod
-    def from_coordinates(cls, positions, velocities=None, forces=None, **kwargs):
+    def from_coordinates(cls,
+                         positions=None,
+                         velocities=None,
+                         forces=None,
+                         **kwargs):
         """Create an instance of this Timestep, from coordinate data
+
+        Can pass position, velocity and force data to form a Timestep.
 
         .. versionadded:: 0.11.0
         """
+        has_positions = positions is not None
         has_velocities = velocities is not None
         has_forces = forces is not None
 
-        ts = cls(len(positions), velocities=has_velocities, forces=has_forces, **kwargs)
-        ts.positions = positions
+        lens = [len(a) for a in [positions, velocities, forces]
+                if not a is None]
+        if not lens:
+            raise ValueError("Must specify at least one set of data")
+        n_atoms = max(lens)
+        # Check arrays are matched length?
+        if not all([val == n_atoms for val in lens]):
+            raise ValueError("Lengths of input data mismatched")
+
+        ts = cls(n_atoms,
+                 positions=has_positions,
+                 velocities=has_velocities,
+                 forces=has_forces,
+                 **kwargs)
+        if has_positions:
+            ts.positions = positions
         if has_velocities:
             ts.velocities = velocities
         if has_forces:
@@ -275,14 +301,18 @@ class Timestep(object):
         if not self.n_atoms == other.n_atoms:
             return False
 
-        # Check contents of np arrays last (probably slow)
-        if not (self.positions == other.positions).all():
+        if not self.has_positions == other.has_positions:
             return False
+        if self.has_positions:
+            if not (self.positions == other.positions).all():
+                return False
+
         if not self.has_velocities == other.has_velocities:
             return False
         if self.has_velocities:
             if not (self.velocities == other.velocities).all():
                 return False
+
         if not self.has_forces == other.has_forces:
             return False
         if self.has_forces:
@@ -345,11 +375,15 @@ class Timestep(object):
         ``ts.copy_slice(slice(start, stop, skip))``
         ``ts.copy_slice([list of indices])``
 
-        :Returns: A Timestep object of the same type containing all header
-                  information and all atom information relevant to the selection.
+        Returns
+        -------
+        A Timestep object of the same type containing all header
+        information and all atom information relevant to the selection.
 
-        .. Note:: The selection must be a 0 based slice or array of the atom indices
-                  in this Timestep
+        Note
+        ----
+        The selection must be a 0 based slice or array of the atom indices
+        in this Timestep
 
         .. versionadded:: 0.8
         .. versionchanged:: 0.11.0
@@ -358,20 +392,27 @@ class Timestep(object):
         """
         # Detect the size of the Timestep by doing a dummy slice
         try:
-            new_n_atoms = len(self._pos[sel])
+            pos = self.positions[sel]
+        except NoDataError:
+            # It's cool if there's no Data, we'll live
+            pos = None
         except:
             raise TypeError("Selection type must be compatible with slicing"
                             " the coordinates")
-        # Make a mostly empty TS of same type of reduced size
-        new_TS = self.__class__(new_n_atoms, velocities=self.has_velocities,
-                                forces=self.has_forces)
+        try:
+            vel = self.velocities[sel]
+        except NoDataError:
+            vel = None
+        try:
+            force = self.forces[sel]
+        except NoDataError:
+            force = None
 
-        if self.has_positions:
-            new_TS.positions = self.positions[sel]
-        if self.has_velocities:
-            new_TS.velocities = self.velocities[sel]
-        if self.has_forces:
-            new_TS.forces = self.forces[sel]
+        new_TS = self.__class__.from_coordinates(
+            positions=pos,
+            velocities=vel,
+            forces=force)
+
         new_TS._unitcell = self._unitcell.copy()
 
         new_TS.frame = self.frame

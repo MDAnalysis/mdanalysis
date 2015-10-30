@@ -552,6 +552,7 @@ class TestDCDTimestep(BaseTimestepTest):
     has_box = True
     set_box = True
     unitcell = np.array([10., 90., 11., 90., 90., 12.])
+    uni_args = (PSF, DCD)
 
     def test_ts_order_define(self):
         """Check that users can hack in a custom unitcell order"""

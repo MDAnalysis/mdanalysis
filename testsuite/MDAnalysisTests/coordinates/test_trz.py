@@ -240,4 +240,5 @@ class TestTRZTimestep(BaseTimestepTest):
     unitcell = np.array([10., 0., 0.,
                          0., 11., 0.,
                          0., 0., 12.])
+    uni_args = (TRZ_psf, TRZ)
 

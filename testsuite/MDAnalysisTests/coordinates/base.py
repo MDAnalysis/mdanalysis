@@ -1,10 +1,12 @@
+import itertools
 import numpy as np
 from six.moves import zip
 from nose.plugins.attrib import attr
 from unittest import TestCase
 import tempdir
 from numpy.testing import (assert_equal, assert_raises, assert_almost_equal,
-                           assert_array_almost_equal, raises, assert_allclose)
+                           assert_array_almost_equal, raises, assert_allclose,
+                           assert_)
 
 import MDAnalysis as mda
 from MDAnalysis.coordinates.base import Timestep
@@ -206,6 +208,9 @@ class BaseReaderTest(object):
     def test_dt(self):
         assert_equal(self.reader.dt, self.ref.dt)
 
+    def test_ts_dt_matches_reader(self):
+        assert_equal(self.reader.ts.dt, self.reader.dt)
+
     def test_total_time(self):
         assert_equal(self.reader.totaltime, self.ref.totaltime)
 
@@ -290,7 +295,7 @@ class BaseWriterTest(object):
             w.write(None)
 
 
-class BaseTimestepTest(TestCase):
+class BaseTimestepTest(object):
     """Test all the base functionality of a Timestep
 
     All Timesteps must pass these tests!
@@ -304,6 +309,9 @@ class BaseTimestepTest(TestCase):
     size = 10  # size of arrays, 10 is enough to allow slicing etc
     # each coord is unique
     refpos = np.arange(size * 3, dtype=np.float32).reshape(size, 3) * 1.234
+    refvel = np.arange(size * 3, dtype=np.float32).reshape(size, 3) * 2.345
+    reffor = np.arange(size * 3, dtype=np.float32).reshape(size, 3) * 3.456
+
     has_box = True
     set_box = True  # whether you can set dimensions info.
     # If you can set box, what the underlying unitcell should be
@@ -311,6 +319,7 @@ class BaseTimestepTest(TestCase):
     newbox = np.array([10., 11., 12., 90., 90., 90.])
     unitcell = np.array([10., 11., 12., 90., 90., 90.])
     ref_volume = 1320.  # what the volume is after setting newbox
+    uni_args = None
 
     def setUp(self):
         self.ts = self.Timestep(self.size)
@@ -358,8 +367,6 @@ class BaseTimestepTest(TestCase):
 
     def test_repr(self):
         assert_equal(type(repr(self.ts)), str)
-
-    # Test copy done as separate test
 
     # Dimensions has 2 possible cases
     # Timestep doesn't do dimensions,
@@ -465,45 +472,47 @@ class BaseTimestepTest(TestCase):
         assert_equal(ts.has_forces, False)
         assert_raises(NoDataError, getattr, ts, 'forces')
 
-    def test_from_coordinates_1(self):
-        ts = self.Timestep.from_coordinates(self.refpos)
+    def _empty_ts(self):
+        assert_raises(ValueError, self.Timestep.from_coordinates,
+                      None, None, None)
 
-        assert_equal(len(ts), self.size)
-        assert_array_almost_equal(ts.positions, self.refpos)
-        assert_raises(NoDataError, getattr, ts, 'velocities')
-        assert_raises(NoDataError, getattr, ts, 'forces')
+    def _from_coords(self, p, v, f):
+        posi = self.refpos if p else None
+        velo = self.refvel if v else None
+        forc = self.reffor if f else None
 
-    def test_from_coordinates_2(self):
-        refvel = self.refpos + 10
+        ts = self.Timestep.from_coordinates(posi, velo, forc)
 
-        ts = self.Timestep.from_coordinates(self.refpos, velocities=refvel)
+        if p:
+            assert_array_almost_equal(ts.positions, posi)
+        else:
+            assert_raises(NoDataError, getattr, ts, 'positions')
+        if v:
+            assert_array_almost_equal(ts.velocities, velo)
+        else:
+            assert_raises(NoDataError, getattr, ts, 'velocities')
+        if f:
+            assert_array_almost_equal(ts.forces, forc)
+        else:
+            assert_raises(NoDataError, getattr, ts, 'forces')
 
-        assert_equal(len(ts), self.size)
-        assert_array_almost_equal(ts.positions, self.refpos)
-        assert_array_almost_equal(ts.velocities, refvel)
-        assert_raises(NoDataError, getattr, ts, 'forces')
+    def test_from_coordinates(self):
+        # Check all combinations of creating a Timestep from data
+        # 8 possibilites of with and without 3 data categories
+        for p, v, f in itertools.product([True, False], repeat=3):
+            if not any([p, v, f]):
+                yield self._empty_ts
+            else:
+                yield self._from_coords, p, v, f
 
-    def test_from_coordinates_3(self):
-        reffor = self.refpos + 10
+    def test_from_coordinates_mismatch(self):
+        velo = self.refvel[:2]
 
-        ts = self.Timestep.from_coordinates(self.refpos, forces=reffor)
+        assert_raises(ValueError, self.Timestep.from_coordinates,
+                      self.refpos, velo)
 
-        assert_equal(len(ts), self.size)
-        assert_array_almost_equal(ts.positions, self.refpos)
-        assert_raises(NoDataError, getattr, ts, 'velocities')
-        assert_array_almost_equal(ts.forces, reffor)
-
-    def test_from_coordinates_4(self):
-        refvel = self.refpos + 20
-        reffor = self.refpos + 10
-
-        ts = self.Timestep.from_coordinates(self.refpos, velocities=refvel,
-                                            forces=reffor)
-
-        assert_equal(len(ts), self.size)
-        assert_array_almost_equal(ts.positions, self.refpos)
-        assert_array_almost_equal(ts.velocities, refvel)
-        assert_array_almost_equal(ts.forces, reffor)
+    def test_from_coordinates_nodata(self):
+        assert_raises(ValueError, self.Timestep.from_coordinates)
 
     # Time related tests
     def test_supply_dt(self):
@@ -599,6 +608,209 @@ class BaseTimestepTest(TestCase):
 
         assert_equal(ts.time, reftime + ref_offset)
 
+    def _check_copy(self, name, ref_ts):
+        """Check basic copy"""
+        ts2 = ref_ts.copy()
+
+        err_msg = ("Timestep copy failed for format {form}"
+                   " on attribute {att}")
+
+        # eq method checks:
+        # - frame
+        # - n_atoms
+        # - positions, vels and forces
+        assert_(ref_ts == ts2)
+
+        assert_array_almost_equal(ref_ts.dimensions, ts2.dimensions,
+                                  decimal=4)
+
+        # Check things not covered by eq
+        for d in ref_ts.data:
+            assert_(d in ts2.data)
+            if isinstance(ref_ts.data[d], np.ndarray):
+                assert_array_almost_equal(
+                    ref_ts.data[d], ts2.data[d])
+            else:
+                assert_(ref_ts.data[d] == ts2.data[d])
+
+    def _check_independent(self, name, ts):
+        """Check that copies made are independent"""
+        ts2 = ts.copy()
+
+        if ts.has_positions:
+            self._check_array(ts.positions, ts2.positions)
+        if ts.has_velocities:
+            self._check_array(ts.velocities, ts2.velocities)
+        if ts.has_forces:
+            self._check_array(ts.forces, ts2.forces)
+        self._check_array(ts.dimensions, ts2.dimensions)
+
+    def _check_array(self, arr1, arr2):
+        """Check modifying one array doesn't change other"""
+        ref = arr1.copy()
+        arr2 += 1.0
+        assert_array_almost_equal(ref, arr1)
+
+    def _check_copy_slice_indices(self, name, ts):
+        sl = slice(0, len(ts), 3)
+        ts2 = ts.copy_slice(sl)
+        self._check_slice(ts, ts2, sl)
+
+    def _check_copy_slice_slice(self, name, ts):
+        sl = [0, 1, 3, 5, 6, 7]
+        ts2 = ts.copy_slice(sl)
+        self._check_slice(ts, ts2, sl)
+
+    def _check_slice(self, ts1, ts2, sl):
+        if ts1.has_positions:
+            assert_array_almost_equal(ts1.positions[sl], ts2.positions)
+        if ts1.has_velocities:
+            assert_array_almost_equal(ts1.velocities[sl], ts2.velocities)
+        if ts1.has_forces:
+            assert_array_almost_equal(ts1.forces[sl], ts2.forces)
+
+    def test_copy(self):
+        if self.uni_args is None:
+            return
+        u = mda.Universe(*self.uni_args)
+        ts = u.trajectory.ts
+
+        yield self._check_copy, self.name, ts
+        yield self._check_independent, self.name, ts
+        yield self._check_copy_slice_indices, self.name, ts
+        yield self._check_copy_slice_slice, self.name, ts
+
+    def _get_pos(self):
+        # Get generic reference positions
+        return np.arange(30).reshape(10, 3) * 1.234
+
+    def _check_ts_equal(self, a, b, err_msg):
+        assert_(a == b, err_msg)
+        assert_(b == a, err_msg)
+
+    def test_check_equal(self):
+        for p, v, f in itertools.product([True, False], repeat=3):
+            if not any([p, v, f]):
+                continue
+
+            ts1 = self.Timestep(self.size,
+                                positions=p, 
+                                velocities=v,
+                                forces=f)
+            ts2 = self.Timestep(self.size,
+                                positions=p, 
+                                velocities=v,
+                                forces=f)
+            if p:
+                ts1.positions = self.refpos.copy()
+                ts2.positions = self.refpos.copy()
+            if v:
+                ts1.velocities = self.refvel.copy()
+                ts2.velocities = self.refvel.copy()
+            if f:
+                ts1.forces = self.reffor.copy()
+                ts2.forces = self.reffor.copy()
+
+            yield (self._check_ts_equal, ts1, ts2,
+                   'Failed on {}'.format(self.name))
+
+    def test_wrong_class_equality(self):
+        ts1 = self.Timestep(self.size)
+        ts1.positions = self._get_pos()
+
+        b = tuple([0, 1, 2, 3])
+
+        assert_(ts1 != b)
+        assert_(b != ts1)
+
+    def test_wrong_frame_equality(self):
+        ts1 = self.Timestep(self.size)
+        ts1.positions = self._get_pos()
+
+        ts2 = self.Timestep(self.size)
+        ts2.positions = self._get_pos()
+        ts2.frame = 987
+
+        assert_(ts1 != ts2)
+        assert_(ts2 != ts1)
+
+    def test_wrong_n_atoms_equality(self):
+        ts1 = self.Timestep(self.size)
+        ts1.positions = self._get_pos()
+
+        ts3 = self.Timestep(self.size * 2)
+
+        assert_(ts1 != ts3)
+        assert_(ts3 != ts1)
+
+    def test_wrong_pos_equality(self):
+        ts1 = self.Timestep(self.size)
+        ts1.positions = self._get_pos()
+
+        ts2 = self.Timestep(self.size)
+        ts2.positions = self._get_pos() + 1.0
+
+        assert_(ts1 != ts2)
+        assert_(ts2 != ts1)
+
+    def test_check_vels_equality(self):
+        ts1 = self.Timestep(self.size, velocities=True)
+        ts2 = self.Timestep(self.size, velocities=True)
+
+        ts1.velocities = self._get_pos()
+        ts2.velocities = self._get_pos()
+
+        assert_(ts1 == ts2)
+        assert_(ts2 == ts1)
+
+    def test_check_mismatched_vels_equality(self):
+        ts1 = self.Timestep(self.size, velocities=True)
+        ts2 = self.Timestep(self.size, velocities=False)
+
+        ts1.velocities = self._get_pos()
+
+        assert_(ts1 != ts2)
+        assert_(ts2 != ts1)
+
+    def test_check_wrong_vels_equality(self):
+        ts1 = self.Timestep(self.size, velocities=True)
+        ts2 = self.Timestep(self.size, velocities=True)
+
+        ts1.velocities = self._get_pos()
+        ts2.velocities = self._get_pos() + 1.0
+
+        assert_(ts1 != ts2)
+        assert_(ts2 != ts1)
+
+    def test_check_forces_equality(self):
+        ts1 = self.Timestep(self.size, forces=True)
+        ts2 = self.Timestep(self.size, forces=True)
+
+        ts1.forces = self._get_pos()
+        ts2.forces = self._get_pos()
+
+        assert_(ts1 == ts2)
+        assert_(ts2 == ts1)
+
+    def test_check_mismatched_forces_equality(self):
+        ts1 = self.Timestep(self.size, forces=True)
+        ts2 = self.Timestep(self.size, forces=False)
+
+        ts1.forces = self._get_pos()
+
+        assert_(ts1 != ts2)
+        assert_(ts2 != ts1)
+
+    def test_check_wrong_forces_equality(self):
+        ts1 = self.Timestep(self.size, forces=True)
+        ts2 = self.Timestep(self.size, forces=True)
+
+        ts1.forces = self._get_pos()
+        ts2.forces = self._get_pos() + 1.0
+
+        assert_(ts1 != ts2)
+        assert_(ts2 != ts1)
+
 
 def assert_timestep_almost_equal(A, B, decimal=6, verbose=True):
     if not isinstance(A, Timestep):
@@ -640,3 +852,4 @@ def assert_timestep_almost_equal(A, B, decimal=6, verbose=True):
     if A.has_forces:
         assert_array_almost_equal(A.forces, B.forces, decimal=decimal,
                                   err_msg='Timestep forces', verbose=verbose)
+
