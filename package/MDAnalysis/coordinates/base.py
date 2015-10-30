@@ -403,10 +403,16 @@ class Timestep(object):
             vel = self.velocities[sel]
         except NoDataError:
             vel = None
+        except:
+            raise TypeError("Selection type must be compatible with slicing"
+                            " the coordinates")
         try:
             force = self.forces[sel]
         except NoDataError:
             force = None
+        except:
+            raise TypeError("Selection type must be compatible with slicing"
+                            " the coordinates")
 
         new_TS = self.__class__.from_coordinates(
             positions=pos,

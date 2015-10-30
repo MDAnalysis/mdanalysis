@@ -483,16 +483,21 @@ class BaseTimestepTest(object):
 
         ts = self.Timestep.from_coordinates(posi, velo, forc)
 
+        return ts
+
+    def _check_from_coordinates(self, p, v, f):
+        ts = self._from_coords(p, v, f)
+
         if p:
-            assert_array_almost_equal(ts.positions, posi)
+            assert_array_almost_equal(ts.positions, self.refpos)
         else:
             assert_raises(NoDataError, getattr, ts, 'positions')
         if v:
-            assert_array_almost_equal(ts.velocities, velo)
+            assert_array_almost_equal(ts.velocities, self.refvel)
         else:
             assert_raises(NoDataError, getattr, ts, 'velocities')
         if f:
-            assert_array_almost_equal(ts.forces, forc)
+            assert_array_almost_equal(ts.forces, self.reffor)
         else:
             assert_raises(NoDataError, getattr, ts, 'forces')
 
@@ -503,7 +508,7 @@ class BaseTimestepTest(object):
             if not any([p, v, f]):
                 yield self._empty_ts
             else:
-                yield self._from_coords, p, v, f
+                yield self._check_from_coordinates, p, v, f
 
     def test_from_coordinates_mismatch(self):
         velo = self.refvel[:2]
@@ -513,6 +518,18 @@ class BaseTimestepTest(object):
 
     def test_from_coordinates_nodata(self):
         assert_raises(ValueError, self.Timestep.from_coordinates)
+
+    def _check_from_timestep(self, p, v, f):
+        ts = self._from_coords(p, v, f)
+        ts2 = self.Timestep.from_timestep(ts)
+
+        assert_timestep_almost_equal(ts, ts2)
+
+    def test_from_timestep(self):
+        for p, v, f in itertools.product([True, False], repeat=3):
+            if not any([p, v, f]):
+                continue
+            yield self._check_from_timestep, p, v, f
 
     # Time related tests
     def test_supply_dt(self):
@@ -680,6 +697,27 @@ class BaseTimestepTest(object):
         yield self._check_copy_slice_indices, self.name, ts
         yield self._check_copy_slice_slice, self.name, ts
 
+    def test_copy_slice(self):
+        for p, v, f in itertools.product([True, False], repeat=3):
+            if not any([p, v, f]):
+                continue
+            ts = self._from_coords(p, v, f)
+            yield self._check_copy, self.name, ts
+            yield self._check_independent, self.name, ts
+            yield self._check_copy_slice_indices, self.name, ts
+            yield self._check_copy_slice_slice, self.name, ts
+
+    def _check_bad_slice(self, p, v, f):
+        ts = self._from_coords(p, v, f)
+        sl = ['this', 'is', 'silly']
+        assert_raises(TypeError, ts.copy_slice, sl)
+
+    def test_bad_copy_slice(self):
+        for p, v, f in itertools.product([True, False], repeat=3):
+            if not any([p, v, f]):
+                continue
+            yield self._check_bad_slice, p, v, f
+
     def _get_pos(self):
         # Get generic reference positions
         return np.arange(30).reshape(10, 3) * 1.234
@@ -833,8 +871,15 @@ def assert_timestep_almost_equal(A, B, decimal=6, verbose=True):
                              'A.n_atoms = {}, B.n_atoms = {}'.format(
                                  A.n_atoms, B.n_atoms))
 
-    assert_array_almost_equal(A.positions, B.positions, decimal=decimal,
-                              err_msg='Timestep positions', verbose=verbose)
+    if A.has_positions != B.has_positions:
+        raise AssertionError('Only one Timestep has positions:'
+                             'A.has_positions = {}, B.has_positions'.format(
+                                 A.has_positions, B.has_positions))
+
+    if A.has_positions:
+        assert_array_almost_equal(A.positions, B.positions, decimal=decimal,
+                                  err_msg='Timestep positions',
+                                  verbose=verbose)
 
     if A.has_velocities != B.has_velocities:
         raise AssertionError('Only one Timestep has velocities:'
