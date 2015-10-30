@@ -280,7 +280,7 @@ class BaseWriterTest(object):
             assert_timestep_almost_equal(
                 copy_ts, orig_ts, decimal=self.ref.prec)
 
-    @raises(mda.NoDataError)
+    @raises(TypeError)
     def test_write_none(self):
         outfile = self.tmp_file('write-none')
         with self.ref.writer(outfile) as w:
