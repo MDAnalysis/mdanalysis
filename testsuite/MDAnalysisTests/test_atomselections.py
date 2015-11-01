@@ -44,7 +44,10 @@ from MDAnalysisTests.plugins.knownfailure import knownfailure
 
 class TestSelectionsCHARMM(TestCase):
     def setUp(self):
-        """Set up the standard AdK system in implicit solvent."""
+        """Set up the standard AdK system in implicit solvent.
+
+        Geometry here is orthogonal
+        """
         self.universe = MDAnalysis.Universe(PSF, DCD)
 
     def tearDown(self):
@@ -158,6 +161,17 @@ class TestSelectionsCHARMM(TestCase):
         sel = self.universe.select_atoms('cyzone 6.0 10 -10 bynum 1281')
         assert_equal(len(sel), 166)
 
+    def test_point(self):
+        ag = self.universe.select_atoms('point 5.0 5.0 5.0 3.5')
+
+        d = distance_array(np.array([[5.0, 5.0, 5.0]], dtype=np.float32),
+                           self.universe.atoms.positions,
+                           box=self.universe.dimensions)
+
+        idx = np.where(d < 3.5)[1]
+
+        assert_equal(set(ag.indices), set(idx))
+
     def test_prop(self):
         sel = self.universe.select_atoms('prop y <= 16')
         sel2 = self.universe.select_atoms('prop abs z < 8')
@@ -180,7 +194,7 @@ class TestSelectionsCHARMM(TestCase):
         assert_equal(subsel[-1].index, 4)
 
     # TODO:
-    # add more test cases for byres, bynum, point
+    # add more test cases for byres, bynum
     # and also for selection keywords such as 'nucleic'
 
     def test_same_resname(self):
@@ -409,20 +423,59 @@ class TestSelectionsNucleicAcids(TestCase):
         assert_equal(rna.n_atoms, rna.n_residues * 5)
 
 
-class TestPointSelection(object):
+class TestTriclinicSelections(object):
+    """Non-KDTree based selections
+
+    This system has triclinic geometry so won't use KDTree based selections
+    """
     def setUp(self):
         self.u = mda.Universe(GRO)
+        self.box = self.u.dimensions
 
     def tearDown(self):
         del self.u
 
-    def test_point(self):
+    def test_around(self):
+        r1 = self.u.select_atoms('resid 1')
+
+        ag = self.u.select_atoms('around 5.0 resid 1')
+
+        d = distance_array(self.u.atoms.positions, r1.positions, box=self.box)
+        idx = set(np.where(d < 5.0)[0])
+
+        # Around doesn't include atoms from the reference group
+        idx.difference_update(set(r1.indices))
+        assert_(idx == set(ag.indices))
+
+    def test_sphlayer(self):
+        r1 = self.u.select_atoms('resid 1')
+        cog = r1.center_of_geometry().reshape(1, 3)
+
+        ag = self.u.select_atoms('sphlayer 2.4 6.0 resid 1')
+
+        d = distance_array(self.u.atoms.positions, cog, box=self.box)
+        idx = set(np.where((d > 2.4) & (d < 6.0))[0])
+
+        assert_(idx == set(ag.indices))
+
+    def test_sphzone(self):
+        r1 = self.u.select_atoms('resid 1')
+        cog = r1.center_of_geometry().reshape(1, 3)
+
+        ag = self.u.select_atoms('sphzone 5.0 resid 1')
+
+        d = distance_array(self.u.atoms.positions, cog, box=self.box)
+        idx = set(np.where(d < 5.0)[0])
+
+        assert_(idx == set(ag.indices))
+
+    def test_point_1(self):
         # The example selection
         ag = self.u.select_atoms('point 5.0 5.0 5.0 3.5')
 
         d = distance_array(np.array([[5.0, 5.0, 5.0]], dtype=np.float32),
                            self.u.atoms.positions,
-                           box=self.u.dimensions)
+                           box=self.box)
 
         idx = np.where(d < 3.5)[1]
 
@@ -435,7 +488,7 @@ class TestPointSelection(object):
 
         d = distance_array(np.array([[5.0, 5.0, 5.0]], dtype=np.float32),
                            ag1.positions,
-                           box=self.u.dimensions)
+                           box=self.box)
 
         idx = np.where(d < 3.5)[1]
 
@@ -522,7 +575,8 @@ class TestBondedSelection(object):
     def test_nobonds_warns(self):
         self.u.bonds = TopologyGroup([])
 
-        assert_warns(UserWarning, self.u.select_atoms, 'type 2 and bonded name N')
+        assert_warns(UserWarning,
+                     self.u.select_atoms, 'type 2 and bonded name N')
 
 
     
