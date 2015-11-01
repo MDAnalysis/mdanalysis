@@ -473,12 +473,9 @@ class BondedSelection(Selection):
         res = self.sel._apply(group)
         sel = []
         for atom in res:
-            print group.bonds
-            for b1, b2 in group.bonds:
-                if atom == b1:
-                    sel.append(b1)
-                elif atom == b2:
-                    sel.append(b2)
+            for b in group.bonds:
+                if atom in b:
+                    sel.append(b.partner(atom))
         return set(sel)
 
 
