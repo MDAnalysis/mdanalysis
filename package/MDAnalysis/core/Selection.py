@@ -36,12 +36,7 @@ from ..lib import distances
 from ..lib.mdamath import triclinic_vectors
 
 
-class Selection:
-    def __init__(self):
-        # This allows you to build a Selection without tying it to a particular group yet
-        # Updatable means every timestep
-        self.update = False  # not used at the moment
-
+class Selection(object):
     def __repr__(self):
         return "<" + self.__class__.__name__ + ">"
 
@@ -89,16 +84,12 @@ class Selection:
 
 
 class AllSelection(Selection):
-    def __init__(self):
-        Selection.__init__(self)
-
     def _apply(self, group):
         return set(group.atoms[:])
 
 
 class NotSelection(Selection):
     def __init__(self, sel):
-        Selection.__init__(self)
         self.sel = sel
 
     def _apply(self, group):
@@ -111,7 +102,6 @@ class NotSelection(Selection):
 
 class AndSelection(Selection):
     def __init__(self, lsel, rsel):
-        Selection.__init__(self)
         self.rsel = rsel
         self.lsel = lsel
 
@@ -124,7 +114,6 @@ class AndSelection(Selection):
 
 class OrSelection(Selection):
     def __init__(self, lsel, rsel):
-        Selection.__init__(self)
         self.rsel = rsel
         self.lsel = lsel
 
@@ -136,7 +125,6 @@ class OrSelection(Selection):
 
 class GlobalSelection(Selection):
     def __init__(self, sel):
-        Selection.__init__(self)
         self.sel = sel
 
     def _apply(self, group):
@@ -145,7 +133,6 @@ class GlobalSelection(Selection):
 
 class AroundSelection(Selection):
     def __init__(self, sel, cutoff, periodic=None):
-        Selection.__init__(self)
         self.sel = sel
         self.cutoff = cutoff
         self.sqdist = cutoff * cutoff
@@ -212,7 +199,6 @@ class AroundSelection(Selection):
 
 class SphericalLayerSelection(Selection):
     def __init__(self, sel, inRadius, exRadius, periodic=None):
-        Selection.__init__(self)
         self.sel = sel
         self.inRadius = inRadius
         self.exRadius = exRadius
@@ -273,7 +259,6 @@ class SphericalLayerSelection(Selection):
 
 class SphericalZoneSelection(Selection):
     def __init__(self, sel, cutoff, periodic=None):
-        Selection.__init__(self)
         self.sel = sel
         self.cutoff = cutoff
         self.sqdist = cutoff * cutoff
@@ -327,7 +312,6 @@ class SphericalZoneSelection(Selection):
 
 class _CylindricalSelection(Selection):
     def __init__(self, sel, exRadius, zmax, zmin, periodic=None):
-        Selection.__init__(self)
         self.sel = sel
         self.exRadius = exRadius
         self.exRadiusSq = exRadius * exRadius
@@ -397,7 +381,6 @@ class _CylindricalSelection(Selection):
 
 class CylindricalZoneSelection(_CylindricalSelection):
     def __init__(self, sel, exRadius, zmax, zmin, periodic=None):
-        Selection.__init__(self)
         _CylindricalSelection.__init__(self, sel, exRadius, zmax, zmin, periodic)
 
     def __repr__(self):
@@ -406,7 +389,6 @@ class CylindricalZoneSelection(_CylindricalSelection):
 
 class CylindricalLayerSelection(_CylindricalSelection):
     def __init__(self, sel, inRadius, exRadius, zmax, zmin, periodic=None):
-        Selection.__init__(self)
         _CylindricalSelection.__init__(self, sel, exRadius, zmax, zmin, periodic)
         self.inRadius = inRadius
         self.inRadiusSq = inRadius * inRadius
@@ -418,7 +400,6 @@ class CylindricalLayerSelection(_CylindricalSelection):
 
 class PointSelection(Selection):
     def __init__(self, x, y, z, cutoff, periodic=None):
-        Selection.__init__(self)
         self.ref = np.array((float(x), float(y), float(z)))
         self.cutoff = float(cutoff)
         self.cutoffsq = float(cutoff) * float(cutoff)
@@ -470,7 +451,6 @@ class PointSelection(Selection):
 
 class AtomSelection(Selection):
     def __init__(self, name, resid, segid):
-        Selection.__init__(self)
         self.name = name
         self.resid = resid
         self.segid = segid
@@ -487,7 +467,6 @@ class AtomSelection(Selection):
 
 class BondedSelection(Selection):
     def __init__(self, sel):
-        Selection.__init__(self)
         self.sel = sel
 
     def _apply(self, group):
@@ -505,7 +484,6 @@ class BondedSelection(Selection):
 
 class SelgroupSelection(Selection):
     def __init__(self, selgroup):
-        Selection.__init__(self)
         self._grp = selgroup
 
     def _apply(self, group):
@@ -520,7 +498,6 @@ class SelgroupSelection(Selection):
 @deprecate(old_name='fullgroup', new_name='global group')
 class FullSelgroupSelection(Selection):
     def __init__(self, selgroup):
-        Selection.__init__(self)
         self._grp = selgroup
 
     def _apply(self, group):
@@ -532,7 +509,6 @@ class FullSelgroupSelection(Selection):
 
 class StringSelection(Selection):
     def __init__(self, field):
-        Selection.__init__(self)
         self._field = field
 
     def _apply(self, group):
@@ -579,7 +555,6 @@ class AltlocSelection(StringSelection):
 
 class ByResSelection(Selection):
     def __init__(self, sel):
-        Selection.__init__(self)
         self.sel = sel
 
     def _apply(self, group):
@@ -597,7 +572,6 @@ class ByResSelection(Selection):
 
 class _RangeSelection(Selection):
     def __init__(self, lower, upper):
-        Selection.__init__(self)
         self.lower = lower
         self.upper = upper
 
@@ -765,7 +739,6 @@ class PropertySelection(Selection):
     """
 
     def __init__(self, prop, operator, value, abs=False):
-        Selection.__init__(self)
         self.prop = prop
         self.operator = operator
         self.value = value
@@ -802,7 +775,6 @@ class SameSelection(Selection):
     # When adding new keywords here don't forget to also add them to the
     #  case statement under the SAME op, where they are first checked.
     def __init__(self, sel, prop):
-        Selection.__init__(self)
         self.sel = sel
         self.prop = prop
     def _apply(self, group):
