@@ -29,6 +29,7 @@ import re
 import numpy as np
 from numpy.lib.utils import deprecate
 from Bio.KDTree import KDTree
+import warnings
 
 from .AtomGroup import AtomGroup, Universe
 from MDAnalysis.core import flags
@@ -471,6 +472,10 @@ class BondedSelection(Selection):
 
     def _apply(self, group):
         res = self.sel._apply(group)
+        # Check if we have bonds
+        if not group.bonds:
+            warnings.warn("Bonded selection has 0 bonds")
+
         sel = []
         for atom in res:
             for b in group.bonds:

@@ -22,13 +22,16 @@ from numpy.testing import(
     assert_array_almost_equal,
     assert_,
     assert_array_equal,
+    assert_warns,
 )
 from nose.plugins.attrib import attr
+import warnings
 
 import MDAnalysis
 import MDAnalysis as mda
 import MDAnalysis.core.Selection
 from MDAnalysis.lib.distances import distance_array
+from MDAnalysis.core.topologyobjects import TopologyGroup
 
 from MDAnalysis.tests.datafiles import (
     PSF, DCD,
@@ -515,5 +518,11 @@ class TestBondedSelection(object):
         ag = self.u.select_atoms('type 2 and bonded name N')
 
         assert_(len(ag) == 3)
+
+    def test_nobonds_warns(self):
+        self.u.bonds = TopologyGroup([])
+
+        assert_warns(UserWarning, self.u.select_atoms, 'type 2 and bonded name N')
+
 
     
