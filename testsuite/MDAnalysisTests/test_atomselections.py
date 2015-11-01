@@ -13,18 +13,31 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+
+import numpy as np
+from numpy.testing import(
+    TestCase,
+    dec,
+    assert_equal,
+    assert_array_almost_equal,
+    assert_,
+    assert_array_equal,
+)
+from nose.plugins.attrib import attr
+
 import MDAnalysis
 import MDAnalysis as mda
 import MDAnalysis.core.Selection
-from MDAnalysis.tests.datafiles import PSF, DCD, PRMpbc, TRJpbc_bz2, PSF_NAMD, PDB_NAMD, GRO, NUCL, TPR, XTC
-
-import numpy as np
-from numpy.testing import *
-from nose.plugins.attrib import attr
-
 from MDAnalysis.lib.distances import distance_array
 
+from MDAnalysis.tests.datafiles import (
+    PSF, DCD,
+    PRMpbc, TRJpbc_bz2,
+    PSF_NAMD, PDB_NAMD,
+    GRO, NUCL, TPR, XTC
+)
 from MDAnalysisTests.plugins.knownfailure import knownfailure
+
 
 class TestSelectionsCHARMM(TestCase):
     def setUp(self):
@@ -489,3 +502,18 @@ class TestPropSelection(object):
                 yield self._check_ge, prop, ag
                 yield self._check_eq, prop, ag
                 yield self._check_ne, prop, ag
+
+
+class TestBondedSelection(object):
+    def setUp(self):
+        self.u = mda.Universe(PSF, DCD)
+
+    def tearDown(self):
+        del self.u
+
+    def test_bonded_1(self):
+        ag = self.u.select_atoms('type 2 and bonded name N')
+
+        assert_(len(ag) == 3)
+
+    
