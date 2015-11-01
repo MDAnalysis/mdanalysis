@@ -41,18 +41,6 @@ class Selection(object):
     def __repr__(self):
         return "<" + self.__class__.__name__ + ">"
 
-    def __and__(self, other):
-        return AndSelection(self, other)
-
-    def __or__(self, other):
-        return OrSelection(self, other)
-
-    def __invert__(self):
-        return NotSelection(self)
-
-    def __hash__(self):
-        return hash(repr(self))
-
     def _apply(self, group):
         # This is an error
         raise NotImplementedError("No _apply function defined for " + repr(self.__class__.__name__))
