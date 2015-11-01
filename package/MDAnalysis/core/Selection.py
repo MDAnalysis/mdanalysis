@@ -485,6 +485,24 @@ class AtomSelection(Selection):
         return "<'AtomSelection' " + repr(self.segid) + " " + repr(self.resid) + " " + repr(self.name) + " >"
 
 
+class BondedSelection(Selection):
+    def __init__(self, sel):
+        Selection.__init__(self)
+        self.sel = sel
+
+    def _apply(self, group):
+        res = self.sel._apply(group)
+        sel = []
+        for atom in res:
+            print group.bonds
+            for b1, b2 in group.bonds:
+                if atom == b1:
+                    sel.append(b1)
+                elif atom == b2:
+                    sel.append(b2)
+        return set(sel)
+
+
 class SelgroupSelection(Selection):
     def __init__(self, selgroup):
         Selection.__init__(self)
@@ -808,7 +826,7 @@ class SameSelection(Selection):
             sel_indices = np.array([a.index for a in Selection._group_atoms])
             result_set = group.atoms[np.where(np.in1d(p[sel_indices], p[res_indices]))[0]]._atoms
         else:
-            self.__error(self.prop, expected=False)
+            self._error(self.prop, expected=False)
         return set(result_set)
     def __repr__(self):
         return "<'SameSelection' of "+ repr(self.prop)+" >"
@@ -849,6 +867,7 @@ class SelectionParser:
     CYLAYER = 'cylayer'
     CYZONE = 'cyzone'
     POINT = 'point'
+    BONDED = 'bonded'
     BYRES = 'byres'
     BYNUM = 'bynum'
     PROP = 'prop'
@@ -884,6 +903,7 @@ class SelectionParser:
         (ALL, AllSelection),
         (NOT, NotSelection),
         (AND, AndSelection),
+        (BONDED, BondedSelection),
         (OR, OrSelection),
         (SEGID, SegmentNameSelection),
         (RESID, ResidueIDSelection),
@@ -921,6 +941,7 @@ class SelectionParser:
          (CYZONE, 1),
          (POINT, 1),
          (BYRES, 1),
+         (BONDED, 1),
          (SAME, 1),
          (AND, 3),
          (OR, 3),
@@ -935,98 +956,102 @@ class SelectionParser:
         self.__dict__ = cls._shared_state
         return self
 
-    def __peek_token(self):
+    def _peek_token(self):
         """Looks at the next token in our token stream."""
         return self.tokens[0]
 
-    def __consume_token(self):
+    def _consume_token(self):
         """Pops off the next token in our token stream."""
         return self.tokens.pop(0)
 
-    def __error(self, token, expected=True):
+    def _error(self, token, expected=True):
         """Stops parsing and reports an error."""
         if expected:
             raise ParseError("Parsing error- '" + self.selectstr + "'\n" + repr(token) + " expected")
         else:
             raise ParseError("Parsing error- '" + self.selectstr + "'\n" + repr(token) + " unexpected")
 
-    def __expect(self, token):
-        if self.__peek_token() == token:
-            self.__consume_token()
+    def _expect(self, token):
+        if self._peek_token() == token:
+            self._consume_token()
         else:
-            self.__error(token)
+            self._error(token)
 
     def parse(self, selectstr, selgroups):
         self.selectstr = selectstr
         self.selgroups = selgroups
         self.tokens = selectstr.replace('(', ' ( ').replace(')', ' ) ').split() + [self.EOF]
-        parsetree = self.__parse_expression(0)
-        self.__expect(self.EOF)
+        parsetree = self._parse_expression(0)
+        self._expect(self.EOF)
         return parsetree
 
-    def __parse_expression(self, p):
-        exp1 = self.__parse_subexp()
-        while self.__peek_token() in (self.AND, self.OR) and self.precedence[self.__peek_token()] >= p:  # bin ops
-            op = self.__consume_token()
+    def _parse_expression(self, p):
+        exp1 = self._parse_subexp()
+        while self._peek_token() in (self.AND, self.OR) and self.precedence[self._peek_token()] >= p:  # bin ops
+            op = self._consume_token()
             if self.associativity[op] == "right":
                 q = self.precedence[op]
             else:
                 q = 1 + self.precedence[op]
-            exp2 = self.__parse_expression(q)
+            exp2 = self._parse_expression(q)
             exp1 = self.classdict[op](exp1, exp2)
         return exp1
 
-    def __parse_subexp(self):
-        op = self.__consume_token()
+    def _parse_subexp(self):
+        op = self._consume_token()
         if op in (self.NOT, self.BYRES, self.GLOBAL):  # unary operators
-            exp = self.__parse_expression(self.precedence[op])
+            exp = self._parse_expression(self.precedence[op])
             return self.classdict[op](exp)
         elif op in (self.AROUND):
-            dist = self.__consume_token()
-            exp = self.__parse_expression(self.precedence[op])
+            dist = self._consume_token()
+            exp = self._parse_expression(self.precedence[op])
             return self.classdict[op](exp, float(dist))
         elif op in (self.SPHLAYER):
-            inRadius = self.__consume_token()
-            exRadius = self.__consume_token()
-            exp = self.__parse_expression(self.precedence[op])
+            inRadius = self._consume_token()
+            exRadius = self._consume_token()
+            exp = self._parse_expression(self.precedence[op])
             return self.classdict[op](exp, float(inRadius), float(exRadius))
         elif op in (self.SPHZONE):
-            dist = self.__consume_token()
-            exp = self.__parse_expression(self.precedence[op])
+            dist = self._consume_token()
+            exp = self._parse_expression(self.precedence[op])
             return self.classdict[op](exp, float(dist))
         elif op in (self.CYLAYER):
-            inRadius = self.__consume_token()
-            exRadius = self.__consume_token()
-            zmax = self.__consume_token()
-            zmin = self.__consume_token()
-            exp = self.__parse_expression(self.precedence[op])
+            inRadius = self._consume_token()
+            exRadius = self._consume_token()
+            zmax = self._consume_token()
+            zmin = self._consume_token()
+            exp = self._parse_expression(self.precedence[op])
             return self.classdict[op](exp, float(inRadius), float(exRadius), float(zmax), float(zmin))
         elif op in (self.CYZONE):
-            exRadius = self.__consume_token()
-            zmax = self.__consume_token()
-            zmin = self.__consume_token()
-            exp = self.__parse_expression(self.precedence[op])
+            exRadius = self._consume_token()
+            zmax = self._consume_token()
+            zmin = self._consume_token()
+            exp = self._parse_expression(self.precedence[op])
             return self.classdict[op](exp, float(exRadius), float(zmax), float(zmin))
         elif op in (self.POINT):
-            dist = self.__consume_token()
-            x = self.__consume_token()
-            y = self.__consume_token()
-            z = self.__consume_token()
+            dist = self._consume_token()
+            x = self._consume_token()
+            y = self._consume_token()
+            z = self._consume_token()
             return self.classdict[op](float(dist), float(x), float(y), float(z))
+        elif op == self.BONDED:
+            exp = self._parse_expression(self.precedence[op])
+            return self.classdict[op](exp)
         elif op == self.LPAREN:
-            exp = self.__parse_expression(0)
-            self.__expect(self.RPAREN)
+            exp = self._parse_expression(0)
+            self._expect(self.RPAREN)
             return exp
         elif op in (self.SEGID, self.RESNAME, self.NAME, self.TYPE, self.ALTLOC):
-            data = self.__consume_token()
+            data = self._consume_token()
             if data in (
-                    self.LPAREN,
-                    self.RPAREN, self.AND, self.OR, self.NOT, self.SEGID, self.RESID, self.RESNAME, self.NAME,
-                    self.TYPE):
-                self.__error("Identifier")
+                    self.LPAREN, self.RPAREN,
+                    self.AND, self.OR, self.NOT,
+                    self.SEGID, self.RESID, self.RESNAME,
+                    self.NAME, self.TYPE):
+                self._error("Identifier")
             return self.classdict[op](data)
         elif op in (self.SELGROUP, self.FULLSELGROUP):
-            grpname = self.__consume_token()
+            grpname = self._consume_token()
             return self.classdict[op](self.selgroups[grpname])
         elif op == self.PROTEIN:
             return self.classdict[op]()
@@ -1043,7 +1068,7 @@ class SelectionParser:
         elif op == self.SUGAR:
             return self.classdict[op]()
         elif op in (self.RESID, self.RESNUM, self.BYNUM):  # can operate on ranges X:Y or X-Y
-            data = self.__consume_token()
+            data = self._consume_token()
             try:
                 lower = int(data)
                 upper = None
@@ -1051,18 +1076,18 @@ class SelectionParser:
                 selrange = re.match("(\d+)[:-](\d+)",
                                     data)  # check if in appropriate format 'lower:upper' or 'lower-upper'
                 if not selrange:
-                    self.__error(op)
+                    self._error(op)
                 lower, upper = map(int, selrange.groups())
             return self.classdict[op](lower, upper)
         elif op == self.PROP:
-            prop = self.__consume_token()
+            prop = self._consume_token()
             if prop == "abs":
                 abs = True
-                prop = self.__consume_token()
+                prop = self._consume_token()
             else:
                 abs = False
-            oper = self.__consume_token()
-            value = float(self.__consume_token())
+            oper = self._consume_token()
+            value = float(self._consume_token())
             ops = dict([
                 (self.GT, np.greater), (self.LT, np.less),
                 (self.GE, np.greater_equal), (self.LE, np.less_equal),
@@ -1070,21 +1095,23 @@ class SelectionParser:
             if oper in ops.keys():
                 return self.classdict[op](prop, ops[oper], value, abs)
         elif op == self.ATOM:
-            segid = self.__consume_token()
-            resid = int(self.__consume_token())
-            name = self.__consume_token()
+            segid = self._consume_token()
+            resid = int(self._consume_token())
+            name = self._consume_token()
             return self.classdict[op](name, resid, segid)
         elif op == self.SAME:
-            prop = self.__consume_token()
-            self.__expect("as")
-            if prop in ("name", "type", "resname", "resid", "segid", "mass", "charge", "radius", "bfactor",
-                        "resnum", "residue", "segment", "fragment", "x", "y", "z"):
-                exp = self.__parse_expression(self.precedence[op])
+            prop = self._consume_token()
+            self._expect("as")
+            if prop in ("name", "type", "resname", "resid", "segid",
+                        "mass", "charge", "radius", "bfactor",
+                        "resnum", "residue", "segment", "fragment",
+                        "x", "y", "z"):
+                exp = self._parse_expression(self.precedence[op])
                 return self.classdict[op](exp, prop)
             else:
-                self.__error(prop, expected=False)
+                self._error(prop, expected=False)
         else:
-            self.__error(op, expected=False)
+            self._error(op, expected=False)
 
 # The module level instance
 Parser = SelectionParser()
