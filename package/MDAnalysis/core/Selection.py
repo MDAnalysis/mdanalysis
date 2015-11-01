@@ -904,7 +904,6 @@ class SelectionParser:
         (FULLSELGROUP, FullSelgroupSelection),
         (SAME, SameSelection),
         (GLOBAL, GlobalSelection)])
-    associativity = dict([(AND, "left"), (OR, "left")])
     precedence = dict(
         [(AROUND, 1),
          (SPHLAYER, 1),
@@ -961,10 +960,7 @@ class SelectionParser:
         exp1 = self._parse_subexp()
         while self._peek_token() in (self.AND, self.OR) and self.precedence[self._peek_token()] >= p:  # bin ops
             op = self._consume_token()
-            if self.associativity[op] == "right":
-                q = self.precedence[op]
-            else:
-                q = 1 + self.precedence[op]
+            q = 1 + self.precedence[op]
             exp2 = self._parse_expression(q)
             exp1 = self.classdict[op](exp1, exp2)
         return exp1
