@@ -38,19 +38,15 @@ from ..lib.mdamath import triclinic_vectors
 
 
 class Selection(object):
-    def __repr__(self):
-        return "<" + self.__class__.__name__ + ">"
-
     def _apply(self, group):
         # This is an error
-        raise NotImplementedError("No _apply function defined for " + repr(self.__class__.__name__))
+        raise NotImplementedError("No _apply function defined")
 
     def apply(self, group):
         # Cache the result for future use
         # atoms is from Universe
         # returns AtomGroup
-        if not (isinstance(group, Universe) or isinstance(group, AtomGroup)):
-            raise Exception("Must pass in an AtomGroup or Universe to the Selection")
+
         # make a set of all the atoms in the group
         # XXX this should be static to all the class members
         Selection._group_atoms = set(group.atoms)
@@ -85,9 +81,6 @@ class NotSelection(Selection):
         notsel = self.sel._apply(group)
         return (set(group.atoms[:]) - notsel)
 
-    def __repr__(self):
-        return "<'NotSelection' " + repr(self.sel) + ">"
-
 
 class AndSelection(Selection):
     def __init__(self, lsel, rsel):
@@ -96,9 +89,6 @@ class AndSelection(Selection):
 
     def _apply(self, group):
         return self.lsel._apply(group) & self.rsel._apply(group)
-
-    def __repr__(self):
-        return "<'AndSelection' " + repr(self.lsel) + "," + repr(self.rsel) + ">"
 
 
 class OrSelection(Selection):
@@ -109,8 +99,6 @@ class OrSelection(Selection):
     def _apply(self, group):
         return self.lsel._apply(group) | self.rsel._apply(group)
 
-    def __repr__(self):
-        return "<'OrSelection' " + repr(self.lsel) + "," + repr(self.rsel) + ">"
 
 class GlobalSelection(Selection):
     def __init__(self, sel):
@@ -182,9 +170,6 @@ class AroundSelection(Selection):
             np.any(dist <= self.cutoff, axis=1).nonzero()[0]]  # make list np array and use fancy indexing?
         return set(res_atoms)
 
-    def __repr__(self):
-        return "<'AroundSelection' " + repr(self.cutoff) + " around " + repr(self.sel) + ">"
-
 
 class SphericalLayerSelection(Selection):
     def __init__(self, sel, inRadius, exRadius, periodic=None):
@@ -241,10 +226,6 @@ class SphericalLayerSelection(Selection):
             box = None
         return set(res_atoms)
 
-    def __repr__(self):
-        return "<'SphericalLayerSelection' inner radius " + repr(self.inRadius) + ", external radius " + repr(
-            self.exRadius) + " centered in " + repr(self.sel) + ">"
-
 
 class SphericalZoneSelection(Selection):
     def __init__(self, sel, cutoff, periodic=None):
@@ -294,9 +275,6 @@ class SphericalZoneSelection(Selection):
         else:
             box = None
         return set(res_atoms)
-
-    def __repr__(self):
-        return "<'SphericalZoneSelection' radius " + repr(self.cutoff) + " centered in " + repr(self.sel) + ">"
 
 
 class _CylindricalSelection(Selection):
@@ -364,27 +342,17 @@ class _CylindricalSelection(Selection):
         res_atoms = set(Selection._group_atoms_list[ndx] for ndx in ndxs)
         return res_atoms
 
-    def __repr__(self):
-        return "<'CylindricalSelection' radius " + repr(self.exRadius) + ", zmax " + repr(
-            self.zmax) + ", zmin " + repr(self.zmin) + ">"
 
 class CylindricalZoneSelection(_CylindricalSelection):
     def __init__(self, sel, exRadius, zmax, zmin, periodic=None):
         _CylindricalSelection.__init__(self, sel, exRadius, zmax, zmin, periodic)
 
-    def __repr__(self):
-        return "<'CylindricalZoneSelection' radius " + repr(self.exRadius) + ", zmax " + repr(
-            self.zmax) + ", zmin " + repr(self.zmin) + ">"
 
 class CylindricalLayerSelection(_CylindricalSelection):
     def __init__(self, sel, inRadius, exRadius, zmax, zmin, periodic=None):
         _CylindricalSelection.__init__(self, sel, exRadius, zmax, zmin, periodic)
         self.inRadius = inRadius
         self.inRadiusSq = inRadius * inRadius
-
-    def __repr__(self):
-        return "<'CylindricalLayerSelection' inner radius " + repr(self.inRadius) + ", external radius " + repr(
-            self.exRadius) + ", zmax " + repr(self.zmax) + ", zmin " + repr(self.zmin) + ">"
 
 
 class PointSelection(Selection):
@@ -434,9 +402,6 @@ class PointSelection(Selection):
         # make list np array and use fancy indexing?
         return set(res_atoms)
 
-    def __repr__(self):
-        return "<'PointSelection' " + repr(self.cutoff) + " Ang around " + repr(self.ref) + ">"
-
 
 class AtomSelection(Selection):
     def __init__(self, name, resid, segid):
@@ -449,9 +414,6 @@ class AtomSelection(Selection):
             if ((a.name == self.name) and (a.resid == self.resid) and (a.segid == self.segid)):
                 return set([a])
         return set([])
-
-    def __repr__(self):
-        return "<'AtomSelection' " + repr(self.segid) + " " + repr(self.resid) + " " + repr(self.name) + " >"
 
 
 class BondedSelection(Selection):
@@ -481,9 +443,6 @@ class SelgroupSelection(Selection):
         res_atoms = [i for i in self._grp if i.index in common]
         return set(res_atoms)
 
-    def __repr__(self):
-        return "<" + repr(self.__class__.__name__) + ">"
-
 
 @deprecate(old_name='fullgroup', new_name='global group')
 class FullSelgroupSelection(Selection):
@@ -492,9 +451,6 @@ class FullSelgroupSelection(Selection):
 
     def _apply(self, group):
         return set(self._grp._atoms)
-
-    def __repr__(self):
-        return "<" + repr(self.__class__.__name__) + ">"
 
 
 class StringSelection(Selection):
@@ -507,10 +463,8 @@ class StringSelection(Selection):
         wc_pos = value.find('*')  # This returns -1, so if it's not in value then use the whole of value
         if wc_pos == -1:
             wc_pos = None
-        return set([a for a in group.atoms if getattr(a, self._field)[:wc_pos] == value[:wc_pos]])
-
-    def __repr__(self):
-        return "<" + repr(self.__class__.__name__) + ": " + repr(getattr(self, self._field)) + ">"
+        return set([a for a in group.atoms
+                    if getattr(a, self._field)[:wc_pos] == value[:wc_pos]])
 
 
 class AtomNameSelection(StringSelection):
@@ -556,17 +510,11 @@ class ByResSelection(Selection):
                 sel.append(atom)
         return set(sel)
 
-    def __repr__(self):
-        return "<'ByResSelection'>"
-
 
 class _RangeSelection(Selection):
     def __init__(self, lower, upper):
         self.lower = lower
         self.upper = upper
-
-    def __repr__(self):
-        return "<'" + self.__class__.__name__ + "' " + repr(self.lower) + ":" + repr(self.upper) + " >"
 
 
 class ResidueIDSelection(_RangeSelection):
@@ -634,9 +582,6 @@ class ProteinSelection(Selection):
     def _apply(self, group):
         return set([a for a in group.atoms if a.resname in self.prot_res])
 
-    def __repr__(self):
-        return "<'ProteinSelection' >"
-
 
 class NucleicSelection(Selection):
     """A nucleic selection consists of all atoms in nucleic acid residues with  recognized residue names.
@@ -658,26 +603,21 @@ class NucleicSelection(Selection):
     def _apply(self, group):
         return set([a for a in group.atoms if a.resname in self.nucl_res])
 
-    def __repr__(self):
-        return "<'NucleicSelection' >"
-
 
 class BackboneSelection(ProteinSelection):
     """A BackboneSelection contains all atoms with name 'N', 'CA', 'C', 'O'.
 
-    This excludes OT* on C-termini (which are included by, eg VMD's backbone selection).
+    This excludes OT* on C-termini
+    (which are included by, eg VMD's backbone selection).
     """
     bb_atoms = dict([(x, None) for x in ['N', 'CA', 'C', 'O']])
 
     def _apply(self, group):
         return set([a for a in group.atoms if (a.name in self.bb_atoms and a.resname in self.prot_res)])
 
-    def __repr__(self):
-        return "<'BackboneSelection' >"
-
 
 class NucleicBackboneSelection(NucleicSelection):
-    """A NucleicBackboneSelection contains all atoms with name "P", "C5'", C3'", "O3'", "O5'".
+    """Contains all atoms with name "P", "C5'", C3'", "O3'", "O5'".
 
     These atoms are only recognized if they are in a residue matched
     by the :class:`NucleicSelection`.
@@ -685,10 +625,9 @@ class NucleicBackboneSelection(NucleicSelection):
     bb_atoms = dict([(x, None) for x in ["P", "C5'", "C3'", "O3'", "O5'"]])
 
     def _apply(self, group):
-        return set([a for a in group.atoms if (a.name in self.bb_atoms and a.resname in self.nucl_res)])
-
-    def __repr__(self):
-        return "<'NucleicBackboneSelection' >"
+        return set([a for a in group.atoms
+                    if (a.name in self.bb_atoms and
+                        a.resname in self.nucl_res)])
 
 
 class BaseSelection(NucleicSelection):
@@ -705,29 +644,26 @@ class BaseSelection(NucleicSelection):
         'O2', 'N4', 'O4', 'C5M']])
 
     def _apply(self, group):
-        return set([a for a in group.atoms if (a.name in self.base_atoms and a.resname in self.nucl_res)])
-
-    def __repr__(self):
-        return "<'BaseSelection' >"
+        return set([a for a in group.atoms
+                    if (a.name in self.base_atoms and
+                        a.resname in self.nucl_res)])
 
 
 class NucleicSugarSelection(NucleicSelection):
-    """A NucleicSugarSelection contains all atoms with name C1', C2', C3', C4', O2', O4', O3'.
+    """Contains all atoms with name C1', C2', C3', C4', O2', O4', O3'.
     """
     sug_atoms = dict([(x, None) for x in ['C1\'', 'C2\'', 'C3\'', 'C4\'', 'O4\'']])
 
     def _apply(self, group):
-        return set([a for a in group.atoms if (a.name in self.sug_atoms and a.resname in self.nucl_res)])
-
-    def __repr__(self):
-        return "<'NucleicSugarSelection' >"
+        return set([a for a in group.atoms
+                    if (a.name in self.sug_atoms and
+                        a.resname in self.nucl_res)])
 
 
 class PropertySelection(Selection):
     """Some of the possible properties:
     x, y, z, radius, mass,
     """
-
     def __init__(self, prop, operator, value, abs=False):
         self.prop = prop
         self.operator = operator
@@ -748,18 +684,13 @@ class PropertySelection(Selection):
                 res = res[0]
             result_set = [group.atoms[i] for i in res]
         elif self.prop == "mass":
-            result_set = [a for a in group.atoms if self.operator(a.mass, self.value)]
+            result_set = [a for a in group.atoms
+                          if self.operator(a.mass, self.value)]
         elif self.prop == "charge":
-            result_set = [a for a in group.atoms if self.operator(a.charge, self.value)]
+            result_set = [a for a in group.atoms
+                          if self.operator(a.charge, self.value)]
         return set(result_set)
 
-    def __repr__(self):
-        if self.abs:
-            abs_str = " abs "
-        else:
-            abs_str = ""
-        return "<'PropertySelection' " + abs_str + repr(self.prop) + " " + repr(self.operator.__name__) + " " + repr(
-            self.value) + ">"
 
 class SameSelection(Selection):
     # When adding new keywords here don't forget to also add them to the
@@ -767,6 +698,7 @@ class SameSelection(Selection):
     def __init__(self, sel, prop):
         self.sel = sel
         self.prop = prop
+
     def _apply(self, group):
         res = self.sel._apply(group)
         if not res:
@@ -790,8 +722,6 @@ class SameSelection(Selection):
         else:
             self._error(self.prop)
         return set(result_set)
-    def __repr__(self):
-        return "<'SameSelection' of "+ repr(self.prop)+" >"
 
 
 class ParseError(Exception):
