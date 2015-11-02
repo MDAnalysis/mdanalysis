@@ -30,6 +30,8 @@ Enhancement
 
   * GRO file reading approximately 50% faster for large files (Issue #212)
   * GRO file writing now will write velocities where possible (Issue #494)
+  * Added bonded selection (Issue #362)
+  * Spherical layer and spherical zone selections now much faster (Issue #362)
 
 Changes
   * built html doc files are no longer version controlled (Issue #491)
@@ -45,7 +47,7 @@ Fixes
   * Fixed non-compliant Amber NCDFWriter (Issue #488)
   * Fixed many Timestep methods failing when positions weren't present
     (Issue #512)
-
+  * Fixed PointSelection using KDTree (Issue #362)
 
 10/08/15
 

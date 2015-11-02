@@ -437,111 +437,93 @@ class TestDistanceSelections(object):
 
     Cylindrical methods don't use KDTree
     """
+    methods = [('kdtree', False),
+               ('distmat', True),
+               ('distmat', False)]
+
     def setUp(self):
         self.u = mda.Universe(TRZ_psf, TRZ)
 
     def tearDown(self):
         del self.u
 
-    def choosemeth(self, sel, meth):
+    def choosemeth(self, sel, meth, periodic):
         """hack in the desired apply method"""
         if meth == 'kdtree':
             sel._apply = sel._apply_KDTree
         elif meth == 'distmat':
             sel._apply = sel._apply_distmat
+
+        if periodic:
+            sel.periodic = True
+        else:
+            sel.periodic = False
+
         return sel
 
-    def _check_around(self, meth):
+    def _check_around(self, meth, periodic):
         sel = Parser.parse('around 5.0 resid 1', self.u.atoms)
-        sel = self.choosemeth(sel, meth)
+        sel = self.choosemeth(sel, meth, periodic)
         result = sel.apply(self.u.atoms)
 
         r1 = self.u.select_atoms('resid 1')
         cog = r1.center_of_geometry().reshape(1, 3)
 
-        # Ugly hack
-        # KDTree doesn't do periodicity
-        # distmat does
-        if meth == 'distmat':
-            box = self.u.dimensions
-        else:
-            box = None
-
-        d = distance_array(self.u.atoms.positions, r1.positions, box=box)
+        box = self.u.dimensions if periodic else None
+        d = distance_array(self.u.atoms.positions, r1.positions,
+                           box=box)
         ref = set(np.where(d < 5.0)[0])
 
         # Around doesn't include atoms from the reference group
         ref.difference_update(set(r1.indices))
         assert_(ref == set(result.indices))
 
-
     def test_around(self):
-        for meth in ['kdtree', 'distmat']:
-            yield self._check_around, meth
+        for meth, periodic in self.methods:
+            yield self._check_around, meth, periodic
 
-    def _check_spherical_layer(self, meth):
+    def _check_spherical_layer(self, meth, periodic):
         sel = Parser.parse('sphlayer 2.4 6.0 resid 1' , self.u.atoms)
-        sel = self.choosemeth(sel, meth)
+        sel = self.choosemeth(sel, meth, periodic)
         result = sel.apply(self.u.atoms)
 
         r1 = self.u.select_atoms('resid 1')
         cog = r1.center_of_geometry().reshape(1, 3)
 
-        # Ugly hack
-        # KDTree doesn't do periodicity
-        # distmat does
-        if meth == 'distmat':
-            box = self.u.dimensions
-        else:
-            box = None
-
+        box = self.u.dimensions if periodic else None
         d = distance_array(self.u.atoms.positions, cog, box=box)
         ref = set(np.where((d > 2.4) & (d < 6.0))[0])
 
         assert_(ref == set(result.indices))
 
     def test_spherical_layer(self):
-        for meth in ['kdtree', 'distmat']:
-            yield self._check_spherical_layer, meth
+        for meth, periodic in self.methods:
+            yield self._check_spherical_layer, meth, periodic
 
-    def _check_spherical_zone(self, meth):
+    def _check_spherical_zone(self, meth, periodic):
         sel = Parser.parse('sphzone 5.0 resid 1', self.u.atoms)
-        sel = self.choosemeth(sel, meth)
+        sel = self.choosemeth(sel, meth, periodic)
         result = sel.apply(self.u.atoms)
 
         r1 = self.u.select_atoms('resid 1')
         cog = r1.center_of_geometry().reshape(1, 3)
 
-        # Ugly hack
-        # KDTree doesn't do periodicity
-        # distmat does
-        if meth == 'distmat':
-            box = self.u.dimensions
-        else:
-            box = None
-
+        box = self.u.dimensions if periodic else None
         d = distance_array(self.u.atoms.positions, cog, box=box)
         ref = set(np.where(d < 5.0)[0])
 
         assert_(ref == set(result.indices))
 
     def test_spherical_zone(self):
-        for meth in ['kdtree', 'distmat']:
-            yield self._check_spherical_zone, meth
+        for meth, periodic in self.methods:
+            yield self._check_spherical_zone, meth, periodic
 
-    def _check_point(self, meth):
+    def _check_point(self, meth, periodic):
         sel = Parser.parse('point 5.0 5.0 5.0  3.0', self.u.atoms)
-        sel = self.choosemeth(sel, meth)
+        sel = self.choosemeth(sel, meth, periodic)
         result = sel.apply(self.u.atoms)
 
-        # Ugly hack
-        # KDTree doesn't do periodicity
-        # distmat does
-        if meth == 'distmat':
-            box = self.u.dimensions
-        else:
-            box = None
-
+        box = self.u.dimensions if periodic else None
         d = distance_array(np.array([[5.0, 5.0, 5.0]], dtype=np.float32),
                            self.u.atoms.positions,
                            box=box)
@@ -550,9 +532,8 @@ class TestDistanceSelections(object):
         assert_(ref == set(result.indices))
 
     def test_point(self):
-        # Doesn't work with KDTree currently
-        for meth in ['kdtree', 'distmat']:
-            yield self._check_point, meth
+        for meth, periodic in self.methods:
+            yield self._check_point, meth, periodic
 
 
 class TestTriclinicSelections(object):

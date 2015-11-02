@@ -215,17 +215,20 @@ class SphericalLayerSelection(DistanceSelection):
         return set(res_atoms)
 
     def _apply_distmat(self, group):
-        sel_atoms = self.sel._apply(group)  # group is wrong, should be universe (?!)
+        # group is wrong, should be universe (?!)
+        sel_atoms = self.sel._apply(group)
         sel_CoG = AtomGroup(sel_atoms).center_of_geometry()
-        sys_atoms_list = [a for a in (self._group_atoms)]  # list needed for back-indexing
+        sel_CoG = sel_CoG.reshape(1, 3).astype(np.float32)
+        # list needed for back-indexing
+        sys_atoms_list = [a for a in (self._group_atoms)]
         sys_ag = AtomGroup(sys_atoms_list)
-        sel_CoG_str = \
-            str("point ") +\
-            str(sel_CoG[0]) + " " + str(sel_CoG[1]) + " " + str(sel_CoG[2]) + " " +\
-            str(self.exRadius) + " and not point " + str(sel_CoG[0]) + " " + str(sel_CoG[1]) + " " + \
-            str(sel_CoG[2]) + " " + str(self.inRadius)
-        sel = sys_ag.select_atoms(sel_CoG_str)
-        res_atoms = AtomGroup(set(sel))
+
+        box = sys_ag.dimensions if self.periodic else None
+        d = distances.distance_array(sel_CoG,
+                                     sys_ag.positions,
+                                     box=box)
+        idx = np.where((d < self.exRadius) & (d > self.inRadius))[1]
+        res_atoms = sys_ag[idx]
 
         return set(res_atoms)
 
@@ -254,14 +257,20 @@ class SphericalZoneSelection(DistanceSelection):
         return set(res_atoms)
 
     def _apply_distmat(self, group):
-        sel_atoms = self.sel._apply(group)  # group is wrong, should be universe (?!)
+        # group is wrong, should be universe (?!)
+        sel_atoms = self.sel._apply(group)
         sel_CoG = AtomGroup(sel_atoms).center_of_geometry()
-        sys_atoms_list = [a for a in (self._group_atoms)]  # list needed for back-indexing
+        sel_CoG = sel_CoG.reshape(1, 3).astype(np.float32)
+        # list needed for back-indexing
+        sys_atoms_list = [a for a in (self._group_atoms)]
         sys_ag = AtomGroup(sys_atoms_list)
-        sel_CoG_str = str("point ") + str(sel_CoG[0]) + " " + str(sel_CoG[1]) + " " + str(sel_CoG[2]) + " " + str(
-            self.cutoff)
-        sel = sys_ag.select_atoms(sel_CoG_str)
-        res_atoms = AtomGroup(set(sel))
+
+        box = sys_ag.dimensions if self.periodic else None
+        d = distances.distance_array(sel_CoG,
+                                     sys_ag.positions,
+                                     box=box)
+        idx = np.where(d < self.cutoff)[1]
+        res_atoms = sys_ag[idx]
 
         return set(res_atoms)
 
