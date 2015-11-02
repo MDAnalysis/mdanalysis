@@ -32,12 +32,14 @@ import MDAnalysis as mda
 import MDAnalysis.core.Selection
 from MDAnalysis.lib.distances import distance_array
 from MDAnalysis.core.topologyobjects import TopologyGroup
+from MDAnalysis.core.Selection import Parser
 
 from MDAnalysis.tests.datafiles import (
     PSF, DCD,
     PRMpbc, TRJpbc_bz2,
     PSF_NAMD, PDB_NAMD,
-    GRO, NUCL, TPR, XTC
+    GRO, NUCL, TPR, XTC,
+    TRZ_psf, TRZ,
 )
 from MDAnalysisTests.plugins.knownfailure import knownfailure
 
@@ -421,6 +423,135 @@ class TestSelectionsNucleicAcids(TestCase):
         rna = self.universe.select_atoms("nucleicsugar")
         assert_equal(rna.n_residues, 23)
         assert_equal(rna.n_atoms, rna.n_residues * 5)
+
+
+class TestDistanceSelections(object):
+    """Both KDTree and distmat selections on orthogonal system
+
+    Selections to check:
+     - Around
+     - SphericalLayer
+     - SphericalZone
+     - Point
+
+    Cylindrical methods don't use KDTree
+    """
+    def setUp(self):
+        self.u = mda.Universe(TRZ_psf, TRZ)
+
+    def tearDown(self):
+        del self.u
+
+    def choosemeth(self, sel, meth):
+        """hack in the desired apply method"""
+        if meth == 'kdtree':
+            sel._apply = sel._apply_KDTree
+        elif meth == 'distmat':
+            sel._apply = sel._apply_distmat
+        return sel
+
+    def _check_around(self, meth):
+        sel = Parser.parse('around 5.0 resid 1', self.u.atoms)
+        sel = self.choosemeth(sel, meth)
+        result = sel.apply(self.u.atoms)
+
+        r1 = self.u.select_atoms('resid 1')
+        cog = r1.center_of_geometry().reshape(1, 3)
+
+        # Ugly hack
+        # KDTree doesn't do periodicity
+        # distmat does
+        if meth == 'distmat':
+            box = self.u.dimensions
+        else:
+            box = None
+
+        d = distance_array(self.u.atoms.positions, r1.positions, box=box)
+        ref = set(np.where(d < 5.0)[0])
+
+        # Around doesn't include atoms from the reference group
+        ref.difference_update(set(r1.indices))
+        assert_(ref == set(result.indices))
+
+
+    def test_around(self):
+        for meth in ['kdtree', 'distmat']:
+            yield self._check_around, meth
+
+    def _check_spherical_layer(self, meth):
+        sel = Parser.parse('sphlayer 2.4 6.0 resid 1' , self.u.atoms)
+        sel = self.choosemeth(sel, meth)
+        result = sel.apply(self.u.atoms)
+
+        r1 = self.u.select_atoms('resid 1')
+        cog = r1.center_of_geometry().reshape(1, 3)
+
+        # Ugly hack
+        # KDTree doesn't do periodicity
+        # distmat does
+        if meth == 'distmat':
+            box = self.u.dimensions
+        else:
+            box = None
+
+        d = distance_array(self.u.atoms.positions, cog, box=box)
+        ref = set(np.where((d > 2.4) & (d < 6.0))[0])
+
+        assert_(ref == set(result.indices))
+
+    def test_spherical_layer(self):
+        for meth in ['kdtree', 'distmat']:
+            yield self._check_spherical_layer, meth
+
+    def _check_spherical_zone(self, meth):
+        sel = Parser.parse('sphzone 5.0 resid 1', self.u.atoms)
+        sel = self.choosemeth(sel, meth)
+        result = sel.apply(self.u.atoms)
+
+        r1 = self.u.select_atoms('resid 1')
+        cog = r1.center_of_geometry().reshape(1, 3)
+
+        # Ugly hack
+        # KDTree doesn't do periodicity
+        # distmat does
+        if meth == 'distmat':
+            box = self.u.dimensions
+        else:
+            box = None
+
+        d = distance_array(self.u.atoms.positions, cog, box=box)
+        ref = set(np.where(d < 5.0)[0])
+
+        assert_(ref == set(result.indices))
+
+    def test_spherical_zone(self):
+        for meth in ['kdtree', 'distmat']:
+            yield self._check_spherical_zone, meth
+
+    def _check_point(self, meth):
+        sel = Parser.parse('point 5.0 5.0 5.0  3.0', self.u.atoms)
+        sel = self.choosemeth(sel, meth)
+        result = sel.apply(self.u.atoms)
+
+        # Ugly hack
+        # KDTree doesn't do periodicity
+        # distmat does
+        if meth == 'distmat':
+            box = self.u.dimensions
+        else:
+            box = None
+
+        d = distance_array(np.array([[5.0, 5.0, 5.0]], dtype=np.float32),
+                           self.u.atoms.positions,
+                           box=box)
+        ref = set(np.where(d < 3.5)[1])
+
+        assert_(ref == set(result.indices))
+
+    def test_point(self):
+        # Doesn't work with KDTree currently
+        for meth in ['kdtree', 'distmat']:
+            yield self._check_point, meth
 
 
 class TestTriclinicSelections(object):

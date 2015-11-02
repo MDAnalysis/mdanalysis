@@ -108,20 +108,34 @@ class GlobalSelection(Selection):
         sel = self.sel._apply(group.universe)
         return sel
 
-class AroundSelection(Selection):
-    def __init__(self, sel, cutoff, periodic=None):
+class DistanceSelection(Selection):
+    """Base class for distance search based selections
+
+    Grabs the flags for this selection
+     - 'use_KDTree_routines'
+     - 'use_periodic_selections'
+
+    Populates the `_apply` method with either
+     - _apply_KDTree
+     - _apply_distmat
+    """
+    def __init__(self):
+        if flags['use_KDTree_routines'] in (True, 'fast', 'always'):
+            self._apply = self._apply_KDTree
+        else:
+            self._apply = self._apply_distmat
+
+        self.periodic = flags['use_periodic_selections']
+        # KDTree doesn't support periodic
+        if self.periodic:
+            self._apply = self._apply_distmat
+
+
+class AroundSelection(DistanceSelection):
+    def __init__(self, sel, cutoff):
+        super(AroundSelection, self).__init__()
         self.sel = sel
         self.cutoff = cutoff
-        self.sqdist = cutoff * cutoff
-        if periodic is None:
-            self.periodic = flags['use_periodic_selections']
-
-    def _apply(self, group):
-        # make choosing _fast/_slow configurable (while testing)
-        if flags['use_KDTree_routines'] in (True, 'fast', 'always'):
-            return self._apply_KDTree(group)
-        else:
-            return self._apply_distmat(group)
 
     def _apply_KDTree(self, group):
         """KDTree based selection is about 7x faster than distmat for typical problems.
@@ -160,7 +174,7 @@ class AroundSelection(Selection):
         sel_coor = Selection.coord[sel_indices]
         sys_coor = Selection.coord[sys_indices]
         if self.periodic:
-            box = group.dimensions[:3]  # ignored with KDTree
+            box = group.dimensions[:3]
         else:
             box = None
 
@@ -171,20 +185,12 @@ class AroundSelection(Selection):
         return set(res_atoms)
 
 
-class SphericalLayerSelection(Selection):
-    def __init__(self, sel, inRadius, exRadius, periodic=None):
+class SphericalLayerSelection(DistanceSelection):
+    def __init__(self, sel, inRadius, exRadius):
+        super(SphericalLayerSelection, self).__init__()
         self.sel = sel
         self.inRadius = inRadius
         self.exRadius = exRadius
-        if periodic is None:
-            self.periodic = flags['use_periodic_selections']
-
-    def _apply(self, group):
-        # make choosing _fast/_slow configurable (while testing)
-        if flags['use_KDTree_routines'] in (True, 'fast', 'always'):
-            return self._apply_KDTree(group)
-        else:
-            return self._apply_distmat(group)
 
     def _apply_KDTree(self, group):
         """Selection using KDTree but periodic = True not supported.
@@ -195,8 +201,7 @@ class SphericalLayerSelection(Selection):
         sel_atoms = self.sel._apply(group)
         sel_CoG = AtomGroup(sel_atoms).center_of_geometry()
         self.ref = np.array((sel_CoG[0], sel_CoG[1], sel_CoG[2]))
-        if self.periodic:
-            pass  # or warn? -- no periodic functionality with KDTree search
+
         kdtree = KDTree(dim=3, bucket_size=10)
         kdtree.set_coords(sys_coor)
 
@@ -206,6 +211,7 @@ class SphericalLayerSelection(Selection):
         found_IntIndices = kdtree.get_indices()
         found_indices = list(set(found_ExtIndices) - set(found_IntIndices))
         res_atoms = [self._group_atoms_list[i] for i in found_indices]
+
         return set(res_atoms)
 
     def _apply_distmat(self, group):
@@ -220,27 +226,15 @@ class SphericalLayerSelection(Selection):
             str(sel_CoG[2]) + " " + str(self.inRadius)
         sel = sys_ag.select_atoms(sel_CoG_str)
         res_atoms = AtomGroup(set(sel))
-        if self.periodic:
-            box = group.dimensions[:3]  # ignored with KDTree
-        else:
-            box = None
+
         return set(res_atoms)
 
 
-class SphericalZoneSelection(Selection):
-    def __init__(self, sel, cutoff, periodic=None):
+class SphericalZoneSelection(DistanceSelection):
+    def __init__(self, sel, cutoff):
+        super(SphericalZoneSelection, self).__init__()
         self.sel = sel
         self.cutoff = cutoff
-        self.sqdist = cutoff * cutoff
-        if periodic is None:
-            self.periodic = flags['use_periodic_selections']
-
-    def _apply(self, group):
-        # make choosing _fast/_slow configurable (while testing)
-        if flags['use_KDTree_routines'] in (True, 'fast', 'always'):
-            return self._apply_KDTree(group)
-        else:
-            return self._apply_distmat(group)
 
     def _apply_KDTree(self, group):
         """Selection using KDTree but periodic = True not supported.
@@ -251,8 +245,6 @@ class SphericalZoneSelection(Selection):
         sel_atoms = self.sel._apply(group)  # group is wrong, should be universe (?!)
         sel_CoG = AtomGroup(sel_atoms).center_of_geometry()
         self.ref = np.array((sel_CoG[0], sel_CoG[1], sel_CoG[2]))
-        if self.periodic:
-            pass  # or warn? -- no periodic functionality with KDTree search
 
         kdtree = KDTree(dim=3, bucket_size=10)
         kdtree.set_coords(sys_coor)
@@ -270,15 +262,12 @@ class SphericalZoneSelection(Selection):
             self.cutoff)
         sel = sys_ag.select_atoms(sel_CoG_str)
         res_atoms = AtomGroup(set(sel))
-        if self.periodic:
-            box = group.dimensions[:3]  # ignored with KDTree
-        else:
-            box = None
+
         return set(res_atoms)
 
 
 class _CylindricalSelection(Selection):
-    def __init__(self, sel, exRadius, zmax, zmin, periodic=None):
+    def __init__(self, sel, exRadius, zmax, zmin):
         self.sel = sel
         self.exRadius = exRadius
         self.exRadiusSq = exRadius * exRadius
@@ -287,10 +276,6 @@ class _CylindricalSelection(Selection):
         self.periodic = flags['use_periodic_selections']
 
     def _apply(self, group):
-        #KDTree function not implementable
-        return self._apply_distmat(group)
-
-    def _apply_distmat(self, group):
         sel_atoms = self.sel._apply(group)
         sel_CoG = AtomGroup(sel_atoms).center_of_geometry()
         coords = AtomGroup(Selection._group_atoms_list).positions
@@ -344,44 +329,36 @@ class _CylindricalSelection(Selection):
 
 
 class CylindricalZoneSelection(_CylindricalSelection):
-    def __init__(self, sel, exRadius, zmax, zmin, periodic=None):
-        _CylindricalSelection.__init__(self, sel, exRadius, zmax, zmin, periodic)
+    def __init__(self, sel, exRadius, zmax, zmin):
+        _CylindricalSelection.__init__(self, sel, exRadius, zmax, zmin)
 
 
 class CylindricalLayerSelection(_CylindricalSelection):
-    def __init__(self, sel, inRadius, exRadius, zmax, zmin, periodic=None):
-        _CylindricalSelection.__init__(self, sel, exRadius, zmax, zmin, periodic)
+    def __init__(self, sel, inRadius, exRadius, zmax, zmin):
+        _CylindricalSelection.__init__(self, sel, exRadius, zmax, zmin)
         self.inRadius = inRadius
         self.inRadiusSq = inRadius * inRadius
 
 
-class PointSelection(Selection):
-    def __init__(self, x, y, z, cutoff, periodic=None):
-        self.ref = np.array((float(x), float(y), float(z)))
-        self.cutoff = float(cutoff)
-        self.cutoffsq = float(cutoff) * float(cutoff)
-        if periodic is None:
-            self.periodic = flags['use_periodic_selections']
-
-    def _apply(self, group):
-        # make choosing _fast/_slow configurable (while testing)
-        if flags['use_KDTree_routines'] in ('always',):
-            return self._apply_KDTree(group)
-        else:
-            return self._apply_distmat(group)
+class PointSelection(DistanceSelection):
+    def __init__(self, x, y, z, cutoff):
+        super(PointSelection, self).__init__()
+        self.ref = np.array([x, y, z])
+        self.cutoff = cutoff
 
     def _apply_KDTree(self, group):
         """Selection using KDTree but periodic = True not supported.
         (KDTree routine is ca 15% slower than the distance matrix one)
         """
         sys_indices = np.array([a.index for a in self._group_atoms_list])
-        sys_coor = Selection.coord[sys_indices]
-        if self.periodic:
-            pass  # or warn? -- no periodic functionality with KDTree search
 
-        CNS = CoordinateNeighborSearch(sys_coor)  # cache the KDTree for this selection/frame?
-        found_indices = CNS.search(self.ref, self.cutoff)
-        res_atoms = [self._group_atoms_list[i] for i in found_indices]  # make list np array and use fancy indexing?
+        kdtree = KDTree(dim=3, bucket_size=10)
+        kdtree.set_coords(Selection.coord[sys_indices])
+        kdtree.search(self.ref, self.cutoff)
+        found_indices = kdtree.get_indices()
+
+        # make list np array and use fancy indexing?
+        res_atoms = [self._group_atoms_list[i] for i in found_indices]
         return set(res_atoms)
 
     def _apply_distmat(self, group):
