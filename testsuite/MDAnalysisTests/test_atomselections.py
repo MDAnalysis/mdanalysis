@@ -196,8 +196,11 @@ class TestSelectionsCHARMM(TestCase):
         assert_equal(subsel[-1].index, 4)
 
     # TODO:
-    # add more test cases for byres, bynum
     # and also for selection keywords such as 'nucleic'
+    def test_byres(self):
+        sel = self.universe.select_atoms('byres bynum 0:5')
+
+        assert_equal(len(sel), len(self.universe.residues[0]))
 
     def test_same_resname(self):
         """Test the 'same ... as' construct (Issue 217)"""
@@ -231,8 +234,6 @@ class TestSelectionsCHARMM(TestCase):
 
         #cleanup
         self.universe.residues.set_segids("4AKE")
-
-
 
     def test_empty_selection(self):
         """Test that empty selection can be processed (see Issue 12)"""
