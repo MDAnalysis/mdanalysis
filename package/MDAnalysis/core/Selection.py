@@ -788,7 +788,7 @@ class SameSelection(Selection):
             sel_indices = np.array([a.index for a in Selection._group_atoms])
             result_set = group.atoms[np.where(np.in1d(p[sel_indices], p[res_indices]))[0]]._atoms
         else:
-            self._error(self.prop, expected=False)
+            self._error(self.prop)
         return set(result_set)
     def __repr__(self):
         return "<'SameSelection' of "+ repr(self.prop)+" >"
@@ -925,12 +925,10 @@ class SelectionParser:
         """Pops off the next token in our token stream."""
         return self.tokens.pop(0)
 
-    def _error(self, token, expected=True):
+    def _error(self, token):
         """Stops parsing and reports an error."""
-        if expected:
-            raise ParseError("Parsing error- '" + self.selectstr + "'\n" + repr(token) + " expected")
-        else:
-            raise ParseError("Parsing error- '" + self.selectstr + "'\n" + repr(token) + " unexpected")
+        raise ParseError("Parsing error- '{}'\n {} expected"
+                         "".format(self.selectstr, token))
 
     def _expect(self, token):
         if self._peek_token() == token:
@@ -941,14 +939,16 @@ class SelectionParser:
     def parse(self, selectstr, selgroups):
         self.selectstr = selectstr
         self.selgroups = selgroups
-        self.tokens = selectstr.replace('(', ' ( ').replace(')', ' ) ').split() + [self.EOF]
+        self.tokens = selectstr.replace('(', ' ( ').replace(')', ' ) ')
+        self.tokens = self.tokens.split() + [self.EOF]
         parsetree = self._parse_expression(0)
         self._expect(self.EOF)
         return parsetree
 
     def _parse_expression(self, p):
         exp1 = self._parse_subexp()
-        while self._peek_token() in (self.AND, self.OR) and self.precedence[self._peek_token()] >= p:  # bin ops
+        while (self._peek_token() in (self.AND, self.OR) and
+               self.precedence[self._peek_token()] >= p):  # bin ops
             op = self._consume_token()
             q = 1 + self.precedence[op]
             exp2 = self._parse_expression(q)
@@ -960,33 +960,37 @@ class SelectionParser:
         if op in (self.NOT, self.BYRES, self.GLOBAL):  # unary operators
             exp = self._parse_expression(self.precedence[op])
             return self.classdict[op](exp)
-        elif op in (self.AROUND):
+        elif op == self.AROUND:
             dist = self._consume_token()
             exp = self._parse_expression(self.precedence[op])
             return self.classdict[op](exp, float(dist))
-        elif op in (self.SPHLAYER):
+        elif op == self.SPHLAYER:
             inRadius = self._consume_token()
             exRadius = self._consume_token()
             exp = self._parse_expression(self.precedence[op])
             return self.classdict[op](exp, float(inRadius), float(exRadius))
-        elif op in (self.SPHZONE):
+        elif op == self.SPHZONE:
             dist = self._consume_token()
             exp = self._parse_expression(self.precedence[op])
             return self.classdict[op](exp, float(dist))
-        elif op in (self.CYLAYER):
+        elif op == self.CYLAYER:
             inRadius = self._consume_token()
             exRadius = self._consume_token()
             zmax = self._consume_token()
             zmin = self._consume_token()
             exp = self._parse_expression(self.precedence[op])
-            return self.classdict[op](exp, float(inRadius), float(exRadius), float(zmax), float(zmin))
-        elif op in (self.CYZONE):
+            return self.classdict[op](exp,
+                                      float(inRadius), float(exRadius),
+                                      float(zmax), float(zmin))
+        elif op == self.CYZONE:
             exRadius = self._consume_token()
             zmax = self._consume_token()
             zmin = self._consume_token()
             exp = self._parse_expression(self.precedence[op])
-            return self.classdict[op](exp, float(exRadius), float(zmax), float(zmin))
-        elif op in (self.POINT):
+            return self.classdict[op](exp,
+                                      float(exRadius),
+                                      float(zmax), float(zmin))
+        elif op == self.POINT:
             dist = self._consume_token()
             x = self._consume_token()
             y = self._consume_token()
@@ -1025,14 +1029,16 @@ class SelectionParser:
             return self.classdict[op]()
         elif op == self.SUGAR:
             return self.classdict[op]()
-        elif op in (self.RESID, self.RESNUM, self.BYNUM):  # can operate on ranges X:Y or X-Y
+        elif op in (self.RESID, self.RESNUM, self.BYNUM):
+            # can operate on ranges X:Y or X-Y
             data = self._consume_token()
             try:
                 lower = int(data)
                 upper = None
             except ValueError:
+                # check if in appropriate format 'lower:upper' or 'lower-upper'
                 selrange = re.match("(\d+)[:-](\d+)",
-                                    data)  # check if in appropriate format 'lower:upper' or 'lower-upper'
+                                    data)
                 if not selrange:
                     self._error(op)
                 lower, upper = map(int, selrange.groups())
@@ -1067,9 +1073,9 @@ class SelectionParser:
                 exp = self._parse_expression(self.precedence[op])
                 return self.classdict[op](exp, prop)
             else:
-                self._error(prop, expected=False)
+                self._error(prop)
         else:
-            self._error(op, expected=False)
+            self._error(op)
 
 # The module level instance
 Parser = SelectionParser()
