@@ -426,7 +426,7 @@ class TestSelectionsNucleicAcids(TestCase):
         assert_equal(rna.n_atoms, rna.n_residues * 5)
 
 
-class TestDistanceSelections(object):
+class BaseDistanceSelection(object):
     """Both KDTree and distmat selections on orthogonal system
 
     Selections to check:
@@ -440,12 +440,6 @@ class TestDistanceSelections(object):
     methods = [('kdtree', False),
                ('distmat', True),
                ('distmat', False)]
-
-    def setUp(self):
-        self.u = mda.Universe(TRZ_psf, TRZ)
-
-    def tearDown(self):
-        del self.u
 
     def choosemeth(self, sel, meth, periodic):
         """hack in the desired apply method"""
@@ -527,7 +521,7 @@ class TestDistanceSelections(object):
         d = distance_array(np.array([[5.0, 5.0, 5.0]], dtype=np.float32),
                            self.u.atoms.positions,
                            box=box)
-        ref = set(np.where(d < 3.5)[1])
+        ref = set(np.where(d < 3.0)[1])
 
         assert_(ref == set(result.indices))
 
@@ -535,6 +529,21 @@ class TestDistanceSelections(object):
         for meth, periodic in self.methods:
             yield self._check_point, meth, periodic
 
+
+class TestOrthogonalDistanceSelections(BaseDistanceSelection):
+    def setUp(self):
+        self.u = mda.Universe(TRZ_psf, TRZ)
+
+    def tearDown(self):
+        del self.u
+
+
+class TestTriclinicDistanceSelections(BaseDistanceSelection):
+    def setUp(self):
+        self.u = mda.Universe(GRO)
+
+    def tearDown(self):
+        del self.u
 
 class TestTriclinicSelections(object):
     """Non-KDTree based selections

@@ -174,7 +174,7 @@ class AroundSelection(DistanceSelection):
         sel_coor = Selection.coord[sel_indices]
         sys_coor = Selection.coord[sys_indices]
         if self.periodic:
-            box = group.dimensions[:3]
+            box = group.dimensions
         else:
             box = None
 
@@ -375,11 +375,11 @@ class PointSelection(DistanceSelection):
         sys_indices = np.array([a.index for a in self._group_atoms_list])
         sys_coor = Selection.coord[sys_indices]
         ref_coor = self.ref[np.newaxis, ...]
-        # Fix: Arrarys need to be converted to dtype=float32 to work with distance_array
+
         sys_coor = np.asarray(sys_coor, dtype=np.float32)
         ref_coor = np.asarray(ref_coor, dtype=np.float32)
         if self.periodic:
-            box = group.dimensions[:3]
+            box = group.dimensions
         else:
             box = None
 
