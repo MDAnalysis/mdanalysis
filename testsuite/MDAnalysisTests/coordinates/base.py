@@ -110,6 +110,7 @@ class BaseReference(object):
         self.n_frames = 5
         # default for the numpy test functions
         self.prec = 6
+        self.container_format = False
 
         self.first_frame = Timestep(self.n_atoms)
         self.first_frame.positions = np.arange(
@@ -191,14 +192,16 @@ class BaseReaderTest(object):
         assert_timestep_almost_equal(ts, self.ref.jump_to_frame,
                                      decimal=self.ref.prec)
 
-    def test_get_writer(self):
+    def test_get_writer_container(self):
+        if not self.ref.container_format:
+            return
         with tempdir.in_tempdir():
             self.outfile = 'test-writer' + self.ref.ext
             with self.reader.Writer(self.outfile) as W:
                 assert_equal(isinstance(W, self.ref.writer), True)
                 assert_equal(W.n_atoms, self.reader.n_atoms)
 
-    def test_get_writer_2(self):
+    def test_get_writer(self):
         with tempdir.in_tempdir():
             self.outfile = 'test-writer' + self.ref.ext
             with self.reader.Writer(self.outfile, n_atoms=100) as W:
@@ -230,7 +233,6 @@ class BaseReaderTest(object):
                                          decimal=self.ref.prec)
 
 
-
 class BaseWriterTest(object):
     def __init__(self, reference):
         self.ref = reference
@@ -242,7 +244,7 @@ class BaseWriterTest(object):
 
     def test_write_trajectory_timestep(self):
         outfile = self.tmp_file('write-timestep-test')
-        with self.ref.writer(outfile) as W:
+        with self.ref.writer(outfile, self.reader.n_atoms) as W:
             for ts in self.reader:
                 W.write(ts)
         self._check_copy(outfile)
@@ -250,7 +252,7 @@ class BaseWriterTest(object):
     def test_write_trajectory_atomgroup(self):
         uni = mda.Universe(self.ref.topology, self.ref.trajectory)
         outfile = self.tmp_file('write-atoms-test')
-        with self.ref.writer(outfile) as w:
+        with self.ref.writer(outfile, uni.atoms.n_atoms) as w:
             for ts in uni.trajectory:
                 w.write(uni.atoms)
         self._check_copy(outfile)
@@ -258,7 +260,7 @@ class BaseWriterTest(object):
     def test_write_trajectory_universe(self):
         uni = mda.Universe(self.ref.topology, self.ref.trajectory)
         outfile = self.tmp_file('write-uni-test')
-        with self.ref.writer(outfile) as w:
+        with self.ref.writer(outfile, uni.atoms.n_atoms) as w:
             for ts in uni.trajectory:
                 w.write(uni)
         self._check_copy(outfile)
@@ -269,7 +271,7 @@ class BaseWriterTest(object):
         sel = uni.select_atoms(sel_str)
         outfile = self.tmp_file('write-selection-test')
 
-        with self.ref.writer(outfile) as W:
+        with self.ref.writer(outfile, sel.n_atoms) as W:
             for ts in uni.trajectory:
                 W.write(sel.atoms)
 
@@ -291,8 +293,16 @@ class BaseWriterTest(object):
     @raises(TypeError)
     def test_write_none(self):
         outfile = self.tmp_file('write-none')
-        with self.ref.writer(outfile) as w:
+        with self.ref.writer(outfile, 42) as w:
             w.write(None)
+
+    # Only some writer formats can work without the n_atoms argument
+    def test_no_container(self):
+        with tempdir.in_tempdir():
+            if self.ref.container_format:
+                self.ref.writer('foo')
+            else:
+                assert_raises(ValueError, self.ref.writer, 'foo')
 
 
 class BaseTimestepTest(object):
@@ -409,9 +419,9 @@ class BaseTimestepTest(object):
     def test_coordinate_getter_shortcuts(self):
         """testing that reading _x, _y, and _z works as expected
         # (Issue 224) (TestTimestep)"""
-        assert_allclose(self.ts._x, self.ts._pos[:,0])
-        assert_allclose(self.ts._y, self.ts._pos[:,1])
-        assert_allclose(self.ts._z, self.ts._pos[:,2])
+        assert_allclose(self.ts._x, self.ts._pos[:, 0])
+        assert_allclose(self.ts._y, self.ts._pos[:, 1])
+        assert_allclose(self.ts._z, self.ts._pos[:, 2])
 
     def test_coordinate_setter_shortcuts(self):
         # Check that _x _y and _z are read only
@@ -732,11 +742,11 @@ class BaseTimestepTest(object):
                 continue
 
             ts1 = self.Timestep(self.size,
-                                positions=p, 
+                                positions=p,
                                 velocities=v,
                                 forces=f)
             ts2 = self.Timestep(self.size,
-                                positions=p, 
+                                positions=p,
                                 velocities=v,
                                 forces=f)
             if p:
@@ -897,4 +907,3 @@ def assert_timestep_almost_equal(A, B, decimal=6, verbose=True):
     if A.has_forces:
         assert_array_almost_equal(A.forces, B.forces, decimal=decimal,
                                   err_msg='Timestep forces', verbose=verbose)
-
