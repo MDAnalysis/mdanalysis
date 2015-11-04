@@ -19,6 +19,7 @@ class XYZReference(BaseReference):
         self.ext = 'xyz'
         self.volume = 0
         self.dimensions = np.zeros(6)
+        self.container_format = True
 
 
 class TestXYZReader(BaseReaderTest):
