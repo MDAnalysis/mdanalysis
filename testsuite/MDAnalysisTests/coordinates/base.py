@@ -104,6 +104,23 @@ class _SingleFrameReader(TestCase, RefAdKSmall):
 
 
 class BaseReference(object):
+    """Define what a Reader should read here
+
+    Defines some values
+     - trajectory - the filename of the traj
+     - n_atoms
+     - n_frames
+     - prec - the precision at which reference data is compared
+     - container_format - if this Reader has an associated Writer?
+
+    Defines the four frames as Timestep objects, which are named:
+     - first_frame
+     - second_frame
+     - jump_to_frame (4th frame)
+     - last_frame
+
+     - dimensions - dimensions of the first frame
+    """
     def __init__(self):
         self.trajectory = None
         self.n_atoms = 5
@@ -202,6 +219,8 @@ class BaseReaderTest(object):
                 assert_equal(W.n_atoms, self.reader.n_atoms)
 
     def test_get_writer(self):
+        if not self.ref.container_format:
+            return
         with tempdir.in_tempdir():
             self.outfile = 'test-writer' + self.ref.ext
             with self.reader.Writer(self.outfile, n_atoms=100) as W:

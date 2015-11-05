@@ -1,13 +1,22 @@
-import MDAnalysis as mda
 import numpy as np
 from six.moves import zip
+from numpy.testing import (
+    assert_equal, assert_raises, assert_allclose
+)
 
-from numpy.testing import (assert_equal, assert_raises, assert_allclose)
+import MDAnalysis as mda
+from MDAnalysis.coordinates.base import Timestep
 
-from MDAnalysisTests.datafiles import (DLP_CONFIG, DLP_CONFIG_minimal,
-                                       DLP_CONFIG_order, DLP_HISTORY,
-                                       DLP_HISTORY_minimal, DLP_HISTORY_order)
-from MDAnalysisTests.coordinates.base import BaseTimestepTest
+from MDAnalysisTests.datafiles import (
+    DLP_CONFIG, DLP_CONFIG_minimal,
+    DLP_CONFIG_order, DLP_HISTORY,
+    DLP_HISTORY_minimal, DLP_HISTORY_order,
+)
+from MDAnalysisTests.coordinates.base import (
+    BaseTimestepTest,
+    BaseReaderTest,
+    BaseReference,
+)
 
 
 class _DLPConfig(object):
@@ -22,8 +31,8 @@ class _DLPConfig(object):
         del self.ts
 
     def test_read_unitcell(self):
-        ref = np.array([[18.6960000000, 0.0000000000, 0.0000000000
-                         ], [0.0000000000, 18.6960000000, 0.0000000000],
+        ref = np.array([[18.6960000000, 0.0000000000, 0.0000000000],
+                        [0.0000000000, 18.6960000000, 0.0000000000],
                         [0.0000000000, 0.0000000000, 18.6960000000]])
         assert_allclose(self.ts._unitcell, ref)
 
@@ -40,9 +49,47 @@ class _DLPConfig(object):
         assert_allclose(self.ts._forces[0], ref)
 
 
+class DLPConfigReference(object):
+    def __init__(self):
+        self.trajectory = DLP_CONFIG
+        self.n_atoms = 216
+        self.n_frames = 1
+        self.prec = 6
+        self.container_format = False
+
+        # Define first four frames
+        # fin = np.loadz(DLP_reference)
+
+        self.first_frame = Timestep(self.n_atoms)
+        self.first_frame.positions = 0.0
+
+        self.second_frame = Timestep(self.n_atoms)
+        self.second_frame.positions = 0.0
+
+        self.jump_to_frame = Timestep(self.n_atoms)
+        self.jump_to_frame.positions = 0.0
+
+        self.last_frame = Timestep(self.n_atoms)
+        self.last_frame.positions = 0.0
+
+        self.dimensions = np.array([18.696, 18.696, 18.696,
+                                    90, 90, 90], dtype=np.float32)
+        self.volume = mda.lib.mdamath.box_volume(self.dimensions)
+        self.time = 0
+        self.dt = 1
+        self.totaltime = 1.0
+
+        self.reader = mda.coordinates.DLPoly.ConfigReader
+
+
+class TestDLPolyConfig2(BaseReaderTest):
+    def __init__(self):
+        self.ref = DLPConfigReference()
+        self.reader = self.ref.reader(self.ref.trajectory)
+
+
 class TestConfigReader(_DLPConfig):
     f = DLP_CONFIG
-
     def test_read(self):
         assert self.rd.title == "DL_POLY: Potassium Chloride Test Case"
 
@@ -131,15 +178,15 @@ class _DLHistory(object):
         assert_equal(nums, [2])
 
     def test_position(self):
-        ref = np.array([[-7.595541651, -7.898808509, -7.861763110
-                         ], [-7.019565641, -7.264933320, -7.045213551],
+        ref = np.array([[-7.595541651, -7.898808509, -7.861763110],
+                        [-7.019565641, -7.264933320, -7.045213551],
                         [-6.787470785, -6.912685099, -6.922156843]])
         for ts, r in zip(self.u.trajectory, ref):
             assert_allclose(self.u.atoms[0].pos, r)
 
     def test_velocity(self):
-        ref = np.array([[1.109901682, -1.500264697, 4.752251711
-                         ], [-1.398479696, 2.091141311, 1.957430003],
+        ref = np.array([[1.109901682, -1.500264697, 4.752251711],
+                        [-1.398479696, 2.091141311, 1.957430003],
                         [0.2570827995, -0.7146878577, -3.547444215]])
         for ts, r in zip(self.u.trajectory, ref):
             assert_allclose(self.u.atoms[0].velocity, r)
@@ -152,14 +199,14 @@ class _DLHistory(object):
             assert_allclose(self.u.atoms[0].force, r)
 
     def test_unitcell(self):
-        ref1 = np.array([[18.6796195135, 0.0000058913, -0.0000139999
-                          ], [0.0000058913, 18.6794658887, -0.0000016255],
+        ref1 = np.array([[18.6796195135, 0.0000058913, -0.0000139999],
+                         [0.0000058913, 18.6794658887, -0.0000016255],
                          [-0.0000139999, -0.0000016255, 18.6797229304]])
-        ref2 = np.array([[17.2277221163, -0.0044216126, -0.0003229237
-                          ], [-0.0044205826, 17.2124253987, 0.0019439244],
+        ref2 = np.array([[17.2277221163, -0.0044216126, -0.0003229237],
+                         [-0.0044205826, 17.2124253987, 0.0019439244],
                          [-0.0003226531, 0.0019445826, 17.2416976104]])
-        ref3 = np.array([[16.5435673205, -0.0108424742, 0.0014935464
-                          ], [-0.0108333201, 16.5270298891, 0.0011094612],
+        ref3 = np.array([[16.5435673205, -0.0108424742, 0.0014935464],
+                         [-0.0108333201, 16.5270298891, 0.0011094612],
                          [0.0014948739, 0.0011058349, 16.5725517831]])
         for ts, r in zip(self.u.trajectory, [ref1, ref2, ref3]):
             assert_allclose(ts._unitcell, r)
