@@ -1190,7 +1190,7 @@ class ChainReader(ProtoReader):
 
     - :attr:`time` will not necessarily return the true time but just
       number of frames times a provided time between frames (from the
-      keyword *delta*)
+      keyword *frame_dt*)
 
     .. versionchanged:: 0.11.0
        Frames now 0-based instead of 1-based
@@ -1216,7 +1216,7 @@ class ChainReader(ProtoReader):
                skip step (also passed on to the individual trajectory
                readers); must be same for all trajectories
 
-           *delta*
+           *frame_dt*
                The time between frames in MDAnalysis time units if no
                other information is available. If this is not set then
                any call to :attr:`~ChainReader.time` will raise a
@@ -1228,13 +1228,22 @@ class ChainReader(ProtoReader):
 
         .. versionchanged:: 0.8
            The *delta* keyword was added.
+        .. versionchanged:: 0.13
+           The *delta* keyword was changed to *frame_dt*.
         """
         self.filenames = asiterable(filenames)
-        self.readers = [core.reader(filename, **kwargs) for filename in self.filenames]
-        self.__active_reader_index = 0  # pointer to "active" trajectory index into self.readers
+        self.readers = [core.reader(filename, **kwargs)
+                        for filename in self.filenames]
+        # pointer to "active" trajectory index into self.readers
+        self.__active_reader_index = 0
 
         self.skip = kwargs.get('skip', 1)
-        self._default_delta = kwargs.pop('delta', None)
+        if 'delta' in kwargs:
+            warnings.warn("Keyword 'delta' is now deprecated "
+                          "(from version 0.13); "
+                          "use 'frame_dt' instead", DeprecationWarning)
+        # Give priority to 'frame_delta' over the deprecated 'delta'
+        self._default_delta = kwargs.pop('frame_dt', kwargs.pop('delta', None))
         self.n_atoms = self._get_same('n_atoms')
         #self.fixed = self._get_same('fixed')
 
@@ -1349,7 +1358,7 @@ class ChainReader(ProtoReader):
         try:
             return self.frame * self._default_delta
         except TypeError:
-            raise ValueError("No timestep information available. Set delta to fake a constant time step.")
+            raise ValueError("No timestep information available. Set frame_dt to fake a constant time step.")
 
     def _apply(self, method, **kwargs):
         """Execute *method* with *kwargs* for all readers."""

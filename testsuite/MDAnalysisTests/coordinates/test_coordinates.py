@@ -64,7 +64,10 @@ class TestINPCRDReader(TestCase):
 class TestChainReader(TestCase):
 
     def setUp(self):
-        self.universe = mda.Universe(PSF, [DCD, CRD, DCD, CRD, DCD, CRD, CRD])
+        self.fake_dt = 100.0
+        self.universe = mda.Universe(PSF,
+                                     [DCD, CRD, DCD, CRD, DCD, CRD, CRD],
+                                     frame_dt=self.fake_dt)
         self.trajectory = self.universe.trajectory
         self.prec = 3
         # dummy output DCD file
@@ -128,12 +131,23 @@ class TestChainReader(TestCase):
             self.universe.atoms.coordinates(), coord0,
             "coordinates at frame 1 and 100 should be the same!")
 
-    @knownfailure("time attribute not implemented for chained reader",
-                  ValueError)
-    def test_time(self):
-        self.trajectory[30]  # index is 0-based but frames are 1-based
-        assert_almost_equal(self.universe.trajectory.time,
-                            31.0,
+    # We might want to revive this test once the ChainReader gets a cleverer
+    #  time counter.
+    #@knownfailure("time attribute not implemented for chained reader",
+    #              ValueError)
+    #def test_time(self):
+    #    self.trajectory[30]  # index is 0-based but frames are 1-based
+    #    assert_almost_equal(self.universe.trajectory.time,
+    #                        31.0,
+    #                        5,
+    #                        err_msg="wrong time of frame")
+
+    def test_faked_time(self):
+        # We test this for the beginning, middle and end of the trajectory.
+        for frame_n in (0, self.trajectory.n_frames/2, -1):
+            self.trajectory[frame_n]
+            assert_almost_equal(self.trajectory.time,
+                            self.trajectory.frame*self.fake_dt,
                             5,
                             err_msg="wrong time of frame")
 
