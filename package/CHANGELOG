@@ -20,7 +20,7 @@ The rules for this file:
 
 API Changes
 
-  * ChainReader `delta` keyword deprecated in favor of `frame_dt`. (Issue #522)
+  * ChainReader `delta` keyword deprecated in favor of `dt`. (Issue #522)
   * XYZWriter can now be used as a container format for different protein models
     as well as a normal trajectory. If `n_atoms` is None (default) MDAnalysis
     assumes that it is used as a container and won't give a warning if the
@@ -29,6 +29,7 @@ API Changes
 
 Enhancement
 
+  * ChainReader now reports times properly summed over sub-readers (Issue #522)
   * GRO file reading approximately 50% faster for large files (Issue #212)
   * GRO file writing now will write velocities where possible (Issue #494)
   * Added bonded selection (Issue #362)
