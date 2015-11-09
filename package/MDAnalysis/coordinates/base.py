@@ -1188,12 +1188,11 @@ class ChainReader(ProtoReader):
 
     - slicing not implemented
 
-    - :attr:`time` will not necessarily return the true time but just
-      number of frames times a provided time between frames (from the
-      keyword *delta*)
-
     .. versionchanged:: 0.11.0
        Frames now 0-based instead of 1-based
+    .. versionchanged:: 0.13.0
+       :attr:`time` now reports the time summed over each trajectory's
+       frames and individual :attr:`dt`. 
     """
     format = 'CHAIN'
 
@@ -1216,11 +1215,13 @@ class ChainReader(ProtoReader):
                skip step (also passed on to the individual trajectory
                readers); must be same for all trajectories
 
-           *delta*
-               The time between frames in MDAnalysis time units if no
-               other information is available. If this is not set then
-               any call to :attr:`~ChainReader.time` will raise a
-               :exc:`ValueError`.
+           *dt*
+               Passed to individual trajectory readers to enforce a common
+               time difference between frames, in MDAnalysis time units. If
+               not set, each reader's *dt* will be used (either inferred from
+               the trajectory files, or set to the reader's default) when
+               reporting frame times; note that this might mean an inconstant
+               time difference between frames.
 
            *kwargs*
                all other keyword arguments are passed on to each
@@ -1228,13 +1229,24 @@ class ChainReader(ProtoReader):
 
         .. versionchanged:: 0.8
            The *delta* keyword was added.
+        .. versionchanged:: 0.13
+           The *delta* keyword was deprecated in favor of using *dt*.
         """
+        if 'delta' in kwargs:
+            warnings.warn("Keyword 'delta' is now deprecated "
+                          "(from version 0.13); "
+                          "use 'dt' instead", DeprecationWarning)
+            delta = kwargs.pop('delta')
+            if 'dt' not in kwargs:
+                kwargs['dt'] = delta
+
         self.filenames = asiterable(filenames)
-        self.readers = [core.reader(filename, **kwargs) for filename in self.filenames]
-        self.__active_reader_index = 0  # pointer to "active" trajectory index into self.readers
+        self.readers = [core.reader(filename, **kwargs)
+                        for filename in self.filenames]
+        # pointer to "active" trajectory index into self.readers
+        self.__active_reader_index = 0
 
         self.skip = kwargs.get('skip', 1)
-        self._default_delta = kwargs.pop('delta', None)
         self.n_atoms = self._get_same('n_atoms')
         #self.fixed = self._get_same('fixed')
 
@@ -1258,6 +1270,8 @@ class ChainReader(ProtoReader):
         self.__start_frames = np.cumsum([0] + n_frames)
 
         self.n_frames = np.sum(n_frames)
+        self.dts = np.array(self._get('dt'))
+        self.total_times = self.dts * n_frames
 
         #: source for trajectories frame (fakes trajectory)
         self.__chained_trajectories_iter = None
@@ -1345,11 +1359,12 @@ class ChainReader(ProtoReader):
     @property
     def time(self):
         """Cumulative time of the current frame in MDAnalysis time units (typically ps)."""
-        # currently a hack, should really use a list of trajectory lengths and delta * local_frame
-        try:
-            return self.frame * self._default_delta
-        except TypeError:
-            raise ValueError("No timestep information available. Set delta to fake a constant time step.")
+        # Before 0.13 we had to distinguish between enforcing a common dt or
+        #  summing over each reader's times.
+        # Now each reader is either already instantiated with a common dt, or
+        #  left at its default dt. In any case, we sum over individual times.
+        trajindex, subframe = self._get_local_frame(self.frame)
+        return self.total_times[:trajindex].sum() + subframe * self.dts[trajindex]
 
     def _apply(self, method, **kwargs):
         """Execute *method* with *kwargs* for all readers."""
