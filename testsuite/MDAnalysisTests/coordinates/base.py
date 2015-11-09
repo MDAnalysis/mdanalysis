@@ -296,13 +296,20 @@ class BaseWriterTest(object):
         with self.ref.writer(outfile, 42) as w:
             w.write(None)
 
-    # Only some writer formats can work without the n_atoms argument
     def test_no_container(self):
         with tempdir.in_tempdir():
             if self.ref.container_format:
                 self.ref.writer('foo')
             else:
                 assert_raises(ValueError, self.ref.writer, 'foo')
+
+    def test_write_not_changing_ts(self):
+        outfile = self.tmp_file('write-not-changing-ts')
+        ts = self.reader.ts.copy()
+        copy_ts = ts.copy()
+        with self.ref.writer(outfile) as W:
+            W.write(ts)
+            assert_timestep_almost_equal(copy_ts, ts)
 
 
 class BaseTimestepTest(object):
