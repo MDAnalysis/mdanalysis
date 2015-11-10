@@ -301,13 +301,13 @@ class BaseWriterTest(object):
             if self.ref.container_format:
                 self.ref.writer('foo')
             else:
-                assert_raises(ValueError, self.ref.writer, 'foo')
+                assert_raises(TypeError, self.ref.writer, 'foo')
 
     def test_write_not_changing_ts(self):
         outfile = self.tmp_file('write-not-changing-ts')
         ts = self.reader.ts.copy()
         copy_ts = ts.copy()
-        with self.ref.writer(outfile) as W:
+        with self.ref.writer(outfile, n_atoms=5) as W:
             W.write(ts)
             assert_timestep_almost_equal(copy_ts, ts)
 
