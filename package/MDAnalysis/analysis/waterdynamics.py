@@ -639,7 +639,10 @@ class WaterOrientationalRelaxation(object):
         valdipList = []
 
         for j in range(totalFrames/dt-1):
-            a = self._getOneDeltaPoint(universe,repInd,j,sumsdt,dt)
+            try:
+                a = self._getOneDeltaPoint(universe,repInd,j,sumsdt,dt)
+            except ZeroDivisionError:
+                continue
             sumDeltaOH += a[0]
             sumDeltaHH += a[1]
             sumDeltadip += a[2]
