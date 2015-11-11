@@ -39,6 +39,8 @@ Changes
   * built html doc files are no longer version controlled (Issue #491)
 
 Fixes
+  * Fixed a numpy incompatibility in `analysis.leaflet.LeafletFinder`.
+    (Issue #533)
   * Cleaned up `MDAnalysis.Writer` docs regarding `dt` usage. (Issue #522)
   * Fixed setup-time dependency on numpy that broke pip installs. (Issue #479)
   * Fixed unpickling errors due to lingering dead universes. (Issue #487)
