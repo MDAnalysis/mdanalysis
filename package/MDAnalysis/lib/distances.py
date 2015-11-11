@@ -24,19 +24,60 @@ Fast C-routines to calculate distance arrays from coordinate arrays.
 Functions
 ---------
 
-.. autofunction:: distance_array(reference, configuation [, box [,result]])
-.. autofunction:: self_distance_array(reference [, box [,result]])
-.. autofunction:: calc_bonds(atom1, atom2 [, box, [,result]])
-.. autofunction:: calc_angles(atom1, atom2, atom3 [,box [, result]])
-.. autofunction:: calc_dihedrals(atom1, atom2, atom3, atom4 [,box [, result]])
-.. autofunction:: apply_PBC(coordinates, box)
-.. autofunction:: transform_RtoS(coordinates, box)
-.. autofunction:: transform_StoR(coordinates, box)
+All functions take the optional keyword *backend*, which determines the
+type of acceleration. Currently, the following choices are implemented:
+
+========== ======================== ======================================
+*backend*  module                   description
+========== ======================== ======================================
+"serial"   :mod:`_distances`        serial implementation in C/Cython
+
+"OpenMP"   :mod:`_distances_openmp` parallel implementation in C/Cython
+                                    with OpenMP
+========== ======================== ======================================
+
+.. autofunction:: distance_array(reference, configuration [, box [, result [, backend]]])
+.. autofunction:: self_distance_array(reference [, box [,result [, backend]]])
+.. autofunction:: calc_bonds(atom1, atom2 [, box, [, result [, backend]]])
+.. autofunction:: calc_angles(atom1, atom2, atom3 [,box [, result [, backend]]])
+.. autofunction:: calc_dihedrals(atom1, atom2, atom3, atom4 [,box [, result [, backend]]])
+.. autofunction:: apply_PBC(coordinates, box [, backend])
+.. autofunction:: transform_RtoS(coordinates, box [, backend])
+.. autofunction:: transform_StoR(coordinates, box [,backend])
 """
 import numpy as np
 from numpy.lib.utils import deprecate
 
 from .mdamath import triclinic_vectors, triclinic_box
+
+
+# hack to select backend with backend=<backend> kwarg. Note that
+# the cython parallel code (prange) in parallel.distances is
+# independent from the OpenMP code
+import importlib
+_distances = {}
+_distances['serial'] = importlib.import_module("._distances",
+                                         package="MDAnalysis.lib")
+try:
+    _distances['OpenMP'] = importlib.import_module("._distances_openmp",
+                                          package="MDAnalysis.lib")
+except ImportError:
+    pass
+del importlib
+
+def _run(funcname, args=None, kwargs=None, backend="serial"):
+    """Helper function to select a backend function *funcname*."""
+    args = args if args is not None else tuple()
+    kwargs = kwargs if kwargs is not None else dict()
+    try:
+        func = getattr(_distances[backend], funcname)
+    except KeyError:
+        raise RuntimeError("Function {0} not available with backend {1}; try one of: {2}".format(
+                funcname, backend, ", ".join(_distances.keys())))
+    return func(*args, **kwargs)
+
+# serial versions are always available (and are typically used within
+# the core and topology modules)
 from ._distances import (calc_distance_array,
                          calc_distance_array_ortho,
                          calc_distance_array_triclinic,
@@ -137,7 +178,7 @@ def _check_lengths_match(*arrays):
         raise ValueError("Input arrays must all be same shape"
                          "Got {0}".format([a.shape for a in arrays]))
 
-def distance_array(reference, configuration, box=None, result=None):
+def distance_array(reference, configuration, box=None, result=None, backend="serial"):
     """Calculate all distances between a reference set and another configuration.
 
     If there are *i* positions in reference, and *j* positions in configuration,
@@ -167,6 +208,9 @@ def distance_array(reference, configuration, box=None, result=None):
              shape (len(ref), len(conf)) and dtype=numpy.float64.
              Avoids creating the array which saves time when the function
              is called repeatedly. [``None``]
+        *backend*
+             select the type of acceleration; "serial" is always available. Other
+             possibilities are "OpenMP" (OpenMP).
     :Returns:
          *d*
              (len(reference),len(configuration)) numpy array with the distances d[i,j]
@@ -200,16 +244,22 @@ def distance_array(reference, configuration, box=None, result=None):
 
     if box is not None:
         if boxtype == 'ortho':
-            calc_distance_array_ortho(ref, conf, box, distances)
+            _run("calc_distance_array_ortho",
+                   args=(ref, conf, box, distances),
+                   backend=backend)
         else:
-            calc_distance_array_triclinic(ref, conf, box, distances)
+            _run("calc_distance_array_triclinic",
+                   args=(ref, conf, box, distances),
+                   backend=backend)
     else:
-        calc_distance_array(ref, conf, distances)
+        _run("calc_distance_array",
+               args=(ref, conf, distances),
+               backend=backend)
 
     return distances
 
 
-def self_distance_array(reference, box=None, result=None):
+def self_distance_array(reference, box=None, result=None, backend="serial"):
     """Calculate all distances within a configuration *reference*.
 
     If a *box* is supplied then a minimum image convention is used before
@@ -233,6 +283,9 @@ def self_distance_array(reference, box=None, result=None):
              (N*(N-1)/2,) and dtype ``numpy.float64``. Avoids creating
              the array which saves time when the function is called
              repeatedly. [``None``]
+        *backend*
+             select the type of acceleration; "serial" is always available. Other
+             possibilities are "OpenMP" (OpenMP).
     :Returns:
         *d*
              N*(N-1)/2 numpy 1D array with the distances dist[i,j] between ref
@@ -270,16 +323,22 @@ def self_distance_array(reference, box=None, result=None):
 
     if box is not None:
         if boxtype == 'ortho':
-            calc_self_distance_array_ortho(ref, box, distances)
+            _run("calc_self_distance_array_ortho",
+                   args=(ref, box, distances),
+                   backend=backend)
         else:
-            calc_self_distance_array_triclinic(ref, box, distances)
+            _run("calc_self_distance_array_triclinic",
+                   args=(ref, box, distances),
+                   backend=backend)
     else:
-        calc_self_distance_array(ref, distances)
+        _run("calc_self_distance_array",
+               args=(ref, distances),
+               backend=backend)
 
     return distances
 
 
-def transform_RtoS(inputcoords, box):
+def transform_RtoS(inputcoords, box, backend="serial"):
     """Transform an array of coordinates from real space to S space (aka lambda space)
 
     S space represents fractional space within the unit cell for this system
@@ -294,6 +353,9 @@ def transform_RtoS(inputcoords, box):
           Cell dimensions must be in an identical to format to those returned
           by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`,
           [lx, ly, lz, alpha, beta, gamma]
+      *backend*
+          select the type of acceleration; "serial" is always available. Other
+          possibilities are "OpenMP" (OpenMP).
 
     :Returns:
        *outcoords*
@@ -317,12 +379,14 @@ def transform_RtoS(inputcoords, box):
     # need order C here
     inv = np.array(np.matrix(box).I, dtype=np.float32, order='C')
 
-    coord_transform(coords, inv)
+    _run("coord_transform",
+           args=(coords, inv),
+           backend=backend)
 
     return coords
 
 
-def transform_StoR(inputcoords, box):
+def transform_StoR(inputcoords, box, backend="serial"):
     """Transform an array of coordinates from S space into real space.
 
     S space represents fractional space within the unit cell for this system
@@ -337,6 +401,9 @@ def transform_StoR(inputcoords, box):
            Cell dimensions must be in an identical to format to those returned
            by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`,
            [lx, ly, lz, alpha, beta, gamma]
+      *backend*
+          select the type of acceleration; "serial" is always available. Other
+          possibilities are "OpenMP" (OpenMP).
 
     :Returns:
        *outcoords*
@@ -354,12 +421,14 @@ def transform_StoR(inputcoords, box):
                         [0.0, box[1], 0.0],
                         [0.0, 0.0, box[2]]], dtype=np.float32)
 
-    coord_transform(coords, box)
+    _run("coord_transform",
+           args=(coords, box),
+           backend=backend)
 
     return coords
 
 
-def calc_bonds(coords1, coords2, box=None, result=None):
+def calc_bonds(coords1, coords2, box=None, result=None, backend="serial"):
     """
     Calculate all distances between a pair of atoms.  *atom1* and *atom2* are both
     arrays of coordinates, where atom1[i] and atom2[i] represent a bond.
@@ -393,6 +462,9 @@ def calc_bonds(coords1, coords2, box=None, result=None):
           optional preallocated result array which must be same length as coord
           arrays and dtype=numpy.float64. Avoids creating the
           array which saves time when the function is called repeatedly. [None]
+       *backend*
+          select the type of acceleration; "serial" is always available. Other
+          possibilities are "OpenMP" (OpenMP).
 
     :Returns:
        *bondlengths*
@@ -425,16 +497,22 @@ def calc_bonds(coords1, coords2, box=None, result=None):
 
     if box is not None:
         if boxtype == 'ortho':
-            calc_bond_distance_ortho(atom1, atom2, box, distances)
+            _run("calc_bond_distance_ortho",
+                   args=(atom1, atom2, box, distances),
+                   backend=backend)
         else:
-            calc_bond_distance_triclinic(atom1, atom2, box, distances)
+            _run("calc_bond_distance_triclinic",
+                   args=(atom1, atom2, box, distances),
+                   backend=backend)
     else:
-        calc_bond_distance(atom1, atom2, distances)
+        _run("calc_bond_distance",
+               args=(atom1, atom2, distances),
+               backend=backend)
 
     return distances
 
 
-def calc_angles(coords1, coords2, coords3, box=None, result=None):
+def calc_angles(coords1, coords2, coords3, box=None, result=None, backend="serial"):
     """
     Calculates the angle formed between three atoms, over a list of coordinates.
     All *atom* inputs are lists of coordinates of equal length, with *atom2*
@@ -467,6 +545,9 @@ def calc_angles(coords1, coords2, coords3, box=None, result=None):
         *result*
             optional preallocated results array which must have same length as coordinate
             array and dtype=numpy.float64.
+        *backend*
+            select the type of acceleration; "serial" is always available. Other
+            possibilities are "OpenMP" (OpenMP).
 
     :Returns:
         *angles*
@@ -502,16 +583,23 @@ def calc_angles(coords1, coords2, coords3, box=None, result=None):
 
     if box is not None:
         if boxtype == 'ortho':
-            calc_angle_ortho(atom1, atom2, atom3, box, angles)
+            _run("calc_angle_ortho",
+                   args=(atom1, atom2, atom3, box, angles),
+                   backend=backend)
         else:
-            calc_angle_triclinic(atom1, atom2, atom3, box, angles)
+            _run("calc_angle_triclinic",
+                   args=(atom1, atom2, atom3, box, angles),
+                   backend=backend)
     else:
-        calc_angle(atom1, atom2, atom3, angles)
+        _run("calc_angle",
+               args=(atom1, atom2, atom3, angles),
+               backend=backend)
 
     return angles
 
 
-def calc_dihedrals(coords1, coords2, coords3, coords4, box=None, result=None):
+def calc_dihedrals(coords1, coords2, coords3, coords4, box=None, result=None,
+                   backend="serial"):
     """
     Calculate the dihedral angle formed by four atoms, over a list of coordinates.
 
@@ -530,9 +618,9 @@ def calc_dihedrals(coords1, coords2, coords3, coords4, box=None, result=None):
 
     The optional argument ``box`` ensures that periodic boundaries are taken into
     account when constructing the connecting vectors between atoms, ie that the vector
-    between atoms 1 & 2 goes between coordinates in the same image.
+    between atoms 1 & 2 goes between coordinates in the same image::
 
-    angles = calc_dihedrals(coords1, coords2, coords3, coords4 [,box=box, result=angles])
+      angles = calc_dihedrals(coords1, coords2, coords3, coords4 [,box=box, result=angles])
 
     :Arguments:
         *coords1*
@@ -553,6 +641,9 @@ def calc_dihedrals(coords1, coords2, coords3, coords4, box=None, result=None):
         *result*
             optional preallocated results array which must have same length as
             coordinate array and dtype=numpy.float64.
+        *backend*
+            select the type of acceleration; "serial" is always available. Other
+            possibilities are "OpenMP" (OpenMP).
 
     :Returns:
         *angles*
@@ -593,11 +684,17 @@ def calc_dihedrals(coords1, coords2, coords3, coords4, box=None, result=None):
 
     if box is not None:
         if boxtype == 'ortho':
-            calc_dihedral_ortho(atom1, atom2, atom3, atom4, box, angles)
+            _run("calc_dihedral_ortho",
+                   args=(atom1, atom2, atom3, atom4, box, angles),
+                   backend=backend)
         else:
-            calc_dihedral_triclinic(atom1, atom2, atom3, atom4, box, angles)
+            _run("calc_dihedral_triclinic",
+                   args=(atom1, atom2, atom3, atom4, box, angles),
+                   backend=backend)
     else:
-        calc_dihedral(atom1, atom2, atom3, atom4, angles)
+        _run("calc_dihedral",
+               args=(atom1, atom2, atom3, atom4, angles),
+               backend=backend)
 
     return angles
 
@@ -605,7 +702,7 @@ calc_torsions = deprecate(calc_dihedrals, old_name='calc_torsions',
                           new_name='calc_dihedrals')
 
 
-def apply_PBC(incoords, box):
+def apply_PBC(incoords, box, backend="serial"):
     """Moves a set of coordinates to all be within the primary unit cell
 
     newcoords = apply_PBC(coords, box)
@@ -618,6 +715,9 @@ def apply_PBC(incoords, box):
            Cell dimensions must be in an identical to format to those returned
            by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`,
            [lx, ly, lz, alpha, beta, gamma]
+        *backend*
+           select the type of acceleration; "serial" is always available. Other
+           possibilities are "OpenMP" (OpenMP).
 
     :Returns:
         *newcoords*
@@ -645,12 +745,16 @@ def apply_PBC(incoords, box):
         box_inv[0] = 1.0 / box[0]
         box_inv[1] = 1.0 / box[1]
         box_inv[2] = 1.0 / box[2]
-        ortho_pbc(coords, box, box_inv)
+        _run("ortho_pbc",
+               args=(coords, box, box_inv),
+               backend=backend)
     else:
         box_inv[0] = 1.0 / box[0][0]
         box_inv[1] = 1.0 / box[1][1]
         box_inv[2] = 1.0 / box[2][2]
-        triclinic_pbc(coords, box, box_inv)
+        _run("triclinic_pbc",
+               args=(coords, box, box_inv),
+               backend=backend)
 
     return coords
 
