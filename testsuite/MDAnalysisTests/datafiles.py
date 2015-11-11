@@ -90,6 +90,7 @@ __all__ = [
     "Make_Whole",  # for testing the function lib.mdamath.make_whole, has 9 atoms
     "COORDINATES_XYZ",
     "COORDINATES_XYZ_BZ2",
+    "Martini_membrane_gro", # for testing the leaflet finder
 ]
 
 from pkg_resources import resource_filename
@@ -254,3 +255,5 @@ rmsfArray = resource_filename(__name__, 'data/adk_oplsaa_CA_rmsf.npy')
 HoomdXMLdata = resource_filename(__name__, 'data/C12x64.xml.bz2')
 
 Make_Whole = resource_filename(__name__, 'data/make_whole.gro')
+
+Martini_membrane_gro = resource_filename(__name__, 'data/martini_dppc_chol_bilayer.gro')
