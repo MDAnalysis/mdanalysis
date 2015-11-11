@@ -78,15 +78,10 @@ Load the module with ::
    .. versionadded:: 0.7.7
 """
 
-cimport numpy as np
 cimport cython
 from cython.parallel import parallel, prange
 
 import numpy as np
-
-# Register a np.float64 as data type 'DTYPE_t'
-DTYPE = np.float32
-ctypedef np.float32_t DTYPE_t
 
 # Register a C math sqrt function
 cdef extern from "math.h":
@@ -94,10 +89,10 @@ cdef extern from "math.h":
     float fabs(double x) nogil
     float round(double x) nogil
 
-def distance_array_serial(np.ndarray[DTYPE_t, ndim=2] coordA, \
-                          np.ndarray[DTYPE_t, ndim=2] coordB, \
-                          np.ndarray[DTYPE_t, ndim=1] box = None, \
-                          np.ndarray[DTYPE_t, ndim=2] result = None):
+def distance_array_serial(float[:, ::1] coordA, \
+                          float[:, ::1] coordB, \
+                          float[::1] box = None, \
+                          float[:, ::1] result = None):
     """distance_array_serial(ref,conf[,box[,result]])
 
     Calculate all distances d_ij between the coordinates ref[i] and
@@ -116,11 +111,11 @@ def distance_array_serial(np.ndarray[DTYPE_t, ndim=2] coordA, \
        Only orthorhombic boxes are supported, anything else will
        produce wrong results.
     """
-    cdef DTYPE_t x, y, z, dist
+    cdef float x, y, z, dist
     cdef Py_ssize_t i, j
 
     cdef char has_box = 0
-    cdef DTYPE_t box_x, box_y, box_z
+    cdef float box_x, box_y, box_z
 
     if box is not None:
         has_box = 1
@@ -134,7 +129,7 @@ def distance_array_serial(np.ndarray[DTYPE_t, ndim=2] coordA, \
     Distance matrix must be square: number of rows (%d) must be the same as the number of columns (%d)""" % (rows, cols)
 
     if result is None:
-        result = np.empty((rows, cols), dtype=DTYPE)
+        result = np.empty((rows, cols), dtype='f4')
     else:
         assert result.shape[0] == rows, "Results array should have %d rows, has %d" % (rows, result.shape[0])
         assert result.shape[1] == cols, "Results array should have %d columns, has %d" % (cols, result.shape[1])
@@ -160,10 +155,10 @@ def distance_array_serial(np.ndarray[DTYPE_t, ndim=2] coordA, \
 # both; I'll be happy to change, if there is a convention.
 
 @cython.boundscheck(False)
-def distance_array(np.ndarray[DTYPE_t, ndim=2] coordA, \
-                   np.ndarray[DTYPE_t, ndim=2] coordB, \
-                   np.ndarray[DTYPE_t, ndim=1] box = None, \
-                   np.ndarray[DTYPE_t, ndim=2] result = None):
+def distance_array(float[:, ::1] coordA, \
+                   float[:, ::1] coordB, \
+                   float[::1] box = None, \
+                   float[:, ::1] result = None):
 
     """distance_array(ref,conf,box=None,result=None)
 
@@ -173,11 +168,11 @@ def distance_array(np.ndarray[DTYPE_t, ndim=2] coordA, \
     Parallel version that will automatically decide on how many threads
     to run.
     """
-    cdef DTYPE_t x, y, z, dist
+    cdef float x, y, z, dist
     cdef Py_ssize_t i, j
 
     cdef char has_box = 0
-    cdef DTYPE_t box_x, box_y, box_z
+    cdef float box_x, box_y, box_z
 
     if box is not None:
         has_box = 1
@@ -190,7 +185,7 @@ def distance_array(np.ndarray[DTYPE_t, ndim=2] coordA, \
     cols = coordB.shape[0];
 
     if result is None:
-        result = np.empty((rows, cols), dtype=DTYPE)
+        result = np.empty((rows, cols), dtype='f4')
     else:
         assert result.shape[0] == rows, "Results array should have %d rows, has %d" % (rows, result.shape[0])
         assert result.shape[1] == cols, "Results array should have %d columns, has %d" % (cols, result.shape[1])
