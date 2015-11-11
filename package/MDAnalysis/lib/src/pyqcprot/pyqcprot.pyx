@@ -126,8 +126,6 @@ Users will typically use the :func:`CalcRMSDRotationalMatrix` function.
 """
 
 import numpy as np
-cimport numpy as np
-
 import cython
 
 cdef extern from "math.h":
@@ -136,11 +134,11 @@ cdef extern from "math.h":
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def InnerProduct(np.ndarray[np.float64_t,ndim=1] A,
-                 np.ndarray[np.float64_t,ndim=2] coords1,
-                 np.ndarray[np.float64_t,ndim=2] coords2,
+def InnerProduct(double[::1] A,
+                 double[:, ::1] coords1,
+                 double[:, ::1] coords2,
                  int N,
-                 np.ndarray[np.float64_t,ndim=1] weight):
+                 double[::1] weight):
     """
     Calculate the inner product of two structures.
 
@@ -236,7 +234,7 @@ def InnerProduct(np.ndarray[np.float64_t,ndim=1] A,
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def FastCalcRMSDAndRotation(np.ndarray[np.float64_t,ndim=1] rot, np.ndarray[np.float64_t,ndim=1] A, double E0, int N):
+def FastCalcRMSDAndRotation(double[::1] rot, double[::1] A, double E0, int N):
     """
     Calculate the RMSD, and/or the optimal rotation matrix.
 
@@ -262,7 +260,7 @@ def FastCalcRMSDAndRotation(np.ndarray[np.float64_t,ndim=1] rot, np.ndarray[np.f
     cdef double SxzpSzx, SyzpSzy, SxypSyx, SyzmSzy,
     cdef double SxzmSzx, SxymSyx, SxxpSyy, SxxmSyy
 
-    cdef np.ndarray[np.float64_t,ndim=1] C = np.zeros(4,)
+    cdef double[::1] C = np.zeros(4,)
     cdef unsigned int i
     cdef double mxEigenV
     cdef double oldg = 0.0
@@ -427,11 +425,11 @@ def FastCalcRMSDAndRotation(np.ndarray[np.float64_t,ndim=1] rot, np.ndarray[np.f
 
     return rms
 
-def CalcRMSDRotationalMatrix(np.ndarray[np.float64_t,ndim=2] ref,
-                             np.ndarray[np.float64_t,ndim=2] conf,
+def CalcRMSDRotationalMatrix(double[:, ::1] ref,
+                             double[:, ::1] conf,
                              int N,
-                             np.ndarray[np.float64_t,ndim=1] rot,
-                             np.ndarray[np.float64_t,ndim=1] weights):
+                             double[::1] rot,
+                             double[::1] weights):
     """
     Calculate the RMSD & rotational matrix.
 
@@ -450,7 +448,7 @@ def CalcRMSDRotationalMatrix(np.ndarray[np.float64_t,ndim=2] ref,
     .. Note:: All arrays *must* be of type `numpy.float64`.
     """
     cdef double E0, rmsd
-    cdef np.ndarray[np.float64_t,ndim=1] A = np.zeros(9,)
+    cdef double[::1] A = np.zeros(9,)
 
     E0 = InnerProduct(A,conf,ref,N,weights)
     rmsd = FastCalcRMSDAndRotation(rot,A,E0,N)
