@@ -16,12 +16,14 @@
 #
 
 """Fast distance array computation --- :mod:`MDAnalysis.lib.distances`
-====================================================================
+===================================================================
 
-Fast C-routines to calculate distance arrays from coordinate arrays.
+Fast C-routines to calculate distance arrays from coordinate
+arrays. Many of the functions also exist in parallel versions, that
+typically provide higher performance than the serial code.
 
-Functions
----------
+Selection of acceleration ("backend")
+-------------------------------------
 
 All functions take the optional keyword *backend*, which determines
 the type of acceleration. Currently, the following choices are
@@ -35,6 +37,11 @@ implemented (*backend* is case-insensitive):
 "OpenMP"   :mod:`_distances_openmp` parallel implementation in C/Cython
                                     with OpenMP
 ========== ======================== ======================================
+
+.. versionadded:: 0.13.0
+
+Functions
+---------
 
 .. autofunction:: distance_array(reference, configuration [, box [, result [, backend]]])
 .. autofunction:: self_distance_array(reference [, box [,result [, backend]]])
@@ -219,7 +226,10 @@ def distance_array(reference, configuration, box=None, result=None, backend="ser
              between reference coordinates i and configuration coordinates j
 
     .. Note:: This method is slower than it could be because internally we need to
-          make copies of the ref and conf arrays.
+              make copies of the ref and conf arrays.
+
+    .. versionchanged:: 0.13.0
+       Added *backend* keyword.
     """
     ref = reference.copy('C')
     conf = configuration.copy('C')
@@ -300,6 +310,9 @@ def self_distance_array(reference, box=None, result=None, backend="serial"):
 
     .. Note:: This method is slower than it could be because internally we need to
               make copies of the coordinate arrays.
+
+    .. versionchanged:: 0.13.0
+       Added *backend* keyword.
     """
     ref = reference.copy('C')
 
@@ -362,6 +375,9 @@ def transform_RtoS(inputcoords, box, backend="serial"):
     :Returns:
        *outcoords*
           An n x 3 array of fractional coordiantes
+
+    .. versionchanged:: 0.13.0
+       Added *backend* keyword.
     """
     coords = inputcoords.copy('C')
     numcoords = coords.shape[0]
@@ -410,6 +426,9 @@ def transform_StoR(inputcoords, box, backend="serial"):
     :Returns:
        *outcoords*
             An n x 3 array of fracional coordiantes
+
+    .. versionchanged:: 0.13.0
+       Added *backend* keyword.
     """
     coords = inputcoords.copy('C')
     numcoords = coords.shape[0]
@@ -473,6 +492,8 @@ def calc_bonds(coords1, coords2, box=None, result=None, backend="serial"):
           numpy array with the length between each pair in coords1 and coords2
 
     .. versionadded:: 0.8
+    .. versionchanged:: 0.13.0
+       Added *backend* keyword.
     """
     atom1 = coords1.copy('C')
     atom2 = coords2.copy('C')
@@ -558,6 +579,8 @@ def calc_angles(coords1, coords2, coords3, box=None, result=None, backend="seria
     .. versionadded:: 0.8
     .. versionchanged:: 0.9.0
        Added optional box argument to account for periodic boundaries in calculation
+    .. versionchanged:: 0.13.0
+       Added *backend* keyword.
     """
     atom1 = coords1.copy('C')
     atom2 = coords2.copy('C')
@@ -656,6 +679,8 @@ def calc_dihedrals(coords1, coords2, coords3, coords4, box=None, result=None,
        Added optional box argument to account for periodic boundaries in calculation
     .. versionchanged:: 0.11.0
        Renamed from calc_torsions to calc_dihedrals
+    .. versionchanged:: 0.13.0
+       Added *backend* keyword.
     """
     atom1 = coords1.copy('C')
     atom2 = coords2.copy('C')
@@ -727,6 +752,8 @@ def apply_PBC(incoords, box, backend="serial"):
            as defined by box
 
     .. versionadded:: 0.8
+    .. versionchanged:: 0.13.0
+       Added *backend* keyword.
     """
     coords = incoords.copy('C')
 
