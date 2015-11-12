@@ -45,12 +45,6 @@ class TestImports(TestCase):
         except ImportError:
             raise AssertionError("MDAnalysis.core.distances not available")
 
-    def test_core_parallel(self):
-        try:
-            import MDAnalysis.core.parallel
-        except ImportError:
-            raise AssertionError("MDAnalysis.core.parallel not available")
-
     def test_core_transformations(self):
         try:
             import MDAnalysis.core.transformations

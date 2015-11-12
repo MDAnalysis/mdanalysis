@@ -13,10 +13,10 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
---/--/-- tyler.je.reddy, kain88-de, richardjgowers, manuel.nuno.melo, 
+--/--/15 tyler.je.reddy, kain88-de, richardjgowers, manuel.nuno.melo,
          orbeckst
 
-  * 0.xx.x
+  * 0.13.0
 
 API Changes
 
@@ -26,7 +26,9 @@ API Changes
     assumes that it is used as a container and won't give a warning if the
     number of atoms differs between frames.
   * GROWriter.fmt strings updated to use format style (Issue #494)
-
+  * removed MDAnalysis.lib.parallel.distances; use the new backend="OpenMP"
+    keyword for the functions in MDAnalysis.lib.distances (Issue #530)
+        
 Enhancement
 
   * ChainReader now reports times properly summed over sub-readers (Issue #522)
@@ -34,11 +36,16 @@ Enhancement
   * GRO file writing now will write velocities where possible (Issue #494)
   * Added bonded selection (Issue #362)
   * Spherical layer and spherical zone selections now much faster (Issue #362)
+  * new keyword "backend" for accelerated functions in MDAnalysis.lib.distances
+    to select "serial" or "OpenMP"-enabled versions of the code; the default
+    is "serial" so old code will behave as before (see Issue #530)
 
 Changes
+
   * built html doc files are no longer version controlled (Issue #491)
 
 Fixes
+
   * AMBER netcdf writer now correctly uses float32 precision (Issue #518)
   * Fixed a numpy incompatibility in `analysis.leaflet.LeafletFinder`.
     (Issue #533)
