@@ -216,7 +216,8 @@ def rotation_matrix(a, b, weights=None):
         # weights are constructed as relative to the mean
         weights = np.asarray(weights) / np.mean(weights)
     rot = np.zeros(9, dtype=np.float64)
-    rmsd = qcp.CalcRMSDRotationalMatrix(a.T.astype(np.float64), b.T.astype(np.float64),
+    rmsd = qcp.CalcRMSDRotationalMatrix(np.ascontiguousarray(a.T, dtype='f8'),
+                                        np.ascontiguousarray(b.T, dtype='f8'),
                                         b.shape[0], rot, weights)
     return np.matrix(rot.reshape(3, 3)), rmsd
 
@@ -337,7 +338,8 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
 
     old_rmsd = rms.rmsd(mobile_atoms.coordinates(), ref_atoms.coordinates())
 
-    R, new_rmsd = rotation_matrix(mobile_coordinates, ref_coordinates, weights=weights)
+    R, new_rmsd = rotation_matrix(np.ascontiguousarray(mobile_coordinates),
+                                  np.ascontiguousarray(ref_coordinates), weights=weights)
 
     if subselection is None:
         atoms = mobile.universe.atoms
