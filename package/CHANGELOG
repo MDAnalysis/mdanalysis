@@ -39,6 +39,7 @@ Changes
   * built html doc files are no longer version controlled (Issue #491)
 
 Fixes
+  * AMBER netcdf writer now correctly uses float32 precision (Issue #518)
   * Fixed a numpy incompatibility in `analysis.leaflet.LeafletFinder`.
     (Issue #533)
   * Cleaned up `MDAnalysis.Writer` docs regarding `dt` usage. (Issue #522)
