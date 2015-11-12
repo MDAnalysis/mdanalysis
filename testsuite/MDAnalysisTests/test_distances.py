@@ -17,8 +17,8 @@ import MDAnalysis
 import MDAnalysis.lib.distances
 
 import numpy as np
-from numpy.testing import (TestCase,
-                           assert_almost_equal, assert_equal, assert_raises)
+from numpy.testing import (TestCase, raises,
+                           assert_almost_equal, assert_equal, assert_raises,)
 
 from nose.plugins.attrib import attr
 
@@ -679,3 +679,30 @@ class TestPeriodicAngles_Serial(_TestPeriodicAngles):
 
 class TestPeriodicAngles_OpenMP(_TestPeriodicAngles):
     backend = "OpenMP"
+
+class TestDistanceBackendSelection(object):
+    def __init__(self):
+        self.positions = np.random.rand(10, 3)
+        N = self.positions.shape[0]
+        self.result = np.empty(N*(N-1)/2, dtype=np.float64)
+
+    def _case_insensitivity_test(self, backend):
+        try:
+            MDAnalysis.lib.distances._run("calc_self_distance_array",
+                                          args=(self.positions, self.result),
+                                          backend=backend)
+        except RuntimeError:
+            raise AssertionError("Failed to understand backend {}".format(backend))
+    
+    def test_case_insensitivity(self):
+        for backend in ("serial", "Serial", "SeRiAL", "SERIAL",
+                        "openmp", "OpenMP", "oPENmP", "OPENMP"):
+            yield self._case_insensitivity_test, backend
+    
+    @raises(ValueError)
+    def test_missing_backend_raises_ValueError(self):
+        MDAnalysis.lib.distances._run("calc_self_distance_array",
+                                      args=(self.positions, self.result),
+                                      backend="not_implemented_stuff")
+        
+        

@@ -15,8 +15,7 @@
 #     doi:10.1002/jcc.21787
 #
 
-"""
-Fast distance array computation --- :mod:`MDAnalysis.lib.distances`
+"""Fast distance array computation --- :mod:`MDAnalysis.lib.distances`
 ====================================================================
 
 Fast C-routines to calculate distance arrays from coordinate arrays.
@@ -24,8 +23,9 @@ Fast C-routines to calculate distance arrays from coordinate arrays.
 Functions
 ---------
 
-All functions take the optional keyword *backend*, which determines the
-type of acceleration. Currently, the following choices are implemented:
+All functions take the optional keyword *backend*, which determines
+the type of acceleration. Currently, the following choices are
+implemented (*backend* is case-insensitive):
 
 ========== ======================== ======================================
 *backend*  module                   description
@@ -44,6 +44,7 @@ type of acceleration. Currently, the following choices are implemented:
 .. autofunction:: apply_PBC(coordinates, box [, backend])
 .. autofunction:: transform_RtoS(coordinates, box [, backend])
 .. autofunction:: transform_StoR(coordinates, box [,backend])
+
 """
 import numpy as np
 from numpy.lib.utils import deprecate
@@ -59,7 +60,7 @@ _distances = {}
 _distances['serial'] = importlib.import_module("._distances",
                                          package="MDAnalysis.lib")
 try:
-    _distances['OpenMP'] = importlib.import_module("._distances_openmp",
+    _distances['openmp'] = importlib.import_module("._distances_openmp",
                                           package="MDAnalysis.lib")
 except ImportError:
     pass
@@ -69,11 +70,12 @@ def _run(funcname, args=None, kwargs=None, backend="serial"):
     """Helper function to select a backend function *funcname*."""
     args = args if args is not None else tuple()
     kwargs = kwargs if kwargs is not None else dict()
+    backend = backend.lower()
     try:
         func = getattr(_distances[backend], funcname)
     except KeyError:
-        raise RuntimeError("Function {0} not available with backend {1}; try one of: {2}".format(
-                funcname, backend, ", ".join(_distances.keys())))
+        raise ValueError("Function {0} not available with backend {1}; try one of: {2}".format(
+            funcname, backend, ", ".join(_distances.keys())))
     return func(*args, **kwargs)
 
 # serial versions are always available (and are typically used within
