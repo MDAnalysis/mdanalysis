@@ -31,7 +31,7 @@ cdef extern from "string.h":
 
 cdef extern from "calc_distances.h":
     ctypedef float coordinate[3]
-
+    cdef bint USED_OPENMP
     void _calc_distance_array(coordinate* ref, int numref, coordinate* conf, int numconf, double* distances)
     void _calc_distance_array_ortho(coordinate* ref, int numref, coordinate* conf, int numconf, float* box, double* distances)
     void _calc_distance_array_triclinic(coordinate* ref, int numref, coordinate* conf, int numconf, coordinate* box, double* distances)
@@ -50,6 +50,10 @@ cdef extern from "calc_distances.h":
     void _calc_dihedral_triclinic(coordinate* atom1, coordinate* atom2, coordinate* atom3, coordinate* atom4, int numatom, coordinate* box, double* angles)
     void _ortho_pbc(coordinate* coords, int numcoords, float* box, float* box_inverse)
     void _triclinic_pbc(coordinate* coords, int numcoords, coordinate* box, float* box_inverse)
+
+
+OPENMP_ENABLED = True if USED_OPENMP else False
+
 
 def calc_distance_array(numpy.ndarray ref, numpy.ndarray conf,
                         numpy.ndarray result):
