@@ -184,7 +184,8 @@ def rmsd(a, b, weights=None, center=False):
         # weights=None is equivalent to all weights 1
         a = a - np.average(a, axis=0, weights=weights)
         b = b - np.average(b, axis=0, weights=weights)
-    return qcp.CalcRMSDRotationalMatrix(a.T.astype(np.float64), b.T.astype(np.float64),
+    return qcp.CalcRMSDRotationalMatrix(np.ascontiguousarray(a.T, dtype='f8'),
+                                        np.ascontiguousarray(b.T, dtype='f8'),
                                         a.shape[0], None, relative_weights)
 
 
