@@ -37,6 +37,9 @@ Enhancement
 
 Changes
   * built html doc files are no longer version controlled (Issue #491)
+  * The lib._distances and lib_distances_openmp libraries now have a
+    OPENMP_ENABLED boolean flag which indicates if openmp was used in
+    compilation.  (Issue #530)
 
 Fixes
   * AMBER netcdf writer now correctly uses float32 precision (Issue #518)

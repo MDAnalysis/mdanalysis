@@ -17,7 +17,7 @@ import MDAnalysis
 import MDAnalysis.lib.distances
 
 import numpy as np
-from numpy.testing import (TestCase, raises,
+from numpy.testing import (TestCase, raises, assert_,
                            assert_almost_equal, assert_equal, assert_raises,)
 
 from nose.plugins.attrib import attr
@@ -706,3 +706,9 @@ class TestDistanceBackendSelection(object):
                                       backend="not_implemented_stuff")
         
         
+class TestOpenMP(object):
+    def test_serial(self):
+        assert_(MDAnalysis.lib._distances.OPENMP_ENABLED == False)
+
+    def test_openmp(self):
+        assert_(MDAnalysis.lib._distances_openmp.OPENMP_ENABLED == True)
