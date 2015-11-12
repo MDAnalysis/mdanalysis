@@ -129,6 +129,16 @@ class _NCDFWriterTest(TestCase):
         with self.Writer(self.outfile, t.n_atoms, dt=t.dt) as W:
             self._copy_traj(W)
         self._check_new_traj()
+        import netCDF4
+        #for issue #518 -- preserve float32 data in ncdf output
+        dataset = netCDF4.Dataset(self.outfile, 'r', format='NETCDF3')
+        variable_dict = dataset.variables
+        coords = variable_dict['coordinates']
+        time = variable_dict['time']
+        self.assertTrue('float32' in coords.__repr__(),
+                'ncdf coord output not float32')
+        self.assertTrue('float32' in time.__repr__(),
+                'ncdf time output not float32')
 
     def test_OtherWriter(self):
         t = self.universe.trajectory
