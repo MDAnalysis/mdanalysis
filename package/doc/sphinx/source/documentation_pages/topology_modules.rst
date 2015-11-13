@@ -25,6 +25,7 @@ topology file format in the *topology_format* keyword argument to
    :maxdepth: 1
 
    topology/init
+   topology/dummy
    topology/PSFParser
    topology/TOPParser
    topology/CRDParser

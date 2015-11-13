@@ -19,6 +19,7 @@ provide the format in the keyword argument *format* to
    :maxdepth: 1
 
    coordinates/init
+   coordinates/dummy
    coordinates/CRD
    coordinates/DCD
    coordinates/DLPoly
