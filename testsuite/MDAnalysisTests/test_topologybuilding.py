@@ -22,6 +22,7 @@ Tests:
 """
 from numpy.testing import (
     assert_,
+    assert_raises,
 )
 
 import MDAnalysis as mda
@@ -43,7 +44,22 @@ class TestDummyParser(object):
 
 
 class TestDummyReader(object):
-    pass
+    def test_dummyreader(self):
+        r = mda.coordinates.dummy.DummyReader(10)
+
+        assert_(r.filename == 10)
+        assert_(r.n_atoms == 10)
+
+    def test_dummy_ts(self):
+        r = mda.coordinates.dummy.DummyReader(10)
+
+        assert_(len(r.ts) == 10)
+        assert_(r.ts.has_positions == False)
+        assert_raises(mda.NoDataError, getattr, r.ts, 'positions')
+        assert_(r.ts.has_velocities == False)
+        assert_raises(mda.NoDataError, getattr, r.ts, 'velocities')
+        assert_(r.ts.has_forces == False)
+        assert_raises(mda.NoDataError, getattr, r.ts, 'forces')
 
 
 class TestDummyUniverse(object):
