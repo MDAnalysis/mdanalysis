@@ -533,9 +533,7 @@ class Atom(object):
         if not isinstance(other, (Atom, AtomGroup)):
             raise TypeError('Can only add Atoms or AtomGroups (not "{0}")'
                             ' to Atom'.format(other.__class__.__name__))
-        # Dodge property to avoid NoDataErrors
-        # Will then allow addition of NoneUniverse to NoneUniverse..
-        if not self._universe is other._universe:
+        if not self.universe is other.universe:
             raise ValueError("Can only add objects from the same Universe")
         if isinstance(other, Atom):
             return AtomGroup([self, other])
