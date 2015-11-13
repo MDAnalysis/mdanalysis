@@ -286,12 +286,6 @@ def extensions(config):
                               define_macros=define_macros + parallel_macros,
                               extra_compile_args=parallel_args,
                               extra_link_args=parallel_args)
-    parallel_dist = MDAExtension("lib.parallel.distances",
-                              ['MDAnalysis/lib/distances_parallel' + source_suffix],
-                              include_dirs=include_dirs,
-                              libraries=['m'] + parallel_libraries,
-                              extra_compile_args=parallel_args,
-                              extra_link_args=parallel_args)
     qcprot = MDAExtension('lib.qcprot',
                        ['MDAnalysis/lib/src/pyqcprot/pyqcprot' + source_suffix],
                        include_dirs=include_dirs,
@@ -312,7 +306,7 @@ def extensions(config):
                     include_dirs=include_dirs,
                     define_macros=largefile_macros)
 
-    return [dcd, dcd_time, distances, distances_omp, parallel_dist, qcprot,
+    return [dcd, dcd_time, distances, distances_omp, qcprot,
             transformation, xdr]
 
 if __name__ == '__main__':

@@ -15,7 +15,7 @@
 #
 
 """
-Neighbor Search wrapper for MDAnalysis --- :mod: `MDAnalysis.lib.NeighborSearch`
+Neighbor Search wrapper for MDAnalysis --- :mod:`MDAnalysis.lib.NeighborSearch`
 ===============================================================================
 
 This module contains classes that allow neighbor searches directly with
