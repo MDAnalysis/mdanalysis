@@ -2191,12 +2191,21 @@ class TestCrossUniverse(object):
 
     def test_add_mixed_universes(self):
         # Issue #532
+        # Checks that adding objects from different universes
+        # doesn't proceed quietly.
         u1 = MDAnalysis.Universe(two_water_gro)
         u2 = MDAnalysis.Universe(two_water_gro)
 
         A = [u1.atoms[:2], u1.atoms[3]]
         B = [u2.atoms[:3], u2.atoms[0]]
 
+        # Checks Atom to Atom, Atom to AG, AG to Atom and AG to AG 
         for x, y in itertools.product(A, B):
             yield self._check_badadd, x, y
 
+    def test_adding_empty_ags(self):
+        # Check that empty AtomGroups don't trip up on the Universe check
+        u = MDAnalysis.Universe(two_water_gro)
+
+        assert_(len(AtomGroup([]) + u.atoms[:3]) == 3)
+        assert_(len(u.atoms[:3] + AtomGroup([])) == 3)
