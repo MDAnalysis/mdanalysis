@@ -27,6 +27,8 @@ from numpy.testing import (
 
 import MDAnalysis as mda
 
+from MDAnalysis.tests.datafiles import TRZ, TRZ_psf
+
 
 class TestDummyParser(object):
     def test_dummy(self):
@@ -69,3 +71,14 @@ class TestDummyUniverse(object):
         assert_(len(u.atoms) == 10)
         assert_(u.atoms.universe is u)
         assert_raises(mda.NoDataError, getattr, u.atoms, 'positions')
+
+
+class TestDummyTopology(object):
+    def test_use_dummy_top(self):
+        u = mda.Universe(8184, TRZ, topology_format='dummy')
+
+        assert_(len(u.atoms) == 8184)
+
+        u2 = mda.Universe(TRZ_psf, TRZ)
+
+        assert_(all(u.atoms[0].position == u2.atoms[0].position))
