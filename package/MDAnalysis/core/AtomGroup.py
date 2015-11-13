@@ -3812,6 +3812,25 @@ class Universe(object):
             self.make_anchor()
         self.anchor_name = kwargs.get('anchor_name')
 
+    @classmethod
+    def create_dummy(cls, natoms):
+        """Create an empty Universe with size *natoms*
+
+        .. versionadded:: 0.13.0
+        """
+        from ..topology.dummy import DummyParser
+        from ..coordinates.dummy import DummyReader
+
+        u = cls()
+        with DummyParser(natoms, universe=u) as p:
+            u._topology = p.parse()
+        # Generate atoms, residues and segments
+        u._init_topology()
+
+        u.trajectory = DummyReader(natoms)
+
+        return u
+
     def _clear_caches(self, *args):
         """Clear cache for all *args*.
 

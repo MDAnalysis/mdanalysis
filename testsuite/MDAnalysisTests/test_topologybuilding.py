@@ -63,4 +63,9 @@ class TestDummyReader(object):
 
 
 class TestDummyUniverse(object):
-    pass
+    def test_create_dummy(self):
+        u = mda.Universe.create_dummy(10)
+
+        assert_(len(u.atoms) == 10)
+        assert_(u.atoms.universe is u)
+        assert_raises(mda.NoDataError, getattr, u.atoms, 'positions')
