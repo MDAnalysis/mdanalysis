@@ -2181,3 +2181,22 @@ class TestOrphans(object):
         assert_(len(ag.universe.atoms) == len(u.atoms))
         assert_array_almost_equal(ag.positions, ag2.positions)
 
+
+class TestCrossUniverse(object):
+    """Test behaviour when we mix Universes"""
+    def _check_badadd(self, a, b):
+        def add(x, y):
+            return x + y
+        assert_raises(ValueError, add, a, b)
+
+    def test_add_mixed_universes(self):
+        # Issue #532
+        u1 = MDAnalysis.Universe(two_water_gro)
+        u2 = MDAnalysis.Universe(two_water_gro)
+
+        A = [u1.atoms[:2], u1.atoms[3]]
+        B = [u2.atoms[:3], u2.atoms[0]]
+
+        for x, y in itertools.product(A, B):
+            yield self._check_badadd, x, y
+
