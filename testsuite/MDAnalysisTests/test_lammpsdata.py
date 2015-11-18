@@ -21,13 +21,60 @@ from numpy.testing import (
 import MDAnalysis
 from MDAnalysis.tests.datafiles import (
     LAMMPSdata,
+    LAMMPScnt, LAMMPScnt2,
+    LAMMPShyd, LAMMPShyd2,
 )
 
 from MDAnalysisTests.test_topology import _TestTopology
 
 
+class _TestLammpsTop(_TestTopology):
+    def test_n_bonds(self):
+        if self.ref_n_bonds:
+            assert_equal(len(self.universe._topology['bonds']),
+                         self.ref_n_bonds)
+        else:
+            assert_('bonds' not in self.universe._topology)
 
-class TestLammpsData(_TestTopology):
+    def test_bond_member(self):
+        if self.ref_n_bonds:
+            assert_(self.ref_bond in self.universe._topology['bonds'])
+
+    def test_n_angles(self):
+        if self.ref_n_angles:
+            assert_equal(len(self.universe._topology['angles']),
+                         self.ref_n_angles)
+        else:
+            assert_('angles' not in self.universe._topology)
+
+    def test_angle_member(self):
+        if self.ref_n_angles:
+            assert_(self.ref_angle in self.universe._topology['angles'])
+
+    def test_n_dihedrals(self):
+        if self.ref_n_dihedrals:
+            assert_equal(len(self.universe._topology['dihedrals']),
+                         self.ref_n_dihedrals)
+        else:
+            assert_('dihedrals' not in self.universe._topology)
+
+    def test_dihedral_member(self):
+        if self.ref_n_dihedrals:
+            assert_(self.ref_dihedral in self.universe._topology['dihedrals'])
+
+    def test_n_impropers(self):
+        if self.ref_n_impropers:
+            assert_equal(len(self.universe._topology['impropers']),
+                         self.ref_n_impropers)
+        else:
+            assert_('impropers' not in self.universe._topology)
+
+    def test_improper_member(self):
+        if self.ref_n_impropers:
+            assert_(self.ref_improper in self.universe._topology['impropers'])
+
+
+class TestLammpsData(_TestLammpsTop):
     """Tests the reading of lammps .data topology files.
 
     The reading of coords and velocities is done separately in test_coordinates
@@ -36,6 +83,13 @@ class TestLammpsData(_TestTopology):
     parser = MDAnalysis.topology.LAMMPSParser.DATAParser
     ref_n_atoms = 18360
     ref_numresidues = 24
+    ref_n_bonds = 18336
+    ref_bond = (12, 14)
+    ref_n_angles = 29904
+    ref_angle = (3, 6, 9)
+    ref_n_dihedrals = 5712
+    ref_dihedral = (82, 85, 88, 89)
+    ref_n_impropers = 0
 
     def test_charge(self):
         # No charges were supplied, should default to 0.0
@@ -46,19 +100,52 @@ class TestLammpsData(_TestTopology):
 
     # Testing _psf prevent building TGs
     # test length and random item from within
-    def test_bonds(self):
-        assert_equal(len(self.universe._topology['bonds']), 18336)
-        assert_((5684, 5685) in self.universe._topology['bonds'])
-
-    def test_angles(self):
-        assert_equal(len(self.universe._topology['angles']), 29904)
-        assert_((7575, 7578, 7579) in self.universe._topology['angles'])
-
-    def test_dihedrals(self):
-        assert_equal(len(self.universe._topology['dihedrals']), 5712)
-        assert_((3210, 3212, 3215, 3218) in self.universe._topology['dihedrals'])
-
     def test_masses(self):
         assert_equal(self.universe.atoms[0].mass, 0.012)
 
+
+class TestLAMMPSCNT(_TestLammpsTop):
+    topology = LAMMPScnt
+    parser = MDAnalysis.topology.LAMMPSParser.DATAParser
+    ref_n_atoms = 604
+    ref_numresidues = 1
+    ref_n_bonds = 906
+    ref_bond = (9, 467)
+    ref_n_angles = 1812
+    ref_angle = (17, 16, 31)
+    ref_n_dihedrals = 3624
+    ref_dihedral = (22, 39, 40, 41)
+    ref_n_impropers = 604
+    ref_improper = (210, 159, 212, 566)
+
+
+class TestLAMMPSCNT2(TestLAMMPSCNT):
+    topology = LAMMPScnt2
+    def setUp(self):
+        self.universe = MDAnalysis.Universe(self.topology,
+                                            format='data')
+
+    def test_correct_parser(self):
+        pass
+
+
+class TestLAMMPSHYD(_TestLammpsTop):
+    topology = LAMMPShyd
+    parser = MDAnalysis.topology.LAMMPSParser.DATAParser
+    ref_n_atoms = 2
+    ref_numresidues = 1
+    ref_n_bonds = 1
+    ref_bond = (0, 1)
+    ref_n_angles = 0
+    ref_n_dihedrals = 0
+    ref_n_impropers = 0
+
+
+class TestLAMMPSHYD2(TestLAMMPSHYD):
+    topology = LAMMPShyd2
+    def setUp(self):
+        self.universe = MDAnalysis.Universe(self.topology,
+                                            format='data')
+    def test_correct_parser(self):
+        pass
 
