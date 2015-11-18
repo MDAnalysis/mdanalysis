@@ -44,7 +44,7 @@ import string
 import functools
 
 from ..core.AtomGroup import Atom
-from ..lib.util import openany, conv_float
+from ..lib.util import openany, anyopen, conv_float
 from ..lib.mdamath import triclinic_box
 from .base import TopologyReader
 from .core import guess_atom_mass, guess_atom_charge
@@ -134,11 +134,12 @@ class DATAParser(TopologyReader):
 
     .. versionadded:: 0.9.0
     """
-    def iterdata(self, f):
-        for line in f:
-            line = line.partition('#')[0].strip()
-            if line:
-                yield line        
+    def iterdata(self):
+        with anyopen(self.filename, 'r') as f:
+            for line in f:
+                line = line.partition('#')[0].strip()
+                if line:
+                    yield line        
 
     def grab_datafile(self):
         """Split a data file into dict of header and sections
@@ -148,7 +149,7 @@ class DATAParser(TopologyReader):
         header - dict of header section: value
         sections - dict of section name: content
         """
-        f = list(self.iterdata(open(self.filename, 'r')))
+        f = list(self.iterdata())
 
         starts = [i for i, line in enumerate(f)
                   if line.split()[0] in SECTIONS]
