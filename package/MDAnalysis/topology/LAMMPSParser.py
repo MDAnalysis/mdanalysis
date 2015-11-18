@@ -220,8 +220,6 @@ class DATAParser(TopologyReader):
         header, sects = self.grab_datafile()
 
         unitcell = self._parse_box(header)
-        # Figure out box information
-        x = header['xlo xhi']
 
         positions = np.zeros((n_atoms, 3),
                              dtype=np.float32, order='F')
