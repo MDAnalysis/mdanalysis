@@ -28,7 +28,7 @@ API Changes
   * GROWriter.fmt strings updated to use format style (Issue #494)
   * removed MDAnalysis.lib.parallel.distances; use the new backend="OpenMP"
     keyword for the functions in MDAnalysis.lib.distances (Issue #530)
-        
+
 Enhancement
 
   * ChainReader now reports times properly summed over sub-readers (Issue #522)
@@ -39,6 +39,8 @@ Enhancement
   * new keyword "backend" for accelerated functions in MDAnalysis.lib.distances
     to select "serial" or "OpenMP"-enabled versions of the code; the default
     is "serial" so old code will behave as before (see Issue #530)
+  * Lammps data file parsing improved greatly.  Should now support all files,
+    and triclinic geometry. (Issue #139)
 
 Changes
 
