@@ -1,4 +1,4 @@
-/* -*- mode: c; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- 
+/* -*- mode: c; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*-
  *
  * $Id$
  *
@@ -31,6 +31,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -71,7 +72,7 @@ typedef struct		/* This struct describes the order and the	*/
 static int nFloatSize(t_trnheader *sh,int *nflsz)
 {
     int nflsize=0;
-  
+
     if (sh->box_size)
         nflsize = sh->box_size/(DIM*DIM);
     else if (sh->x_size)
@@ -80,14 +81,14 @@ static int nFloatSize(t_trnheader *sh,int *nflsz)
         nflsize = sh->v_size/(sh->natoms*DIM);
     else if (sh->f_size)
         nflsize = sh->f_size/(sh->natoms*DIM);
-    else 
+    else
         return exdrHEADER;
-  
+
     if (((nflsize != sizeof(float)) && (nflsize != sizeof(double))))
         return exdrHEADER;
-      
+
     *nflsz = nflsize;
-  
+
     return exdrOK;
 }
 
@@ -97,11 +98,11 @@ static int do_trnheader(XDRFILE *xd,mybool bRead,t_trnheader *sh)
 	int nflsz,slen,result;
 	char *version = "GMX_trn_file";
 	char buf[BUFSIZE];
-  
+
 	if (xdrfile_read_int(&magic,1,xd) != 1)
 		return exdrINT;
-  
-	if (bRead) 
+
+	if (bRead)
     {
         if (xdrfile_read_int(&slen,1,xd) != 1)
             return exdrINT;
@@ -110,7 +111,7 @@ static int do_trnheader(XDRFILE *xd,mybool bRead,t_trnheader *sh)
         if (xdrfile_read_string(buf,BUFSIZE,xd) <= 0)
             return exdrSTRING;
     }
-	else 
+	else
     {
         slen = strlen(version)+1;
         if (xdrfile_read_int(&slen,1,xd) != 1)
@@ -140,16 +141,16 @@ static int do_trnheader(XDRFILE *xd,mybool bRead,t_trnheader *sh)
 		return exdrINT;
 	if (xdrfile_read_int(&sh->natoms,1,xd) != 1)
 		return exdrINT;
-	
+
 	if ((result = nFloatSize(sh,&nflsz)) != exdrOK)
 		return result;
 	sh->bDouble = (nflsz == sizeof(double));
-	
+
 	if (xdrfile_read_int(&sh->step,1,xd) != 1)
 		return exdrINT;
 	if (xdrfile_read_int(&sh->nre,1,xd) != 1)
 		return exdrINT;
-	if (sh->bDouble) 
+	if (sh->bDouble)
     {
         if (xdrfile_read_double(&sh->td,1,xd) != 1)
             return exdrDOUBLE;
@@ -158,7 +159,7 @@ static int do_trnheader(XDRFILE *xd,mybool bRead,t_trnheader *sh)
             return exdrDOUBLE;
         sh->lambdaf = sh->lambdad;
     }
-	else 
+	else
     {
         if (xdrfile_read_float(&sh->tf,1,xd) != 1)
             return exdrFLOAT;
@@ -167,7 +168,7 @@ static int do_trnheader(XDRFILE *xd,mybool bRead,t_trnheader *sh)
             return exdrFLOAT;
         sh->lambdad = sh->lambdaf;
     }
-  
+
     return exdrOK;
 }
 
@@ -179,12 +180,12 @@ static int do_htrn(XDRFILE *xd,mybool bRead,t_trnheader *sh,
 	float  pvf[DIM*DIM];
 	float  *fx=NULL;
 	int    i,j;
-	
-	if (sh->bDouble) 
+
+	if (sh->bDouble)
 	{
-		if (sh->box_size != 0) 
+		if (sh->box_size != 0)
         {
-            if (!bRead) 
+            if (!bRead)
             {
                 for(i=0; (i<DIM); i++)
                     for(j=0; (j<DIM); j++)
@@ -193,7 +194,7 @@ static int do_htrn(XDRFILE *xd,mybool bRead,t_trnheader *sh,
                             pvd[i*DIM+j] = box[i][j];
                         }
             }
-            if (xdrfile_read_double(pvd,DIM*DIM,xd) == DIM*DIM) 
+            if (xdrfile_read_double(pvd,DIM*DIM,xd) == DIM*DIM)
             {
                 for(i=0; (i<DIM); i++)
                     for(j=0; (j<DIM); j++)
@@ -205,27 +206,27 @@ static int do_htrn(XDRFILE *xd,mybool bRead,t_trnheader *sh,
             else
                 return exdrDOUBLE;
         }
-			
-		if (sh->vir_size != 0) 
+
+		if (sh->vir_size != 0)
         {
-            if (xdrfile_read_double(pvd,DIM*DIM,xd) != DIM*DIM) 
+            if (xdrfile_read_double(pvd,DIM*DIM,xd) != DIM*DIM)
                 return exdrDOUBLE;
         }
-		
-		if (sh->pres_size!= 0) 
+
+		if (sh->pres_size!= 0)
         {
-            if (xdrfile_read_double(pvd,DIM*DIM,xd) != DIM*DIM) 
+            if (xdrfile_read_double(pvd,DIM*DIM,xd) != DIM*DIM)
                 return exdrDOUBLE;
         }
-		
+
 		if ((sh->x_size != 0) || (sh->v_size != 0) || (sh->f_size != 0)) {
 			dx = (double *)calloc(sh->natoms*DIM,sizeof(dx[0]));
 			if (NULL == dx)
 				return exdrNOMEM;
 		}
-		if (sh->x_size   != 0) 
+		if (sh->x_size   != 0)
         {
-            if (!bRead) 
+            if (!bRead)
             {
                 for(i=0; (i<sh->natoms); i++)
                     for(j=0; (j<DIM); j++)
@@ -236,7 +237,7 @@ static int do_htrn(XDRFILE *xd,mybool bRead,t_trnheader *sh,
             }
             if (xdrfile_read_double(dx,sh->natoms*DIM,xd) == sh->natoms*DIM)
             {
-                if (bRead) 
+                if (bRead)
                 {
                     for(i=0; (i<sh->natoms); i++)
                         for(j=0; (j<DIM); j++)
@@ -249,9 +250,9 @@ static int do_htrn(XDRFILE *xd,mybool bRead,t_trnheader *sh,
             else
                 return exdrDOUBLE;
         }
-		if (sh->v_size   != 0) 
+		if (sh->v_size   != 0)
         {
-            if (!bRead) 
+            if (!bRead)
             {
                 for(i=0; (i<sh->natoms); i++)
                     for(j=0; (j<DIM); j++)
@@ -272,9 +273,9 @@ static int do_htrn(XDRFILE *xd,mybool bRead,t_trnheader *sh,
             else
                 return exdrDOUBLE;
         }
-		if (sh->f_size   != 0) 
+		if (sh->f_size   != 0)
         {
-            if (!bRead) 
+            if (!bRead)
             {
                 for(i=0; (i<sh->natoms); i++)
                     for(j=0; (j<DIM); j++)
@@ -306,9 +307,9 @@ static int do_htrn(XDRFILE *xd,mybool bRead,t_trnheader *sh,
 	else
 		/* Float */
 	{
-		if (sh->box_size != 0) 
+		if (sh->box_size != 0)
         {
-            if (!bRead) 
+            if (!bRead)
             {
                 for(i=0; (i<DIM); i++)
                     for(j=0; (j<DIM); j++)
@@ -317,7 +318,7 @@ static int do_htrn(XDRFILE *xd,mybool bRead,t_trnheader *sh,
                             pvf[i*DIM+j] = box[i][j];
                         }
             }
-            if (xdrfile_read_float(pvf,DIM*DIM,xd) == DIM*DIM) 
+            if (xdrfile_read_float(pvf,DIM*DIM,xd) == DIM*DIM)
             {
                 for(i=0; (i<DIM); i++)
                 {
@@ -333,27 +334,27 @@ static int do_htrn(XDRFILE *xd,mybool bRead,t_trnheader *sh,
             else
                 return exdrFLOAT;
         }
-			
-		if (sh->vir_size != 0) 
+
+		if (sh->vir_size != 0)
         {
-            if (xdrfile_read_float(pvf,DIM*DIM,xd) != DIM*DIM) 
+            if (xdrfile_read_float(pvf,DIM*DIM,xd) != DIM*DIM)
                 return exdrFLOAT;
         }
-		
-		if (sh->pres_size!= 0) 
+
+		if (sh->pres_size!= 0)
         {
-            if (xdrfile_read_float(pvf,DIM*DIM,xd) != DIM*DIM) 
+            if (xdrfile_read_float(pvf,DIM*DIM,xd) != DIM*DIM)
                 return exdrFLOAT;
         }
-		
+
 		if ((sh->x_size != 0) || (sh->v_size != 0) || (sh->f_size != 0)) {
 			fx = (float *)calloc(sh->natoms*DIM,sizeof(fx[0]));
 			if (NULL == fx)
 				return exdrNOMEM;
 		}
-		if (sh->x_size   != 0) 
+		if (sh->x_size   != 0)
         {
-            if (!bRead) 
+            if (!bRead)
             {
                 for(i=0; (i<sh->natoms); i++)
                     for(j=0; (j<DIM); j++)
@@ -364,7 +365,7 @@ static int do_htrn(XDRFILE *xd,mybool bRead,t_trnheader *sh,
             }
             if (xdrfile_read_float(fx,sh->natoms*DIM,xd) == sh->natoms*DIM)
             {
-                if (bRead) 
+                if (bRead)
                 {
                     for(i=0; (i<sh->natoms); i++)
                         for(j=0; (j<DIM); j++)
@@ -375,9 +376,9 @@ static int do_htrn(XDRFILE *xd,mybool bRead,t_trnheader *sh,
             else
                 return exdrFLOAT;
         }
-		if (sh->v_size   != 0) 
+		if (sh->v_size   != 0)
         {
-            if (!bRead) 
+            if (!bRead)
             {
                 for(i=0; (i<sh->natoms); i++)
                     for(j=0; (j<DIM); j++)
@@ -396,9 +397,9 @@ static int do_htrn(XDRFILE *xd,mybool bRead,t_trnheader *sh,
             else
                 return exdrFLOAT;
         }
-		if (sh->f_size   != 0) 
+		if (sh->f_size   != 0)
         {
-           if (!bRead) 
+           if (!bRead)
             {
                 for(i=0; (i<sh->natoms); i++)
                     for(j=0; (j<DIM); j++)
@@ -425,13 +426,13 @@ static int do_htrn(XDRFILE *xd,mybool bRead,t_trnheader *sh,
 }
 
 static int do_trn(XDRFILE *xd,mybool bRead,int *step,float *t,float *lambda,
-				  matrix box,int *natoms,rvec *x,rvec *v,rvec *f)
+				  matrix box,int *natoms,rvec *x,rvec *v,rvec *f, int *has_prop)
 {
     t_trnheader *sh;
     int result;
-  
+
     sh = (t_trnheader *)calloc(1,sizeof(*sh));
-  
+
     if (!bRead) {
         sh->box_size = (NULL != box) ? sizeof(matrix):0;
         sh->x_size   = ((NULL != x) ? (*natoms*sizeof(x[0])):0);
@@ -452,12 +453,19 @@ static int do_trn(XDRFILE *xd,mybool bRead,int *step,float *t,float *lambda,
         *step   = sh->step;
         *t      = sh->td;
         *lambda = sh->lambdad;
+        /* Flag what we read */
+        if (sh->x_size)
+            *has_prop |= HASX;
+        if (sh->v_size)
+            *has_prop |= HASV;
+        if (sh->f_size)
+            *has_prop |= HASF;
     }
     if ((result = do_htrn(xd,bRead,sh,box,x,v,f)) != exdrOK)
         return result;
 
     free(sh);
-  
+
     return exdrOK;
 }
 
@@ -466,13 +474,13 @@ static int do_trn(XDRFILE *xd,mybool bRead,int *step,float *t,float *lambda,
  *  The following routines are the exported ones
  *
  ************************************************************/
- 
+
 int read_trr_natoms(char *fn,int *natoms)
 {
 	XDRFILE *xd;
 	t_trnheader sh;
 	int  result;
-	
+
 	xd = xdrfile_open(fn,"r");
 	if (NULL == xd)
 		return exdrFILENOTFOUND;
@@ -480,19 +488,95 @@ int read_trr_natoms(char *fn,int *natoms)
 		return result;
 	xdrfile_close(xd);
 	*natoms = sh.natoms;
-	
+
 	return exdrOK;
 }
+
+int read_trr_n_frames(char *fn, int *n_frames, int64_t **offsets)
+{
+	XDRFILE *xd;
+	t_trnheader sh;
+	float time, lambda;
+	int result, framebytes, est_nframes, totalframebytes;
+    int64_t filesize, frame_offset;
+
+	if ((xd = xdrfile_open(fn,"r"))==NULL)
+		return exdrFILENOTFOUND;
+    if (xdr_seek(xd, 0L, SEEK_END) != exdrOK)
+    {
+        xdrfile_close(xd);
+        return exdrNR;
+    }
+    filesize = xdr_tell(xd);
+    if (xdr_seek(xd, 0L, SEEK_SET) != exdrOK)
+    {
+        xdrfile_close(xd);
+        return exdrNR;
+    }
+
+	if ((result = do_trnheader(xd,1,&sh)) != exdrOK)
+    {
+        xdrfile_close(xd);
+		return result;
+    }
+
+    framebytes = sh.ir_size + sh.e_size + sh.box_size +
+                 sh.vir_size + sh.pres_size + sh.top_size +
+                 sh.sym_size + sh.x_size + sh.v_size + sh.f_size;
+
+    est_nframes = (int) (filesize/((int64_t) (framebytes + TRR_MIN_HEADER_SIZE)) + 1); // add one because it'd be easy to underestimate low frame numbers.
+    est_nframes += est_nframes/5;
+
+    /* Allocate memory for the frame index array */
+    if ((*offsets=(int64_t *)malloc(sizeof(int64_t)*est_nframes))==NULL)
+    {
+        xdrfile_close(xd);
+        return exdrNOMEM;
+    }
+
+    (*offsets)[0] = 0L;
+    *n_frames = 1;
+    while (1)
+    {
+        if (xdr_seek(xd, (int64_t) (framebytes), SEEK_CUR) != exdrOK) {
+            free(*offsets);
+            xdrfile_close(xd);
+            return exdrNR;
+        }
+        frame_offset = xdr_tell(xd); /* Store it now, before we read the header */
+        if ((result = do_trnheader(xd,1,&sh)) != exdrOK) /* Interpreting as EOF */
+            break;
+        /* Read was successful; this is another frame */
+        /* Check if we need to enlarge array */
+        if (*n_frames == est_nframes){
+            est_nframes += est_nframes/5 + 1; // Increase in 20% stretches
+            if ((*offsets = realloc(*offsets, sizeof(int64_t)*est_nframes))==NULL)
+            {
+                xdrfile_close(xd);
+                return exdrNOMEM;
+            }
+        }
+        (*offsets)[*n_frames] = frame_offset;
+        (*n_frames)++;
+        /* Calculate how much to skip this time */
+        framebytes = sh.ir_size + sh.e_size + sh.box_size +
+                     sh.vir_size + sh.pres_size + sh.top_size +
+                     sh.sym_size + sh.x_size + sh.v_size + sh.f_size;
+    }
+	xdrfile_close(xd);
+	return exdrOK;
+}
+
 
 int write_trr(XDRFILE *xd,int natoms,int step,float t,float lambda,
 			  matrix box,rvec *x,rvec *v,rvec *f)
 {
-	return do_trn(xd,0,&step,&t,&lambda,box,&natoms,x,v,f);
+    int *plcholder;
+	return do_trn(xd,0,&step,&t,&lambda,box,&natoms,x,v,f, plcholder);
 }
 
 int read_trr(XDRFILE *xd,int natoms,int *step,float *t,float *lambda,
-			 matrix box,rvec *x,rvec *v,rvec *f)
+			 matrix box,rvec *x,rvec *v,rvec *f, int *has_prop)
 {
-	return do_trn(xd,1,step,t,lambda,box,&natoms,x,v,f);
+	return do_trn(xd,1,step,t,lambda,box,&natoms,x,v,f,has_prop);
 }
-

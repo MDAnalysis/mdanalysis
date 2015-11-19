@@ -46,16 +46,28 @@ extern "C" {
    
   /* This function returns the number of atoms in the xtc file in *natoms */
   extern int read_xtc_natoms(char *fn,int *natoms);
+
+  /* Seek through trajectory counting and indexing frames */
+  extern int read_xtc_n_frames(char *fn, int *n_frames, int64_t **offsets);
   
   /* Read one frame of an open xtc file */
   extern int read_xtc(XDRFILE *xd,int natoms,int *step,float *time,
 		      matrix box,rvec *x,float *prec);
-  
+
   /* Write a frame to xtc file */
   extern int write_xtc(XDRFILE *xd,
 		       int natoms,int step,float time,
 		       matrix box,rvec *x,float prec);
   
+/* XTC header fields until coord floats: *** only for trajectories of less than 10 atoms! ***  */
+/* magic natoms step time DIM*DIM_box_vecs natoms */
+#define XTC_SHORTHEADER_SIZE (20 + DIM*DIM*4)
+/* Short XTCs store each coordinate as a 32-bit float. */
+#define XTC_SHORT_BYTESPERATOM 12
+/* XTC header fields until frame bytes: *** only for trajectories of more than 9 atoms! ***  */
+/* magic natoms step time DIM*DIM_box_vecs natoms prec DIM_min_xyz DIM_max_xyz smallidx */
+#define XTC_HEADER_SIZE (DIM*DIM*4 + DIM*2 + 46)
+
 #ifdef __cplusplus
 }
 #endif
