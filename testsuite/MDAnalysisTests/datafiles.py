@@ -78,6 +78,8 @@ __all__ = [
     "capping_input", "capping_output", "capping_ace", "capping_nma",
     "LAMMPSdata", "trz4data", "LAMMPSdata_mini",
     "LAMMPSdata2", "LAMMPSdcd2",
+    "LAMMPScnt", "LAMMPScnt2",  # triclinic box
+    "LAMMPShyd", "LAMMPShyd2",
     "unordered_res",  # pdb file with resids non sequential
     "GMS_ASYMOPT",  # GAMESS C1  optimization
     "GMS_SYMOPT",   # GAMESS D4h optimization
@@ -230,6 +232,10 @@ LAMMPSdata = resource_filename(__name__, "data/lammps/datatest.data")
 LAMMPSdata_mini = resource_filename(__name__, "data/lammps/mini.data")
 LAMMPSdata2 = resource_filename(__name__, "data/lammps/ifabp_apo_100mM.data.bz2")
 LAMMPSdcd2 = resource_filename(__name__, "data/lammps/ifabp_apo_100mM.dcd")
+LAMMPScnt = resource_filename(__name__, "data/lammps/cnt-hexagonal-class1.data")
+LAMMPScnt2 = resource_filename(__name__, "data/lammps/cnt-hexagonal-class1.data2")
+LAMMPShyd = resource_filename(__name__, "data/lammps/hydrogen-class1.data")
+LAMMPShyd2 = resource_filename(__name__, "data/lammps/hydrogen-class1.data2")
 
 unordered_res = resource_filename(__name__, "data/unordered_res.pdb")
 
