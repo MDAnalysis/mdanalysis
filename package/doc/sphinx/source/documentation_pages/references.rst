@@ -58,10 +58,17 @@ If you use the water analysis code in
   Cx26 hemichannel structure. *Biophysical Journal*, **107** (3),
   599-612.
 
+If you use the Path Similarity Analysis (PSA) code in
+:mod:`MDAnalysis.analysis.psa` please cite
+
+* Seyler SL, Kumar A, Thorpe MF, Beckstein O (2015) Path Similarity
+  Analysis: A Method for Quantifying Macromolecular Pathways. PLoS
+  Comput Biol 11(10): e1004568. doi: `10.1371/journal.pcbi.1004568`_
 
 
-Thanks! 
+
+Thanks!
 
 .. _`10.1002/jcc.21787`: http://dx.doi.org/10.1002/jcc.21787
 .. _HELANAL: http://www.ccrnp.ncifcrf.gov/users/kumarsan/HELANAL/helanal.html
-
+.. _`10.1371/journal.pcbi.1004568`: http://dx.doi.org/10.1371/journal.pcbi.1004568
