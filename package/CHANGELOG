@@ -66,6 +66,7 @@ Fixes
   * Fixed many Timestep methods failing when positions weren't present
     (Issue #512)
   * Fixed PointSelection using KDTree (Issue #362)
+  * Fixed GROParser getting tripped up by some file (Issue #548)
 
 10/08/15
 
