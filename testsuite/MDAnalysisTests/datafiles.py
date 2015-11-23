@@ -85,6 +85,7 @@ __all__ = [
     "GMS_SYMOPT",   # GAMESS D4h optimization
     "GMS_ASYMSURF", # GAMESS C1  surface
     "two_water_gro", "two_water_gro_nonames",  # for bond guessing, 2 water molecules, one with weird names
+    "two_water_gro_widebox",  # Issue #548
     "DLP_CONFIG", "DLP_CONFIG_order", "DLP_CONFIG_minimal",  # dl_poly 4 config file
     "DLP_HISTORY", "DLP_HISTORY_order", "DLP_HISTORY_minimal",  # dl_poly 4 history file
     "waterPSF","waterDCD","rmsfArray",
@@ -245,6 +246,7 @@ GMS_ASYMSURF      = resource_filename(__name__, "data/gms/surf2wat.gms")
 
 two_water_gro = resource_filename(__name__, "data/two_water_gro.gro")
 two_water_gro_nonames = resource_filename(__name__, "data/two_water_gro_nonames.gro")
+two_water_gro_widebox = resource_filename(__name__, "data/two_water_gro_widebox.gro")
 
 DLP_CONFIG = resource_filename(__name__, "data/dlpoly/CONFIG")
 DLP_CONFIG_order = resource_filename(__name__, "data/dlpoly/CONFIG_order")
