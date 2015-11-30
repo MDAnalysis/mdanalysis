@@ -208,8 +208,11 @@ class Timestep(object):
 
         .. versionadded:: 0.11.0
         """
-        ts = cls(other.n_atoms, velocities=other.has_velocities,
-                 forces=other.has_forces, **kwargs)
+        ts = cls(other.n_atoms,
+                 positions=other.has_positions,
+                 velocities=other.has_velocities,
+                 forces=other.has_forces,
+                 **kwargs)
         ts.frame = other.frame
         ts.dimensions = other.dimensions
         try:
@@ -225,6 +228,8 @@ class Timestep(object):
         except NoDataError:
             pass
 
+        # Optional attributes that don't live in .data
+        # should probably iron out these last kinks
         for att in ('_frame',):
             try:
                 setattr(ts, att, getattr(other, att))
@@ -239,16 +244,37 @@ class Timestep(object):
         return ts
 
     @classmethod
-    def from_coordinates(cls, positions, velocities=None, forces=None, **kwargs):
+    def from_coordinates(cls,
+                         positions=None,
+                         velocities=None,
+                         forces=None,
+                         **kwargs):
         """Create an instance of this Timestep, from coordinate data
+
+        Can pass position, velocity and force data to form a Timestep.
 
         .. versionadded:: 0.11.0
         """
+        has_positions = positions is not None
         has_velocities = velocities is not None
         has_forces = forces is not None
 
-        ts = cls(len(positions), velocities=has_velocities, forces=has_forces, **kwargs)
-        ts.positions = positions
+        lens = [len(a) for a in [positions, velocities, forces]
+                if not a is None]
+        if not lens:
+            raise ValueError("Must specify at least one set of data")
+        n_atoms = max(lens)
+        # Check arrays are matched length?
+        if not all([val == n_atoms for val in lens]):
+            raise ValueError("Lengths of input data mismatched")
+
+        ts = cls(n_atoms,
+                 positions=has_positions,
+                 velocities=has_velocities,
+                 forces=has_forces,
+                 **kwargs)
+        if has_positions:
+            ts.positions = positions
         if has_velocities:
             ts.velocities = velocities
         if has_forces:
@@ -275,14 +301,18 @@ class Timestep(object):
         if not self.n_atoms == other.n_atoms:
             return False
 
-        # Check contents of np arrays last (probably slow)
-        if not (self.positions == other.positions).all():
+        if not self.has_positions == other.has_positions:
             return False
+        if self.has_positions:
+            if not (self.positions == other.positions).all():
+                return False
+
         if not self.has_velocities == other.has_velocities:
             return False
         if self.has_velocities:
             if not (self.velocities == other.velocities).all():
                 return False
+
         if not self.has_forces == other.has_forces:
             return False
         if self.has_forces:
@@ -345,11 +375,15 @@ class Timestep(object):
         ``ts.copy_slice(slice(start, stop, skip))``
         ``ts.copy_slice([list of indices])``
 
-        :Returns: A Timestep object of the same type containing all header
-                  information and all atom information relevant to the selection.
+        Returns
+        -------
+        A Timestep object of the same type containing all header
+        information and all atom information relevant to the selection.
 
-        .. Note:: The selection must be a 0 based slice or array of the atom indices
-                  in this Timestep
+        Note
+        ----
+        The selection must be a 0 based slice or array of the atom indices
+        in this Timestep
 
         .. versionadded:: 0.8
         .. versionchanged:: 0.11.0
@@ -358,20 +392,33 @@ class Timestep(object):
         """
         # Detect the size of the Timestep by doing a dummy slice
         try:
-            new_n_atoms = len(self._pos[sel])
+            pos = self.positions[sel]
+        except NoDataError:
+            # It's cool if there's no Data, we'll live
+            pos = None
         except:
             raise TypeError("Selection type must be compatible with slicing"
                             " the coordinates")
-        # Make a mostly empty TS of same type of reduced size
-        new_TS = self.__class__(new_n_atoms, velocities=self.has_velocities,
-                                forces=self.has_forces)
+        try:
+            vel = self.velocities[sel]
+        except NoDataError:
+            vel = None
+        except:
+            raise TypeError("Selection type must be compatible with slicing"
+                            " the coordinates")
+        try:
+            force = self.forces[sel]
+        except NoDataError:
+            force = None
+        except:
+            raise TypeError("Selection type must be compatible with slicing"
+                            " the coordinates")
 
-        if self.has_positions:
-            new_TS.positions = self.positions[sel]
-        if self.has_velocities:
-            new_TS.velocities = self.velocities[sel]
-        if self.has_forces:
-            new_TS.forces = self.forces[sel]
+        new_TS = self.__class__.from_coordinates(
+            positions=pos,
+            velocities=vel,
+            forces=force)
+
         new_TS._unitcell = self._unitcell.copy()
 
         new_TS.frame = self.frame
@@ -1141,12 +1188,11 @@ class ChainReader(ProtoReader):
 
     - slicing not implemented
 
-    - :attr:`time` will not necessarily return the true time but just
-      number of frames times a provided time between frames (from the
-      keyword *delta*)
-
     .. versionchanged:: 0.11.0
        Frames now 0-based instead of 1-based
+    .. versionchanged:: 0.13.0
+       :attr:`time` now reports the time summed over each trajectory's
+       frames and individual :attr:`dt`. 
     """
     format = 'CHAIN'
 
@@ -1169,11 +1215,13 @@ class ChainReader(ProtoReader):
                skip step (also passed on to the individual trajectory
                readers); must be same for all trajectories
 
-           *delta*
-               The time between frames in MDAnalysis time units if no
-               other information is available. If this is not set then
-               any call to :attr:`~ChainReader.time` will raise a
-               :exc:`ValueError`.
+           *dt*
+               Passed to individual trajectory readers to enforce a common
+               time difference between frames, in MDAnalysis time units. If
+               not set, each reader's *dt* will be used (either inferred from
+               the trajectory files, or set to the reader's default) when
+               reporting frame times; note that this might mean an inconstant
+               time difference between frames.
 
            *kwargs*
                all other keyword arguments are passed on to each
@@ -1181,13 +1229,24 @@ class ChainReader(ProtoReader):
 
         .. versionchanged:: 0.8
            The *delta* keyword was added.
+        .. versionchanged:: 0.13
+           The *delta* keyword was deprecated in favor of using *dt*.
         """
+        if 'delta' in kwargs:
+            warnings.warn("Keyword 'delta' is now deprecated "
+                          "(from version 0.13); "
+                          "use 'dt' instead", DeprecationWarning)
+            delta = kwargs.pop('delta')
+            if 'dt' not in kwargs:
+                kwargs['dt'] = delta
+
         self.filenames = asiterable(filenames)
-        self.readers = [core.reader(filename, **kwargs) for filename in self.filenames]
-        self.__active_reader_index = 0  # pointer to "active" trajectory index into self.readers
+        self.readers = [core.reader(filename, **kwargs)
+                        for filename in self.filenames]
+        # pointer to "active" trajectory index into self.readers
+        self.__active_reader_index = 0
 
         self.skip = kwargs.get('skip', 1)
-        self._default_delta = kwargs.pop('delta', None)
         self.n_atoms = self._get_same('n_atoms')
         #self.fixed = self._get_same('fixed')
 
@@ -1211,6 +1270,8 @@ class ChainReader(ProtoReader):
         self.__start_frames = np.cumsum([0] + n_frames)
 
         self.n_frames = np.sum(n_frames)
+        self.dts = np.array(self._get('dt'))
+        self.total_times = self.dts * n_frames
 
         #: source for trajectories frame (fakes trajectory)
         self.__chained_trajectories_iter = None
@@ -1298,11 +1359,12 @@ class ChainReader(ProtoReader):
     @property
     def time(self):
         """Cumulative time of the current frame in MDAnalysis time units (typically ps)."""
-        # currently a hack, should really use a list of trajectory lengths and delta * local_frame
-        try:
-            return self.frame * self._default_delta
-        except TypeError:
-            raise ValueError("No timestep information available. Set delta to fake a constant time step.")
+        # Before 0.13 we had to distinguish between enforcing a common dt or
+        #  summing over each reader's times.
+        # Now each reader is either already instantiated with a common dt, or
+        #  left at its default dt. In any case, we sum over individual times.
+        trajindex, subframe = self._get_local_frame(self.frame)
+        return self.total_times[:trajindex].sum() + subframe * self.dts[trajindex]
 
     def _apply(self, method, **kwargs):
         """Execute *method* with *kwargs* for all readers."""
@@ -1416,16 +1478,18 @@ class Writer(IObase):
     the required attributes and methods.
     """
 
-    def convert_dimensions_to_unitcell(self, ts):
+    def convert_dimensions_to_unitcell(self, ts, inplace=True):
         """Read dimensions from timestep *ts* and return appropriate unitcell.
 
         The default is to return ``[A,B,C,alpha,beta,gamma]``; if this
         is not appropriate then this method has to be overriden.
         """
-        #raise NotImplementedError("Writer.convert_dimensions_to_unitcell(): Override in the specific writer: [A,B,C,alpha,beta,gamma] --> native")
-        # override if the native trajectory format does NOT use [A,B,C,alpha,beta,gamma]
+        # override if the native trajectory format does NOT use
+        # [A,B,C,alpha,beta,gamma]
         lengths, angles = ts.dimensions[:3], ts.dimensions[3:]
-        self.convert_pos_to_native(lengths)
+        if not inplace:
+            lengths = lengths.copy()
+        lengths = self.convert_pos_to_native(lengths)
         return np.concatenate([lengths, angles])
 
     def write(self, obj):

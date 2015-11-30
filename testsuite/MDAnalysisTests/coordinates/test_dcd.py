@@ -5,13 +5,15 @@ from six.moves import zip
 
 from nose.plugins.attrib import attr
 from numpy.testing import (assert_equal, assert_array_equal, assert_raises,
-                           assert_almost_equal, assert_array_almost_equal)
+                           assert_almost_equal, assert_array_almost_equal,
+                           assert_allclose)
 import tempdir
 from unittest import TestCase
 
 from MDAnalysisTests.datafiles import (DCD, PSF, DCD_empty, CRD, PRMncdf, NCDF)
 from MDAnalysisTests.coordinates.reference import (RefCHARMMtriclinicDCD,
                                                    RefNAMDtriclinicDCD)
+from MDAnalysisTests.coordinates.base import BaseTimestepTest
 
 
 @attr('issue')
@@ -542,3 +544,23 @@ def compute_correl_references():
     }
     C.clear()
     return results
+
+
+class TestDCDTimestep(BaseTimestepTest):
+    Timestep = mda.coordinates.DCD.Timestep
+    name = "DCD"
+    has_box = True
+    set_box = True
+    unitcell = np.array([10., 90., 11., 90., 90., 12.])
+    uni_args = (PSF, DCD)
+
+    def test_ts_order_define(self):
+        """Check that users can hack in a custom unitcell order"""
+        old = self.Timestep._ts_order
+        self.ts._ts_order = [0, 2, 5, 1, 3, 4]
+        self.ts.dimensions = np.array([10, 11, 12, 80, 85, 90])
+        assert_allclose(self.ts._unitcell, np.array([10, 80, 11, 85, 90, 12]))
+        self.ts._ts_order = old
+        self.ts.dimensions = np.zeros(6)
+
+

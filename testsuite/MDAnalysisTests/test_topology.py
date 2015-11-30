@@ -26,7 +26,7 @@ from MDAnalysis.core.topologyobjects import (
     Bond, Angle, Dihedral, ImproperDihedral)
 from MDAnalysis.tests.datafiles import (
     PRMpbc, PRM12, PSF, PSF_NAMD, PSF_nosegid, DMS, PDB_small, DCD,
-    LAMMPSdata, trz4data, TPR, PDB, XYZ_mini, GMS_SYMOPT, GMS_ASYMSURF,
+    TPR, PDB, XYZ_mini, GMS_SYMOPT, GMS_ASYMSURF,
     DLP_CONFIG, DLP_CONFIG_order, DLP_CONFIG_minimal,
     DLP_HISTORY, DLP_HISTORY_order, DLP_HISTORY_minimal, HoomdXMLdata)
 from MDAnalysisTests.plugins.knownfailure import knownfailure
@@ -1178,44 +1178,6 @@ class TestTopologyGuessers(TestCase):
 
         assert_equal(len(self.u.impropers), 10314)
 
-
-class RefLammpsData(object):
-    topology = LAMMPSdata
-    parser = MDAnalysis.topology.LAMMPSParser.DATAParser
-    ref_n_atoms = 18360
-    ref_numresidues = 24
-
-
-class TestLammpsData(_TestTopology, RefLammpsData):
-    """Tests the reading of lammps .data topology files.
-
-    The reading of coords and velocities is done separately in test_coordinates
-    """
-
-    def test_charge(self):
-        # No charges were supplied, should default to 0.0
-        assert_equal(self.universe.atoms[0].charge, 0.0)
-
-    def test_resid(self):
-        assert_equal(len(self.universe.residues[0]), 765)
-
-    # Testing _psf prevent building TGs
-    # test length and random item from within
-    def test_bonds(self):
-        assert_equal(len(self.universe._topology['bonds']), 18336)
-        assert_equal((5684, 5685) in self.universe._topology['bonds'], True)
-
-    def test_angles(self):
-        assert_equal(len(self.universe._topology['angles']), 29904)
-        assert_equal((7575, 7578, 7579) in self.universe._topology['angles'], True)
-
-    def test_dihedrals(self):
-        assert_equal(len(self.universe._topology['dihedrals']), 5712)
-        assert_equal((3210, 3212, 3215, 3218) in self.universe._topology['dihedrals'],
-                     True)
-
-    def test_masses(self):
-        assert_equal(self.universe.atoms[0].mass, 0.012)
 
 
 class RefXYZ(object):

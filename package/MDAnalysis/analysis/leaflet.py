@@ -160,7 +160,7 @@ class LeafletFinder(object):
 
     def _get_components(self):
         """Return connected components (as sorted numpy arrays), sorted by size."""
-        return [np.sort(component) for component in NX.connected_components(self.graph)]
+        return [np.sort(list(component)) for component in NX.connected_components(self.graph)]
 
     def update(self, cutoff=None):
         """Update components, possibly with a different *cutoff*"""

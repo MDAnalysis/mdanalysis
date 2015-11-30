@@ -15,8 +15,8 @@
 #     doi:10.1002/jcc.21787
 #
 
-cimport c_numpy
-c_numpy.import_array()
+import numpy
+cimport numpy
 
 ctypedef int size_t
 
@@ -61,8 +61,8 @@ import numpy as np
 
 def __read_timecorrel(object self, object atoms, object atomcounts, object format, object auxdata, int sizedata, int lowerb, int upperb, int start, int stop, int skip):
     cdef dcdhandle* dcd
-    cdef c_numpy.ndarray atomlist, atomcountslist, auxlist
-    cdef c_numpy.ndarray data, temp
+    cdef numpy.ndarray atomlist, atomcountslist, auxlist
+    cdef numpy.ndarray data, temp
     cdef float *tempX, *tempY, *tempZ
     cdef int rc
     cdef char* fmtstr
@@ -135,8 +135,8 @@ def __read_timecorrel(object self, object atoms, object atomcounts, object forma
 
 def __read_timeseries(object self, object atoms, int skip):
     cdef dcdhandle* dcd
-    cdef c_numpy.ndarray atomlist
-    cdef c_numpy.ndarray coord, temp
+    cdef numpy.ndarray atomlist
+    cdef numpy.ndarray coord, temp
     cdef float *tempX, *tempY, *tempZ
     cdef int rc
 

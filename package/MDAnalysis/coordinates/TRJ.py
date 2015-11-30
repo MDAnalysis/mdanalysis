@@ -691,14 +691,14 @@ class NCDFWriter(base.Writer):
         ncfile.createDimension('label', 5)  # needed for cell_angular
 
         # Create variables.
-        coords = ncfile.createVariable('coordinates', 'f8', ('frame', 'atom', 'spatial'),
+        coords = ncfile.createVariable('coordinates', 'f4', ('frame', 'atom', 'spatial'),
                                        zlib=self.zlib, complevel=self.cmplevel)
         setattr(coords, 'units', 'angstrom')
 
         spatial = ncfile.createVariable('spatial', 'c', ('spatial',))
         spatial[:] = np.asarray(list('xyz'))
         
-        time = ncfile.createVariable('time', 'f8', ('frame',),
+        time = ncfile.createVariable('time', 'f4', ('frame',),
                                      zlib=self.zlib, complevel=self.cmplevel)
         setattr(time, 'units', 'picosecond')
 

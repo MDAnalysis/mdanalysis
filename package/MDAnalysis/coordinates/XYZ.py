@@ -155,7 +155,12 @@ class XYZWriter(base.Writer):
             pass
         # list or string (can be a single atom name... deal with this in
         # write_next_timestep() once we know n_atoms)
-        return np.asarray(util.asiterable(atoms))
+        if self.n_atoms is None:
+            return np.asarray(util.asiterable(atoms))
+        if isinstance(atoms, list):
+            return atoms
+        else:
+            return np.asarray([atoms for _ in range(self.n_atoms)])
 
     def close(self):
         """Close the trajectory file and finalize the writing"""
@@ -202,7 +207,10 @@ class XYZWriter(base.Writer):
             # update atom names
             self.atomnames = atoms.names
         else:
-            ts = obj
+            if isinstance(obj, base.Timestep):
+                ts = obj
+            else:
+                raise TypeError("No Timestep found in obj argument")
 
         self.write_next_timestep(ts)
 
@@ -379,21 +387,31 @@ class XYZReader(base.Reader):
 
         return self.xyzfile
 
-    def Writer(self, filename, **kwargs):
-        """Returns a XYZWriter for *filename* with the same parameters as this XYZ.
+    def Writer(self, filename, n_atoms=None, **kwargs):
+        """Returns a XYZWriter for *filename* with the same parameters as this
+        XYZ.
 
-        All values can be changed through keyword arguments.
+        Parameters
+        ----------
+        filename: str
+            filename of the output trajectory
+        n_atoms: int (optional)
+            number of atoms. If none is given use the same number of atoms from
+            the reader instance is used
+        **kwargs:
+            See :class:`XYZWriter` for additional kwargs
 
-        :Arguments:
-          *filename*
-              filename of the output DCD trajectory
-        :Keywords:
-          *atoms*
-              names of the atoms (if not taken from atom groups)
+        Returns
+        -------
+        :class:`XYZWriter` (see there for more details)
 
-        :Returns: :class:`XYZWriter` (see there for more details)
+        See Also
+        --------
+        :class: `XYZWriter`
         """
-        return XYZWriter(filename, **kwargs)
+        if n_atoms is None:
+            n_atoms = self.n_atoms
+        return XYZWriter(filename, n_atoms=n_atoms, **kwargs)
 
     def close(self):
         """Close xyz trajectory file if it was open."""

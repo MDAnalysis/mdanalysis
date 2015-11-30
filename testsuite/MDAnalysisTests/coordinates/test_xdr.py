@@ -10,10 +10,14 @@ from numpy.testing import (assert_equal, assert_array_almost_equal, dec,
                            assert_array_equal)
 import tempdir
 from unittest import TestCase
+from MDAnalysis import NoDataError
+
+
 from MDAnalysisTests import module_not_found
 
 from MDAnalysisTests.datafiles import (PDB_sub_dry, PDB_sub_sol, TRR_sub_sol,
                                        TRR, XTC, GRO, PDB, CRD, PRMncdf, NCDF)
+from MDAnalysisTests.coordinates.base import BaseTimestepTest
 
 
 class TestTRRReader_Sub(TestCase):
@@ -591,3 +595,118 @@ def test_triclinic_box():
         unitcell,
         3,
         err_msg="unitcell round-trip connversion failed (Issue 61)")
+
+
+class TestXTCTimestep(BaseTimestepTest):
+    Timestep = mda.coordinates.xdrfile.core.Timestep
+    name = "XTC"
+    has_box = True
+    set_box = True
+    unitcell = np.array([[10., 0., 0.],
+                         [0., 11., 0.],
+                         [0., 0., 12.]])
+    uni_args = (PDB, XTC)
+
+
+class TestTRRTimestep(BaseTimestepTest):
+    Timestep = mda.coordinates.TRR.Timestep
+    name = "TRR"
+    has_box = True
+    set_box = True
+    unitcell = np.array([[10., 0., 0.],
+                         [0., 11., 0.],
+                         [0., 0., 12.]])
+    uni_args = (GRO, TRR)
+
+    def test_velocities_remove(self):
+        # This test is different because TRR requires that the
+        # has flags get updated every frame
+        ts = self.Timestep(10, velocities=True)
+        ts.frame += 1
+        ts.has_velocities = True  # This line is extra for TRR
+        assert_equal(ts.has_velocities, True)
+
+        ts.has_velocities = False
+        assert_equal(ts.has_velocities, False)
+        assert_raises(NoDataError, getattr, ts, 'velocities')
+
+    def test_forces_remove(self):
+        # This test is different because TRR requires that the
+        # has flags get updated every frame
+        ts = self.Timestep(10, forces=True)
+        ts.frame += 1
+        ts.has_forces = True  # This line is extra for TRR
+        assert_equal(ts.has_forces, True)
+
+        ts.has_forces = False
+        assert_equal(ts.has_forces, False)
+        assert_raises(NoDataError, getattr, ts, 'forces')
+
+    def test_positions_expiry(self):
+        assert_equal(self.ts.has_positions, True)
+        assert_array_almost_equal(self.ts.positions, self.refpos)
+        self.ts.frame += 1
+        assert_equal(self.ts.has_positions, False)
+        assert_raises(NoDataError, getattr, self.ts, 'positions')
+
+    def test_velocities_expiry(self):
+        self.ts.velocities = self.refpos + 10
+        assert_equal(self.ts.has_velocities, True)
+        assert_array_almost_equal(self.ts.velocities, self.refpos + 10)
+        self.ts.frame += 1
+        assert_equal(self.ts.has_velocities, False)
+        assert_raises(NoDataError, getattr, self.ts, 'velocities')
+
+    def test_forces_expiry(self):
+        self.ts.forces = self.refpos + 100
+        assert_equal(self.ts.has_forces, True)
+        assert_array_almost_equal(self.ts.forces, self.refpos + 100)
+        self.ts.frame += 1
+        assert_equal(self.ts.has_forces, False)
+        assert_raises(NoDataError, getattr, self.ts, 'forces')
+
+    def test_positions_renewal(self):
+        assert_equal(self.ts.has_positions, True)
+        self.ts.frame += 1
+        assert_equal(self.ts.has_positions, False)
+        assert_raises(NoDataError, getattr, self.ts, 'positions')
+
+        self.ts.has_positions = True
+        assert_equal(self.ts.has_positions, True)
+        assert_equal(self.ts.positions, self.refpos)
+
+    def test_velocities_renewal(self):
+        self.ts.velocities = self.refpos + 10
+        assert_equal(self.ts.has_velocities, True)
+        assert_array_almost_equal(self.ts.velocities, self.refpos + 10)
+        self.ts.frame += 1
+        assert_equal(self.ts.has_velocities, False)
+        assert_raises(NoDataError, getattr, self.ts, 'velocities')
+
+        self.ts.velocities = self.refpos + 11
+        assert_equal(self.ts.has_velocities, True)
+        assert_array_almost_equal(self.ts.velocities, self.refpos + 11)
+
+    def test_forces_renewal(self):
+        self.ts.forces = self.refpos + 100
+        assert_equal(self.ts.has_forces, True)
+        self.ts.frame += 1
+        assert_equal(self.ts.has_forces, False)
+        assert_raises(NoDataError, getattr, self.ts, 'forces')
+
+        self.ts.forces = self.refpos + 101
+        assert_equal(self.ts.has_forces, True)
+        assert_array_almost_equal(self.ts.forces, self.refpos + 101)
+
+    def test_trr_timestep(self):
+        ts1 = mda.coordinates.base.Timestep(10, velocities=True, forces=True)
+        ts1.positions = self._get_pos()
+        ts1.velocities = self._get_pos() + 10.0
+        ts1.forces = self._get_pos() + 100.0
+
+        ts2 = mda.coordinates.TRR.Timestep(10)
+        ts2.positions = self._get_pos()
+        ts2.velocities = self._get_pos() + 10.0
+        ts2.forces = self._get_pos() + 100.0
+
+        self._check_ts_equal(ts1, ts2, "Failed on TRR Timestep")

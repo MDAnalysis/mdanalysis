@@ -13,19 +13,43 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-import MDAnalysis
-import MDAnalysis.core.Selection
-from MDAnalysis.tests.datafiles import PSF, DCD, PRMpbc, TRJpbc_bz2, PSF_NAMD, PDB_NAMD, GRO, NUCL, TPR, XTC
 
 import numpy as np
-from numpy.testing import *
+from numpy.testing import(
+    TestCase,
+    dec,
+    assert_equal,
+    assert_array_almost_equal,
+    assert_,
+    assert_array_equal,
+    assert_warns,
+)
 from nose.plugins.attrib import attr
+import warnings
 
+import MDAnalysis
+import MDAnalysis as mda
+import MDAnalysis.core.Selection
+from MDAnalysis.lib.distances import distance_array
+from MDAnalysis.core.topologyobjects import TopologyGroup
+from MDAnalysis.core.Selection import Parser
+
+from MDAnalysis.tests.datafiles import (
+    PSF, DCD,
+    PRMpbc, TRJpbc_bz2,
+    PSF_NAMD, PDB_NAMD,
+    GRO, NUCL, TPR, XTC,
+    TRZ_psf, TRZ,
+)
 from MDAnalysisTests.plugins.knownfailure import knownfailure
+
 
 class TestSelectionsCHARMM(TestCase):
     def setUp(self):
-        """Set up the standard AdK system in implicit solvent."""
+        """Set up the standard AdK system in implicit solvent.
+
+        Geometry here is orthogonal
+        """
         self.universe = MDAnalysis.Universe(PSF, DCD)
 
     def tearDown(self):
@@ -139,6 +163,17 @@ class TestSelectionsCHARMM(TestCase):
         sel = self.universe.select_atoms('cyzone 6.0 10 -10 bynum 1281')
         assert_equal(len(sel), 166)
 
+    def test_point(self):
+        ag = self.universe.select_atoms('point 5.0 5.0 5.0 3.5')
+
+        d = distance_array(np.array([[5.0, 5.0, 5.0]], dtype=np.float32),
+                           self.universe.atoms.positions,
+                           box=self.universe.dimensions)
+
+        idx = np.where(d < 3.5)[1]
+
+        assert_equal(set(ag.indices), set(idx))
+
     def test_prop(self):
         sel = self.universe.select_atoms('prop y <= 16')
         sel2 = self.universe.select_atoms('prop abs z < 8')
@@ -161,8 +196,11 @@ class TestSelectionsCHARMM(TestCase):
         assert_equal(subsel[-1].index, 4)
 
     # TODO:
-    # add more test cases for byres, bynum, point
     # and also for selection keywords such as 'nucleic'
+    def test_byres(self):
+        sel = self.universe.select_atoms('byres bynum 0:5')
+
+        assert_equal(len(sel), len(self.universe.residues[0]))
 
     def test_same_resname(self):
         """Test the 'same ... as' construct (Issue 217)"""
@@ -196,8 +234,6 @@ class TestSelectionsCHARMM(TestCase):
 
         #cleanup
         self.universe.residues.set_segids("4AKE")
-
-
 
     def test_empty_selection(self):
         """Test that empty selection can be processed (see Issue 12)"""
@@ -388,3 +424,281 @@ class TestSelectionsNucleicAcids(TestCase):
         rna = self.universe.select_atoms("nucleicsugar")
         assert_equal(rna.n_residues, 23)
         assert_equal(rna.n_atoms, rna.n_residues * 5)
+
+
+class BaseDistanceSelection(object):
+    """Both KDTree and distmat selections on orthogonal system
+
+    Selections to check:
+     - Around
+     - SphericalLayer
+     - SphericalZone
+     - Point
+
+    Cylindrical methods don't use KDTree
+    """
+    methods = [('kdtree', False),
+               ('distmat', True),
+               ('distmat', False)]
+
+    def choosemeth(self, sel, meth, periodic):
+        """hack in the desired apply method"""
+        if meth == 'kdtree':
+            sel._apply = sel._apply_KDTree
+        elif meth == 'distmat':
+            sel._apply = sel._apply_distmat
+
+        if periodic:
+            sel.periodic = True
+        else:
+            sel.periodic = False
+
+        return sel
+
+    def _check_around(self, meth, periodic):
+        sel = Parser.parse('around 5.0 resid 1', self.u.atoms)
+        sel = self.choosemeth(sel, meth, periodic)
+        result = sel.apply(self.u.atoms)
+
+        r1 = self.u.select_atoms('resid 1')
+        cog = r1.center_of_geometry().reshape(1, 3)
+
+        box = self.u.dimensions if periodic else None
+        d = distance_array(self.u.atoms.positions, r1.positions,
+                           box=box)
+        ref = set(np.where(d < 5.0)[0])
+
+        # Around doesn't include atoms from the reference group
+        ref.difference_update(set(r1.indices))
+        assert_(ref == set(result.indices))
+
+    def test_around(self):
+        for meth, periodic in self.methods:
+            yield self._check_around, meth, periodic
+
+    def _check_spherical_layer(self, meth, periodic):
+        sel = Parser.parse('sphlayer 2.4 6.0 resid 1' , self.u.atoms)
+        sel = self.choosemeth(sel, meth, periodic)
+        result = sel.apply(self.u.atoms)
+
+        r1 = self.u.select_atoms('resid 1')
+        cog = r1.center_of_geometry().reshape(1, 3)
+
+        box = self.u.dimensions if periodic else None
+        d = distance_array(self.u.atoms.positions, cog, box=box)
+        ref = set(np.where((d > 2.4) & (d < 6.0))[0])
+
+        assert_(ref == set(result.indices))
+
+    def test_spherical_layer(self):
+        for meth, periodic in self.methods:
+            yield self._check_spherical_layer, meth, periodic
+
+    def _check_spherical_zone(self, meth, periodic):
+        sel = Parser.parse('sphzone 5.0 resid 1', self.u.atoms)
+        sel = self.choosemeth(sel, meth, periodic)
+        result = sel.apply(self.u.atoms)
+
+        r1 = self.u.select_atoms('resid 1')
+        cog = r1.center_of_geometry().reshape(1, 3)
+
+        box = self.u.dimensions if periodic else None
+        d = distance_array(self.u.atoms.positions, cog, box=box)
+        ref = set(np.where(d < 5.0)[0])
+
+        assert_(ref == set(result.indices))
+
+    def test_spherical_zone(self):
+        for meth, periodic in self.methods:
+            yield self._check_spherical_zone, meth, periodic
+
+    def _check_point(self, meth, periodic):
+        sel = Parser.parse('point 5.0 5.0 5.0  3.0', self.u.atoms)
+        sel = self.choosemeth(sel, meth, periodic)
+        result = sel.apply(self.u.atoms)
+
+        box = self.u.dimensions if periodic else None
+        d = distance_array(np.array([[5.0, 5.0, 5.0]], dtype=np.float32),
+                           self.u.atoms.positions,
+                           box=box)
+        ref = set(np.where(d < 3.0)[1])
+
+        assert_(ref == set(result.indices))
+
+    def test_point(self):
+        for meth, periodic in self.methods:
+            yield self._check_point, meth, periodic
+
+
+class TestOrthogonalDistanceSelections(BaseDistanceSelection):
+    def setUp(self):
+        self.u = mda.Universe(TRZ_psf, TRZ)
+
+    def tearDown(self):
+        del self.u
+
+
+class TestTriclinicDistanceSelections(BaseDistanceSelection):
+    def setUp(self):
+        self.u = mda.Universe(GRO)
+
+    def tearDown(self):
+        del self.u
+
+class TestTriclinicSelections(object):
+    """Non-KDTree based selections
+
+    This system has triclinic geometry so won't use KDTree based selections
+    """
+    def setUp(self):
+        self.u = mda.Universe(GRO)
+        self.box = self.u.dimensions
+
+    def tearDown(self):
+        del self.u
+
+    def test_around(self):
+        r1 = self.u.select_atoms('resid 1')
+
+        ag = self.u.select_atoms('around 5.0 resid 1')
+
+        d = distance_array(self.u.atoms.positions, r1.positions, box=self.box)
+        idx = set(np.where(d < 5.0)[0])
+
+        # Around doesn't include atoms from the reference group
+        idx.difference_update(set(r1.indices))
+        assert_(idx == set(ag.indices))
+
+    def test_sphlayer(self):
+        r1 = self.u.select_atoms('resid 1')
+        cog = r1.center_of_geometry().reshape(1, 3)
+
+        ag = self.u.select_atoms('sphlayer 2.4 6.0 resid 1')
+
+        d = distance_array(self.u.atoms.positions, cog, box=self.box)
+        idx = set(np.where((d > 2.4) & (d < 6.0))[0])
+
+        assert_(idx == set(ag.indices))
+
+    def test_sphzone(self):
+        r1 = self.u.select_atoms('resid 1')
+        cog = r1.center_of_geometry().reshape(1, 3)
+
+        ag = self.u.select_atoms('sphzone 5.0 resid 1')
+
+        d = distance_array(self.u.atoms.positions, cog, box=self.box)
+        idx = set(np.where(d < 5.0)[0])
+
+        assert_(idx == set(ag.indices))
+
+    def test_point_1(self):
+        # The example selection
+        ag = self.u.select_atoms('point 5.0 5.0 5.0 3.5')
+
+        d = distance_array(np.array([[5.0, 5.0, 5.0]], dtype=np.float32),
+                           self.u.atoms.positions,
+                           box=self.box)
+
+        idx = np.where(d < 3.5)[1]
+
+        assert_equal(set(ag.indices), set(idx))
+
+    def test_point_2(self):
+        ag1 = self.u.atoms[:10000]
+
+        ag2 = ag1.select_atoms('point 5.0 5.0 5.0 3.5')
+
+        d = distance_array(np.array([[5.0, 5.0, 5.0]], dtype=np.float32),
+                           ag1.positions,
+                           box=self.box)
+
+        idx = np.where(d < 3.5)[1]
+
+        assert_equal(set(ag2.indices), set(idx))
+
+
+class TestPropSelection(object):
+    plurals = {'mass': 'masses',
+               'charge': 'charges'}
+
+    def _check_lt(self, prop, ag):
+        setattr(ag[::2], self.plurals[prop], 500.0)
+
+        sel = ag.select_atoms('prop {} < 500.0'.format(prop))
+
+        assert_equal(set(sel.indices),
+                     set(ag[getattr(ag, self.plurals[prop]) < 500.0].indices))
+
+    def _check_le(self, prop, ag):
+        setattr(ag[::2], self.plurals[prop], 500.0)
+
+        sel = ag.select_atoms('prop {} <= 500.0'.format(prop))
+
+        assert_equal(set(sel.indices),
+                     set(ag[getattr(ag, self.plurals[prop]) <= 500.0].indices))
+
+    def _check_gt(self, prop, ag):
+        setattr(ag[::2], self.plurals[prop], 500.0)
+
+        sel = ag.select_atoms('prop {} > 500.0'.format(prop))
+
+        assert_equal(set(sel.indices),
+                     set(ag[getattr(ag, self.plurals[prop]) > 500.0].indices))
+
+    def _check_ge(self, prop, ag):
+        setattr(ag[::2], self.plurals[prop], 500.0)
+
+        sel = ag.select_atoms('prop {} >= 500.0'.format(prop))
+
+        assert_equal(set(sel.indices),
+                     set(ag[getattr(ag, self.plurals[prop]) >= 500.0].indices))
+
+    def _check_eq(self, prop, ag):
+        setattr(ag[::2], self.plurals[prop], 500.0)
+
+        sel = ag.select_atoms('prop {} == 500.0'.format(prop))
+
+        assert_equal(set(sel.indices),
+                     set(ag[getattr(ag, self.plurals[prop]) == 500.0].indices))
+
+    def _check_ne(self, prop, ag):
+        setattr(ag[::2], self.plurals[prop], 500.0)
+
+        sel = ag.select_atoms('prop {} != 500.0'.format(prop))
+
+        assert_equal(set(sel.indices),
+                     set(ag[getattr(ag, self.plurals[prop]) != 500.0].indices))
+
+    def test_props(self):
+        u = mda.Universe(GRO)
+
+        for prop in ['mass', 'charge']:
+            for ag in [u.atoms, u.atoms[:100]]:
+                yield self._check_lt, prop, ag
+                yield self._check_le, prop, ag
+                yield self._check_gt, prop, ag
+                yield self._check_ge, prop, ag
+                yield self._check_eq, prop, ag
+                yield self._check_ne, prop, ag
+
+
+class TestBondedSelection(object):
+    def setUp(self):
+        self.u = mda.Universe(PSF, DCD)
+
+    def tearDown(self):
+        del self.u
+
+    def test_bonded_1(self):
+        ag = self.u.select_atoms('type 2 and bonded name N')
+
+        assert_(len(ag) == 3)
+
+    def test_nobonds_warns(self):
+        self.u.bonds = TopologyGroup([])
+
+        assert_warns(UserWarning,
+                     self.u.select_atoms, 'type 2 and bonded name N')
+
+
+    

@@ -24,7 +24,10 @@
 typedef float coordinate[3];
 
 #ifdef PARALLEL
-#include <omp.h>
+  #include <omp.h>
+  #define USED_OPENMP 1
+#else
+  #define USED_OPENMP 0
 #endif
 
 static void minimum_image(double *x, float *box, float *inverse_box)
