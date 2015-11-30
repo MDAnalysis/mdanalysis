@@ -20,11 +20,14 @@ Radial Distribution Functions --- :mod:`MDAnalysis.analysis.rdf`
 
 Tools for calculating pair distribution functions
 
-
+# TODO
+ - Structure factor?
+ - Coordination number
 """
 import numpy as np
 
 from ..lib.util import blocks_of
+from ..lib import distances
 from .base import AnalysisBase
 
 
@@ -56,14 +59,30 @@ class InterRDF(AnalysisBase):
     step
           The step size through the trajectory in frames [0]
 
+    Example
+    -------
+    First create the InterRDF object, by supplying two AtomGroups
+    then use the `run` method
+
+      rdf = InterRDF(ag1, ag2)
+      rdf.run()
+
+    Results are available through the .bins and .rdf attributes
+
+      plt.plot(rdf.bins, rdf.rdf)
+
+    The `exclusion_block` keyword allows the masking of pairs from
+    within the same molecule.  For example, if there are 7 of each
+    atom in each molecule, the exclusion mask (7, 7) can be used.
+
     .. versionadded:: 0.13.0
     """
     def __init__(self, g1, g2,
                  nbins=75, range=(0.0, 15.0), exclusion_block=None,
                  start=None, stop=None, step=None):
-        self.g1 = self.g1
-        self.g2 = self.g2
-        self.u = self.g1.universe
+        self.g1 = g1
+        self.g2 = g2
+        self.u = g1.universe
 
         self._setup_frames(self.u.trajectory,
                            start=start,
@@ -91,14 +110,14 @@ class InterRDF(AnalysisBase):
         if not exclusion_block is None:
             self._exclusion_block = exclusion_block
             self._exclusion_mask = blocks_of(self._result, *exclusion_block)
-            self._maxrange = hrange[1] + 1.0
+            self._maxrange = range[1] + 1.0
         else:
             self._exclusion_block = None
             self._exclusion_mask = None
 
     def _single_frame(self):
-        distance_array(self.g1.positions, self.g2.positions,
-                       box=self.u.dimensions, result=self._result)
+        distances.distance_array(self.g1.positions, self.g2.positions,
+                                 box=self.u.dimensions, result=self._result)
         # Maybe exclude same molecule distances
         if not self._exclusion_mask is None:
             self._exclusion_mask[:] = self._maxrange
@@ -124,14 +143,11 @@ class InterRDF(AnalysisBase):
         vol = np.power(self.edges[1:], 3) - np.power(self.edges[:-1], 3)
         vol *= 4/3.0 * np.pi
 
-        # Number of frames
-        nframes = len(self.frames)
-
         # Average number density
-        box_vol = self.volume / nframes
+        box_vol = self.volume / self.nframes
         density = N / box_vol
 
-        rdf = self.count / (density * vol * nframes)
+        rdf = self.count / (density * vol * self.nframes)
 
         self.rdf = rdf
 
