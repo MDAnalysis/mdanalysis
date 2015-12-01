@@ -395,6 +395,15 @@ class NCDFReader(base.ReaderBase):
     * only trajectories with time in ps and lengths in Angstroem are processed
     * scale_factors are not supported (and not checked)
 
+    The NCDF reader uses :mod:`scipy.io.netcdf` and therefore :mod:`scipy` must
+    be installed. It supports the *mmap* keyword argument (when reading):
+    ``mmap=True`` is memory efficient and directly maps the trajectory on disk
+    to memory; ``mmap=False`` may consume large amounts of memory because it
+    loads the whole trajectory into memory but it might be faster. The default
+    is ``mmap=None`` and then default behavior of
+    :class:`scipy.io.netcdf.netcdf_file` prevails, i.e. ``True`` when
+    *filename* is a file name, ``False`` when *filename* is a file-like object.
+
     .. _AMBER NETCDF format: http://ambermd.org/netcdf/nctraj.html
 
     See Also
@@ -408,6 +417,8 @@ class NCDFReader(base.ReaderBase):
     .. versionchanged:: 0.11.0
        Frame labels now 0-based instead of 1-based.
        kwarg `delta` renamed to `dt`, for uniformity with other Readers.
+    .. versionchanged:: 0.17.0
+       Uses :mod:`scipy.io.netcdf` and supports the *mmap* kwarg.
     """
 
     format = ['NCDF', 'NC']
@@ -427,9 +438,11 @@ class NCDFReader(base.ReaderBase):
             raise ImportError("scipy.io.netcdf package missing but is required "
                               "for the Amber Reader.")
 
+        self._mmap = kwargs.pop('mmap', None)
+
         super(NCDFReader, self).__init__(filename, **kwargs)
 
-        self.trjfile = netcdf.netcdf_file(self.filename)
+        self.trjfile = netcdf.netcdf_file(self.filename, mmap=self._mmap)
 
         if not ('AMBER' in self.trjfile.Conventions.split(',') or
                 'AMBER' in self.trjfile.Conventions.split()):
