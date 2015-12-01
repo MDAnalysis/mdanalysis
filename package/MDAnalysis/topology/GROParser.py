@@ -38,6 +38,7 @@ from ..lib.util import openany
 from ..core.AtomGroup import Atom
 from .core import get_atom_mass, guess_atom_charge, guess_atom_element
 from .base import TopologyReader
+from .newtopology import Topology
 
 
 class GROParser(TopologyReader):
@@ -78,3 +79,35 @@ class GROParser(TopologyReader):
         structure = {'atoms': atoms}
 
         return structure
+
+
+class NewGROParser(TopologyReader):
+    def parse(self):
+        """Return the *Topology* object for this file"""
+        # Gro has the following columns
+        # resid, resname, name, index, (x,y,z)
+        with openany(self.filename, 'r') as inf:
+            inf.readline()
+            n_atoms = int(inf.readline())
+
+            # Allocate shizznizz
+            resids = np.zeros(n_atoms, dtype=np.int32)
+            resnames = np.zeros(n_atoms, dtype=object)
+            names = np.zeros(n_atoms, dtype=object)
+            indices = np.zeros(n_atoms, dtype=np.int32)
+
+            for i in xrange(n_atoms):
+                line = inf.readline()
+                resids[i] = int(line[:5])
+                resnames[i] = line[5:10].strip()
+                names[i] = line[10:15].strip()
+                indices[i] = int(line[15:20])
+
+        top = Topology()
+        top['resids'] = resids
+        top['resnames'] = resnames
+        top['names'] = names
+        top['indices'] = indices
+
+        return top
+        
