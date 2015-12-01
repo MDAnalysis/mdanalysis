@@ -34,10 +34,12 @@ Classes
 """
 from __future__ import absolute_import
 
+import numpy as np
+
 from ..lib.util import openany
 from ..core.AtomGroup import Atom
 from .core import get_atom_mass, guess_atom_charge, guess_atom_element
-from .base import TopologyReader
+from .base import TopologyReader, squash_by
 from .newtopology import Topology
 
 
@@ -104,10 +106,13 @@ class NewGROParser(TopologyReader):
                 indices[i] = int(line[15:20])
 
         top = Topology()
-        top['resids'] = resids
-        top['resnames'] = resnames
+        top['atom resindex'] = resids
         top['names'] = names
         top['indices'] = indices
+
+        new_resids, (new_resnames,) = squash_by(resids, resnames)
+        top['resids'] = new_resids
+        top['resnames'] = new_resnames
 
         return top
         

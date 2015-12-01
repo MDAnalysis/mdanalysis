@@ -28,6 +28,9 @@ Classes
    :inherited-members:
 
 """
+from itertools import izip
+import numpy as np
+import warnings
 
 from ..coordinates.base import IObase
 
@@ -70,3 +73,45 @@ class TopologyReader(IObase):
 
     def parse(self):
         raise NotImplementedError("Override this in each subclass")
+
+
+def squash_by(resids, *attributes):
+    """Produce len(n_residues) arrays from len(n_atoms) arrays
+
+    Groups elements in resids according to unique values and
+    then compresses all *attributes* arrays
+
+    Arguments
+    ---------
+    resids - array of resids
+    *attributes - other arrays that need to follow the sorting of resids
+
+    Returns
+    -------
+    new_resids, new_attributes - arrays that are now per-residue
+    """
+    unique_resids = set(resids)
+    n_residues = len(unique_resids)
+
+    # Array of my new resids
+    new_resids = np.asarray(np.sort(list(unique_resids)), dtype=np.int32)
+
+    new_order = np.argsort(resids)
+    sorted_resids = resids[new_order]
+    # Find borders in the sorted resids
+    changes = np.where(np.diff(sorted_resids) != 0)[0]
+    borders = np.concatenate([[0], changes + 1, [len(resids) + 1]])
+    # Sort original attributes according to the new order
+    sorted_attributes = [att[new_order] for att in attributes]
+    
+    # new array for each attribute, keep original dtype
+    new_atts = [np.zeros(n_residues, dtype=att.dtype) for att in attributes]
+
+    for att, new_att in izip(attributes, new_atts):
+        for i, (x, y) in enumerate(izip(borders[:-1], borders[1:])):
+            view = att[x:y]
+            if not np.unique(view).size == 1:
+                warnings.warn("Nonconsistent resid attribute")
+            new_att[i] = view[0]
+        
+    return new_resids, new_atts
