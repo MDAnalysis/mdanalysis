@@ -105,14 +105,15 @@ class NewGROParser(TopologyReader):
                 names[i] = line[10:15].strip()
                 indices[i] = int(line[15:20])
 
-        top = Topology()
-        top['atom resindex'] = resids
-        top['names'] = names
-        top['indices'] = indices
-
         new_resids, (new_resnames,) = squash_by(resids, resnames)
-        top['resids'] = new_resids
-        top['resnames'] = new_resnames
+
+        top = Topology(n_atoms, len(new_resids), 1)
+        top.atoms['resindex'] = resids
+        top.atoms['names'] = names
+        top.atoms['indices'] = indices
+
+        top.residues['resids'] = new_resids
+        top.residues['resnames'] = new_resnames
 
         return top
         
