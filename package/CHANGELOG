@@ -13,10 +13,10 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
---/--/-- tyler.je.reddy, kain88-de, richardjgowers, manuel.nuno.melo, 
+--/--/15 tyler.je.reddy, kain88-de, richardjgowers, manuel.nuno.melo,
          orbeckst
 
-  * 0.xx.x
+  * 0.13.0
 
 API Changes
 
@@ -26,6 +26,8 @@ API Changes
     assumes that it is used as a container and won't give a warning if the
     number of atoms differs between frames.
   * GROWriter.fmt strings updated to use format style (Issue #494)
+  * removed MDAnalysis.lib.parallel.distances; use the new backend="OpenMP"
+    keyword for the functions in MDAnalysis.lib.distances (Issue #530)
 
 Enhancement
 
@@ -34,11 +36,24 @@ Enhancement
   * GRO file writing now will write velocities where possible (Issue #494)
   * Added bonded selection (Issue #362)
   * Spherical layer and spherical zone selections now much faster (Issue #362)
+  * new keyword "backend" for accelerated functions in MDAnalysis.lib.distances
+    to select "serial" or "OpenMP"-enabled versions of the code; the default
+    is "serial" so old code will behave as before (see Issue #530)
+  * Lammps data file parsing improved greatly.  Should now support all files,
+    and triclinic geometry. (Issue #139)
 
 Changes
+
   * built html doc files are no longer version controlled (Issue #491)
+  * The lib._distances and lib_distances_openmp libraries now have a
+    OPENMP_ENABLED boolean flag which indicates if openmp was used in
+    compilation.  (Issue #530)
 
 Fixes
+
+  * AMBER netcdf writer now correctly uses float32 precision (Issue #518)
+  * Fixed a numpy incompatibility in `analysis.leaflet.LeafletFinder`.
+    (Issue #533)
   * Cleaned up `MDAnalysis.Writer` docs regarding `dt` usage. (Issue #522)
   * Fixed setup-time dependency on numpy that broke pip installs. (Issue #479)
   * Fixed unpickling errors due to lingering dead universes. (Issue #487)
@@ -51,6 +66,7 @@ Fixes
   * Fixed many Timestep methods failing when positions weren't present
     (Issue #512)
   * Fixed PointSelection using KDTree (Issue #362)
+  * Fixed GROParser getting tripped up by some file (Issue #548)
 
 10/08/15
 

@@ -533,6 +533,8 @@ class Atom(object):
         if not isinstance(other, (Atom, AtomGroup)):
             raise TypeError('Can only add Atoms or AtomGroups (not "{0}")'
                             ' to Atom'.format(other.__class__.__name__))
+        if not self.universe is other.universe:
+            raise ValueError("Can only add objects from the same Universe")
         if isinstance(other, Atom):
             return AtomGroup([self, other])
         else:
@@ -1074,6 +1076,8 @@ class AtomGroup(object):
         if not isinstance(other, (Atom, AtomGroup)):
             raise TypeError('Can only concatenate Atom or AtomGroup (not "{0}") to'
                             ' AtomGroup'.format(other.__class__.__name__))
+        if (self and other) and (not self.universe is other.universe):
+            raise ValueError("Can only add objects from the same Universe")
         if isinstance(other, AtomGroup):
             return AtomGroup(self._atoms + other._atoms)
         else:

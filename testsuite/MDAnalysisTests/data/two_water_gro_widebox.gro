@@ -1,0 +1,9 @@
+# Designed to fix Issue #548 Box format is wider than usual
+    6
+    1SOL     OW    1   0.230   0.628   0.113
+    1SOL    HW1    2   0.137   0.626   0.150
+    1SOL    HW2    3   0.231   0.589   0.021
+    2SOL     OW    4   0.225   0.275   0.996
+    2SOL    HW1    5   0.260   0.258   1.088
+    2SOL    HW2    6   0.137   0.230   0.984
+    7.64092    7.91768    7.31922

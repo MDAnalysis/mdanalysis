@@ -121,6 +121,7 @@ For details see the report for `Issue 87`_.
                   'data/mol2/*.mol2',
                   'data/capping/*.gro', 'data/capping/*.pdb',
                   'data/lammps/*.data', 'data/lammps/*.data.bz2',
+                  'data/lammps/*.data2',
                   'data/lammps/*.dcd', 'data/lammps/*.trz',
                   'data/lammps/*.inp',
                   'data/gms/*.xyz', 'data/gms/*.gms', 'data/gms/*.gms.gz',
