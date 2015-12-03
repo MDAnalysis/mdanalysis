@@ -35,9 +35,6 @@ class TopologyAttr(object):
     topology = None
 
     def __init__(self, values):
-        """Generate a new :class:`TopologyAttr` object with the given values.
-
-        """
         pass
 
     def get_atoms(self, idx):
@@ -77,20 +74,52 @@ class TopologyAttr(object):
         raise NotImplementedError
 
 
-class Masses(TopologyAttr):
-    """
-    Interface to masses for atoms, residues, and segments.
+class Resids(TopologyAttr):
+    """Interface to resids.
     
     Parameters
     ----------
-    masses : array
+    values : array
+        resids for each atom in the system
+
+    """
+    def __init__(self, values):
+        super(self, Resids).__init__(values)
+
+        self.values = values
+
+    def get_atoms(self, aix):
+        self.values[aix]
+
+    def set_atoms(self, aix, values):
+        self.values[aix] = values
+
+    def get_residues(self, rix):
+
+    def get_segments(self, six):
+        masses = np.empty(len(six))
+
+        segatoms = self.topology.s2sa(six)
+
+        for i, row in enumerate(segatoms):
+            masses[i] = self.values[row].sum()
+
+        return masses
+
+
+class Masses(TopologyAttr):
+    """Interface to masses for atoms, residues, and segments.
+    
+    Parameters
+    ----------
+    values : array
         mass for each atom in the system
 
     """
     def __init__(self, values):
         super(self, Masses).__init__(values)
 
-        self.values = values
+        self.values = values 
 
     def get_atoms(self, aix):
         self.values[aix]

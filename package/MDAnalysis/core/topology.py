@@ -1,20 +1,60 @@
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+#
+# MDAnalysis --- http://www.MDAnalysis.org
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
+# and contributors (see AUTHORS for the full list)
+#
+# Released under the GNU Public Licence, v2 or any higher version
+#
+# Please cite your use of MDAnalysis in published work:
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
+#
+
+"""
+Topology object --- :mod:`MDAnalysis.core.topology'
+===================================================================
+
+"""
+
 
 class Topology(object):
     """In-memory, array-based topology database.
 
+    The topology model of MDanalysis features atoms, which can each be a member
+    of one or zero residues. Each residue, in turn, can be a member of one
+    or zero segments. The details of maintaining this heirarchy, and mappings
+    of atoms to residues, residues to segments, and vice-versa, are handled
+    internally by this object.
+
     Parameters
     ----------
+    n_atoms, n_residues, n_segments : int
+        number of atoms, residues, segments in topology
     topologyattrs : TopologyAttr objects
         components of the topology to be included
 
     """
 
-    def __init__(self, *topologyattrs):
+    def __init__(self, n_atoms, n_residues, n_segments, *topologyattrs):
 
         # attach the TopologyAttrs
         for topologyattr in topologyattrs:
-            self.__setattr__(topologyattr.attrname, topologyattr)
+            self.add_TopologyAttr(topologyattr)
 
+
+    def add_TopologyAttr(topologyattr):
+        """Add a new TopologyAttr to the Topology.
+
+        Parameters
+        ----------
+        topologyattr : TopologyAttr
+
+        """
+        topologyattr.topology = self
+        self.__setattr__(topologyattr.attrname, topologyattr)
 
     def a2r(self, aix):
         """Get residue indices for each atom.
