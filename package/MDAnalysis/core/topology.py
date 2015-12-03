@@ -38,7 +38,7 @@ class Topology(object):
 
     """
 
-    def __init__(self, n_atoms, n_residues, n_segments, *topologyattrs):
+    def __init__(self, n_atoms, *topologyattrs, atom_resindices=None, residue_segindices=None):
 
         # attach the TopologyAttrs
         for topologyattr in topologyattrs:
