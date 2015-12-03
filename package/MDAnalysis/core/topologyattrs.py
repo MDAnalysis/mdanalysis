@@ -90,16 +90,30 @@ class Masses(TopologyAttr):
     def __init__(self, values):
         super(self, Masses).__init__(values)
 
-        self._values = values
+        self.values = values
 
     def get_atoms(self, aix):
-        self._values[aix]
+        self.values[aix]
 
     def set_atoms(self, aix, values):
         self.values[aix] = values
 
     def get_residues(self, rix):
-        resatoms = self.topology.r2a(rix)
+        masses = np.empty(len(rix))
 
+        resatoms = self.topology.r2ra(rix)
 
+        for i, row in enumerate(resatoms):
+            masses[i] = self.values[row].sum()
 
+        return masses
+
+    def get_segments(self, six):
+        masses = np.empty(len(six))
+
+        segatoms = self.topology.s2sa(six)
+
+        for i, row in enumerate(segatoms):
+            masses[i] = self.values[row].sum()
+
+        return masses

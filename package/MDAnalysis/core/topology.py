@@ -1,6 +1,13 @@
-"""The all singing all dancing new Topology system"""
 
 class Topology(object):
+    """In-memory, array-based topology database.
+
+    Parameters
+    ----------
+    topologyattrs : TopologyAttr objects
+        components of the topology to be included
+
+    """
 
     def __init__(self, *topologyattrs):
 
