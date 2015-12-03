@@ -22,8 +22,7 @@ from numpy.testing import TestCase, assert_raises
 import numpy as np
 
 import os
-import tempfile
-import shutil
+import tempdir
 
 from MDAnalysisTests.datafiles import GRO, XTC
 
@@ -32,21 +31,19 @@ class Test_Helanal(TestCase):
     def setUp(self):
         self.universe = MDAnalysis.Universe(GRO, XTC)
         self.selection = 'name CA'
-        self.tempdir = tempfile.mkdtemp()
-        os.chdir(self.tempdir)
 
     def tearDown(self):
         del self.universe
-        shutil.rmtree(self.tempdir, ignore_errors=True)
 
     def test_xtc_striding(self):
         """MDAnalysis.analysis.helanal: Check for resolution of Issue 188."""
         u = self.universe
         u.trajectory[1]
 
-        assert_raises(FinishTimeException,
-                      MDAnalysis.analysis.helanal.helanal_trajectory,
-                      u, selection=self.selection, finish=5)
+        with tempdir.in_tempdir():
+            assert_raises(FinishTimeException,
+                          MDAnalysis.analysis.helanal.helanal_trajectory,
+                          u, selection=self.selection, finish=5)
 
         #with assert_raises(FinishTimeException):
         #    try:
