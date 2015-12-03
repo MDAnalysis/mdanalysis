@@ -22,46 +22,84 @@ Topology attribute objects --- :mod:`MDAnalysis.core.topologyattrs'
 from MDAnalysis.exceptions import NoDataError
 
 
-class Level(object):
-    """Base class for levels represented in TopologyAttr.
-
-    """
-    def get(self, idx):
-        """Get level attributes for given level indices.
-
-        """
-
-    def set(self, idx, values):
-        """Set level attributes for given level indices.
-
-        """
-
-    def add(self, values):
-        """Add level attributes; needed when new elements are added to the
-        level.
-
-        """
-
-    def remove(self, idx):
-        """Remove level attributes for given level indices; needed when
-        elements are removed from the level.
-
-        """
-
-
 class TopologyAttr(object):
     """Base class for Topology attributes.
 
-    :note: This class is intended to be subclassed, and mostly amounts to a
-    skeleton.
+    .. note::   This class is intended to be subclassed, and mostly amounts to a
+                skeleton. The methods here should be present in all
+                :class:`TopologyAttr` child classes, but by default they raise
+                appropriate exceptions.
 
     """
     attrname = 'topologyattr'
+    topology = None
 
     def __init__(self, values):
         """Generate a new :class:`TopologyAttr` object with the given values.
 
         """
-        self.atoms = Level()
-        self.residues = Level()
-        self.segments = Level()
+        pass
+
+    def get_atoms(self, idx):
+        """Get atom attributes for given atom indices.
+
+        """
+        raise NoDataError
+
+    def set_atoms(self, idx, values):
+        """Set atom attributes for given atom indices.
+
+        """
+        raise NotImplementedError
+
+    def get_residues(self, idx):
+        """Get residue attributes for given residue indices.
+
+        """
+        raise NoDataError
+
+    def set_residues(self, idx, values):
+        """Set residue attributes for given residue indices.
+
+        """
+        raise NotImplementedError
+
+    def get_segments(self, idx):
+        """Get segment attributes for given segment indices.
+
+        """
+        raise NoDataError
+
+    def set_segments(self, idx, values):
+        """Set segmentattributes for given segment indices.
+
+        """
+        raise NotImplementedError
+
+
+class Masses(TopologyAttr):
+    """
+    Interface to masses for atoms, residues, and segments.
+    
+    Parameters
+    ----------
+    masses : array
+        mass for each atom in the system
+
+    """
+    def __init__(self, values):
+        super(self, Masses).__init__(values)
+
+        self._values = values
+
+    def get_atoms(self, aix):
+        self._values[aix]
+
+    def set_atoms(self, aix, values):
+        self.values[aix] = values
+
+    def get_residues(self, rix):
+        resatoms = self.topology.r2a(rix)
+
+
+
