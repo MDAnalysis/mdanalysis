@@ -79,23 +79,30 @@ class Resids(TopologyAttr):
     
     Parameters
     ----------
-    values : array
+    resids : array
         resids for residue in the system
 
     """
-    def __init__(self, values):
-        super(self, Resids).__init__(values)
+    def __init__(self, resids):
+        super(self, Resids).__init__(resids)
 
-        self.values = values
+        self.resids = resids
 
     def get_atoms(self, aix):
         rix = self.topology.tt.a2r(aix)
-        return self.values[rix]
+        return self.resids[rix]
 
-    def set_atoms(self, aix, values):
-        
-        rix = self.topology.tt.a2r(aix)
+    def set_atoms(self, aix, resids):
+        rix = np.zeros(len(aix), dtype=np.int64)
 
+        # get resindexes for each resid
+        for i, item in enumerate(resids):
+            try:
+                rix[i] = np.where(self.resids == item)[0][0]
+            except IndexError:
+                raise NoDataError("Cannot assign atom to a residue that doesn't already exist.")
+
+        self.topology.tt.move_atom(aix, rix)
 
     def get_residues(self, rix):
         self.topology.tt.
@@ -117,20 +124,20 @@ class Masses(TopologyAttr):
     
     Parameters
     ----------
-    values : array
+    masses : array
         mass for each atom in the system
 
     """
-    def __init__(self, values):
-        super(self, Masses).__init__(values)
+    def __init__(self, masses):
+        super(self, Masses).__init__(masses)
 
-        self.values = values 
+        self.masses = masses 
 
     def get_atoms(self, aix):
-        self.values[aix]
+        self.masses[aix]
 
-    def set_atoms(self, aix, values):
-        self.values[aix] = values
+    def set_atoms(self, aix, masses):
+        self.masses[aix] = masses 
 
     def get_residues(self, rix):
         masses = np.empty(len(rix))
@@ -138,7 +145,7 @@ class Masses(TopologyAttr):
         resatoms = self.topology.tt.r2ra(rix)
 
         for i, row in enumerate(resatoms):
-            masses[i] = self.values[row].sum()
+            masses[i] = self.masses[row].sum()
 
         return masses
 
@@ -148,6 +155,6 @@ class Masses(TopologyAttr):
         segatoms = self.topology.tt.s2sa(six)
 
         for i, row in enumerate(segatoms):
-            masses[i] = self.values[row].sum()
+            masses[i] = self.masses[row].sum()
 
         return masses
