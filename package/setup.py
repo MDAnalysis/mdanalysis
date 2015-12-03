@@ -78,6 +78,7 @@ except ImportError:
 if cython_found:
     # cython has to be >=0.16 to support cython.parallel
     import Cython
+    from Cython.Build import cythonize
     from distutils.version import LooseVersion
 
     required_version = "0.16"
@@ -141,7 +142,7 @@ class MDAExtension(Extension, object):
                 try:
                     self._mda_include_dirs.append(item()) #The numpy callable
                 except TypeError:
-                    self._mda_include_dirs.append(item) 
+                    self._mda_include_dirs.append(item)
         return self._mda_include_dirs
 
     @include_dirs.setter
@@ -306,8 +307,11 @@ def extensions(config):
                     include_dirs=include_dirs,
                     define_macros=largefile_macros)
 
-    return [dcd, dcd_time, distances, distances_omp, qcprot,
-            transformation, xdr]
+    extensions = [dcd, dcd_time, distances, distances_omp, qcprot,
+                  transformation, xdr]
+    if use_cython:
+        extensions = cythonize(extensions)
+    return extensions
 
 if __name__ == '__main__':
     # NOTE: keep in sync with MDAnalysis.__version__ in version.py
