@@ -84,10 +84,11 @@ authors = u"""Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua
     Xavier Deupi, Jan Domański, David L. Dotson, Lennard van der
     Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas
     Grossar, Benjamin Hall, Joe Jordan, Max Linke, Jinju Lu, Robert
-    McGibbon, Alex Nesterenko, Manuel Nuno Melo, Caio S. Souza, Danny
-    Parton, Joshua L. Phillips, Tyler Reddy, Paul Rigor, Sean
-    L. Seyler, Andy Somogyi, Lukas Stelzl, Gorman Stock, Isaac
-    Virshup, Zhuyi Xue, Carlos Yáñez S., and Oliver Beckstein"""
+    McGibbon, Alex Nesterenko, Manuel Nuno Melo, Hai Nguyen,
+    Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
+    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, 
+    Gorman Stock, Isaac Virshup, Zhuyi Xue, Carlos Yáñez S.,
+    and Oliver Beckstein"""
 project = u'MDAnalysis'
 copyright = u'2005-2015, ' + authors
 
