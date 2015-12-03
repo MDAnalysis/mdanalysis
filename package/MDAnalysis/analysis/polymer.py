@@ -29,6 +29,7 @@ This module contains various commonly used tools in analysing polymers.
 import numpy as np
 import logging
 
+from .. import NoDataError
 from ..lib.util import blocks_of
 from ..lib.distances import calc_bonds
 from .base import AnalysisBase
@@ -119,7 +120,7 @@ class PersistenceLength(AnalysisBase):
         try:
             results = self.results
         except AttributeError:
-            raise ValueError("Use the run method first")
+            raise NoDataError("Use the run method first")
         self.x = np.arange(len(self.results)) * self.lb
 
         self.lp = fit_exponential_decay(self.x, self.results)
