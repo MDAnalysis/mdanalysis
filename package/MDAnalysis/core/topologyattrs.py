@@ -80,7 +80,7 @@ class Resids(TopologyAttr):
     Parameters
     ----------
     values : array
-        resids for each atom in the system
+        resids for residue in the system
 
     """
     def __init__(self, values):
@@ -89,17 +89,21 @@ class Resids(TopologyAttr):
         self.values = values
 
     def get_atoms(self, aix):
-        self.values[aix]
+        rix = self.topology.tt.a2r(aix)
+        return self.values[rix]
 
     def set_atoms(self, aix, values):
-        self.values[aix] = values
+        
+        rix = self.topology.tt.a2r(aix)
+
 
     def get_residues(self, rix):
+        self.topology.tt.
 
     def get_segments(self, six):
         masses = np.empty(len(six))
 
-        segatoms = self.topology.s2sa(six)
+        segatoms = self.topology.tt.s2sa(six)
 
         for i, row in enumerate(segatoms):
             masses[i] = self.values[row].sum()
@@ -107,6 +111,7 @@ class Resids(TopologyAttr):
         return masses
 
 
+#TODO: need to add cacheing
 class Masses(TopologyAttr):
     """Interface to masses for atoms, residues, and segments.
     
@@ -130,7 +135,7 @@ class Masses(TopologyAttr):
     def get_residues(self, rix):
         masses = np.empty(len(rix))
 
-        resatoms = self.topology.r2ra(rix)
+        resatoms = self.topology.tt.r2ra(rix)
 
         for i, row in enumerate(resatoms):
             masses[i] = self.values[row].sum()
@@ -140,7 +145,7 @@ class Masses(TopologyAttr):
     def get_segments(self, six):
         masses = np.empty(len(six))
 
-        segatoms = self.topology.s2sa(six)
+        segatoms = self.topology.tt.s2sa(six)
 
         for i, row in enumerate(segatoms):
             masses[i] = self.values[row].sum()
