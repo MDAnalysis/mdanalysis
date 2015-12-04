@@ -45,12 +45,8 @@ class Topology(object):
                  residue_segindex=None):
 
         self.tt = TransTable(n_atoms, n_res, n_seg,
-                             
-        self.n_atoms = n_atoms
-        self.n_res = n_res
-        self.n_seg = n_seg
-        self.Rixs = Rixs
-        self.Sixs = Sixs
+                             atom_resindex=atom_resindex,
+                             residue_segindex=residue_segindex)
 
         # attach the TopologyAttrs
         for topologyattr in attrs:

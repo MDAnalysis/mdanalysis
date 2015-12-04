@@ -14,21 +14,39 @@ class TransTable(object):
 
     Parameters
     ----------
-    jj
+    n_atoms, n_residues, n_segments : int
+        number of atoms, residues, segments in topology
+    atom_resindex : 1-D array
+        resindex for each atom in the topology; the number of unique values in this
+        array must be <= `n_residues`, and the array must be length `n_atoms`;
+        giving None defaults to placing all atoms in residue 0
+    residue_segindex : 1-D array
+        segindex for each atom in the topology; the number of unique values in this
+        array must be <= `n_segments`, and the array must be length `n_residues`;
+        giving None defaults to placing all residues in segment 0
+ 
 
+    Attributes
+    ----------
+    n_atoms, n_residues, n_segments : int
+        number of atoms, residues, segments in topology
+    AR : 1-D array
+        resindex for each atom in the topology; allows fast upward translation
+        from atoms to residues 
+    RA : sparse matrix
+        row ``i`` corresponds to the residue with resindex ``i``, with each
+        column giving 1 if the atom with atomindex ``j`` is a member or 0 if it
+        is not; this matrix has dimension (nres x natoms); allows fast downward
+        translation from residues to atoms
+    RS : 1-D array
+        segindex for each residue in the topology; allows fast upward
+        translation from residues to segments 
+    SR : sparse matrix
+        row ``i`` corresponds to the segment with segindex ``i``, with each
+        column giving 1 if the residue with resindex ``j`` is a member or 0 if
+        it is not; this matrix has dimension (nseg x nres); allows fast
+        downward translation from segments to residues 
 
-
-
-    Atom
-    AtomToResidue sparse matrix (nres x natoms)
-    Residue
-     ^v     ResidueToSegment sparse matrix (nseg x nres)
-    Segment
-
-    Accepts only Xidx!
-    Returns Xidx!
-    Ie. row indices for other tables
-    Might differ from Ids!
     """
     def __init__(self,
                  n_atoms, n_residues, n_segments,  # Size of tables
@@ -38,23 +56,23 @@ class TransTable(object):
         self.n_residues = n_residues
         self.n_segments = n_segments
 
-        RA = self.RA = sparse.csr_matrix((n_residues, n_atoms),
+        self.RA = sparse.csr_matrix((n_residues, n_atoms),
                                          dtype=np.bool)
-        SR = self.SR = sparse.csr_matrix((n_segments, n_residues),
+        self.SR = sparse.csr_matrix((n_segments, n_residues),
                                          dtype=np.bool)
 
-        if not Ridx is None:
+        if not atom_resindex is None:
             # fill in arrays here
             # could optimise by creating different type of SM then converting
             # we want the CSR? format for quick access across rows
             # ie finding all children of a certain parent
-            self.AR = Ridx
-            for ai, ri in enumerate(Ridx):
-                RA[ri, ai] = True   
-        if not Sidx is None:
-            self.RS = Sidx
-            for ri, si in enumerate(Sidx):
-                SR[si, ri] = True
+            self.AR = atom_resindex
+            for ai, ri in enumerate(atom_resindex):
+                self.RA[ri, ai] = True   
+        if not residue_segindex is None:
+            self.RS = residue_segindex
+            for ri, si in enumerate(residue_segindex):
+                self.SR[si, ri] = True
 
     def a2r(self, aix):
         """Get residue indices for each atom.
