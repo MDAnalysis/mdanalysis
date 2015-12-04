@@ -150,13 +150,20 @@ class MDAExtension(Extension, object):
         self._mda_include_dir_args = val
 
 def get_numpy_include():
+    # Obtain the numpy include directory. This logic works across numpy
+    # versions.
+    # setuptools forgets to unset numpy's setup flag and we get a crippled
+    # version of it unless we do it ourselves.
     try:
-        # Obtain the numpy include directory. This logic works across numpy
-        # versions.
-        # setuptools forgets to unset numpy's setup flag and we get a crippled
-        # version of it unless we do it ourselves.
-        import __builtin__
-        __builtin__.__NUMPY_SETUP__ = False
+        # Python 3 renamed the ``__builin__`` module into ``builtins``.
+        # Here we import the python 2 or the python 3 version of the module
+        # with the python 3 name. This could be done with ``six`` but that
+        # module may not be installed at that point.
+        import __builtin__ as builtins
+    except ImportError:
+        import builtins
+    builtins.__NUMPY_SETUP__ = False
+    try:
         import numpy as np
     except ImportError:
         print('*** package "numpy" not found ***')
