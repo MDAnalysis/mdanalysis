@@ -115,3 +115,16 @@ def squash_by(resids, *attributes):
             new_att[i] = view[0]
         
     return new_resids, new_atts
+
+def remap_ids(ids, id2ix):
+    """
+    Arguments
+    ---------
+    ids - an array of len(n) which refers to ids
+    id2ix - an array of ids in order of their index
+
+    Returns
+    -------
+    newids - an array len(n) which now contains ixs
+    """
+    return np.array([np.where(id2ix == val)[0][0] for val in ids])
