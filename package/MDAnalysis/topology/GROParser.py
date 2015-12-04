@@ -125,8 +125,8 @@ class NewGROParser(TopologyReader):
 
         top = Topology(n_atoms, len(new_resids), 1,
                        attrs=[atomnames, residueids, residuenames],
-                       Rixs=residx,
-                       Sixs=None)
+                       atom_resindex=residx,
+                       residue_segindex=None)
 
         return top
         

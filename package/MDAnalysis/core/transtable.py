@@ -5,8 +5,9 @@ optimisation:
 could store 2 tables for each table, so that access is always fast
 would mean that updating the tables needs to update two tables.
 """
-from scipy import sparse
 import numpy as np
+
+from ..lib.mdamath import one_to_many_pointers
 
 
 class TransTable(object):
@@ -56,23 +57,14 @@ class TransTable(object):
         self.n_residues = n_residues
         self.n_segments = n_segments
 
-        self.RA = sparse.csr_matrix((n_residues, n_atoms),
-                                         dtype=np.bool)
-        self.SR = sparse.csr_matrix((n_segments, n_residues),
-                                         dtype=np.bool)
-
         if not atom_resindex is None:
-            # fill in arrays here
-            # could optimise by creating different type of SM then converting
-            # we want the CSR? format for quick access across rows
-            # ie finding all children of a certain parent
             self.AR = atom_resindex
-            for ai, ri in enumerate(atom_resindex):
-                self.RA[ri, ai] = True   
+            self._atom_order, self._res_ptrs = one_to_many_pointers(
+                n_atoms, n_residues, atom_resindex)
         if not residue_segindex is None:
             self.RS = residue_segindex
-            for ri, si in enumerate(residue_segindex):
-                self.SR[si, ri] = True
+            self._res_order, self._seg_ptrs = one_to_many_pointers(
+                n_residues, n_segments, residue_segindex)
 
     def a2r(self, aix):
         """Get residue indices for each atom.
@@ -104,7 +96,8 @@ class TransTable(object):
             indices of atoms present in residues, collectively
 
         """
-        return self.RA[rix].sorted_indices().indices
+        return np.concatenate([self._atom_order[x:y]
+                               for x, y in self._res_ptrs[rix]])
 
     def r2a_2d(self, rix):
         """Get atom indices represented by each residue index.
@@ -122,7 +115,7 @@ class TransTable(object):
             in that residue
 
         """
-        return (row.sorted_indices().indices for row in self.RA[rix])
+        return (self._atom_order[x:y] for x, y in self._res_ptrs[rix])
 
     def r2s(self, rix):
         """Get segment indices for each residue.
@@ -141,7 +134,7 @@ class TransTable(object):
         return self.RS[rix]
 
     def s2r_1d(self, six):
-        """Get residue indices collectively represented by given segment indices.
+        """Get residue indices collectively represented by given segment indices
 
         Parameters
         ----------
@@ -154,7 +147,8 @@ class TransTable(object):
             sorted indices of residues present in segments, collectively
 
         """
-        return self.SR[six].sorted_indices().indices
+        return np.concatenate([self._res_order[x:y]
+                               for x, y in self._seg_ptrs[six]])
 
     def s2r_2d(self, six):
         """Get residue indices represented by each segment index.
@@ -172,7 +166,7 @@ class TransTable(object):
             in that segment
 
         """
-        return (row.sorted_indices().indices for row in self.SR[six])
+        return (self._res_order[x:y] for x, y in self._seg_ptrs[six])
 
     # Compound moves, does 2 translations
     def a2s(self, aix):
