@@ -10,10 +10,17 @@ import numpy as np
 
 
 class TransTable(object):
-    """Who's your daddy?
+    """Membership tables with methods to translate indices across levels.
+
+    Parameters
+    ----------
+    jj
+
+
+
 
     Atom
-     ^v     AtomToResidue sparse matrix (nres x natoms)
+    AtomToResidue sparse matrix (nres x natoms)
     Residue
      ^v     ResidueToSegment sparse matrix (nseg x nres)
     Segment
@@ -25,8 +32,8 @@ class TransTable(object):
     """
     def __init__(self,
                  n_atoms, n_residues, n_segments,  # Size of tables
-                 Ridx=None, Sidx=None,  # Contents of tables
-    ):
+                 atom_resindex=None, residue_segindex=None,  # Contents of tables
+                ):
         self.n_atoms = n_atoms
         self.n_residues = n_residues
         self.n_segments = n_segments
@@ -49,54 +56,169 @@ class TransTable(object):
             for ri, si in enumerate(Sidx):
                 SR[si, ri] = True
 
-    def a2r(self, Aidx):
-        """The Residue index for this Atom index"""
-        return self.AR[Aidx]
+    def a2r(self, aix):
+        """Get residue indices for each atom.
 
-    def r2a_1d(self, Ridx):
-        """The Atom indices for this Ridx"""
-        # Sort here so atom indices are sorted within each Residue
-        return self.RA[Ridx].sorted_indices().indices
+        Parameters
+        ----------
+        aix : array
+            atom indices
 
-    def r2a_2d(self, Ridx):
-        return (row.sorted_indices().indices for row in self.RA[Ridx])
+        Returns
+        -------
+        rix : array
+            residue index for each atom 
 
-    def r2s(self, Ridx):
-        """The Sidx for this Ridx"""
-        return self.RS[Ridx]
+        """
+        return self.AR[aix]
 
-    def s2r_1d(self, Sidx):
-        """The Ridxs for this Sidx"""
-        return self.SR[Sidx].sorted_indices().indices
+    def r2a_1d(self, rix):
+        """Get atom indices collectively represented by given residue indices.
 
-    def s2r_2d(self, Sidx):
-        return (row.sorted_indices().indices for row in self.SR[Sidx])
+        Parameters
+        ----------
+        rix : array
+            residue indices
+
+        Returns
+        -------
+        aix : array
+            indices of atoms present in residues, collectively
+
+        """
+        return self.RA[rix].sorted_indices().indices
+
+    def r2a_2d(self, rix):
+        """Get atom indices represented by each residue index.
+
+        Parameters
+        ----------
+        rix : array
+            residue indices
+
+        Returns
+        -------
+        raix : tuple
+            each element corresponds to a residue index, in order given in
+            `rix`, with each element being an array of the atom indices present
+            in that residue
+
+        """
+        return (row.sorted_indices().indices for row in self.RA[rix])
+
+    def r2s(self, rix):
+        """Get segment indices for each residue.
+
+        Parameters
+        ----------
+        rix : array
+            residue indices 
+
+        Returns
+        -------
+        six : array
+            segment index for each residue
+
+        """
+        return self.RS[rix]
+
+    def s2r_1d(self, six):
+        """Get residue indices collectively represented by given segment indices.
+
+        Parameters
+        ----------
+        six : array
+            segment indices
+
+        Returns
+        -------
+        rix : array
+            sorted indices of residues present in segments, collectively
+
+        """
+        return self.SR[six].sorted_indices().indices
+
+    def s2r_2d(self, six):
+        """Get residue indices represented by each segment index.
+
+        Parameters
+        ----------
+        six : array
+            residue indices
+
+        Returns
+        -------
+        srix : sparse matrix 
+            each element corresponds to a segment index, in order given in
+            `six`, with each element being an array of the residue indices present
+            in that segment
+
+        """
+        return (row.sorted_indices().indices for row in self.SR[six])
 
     # Compound moves, does 2 translations
-    def a2s(self, Aidx):
-        """The Sidx for this Aidx"""
-        Ridx = self.a2r(Aidx)
-        return self.r2s(Ridx)
+    def a2s(self, aix):
+        """Get segment indices for each atom.
 
-    def s2a_1d(self, Sidx):
-        """The Aidxs for this Sidx"""
-        Ridxs = self.s2r_2d(Sidx)
-        return np.concatenate([self.r2a_1d(Ridx) for Ridx in Ridxs])
+        Parameters
+        ----------
+        aix : array
+            atom indices
 
-    def s2a_2d(self, Sidx):
-        Ridxs = self.s2r_2d(Sidx)
-        return (self.r2a_1d(Ridx) for Ridx in Ridxs)
+        Returns
+        -------
+        rix : array
+            segment index for each atom
+
+        """
+        rix = self.a2r(aix)
+        return self.r2s(rix)
+
+    def s2a_1d(self, six):
+        """Get atom indices collectively represented by given segment indices.
+
+        Parameters
+        ----------
+        six : array
+            segment indices
+
+        Returns
+        -------
+        aix : array
+            sorted indices of atoms present in segments, collectively
+
+        """
+        rixs = self.s2r_2d(six)
+        return np.concatenate([self.r2a_1d(rix) for rix in rixs])
+
+    def s2a_2d(self, six):
+        """Get atom indices represented by each segment index.
+
+        Parameters
+        ----------
+        six : array
+            residue indices
+
+        Returns
+        -------
+        saix : sparse matrix 
+            each element corresponds to a segment index, in order given in
+            `six`, with each element being an array of the atom indices present
+            in that segment
+
+        """
+        rixs = self.s2r_2d(six)
+        return (self.r2a_1d(rix) for rix in rixs)
 
     # Move between different groups.
     # In general, delete old address, add new address
-    def move_atom(self, Aidx, Ridx):
-        """Move Aidx to be in Ridx"""
+    def move_atom(self, aix, rix):
+        """Move aix to be in rix"""
         pass
 
-    def move_residue(self, Ridx, Sidx):
-        """Move Ridx to be in Sidx"""
+    def move_residue(self, rix, six):
+        """Move rix to be in six"""
         pass
 
     def resize(self):
-        # Shit just got real
         pass
