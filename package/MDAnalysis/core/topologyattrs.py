@@ -30,19 +30,29 @@ class TopologyAttr(object):
                 :class:`TopologyAttr` child classes, but by default they raise
                 appropriate exceptions.
 
+    Attributes
+    ----------
+    attrname : str
+        the name used for the attribute when attached to a ``Topology`` object
+    top : Topology
+        handle for the Topology object TopologyAttr is associated with
+    level : int {0, 1, 2}
+        the natural level in the topology the attribute: ``0`` for atoms,
+        ``1`` for residues, ``2`` for segments
+        
     """
     attrname = 'topologyattr'
-    topology = None
+    top = None
     level = None
 
     def __init__(self, values):
-        pass
+        self.values = values
 
     def __len__(self):
         """Length of the TopologyAttr at its intrinsic level.
 
-        If the level is 'atoms', then this should return a value of size
-        atoms.
+        If the ``self.level`` is ``0``, then this should return a value of size
+        atoms, for example.
 
         """
         return len(self.values)
@@ -84,7 +94,42 @@ class TopologyAttr(object):
         raise NotImplementedError
 
 
-class Atomids(TopologyAttr):
+## atom attributes
+
+class AtomAttr(TopologyAttr):
+    """Base class for atom attributes.
+
+    """
+    attrname = 'atomattr'
+    topology = None
+    level = 0 
+
+    def get_atoms(self, aix):
+        return self.values[aix]
+
+    def set_atoms(self, aix, values):
+        self.values[aix] = values
+
+    def get_residues(self, rix):
+        """By default, the values for each atom present in the set of residues
+        are returned in a single array. This behavior can be overriden in child
+        attributes.
+
+        """
+        aix = self.top.tt.r2a_1d(rix)
+        return self.values[aix]
+
+    def get_segments(self, six):
+        """By default, the values for each atom present in the set of residues
+        are returned in a single array. This behavior can be overriden in child
+        attributes.
+
+        """
+        aix = self.top.tt.s2a_1d(six)
+        return self.values[aix]
+
+
+class Atomids(AtomAttr):
     """Interface to atomids.
     
     Parameters
@@ -94,28 +139,9 @@ class Atomids(TopologyAttr):
 
     """
     attrname = 'atomids'
-    level = 'atoms'
-
-    def __init__(self, atomids):
-        super(Atomids, self).__init__(atomids)
-        self.values = atomids 
-
-    def get_atoms(self, aix):
-        return self.values[aix]
-
-    def set_atoms(self, aix, atomids):
-        self.values[aix] = atomids 
-
-    def get_residues(self, rix):
-        aix = self.top.tt.r2a_1d(rix)
-        return self.values[aix]
-
-    def get_segments(self, six):
-        aix = self.top.tt.s2a_1d(six)
-        return self.values[aix]
 
 
-class Atomnames(TopologyAttr):
+class Atomnames(AtomAttr):
     """Interface to atomnames.
     
     Parameters
@@ -125,113 +151,10 @@ class Atomnames(TopologyAttr):
 
     """
     attrname = 'atomnames'
-    level = 'atoms'
-
-    def __init__(self, atomnames):
-        super(Atomnames, self).__init__(atomnames)
-
-        self.values = atomnames
-
-    def get_atoms(self, aix):
-        return self.values[aix]
-
-    def set_atoms(self, aix, atomnames):
-        self.values[aix] = atomnames
-
-    def get_residues(self, rix):
-        aix = self.top.tt.r2a_1d(rix)
-        return self.values[aix]
-
-    def get_segments(self, six):
-        aix = self.top.tt.s2a_1d(six)
-        return self.values[aix]
-
-
-class Resids(TopologyAttr):
-    """Interface to resids.
-    
-    Parameters
-    ----------
-    resids : array
-        resids for residue in the system
-
-    """
-    attrname = 'resids'
-    level = 'residues'
-
-    def __init__(self, resids):
-        super(Resids, self).__init__(resids)
-
-        self.values = resids
-
-    def get_atoms(self, aix):
-        rix = self.top.tt.a2r(aix)
-        return self.values[rix]
-
-    def set_atoms(self, aix, resids):
-        """Set resid for each atom given. Effectively moves each atom to
-        another residue.
-
-        """
-        
-        rix = np.zeros(len(aix), dtype=np.int64)
-
-        # get resindexes for each resid
-        for i, item in enumerate(resids):
-            try:
-                rix[i] = np.where(self.values == item)[0][0]
-            except IndexError:
-                raise NoDataError("Cannot assign atom to a residue that doesn't already exist.")
-
-        self.top.tt.move_atom(aix, rix)
-
-    def get_residues(self, rix):
-        return self.values[rix]
-
-    def set_residues(self, rix, resids):
-        """Change resids of the given residues.
-
-        """
-        self.values[rix] = resids
-
-    def get_segments(self, six):
-        rix = self.top.tt.s2r_1d(six)
-        return self.values[rix]
-
-
-class Resnames(TopologyAttr):
-    """Interface to resnames.
-    
-    Parameters
-    ----------
-    resnames : array
-        resnames for residues in the system
-
-    """
-    attrname = 'resnames'
-    level = 'residues'
-
-    def __init__(self, resnames):
-        super(Resnames, self).__init__(resnames)
-
-        self.values = resnames
-
-    def get_atoms(self, aix):
-        rix = self.top.tt.a2r(aix)
-        return self.values[rix]
-
-    def get_residues(self, rix):
-        return self.values[rix]
-
-    def set_residues(self, rix, resnames):
-        """Change resnames for the given residues.
-
-        """
-        self.values[rix] = resnames
 
 
 #TODO: need to add cacheing
-class Masses(TopologyAttr):
+class Masses(AtomAttr):
     """Interface to masses for atoms, residues, and segments.
     
     Parameters
@@ -241,18 +164,6 @@ class Masses(TopologyAttr):
 
     """
     attrname = 'masses'
-    level = 'atoms'
-
-    def __init__(self, masses):
-        super(Masses, self).__init__(masses)
-
-        self.values = masses 
-
-    def get_atoms(self, aix):
-        self.values[aix]
-
-    def set_atoms(self, aix, masses):
-        self.values[aix] = masses 
 
     def get_residues(self, rix):
         masses = np.empty(len(rix))
@@ -273,3 +184,137 @@ class Masses(TopologyAttr):
             masses[i] = self.values[row].sum()
 
         return masses
+
+
+#TODO: need to add cacheing
+class Charges(AtomAttr):
+    """Interface to charges for atoms, residues, and segments.
+    
+    Parameters
+    ----------
+    charges : array
+        charge for each atom in the system
+
+    """
+    attrname = 'charges'
+
+    def get_residues(self, rix):
+        charges = np.empty(len(rix))
+
+        resatoms = self.top.tt.r2a_2d(rix)
+
+        for i, row in enumerate(resatoms):
+            charges[i] = self.values[row].sum()
+
+        return charges
+
+    def get_segments(self, six):
+        charges = np.empty(len(six))
+
+        segatoms = self.top.tt.s2a_2d(six)
+
+        for i, row in enumerate(segatoms):
+            charges[i] = self.values[row].sum()
+
+        return charges
+
+
+## residue attributes
+
+class ResidueAttr(TopologyAttr):
+    """Base class for Topology attributes.
+
+    .. note::   This class is intended to be subclassed, and mostly amounts to a
+                skeleton. The methods here should be present in all
+                :class:`TopologyAttr` child classes, but by default they raise
+                appropriate exceptions.
+
+    """
+    attrname = 'residueattr'
+    topology = None
+    level = 1
+
+    def get_atoms(self, aix):
+        rix = self.top.tt.a2r(aix)
+        return self.values[rix]
+
+    def get_residues(self, rix):
+        return self.values[rix]
+
+    def set_residues(self, rix, values):
+        self.values[rix] = values
+
+    def get_segments(self, six):
+        """By default, the values for each residue present in the set of
+        segments are returned in a single array. This behavior can be overriden
+        in child attributes.
+
+        """
+        rix = self.top.tt.s2r_1d(six)
+        return self.values[rix]
+
+
+class Resids(ResidueAttr):
+    """Interface to resids.
+    
+    Parameters
+    ----------
+    resids : array
+        resids for residue in the system
+
+    """
+    attrname = 'resids'
+
+    def set_atoms(self, aix, resids):
+        """Set resid for each atom given. Effectively moves each atom to
+        another residue.
+
+        """
+        
+        rix = np.zeros(len(aix), dtype=np.int64)
+
+        # get resindexes for each resid
+        for i, item in enumerate(resids):
+            try:
+                rix[i] = np.where(self.values == item)[0][0]
+            except IndexError:
+                raise NoDataError("Cannot assign atom to a residue that doesn't already exist.")
+
+        self.top.tt.move_atom(aix, rix)
+
+
+class Resnames(ResidueAttr):
+    """Interface to resnames.
+    
+    Parameters
+    ----------
+    resnames : array
+        resnames for residues in the system
+
+    """
+    attrname = 'resnames'
+
+
+## segment attributes
+
+class SegmentAttr(TopologyAttr):
+    """Base class for segment attributes.
+
+    """
+    attrname = 'segmentattr'
+    topology = None
+    level = 2
+
+    def get_atoms(self, aix):
+        six = self.top.tt.a2s(aix)
+        return self.values[six]
+
+    def get_residues(self, rix):
+        six = self.top.tt.r2s(rix)
+        return self.values[six]
+
+    def get_segments(self, six):
+        return self.values[six]
+
+    def set_segments(self, six, values):
+        self.values[six] = values
