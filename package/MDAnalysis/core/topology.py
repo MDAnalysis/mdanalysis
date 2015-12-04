@@ -38,14 +38,22 @@ class Topology(object):
 
     """
 
-    def __init__(self, n_atoms, *topologyattrs, atom_resindices=None, residue_segindices=None):
+    def __init__(self, n_atoms, n_res, n_seg,
+                 attrs=None,
+                 Rix=None,
+                 Six=None):
+        self.n_atoms = n_atoms
+        self.n_res = n_res
+        self.n_seg = n_seg
+        self.attrs = attrs
+        self.Rix = Rix
+        self.Six = Six
 
         # attach the TopologyAttrs
         for topologyattr in topologyattrs:
             self.add_TopologyAttr(topologyattr)
 
-
-    def add_TopologyAttr(topologyattr):
+    def add_TopologyAttr(self, topologyattr):
         """Add a new TopologyAttr to the Topology.
 
         Parameters

@@ -38,8 +38,15 @@ import numpy as np
 
 from ..lib.util import openany
 from ..core.AtomGroup import Atom
+from ..core.topologyattrs import (
+    Resids,
+    Resnames,
+    Atomids,
+    Atomnames,
+)
+from ..core.topology import Topology
 from .core import get_atom_mass, guess_atom_charge, guess_atom_element
-from .base import TopologyReader, squash_by
+from .base import TopologyReader, squash_by, remap_ids
 from .newtopology import Topology
 
 
@@ -107,13 +114,20 @@ class NewGROParser(TopologyReader):
 
         new_resids, (new_resnames,) = squash_by(resids, resnames)
 
-        top = Topology(n_atoms, len(new_resids), 1)
-        top.atoms['resindex'] = resids
-        top.atoms['names'] = names
-        top.atoms['indices'] = indices
+        # new_resids is len(residues)
+        # so resindex 0 has resid new_resids[0]
 
-        top.residues['resids'] = new_resids
-        top.residues['resnames'] = new_resnames
+        # Renumber the (AtomID: ResID) relationship to be (AtomID: ResIX)
+        residx = remap_ids(resids, new_resids)
+
+        atomnames = Atomnames(names)
+        residueids = Resids(new_resids)
+        residuenames = Resnames(new_resnames)
+
+        top = Topology(n_atoms, len(new_resids), 1,
+                       attrs=[atomnames, residueids, residuenames],
+                       Rixs=residx,
+                       Sixs=None)
 
         return top
         
