@@ -191,7 +191,7 @@ class Resids(TopologyAttr):
         return self.values[rix]
 
 
-class Resids(TopologyAttr):
+class Resnames(TopologyAttr):
     """Interface to resnames.
     
     Parameters
