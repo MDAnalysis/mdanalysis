@@ -127,4 +127,5 @@ def remap_ids(ids, id2ix):
     -------
     newids - an array len(n) which now contains ixs
     """
-    return np.array([np.where(id2ix == val)[0][0] for val in ids])
+    conv = {val:i for i, val in enumerate(id2ix)}
+    return np.array([conv[val] for val in ids])
