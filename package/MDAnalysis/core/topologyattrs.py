@@ -97,7 +97,7 @@ class Atomids(TopologyAttr):
     level = 'atoms'
 
     def __init__(self, atomids):
-        super(self, Atomids).__init__(atomids)
+        super(Atomids, self).__init__(atomids)
         self.values = atomids 
 
     def get_atoms(self, aix):
@@ -128,7 +128,7 @@ class Atomnames(TopologyAttr):
     level = 'atoms'
 
     def __init__(self, atomnames):
-        super(self, Atomnames).__init__(atomnames)
+        super(Atomnames, self).__init__(atomnames)
 
         self.values = atomnames
 
@@ -152,7 +152,7 @@ class Resids(TopologyAttr):
     level = 'residues'
 
     def __init__(self, resids):
-        super(self, Resids).__init__(resids)
+        super(Resids, self).__init__(resids)
 
         self.values = resids
 
@@ -191,7 +191,7 @@ class Resids(TopologyAttr):
         return self.values[rix]
 
 
-class Resids(TopologyAttr):
+class Resnames(TopologyAttr):
     """Interface to resnames.
     
     Parameters
@@ -204,7 +204,7 @@ class Resids(TopologyAttr):
     level = 'residues'
 
     def __init__(self, resnames):
-        super(self, Resids).__init__(resnames)
+        super(Resids, self).__init__(resnames)
 
         self.values = resnames
 
@@ -221,6 +221,7 @@ class Resids(TopologyAttr):
         """
         self.values[rix] = resnames
 
+
 #TODO: need to add cacheing
 class Masses(TopologyAttr):
     """Interface to masses for atoms, residues, and segments.
@@ -235,7 +236,7 @@ class Masses(TopologyAttr):
     level = 'atoms'
 
     def __init__(self, masses):
-        super(self, Masses).__init__(masses)
+        super(Masses, self).__init__(masses)
 
         self.values = masses 
 
