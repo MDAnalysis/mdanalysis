@@ -67,7 +67,7 @@ class TransTable(object):
 
     def s2r_1d(self, Sidx):
         """The Ridxs for this Sidx"""
-        return self.SR[Sidx].indices
+        return self.SR[Sidx].sorted_indices().indices
 
     def s2r_2d(self, Sidx):
         return (row.sorted_indices().indices for row in self.SR[Sidx])
