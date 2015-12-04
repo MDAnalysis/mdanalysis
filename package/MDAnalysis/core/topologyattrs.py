@@ -204,7 +204,7 @@ class Resnames(TopologyAttr):
     level = 'residues'
 
     def __init__(self, resnames):
-        super(Resids, self).__init__(resnames)
+        super(Resnames, self).__init__(resnames)
 
         self.values = resnames
 
