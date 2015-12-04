@@ -138,6 +138,14 @@ class Atomnames(TopologyAttr):
     def set_atoms(self, aix, atomnames):
         self.values[aix] = atomnames
 
+    def get_residues(self, rix):
+        aix = self.top.tt.r2a_1d(rix)
+        return self.values[aix]
+
+    def get_segments(self, six):
+        aix = self.top.tt.s2a_1d(six)
+        return self.values[aix]
+
 
 class Resids(TopologyAttr):
     """Interface to resids.

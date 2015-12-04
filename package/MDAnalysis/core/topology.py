@@ -23,11 +23,11 @@ Topology object --- :mod:`MDAnalysis.core.topology'
 class Topology(object):
     """In-memory, array-based topology database.
 
-    The topology model of MDanalysis features atoms, which can each be a member
-    of one or zero residues. Each residue, in turn, can be a member of one
-    or zero segments. The details of maintaining this heirarchy, and mappings
-    of atoms to residues, residues to segments, and vice-versa, are handled
-    internally by this object.
+    The topology model of MDanalysis features atoms, which must each be a
+    member of one residue. Each residue, in turn, must be a member of one
+    segment. The details of maintaining this heirarchy, and mappings of atoms
+    to residues, residues to segments, and vice-versa, are handled internally
+    by this object.
 
     Parameters
     ----------
