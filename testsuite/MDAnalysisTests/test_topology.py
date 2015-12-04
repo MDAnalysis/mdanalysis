@@ -106,4 +106,26 @@ class TestTransTable(object):
             for a1, a2 in zip(answer, rix):
                 assert_array_equal(a1, a2)
 
+    def test_s2a_1d(self):
+        for six, aix in zip(
+                [[0, 1],
+                 [1, 0],
+                 [1, 1]],
+                [[0, 1, 6, 7, 4, 5, 8, 2, 3, 9],
+                 [4, 5, 8, 2, 3, 9, 0, 1, 6, 7],
+                 [4, 5, 8, 2, 3, 9, 4, 5, 8, 2, 3, 9]],
+        ):
+            assert_array_equal(self.tt.s2a_1d(six), aix)
 
+    def test_s2a_2d(self):
+        for six, aix in zip(
+                [[0, 1],
+                 [1, 0],
+                 [1, 1]],
+                [[[0, 1, 6, 7], [4, 5, 8, 2, 3, 9]],
+                 [[4, 5, 8, 2, 3, 9], [0, 1, 6, 7]],
+                 [[4, 5, 8, 2, 3, 9], [4, 5, 8, 2, 3, 9]]],
+        ):
+            answer = self.tt.s2a_2d(six)
+            for a1, a2 in zip(answer, aix):
+                assert_array_equal(a1, a2)
