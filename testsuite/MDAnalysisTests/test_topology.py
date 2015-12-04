@@ -21,10 +21,12 @@ class TestTopology(object):
     Sidx = np.array([0, 1, 1, 0])
 
     def setUp(self):
-        self.tt = TransTable(10, 4, 2, self.Ridx, self.Sidx)
+        self.top = Topology(10, 4, 2, attrs=[],
+                            atom_resindex=self.Ridx,
+                            residue_segindex=self.Sidx)
 
     def tearDown(self):
-        del self.tt
+        del self.top
 
 
 class TestTransTable(object):

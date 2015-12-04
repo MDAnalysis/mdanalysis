@@ -30,9 +30,19 @@ class TopologyAttr(object):
                 :class:`TopologyAttr` child classes, but by default they raise
                 appropriate exceptions.
 
+    Attributes
+    ----------
+    attrname : str
+        the name used for the attribute when attached to a ``Topology`` object
+    top : Topology
+        handle for the Topology object TopologyAttr is associated with
+    level : int {0, 1, 2}
+        the natural level in the topology the attribute: ``0`` for atoms,
+        ``1`` for residues, ``2`` for segments
+        
     """
     attrname = 'topologyattr'
-    topology = None
+    top = None
     level = None
 
     def __init__(self, values):
@@ -41,8 +51,8 @@ class TopologyAttr(object):
     def __len__(self):
         """Length of the TopologyAttr at its intrinsic level.
 
-        If the level is 'atoms', then this should return a value of size
-        atoms.
+        If the ``self.level`` is ``0``, then this should return a value of size
+        atoms, for example.
 
         """
         return len(self.values)
