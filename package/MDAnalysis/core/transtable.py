@@ -17,11 +17,6 @@
 TransTable object --- :mod:`MDAnalysis.core.transtable'
 ===================================================================
 
-
-optimisation:
--------------
-could store 2 tables for each table, so that access is always fast
-would mean that updating the tables needs to update two tables.
 """
 from scipy import sparse
 import numpy as np
