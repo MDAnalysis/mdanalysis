@@ -47,7 +47,6 @@ from ..core.topologyattrs import (
 from ..core.topology import Topology
 from .core import get_atom_mass, guess_atom_charge, guess_atom_element
 from .base import TopologyReader, squash_by, remap_ids
-from .newtopology import Topology
 
 
 class GROParser(TopologyReader):
