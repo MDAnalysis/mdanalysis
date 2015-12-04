@@ -40,17 +40,17 @@ class Topology(object):
 
     def __init__(self, n_atoms, n_res, n_seg,
                  attrs=None,
-                 Rix=None,
-                 Six=None):
+                 Rixs=None,
+                 Sixs=None):
         self.n_atoms = n_atoms
         self.n_res = n_res
         self.n_seg = n_seg
         self.attrs = attrs
-        self.Rix = Rix
-        self.Six = Six
+        self.Rixs = Rixs
+        self.Sixs = Sixs
 
         # attach the TopologyAttrs
-        for topologyattr in topologyattrs:
+        for topologyattr in attrs:
             self.add_TopologyAttr(topologyattr)
 
     def add_TopologyAttr(self, topologyattr):
