@@ -101,7 +101,6 @@ class AtomAttr(TopologyAttr):
 
     """
     attrname = 'atomattr'
-    topology = None
     level = 0 
 
     def get_atoms(self, aix):
@@ -302,7 +301,6 @@ class SegmentAttr(TopologyAttr):
 
     """
     attrname = 'segmentattr'
-    topology = None
     level = 2
 
     def get_atoms(self, aix):
