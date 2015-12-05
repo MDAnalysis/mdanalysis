@@ -1525,9 +1525,6 @@ class TestWriteGRO(_WriteAtoms):
                      "testing suite.)")
 
 
-import MDAnalysis.core.AtomGroup
-
-
 @attr("issue")
 def test_generated_residueselection():
     """Test that a generated residue group always returns a ResidueGroup (Issue 47)"""
@@ -2199,7 +2196,7 @@ class TestCrossUniverse(object):
         A = [u1.atoms[:2], u1.atoms[3]]
         B = [u2.atoms[:3], u2.atoms[0]]
 
-        # Checks Atom to Atom, Atom to AG, AG to Atom and AG to AG 
+        # Checks Atom to Atom, Atom to AG, AG to Atom and AG to AG
         for x, y in itertools.product(A, B):
             yield self._check_badadd, x, y
 
