@@ -37,7 +37,6 @@ from __future__ import absolute_import
 import numpy as np
 
 from ..lib.util import openany
-from ..core.AtomGroup import Atom
 from ..core.topologyattrs import (
     Resids,
     Resnames,
@@ -50,46 +49,6 @@ from .base import TopologyReader, squash_by, remap_ids
 
 
 class GROParser(TopologyReader):
-    def parse(self):
-        """Parse GRO file *filename* and return the dict `structure`.
-
-        Only reads the list of atoms.
-
-        :Returns: MDAnalysis internal *structure* dict
-
-        .. SeeAlso:: The *structure* dict is defined in
-                     :func:`MDAnalysis.topology.base`.
-        """
-        segid = "SYSTEM"
-        atoms = []
-        with openany(self.filename, "r") as grofile:
-            grofile.readline()
-            natoms = int(grofile.readline())
-            for atom_iter in xrange(natoms):
-                line = grofile.readline()
-                try:
-                    resid, resname, name = int(line[0:5]), line[5:10].strip(), line[10:15].strip()
-                    # guess based on atom name
-                    elem = guess_atom_element(name)
-                    atype = elem
-                    mass = get_atom_mass(elem)
-                    charge = guess_atom_charge(name)
-                    # segid = "SYSTEM"
-                    # ignore coords and velocities, they can be read by coordinates.GRO
-                except:
-                    raise IOError("Couldn't read the following line of the .gro file:\n"
-                                  "{0}".format(line))
-                else:
-                    # Just use the atom_iter (counting from 0) rather than
-                    # the number in the .gro file (which wraps at 99999)
-                    atoms.append(Atom(atom_iter, name, atype, resname, resid,
-                                      segid, mass, charge, universe=self._u))
-        structure = {'atoms': atoms}
-
-        return structure
-
-
-class NewGROParser(TopologyReader):
     def parse(self):
         """Return the *Topology* object for this file"""
         # Gro has the following columns
@@ -123,7 +82,7 @@ class NewGROParser(TopologyReader):
         residueids = Resids(new_resids)
         residuenames = Resnames(new_resnames)
 
-        top = Topology(n_atoms, len(new_resids), 1,
+        top = Topology(n_atoms, len(new_resids), 0,
                        attrs=[atomnames, residueids, residuenames],
                        atom_resindex=residx,
                        residue_segindex=None)
