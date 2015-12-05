@@ -62,4 +62,3 @@ class Topology(object):
         """
         topologyattr.topology = self
         self.__setattr__(topologyattr.attrname, topologyattr)
-
