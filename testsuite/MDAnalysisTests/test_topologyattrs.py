@@ -6,9 +6,11 @@ from numpy.testing import (
     assert_array_equal,
 )
 import numpy as np
+from nose.tools import assert_raises
 
 import MDAnalysis.core.topologyattrs as tpattrs
 from MDAnalysis.core.topology import Topology
+from MDAnalysis.exceptions import NoDataError
 
 
 class TopologyAttrMixin(object):
@@ -20,7 +22,8 @@ class TopologyAttrMixin(object):
     Sidx = np.array([0, 1, 1, 0])
 
     def setUp(self):
-        self.top = Topology(10, 4, 2, attrs=[self.attrclass(self.values)],
+        self.top = Topology(10, 4, 2, 
+                            attrs=[self.attrclass(self.values.copy())],
                             atom_resindex=self.Ridx,
                             residue_segindex=self.Sidx)
         
@@ -41,15 +44,9 @@ class TestAtomAttr(TopologyAttrMixin):
     attrclass = tpattrs.AtomAttr
 
     def test_get_atoms(self):
-        assert_array_equal(self.attr.get_atoms([2, 1]), np.array([69, 3]))
+        assert_array_equal(self.attr.get_atoms([2, 1]), self.values[[2, 1]])
 
     def test_set_atoms(self):
-
-        # broadcasting
-        self.attr.set_atoms([2, 1], 87)
-        assert_array_equal(self.attr.get_atoms([2, 1]), np.array([87, 87]))
-
-        # set with array
         self.attr.set_atoms([3, 7], np.array([23, 504]))
         assert_array_equal(self.attr.get_atoms([3, 7]), np.array([23, 504]))
 
@@ -59,7 +56,7 @@ class TestAtomAttr(TopologyAttrMixin):
 
         """
         assert_array_equal(self.attr.get_residues([2, 1]), 
-                           np.array([69, 9993, 5873, 84, 194, 109]))
+                           self.values[[2, 3, 9, 4, 5, 8]])
 
     def test_get_segments(self):
         """Unless overriden by child class, this should yield values for all
@@ -67,7 +64,37 @@ class TestAtomAttr(TopologyAttrMixin):
 
         """
         assert_array_equal(self.attr.get_segments([1]), 
-                           np.array([84, 194, 109, 69, 9993, 5873]))
+                           self.values[[4, 5, 8, 2, 3, 9]])
+
+
+class TestAtomids(TestAtomAttr):
+    attrclass = tpattrs.Atomids
+
+
+class TestAtomnames(TestAtomAttr):
+    values = np.array(['O', 'C', 'CA', 'N', 'CB', 'CG', 'CD', 'NA', 'CL', 'OW'],
+                      dtype=np.object)
+    attrclass = tpattrs.Atomnames
+
+
+class AggregationMixin(TestAtomAttr):
+    def test_get_residues(self):
+        assert_array_equal(self.attr.get_residues([2, 1]), 
+                           np.array([self.values[[2, 3, 9]].sum(), 
+                                     self.values[[4, 5, 8]].sum()]))
+
+    def test_get_segments(self):
+        assert_array_equal(self.attr.get_segments([1]), 
+                           np.array([self.values[[4, 5, 8, 2, 3, 9]].sum()]))
+
+
+class TestMasses(AggregationMixin):
+    attrclass = tpattrs.Masses
+
+
+class TestCharges(AggregationMixin):
+    values = np.array([+2, -1, 0, -1, +1, +2, 0, 0, 0, -1])
+    attrclass = tpattrs.Charges
 
 
 class TestResidueAttr(TopologyAttrMixin):
@@ -78,19 +105,13 @@ class TestResidueAttr(TopologyAttrMixin):
     attrclass = tpattrs.ResidueAttr
 
     def test_get_atoms(self):
-        assert_array_equal(self.attr.get_atoms([7, 3, 9]), np.array([9.8, 0.1, 0.1]))
+        assert_array_equal(self.attr.get_atoms([7, 3, 9]), self.values[[3, 2, 2]])
 
     def test_get_residues(self):
         assert_array_equal(self.attr.get_residues([1, 2, 1, 3]), 
-                           np.array([395.6, 0.1, 395.6, 9.8]))
+                           self.values[[1, 2, 1, 3]])
 
     def test_set_residues(self):
-
-        # broadcasting
-        self.attr.set_residues([3, 0, 2], 74)
-        assert_array_equal(self.attr.get_residues([3, 0, 2]), np.array([74, 74, 74]))
-
-        # set with array
         self.attr.set_residues([3, 0, 1], np.array([23, 504, 0.0002]))
         assert_array_equal(self.attr.get_residues([3, 0, 1]), np.array([23, 504, 0.0002]))
 
@@ -100,7 +121,28 @@ class TestResidueAttr(TopologyAttrMixin):
 
         """
         assert_array_equal(self.attr.get_segments([0, 1, 1]), 
-                           np.array([15.2, 9.8, 395.6, 0.1, 395.6, 0.1]))
+                           self.values[[0, 3, 1, 2, 1, 2]])
+
+
+class TestResids(TestResidueAttr):
+    values = np.array([10, 11, 18, 20])
+    attrclass = tpattrs.Resids
+
+    def test_set_atoms(self):
+        """Setting the resids of atoms changes their residue membership.
+
+        """
+        # set with array
+        self.attr.set_atoms([3, 7], np.array([11, 20]))
+        assert_array_equal(self.attr.get_atoms([3, 7]), np.array([11, 20]))
+
+        # set to resid that no residue has (should raise exception)
+        assert_raises(NoDataError, self.attr.set_atoms, [3, 7], np.array([11, 21]))
+
+
+class TestResnames(TestResidueAttr):
+    values = np.array(['ARG', 'LYS', 'VAL', 'POPG'], dtype=np.object)
+    attrclass = tpattrs.Resnames
 
 
 class TestSegmentAttr(TopologyAttrMixin):
@@ -111,11 +153,11 @@ class TestSegmentAttr(TopologyAttrMixin):
     attrclass = tpattrs.SegmentAttr
 
     def test_get_atoms(self):
-        assert_array_equal(self.attr.get_atoms([2, 4, 1]), np.array([500, 500, -0.19]))
+        assert_array_equal(self.attr.get_atoms([2, 4, 1]), self.values[[1, 1, 0]])
 
     def test_get_residues(self):
         assert_array_equal(self.attr.get_residues([1, 2, 1, 3]), 
-                           np.array([500, 500, 500, -0.19]))
+                           self.values[[1, 1, 1, 0]])
 
     def test_get_segments(self):
         """Unless overriden by child class, this should yield values for all
@@ -123,15 +165,9 @@ class TestSegmentAttr(TopologyAttrMixin):
 
         """
         assert_array_equal(self.attr.get_segments([1, 0, 0]), 
-                           np.array([500, -0.19, -0.19]))
+                           self.values[[1, 0, 0]])
 
     def test_set_segments(self):
-
-        # broadcasting
-        self.attr.set_segments([1, 0], -108)
-        assert_array_equal(self.attr.get_segments([0, 1]), np.array([-108, -108]))
-
-        # set with array
         self.attr.set_segments([0, 1], np.array([23, -0.0002]))
         assert_array_equal(self.attr.get_segments([1, 0, 1]), 
                 np.array([-0.0002, 23, -0.0002]))
