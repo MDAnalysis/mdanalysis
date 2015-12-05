@@ -44,9 +44,16 @@ class Group(object):
 class AtomGroup(Group):
     level = 'atom'
 
+    @property
+    def names(self):
+        return self._u._topology.atomnames.get_atoms(self._ix)
 
 class ResidueGroup(Group):
     level = 'residue'
+
+    @property
+    def names(self):
+        return self._u._topology.atomnames.get_residues(self._ix)
 
 
 class SegmentGroup(Group):

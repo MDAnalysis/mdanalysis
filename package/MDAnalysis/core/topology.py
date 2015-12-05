@@ -43,7 +43,9 @@ class Topology(object):
                  attrs=None,
                  atom_resindex=None,
                  residue_segindex=None):
-
+        self.n_atoms = n_atoms
+        self.n_residues = n_res
+        self.n_segments = n_seg
         self.tt = TransTable(n_atoms, n_res, n_seg,
                              atom_resindex=atom_resindex,
                              residue_segindex=residue_segindex)
