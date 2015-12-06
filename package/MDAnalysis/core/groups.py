@@ -48,6 +48,27 @@ class AtomGroup(Group):
     def names(self):
         return self._u._topology.atomnames.get_atoms(self._ix)
 
+    @names.setter
+    def names(self, values):
+        return self._u._topology.atomnames.set_atoms(self._ix, values)
+
+    @property
+    def ids(self):
+        return self._u._topology.atomids.get_atoms(self._ix)
+
+    @ids.setter
+    def ids(self, values):
+        return self._u._topology.atomids.set_atoms(self._ix, values)
+
+    @property
+    def masses(self):
+        return self._u._topology.masses.get_atoms(self._ix)
+
+    @masses.setter
+    def masses(self, values):
+        return self._u._topology.masses.set_atoms(self._ix, values)
+
+
 class ResidueGroup(Group):
     level = 'residue'
 
@@ -55,6 +76,29 @@ class ResidueGroup(Group):
     def names(self):
         return self._u._topology.atomnames.get_residues(self._ix)
 
+    @property
+    def ids(self):
+        return self._u._topology.atomids.get_residues(self._ix)
+
+    @property
+    def resids(self):
+        return self._u._topology.resids.get_residues(self._ix)
+
+    @resids.setter
+    def resids(self, values):
+        return self._u._topology.resids.set_residues(self._ix, values)
+
+    @property
+    def resnames(self):
+        return self._u._topology.resnames.get_residues(self._ix)
+
+    @resnames.setter
+    def resnames(self, values):
+        return self._u._topology.resnames.set_residues(self._ix, values)
+
+    @property
+    def masses(self):
+        return self._u._topology.masses.get_residues(self._ix)
 
 class SegmentGroup(Group):
     level = 'segment'

@@ -18,6 +18,7 @@ Topology attribute objects --- :mod:`MDAnalysis.core.topologyattrs'
 ===================================================================
 
 """
+import numpy as np
 
 from MDAnalysis.exceptions import NoDataError
 
@@ -101,7 +102,6 @@ class AtomAttr(TopologyAttr):
 
     """
     attrname = 'atomattr'
-    topology = None
     level = 0 
 
     def get_atoms(self, aix):
@@ -180,7 +180,7 @@ class Masses(AtomAttr):
     def get_residues(self, rix):
         masses = np.empty(len(rix))
 
-        resatoms = self.top.tt.r2ra(rix)
+        resatoms = self.top.tt.r2a_2d(rix)
 
         for i, row in enumerate(resatoms):
             masses[i] = self.values[row].sum()
@@ -190,7 +190,7 @@ class Masses(AtomAttr):
     def get_segments(self, six):
         masses = np.empty(len(six))
 
-        segatoms = self.top.tt.s2sa(six)
+        segatoms = self.top.tt.s2a_2d(six)
 
         for i, row in enumerate(segatoms):
             masses[i] = self.values[row].sum()
@@ -243,7 +243,6 @@ class ResidueAttr(TopologyAttr):
 
     """
     attrname = 'residueattr'
-    topology = None
     level = 1
 
     def get_atoms(self, aix):
@@ -314,7 +313,6 @@ class SegmentAttr(TopologyAttr):
 
     """
     attrname = 'segmentattr'
-    topology = None
     level = 2
 
     def get_atoms(self, aix):

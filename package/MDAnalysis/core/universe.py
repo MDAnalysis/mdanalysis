@@ -7,7 +7,6 @@ from ..lib import util
 from ..lib.util import cached
 from . import groups
 
-
 logger = logging.getLogger("MDAnalysis.core.universe")
 
 
@@ -48,153 +47,75 @@ class Universe(object):
 
        u.select_atoms(...)
 
-    *Attributes:*
+    Parameters
+    ----------
+    topologyfile
+        A CHARMM/XPLOR PSF topology file, PDB file or Gromacs GRO file; used to
+        define the list of atoms. If the file includes bond information,
+        partial charges, atom masses, ... then these data will be available to
+        MDAnalysis. A "structure" file (PSF, PDB or GRO, in the sense of a
+        topology) is always required.
+    permissive
+        currently only relevant for PDB files: Set to ``True`` in order to
+        ignore most errors and read typical MD simulation PDB files; set to
+        ``False`` to read with the Bio.PDB reader, which can be useful for real
+        Protein Databank PDB files. ``None``  selects the MDAnalysis default
+        (which is set in :class:`MDAnalysis.core.flags`) [``None``]
+    topology_format
+        provide the file format of the topology file; ``None`` guesses it from
+        the file extension [``None``] Can also pass a subclass of
+        :class:`MDAnalysis.topology.base.TopologyReader` to define a custom
+        reader to be used on the topology file.
+    format
+        provide the file format of the coordinate or trajectory file; ``None``
+        guesses it from the file extension. Note that this keyword has no
+        effect if a list of file names is supplied because the "chained" reader
+        has to guess the file format for each individual list member.
+        [``None``] Can also pass a subclass of
+        :class:`MDAnalysis.coordinates.base.Reader` to define a custom reader
+        to be used on the trajectory file.
+    guess_bonds
+        Once Universe has been loaded, attempt to guess the connectivity
+        between atoms.  This will populate the .bonds .angles and .dihedrals
+        attributes of the Universe.
+    vdwradii
+        For use with *guess_bonds*. Supply a dict giving a vdwradii for each
+        atom type which are used in guessing bonds.
+    is_anchor
+        When unpickling instances of
+        :class:`MDAnalysis.core.AtomGroup.AtomGroup` existing Universes are
+        searched for one where to anchor those atoms. Set to ``False`` to
+        prevent this Universe from being considered. [``True``]
+    anchor_name
+        Setting to other than ``None`` will cause
+        :class:`MDAnalysis.core.AtomGroup.AtomGroup` instances pickled from the
+        Universe to only unpickle if a compatible Universe with matching
+        *anchor_name* is found. *is_anchor* will be ignored in this case but
+        will still be honored when unpickling
+        :class:`MDAnalysis.core.AtomGroup.AtomGroup` instances pickled with
+        *anchor_name*==``None``. [``None``]
 
-    - :attr:`Universe.trajectory`: currently loaded trajectory reader;
-      :attr:`Universe.trajectory.ts` is the current time step
-    - :attr:`Universe.dimensions`: current system dimensions (simulation unit cell, if
-      set in the trajectory)
-    - :attr:`Universe.bonds`: TopologyGroup of bonds in Universe, also
-      :attr:`Universe.angles`, :attr:`Universe.dihedrals`, and :attr:`Universe.impropers`
-      (low level access through :attr:`Universe._topology`)
+    Attributes
+    ----------
+    trajectory
+        currently loaded trajectory reader;
+    dimensions
+        current system dimensions (simulation unit cell, if set in the
+        trajectory)
+    atoms, residues, segments
+        master Groups for each topology level
+    bonds, angles, dihedrals
+        master ConnectivityGroups for each connectivity type
 
-    .. Note::
-
-       If atom attributes such as element, mass, or charge are not explicitly
-       provided in the topology file then MDAnalysis tries to guess them (see
-       :mod:`MDAnalysis.topology.tables`). This does not always work and if you
-       require correct values (e.g. because you want to calculate the center of
-       mass) then you need to make sure that MDAnalysis gets all the
-       information needed.
-
-    .. versionchanged:: 0.7.5
-       Can also read multi-frame PDB files with the
-       :class:`~MDAnalysis.coordinates.PDB.PrimitivePDBReader`.
-
-    .. versionchanged:: 0.8
-       Parse arbitrary number of arguments as a single topology file and a
-       sequence of trajectories.
-
-    .. versionchanged:: 0.9.0
-       Topology information now loaded lazily, but can be forced with
-       :meth:`build_topology`. Changed :attr:`bonds` attribute to be a
-       :class:`~MDAnalysis.core.topologyobjects.TopologyGroup`. Added :attr:`angles`
-       and :attr:`torsions` attribute as
-       :class:`~MDAnalysis.core.topologyobjects.TopologyGroup`. Added fragments to
-       Universe cache
-
-    .. versionchanged:: 0.11.0
-       :meth:`make_anchor`, :meth:`remove_anchor`, :attr:`is_anchor`, and
-       :attr:`anchor_name` were added to support the pickling/unpickling of
-       :class:`AtomGroup`.
-       Deprecated :meth:`selectAtoms` in favour of :meth:`select_atoms`.
     """
 
     def __init__(self, *args, **kwargs):
-        """Initialize the central MDAnalysis Universe object.
-
-        :Arguments:
-          *topologyfile*
-             A CHARMM/XPLOR PSF topology file, PDB file or Gromacs GRO file; used to define the
-             list of atoms. If the file includes bond information, partial
-             charges, atom masses, ... then these data will be available to
-             MDAnalysis. A "structure" file (PSF, PDB or GRO, in the sense of a
-             topology) is always required.
-          *coordinatefile*
-             A trajectory (such as CHARMM DCD, Gromacs XTC/TRR/GRO, XYZ, XYZ.bz2) or a PDB that
-             will provide coordinates, possibly multiple frames.
-             If a **list of filenames** is provided then they are sequentially read and appear
-             as one single trajectory to the Universe. The list can contain different file
-             formats.
-
-             .. deprecated:: 0.8
-                Do not use the *coordinatefile* keyword argument, just provide trajectories as
-                positional arguments.
-
-          *permissive*
-             currently only relevant for PDB files: Set to ``True`` in order to ignore most errors
-             and read typical MD simulation PDB files; set to ``False`` to read with the Bio.PDB reader,
-             which can be useful for real Protein Databank PDB files. ``None``  selects the
-             MDAnalysis default (which is set in :class:`MDAnalysis.core.flags`) [``None``]
-          *topology_format*
-             provide the file format of the topology file; ``None`` guesses it from the file
-             extension [``None``]
-             Can also pass a subclass of :class:`MDAnalysis.topology.base.TopologyReader`
-             to define a custom reader to be used on the topology file.
-          *format*
-             provide the file format of the coordinate or trajectory file;
-             ``None`` guesses it from the file extension. Note that this
-             keyword has no effect if a list of file names is supplied because
-             the "chained" reader has to guess the file format for each
-             individual list member. [``None``]
-             Can also pass a subclass of :class:`MDAnalysis.coordinates.base.Reader`
-             to define a custom reader to be used on the trajectory file.
-          *guess_bonds*
-              Once Universe has been loaded, attempt to guess the connectivity
-              between atoms.  This will populate the .bonds .angles and
-              .dihedrals attributes of the Universe.
-          *vdwradii*
-              For use with *guess_bonds*. Supply a dict giving a vdwradii for each atom type
-              which are used in guessing bonds.
-          *is_anchor*
-              When unpickling instances of :class:`MDAnalysis.core.AtomGroup.AtomGroup`
-              existing Universes are searched for one where to anchor those atoms. Set
-              to ``False`` to prevent this Universe from being considered. [``True``]
-          *anchor_name*
-              Setting to other than ``None`` will cause :class:`MDAnalysis.core.AtomGroup.AtomGroup`
-              instances pickled from the Universe to only unpickle if a compatible
-              Universe with matching *anchor_name* is found. *is_anchor* will be ignored in
-              this case but will still be honored when unpickling :class:`MDAnalysis.core.AtomGroup.AtomGroup`
-              instances pickled with *anchor_name*==``None``. [``None``]
-
-
-        This class tries to do the right thing:
-
-        1. If file with topology and coordinate information (such as PDB, GRO,
-           CRD, ...) is provided instead of a topology file and no
-           *coordinatefile* then the coordinates are taken from the first
-           file. Thus you can load a functional universe with ::
-
-              u = Universe('1ake.pdb')
-
-           If you want to specify the coordinate file format yourself you can
-           do so using the *format* keyword::
-
-              u = Universe('1ake.ent1', format='pdb')
-
-        2. If only a topology file without coordinate information is provided
-           one will have to load coordinates manually using
-           :meth:`Universe.load_new`. The file format of the topology file
-           can be explicitly set with the *topology_format* keyword.
-
-        .. versionchanged:: 0.7.4
-           New *topology_format* and *format* parameters to override the file
-           format detection.
-        .. versionchanged:: 0.10.0
-           Added ``'guess_bonds'`` keyword to cause topology to be guessed on
-           Universe creation.
-           Deprecated ``'bonds'`` keyword, use ``'guess_bonds'`` instead.
-        .. versionchanged:: 0.11.0
-           Added the *is_anchor* and *anchor_name* keywords for finer behavior
-           control when unpickling instances of :class:`MDAnalysis.core.AtomGroup.AtomGroup`.
-        """
-
         from ..topology.core import get_parser_for
         from ..topology.base import TopologyReader
         from ..coordinates.base import ProtoReader
 
         # managed attribute holding Reader
         self._trajectory = None
-
-        # Cache is used to store objects which are built lazily into Universe
-        # Currently cached objects (managed property name and cache key):
-        # - bonds
-        # - angles
-        # - dihedrals
-        # - improper dihedrals
-        # - fragments
-        # Cached stuff is handled using util.cached decorator
-        self._cache = dict()
 
         if len(args) == 0:
             # create an empty universe
@@ -204,13 +125,10 @@ class Universe(object):
 
         self.filename = args[0]
 
-        # old behaviour (explicit coordfile) overrides new behaviour
-        coordinatefile = kwargs.pop('coordinatefile', args[1:])
         topology_format = kwargs.pop('topology_format', None)
 
-        if len(args) == 1 and not coordinatefile:
+        if len(args) == 1:
             # special hacks to treat a coordinate file as a coordinate AND topology file
-            # coordinatefile can be None or () (from an empty slice args[1:])
             if kwargs.get('format', None) is None:
                 kwargs['format'] = topology_format
             elif topology_format is None:
@@ -260,193 +178,9 @@ class Universe(object):
             self._topology.n_residues), self)
         self.segments = groups.SegmentGroup(np.arange(
             self._topology.n_segments), self)
-        # Add segids to Universe attribute namespace
-        for seg in self.segments:
-            if seg.id[0].isdigit():
-                name = 's' + seg.id
-            else:
-                name = seg.id
-            self.__dict__[name] = seg
 
         # Load coordinates
         self.load_new(coordinatefile, **kwargs)
-
-        # Deprecated bonds mode handling here, remove eventually.
-        if 'bonds' in kwargs:
-            warnings.warn("The 'bonds' keyword has been deprecated"
-                          " and will be removed in 0.11.0."
-                          " Please use 'guess_bonds' instead.")
-            if kwargs.get('bonds') in ['all', True]:
-                kwargs['guess_bonds'] = True
-
-        if kwargs.get('guess_bonds', False):
-            self.atoms.guess_bonds(vdwradii=kwargs.get('vdwradii',None))
-
-        # For control of AtomGroup unpickling
-        if kwargs.get('is_anchor', True):
-            self.make_anchor()
-        self.anchor_name = kwargs.get('anchor_name')
-
-    def _clear_caches(self, *args):
-        """Clear cache for all *args*.
-
-        If not args are provided, all caches are cleared.
-
-        .. versionadded 0.9.0
-        """
-        if len(args) == 0:
-            self._cache = dict()
-        else:
-            for name in args:
-                try:
-                    del self._cache[name]
-                except KeyError:
-                    pass
-
-    def _fill_cache(self, name, value):
-        """Populate _cache[name] with value.
-
-        .. versionadded:: 0.9.0
-        """
-        self._cache[name] = value
-
-    def _init_top(self, cat, Top):
-        """Initiate a generic form of topology.
-
-        Arguments:
-          *cat*
-            The key which will be searched in the _topology dict.
-            The key "guessed_" + cat will also be searched.
-          *Top*
-            Class of the topology object to be created.
-
-        .. versionadded:: 0.10.0
-        """
-        defined = self._topology.get(cat, set())
-        guessed = self._topology.get('guessed_' + cat, set())
-
-        TopSet = top.TopologyGroup.from_indices(defined, self.atoms,
-                                                            bondclass=Top, guessed=False,
-                                                            remove_duplicates=True)
-        TopSet += top.TopologyGroup.from_indices(guessed, self.atoms,
-                                                             bondclass=Top, guessed=True,
-                                                             remove_duplicates=True)
-
-        return TopSet
-
-    def _init_bonds(self):
-        """Set bond information from u._topology['bonds']
-
-        .. versionchanged:: 0.9.0
-           Now returns a :class:`~MDAnalysis.core.topologyobjects.TopologyGroup`
-        """
-        bonds = self._init_top('bonds', top.Bond)
-
-        bondorder = self._topology.get('bondorder', None)
-        if bondorder:
-            for b in bonds:
-                try:
-                    b.order = bondorder[b.indices]
-                except KeyError:
-                    pass
-
-        return bonds
-
-    def _init_angles(self):
-        """Builds angle information from u._topology['angles']
-
-        Returns a :class:`~MDAnalysis.core.topologyobjects.TopologyGroup`
-
-        .. versionadded:: 0.9.0
-        .. versionchanged:: 0.10.0
-           Now reads guessed angles and tags them appropriately.
-        """
-        return self._init_top('angles', top.Angle)
-
-    def _init_dihedrals(self):
-        """Builds dihedral information from u._topology['dihedrals']
-
-        Returns a :class:`~MDAnalysis.core.topologyobjects.TopologyGroup`
-
-        .. versionadded:: 0.9.0
-        .. versionchanged:: 0.10.0
-           Now reads guessed torsions and tags them appropriately.
-        .. versionchanged:: 0.11.0
-           Renamed to _init_dihedrals (was _init_torsions)
-        """
-        return self._init_top('dihedrals', top.Dihedral)
-
-    def _init_impropers(self):
-        """Build improper dihedral information from u._topology['impropers']
-
-        Returns a :class:`~MDAnalysis.core.topologyobjects.TopologyGroup`
-
-        .. versionadded:: 0.9.0
-        .. versionchanged:: 0.10.0
-        """
-        return self._init_top('impropers', top.ImproperDihedral)
-
-    def _init_fragments(self):
-        """Build all fragments in the Universe
-
-        Generally built on demand by an Atom querying its fragment property.
-
-        .. versionadded:: 0.9.0
-        """
-        # Check that bond information is present, else inform
-        bonds = self.bonds
-        if not bonds:
-            raise NoDataError("Fragments require that the Universe has Bond information")
-
-        # This current finds all fragments from all Atoms
-        # Could redo this to only find fragments for a queried atom (ie. only fill out
-        # a single fragment).  This would then make it scale better for large systems.
-        # eg:
-        # try:
-        #    return self._fragDict[a]
-        # except KeyError:
-        #    self._init_fragments(a)  # builds the fragment a belongs to
-
-        class _fragset(object):
-            """Normal sets aren't hashable, this is"""
-
-            def __init__(self, ats):
-                self.ats = set(ats)
-
-            def __iter__(self):
-                return iter(self.ats)
-
-            def add(self, other):
-                self.ats.add(other)
-
-            def update(self, other):
-                self.ats.update(other.ats)
-
-        f = dict.fromkeys(self.atoms, None)  # each atom starts with its own list
-
-        for a1, a2 in bonds:  # Iterate through all bonds
-            if not (f[a1] or f[a2]):  # New set made here
-                new = _fragset([a1, a2])
-                f[a1] = f[a2] = new
-            elif f[a1] and not f[a2]:  # If a2 isn't in a fragment, add it to a1's
-                f[a1].add(a2)
-                f[a2] = f[a1]
-            elif not f[a1] and f[a2]:  # If a1 isn't in a fragment, add it to a2's
-                f[a2].add(a1)
-                f[a1] = f[a2]
-            elif f[a1] is f[a2]:  # If they're in the same fragment, do nothing
-                continue
-            else:  # If they are both in different fragments, combine fragments
-                f[a1].update(f[a2])
-                f.update(dict((a, f[a1]) for a in f[a2]))
-
-                # Lone atoms get their own fragment
-        f.update(dict((a, _fragset((a,))) for a, val in f.items() if not val))
-
-        # All the unique values in f are the fragments
-        frags = tuple([AtomGroup(list(a.ats)) for a in set(f.values())])
-
-        return frags
 
     @property
     def universe(self):
@@ -454,235 +188,6 @@ class Universe(object):
         # Encapsulation in an accessor prevents the Universe from having to keep a reference to itself,
         #  which might be undesirable if it has a __del__ method. It is also cleaner than a weakref.
         return self
-
-    @property
-    @cached('fragments')
-    def fragments(self):
-        """Read only tuple of fragments in the Universe
-
-        .. versionadded 0.9.0
-        """
-        return self._init_fragments()
-
-    @property
-    @cached('bondDict')
-    def _bondDict(self):
-        """Lazily built dictionary of bonds
-
-        Translates Atom to list of bonds
-
-        .. versionadded:: 0.9.0
-        """
-        bonds = self.bonds
-        bd = defaultdict(list)
-
-        if not bonds:
-            pass
-        else:
-            for b in bonds:
-                for a in b:
-                    bd[a].append(b)
-        return bd
-
-    @property
-    @cached('angleDict')
-    def _angleDict(self):
-        """Lazily built dictionary of angles
-
-        Translates Atom to list of angles
-
-        .. versionadded:: 0.9.0
-        """
-        bonds = self.angles
-        bd = defaultdict(list)
-
-        if not bonds:
-            pass
-        else:
-            for b in bonds:
-                for a in b:
-                    bd[a].append(b)
-        return bd
-
-    @property
-    @cached('dihedralDict')
-    def _dihedralDict(self):
-        """Lazily built dictionary of dihedrals
-
-        Translates Atom to list of dihedrals
-
-        .. versionadded:: 0.9.0
-        .. versionchanged:: 0.11.0
-           Renamed to _dihedralDict (was _torsionDict)
-        """
-        bonds = self.dihedrals
-        bd = defaultdict(list)
-
-        if bonds is None:
-            pass
-        else:
-            for b in bonds:
-                for a in b:
-                    bd[a].append(b)
-        return bd
-
-    @property
-    @cached('improperDict')
-    def _improperDict(self):
-        """Lazily built dictionary of improper dihedrals
-
-        Translates Atom to list of improper dihedrals
-
-        .. versionadded:: 0.9.0
-        """
-        bonds = self.impropers
-        bd = defaultdict(list)
-
-        if bonds is None:
-            pass
-        else:
-            for b in bonds:
-                for a in b:
-                    bd[a].append(b)
-        return bd
-
-    @property
-    @cached('fragDict')
-    def _fragmentDict(self):
-        """Lazily built dictionary of fragments.
-
-        Translates :class:`Atom` objects into the fragment they belong to.
-
-        The Atom.fragment managed property queries this dictionary.
-
-        .. versionadded 0.9.0
-        """
-        frags = self.fragments  # will build if not built
-        fd = dict()
-        for f in frags:
-            for a in f:
-                fd[a] = f
-        return fd
-
-    def build_topology(self):
-        """
-        Bond angle and dihedral information is lazily constructed into the
-        Universe.
-
-        This method forces all this information to be loaded.
-
-        .. versionadded 0.9.0
-        """
-        if 'bonds' not in self._cache:
-            self._cache['bonds'] = self._init_bonds()
-        if 'angles' not in self._cache:
-            self._cache['angles'] = self._init_angles()
-        if 'dihedrals' not in self._cache:
-            self._cache['dihedrals'] = self._init_dihedrals()
-        if 'impropers' not in self._cache:
-            self._cache['impropers'] = self._init_impropers()
-
-    @property
-    @cached('bonds')
-    def bonds(self):
-        """
-        Returns a :class:`~MDAnalysis.core.topologyobjects.TopologyGroup` of all
-        bonds in the Universe.
-
-        .. versionchanged:: 0.9.0
-           Now a lazily built :class:`~MDAnalysis.core.topologyobjects.TopologyGroup`
-        .. versionchanged:: 0.9.2
-           Now can return empty TopologyGroup
-        """
-        return self._init_bonds()
-
-    @bonds.setter
-    def bonds(self, bondlist):
-        """Can set bonds by supplying an iterable of bond tuples.
-
-        Each bond tuple must contain the zero based indices of the two Atoms in
-        the bond
-
-        .. versionadded:: 0.9.0
-        """
-        self._fill_cache('bonds', bondlist)
-        self._clear_caches('bondDict')
-
-    @bonds.deleter
-    def bonds(self):
-        """Delete the bonds from Universe
-
-        This must also remove the per atom record of bonds (bondDict)
-
-        .. versionadded:: 0.9.0
-        """
-        self._clear_caches('bonds', 'bondDict')
-
-    @property
-    @cached('angles')
-    def angles(self):
-        """
-        Returns a :class:`~MDAnalysis.core.topologyobjects.TopologyGroup`
-        of all angles in the Universe
-
-        .. versionadded:: 0.9.0
-        .. versionchanged:: 0.9.2
-           Now can return empty TopologyGroup
-        """
-        return self._init_angles()
-
-    @angles.setter
-    def angles(self, bondlist):
-        self._fill_cache('angles', bondlist)
-        self._clear_caches('angleDict')
-
-    @angles.deleter
-    def angles(self):
-        self._clear_caches('angles', 'angleDict')
-
-    @property
-    @cached('dihedrals')
-    def dihedrals(self):
-        """
-        Returns a :class:`~MDAnalysis.core.topologyobjects.TopologyGroup`
-        of all dihedrals in the Universe
-
-        .. versionadded:: 0.9.0
-        .. versionchanged:: 0.9.2
-           Now can return empty TopologyGroup
-        """
-        return self._init_dihedrals()
-
-    @dihedrals.setter
-    def dihedrals(self, bondlist):
-        self._fill_cache('dihedrals', bondlist)
-        self._clear_caches('dihedralDict')
-
-    @dihedrals.deleter
-    def dihedrals(self):
-        self._clear_caches('dihedrals', 'dihedralDict')
-
-    @property
-    @cached('impropers')
-    def impropers(self):
-        """
-        Returns a :class:`~MDAnalysis.core.topologyobjects.TopologyGroup`
-        of all improper dihedrals in the Universe
-
-        .. versionadded:: 0.9.0
-        .. versionchanged:: 0.9.2
-           Now can return empty TopologyGroup
-        """
-        return self._init_impropers()
-
-    @impropers.setter
-    def impropers(self, bondlist):
-        self._fill_cache('impropers', bondlist)
-        self._clear_caches('improperDict')
-
-    @impropers.deleter
-    def impropers(self):
-        self._clear_caches('impropers', 'improperDict')
 
     def load_new(self, filename, **kwargs):
         """Load coordinates from *filename*, using the suffix to detect file format.
@@ -937,13 +442,13 @@ class Universe(object):
             #return tuple(atomselections)
             return atomgrp
 
-    selectAtoms = deprecate(select_atoms, old_name='selectAtoms',
-                            new_name='select_atoms')
-
     def __repr__(self):
-        return "<Universe with {n_atoms} atoms{bonds}>".format(
-            n_atoms=len(self.atoms),
-            bonds=" and {0} bonds".format(len(self.bonds)) if self.bonds else "")
+        #return "<Universe with {n_atoms} atoms{bonds}>".format(
+        #    n_atoms=len(self.atoms),
+        #    bonds=" and {0} bonds".format(len(self.bonds)) if self.bonds else "")
+
+        return "<Universe with {n_atoms} atoms>".format(
+            n_atoms=len(self.atoms))
 
     def __getstate__(self):
         raise NotImplementedError
@@ -999,47 +504,130 @@ class Universe(object):
         del self._trajectory  # guarantees that files are closed (?)
         self._trajectory = value
 
-    def make_anchor(self):
-        """Add this Universe to the list where anchors are searched for when unpickling
-        :class:`MDAnalysis.core.AtomGroup.AtomGroup` instances. Silently proceeds if it
-        is already on the list."""
-        MDAnalysis._anchor_universes.add(self)
 
-    def remove_anchor(self):
-        """Remove this Universe from the list where anchors are searched for when unpickling
-        :class:`MDAnalysis.core.AtomGroup.AtomGroup` instances. Silently proceeds if it
-        is already not on the list."""
-        MDAnalysis._anchor_universes.discard(self)
+def as_Universe(*args, **kwargs):
+    """Return a universe from the input arguments.
 
-    @property
-    def is_anchor(self):
-        """Whether this Universe will be checked for anchoring when unpickling
-        :class:`MDAnalysis.core.AtomGroup.AtomGroup` instances"""
-        return self in MDAnalysis._anchor_universes
+    1. If the first argument is a universe, just return it::
 
-    @property
-    def anchor_name(self):
-        return self._anchor_name
+         as_Universe(universe) --> universe
 
-    @anchor_name.setter
-    def anchor_name(self, name):
-        """Setting this attribute to anything other than ``None`` causes this Universe to
-        be added to the list where named anchors are searched for when unpickling
-        :class:`MDAnalysis.core.AtomGroup.AtomGroup` instances (silently proceeding if
-        it already is on the list). Setting to ``None`` causes the removal from said list."""
-        self._anchor_name = name
-        if name is None:
-            MDAnalysis._named_anchor_universes.discard(self)
-        else:
-            MDAnalysis._named_anchor_universes.add(self)
+    2. Otherwise try to build a universe from the first or the first
+       and second argument::
 
-    def _matches_unpickling(self, anchor_name, n_atoms, fname, trajname):
-        if anchor_name is None or anchor_name == self.anchor_name:
-            try:
-                return len(self.atoms)==n_atoms and self.filename==fname and self.trajectory.filenames==trajname
-            except AttributeError: # Only ChainReaders have filenames (plural)
-                return len(self.atoms)==n_atoms and self.filename==fname and self.trajectory.filename==trajname
-        else:
-            return False
+         as_Universe(PDB, **kwargs) --> Universe(PDB, **kwargs)
+         as_Universe(PSF, DCD, **kwargs) --> Universe(PSF, DCD, **kwargs)
+         as_Universe(*args, **kwargs) --> Universe(*args, **kwargs)
 
+    :Returns: an instance of :class:`~MDAnalaysis.AtomGroup.Universe`
+    """
+    if len(args) == 0:
+        raise TypeError("as_Universe() takes at least one argument (%d given)" % len(args))
+    elif len(args) == 1 and isinstance(args[0], Universe):
+        return args[0]
+    return Universe(*args, **kwargs)
 
+asUniverse = deprecate(as_Universe, old_name='asUniverse', new_name='as_Universe')
+
+#TODO: UPDATE ME WITH NEW TOPOLOGY DETAILS
+def Merge(*args):
+    """Return a :class:`Universe` from two or more :class:`AtomGroup` instances.
+
+    :class:`AtomGroup` instances can come from different Universes, or come
+    directly from a :meth:`~Universe.select_atoms` call.
+
+    It can also be used with a single :class:`AtomGroup` if the user wants to,
+    for example, re-order the atoms in the Universe.
+
+    :Arguments: One or more :class:`AtomGroup` instances.
+
+    :Returns: an instance of :class:`~MDAnalaysis.AtomGroup.Universe`
+
+    :Raises: :exc:`ValueError` for too few arguments or if an AtomGroup is
+             empty and :exc:`TypeError` if arguments are not
+             :class:`AtomGroup` instances.
+
+    .. rubric:: Example
+
+    In this example, protein, ligand, and solvent were externally prepared in
+    three different PDB files. They are loaded into separate :class:`Universe`
+    objects (where they could be further manipulated, e.g. renumbered,
+    relabeled, rotated, ...) The :func:`Merge` command is used to combine all
+    of them together::
+
+       u1 = Universe("protein.pdb")
+       u2 = Universe("ligand.pdb")
+       u3 = Universe("solvent.pdb")
+       u = Merge(u1.select_atoms("protein"), u2.atoms, u3.atoms)
+       u.atoms.write("system.pdb")
+
+    The complete system is then written out to a new PDB file.
+
+    .. Note:: Merging does not create a full trajectory but only a single
+              structure even if the input consists of one or more trajectories.
+
+    .. versionchanged 0.9.0::
+       Raises exceptions instead of assertion errors.
+
+    """
+    import MDAnalysis.topology.core
+
+    if len(args) == 0:
+        raise ValueError("Need at least one AtomGroup for merging")
+
+    for a in args:
+        if not isinstance(a, AtomGroup):
+            raise TypeError(repr(a) + " is not an AtomGroup")
+    for a in args:
+        if len(a) == 0:
+            raise ValueError("cannot merge empty AtomGroup")
+
+    coords = np.vstack([a.coordinates() for a in args])
+    trajectory = MDAnalysis.coordinates.base.Reader(None)
+    ts = MDAnalysis.coordinates.base.Timestep.from_coordinates(coords)
+    setattr(trajectory, "ts", ts)
+    trajectory.n_frames = 1
+
+    # create an empty Universe object
+    u = Universe()
+    u.trajectory = trajectory
+
+    # create a list of Atoms, then convert it to an AtomGroup
+    atoms = [copy.copy(a) for gr in args for a in gr]
+    for a in atoms:
+        a.universe = u
+
+    # adjust the atom numbering
+    for i, a in enumerate(atoms):
+        a.index = i
+        a.serial = i + 1
+    u.atoms = AtomGroup(atoms)
+
+    # move over the topology
+    offset = 0
+    tops = ['bonds', 'angles', 'dihedrals', 'impropers']
+    idx_lists = {t:[] for t in tops}
+    for ag in args:
+        # create a mapping scheme for this atomgroup
+        mapping = {a.index:i for i, a in enumerate(ag, start=offset)}
+        offset += len(ag)
+
+        for t in tops:
+            tg = getattr(ag, t)
+            # Create a topology group of only bonds that are within this ag
+            # ie we don't want bonds that extend out of the atomgroup
+            tg = tg.atomgroup_intersection(ag, strict=True)
+
+            # Map them so they refer to our new indices
+            new_idx = [tuple(map(lambda x:mapping[x], entry))
+                       for entry in tg.to_indices()]
+            idx_lists[t].extend(new_idx)
+
+    for t in tops:
+        u._topology[t] = idx_lists[t]
+
+    # adjust the residue and segment numbering (removes any remaining references to the old universe)
+    MDAnalysis.topology.core.build_residues(u.atoms)
+    MDAnalysis.topology.core.build_segments(u.atoms)
+
+    return u

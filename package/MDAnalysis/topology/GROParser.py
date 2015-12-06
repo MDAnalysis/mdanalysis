@@ -75,11 +75,12 @@ class GROParser(TopologyReader):
         # new_resids is len(residues)
         # so resindex 0 has resid new_resids[0]
         atomnames = Atomnames(names)
+        atomids = Atomids(indices)
         residueids = Resids(new_resids)
         residuenames = Resnames(new_resnames)
 
         top = Topology(n_atoms, len(new_resids), 0,
-                       attrs=[atomnames, residueids, residuenames],
+                       attrs=[atomnames, atomids, residueids, residuenames],
                        atom_resindex=residx,
                        residue_segindex=None)
 
