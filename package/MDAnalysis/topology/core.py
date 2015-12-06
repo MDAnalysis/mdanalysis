@@ -33,81 +33,10 @@ from collections import defaultdict
 from itertools import izip
 
 # Local imports
-from . import tables
-from ..lib import distances
-from ..lib.util import cached
-from ..lib import util
-from ..core import AtomGroup
-
-
-def build_segments(atoms):
-    """Create all :class:`~MDAnalysis.core.AtomGroup.Segment` instancess from
-    a list of :class:`~MDAnalysis.core.AtomGroup.Atom` instances.
-
-    The function also builds the :class:`~MDAnalysis.core.AtomGroup.Residue`
-    instances by tracking residue numbers.
-
-    Updating segments also changes the underlying
-    :class:`~MDAnalysis.core.AtomGroup.Atom` instances, which record
-    to which residue and segment an atom belongs.
-
-    :Returns: List of :class:`~MDAnalysis.core.AtomGroup.Segment`
-              instances
-
-    .. versionchanged:: 0.9.0
-       Now allows resids in a given :class:`Segment` to be given in non sequential order.
-    .. versionchanged:: 0.11.0
-       Returns a list instead of a dict for consistency with the outputs of
-       :func:`build_residues`
-    """
-    struc = list()
-    resatomlist = defaultdict(list)
-    curr_segname = atoms[0].segid
-
-    for a in atoms:
-        if a.segid == curr_segname:  # if still in same Segment
-            resatomlist[a.resid].append(a)
-        else:
-            # We've come to a new segment
-            # Build the Segment we just left
-            residues = [AtomGroup.Residue(ats[0].resname, k, ats)
-                        for k, ats in resatomlist.iteritems()]
-            struc.append(AtomGroup.Segment(curr_segname, residues))
-
-            # Reset things and start again
-            resatomlist = defaultdict(list)
-            resatomlist[a.resid].append(a)
-            curr_segname = a.segid
-
-    # Add the last segment
-    residues = [AtomGroup.Residue(ats[0].resname, k, ats)
-                for k, ats in resatomlist.iteritems()]
-    struc.append(AtomGroup.Segment(curr_segname, residues))
-    return struc
-
-
-def build_residues(atoms):
-    """Create a list :class:`~MDAnalysis.core.AtomGroup.Residue` instances from
-    a list of :class:`~MDAnalysis.core.AtomGroup.Atom` instances.
-
-    Updating residues also changes the underlying
-    :class:`~MDAnalysis.core.AtomGroup.Atom` instances, which record
-    to which residue an atom belongs.
-
-    :Returns: List of :class:`~MDAnalysis.core.AtomGroup.Residue` instances
-
-    .. versionadded:: 0.8
-    .. versionchanged:: 0.9.0
-       Now allows resids to be given in non sequential order
-    """
-    resatomlist = defaultdict(list)
-    for a in atoms:
-        resatomlist[a.resid].append(a)
-
-    residues = [AtomGroup.Residue(ats[0].resname, k, ats)
-                for k, ats in resatomlist.iteritems()]
-
-    return residues
+from MDAnalysis.topology import tables
+from MDAnalysis.lib import distances
+from MDAnalysis.lib.util import cached
+from MDAnalysis.lib import util
 
 
 def get_parser_for(filename, permissive=False, format=None):

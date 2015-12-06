@@ -20,7 +20,7 @@ Topology object --- :mod:`MDAnalysis.core.topology'
 """
 import numpy as np
 
-from ..lib.mdamath import one_to_many_pointers
+from MDAnalysis.lib.mdamath import one_to_many_pointers
 
 
 class TransTable(object):

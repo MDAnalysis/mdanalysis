@@ -19,11 +19,11 @@
 Core functions of MDAnalysis
 ============================
 
-The basic class is an :class:`~MDAnalysis.core.AtomGroup.AtomGroup`;
+The basic class is an :class:`~MDAnalysis.core.groups.AtomGroup`;
 the whole simulation is called the
-:class:`~MDAnalysis.core.AtomGroup.Universe`. Selections are computed
-on an :class:`~MDAnalysis.core.AtomGroup.AtomGroup` and return another
-:class:`~MDAnalysis.core.AtomGroup.AtomGroup`.
+:class:`~MDAnalysis.core.universe.Universe`. Selections are computed
+on an :class:`~MDAnalysis.core.groups.AtomGroup` and return another
+:class:`~MDAnalysis.core.groups.AtomGroup`.
 
 :mod:`~MDAnalysis.Timeseries` are a convenient way to analyse trajectories.
 
@@ -412,7 +412,7 @@ _flags = [
         {True: True, False: False},
         """
         Choose whether to consider periodic boundary conditions when
-        performing many :class:`MDAnalysis.core.AtomGroup.AtomGroup` methods.
+        performing many :class:`MDAnalysis.core.groups.AtomGroup` methods.
         This is set to ``False`` by default but can be enabled with:
 
         >>> MDAnalysis.core.flags['use_pbc'] = True
@@ -425,9 +425,9 @@ _flags = [
         .. Warning::
 
            Changing this to ``True`` changes the default behaviour of
-           commonly used :class:`MDAnalysis.core.AtomGroup.AtomGroup` methods
-           such as :meth:`MDAnalysis.core.AtomGroup.AtomGroup.center_of_mass`
-           and :meth:`MDAnalysis.core.AtomGroup.AtomGroup.center_of_geometry`!
+           commonly used :class:`MDAnalysis.core.groups.AtomGroup` methods
+           such as :meth:`MDAnalysis.core.groups.AtomGroup.center_of_mass`
+           and :meth:`MDAnalysis.core.groups.AtomGroup.center_of_geometry`!
         """),
 
 ]
@@ -443,6 +443,6 @@ class flagsDocs(object):
     __doc__ = flags.doc()
 
 
-import AtomGroup
+import groups
 import Selection
 import Timeseries

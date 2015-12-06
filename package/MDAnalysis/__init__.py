@@ -162,7 +162,7 @@ from . import units
 
 # Bring some often used objects into the current namespace
 from .core import Timeseries
-from .core.AtomGroup import Universe, as_Universe, Merge
+from .core.universe import Universe, as_Universe, Merge
 from .coordinates.core import writer as Writer
 
 collection = Timeseries.TimeseriesCollection()
