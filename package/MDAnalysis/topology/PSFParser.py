@@ -39,6 +39,7 @@ from __future__ import absolute_import
 import logging
 from math import ceil
 
+from ..core.AtomGroup import Atom
 from ..lib.util import openany
 from .base import TopologyReader
 

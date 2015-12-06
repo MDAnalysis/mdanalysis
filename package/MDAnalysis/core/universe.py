@@ -3,13 +3,9 @@ from numpy.lib.utils import deprecate
 import logging
 
 import MDAnalysis
-from MDAnalysis.lib import util
-from MDAnalysis.lib.util import cached
-from MDAnalysis.core import groups
-
-from MDAnalysis.topology.core import get_parser_for
-from MDAnalysis.topology.base import TopologyReader
-from MDAnalysis.coordinates.base import ProtoReader
+from ..lib import util
+from ..lib.util import cached
+from . import groups
 
 logger = logging.getLogger("MDAnalysis.core.universe")
 
@@ -114,6 +110,9 @@ class Universe(object):
     """
 
     def __init__(self, *args, **kwargs):
+        from ..topology.core import get_parser_for
+        from ..topology.base import TopologyReader
+        from ..coordinates.base import ProtoReader
 
         # managed attribute holding Reader
         self._trajectory = None
@@ -128,9 +127,8 @@ class Universe(object):
 
         topology_format = kwargs.pop('topology_format', None)
 
-        if len(args) == 1 and not coordinatefile:
+        if len(args) == 1:
             # special hacks to treat a coordinate file as a coordinate AND topology file
-            # coordinatefile can be None or () (from an empty slice args[1:])
             if kwargs.get('format', None) is None:
                 kwargs['format'] = topology_format
             elif topology_format is None:
@@ -445,9 +443,12 @@ class Universe(object):
             return atomgrp
 
     def __repr__(self):
-        return "<Universe with {n_atoms} atoms{bonds}>".format(
-            n_atoms=len(self.atoms),
-            bonds=" and {0} bonds".format(len(self.bonds)) if self.bonds else "")
+        #return "<Universe with {n_atoms} atoms{bonds}>".format(
+        #    n_atoms=len(self.atoms),
+        #    bonds=" and {0} bonds".format(len(self.bonds)) if self.bonds else "")
+
+        return "<Universe with {n_atoms} atoms>".format(
+            n_atoms=len(self.atoms))
 
     def __getstate__(self):
         raise NotImplementedError
@@ -502,3 +503,131 @@ class Universe(object):
     def trajectory(self, value):
         del self._trajectory  # guarantees that files are closed (?)
         self._trajectory = value
+
+
+def as_Universe(*args, **kwargs):
+    """Return a universe from the input arguments.
+
+    1. If the first argument is a universe, just return it::
+
+         as_Universe(universe) --> universe
+
+    2. Otherwise try to build a universe from the first or the first
+       and second argument::
+
+         as_Universe(PDB, **kwargs) --> Universe(PDB, **kwargs)
+         as_Universe(PSF, DCD, **kwargs) --> Universe(PSF, DCD, **kwargs)
+         as_Universe(*args, **kwargs) --> Universe(*args, **kwargs)
+
+    :Returns: an instance of :class:`~MDAnalaysis.AtomGroup.Universe`
+    """
+    if len(args) == 0:
+        raise TypeError("as_Universe() takes at least one argument (%d given)" % len(args))
+    elif len(args) == 1 and isinstance(args[0], Universe):
+        return args[0]
+    return Universe(*args, **kwargs)
+
+asUniverse = deprecate(as_Universe, old_name='asUniverse', new_name='as_Universe')
+
+#TODO: UPDATE ME WITH NEW TOPOLOGY DETAILS
+def Merge(*args):
+    """Return a :class:`Universe` from two or more :class:`AtomGroup` instances.
+
+    :class:`AtomGroup` instances can come from different Universes, or come
+    directly from a :meth:`~Universe.select_atoms` call.
+
+    It can also be used with a single :class:`AtomGroup` if the user wants to,
+    for example, re-order the atoms in the Universe.
+
+    :Arguments: One or more :class:`AtomGroup` instances.
+
+    :Returns: an instance of :class:`~MDAnalaysis.AtomGroup.Universe`
+
+    :Raises: :exc:`ValueError` for too few arguments or if an AtomGroup is
+             empty and :exc:`TypeError` if arguments are not
+             :class:`AtomGroup` instances.
+
+    .. rubric:: Example
+
+    In this example, protein, ligand, and solvent were externally prepared in
+    three different PDB files. They are loaded into separate :class:`Universe`
+    objects (where they could be further manipulated, e.g. renumbered,
+    relabeled, rotated, ...) The :func:`Merge` command is used to combine all
+    of them together::
+
+       u1 = Universe("protein.pdb")
+       u2 = Universe("ligand.pdb")
+       u3 = Universe("solvent.pdb")
+       u = Merge(u1.select_atoms("protein"), u2.atoms, u3.atoms)
+       u.atoms.write("system.pdb")
+
+    The complete system is then written out to a new PDB file.
+
+    .. Note:: Merging does not create a full trajectory but only a single
+              structure even if the input consists of one or more trajectories.
+
+    .. versionchanged 0.9.0::
+       Raises exceptions instead of assertion errors.
+
+    """
+    import MDAnalysis.topology.core
+
+    if len(args) == 0:
+        raise ValueError("Need at least one AtomGroup for merging")
+
+    for a in args:
+        if not isinstance(a, AtomGroup):
+            raise TypeError(repr(a) + " is not an AtomGroup")
+    for a in args:
+        if len(a) == 0:
+            raise ValueError("cannot merge empty AtomGroup")
+
+    coords = np.vstack([a.coordinates() for a in args])
+    trajectory = MDAnalysis.coordinates.base.Reader(None)
+    ts = MDAnalysis.coordinates.base.Timestep.from_coordinates(coords)
+    setattr(trajectory, "ts", ts)
+    trajectory.n_frames = 1
+
+    # create an empty Universe object
+    u = Universe()
+    u.trajectory = trajectory
+
+    # create a list of Atoms, then convert it to an AtomGroup
+    atoms = [copy.copy(a) for gr in args for a in gr]
+    for a in atoms:
+        a.universe = u
+
+    # adjust the atom numbering
+    for i, a in enumerate(atoms):
+        a.index = i
+        a.serial = i + 1
+    u.atoms = AtomGroup(atoms)
+
+    # move over the topology
+    offset = 0
+    tops = ['bonds', 'angles', 'dihedrals', 'impropers']
+    idx_lists = {t:[] for t in tops}
+    for ag in args:
+        # create a mapping scheme for this atomgroup
+        mapping = {a.index:i for i, a in enumerate(ag, start=offset)}
+        offset += len(ag)
+
+        for t in tops:
+            tg = getattr(ag, t)
+            # Create a topology group of only bonds that are within this ag
+            # ie we don't want bonds that extend out of the atomgroup
+            tg = tg.atomgroup_intersection(ag, strict=True)
+
+            # Map them so they refer to our new indices
+            new_idx = [tuple(map(lambda x:mapping[x], entry))
+                       for entry in tg.to_indices()]
+            idx_lists[t].extend(new_idx)
+
+    for t in tops:
+        u._topology[t] = idx_lists[t]
+
+    # adjust the residue and segment numbering (removes any remaining references to the old universe)
+    MDAnalysis.topology.core.build_residues(u.atoms)
+    MDAnalysis.topology.core.build_segments(u.atoms)
+
+    return u
