@@ -58,3 +58,7 @@ class ResidueGroup(Group):
 
 class SegmentGroup(Group):
     level = 'segment'
+
+    @property
+    def id(self):
+        return self._u._topology.segids.get_segments(self._ix)

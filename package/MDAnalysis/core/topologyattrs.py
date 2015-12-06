@@ -152,6 +152,18 @@ class Atomnames(AtomAttr):
     """
     attrname = 'atomnames'
 
+class Atomtypes(AtomAttr):
+    """Type for each atom"""
+    attrname = 'atomtypes'
+
+
+class Bonds(AtomAttr):
+    """Bonds between atoms
+
+    Parameters
+    ----------
+    """
+    pass
 
 #TODO: need to add cacheing
 class Masses(AtomAttr):
@@ -318,3 +330,7 @@ class SegmentAttr(TopologyAttr):
 
     def set_segments(self, six, values):
         self.values[six] = values
+
+
+class Segids(SegmentAttr):
+    attrname = 'segids'

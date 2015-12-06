@@ -45,7 +45,7 @@ from ..core.topologyattrs import (
 )
 from ..core.topology import Topology
 from .core import get_atom_mass, guess_atom_charge, guess_atom_element
-from .base import TopologyReader, squash_by, remap_ids
+from .base import TopologyReader, squash_by
 
 
 class GROParser(TopologyReader):
@@ -70,14 +70,10 @@ class GROParser(TopologyReader):
                 names[i] = line[10:15].strip()
                 indices[i] = int(line[15:20])
 
-        new_resids, (new_resnames,) = squash_by(resids, resnames)
+        residx, new_resids, (new_resnames,) = squash_by(resids, resnames)
 
         # new_resids is len(residues)
         # so resindex 0 has resid new_resids[0]
-
-        # Renumber the (AtomID: ResID) relationship to be (AtomID: ResIX)
-        residx = remap_ids(resids, new_resids)
-
         atomnames = Atomnames(names)
         residueids = Resids(new_resids)
         residuenames = Resnames(new_resnames)
