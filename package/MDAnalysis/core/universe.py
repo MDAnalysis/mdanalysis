@@ -124,6 +124,7 @@ class Universe(object):
             return
 
         self.filename = args[0]
+        coordinatefile = args[1:]
 
         topology_format = kwargs.pop('topology_format', None)
 
