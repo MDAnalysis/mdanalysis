@@ -281,23 +281,23 @@ def extensions(config):
                          include_dirs=include_dirs + ['MDAnalysis/coordinates/include'],
                          define_macros=define_macros,
                          extra_compile_args=extra_compile_args)
-    distances = MDAExtension('lib._distances',
-                          ['MDAnalysis/lib/distances' + source_suffix],
-                          include_dirs=include_dirs + ['MDAnalysis/lib/include'],
-                          libraries=['m'],
-                          define_macros=define_macros,
-                          extra_compile_args=extra_compile_args)
-    distances_omp = MDAExtension('lib._distances_openmp',
-                              ['MDAnalysis/lib/distances_openmp' + source_suffix],
-                              include_dirs=include_dirs + ['MDAnalysis/lib/include'],
-                              libraries=['m'] + parallel_libraries,
-                              define_macros=define_macros + parallel_macros,
-                              extra_compile_args=parallel_args,
-                              extra_link_args=parallel_args)
+    distances = MDAExtension('lib.c_distances',
+                             ['MDAnalysis/lib/c_distances' + source_suffix],
+                             include_dirs=include_dirs + ['MDAnalysis/lib/include'],
+                             libraries=['m'],
+                             define_macros=define_macros,
+                             extra_compile_args=extra_compile_args)
+    distances_omp = MDAExtension('lib.c_distances_openmp',
+                                 ['MDAnalysis/lib/c_distances_openmp' + source_suffix],
+                                 include_dirs=include_dirs + ['MDAnalysis/lib/include'],
+                                 libraries=['m'] + parallel_libraries,
+                                 define_macros=define_macros + parallel_macros,
+                                 extra_compile_args=parallel_args,
+                                 extra_link_args=parallel_args)
     qcprot = MDAExtension('lib.qcprot',
-                       ['MDAnalysis/lib/src/pyqcprot/pyqcprot' + source_suffix],
-                       include_dirs=include_dirs,
-                       extra_compile_args=["-O3", "-ffast-math"])
+                          ['MDAnalysis/lib/qcprot' + source_suffix],
+                          include_dirs=include_dirs,
+                          extra_compile_args=["-O3", "-ffast-math"])
     transformation = MDAExtension('lib._transformations',
                                ['MDAnalysis/lib/src/transformations/transformations.c'],
                                libraries=['m'],
