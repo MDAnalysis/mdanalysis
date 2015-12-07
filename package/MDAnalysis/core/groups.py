@@ -3,6 +3,30 @@
 
 """
 
+def make_group(top):
+    """Generate the Group class with attributes according to the topology.
+
+    """
+    return type('Group', (GroupBase,), {})
+
+
+def make_levelgroup(top, Groupclass, level):
+    """Generate the AtomGroup class with attributes according to the topology.
+
+    """
+    if level == 'atom':
+        levelgroup = 'AtomGroup'
+        baseclass = AtomGroupBase
+    elif level == 'residue':
+        levelgroup = 'ResidueGroup'
+        baseclass = ResidueGroupBase
+    elif level == 'segment':
+        levelgroup = 'SegmentGroup'
+        baseclass = SegmentGroupBase 
+
+    return type(levelgroup, (Groupclass, baseclass), {})
+
+
 class GroupBase(object):
     level = ''
 

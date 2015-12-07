@@ -172,12 +172,15 @@ class Universe(object):
                              " with parser {1} \n"
                              "Error: {2}".format(self.filename, parser, err))
 
+        # generate Group classes
+        self._make_groupclasses()
+
         # Generate atoms, residues and segments
-        self.atoms = groups.AtomGroupBase(
+        self.atoms = self._AtomGroup(
             np.arange(self._topology.n_atoms), self)
-        self.residues = groups.ResidueGroupBase(np.arange(
+        self.residues = groups._ResidueGroup(np.arange(
             self._topology.n_residues), self)
-        self.segments = groups.SegmentGroupBase(np.arange(
+        self.segments = groups._SegmentGroup(np.arange(
             self._topology.n_segments), self)
 
         # Add attributes from Topology into Groups
@@ -186,6 +189,26 @@ class Universe(object):
 
         # Load coordinates
         self.load_new(coordinatefile, **kwargs)
+
+    def _make_groupclasses(self):
+        """Generates Group classes specific to this Universe based on its
+        Topology.
+
+        """
+        # generate Group class based on Topology
+        self._Group = groups.make_group(self._topology)
+
+        # generate AtomGroup, ResidueGroup, and SegmentGroup classes for this
+        # universe
+        self._AtomGroup = groups.make_levelgroup(self._topology,
+                                                 self._Group,
+                                                 level='atom')
+        self._AtomGroup = groups.make_levelgroup(self._topology,
+                                                 self._Group,
+                                                 level='atom')
+        self._AtomGroup = groups.make_levelgroup(self._topology,
+                                                 self._Group,
+                                                 level='atom')
 
     @property
     def universe(self):
