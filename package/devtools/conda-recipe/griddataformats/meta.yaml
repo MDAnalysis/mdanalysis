@@ -1,0 +1,40 @@
+package:
+  name: griddataformats
+  version: "0.3.0"
+
+source:
+  git_url: https://github.com/MDAnalysis/GridDataFormats
+  git_tag: release-0.3.0
+
+
+requirements:
+  build:
+    - python
+    - setuptools
+    - six
+    - numpy
+    - scipy
+
+  run:
+    - python
+    - six
+    - numpy
+    - scipy
+
+test:
+  # Python imports
+  imports:
+    - gridData
+
+  # requires:
+    # Put any additional test requirements here.  For example
+    # - nose
+
+about:
+  home: http://mdanalysis.org/GridDataFormats
+  license: GNU LESSER GENERAL PUBLIC LICENSE
+  summary: 'GridDataFormats provides the Python package gridData'
+
+# See
+# http://docs.continuum.io/conda/build.html for
+# more information about meta.yaml

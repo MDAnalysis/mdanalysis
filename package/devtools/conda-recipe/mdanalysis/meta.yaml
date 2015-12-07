@@ -12,14 +12,19 @@ requirements:
     - python
     - setuptools
     - numpy
+    - griddataformats
 
   run:
     - python
     - numpy
     - scipy
+    - griddataformats
+    - networkx
 
 test:
   # Python imports
+  # turn off test for now since MDAnalysis require GridDataFormats package
+  # we can make a conda recipe for it too
   imports:
     - MDAnalysis
 
