@@ -15,6 +15,7 @@ requirements:
     - griddataformats
     - networkx
     - biopython
+    - cython
 
   run:
     - python
