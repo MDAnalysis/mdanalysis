@@ -178,9 +178,9 @@ class Universe(object):
         # Generate atoms, residues and segments
         self.atoms = self._AtomGroup(
             np.arange(self._topology.n_atoms), self)
-        self.residues = groups._ResidueGroup(np.arange(
+        self.residues = self._ResidueGroup(np.arange(
             self._topology.n_residues), self)
-        self.segments = groups._SegmentGroup(np.arange(
+        self.segments = self._SegmentGroup(np.arange(
             self._topology.n_segments), self)
 
         # Add attributes from Topology into Groups

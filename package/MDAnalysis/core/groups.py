@@ -79,13 +79,13 @@ class GroupBase(object):
         return self._u
 
 
-class AtomGroupBase(Group):
+class AtomGroupBase(object):
     level = 'atom'
 
 
-class ResidueGroupBase(Group):
+class ResidueGroupBase(object):
     level = 'residue'
 
 
-class SegmentGroupBase(Group):
+class SegmentGroupBase(object):
     level = 'segment'
