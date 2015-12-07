@@ -293,3 +293,7 @@ class Topology(object):
         """
         topologyattr.top = self
         self.__setattr__(topologyattr.attrname, topologyattr)
+
+        ## TODO: add checking that TopologyAttr values are of right shape for
+        # its level
+
