@@ -203,12 +203,12 @@ class Universe(object):
         self._AtomGroup = groups.make_levelgroup(self._topology,
                                                  self._Group,
                                                  level='atom')
-        self._AtomGroup = groups.make_levelgroup(self._topology,
+        self._ResidueGroup = groups.make_levelgroup(self._topology,
                                                  self._Group,
-                                                 level='atom')
-        self._AtomGroup = groups.make_levelgroup(self._topology,
+                                                 level='residue')
+        self._SegmentGroup = groups.make_levelgroup(self._topology,
                                                  self._Group,
-                                                 level='atom')
+                                                 level='segment')
 
     @property
     def universe(self):
