@@ -152,6 +152,7 @@ class Atomnames(AtomAttr):
     """
     attrname = 'atomnames'
 
+
 class Atomtypes(AtomAttr):
     """Type for each atom"""
     attrname = 'atomtypes'
@@ -164,6 +165,7 @@ class Bonds(AtomAttr):
     ----------
     """
     pass
+
 
 #TODO: need to add cacheing
 class Masses(AtomAttr):
