@@ -21,7 +21,7 @@ install:
   - source activate pyenv
   - conda install --yes python=$TRAVIS_PYTHON_VERSION cython biopython matplotlib networkx netcdf4
   - if [[ $CYTHONIZE == 'true' ]]; then find . -name '*.pyx' -exec touch '{}' \; ;fi
-  - pip install package/
+  - pip install -v package/
   - pip install testsuite/
   - pip install coveralls tempdir
   - chmod +x testsuite/MDAnalysisTests/mda_nosetests
