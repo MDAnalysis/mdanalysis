@@ -2,6 +2,41 @@
 
 
 """
+class AtomDescriptor(object):
+    """Make an atom-level descriptor from a Topology object.
+
+    This basically builds properties for, say, an AtomGroup based on what's
+    available in the topology.
+
+    """
+    def __init__(self, top, attr):
+        self.attr = getattr(top, attr)
+        self.__doc__ = self.attr.__doc__
+
+    def __get__(self, group, Group):
+        return self.attr.get_atoms(group._ix)
+
+    def __set__(self, group, values):
+        self.attr.set_atoms(group._ix, values)
+
+
+def make_atomgroup(top):
+    """Generate the AtomGroup class with attributes according to the topology.
+
+    """
+    # need to build a descriptor for each attribute
+    group_attrs = {}
+    for attr in top.attrs:
+        group_attrs[attr] = AtomDescriptor(top, attr)
+
+    group_attrs['level'] = 'atom'
+
+    return type('AtomGroup', (Group,), group_attrs)
+
+
+#class MetaAtomGroup(type):
+#    def __new__(mcs, name, bases, attrs, **kwargs):
+#        return super(MetaAtomGroup, mcs).__new__(mcs, name, bases, attrs)
 
 class Group(object):
     level = ''
@@ -99,6 +134,7 @@ class ResidueGroup(Group):
     @property
     def masses(self):
         return self._u._topology.masses.get_residues(self._ix)
+
 
 class SegmentGroup(Group):
     level = 'segment'

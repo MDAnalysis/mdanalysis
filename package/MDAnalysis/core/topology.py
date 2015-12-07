@@ -271,6 +271,7 @@ class Topology(object):
                  attrs=None,
                  atom_resindex=None,
                  residue_segindex=None):
+
         self.n_atoms = n_atoms
         self.n_residues = n_res
         self.n_segments = n_seg
@@ -278,10 +279,14 @@ class Topology(object):
                              atom_resindex=atom_resindex,
                              residue_segindex=residue_segindex)
 
+        # list otf attribute names; needed for generating groups by Universe
+        self.attrs = list()
+
         # attach the TopologyAttrs
         for topologyattr in attrs:
             self.add_TopologyAttr(topologyattr)
 
+    # TODO: add checking for duplicate TopologyAttrs
     def add_TopologyAttr(self, topologyattr):
         """Add a new TopologyAttr to the Topology.
 
@@ -291,4 +296,5 @@ class Topology(object):
 
         """
         topologyattr.top = self
+        self.attrs.append(topologyattr.attrname)
         self.__setattr__(topologyattr.attrname, topologyattr)
