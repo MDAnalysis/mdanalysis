@@ -1,0 +1,36 @@
+package:
+  name: mdanalysis
+  version: "0.13.0dev0"
+
+source:
+  git_url: https://github.com/MDAnalysis/mdanalysis
+  git_tag: develop
+
+
+requirements:
+  build:
+    - python
+    - numpy
+
+  run:
+    - python
+    - numpy
+    - scipy
+
+test:
+  # Python imports
+  imports:
+    - MDAnalysis
+
+  # requires:
+    # Put any additional test requirements here.  For example
+    # - nose
+
+about:
+  home: http://www.mdanalysis.org
+  license: GNU GENERAL PUBLIC LICENSE
+  summary: 'MDAnalysis is a Python library to analyze molecular dynamics trajectories.'
+
+# See
+# http://docs.continuum.io/conda/build.html for
+# more information about meta.yaml

@@ -1,0 +1,1 @@
+conda build ./MDAnalysis
