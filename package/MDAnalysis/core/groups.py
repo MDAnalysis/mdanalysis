@@ -12,12 +12,19 @@ class Group(object):
         self._u = u
         self._cache = dict()
 
-    def _addprop(self, attr):
+    @classmethod
+    def _add_prop(cls, attr):
+        """Add attr into the namespace for this class
+
+        Arguments
+        ---------
+        attr - A TopologyAttr object
+        """
         getter = lambda self: attr.__getitem__(self)
         setter = lambda self, values: attr.__setitem__(self, values)
 
-        setattr(self.__class__, attr.attrname,
-                property(getter, setter))
+        setattr(cls, attr.attrname,
+                property(getter, setter, None, attr.__doc__))
 
     def __len__(self):
         return len(self._ix)
@@ -51,65 +58,10 @@ class Group(object):
 class AtomGroup(Group):
     level = 'atom'
 
-    @property
-    def names(self):
-        return self._u._topology.atomnames.get_atoms(self._ix)
-
-    @names.setter
-    def names(self, values):
-        return self._u._topology.atomnames.set_atoms(self._ix, values)
-
-    @property
-    def ids(self):
-        return self._u._topology.atomids.get_atoms(self._ix)
-
-    @ids.setter
-    def ids(self, values):
-        return self._u._topology.atomids.set_atoms(self._ix, values)
-
-    @property
-    def masses(self):
-        return self._u._topology.masses.get_atoms(self._ix)
-
-    @masses.setter
-    def masses(self, values):
-        return self._u._topology.masses.set_atoms(self._ix, values)
-
 
 class ResidueGroup(Group):
     level = 'residue'
 
-    @property
-    def names(self):
-        return self._u._topology.atomnames.get_residues(self._ix)
-
-    @property
-    def ids(self):
-        return self._u._topology.atomids.get_residues(self._ix)
-
-    @property
-    def resids(self):
-        return self._u._topology.resids.get_residues(self._ix)
-
-    @resids.setter
-    def resids(self, values):
-        return self._u._topology.resids.set_residues(self._ix, values)
-
-    @property
-    def resnames(self):
-        return self._u._topology.resnames.get_residues(self._ix)
-
-    @resnames.setter
-    def resnames(self, values):
-        return self._u._topology.resnames.set_residues(self._ix, values)
-
-    @property
-    def masses(self):
-        return self._u._topology.masses.get_residues(self._ix)
 
 class SegmentGroup(Group):
     level = 'segment'
-
-    @property
-    def id(self):
-        return self._u._topology.segids.get_segments(self._ix)

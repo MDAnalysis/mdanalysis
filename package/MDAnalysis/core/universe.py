@@ -180,6 +180,10 @@ class Universe(object):
         self.segments = groups.SegmentGroup(np.arange(
             self._topology.n_segments), self)
 
+        # Add attributes from Topology into Groups
+        for attr in self._topology._attrs:
+            groups.Group._add_prop(attr)
+
         # Load coordinates
         self.load_new(coordinatefile, **kwargs)
 
