@@ -17,6 +17,8 @@
 Topology attribute objects --- :mod:`MDAnalysis.core.topologyattrs'
 ===================================================================
 
+Common TopologyAttrs used by most topology parsers.
+
 """
 import numpy as np
 
@@ -37,14 +39,11 @@ class TopologyAttr(object):
         the name used for the attribute when attached to a ``Topology`` object
     top : Topology
         handle for the Topology object TopologyAttr is associated with
-    level : int {0, 1, 2}
-        the natural level in the topology the attribute: ``0`` for atoms,
-        ``1`` for residues, ``2`` for segments
         
     """
-    attrname = 'topologyattr'
+    attrname = 'topologyattrs'
+    singular = 'topologyattr'
     top = None
-    level = None
 
     def __init__(self, values):
         self.values = values
@@ -117,8 +116,8 @@ class AtomAttr(TopologyAttr):
     """Base class for atom attributes.
 
     """
-    attrname = 'atomattr'
-    level = 0 
+    attrname = 'atomattrs'
+    singular = 'atomattr'
 
     def get_atoms(self, aix):
         return self.values[aix]
@@ -154,7 +153,8 @@ class Atomids(AtomAttr):
         atomids for atoms in the system
 
     """
-    attrname = 'atomids'
+    attrname = 'ids'
+    singular = 'id'
 
 
 class Atomnames(AtomAttr):
@@ -166,11 +166,14 @@ class Atomnames(AtomAttr):
         atomnames for atoms in the system
 
     """
-    attrname = 'atomnames'
+    attrname = 'names'
+    singular = 'name'
+
 
 class Atomtypes(AtomAttr):
     """Type for each atom"""
-    attrname = 'atomtypes'
+    attrname = 'types'
+    singular = 'type'
 
 
 class Bonds(AtomAttr):
@@ -180,6 +183,7 @@ class Bonds(AtomAttr):
     ----------
     """
     pass
+
 
 #TODO: need to add cacheing
 class Masses(AtomAttr):
@@ -192,6 +196,7 @@ class Masses(AtomAttr):
 
     """
     attrname = 'masses'
+    singular = 'mass'
 
     def get_residues(self, rix):
         masses = np.empty(len(rix))
@@ -225,6 +230,7 @@ class Charges(AtomAttr):
 
     """
     attrname = 'charges'
+    singular = 'charge'
 
     def get_residues(self, rix):
         charges = np.empty(len(rix))
@@ -258,8 +264,8 @@ class ResidueAttr(TopologyAttr):
                 appropriate exceptions.
 
     """
-    attrname = 'residueattr'
-    level = 1
+    attrname = 'residueattrs'
+    singular = 'residueattr'
 
     def get_atoms(self, aix):
         rix = self.top.tt.a2r(aix)
@@ -291,6 +297,7 @@ class Resids(ResidueAttr):
 
     """
     attrname = 'resids'
+    singular = 'resid'
 
     def set_atoms(self, aix, resids):
         """Set resid for each atom given. Effectively moves each atom to
@@ -320,6 +327,7 @@ class Resnames(ResidueAttr):
 
     """
     attrname = 'resnames'
+    singular = 'resname'
 
 
 ## segment attributes
@@ -328,8 +336,8 @@ class SegmentAttr(TopologyAttr):
     """Base class for segment attributes.
 
     """
-    attrname = 'segmentattr'
-    level = 2
+    attrname = 'segmentattrs'
+    singular = 'segmentattr'
 
     def get_atoms(self, aix):
         six = self.top.tt.a2s(aix)
@@ -348,3 +356,4 @@ class SegmentAttr(TopologyAttr):
 
 class Segids(SegmentAttr):
     attrname = 'segids'
+    singular = 'segid'
