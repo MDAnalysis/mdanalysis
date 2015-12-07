@@ -79,6 +79,11 @@ class TransTable(object):
             self._res_order, self._seg_ptrs = one_to_many_pointers(
                 n_residues, n_segments, residue_segindex)
 
+    @property
+    def size(self):
+        """The shape of the table, (n_atoms, n_residues, n_segments)"""
+        return (self.n_atoms, self.n_residues, self.n_segments)
+
     def a2r(self, aix):
         """Get residue indices for each atom.
 
