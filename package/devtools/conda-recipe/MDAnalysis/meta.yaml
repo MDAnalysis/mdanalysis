@@ -10,6 +10,7 @@ source:
 requirements:
   build:
     - python
+    - setuptools
     - numpy
 
   run:
