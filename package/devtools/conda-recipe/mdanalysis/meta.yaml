@@ -14,6 +14,7 @@ requirements:
     - numpy
     - griddataformats
     - networkx
+    - biopython
 
   run:
     - python
@@ -21,6 +22,7 @@ requirements:
     - scipy
     - griddataformats
     - networkx
+    - biopython
 
 test:
   # Python imports
