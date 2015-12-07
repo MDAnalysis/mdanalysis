@@ -693,22 +693,22 @@ class TestDistanceBackendSelection(object):
                                           backend=backend)
         except RuntimeError:
             raise AssertionError("Failed to understand backend {}".format(backend))
-    
+
     def test_case_insensitivity(self):
         for backend in ("serial", "Serial", "SeRiAL", "SERIAL",
                         "openmp", "OpenMP", "oPENmP", "OPENMP"):
             yield self._case_insensitivity_test, backend
-    
+
     @raises(ValueError)
     def test_missing_backend_raises_ValueError(self):
         MDAnalysis.lib.distances._run("calc_self_distance_array",
                                       args=(self.positions, self.result),
                                       backend="not_implemented_stuff")
-        
-        
+
+
 class TestOpenMP(object):
     def test_serial(self):
-        assert_(MDAnalysis.lib._distances.OPENMP_ENABLED == False)
+        assert_(MDAnalysis.lib.c_distances.OPENMP_ENABLED == False)
 
     def test_openmp(self):
-        assert_(MDAnalysis.lib._distances_openmp.OPENMP_ENABLED == True)
+        assert_(MDAnalysis.lib.c_distances_openmp.OPENMP_ENABLED == True)

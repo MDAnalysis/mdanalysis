@@ -32,9 +32,9 @@ implemented (*backend* is case-insensitive):
 ========== ======================== ======================================
 *backend*  module                   description
 ========== ======================== ======================================
-"serial"   :mod:`_distances`        serial implementation in C/Cython
+"serial"   :mod:`c_distances`        serial implementation in C/Cython
 
-"OpenMP"   :mod:`_distances_openmp` parallel implementation in C/Cython
+"OpenMP"   :mod:`c_distances_openmp` parallel implementation in C/Cython
                                     with OpenMP
 ========== ======================== ======================================
 
@@ -64,10 +64,10 @@ from .mdamath import triclinic_vectors, triclinic_box
 # independent from the OpenMP code
 import importlib
 _distances = {}
-_distances['serial'] = importlib.import_module("._distances",
+_distances['serial'] = importlib.import_module(".c_distances",
                                          package="MDAnalysis.lib")
 try:
-    _distances['openmp'] = importlib.import_module("._distances_openmp",
+    _distances['openmp'] = importlib.import_module(".c_distances_openmp",
                                           package="MDAnalysis.lib")
 except ImportError:
     pass
@@ -87,24 +87,24 @@ def _run(funcname, args=None, kwargs=None, backend="serial"):
 
 # serial versions are always available (and are typically used within
 # the core and topology modules)
-from ._distances import (calc_distance_array,
-                         calc_distance_array_ortho,
-                         calc_distance_array_triclinic,
-                         calc_self_distance_array,
-                         calc_self_distance_array_ortho,
-                         calc_self_distance_array_triclinic,
-                         coord_transform,
-                         calc_bond_distance,
-                         calc_bond_distance_ortho,
-                         calc_bond_distance_triclinic,
-                         calc_angle,
-                         calc_angle_ortho,
-                         calc_angle_triclinic,
-                         calc_dihedral,
-                         calc_dihedral_ortho,
-                         calc_dihedral_triclinic,
-                         ortho_pbc,
-                         triclinic_pbc)
+from .c_distances import (calc_distance_array,
+                          calc_distance_array_ortho,
+                          calc_distance_array_triclinic,
+                          calc_self_distance_array,
+                          calc_self_distance_array_ortho,
+                          calc_self_distance_array_triclinic,
+                          coord_transform,
+                          calc_bond_distance,
+                          calc_bond_distance_ortho,
+                          calc_bond_distance_triclinic,
+                          calc_angle,
+                          calc_angle_ortho,
+                          calc_angle_triclinic,
+                          calc_dihedral,
+                          calc_dihedral_ortho,
+                          calc_dihedral_triclinic,
+                          ortho_pbc,
+                          triclinic_pbc)
 
 
 def _box_check(box):
