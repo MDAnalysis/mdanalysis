@@ -28,8 +28,6 @@ def make_levelgroup(top, Groupclass, level):
 
 
 class GroupBase(object):
-    level = ''
-
     def __init__(self, ix, u):
         # indices for the objects I hold
         self._ix = ix
