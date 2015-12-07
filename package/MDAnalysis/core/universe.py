@@ -197,6 +197,8 @@ class Universe(object):
         """
         # generate Group class based on Topology
         self._Group = groups.make_group(self._topology)
+        for attr in self._topology.attrs:
+            self._Group._add_prop(attr)
 
         # generate AtomGroup, ResidueGroup, and SegmentGroup classes for this
         # universe
