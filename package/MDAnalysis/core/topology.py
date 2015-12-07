@@ -298,3 +298,7 @@ class Topology(object):
         """
         topologyattr.top = self
         self.__setattr__(topologyattr.attrname, topologyattr)
+
+        ## TODO: add checking that TopologyAttr len gives right length for
+        # its level
+
