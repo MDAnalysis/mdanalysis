@@ -13,6 +13,7 @@ requirements:
     - setuptools
     - numpy
     - griddataformats
+    - networkx
 
   run:
     - python
