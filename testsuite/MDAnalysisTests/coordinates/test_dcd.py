@@ -6,7 +6,7 @@ from six.moves import zip
 from nose.plugins.attrib import attr
 from numpy.testing import (assert_equal, assert_array_equal, assert_raises,
                            assert_almost_equal, assert_array_almost_equal,
-                           assert_allclose)
+                           assert_allclose, dec)
 import tempdir
 from unittest import TestCase
 
@@ -14,6 +14,7 @@ from MDAnalysisTests.datafiles import (DCD, PSF, DCD_empty, CRD, PRMncdf, NCDF)
 from MDAnalysisTests.coordinates.reference import (RefCHARMMtriclinicDCD,
                                                    RefNAMDtriclinicDCD)
 from MDAnalysisTests.coordinates.base import BaseTimestepTest
+from MDAnalysisTests import module_not_found
 
 
 @attr('issue')
@@ -369,6 +370,8 @@ class TestDCDReader_NAMD_Unitcell(_TestDCDReader_TriclinicUnitcell,
 
 
 class TestNCDF2DCD(TestCase):
+    @dec.skipif(module_not_found("netCDF4"),
+                "Test skipped because netCDF is not available.")
     def setUp(self):
         self.u = mda.Universe(PRMncdf, NCDF)
         # create the DCD
