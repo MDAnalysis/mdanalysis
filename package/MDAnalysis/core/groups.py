@@ -12,6 +12,13 @@ class Group(object):
         self._u = u
         self._cache = dict()
 
+    def _addprop(self, attr):
+        getter = lambda self: attr.__getitem__(self)
+        setter = lambda self, values: attr.__setitem__(self, values)
+
+        setattr(self.__class__, attr.attrname,
+                property(getter, setter))
+
     def __len__(self):
         return len(self._ix)
 

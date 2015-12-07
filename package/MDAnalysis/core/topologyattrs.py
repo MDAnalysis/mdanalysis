@@ -58,6 +58,22 @@ class TopologyAttr(object):
         """
         return len(self.values)
 
+    def __getitem__(self, group):
+        if group.level == 'atom':
+            return self.get_atoms(group._ix)
+        elif group.level == 'residue':
+            return self.get_residues(group._ix)
+        elif group.level == 'segment':
+            return self.get_segments(group._ix)
+
+    def __setitem__(self, group, values):
+        if group.level == 'atom':
+            return self.set_atoms(group._ix, values)
+        elif group.level == 'residue':
+            return self.set_residues(group._ix, values)
+        elif group.level == 'segment':
+            return self.set_segments(group._ix, values)
+
     def get_atoms(self, aix):
         """Get atom attributes for given atom indices.
 
