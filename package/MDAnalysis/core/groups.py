@@ -3,7 +3,7 @@
 
 """
 
-class Group(object):
+class GroupBase(object):
     level = ''
 
     def __init__(self, ix, u):
@@ -55,13 +55,13 @@ class Group(object):
         return self._u
 
 
-class AtomGroup(Group):
+class AtomGroupBase(Group):
     level = 'atom'
 
 
-class ResidueGroup(Group):
+class ResidueGroupBase(Group):
     level = 'residue'
 
 
-class SegmentGroup(Group):
+class SegmentGroupBase(Group):
     level = 'segment'

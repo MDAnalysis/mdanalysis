@@ -173,16 +173,16 @@ class Universe(object):
                              "Error: {2}".format(self.filename, parser, err))
 
         # Generate atoms, residues and segments
-        self.atoms = groups.AtomGroup(
+        self.atoms = groups.AtomGroupBase(
             np.arange(self._topology.n_atoms), self)
-        self.residues = groups.ResidueGroup(np.arange(
+        self.residues = groups.ResidueGroupBase(np.arange(
             self._topology.n_residues), self)
-        self.segments = groups.SegmentGroup(np.arange(
+        self.segments = groups.SegmentGroupBase(np.arange(
             self._topology.n_segments), self)
 
         # Add attributes from Topology into Groups
         for attr in self._topology._attrs:
-            groups.Group._add_prop(attr)
+            groups.GroupBase._add_prop(attr)
 
         # Load coordinates
         self.load_new(coordinatefile, **kwargs)
