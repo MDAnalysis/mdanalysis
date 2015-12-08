@@ -8,7 +8,6 @@ env:
       - MDA_DOCDIR: package/doc/html
    matrix:
    - SETUP=full CYTHONIZE=true
-   - SETUP=full CYTHONIZE=false
    - SETUP=minimal CYTHONIZE=false
 language: python
 python:
