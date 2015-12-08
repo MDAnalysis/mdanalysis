@@ -54,7 +54,6 @@ env:
       - GIT_CI_EMAIL: TravisCI@mdanalysis.org
       - MDA_DOCDIR: package/doc/html
    matrix:
-   - CYTHONIZE=true
-   - CYTHONIZE=false
-   - SETUP=full
-   - SETUP=minimal
+   - SETUP=full CYTHONIZE=true
+   - SETUP=full CYTHONIZE=false
+   - SETUP=minimal CYTHONIZE=false
