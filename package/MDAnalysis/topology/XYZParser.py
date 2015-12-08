@@ -33,10 +33,14 @@ Classes
 """
 from __future__ import absolute_import
 
-from ..core.AtomGroup import Atom
+import numpy as np
+
 from ..lib.util import openany
-from .core import get_atom_mass, guess_atom_charge, guess_atom_element
 from .base import TopologyReader
+from ..core.topology import Topology
+from ..core.topologyattrs import (
+    Atomnames,
+)
 
 
 class XYZParser(TopologyReader):
@@ -48,30 +52,23 @@ class XYZParser(TopologyReader):
     def parse(self):
         """Read the file and return the structure.
 
-        :Returns: MDAnalysis internal *structure* dict.
+        Returns
+        -------
+        MDAnalysis Topology object
         """
         with openany(self.filename, 'r') as inf:
             natoms = int(inf.readline().strip())
             inf.readline()
 
-            segid = "SYSTEM"
-            resid = 1
-            resname = "SYSTEM"
+            names = np.zeros(natoms, dtype=object)
 
-            atoms = []
             # Can't infinitely read as XYZ files can be multiframe
             for i in range(natoms):
                 name = inf.readline().split()[0]
+                names[i] = name
 
-                elem = guess_atom_element(name)
-                mass = get_atom_mass(elem)
-                charge = guess_atom_charge(name)
+        names = Atomnames(names)
+        top = Topology(natoms, 0, 0,
+                       attrs=[names])
 
-                at = Atom(i, name, elem, resname, resid,
-                          segid, mass, charge, universe=self._u)
-
-                atoms.append(at)
-
-        struc = {"atoms": atoms}
-
-        return struc
+        return top
