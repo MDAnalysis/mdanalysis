@@ -51,6 +51,10 @@ from ..core.topologyattrs import (
     Resids,
     Resnames,
     Segids,
+    Bonds,
+    Angles,
+    Dihedrals,
+    Impropers
 )
 from ..core.topology import Topology
 
@@ -106,20 +110,18 @@ class PSFParser(TopologyReader):
             # Then possibly other sections
             sections = (
                 #("atoms", ("NATOM", 1, 1, self._parseatoms)),
-                ("bonds", ("NBOND", 2, 4, self._parsesection)),
-                ("angles", ("NTHETA", 3, 3, self._parsesection)),
-                ("dihedrals", ("NPHI", 4, 2, self._parsesection)),
-                ("impropers", ("NIMPHI", 4, 2, self._parsesection)),
-                ("donors", ("NDON", 2, 4, self._parsesection)),
-                ("acceptors", ("NACC", 2, 4, self._parsesection))
+                (Bonds, ("NBOND", 2, 4, self._parsesection)),
+                (Angles, ("NTHETA", 3, 3, self._parsesection)),
+                (Dihedrals, ("NPHI", 4, 2, self._parsesection)),
+                (Impropers, ("NIMPHI", 4, 2, self._parsesection)),
+                #("donors", ("NDON", 2, 4, self._parsesection)),
+                #("acceptors", ("NACC", 2, 4, self._parsesection))
             )
-
-            attrs = []
 
             try:
                 for attr, info in sections:
                     psffile.next()
-                    attrs += self._parse_sec(psffile, info)
+                    top.add_TopologyAttr(attr(self._parse_sec(psffile, info)))
             except StopIteration:
                 pass
                 # Reached the end of the file before we expected
@@ -128,7 +130,6 @@ class PSFParser(TopologyReader):
                            " section of NATOM")
                     logger.error(err)
                     raise ValueError(err)
-            top.extras = attrs
 
         return top
 
@@ -306,4 +307,4 @@ class PSFParser(TopologyReader):
             fields = map(lambda x: int(x) - 1, lines().split())
             for j in range(0, len(fields), atoms_per):
                 section.append(tuple(fields[j:j+atoms_per]))
-        return [section]
+        return section

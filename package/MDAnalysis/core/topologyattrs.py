@@ -20,9 +20,12 @@ Topology attribute objects --- :mod:`MDAnalysis.core.topologyattrs'
 Common TopologyAttrs used by most topology parsers.
 
 """
+from collections import defaultdict
+import itertools
 import numpy as np
 
-from MDAnalysis.exceptions import NoDataError
+from ..lib.util import cached
+from ..exceptions import NoDataError
 
 
 class TopologyAttr(object):
@@ -357,3 +360,57 @@ class SegmentAttr(TopologyAttr):
 class Segids(SegmentAttr):
     attrname = 'segids'
     singular = 'segid'
+
+
+class Bonds(AtomAttr):
+    """Bonds for atoms"""
+    attrname = 'bonds'
+    # Singular is the same because one Atom might have
+    # many bonds, so still asks for "bonds" in the plural
+    singular = 'bonds'
+
+    def __init__(self, values):
+        """
+        Arguments
+        ---------
+        values - list of tuples of indices.  Should be zero based
+        to match the atom indices
+
+        Eg:  [(0, 1), (1, 2), (2, 3)]
+        """
+        self.values = values
+        self._cache = dict()
+
+    def __len__(self):
+        return len(self._bondDict)
+
+    @property
+    @cached('bd')
+    def _bondDict(self):
+        """Lazily built mapping of atoms:bonds"""
+        bd = defaultdict(list)
+
+        for b in self.values:
+            for a in b:
+                bd[a].append(b)
+        return bd
+
+    def get_atoms(self, aix):
+        return set(itertools.chain(*[self._bondDict[a] for a in aix]))
+
+class Angles(Bonds):
+    """Angles for atoms"""
+    attrname = 'angles'
+    singular = 'angles'
+
+
+class Dihedrals(Bonds):
+    """Dihedrals for atoms"""
+    attrname = 'dihedrals'
+    singular = 'dihedrals'
+
+
+class Impropers(Bonds):
+    attrname = 'impropers'
+    singular = 'impropers'
+

@@ -29,6 +29,7 @@ from ..lib.mdamath import angle as slowang
 from ..lib.util import cached
 from ..lib import distances
 
+
 class TopologyObject(object):
 
     """Base class for all Topology items.

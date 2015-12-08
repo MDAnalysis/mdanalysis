@@ -284,7 +284,7 @@ class Topology(object):
                              residue_segindex=residue_segindex)
 
         # attach the TopologyAttrs
-        self.attrs = attrs
+        self.attrs = []
         for topologyattr in attrs:
             self.add_TopologyAttr(topologyattr)
 
@@ -296,6 +296,7 @@ class Topology(object):
         topologyattr : TopologyAttr
 
         """
+        self.attrs.append(topologyattr)
         topologyattr.top = self
         self.__setattr__(topologyattr.attrname, topologyattr)
 
