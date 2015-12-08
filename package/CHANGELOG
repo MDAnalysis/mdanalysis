@@ -69,6 +69,8 @@ Fixes
     (Issue #512)
   * Fixed PointSelection using KDTree (Issue #362)
   * Fixed GROParser getting tripped up by some file (Issue #548)
+  * Fixed writing dx files from analysis.density.density_from_Universe()
+    (Issue #544 and #410)
 
 10/08/15
 
