@@ -14,14 +14,16 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import MDAnalysis
-from MDAnalysis.analysis.leaflet import LeafletFinder
+from MDAnalysisTests import module_not_found
 
-from numpy.testing import TestCase, assert_equal
+from numpy.testing import TestCase, assert_equal, dec
 import numpy as np
 
 from MDAnalysisTests.datafiles import Martini_membrane_gro
 
 class TestLeafletFinder(TestCase):
+    @dec.skipif(module_not_found('scipy'),
+                "Test skipped because scipy is not available.")
     def setUp(self):
         self.universe = MDAnalysis.Universe(Martini_membrane_gro, Martini_membrane_gro)
         self.lipid_heads = self.universe.select_atoms("name PO4")
@@ -30,6 +32,7 @@ class TestLeafletFinder(TestCase):
         del self.universe
 
     def test_leaflet_finder(self):
+        from MDAnalysis.analysis.leaflet import LeafletFinder
         lfls = LeafletFinder(self.universe, self.lipid_heads, pbc=True)
         top_heads, bottom_heads = lfls.groups()
         # Make top be... on top.
