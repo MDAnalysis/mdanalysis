@@ -22,9 +22,11 @@ from numpy.testing import (
     assert_,
     assert_almost_equal,
     assert_raises,
+    dec
 )
 
 from MDAnalysisTests.datafiles import Plength
+from MDAnalysisTests import module_not_found
 
 
 class TestPersistenceLength(object):
@@ -52,6 +54,8 @@ class TestPersistenceLength(object):
         assert_(len(p.results) == 280)
         assert_almost_equal(p.lb, 1.485, 3)
 
+    @dec.skipif(module_not_found('scipy'),
+                "Test skipped because scipy is not available.")
     def test_fit(self):
         p = self._make_p()
         p.run()
@@ -72,10 +76,14 @@ class TestFitExponential(object):
         del self.a_ref
         del self.y
 
+    @dec.skipif(module_not_found('scipy'),
+                "Test skipped because scipy is not available.")
     def test_fit_simple(self):
         a = polymer.fit_exponential_decay(self.x, self.y)
         assert_(a == self.a_ref)
 
+    @dec.skipif(module_not_found('scipy'),
+                "Test skipped because scipy is not available.")
     def test_fit_noisy(self):
         y2 = self.y + (np.random.random(len(self.y)) - 0.5) * 0.05
         a = polymer.fit_exponential_decay(self.x, y2)
