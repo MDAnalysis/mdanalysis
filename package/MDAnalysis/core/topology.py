@@ -20,7 +20,8 @@ Topology object --- :mod:`MDAnalysis.core.topology'
 """
 import numpy as np
 
-from MDAnalysis.lib.mdamath import one_to_many_pointers
+from ..lib.mdamath import one_to_many_pointers
+from .topologyattrs import Atomindices, Resindices, Segindices
 
 
 class TransTable(object):
@@ -240,6 +241,9 @@ class TransTable(object):
         rixs = self.s2r_2d(six)
         return (self.r2a_1d(rix) for rix in rixs)
 
+
+#TODO: movers and resizers
+
     # Move between different groups.
     # In general, delete old address, add new address
     def move_atom(self, aix, rix):
@@ -282,6 +286,9 @@ class Topology(object):
         self.tt = TransTable(n_atoms, n_res, n_seg,
                              atom_resindex=atom_resindex,
                              residue_segindex=residue_segindex)
+
+        # add core TopologyAttrs that give access to indices
+        attrs.extend(Atomindices(), Resindices(), Segindices())
 
         # attach the TopologyAttrs
         self.attrs = []

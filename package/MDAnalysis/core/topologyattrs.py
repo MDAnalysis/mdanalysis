@@ -28,6 +28,7 @@ from ..lib.util import cached
 from ..exceptions import NoDataError
 from .topologyobjects import TopologyGroup
 
+
 class TopologyAttr(object):
     """Base class for Topology attributes.
 
@@ -98,6 +99,109 @@ class TopologyAttr(object):
         raise NotImplementedError
 
 
+## core attributes
+
+class Atomindices(TopologyAttr):
+    """Globally unique indices for each atom in the group.
+
+    If the group is an AtomGroup, then this gives the index for each atom in
+    the group. This is the unambiguous identifier for each atom in the
+    topology, and it is not alterable.
+
+    If the group is a ResidueGroup or SegmentGroup, then this gives the indices
+    of each atom represented in the group in a 1-D array, in the order of the
+    elements in that group. 
+
+    """
+    attrname = 'indices'
+    singular = 'index'
+
+    def __init__(self):
+        pass
+
+    def set_atoms(self, ag, values):
+        raise AttributeError("Atom indices are fixed; they cannot be reset")
+
+    def get_atoms(self, ag):
+        return ag._ix
+
+    def get_residues(self, rg):
+        return self.top.tt.r2a_1d(rg._ix)
+
+    def get_segments(self, sg):
+        return self.top.tt.s2a_1d(sg._ix)
+
+
+class Resindices(TopologyAttr):
+    """Globally unique resindices for each residue in the group.
+
+    If the group is an AtomGroup, then this gives the resindex for each atom in
+    the group. This unambiguously determines each atom's residue membership.
+    Resetting these values changes the residue membership of the atoms.
+
+    If the group is a ResidueGroup or SegmentGroup, then this gives the
+    resindices of each residue represented in the group in a 1-D array, in the
+    order of the elements in that group. 
+
+    """
+    attrname = 'resindices'
+    singular = 'resindex'
+
+    def __init__(self):
+        pass
+
+    def get_atoms(self, ag):
+        return self.top.tt.a2r(ag._ix)
+
+    def set_atoms(self, ag, values):
+        """Set resindex for each atom given. Effectively moves each atom to
+        another residue.
+
+        """
+        self.top.tt.move_atom(ag._ix, values)
+
+    def get_residues(self, rg):
+        return rg._ix
+
+    def set_residues(self, rg, values):
+        raise AttributeError("Residue indices are fixed; they cannot be reset")
+
+    def get_segments(self, sg):
+        return rix = self.top.tt.s2r_1d(sg._ix)
+
+
+class Segindices(TopologyAttr):
+    """Globally unique segindices for each segment in the group.
+
+    If the group is an AtomGroup, then this gives the segindex for each atom in
+    the group. This unambiguously determines each atom's segment membership.
+    It is not possible to set these, since membership in a segment is an
+    attribute of each atom's residue.
+    
+    If the group is a ResidueGroup or SegmentGroup, then this gives the
+    segindices of each segment represented in the group in a 1-D array, in the
+    order of the elements in that group. 
+
+    """
+    attrname = 'segindices'
+    singular = 'segindex'
+
+    def __init__(self):
+        pass
+
+    def get_atoms(self, ag):
+        return self.top.tt.a2s(ag._ix)
+
+    def get_residues(self, rg):
+        return self.top.tt.r2s(rg._ix)
+
+    def get_segments(self, sg):
+        return sg._ix
+
+    def set_segments(self, sg, values):
+        raise AttributeError("Segment indices are fixed; they cannot be reset")
+
+
 ## atom attributes
 
 class AtomAttr(TopologyAttr):
@@ -132,48 +236,39 @@ class AtomAttr(TopologyAttr):
         return self.values[aix]
 
 
+#TODO: update docs to property doc
 class Atomids(AtomAttr):
-    """Interface to atomids.
-    
-    Parameters
-    ----------
-    atomids : array
-        atomids for atoms in the system
-
+    """ID for each atom.
     """
     attrname = 'ids'
     singular = 'id'
 
 
+#TODO: update docs to property doc
 class Atomnames(AtomAttr):
-    """Interface to atomnames.
-    
-    Parameters
-    ----------
-    atomnames : array
-        atomnames for atoms in the system
-
+    """Name for each atom.
     """
     attrname = 'names'
     singular = 'name'
 
 
+#TODO: update docs to property doc
 class Atomtypes(AtomAttr):
     """Type for each atom"""
     attrname = 'types'
     singular = 'type'
 
 
-#TODO: need to add cacheing
-class Masses(AtomAttr):
-    """Interface to masses for atoms, residues, and segments.
-    
-    Parameters
-    ----------
-    masses : array
-        mass for each atom in the system
+#TODO: update docs to property doc
+class Radii(AtomAttr):
+    """Radii for each atom"""
+    attrname = 'radii'
+    singular = 'radius'
 
-    """
+
+#TODO: need to add cacheing
+#TODO: update docs to property doc
+class Masses(AtomAttr):
     attrname = 'masses'
     singular = 'mass'
 
@@ -199,15 +294,8 @@ class Masses(AtomAttr):
 
 
 #TODO: need to add cacheing
+#TODO: update docs to property doc
 class Charges(AtomAttr):
-    """Interface to charges for atoms, residues, and segments.
-    
-    Parameters
-    ----------
-    charges : array
-        charge for each atom in the system
-
-    """
     attrname = 'charges'
     singular = 'charge'
 
@@ -230,6 +318,26 @@ class Charges(AtomAttr):
             charges[i] = self.values[row].sum()
 
         return charges
+
+
+#TODO: update docs to property doc
+class Bfactors(AtomAttr):
+    """Crystallographic B-factors in A**2 for each atom"""
+    attrname = 'bfactors'
+    singular = 'bfactors'
+
+
+#TODO: update docs to property doc
+class Occupancy(AtomAttr):
+    attrname = 'occupancies'
+    singular = 'occupancy'
+
+
+#TODO: update docs to property doc
+class AltLocs(AtomAttr):
+    """AltLocs for each atom"""
+    attrname = 'altLocs'
+    singular = 'altLoc'
 
 
 ## residue attributes
@@ -266,47 +374,22 @@ class ResidueAttr(TopologyAttr):
         return self.values[rix]
 
 
+#TODO: update docs to property doc
 class Resids(ResidueAttr):
-    """Interface to resids.
-    
-    Parameters
-    ----------
-    resids : array
-        resids for residue in the system
-
-    """
     attrname = 'resids'
     singular = 'resid'
 
-    def set_atoms(self, ag, resids):
-        """Set resid for each atom given. Effectively moves each atom to
-        another residue.
 
-        """
-        
-        rix = np.zeros(len(ag), dtype=np.int32)
-
-        # get resindexes for each resid
-        for i, item in enumerate(resids):
-            try:
-                rix[i] = np.where(self.values == item)[0][0]
-            except IndexError:
-                raise NoDataError("Cannot assign atom to a residue that doesn't already exist.")
-
-        self.top.tt.move_atom(ag._ix, rix)
-
-
+#TODO: update docs to property doc
 class Resnames(ResidueAttr):
-    """Interface to resnames.
-    
-    Parameters
-    ----------
-    resnames : array
-        resnames for residues in the system
-
-    """
     attrname = 'resnames'
     singular = 'resname'
+
+
+#TODO: update docs to property doc
+class Resnums(ResidueAttr):
+    attrname = 'resnums'
+    singular = 'resnum'
 
 
 ## segment attributes
@@ -333,11 +416,13 @@ class SegmentAttr(TopologyAttr):
         self.values[sg._ix] = values
 
 
+#TODO: update docs to property doc
 class Segids(SegmentAttr):
     attrname = 'segids'
     singular = 'segid'
 
 
+#TODO: update docs to property doc
 class Bonds(AtomAttr):
     """Bonds for atoms"""
     attrname = 'bonds'
@@ -382,22 +467,23 @@ class Bonds(AtomAttr):
             *[self._bondDict[a] for a in ag._ix]))
         bond_idx = np.array(sorted(unique_bonds))
         return TopologyGroup(bond_idx, ag._u, self.singular[:-1])
-        #return TopologyGroup(unique_bonds)
 
 
+#TODO: update docs to property doc
 class Angles(Bonds):
     """Angles for atoms"""
     attrname = 'angles'
     singular = 'angles'
 
 
+#TODO: update docs to property doc
 class Dihedrals(Bonds):
     """Dihedrals for atoms"""
     attrname = 'dihedrals'
     singular = 'dihedrals'
 
 
+#TODO: update docs to property doc
 class Impropers(Bonds):
     attrname = 'impropers'
     singular = 'impropers'
-
