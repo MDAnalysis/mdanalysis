@@ -170,6 +170,75 @@ class AtomGroupBase(object):
         else:
             return AtomGroup(atomlist)  # XXX: but inconsistent (see residues and Issue 47)
 
+    @property
+    def positions(self)
+        """Coordinates of the atoms in the AtomGroup.
+
+        The positions can be changed by assigning an array of the appropriate
+        shape, i.e. either Nx3 to assign individual coordinates or 3, to assign
+        the *same* coordinate to all atoms (e.g. ``ag.positions = array([0,0,0])``
+        will move all particles to the origin).
+
+        """
+        return self._u.trajectory.ts.positions[self._ix]
+    
+    @positions.setter
+    def positions(self, values)
+        ts = self._u.trajectory.ts
+        ts.positions[self._ix, :] = values
+
+    @property
+    def velocities(self):
+        """Velocities of the atoms in the AtomGroup.
+
+        The velocities can be changed by assigning an array of the appropriate
+        shape, i.e. either Nx3 to assign individual velocities or 3 to assign
+        the *same* velocity to all atoms (e.g. ``ag.velocity = array([0,0,0])``
+        will give all particles zero velocity).
+
+        Raises a :exc:`NoDataError` if the underlying
+        :class:`~MDAnalysis.coordinates.base.Timestep` does not contain
+        :attr:`~MDAnalysis.coordinates.base.Timestep.velocities`.
+
+        """
+        ts = self._u.trajectory.ts
+        try:
+            return np.array(ts.velocities[self._ix])
+        except (AttributeError, NoDataError):
+            raise NoDataError("Timestep does not contain velocities")
+
+    @velocities.setter
+    def velocities(self, values):
+        ts = self._u.trajectory.ts
+        try:
+            ts.velocities[self._ix, :] = values
+        except AttributeError:
+            raise NoDataError("Timestep does not contain velocities")
+
+    @property
+    def forces(self):
+        """Forces on each atom in the AtomGroup.
+
+        The velocities can be changed by assigning an array of the appropriate
+        shape, i.e. either Nx3 to assign individual velocities or 3 to assign
+        the *same* velocity to all atoms (e.g. ``ag.velocity = array([0,0,0])``
+        will give all particles zero velocity).
+
+
+        """
+        ts = self._u.trajectory.ts
+        try:
+            return ts.forces[self._ix]
+        except (AttributeError, NoDataError):
+            raise NoDataError("Timestep does not contain forces")
+
+    @forces.setter
+    def forces(self, values):
+        ts = self._u.trajectory.ts
+        try:
+            ts.forces[self._ix, :] = forces
+        except AttributeError:
+            raise NoDataError("Timestep does not contain forces")
 
 class ResidueGroupBase(object):
     level = 'residue'
