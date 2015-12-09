@@ -714,7 +714,7 @@ class ParseError(Exception):
     pass
 
 
-class SelectionParser:
+class SelectionParser(object):
     """A small parser for selection expressions.  Demonstration of
     recursive descent parsing using Precedence climbing (see
     http://www.engr.mun.ca/~theo/Misc/exp_parsing.htm).  Transforms
