@@ -171,7 +171,7 @@ class AtomGroupBase(object):
             return AtomGroup(atomlist)  # XXX: but inconsistent (see residues and Issue 47)
 
     @property
-    def positions(self)
+    def positions(self):
         """Coordinates of the atoms in the AtomGroup.
 
         The positions can be changed by assigning an array of the appropriate
@@ -183,7 +183,7 @@ class AtomGroupBase(object):
         return self._u.trajectory.ts.positions[self._ix]
     
     @positions.setter
-    def positions(self, values)
+    def positions(self, values):
         ts = self._u.trajectory.ts
         ts.positions[self._ix, :] = values
 
@@ -408,6 +408,14 @@ class AtomGroupBase(object):
 
 
 class ResidueGroupBase(object):
+    """ResidueGroup base class.
+
+    This class is used by a Universe for generating its Topology-specific
+    ResidueGroup class. All the TopologyAttr components are obtained from
+    GroupBase, so this class only includes ad-hoc methods specific to
+    ResidueGroups.
+
+    """
     level = 'residue'
 
     def sequence(self, **kwargs):
@@ -505,4 +513,12 @@ class ResidueGroupBase(object):
 
 
 class SegmentGroupBase(object):
+    """SegmentGroup base class.
+
+    This class is used by a Universe for generating its Topology-specific
+    SegmentGroup class. All the TopologyAttr components are obtained from
+    GroupBase, so this class only includes ad-hoc methods specific to
+    SegmentGroups.
+
+    """
     level = 'segment'
