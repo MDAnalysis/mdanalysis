@@ -78,6 +78,7 @@ except ImportError:
 if cython_found:
     # cython has to be >=0.16 to support cython.parallel
     import Cython
+    from Cython.Build import cythonize
     from distutils.version import LooseVersion
 
     required_version = "0.16"
@@ -141,7 +142,7 @@ class MDAExtension(Extension, object):
                 try:
                     self._mda_include_dirs.append(item()) #The numpy callable
                 except TypeError:
-                    self._mda_include_dirs.append(item) 
+                    self._mda_include_dirs.append(item)
         return self._mda_include_dirs
 
     @include_dirs.setter
@@ -149,13 +150,20 @@ class MDAExtension(Extension, object):
         self._mda_include_dir_args = val
 
 def get_numpy_include():
+    # Obtain the numpy include directory. This logic works across numpy
+    # versions.
+    # setuptools forgets to unset numpy's setup flag and we get a crippled
+    # version of it unless we do it ourselves.
     try:
-        # Obtain the numpy include directory. This logic works across numpy
-        # versions.
-        # setuptools forgets to unset numpy's setup flag and we get a crippled
-        # version of it unless we do it ourselves.
-        import __builtin__
-        __builtin__.__NUMPY_SETUP__ = False
+        # Python 3 renamed the ``__builin__`` module into ``builtins``.
+        # Here we import the python 2 or the python 3 version of the module
+        # with the python 3 name. This could be done with ``six`` but that
+        # module may not be installed at that point.
+        import __builtin__ as builtins
+    except ImportError:
+        import builtins
+    builtins.__NUMPY_SETUP__ = False
+    try:
         import numpy as np
     except ImportError:
         print('*** package "numpy" not found ***')
@@ -273,23 +281,23 @@ def extensions(config):
                          include_dirs=include_dirs + ['MDAnalysis/coordinates/include'],
                          define_macros=define_macros,
                          extra_compile_args=extra_compile_args)
-    distances = MDAExtension('lib._distances',
-                          ['MDAnalysis/lib/distances' + source_suffix],
-                          include_dirs=include_dirs + ['MDAnalysis/lib/include'],
-                          libraries=['m'],
-                          define_macros=define_macros,
-                          extra_compile_args=extra_compile_args)
-    distances_omp = MDAExtension('lib._distances_openmp',
-                              ['MDAnalysis/lib/distances_openmp' + source_suffix],
-                              include_dirs=include_dirs + ['MDAnalysis/lib/include'],
-                              libraries=['m'] + parallel_libraries,
-                              define_macros=define_macros + parallel_macros,
-                              extra_compile_args=parallel_args,
-                              extra_link_args=parallel_args)
+    distances = MDAExtension('lib.c_distances',
+                             ['MDAnalysis/lib/c_distances' + source_suffix],
+                             include_dirs=include_dirs + ['MDAnalysis/lib/include'],
+                             libraries=['m'],
+                             define_macros=define_macros,
+                             extra_compile_args=extra_compile_args)
+    distances_omp = MDAExtension('lib.c_distances_openmp',
+                                 ['MDAnalysis/lib/c_distances_openmp' + source_suffix],
+                                 include_dirs=include_dirs + ['MDAnalysis/lib/include'],
+                                 libraries=['m'] + parallel_libraries,
+                                 define_macros=define_macros + parallel_macros,
+                                 extra_compile_args=parallel_args,
+                                 extra_link_args=parallel_args)
     qcprot = MDAExtension('lib.qcprot',
-                       ['MDAnalysis/lib/src/pyqcprot/pyqcprot' + source_suffix],
-                       include_dirs=include_dirs,
-                       extra_compile_args=["-O3", "-ffast-math"])
+                          ['MDAnalysis/lib/qcprot' + source_suffix],
+                          include_dirs=include_dirs,
+                          extra_compile_args=["-O3", "-ffast-math"])
     transformation = MDAExtension('lib._transformations',
                                ['MDAnalysis/lib/src/transformations/transformations.c'],
                                libraries=['m'],
@@ -306,8 +314,11 @@ def extensions(config):
                     include_dirs=include_dirs,
                     define_macros=largefile_macros)
 
-    return [dcd, dcd_time, distances, distances_omp, qcprot,
-            transformation, xdr]
+    extensions = [dcd, dcd_time, distances, distances_omp, qcprot,
+                  transformation, xdr]
+    if use_cython:
+        extensions = cythonize(extensions)
+    return extensions
 
 if __name__ == '__main__':
     # NOTE: keep in sync with MDAnalysis.__version__ in version.py

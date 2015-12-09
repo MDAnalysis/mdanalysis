@@ -1,3 +1,14 @@
+env:
+   global:
+      - secure: "HIj3p+p2PV8DBVg/KGUx6n83KwB0ASE5FwOn0SMB9zxnzAqe8sapwdBQdMdq0sXB7xT1spJqRxuxOMVEVn35BNLu7bxMLfa4287C8YXcomnvmv9xruxAsjsIewnNQ80vtPVbQddBPxa4jKbqgPby5QhhAP8KANAqYe44pIV70fY="
+      - GH_DOC_BRANCH: develop
+      - GH_REPOSITORY: github.com/MDAnalysis/mdanalysis.git
+      - GIT_CI_USER: TravisCI
+      - GIT_CI_EMAIL: TravisCI@mdanalysis.org
+      - MDA_DOCDIR: package/doc/html
+   matrix:
+   - SETUP=full CYTHONIZE=true
+   - SETUP=minimal CYTHONIZE=false
 language: python
 python:
   - "2.7"
@@ -17,16 +28,19 @@ before_install:
   - export PATH=/home/travis/miniconda/bin:$PATH
   - conda update --yes conda
 install:
-  - conda create --yes -q -n pyenv mkl python=2.7 numpy=1.9.1 scipy=0.14.0 nose=1.3.7 sphinx=1.3
+  - if [[ $SETUP == 'full' ]]; then conda create --yes -q -n pyenv mkl python=2.7 numpy=1.9.1 scipy=0.14.0 nose=1.3.7 sphinx=1.3; fi
+  - if [[ $SETUP == 'minimal' ]]; then conda create --yes -q -n pyenv python=2.7 numpy=1.9.1 nose=1.3.7 sphinx=1.3; fi
   - source activate pyenv
-  - conda install --yes python=$TRAVIS_PYTHON_VERSION cython biopython matplotlib networkx netcdf4
-  - pip install package/
+  - if [[ $SETUP == 'full' ]]; then conda install --yes python=$TRAVIS_PYTHON_VERSION cython biopython matplotlib networkx netcdf4; fi
+  - if [[ $SETUP == 'minimal' ]]; then conda install --yes python=$TRAVIS_PYTHON_VERSION biopython networkx; fi
+  - if [[ $CYTHONIZE == 'true' ]]; then find . -name '*.pyx' -exec touch '{}' \; ;fi
+  - pip install -v package/
   - pip install testsuite/
   - pip install coveralls tempdir
   - chmod +x testsuite/MDAnalysisTests/mda_nosetests
 # command to run tests
 script:
-  - ./testsuite/MDAnalysisTests/mda_nosetests -v --with-coverage --cover-package MDAnalysis --processes=2 --process-timeout=120 --with-memleak
+  - ./testsuite/MDAnalysisTests/mda_nosetests -v --with-coverage --cover-package MDAnalysis --processes=2 --process-timeout=300 --with-memleak
   - |
      test ${TRAVIS_PULL_REQUEST} == "false" && \
      test ${TRAVIS_BRANCH} == ${GH_DOC_BRANCH} && \
@@ -41,12 +55,3 @@ after_success:
      test ${TRAVIS_BRANCH} == ${GH_DOC_BRANCH} && \
      test "${TRAVIS_BUILD_NUMBER}.1" == "${TRAVIS_JOB_NUMBER}" && \
      bash ./maintainer/deploy_docs.sh
-
-env:
-   global:
-      - secure: "HIj3p+p2PV8DBVg/KGUx6n83KwB0ASE5FwOn0SMB9zxnzAqe8sapwdBQdMdq0sXB7xT1spJqRxuxOMVEVn35BNLu7bxMLfa4287C8YXcomnvmv9xruxAsjsIewnNQ80vtPVbQddBPxa4jKbqgPby5QhhAP8KANAqYe44pIV70fY="
-      - GH_DOC_BRANCH: develop
-      - GH_REPOSITORY: github.com/MDAnalysis/mdanalysis.git
-      - GIT_CI_USER: TravisCI
-      - GIT_CI_EMAIL: TravisCI@mdanalysis.org
-      - MDA_DOCDIR: package/doc/html

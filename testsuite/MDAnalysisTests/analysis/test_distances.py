@@ -16,14 +16,18 @@
 from __future__ import print_function
 
 import MDAnalysis
-import MDAnalysis.analysis.distances
+from MDAnalysisTests import module_not_found
 
-from numpy.testing import TestCase, assert_equal
+from numpy.testing import TestCase, assert_equal, dec
 import numpy as np
 
 
 class TestContactMatrix(TestCase):
+
+    @dec.skipif(module_not_found('scipy'),
+                "Test skipped because scipy is not available.")
     def setUp(self):
+        import MDAnalysis.analysis.distances
         self.coord = np.array([[1, 1, 1],
                                   [5, 5, 5],
                                   [1.1, 1.1, 1.1],

@@ -14,5 +14,5 @@ the OpenMP-enable functions.
 .. toctree::
    :maxdepth: 1
 
-   _distances
-   _distances_openmp
+   c_distances
+   c_distances_openmp
