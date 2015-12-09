@@ -41,6 +41,8 @@ Enhancement
     is "serial" so old code will behave as before (see Issue #530)
   * Lammps data file parsing improved greatly.  Should now support all files,
     and triclinic geometry. (Issue #139)
+  * Added analysis.polymer, currently with PersistenceLength tool (Issue #460)
+  * Added analysis.rdf, with InterRDF tool. (Issue #460)
 
 Changes
 
