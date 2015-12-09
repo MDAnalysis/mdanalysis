@@ -28,7 +28,7 @@ from Bio.KDTree import KDTree
 from MDAnalysis.core.AtomGroup import AtomGroup
 
 
-class AtomNeighborSearch():
+class AtomNeighborSearch(object):
     """This class can be used to find all atoms/residues/segements within the
     radius of a given query position.
 
