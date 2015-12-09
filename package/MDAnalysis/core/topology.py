@@ -241,6 +241,9 @@ class TransTable(object):
         rixs = self.s2r_2d(six)
         return (self.r2a_1d(rix) for rix in rixs)
 
+
+#TODO: movers and resizers
+
     # Move between different groups.
     # In general, delete old address, add new address
     def move_atom(self, aix, rix):
