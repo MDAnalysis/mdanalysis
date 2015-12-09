@@ -21,7 +21,7 @@ import MDAnalysis.analysis.psa
 from numpy.testing import TestCase, assert_array_less, assert_array_almost_equal
 import numpy as np
 
-import tempfile
+import tempdir
 import shutil
 
 from MDAnalysisTests.datafiles import PSF, DCD, DCD2
@@ -36,7 +36,8 @@ class TestPSAnalysis(TestCase):
         self.universe_rev = MDAnalysis.Universe(PSF, DCD)
         self.universes = [self.universe1, self.universe2, self.universe_rev]
         self.psa = MDAnalysis.analysis.psa.PSAnalysis(self.universes,           \
-                                               path_select='name CA')
+                                               path_select='name CA',           \
+                                               targetdir=tempdir.TempDir())
         self.psa.generate_paths(align=True)
         self.psa.paths[-1] = self.psa.paths[-1][::-1,:,:] # reverse third path
         self._run()
