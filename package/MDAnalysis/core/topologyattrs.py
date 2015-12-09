@@ -52,64 +52,49 @@ class TopologyAttr(object):
         self.values = values
 
     def __len__(self):
-        """Length of the TopologyAttr at its intrinsic level.
-
-        If the ``self.level`` is ``0``, then this should return a value of size
-        atoms, for example.
-
-        """
+        """Length of the TopologyAttr at its intrinsic level."""
         return len(self.values)
 
     def __getitem__(self, group):
+        """Accepts an AtomGroup, ResidueGroup or SegmentGroup"""
         if group.level == 'atom':
-            return self.get_atoms(group._ix)
+            return self.get_atoms(group)
         elif group.level == 'residue':
-            return self.get_residues(group._ix)
+            return self.get_residues(group)
         elif group.level == 'segment':
-            return self.get_segments(group._ix)
+            return self.get_segments(group)
 
     def __setitem__(self, group, values):
         if group.level == 'atom':
-            return self.set_atoms(group._ix, values)
+            return self.set_atoms(group, values)
         elif group.level == 'residue':
-            return self.set_residues(group._ix, values)
+            return self.set_residues(group, values)
         elif group.level == 'segment':
-            return self.set_segments(group._ix, values)
+            return self.set_segments(group, values)
 
-    def get_atoms(self, aix):
-        """Get atom attributes for given atom indices.
-
-        """
+    def get_atoms(self, ag):
+        """Get atom attributes for a given AtomGroup"""
+        # aix = ag.indices
         raise NoDataError
 
-    def set_atoms(self, aix, values):
-        """Set atom attributes for given atom indices.
-
-        """
+    def set_atoms(self, ag, values):
+        """Set atom attributes for a given AtomGroup"""
         raise NotImplementedError
 
-    def get_residues(self, rix):
-        """Get residue attributes for given residue indices.
-
-        """
+    def get_residues(self, rg):
+        """Get residue attributes for a given ResidueGroup"""
         raise NoDataError
 
-    def set_residues(self, rix, values):
-        """Set residue attributes for given residue indices.
-
-        """
+    def set_residues(self, rg, values):
+        """Set residue attributes for a given ResidueGroup"""
         raise NotImplementedError
 
-    def get_segments(self, six):
-        """Get segment attributes for given segment indices.
-
-        """
+    def get_segments(self, sg):
+        """Get segment attributes for a given SegmentGroup"""
         raise NoDataError
 
-    def set_segments(self, six, values):
-        """Set segmentattributes for given segment indices.
-
-        """
+    def set_segments(self, sg, values):
+        """Set segmentattributes for a given SegmentGroup"""
         raise NotImplementedError
 
 
@@ -122,28 +107,28 @@ class AtomAttr(TopologyAttr):
     attrname = 'atomattrs'
     singular = 'atomattr'
 
-    def get_atoms(self, aix):
-        return self.values[aix]
+    def get_atoms(self, ag):
+        return self.values[ag._ix]
 
-    def set_atoms(self, aix, values):
-        self.values[aix] = values
+    def set_atoms(self, ag, values):
+        self.values[ag._ix] = values
 
-    def get_residues(self, rix):
+    def get_residues(self, rg):
         """By default, the values for each atom present in the set of residues
         are returned in a single array. This behavior can be overriden in child
         attributes.
 
         """
-        aix = self.top.tt.r2a_1d(rix)
+        aix = self.top.tt.r2a_1d(rg._ix)
         return self.values[aix]
 
-    def get_segments(self, six):
+    def get_segments(self, sg):
         """By default, the values for each atom present in the set of residues
         are returned in a single array. This behavior can be overriden in child
         attributes.
 
         """
-        aix = self.top.tt.s2a_1d(six)
+        aix = self.top.tt.s2a_1d(sg._ix)
         return self.values[aix]
 
 
@@ -198,15 +183,6 @@ class Atomtypes(AtomAttr):
     singular = 'type'
 
 
-class Bonds(AtomAttr):
-    """Bonds between atoms
-
-    Parameters
-    ----------
-    """
-    pass
-
-
 #TODO: need to add cacheing
 class Masses(AtomAttr):
     """Interface to masses for atoms, residues, and segments.
@@ -220,20 +196,20 @@ class Masses(AtomAttr):
     attrname = 'masses'
     singular = 'mass'
 
-    def get_residues(self, rix):
-        masses = np.empty(len(rix))
+    def get_residues(self, rg):
+        masses = np.empty(len(rg))
 
-        resatoms = self.top.tt.r2a_2d(rix)
+        resatoms = self.top.tt.r2a_2d(rg._ix)
 
         for i, row in enumerate(resatoms):
             masses[i] = self.values[row].sum()
 
         return masses
 
-    def get_segments(self, six):
-        masses = np.empty(len(six))
+    def get_segments(self, sg):
+        masses = np.empty(len(sg))
 
-        segatoms = self.top.tt.s2a_2d(six)
+        segatoms = self.top.tt.s2a_2d(sg._ix)
 
         for i, row in enumerate(segatoms):
             masses[i] = self.values[row].sum()
@@ -254,20 +230,20 @@ class Charges(AtomAttr):
     attrname = 'charges'
     singular = 'charge'
 
-    def get_residues(self, rix):
-        charges = np.empty(len(rix))
+    def get_residues(self, rg):
+        charges = np.empty(len(rg))
 
-        resatoms = self.top.tt.r2a_2d(rix)
+        resatoms = self.top.tt.r2a_2d(rg._ix)
 
         for i, row in enumerate(resatoms):
             charges[i] = self.values[row].sum()
 
         return charges
 
-    def get_segments(self, six):
-        charges = np.empty(len(six))
+    def get_segments(self, sg):
+        charges = np.empty(len(sg))
 
-        segatoms = self.top.tt.s2a_2d(six)
+        segatoms = self.top.tt.s2a_2d(sg._ix)
 
         for i, row in enumerate(segatoms):
             charges[i] = self.values[row].sum()
@@ -302,23 +278,23 @@ class ResidueAttr(TopologyAttr):
     attrname = 'residueattrs'
     singular = 'residueattr'
 
-    def get_atoms(self, aix):
-        rix = self.top.tt.a2r(aix)
+    def get_atoms(self, ag):
+        rix = self.top.tt.a2r(ag._ix)
         return self.values[rix]
 
-    def get_residues(self, rix):
-        return self.values[rix]
+    def get_residues(self, rg):
+        return self.values[rg._ix]
 
-    def set_residues(self, rix, values):
-        self.values[rix] = values
+    def set_residues(self, rg, values):
+        self.values[rg._ix] = values
 
-    def get_segments(self, six):
+    def get_segments(self, sg):
         """By default, the values for each residue present in the set of
         segments are returned in a single array. This behavior can be overriden
         in child attributes.
 
         """
-        rix = self.top.tt.s2r_1d(six)
+        rix = self.top.tt.s2r_1d(sg._ix)
         return self.values[rix]
 
 
@@ -352,13 +328,13 @@ class Resids(ResidueAttr):
     attrname = 'resids'
     singular = 'resid'
 
-    def set_atoms(self, aix, resids):
+    def set_atoms(self, ag, resids):
         """Set resid for each atom given. Effectively moves each atom to
         another residue.
 
         """
         
-        rix = np.zeros(len(aix), dtype=np.int64)
+        rix = np.zeros(len(ag), dtype=np.int32)
 
         # get resindexes for each resid
         for i, item in enumerate(resids):
@@ -367,7 +343,7 @@ class Resids(ResidueAttr):
             except IndexError:
                 raise NoDataError("Cannot assign atom to a residue that doesn't already exist.")
 
-        self.top.tt.move_atom(aix, rix)
+        self.top.tt.move_atom(ag._ix, rix)
 
 
 class Resnames(ResidueAttr):
@@ -392,19 +368,19 @@ class SegmentAttr(TopologyAttr):
     attrname = 'segmentattrs'
     singular = 'segmentattr'
 
-    def get_atoms(self, aix):
-        six = self.top.tt.a2s(aix)
+    def get_atoms(self, ag):
+        six = self.top.tt.a2s(ag._ix)
         return self.values[six]
 
-    def get_residues(self, rix):
-        six = self.top.tt.r2s(rix)
+    def get_residues(self, rg):
+        six = self.top.tt.r2s(rg._ix)
         return self.values[six]
 
-    def get_segments(self, six):
-        return self.values[six]
+    def get_segments(self, sg):
+        return self.values[sg._ix]
 
-    def set_segments(self, six, values):
-        self.values[six] = values
+    def set_segments(self, sg, values):
+        self.values[sg._ix] = values
 
 
 class Segids(SegmentAttr):
@@ -441,12 +417,23 @@ class Bonds(AtomAttr):
         bd = defaultdict(list)
 
         for b in self.values:
+            # We always want the first index
+            # to be less than the last
+            # eg (0, 1) not (1, 0)
+            # and (4, 10, 8) not (8, 10, 4)
+            if b[0] < b[-1]:
+                b = b[::-1]
             for a in b:
                 bd[a].append(b)
         return bd
 
-    def get_atoms(self, aix):
-        return set(itertools.chain(*[self._bondDict[a] for a in aix]))
+    def get_atoms(self, ag):
+        unique_bonds =  set(itertools.chain(
+            *[self._bondDict[a] for a in ag._ix]))
+        bond_idx = np.array(sorted(unique_bonds))
+        return TopologyGroup(bond_idx, ag._u, self.attrnames)
+        #return TopologyGroup(unique_bonds)
+
 
 
 class Angles(Bonds):

@@ -483,68 +483,29 @@ class TopologyGroup(object):
        Added `values` method to return the size of each object in this group
        Deprecated selectBonds method in favour of select_bonds
     """
+    _allowed_types = {'bond', 'angle', 'dihedral', 'improper'}
 
-    def __init__(self, bondlist):
-        try:
-            self.toptype = bondlist[0].__class__.__name__
-        except IndexError:
-            self.toptype = None
+    def __init__(self, bondidx, universe, btype=None):
+        self._bix = bondidx
+        self._u = universe
+
+        if btype is None:
+            # guess what I am
+            # difference between dihedral and improper
+            # not really important
+            self.btype = {2:'bond', 3:'angle', 4:'dihedral'}[
+                len(bondidx[0])]
+        elif btype in self._allowed_types:
+            self.btype = btype
         else:
-            # only check type if list has length
-            if not isinstance(bondlist[0], TopologyObject):
-                raise TypeError("Input must be TopologyObject")
-        # Would be nice to make everything work internally using sets, BUT
-        # sets can't be indexed, so couldn't work backward from .angles()
-        # results to find which angle is a certain value.
-        # Sorted so that slicing returns sensible results
-        self.bondlist = tuple(sorted(set(bondlist)))
+            raise ValueError("Unsupported btype, use one of {}"
+                             "".format(self._allowed_types))
+
+        # Create vertical AtomGroups
+        self._ags = [universe.atoms[bondidx[:,i]]
+                     for i in xrange(bondidx.shape[1])]
 
         self._cache = dict()  # used for topdict saving
-
-    @classmethod
-    def from_indices(cls, bondlist, atomgroup,
-                     bondclass=None, guessed=True,
-                     remove_duplicates=False):
-        """Initiate from a list of indices.
-
-        :Arguments:
-          *bondlist*
-            A list of lists of indices.  For example `[(0, 1), (1, 2)]`
-            Note that these indices refer to the index of the Atoms
-            within the supplied AtomGroup, not their global index.
-          *atomgroup*
-            An AtomGroup which the indices from bondlist will be used on.
-
-        :Keywords:
-          *bondclass*
-            The Class of the topology object to be made.
-            If missing this will try and be guessed according to the number
-            of indices in each record.
-          *guessed*
-            Whether or not the bonds were guessed. [``True``]
-          *remove_duplicates*
-            Sort through items and make sure that no duplicates are created [``False``]
-
-        .. versionadded:: 0.10.0
-        """
-        if remove_duplicates:
-            # always have first index less than last
-            bondlist = set([b if b[0] < b[-1] else b[::-1] for b in bondlist])
-
-        if bondclass is None:  # try and guess
-            try:
-                bondclass = {
-                    2:Bond,
-                    3:Angle,
-                    4:Dihedral
-                }[len(bondlist[0])]
-            except KeyError:
-                raise ValueError("Can't detect bondclass for provided indices")
-
-        bonds = [bondclass([atomgroup[a] for a in entry], is_guessed=guessed)
-                 for entry in bondlist]
-
-        return cls(bonds)
 
     def select_bonds(self, selection):
         """Retrieves a selection from this topology group based on types.
@@ -607,13 +568,13 @@ class TopologyGroup(object):
 
         .. versionadded 0.9.0
         """
-        if self.toptype == 'Bond':
+        if self.btype == 'bond':
             other_set = set(other.bonds)
-        elif self.toptype == 'Angle':
+        elif self.btype == 'angle':
             other_set = set(other.angles)
-        elif self.toptype == 'Dihedral':
+        elif self.btype == 'dihedral':
             other_set = set(other.dihedrals)
-        elif self.toptype == 'ImproperDihedral':
+        elif self.btype == 'improper':
             other_set = set(other.impropers)
         else:
             raise ValueError("Unsupported intersection")
@@ -658,7 +619,7 @@ class TopologyGroup(object):
 #                except KeyError:  # if he's not in dict then meh
 #                    pass
 # So I'll bruteforce here, despite it being fugly
-        if self.toptype == 'Bond':
+        if self.btype == 'bond':
             crit = 2
             for atom in other:
                 for b in atom.bonds:
@@ -666,7 +627,7 @@ class TopologyGroup(object):
                         count_dict[b] += 1
                     except KeyError:
                         pass
-        elif self.toptype == 'Angle':
+        elif self.btype == 'angle':
             crit = 3
             for atom in other:
                 for b in atom.angles:
@@ -674,7 +635,7 @@ class TopologyGroup(object):
                         count_dict[b] += 1
                     except KeyError:
                         pass
-        elif self.toptype == 'Dihedral':
+        elif self.btype == 'dihedral':
             crit = 4
             for atom in other:
                 for b in atom.dihedrals:
@@ -682,7 +643,7 @@ class TopologyGroup(object):
                         count_dict[b] += 1
                     except KeyError:
                         pass
-        elif self.toptype == 'ImproperDihedral':
+        elif self.btype == 'improper':
             crit = 4
             for atom in other:
                 for b in atom.impropers:
@@ -719,33 +680,9 @@ class TopologyGroup(object):
 
     dump_contents = to_indices
 
-    @property
-    @cached('atom1')
-    def atom1(self):
-        from .AtomGroup import AtomGroup
-        return AtomGroup([b[0] for b in self.bondlist])
-
-    @property
-    @cached('atom2')
-    def atom2(self):
-        from .AtomGroup import AtomGroup
-        return AtomGroup([b[1] for b in self.bondlist])
-
-    @property
-    @cached('atom3')
-    def atom3(self):
-        from .AtomGroup import AtomGroup
-        return AtomGroup([b[2] for b in self.bondlist])
-
-    @property
-    @cached('atom4')
-    def atom4(self):
-        from .AtomGroup import AtomGroup
-        return AtomGroup([b[3] for b in self.bondlist])
-
     def __len__(self):
         """Number of bonds in the topology group"""
-        return len(self.bondlist)
+        return self._bix.shape[0]
 
     def __add__(self, other):
         """Combine two TopologyGroups together.
@@ -777,7 +714,7 @@ class TopologyGroup(object):
                 return TopologyGroup(self.bondlist + (other,))
 
         # add TG to me
-        if self.toptype != other.toptype:
+        if self.btype != other.btype:
             raise TypeError("Can only combine TopologyGroups of the same type")
         else:
             return TopologyGroup(self.bondlist + other.bondlist)
@@ -789,29 +726,16 @@ class TopologyGroup(object):
         .. versionchanged:: 0.10.0
            Allows indexing via boolean numpy array
         """
-        if np.dtype(type(item)) == np.dtype(int):
-            return self.bondlist[item]  # single TopObj
-        elif isinstance(item, slice):
-            return TopologyGroup(self.bondlist[item])  # new TG
-        elif isinstance(item, (np.ndarray, list)):
-            try:
-                if isinstance(item[0], np.bool_):
-                    item = np.arange(len(item))[item]
-            except IndexError:  # zero length item
-                pass
-            return TopologyGroup([self.bondlist[i] for i in item])
-
-    def __iter__(self):
-        """Iterator over all bonds"""
-        return iter(self.bondlist)
+        return self.__class__(self._bix[item], self._u, btype=self.btype)
 
     def __contains__(self, item):
         """Tests if this TopologyGroup contains a bond"""
-        return item in self.bondlist
+        # TODO: Check with tuple of indices or Bond object?
+        return item in self._bix
 
     def __repr__(self):
         return "<TopologyGroup containing {num} {type}s>".format(
-            num=len(self), type=self.toptype)
+            num=len(self), type=self.btype)
 
     def __eq__(self, other):
         """Test if contents of TopologyGroups are equal"""
@@ -838,23 +762,23 @@ class TopologyGroup(object):
 
         .. versionadded:: 0.11.0
         """
-        if self.toptype == 'Bond':
+        if self.btype == 'bond':
             return self.bonds(**kwargs)
-        elif self.toptype == 'Angle':
+        elif self.btype == 'angle':
             return self.angles(**kwargs)
-        elif self.toptype == 'Dihedral':
+        elif self.btype == 'dihedral':
             return self.dihedrals(**kwargs)
-        elif self.toptype == 'ImproperDihedral':
+        elif self.btype == 'improper':
             return self.dihedrals(**kwargs)
 
     def _bondsSlow(self, pbc=False):  # pragma: no cover
         """Slow version of bond (numpy implementation)"""
-        if not self.toptype == 'Bond':
-            return TypeError("TopologyGroup is not of type 'Bond'")
+        if not self.btype == 'bond':
+            return TypeError("TopologyGroup is not of type 'bond'")
         else:
-            bond_dist = self.atom1.positions - self.atom2.positions
+            bond_dist = self._ags[0].positions - self._ags[1].positions
             if pbc:
-                box = self.atom1.dimensions
+                box = self._ags[0].dimensions
                 # orthogonal and divide by zero check
                 if (box[6:9] == 90.).all() and not (box[0:3] == 0).any():
                     bond_dist -= np.rint(bond_dist / box[0:3]) * box[0:3]
@@ -876,27 +800,27 @@ class TopologyGroup(object):
 
         Uses cython implementation
         """
-        if not self.toptype == 'Bond':
-            raise TypeError("TopologyGroup is not of type 'Bond'")
+        if not self.btype == 'bond':
+            raise TypeError("TopologyGroup is not of type 'bond'")
         if not result:
             result = np.zeros(len(self), np.float64)
         if pbc:
-            return distances.calc_bonds(self.atom1.positions,
-                                        self.atom2.positions,
-                                        box=self.atom1.dimensions,
+            return distances.calc_bonds(self._ags[0].positions,
+                                        self._ags[1].positions,
+                                        box=self._ags[0].dimensions,
                                         result=result)
         else:
-            return distances.calc_bonds(self.atom1.positions,
-                                        self.atom2.positions,
+            return distances.calc_bonds(self._ags[0].positions,
+                                        self._ags[1].positions,
                                         result=result)
 
     def _anglesSlow(self):  # pragma: no cover
         """Slow version of angle (numpy implementation)"""
-        if not self.toptype == 'Angle':
-            raise TypeError("TopologyGroup is not of type 'Angle'")
+        if not self.btype == 'angle':
+            raise TypeError("TopologyGroup is not of type 'angle'")
 
-        vec1 = self.atom1.positions - self.atom2.positions
-        vec2 = self.atom3.positions - self.atom2.positions
+        vec1 = self._ags[0].positions - self._ags[1].positions
+        vec2 = self._ags[2].positions - self._ags[1].positions
 
         angles = np.array([slowang(a, b) for a, b in izip(vec1, vec2)])
         return angles
@@ -919,31 +843,31 @@ class TopologyGroup(object):
         .. versionchanged :: 0.9.0
            Added *pbc* option (default ``False``)
         """
-        if not self.toptype == 'Angle':
-            raise TypeError("TopologyGroup is not of type 'Angle'")
+        if not self.btype == 'angle':
+            raise TypeError("TopologyGroup is not of type 'angle'")
         if not result:
             result = np.zeros(len(self), np.float64)
         if pbc:
-            return distances.calc_angles(self.atom1.positions,
-                                         self.atom2.positions,
-                                         self.atom3.positions,
-                                         box=self.atom1.dimensions,
+            return distances.calc_angles(self._ags[0].positions,
+                                         self._ags[1].positions,
+                                         self._ags[2].positions,
+                                         box=self._ags[0].dimensions,
                                          result=result)
         else:
-            return distances.calc_angles(self.atom1.positions,
-                                         self.atom2.positions,
-                                         self.atom3.positions,
+            return distances.calc_angles(self._ags[0].positions,
+                                         self._ags[1].positions,
+                                         self._ags[2].positions,
                                          result=result)
 
     def _dihedralsSlow(self):  # pragma: no cover
         """Slow version of dihedral (numpy implementation)"""
-        if self.toptype not in ['Dihedral', 'ImproperDihedral']:
-            raise TypeError("TopologyGroup is not of type 'Dihedral' or "
-                            "'ImproperDihedral'")
+        if self.btype not in ['dihedral', 'improper']:
+            raise TypeError("TopologyGroup is not of type 'dihedral' or "
+                            "'improper'")
 
-        vec1 = self.atom2.positions - self.atom1.positions
-        vec2 = self.atom3.positions - self.atom2.positions
-        vec3 = self.atom4.positions - self.atom3.positions
+        vec1 = self._ags[1].positions - self._ags[0].positions
+        vec2 = self._ags[2].positions - self._ags[1].positions
+        vec3 = self._ags[3].positions - self._ags[2].positions
 
         return np.array([dihedral(a, b, c)
                          for a, b, c in izip(vec1, vec2, vec3)])
@@ -969,21 +893,21 @@ v              apply periodic boundary conditions when calculating angles
         .. versionchanged:: 0.9.0
            Added *pbc* option (default ``False``)
         """
-        if self.toptype not in ['Dihedral', 'ImproperDihedral']:
-            raise TypeError("TopologyGroup is not of type 'Dihedral' or "
-                            "'ImproperDihedral'")
+        if self.btype not in ['dihedral', 'improper']:
+            raise TypeError("TopologyGroup is not of type 'dihedral' or "
+                            "'improper'")
         if not result:
             result = np.zeros(len(self), np.float64)
         if pbc:
-            return distances.calc_dihedrals(self.atom1.positions,
-                                            self.atom2.positions,
-                                            self.atom3.positions,
-                                            self.atom4.positions,
-                                            box=self.atom1.dimensions,
+            return distances.calc_dihedrals(self._ags[0].positions,
+                                            self._ags[1].positions,
+                                            self._ags[2].positions,
+                                            self._ags[3].positions,
+                                            box=self._ags[0].dimensions,
                                             result=result)
         else:
-            return distances.calc_dihedrals(self.atom1.positions,
-                                            self.atom2.positions,
-                                            self.atom3.positions,
-                                            self.atom4.positions,
+            return distances.calc_dihedrals(self._ags[0].positions,
+                                            self._ags[1].positions,
+                                            self._ags[2].positions,
+                                            self._ags[3].positions,
                                             result=result)
