@@ -75,10 +75,82 @@ class GroupBase(object):
     @property
     def universe(self):
         return self._u
+    
+    @property
+    def atoms(self):
+        ##TODO: how do we want to do this?
+        return self._u._AtomGroup(,
+                                  self._u)
 
+    @property
+    def residues(self):
+        ##TODO: how do we want to do this?
+
+    @property
+    def segments(self):
+        ##TODO: how do we want to do this?
 
 class AtomGroupBase(object):
+    """AtomGroup base class.
+
+    This class is used by a Universe for generating its Topology-specific
+    AtomGroup class. All the TopologyAttr components are obtained from
+    GroupBase, so this class only includes ad-hoc methods specific to
+    AtomGroups.
+
+    """
     level = 'atom'
+
+    @property
+    def position(self):
+        """coordinates of the atom
+
+        Get the current cartesian coordinates of the atom.
+
+        :Returns: a (3,) shape numpy array
+        """
+        return self.universe.coord.positions[self.index]  # internal numbering starts at 0
+
+    @position.setter
+    def position(self, coords):
+        """
+        Set the current cartesian coordinates of the atom.
+        @param coords: a 1x3 numpy array of {x,y,z} coordinates, or optionally
+            a single scalar if you should want to set all coordinates to the same value.
+        """
+        self.universe.coord.positions[self.index, :] = coords  # internal numbering starts at 0
+
+    @property
+    def velocity(self):
+        """Current velocity of the atom.
+
+        :Returns: a (3,) shape numpy array
+
+        A :exc:`~MDAnalysis.NoDataError` is raised if the trajectory
+        does not contain velocities.
+
+        .. versionadded:: 0.7.5
+        """
+        # TODO: Remove error checking here (and all similar below)
+        # and add to Timestep
+        try:
+            return self.universe.coord.velocities[self.index]
+        except (AttributeError, NoDataError):
+            raise NoDataError("Timestep does not contain velocities")
+
+    @velocity.setter
+    def velocity(self, vals):
+        """Set the current velocity of the atom.
+
+        A :exc:`~MDAnalysis.NoDataError` is raised if the trajectory
+        does not contain velocities.
+
+        .. versionadded:: 0.9.2
+        """
+        try:
+            self.universe.coord.velocities[self.index] = vals
+        except (AttributeError, NoDataError):
+            raise NoDataError("Timestep does not contain velocities")
 
 
 class ResidueGroupBase(object):

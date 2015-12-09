@@ -147,6 +147,25 @@ class AtomAttr(TopologyAttr):
         return self.values[aix]
 
 
+class Atomindices(AtomAttr):
+    """Globally unique indices for each atom in the group.
+
+    If the group is an AtomGroup, then this gives the index for each atom in
+    the group. This is the unambiguous identifier for each atom in the
+    topology, and it is not alterable.
+
+    If the group is a ResidueGroup or SegmentGroup, then this gives the indices
+    of each atom represented in the group in a 1-D array, in the order of the
+    elements in that group. 
+
+    """
+    attrname = 'indices'
+    singular = 'index'
+
+    def set_atoms(self, aix, values):
+        raise AttributeError("Atom indices are fixed; they cannot be reset")
+
+
 class Atomids(AtomAttr):
     """Interface to atomids.
     
@@ -256,6 +275,19 @@ class Charges(AtomAttr):
         return charges
 
 
+class Occupancy(AtomAttr):
+    """Interface to occupancies for atoms, residues, and segments.
+    
+    Parameters
+    ----------
+    occupancies : array
+        occupancy for each atom in the system
+
+    """
+    attrname = 'occupancies'
+    singular = 'occupancy'
+
+
 ## residue attributes
 
 class ResidueAttr(TopologyAttr):
@@ -289,6 +321,24 @@ class ResidueAttr(TopologyAttr):
         rix = self.top.tt.s2r_1d(six)
         return self.values[rix]
 
+
+class Resindices(ResidueAttr):
+    """Globally unique resindices for each residue in the group.
+
+    If the group is an AtomGroup, then this gives the resindex for each atom in
+    the group. This unambiguously determines each atom's residue membership.
+    Resetting these values changes the residue membership of the atoms.
+
+    If the group is a ResidueGroup or SegmentGroup, then this gives the indices of each residue
+    represented in the group in a 1-D array, in the order of the elements in
+    that group. 
+
+    """
+    attrname = 'indices'
+    singular = 'index'
+
+    def set_residues(self, rix, values):
+        raise AttributeError("Residue indices are fixed; they cannot be reset")
 
 class Resids(ResidueAttr):
     """Interface to resids.
@@ -397,6 +447,7 @@ class Bonds(AtomAttr):
 
     def get_atoms(self, aix):
         return set(itertools.chain(*[self._bondDict[a] for a in aix]))
+
 
 class Angles(Bonds):
     """Angles for atoms"""
