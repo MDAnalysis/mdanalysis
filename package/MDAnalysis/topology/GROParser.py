@@ -79,7 +79,7 @@ class GROParser(TopologyReader):
         residueids = Resids(new_resids)
         residuenames = Resnames(new_resnames)
 
-        top = Topology(n_atoms, len(new_resids), 1,
+        top = Topology(n_atoms=n_atoms, n_res=len(new_resids), n_seg=1,
                        attrs=[atomnames, atomids, residueids, residuenames],
                        atom_resindex=residx,
                        residue_segindex=None)
