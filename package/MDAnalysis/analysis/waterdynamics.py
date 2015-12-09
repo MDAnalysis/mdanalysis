@@ -639,6 +639,8 @@ class WaterOrientationalRelaxation(object):
         valdipList = []
 
         for j in range(totalFrames/dt-1):
+            # If the selection of atoms is too small, there will be a division by zero in the next line.
+            # The except clause avoid the use of the result of _getOneDeltaPoint() on the mean.
             try:
                 a = self._getOneDeltaPoint(universe,repInd,j,sumsdt,dt)
             except ZeroDivisionError:
