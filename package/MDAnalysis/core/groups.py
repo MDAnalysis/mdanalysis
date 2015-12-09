@@ -72,13 +72,22 @@ class GroupBase(object):
             raise ValueError("Can't add objects from different Universe")
         return self.__class__(np.concatenate([self._ix, other._ix]), self._u)
 
+    # TODO: need to generalize for checking Levelobject isin Group
+    def __contains__(self, other):
+        # If the number of atoms is very large, create a dictionary cache for lookup
+        if len(self) > self._atomcache_size and not 'atoms' in self._cache:
+            self._cache['atoms'] = dict(((x, None) for x in self.__atoms))
+        try:
+            return other in self._cache['atoms']
+        except KeyError:
+            return other in self._atoms
+
     @property
     def universe(self):
         return self._u
     
-    @property
-    def atoms(self):
-        return self._u.atoms[np.unique(self.indices)]
+    # rethink: perhaps a set only uphill? Need to place in separate *GroupBase
+    # classes if so
 
     @property
     def residues(self):
@@ -100,61 +109,72 @@ class AtomGroupBase(object):
     """
     level = 'atom'
 
-    @property
-    def position(self):
-        """coordinates of the atom
 
-        Get the current cartesian coordinates of the atom.
-
-        :Returns: a (3,) shape numpy array
-        """
-        return self.universe.coord.positions[self.index]  # internal numbering starts at 0
-
-    @position.setter
-    def position(self, coords):
-        """
-        Set the current cartesian coordinates of the atom.
-        @param coords: a 1x3 numpy array of {x,y,z} coordinates, or optionally
-            a single scalar if you should want to set all coordinates to the same value.
-        """
-        self.universe.coord.positions[self.index, :] = coords  # internal numbering starts at 0
-
-    @property
-    def velocity(self):
-        """Current velocity of the atom.
-
-        :Returns: a (3,) shape numpy array
-
-        A :exc:`~MDAnalysis.NoDataError` is raised if the trajectory
-        does not contain velocities.
-
-        .. versionadded:: 0.7.5
-        """
-        # TODO: Remove error checking here (and all similar below)
-        # and add to Timestep
+    # TODO: CHECK THAT THIS IS APPROPRIATE IN NEW SCHEME
+    def __getattr__(self, name):
         try:
-            return self.universe.coord.velocities[self.index]
-        except (AttributeError, NoDataError):
-            raise NoDataError("Timestep does not contain velocities")
+            return self._get_named_atom(name)
+        except SelectionError:
+            raise AttributeError("'{0}' object has no attribute '{1}'".format(
+                    self.__class__.__name__, name))
 
-    @velocity.setter
-    def velocity(self, vals):
-        """Set the current velocity of the atom.
+    # TODO: fix me; we need Atom objects!
+    def _get_named_atom(self, name):
+        """Get all atoms with name *name* in the current AtomGroup.
 
-        A :exc:`~MDAnalysis.NoDataError` is raised if the trajectory
-        does not contain velocities.
+        For more than one atom it returns a list of :class:`Atom`
+        instance. A single :class:`Atom` is returned just as such. If
+        no atoms are found, a :exc:`SelectionError` is raised.
 
         .. versionadded:: 0.9.2
         """
-        try:
-            self.universe.coord.velocities[self.index] = vals
-        except (AttributeError, NoDataError):
-            raise NoDataError("Timestep does not contain velocities")
+        # There can be more than one atom with the same name
+        atomlist = [atom for atom in self._atoms if name == atom.name]
+        if len(atomlist) == 0:
+            raise SelectionError("No atoms with name '{0}'".format(name))
+        elif len(atomlist) == 1:
+            return atomlist[0]  # XXX: keep this, makes more sense for names
+        else:
+            return AtomGroup(atomlist)  # XXX: but inconsistent (see residues and Issue 47)
+
+    @property
+    def atoms(self):
+        """Get a unique (non-repeating) AtomGroup of the atoms in the group.
+        """
+        return self._u.atoms[np.unique(self.indices)]
+
+    @property
+    def n_atoms(self):
+        """Total number of atoms in the group.
+        """
+        return len(self)
 
 
 class ResidueGroupBase(object):
     level = 'residue'
 
+    @property
+    def atoms(self):
+        """Get an AtomGroup of the atoms in each residue.
+
+        Atoms are ordered according the order of residues in the group.
+        """
+        return self._u.atoms[self.indices]
+
+    @property
+    def n_atoms(self):
+        """Total number of atoms in the group, including repeats.
+        """
+        return len(self.atoms)
+
 
 class SegmentGroupBase(object):
     level = 'segment'
+
+    @property
+    def atoms(self):
+        """Get an AtomGroup of the atoms in each segment.
+
+        Atoms are ordered according the order of segments in the group.
+        """
+        return self._u.atoms[self.indices]

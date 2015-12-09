@@ -20,7 +20,8 @@ Topology object --- :mod:`MDAnalysis.core.topology'
 """
 import numpy as np
 
-from MDAnalysis.lib.mdamath import one_to_many_pointers
+from ..lib.mdamath import one_to_many_pointers
+from .topologyattrs import Atomindices, Resindices, Segindices
 
 
 class TransTable(object):
@@ -282,6 +283,9 @@ class Topology(object):
         self.tt = TransTable(n_atoms, n_res, n_seg,
                              atom_resindex=atom_resindex,
                              residue_segindex=residue_segindex)
+
+        # add core TopologyAttrs that give access to indices
+        attrs.extend(Atomindices(), Resindices(), Segindices())
 
         # attach the TopologyAttrs
         self.attrs = []

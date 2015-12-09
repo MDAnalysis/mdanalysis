@@ -98,6 +98,102 @@ class TopologyAttr(object):
         raise NotImplementedError
 
 
+## core attributes
+
+class Atomindices(TopologyAttr):
+    """Globally unique indices for each atom in the group.
+
+    If the group is an AtomGroup, then this gives the index for each atom in
+    the group. This is the unambiguous identifier for each atom in the
+    topology, and it is not alterable.
+
+    If the group is a ResidueGroup or SegmentGroup, then this gives the indices
+    of each atom represented in the group in a 1-D array, in the order of the
+    elements in that group. 
+
+    """
+    attrname = 'indices'
+    singular = 'index'
+
+    def __init__(self):
+        pass
+
+    def set_atoms(self, ag, values):
+        raise AttributeError("Atom indices are fixed; they cannot be reset")
+
+    def get_atoms(self, ag):
+        return ag._ix
+
+    def get_residues(self, rg):
+        return self.top.tt.r2a_1d(rg._ix)
+
+    def get_segments(self, sg):
+        return self.top.tt.s2a_1d(sg._ix)
+
+
+class Resindices(TopologyAttr):
+    """Globally unique resindices for each residue in the group.
+
+    If the group is an AtomGroup, then this gives the resindex for each atom in
+    the group. This unambiguously determines each atom's residue membership.
+    Resetting these values changes the residue membership of the atoms.
+
+    If the group is a ResidueGroup or SegmentGroup, then this gives the
+    resindices of each residue represented in the group in a 1-D array, in the
+    order of the elements in that group. 
+
+    """
+    attrname = 'resindices'
+    singular = 'resindex'
+
+    def __init__(self):
+        pass
+
+    def get_atoms(self, ag):
+        return self.top.tt.a2r(ag._ix)
+
+    def get_residues(self, rg):
+        return rg._ix
+
+    def set_residues(self, rg, values):
+        raise AttributeError("Residue indices are fixed; they cannot be reset")
+
+    def get_segments(self, sg):
+        return rix = self.top.tt.s2r_1d(sg._ix)
+
+
+class Segindices(TopologyAttr):
+    """Globally unique segindices for each segment in the group.
+
+    If the group is an AtomGroup, then this gives the segindex for each atom in
+    the group. This unambiguously determines each atom's segment membership.
+    It is not possible to set these, since membership in a segment is an
+    attribute of each atom's residue.
+    
+    If the group is a ResidueGroup or SegmentGroup, then this gives the
+    segindices of each segment represented in the group in a 1-D array, in the
+    order of the elements in that group. 
+
+    """
+    attrname = 'segindices'
+    singular = 'segindex'
+
+    def __init__(self):
+        pass
+
+    def get_atoms(self, ag):
+        return self.top.tt.a2s(ag._ix)
+
+    def get_residues(self, rg):
+        return self.top.tt.r2s(rg._ix)
+
+    def get_segments(self, sg):
+        return sg._ix
+
+    def set_segments(self, sg, values):
+        raise AttributeError("Segment indices are fixed; they cannot be reset")
+
+
 ## atom attributes
 
 class AtomAttr(TopologyAttr):
@@ -130,25 +226,6 @@ class AtomAttr(TopologyAttr):
         """
         aix = self.top.tt.s2a_1d(sg._ix)
         return self.values[aix]
-
-
-class Atomindices(AtomAttr):
-    """Globally unique indices for each atom in the group.
-
-    If the group is an AtomGroup, then this gives the index for each atom in
-    the group. This is the unambiguous identifier for each atom in the
-    topology, and it is not alterable.
-
-    If the group is a ResidueGroup or SegmentGroup, then this gives the indices
-    of each atom represented in the group in a 1-D array, in the order of the
-    elements in that group. 
-
-    """
-    attrname = 'indices'
-    singular = 'index'
-
-    def set_atoms(self, ag, values):
-        raise AttributeError("Atom indices are fixed; they cannot be reset")
 
 
 class Atomids(AtomAttr):
@@ -298,25 +375,6 @@ class ResidueAttr(TopologyAttr):
         return self.values[rix]
 
 
-class Resindices(ResidueAttr):
-    """Globally unique resindices for each residue in the group.
-
-    If the group is an AtomGroup, then this gives the resindex for each atom in
-    the group. This unambiguously determines each atom's residue membership.
-    Resetting these values changes the residue membership of the atoms.
-
-    If the group is a ResidueGroup or SegmentGroup, then this gives the
-    resindices of each residue represented in the group in a 1-D array, in the
-    order of the elements in that group. 
-
-    """
-    attrname = 'resindices'
-    singular = 'resindex'
-
-    def set_residues(self, rg, values):
-        raise AttributeError("Residue indices are fixed; they cannot be reset")
-
-
 class Resids(ResidueAttr):
     """Interface to resids.
     
@@ -382,26 +440,6 @@ class SegmentAttr(TopologyAttr):
 
     def set_segments(self, sg, values):
         self.values[sg._ix] = values
-
-
-class Segindices(SegmentAttr):
-    """Globally unique segindices for each segment in the group.
-
-    If the group is an AtomGroup, then this gives the segindex for each atom in
-    the group. This unambiguously determines each atom's segment membership.
-    It is not possible to set these, since membership in a segment is an
-    attribute of each atom's residue.
-    
-    If the group is a ResidueGroup or SegmentGroup, then this gives the
-    segindices of each segment represented in the group in a 1-D array, in the
-    order of the elements in that group. 
-
-    """
-    attrname = 'segindices'
-    singular = 'segindex'
-
-    def set_segments(self, sg, values):
-        raise AttributeError("Segment indices are fixed; they cannot be reset")
 
 
 class Segids(SegmentAttr):
