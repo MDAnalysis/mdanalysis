@@ -71,14 +71,21 @@ class TransTable(object):
         self.n_residues = n_residues
         self.n_segments = n_segments
 
-        if not atom_resindex is None:
+        # built atom-to-residue mapping, and vice-versa
+        if atom_resindex is None:
+            self.AR = np.zeros(n_atoms, dtype=np.int64)
+        else:
             self.AR = atom_resindex
-            self._atom_order, self._res_ptrs = one_to_many_pointers(
-                n_atoms, n_residues, atom_resindex)
-        if not residue_segindex is None:
+        self._atom_order, self._res_ptrs = one_to_many_pointers(
+                n_atoms, n_residues, self.AR)
+
+        # built residue-to-segment mapping, and vice-versa
+        if residue_segindex is None:
+            self.RS = np.zeros(n_residues, dtype=np.int64)
+        else:
             self.RS = residue_segindex
-            self._res_order, self._seg_ptrs = one_to_many_pointers(
-                n_residues, n_segments, residue_segindex)
+        self._res_order, self._seg_ptrs = one_to_many_pointers(
+                n_residues, n_segments, self.RS)
 
     @property
     def size(self):
@@ -270,13 +277,18 @@ class Topology(object):
     Parameters
     ----------
     n_atoms, n_residues, n_segments : int
-        number of atoms, residues, segments in topology
-    topologyattrs : TopologyAttr objects
+        number of atoms, residues, segments in topology; there must be at least
+        1 element of each level in the system
+    attrs : TopologyAttr objects
         components of the topology to be included
-
+    atom_resindex : array
+        1-D array giving the resindex of each atom in the system
+    residue_segindex : array
+        1-D array giving the segindex of each residue in the system
+ 
     """
 
-    def __init__(self, n_atoms, n_res, n_seg,
+    def __init__(self, n_atoms=1, n_res=1, n_seg=1,
                  attrs=None,
                  atom_resindex=None,
                  residue_segindex=None):
@@ -288,7 +300,7 @@ class Topology(object):
                              residue_segindex=residue_segindex)
 
         # add core TopologyAttrs that give access to indices
-        attrs.extend(Atomindices(), Resindices(), Segindices())
+        attrs.extend((Atomindices(), Resindices(), Segindices()))
 
         # attach the TopologyAttrs
         self.attrs = []

@@ -2,6 +2,7 @@
 
 
 """
+import numpy as np
 
 def make_group(top):
     """Generate the Group class with attributes according to the topology.
@@ -28,6 +29,9 @@ def make_levelgroup(top, Groupclass, level):
 
 
 class GroupBase(object):
+    """Base class from which a Universe's Group class is built.
+
+    """
     def __init__(self, ix, u):
         # indices for the objects I hold
         self._ix = ix
@@ -86,16 +90,45 @@ class GroupBase(object):
     def universe(self):
         return self._u
     
-    # rethink: perhaps a set only uphill? Need to place in separate *GroupBase
-    # classes if so
+    @property
+    def atoms(self):
+        """Get a unique (non-repeating) AtomGroup of the atoms in the group.
+        """
+        return self._u.atoms[np.unique(self.indices)]
+
+    @property
+    def n_atoms(self):
+        """Total number of unique atoms represented in the group.
+        """
+        return len(self.atoms)
 
     @property
     def residues(self):
+        """Get a unique (non-repeating) ResidueGroup of the residues
+        represented in the group.
+        """
         return self._u.residues[np.unique(self.resindices)]
 
     @property
+    def n_residues(self):
+        """Total number of unique residues represented in the group.
+
+        """
+        return len(self.residues)
+
+    @property
     def segments(self):
+        """Get a unique (non-repeating) SegmentGroup of the segments 
+        represented in the group.
+        """
         return self._u.segments[np.unique(self.segindices)]
+                                                
+    @property
+    def n_segments(self):
+        """Total number of unique segments represented in the group.
+
+        """
+        return len(self.segments)
 
 
 class AtomGroupBase(object):
@@ -137,40 +170,9 @@ class AtomGroupBase(object):
         else:
             return AtomGroup(atomlist)  # XXX: but inconsistent (see residues and Issue 47)
 
-    @property
-    def atoms(self):
-        """Get a unique (non-repeating) AtomGroup of the atoms in the group.
-        """
-        return self._u.atoms[np.unique(self.indices)]
-
-    @property
-    def n_atoms(self):
-        """Total number of atoms in the group, including repeats.
-
-        This has the same effect as calling ``len(self)``.
-
-        """
-        return len(self)
-
 
 class ResidueGroupBase(object):
     level = 'residue'
-
-    @property
-    def atoms(self):
-        """Get an AtomGroup of the atoms in each residue.
-
-        Atoms are ordered according the order of residues in the group.
-        """
-        return self._u.atoms[self.indices]
-
-    @property
-    def n_atoms(self):
-        """Total number of atoms represented in the group, including repeats.
-
-        This has the same effect of calling ``len(self.atoms)``.
-        """
-        return len(self.atoms)
 
     def sequence(self, **kwargs):
         """Returns the amino acid sequence.
@@ -268,19 +270,3 @@ class ResidueGroupBase(object):
 
 class SegmentGroupBase(object):
     level = 'segment'
-
-    @property
-    def atoms(self):
-        """Get an AtomGroup of the atoms in each segment.
-
-        Atoms are ordered according the order of segments in the group.
-        """
-        return self._u.atoms[self.indices]
-
-    @property
-    def n_atoms(self):
-        """Total number of atoms represented in the group, including repeats.
-
-        This has the same effect of calling ``len(self.atoms)``.
-        """
-        return len(self.atoms)

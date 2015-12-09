@@ -530,6 +530,10 @@ class Universe(object):
         del self._trajectory  # guarantees that files are closed (?)
         self._trajectory = value
 
+    def add_TopologyAttr(self, topologyattr):
+        self._topology.add_TopologyAttr(topologyattr)
+        self._Group._add_prop(topologyattr)
+
 
 def as_Universe(*args, **kwargs):
     """Return a universe from the input arguments.

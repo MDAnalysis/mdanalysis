@@ -1222,185 +1222,185 @@ class AtomGroup(object):
         # Return transposed in more logical form. See Issue 33.
         return eigenvec[:, indices].T
 
-    def set_positions(self, coords, ts=None):
-        """Set the positions for all atoms in the group.
-
-        :Arguments:
-           *coords*
-               a Nx3 :class:`numpy.ndarray` where N is the number of
-               atoms in this atom group.
-
-        :Keywords:
-           *ts*
-              :class:`~MDAnalysis.coordinates.base.Timestep`, defaults
-              to ``None`` and then the current time step is used.
-
-        .. Note::
-
-           If the group contains N atoms and *coord* is a single point (i.e. an
-           array of length 3) then all N atom positions are set to *coord* (due
-           to numpy's broadcasting rules), as described for
-           :attr:`~AtomGroup.positions`.
-
-        See also :meth:`~AtomGroup.get_positions` and attribute access through
-        :attr:`~AtomGroup.positions`.
-
-        .. versionadded:: 0.7.6
-        """
-        if ts is None:
-            ts = self.universe.trajectory.ts
-        ts.positions[self.indices, :] = coords
-
-    positions = property(get_positions, set_positions,
-                         doc="""
-                Coordinates of the atoms in the AtomGroup.
-
-                The positions can be changed by assigning an array of the appropriate
-                shape, i.e. either Nx3 to assign individual coordinates or 3, to assign
-                the *same* coordinate to all atoms (e.g. ``ag.positions = array([0,0,0])``
-                will move all particles to the origin).
-
-                For more control use the :meth:`~AtomGroup.get_positions` and
-                :meth:`~AtomGroup.set_positions` methods.
-
-                .. versionadded:: 0.7.6""")
-
-    def get_velocities(self, ts=None, copy=False, dtype=np.float32):
-        """numpy array of the velocities.
-
-        Raises a :exc:`NoDataError` if the underlying
-        :class:`~MDAnalysis.coordinates.base.Timestep` does not contain
-        :attr:`~MDAnalysis.coordinates.base.Timestep.velocities`.
-
-        See also :meth:`AtomGroup.set_velocities` and attribute access through
-        :attr:`AtomGroup.velocities`.
-
-        .. versionadded:: 0.7.6
-        """
-        if ts is None:
-            ts = self.universe.trajectory.ts
-        try:
-            return np.array(ts.velocities[self.indices], copy=copy, dtype=dtype)
-        except (AttributeError, NoDataError):
-            raise NoDataError("Timestep does not contain velocities")
-
-    def set_velocities(self, v, ts=None):
-        """Assign the velocities *v* to the timestep.
-
-        Raises a :exc:`NoDataError` if the underlying
-        :class:`~MDAnalysis.coordinates.base.Timestep` does not contain
-        :attr:`~MDAnalysis.coordinates.base.Timestep.velocities`.
-
-        See also :meth:`AtomGroup.get_velocities` and :attr:`AtomGroup.velocities` for
-        attribute access.
-
-        .. versionadded:: 0.7.6
-        """
-        if ts is None:
-            ts = self.universe.trajectory.ts
-        try:
-            ts.velocities[self.indices, :] = v
-        except AttributeError:
-            raise NoDataError("Timestep does not contain velocities")
-
-    velocities = property(get_velocities, set_velocities, doc="""\
-        numpy array of the velocities of the atoms in the group.
-
-        If the trajectory does not contain velocity information then a
-        :exc:`~MDAnalysis.NoDataError` is raised.
-
-        .. versionadded:: 0.7.5
-        .. deprecated:: 0.7.6
-           In 0.8 this will become an attribute! You can already use :meth:`get_velocities`
-           and :meth:`set_velocities`.
-        .. versionchanged:: 0.8
-           Became an attribute.
-    """)
-
-    def get_forces(self, ts=None, copy=False, dtype=np.float32):
-        """
-        Get a numpy array of the atomic forces (if available).
-        Currently only supported for Gromacs .trr trajectories.
-
-        :Keywords:
-           *ts*
-               If *ts* is provided then positions are read from that
-               :class:`~MDAnalysis.coordinates.base.Timestep` instead of
-               the one from the current trajectory belonging to this universe.
-               The *ts* is indexed with the indices returned by
-               :meth:`~AtomGroup.indices` and it is the user's responsibility
-               to provide a time step that has the appropriate dimensions.
-           *copy*
-               ``True``: always make a copy (slow), ``False``: Try to
-               return a array view or reference (faster); note that for
-               passing coordinates to C-code it can be necessary to use
-               a copy [``False``]
-           *dtype*
-               numpy data type of the array; the default is usually
-               entirely appropriate. Most C-code actually requires the
-               default  [:class:`np.float32`]
-
-        Forces can also be directly obtained from the attribute
-        :attr:`~AtomGroup.forces`.
-
-        Forces can be directly set with :meth:`~AtomGroup.set_forces` or
-        by assigning to :attr:`~AtomGroup.forces`.
-
-        .. versionadded:: 0.7.7
-        """
-        if ts is None:
-            ts = self.universe.trajectory.ts
-        try:
-            return np.array(ts.forces[self.indices], copy=copy, dtype=dtype)
-        except (AttributeError, NoDataError):
-            raise NoDataError("Timestep does not contain forces")
-
-    def set_forces(self, forces, ts=None):
-        """Set the forces for all atoms in the group.
-
-        :Arguments:
-           *forces*
-               a Nx3 numpy :class:`numpy.ndarray` where N is the number of
-               atoms in this atom group.
-
-        :Keywords:
-           *ts*
-              :class:`~MDAnalysis.coordinates.base.Timestep`, defaults
-              to ``None`` and then the current time step is used.
-
-        .. Note::
-
-           If the group contains N atoms and *force* is a single vector (i.e. an
-           array of length 3) then all N atom positions are set to *force* (due
-           to numpy's broadcasting rules), as described for
-           :attr:`~AtomGroup.forces`.
-
-        See also :meth:`~AtomGroup.get_forces` and attribute access through
-        :attr:`~AtomGroup.forces`.
-
-        .. versionadded:: 0.7.7
-        """
-        if ts is None:
-            ts = self.universe.trajectory.ts
-        try:
-            ts.forces[self.indices, :] = forces
-        except AttributeError:
-            raise NoDataError("Timestep does not contain forces")
-
-    forces = property(get_forces, set_forces,
-                      doc="""
-                Forces on the atoms in the AtomGroup.
-
-                The forces can be changed by assigning an array of the appropriate
-                shape, i.e. either Nx3 to assign individual force or 3, to assign
-                the *same* force to all atoms (e.g. ``ag.forces = array([0,0,0])``
-                will set all forces to (0.,0.,0.)).
-
-                For more control use the :meth:`~AtomGroup.get_forces` and
-                :meth:`~AtomGroup.set_forces` methods.
-
-                .. versionadded:: 0.7.7""")
-
+#    def set_positions(self, coords, ts=None):
+#        """Set the positions for all atoms in the group.
+#
+#        :Arguments:
+#           *coords*
+#               a Nx3 :class:`numpy.ndarray` where N is the number of
+#               atoms in this atom group.
+#
+#        :Keywords:
+#           *ts*
+#              :class:`~MDAnalysis.coordinates.base.Timestep`, defaults
+#              to ``None`` and then the current time step is used.
+#
+#        .. Note::
+#
+#           If the group contains N atoms and *coord* is a single point (i.e. an
+#           array of length 3) then all N atom positions are set to *coord* (due
+#           to numpy's broadcasting rules), as described for
+#           :attr:`~AtomGroup.positions`.
+#
+#        See also :meth:`~AtomGroup.get_positions` and attribute access through
+#        :attr:`~AtomGroup.positions`.
+#
+#        .. versionadded:: 0.7.6
+#        """
+#        if ts is None:
+#            ts = self.universe.trajectory.ts
+#        ts.positions[self.indices, :] = coords
+#
+#    positions = property(get_positions, set_positions,
+#                         doc="""
+#                Coordinates of the atoms in the AtomGroup.
+#
+#                The positions can be changed by assigning an array of the appropriate
+#                shape, i.e. either Nx3 to assign individual coordinates or 3, to assign
+#                the *same* coordinate to all atoms (e.g. ``ag.positions = array([0,0,0])``
+#                will move all particles to the origin).
+#
+#                For more control use the :meth:`~AtomGroup.get_positions` and
+#                :meth:`~AtomGroup.set_positions` methods.
+#
+#                .. versionadded:: 0.7.6""")
+#
+#    def get_velocities(self, ts=None, copy=False, dtype=np.float32):
+#        """numpy array of the velocities.
+#
+#        Raises a :exc:`NoDataError` if the underlying
+#        :class:`~MDAnalysis.coordinates.base.Timestep` does not contain
+#        :attr:`~MDAnalysis.coordinates.base.Timestep.velocities`.
+#
+#        See also :meth:`AtomGroup.set_velocities` and attribute access through
+#        :attr:`AtomGroup.velocities`.
+#
+#        .. versionadded:: 0.7.6
+#        """
+#        if ts is None:
+#            ts = self.universe.trajectory.ts
+#        try:
+#            return np.array(ts.velocities[self.indices], copy=copy, dtype=dtype)
+#        except (AttributeError, NoDataError):
+#            raise NoDataError("Timestep does not contain velocities")
+#
+#    def set_velocities(self, v, ts=None):
+#        """Assign the velocities *v* to the timestep.
+#
+#        Raises a :exc:`NoDataError` if the underlying
+#        :class:`~MDAnalysis.coordinates.base.Timestep` does not contain
+#        :attr:`~MDAnalysis.coordinates.base.Timestep.velocities`.
+#
+#        See also :meth:`AtomGroup.get_velocities` and :attr:`AtomGroup.velocities` for
+#        attribute access.
+#
+#        .. versionadded:: 0.7.6
+#        """
+#        if ts is None:
+#            ts = self.universe.trajectory.ts
+#        try:
+#            ts.velocities[self.indices, :] = v
+#        except AttributeError:
+#            raise NoDataError("Timestep does not contain velocities")
+#
+#    velocities = property(get_velocities, set_velocities, doc="""\
+#        numpy array of the velocities of the atoms in the group.
+#
+#        If the trajectory does not contain velocity information then a
+#        :exc:`~MDAnalysis.NoDataError` is raised.
+#
+#        .. versionadded:: 0.7.5
+#        .. deprecated:: 0.7.6
+#           In 0.8 this will become an attribute! You can already use :meth:`get_velocities`
+#           and :meth:`set_velocities`.
+#        .. versionchanged:: 0.8
+#           Became an attribute.
+#    """)
+#
+#    def get_forces(self, ts=None, copy=False, dtype=np.float32):
+#        """
+#        Get a numpy array of the atomic forces (if available).
+#        Currently only supported for Gromacs .trr trajectories.
+#
+#        :Keywords:
+#           *ts*
+#               If *ts* is provided then positions are read from that
+#               :class:`~MDAnalysis.coordinates.base.Timestep` instead of
+#               the one from the current trajectory belonging to this universe.
+#               The *ts* is indexed with the indices returned by
+#               :meth:`~AtomGroup.indices` and it is the user's responsibility
+#               to provide a time step that has the appropriate dimensions.
+#           *copy*
+#               ``True``: always make a copy (slow), ``False``: Try to
+#               return a array view or reference (faster); note that for
+#               passing coordinates to C-code it can be necessary to use
+#               a copy [``False``]
+#           *dtype*
+#               numpy data type of the array; the default is usually
+#               entirely appropriate. Most C-code actually requires the
+#               default  [:class:`np.float32`]
+#
+#        Forces can also be directly obtained from the attribute
+#        :attr:`~AtomGroup.forces`.
+#
+#        Forces can be directly set with :meth:`~AtomGroup.set_forces` or
+#        by assigning to :attr:`~AtomGroup.forces`.
+#
+#        .. versionadded:: 0.7.7
+#        """
+#        if ts is None:
+#            ts = self.universe.trajectory.ts
+#        try:
+#            return np.array(ts.forces[self.indices], copy=copy, dtype=dtype)
+#        except (AttributeError, NoDataError):
+#            raise NoDataError("Timestep does not contain forces")
+#
+#    def set_forces(self, forces, ts=None):
+#        """Set the forces for all atoms in the group.
+#
+#        :Arguments:
+#           *forces*
+#               a Nx3 numpy :class:`numpy.ndarray` where N is the number of
+#               atoms in this atom group.
+#
+#        :Keywords:
+#           *ts*
+#              :class:`~MDAnalysis.coordinates.base.Timestep`, defaults
+#              to ``None`` and then the current time step is used.
+#
+#        .. Note::
+#
+#           If the group contains N atoms and *force* is a single vector (i.e. an
+#           array of length 3) then all N atom positions are set to *force* (due
+#           to numpy's broadcasting rules), as described for
+#           :attr:`~AtomGroup.forces`.
+#
+#        See also :meth:`~AtomGroup.get_forces` and attribute access through
+#        :attr:`~AtomGroup.forces`.
+#
+#        .. versionadded:: 0.7.7
+#        """
+#        if ts is None:
+#            ts = self.universe.trajectory.ts
+#        try:
+#            ts.forces[self.indices, :] = forces
+#        except AttributeError:
+#            raise NoDataError("Timestep does not contain forces")
+#
+#    forces = property(get_forces, set_forces,
+#                      doc="""
+#                Forces on the atoms in the AtomGroup.
+#
+#                The forces can be changed by assigning an array of the appropriate
+#                shape, i.e. either Nx3 to assign individual force or 3, to assign
+#                the *same* force to all atoms (e.g. ``ag.forces = array([0,0,0])``
+#                will set all forces to (0.,0.,0.)).
+#
+#                For more control use the :meth:`~AtomGroup.get_forces` and
+#                :meth:`~AtomGroup.set_forces` methods.
+#
+#                .. versionadded:: 0.7.7""")
+#
 
     def transform(self, M):
         r"""Apply homogenous transformation matrix *M* to the coordinates.
