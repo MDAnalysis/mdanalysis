@@ -16,13 +16,18 @@
 
 
 """
-Atom selection Hierarchy --- :mod:`MDAnalysis.core.Selection`
-======================================================================
+Atom selection Hierarchy --- :mod:`MDAnalysis.core.selection`
+=============================================================
 
 These objects are constructed and applied to the group
 
-Currently all atom arrays are handled internally as sets, but returned as AtomGroups
+In general, Parser.parse() creates a Selection object
+from a selection string.
 
+This Selection object is then passed an AtomGroup through its
+apply method to apply the Selection to the AtomGroup.
+
+This is all invisible to the user through ag.select_atoms
 """
 
 import re
@@ -31,104 +36,85 @@ from numpy.lib.utils import deprecate
 from Bio.KDTree import KDTree
 import warnings
 
-from .AtomGroup import AtomGroup, Universe
 from MDAnalysis.core import flags
 from ..lib import distances
 from ..lib.mdamath import triclinic_vectors
 
 
-class Selection(object):
-    def _apply(self, group):
-        # This is an error
-        raise NotImplementedError("No _apply function defined")
+class AllSelection(object):
+    def apply(self, group):
+        return group[:]
+
+
+class NotSelection(object):
+    def __init__(self, sel):
+        self.sel = sel
 
     def apply(self, group):
-        # Cache the result for future use
-        # atoms is from Universe
-        # returns AtomGroup
-
-        # make a set of all the atoms in the group
-        # XXX this should be static to all the class members
-        Selection._group_atoms = set(group.atoms)
-        Selection._group_atoms_list = [
-            a for a in Selection._group_atoms
-        ]  # need ordered, unique list for back-indexing in Around and Point!
-        if not hasattr(group, "coord"):
-            Selection.coord = group.universe.coord
-        else:
-            Selection.coord = group.coord
-
-        if not hasattr(self, "_cache"):
-            cache = list(self._apply(group))
-            # Decorate/Sort/Undecorate (Schwartzian Transform)
-            cache[:] = [(x.index, x) for x in cache]
-            cache.sort()
-            cache[:] = [val for (key, val) in cache]
-            self._cache = AtomGroup(cache)
-        return self._cache
+        notsel = self.sel.apply(group)
+        return group[~np.in1d(group.indices, notsel.indices)]
 
 
-class AllSelection(Selection):
-    def _apply(self, group):
-        return set(group.atoms[:])
-
-
-class NotSelection(Selection):
-    def __init__(self, sel):
-        self.sel = sel
-
-    def _apply(self, group):
-        notsel = self.sel._apply(group)
-        return (set(group.atoms[:]) - notsel)
-
-
-class AndSelection(Selection):
+class AndSelection(object):
     def __init__(self, lsel, rsel):
         self.rsel = rsel
         self.lsel = lsel
 
-    def _apply(self, group):
-        return self.lsel._apply(group) & self.rsel._apply(group)
+    def apply(self, group):
+        rsel = self.rsel.apply(group)
+        lsel = self.lsel.apply(group)
+
+        # Mask which lsel indices appear in rsel
+        mask = np.in1d(rsel.indices, lsel.indices)
+        # and mask rsel according to that
+        return rsel[mask]
 
 
-class OrSelection(Selection):
+class OrSelection(object):
     def __init__(self, lsel, rsel):
         self.rsel = rsel
         self.lsel = lsel
 
-    def _apply(self, group):
-        return self.lsel._apply(group) | self.rsel._apply(group)
+    def apply(self, group):
+        lsel = self.lsel.apply(group)
+        rsel = self.rsel.apply(group)
+
+        # Find unique indices from both these AtomGroups
+        # and slice master list using them
+        idx = np.intersect1d(lsel.indices, rsel.indices)
+
+        return self.group.universe.atoms[idx]
 
 
-class GlobalSelection(Selection):
+class GlobalSelection(object):
     def __init__(self, sel):
         self.sel = sel
 
-    def _apply(self, group):
-        sel = self.sel._apply(group.universe)
-        return sel
+    def apply(self, group):
+        return self.sel.apply(group.universe.atoms)
 
-class DistanceSelection(Selection):
+
+class DistanceSelection(object):
     """Base class for distance search based selections
 
     Grabs the flags for this selection
      - 'use_KDTree_routines'
      - 'use_periodic_selections'
 
-    Populates the `_apply` method with either
+    Populates the `apply` method with either
      - _apply_KDTree
      - _apply_distmat
     """
     def __init__(self):
         if flags['use_KDTree_routines'] in (True, 'fast', 'always'):
-            self._apply = self._apply_KDTree
+            self.apply = self._apply_KDTree
         else:
-            self._apply = self._apply_distmat
+            self.apply = self._apply_distmat
 
         self.periodic = flags['use_periodic_selections']
         # KDTree doesn't support periodic
         if self.periodic:
-            self._apply = self._apply_distmat
+            self.apply = self._apply_distmat
 
 
 class AroundSelection(DistanceSelection):
@@ -138,51 +124,36 @@ class AroundSelection(DistanceSelection):
         self.cutoff = cutoff
 
     def _apply_KDTree(self, group):
-        """KDTree based selection is about 7x faster than distmat for typical problems.
+        """KDTree based selection is about 7x faster than distmat
+        for typical problems.
         Limitations: always ignores periodicity
         """
-        # group is wrong, should be universe (?!)
-        sel_atoms = self.sel._apply(group)
-        # list needed for back-indexing
-        sys_atoms_list = [a for a in (self._group_atoms - sel_atoms)]
-        sel_indices = np.array([a.index for a in sel_atoms], dtype=int)
-        sys_indices = np.array([a.index for a in sys_atoms_list], dtype=int)
-        sel_coor = Selection.coord[sel_indices]
+        sel = self.sel.apply(group)
+        # All atoms in group that aren't in sel
+        sys = group[~np.in1d(group.indices, sel.indices)]
 
         kdtree = KDTree(dim=3, bucket_size=10)
-        kdtree.set_coords(Selection.coord[sys_indices])
+        kdtree.set_coords(sys.positions)
         found_indices = []
-        for atom in np.array(sel_coor):
+        for atom in sel.positions:
             kdtree.search(atom, self.cutoff)
             found_indices.append(kdtree.get_indices())
-
-        # the list-comprehension here can be understood as a nested loop.
-        # for list in found_indices:
-        #     for i in list:
-        #         yield sys_atoms_list[i]
-        # converting found_indices to a np array won't reallt work since
-        # each we will find a different number of neighbors for each center in
-        # sel_coor.
-        res_atoms = [sys_atoms_list[i] for list in found_indices for i in list]
-        return set(res_atoms)
+        # These are the indices from SYS that were seen when
+        # probing with SEL
+        unique_idx = np.unique(found_indices)
+        return sys[unique_idx]
 
     def _apply_distmat(self, group):
-        sel_atoms = self.sel._apply(group)  # group is wrong, should be universe (?!)
-        sys_atoms_list = [a for a in (self._group_atoms - sel_atoms)]  # list needed for back-indexing
-        sel_indices = np.array([a.index for a in sel_atoms], dtype=int)
-        sys_indices = np.array([a.index for a in sys_atoms_list], dtype=int)
-        sel_coor = Selection.coord[sel_indices]
-        sys_coor = Selection.coord[sys_indices]
-        if self.periodic:
-            box = group.dimensions
-        else:
-            box = None
+        sel = self.sel.apply(group)
+        sys = group[~np.in1d(group.indices, sel.indices)]
 
-        dist = distances.distance_array(sys_coor, sel_coor, box)
-        res_atoms = [
-            sys_atoms_list[i] for i in
-            np.any(dist <= self.cutoff, axis=1).nonzero()[0]]  # make list np array and use fancy indexing?
-        return set(res_atoms)
+        box = group.dimensions if self.periodic else None
+        dist = distances.distance_array(
+            sys.positions, sel.positions, box)
+
+        mask = (dist <= self.cutoff).any(axis=0)
+
+        return sys[mask]
 
 
 class SphericalLayerSelection(DistanceSelection):
@@ -195,42 +166,34 @@ class SphericalLayerSelection(DistanceSelection):
     def _apply_KDTree(self, group):
         """Selection using KDTree but periodic = True not supported.
         """
-        sys_indices = np.array([a.index for a in self._group_atoms_list])
-        sys_coor = Selection.coord[sys_indices]
-        # group is wrong, should be universe (?!)
-        sel_atoms = self.sel._apply(group)
-        sel_CoG = AtomGroup(sel_atoms).center_of_geometry()
-        self.ref = np.array((sel_CoG[0], sel_CoG[1], sel_CoG[2]))
+        sel = self.sel.apply(group)
+        ref = sel_atoms.center_of_geometry()
+        sys = group[~np.in1d(group.indices, sel.indices)]
 
         kdtree = KDTree(dim=3, bucket_size=10)
-        kdtree.set_coords(sys_coor)
+        kdtree.set_coords(sys.positions)
 
-        kdtree.search(self.ref, self.exRadius)
+        kdtree.search(ref, self.exRadius)
         found_ExtIndices = kdtree.get_indices()
-        kdtree.search(self.ref, self.inRadius)
+        kdtree.search(ref, self.inRadius)
         found_IntIndices = kdtree.get_indices()
         found_indices = list(set(found_ExtIndices) - set(found_IntIndices))
-        res_atoms = [self._group_atoms_list[i] for i in found_indices]
-
-        return set(res_atoms)
+        return sys[found_indices]
 
     def _apply_distmat(self, group):
-        # group is wrong, should be universe (?!)
-        sel_atoms = self.sel._apply(group)
-        sel_CoG = AtomGroup(sel_atoms).center_of_geometry()
-        sel_CoG = sel_CoG.reshape(1, 3).astype(np.float32)
-        # list needed for back-indexing
-        sys_atoms_list = [a for a in (self._group_atoms)]
-        sys_ag = AtomGroup(sys_atoms_list)
+        sel = self.sel.apply(group)
+        sel_CoG = sel.center_of_geometry().reshape(1, 3).astype(np.float32)
+
+        sys = group[~np.in1d(group.indices, sel.indices)]
 
         box = sys_ag.dimensions if self.periodic else None
         d = distances.distance_array(sel_CoG,
-                                     sys_ag.positions,
+                                     sys.positions,
                                      box=box)
-        idx = np.where((d < self.exRadius) & (d > self.inRadius))[1]
-        res_atoms = sys_ag[idx]
-
-        return set(res_atoms)
+        lmask = d < self.exRadius
+        rmask = d > self.inRadius
+        mask = lmask & rmask
+        return sys[mask]
 
 
 class SphericalZoneSelection(DistanceSelection):
@@ -243,39 +206,29 @@ class SphericalZoneSelection(DistanceSelection):
         """Selection using KDTree but periodic = True not supported.
         (KDTree routine is ca 15% slower than the distance matrix one)
         """
-        sys_indices = np.array([a.index for a in self._group_atoms_list])
-        sys_coor = Selection.coord[sys_indices]
-        sel_atoms = self.sel._apply(group)  # group is wrong, should be universe (?!)
-        sel_CoG = AtomGroup(sel_atoms).center_of_geometry()
-        self.ref = np.array((sel_CoG[0], sel_CoG[1], sel_CoG[2]))
+        sel = self.sel.apply(group)
+        ref = sel.center_of_geometry()
 
         kdtree = KDTree(dim=3, bucket_size=10)
-        kdtree.set_coords(sys_coor)
-        kdtree.search(self.ref, self.cutoff)
+        kdtree.set_coords(group.positions)
+        kdtree.search(ref, self.cutoff)
         found_indices = kdtree.get_indices()
-        res_atoms = [self._group_atoms_list[i] for i in found_indices]
-        return set(res_atoms)
+
+        return sys[found_indices]
 
     def _apply_distmat(self, group):
-        # group is wrong, should be universe (?!)
-        sel_atoms = self.sel._apply(group)
-        sel_CoG = AtomGroup(sel_atoms).center_of_geometry()
-        sel_CoG = sel_CoG.reshape(1, 3).astype(np.float32)
-        # list needed for back-indexing
-        sys_atoms_list = [a for a in (self._group_atoms)]
-        sys_ag = AtomGroup(sys_atoms_list)
+        sel = self.sel.apply(group)
+        ref = sel_atoms.center_of_geometry().reshape(1, 3).astype(np.float32)
 
         box = sys_ag.dimensions if self.periodic else None
-        d = distances.distance_array(sel_CoG,
-                                     sys_ag.positions,
+        d = distances.distance_array(ref,
+                                     group.positions,
                                      box=box)
-        idx = np.where(d < self.cutoff)[1]
-        res_atoms = sys_ag[idx]
-
-        return set(res_atoms)
+        idx = d < self.cutoff
+        return group[idx]
 
 
-class _CylindricalSelection(Selection):
+class CylindricalSelection(Selection):
     def __init__(self, sel, exRadius, zmax, zmin):
         self.sel = sel
         self.exRadius = exRadius
@@ -284,33 +237,38 @@ class _CylindricalSelection(Selection):
         self.zmin = zmin
         self.periodic = flags['use_periodic_selections']
 
-    def _apply(self, group):
-        sel_atoms = self.sel._apply(group)
-        sel_CoG = AtomGroup(sel_atoms).center_of_geometry()
-        coords = AtomGroup(Selection._group_atoms_list).positions
+    def apply(self, group):
+        sel = self.sel.apply(group)
+        sel_CoG = sel.center_of_geometry()
+        coords = group.positions
 
-        if self.periodic and not np.any(Selection.coord.dimensions[:3]==0):
-            if not np.allclose(Selection.coord.dimensions[3:],(90.,90.,90.)):
-                is_triclinic = True
-                box = triclinic_vectors(Selection.coord.dimensions).diagonal()
-            else:
-                is_triclinic = False
-                box = Selection.coord.dimensions[:3]
-
+        if self.periodic and not np.any(group.dimensions[:3]==0):
             cyl_z_hheight = (self.zmax-self.zmin)/2
 
             if 2*self.exRadius > box[0]:
-                raise NotImplementedError("The diameter of the cylinder selection (%.3f) is larger than the unit cell's x dimension (%.3f). Can only do selections where it is smaller or equal." % (2*self.exRadius, box[0]))
+                raise NotImplementedError(
+                    "The diameter of the cylinder selection ({:.3f}) is larger "
+                    "than the unit cell's x dimension ({:.3f}). Can only do "
+                    "selections where it is smaller or equal."
+                    "".format(2*self.exRadius, box[0]))
             if 2*self.exRadius > box[1]:
-                raise NotImplementedError("The diameter of the cylinder selection (%.3f) is larger than the unit cell's y dimension (%.3f). Can only do selections where it is smaller or equal." % (2*self.exRadius, box[1]))
+                raise NotImplementedError(
+                    "The diameter of the cylinder selection ({:.3f}) is larger "
+                    "than the unit cell's y dimension ({:.3f}). Can only do "
+                    "selections where it is smaller or equal."
+                    "".format(2*self.exRadius, box[1]))
             if 2*cyl_z_hheight > box[2]:
-                raise NotImplementedError("The total length of the cylinder selection in z (%.3f) is larger than the unit cell's z dimension (%.3f). Can only do selections where it is smaller or equal." % (2*cyl_z_hheight, box[2]))
+                raise NotImplementedError(
+                    "The total length of the cylinder selection in z ({:.3f}) "
+                    "is larger than the unit cell's z dimension ({:.3f}). Can "
+                    "only do selections where it is smaller or equal."
+                    "".format(2*cyl_z_hheight, box[2]))
+
             #how off-center in z is our CoG relative to the cylinder's center
             cyl_center = sel_CoG + [0,0,(self.zmax+self.zmin)/2]
             coords += box/2 - cyl_center
-            coords = distances.apply_PBC(coords, box=Selection.coord.dimensions)
-            if is_triclinic:
-                coords = distances.apply_PBC(coords, box=box)
+            coords = distances.apply_PBC(coords, box=group.dimensions)
+
             sel_CoG = box/2
             zmin = -cyl_z_hheight
             zmax = cyl_z_hheight
@@ -337,14 +295,16 @@ class _CylindricalSelection(Selection):
         return res_atoms
 
 
-class CylindricalZoneSelection(_CylindricalSelection):
+class CylindricalZoneSelection(CylindricalSelection):
     def __init__(self, sel, exRadius, zmax, zmin):
-        _CylindricalSelection.__init__(self, sel, exRadius, zmax, zmin)
+        super(CylindricalZoneSelection, self).__init__(
+            sel, exRadius, zmax, zmin)
 
 
-class CylindricalLayerSelection(_CylindricalSelection):
+class CylindricalLayerSelection(CylindricalSelection):
     def __init__(self, sel, inRadius, exRadius, zmax, zmin):
-        _CylindricalSelection.__init__(self, sel, exRadius, zmax, zmin)
+        super(CylindricalLayerSelection, self).__init__(
+            sel, exRadius, zmax, zmin)
         self.inRadius = inRadius
         self.inRadiusSq = inRadius * inRadius
 
@@ -356,58 +316,43 @@ class PointSelection(DistanceSelection):
         self.cutoff = cutoff
 
     def _apply_KDTree(self, group):
-        """Selection using KDTree but periodic = True not supported.
-        (KDTree routine is ca 15% slower than the distance matrix one)
-        """
-        sys_indices = np.array([a.index for a in self._group_atoms_list])
-
         kdtree = KDTree(dim=3, bucket_size=10)
-        kdtree.set_coords(Selection.coord[sys_indices])
+        kdtree.set_coords(group.positions)
         kdtree.search(self.ref, self.cutoff)
         found_indices = kdtree.get_indices()
 
-        # make list np array and use fancy indexing?
-        res_atoms = [self._group_atoms_list[i] for i in found_indices]
-        return set(res_atoms)
+        return group[found_indices]
 
     def _apply_distmat(self, group):
-        """Selection that computes all distances."""
-        sys_indices = np.array([a.index for a in self._group_atoms_list])
-        sys_coor = Selection.coord[sys_indices]
         ref_coor = self.ref[np.newaxis, ...]
 
-        sys_coor = np.asarray(sys_coor, dtype=np.float32)
         ref_coor = np.asarray(ref_coor, dtype=np.float32)
-        if self.periodic:
-            box = group.dimensions
-        else:
-            box = None
+        box = group.dimensions if self.periodic else None
 
-        dist = distances.distance_array(sys_coor, ref_coor, box)
-        res_atoms = [self._group_atoms_list[i] for i in np.any(dist <= self.cutoff, axis=1).nonzero()[0]]
-        # make list np array and use fancy indexing?
-        return set(res_atoms)
+        dist = distances.distance_array(group.positions, ref_coor, box)
+        mask = dist <= self.cutoff
+        return group[mask]
 
 
-class AtomSelection(Selection):
+class AtomSelection(object):
     def __init__(self, name, resid, segid):
         self.name = name
         self.resid = resid
         self.segid = segid
 
-    def _apply(self, group):
-        for a in group.atoms:
-            if ((a.name == self.name) and (a.resid == self.resid) and (a.segid == self.segid)):
-                return set([a])
-        return set([])
+    def apply(self, group):
+        sub = group[group.names == self.name]
+        sub = sub[sub.resids == self.resid]
+        sub = sub[sub.segids == self.segid]
+        return sub
 
 
-class BondedSelection(Selection):
+class BondedSelection(object):
     def __init__(self, sel):
         self.sel = sel
 
-    def _apply(self, group):
-        res = self.sel._apply(group)
+    def apply(self, group):
+        res = self.sel.apply(group)
         # Check if we have bonds
         if not group.bonds:
             warnings.warn("Bonded selection has 0 bonds")
@@ -420,117 +365,118 @@ class BondedSelection(Selection):
         return set(sel)
 
 
-class SelgroupSelection(Selection):
+class SelgroupSelection(object):
     def __init__(self, selgroup):
-        self._grp = selgroup
+        self.grp = selgroup
 
-    def _apply(self, group):
-        common = np.intersect1d(group.atoms.indices, self._grp.atoms.indices)
-        res_atoms = [i for i in self._grp if i.index in common]
-        return set(res_atoms)
+    def apply(self, group):
+        idx = np.intersect1d(self.grp.indices, group.indices)
+        return group.universe.atoms[idx]
 
 
 @deprecate(old_name='fullgroup', new_name='global group')
 class FullSelgroupSelection(Selection):
     def __init__(self, selgroup):
-        self._grp = selgroup
+        self.grp = selgroup
 
-    def _apply(self, group):
-        return set(self._grp._atoms)
+    def apply(self, group):
+        return self.grp
 
 
-class StringSelection(Selection):
-    def __init__(self, field):
-        self._field = field
+class StringSelection(object):
+    def __init__(self, val):
+        self.val = val
 
-    def _apply(self, group):
-        # Look for a wildcard
-        value = getattr(self, self._field)
-        wc_pos = value.find('*')  # This returns -1, so if it's not in value then use the whole of value
-        if wc_pos == -1:
-            wc_pos = None
-        return set([a for a in group.atoms
-                    if getattr(a, self._field)[:wc_pos] == value[:wc_pos]])
+    def apply(self, group):
+        wc_pos = self.val.find('*')
+        if wc_pos == -1:  # No wildcard found
+            mask = getattr(group, self.field) == self.val
+        else:
+            values = getattr(group, self.field).astype(np.str_)
+            mask = np.char.startswith(values, self.value[:wc_pos])
+
+        return group[mask]
 
 
 class AtomNameSelection(StringSelection):
-    def __init__(self, name):
-        StringSelection.__init__(self, "name")
-        self.name = name
+    field = 'names'
 
 
 class AtomTypeSelection(StringSelection):
-    def __init__(self, type):
-        StringSelection.__init__(self, "type")
-        self.type = type
+    field = 'types'
 
 
 class ResidueNameSelection(StringSelection):
-    def __init__(self, resname):
-        StringSelection.__init__(self, "resname")
-        self.resname = resname
+    field = 'resnames'
 
 
 class SegmentNameSelection(StringSelection):
-    def __init__(self, segid):
-        StringSelection.__init__(self, "segid")
-        self.segid = segid
+    field = 'segids'
 
 
 class AltlocSelection(StringSelection):
-    def __init__(self, altLoc):
-        StringSelection.__init__(self, "altLoc")
-        self.altLoc = altLoc
+    field = 'altLocs'
 
 
-class ByResSelection(Selection):
+class ByResSelection(object):
     def __init__(self, sel):
         self.sel = sel
 
-    def _apply(self, group):
-        res = self.sel._apply(group)
-        unique_res = set([(a.resid, a.segid) for a in res])
-        sel = []
-        for atom in group.atoms:
-            if (atom.resid, atom.segid) in unique_res:
-                sel.append(atom)
-        return set(sel)
+    def apply(self, group):
+        res = self.sel.apply(group)
+
+        unique_res = np.unique(res.resindices)
+        mask = np.in1d(group.resindices, unique_res)
+
+        return res[mask]
 
 
-class _RangeSelection(Selection):
+class RangeSelection(object):
     def __init__(self, lower, upper):
         self.lower = lower
         self.upper = upper
 
 
-class ResidueIDSelection(_RangeSelection):
-    def _apply(self, group):
+class ResidueIDSelection(RangeSelection):
+    def apply(self, group):
+        resids = group.resids
         if self.upper is not None:
-            return set([a for a in group.atoms if (self.lower <= a.resid <= self.upper)])
+            lower_mask = resids >= self.lower
+            upper_mask = resids <= self.upper
+            mask = lower_mask & upper_mask
         else:
-            return set([a for a in group.atoms if a.resid == self.lower])
+            mask = resids == self.lower
+        return group[mask]
 
 
-class ResnumSelection(_RangeSelection):
-    def _apply(self, group):
+class ResnumSelection(RangeSelection):
+    def apply(self, group):
+        resnums = group.resnums
         if self.upper is not None:
-            return set([a for a in group.atoms if (self.lower <= a.resnum <= self.upper)])
+            lower_mask = resnums >= self.lower
+            upper_mask = resnums <= self.upper
+            mask = lower_mask & upper_mask
         else:
-            return set([a for a in group.atoms if a.resnum == self.lower])
+            mask = resnums == self.lower
+        return group[mask]
 
 
-class ByNumSelection(_RangeSelection):
-    def _apply(self, group):
+class ByNumSelection(RangeSelection):
+    def apply(self, group):
+        # In this case we'll use 1 indexing since that's what the
+        # user will be familiar with
+        indices = group.indices + 1
         if self.upper is not None:
-            # In this case we'll use 1 indexing since that's what the user will be
-            # familiar with
-            return set([a for a in group.atoms if (self.lower <= (a.index+1) <= self.upper)])
+            lower_mask = resnums >= self.lower
+            upper_mask = resnums <= self.upper
+            mask = lower_mask & upper_mask
         else:
-            return set([a for a in group.atoms if (a.index+1) == self.lower])
+            mask = resnums == self.lower
+        return group[mask]
 
 
-class ProteinSelection(Selection):
-    """A protein selection consists of all residues with  recognized residue names.
+class ProteinSelection(object):
+    """Consists of all residues with  recognized residue names.
 
     Recognized residue names in :attr:`ProteinSelection.prot_res`.
 
@@ -543,8 +489,7 @@ class ProteinSelection(Selection):
 
     .. SeeAlso:: :func:`MDAnalysis.lib.util.convert_aa_code`
     """
-    #: Dictionary of recognized residue names (3- or 4-letter).
-    prot_res = dict([(x, None) for x in [
+    prot_res = [
         # CHARMM top_all27_prot_lipid.rtf
         'ALA', 'ARG', 'ASN', 'ASP', 'CYS', 'GLN', 'GLU', 'GLY', 'HSD',
         'HSE', 'HSP', 'ILE', 'LEU', 'LYS', 'MET', 'PHE', 'PRO', 'SER', 'THR',
@@ -563,14 +508,15 @@ class ProteinSelection(Selection):
         'HID', 'HIE', 'HIP', 'ORN', 'DAB', 'LYN', 'HYP', 'CYM', 'CYX', 'ASH',
         'GLH',
         'ACE', 'NME',
-    ]])
+    ]
 
-    def _apply(self, group):
-        return set([a for a in group.atoms if a.resname in self.prot_res])
+    def apply(self, group):
+        mask = np.in1d(group.resnames, self.prot_res)
+        return group[mask]
 
 
-class NucleicSelection(Selection):
-    """A nucleic selection consists of all atoms in nucleic acid residues with  recognized residue names.
+class NucleicSelection(object):
+    """All atoms in nucleic acid residues with recognized residue names.
 
     Recognized residue names:
 
@@ -582,12 +528,13 @@ class NucleicSelection(Selection):
     .. versionchanged:: 0.8
        additional Gromacs selections
     """
-    nucl_res = dict([(x, None) for x in [
+    nucl_res = [
         'ADE', 'URA', 'CYT', 'GUA', 'THY', 'DA', 'DC', 'DG', 'DT', 'RA',
-        'RU', 'RG', 'RC', 'A', 'T', 'U', 'C', 'G']])
+        'RU', 'RG', 'RC', 'A', 'T', 'U', 'C', 'G']
 
-    def _apply(self, group):
-        return set([a for a in group.atoms if a.resname in self.nucl_res])
+    def apply(self, group):
+        mask = np.in1d(group.resnames, self.nucl_res)
+        return group[mask]
 
 
 class BackboneSelection(ProteinSelection):
@@ -596,10 +543,13 @@ class BackboneSelection(ProteinSelection):
     This excludes OT* on C-termini
     (which are included by, eg VMD's backbone selection).
     """
-    bb_atoms = dict([(x, None) for x in ['N', 'CA', 'C', 'O']])
+    bb_atoms = ['N', 'CA', 'C', 'O']
 
-    def _apply(self, group):
-        return set([a for a in group.atoms if (a.name in self.bb_atoms and a.resname in self.prot_res)])
+    def apply(self, group):
+        namemask = np.in1d(group.names, self.bb_atoms)
+        resnamemask = np.in1d(group.resnames, self.prot_res)
+        mask = namemask & resnamemask
+        return group[mask]
 
 
 class NucleicBackboneSelection(NucleicSelection):
@@ -608,12 +558,13 @@ class NucleicBackboneSelection(NucleicSelection):
     These atoms are only recognized if they are in a residue matched
     by the :class:`NucleicSelection`.
     """
-    bb_atoms = dict([(x, None) for x in ["P", "C5'", "C3'", "O3'", "O5'"]])
+    bb_atoms = ["P", "C5'", "C3'", "O3'", "O5'"]
 
-    def _apply(self, group):
-        return set([a for a in group.atoms
-                    if (a.name in self.bb_atoms and
-                        a.resname in self.nucl_res)])
+    def apply(self, group):
+        namemask = np.in1d(group.names, self.bb_atoms)
+        resnamemask = np.in1d(group.resnames, self.prot_res)
+        mask = namemask & resnamemask
+        return group[mask]
 
 
 class BaseSelection(NucleicSelection):
@@ -624,90 +575,108 @@ class BaseSelection(NucleicSelection):
      'N9', 'N7', 'C8', 'C5', 'C4', 'N3', 'C2', 'N1', 'C6',
      'O6','N2','N6', 'O2','N4','O4','C5M'
     """
-    base_atoms = dict([(x, None) for x in [
+    base_atoms = [
         'N9', 'N7', 'C8', 'C5', 'C4', 'N3', 'C2', 'N1', 'C6',
         'O6', 'N2', 'N6',
-        'O2', 'N4', 'O4', 'C5M']])
+        'O2', 'N4', 'O4', 'C5M']
 
-    def _apply(self, group):
-        return set([a for a in group.atoms
-                    if (a.name in self.base_atoms and
-                        a.resname in self.nucl_res)])
+    def apply(self, group):
+        namemask = np.in1d(group.names, self.base_atoms)
+        resnamemask = np.in1d(group.resnames, self.nucl_res)
+        mask = namemask & resnamemask
+        return group[mask]
 
 
 class NucleicSugarSelection(NucleicSelection):
     """Contains all atoms with name C1', C2', C3', C4', O2', O4', O3'.
     """
-    sug_atoms = dict([(x, None) for x in ['C1\'', 'C2\'', 'C3\'', 'C4\'', 'O4\'']])
+    sug_atoms = ["C1'", "C2'", "C3'", "C4'", "O4'"]
 
-    def _apply(self, group):
-        return set([a for a in group.atoms
-                    if (a.name in self.sug_atoms and
-                        a.resname in self.nucl_res)])
+    def apply(self, group):
+        namemask = np.in1d(group.names, self.sug_atoms)
+        resnamemask = np.in1d(group.resnames, self.nucl_res)
+        mask = namemask & resnamemask
+        return group[mask]
 
 
-class PropertySelection(Selection):
+class PropertySelection(object):
     """Some of the possible properties:
     x, y, z, radius, mass,
     """
-    def __init__(self, prop, operator, value, abs=False):
+    def __init__(self, prop, operator, value, abs_=False):
         self.prop = prop
         self.operator = operator
         self.value = value
-        self.abs = abs
+        self.abs_ = abs_
 
-    def _apply(self, group):
-        # For efficiency, get a reference to the actual np position arrays
-        if self.prop in ("x", "y", "z"):
-            p = getattr(Selection.coord, '_' + self.prop)
-            indices = np.array([a.index for a in group.atoms])
-            if not self.abs:
-                # XXX Hack for difference in np.nonzero between version < 1. and version > 1
-                res = np.nonzero(self.operator(p[indices], self.value))
-            else:
-                res = np.nonzero(self.operator(np.abs(p[indices]), self.value))
-            if type(res) == tuple:
-                res = res[0]
-            result_set = [group.atoms[i] for i in res]
-        elif self.prop == "mass":
-            result_set = [a for a in group.atoms
-                          if self.operator(a.mass, self.value)]
-        elif self.prop == "charge":
-            result_set = [a for a in group.atoms
-                          if self.operator(a.charge, self.value)]
-        return set(result_set)
+    def apply(self, group):
+        try:
+            col = {'x':0, 'y':1, 'z':2}[self.prop]
+        except KeyError:
+            pass
+        else:
+            values = group.positions[:,col]
+
+        if self.prop == 'mass':
+            values = group.masses
+        elif self.prop == 'charge':
+            values = group.charges
+
+        if self.abs_:
+            values = np.abs(values)
+        mask = self.operator(values, self.value)
+
+        return group[mask]
 
 
-class SameSelection(Selection):
+class SameSelection(object):
     # When adding new keywords here don't forget to also add them to the
     #  case statement under the SAME op, where they are first checked.
     def __init__(self, sel, prop):
         self.sel = sel
         self.prop = prop
 
-    def _apply(self, group):
-        res = self.sel._apply(group)
+    def apply(self, group):
+        prop_trans = {
+            'residue':'resindices',
+            'segment':'segindices',
+            'name': 'names',
+            'type': 'types',
+            'resname': 'resnames',
+            'resid': 'resids',
+            'segid': 'segids',
+            'mass': 'masses',
+            'charge': 'charges',
+            'radius': 'radii',
+            'bfactor': 'bfactors',
+            'resnum': 'resnums',
+        }
+
+        res = self.sel.apply(group)
         if not res:
-            return set([])
-        if self.prop in ("residue", "fragment", "segment"):
-            atoms = set([])
-            for a in res:
-                if a not in atoms:
-                # This shortcut assumes consistency that all atoms in a residue/fragment/segment
-                # belong to the exact same residue/fragment/segment.
-                    atoms |= set(getattr(a, self.prop).atoms)
-            return Selection._group_atoms & atoms
-        elif self.prop in ("name", "type", "resname", "resid", "segid", "mass", "charge", "radius", "bfactor", "resnum"):
-            props = [getattr(a, self.prop) for a in res]
-            result_set = (a for a in Selection._group_atoms if getattr(a, self.prop) in props)
-        elif self.prop in ("x", "y", "z"):
-            p = getattr(Selection.coord, "_"+self.prop)
-            res_indices = np.array([a.index for a in res])
-            sel_indices = np.array([a.index for a in Selection._group_atoms])
-            result_set = group.atoms[np.where(np.in1d(p[sel_indices], p[res_indices]))[0]]._atoms
+            return group[[]]  # empty selection
+
+        # TODO: Fragments!
+
+        try:
+            attrname = prop_trans[self.prop]
+        except KeyError:
+            pass
         else:
-            self._error(self.prop)
-        return set(result_set)
+            vals = getattr(res, attrname)
+            mask = np.in1d(getattr(group, attrname), vals)
+
+            return group[mask]
+
+        try:
+            pos_idx = {0:'x', 1:'y', 2:'z'}[prop]
+        except KeyError:
+            pass
+        else:
+            vals = res.positions[:, pos_idx]
+            mask = np.in1d(group.positions[:, pos_idx], vals)
+
+            return group[mask]
 
 
 class ParseError(Exception):
@@ -919,13 +888,14 @@ class SelectionParser(object):
             exp = self._parse_expression(0)
             self._expect(self.RPAREN)
             return exp
-        elif op in (self.SEGID, self.RESNAME, self.NAME, self.TYPE, self.ALTLOC):
+        elif op in {self.SEGID, self.RESNAME, self.NAME,
+                    self.TYPE, self.ALTLOC}:
             data = self._consume_token()
-            if data in (
+            if data in {
                     self.LPAREN, self.RPAREN,
                     self.AND, self.OR, self.NOT,
                     self.SEGID, self.RESID, self.RESNAME,
-                    self.NAME, self.TYPE):
+                    self.NAME, self.TYPE}:
                 self._error("Identifier")
             return self.classdict[op](data)
         elif op in (self.SELGROUP, self.FULLSELGROUP):
@@ -962,18 +932,21 @@ class SelectionParser(object):
         elif op == self.PROP:
             prop = self._consume_token()
             if prop == "abs":
-                abs = True
+                abs_ = True
                 prop = self._consume_token()
             else:
-                abs = False
+                abs_ = False
             oper = self._consume_token()
             value = float(self._consume_token())
             ops = dict([
-                (self.GT, np.greater), (self.LT, np.less),
-                (self.GE, np.greater_equal), (self.LE, np.less_equal),
-                (self.EQ, np.equal), (self.NE, np.not_equal)])
-            if oper in ops.keys():
-                return self.classdict[op](prop, ops[oper], value, abs)
+                (self.GT, np.greater),
+                (self.LT, np.less),
+                (self.GE, np.greater_equal),
+                (self.LE, np.less_equal),
+                (self.EQ, np.equal),
+                (self.NE, np.not_equal),
+            ])
+            return self.classdict[op](prop, ops[oper], value, abs_)
         elif op == self.ATOM:
             segid = self._consume_token()
             resid = int(self._consume_token())
@@ -982,10 +955,10 @@ class SelectionParser(object):
         elif op == self.SAME:
             prop = self._consume_token()
             self._expect("as")
-            if prop in ("name", "type", "resname", "resid", "segid",
+            if prop in {"name", "type", "resname", "resid", "segid",
                         "mass", "charge", "radius", "bfactor",
                         "resnum", "residue", "segment", "fragment",
-                        "x", "y", "z"):
+                        "x", "y", "z"}:
                 exp = self._parse_expression(self.precedence[op])
                 return self.classdict[op](exp, prop)
             else:

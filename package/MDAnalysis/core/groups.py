@@ -4,6 +4,9 @@
 """
 import numpy as np
 
+from . import selection
+
+
 def make_group(top):
     """Generate the Group class with attributes according to the topology.
 
@@ -322,20 +325,12 @@ class AtomGroupBase(object):
         .. versionchanged:: 0.13.0
            Added *bonded* selection
         """
-        # can ONLY import in method, otherwise cyclical import!
-        from . import Selection
-
-        atomgrp = Selection.Parser.parse(sel, selgroups).apply(self)
-        if len(othersel) == 0:
-            return atomgrp
-        else:
+        atomgrp = selection.Parser.parse(sel, selgroups).apply(self)
+        if othersel:
             # Generate a selection for each selection string
-            #atomselections = [atomgrp]
             for sel in othersel:
-                atomgrp += Selection.Parser.parse(sel, selgroups).apply(self)
-                #atomselections.append(Selection.Parser.parse(sel).apply(self))
-            #return tuple(atomselections)
-            return atomgrp
+                atomgrp += selection.Parser.parse(sel, selgroups).apply(self)
+        return atomgrp
 
 
 class ResidueGroupBase(object):
