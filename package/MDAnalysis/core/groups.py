@@ -78,17 +78,16 @@ class GroupBase(object):
     
     @property
     def atoms(self):
-        ##TODO: how do we want to do this?
-        return self._u._AtomGroup(,
-                                  self._u)
+        return self._u.atoms[np.unique(self.indices)]
 
     @property
     def residues(self):
-        ##TODO: how do we want to do this?
+        return self._u.residues[np.unique(self.resindices)]
 
     @property
     def segments(self):
-        ##TODO: how do we want to do this?
+        return self._u.segments[np.unique(self.segindices)]
+
 
 class AtomGroupBase(object):
     """AtomGroup base class.

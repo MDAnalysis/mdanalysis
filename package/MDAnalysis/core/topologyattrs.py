@@ -147,7 +147,7 @@ class Atomindices(AtomAttr):
     attrname = 'indices'
     singular = 'index'
 
-    def set_atoms(self, aix, values):
+    def set_atoms(self, ag, values):
         raise AttributeError("Atom indices are fixed; they cannot be reset")
 
 
@@ -305,16 +305,17 @@ class Resindices(ResidueAttr):
     the group. This unambiguously determines each atom's residue membership.
     Resetting these values changes the residue membership of the atoms.
 
-    If the group is a ResidueGroup or SegmentGroup, then this gives the indices of each residue
-    represented in the group in a 1-D array, in the order of the elements in
-    that group. 
+    If the group is a ResidueGroup or SegmentGroup, then this gives the
+    resindices of each residue represented in the group in a 1-D array, in the
+    order of the elements in that group. 
 
     """
-    attrname = 'indices'
-    singular = 'index'
+    attrname = 'resindices'
+    singular = 'resindex'
 
-    def set_residues(self, rix, values):
+    def set_residues(self, rg, values):
         raise AttributeError("Residue indices are fixed; they cannot be reset")
+
 
 class Resids(ResidueAttr):
     """Interface to resids.
@@ -383,6 +384,26 @@ class SegmentAttr(TopologyAttr):
         self.values[sg._ix] = values
 
 
+class Segindices(SegmentAttr):
+    """Globally unique segindices for each segment in the group.
+
+    If the group is an AtomGroup, then this gives the segindex for each atom in
+    the group. This unambiguously determines each atom's segment membership.
+    It is not possible to set these, since membership in a segment is an
+    attribute of each atom's residue.
+    
+    If the group is a ResidueGroup or SegmentGroup, then this gives the
+    segindices of each segment represented in the group in a 1-D array, in the
+    order of the elements in that group. 
+
+    """
+    attrname = 'segindices'
+    singular = 'segindex'
+
+    def set_segments(self, sg, values):
+        raise AttributeError("Segment indices are fixed; they cannot be reset")
+
+
 class Segids(SegmentAttr):
     attrname = 'segids'
     singular = 'segid'
@@ -432,8 +453,6 @@ class Bonds(AtomAttr):
             *[self._bondDict[a] for a in ag._ix]))
         bond_idx = np.array(sorted(unique_bonds))
         return TopologyGroup(bond_idx, ag._u, self.attrnames)
-        #return TopologyGroup(unique_bonds)
-
 
 
 class Angles(Bonds):
