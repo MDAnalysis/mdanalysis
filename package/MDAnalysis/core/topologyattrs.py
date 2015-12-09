@@ -26,7 +26,7 @@ import numpy as np
 
 from ..lib.util import cached
 from ..exceptions import NoDataError
-
+from .topologyobjects import TopologyGroup
 
 class TopologyAttr(object):
     """Base class for Topology attributes.
@@ -381,7 +381,7 @@ class Bonds(AtomAttr):
         unique_bonds =  set(itertools.chain(
             *[self._bondDict[a] for a in ag._ix]))
         bond_idx = np.array(sorted(unique_bonds))
-        return TopologyGroup(bond_idx, ag._u, self.attrnames)
+        return TopologyGroup(bond_idx, ag._u, self.singular[:-1])
         #return TopologyGroup(unique_bonds)
 
 
