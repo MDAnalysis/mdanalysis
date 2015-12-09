@@ -695,6 +695,8 @@ __all__ = ['reader', 'writer']
 
 from . import base
 from .core import reader, writer
+from . import dummy
+
 from . import CRD
 from . import DCD
 from . import DLPoly
@@ -742,6 +744,7 @@ _trajectory_readers = {
     'TRZ': TRZ.TRZReader,
     'DATA': LAMMPS.DATAReader,
     'GMS': GMS.GMSReader,
+    'DUMMY': dummy.DummyReader,
 }
 
 #: formats of readers that can also handle gzip or bzip2 compressed files

@@ -258,6 +258,7 @@ from . import XYZParser
 from . import GMSParser
 from . import DLPolyParser
 from . import HoomdXMLParser
+from . import dummy
 
 
 # dictionary of known file formats and the corresponding file parser
@@ -284,4 +285,5 @@ _topology_parsers = {'PSF': PSFParser.PSFParser,
                      'CONFIG': DLPolyParser.ConfigParser,
                      'HISTORY': DLPolyParser.HistoryParser,
                      'XML': HoomdXMLParser.HoomdXMLParser,
+                     'DUMMY': dummy.DummyParser,
                      }

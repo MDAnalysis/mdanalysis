@@ -559,6 +559,7 @@ class TestGuessFormat(object):
         ('DATA', mda.topology.LAMMPSParser.DATAParser, mda.coordinates.LAMMPS.DATAReader),
         ('DCD', None, mda.coordinates.DCD.DCDReader),
         ('DMS', mda.topology.DMSParser.DMSParser, mda.coordinates.DMS.DMSReader),
+        ('DUMMY', mda.topology.dummy.DummyParser, mda.coordinates.dummy.DummyReader),
         ('GMS', mda.topology.GMSParser.GMSParser, mda.coordinates.GMS.GMSReader),
         ('GRO', mda.topology.GROParser.GROParser, mda.coordinates.GRO.GROReader),
         ('HISTORY', mda.topology.DLPolyParser.HistoryParser, mda.coordinates.DLPoly.HistoryReader),

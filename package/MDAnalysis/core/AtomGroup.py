@@ -3816,6 +3816,52 @@ class Universe(object):
             self.make_anchor()
         self.anchor_name = kwargs.get('anchor_name')
 
+    @classmethod
+    def create_dummy(cls, natoms):
+        """Create an empty Universe with size *natoms*
+
+        Arguments
+        ---------
+        natoms: int
+          The desired size of the new Universe
+
+        Returns
+        -------
+        An empty Universe with size *natoms*
+
+        Example
+        -------
+
+        new_u = mda.Universe.create_dummy(20)
+
+        for i, atom in enumerate(new_u.atoms):
+            atom.name = 'Congaman{}'.format(i+1)
+        new_u.atoms.resnames = 'Congaline'
+
+        new_coords = np.stack([np.zeros(20), np.zeros(20), np.arange(20)]).T
+        new_u.trajectory.ts.positions = new_coords
+
+
+        SeeAlso
+        -------
+        :func:`MDAnalysis.core.AtomGroup.Merge` for creating a
+        new Universe from existing AtomGroups
+
+        .. versionadded:: 0.13.0
+        """
+        from ..topology.dummy import DummyParser
+        from ..coordinates.dummy import DummyReader
+
+        u = cls()
+        with DummyParser(natoms, universe=u) as p:
+            u._topology = p.parse()
+        # Generate atoms, residues and segments
+        u._init_topology()
+
+        u.trajectory = DummyReader(natoms)
+
+        return u
+
     def _clear_caches(self, *args):
         """Clear cache for all *args*.
 
