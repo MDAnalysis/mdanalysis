@@ -1075,7 +1075,7 @@ class PSAnalysis(object):
     """
     def __init__(self, universes, reference=None, ref_select='name CA',
                  ref_frame=0, path_select=None, labels=None,
-                 targetdir=None):
+                 targetdir=os.path.curdir):
         """Setting up Path Similarity Analysis.
 
         The mutual similarity between all unique pairs of trajectories

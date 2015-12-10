@@ -27,16 +27,17 @@ import shutil
 from MDAnalysisTests.datafiles import PSF, DCD, DCD2
 
 
-
 class TestPSAnalysis(TestCase):
     def setUp(self):
+        self.tmpdir = tempfile.mkdtemp()
         self.iu1 = np.triu_indices(3, k=1)
         self.universe1 = MDAnalysis.Universe(PSF, DCD)
         self.universe2 = MDAnalysis.Universe(PSF, DCD2)
         self.universe_rev = MDAnalysis.Universe(PSF, DCD)
         self.universes = [self.universe1, self.universe2, self.universe_rev]
         self.psa = MDAnalysis.analysis.psa.PSAnalysis(self.universes,           \
-                                               path_select='name CA')
+                                               path_select='name CA',           \
+                                               targetdir=self.tmpdir)
         self.psa.generate_paths(align=True)
         self.psa.paths[-1] = self.psa.paths[-1][::-1,:,:] # reverse third path
         self._run()
@@ -54,7 +55,8 @@ class TestPSAnalysis(TestCase):
         del self.universe2
         del self.universe_rev
         del self.psa
-        shutil.rmtree('psadata') # remove psa data directory
+        if self.tmpdir:
+            shutil.rmtree(self.tmpdir)
 
     def test_hausdorff_bound(self):
         err_msg = "Some Frechet distances are smaller than corresponding "      \
