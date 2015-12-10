@@ -85,7 +85,7 @@ class OrSelection(object):
 
         # Find unique indices from both these AtomGroups
         # and slice master list using them
-        idx = np.intersect1d(lsel.indices, rsel.indices)
+        idx = np.unique(np.concatenate([lsel.indices, rsel.indices]))
 
         return group.universe.atoms[idx]
 
@@ -302,13 +302,11 @@ class CylindricalSelection(object):
         xy_vecs = coords[mask_ndxs,:2] - sel_CoG[:2]
         xy_norms = np.sum(xy_vecs**2, axis=1)
         try: # Generic for both 'Layer' and 'Zone' cases
-            circ_sel = (xy_norms <= self.exRadiusSq) * (xy_norms >= self.inRadiusSq)
+            circ_sel = (xy_norms <= self.exRadiusSq) & (xy_norms >= self.inRadiusSq)
         except AttributeError:
             circ_sel = (xy_norms <= self.exRadiusSq)
         mask_sel[mask_ndxs] = circ_sel
-        ndxs = np.where(mask_sel)[0]
-        res_atoms = set(Selection._group_atoms_list[ndx] for ndx in ndxs)
-        return res_atoms
+        return group[mask_sel]
 
 
 class CylindricalZoneSelection(CylindricalSelection):

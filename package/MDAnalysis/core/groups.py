@@ -659,6 +659,13 @@ class SegmentBase(ComponentBase):
     """
     level = 'segment'
 
+    def __getattr__(self, attr):
+        if attr.startswith('r'):
+            resnum = int(attr[1:]) - 1
+            return self.residues[resnum]
+        else:
+            raise AttributeError
+
     @property
     def atoms(self):
         atomsclass = self._u._groups['atom']

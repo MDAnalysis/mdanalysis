@@ -186,6 +186,13 @@ class Universe(object):
         self.segments = self._groups['segment'](np.arange(
             self._topology.n_segments), self)
 
+        for seg in self.segments:
+            if seg.segid[0].isdigit():
+                name = 's' + seg.segid
+            else:
+                name = seg.segid
+            self.__dict__[name] = seg
+
         # Load coordinates
         self.load_new(coordinatefile, **kwargs)
 

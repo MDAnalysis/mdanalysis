@@ -254,7 +254,7 @@ class TestSelectionsCHARMM(TestCase):
     def test_concatenated_selection(self):
         E151 = self.universe.s4AKE.r151
         # note that this is not quite phi... HN should be C of prec. residue
-        phi151 = E151.select_atoms('name HN', 'name N', 'name CA', 'name CB')
+        phi151 = E151.atoms.select_atoms('name HN', 'name N', 'name CA', 'name CB')
         assert_equal(len(phi151), 4)
         assert_equal(phi151[0].name, 'HN', "wrong ordering in selection, should be HN-N-CA-CB")
 
@@ -264,7 +264,7 @@ class TestSelectionsCHARMM(TestCase):
         # Lys amines within 4 angstrom of the backbone.
         ag1 = self.universe.select_atoms("resname LYS and name NZ and around 4 backbone")
         ag2 = ag.select_atoms("around 4 global backbone")
-        assert_(ag2._atoms == ag1._atoms)
+        assert_array_equal(ag2.indices, ag1.indices)
 
 
 class TestSelectionsAMBER(TestCase):
