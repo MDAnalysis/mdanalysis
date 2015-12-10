@@ -619,6 +619,7 @@ class AtomBase(ComponentBase):
         return segmentclass(self._u._topology.segindices[self],
                             self._u)
 
+
 class ResidueBase(ComponentBase):
     """Residue base class.
 
@@ -633,7 +634,12 @@ class ResidueBase(ComponentBase):
     @property
     def atoms(self):
         atomsclass = self._u._groups['atom']
-        return atomsclass(self._u._topology.indices[self],
+
+        # we need to pass a fake residue with a numpy array as its self._ix for
+        # downward translation tables to work; this is because they accept
+        # arrays only for performance
+        r_proxy = self.__class__(np.array([self._ix]), self._u)
+        return atomsclass(self._u._topology.indices[r_proxy],
                           self._u)
 
     @property
@@ -656,12 +662,21 @@ class SegmentBase(ComponentBase):
     @property
     def atoms(self):
         atomsclass = self._u._groups['atom']
-        return atomsclass(self._u._topology.indices[self],
+
+        # we need to pass a fake segment with a numpy array as its self._ix for
+        # downward translation tables to work; this is because they accept
+        # arrays only for performance
+        s_proxy = self.__class__(np.array([self._ix]), self._u)
+        return atomsclass(self._u._topology.indices[s_proxy],
                           self._u)
 
     @property
-    def residue(self):
+    def residues(self):
         residuesclass = self._u._groups['residue']
-        return residuesclass(self._u._topology.resindices[self],
-                             self._u)
 
+        # we need to pass a fake residue with a numpy array as its self._ix for
+        # downward translation tables to work; this is because they accept arrays only
+        # for performance
+        s_proxy = self.__class__(np.array([self._ix]), self._u)
+        return residuesclass(self._u._topology.resindices[s_proxy],
+                             self._u)
