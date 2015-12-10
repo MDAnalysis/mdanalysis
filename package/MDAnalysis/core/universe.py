@@ -174,13 +174,16 @@ class Universe(object):
 
         # generate Group classes
         self._make_groupclasses()
+        self._make_componentclasses()
 
         # Generate atoms, residues and segments
-        self.atoms = self._AtomGroup(
-            np.arange(self._topology.n_atoms), self)
-        self.residues = self._ResidueGroup(np.arange(
-            self._topology.n_residues), self)
-        self.segments = self._SegmentGroup(np.arange(
+        self.atoms = self._groups['atom'](
+                np.arange(self._topology.n_atoms), self)
+
+        self.residues = self._groups['residue'](
+                np.arange( self._topology.n_residues), self)
+
+        self.segments = self._groups['segment'](np.arange(
             self._topology.n_segments), self)
 
         # Load coordinates
@@ -191,22 +194,46 @@ class Universe(object):
         Topology.
 
         """
+        self._groups = {}
+
         # generate Group class based on Topology
-        self._Group = groups.make_group(self._topology)
+        self._Group = groups.make_group()
         for attr in self._topology.attrs:
             self._Group._add_prop(attr)
 
         # generate AtomGroup, ResidueGroup, and SegmentGroup classes for this
         # universe
-        self._AtomGroup = groups.make_levelgroup(self._topology,
+        self._groups['atom'] = groups.make_levelgroup(self._topology,
                                                  self._Group,
                                                  level='atom')
-        self._ResidueGroup = groups.make_levelgroup(self._topology,
+        self._groups['residue'] = groups.make_levelgroup(self._topology,
                                                  self._Group,
                                                  level='residue')
-        self._SegmentGroup = groups.make_levelgroup(self._topology,
+        self._groups['segment'] = groups.make_levelgroup(self._topology,
                                                  self._Group,
                                                  level='segment')
+
+    def _make_componentclasses(self):
+        """Generates component classes specific to this Universe based on its
+        Topology.
+
+        """
+        self._components = {}
+
+        # generate Component class based on Topology
+        self._Component = groups.make_component()
+        for attr in self._topology.attrs:
+            self._Component._add_prop(attr)
+
+        # generate Atom, Residue, and Segment classes for this universe
+        self._components['atom'] = groups.make_levelcomponent(
+                self._topology, self._Component, level='atom')
+
+        self._components['residue'] = groups.make_levelcomponent(
+                self._topology, self._Component, level='residue')
+
+        self._components['segment'] = groups.make_levelcomponent(
+                self._topology, self._Component, level='segment')
 
     @property
     def universe(self):

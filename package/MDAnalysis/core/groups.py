@@ -4,7 +4,7 @@
 """
 import numpy as np
 
-def make_group(top):
+def make_group():
     """Generate the Group class with attributes according to the topology.
 
     """
@@ -12,7 +12,8 @@ def make_group(top):
 
 
 def make_levelgroup(top, Groupclass, level):
-    """Generate the AtomGroup class with attributes according to the topology.
+    """Generate the *Group class at `level` with attributes according to the
+    topology.
 
     """
     if level == 'atom':
@@ -26,6 +27,31 @@ def make_levelgroup(top, Groupclass, level):
         baseclass = SegmentGroupBase 
 
     return type(levelgroup, (Groupclass, baseclass), {})
+
+
+def make_component():
+    """Generate the Component class with attributes according to the topology.
+
+    """
+    return type('Component', (ComponentBase,), {})
+
+
+def make_levelcomponent(top, Componentclass, level):
+    """Generate the Component class specified by `level` with attributes
+    according to the topology.
+
+    """
+    if level == 'atom':
+        levelgroup = 'Atom'
+        baseclass = AtomBase
+    elif level == 'residue':
+        levelgroup = 'Residue'
+        baseclass = ResidueBase
+    elif level == 'segment':
+        levelgroup = 'Segment'
+        baseclass = SegmentBase 
+
+    return type(levelgroup, (Componentclass, baseclass), {})
 
 
 class GroupBase(object):
@@ -63,7 +89,10 @@ class GroupBase(object):
         # because our _ix attribute is a numpy array
         # it can be sliced by all of these already,
         # so just return ourselves sliced by the item
-        return self.__class__(self._ix[item], self._u)
+        if not isinstance(item, (int, np.int_)):
+            return self.__class__(self._ix[item], self._u)
+        else:
+            return self._u._components[self.level](self._ix[item], self._u)
 
     def __repr__(self):
         return ("<{}Group with {} {}s>"
@@ -522,3 +551,69 @@ class SegmentGroupBase(object):
 
     """
     level = 'segment'
+
+
+class ComponentBase(object):
+    """Base class from which a Universe's Component class is built.
+
+    Components are the individual objects that are found in Groups.
+    """
+    def __init__(self, ix, u):
+        # index of component
+        self._ix = ix
+        self._u = u
+
+    def __repr__(self):
+        return ("<{} {}>"
+                "".format(self.level.capitalize(), self._ix))
+
+    # TODO: put in mixin with GroupBase method of same name
+    @classmethod
+    def _add_prop(cls, attr):
+        """Add attr into the namespace for this class
+
+        Arguments
+        ---------
+        attr 
+            TopologyAttr object to add
+        """
+        getter = lambda self: attr.__getitem__(self)
+        setter = lambda self, values: attr.__setitem__(self, values)
+
+        setattr(cls, attr.singular,
+                property(getter, setter, None, attr.__doc__))
+
+
+class AtomBase(object):
+    """Atom base class.
+
+    This class is used by a Universe for generating its Topology-specific Atom
+    class. All the TopologyAttr components are obtained from ComponentBase, so
+    this class only includes ad-hoc methods specific to Atoms.
+
+    """
+    level = 'atom'
+
+
+class ResidueBase(object):
+    """Residue base class.
+
+    This class is used by a Universe for generating its Topology-specific
+    Residue class. All the TopologyAttr components are obtained from
+    ComponentBase, so this class only includes ad-hoc methods specific to
+    Residues.
+
+    """
+    level = 'residue'
+
+
+class SegmentBase(object):
+    """Segment base class.
+
+    This class is used by a Universe for generating its Topology-specific Segment
+    class. All the TopologyAttr components are obtained from ComponentBase, so
+    this class only includes ad-hoc methods specific to Segments.
+
+    """
+    level = 'segment'
+
