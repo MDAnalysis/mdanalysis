@@ -21,17 +21,15 @@ import MDAnalysis.analysis.psa
 from numpy.testing import TestCase, assert_array_less, assert_array_almost_equal
 import numpy as np
 
-import tempdir
+import tempfile
 import shutil
 
 from MDAnalysisTests.datafiles import PSF, DCD, DCD2
 
 
-
 class TestPSAnalysis(TestCase):
     def setUp(self):
-        self.tmpdir = tempdir.TempDir()
-        self.outdir = self.tmpdir.name
+        self.tmpdir = tempfile.mkdtemp()
         self.iu1 = np.triu_indices(3, k=1)
         self.universe1 = MDAnalysis.Universe(PSF, DCD)
         self.universe2 = MDAnalysis.Universe(PSF, DCD2)
@@ -39,7 +37,7 @@ class TestPSAnalysis(TestCase):
         self.universes = [self.universe1, self.universe2, self.universe_rev]
         self.psa = MDAnalysis.analysis.psa.PSAnalysis(self.universes,           \
                                                path_select='name CA',           \
-                                               targetdir=self.outdir)
+                                               targetdir=self.tmpdir)
         self.psa.generate_paths(align=True)
         self.psa.paths[-1] = self.psa.paths[-1][::-1,:,:] # reverse third path
         self._run()
@@ -53,15 +51,12 @@ class TestPSAnalysis(TestCase):
         self.frech_dists = self.frech_matrix[self.iu1]
 
     def tearDown(self):
-        try:
-            os.unlink(self.outdir)
-        except:
-            pass
         del self.universe1
         del self.universe2
         del self.universe_rev
         del self.psa
-        del self.tmpdir
+        if self.tmpdir:
+            shutil.rmtree(self.tmpdir)
 
     def test_hausdorff_bound(self):
         err_msg = "Some Frechet distances are smaller than corresponding "      \
