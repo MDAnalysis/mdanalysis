@@ -200,7 +200,7 @@ class TestSelectionsCHARMM(TestCase):
     def test_byres(self):
         sel = self.universe.select_atoms('byres bynum 0:5')
 
-        assert_equal(len(sel), len(self.universe.residues[0]))
+        assert_equal(len(sel), len(self.universe.residues[0].atoms))
 
     def test_same_resname(self):
         """Test the 'same ... as' construct (Issue 217)"""
