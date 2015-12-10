@@ -456,7 +456,6 @@ _PLURAL_PROPERTIES = {'index': 'indices',
 _SINGULAR_PROPERTIES = {v: k for k, v in _PLURAL_PROPERTIES.items()}
 
 
-@functools.total_ordering
 class Atom(object):
     """A class representing a single atom.
 
@@ -487,48 +486,6 @@ class Atom(object):
        Added occupancy property. Can get and set.
     """
 
-    __slots__ = (
-        "index", "id", "name", "type", "resname", "resid", "segid",
-        "mass", "charge", "residue", "segment",
-        "_universe",
-        "radius", "bfactor", "resnum", "serial", "altLoc")
-
-    def __init__(self, index, name, type, resname, resid, segid, mass, charge,
-                 residue=None, segment=None, radius=None, bfactor=None,
-                 resnum=None, serial=None, altLoc=None, universe=None):
-        self.index = index
-        self.name = name
-        self.altLoc = altLoc
-        self.type = str(type)  # always a string (needed for selections)
-        self.resname = resname
-        self.resid = resid
-        self.resnum = resnum
-        self.residue = residue  # typically patched in later
-        self.segid = segid
-        self.segment = segment  # typically patched in later
-        self.mass = mass
-        self.charge = charge
-        self.radius = radius
-        self.bfactor = bfactor
-        self.serial = serial
-        self._universe = universe
-
-    def __repr__(self):
-        return ("<Atom {idx}: {name} of type {t} of resname {rname}, "
-                "resid {rid} and segid {sid}{altloc}>".format(
-                    idx=self.index + 1, name=self.name, t=self.type,
-                    rname=self.resname, rid=self.resid, sid=self.segid,
-                    altloc="" if not self.altLoc
-                    else " and altloc {0}".format(self.altLoc)))
-
-    def __lt__(self, other):
-        return self.index < other.index
-
-    def __eq__(self, other):
-        return self.index == other.index
-
-    def __hash__(self):
-        return hash(self.index)
 
     def __add__(self, other):
         if not isinstance(other, (Atom, AtomGroup)):
@@ -540,22 +497,6 @@ class Atom(object):
             return AtomGroup([self, other])
         else:
             return AtomGroup([self] + other._atoms)
-
-    @property
-    def number(self):
-        """The index of this atom"""
-        return self.index
-
-    @property
-    def pos(self):
-        """coordinates of the atom
-
-        Get the current cartesian coordinates of the atom (read-only).
-
-        .. deprecated:: 0.8
-           use :attr:`position`
-        """
-        return self.position
 
     @property
     def position(self):
@@ -609,38 +550,6 @@ class Atom(object):
             raise NoDataError("Timestep does not contain velocities")
 
     @property
-    def occupancy(self):
-        """Access occupancy values.
-
-        If available can have a value between 0 and 1
-
-        Returns
-        -------
-        float
-            occupancy of Atom
-
-        .. versionadded:: 0.11.1
-        """
-        try:
-            return self.universe.coord.data['occupancy'][self.index]
-        except KeyError:
-            raise NoDataError('Timestep does not contain occupancy')
-
-    @occupancy.setter
-    def occupancy(self, _occupancy):
-        """Set occupancy for an atom
-
-        If no occupancies are set in the universe of the atom the occupancy
-        of the other atoms will be set to 1.
-        """
-        try:
-            self.universe.coord.data['occupancy'][self.index] = _occupancy
-        except KeyError:
-            n_atoms = self.universe.coord.n_atoms
-            self.universe.coord.data['occupancy'] = np.ones(n_atoms)
-            self.universe.coord.data['occupancy'][self.index] = _occupancy
-
-    @property
     def force(self):
         """Current force of the atom.
 
@@ -667,11 +576,6 @@ class Atom(object):
         except (AttributeError, NoDataError):
             raise NoDataError("Timestep does not contain forces")
 
-    def centroid(self):
-        """The centroid of an atom is its position, :attr:`Atom.position`."""
-        # centroid exists for compatibility with AtomGroup
-        return self.position
-
     @property
     def universe(self):
         """A pointer back to the Universe of this Atom"""
@@ -679,10 +583,6 @@ class Atom(object):
             raise NoDataError("This Atom does not belong to a Universe")
         else:
             return self._universe
-
-    @universe.setter
-    def universe(self, new):
-        self._universe = new
 
     @property
     def bonded_atoms(self):
@@ -953,27 +853,6 @@ class AtomGroup(object):
         self.universe.dihedrals += tgroup
         self._clear_caches('dihedrals')
 
-
-    def center_of_geometry(self, **kwargs):
-        """Center of geometry (also known as centroid) of the selection.
-
-        :Keywords:
-          *pbc*
-            ``True``: Move all atoms within the primary unit cell before calculation [``False``]
-
-        .. Note::
-            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to ``True`` allows the *pbc*
-            flag to be used by default.
-
-        .. versionchanged:: 0.8 Added *pbc* keyword
-        """
-        pbc = kwargs.pop('pbc', MDAnalysis.core.flags['use_pbc'])
-        if pbc:
-            return np.sum(self.pack_into_box(inplace=False), axis=0) / self.n_atoms
-        else:
-            return np.sum(self.positions, axis=0) / self.n_atoms
-
-    centroid = center_of_geometry
 
     def center_of_mass(self, **kwargs):
         """Center of mass of the selection.

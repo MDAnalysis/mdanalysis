@@ -3,6 +3,7 @@
 
 """
 import numpy as np
+import functools
 
 from . import selection
 from . import flags
@@ -94,25 +95,50 @@ class GroupBase(object):
                 "".format(self.level.capitalize(), len(self), self.level))
 
     def __add__(self, other):
+        """Concatenate the Group with another Group or Component of the same
+        level.
+
+        Parameters
+        ----------
+        other : Group or Component
+            Group or Component with `other.level` same as `self.level`
+
+        Returns
+        -------
+        Group
+            Group with elements of `self` and `other` concatenated
+        
+        """
         if self.level != other.level:
             raise TypeError("Can't add different level objects")
         if not self._u is other._u:
             raise ValueError("Can't add objects from different Universe")
+        
+        # for the case where other is a Component, and so other._ix is an
+        # integer
+        if isinstance(other._ix, int):
+            return NotImplemented
+
         return self.__class__(np.concatenate([self._ix, other._ix]), self._u)
 
-    # TODO: need to generalize for checking Levelobject isin Group
+    # TODO: finish me!
     def __contains__(self, other):
-        # If the number of atoms is very large, create a dictionary cache for lookup
-        if len(self) > self._atomcache_size and not 'atoms' in self._cache:
-            self._cache['atoms'] = dict(((x, None) for x in self.__atoms))
-        try:
-            return other in self._cache['atoms']
-        except KeyError:
-            return other in self._atoms
+        pass
 
     @property
     def universe(self):
         return self._u
+
+    @property
+    def ix(self):
+        """Unique indices of the components in the Group.
+
+        If this Group is an AtomGroup, these are the indices of the atoms.
+        If it is a ResidueGroup, these are the indices of the residues.
+        If it is a SegmentGroup, these are the indices of the segments.
+
+        """
+        return self._ix
     
     @property
     def atoms(self):
@@ -285,6 +311,8 @@ class AtomGroupBase(object):
             return np.sum(self.pack_into_box(inplace=False), axis=0) / len(self)
         else:
             return np.sum(self.positions, axis=0) / len(self)
+
+    centroid = center_of_geometry
 
     def select_atoms(self, sel, *othersel, **selgroups):
         """Select atoms using a CHARMM selection string.
@@ -562,6 +590,7 @@ class SegmentGroupBase(object):
     level = 'segment'
 
 
+@functools.total_ordering
 class ComponentBase(object):
     """Base class from which a Universe's Component class is built.
 
@@ -575,6 +604,30 @@ class ComponentBase(object):
     def __repr__(self):
         return ("<{} {}>"
                 "".format(self.level.capitalize(), self._ix))
+
+    def __lt__(self, other):
+        if self.level != other.level:
+            raise TypeError("Can't compare different level objects")
+        return self._ix < other._ix
+
+    def __eq__(self, other):
+        if self.level != other.level:
+            raise TypeError("Can't compare different level objects")
+        return self.index == other.index
+
+    def __hash__(self):
+        return hash(self.index)
+
+    def __add__(self, other):
+        if self.level != other.level:
+            raise TypeError('Can only add Atoms or AtomGroups (not "{0}")'
+                            ' to Atom'.format(other.__class__.__name__))
+        if not self.universe is other.universe:
+            raise ValueError("Can only add objects from the same Universe")
+        if isinstance(other, Atom):
+            return AtomGroup([self, other])
+        else:
+            return AtomGroup([self] + other._atoms)
 
     # TODO: put in mixin with GroupBase method of same name
     @classmethod
