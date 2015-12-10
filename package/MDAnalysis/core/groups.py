@@ -11,7 +11,7 @@ def make_group():
     return type('Group', (GroupBase,), {})
 
 
-def make_levelgroup(top, Groupclass, level):
+def make_levelgroup(Groupclass, level):
     """Generate the *Group class at `level` with attributes according to the
     topology.
 
@@ -29,16 +29,8 @@ def make_levelgroup(top, Groupclass, level):
     return type(levelgroup, (Groupclass, baseclass), {})
 
 
-def make_component():
-    """Generate the Component class with attributes according to the topology.
-
-    """
-    return type('Component', (ComponentBase,), {})
-
-
-def make_levelcomponent(top, Componentclass, level):
-    """Generate the Component class specified by `level` with attributes
-    according to the topology.
+def make_levelcomponent(level):
+    """Generate a copy of the Component class specified by `level`.
 
     """
     if level == 'atom':
@@ -51,7 +43,7 @@ def make_levelcomponent(top, Componentclass, level):
         levelgroup = 'Segment'
         baseclass = SegmentBase 
 
-    return type(levelgroup, (Componentclass, baseclass), {})
+    return type(levelgroup, (baseclass,), {})
 
 
 class GroupBase(object):
@@ -584,7 +576,7 @@ class ComponentBase(object):
                 property(getter, setter, None, attr.__doc__))
 
 
-class AtomBase(object):
+class AtomBase(ComponentBase):
     """Atom base class.
 
     This class is used by a Universe for generating its Topology-specific Atom
@@ -594,8 +586,19 @@ class AtomBase(object):
     """
     level = 'atom'
 
+    @property
+    def residue(self):
+        residueclass = self._u._components['residue']
+        return residueclass(self._u._topology.resindices[self],
+                            self._u)
 
-class ResidueBase(object):
+    @property
+    def segment(self):
+        segmentclass = self._u._components['segment']
+        return segmentclass(self._u._topology.segindices[self],
+                            self._u)
+
+class ResidueBase(ComponentBase):
     """Residue base class.
 
     This class is used by a Universe for generating its Topology-specific
@@ -606,8 +609,20 @@ class ResidueBase(object):
     """
     level = 'residue'
 
+    @property
+    def atoms(self):
+        atomsclass = self._u._groups['atom']
+        return atomsclass(self._u._topology.indices[self],
+                          self._u)
 
-class SegmentBase(object):
+    @property
+    def segment(self):
+        segmentclass = self._u._components['segment']
+        return segmentclass(self._u._topology.segindices[self],
+                            self._u)
+
+
+class SegmentBase(ComponentBase):
     """Segment base class.
 
     This class is used by a Universe for generating its Topology-specific Segment
@@ -616,4 +631,16 @@ class SegmentBase(object):
 
     """
     level = 'segment'
+
+    @property
+    def atoms(self):
+        atomsclass = self._u._groups['atom']
+        return atomsclass(self._u._topology.indices[self],
+                          self._u)
+
+    @property
+    def residue(self):
+        residuesclass = self._u._groups['residue']
+        return residuesclass(self._u._topology.resindices[self],
+                             self._u)
 

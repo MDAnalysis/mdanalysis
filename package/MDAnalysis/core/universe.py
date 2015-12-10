@@ -203,15 +203,12 @@ class Universe(object):
 
         # generate AtomGroup, ResidueGroup, and SegmentGroup classes for this
         # universe
-        self._groups['atom'] = groups.make_levelgroup(self._topology,
-                                                 self._Group,
-                                                 level='atom')
-        self._groups['residue'] = groups.make_levelgroup(self._topology,
-                                                 self._Group,
-                                                 level='residue')
-        self._groups['segment'] = groups.make_levelgroup(self._topology,
-                                                 self._Group,
-                                                 level='segment')
+        self._groups['atom'] = groups.make_levelgroup(self._Group,
+                                                      level='atom')
+        self._groups['residue'] = groups.make_levelgroup(self._Group,
+                                                         level='residue')
+        self._groups['segment'] = groups.make_levelgroup(self._Group,
+                                                         level='segment')
 
     def _make_componentclasses(self):
         """Generates component classes specific to this Universe based on its
@@ -220,20 +217,13 @@ class Universe(object):
         """
         self._components = {}
 
-        # generate Component class based on Topology
-        self._Component = groups.make_component()
-        for attr in self._topology.attrs:
-            self._Component._add_prop(attr)
-
-        # generate Atom, Residue, and Segment classes for this universe
-        self._components['atom'] = groups.make_levelcomponent(
-                self._topology, self._Component, level='atom')
-
-        self._components['residue'] = groups.make_levelcomponent(
-                self._topology, self._Component, level='residue')
-
-        self._components['segment'] = groups.make_levelcomponent(
-                self._topology, self._Component, level='segment')
+        # for each level, generate Component class (Atom, Residue, Segment),
+        # and attach attributes appropriate to that level from Topology
+        for level in ['atom', 'residue', 'segment']:
+            self._components[level] = groups.make_levelcomponent(level=level)
+            for attr in self._topology.attrs:
+                if attr.level == level:
+                    self._components[level]._add_prop(attr)
 
     @property
     def universe(self):

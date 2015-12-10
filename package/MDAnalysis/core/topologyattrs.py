@@ -115,6 +115,7 @@ class Atomindices(TopologyAttr):
     """
     attrname = 'indices'
     singular = 'index'
+    level = 'atom'
 
     def __init__(self):
         pass
@@ -150,6 +151,7 @@ class Resindices(TopologyAttr):
     """
     attrname = 'resindices'
     singular = 'resindex'
+    level = 'residue'
 
     def __init__(self):
         pass
@@ -193,6 +195,7 @@ class Segindices(TopologyAttr):
     """
     attrname = 'segindices'
     singular = 'segindex'
+    level = 'segment'
 
     def __init__(self):
         pass
@@ -222,6 +225,7 @@ class AtomAttr(TopologyAttr):
     """
     attrname = 'atomattrs'
     singular = 'atomattr'
+    level = 'atom'
 
     def get_atoms(self, ag):
         return self.values[ag._ix]
@@ -365,6 +369,7 @@ class ResidueAttr(TopologyAttr):
     """
     attrname = 'residueattrs'
     singular = 'residueattr'
+    level = 'residue'
 
     def get_atoms(self, ag):
         rix = self.top.tt.a2r(ag._ix)
@@ -412,6 +417,7 @@ class SegmentAttr(TopologyAttr):
     """
     attrname = 'segmentattrs'
     singular = 'segmentattr'
+    level = 'segment'
 
     def get_atoms(self, ag):
         six = self.top.tt.a2s(ag._ix)
