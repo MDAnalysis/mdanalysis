@@ -447,12 +447,15 @@ class ByResSelection(object):
         self.sel = sel
 
     def apply(self, group):
+        logger.debug("In ByResSelection")
         res = self.sel.apply(group)
+        logger.debug("Reference group is {}".format(res))
 
         unique_res = np.unique(res.resindices)
+        logger.debug("Ref resindices are {}".format(unique_res))
         mask = np.in1d(group.resindices, unique_res)
 
-        return res[mask]
+        return group[mask]
 
 
 class RangeSelection(object):
