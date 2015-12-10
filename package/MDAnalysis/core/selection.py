@@ -228,7 +228,7 @@ class SphericalZoneSelection(DistanceSelection):
         return group[idx]
 
 
-class CylindricalSelection(Selection):
+class CylindricalSelection(object):
     def __init__(self, sel, exRadius, zmax, zmin):
         self.sel = sel
         self.exRadius = exRadius
@@ -375,7 +375,7 @@ class SelgroupSelection(object):
 
 
 @deprecate(old_name='fullgroup', new_name='global group')
-class FullSelgroupSelection(Selection):
+class FullSelgroupSelection(object):
     def __init__(self, selgroup):
         self.grp = selgroup
 

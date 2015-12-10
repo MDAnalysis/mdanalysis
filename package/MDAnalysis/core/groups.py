@@ -5,7 +5,7 @@
 import numpy as np
 
 from . import selection
-
+from . import flags
 
 def make_group():
     """Generate the Group class with attributes according to the topology.
@@ -263,6 +263,28 @@ class AtomGroupBase(object):
             ts.forces[self._ix, :] = forces
         except AttributeError:
             raise NoDataError("Timestep does not contain forces")
+
+    def center_of_geometry(self, **kwargs):
+        """Center of geometry (also known as centroid) of the selection.
+
+        Keywords
+        --------
+          *pbc*
+            ``True``: Move all atoms within the primary unit cell
+                      before calculation [``False``]
+
+        Notes
+        -----
+        The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
+        ``True`` allows the *pbc* flag to be used by default.
+
+        .. versionchanged:: 0.8 Added *pbc* keyword
+        """
+        pbc = kwargs.pop('pbc', flags['use_pbc'])
+        if pbc:
+            return np.sum(self.pack_into_box(inplace=False), axis=0) / len(self)
+        else:
+            return np.sum(self.positions, axis=0) / len(self)
 
     def select_atoms(self, sel, *othersel, **selgroups):
         """Select atoms using a CHARMM selection string.
