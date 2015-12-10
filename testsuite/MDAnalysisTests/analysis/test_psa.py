@@ -30,6 +30,8 @@ from MDAnalysisTests.datafiles import PSF, DCD, DCD2
 
 class TestPSAnalysis(TestCase):
     def setUp(self):
+        self.tmpdir = tempdir.TempDir()
+        self.outdir = self.tmpdir.name
         self.iu1 = np.triu_indices(3, k=1)
         self.universe1 = MDAnalysis.Universe(PSF, DCD)
         self.universe2 = MDAnalysis.Universe(PSF, DCD2)
@@ -37,7 +39,7 @@ class TestPSAnalysis(TestCase):
         self.universes = [self.universe1, self.universe2, self.universe_rev]
         self.psa = MDAnalysis.analysis.psa.PSAnalysis(self.universes,           \
                                                path_select='name CA',           \
-                                               targetdir=tempdir.TempDir())
+                                               targetdir=self.outdir)
         self.psa.generate_paths(align=True)
         self.psa.paths[-1] = self.psa.paths[-1][::-1,:,:] # reverse third path
         self._run()
@@ -51,11 +53,15 @@ class TestPSAnalysis(TestCase):
         self.frech_dists = self.frech_matrix[self.iu1]
 
     def tearDown(self):
+        try:
+            os.unlink(self.outfile)
+        except:
+            pass
         del self.universe1
         del self.universe2
         del self.universe_rev
         del self.psa
-        shutil.rmtree('psadata') # remove psa data directory
+        del self.tmpdir
 
     def test_hausdorff_bound(self):
         err_msg = "Some Frechet distances are smaller than corresponding "      \
