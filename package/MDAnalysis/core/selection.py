@@ -83,7 +83,7 @@ class OrSelection(object):
         # and slice master list using them
         idx = np.intersect1d(lsel.indices, rsel.indices)
 
-        return self.group.universe.atoms[idx]
+        return group.universe.atoms[idx]
 
 
 class GlobalSelection(object):
@@ -329,7 +329,7 @@ class PointSelection(DistanceSelection):
         ref_coor = np.asarray(ref_coor, dtype=np.float32)
         box = group.dimensions if self.periodic else None
 
-        dist = distances.distance_array(group.positions, ref_coor, box)
+        dist = distances.distance_array(group.positions, ref_coor, box)[0]
         mask = dist <= self.cutoff
         return group[mask]
 
@@ -352,17 +352,25 @@ class BondedSelection(object):
         self.sel = sel
 
     def apply(self, group):
-        res = self.sel.apply(group)
+        grp = self.sel.apply(group)
         # Check if we have bonds
         if not group.bonds:
             warnings.warn("Bonded selection has 0 bonds")
 
-        sel = []
-        for atom in res:
-            for b in group.bonds:
-                if atom in b:
-                    sel.append(b.partner(atom))
-        return set(sel)
+        grpidx = grp.indices
+
+        # (n, 2) array of bond indices
+        bix = group.bonds.indices
+
+        idx = []
+        # left side
+        idx.append(bix[:,0][np.in1d(bix[:,1], grpidx)])
+        # right side
+        idx.append(bix[:,1][np.in1d(bix[:,0], grpidx)])
+
+        idx = np.union1d(*idx)
+
+        return group.universe.atoms[idx]
 
 
 class SelgroupSelection(object):
@@ -393,7 +401,7 @@ class StringSelection(object):
             mask = getattr(group, self.field) == self.val
         else:
             values = getattr(group, self.field).astype(np.str_)
-            mask = np.char.startswith(values, self.value[:wc_pos])
+            mask = np.char.startswith(values, self.val[:wc_pos])
 
         return group[mask]
 

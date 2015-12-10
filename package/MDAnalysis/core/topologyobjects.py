@@ -657,6 +657,10 @@ class TopologyGroup(object):
 
         return TopologyGroup(newlist)
 
+    @property
+    def indices(self):
+        return self._bix
+
     def to_indices(self):
         """Return a tuple of tuples which define the contents of this
         TopologyGroup in terms of the atom numbers,

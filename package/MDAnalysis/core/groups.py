@@ -195,6 +195,10 @@ class AtomGroupBase(object):
             return AtomGroup(atomlist)  # XXX: but inconsistent (see residues and Issue 47)
 
     @property
+    def dimensions(self):
+        return self._u.trajectory.ts.dimensions
+
+    @property
     def positions(self):
         """Coordinates of the atoms in the AtomGroup.
 
