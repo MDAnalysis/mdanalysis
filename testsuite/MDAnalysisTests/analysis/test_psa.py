@@ -54,7 +54,7 @@ class TestPSAnalysis(TestCase):
 
     def tearDown(self):
         try:
-            os.unlink(self.outfile)
+            os.unlink(self.outdir)
         except:
             pass
         del self.universe1
