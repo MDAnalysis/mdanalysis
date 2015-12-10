@@ -124,7 +124,7 @@ class TestSelectionsCHARMM(TestCase):
         sel = self.universe.select_atoms('atom 4AKE 100 CA')
         assert_equal(len(sel), 1)
         assert_equal(sel.resnames, ['GLY'])
-        assert_array_almost_equal(sel.coordinates(),
+        assert_array_almost_equal(sel.positions,
                                   np.array([[20.38685226, -3.44224262, -5.92158318]], dtype=np.float32))
 
     def test_type(self):

@@ -35,10 +35,14 @@ import numpy as np
 from numpy.lib.utils import deprecate
 from Bio.KDTree import KDTree
 import warnings
+import logging
 
 from MDAnalysis.core import flags
 from ..lib import distances
 from ..lib.mdamath import triclinic_vectors
+
+
+logger = logging.getLogger(__name__)
 
 
 class AllSelection(object):
@@ -128,9 +132,12 @@ class AroundSelection(DistanceSelection):
         for typical problems.
         Limitations: always ignores periodicity
         """
+        logger.debug("In Around KDTree")
         sel = self.sel.apply(group)
+        logger.debug("Reference group is {}".format(sel))
         # All atoms in group that aren't in sel
         sys = group[~np.in1d(group.indices, sel.indices)]
+        logger.debug("Other group is {}".format(sys))
 
         kdtree = KDTree(dim=3, bucket_size=10)
         kdtree.set_coords(sys.positions)
@@ -138,20 +145,29 @@ class AroundSelection(DistanceSelection):
         for atom in sel.positions:
             kdtree.search(atom, self.cutoff)
             found_indices.append(kdtree.get_indices())
+        logger.debug("Found indices are {}".format(found_indices))
         # These are the indices from SYS that were seen when
         # probing with SEL
-        unique_idx = np.unique(found_indices)
+        unique_idx = np.unique(np.concatenate(found_indices))
+        logger.debug("Unique indices are {}".format(unique_idx))
         return sys[unique_idx]
 
     def _apply_distmat(self, group):
+        logger.debug("In Around Distmat")
         sel = self.sel.apply(group)
+        logger.debug("Sel is {}".format(sel))
         sys = group[~np.in1d(group.indices, sel.indices)]
+        logger.debug("Sys is {}".format(sys))
 
         box = group.dimensions if self.periodic else None
         dist = distances.distance_array(
             sys.positions, sel.positions, box)
+        logger.debug("dist has shape {}".format(dist.shape))
+        logger.debug("dist is {}".format(dist))
 
-        mask = (dist <= self.cutoff).any(axis=0)
+        mask = (dist <= self.cutoff).any(axis=1)
+
+        logger.debug("mask has shape {}".format(mask.shape))
 
         return sys[mask]
 
@@ -475,11 +491,11 @@ class ByNumSelection(RangeSelection):
         # user will be familiar with
         indices = group.indices + 1
         if self.upper is not None:
-            lower_mask = resnums >= self.lower
-            upper_mask = resnums <= self.upper
+            lower_mask = indices >= self.lower
+            upper_mask = indices <= self.upper
             mask = lower_mask & upper_mask
         else:
-            mask = resnums == self.lower
+            mask = indices == self.lower
         return group[mask]
 
 
