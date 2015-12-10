@@ -7,15 +7,16 @@ import numpy as np
 from . import selection
 
 
-def make_group(top):
+def make_group():
     """Generate the Group class with attributes according to the topology.
 
     """
     return type('Group', (GroupBase,), {})
 
 
-def make_levelgroup(top, Groupclass, level):
-    """Generate the AtomGroup class with attributes according to the topology.
+def make_levelgroup(Groupclass, level):
+    """Generate the *Group class at `level` with attributes according to the
+    topology.
 
     """
     if level == 'atom':
@@ -29,6 +30,23 @@ def make_levelgroup(top, Groupclass, level):
         baseclass = SegmentGroupBase 
 
     return type(levelgroup, (Groupclass, baseclass), {})
+
+
+def make_levelcomponent(level):
+    """Generate a copy of the Component class specified by `level`.
+
+    """
+    if level == 'atom':
+        levelgroup = 'Atom'
+        baseclass = AtomBase
+    elif level == 'residue':
+        levelgroup = 'Residue'
+        baseclass = ResidueBase
+    elif level == 'segment':
+        levelgroup = 'Segment'
+        baseclass = SegmentBase 
+
+    return type(levelgroup, (baseclass,), {})
 
 
 class GroupBase(object):
@@ -66,7 +84,10 @@ class GroupBase(object):
         # because our _ix attribute is a numpy array
         # it can be sliced by all of these already,
         # so just return ourselves sliced by the item
-        return self.__class__(self._ix[item], self._u)
+        if not isinstance(item, (int, np.int_)):
+            return self.__class__(self._ix[item], self._u)
+        else:
+            return self._u._components[self.level](self._ix[item], self._u)
 
     def __repr__(self):
         return ("<{}Group with {} {}s>"
@@ -173,6 +194,75 @@ class AtomGroupBase(object):
         else:
             return AtomGroup(atomlist)  # XXX: but inconsistent (see residues and Issue 47)
 
+    @property
+    def positions(self):
+        """Coordinates of the atoms in the AtomGroup.
+
+        The positions can be changed by assigning an array of the appropriate
+        shape, i.e. either Nx3 to assign individual coordinates or 3, to assign
+        the *same* coordinate to all atoms (e.g. ``ag.positions = array([0,0,0])``
+        will move all particles to the origin).
+
+        """
+        return self._u.trajectory.ts.positions[self._ix]
+    
+    @positions.setter
+    def positions(self, values):
+        ts = self._u.trajectory.ts
+        ts.positions[self._ix, :] = values
+
+    @property
+    def velocities(self):
+        """Velocities of the atoms in the AtomGroup.
+
+        The velocities can be changed by assigning an array of the appropriate
+        shape, i.e. either Nx3 to assign individual velocities or 3 to assign
+        the *same* velocity to all atoms (e.g. ``ag.velocity = array([0,0,0])``
+        will give all particles zero velocity).
+
+        Raises a :exc:`NoDataError` if the underlying
+        :class:`~MDAnalysis.coordinates.base.Timestep` does not contain
+        :attr:`~MDAnalysis.coordinates.base.Timestep.velocities`.
+
+        """
+        ts = self._u.trajectory.ts
+        try:
+            return np.array(ts.velocities[self._ix])
+        except (AttributeError, NoDataError):
+            raise NoDataError("Timestep does not contain velocities")
+
+    @velocities.setter
+    def velocities(self, values):
+        ts = self._u.trajectory.ts
+        try:
+            ts.velocities[self._ix, :] = values
+        except AttributeError:
+            raise NoDataError("Timestep does not contain velocities")
+
+    @property
+    def forces(self):
+        """Forces on each atom in the AtomGroup.
+
+        The velocities can be changed by assigning an array of the appropriate
+        shape, i.e. either Nx3 to assign individual velocities or 3 to assign
+        the *same* velocity to all atoms (e.g. ``ag.velocity = array([0,0,0])``
+        will give all particles zero velocity).
+
+
+        """
+        ts = self._u.trajectory.ts
+        try:
+            return ts.forces[self._ix]
+        except (AttributeError, NoDataError):
+            raise NoDataError("Timestep does not contain forces")
+
+    @forces.setter
+    def forces(self, values):
+        ts = self._u.trajectory.ts
+        try:
+            ts.forces[self._ix, :] = forces
+        except AttributeError:
+            raise NoDataError("Timestep does not contain forces")
 
     def select_atoms(self, sel, *othersel, **selgroups):
         """Select atoms using a CHARMM selection string.
@@ -334,6 +424,14 @@ class AtomGroupBase(object):
 
 
 class ResidueGroupBase(object):
+    """ResidueGroup base class.
+
+    This class is used by a Universe for generating its Topology-specific
+    ResidueGroup class. All the TopologyAttr components are obtained from
+    GroupBase, so this class only includes ad-hoc methods specific to
+    ResidueGroups.
+
+    """
     level = 'residue'
 
     def sequence(self, **kwargs):
@@ -431,4 +529,113 @@ class ResidueGroupBase(object):
 
 
 class SegmentGroupBase(object):
+    """SegmentGroup base class.
+
+    This class is used by a Universe for generating its Topology-specific
+    SegmentGroup class. All the TopologyAttr components are obtained from
+    GroupBase, so this class only includes ad-hoc methods specific to
+    SegmentGroups.
+
+    """
     level = 'segment'
+
+
+class ComponentBase(object):
+    """Base class from which a Universe's Component class is built.
+
+    Components are the individual objects that are found in Groups.
+    """
+    def __init__(self, ix, u):
+        # index of component
+        self._ix = ix
+        self._u = u
+
+    def __repr__(self):
+        return ("<{} {}>"
+                "".format(self.level.capitalize(), self._ix))
+
+    # TODO: put in mixin with GroupBase method of same name
+    @classmethod
+    def _add_prop(cls, attr):
+        """Add attr into the namespace for this class
+
+        Arguments
+        ---------
+        attr 
+            TopologyAttr object to add
+        """
+        getter = lambda self: attr.__getitem__(self)
+        setter = lambda self, values: attr.__setitem__(self, values)
+
+        setattr(cls, attr.singular,
+                property(getter, setter, None, attr.__doc__))
+
+
+class AtomBase(ComponentBase):
+    """Atom base class.
+
+    This class is used by a Universe for generating its Topology-specific Atom
+    class. All the TopologyAttr components are obtained from ComponentBase, so
+    this class only includes ad-hoc methods specific to Atoms.
+
+    """
+    level = 'atom'
+
+    @property
+    def residue(self):
+        residueclass = self._u._components['residue']
+        return residueclass(self._u._topology.resindices[self],
+                            self._u)
+
+    @property
+    def segment(self):
+        segmentclass = self._u._components['segment']
+        return segmentclass(self._u._topology.segindices[self],
+                            self._u)
+
+class ResidueBase(ComponentBase):
+    """Residue base class.
+
+    This class is used by a Universe for generating its Topology-specific
+    Residue class. All the TopologyAttr components are obtained from
+    ComponentBase, so this class only includes ad-hoc methods specific to
+    Residues.
+
+    """
+    level = 'residue'
+
+    @property
+    def atoms(self):
+        atomsclass = self._u._groups['atom']
+        return atomsclass(self._u._topology.indices[self],
+                          self._u)
+
+    @property
+    def segment(self):
+        segmentclass = self._u._components['segment']
+        return segmentclass(self._u._topology.segindices[self],
+                            self._u)
+
+
+class SegmentBase(ComponentBase):
+    """Segment base class.
+
+    This class is used by a Universe for generating its Topology-specific Segment
+    class. All the TopologyAttr components are obtained from ComponentBase, so
+    this class only includes ad-hoc methods specific to Segments.
+
+    """
+    level = 'segment'
+
+    @property
+    def atoms(self):
+        atomsclass = self._u._groups['atom']
+        return atomsclass(self._u._topology.indices[self],
+                          self._u)
+
+    @property
+    def residue(self):
+        residuesclass = self._u._groups['residue']
+        return residuesclass(self._u._topology.resindices[self],
+                             self._u)
+
