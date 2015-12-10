@@ -1522,16 +1522,16 @@ class AtomGroup(object):
 
         .. SeeAlso:: :meth:`Universe.select_atoms`
         """
-        from . import Selection  # can ONLY import in method, otherwise cyclical import!
+        from . import selection  # can ONLY import in method, otherwise cyclical import!
 
-        atomgrp = Selection.Parser.parse(sel, selgroups).apply(self)
+        atomgrp = selection.Parser.parse(sel, selgroups).apply(self)
         if len(othersel) == 0:
             return atomgrp
         else:
             # Generate a selection for each selection string
             #atomselections = [atomgrp]
             for sel in othersel:
-                atomgrp = atomgrp + Selection.Parser.parse(sel, selgroups).apply(self)
+                atomgrp = atomgrp + selection.Parser.parse(sel, selgroups).apply(self)
                 #atomselections.append(Selection.Parser.parse(sel).apply(self))
             #return tuple(atomselections)
             return atomgrp
