@@ -200,12 +200,12 @@ class TestGROWriter(TestCase, tempdir.TempDir):
         self.large_universe.atoms.write(self.outfile3)
         with open(self.outfile3, 'r') as mda_output:
             with open(GRO_large, 'r') as expected_output:
-                produced_line = mda_output.readlines()[-2]
-                expected_line = expected_output.readlines()[-2]
-                assert_equal(produced_line,
-                             expected_line,
-                             err_msg="Writing GRO file with > 100 000"
-                             "coords does not truncate properly.")
+                produced_lines = mda_output.readlines()[1:]
+                expected_lines = expected_output.readlines()[1:]
+                assert_equal(produced_lines,
+                             expected_lines,
+                             err_msg="Writing GRO file with > 100 000 "
+                                 "coords does not truncate properly.")
 
 
     @dec.slow
