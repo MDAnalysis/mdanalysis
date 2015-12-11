@@ -19,21 +19,27 @@
 
 Read DL Poly_ format topology files
 
+DLPoly files have the following Attributes:
+ - Atomnames
+ - Atomids
+
 .. _Poly: http://www.stfc.ac.uk/SCD/research/app/ccg/software/DL_POLY/44516.aspx
 """
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 
 import numpy as np
-import itertools
 
-from . import base
-from . import core
+from .base import TopologyReader
+from ..core.topology import Topology
+from ..core.topologyattrs import (
+    Atomids,
+    Atomnames,
+)
 from ..lib.util import openany
-from ..core.AtomGroup import Atom
 
 
-class ConfigParser(base.TopologyReader):
+class ConfigParser(TopologyReader):
     """DL_Poly CONFIG file parser
 
     .. versionadded:: 0.10.1
@@ -41,7 +47,8 @@ class ConfigParser(base.TopologyReader):
     def parse(self):
         with openany(self.filename, 'r') as inf:
             inf.readline()
-            levcfg, imcon, megatm = map(int, inf.readline().split()[:3])
+            levcfg, imcon, megatm = map(int,
+                                        inf.readline().split()[:3])
             if not imcon == 0:
                 inf.readline()
                 inf.readline()
@@ -78,25 +85,17 @@ class ConfigParser(base.TopologyReader):
         else:
             ids = np.arange(len(names))
 
-        segid = "SYSTEM"
-        resname = "SYSTEM"
-        resid = 1
-        atoms = []
 
-        for i, (name, num) in enumerate(itertools.izip(names, ids)):
-            elem = core.guess_atom_element(name)
-            mass = core.get_atom_mass(elem)
-            charge = core.guess_atom_charge(name)
-            atoms.append(Atom(i, name, elem, resname, resid,
-                              segid, mass, charge,
-                              resnum=num, universe=self._u))
+        names = Atomnames(names)
+        ids = Atomids(ids)
 
-        structure = {'atoms': atoms}
+        top = Topology(len(ids), 1, 1,
+                       attrs = [ids, names])
 
-        return structure
+        return top
 
 
-class HistoryParser(base.TopologyReader):
+class HistoryParser(TopologyReader):
     """DL_Poly History file parser
 
     .. versionadded:: 0.10.1
@@ -142,19 +141,10 @@ class HistoryParser(base.TopologyReader):
         else:
             ids = np.arange(len(names))
 
-        segid = "SYSTEM"
-        resname = "SYSTEM"
-        resid = 1
-        atoms = []
+        names = Atomnames(names)
+        ids = Atomids(ids)
 
-        for i, (name, num) in enumerate(itertools.izip(names, ids)):
-            elem = core.guess_atom_element(name)
-            mass = core.get_atom_mass(elem)
-            charge = core.guess_atom_charge(name)
-            atoms.append(Atom(i, name, elem, resname, resid,
-                              segid, mass, charge,
-                              resnum=num, universe=self._u))
+        top = Topology(len(ids), 1, 1,
+                       attrs = [ids, names])
 
-        structure = {'atoms': atoms}
-
-        return structure
+        return top
