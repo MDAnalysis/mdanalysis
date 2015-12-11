@@ -187,11 +187,12 @@ class Universe(object):
             self._topology.n_segments), self)
 
         for seg in self.segments:
-            if seg.segid[0].isdigit():
-                name = 's' + seg.segid
-            else:
-                name = seg.segid
-            self.__dict__[name] = seg
+            if hasattr(seg, 'segid'):
+                if seg.segid[0].isdigit():
+                    name = 's' + seg.segid
+                else:
+                    name = seg.segid
+                self.__dict__[name] = seg
 
         # Load coordinates
         self.load_new(coordinatefile, **kwargs)
