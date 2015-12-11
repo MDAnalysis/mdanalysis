@@ -396,6 +396,7 @@ class Universe(object):
         self._Group._add_prop(topologyattr)
 
 
+# TODO: what is the point of this function???
 def as_Universe(*args, **kwargs):
     """Return a universe from the input arguments.
 
