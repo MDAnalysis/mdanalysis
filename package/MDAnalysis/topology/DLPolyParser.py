@@ -78,7 +78,7 @@ class ConfigParser(TopologyReader):
 
         if ids:
             ids = np.array(ids)
-            names = np.array(names)
+            names = np.array(names, dtype=object)
             order = np.argsort(ids)
             ids = ids[order]
             names = names[order]
@@ -134,7 +134,7 @@ class HistoryParser(TopologyReader):
 
         if ids:
             ids = np.array(ids)
-            names = np.array(names)
+            names = np.array(names, dtype=object)
             order = np.argsort(ids)
             ids = ids[order]
             names = names[order]
