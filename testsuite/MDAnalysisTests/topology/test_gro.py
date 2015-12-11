@@ -18,42 +18,29 @@ from numpy.testing import (
 
 import MDAnalysis as mda
 
+from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import (
     GRO,
     two_water_gro_widebox,
 )
 
 
-
-class TestGROParser(object):
-    def setUp(self):
-        parser = mda.topology.GROParser.GROParser
-        with parser(GRO) as p:
-            s = p.parse()
-        self.top = s
-
-    def tearDown(self):
-        del self.top
-
-    def test_attributes(self):
-        for attr in ['atomids', 'atomnames', 'resids', 'resnames']:
-            assert_(hasattr(self.top, attr))
+class TestGROParser(ParserBase):
+    parser = mda.topology.GROParser.GROParser
+    filename = GRO
+    expected_attrs = ['ids', 'names', 'resids', 'resnames']
+    expected_n_atoms = 47681
+    expected_n_residues = 11302
+    expected_n_segments = 1
 
     def test_attr_size(self):
-        for attr in ['atomids', 'atomnames']:
-            assert_(len(self.top.atomids) == self.top.n_atoms)
-            assert_(len(self.top.atomnames) == self.top.n_atoms)
+        for attr in ['ids', 'names']:
+            assert_(len(self.top.ids) == self.top.n_atoms)
+            assert_(len(self.top.names) == self.top.n_atoms)
         for attr in ['resids', 'resnames']:
             assert_(len(self.top.resids) == self.top.n_residues)
             assert_(len(self.top.resnames) == self.top.n_residues)
 
-    def test_size(self):
-        assert_(self.top.n_atoms == 47681)
-        assert_(self.top.n_residues == 11302)
-        assert_(self.top.n_segments == 0)
-
-    def test_tt_size(self):
-        assert_(self.top.tt.size == (47681, 11302, 0))
 
 
 class TestGROWideBox(object):
