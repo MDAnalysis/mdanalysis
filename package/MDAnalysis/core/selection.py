@@ -202,10 +202,10 @@ class SphericalLayerSelection(DistanceSelection):
 
         sys = group[~np.in1d(group.indices, sel.indices)]
 
-        box = sys_ag.dimensions if self.periodic else None
+        box = group.dimensions if self.periodic else None
         d = distances.distance_array(sel_CoG,
                                      sys.positions,
-                                     box=box)
+                                     box=box)[0]
         lmask = d < self.exRadius
         rmask = d > self.inRadius
         mask = lmask & rmask
@@ -234,12 +234,12 @@ class SphericalZoneSelection(DistanceSelection):
 
     def _apply_distmat(self, group):
         sel = self.sel.apply(group)
-        ref = sel_atoms.center_of_geometry().reshape(1, 3).astype(np.float32)
+        ref = sel.center_of_geometry().reshape(1, 3).astype(np.float32)
 
-        box = sys_ag.dimensions if self.periodic else None
+        box = group.dimensions if self.periodic else None
         d = distances.distance_array(ref,
                                      group.positions,
-                                     box=box)
+                                     box=box)[0]
         idx = d < self.cutoff
         return group[idx]
 
@@ -343,8 +343,8 @@ class PointSelection(DistanceSelection):
         ref_coor = np.asarray(ref_coor, dtype=np.float32)
         box = group.dimensions if self.periodic else None
 
-        dist = distances.distance_array(group.positions, ref_coor, box)[0]
-        mask = dist <= self.cutoff
+        dist = distances.distance_array(group.positions, ref_coor, box)
+        mask = (dist <= self.cutoff).any(axis=1)
         return group[mask]
 
 

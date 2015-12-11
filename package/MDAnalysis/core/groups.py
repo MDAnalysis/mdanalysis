@@ -664,7 +664,11 @@ class SegmentBase(ComponentBase):
             resnum = int(attr[1:]) - 1
             return self.residues[resnum]
         else:
-            raise AttributeError
+            # resname from segment
+            rg = self.residues[self.residues.resnames == attr]
+            if rg:
+                return rg
+        raise AttributeError
 
     @property
     def atoms(self):
