@@ -8,7 +8,7 @@ from numpy.testing import (assert_equal, assert_almost_equal, dec,
 from unittest import TestCase
 import tempdir
 
-from MDAnalysisTests.datafiles import (GRO, GRO_velocity)
+from MDAnalysisTests.datafiles import (GRO, GRO_velocity, GRO_large)
 from MDAnalysisTests.coordinates.reference import RefAdK
 from MDAnalysisTests.coordinates.base import BaseTimestepTest
 
@@ -161,11 +161,13 @@ class TestGROReaderNoConversion(TestCase, RefAdK):
 class TestGROWriter(TestCase, tempdir.TempDir):
     def setUp(self):
         self.universe = mda.Universe(GRO)
+        self.large_universe = mda.Universe(GRO_large)
         self.prec = 2  # 3 decimals in file in nm but MDAnalysis is in A
         ext = ".gro"
         self.tmpdir = tempdir.TempDir()
         self.outfile = self.tmpdir.name + '/gro-writer' + ext
         self.outfile2 = self.tmpdir.name + '/gro-writer2' + ext
+        self.outfile3 = self.tmpdir.name + '/gro-writer3' + ext
 
     def tearDown(self):
         try:
@@ -176,7 +178,12 @@ class TestGROWriter(TestCase, tempdir.TempDir):
             os.unlink(self.outfile2)
         except OSError:
             pass
+        try:
+            os.unlink(self.outfile3)
+        except OSError:
+            pass
         del self.universe
+        del self.large_universe
         del self.tmpdir
 
     @dec.slow
@@ -187,6 +194,19 @@ class TestGROWriter(TestCase, tempdir.TempDir):
                             self.universe.atoms.coordinates(), self.prec,
                             err_msg="Writing GRO file with GROWriter does "
                             "not reproduce original coordinates")
+
+    @dec.slow
+    def test_writer_large(self):
+        self.large_universe.atoms.write(self.outfile3)
+        with open(self.outfile3, 'r') as mda_output:
+            with open(GRO_large, 'r') as expected_output:
+                produced_line = mda_output.readlines()[-2]
+                expected_line = expected_output.readlines()[-2]
+                assert_equal(produced_line,
+                             expected_line,
+                             err_msg="Writing GRO file with > 100 000"
+                             "coords does not truncate properly.")
+
 
     @dec.slow
     def test_timestep_not_modified_by_writer(self):
