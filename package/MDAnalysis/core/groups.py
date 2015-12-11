@@ -117,9 +117,11 @@ class GroupBase(object):
         # for the case where other is a Component, and so other._ix is an
         # integer
         if isinstance(other._ix, int):
-            return NotImplemented
+            o_ix = np.array([other._ix])
+        else:
+            o_ix = other._ix
 
-        return self.__class__(np.concatenate([self._ix, other._ix]), self._u)
+        return self.__class__(np.concatenate([self._ix, o_ix]), self._u)
 
     # TODO: finish me!
     def __contains__(self, other):
@@ -619,15 +621,35 @@ class ComponentBase(object):
         return hash(self.index)
 
     def __add__(self, other):
+        """Concatenate the Component with another Component or Group of the
+        same level.
+
+        Parameters
+        ----------
+        other : Component or Group
+            Component or Group with `other.level` same as `self.level`
+
+        Returns
+        -------
+        Group
+            Group with elements of `self` and `other` concatenated
+        
+        """
         if self.level != other.level:
             raise TypeError('Can only add Atoms or AtomGroups (not "{0}")'
                             ' to Atom'.format(other.__class__.__name__))
+
         if not self.universe is other.universe:
             raise ValueError("Can only add objects from the same Universe")
-        if isinstance(other, Atom):
-            return AtomGroup([self, other])
+
+        if isinstance(other._ix, int):
+            o_ix = np.array([other._ix])
         else:
-            return AtomGroup([self] + other._atoms)
+            o_ix = other._ix
+
+        return self._u._groups[self.level](
+                np.concatenate((np.array([self._ix]), o_ix)), self._u)
+
 
     # TODO: put in mixin with GroupBase method of same name
     @classmethod
@@ -644,6 +666,10 @@ class ComponentBase(object):
 
         setattr(cls, attr.singular,
                 property(getter, setter, None, attr.__doc__))
+
+    @property
+    def universe(self):
+        return self._u
 
 
 class AtomBase(ComponentBase):
