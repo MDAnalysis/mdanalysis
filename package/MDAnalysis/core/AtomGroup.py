@@ -487,17 +487,6 @@ class Atom(object):
     """
 
 
-    def __add__(self, other):
-        if not isinstance(other, (Atom, AtomGroup)):
-            raise TypeError('Can only add Atoms or AtomGroups (not "{0}")'
-                            ' to Atom'.format(other.__class__.__name__))
-        if not self.universe is other.universe:
-            raise ValueError("Can only add objects from the same Universe")
-        if isinstance(other, Atom):
-            return AtomGroup([self, other])
-        else:
-            return AtomGroup([self] + other._atoms)
-
     @property
     def position(self):
         """coordinates of the atom
