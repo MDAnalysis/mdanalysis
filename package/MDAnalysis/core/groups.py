@@ -231,6 +231,9 @@ class AtomGroupBase(object):
         the *same* coordinate to all atoms (e.g. ``ag.positions = array([0,0,0])``
         will move all particles to the origin).
 
+        .. note:: changing the position is not reflected in any files; reading any
+                  frame from the trajectory will replace the change with that
+                  from the file
         """
         return self._u.trajectory.ts.positions[self._ix]
     
@@ -693,6 +696,78 @@ class AtomBase(ComponentBase):
         segmentclass = self._u._components['segment']
         return segmentclass(self._u._topology.segindices[self],
                             self._u)
+
+    @property
+    def position(self):
+        """Coordinates of the atom.
+
+        The position can be changed by assigning an array of length (3,). 
+        
+        .. note:: changing the position is not reflected in any files; reading any
+                  frame from the trajectory will replace the change with that
+                  from the file
+        """
+        return self._u.trajectory.ts.positions[self._ix]
+
+    @position.setter
+    def position(self, values):
+        self._u.trajectory.ts.positions[self._ix, :] = values
+
+    @property
+    def velocity(self):
+        """Velocity of the atom.
+
+        The velocity can be changed by assigning an array of shape (3,). 
+        
+        .. note:: changing the velocity is not reflected in any files; reading any
+                  frame from the trajectory will replace the change with that
+                  from the file
+
+        A :exc:`~MDAnalysis.NoDataError` is raised if the trajectory
+        does not contain velocities.
+
+        """
+        ts = self._u.trajectory.ts
+        try:
+            return ts.velocities[self._ix]
+        except (AttributeError, NoDataError):
+            raise NoDataError("Timestep does not contain velocities")
+
+    @velocity.setter
+    def velocity(self, values):
+        ts = self._u.trajectory.ts
+        try:
+            ts.velocities[self.index, :] = values
+        except (AttributeError, NoDataError):
+            raise NoDataError("Timestep does not contain velocities")
+
+    @property
+    def force(self):
+        """Force on the atom.
+
+        The force can be changed by assigning an array of shape (3,). 
+        
+        .. note:: changing the force is not reflected in any files; reading any
+                  frame from the trajectory will replace the change with that
+                  from the file
+
+        A :exc:`~MDAnalysis.NoDataError` is raised if the trajectory
+        does not contain forces.
+
+        """
+        ts = self._u.trajectory.ts
+        try:
+            return ts.forces[self._ix]
+        except (AttributeError, NoDataError):
+            raise NoDataError("Timestep does not contain forces")
+
+    @force.setter
+    def force(self, values):
+        ts = self._u.trajectory.ts
+        try:
+            ts.forces[self._ix, :] = values
+        except (AttributeError, NoDataError):
+            raise NoDataError("Timestep does not contain forces")
 
 
 class ResidueBase(ComponentBase):
