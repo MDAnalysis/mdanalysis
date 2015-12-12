@@ -1,6 +1,7 @@
 import MDAnalysis as mda
 import numpy as np
 import os
+import bz2
 
 from nose.plugins.attrib import attr
 from numpy.testing import (assert_equal, assert_almost_equal, dec,
@@ -199,7 +200,7 @@ class TestGROWriter(TestCase, tempdir.TempDir):
     def test_writer_large(self):
         self.large_universe.atoms.write(self.outfile3)
         with open(self.outfile3, 'r') as mda_output:
-            with open(GRO_large, 'r') as expected_output:
+            with bz2.BZ2File(GRO_large, 'r') as expected_output:
                 produced_lines = mda_output.readlines()[1:]
                 expected_lines = expected_output.readlines()[1:]
                 assert_equal(produced_lines,

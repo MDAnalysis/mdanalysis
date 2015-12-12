@@ -131,7 +131,7 @@ PDB_helix = resource_filename(__name__, 'data/A6PA6_alpha.pdb')
 
 GRO = resource_filename(__name__, 'data/adk_oplsaa.gro')
 GRO_velocity = resource_filename(__name__, 'data/sample_velocity_file.gro')
-GRO_large = resource_filename(__name__, 'data/bigbox.gro')
+GRO_large = resource_filename(__name__, 'data/bigbox.gro.bz2')
 PDB = resource_filename(__name__, 'data/adk_oplsaa.pdb')
 XTC = resource_filename(__name__, 'data/adk_oplsaa.xtc')
 TRR = resource_filename(__name__, 'data/adk_oplsaa.trr')
