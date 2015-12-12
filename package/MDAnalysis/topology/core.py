@@ -72,7 +72,6 @@ def get_parser_for(filename, permissive=False, format=None):
             "http://issues.mdanalysis.org".format(filename, _topology_parsers.keys()))
 
 
-# following guess_* used by PDB parser
 def guess_atom_type(atomname):
     """Guess atom type from the name.
 
