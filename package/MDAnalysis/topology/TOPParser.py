@@ -17,12 +17,32 @@
 AMBER PRMTOP topology parser
 ============================
 
-Reads a  AMBER top file to build the system. It uses atom types,
-partial charges and masses from the PRMTOP file.
+Reads a  AMBER top file to build the system.
 
-The format is defined in `PARM parameter/topology file specification`_.
-The reader tries to detect if it is a newer (AMBER 12?) file format
-by looking for the flag "ATOMIC_NUMBER".
+Amber keywords are turned into the following attributes:
+
++-----------------+----------------------+
+| AMBER flag      | MDAnalysis attribute |
++-----------------+----------------------+
+| ATOM_NAME       | names                |
++-----------------+----------------------+
+| CHARGE          | charges              |
++-----------------+----------------------+
+| ATOMIC_NUMBER   | numbers              |
++-----------------+----------------------+
+| MASS            | masses               |
++-----------------+----------------------+
+| ATOM_TYPE_INDEX | type_indices         |
++-----------------+----------------------+
+| AMBER_ATOM_TYPE | types                |
++-----------------+----------------------+
+| RESIDUE_LABEL   | resnames             |
++-----------------+----------------------+
+| RESIDUE_POINTER | residues             |
++-----------------+----------------------+
+
+TODO:
+  Add reading of bonds etc
 
 .. Note::
 
@@ -57,7 +77,22 @@ from ..core.topologyattrs import (
     Charges,
     Masses,
     Resnames,
+    AtomAttr,
 )
+
+
+class Atomnumbers(AtomAttr):
+    """Atom number for each Atom"""
+    attrname = 'numbers'
+    singular = 'number'
+    level = 'atom'
+
+
+class TypeIndices(AtomAttr):
+    """Numerical type of each Atom"""
+    attrname = 'type_indices'
+    singular = 'type_index'
+    level = 'atom'
 
 
 class TOPParser(TopologyReader):
@@ -96,7 +131,8 @@ class TOPParser(TopologyReader):
             "CHARGE": (1, 5, self.parse_charges, "charge", 0),
             "ATOMIC_NUMBER": (1, 10, self.parse_numbers, "atom_number", 0),
             "MASS": (1, 5, self.parse_masses, "mass", 0),
-            "ATOM_TYPE_INDEX": (1, 10, self.parse_types, "atom_type", 0),
+            "ATOM_TYPE_INDEX": (1, 10, self.parse_type_indices, "type_indices", 0),
+            "AMBER_ATOM_TYPE": (1, 20, self.parse_types, "types", 0),
             "RESIDUE_LABEL": (1, 20, self.parse_resnames, "resname", 11),
             "RESIDUE_POINTER": (2, 10, self.parse_residx, "respoint", 11),
         }
@@ -186,7 +222,9 @@ class TOPParser(TopologyReader):
     def parse_charges(self, atoms_per, numlines):
         vals = self.parsesection_mapper(
             atoms_per, numlines, lambda x: float(x))
-        attr = Charges(np.array(vals, dtype=np.float32))
+        charges = np.array(vals, dtype=np.float32)
+        charges /= 18.2223  # to electron charge units
+        attr = Charges(charges)
         return attr
 
     def parse_masses(self, atoms_per, numlines):
@@ -198,13 +236,19 @@ class TOPParser(TopologyReader):
     def parse_numbers(self, atoms_per, numlines):
         vals = self.parsesection_mapper(
             atoms_per, numlines, lambda x: int(x))
-        attr = Atomnumber(np.array(vals, dtype=np.int32))
+        attr = Atomnumbers(np.array(vals, dtype=np.int32))
         return attr
 
     def parse_types(self, atoms_per, numlines):
         vals = self.parsesection_mapper(
+            atoms_per, numlines, lambda x: x)
+        attr = Atomtypes(np.array(vals, dtype=object))
+        return attr
+
+    def parse_type_indices(self, atoms_per, numlines):
+        vals = self.parsesection_mapper(
             atoms_per, numlines, lambda x: int(x))
-        attr = Atomtypes(np.array(vals, dtype=np.int32))
+        attr = TypeIndices(np.array(vals, dtype=np.int32))
         return attr
 
     def parse_residx(self, atoms_per, numlines):
