@@ -164,7 +164,7 @@ def extract_box_info(data, fver):
     return obj.Box(box, box_rel, box_v)
 
 
-def do_mtop(data, fver, u):
+def do_mtop(data, fver):
     # mtop: the topology of the whole system
     symtab = do_symtab(data)
     do_symstr(data, symtab)  # system_name

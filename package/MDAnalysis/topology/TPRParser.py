@@ -183,7 +183,7 @@ class TPRParser(TopologyReader):
             U.fver_err(V)
 
         if th.bTop:
-            tpr_top = U.do_mtop(data, V, self._u)
+            tpr_top = U.do_mtop(data, V)
         else:
             msg = "{0}: No topology found in tpr file".format(self.filename)
             logger.critical(msg)
