@@ -544,7 +544,7 @@ class ProteinSelection(Selection):
     .. SeeAlso:: :func:`MDAnalysis.lib.util.convert_aa_code`
     """
     #: Dictionary of recognized residue names (3- or 4-letter).
-    prot_res = dict([(x, None) for x in [
+    prot_res = {x: None for x in [
         # CHARMM top_all27_prot_lipid.rtf
         'ALA', 'ARG', 'ASN', 'ASP', 'CYS', 'GLN', 'GLU', 'GLY', 'HSD',
         'HSE', 'HSP', 'ILE', 'LEU', 'LYS', 'MET', 'PHE', 'PRO', 'SER', 'THR',
@@ -563,7 +563,7 @@ class ProteinSelection(Selection):
         'HID', 'HIE', 'HIP', 'ORN', 'DAB', 'LYN', 'HYP', 'CYM', 'CYX', 'ASH',
         'GLH',
         'ACE', 'NME',
-    ]])
+    ]}
 
     def _apply(self, group):
         return set([a for a in group.atoms if a.resname in self.prot_res])
@@ -582,9 +582,9 @@ class NucleicSelection(Selection):
     .. versionchanged:: 0.8
        additional Gromacs selections
     """
-    nucl_res = dict([(x, None) for x in [
+    nucl_res = {x: None for x in [
         'ADE', 'URA', 'CYT', 'GUA', 'THY', 'DA', 'DC', 'DG', 'DT', 'RA',
-        'RU', 'RG', 'RC', 'A', 'T', 'U', 'C', 'G']])
+        'RU', 'RG', 'RC', 'A', 'T', 'U', 'C', 'G']}
 
     def _apply(self, group):
         return set([a for a in group.atoms if a.resname in self.nucl_res])
@@ -596,7 +596,7 @@ class BackboneSelection(ProteinSelection):
     This excludes OT* on C-termini
     (which are included by, eg VMD's backbone selection).
     """
-    bb_atoms = dict([(x, None) for x in ['N', 'CA', 'C', 'O']])
+    bb_atoms = {x: None for x in ['N', 'CA', 'C', 'O']}
 
     def _apply(self, group):
         return set([a for a in group.atoms if (a.name in self.bb_atoms and a.resname in self.prot_res)])
@@ -608,7 +608,7 @@ class NucleicBackboneSelection(NucleicSelection):
     These atoms are only recognized if they are in a residue matched
     by the :class:`NucleicSelection`.
     """
-    bb_atoms = dict([(x, None) for x in ["P", "C5'", "C3'", "O3'", "O5'"]])
+    bb_atoms = {x: None for x in ["P", "C5'", "C3'", "O3'", "O5'"]}
 
     def _apply(self, group):
         return set([a for a in group.atoms
@@ -624,10 +624,10 @@ class BaseSelection(NucleicSelection):
      'N9', 'N7', 'C8', 'C5', 'C4', 'N3', 'C2', 'N1', 'C6',
      'O6','N2','N6', 'O2','N4','O4','C5M'
     """
-    base_atoms = dict([(x, None) for x in [
+    base_atoms = {x: None for x in [
         'N9', 'N7', 'C8', 'C5', 'C4', 'N3', 'C2', 'N1', 'C6',
         'O6', 'N2', 'N6',
-        'O2', 'N4', 'O4', 'C5M']])
+        'O2', 'N4', 'O4', 'C5M']}
 
     def _apply(self, group):
         return set([a for a in group.atoms
@@ -638,7 +638,7 @@ class BaseSelection(NucleicSelection):
 class NucleicSugarSelection(NucleicSelection):
     """Contains all atoms with name C1', C2', C3', C4', O2', O4', O3'.
     """
-    sug_atoms = dict([(x, None) for x in ['C1\'', 'C2\'', 'C3\'', 'C4\'', 'O4\'']])
+    sug_atoms = {x: None for x in ['C1\'', 'C2\'', 'C3\'', 'C4\'', 'O4\'']}
 
     def _apply(self, group):
         return set([a for a in group.atoms
