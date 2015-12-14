@@ -75,7 +75,7 @@ class GMSParser(TopologyReader):
                 _m = re.match(\
 r'^\s*([A-Za-z_][A-Za-z_0-9]*)\s+([0-9]+\.[0-9]+)\s+(\-?[0-9]+\.[0-9]+)\s+(\-?[0-9]+\.[0-9]+)\s+(\-?[0-9]+\.[0-9]+).*',
                         line)
-                if _m == None:
+                if _m is None:
                     break
                 name = _m.group(1)
                 elem = int(float(_m.group(2)))
