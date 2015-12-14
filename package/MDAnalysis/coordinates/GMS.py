@@ -106,7 +106,7 @@ class GMSReader(base.Reader):
         counter = 0
         for line in self.outfile:
             m = re.match(r'^.*RUNTYP=([A-Z]+)\s+.*', line)
-            if (m != None):
+            if (m is not None):
                 self.close()
                 return m.group(1).lower()
 
@@ -130,7 +130,7 @@ class GMSReader(base.Reader):
         # this assumes that this is only called once at startup and that the filestream is already open
         for line in self.outfile:           
             m = re.match(r'\s*TOTAL NUMBER OF ATOMS\s*=\s*([0-9]+)\s*',line)
-            if m == None:
+            if m is None:
                 continue
             self.close()
             return int(m.group(1))
@@ -180,14 +180,14 @@ class GMSReader(base.Reader):
 
         for line in self.outfile:
             if self.runtyp == 'optimize': 
-                if (flag == 0) and (re.match(r'^.NSERCH=.*', line) != None):
+                if (flag == 0) and (re.match(r'^.NSERCH=.*', line) is not None):
                     flag = 1
                     continue
                 if (flag == 1) and (re.match(r'^ COORDINATES OF ALL ATOMS ARE ',\
-                    line) != None):
+                    line) is not None):
                     flag = 2
                     continue
-                if (flag == 2) and (re.match(r'^\s*[-]+\s*', line) != None):
+                if (flag == 2) and (re.match(r'^\s*[-]+\s*', line) is not None):
                     flag = 3
                     continue
                 if flag == 3 and counter < self.n_atoms:
@@ -199,11 +199,11 @@ class GMSReader(base.Reader):
 
             elif self.runtyp == 'surface':
                 if (flag == 0) and (re.match(\
-                        r'^.COORD 1=\s*([-]?[0-9]+\.[0-9]+).*', line) != None):
+                        r'^.COORD 1=\s*([-]?[0-9]+\.[0-9]+).*', line) is not None):
                     flag = 1
                     continue
                 if (flag == 1) and (re.match(\
-                        r'^\s*HAS ENERGY VALUE\s*([-]?[0-9]+\.[0-9]+)\s*', line) != None):
+                        r'^\s*HAS ENERGY VALUE\s*([-]?[0-9]+\.[0-9]+)\s*', line) is not None):
                     flag = 3
                     continue
                 if flag == 3 and counter < self.n_atoms:
