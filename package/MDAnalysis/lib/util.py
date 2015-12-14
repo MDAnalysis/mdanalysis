@@ -1029,7 +1029,7 @@ canonical_inverse_aa_codes = {
     'THR': 'T', 'VAL': 'V', 'TRP': 'W', 'TYR': 'Y'}
 #: translation table for 1-letter codes --> *canonical* 3-letter codes.
 #: The table is used for :func:`convert_aa_code`.
-amino_acid_codes = dict([(one, three) for three, one in canonical_inverse_aa_codes.items()])
+amino_acid_codes = {one: three for three, one in canonical_inverse_aa_codes.items()}
 #: non-default charge state amino acids or special charge state descriptions
 #: (Not fully synchronized with :class:`MDAnalysis.core.Selection.ProteinSelection`.)
 alternative_inverse_aa_codes = {

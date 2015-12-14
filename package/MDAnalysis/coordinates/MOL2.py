@@ -254,7 +254,7 @@ class MOL2Writer(base.Writer):
         for a in obj.atoms:
             bonds.update(a.bonds)
         bonds = sorted([(bond[0].id, bond[1].id, bond.order) for bond in bonds])
-        mapping = dict([(a.id, i) for i, a in enumerate(obj.atoms)])
+        mapping = {a.id: i for i, a in enumerate(obj.atoms)}
 
         atom_lines = ["{0:>4} {1:>4} {2:>13.4f} {3:>9.4f} {4:>9.4f} {5:>4} {6} {7} "
                       "{8:>7.4f}".format(mapping[a.id] + 1, a.name,

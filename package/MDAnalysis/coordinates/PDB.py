@@ -883,7 +883,7 @@ class PrimitivePDBWriter(base.Writer):
 
         atoms = set([a.index for a in self.obj.atoms])
 
-        mapping = dict([(atom.index, i) for i, atom in enumerate(self.obj.atoms)])
+        mapping = {atom.index: i for i, atom in enumerate(self.obj.atoms)}
 
         # Write out only the bonds that were defined in CONECT records
         if self.bonds == "conect":
