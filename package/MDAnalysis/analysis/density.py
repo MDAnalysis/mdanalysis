@@ -155,7 +155,7 @@ class Density(Grid):
     1. From a histogram (i.e. counts on a grid)::
 
         h,edges = numpy.histogramdd(...)
-        D = Density(h,edges)
+        D = Density(h, edges, parameters={'isDensity': False}, units={'length': 'A'})
         D.make_density()
 
     2. From a saved density file (e.g. in OpenDX format), where the lengths are
