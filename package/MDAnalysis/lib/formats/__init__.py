@@ -1,3 +1,3 @@
-from . import xtc
+from . import xdrlib
 
-__all__ = ['xtc']
+__all__ = ['xdrlib']

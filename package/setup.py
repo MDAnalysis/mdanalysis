@@ -296,26 +296,20 @@ def extensions(config):
                                   define_macros=define_macros,
                                   include_dirs=include_dirs,
                                   extra_compile_args=extra_compile_args)
-    xtc = MDAExtension('lib.formats.xtc',
-                       sources=['MDAnalysis/lib/formats/xtc.pyx',
-                                'MDAnalysis/lib/formats/src/xdrfile.c',
-                                'MDAnalysis/lib/formats/src/xdrfile_xtc.c'],
-                       include_dirs=include_dirs + ['MDAnalysis/lib/formats/include',
-                                                    'MDAnalysis/lib/formats'],
-                       define_macros=largefile_macros)
-    trr = MDAExtension('lib.formats.trr',
-                       sources=['MDAnalysis/lib/formats/trr.pyx',
-                                'MDAnalysis/lib/formats/src/xdrfile.c',
-                                'MDAnalysis/lib/formats/src/xdrfile_trr.c'],
-                       include_dirs=include_dirs + ['MDAnalysis/lib/formats/include',
-                                                    'MDAnalysis/lib/formats'],
-                       define_macros=largefile_macros)
+    xdrlib = MDAExtension('lib.formats.xdrlib',
+                          sources=['MDAnalysis/lib/formats/xdrlib.pyx',
+                                   'MDAnalysis/lib/formats/src/xdrfile.c',
+                                   'MDAnalysis/lib/formats/src/xdrfile_xtc.c',
+                                   'MDAnalysis/lib/formats/src/xdrfile_trr.c'],
+                          include_dirs=include_dirs + ['MDAnalysis/lib/formats/include',
+                                                       'MDAnalysis/lib/formats'],
+                          define_macros=largefile_macros)
     util = MDAExtension('lib.formats.cython_util',
                         sources=['MDAnalysis/lib/formats/cython_util.pyx'],
                         include_dirs=include_dirs)
 
     extensions = [dcd, dcd_time, distances, distances_omp, qcprot,
-                  transformation, xtc, trr, util]
+                  transformation, xdrlib, util]
     if use_cython:
         extensions = cythonize(extensions)
     return extensions
