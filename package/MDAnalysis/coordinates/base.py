@@ -265,7 +265,7 @@ class Timestep(object):
             raise ValueError("Must specify at least one set of data")
         n_atoms = max(lens)
         # Check arrays are matched length?
-        if not all([val == n_atoms for val in lens]):
+        if not all( val == n_atoms for val in lens):
             raise ValueError("Lengths of input data mismatched")
 
         ts = cls(n_atoms,

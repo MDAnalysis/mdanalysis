@@ -70,7 +70,7 @@ class PersistenceLength(AnalysisBase):
         # Check that all chains are the same length
         lens = [len(ag) for ag in atomgroups]
         chainlength = len(atomgroups[0])
-        if not all([l == chainlength for l in lens]):
+        if not all( l == chainlength for l in lens):
             raise ValueError("Not all AtomGroups were the same size")
 
         self._setup_frames(atomgroups[0].universe.trajectory,
