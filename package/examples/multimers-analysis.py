@@ -78,9 +78,15 @@ def define_peptides(number_of_peptides, lenght_of_peptide):
     return selection, lookup
 
 
-def analyze(partners={}, clusters={}, multimers=[{}, {}, {}, {}], skip=1000):
+def analyze(partners=None, clusters=None, multimers=None, skip=1000):
     # initialize multimers var, this var stores output of the analysis in a
     # format that is easy to plot. at least in the deafault implementation.
+    if partners is None:
+        partners = {}
+    if clusters is None:
+        clusters = {}
+    if multimers is None:
+        multimers = [{}, {}, {}, {}]
     for d in multimers:
         d["x"] = []
         d["y"] = []
