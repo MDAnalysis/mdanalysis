@@ -1,4 +1,4 @@
-from MDAnalysis.lib.formats import xtc
+from MDAnalysis.lib.formats.xdrlib import XTCFile
 from MDAnalysisTests.datafiles import XTC_single_frame
 from MDAnalysisTests.datafiles import XTC_multi_frame
 
@@ -6,17 +6,19 @@ from nose.tools import raises
 from numpy.testing import assert_array_almost_equal
 
 import numpy as np
-
 from tempdir import run_in_tempdir
+from .base import XDRFormatBaseTest
 
 
-def test_n_atoms_xtc():
-    f = xtc.XTCFile(XTC_single_frame)
-    assert f.n_atoms == 10
+class Test_XTCFile(XDRFormatBaseTest):
+    xdrfile = XTCFile
+    single_frame = XTC_single_frame
+    multi_frame = XTC_multi_frame
+    offsets = np.array([0, 104, 208, 312, 416, 520, 624, 728, 832, 936])
 
 
 def test_xtc():
-    f = xtc.XTCFile(XTC_single_frame)
+    f = XTCFile(XTC_single_frame)
     assert f.n_atoms == 10
     xyz, box, step, time, prec = f.read()
     # xtc only saves with 3 decimal places precision
@@ -27,38 +29,8 @@ def test_xtc():
     assert prec == 1000.0
 
 
-@raises(IOError)
-def test_raise_not_existing():
-    xtc.XTCFile('foo')
-
-
-@raises(ValueError)
-def test_open_wrong_mode():
-    xtc.XTCFile('foo', 'e')
-
-
-@raises(RuntimeError)
-def test_over_seek_xtc():
-    with xtc.XTCFile(XTC_multi_frame) as f:
-        f.seek(100)
-
-
-@raises(RuntimeError)
-@run_in_tempdir()
-def test_read_write_mode_file():
-    with xtc.XTCFile('foo', 'w') as f:
-        f.read()
-
-
-@raises(RuntimeError)
-def test_read_closed():
-    f = xtc.XTCFile(XTC_multi_frame)
-    f.close()
-    f.read()
-
-
 def test_read_multi_frame_xtc():
-    with xtc.XTCFile(XTC_multi_frame) as f:
+    with XTCFile(XTC_multi_frame) as f:
         f.seek(5)
         assert f.tell() == 5
         assert len(f) == 10
@@ -79,13 +51,13 @@ def test_read_multi_frame_xtc():
 
 @run_in_tempdir()
 def test_write_xtc():
-    with xtc.XTCFile(XTC_multi_frame) as f_in:
-        with xtc.XTCFile('foo.xtc', 'w') as f_out:
+    with XTCFile(XTC_multi_frame) as f_in:
+        with XTCFile('foo.xtc', 'w') as f_out:
             assert 0 == f_out.n_atoms
             for frame in f_in:
                 f_out.write(*frame)
 
-    with xtc.XTCFile('foo.xtc') as f:
+    with XTCFile('foo.xtc') as f:
         assert len(f) == 10
         ones = np.ones(30).reshape(10, 3)
         box_compare = np.eye(3) * 20
@@ -97,3 +69,44 @@ def test_write_xtc():
             assert step == i
             assert time == i * .5
             assert prec == 1000.0
+
+
+@raises(ValueError)
+@run_in_tempdir()
+def test_write_different_box():
+    with XTCFile(XTC_multi_frame) as f_in:
+        with XTCFile('foo.xtc', 'w') as f_out:
+            assert 0 == f_out.n_atoms
+            frame = f_in.read()
+            f_out.write(frame.x, frame.box, frame.step,
+                        frame.time, frame.prec)
+            box = frame.box + 1
+            f_out.write(frame.x, box, frame.step,
+                        frame.time, frame.prec)
+
+
+@raises(ValueError)
+@run_in_tempdir()
+def test_write_different_x():
+    with XTCFile(XTC_multi_frame) as f_in:
+        with XTCFile('foo.xtc', 'w') as f_out:
+            assert 0 == f_out.n_atoms
+            frame = f_in.read()
+            f_out.write(frame.x, frame.box, frame.step,
+                        frame.time, frame.prec)
+            x = np.ones((f_in.n_atoms - 1, 3))
+            f_out.write(x, frame.box, frame.step,
+                        frame.time, frame.prec)
+
+
+@raises(ValueError)
+@run_in_tempdir()
+def test_write_different_prec():
+    with XTCFile(XTC_multi_frame) as f_in:
+        with XTCFile('foo.xtc', 'w') as f_out:
+            assert 0 == f_out.n_atoms
+            frame = f_in.read()
+            f_out.write(frame.x, frame.box, frame.step,
+                        frame.time, frame.prec)
+            f_out.write(frame.x, frame.box, frame.step,
+                        frame.time, frame.prec - 900)
