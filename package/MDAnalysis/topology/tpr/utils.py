@@ -45,6 +45,24 @@ from ...core.AtomGroup import Atom
 from . import obj
 from . import setting as S
 
+import numpy as np
+from ..base import TopologyReader, squash_by
+from ...core.topologyattrs import (
+    Atomids,
+    Atomnames,
+    Atomtypes,
+    Masses,
+    Charges,
+    Resids,
+    Resnames,
+    Segids,
+    Bonds,
+    Angles,
+    Dihedrals,
+    Impropers
+)
+from ...core.topology import Topology
+
 def ndo_int(data, n):
     """mimic of gmx_fio_ndo_real in gromacs"""
     return [data.unpack_int() for i in xrange(n)]
@@ -146,7 +164,7 @@ def extract_box_info(data, fver):
     return obj.Box(box, box_rel, box_v)
 
 
-def do_mtop(data, fver, u):
+def do_mtop(data, fver):
     # mtop: the topology of the whole system
     symtab = do_symtab(data)
     do_symstr(data, symtab)  # system_name
@@ -162,7 +180,19 @@ def do_mtop(data, fver, u):
 
     mtop = obj.Mtop(nmoltype, moltypes, nmolblock)
 
-    ttop = obj.TPRTopology(*[[] for i in xrange(5)])
+    bonds = []
+    angles = []
+    dihedrals = []
+    impropers = []
+
+    atomids = []
+    segids = []
+    resids = []
+    resnames = []
+    atomnames = []
+    atomtypes = []
+    charges = []
+    masses = []
 
     atom_start_ndx = 0
     res_start_ndx = 0
@@ -175,20 +205,20 @@ def do_mtop(data, fver, u):
         for j in xrange(mb.molb_nmol):
             mt = mtop.moltypes[mb.molb_type]  # mt: molecule type
             for atomkind in mt.atomkinds:
-                ttop.atoms.append(Atom(atomkind.id + atom_start_ndx,
-                                       atomkind.name,
-                                       atomkind.type,
-                                       atomkind.resname,
-                                       atomkind.resid + res_start_ndx,
-                                       segid,
-                                       atomkind.mass,
-                                       atomkind.charge,
-                                       universe=u))
+                atomids.append(atomkind.id + atom_start_ndx)
+                segids.append(segid)
+                resids.append(atomkind.resid + res_start_ndx)
+                resnames.append(atomkind.resname)
+                atomnames.append(atomkind.name)
+                atomtypes.append(atomkind.type)
+                charges.append(atomkind.charge)
+                masses.append(atomkind.mass)
+
             # remap_ method returns [blah, blah, ..] or []
-            ttop.bonds.extend(mt.remap_bonds(atom_start_ndx))
-            ttop.angles.extend(mt.remap_angles(atom_start_ndx))
-            ttop.dihe.extend(mt.remap_dihe(atom_start_ndx))
-            ttop.impr.extend(mt.remap_impr(atom_start_ndx))
+            bonds.extend(mt.remap_bonds(atom_start_ndx))
+            angles.extend(mt.remap_angles(atom_start_ndx))
+            dihedrals.extend(mt.remap_dihe(atom_start_ndx))
+            impropers.extend(mt.remap_impr(atom_start_ndx))
 
             atom_start_ndx += mt.number_of_atoms()
             res_start_ndx += mt.number_of_residues()
@@ -201,7 +231,39 @@ def do_mtop(data, fver, u):
     # mtop_ffparams_cmap_grid_grid_spacing = 0.1
     # mtop_ffparams_cmap_grid_cmapdata     = 'NULL'
     # do_groups(data, symtab)
-    return ttop
+
+    atomids = Atomids(np.array(atomids, dtype=np.int32))
+    atomnames = Atomnames(np.array(atomnames, dtype=object))
+    atomtypes = Atomtypes(np.array(atomtypes, dtype=object))
+    charges = Charges(np.array(charges, dtype=np.float32))
+    masses = Masses(np.array(masses, dtype=np.float32))
+
+    segids = np.array(segids, dtype=object)
+    resids = np.array(resids, dtype=np.int32)
+    resnames = np.array(resnames, dtype=object)
+    (residx, new_resids,
+     (new_resnames, perres_segids)) = squash_by(resids, resnames, segids)
+    residueids = Resids(new_resids)
+    residuenames = Resnames(new_resnames)
+
+    segidx, perseg_segids = squash_by(perres_segids)[:2]
+    segids = Segids(perseg_segids)
+
+    top = Topology(len(atomids), len(new_resids), len(perseg_segids),
+                   attrs=[atomids, atomnames, atomtypes,
+                          charges, masses,
+                          residueids, residuenames,
+                          segids],
+                   atom_resindex=residx,
+                   residue_segindex=segidx)
+    top.add_TopologyAttr(Bonds([bond for bond in bonds if bond]))
+    top.add_TopologyAttr(Angles([angle for angle in angles if angle]))
+    top.add_TopologyAttr(Dihedrals([dihedral for dihedral in dihedrals
+                                    if dihedral]))
+    top.add_TopologyAttr(Impropers([improper for improper in impropers
+                                    if improper]))
+
+    return top
 
 
 def do_symstr(data, symtab):

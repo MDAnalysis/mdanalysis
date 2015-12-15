@@ -444,5 +444,5 @@ class flagsDocs(object):
 
 
 import groups
-import Selection
+import selection
 import Timeseries

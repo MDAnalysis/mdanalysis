@@ -183,20 +183,13 @@ class TPRParser(TopologyReader):
             U.fver_err(V)
 
         if th.bTop:
-            tpr_top = U.do_mtop(data, V, self._u)
-            structure = {
-                'atoms': tpr_top.atoms,
-                'bonds': tpr_top.bonds,
-                'angles': tpr_top.angles,
-                'dihedrals': tpr_top.dihe,
-                'impropers': tpr_top.impr
-            }
+            tpr_top = U.do_mtop(data, V)
         else:
             msg = "{0}: No topology found in tpr file".format(self.filename)
             logger.critical(msg)
             raise IOError(msg)
 
-        return structure
+        return tpr_top
 
     # THE FOLLOWING CODE IS WORKING FOR TPX VERSION 58, BUT SINCE THESE INFO IS
     # NOT INTERESTED, SO IT'S NOT COVERED IN ALL VERSIONS. PARSING STOPS HERE.

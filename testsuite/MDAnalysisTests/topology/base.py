@@ -45,9 +45,15 @@ class ParserBase(object):
 
     def test_size(self):
         """Check that the Topology is correctly sized"""
-        assert_(self.top.n_atoms == self.expected_n_atoms)
-        assert_(self.top.n_residues == self.expected_n_residues)
-        assert_(self.top.n_segments == self.expected_n_segments)
+        assert_(self.top.n_atoms == self.expected_n_atoms,
+                '{} atoms read, {} expected'
+                .format(self.top.n_atoms, self.expected_n_atoms))
+        assert_(self.top.n_residues == self.expected_n_residues,
+                '{} residues read, {} expected'
+                .format(self.top.n_residues, self.expected_n_residues))
+        assert_(self.top.n_segments == self.expected_n_segments,
+                '{} segment read, {} expected'
+                .format(self.top.n_segments, self.expected_n_segments))
 
     def test_tt_size(self):
         """Check that the transtable is appropriately sized"""
