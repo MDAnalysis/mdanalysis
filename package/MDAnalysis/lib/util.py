@@ -309,7 +309,7 @@ def anyopen(datasource, mode='r', reset=True):
                 if not stream is None:
                     break
             if stream is None:
-                raise IOError(errno.EIO, "Cannot open file or stream in mode=%(mode)r." % vars(), repr(filename))
+                raise IOError(errno.EIO, "Cannot open file or stream in mode={mode!r}.".format(**vars()), repr(filename))
     elif mode.startswith('w') or mode.startswith('a'):  # append 'a' not tested...
         if isstream(datasource):
             stream = datasource
@@ -328,9 +328,9 @@ def anyopen(datasource, mode='r', reset=True):
             openfunc = handlers[ext]
             stream = openfunc(datasource, mode=mode)
             if stream is None:
-                raise IOError(errno.EIO, "Cannot open file or stream in mode=%(mode)r." % vars(), repr(filename))
+                raise IOError(errno.EIO, "Cannot open file or stream in mode={mode!r}.".format(**vars()), repr(filename))
     else:
-        raise NotImplementedError("Sorry, mode=%(mode)r is not implemented for %(datasource)r" % vars())
+        raise NotImplementedError("Sorry, mode={mode!r} is not implemented for {datasource!r}".format(**vars()))
     try:
         stream.name = filename
     except (AttributeError, TypeError):
@@ -876,14 +876,14 @@ class FixedcolumnEntry(object):
         try:
             return self.convertor(line[self.start:self.stop])
         except ValueError:
-            raise ValueError("%r: Failed to read&convert %r" % (self, line[self.start:self.stop]))
+            raise ValueError("{0!r}: Failed to read&convert {1!r}".format(self, line[self.start:self.stop]))
 
     def __len__(self):
         """Length of the field in columns (stop - start)"""
         return self.stop - self.start
 
     def __repr__(self):
-        return "FixedcolumnEntry(%d,%d,%r)" % (self.start, self.stop, self.typespecifier)
+        return "FixedcolumnEntry({0:d},{1:d},{2!r})".format(self.start, self.stop, self.typespecifier)
 
 
 class FORTRANReader(object):
@@ -974,7 +974,7 @@ class FORTRANReader(object):
                 if m is None:
                     raise ValueError  # really no idea what the descriptor is supposed to mean
             except:
-                raise ValueError("unrecognized FORTRAN format %r" % edit_descriptor)
+                raise ValueError("unrecognized FORTRAN format {0!r}".format(edit_descriptor))
         d = m.groupdict()
         if d['repeat'] == '':
             d['repeat'] = 1
@@ -1106,7 +1106,7 @@ def parse_residue(residue):
     # XXX: use _translate_residue() ....
     m = RESIDUE.match(residue)
     if not m:
-        raise ValueError("Selection %(residue)r is not valid (only 1/3/4 letter resnames, resid required)." % vars())
+        raise ValueError("Selection {residue!r} is not valid (only 1/3/4 letter resnames, resid required).".format(**vars()))
     resid = int(m.group('resid'))
     residue = m.group('aa')
     if len(residue) == 1:

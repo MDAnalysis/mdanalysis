@@ -300,11 +300,11 @@ class _CylindricalSelection(Selection):
             cyl_z_hheight = (self.zmax-self.zmin)/2
 
             if 2*self.exRadius > box[0]:
-                raise NotImplementedError("The diameter of the cylinder selection (%.3f) is larger than the unit cell's x dimension (%.3f). Can only do selections where it is smaller or equal." % (2*self.exRadius, box[0]))
+                raise NotImplementedError("The diameter of the cylinder selection ({0:.3f}) is larger than the unit cell's x dimension ({1:.3f}). Can only do selections where it is smaller or equal.".format(2*self.exRadius, box[0]))
             if 2*self.exRadius > box[1]:
-                raise NotImplementedError("The diameter of the cylinder selection (%.3f) is larger than the unit cell's y dimension (%.3f). Can only do selections where it is smaller or equal." % (2*self.exRadius, box[1]))
+                raise NotImplementedError("The diameter of the cylinder selection ({0:.3f}) is larger than the unit cell's y dimension ({1:.3f}). Can only do selections where it is smaller or equal.".format(2*self.exRadius, box[1]))
             if 2*cyl_z_hheight > box[2]:
-                raise NotImplementedError("The total length of the cylinder selection in z (%.3f) is larger than the unit cell's z dimension (%.3f). Can only do selections where it is smaller or equal." % (2*cyl_z_hheight, box[2]))
+                raise NotImplementedError("The total length of the cylinder selection in z ({0:.3f}) is larger than the unit cell's z dimension ({1:.3f}). Can only do selections where it is smaller or equal.".format(2*cyl_z_hheight, box[2]))
             #how off-center in z is our CoG relative to the cylinder's center
             cyl_center = sel_CoG + [0,0,(self.zmax+self.zmin)/2]
             coords += box/2 - cyl_center

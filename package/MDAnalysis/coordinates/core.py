@@ -135,19 +135,19 @@ def get_writer_for(filename=None, format='DCD', multiframe=None):
             try:
                 return _frame_writers[format]
             except KeyError:
-                raise TypeError("No trajectory or frame writer for format %r" % format)
+                raise TypeError("No trajectory or frame writer for format {0!r}".format(format))
     elif multiframe is True:
         try:
             return _trajectory_writers[format]
         except KeyError:
-            raise TypeError("No trajectory  writer for format %r" % format)
+            raise TypeError("No trajectory  writer for format {0!r}".format(format))
     elif multiframe is False:
         try:
             return _frame_writers[format]
         except KeyError:
-            raise TypeError("No single frame writer for format %r" % format)
+            raise TypeError("No single frame writer for format {0!r}".format(format))
     else:
-        raise ValueError("Unknown value %r for multiframe, only True, False, None allowed" % multiframe)
+        raise ValueError("Unknown value {0!r} for multiframe, only True, False, None allowed".format(multiframe))
 
 
 def writer(filename, n_atoms=None, **kwargs):

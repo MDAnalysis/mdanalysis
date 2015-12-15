@@ -95,8 +95,7 @@ def _build_egg(egg, tarball, to_dir):
 
 
 def _do_download(version, download_base, to_dir, download_delay):
-    egg = os.path.join(to_dir, 'setuptools-%s-py%d.%d.egg'
-                       % (version, sys.version_info[0], sys.version_info[1]))
+    egg = os.path.join(to_dir, 'setuptools-{0!s}-py{1:d}.{2:d}.egg'.format(version, sys.version_info[0], sys.version_info[1]))
     if not os.path.exists(egg):
         tarball = download_setuptools(version, download_base,
                                       to_dir, download_delay)
@@ -154,7 +153,7 @@ def download_setuptools(version=DEFAULT_VERSION, download_base=DEFAULT_URL,
         from urllib.request import urlopen
     except ImportError:
         from urllib2 import urlopen
-    tgz_name = "setuptools-%s.tar.gz" % version
+    tgz_name = "setuptools-{0!s}.tar.gz".format(version)
     url = download_base + tgz_name
     saveto = os.path.join(to_dir, tgz_name)
     src = dst = None
@@ -219,7 +218,7 @@ def _extractall(self, path=".", members=None):
             if self.errorlevel > 1:
                 raise
             else:
-                self._dbg(1, "tarfile: %s" % e)
+                self._dbg(1, "tarfile: {0!s}".format(e))
 
 
 def _build_install_args(options):

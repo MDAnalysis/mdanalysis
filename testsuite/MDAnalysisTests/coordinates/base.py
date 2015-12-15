@@ -32,7 +32,7 @@ class _SingleFrameReader(TestCase, RefAdKSmall):
     def test_load_file(self):
         U = self.universe
         assert_equal(len(U.atoms), self.ref_n_atoms,
-                     "load Universe from file %s" % U.trajectory.filename)
+                     "load Universe from file {0!s}".format(U.trajectory.filename))
         assert_equal(U.atoms.select_atoms('resid 150 and name HA2').atoms[0],
                      U.atoms[self.ref_E151HA2_index], "Atom selections")
 
