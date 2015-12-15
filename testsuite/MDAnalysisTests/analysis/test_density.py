@@ -49,14 +49,14 @@ class TestDensity(TestCase):
         for dim, (edges, fixture) in enumerate(itertools.izip(
                 self.D.edges, self.bins)):
             assert_almost_equal(edges, fixture,
-                                err_msg="edges[{}] mismatch".format(dim))
+                                err_msg="edges[{0}] mismatch".format(dim))
 
     def test_midpoints(self):
         midpoints = [0.5*(b[:-1] + b[1:]) for b in self.bins]
         for dim, (mp, fixture) in enumerate(itertools.izip(
                 self.D.midpoints, midpoints)):
             assert_almost_equal(mp, fixture,
-                                err_msg="midpoints[{}] mismatch".format(dim))
+                                err_msg="midpoints[{0}] mismatch".format(dim))
 
     def test_delta(self):
         deltas = np.array([self.Lmax])/np.array(self.nbins)

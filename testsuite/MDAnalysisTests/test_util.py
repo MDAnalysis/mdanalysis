@@ -627,7 +627,7 @@ class TestGuessFormat(object):
         # P - parser class or None
         # R - reader class or None
         for f, P, R in self.formats:
-            fn = 'file.{}'.format(f)
+            fn = 'file.{0}'.format(f)
             # check f doesn't trip up get_ext or guess_format
             yield self._check_get_ext, f, fn
             yield self._check_guess_format, f, fn

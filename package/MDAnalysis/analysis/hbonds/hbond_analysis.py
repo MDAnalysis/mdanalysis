@@ -753,7 +753,7 @@ class HydrogenBondAnalysis(object):
             self._s2 = ns_selection_2.search(self._s1, 3. * self.distance)
         self.logger_debug('Size of selection 2: {0} atoms'.format(len(self._s2)))
         if not self._s2:
-            logger.warn('Selection 2 "{}" did not select any atoms.'.format(
+            logger.warn('Selection 2 "{0}" did not select any atoms.'.format(
                 str(self.selection2)[:80]))
         self._s2_donors = {}
         self._s2_donors_h = {}
