@@ -70,7 +70,9 @@ class DMSReader(base.SingleFrameReader):
         particles = cur.fetchall()
         return [(p['x'], p['y'], p['z']) for p in particles]
 
-    def get_particle_by_columns(self, cur, columns=['x', 'y', 'z']):
+    def get_particle_by_columns(self, cur, columns=None):
+        if columns is None:
+            columns = ['x', 'y', 'z']
         cur.execute('SELECT * FROM particle')
         particles = cur.fetchall()
         return [tuple([p[c] for c in columns]) for p in particles]
