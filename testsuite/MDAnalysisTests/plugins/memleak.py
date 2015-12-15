@@ -95,7 +95,7 @@ class Memleak(ErrorClassPlugin):
         for name, val in attrs:
             setattr(test.test, name, val)
         if latest_leaks:
-            raise MemleakError("GC failed to collect the following: {}".format(latest_leaks))
+            raise MemleakError("GC failed to collect the following: {0}".format(latest_leaks))
         elif rp._ml_is_success:
             rp.addSuccess(test)
             del rp._ml_is_success

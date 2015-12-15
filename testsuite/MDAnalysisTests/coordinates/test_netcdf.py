@@ -180,7 +180,7 @@ class _NCDFWriterTest(TestCase):
                                      "dimension '{}'".format(k))
             else:
                 assert_equal(len(dim), len(dim_new),
-                             err_msg="Dimension '{}' size mismatch".format(k))
+                             err_msg="Dimension '{0}' size mismatch".format(k))
 
 
         for k, v in nc_orig.variables.items():

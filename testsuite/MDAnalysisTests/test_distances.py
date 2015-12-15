@@ -692,7 +692,7 @@ class TestDistanceBackendSelection(object):
                                           args=(self.positions, self.result),
                                           backend=backend)
         except RuntimeError:
-            raise AssertionError("Failed to understand backend {}".format(backend))
+            raise AssertionError("Failed to understand backend {0}".format(backend))
 
     def test_case_insensitivity(self):
         for backend in ("serial", "Serial", "SeRiAL", "SERIAL",

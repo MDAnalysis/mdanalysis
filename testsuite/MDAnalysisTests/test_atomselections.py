@@ -624,7 +624,7 @@ class TestPropSelection(object):
     def _check_lt(self, prop, ag):
         setattr(ag[::2], self.plurals[prop], 500.0)
 
-        sel = ag.select_atoms('prop {} < 500.0'.format(prop))
+        sel = ag.select_atoms('prop {0} < 500.0'.format(prop))
 
         assert_equal(set(sel.indices),
                      set(ag[getattr(ag, self.plurals[prop]) < 500.0].indices))
@@ -632,7 +632,7 @@ class TestPropSelection(object):
     def _check_le(self, prop, ag):
         setattr(ag[::2], self.plurals[prop], 500.0)
 
-        sel = ag.select_atoms('prop {} <= 500.0'.format(prop))
+        sel = ag.select_atoms('prop {0} <= 500.0'.format(prop))
 
         assert_equal(set(sel.indices),
                      set(ag[getattr(ag, self.plurals[prop]) <= 500.0].indices))
@@ -640,7 +640,7 @@ class TestPropSelection(object):
     def _check_gt(self, prop, ag):
         setattr(ag[::2], self.plurals[prop], 500.0)
 
-        sel = ag.select_atoms('prop {} > 500.0'.format(prop))
+        sel = ag.select_atoms('prop {0} > 500.0'.format(prop))
 
         assert_equal(set(sel.indices),
                      set(ag[getattr(ag, self.plurals[prop]) > 500.0].indices))
@@ -648,7 +648,7 @@ class TestPropSelection(object):
     def _check_ge(self, prop, ag):
         setattr(ag[::2], self.plurals[prop], 500.0)
 
-        sel = ag.select_atoms('prop {} >= 500.0'.format(prop))
+        sel = ag.select_atoms('prop {0} >= 500.0'.format(prop))
 
         assert_equal(set(sel.indices),
                      set(ag[getattr(ag, self.plurals[prop]) >= 500.0].indices))
@@ -656,7 +656,7 @@ class TestPropSelection(object):
     def _check_eq(self, prop, ag):
         setattr(ag[::2], self.plurals[prop], 500.0)
 
-        sel = ag.select_atoms('prop {} == 500.0'.format(prop))
+        sel = ag.select_atoms('prop {0} == 500.0'.format(prop))
 
         assert_equal(set(sel.indices),
                      set(ag[getattr(ag, self.plurals[prop]) == 500.0].indices))
@@ -664,7 +664,7 @@ class TestPropSelection(object):
     def _check_ne(self, prop, ag):
         setattr(ag[::2], self.plurals[prop], 500.0)
 
-        sel = ag.select_atoms('prop {} != 500.0'.format(prop))
+        sel = ag.select_atoms('prop {0} != 500.0'.format(prop))
 
         assert_equal(set(sel.indices),
                      set(ag[getattr(ag, self.plurals[prop]) != 500.0].indices))

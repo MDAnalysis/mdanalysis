@@ -767,7 +767,7 @@ class BaseTimestepTest(object):
                 ts2.forces = self.reffor.copy()
 
             yield (self._check_ts_equal, ts1, ts2,
-                   'Failed on {}'.format(self.name))
+                   'Failed on {0}'.format(self.name))
 
     def test_wrong_class_equality(self):
         ts1 = self.Timestep(self.size)
