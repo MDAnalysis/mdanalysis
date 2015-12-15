@@ -276,12 +276,12 @@ class TestPSF_bonds(TestCase):
         a5 = self.universe.atoms[4]
         a42 = self.universe.atoms[41]
         # Bonds might change order, so use any checks through bond list
-        assert_equal(all([a1 in b for b in a1.bonds]), True)  # check all bonds have this atom
-        assert_equal(any([a2 in b for b in a1.bonds]), True)  # then check certain atoms are present
-        assert_equal(any([a3 in b for b in a1.bonds]), True)
-        assert_equal(any([a4 in b for b in a1.bonds]), True)
-        assert_equal(any([a5 in b for b in a1.bonds]), True)
-        assert_equal(any([a42 in b for b in a1.bonds]), False)  # and check everything isn't True
+        assert_equal(all(a1 in b for b in a1.bonds), True)  # check all bonds have this atom
+        assert_equal(any(a2 in b for b in a1.bonds), True)  # then check certain atoms are present
+        assert_equal(any(a3 in b for b in a1.bonds), True)
+        assert_equal(any(a4 in b for b in a1.bonds), True)
+        assert_equal(any(a5 in b for b in a1.bonds), True)
+        assert_equal(any(a42 in b for b in a1.bonds), False)  # and check everything isn't True
 
     def test_angles_counts(self):
         assert_equal(len(self.universe._topology['angles']), 6123)
@@ -295,11 +295,11 @@ class TestPSF_bonds(TestCase):
         a5 = self.universe.atoms[4]
         a6 = self.universe.atoms[5]
         a42 = self.universe.atoms[41]
-        assert_equal(all([a1 in b for b in a1.angles]), True)
-        assert_equal(any([a2 in b and a3 in b for b in a1.angles]), True)
-        assert_equal(any([a5 in b and a6 in b for b in a1.angles]), True)
-        assert_equal(any([a42 in b for b in a1.angles]), False)
-        assert_equal(any([a2 in b and a6 in b for b in a1.angles]),
+        assert_equal(all(a1 in b for b in a1.angles), True)
+        assert_equal(any(a2 in b and a3 in b for b in a1.angles), True)
+        assert_equal(any(a5 in b and a6 in b for b in a1.angles), True)
+        assert_equal(any(a42 in b for b in a1.angles), False)
+        assert_equal(any(a2 in b and a6 in b for b in a1.angles),
                      False)  # both a2 and a6 feature, but never simultaneously
 
     def test_dihedrals_counts(self):
@@ -314,11 +314,11 @@ class TestPSF_bonds(TestCase):
         a6 = self.universe.atoms[5]
         a7 = self.universe.atoms[6]
         a42 = self.universe.atoms[41]
-        assert_equal(all([a1 in b for b in a1.dihedrals]), True)
-        assert_equal(any([a2 in b and a5 in b and a6 in b for b in a1.dihedrals]), True)
-        assert_equal(any([a2 in b and a5 in b and a7 in b for b in a1.dihedrals]), True)
-        assert_equal(any([a42 in b for b in a1.dihedrals]), False)
-        assert_equal(any([a2 in b and a3 in b and a6 in b for b in a1.dihedrals]), False)
+        assert_equal(all(a1 in b for b in a1.dihedrals), True)
+        assert_equal(any(a2 in b and a5 in b and a6 in b for b in a1.dihedrals), True)
+        assert_equal(any(a2 in b and a5 in b and a7 in b for b in a1.dihedrals), True)
+        assert_equal(any(a42 in b for b in a1.dihedrals), False)
+        assert_equal(any(a2 in b and a3 in b and a6 in b for b in a1.dihedrals), False)
 
 
 class TestTopologyObjects(TestCase):
@@ -480,7 +480,7 @@ class TestTopologyGroup(TestCase):
         bondtypes = self.universe.bonds.types()
         # check that a key doesn't appear in reversed format in keylist
         # have to exclude case of b[::-1] == b as this is false positive
-        assert_equal(any([b[::-1] in bondtypes for b in bondtypes if b[::-1] != b]),
+        assert_equal(any(b[::-1] in bondtypes for b in bondtypes if b[::-1] != b),
                      False)
 
     def test_bond_reversal(self):
@@ -501,7 +501,7 @@ class TestTopologyGroup(TestCase):
 
     def test_angles_uniqueness(self):
         bondtypes = self.a_td.keys()
-        assert_equal(any([b[::-1] in bondtypes for b in bondtypes if b[::-1] != b]),
+        assert_equal(any(b[::-1] in bondtypes for b in bondtypes if b[::-1] != b),
                      False)
 
     def test_angles_reversal(self):
@@ -522,7 +522,7 @@ class TestTopologyGroup(TestCase):
 
     def test_dihedrals_uniqueness(self):
         bondtypes = self.t_td.keys()
-        assert_equal(any([b[::-1] in bondtypes for b in bondtypes if b[::-1] != b]),
+        assert_equal(any(b[::-1] in bondtypes for b in bondtypes if b[::-1] != b),
                      False)
 
     def test_dihedrals_reversal(self):
@@ -585,12 +585,12 @@ class TestTopologyGroup(TestCase):
         """Pull bonds from a TG which are at least partially in an AG"""
 
         def check_loose_intersection(topg, atomg):
-            return all([any([a in ag for a in b.atoms]) for b in topg.bondlist])
+            return all( any(a in ag for a in b.atoms) for b in topg.bondlist)
 
         def manual(topg, atomg):
             man = []
             for b in topg.bondlist:
-                if any([a in atomg for a in b.atoms]):
+                if any( a in atomg for a in b.atoms):
                     man.append(b)
             return TopologyGroup(man)
 
@@ -613,14 +613,14 @@ class TestTopologyGroup(TestCase):
         def check_strict_intersection(topg, atomg):
             new_topg = topg.atomgroup_intersection(atomg, strict=True)
 
-            return all([all([a in atomg for a in b.atoms]) for b in new_topg.bondlist])
+            return all( all(a in atomg for a in b.atoms) for b in new_topg.bondlist)
 
         def manual(topg, atomg):
             if len(atomg) == 1:  # hack for Atom input
                 atomg = [atomg]
             man = []
             for b in topg.bondlist:
-                if all([a in atomg for a in b.atoms]):
+                if all( a in atomg for a in b.atoms):
                     man.append(b)
 
             if len(man) > 0:
@@ -658,8 +658,10 @@ class TestTopologyGroup(TestCase):
         # the lists might be in one of two formats, but always in a strict order
         # ie any(1234 or 4321) but not (1324)
         assert_equal(any([
-            all([list(x) == list(y) for x, y in zip(forwards, verts)]),
-            all([list(x) == list(y) for x, y in zip(backwards, verts)])]), True)
+            all(
+            list(x) == list(y) for x, y in zip(forwards, verts)),
+            all(
+            list(x) == list(y) for x, y in zip(backwards, verts))]), True)
 
     def test_add_TopologyGroups(self):
         res1_tg = self.res1.bonds.selectBonds(('23', '3'))

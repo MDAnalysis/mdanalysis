@@ -183,7 +183,7 @@ def _check_lengths_match(*arrays):
     """Check all arrays are same shape"""
     ref = arrays[0].shape
 
-    if not all([a.shape == ref for a in arrays]):
+    if not all( a.shape == ref for a in arrays):
         raise ValueError("Input arrays must all be same shape"
                          "Got {0}".format([a.shape for a in arrays]))
 
