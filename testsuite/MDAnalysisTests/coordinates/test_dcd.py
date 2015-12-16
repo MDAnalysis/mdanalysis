@@ -306,16 +306,16 @@ class TestDCDWriter_Issue59(TestCase):
             dcd.atoms.coordinates(),
             xtc.atoms.coordinates(),
             2,
-            err_msg="DCD -> XTC: coordinates are messed up (frame %d)" %
-            dcd.trajectory.frame)
+            err_msg="DCD -> XTC: coordinates are messed up (frame {0:d})".format(
+            dcd.trajectory.frame))
         xtc.trajectory[3]
         dcd.trajectory[3]
         assert_array_almost_equal(
             dcd.atoms.coordinates(),
             xtc.atoms.coordinates(),
             2,
-            err_msg="DCD -> XTC: coordinates are messed up (frame %d)" %
-            dcd.trajectory.frame)
+            err_msg="DCD -> XTC: coordinates are messed up (frame {0:d})".format(
+            dcd.trajectory.frame))
 
 
 class _TestDCDReader_TriclinicUnitcell(TestCase):
@@ -402,8 +402,8 @@ class TestNCDF2DCD(TestCase):
                 ts_orig.dimensions,
                 ts_copy.dimensions,
                 3,
-                err_msg="NCDF->DCD: unit cell dimensions wrong at frame %d" %
-                ts_orig.frame)
+                err_msg="NCDF->DCD: unit cell dimensions wrong at frame {0:d}".format(
+                ts_orig.frame))
 
     def test_coordinates(self):
         for ts_orig, ts_copy in zip(self.u.trajectory,
@@ -412,8 +412,8 @@ class TestNCDF2DCD(TestCase):
                 self.u.atoms.positions,
                 self.w.atoms.positions,
                 3,
-                err_msg="NCDF->DCD: coordinates wrong at frame %d" %
-                ts_orig.frame)
+                err_msg="NCDF->DCD: coordinates wrong at frame {0:d}".format(
+                ts_orig.frame))
 
 
 class TestDCDCorrel(_TestDCD):

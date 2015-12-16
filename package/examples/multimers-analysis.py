@@ -69,7 +69,7 @@ def define_peptides(number_of_peptides, lenght_of_peptide):
     lookup = {}
 
     for i in range(number_of_peptides):
-        selection[i] = "resid %d-%d" % (lenght_of_peptide * i + 1, lenght_of_peptide * (i + 1))
+        selection[i] = "resid {0:d}-{1:d}".format(lenght_of_peptide * i + 1, lenght_of_peptide * (i + 1))
         index = lenght_of_peptide * i + 1
         while (index <= lenght_of_peptide * (i + 1)):
             lookup[index] = i
@@ -94,7 +94,7 @@ def analyze(partners=None, clusters=None, multimers=None, skip=1000):
     for ts in universe.trajectory:
         if not ts.frame % skip == 0 and ts.frame != 1:
             continue
-        print "Stepping... Frame %d, time %d ns" % (ts.frame, ts.time / 1000)
+        print "Stepping... Frame {0:d}, time {1:d} ns".format(ts.frame, ts.time / 1000)
 
         p = find_partners(peptide_selection, peptide_dictionary)
         partners[ts.frame] = p
@@ -130,7 +130,7 @@ def find_partners(peptide_list, lookup):
     """
     ret = {}
     for id, selection in peptide_list.items():
-        atom_list = universe.select_atoms("around %d (%s) and not resname W" % (cutoff, selection))
+        atom_list = universe.select_atoms("around {0:d} ({1!s}) and not resname W".format(cutoff, selection))
         ret[id] = set()
         for atom in atom_list:
             if atom.resname == "CHOL" or atom.resname == "DPPC" or atom.resname == "DUPC":

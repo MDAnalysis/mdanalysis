@@ -109,9 +109,9 @@ class DCDWriter(DCD.DCDWriter):
         for unit_type, unit in self.units.items():
             try:
                 if units.unit_types[unit] != unit_type:
-                    raise TypeError("LAMMPS DCDWriter: wrong unit %r for unit type %r" % (unit, unit_type))
+                    raise TypeError("LAMMPS DCDWriter: wrong unit {0!r} for unit type {1!r}".format(unit, unit_type))
             except KeyError:
-                raise ValueError("LAMMPS DCDWriter: unknown unit %r" % unit)
+                raise ValueError("LAMMPS DCDWriter: unknown unit {0!r}".format(unit))
         super(DCDWriter, self).__init__(*args, **kwargs)
 
 
@@ -135,9 +135,9 @@ class DCDReader(DCD.DCDReader):
         for unit_type, unit in self.units.items():
             try:
                 if units.unit_types[unit] != unit_type:
-                    raise TypeError("LAMMPS DCDReader: wrong unit %r for unit type %r" % (unit, unit_type))
+                    raise TypeError("LAMMPS DCDReader: wrong unit {0!r} for unit type {1!r}".format(unit, unit_type))
             except KeyError:
-                raise ValueError("LAMMPS DCDReader: unknown unit %r" % unit)
+                raise ValueError("LAMMPS DCDReader: unknown unit {0!r}".format(unit))
         super(DCDReader, self).__init__(dcdfilename, **kwargs)
 
 

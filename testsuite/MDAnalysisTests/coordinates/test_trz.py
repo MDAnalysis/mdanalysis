@@ -167,7 +167,7 @@ class TestTRZWriter(TestCase, RefTRZ):
             for att in orig_ts.data:
                 assert_array_almost_equal(orig_ts.data[att],
                                           written_ts.data[att], self.prec,
-                                          err_msg="TS equal failed for %s" % att)
+                                          err_msg="TS equal failed for {0!s}".format(att))
 
 
 class TestTRZWriter2(object):

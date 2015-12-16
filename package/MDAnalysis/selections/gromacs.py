@@ -46,6 +46,6 @@ class SelectionWriter(base.SelectionWriter):
         return [str(atom.index + 1) for atom in atoms]
 
     def _write_head(self, out, **kwargs):
-        out.write("[ %(name)s ]\n" % kwargs)
+        out.write("[ {name!s} ]\n".format(**kwargs))
 
 

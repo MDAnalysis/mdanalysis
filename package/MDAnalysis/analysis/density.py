@@ -370,8 +370,7 @@ class Density(Grid):
         try:
             self.grid *= units.get_conversion_factor('density', self.units['density'], unit)
         except KeyError:
-            raise ValueError("The name of the unit (%r supplied) must be one of:\n%r" %
-                             (unit, units.conversion_factor['density'].keys()))
+            raise ValueError("The name of the unit ({0!r} supplied) must be one of:\n{1!r}".format(unit, units.conversion_factor['density'].keys()))
         self.units['density'] = unit
 
     def __repr__(self):
@@ -478,8 +477,7 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
             return group.coordinates()
 
     coord = current_coordinates()
-    logger.info("Selected %d atoms out of %d atoms (%s) from %d total." %
-                (coord.shape[0], len(u.select_atoms(atomselection)), atomselection, len(u.atoms)))
+    logger.info("Selected {0:d} atoms out of {1:d} atoms ({2!s}) from {3:d} total.".format(coord.shape[0], len(u.select_atoms(atomselection)), atomselection, len(u.atoms)))
 
     # mild warning; typically this is run on RMS-fitted trajectories and
     # so the box information is rather meaningless
@@ -509,8 +507,7 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
     h = grid.copy()
 
     for ts in u.trajectory:
-        print("Histograming %6d atoms in frame %5d/%d  [%5.1f%%]\r" % \
-              (len(coord), ts.frame, u.trajectory.n_frames, 100.0 * ts.frame / u.trajectory.n_frames),)
+        print("Histograming {0:6d} atoms in frame {1:5d}/{2:d}  [{3:5.1f}%]\r".format(len(coord), ts.frame, u.trajectory.n_frames, 100.0 * ts.frame / u.trajectory.n_frames),)
         coord = current_coordinates()
         if len(coord) == 0:
             continue
@@ -758,8 +755,7 @@ class BfactorDensityCreator(object):
         u = as_Universe(pdb)
         group = u.select_atoms(atomselection)
         coord = group.coordinates()
-        logger.info("Selected %d atoms (%s) out of %d total." %
-                    (coord.shape[0], atomselection, len(u.atoms)))
+        logger.info("Selected {0:d} atoms ({1!s}) out of {2:d} total.".format(coord.shape[0], atomselection, len(u.atoms)))
         smin = np.min(coord, axis=0) - padding
         smax = np.max(coord, axis=0) + padding
 
@@ -788,7 +784,7 @@ class BfactorDensityCreator(object):
         else:
             # histogram 'delta functions'
             grid, self.edges = np.histogramdd(coord, bins=bins, range=arange, normed=False)
-            logger.info("Histogrammed %6d atoms from pdb." % len(group.atoms))
+            logger.info("Histogrammed {0:6d} atoms from pdb.".format(len(group.atoms)))
             # just a convolution of the density with a Gaussian
             self.g = self._smear_sigma(grid, sigma)
 
@@ -824,8 +820,7 @@ class BfactorDensityCreator(object):
         for iwat in xrange(len(pos[0])):  # super-ugly loop
             p = tuple([wp[iwat] for wp in pos])
             g += grid[p] * np.fromfunction(self._gaussian, grid.shape, dtype=np.int, p=p, sigma=sigma)
-            print("Smearing out atom position %4d/%5d with RMSF %4.2f A\r" % \
-                  (iwat + 1, len(pos[0]), sigma),)
+            print("Smearing out atom position {0:4d}/{1:5d} with RMSF {2:4.2f} A\r".format(iwat + 1, len(pos[0]), sigma),)
         return g
 
     def _smear_rmsf(self, coordinates, grid, edges, rmsf):
@@ -838,8 +833,7 @@ class BfactorDensityCreator(object):
                 continue
             g += np.fromfunction(self._gaussian_cartesian, grid.shape, dtype=np.int,
                                     c=coord, sigma=rmsf[iwat])
-            print("Smearing out atom position %4d/%5d with RMSF %4.2f A\r" % \
-                  (iwat + 1, N, rmsf[iwat]),)
+            print("Smearing out atom position {0:4d}/{1:5d} with RMSF {2:4.2f} A\r".format(iwat + 1, N, rmsf[iwat]),)
         return g
 
     def _gaussian(self, i, j, k, p, sigma):

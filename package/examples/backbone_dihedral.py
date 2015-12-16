@@ -32,7 +32,7 @@ numresidues = protein.numberOfResidues()
 
 collection.clear()
 for res in range(2, numresidues - 1):
-    print "Processing residue %d" % res
+    print "Processing residue {0:d}".format(res)
     # selection of the atoms involved for the phi for resid '%d' %res
     ## select_atoms("atom 4AKE %d C"%(res-1), "atom 4AKE %d N"%res, "atom %d 4AKE CA"%res, "atom 4AKE %d C" % res)
     phi_sel = universe.residues[res].phi_selection()

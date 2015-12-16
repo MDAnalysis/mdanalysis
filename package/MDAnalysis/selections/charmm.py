@@ -46,13 +46,13 @@ class SelectionWriter(base.SelectionWriter):
     def _translate(self, atoms, **kwargs):
         # CHARMM index is 1-based
         def _index(atom):
-            return "BYNUM %d" % (atom.index + 1)
+            return "BYNUM {0:d}".format((atom.index + 1))
 
         return base.join(atoms, ' .or.', _index)
 
     def _write_head(self, out, **kwargs):
         out.write(self.comment("MDAnalysis CHARMM selection"))
-        out.write("DEFINE %(name)s SELECT " % kwargs + self.continuation + '\n')
+        out.write("DEFINE {name!s} SELECT ".format(**kwargs) + self.continuation + '\n')
 
     def _write_tail(self, out, **kwargs):
         out.write("END")

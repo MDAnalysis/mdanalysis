@@ -263,7 +263,7 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
             start = universe.atoms[0].resid
         if end is None:
             end = universe.atoms[-1].resid
-        selection += " and resid %(start)d:%(end)d" % vars()
+        selection += " and resid {start:d}:{end:d}".format(**vars())
     ca = universe.select_atoms(selection)
     trajectory = universe.trajectory
 
@@ -280,7 +280,7 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
         print "Analysing from residue", start, "to the C termini"
     elif start is None and end is not None:
         print "Analysing from the N termini to", end
-    print "Analysing %d/%d residues" % (ca.n_atoms, universe.atoms.n_residues)
+    print "Analysing {0:d}/{1:d} residues".format(ca.n_atoms, universe.atoms.n_residues)
 
     if not prefix is None:
         prefix = str(prefix)
@@ -379,9 +379,9 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
         #for store,tmp in zip(global_tilt,local_helix_axes): store.append(vecangle(tmp,ref_axis))
 
         #simple ticker
-        formated_time = "%20.1f" % trajectory.time
+        formated_time = "{0:20.1f}".format(trajectory.time)
         frame += 1
-        formated_frame = "%10d" % frame
+        formated_frame = "{0:10d}".format(frame)
 
         print '\r', formated_time, ' ps', formated_frame,
 
@@ -401,21 +401,21 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
         print >> mat_output, "Mean"
         for row in bending_statistics_matrix:
             for col in row:
-                formatted_angle = "%6.1f" % col[0]
+                formatted_angle = "{0:6.1f}".format(col[0])
                 print >> mat_output, formatted_angle,
             print >> mat_output, ''
 
         print >> mat_output, "\nSD"
         for row in bending_statistics_matrix:
             for col in row:
-                formatted_angle = "%6.1f" % col[1]
+                formatted_angle = "{0:6.1f}".format(col[1])
                 print >> mat_output, formatted_angle,
             print >> mat_output, ''
 
         print >> mat_output, "\nABDEV"
         for row in bending_statistics_matrix:
             for col in row:
-                formatted_angle = "%6.1f" % col[2]
+                formatted_angle = "{0:6.1f}".format(col[2])
                 print >> mat_output, formatted_angle,
             print >> mat_output, ''
 
@@ -429,17 +429,17 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
     print "ResID",
     if start is None:
         for item in range(4, len(residue_statistics[0]) + 4):
-            output = "%8d" % item
+            output = "{0:8d}".format(item)
             print output,
     else:
         for item in range(start + 3, len(residue_statistics[0]) + start + 3):
-            output = "%8d" % item
+            output = "{0:8d}".format(item)
             print output,
     print ""
     for measure, name in zip(residue_statistics, measure_names):
         print name,
         for residue in measure:
-            output = "%8.1f" % residue
+            output = "{0:8.1f}".format(residue)
             print output,
         print ''
 
@@ -453,18 +453,18 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
         print >> summary_output, "ResID",
         if start is None:
             for item in range(4, len(residue_statistics[0]) + 4):
-                output = "%8d" % item
+                output = "{0:8d}".format(item)
                 print >> summary_output, output,
         else:
             for item in range(start + 3, len(residue_statistics[0]) + start + 3):
-                output = "%8d" % item
+                output = "{0:8d}".format(item)
                 print >> summary_output, output,
         print >> summary_output, ""
 
         for measure, name in zip(residue_statistics, measure_names):
             print >> summary_output, name,
             for residue in measure:
-                output = "%8.1f" % residue
+                output = "{0:8.1f}".format(residue)
                 print >> summary_output, output,
             print >> summary_output, ''
 
@@ -521,9 +521,9 @@ def helanal_main(pdbfile, selection="name CA", start=None, end=None, ref_axis=No
             start = universe.atoms[0].resid
         if end is None:
             end = universe.atoms[-1].resid
-        selection += " and resid %(start)d:%(end)d" % vars()
+        selection += " and resid {start:d}:{end:d}".format(**vars())
     ca = universe.select_atoms(selection)
-    print "Analysing %d/%d residues" % (ca.n_atoms, universe.atoms.n_residues)
+    print "Analysing {0:d}/{1:d} residues".format(ca.n_atoms, universe.atoms.n_residues)
 
     twist, bending_angles, height, rnou, origins, local_helix_axes, local_screw_angles = \
         main_loop(ca.coordinates(), ref_axis=ref_axis)
@@ -548,7 +548,7 @@ def helanal_main(pdbfile, selection="name CA", start=None, end=None, ref_axis=No
                 angle = 0.
             else:
                 angle = np.rad2deg(np.arccos(vecscaler(i, j)))
-            string_angle = "%6.0f\t" % angle
+            string_angle = "{0:6.0f}\t".format(angle)
             #print string_angle,
             #print ''
             #TESTED- local bending matrix!
@@ -575,12 +575,12 @@ def helanal_main(pdbfile, selection="name CA", start=None, end=None, ref_axis=No
     #print mean_height, sd_height, abdev_height
     print "Local bending angles:"
     for angle in bending_angles:
-        output = "%8.1f\t" % angle
+        output = "{0:8.1f}\t".format(angle)
         print output,
     print ''
     print "Unit twist angles:"
     for twist_ang in twist:
-        outputtwist = "%8.1f\t" % twist_ang
+        outputtwist = "{0:8.1f}\t".format(twist_ang)
         print outputtwist,
     print ''
 
@@ -601,7 +601,7 @@ def origin_pdb(origins, pdbfile):
     with open(pdbfile, 'a') as output:
         i = 1
         for xyz in origins:
-            tmp = "ATOM    %3d  CA  ALA   %3d    %8.3f%8.3f%8.3f  1.00  0.00" % (i, i, xyz[0], xyz[1], xyz[2])
+            tmp = "ATOM    {0:3d}  CA  ALA   {1:3d}    {2:8.3f}{3:8.3f}{4:8.3f}  1.00  0.00".format(i, i, xyz[0], xyz[1], xyz[2])
             print >> output, tmp
             i += 1
         print >> output, "TER\nENDMDL"

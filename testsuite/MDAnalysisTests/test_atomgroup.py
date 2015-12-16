@@ -1448,7 +1448,7 @@ class _WriteAtoms(TestCase):
         self.universe.atoms.write(self.outfile)
         u2 = self.universe_from_tmp()
         assert_array_almost_equal(self.universe.atoms.coordinates(), u2.atoms.coordinates(), self.precision,
-                                  err_msg="atom coordinate mismatch between original and %s file" % self.ext)
+                                  err_msg="atom coordinate mismatch between original and {0!s} file".format(self.ext))
 
     def test_write_empty_atomgroup(self):
         sel = self.universe.select_atoms('name doesntexist')

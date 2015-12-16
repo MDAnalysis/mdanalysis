@@ -86,21 +86,21 @@ if __name__ == "__main__":
                                         max_imbalance=options.max_imbalance)
         except:
             raise RuntimeError("Failed cutoff optimization, try without --optimize")
-        print "# Optimized cutoff=%(cutoff).1f A, finding %(N)d disconnected groups" % vars()
+        print "# Optimized cutoff={cutoff:.1f} A, finding {N:d} disconnected groups".format(**vars())
     else:
         cutoff = options.cutoff
-        print "# Using fixed cutoff=%(cutoff).1f A" % vars()
+        print "# Using fixed cutoff={cutoff:.1f} A".format(**vars())
 
     LF = LeafletFinder(u, options.selection, cutoff=cutoff, pbc=options.pbc)
 
-    print "# group sizes = %r " % LF.sizes()
+    print "# group sizes = {0!r} ".format(LF.sizes())
 
     # two leaflets
     def print_line(symbol="-"):
         print "#" + (12 + 5) * symbol
 
     print_line("=")
-    print "#%2s  %5s  %6s" % ("ll", "resn", "count")
+    print "#{0:2!s}  {1:5!s}  {2:6!s}".format("ll", "resn", "count")
     print_line("=")
 
     for groupindex in xrange(len(LF.components)):
@@ -109,9 +109,9 @@ if __name__ == "__main__":
         keys = np.unique(resnames)
         for k in keys:
             count = resnames.count(k)
-            print " %2d  %5s  %6d" % (groupindex, k, count)
+            print " {0:2d}  {1:5!s}  {2:6d}".format(groupindex, k, count)
         total = LF.sizes()[groupindex]
         if total > 1:
             print_line()
-            print "#%2d  %5s  %6d" % (groupindex, '', total)
+            print "#{0:2d}  {1:5!s}  {2:6d}".format(groupindex, '', total)
         print
