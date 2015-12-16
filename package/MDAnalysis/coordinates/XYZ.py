@@ -246,7 +246,7 @@ class XYZWriter(base.Writer):
         self._xyz.write("{0:d}\n".format(ts.n_atoms))
         self._xyz.write("frame {0}\n".format(ts.frame))
         for atom, (x, y, z) in itertools.izip(self.atomnames, coordinates):
-            self._xyz.write("{0:8!s}  {1:10.5f} {2:10.5f} {3:10.5f}\n".format(atom, x, y, z))
+            self._xyz.write("{0:8s}  {1:10.5f} {2:10.5f} {3:10.5f}\n".format(atom, x, y, z))
 
 
 class XYZReader(base.Reader):

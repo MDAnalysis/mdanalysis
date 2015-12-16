@@ -922,7 +922,7 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
 
         logger.error("Atoms: reference | trajectory")
         for ar, at in itertools.izip(ag1[mismatch_atomindex], ag2[mismatch_atomindex]):
-            logger.error("{0:4!s} {1:3d} {2:3!s} {3:3!s} {4:6.3f}  |  {5:4!s} {6:3d} {7:3!s} {8:3!s} {9:6.3f}".format(ar.segid, ar.resid, ar.resname, ar.name, ar.mass,
+            logger.error("{0:4s} {1:3d} {2:3s} {3:3s} {4:6.3f}  |  {5:4s} {6:3d} {7:3s} {8:3s} {9:6.3f}".format(ar.segid, ar.resid, ar.resname, ar.name, ar.mass,
                           at.segid, at.resid, at.resname, at.name, at.mass))
         errmsg = ("Inconsistent selections, masses differ by more than {0}; " + \
             "mis-matching atoms are shown above.").format(tol_mass)
