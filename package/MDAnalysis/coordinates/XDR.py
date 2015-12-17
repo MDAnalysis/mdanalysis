@@ -11,14 +11,13 @@ class XDRBaseReader(base.Reader):
                                             **kwargs)
         self._xdr = self._file(self.filename)
 
-        self.n_frames = len(self._xdr)
         frame = self._xdr.read()
-        if self.n_frames == 1:
-            dt = 0
-        else:
+        try:
             xdr_frame = self._xdr.read()
             dt = xdr_frame.time - frame.time
             self._xdr.seek(1)
+        except:
+            dt = 0
 
         self._sub = sub
         if self._sub is not None:
@@ -41,6 +40,10 @@ class XDRBaseReader(base.Reader):
     def rewind(self):
         """Read the first frame again"""
         self._read_frame(0)
+
+    @property
+    def n_frames(self):
+        return len(self._xdr)
 
     def _reopen(self):
         self.ts.frame = 0
