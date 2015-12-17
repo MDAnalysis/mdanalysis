@@ -36,37 +36,48 @@ Classes
 from __future__ import absolute_import
 
 import os
+import numpy as np
 
 from ..lib.util import openany
-from ..core.AtomGroup import Atom
-from .core import guess_atom_type, guess_atom_mass, guess_atom_charge
-from .base import TopologyReader
+from .base import TopologyReader, squash_by
+from ..core.topologyattrs import (
+    Resids,
+    Resnames,
+    Atomids,
+    Atomnames,
+    Atomtypes,
+    Charges,
+    Bonds,
+)
+from ..core.topology import Topology
 
 
 class MOL2Parser(TopologyReader):
     """Read topology from a Tripos_ MOL2_ file.
 
+    Create the following Attributes:
+     - Atomids
+     - Atomnames
+     - Atomtypes
+     - Charges
+     - Resids,
+     - Resnames
+     - Bonds
+
     .. versionchanged:: 0.9
        Now subclasses TopologyReader
     """
 
-    def parse(self, filename=None):
+    def parse(self):
         """Parse MOL2 file *filename* and return the dict `structure`.
 
-        Only reads the list of atoms.
-
-        :Returns: MDAnalysis internal *structure* dict
-
-        .. SeeAlso:: The *structure* dict is defined in
-                     :func:`MDAnalysis.topology.PSFParser.PSFParser`.
-
+        Returns
+        -------
+        A MDAnalysis Topology object
         """
-        if not filename:
-            filename = self.filename
-
         blocks = []
 
-        with openany(filename) as f:
+        with openany(self.filename) as f:
             for i, line in enumerate(f):
                 # found new molecules
                 if "@<TRIPOS>MOLECULE" in line:
@@ -101,19 +112,37 @@ class MOL2Parser(TopologyReader):
             raise ValueError("The mol2 block ({0}:{1}) has no bonds".format(
                 os.path.basename(filename), block["start_line"]))
 
-        atoms = []
+        ids = []
+        names = []
+        types = []
+        resids = []
+        resnames = []
+        charges = []
+
         for a in atom_lines:
             aid, name, x, y, z, atom_type, resid, resname, charge = a.split()
-            aid = int(aid) - 1
-            #x, y, z = float(x), float(y), float(z)
-            resid = int(resid)
-            charge = float(charge)
-            element = guess_atom_type(name)
-            mass = guess_atom_mass(element)
-            # atom type is sybl atom type
-            atoms.append(Atom(aid, name, atom_type, resname,
-                              resid, "X", mass, charge, universe=self._u))
-            #guess_atom_type(a.split()[1]
+            ids.append(aid)
+            names.append(name)
+            types.append(atom_type)
+            resids.append(resid)
+            resnames.append(resname)
+            charges.append(charge)
+
+        n_atoms = len(ids)
+        attrs = []
+        attrs.append(Atomids(np.array(ids, dtype=np.int32)))
+        attrs.append(Atomnames(np.array(names, dtype=object)))
+        attrs.append(Atomtypes(np.array(types, dtype=object)))
+        attrs.append(Charges(np.array(charges, dtype=np.float32)))
+
+        resids = np.array(resids, dtype=np.int32)
+        resnames = np.array(resnames, dtype=object)
+
+        residx, resids, (resnames,) = squash_by(
+            resids, resnames)
+        n_residues = len(resids)
+        attrs.append(Resids(resids))
+        attrs.append(Resnames(resnames))
 
         bonds = []
         bondorder = {}
@@ -124,7 +153,10 @@ class MOL2Parser(TopologyReader):
             bond = tuple(sorted([a0, a1]))
             bondorder[bond] = bond_type
             bonds.append(bond)
-        structure = {"atoms": atoms,
-                     "bonds": bonds,
-                     "bondorder": bondorder}
-        return structure
+        attrs.append(Bonds(bonds))
+
+        top = Topology(n_atoms, n_residues, 1,
+                       attrs=attrs,
+                       atom_resindex=residx)
+
+        return top
