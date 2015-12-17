@@ -224,10 +224,15 @@ cdef class _XDRFile:
         RuntimeError
             If you seek for more frames then are available
         """
-        if frame >= self.offsets.size:
-            raise RuntimeError('Trying to seek over max number of frames')
+        cdef int offset
+        if frame == 0:
+            offset = 0
+        else:
+            if frame >= self.offsets.size:
+                raise RuntimeError('Trying to seek over max number of frames')
+            offset = self.offsets[frame]
         self.reached_eof = False
-        ok = xdr_seek(self.xfp, self.offsets[frame], SEEK_SET)
+        ok = xdr_seek(self.xfp, offset, SEEK_SET)
         if ok != 0:
             raise RuntimeError("XDR seek failed, error-message={}".format(
                 error_message[ok]))
