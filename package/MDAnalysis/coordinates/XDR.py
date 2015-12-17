@@ -15,7 +15,9 @@ class XDRBaseReader(base.Reader):
         try:
             xdr_frame = self._xdr.read()
             dt = xdr_frame.time - frame.time
-            self._xdr.seek(1)
+            # avoid triggering a offset calculation!
+            self._xdr.seek(0)
+            self._xdr.read()
         except:
             dt = 0
 
