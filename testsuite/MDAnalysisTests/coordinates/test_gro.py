@@ -162,13 +162,11 @@ class TestGROReaderNoConversion(TestCase, RefAdK):
 class TestGROWriter(TestCase, tempdir.TempDir):
     def setUp(self):
         self.universe = mda.Universe(GRO)
-        self.large_universe = mda.Universe(GRO_large)
         self.prec = 2  # 3 decimals in file in nm but MDAnalysis is in A
         ext = ".gro"
         self.tmpdir = tempdir.TempDir()
         self.outfile = self.tmpdir.name + '/gro-writer' + ext
         self.outfile2 = self.tmpdir.name + '/gro-writer2' + ext
-        self.outfile3 = self.tmpdir.name + '/gro-writer3' + ext
 
     def tearDown(self):
         try:
@@ -179,12 +177,7 @@ class TestGROWriter(TestCase, tempdir.TempDir):
             os.unlink(self.outfile2)
         except OSError:
             pass
-        try:
-            os.unlink(self.outfile3)
-        except OSError:
-            pass
         del self.universe
-        del self.large_universe
         del self.tmpdir
 
     @dec.slow
@@ -195,19 +188,6 @@ class TestGROWriter(TestCase, tempdir.TempDir):
                             self.universe.atoms.coordinates(), self.prec,
                             err_msg="Writing GRO file with GROWriter does "
                             "not reproduce original coordinates")
-
-    @dec.slow
-    def test_writer_large(self):
-        self.large_universe.atoms.write(self.outfile3)
-        with open(self.outfile3, 'r') as mda_output:
-            with bz2.BZ2File(GRO_large, 'r') as expected_output:
-                produced_lines = mda_output.readlines()[1:]
-                expected_lines = expected_output.readlines()[1:]
-                assert_equal(produced_lines,
-                             expected_lines,
-                             err_msg="Writing GRO file with > 100 000 "
-                                 "coords does not truncate properly.")
-
 
     @dec.slow
     def test_timestep_not_modified_by_writer(self):
@@ -255,6 +235,31 @@ class TestGROWriter(TestCase, tempdir.TempDir):
                       convert_units=False)
         del u
 
+
+class TestGROWriterLarge(TestCase, tempdir.TempDir):
+    def setUp(self):
+        self.tmpdir = tempdir.TempDir()
+        self.large_universe = mda.Universe(GRO_large)
+
+    def tearDown(self):
+        del self.tmpdir
+        del self.large_universe
+
+    @dec.slow
+    @attr('issue')
+    def test_writer_large(self):
+        """Test that atom numbers are truncated for large
+        GRO files (Issue 550)."""
+        outfile = self.tmpdir.name + '/outfile1.gro'
+        self.large_universe.atoms.write(outfile)
+        with open(outfile, 'r') as mda_output:
+            with bz2.BZ2File(GRO_large, 'r') as expected_output:
+                produced_lines = mda_output.readlines()[1:]
+                expected_lines = expected_output.readlines()[1:]
+                assert_equal(produced_lines,
+                             expected_lines,
+                             err_msg="Writing GRO file with > 100 000 "
+                                 "coords does not truncate properly.")
 
 class TestGROWriterVels(object):
     def setUp(self):
