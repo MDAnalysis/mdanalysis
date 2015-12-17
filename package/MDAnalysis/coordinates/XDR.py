@@ -1,11 +1,15 @@
 import errno
+import numpy as np
+from os.path import getctime, getsize, isfile
+import warnings
 
 from . import base
 from ..lib.mdamath import triclinic_box
 
 
 class XDRBaseReader(base.Reader):
-    def __init__(self, filename, convert_units=True, sub=None, **kwargs):
+    def __init__(self, filename, convert_units=True, sub=None,
+                 refresh_offsets=False, **kwargs):
         super(XDRBaseReader, self).__init__(filename,
                                             convert_units=convert_units,
                                             **kwargs)
@@ -36,8 +40,44 @@ class XDRBaseReader(base.Reader):
         if self.convert_units:
             self.convert_pos_from_native(self.ts._unitcell[:3])
 
+        if not refresh_offsets:
+            self._load_offsets()
+        else:
+            self._read_offsets(store=True)
+
     def close(self):
         self._xdr.close()
+
+    def _load_offsets(self):
+        fname = '.{}_offsets.npz'.format(self.filename)
+
+        if not isfile(fname):
+            self.read_offsets(store=True)
+            return
+
+        with open(fname) as f:
+            data = np.load(f)
+            offsets = data['offsets']
+            ctime = data['ctime']
+            size = data['size']
+
+        ctime_ok = getctime(self.filename) == ctime
+        size_ok = getsize(self.filename) == size
+
+        if not (ctime_ok and size_ok):
+            warnings.warn("Aborted loading offsets from file\n "
+                          "ctime or size did not match")
+            self.read_offsets(store=True)
+        else:
+            self._xdr.set_offsets(offsets)
+
+    def _read_offsets(self, store=False):
+        offsets = self._xdr.offsets
+        if store:
+            ctime = getctime(self.filename)
+            size = getsize(self.filename)
+            np.savez('.{}_offsets.npz'.format(self.filename),
+                     offsets=offsets, size=size, ctime=ctime)
 
     def rewind(self):
         """Read the first frame again"""
