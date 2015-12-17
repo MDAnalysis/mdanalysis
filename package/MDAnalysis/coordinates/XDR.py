@@ -1,10 +1,15 @@
 import errno
 import numpy as np
-from os.path import getctime, getsize, isfile
+from os.path import getctime, getsize, isfile, split, join
 import warnings
 
 from . import base
 from ..lib.mdamath import triclinic_box
+
+
+def offsets_filename(filename, ending='npz'):
+    head, tail = split(filename)
+    return join(head, '.{}_offsets.{}'.format(tail, ending))
 
 
 class XDRBaseReader(base.Reader):
@@ -49,10 +54,10 @@ class XDRBaseReader(base.Reader):
         self._xdr.close()
 
     def _load_offsets(self):
-        fname = '.{}_offsets.npz'.format(self.filename)
+        fname = offsets_filename(self.filename)
 
         if not isfile(fname):
-            self.read_offsets(store=True)
+            self._read_offsets(store=True)
             return
 
         with open(fname) as f:
@@ -67,7 +72,7 @@ class XDRBaseReader(base.Reader):
         if not (ctime_ok and size_ok):
             warnings.warn("Aborted loading offsets from file\n "
                           "ctime or size did not match")
-            self.read_offsets(store=True)
+            self._read_offsets(store=True)
         else:
             self._xdr.set_offsets(offsets)
 
@@ -76,7 +81,7 @@ class XDRBaseReader(base.Reader):
         if store:
             ctime = getctime(self.filename)
             size = getsize(self.filename)
-            np.savez('.{}_offsets.npz'.format(self.filename),
+            np.savez(offsets_filename(self.filename),
                      offsets=offsets, size=size, ctime=ctime)
 
     def rewind(self):
