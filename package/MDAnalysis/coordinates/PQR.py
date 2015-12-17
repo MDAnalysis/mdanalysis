@@ -93,13 +93,6 @@ from . import base
 class PQRReader(base.SingleFrameReader):
     """Read a PQR_ file into MDAnalysis.
 
-    The :mod:`~MDAnalysis.topology.PQRParser` takes charges from the
-    PQR file in order to populate the
-    :attr:`MDAnalysis.core.AtomGroup.Atom.charge` attribute. Radii are
-    accessible through the :meth:`get_radii` method of the reader, the
-    :meth:`MDAnalysis.core.AtomGroup.AtomGroup.radii` method and the
-    :attr:`MDAnalysis.core.AtomGroup.Atom.radius` attribute.
-
     .. _PQR:
         http://www.poissonboltzmann.org/file-formats/biomolecular-structurw/pqr
 
@@ -111,41 +104,22 @@ class PQRReader(base.SingleFrameReader):
 
     def _read_first_frame(self):
         coords = []
-        atoms = []
         unitcell = np.zeros(6, dtype=np.float32)
-        segID = ''  # use empty string (not in PQR), PQRParsers sets it to SYSTEM
         with util.openany(self.filename, 'r') as pqrfile:
             for line in pqrfile:
-                if line[:6] in ('ATOM  ', 'HETATM'):
+                if line.startswith(('ATOM', 'HETATM')):
                     fields = line.split()
-                    try:
-                        recordName, serial, name, resName, chainID, resSeq, x, y, z, charge, radius = fields
-                    except ValueError:
-                        # files without the chainID
-                        recordName, serial, name, resName, resSeq, x, y, z, charge, radius = fields
-                        chainID = ''
-                    coords.append((float(x), float(y), float(z)))
-                    atoms.append(
-                        (int(serial), name, resName, chainID, int(resSeq), float(charge), float(radius), segID))
+                    coords.append(map(float, fields[-5:-2]))
         self.n_atoms = len(coords)
-        self.ts = self._Timestep.from_coordinates(np.array(coords, dtype=np.float32),
-                                                  **self._ts_kwargs)
+        self.ts = self._Timestep.from_coordinates(
+            np.array(coords, dtype=np.float32),
+            **self._ts_kwargs)
         self.ts._unitcell[:] = unitcell
         self.ts.frame = 0  # 0-based frame number
         if self.convert_units:
-            self.convert_pos_from_native(self.ts._pos)  # in-place !
-            self.convert_pos_from_native(self.ts._unitcell[:3])  # in-place ! (only lengths)
-
-        # hack for PQRParser:
-        self._atoms = np.rec.fromrecords(atoms, names="serial,name,resName,chainID,resSeq,charge,radius,segID")
-
-    def get_radii(self):
-        """Return an array of atom radii in atom order."""
-        return self._atoms.radius
-
-    def get_charges(self):
-        """Return an array of charges in atom order."""
-        return self._atoms.charge
+            # in-place !
+            self.convert_pos_from_native(self.ts._pos)
+            self.convert_pos_from_native(self.ts._unitcell[:3])
 
     def Writer(self, filename, **kwargs):
         """Returns a PQRWriter for *filename*.

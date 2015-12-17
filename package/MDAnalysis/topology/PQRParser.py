@@ -37,18 +37,33 @@ Classes
 """
 from __future__ import absolute_import
 
-from ..core.AtomGroup import Atom
-from .core import guess_atom_type, guess_atom_mass
-from .base import TopologyReader
+import numpy as np
+
+from ..lib.util import openany
+from ..core.topologyattrs import (
+    Atomids,
+    Atomnames,
+    Charges,
+    Radii,
+    Resids,
+    Resnames,
+    Segids,
+)
+from ..core.topology import Topology
+from .base import TopologyReader, squash_by
 
 
 class PQRParser(TopologyReader):
     """Parse atom information from PQR file *filename*.
 
-    Only reads the list of atoms. Reads the charges and radii from the
-    PQR file and populates the
-    :attr:`MDAnalysis.core.AtomGroup.Atom.charge` and
-    :attr:`MDAnalysis.core.AtomGroup.Atom.radius` attribute.
+    Creates a MDAnalysis Topology with the following attributes
+     - Atomids
+     - Atomnames
+     - Charges
+     - Radii
+     - Resids
+     - Resnames
+     - Segids
 
     .. versionchanged:: 0.9.0
        Read chainID from a PQR file and use it as segid (before we always used
@@ -57,37 +72,65 @@ class PQRParser(TopologyReader):
     def parse(self):
         """Parse atom information from PQR file *filename*.
 
-        :Returns: MDAnalysis internal *structure* dict
-
-        .. SeeAlso:: The *structure* dict is defined in
-                     `MDAnalysis.topology` and
-                     :class:`~MDAnalysis.coordinates.PQR.PQRReader` is used to read
-                     the PQR file.
+        Returns
+        -------
+        A MDAnalysis Topology object
         """
-        from ..coordinates.PQR import PQRReader
-        pqr = PQRReader(self.filename)
+        serials = []
+        names = []
+        resnames = []
+        chainIDs = []
+        resids = []
+        charges = []
+        radii = []
 
-        atoms = self._parseatoms(pqr)
-        structure = {'atoms': atoms}
+        with openany(self.filename, 'r') as f:
+            for line in f:
+                if line.startswith(("ATOM", "HETATM")):
+                    fields = line.split()
+                    try:
+                        (recordName, serial, name, resName,
+                         chainID, resSeq, x, y, z, charge,
+                         radius) = fields
+                    except ValueError:
+                        # files without the chainID
+                        (recordName, serial, name, resName,
+                         resSeq, x, y, z, charge, radius) = fields
+                        chainID = "SYSTEM"
+                    serials.append(serial)
+                    names.append(name)
+                    resnames.append(resName)
+                    resids.append(resSeq)
+                    charges.append(charge)
+                    radii.append(radius)
+                    chainIDs.append(chainID)
 
-        return structure
+        n_atoms = len(serials)
+        attrs = []
+        attrs.append(Atomids(np.array(serials, dtype=np.int32)))
+        attrs.append(Atomnames(np.array(names, dtype=object)))
+        attrs.append(Charges(np.array(charges, dtype=np.float32)))
+        attrs.append(Radii(np.array(radii, dtype=np.float32)))
 
-    def _parseatoms(self, pqr):
-        atoms = []
+        resids = np.array(resids, dtype=np.int32)
+        resnames = np.array(resnames, dtype=object)
+        chainIDs = np.array(chainIDs, dtype=object)
 
-        # translate list of atoms to MDAnalysis Atom.
-        for iatom, atom in enumerate(pqr._atoms):
-            atomname = atom.name
-            atomtype = guess_atom_type(atomname)
-            resname = atom.resName
-            resid = int(atom.resSeq)
-            chain = atom.chainID.strip()
-            # no empty segids (or Universe throws IndexError)
-            segid = atom.segID.strip() or chain or "SYSTEM"
-            mass = guess_atom_mass(atomname)
-            charge = float(atom.charge)
-            radius = atom.radius
+        residx, resids, (resnames, chainIDs) = squash_by(
+            resids, resnames, chainIDs)
 
-            atoms.append(Atom(iatom, atomname, atomtype, resname, resid,
-                              segid, mass, charge, radius=radius, universe=self._u))
-        return atoms
+        n_residues = len(resids)
+        attrs.append(Resids(resids))
+        attrs.append(Resnames(resnames))
+
+        segidx, chainIDs = squash_by(chainIDs)[:2]
+
+        n_segments = len(chainIDs)
+        attrs.append(Segids(chainIDs))
+
+        top = Topology(n_atoms, n_residues, n_segments,
+                       attrs=attrs,
+                       atom_resindex=residx,
+                       residue_segindex=segidx)
+
+        return top
