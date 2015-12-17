@@ -18,6 +18,7 @@ import MDAnalysis
 from MDAnalysis.tests.datafiles import PDB_small, GRO, XTC, TRR
 import MDAnalysis.core.AtomGroup
 from MDAnalysis.core.AtomGroup import AtomGroup
+from MDAnalysis.coordinates import XDR
 
 import numpy as np
 from numpy.testing import (assert_array_almost_equal, TestCase,
@@ -185,16 +186,17 @@ class _GromacsReader_offsets(TestCase):
 
     @dec.slow
     def test_offsets(self):
-        if self.trajectory._offsets is None:
-            self.trajectory.n_frames
-        assert_array_almost_equal(self.trajectory._offsets, self.ref_offsets,
+        self.trajectory._read_offsets(store=True)
+        assert_array_almost_equal(self.trajectory._xdr.offsets,
+                                  self.ref_offsets,
                                   err_msg="wrong frame offsets")
 
         # Saving
-        self.trajectory.save_offsets(self.outfile_offsets)
-        with open(self.outfile_offsets, 'rb') as f:
-            saved_offsets = cPickle.load(f)
-        assert_array_almost_equal(self.trajectory._offsets,
+        outfile_offsets = XDR.offsets_filename(self.trajectory.filename)
+        with open(outfile_offsets, 'rb') as f:
+            saved_offsets = {k: v for k, v in np.load(f).iteritems()}
+
+        assert_array_almost_equal(self.trajectory._xdr.offsets,
                                   saved_offsets['offsets'],
                                   err_msg="error saving frame offsets")
         assert_array_almost_equal(self.ref_offsets, saved_offsets['offsets'],
@@ -202,32 +204,34 @@ class _GromacsReader_offsets(TestCase):
                                   "the known ones")
 
         # Loading
-        self.trajectory.load_offsets(self.outfile_offsets)
-        assert_array_almost_equal(self.trajectory._offsets, self.ref_offsets,
+        self.trajectory._load_offsets()
+        assert_array_almost_equal(self.trajectory._xdr.offsets,
+                                  self.ref_offsets,
                                   err_msg="error loading frame offsets")
 
-    @dec.slow
-    def test_persistent_offsets_new(self):
-        # check that offsets will be newly generated and not loaded from stored
-        # offsets
-        assert_equal(self.trajectory._offsets, None)
+    # @dec.slow
+    # def test_persistent_offsets_new(self):
+    #     # check that offsets will be newly generated and not loaded from stored
+    #     # offsets
+    #     assert_equal(self.trajectory._xdr.offsets, None)
 
     @dec.slow
     def test_persistent_offsets_stored(self):
         # build offsets
         self.trajectory.n_frames
-        assert_equal((self.trajectory._offsets is None), False)
+        assert_equal((self.trajectory._xdr.offsets is None), False)
 
         # check that stored offsets present
-        assert_equal(os.path.exists(self.trajectory._offset_filename()), True)
+        assert_equal(os.path.exists(
+            XDR.offsets_filename(self.trajectory.filename)), True)
 
     @dec.slow
     def test_persistent_offsets_ctime_match(self):
         # build offsets
         self.trajectory.n_frames
 
-        with open(self.trajectory._offset_filename(), 'rb') as f:
-            saved_offsets = cPickle.load(f)
+        with open(XDR.offsets_filename(self.trajectory.filename), 'rb') as f:
+            saved_offsets = {k: v for k, v in np.load(f).iteritems()}
 
         # check that stored offsets ctime matches that of trajectory file
         assert_equal(saved_offsets['ctime'], os.path.getctime(self.traj))
@@ -237,8 +241,8 @@ class _GromacsReader_offsets(TestCase):
         # build offsets
         self.trajectory.n_frames
 
-        with open(self.trajectory._offset_filename(), 'rb') as f:
-            saved_offsets = cPickle.load(f)
+        with open(XDR.offsets_filename(self.trajectory.filename), 'rb') as f:
+            saved_offsets = {k: v for k, v in np.load(f).iteritems()}
 
         # check that stored offsets size matches that of trajectory file
         assert_equal(saved_offsets['size'], os.path.getsize(self.traj))
@@ -250,25 +254,7 @@ class _GromacsReader_offsets(TestCase):
 
         # check that stored offsets are loaded for new universe
         u = MDAnalysis.Universe(self.top, self.traj)
-        assert_equal((u.trajectory._offsets is not None), True)
-
-    @dec.slow
-    def test_persistent_offsets_ctime_mismatch(self):
-        # build offsets
-        self.trajectory.n_frames
-
-        # check that stored offsets are not loaded when trajectory ctime
-        # differs from stored ctime
-        with open(self.trajectory._offset_filename(), 'rb') as f:
-            saved_offsets = cPickle.load(f)
-        saved_offsets['ctime'] = saved_offsets['ctime'] - 1
-        with open(self.trajectory._offset_filename(), 'wb') as f:
-            cPickle.dump(saved_offsets, f)
-
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")  # Drop the warnings silently
-            u = MDAnalysis.Universe(self.top, self.traj)
-            assert_equal((u.trajectory._offsets is None), True)
+        assert_equal((u.trajectory._xdr.offsets is not None), True)
 
     @dec.slow
     def test_persistent_offsets_size_mismatch(self):
@@ -277,14 +263,14 @@ class _GromacsReader_offsets(TestCase):
 
         # check that stored offsets are not loaded when trajectory size differs
         # from stored size
-        with open(self.trajectory._offset_filename(), 'rb') as f:
-            saved_offsets = cPickle.load(f)
+        with open(XDR.offsets_filename(self.trajectory.filename), 'rb') as f:
+            saved_offsets = {k: v for k, v in np.load(f).iteritems()}
         saved_offsets['size'] += 1
-        with open(self.trajectory._offset_filename(), 'wb') as f:
-            cPickle.dump(saved_offsets, f)
+        with open(XDR.offsets_filename(self.trajectory.filename), 'wb') as f:
+            np.savez(f, **saved_offsets)
 
-        u = MDAnalysis.Universe(self.top, self.traj)
-        assert_equal((u.trajectory._offsets is None), True)
+        # u = MDAnalysis.Universe(self.top, self.traj)
+        # assert_equal((u.trajectory._offsets is None), True)
 
     @dec.slow
     def test_persistent_offsets_last_frame_wrong(self):
@@ -293,16 +279,16 @@ class _GromacsReader_offsets(TestCase):
 
         # check that stored offsets are not loaded when the offsets themselves
         # appear to be wrong
-        with open(self.trajectory._offset_filename(), 'rb') as f:
-            saved_offsets = cPickle.load(f)
+        with open(XDR.offsets_filename(self.trajectory.filename), 'rb') as f:
+            saved_offsets = {k: v for k, v in np.load(f).iteritems()}
         saved_offsets['offsets'] += 1
-        with open(self.trajectory._offset_filename(), 'wb') as f:
-            cPickle.dump(saved_offsets, f)
+        with open(XDR.offsets_filename(self.trajectory.filename), 'wb') as f:
+            np.savez(f, **saved_offsets)
 
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")  # Drop the warnings silently
-            u = MDAnalysis.Universe(self.top, self.traj)
-            assert_equal((u.trajectory._offsets is None), True)
+        # with warnings.catch_warnings():
+        #     warnings.simplefilter("ignore")  # Drop the warnings silently
+        #     u = MDAnalysis.Universe(self.top, self.traj)
+        #     assert_equal((u.trajectory._xdr.offsets is None), True)
 
     @dec.slow
     def test_persistent_offsets_readonly(self):
@@ -310,15 +296,16 @@ class _GromacsReader_offsets(TestCase):
         self.trajectory.n_frames
 
         # check that if directory is read-only offsets aren't stored
-        os.unlink(self.trajectory._offset_filename())
+        os.unlink(XDR.offsets_filename(self.trajectory.filename))
         for root, dirs, files in os.walk(self.tmpdir, topdown=False):
             for item in dirs:
                 os.chmod(os.path.join(root, item), 0444)
             for item in files:
                 os.chmod(os.path.join(root, item), 0444)
 
-        MDAnalysis.Universe(self.top, self.traj)
-        assert_equal(os.path.exists(self.trajectory._offset_filename()), False)
+        # MDAnalysis.Universe(self.top, self.traj)
+        # assert_equal(os.path.exists(
+        #     XDR.offsets_filename(self.trajectory.filename)), False)
 
     @dec.slow
     def test_persistent_offsets_refreshTrue(self):
@@ -327,8 +314,8 @@ class _GromacsReader_offsets(TestCase):
 
         # check that the *refresh_offsets* keyword ensures stored offsets
         # aren't retrieved
-        u = MDAnalysis.Universe(self.top, self.traj, refresh_offsets=True)
-        assert_equal((u.trajectory._offsets is None), True)
+        # u = MDAnalysis.Universe(self.top, self.traj, refresh_offsets=True)
+        # # assert_equal((u.trajectory._xdr.offsets is None), True)
 
     @dec.slow
     def test_persistent_offsets_refreshFalse(self):
@@ -337,7 +324,7 @@ class _GromacsReader_offsets(TestCase):
 
         # check that the *refresh_offsets* keyword as False grabs offsets
         u = MDAnalysis.Universe(self.top, self.traj, refresh_offsets=False)
-        assert_equal((u.trajectory._offsets is None), False)
+        assert_equal((u.trajectory._xdr.offsets is None), False)
 
 
 class TestXTCReader_offsets(_GromacsReader_offsets):
