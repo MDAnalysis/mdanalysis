@@ -27,7 +27,8 @@ from MDAnalysisTests.datafiles import (
 class TestHoomdXMLParser(ParserBase):
     parser = mda.topology.HoomdXMLParser.HoomdXMLParser
     filename = HoomdXMLdata
-    expected_attrs = ['types', 'masses', 'charges']
+    expected_attrs = ['types', 'masses', 'charges',
+                      'bonds', 'angles', 'dihedrals']
     expected_n_atoms = 769
     expected_n_residues = 1
     expected_n_segments = 1
@@ -36,3 +37,12 @@ class TestHoomdXMLParser(ParserBase):
         assert_(len(self.top.types) == self.top.n_atoms)
         assert_(len(self.top.charges) == self.top.n_atoms)
         assert_(len(self.top.masses) == self.top.n_atoms)
+
+    def test_bonds(self):
+        assert_(len(self.top.bonds.values) == 704)
+
+    def test_angles(self):
+        assert_(len(self.top.angles.values) == 640)
+
+    def test_dihedrals(self):
+        assert_(len(self.top.dihedrals.values) == 576)

@@ -114,7 +114,7 @@ class HoomdXMLParser(TopologyReader):
                 ('element', Atomelements, lambda x:x, object),
                 ('mass', Masses, float, np.float32),
                 ('charge', Charges, float, np.float32),
-                ):
+        ):
             try:
                 val = configuration.find(attrname)
                 vals = map(mapper, val.text.strip().split())
@@ -123,58 +123,24 @@ class HoomdXMLParser(TopologyReader):
             else:
                 attrs.append(attr(np.array(vals, dtype=dtype)))
 
+        for attrname, attr, in (
+                ('bond', Bonds),
+                ('angle', Angles),
+                ('dihedral', Dihedrals),
+                ('improper', Impropers),
+        ):
+            try:
+                val = configuration.find(attrname)
+                vals = [tuple(map(int, line.split()[1:]))
+                        for line in val.text.strip().split('\n')
+                        if line.strip()]
+            except:
+                pass
+            else:
+                if vals:
+                    attrs.append(attr(vals))
 
         top = Topology(natoms, 1, 1,
                        attrs=attrs)
 
         return top
-
-    def useless(self):
-        atoms = []
-        bonds = []
-        angles = []
-        dihedrals = []
-        impropers = []
-
-        for i in range(natoms):
-            atoms.append(Atom(i, names[i], atypes[i], resname, resid, segid, masses[i], charges[i], universe=self._u))
-
-        try:
-            bond = configuration.find('bond')
-            bondlines = bond.text.strip().split('\n')
-            for bondline in bondlines:
-                bondwords = bondline.split()
-                bonds.append((int(bondwords[1]),int(bondwords[2])))
-        except:
-            bonds = []
-
-        try:
-            angle = configuration.find('angle')
-            anglelines = angle.text.strip().split('\n')
-            for angleline in anglelines:
-                anglewords = angleline.split()
-                angles.append((int(anglewords[1]),int(anglewords[2]),int(anglewords[3])))
-        except:
-            angles = []
-
-        try:
-            torsion = configuration.find('dihedral')
-            torsionlines = torsion.text.strip().split('\n')
-            for torsionline in torsionlines:
-                torsionwords = torsionline.split()
-                dihedrals.append((int(torsionwords[1]),int(torsionwords[2]),int(torsionwords[3]),int(torsionwords[4])))
-        except:
-            dihedrals = []
-
-        try:
-            improper = configuration.find('improper')
-            improperlines = improper.text.strip().split('\n')
-            for improperline in improperlines:
-                improperwords = improperline.split()
-                impropers.append((int(improperwords[1]),int(improperwords[2]),int(improperwords[3]),int(improperwords[4])))
-        except:
-            impropers = []
-
-
-        structure = {'atoms': atoms, 'bonds': bonds, 'angles': angles, 'dihedrals': dihedrals, 'impropers': impropers}
-        return structure
