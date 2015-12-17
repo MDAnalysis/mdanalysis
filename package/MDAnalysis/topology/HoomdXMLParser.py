@@ -38,33 +38,62 @@ Classes
 
 """
 from __future__ import absolute_import
-from ..lib.util import openany
-from ..core.AtomGroup import Atom
-from .core import guess_atom_element
-from .base import TopologyReader
+
 import xml.etree.ElementTree as ET
+import numpy as np
+
+from ..lib.util import openany
+from .base import TopologyReader
+from ..core.topology import Topology
+from ..core.topologyattrs import (
+    Atomnames,
+    Atomtypes,
+    Masses,
+    Charges,
+    Bonds,
+    Angles,
+    Dihedrals,
+    Impropers,
+    AtomAttr,
+)
+
+
+class Atomelements(AtomAttr):
+    attrname = 'elements'
+    singular = 'element'
+    level = 'atom'
+
 
 class HoomdXMLParser(TopologyReader):
+    """Creates a Topology object with the following Attributes
+
+     - Atomtypes
+     - Atomnames
+     - Bonds
+     - Angles
+     - Dihedrals
+     - Impropers
+
+    """
     def parse(self):
         """Parse Hoomd XML file *filename* and return the dict `structure`.
 
-           Hoomd XML format does not contain a node for names. The parser will
-           look for a name node anyway, and if it doesn't find one, it will use
-           the atom types as names. If the Hoomd XML file doesn't contain a type
-           node (it should), then all atom types will be \'none\'. Similar to the
-           names, the parser will try to read element, mass, and charge from the XML
-           file, but it will use placeholder values if they are not present.
+        Hoomd XML format does not contain a node for names. The parser will
+        look for a name node anyway, and if it doesn't find one, it will use
+        the atom types as names. If the Hoomd XML file doesn't contain a type
+        node (it should), then all atom types will be \'none\'. Similar to the
+        names, the parser will try to read element, mass, and charge from the XML
+        file, but it will use placeholder values if they are not present.
 
-           Because Hoomd uses unitless mass, charge, etc., if they are not present
-           they will not be guessed - they will be set to zero.
+        Because Hoomd uses unitless mass, charge, etc., if they are not present
+        they will not be guessed - they will be set to zero.
 
-           :Returns: MDAnalysis internal *structure* dict
+        :Returns: MDAnalysis internal *structure* dict
 
-           .. SeeAlso:: The *structure* dict is defined in
+        .. SeeAlso:: The *structure* dict is defined in
                         :func:`MDAnalysis.topology.base`.
 
-           .. versionadded:: 0.11.0
-
+        .. versionadded:: 0.11.0
         """
         with openany(self.filename) as stream:
             tree = ET.parse(stream)
@@ -72,52 +101,35 @@ class HoomdXMLParser(TopologyReader):
         configuration = root.find('configuration')
         natoms = int(configuration.get('natoms'))
 
-        atypes = []
-        elems = []
-        masses = []
-        charges = []
-        resname = "SYSTEM"
-        resid = 0
-        segid = "SYSTEM"
+        attrs = []
 
         atype = configuration.find('type')
         atypes = atype.text.strip().split('\n')
         if len(atypes) != natoms:
             raise IOError("Number of types does not equal natoms.")
+        attrs.append(Atomtypes(np.array(atypes, dtype=object)))
 
-        try:
-            name = configuration.find('name')
-            names = name.text.strip().split('\n')
-        except:
-            names = [atype for atype in atypes]
-        if len(names) != natoms:
-            raise IOError("Number of names does not equal natoms.")
+        for attrname, attr, mapper, dtype in (
+                ('name', Atomnames, lambda x:x, object),
+                ('element', Atomelements, lambda x:x, object),
+                ('mass', Masses, float, np.float32),
+                ('charge', Charges, float, np.float32),
+                ):
+            try:
+                val = configuration.find(attrname)
+                vals = map(mapper, val.text.strip().split())
+            except:
+                pass
+            else:
+                attrs.append(attr(np.array(vals, dtype=dtype)))
 
-        try:
-            elem = configuration.find('element')
-            elems = elem.text.strip().split('\n')
-        except:
-            for atype in atypes:
-                elems.append(guess_atom_element(atype))
-        if len(elems) != natoms:
-            raise IOError("Number of elements does not equal natoms.")
 
-        try:
-            mass = configuration.find('mass')
-            masses = [float(x) for x in mass.text.strip().split('\n')]
-        except:
-            masses = [0]*natoms
-        if len(masses) != natoms:
-            raise IOError("Number of masses does not equal natoms.")
+        top = Topology(natoms, 1, 1,
+                       attrs=attrs)
 
-        try:
-            charge = configuration.find('charge')
-            charges = [float(x) for x in charge.text.strip().split('\n')]
-        except:
-            charges = [0]*natoms
-        if len(charges) != natoms:
-            raise IOError("Number of charges does not equal natoms.")
+        return top
 
+    def useless(self):
         atoms = []
         bonds = []
         angles = []
