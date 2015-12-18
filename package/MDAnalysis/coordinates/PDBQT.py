@@ -136,77 +136,37 @@ class PDBQTReader(base.SingleFrameReader):
     units = {'time': None, 'length': 'Angstrom'}
 
     def _read_first_frame(self):
-        # Ugly inner method: moved outside of for-loop below
-        def _c(start, stop, typeclass=float):
-            return self._col(line, start, stop, typeclass=typeclass)
-
         coords = []
-        atoms = []
         unitcell = np.zeros(6, dtype=np.float32)
         with util.openany(self.filename, 'r') as pdbfile:
             for line in pdbfile:
-                if line[:4] == 'END\n':  # Should only break at the 'END' of a model definition not
-                    # and prevent premature exit for a torsion termination, eg, ENDBRANCH
+                # Should only break at the 'END' of a model definition
+                # and prevent premature exit for a torsion termination
+                # , eg, ENDBRANCH
+                if line.startswith('END\n'):
                     break
-                if line[:6] == 'CRYST1':
-                    A, B, C = _c(7, 15), _c(16, 24), _c(25, 33)
-                    alpha, beta, gamma = _c(34, 40), _c(41, 47), _c(48, 54)
-                    unitcell[:] = A, B, C, alpha, beta, gamma
-                if line[:6] in ('ATOM  ', 'HETATM'):
-                    # directly use COLUMNS from PDB/PDBQT spec
-                    serial = _c(7, 11, int)
-                    name = _c(13, 16, str).strip()
-                    resName = _c(18, 21, str).strip()
-                    chainID = _c(22, 22, str)  # empty chainID is a single space ' '!
-                    resSeq = _c(23, 26, int)
-                    x, y, z = _c(31, 38), _c(39, 46), _c(47, 54)
-                    occupancy = _c(55, 60)
-                    tempFactor = _c(61, 66)
-                    partialCharge = _c(67, 76, str).strip()  # PDBQT partial charge
-                    atomtype = _c(77, 80, str).strip()  # PDBQT atom type
+                if line.startswith('CRYST1'):
+                    # lengths
+                    x, y, z = map(
+                        float, (line[6:15], line[15:24], line[24:33]))
+                    # angles
+                    A, B, G = map(
+                        float, (line[33:40], line[40:47], line[47:54]))
+                    unitcell[:] = x, y, z, A, B, G
+                if line.startswith(('ATOM', 'HETATM')):
+                    x, y, z = map(
+                        float, (line[30:38], line[38:46], line[46:54]))
                     coords.append((x, y, z))
-                    atoms.append(
-                        (serial, name, resName, chainID, resSeq, occupancy, tempFactor, partialCharge, atomtype))
         self.n_atoms = len(coords)
-        self.ts = self._Timestep.from_coordinates(np.array(coords, dtype=np.float32),
-                                                  **self._ts_kwargs)
+        self.ts = self._Timestep.from_coordinates(
+            np.array(coords, dtype=np.float32),
+            **self._ts_kwargs)
         self.ts._unitcell[:] = unitcell
         self.ts.frame = 0  # 0-based frame number
         if self.convert_units:
-            self.convert_pos_from_native(self.ts._pos)  # in-place !
-            self.convert_pos_from_native(self.ts._unitcell[:3])  # in-place ! (only lengths)
-        self.n_frames = 1
-
-        # hack for PDBQTParser:
-        self._atoms = np.rec.fromrecords(atoms,
-                                         names="serial,name,resName,chainID,resSeq,occupancy,tempFactor,"
-                                         "partialCharge,type")
-
-    def _col(self, line, start, stop, typeclass=float):
-        """Pick out and convert the columns start-stop.
-
-        Numbering starts at column 1 with *start* and includes *stop*;
-        this is the convention used in FORTRAN (and also in the PDB format).
-
-        :Returns: ``typeclass(line[start-1:stop])`` or
-                  ``typeclass(0)`` if conversion fails
-        """
-        x = line[start - 1:stop]
-        try:
-            return typeclass(x)
-        except ValueError:
-            return typeclass(0)
-
-    def get_bfactors(self):
-        """Return an array of bfactors (tempFactor) in atom order."""
-        warnings.warn("get_bfactors() will be removed in MDAnalysis 0.8; "
-                      "use AtomGroup.bfactors [which will become AtomGroup.bfactors()]",
-                      DeprecationWarning)
-        return self._atoms.tempFactor
-
-    def get_occupancy(self):
-        """Return an array of occupancies in atom order."""
-        return self._atoms.occupancy
+            # in-place !
+            self.convert_pos_from_native(self.ts._pos)
+            self.convert_pos_from_native(self.ts._unitcell[:3])
 
     def Writer(self, filename, **kwargs):
         """Returns a permissive (simple) PDBQTWriter for *filename*.
