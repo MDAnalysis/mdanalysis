@@ -92,6 +92,13 @@ cdef class _XDRFile:
     mode: ('r', 'w')
         The mode in which to open the file, either 'r' read or 'w' write
 
+    Raises
+    ------
+    ValueError
+        Wrong mode given
+    IOError
+        Couldn't read the file
+
     Note
     ----
     This class can't be initialized use one of the subclasses XTCFile, TRRFile
@@ -212,12 +219,16 @@ cdef class _XDRFile:
         return self.offsets.size
 
     def seek(self, frame):
-        """Seek to Frame
+        """Seek to Frame.
+
+        Please note if that this function will generate internal file offsets if
+        they haven't been set before. For large file this means the first seek
+        can be very slow. Later seeks will be very fast
 
         Parameters
         ----------
         frame: int
-            wind the file to given frame
+            seek the file to given frame
 
         Raises
         ------
@@ -353,12 +364,9 @@ cdef class TRRFile(_XDRFile):
                                       <int*> &has_prop)
         # trr are a bit weird. Reading after the last frame always always
         # results in an integer error while reading. I tried it also with trr
-        # produced by different codes.
+        # produced by different codes (Gromacs, ...).
         if return_code != EOK and return_code != EENDOFFILE \
            and return_code != EINTEGER:
-            print self.current_frame
-            print step
-            print self.reached_eof
             raise RuntimeError('TRR Read Error occured: {}'.format(
                 error_message[return_code]))
 
@@ -495,7 +503,6 @@ cdef class XTCFile(_XDRFile):
     >>>     for frame in f:
     >>>         print(frame.x)
     """
-
     cdef float prec
 
     def _calc_natoms(self, fname):
