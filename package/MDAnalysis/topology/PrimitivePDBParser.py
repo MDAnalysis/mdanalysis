@@ -54,7 +54,9 @@ from ..core.topologyattrs import (
     Atomtypes,
     Atomids,
     AltLocs,
-    Bfactors,
+    Tempfactors,
+    ICodes,
+    ChainIDs,
     Occupancies,
     Resids,
     Resnames,
@@ -63,18 +65,6 @@ from ..core.topologyattrs import (
     Bonds,
     AtomAttr,
 )
-
-
-class ICodes(AtomAttr):
-    attrname = 'icodes'
-    singular = 'icode'
-    level = 'atom'
-
-
-class ChainIDs(AtomAttr):
-    attrname = 'chainids'
-    singular = 'chainid'
-    level = 'atom'
 
 
 class PrimitivePDBParser(TopologyReader):
@@ -115,7 +105,7 @@ class PrimitivePDBParser(TopologyReader):
           - altLocs
           - insertion_codes (non XPDB)
           - chainids
-          - bfactors [optional]
+          - tempfactors [optional]
           - occupancies [optional]
         per residue Attributes:
           - resids
@@ -131,7 +121,7 @@ class PrimitivePDBParser(TopologyReader):
         altlocs = []
         chainids = []
         icodes = []
-        bfactors = []
+        tempfactors = []
         occupancies = []
         atomtypes = []
 
@@ -191,7 +181,7 @@ class PrimitivePDBParser(TopologyReader):
                     tempFactor = float(line[60:66])
                 except ValueError:
                     tempFactor = None
-                bfactors.append(tempFactor)
+                tempfactors.append(tempFactor)
 
                 segids.append(line[66:76].strip())
                 atomtypes.append(line[76:78].strip())
@@ -212,7 +202,7 @@ class PrimitivePDBParser(TopologyReader):
                 (altlocs, AltLocs, object),
                 (chainids, ChainIDs, object),
                 (serials, Atomids, np.int32),
-                (bfactors, Bfactors, np.float32),
+                (tempfactors, Tempfactors, np.float32),
                 (occupancies, Occupancies, np.float32),
         ):
             # Skip if:

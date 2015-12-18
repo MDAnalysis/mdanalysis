@@ -282,6 +282,29 @@ class Radii(AtomAttr):
     singular = 'radius'
 
 
+class ChainIDs(AtomAttr):
+    """ChainID per atom
+
+    Note
+    ----
+    This is an attribute of the Atom, not Residue or Segment
+    """
+    attrname = 'chainIDs'
+    singular = 'chainID'
+
+
+class ICodes(AtomAttr):
+    """Insertion code for Atoms"""
+    attrname = 'icodes'
+    singular = 'icode'
+
+
+class Tempfactors(AtomAttr):
+    """Tempfactor for atoms"""
+    attrname = 'tempfactors'
+    singular = 'tempfactor'
+
+
 #TODO: need to add cacheing
 #TODO: update docs to property doc
 class Masses(AtomAttr):
