@@ -20,13 +20,16 @@ class XDRBaseReader(base.Reader):
                                             **kwargs)
         self._xdr = self._file(self.filename)
 
+        if not refresh_offsets:
+            self._load_offsets()
+        else:
+            self._read_offsets(store=True)
+
         frame = self._xdr.read()
         try:
             xdr_frame = self._xdr.read()
             dt = xdr_frame.time - frame.time
-            # avoid triggering a offset calculation!
-            self._xdr.seek(0)
-            self._xdr.read()
+            self._xdr.seek(1)
         except:
             dt = 0
 
@@ -45,11 +48,6 @@ class XDRBaseReader(base.Reader):
         if self.convert_units:
             self.convert_pos_from_native(self.ts._unitcell[:3])
 
-        if not refresh_offsets:
-            self._load_offsets()
-        else:
-            self._read_offsets(store=True)
-
     def close(self):
         self._xdr.close()
 
@@ -61,20 +59,17 @@ class XDRBaseReader(base.Reader):
             return
 
         with open(fname) as f:
-            data = np.load(f)
-            offsets = data['offsets']
-            ctime = data['ctime']
-            size = data['size']
+            data = {k: v for k, v in np.load(f).iteritems()}
 
-        ctime_ok = getctime(self.filename) == ctime
-        size_ok = getsize(self.filename) == size
+        ctime_ok = getctime(self.filename) == data['ctime']
+        size_ok = getsize(self.filename) == data['size']
 
         if not (ctime_ok and size_ok):
             warnings.warn("Relead offsets from trajectory\n "
                           "ctime or size did not match")
             self._read_offsets(store=True)
         else:
-            self._xdr.set_offsets(offsets)
+            self._xdr.set_offsets(data['offsets'])
 
     def _read_offsets(self, store=False):
         offsets = self._xdr.offsets
@@ -103,7 +98,6 @@ class XDRBaseReader(base.Reader):
 
     def _read_frame(self, i):
         self._xdr.seek(i)
-        self.ts.frame = i - 1
         self._frame = i - 1
         return self._read_next_timestep()
 
