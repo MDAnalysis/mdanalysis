@@ -149,32 +149,24 @@ class _GromacsReader_offsets(TestCase):
     # computed with Gromacs: 362.26999999999998 nm**3 * 1000 A**3/nm**3
     ref_volume = 362270.0
     ref_offsets = None
+    _reader = None
 
     def setUp(self):
         # since offsets are automatically generated in the same directory
         # as the trajectory, we do everything from a temporary directory
-
         self.tmpdir = tempdir.TempDir()
-        # loading from GRO is 4x faster than the PDB reader
-        shutil.copy(GRO, self.tmpdir.name)
         shutil.copy(self.filename, self.tmpdir.name)
 
-        self.top = os.path.join(self.tmpdir.name, os.path.basename(GRO))
         self.traj = os.path.join(self.tmpdir.name,
                                  os.path.basename(self.filename))
 
-        self.universe = MDAnalysis.Universe(self.top, self.traj,
-                                            convert_units=True)
-        self.trajectory = self.universe.trajectory
+        self.trajectory = self._reader(self.traj)
         self.prec = 3
-        self.ts = self.universe.coord
+        self.ts = self.trajectory.ts
 
     def tearDown(self):
         del self.tmpdir
-        del self.universe
-
-    def tmp_file(self, name):
-        return self.tmpdir.name + name + '.' + self.ref.ext
+        del self.trajectory
 
     @dec.slow
     def test_offsets(self):
@@ -183,8 +175,7 @@ class _GromacsReader_offsets(TestCase):
                                   self.ref_offsets,
                                   err_msg="wrong frame offsets")
 
-        # Saving
-        outfile_offsets = XDR.offsets_filename(self.trajectory.filename)
+        outfile_offsets = XDR.offsets_filename(self.traj)
         with open(outfile_offsets) as f:
             saved_offsets = {k: v for k, v in np.load(f).iteritems()}
 
@@ -199,24 +190,6 @@ class _GromacsReader_offsets(TestCase):
         assert_array_almost_equal(self.trajectory._xdr.offsets,
                                   self.ref_offsets,
                                   err_msg="error loading frame offsets")
-
-    @dec.slow
-    def test_persistent_offsets_stored(self):
-        self.trajectory._read_offsets(store=True)
-        assert_equal((self.trajectory._xdr.offsets is None), False)
-
-        # check that stored offsets are present
-        assert_equal(os.path.exists(
-            XDR.offsets_filename(self.trajectory.filename)), True)
-
-    @dec.slow
-    def test_persistent_offsets_ctime_size_match(self):
-        self.trajectory._read_offsets(store=True)
-
-        with open(XDR.offsets_filename(self.trajectory.filename), 'rb') as f:
-            saved_offsets = {k: v for k, v in np.load(f).iteritems()}
-
-        # check that stored offsets ctime matches that of trajectory file
         assert_equal(saved_offsets['ctime'], os.path.getctime(self.traj))
         assert_equal(saved_offsets['size'], os.path.getsize(self.traj))
 
@@ -226,10 +199,10 @@ class _GromacsReader_offsets(TestCase):
 
         # check that stored offsets are not loaded when trajectory size differs
         # from stored size
-        with open(XDR.offsets_filename(self.trajectory.filename), 'rb') as f:
+        with open(XDR.offsets_filename(self.traj), 'rb') as f:
             saved_offsets = {k: v for k, v in np.load(f).iteritems()}
         saved_offsets['size'] += 1
-        with open(XDR.offsets_filename(self.trajectory.filename), 'wb') as f:
+        with open(XDR.offsets_filename(self.traj), 'wb') as f:
             np.savez(f, **saved_offsets)
 
         # u = MDAnalysis.Universe(self.top, self.traj)
@@ -241,10 +214,10 @@ class _GromacsReader_offsets(TestCase):
 
         # check that stored offsets are not loaded when the offsets themselves
         # appear to be wrong
-        with open(XDR.offsets_filename(self.trajectory.filename), 'rb') as f:
+        with open(XDR.offsets_filename(self.traj), 'rb') as f:
             saved_offsets = {k: v for k, v in np.load(f).iteritems()}
         saved_offsets['offsets'] += 1
-        with open(XDR.offsets_filename(self.trajectory.filename), 'wb') as f:
+        with open(XDR.offsets_filename(self.traj), 'wb') as f:
             np.savez(f, **saved_offsets)
 
         # with warnings.catch_warnings():
@@ -253,28 +226,25 @@ class _GromacsReader_offsets(TestCase):
 
     @dec.slow
     def test_persistent_offsets_readonly(self):
-        # check that if directory is read-only offsets aren't stored
-        os.unlink(XDR.offsets_filename(self.trajectory.filename))
-        for root, dirs, files in os.walk(self.tmpdir.name, topdown=False):
-            for item in dirs:
-                os.chmod(os.path.join(root, item), 0444)
-            for item in files:
-                os.chmod(os.path.join(root, item), 0444)
+        os.remove(XDR.offsets_filename(self.traj))
+        assert_equal(os.path.exists(
+            XDR.offsets_filename(self.trajectory.filename)), False)
 
+        os.chmod(self.tmpdir.name, 0555)
         self.trajectory._read_offsets(store=True)
-
-        # MDAnalysis.Universe(self.top, self.traj)
-        # assert_equal(os.path.exists(
-        #     XDR.offsets_filename(self.trajectory.filename)), False)
+        assert_equal(os.path.exists(
+            XDR.offsets_filename(self.trajectory.filename)), False)
 
 
 class TestXTCReader_offsets(_GromacsReader_offsets):
     filename = XTC
     ref_offsets = np.array([0, 165188, 330364, 495520, 660708, 825872, 991044,
                             1156212, 1321384, 1486544])
+    _reader = MDAnalysis.coordinates.XTC.XTCReader
 
 
 class TestTRRReader_offsets(_GromacsReader_offsets):
     filename = TRR
     ref_offsets = np.array([0, 1144464, 2288928, 3433392, 4577856, 5722320,
                             6866784, 8011248, 9155712, 10300176])
+    _reader = MDAnalysis.coordinates.TRR.TRRReader
