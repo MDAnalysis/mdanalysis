@@ -50,13 +50,8 @@ from ..core.topologyattrs import (
     Resnames,
     Segids,
     AtomAttr,  # for custom Attributes
+    ChainIDs,
 )
-
-
-class ChainIDs(AtomAttr):
-    """ChainID for each Atom"""
-    attrname = 'chainids'
-    singular = 'chainid'
 
 
 class Atomnums(AtomAttr):
