@@ -438,7 +438,6 @@ class TestTRRWriter(_GromacsWriter):
     def test_gaps(self):
         """Tests the writing and reading back of TRRs with gaps in any of
         the coordinates/velocities properties."""
-        print("testing for gaps now")
         t = self.universe.trajectory
         W = self.Writer(self.outfile, t.n_atoms, dt=t.dt)
         for ts in self.universe.trajectory:
@@ -452,7 +451,6 @@ class TestTRRWriter(_GromacsWriter):
         W.close()
 
         uw = mda.Universe(GRO, self.outfile)
-        print('iterate over written trr')
         # check that the velocities are identical for each time step, except
         # for the gaps (that we must make sure to raise exceptions on).
         for orig_ts, written_ts in zip(self.universe.trajectory,
