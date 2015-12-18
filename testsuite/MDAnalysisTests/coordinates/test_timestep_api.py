@@ -62,7 +62,6 @@ class TestBaseTimestep(BaseTimestepTest):
                         mda.coordinates.DMS.Timestep,
                         mda.coordinates.GRO.Timestep,
                         mda.coordinates.TRZ.Timestep,
-                        #mda.coordinates.XTC.Timestep,
                         ]:
             ts2 = otherTS(10)
             ts2.positions = self._get_pos()
@@ -195,10 +194,10 @@ class TestNCDF(BaseTimestepInterfaceTest):
         self.ts = u.trajectory.ts
 
 
-# class TestTRR(BaseTimestepInterfaceTest):
-#     def setUp(self):
-#         u = self.u = mda.Universe(GRO, TRR)
-#         self.ts = u.trajectory.ts
+class TestTRR(BaseTimestepInterfaceTest):
+    def setUp(self):
+        u = self.u = mda.Universe(GRO, TRR)
+        self.ts = u.trajectory.ts
 
 
 class TestTRZ(BaseTimestepInterfaceTest):
@@ -207,7 +206,7 @@ class TestTRZ(BaseTimestepInterfaceTest):
         self.ts = u.trajectory.ts
 
 
-# class TestXTC(BaseTimestepInterfaceTest):
-#     def setUp(self):
-#         u = self.u = mda.Universe(GRO, XTC)
-#         self.ts = u.trajectory.ts
+class TestXTC(BaseTimestepInterfaceTest):
+    def setUp(self):
+        u = self.u = mda.Universe(GRO, XTC)
+        self.ts = u.trajectory.ts
