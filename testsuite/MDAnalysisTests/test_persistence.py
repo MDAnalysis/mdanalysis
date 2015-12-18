@@ -29,8 +29,8 @@ import os
 import gc
 import shutil
 import cPickle
-import tempfile
 import warnings
+import tempdir
 
 
 class TestAtomGroupPickle(TestCase):
@@ -154,13 +154,14 @@ class _GromacsReader_offsets(TestCase):
         # since offsets are automatically generated in the same directory
         # as the trajectory, we do everything from a temporary directory
 
-        self.tmpdir = tempfile.mkdtemp()
+        self.tmpdir = tempdir.TempDir()
         # loading from GRO is 4x faster than the PDB reader
-        shutil.copy(GRO, self.tmpdir)
-        shutil.copy(self.filename, self.tmpdir)
+        shutil.copy(GRO, self.tmpdir.name)
+        shutil.copy(self.filename, self.tmpdir.name)
 
-        self.top = os.path.join(self.tmpdir, os.path.basename(GRO))
-        self.traj = os.path.join(self.tmpdir, os.path.basename(self.filename))
+        self.top = os.path.join(self.tmpdir.name, os.path.basename(GRO))
+        self.traj = os.path.join(self.tmpdir.name,
+                                 os.path.basename(self.filename))
 
         self.universe = MDAnalysis.Universe(self.top, self.traj,
                                             convert_units=True)
@@ -168,21 +169,12 @@ class _GromacsReader_offsets(TestCase):
         self.prec = 3
         self.ts = self.universe.coord
 
-        # dummy output file
-        ext = os.path.splitext(self.filename)[1]
-        fd, self.outfile = tempfile.mkstemp(suffix=ext)
-        os.close(fd)
-        fd, self.outfile_offsets = tempfile.mkstemp(suffix='.pkl')
-        os.close(fd)
-
     def tearDown(self):
-        try:
-            os.unlink(self.outfile)
-            os.unlink(self.outfile_offsets)
-            shutil.rmtree(self.tmpdir)
-        except:
-            pass
+        del self.tmpdir
         del self.universe
+
+    def tmp_file(self, name):
+        return self.tmpdir.name + name + '.' + self.ref.ext
 
     @dec.slow
     def test_offsets(self):
@@ -193,7 +185,7 @@ class _GromacsReader_offsets(TestCase):
 
         # Saving
         outfile_offsets = XDR.offsets_filename(self.trajectory.filename)
-        with open(outfile_offsets, 'rb') as f:
+        with open(outfile_offsets) as f:
             saved_offsets = {k: v for k, v in np.load(f).iteritems()}
 
         assert_array_almost_equal(self.trajectory._xdr.offsets,
@@ -203,7 +195,6 @@ class _GromacsReader_offsets(TestCase):
                                   err_msg="saved frame offsets don't match "
                                   "the known ones")
 
-        # Loading
         self.trajectory._load_offsets()
         assert_array_almost_equal(self.trajectory._xdr.offsets,
                                   self.ref_offsets,
@@ -214,7 +205,7 @@ class _GromacsReader_offsets(TestCase):
         self.trajectory._read_offsets(store=True)
         assert_equal((self.trajectory._xdr.offsets is None), False)
 
-        # check that stored offsets present
+        # check that stored offsets are present
         assert_equal(os.path.exists(
             XDR.offsets_filename(self.trajectory.filename)), True)
 
@@ -264,7 +255,7 @@ class _GromacsReader_offsets(TestCase):
     def test_persistent_offsets_readonly(self):
         # check that if directory is read-only offsets aren't stored
         os.unlink(XDR.offsets_filename(self.trajectory.filename))
-        for root, dirs, files in os.walk(self.tmpdir, topdown=False):
+        for root, dirs, files in os.walk(self.tmpdir.name, topdown=False):
             for item in dirs:
                 os.chmod(os.path.join(root, item), 0444)
             for item in files:
