@@ -262,13 +262,6 @@ class PDBReader(base.SingleFrameReader):
         # metadata
         self.metadata = self.pdb.header
 
-    def get_bfactors(self):
-        """Return an array of bfactors (tempFactor) in atom order."""
-        warnings.warn("get_bfactors() will be removed in MDAnalysis 0.8; "
-                      "use AtomGroup.bfactors [which will become AtomGroup.bfactors()]",
-                      DeprecationWarning)
-        return np.array([a.get_bfactor() for a in self.pdb.get_atoms()])
-
     def Writer(self, filename, **kwargs):
         """Returns a strict PDBWriter for *filename*.
 
@@ -479,7 +472,6 @@ class PrimitivePDBReader(base.Reader):
         self.ts = self._Timestep(self._n_atoms, **self._ts_kwargs)
 
         pos = 0  # atom position for filling coordinates array
-        occupancy = np.ones(self._n_atoms)
         with util.openany(filename, 'r') as pdbfile:
             for i, line in enumerate(pdbfile):
                 line = line.strip()  # Remove extra spaces
@@ -513,17 +505,13 @@ class PrimitivePDBReader(base.Reader):
                     remarks.append(content)
                 elif record == 'MODEL':
                     frames[len(frames)] = i  # 0-based indexing
-                elif line[:6] in ('ATOM  ', 'HETATM'):
+                elif line.startswith(('ATOM', 'HETATM')):
                     # skip atom/hetatm for frames other than the first
                     # they will be read in when next() is called
                     # on the trajectory reader
                     if len(frames) > 1:
                         continue
                     self.ts._pos[pos] = map(float, [line[30:38], line[38:46], line[46:54]])
-                    try:
-                        occupancy[pos] = float(line[54:60])
-                    except ValueError:
-                        pass
                     pos += 1
 
         self.header = header
@@ -538,7 +526,6 @@ class PrimitivePDBReader(base.Reader):
         self.n_atoms = pos
 
         self.ts.frame = 0  # 0-based frame number as starting frame
-        self.ts.data['occupancy'] = occupancy
 
         if self.convert_units:
             self.convert_pos_from_native(self.ts._pos)  # in-place !
@@ -550,10 +537,6 @@ class PrimitivePDBReader(base.Reader):
 
         self.frames = frames
         self.n_frames = len(frames) if frames else 1
-
-    def get_occupancy(self):
-        """Return an array of occupancies in atom order."""
-        return np.array(self._occupancy)
 
     def Writer(self, filename, **kwargs):
         """Returns a permissive (simple) PDBWriter for *filename*.
@@ -600,7 +583,6 @@ class PrimitivePDBReader(base.Reader):
         # TODO: only open file once and leave the file open; then seek back and
         #       forth; should improve performance substantially
         pos = 0
-        occupancy = np.ones(self._n_atoms)
         with util.openany(self.filename, 'r') as f:
             for i in xrange(line):
                 f.next()  # forward to frame
@@ -610,21 +592,16 @@ class PrimitivePDBReader(base.Reader):
                 # NOTE - CRYST1 line won't be found if it comes before the MODEL
                 # line, which is sometimes the case, e.g. output from gromacs
                 # trjconv
-                elif line[:6] == 'CRYST1':
+                elif line.startswith('CRYST1'):
                     A, B, C = map(float, [line[6:15], line[15:24], line[24:33]])
                     alpha, beta, gamma = map(float, [line[33:40], line[40:47],
                                                      line[47:54]])
                     self.ts._unitcell[:] = A, B, C, alpha, beta, gamma
                     continue
-                elif line[:6] in ('ATOM  ', 'HETATM'):
+                elif line.startswith(('ATOM', 'HETATM')):
                     # we only care about coordinates
                     self.ts._pos[pos] = map(float, [line[30:38], line[38:46],
                                                     line[46:54]])
-                    # TODO import bfactors - might these change?
-                    try:
-                        occupancy[pos] = float(line[54:60])
-                    except:
-                        pass
                     pos += 1
                     continue
 
@@ -638,7 +615,6 @@ class PrimitivePDBReader(base.Reader):
             self.convert_pos_from_native(self.ts._pos)  # in-place !
             self.convert_pos_from_native(self.ts._unitcell[:3])  # in-place ! (only lengths)
         self.ts.frame = frame
-        self.ts.data['occupancy'] = occupancy
         return self.ts
 
 
