@@ -81,8 +81,11 @@ class XDRBaseReader(base.Reader):
         if store:
             ctime = getctime(self.filename)
             size = getsize(self.filename)
-            np.savez(offsets_filename(self.filename),
-                     offsets=offsets, size=size, ctime=ctime)
+            try:
+                np.savez(offsets_filename(self.filename),
+                         offsets=offsets, size=size, ctime=ctime)
+            except:
+                pass
 
     def rewind(self):
         """Read the first frame again"""
