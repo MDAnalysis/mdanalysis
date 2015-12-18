@@ -340,11 +340,11 @@ class Charges(AtomAttr):
 class Bfactors(AtomAttr):
     """Crystallographic B-factors in A**2 for each atom"""
     attrname = 'bfactors'
-    singular = 'bfactors'
+    singular = 'bfactor'
 
 
 #TODO: update docs to property doc
-class Occupancy(AtomAttr):
+class Occupancies(AtomAttr):
     attrname = 'occupancies'
     singular = 'occupancy'
 
