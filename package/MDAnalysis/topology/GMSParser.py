@@ -40,23 +40,33 @@ Classes
 from __future__ import absolute_import
 
 import re
+import numpy as np
 
-from ..core.AtomGroup import Atom
 from ..lib.util import openany
-from .core import get_atom_mass, guess_atom_charge, guess_atom_element
 from .base import TopologyReader
+from ..core.topology import Topology
+from ..core.topologyattrs import (
+    Atomnames,
+    Atomtypes,
+)
 
 
 class GMSParser(TopologyReader):
     """GAMESS_ topology parser.
+
+    Creates the following Attributes:
+     - names
+     - types
 
     .. versionadded:: 0.9.1
     """
     def parse(self):
         """Read list of atoms from a GAMESS file."""
 
+        names = []
+        elems = []
+
         with openany(self.filename, 'r') as inf:
-            natoms = 0
             while True:
                 line = inf.readline()
                 if not line:
@@ -65,11 +75,7 @@ class GMSParser(TopologyReader):
                         line):
                     break
             line = inf.readline() # skip
-            atoms = []
-            i = 0
-            segid = "SYSTEM"
-            resid = 1
-            resname = "SYSTEM"
+
             while True:
                 line = inf.readline()
                 _m = re.match(\
@@ -79,14 +85,13 @@ r'^\s*([A-Za-z_][A-Za-z_0-9]*)\s+([0-9]+\.[0-9]+)\s+(\-?[0-9]+\.[0-9]+)\s+(\-?[0
                     break
                 name = _m.group(1)
                 elem = int(float(_m.group(2)))
-                charge = guess_atom_charge(name)
-                mass = get_atom_mass(elem)
+
+                names.append(name)
+                elems.append(elem)
                 #TODO: may be use coordinates info from _m.group(3-5) ??
-                at = Atom(i, name, elem, resname, resid,
-                          segid, mass, charge, universe=self._u)
-                atoms.append(at)
-                i += 1
 
-        struc = {"atoms": atoms}
+        top = Topology(len(names), 1, 1,
+                       attrs=[Atomnames(np.array(names, dtype=object)),
+                              Atomtypes(np.array(elems, dtype=np.int32))])
 
-        return struc
+        return top
