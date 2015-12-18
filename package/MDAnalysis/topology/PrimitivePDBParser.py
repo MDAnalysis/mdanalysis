@@ -27,11 +27,6 @@ a different file format (e.g. the "extended" PDB, *XPDB* format, see
 :mod:`~MDAnalysis.topology.ExtendedPDBParser`) that can handle residue
 numbers up to 99,999.
 
-.. Note::
-
-   The parser processes atoms and their names. Masses are guessed and set to 0
-   if unknown. Partial charges are not set.
-
 .. SeeAlso::
 
    * :mod:`MDAnalysis.topology.ExtendedPDBParser`
@@ -49,11 +44,37 @@ Classes
 from __future__ import absolute_import
 
 import warnings
+import numpy as np
 
-from ..core.AtomGroup import Atom
-from .core import get_atom_mass, guess_atom_element
 from ..lib.util import openany
-from .base import TopologyReader
+from .base import TopologyReader, squash_by
+from ..core.topology import Topology
+from ..core.topologyattrs import (
+    Atomnames,
+    Atomtypes,
+    Atomids,
+    AltLocs,
+    Bfactors,
+    Occupancies,
+    Resids,
+    Resnames,
+    Resnums,
+    Segids,
+    Bonds,
+    AtomAttr,
+)
+
+
+class ICodes(AtomAttr):
+    attrname = 'icodes'
+    singular = 'icode'
+    level = 'atom'
+
+
+class ChainIDs(AtomAttr):
+    attrname = 'chainids'
+    singular = 'chainid'
+    level = 'atom'
 
 
 class PrimitivePDBParser(TopologyReader):
@@ -66,109 +87,188 @@ class PrimitivePDBParser(TopologyReader):
     format = 'PDB'
 
     def parse(self):
-        """Parse atom information from PDB file *filename*.
+        """Parse atom information from PDB file
 
-        :Returns: MDAnalysis internal *structure* dict
-
-        .. SeeAlso:: The *structure* dict is defined in
-                     `MDAnalysis.topology` and the file is
-                     read with
-                     :class:`MDAnalysis.coordinates.PDB.PrimitivePDBReader`.
+        Returns
+        -------
+        MDAnalysis Topology object
         """
-        structure = {}
+        top = self._parseatoms()
 
-        atoms = self._parseatoms()
-        structure['atoms'] = atoms
+        try:
+            bonds = self._parsebonds(top.ids.values)
+        except AttributeError:
+            warnings.warn("Invalid atom serials were present, "
+                          "bonds will not be parsed")
+        else:
+            top.add_TopologyAttr(bonds)
 
-        bonds = self._parsebonds(atoms)
-        structure['bonds'] = bonds
-
-        return structure
+        return top
 
     def _parseatoms(self):
-        iatom = 0
-        atoms = []
+        """Create the initial Topology object
+
+        Creates the following per atom Attributes:
+          - serials [optional]
+        ` - name
+          - types
+          - altLocs
+          - insertion_codes (non XPDB)
+          - chainids
+          - bfactors [optional]
+          - occupancies [optional]
+        per residue Attributes:
+          - resids
+          - resnums (non XPDB)
+          - resnames
+        per segment Attributes:
+          - segids
+        """
+        resid_prev = 0  # resid looping hack
+
+        serials = []
+        names = []
+        altlocs = []
+        chainids = []
+        icodes = []
+        bfactors = []
+        occupancies = []
+        atomtypes = []
+
+        resids = []
+        resnums = []
+        resnames = []
+
+        segids = []
 
         with openany(self.filename) as f:
-            resid_prev = 0  # resid looping hack
-            for i, line in enumerate(f):
+            for line in f:
                 line = line.strip()  # Remove extra spaces
-                if len(line) == 0:  # Skip line if empty
+                if not line:  # Skip line if empty
                     continue
-                record = line[:6].strip()
-
-                if record.startswith('END'):
+                if line.startswith('END'):
                     break
-                elif line[:6] in ('ATOM  ', 'HETATM'):
-                    try:
-                        serial = int(line[6:11])
-                    except ValueError:
-                        # serial can become '***' when they get too high
-                        self._wrapped_serials = True
-                        serial = None
-                    name = line[12:16].strip()
-                    altLoc = line[16:17].strip()
-                    resName = line[17:21].strip()
-                    chainID = line[21:22].strip()  # empty chainID is a single space ' '!
-                    if self.format == "XPDB":  # fugly but keeps code DRY
-                        resSeq = int(line[22:27])  # extended non-standard format used by VMD
-                        resid = resSeq
-                    else:
-                        resSeq = int(line[22:26])
-                        resid = resSeq
+                if not line.startswith(('ATOM', 'HETATM')):
+                    continue
 
-                        while resid - resid_prev < -5000:
-                            resid += 10000
+                try:
+                    serial = int(line[6:11])
+                except ValueError:
+                    # serial can become '***' when they get too high
+                    serial = None
+                serials.append(serial)
+
+                names.append(line[12:16].strip())
+                altlocs.append(line[16:17].strip())
+                resnames.append(line[17:21].strip())
+                # empty chainID is a single space ' '!
+                chainids.append(line[21:22].strip())
+                if self.format == "XPDB":  # fugly but keeps code DRY
+                    # extended non-standard format used by VMD
+                    resids.append(int(line[22:27]))
+                else:
+                    resid = int(line[22:26])
+                    try:
+                        icodes.append(int(line[26:27]))
+                    except ValueError:
+                        icodes.append(None)
+
+                    resnums.append(resid)
+
+                    while resid - resid_prev < -5000:
+                        resid += 10000
                         resid_prev = resid
-                        # insertCode = _c(27, 27, str)  # not used
-                        # occupancy = float(line[54:60])
-                    try:
-                        tempFactor = float(line[60:66])
-                    except ValueError:
-                        tempFactor = 0.0
-                    segID = line[66:76].strip()
-                    element = line[76:78].strip()
+                    resids.append(resid)
 
-                    segid = segID.strip() or chainID.strip() or "SYSTEM"
+                try:
+                    occupancy = float(line[54:60])
+                except ValueError:
+                    occupancy = None
+                occupancies.append(occupancy)
 
-                    elem = guess_atom_element(name)
-                    
-                    atomtype = element or elem
-                    mass = get_atom_mass(elem)
-                    # charge = guess_atom_charge(name)
-                    charge = 0.0
+                try:
+                    # bfactor
+                    tempFactor = float(line[60:66])
+                except ValueError:
+                    tempFactor = None
+                bfactors.append(tempFactor)
 
-                    atom = Atom(iatom, name, atomtype, resName, resid,
-                                segid, mass, charge,
-                                bfactor=tempFactor, serial=serial,
-                                altLoc=altLoc, universe=self._u,
-                                resnum=resSeq)
-                    iatom += 1
-                    atoms.append(atom)
+                segids.append(line[66:76].strip())
+                atomtypes.append(line[76:78].strip())
 
-        return atoms
+        # If segids not present, try to use chainids
+        if not any(segids):
+            segids, chainids = chainids, None
+        if not icodes:
+            icodes = None
 
-    def _parsebonds(self, atoms):
+        n_atoms = len(serials)
+        attrs = []
+        attrs.append(Atomnames(np.array(names, dtype=object)))
+        # Optional attributes
+        for vals, Attr, dtype in (
+                (icodes, ICodes, np.int32),
+                (atomtypes, Atomtypes, object),
+                (altlocs, AltLocs, object),
+                (chainids, ChainIDs, object),
+                (serials, Atomids, np.int32),
+                (bfactors, Bfactors, np.float32),
+                (occupancies, Occupancies, np.float32),
+        ):
+            # Skip if:
+            # - vals is None
+            # - any entries are None
+            # - all entries are empty
+            if vals is None:
+                continue
+            if any(v == None for v in vals):
+                continue
+            if not any(vals):
+                continue
+            attrs.append(Attr(np.array(vals, dtype=dtype)))
+
+        # Residue level stuff from here
+        resnames = np.array(resnames, dtype=object)
+        resids = np.array(resids, dtype=np.int32)
+        segids = np.array(segids, dtype=object)
+        if resnums:
+            resnums = np.array(resnums, dtype=np.int32)
+            residx, resids, (resnames, resnums, segids) = squash_by(
+                resids, resnames, resnums, segids)
+            attrs.append(Resnums(resnums))
+        else:
+            residx, resids, (resnames, segids) = squash_by(
+                resids, resnames, segids)
+        n_residues = len(resids)
+        attrs.append(Resids(resids))
+        attrs.append(Resnames(resnames))
+
+        segidx, segids = squash_by(segids)[:2]
+        n_segments = len(segids)
+        attrs.append(Segids(segids))
+
+        top = Topology(n_atoms, n_residues, n_segments,
+                       attrs=attrs,
+                       atom_resindex=residx,
+                       residue_segindex=segidx)
+
+        return top
+
+    def _parsebonds(self, serials):
         # Could optimise this by saving lines in the main loop
         # then doing post processing after all Atoms have been read
         # ie do one pass through the file only        
         # Problem is that in multiframe PDB, the CONECT is at end of file,
         # so the "break" call happens before bonds are reached.
 
-        # If the serials wrapped, this won't work
-        if hasattr(self, '_wrapped_serials'):
-            warnings.warn("Invalid atom serials were present, bonds will not"
-                          " be parsed")
-            return tuple([])
-
         # Mapping between the atom array indicies a.index and atom ids
         # (serial) in the original PDB file
-        mapping = dict((a.serial, a.index) for a in atoms)
+        mapping = dict((s, i) for i, s in enumerate(serials))
 
         bonds = set()
         with openany(self.filename, "r") as f:
             lines = (line[6:].split() for line in f
-                     if line[:6] == "CONECT")
+                     if line.startswith("CONECT"))
             for bond in lines:
                 atom, atoms = int(bond[0]), map(int, bond[1:])
                 for a in atoms:
@@ -177,4 +277,4 @@ class PrimitivePDBParser(TopologyReader):
 
         bonds = tuple(bonds)
 
-        return bonds
+        return Bonds(bonds)
