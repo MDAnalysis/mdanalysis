@@ -186,43 +186,42 @@ class _GromacsReader_offsets(TestCase):
                                   err_msg="saved frame offsets don't match "
                                   "the known ones")
 
-        self.trajectory._load_offsets()
+        self.trjectory._load_offsets()
         assert_array_almost_equal(self.trajectory._xdr.offsets,
                                   self.ref_offsets,
                                   err_msg="error loading frame offsets")
         assert_equal(saved_offsets['ctime'], os.path.getctime(self.traj))
         assert_equal(saved_offsets['size'], os.path.getsize(self.traj))
 
-    @dec.slow
-    def test_persistent_offsets_size_mismatch(self):
-        self.trajectory._read_offsets(store=True)
+    # TODO: tests mismatchs
+    # @dec.slow
+    # def test_persistent_offsets_size_mismatch(self):
+    #     # check that stored offsets are not loaded when trajectory
+    #     # size differs from stored size
+    #     with open(XDR.offsets_filename(self.traj), 'rb') as f:
+    #         saved_offsets = {k: v for k, v in np.load(f).iteritems()}
+    #     saved_offsets['size'] += 1
+    #     with open(XDR.offsets_filename(self.traj), 'wb') as f:
+    #         np.savez(f, **saved_offsets)
 
-        # check that stored offsets are not loaded when trajectory size differs
-        # from stored size
-        with open(XDR.offsets_filename(self.traj), 'rb') as f:
-            saved_offsets = {k: v for k, v in np.load(f).iteritems()}
-        saved_offsets['size'] += 1
-        with open(XDR.offsets_filename(self.traj), 'wb') as f:
-            np.savez(f, **saved_offsets)
+    # TODO: This doesn't test if the offsets work AT ALL. the old
+    # implementation only checked if the offsets were ok to set back to the old
+    # frame. But that doesn't check if any of the other offsets is potentially
+    # wrong. Basically the only way to check that would be to scan through the
+    # whole trajectory.
+    # @dec.slow
+    # def test_persistent_offsets_last_frame_wrong(self):
+    #     # check that stored offsets are not loaded when the offsets
+    #     # themselves appear to be wrong
+    #     with open(XDR.offsets_filename(self.traj), 'rb') as f:
+    #         saved_offsets = {k: v for k, v in np.load(f).iteritems()}
+    #     saved_offsets['offsets'] += 1
+    #     with open(XDR.offsets_filename(self.traj), 'wb') as f:
+    #         np.savez(f, **saved_offsets)
 
-        # u = MDAnalysis.Universe(self.top, self.traj)
-        # assert_equal((u.trajectory._offsets is None), True)
-
-    @dec.slow
-    def test_persistent_offsets_last_frame_wrong(self):
-        self.trajectory._read_offsets(store=True)
-
-        # check that stored offsets are not loaded when the offsets themselves
-        # appear to be wrong
-        with open(XDR.offsets_filename(self.traj), 'rb') as f:
-            saved_offsets = {k: v for k, v in np.load(f).iteritems()}
-        saved_offsets['offsets'] += 1
-        with open(XDR.offsets_filename(self.traj), 'wb') as f:
-            np.savez(f, **saved_offsets)
-
-        # with warnings.catch_warnings():
-        #     u = MDAnalysis.Universe(self.top, self.traj)
-        #     assert_equal((u.trajectory._xdr.offsets is None), True)
+    #     # with warnings.catch_warnings():
+    #     #     u = MDAnalysis.Universe(self.top, self.traj)
+    #     #     assert_equal((u.trajectory._xdr.offsets is None), True)
 
     @dec.slow
     def test_persistent_offsets_readonly(self):
