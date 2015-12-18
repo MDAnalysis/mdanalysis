@@ -727,16 +727,34 @@ class _GromacsReader_offsets(TestCase):
         assert_equal(saved_offsets['ctime'], os.path.getctime(self.traj))
         assert_equal(saved_offsets['size'], os.path.getsize(self.traj))
 
-    # TODO: tests mismatchs
-    # @dec.slow
-    # def test_persistent_offsets_size_mismatch(self):
-    #     # check that stored offsets are not loaded when trajectory
-    #     # size differs from stored size
-    #     with open(XDR.offsets_filename(self.traj), 'rb') as f:
-    #         saved_offsets = {k: v for k, v in np.load(f).iteritems()}
-    #     saved_offsets['size'] += 1
-    #     with open(XDR.offsets_filename(self.traj), 'wb') as f:
-    #         np.savez(f, **saved_offsets)
+    def test_reload_offsets(self):
+        self._reader(self.traj, refresh_offsets=True)
+
+    # TODO: actually tests mismatchs, this only ensures the code-path is run
+    @dec.slow
+    def test_persistent_offsets_size_mismatch(self):
+        # check that stored offsets are not loaded when trajectory
+        # size differs from stored size
+        fname = XDR.offsets_filename(self.traj)
+        with open(fname) as f:
+            saved_offsets = {k: v for k, v in np.load(f).iteritems()}
+        saved_offsets['size'] += 1
+        with open(fname, 'w') as f:
+            np.savez(f, **saved_offsets)
+        self._reader(self.traj)
+
+    # TODO: actually tests mismatchs, this only ensures the code-path is run
+    @dec.slow
+    def test_persistent_offsets_ctime_mismatch(self):
+        # check that stored offsets are not loaded when trajectory
+        # ctime differs from stored ctime
+        fname = XDR.offsets_filename(self.traj)
+        with open(fname) as f:
+            saved_offsets = {k: v for k, v in np.load(f).iteritems()}
+        saved_offsets['ctime'] += 1
+        with open(fname, 'w') as f:
+            np.savez(f, **saved_offsets)
+        self._reader(self.traj)
 
     # TODO: This doesn't test if the offsets work AT ALL. the old
     # implementation only checked if the offsets were ok to set back to the old
