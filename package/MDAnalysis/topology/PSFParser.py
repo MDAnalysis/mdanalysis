@@ -305,7 +305,7 @@ class PSFParser(TopologyReader):
         segidx, perseg_segids = squash_by(perres_segids)[:2]
         segids = Segids(perseg_segids)
 
-        top = Topology(len(atomids), len(resids), len(segids),
+        top = Topology(len(atomids), len(new_resids), len(segids),
                        attrs=[atomids, atomnames, atomtypes,
                               charges, masses,
                               residueids, residuenames,
