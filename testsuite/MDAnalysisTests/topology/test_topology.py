@@ -26,7 +26,7 @@ from MDAnalysis.core.topologyobjects import (
     Bond, Angle, Dihedral, ImproperDihedral)
 from MDAnalysis.tests.datafiles import (
     PRMpbc, PRM12, PSF, PSF_NAMD, PSF_nosegid, DMS, PDB_small, DCD,
-    TPR, PDB, XYZ_mini, GMS_SYMOPT, GMS_ASYMSURF,
+    TPR, PDB, GMS_SYMOPT, GMS_ASYMSURF,
 )
 from MDAnalysisTests.plugins.knownfailure import knownfailure
 
@@ -973,19 +973,6 @@ class TestTopologyGuessers(TestCase):
         self.u.impropers = guess_improper_dihedrals(self.u.angles)
 
         assert_equal(len(self.u.impropers), 10314)
-
-
-
-class RefXYZ(object):
-    topology = XYZ_mini
-    parser = MDAnalysis.topology.XYZParser.XYZParser
-    ref_n_atoms = 3
-    ref_numresidues = 1
-
-
-class TestXYZTopology(RefXYZ, _TestTopology):
-    def test_segments(self):
-        assert_equal(len(self.universe.segments), 1)
 
 
 class RefGMSsym(object):

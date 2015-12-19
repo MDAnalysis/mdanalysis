@@ -71,7 +71,7 @@ class XYZParser(TopologyReader):
                 names[i] = name
 
         names = Atomnames(names)
-        top = Topology(natoms, 0, 0,
+        top = Topology(natoms, 1, 1,
                        attrs=[names])
 
         return top
