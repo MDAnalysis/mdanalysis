@@ -30,7 +30,12 @@ from MDAnalysisTests.datafiles import (
 )
 
 
-class DLPBase2(ParserBase):
+class DLPUniverse(ParserBase):
+    def test_creates_universe(self):
+        u = mda.Universe(self.filename, topology_format=self.format)
+        assert_(isinstance(u, mda.Universe))
+        
+class DLPBase2(DLPUniverse):
     expected_attrs = ['ids', 'names']
     expected_n_atoms = 216
     expected_n_residues = 1
@@ -44,14 +49,16 @@ class DLPBase2(ParserBase):
 class TestDLPHistoryParser(DLPBase2):
     parser = mda.topology.DLPolyParser.HistoryParser
     filename = DLP_HISTORY
+    format='HISTORY'
 
 
 class TestDLPConfigParser(DLPBase2):
     parser = mda.topology.DLPolyParser.ConfigParser
     filename = DLP_CONFIG
+    format='CONFIG'
 
 
-class DLPBase(ParserBase):
+class DLPBase(DLPUniverse):
     expected_attrs = ['ids', 'names']
     expected_n_atoms = 3
     expected_n_residues = 1
@@ -65,19 +72,22 @@ class DLPBase(ParserBase):
 class TestDLPConfigMinimal(DLPBase):
     parser = mda.topology.DLPolyParser.ConfigParser
     filename = DLP_CONFIG_minimal
+    format='CONFIG'
 
 
 class TestDLPConfigOrder(DLPBase):
     parser = mda.topology.DLPolyParser.ConfigParser
     filename = DLP_CONFIG_order
+    format='CONFIG'
 
 
 class TestDLPHistoryMinimal(DLPBase):
     parser = mda.topology.DLPolyParser.HistoryParser
     filename = DLP_HISTORY_minimal
+    format='HISTORY'
 
 
 class TestDLPHistoryOrder(DLPBase):
     parser = mda.topology.DLPolyParser.HistoryParser
     filename = DLP_HISTORY_order
-
+    format='HISTORY'
