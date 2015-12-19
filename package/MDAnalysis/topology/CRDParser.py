@@ -39,8 +39,10 @@ from ..core.topology import Topology
 from ..core.topologyattrs import (
     Atomids,
     Atomnames,
+    Tempfactors,
     Resids,
     Resnames,
+    Resnums,
     Segids,
 )
 
@@ -51,8 +53,10 @@ class CRDParser(TopologyReader):
     Creates the following Attributes:
      - Atomids
      - Atomnames
+     - Tempfactors
      - Resids
      - Resnames
+     - Resnums
      - Segids
     """
 
@@ -72,8 +76,10 @@ class CRDParser(TopologyReader):
 
         atomids = []
         atomnames = []
+        tempfactors = []
         resids = []
         resnames = []
+        resnums = []
         segids = []
 
         with openany(self.filename) as crd:
@@ -81,7 +87,7 @@ class CRDParser(TopologyReader):
                 # reading header
                 if line.split()[0] == '*':
                     continue
-                elif line.split()[-1] == 'EXT' and bool(int(line.split()[0])) is True:
+                elif line.split()[-1] == 'EXT' and int(line.split()[0]):
                     r = extformat
                     continue
                 elif line.split()[0] == line.split()[-1] and line.split()[0] != '*':
@@ -89,34 +95,41 @@ class CRDParser(TopologyReader):
                     continue
                 # anything else should be an atom
                 try:
-                    serial, TotRes, resName, name, x, y, z, chainID, resSeq, tempFactor = r.read(line)
+                    (serial, TotRes, resName, name,
+                     x, y, z, chainID, resSeq, tempFactor) = r.read(line)
                 except:
                     raise ValueError("Check CRD format at line {0}: {1}"
                                      "".format(linenum, line.rstrip()))
 
                 atomids.append(serial)
                 atomnames.append(name)
+                tempfactors.append(tempFactor)
                 resids.append(TotRes)
                 resnames.append(resName)
+                resnums.append(resSeq)
                 segids.append(chainID)
 
         # Convert to np arrays
         atomids = np.array(atomids, dtype=np.int32)
         atomnames = np.array(atomnames, dtype=object)
+        tempfactors = np.array(tempfactors, dtype=np.float32)
         resids = np.array(resids, dtype=np.int32)
         resnames = np.array(resnames, dtype=object)
+        resnums = np.array(resnums, dtype=np.int32)
         segids = np.array(segids, dtype=object)
 
-        atom_residx, res_resids, (res_resnames, res_segids) = squash_by(
-            resids, resnames, segids)
+        atom_residx, res_resids, (res_resnames, res_resnums, res_segids) = squash_by(
+            resids, resnames, resnums, segids)
         res_segidx, seg_segids = squash_by(res_segids)[:2]
 
         top = Topology(len(atomids), len(res_resids), len(seg_segids),
                        attrs=[
                            Atomids(atomids),
                            Atomnames(atomnames),
+                           Tempfactors(tempfactors),
                            Resids(res_resids),
                            Resnames(res_resnames),
+                           Resnums(res_resnums),
                            Segids(seg_segids),
                        ],
                        atom_resindex=atom_residx,
