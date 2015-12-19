@@ -26,7 +26,7 @@ from MDAnalysis.core.topologyobjects import (
     Bond, Angle, Dihedral, ImproperDihedral)
 from MDAnalysis.tests.datafiles import (
     PRMpbc, PRM12, PSF, PSF_NAMD, PSF_nosegid, DMS, PDB_small, DCD,
-    TPR, PDB, GMS_SYMOPT, GMS_ASYMSURF,
+    PDB,
 )
 from MDAnalysisTests.plugins.knownfailure import knownfailure
 
@@ -143,52 +143,6 @@ class TestMagnesium(_TestGuessAtomType):
     element = 'MG'
     mass = 24.305000
     testnames = ['MG', 'MG2+']
-
-
-
-class _TestTopology(TestCase):
-    def setUp(self):
-        self.universe = MDAnalysis.Universe(self.topology)
-
-    def tearDown(self):
-        del self.universe
-
-    def test_correct_parser(self):
-        """Check that get_parser returns the intended parser"""
-        try:
-            perm = self.perm
-        except AttributeError:
-            perm = False
-        ret = get_parser_for(self.topology, permissive=perm)
-
-        assert_equal(self.parser, ret)
-
-    def test_parser(self):
-        """Check that the parser works as intended,
-        and that the returned value is a dictionary
-        """
-        with self.parser(self.topology) as p:
-            ret = p.parse()
-        assert_equal(type(ret), type(dict()))
-
-    #    def test_parser_raises_IOE(self):
-    #        """Check that when given junk input, they raise IOError"""
-    #        p = self.parser(trz4data)
-    #        assert_raises(IOError, p.parse) or assert_raises(ValueError, p.parse)
-
-    def test_parser_atoms(self):
-        assert_equal(self.universe.atoms.n_atoms,
-                     self.ref_n_atoms,
-                     "wrong number of atoms in topology")
-        assert_equal(self.universe.atoms.n_residues,
-                     self.ref_numresidues,
-                     "wrong number of residues in topology")
-
-    def test_atom_number(self):
-        assert_equal(self.universe.atoms[0].index, 0,
-                     "first atom should have Atom.index 0")
-        assert_equal(self.universe.atoms[-1].index, self.ref_n_atoms - 1,
-                     "last atom has wrong Atom.index")
 
 
 class TestTopologyObjects(TestCase):
@@ -854,19 +808,6 @@ class RefXPDB(object):
     ref_numresidues = 11302
 
 
-# GROMACS TPR
-# see also test_tprparser
-class RefTPR(object):
-    parser = MDAnalysis.topology.TPRParser.TPRParser
-    topology = TPR
-    ref_n_atoms = 47681
-    ref_numresidues = 11302
-
-
-class TestTPRParser(_TestTopology, RefTPR):
-    pass
-
-
 class TestTopologyGuessers(TestCase):
     """Test the various ways of automating topology creation in the Universe
 
@@ -973,25 +914,3 @@ class TestTopologyGuessers(TestCase):
         self.u.impropers = guess_improper_dihedrals(self.u.angles)
 
         assert_equal(len(self.u.impropers), 10314)
-
-
-class RefGMSsym(object):
-    topology = GMS_SYMOPT
-    parser = MDAnalysis.topology.GMSParser.GMSParser
-    ref_n_atoms = 4
-    ref_numresidues = 1
-
-
-class TestGMS_withSymmetry(_TestTopology, RefGMSsym):
-    """Testing GAMESS output file format"""
-
-
-class RefGMSasym(object):
-    topology = GMS_ASYMSURF
-    parser = MDAnalysis.topology.GMSParser.GMSParser
-    ref_n_atoms = 6
-    ref_numresidues = 1
-
-
-class TestGMS_noSymmetry(_TestTopology, RefGMSasym):
-    """Testing GAMESS output file format"""
