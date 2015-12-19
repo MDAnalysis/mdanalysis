@@ -46,6 +46,9 @@ from ..core.topologyattrs import (
 class XYZParser(TopologyReader):
     """Parse a list of atoms from an XYZ file.
 
+    Creates the following attributes:
+     - Atomnames
+
     .. versionadded:: 0.9.1
     """
 

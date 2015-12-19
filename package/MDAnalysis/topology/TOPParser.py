@@ -66,9 +66,7 @@ from __future__ import absolute_import, division
 import numpy as np
 from itertools import izip
 
-from ..units import convert
 from ..lib.util import openany, FORTRANReader
-from ..core import flags
 from .base import TopologyReader
 from ..core.topology import Topology
 from ..core.topologyattrs import (
@@ -98,8 +96,14 @@ class TypeIndices(AtomAttr):
 class TOPParser(TopologyReader):
     """Reads topology information from an AMBER top file.
 
-    It uses atom types, partial charges and masses from the PRMTOP
-    file.
+    Creates the following Attributes if possible:
+    - Atomnames
+    - Charges
+    - Masses
+    - Atomnumbers
+    - Atomtypes
+    - Resnames
+    - Type_indices
 
     The format is defined in `PARM parameter/topology file
     specification`_.  The reader tries to detect if it is a newer
@@ -110,20 +114,13 @@ class TOPParser(TopologyReader):
 
    .. versionchanged:: 0.7.6
       parses both amber10 and amber12 formats
-
     """
     def parse(self):
         """Parse Amber PRMTOP topology file *filename*.
 
         Returns
         -------
-        A Topology object with the following Attributes
-          - Atomnames
-          - Charges
-          - Masses
-          - Atomnumbers
-          - Atomtypes
-          - Resnames
+        A MDAnalysis Topology object
         """
         # Sections that we grab as we parse the file
         sections = {
