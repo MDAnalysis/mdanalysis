@@ -101,6 +101,12 @@ class DMSParser(TopologyReader):
             return d
 
         attrs = {}
+
+        # Row factories for different data types
+        facs = {np.int32: lambda c, r: r[0],
+                np.float32: lambda c, r: r[0],
+                object: lambda c, r: str(r[0].strip())}
+
         with sqlite3.connect(self.filename) as con:
             # Selecting single column, so just strip tuple
             for attrname, dt in [
@@ -116,7 +122,7 @@ class DMSParser(TopologyReader):
             ]:
                 try:
                     cur = con.cursor()
-                    cur.row_factory = lambda c, r: r[0]
+                    cur.row_factory = facs[dt]
                     cur.execute('SELECT {} FROM particle'
                                 ''.format(attrname))
                     vals = cur.fetchall()

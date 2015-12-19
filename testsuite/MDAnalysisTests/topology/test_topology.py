@@ -192,31 +192,6 @@ class _TestTopology(TestCase):
                      "last atom has wrong Atom.index")
 
 
-
-class TestPSF_Issue121(TestCase):
-    @attr('issue')
-    def test_nosegid(self):
-        try:
-            u = MDAnalysis.Universe(PSF_nosegid)
-        except IndexError:
-            raise AssertionError("Issue 121 not fixed: cannot load PSF with empty SEGID")
-        assert_equal(u.atoms.n_atoms, 98)
-        assert_equal(u.segments.segids, ["SYSTEM"])
-
-
-class TestPSF_bonds(TestCase):
-    """Tests reading of bonds angles and dihedrals in psf files"""
-
-    def setUp(self):
-        topology = PSF
-        self.universe = MDAnalysis.Universe(topology)
-        self.universe.build_topology()
-
-    def tearDown(self):
-        del self.universe
-
-
-
 class TestTopologyObjects(TestCase):
     """Test the base TopologyObject funtionality
 
@@ -849,38 +824,6 @@ class TestTopologyGroup_Cython(TestCase):
                                    box=self.u.dimensions))
 
 
-# AMBER
-class RefCappedAla(object):
-    """Mixin class to provide comparison numbers.
-
-    Capped Ala in water
-    """
-    topology = PRMpbc
-    parser = MDAnalysis.topology.TOPParser.TOPParser
-    ref_n_atoms = 5071
-    ref_numresidues = 1686
-    ref_proteinatoms = 22
-
-
-class RefAMBER12(object):
-    """Fixture data for testing AMBER12 reading (Issue 100)"""
-    topology = PRM12
-    parser = MDAnalysis.topology.TOPParser.TOPParser
-    ref_n_atoms = 8923
-    ref_numresidues = 2861
-    ref_proteinatoms = 0
-
-
-class TestAMBER(_TestTopology, RefCappedAla):
-    """Testing AMBER PRMTOP parser (Issue 76)"""
-    # note: hard to test the issue because one needs a very specifi datafile
-    #       so this test really checks that we did not break the parser for the
-    #       existing test cases
-
-
-class TestAMBER12(_TestTopology, RefAMBER12):
-    """Testing AMBER 12 PRMTOP parser (Issue 100)"""
-
 
 # PDB
 
@@ -910,48 +853,6 @@ class RefXPDB(object):
     parser = MDAnalysis.topology.ExtendedPDBParser.ExtendedPDBParser
     ref_n_atoms = 47681
     ref_numresidues = 11302
-
-
-# DESRES
-class RefDMS(object):
-    topology = DMS
-    parser = MDAnalysis.topology.DMSParser.DMSParser
-    ref_n_atoms = 3341
-    ref_numresidues = 214
-
-
-class TestDMSReader(_TestTopology, RefDMS):
-    def test_number_of_bonds(self):
-        # Desired value taken from VMD
-        #      Info)    Atoms: 3341
-        assert_equal(len(self.universe.bonds), 3365)
-
-    def test_bond_order(self):
-        pass
-
-    def test_segid(self):
-        segid = set([a.segid for a in self.universe.atoms])
-        assert_equal(segid, set(("4AKE",)))
-
-    def test_atomsels(self):
-        # Desired value taken from VMD atomsel
-        s0 = self.universe.select_atoms("name CA")
-        assert_equal(len(s0), 214)
-
-        s1 = self.universe.select_atoms("resid 33")
-        assert_equal(len(s1), 12)
-
-        s2 = self.universe.select_atoms("segid 4AKE")
-        assert_equal(len(s2), 3341)
-
-        s3 = self.universe.select_atoms("resname ALA")
-        assert_equal(len(s3), 190)
-
-    def test_atom_number(self):
-        assert_equal(self.universe.atoms[0].index, 0,
-                     "first atom should have Atom.index 0")
-        assert_equal(self.universe.atoms[-1].index, 3341 - 1,
-                     "last atom has wrong Atom.index")
 
 
 # GROMACS TPR

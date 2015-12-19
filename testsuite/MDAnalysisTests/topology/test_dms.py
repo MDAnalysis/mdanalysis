@@ -34,4 +34,22 @@ class TestDMSParser(ParserBase):
     expected_n_residues = 214
     expected_n_segments = 1
 
-    
+    def test_number_of_bonds(self):
+        assert_(len(self.top.bonds.values) == 3365)
+
+    def test_atomsels(self):
+        # Desired value taken from VMD atomsel
+        u = mda.Universe(self.filename)
+
+        s0 = u.select_atoms("name CA")
+        assert_(len(s0) == 214)
+
+        s1 = u.select_atoms("resid 33")
+        assert_(len(s1) == 12)
+
+        s2 = u.select_atoms("segid 4AKE")
+        assert_(len(s2) == 3341)
+
+        s3 = u.select_atoms("resname ALA")
+        assert_(len(s3) == 190)
+
