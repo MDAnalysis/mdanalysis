@@ -146,12 +146,6 @@ class TestMagnesium(_TestGuessAtomType):
     testnames = ['MG', 'MG2+']
 
 
-# add more...
-
-# specific topology readers
-# add more!
-
-# CHARMM and NAMD PSF
 
 class _TestTopology(TestCase):
     def setUp(self):
@@ -198,37 +192,6 @@ class _TestTopology(TestCase):
                      "last atom has wrong Atom.index")
 
 
-class RefAdKSmall(object):
-    """Mixin class to provide comparison numbers.
-
-    Based on small PDB with AdK (:data:`PDB_small`).
-    """
-    topology = PSF
-    parser = MDAnalysis.topology.PSFParser.PSFParser
-    ref_n_atoms = 3341
-    ref_numresidues = 214
-
-
-class TestPSF_CHARMM_STANDARD(_TestTopology, RefAdKSmall):
-    """Testing CHARMM standard PSF file format"""
-
-
-class RefNAMD_CGENFF(object):
-    """Testfiles provided by JiyongPark77.
-
-    NAMD/VMD XPLOR-style PSF file (using CGENFF residues/atoms).
-
-    https://github.com/MDAnalysis/mdanalysis/issues/107
-    """
-    topology = PSF_NAMD
-    parser = MDAnalysis.topology.PSFParser.PSFParser
-    ref_n_atoms = 130
-    ref_numresidues = 6
-
-
-class TestPSF_NAMD_CGENFF(_TestTopology, RefNAMD_CGENFF):
-    """Testing NAMD PSF file (with CGENFF atom types, Issue 107)"""
-
 
 class TestPSF_Issue121(TestCase):
     @attr('issue')
@@ -252,62 +215,6 @@ class TestPSF_bonds(TestCase):
     def tearDown(self):
         del self.universe
 
-    def test_bonds_counts(self):
-        assert_equal(len(self.universe._topology['bonds']), 3365)
-        assert_equal(len(self.universe.atoms[0].bonds), 4)
-        assert_equal(len(self.universe.atoms[42].bonds), 1)
-
-    def test_bonds_identity(self):
-        a1 = self.universe.atoms[0]
-        a2 = self.universe.atoms[1]
-        a3 = self.universe.atoms[2]
-        a4 = self.universe.atoms[3]
-        a5 = self.universe.atoms[4]
-        a42 = self.universe.atoms[41]
-        # Bonds might change order, so use any checks through bond list
-        assert_equal(all([a1 in b for b in a1.bonds]), True)  # check all bonds have this atom
-        assert_equal(any([a2 in b for b in a1.bonds]), True)  # then check certain atoms are present
-        assert_equal(any([a3 in b for b in a1.bonds]), True)
-        assert_equal(any([a4 in b for b in a1.bonds]), True)
-        assert_equal(any([a5 in b for b in a1.bonds]), True)
-        assert_equal(any([a42 in b for b in a1.bonds]), False)  # and check everything isn't True
-
-    def test_angles_counts(self):
-        assert_equal(len(self.universe._topology['angles']), 6123)
-        assert_equal(len(self.universe.atoms[0].angles), 9)
-        assert_equal(len(self.universe.atoms[42].angles), 2)
-
-    def test_angles_identity(self):
-        a1 = self.universe.atoms[0]
-        a2 = self.universe.atoms[1]
-        a3 = self.universe.atoms[2]
-        a5 = self.universe.atoms[4]
-        a6 = self.universe.atoms[5]
-        a42 = self.universe.atoms[41]
-        assert_equal(all([a1 in b for b in a1.angles]), True)
-        assert_equal(any([a2 in b and a3 in b for b in a1.angles]), True)
-        assert_equal(any([a5 in b and a6 in b for b in a1.angles]), True)
-        assert_equal(any([a42 in b for b in a1.angles]), False)
-        assert_equal(any([a2 in b and a6 in b for b in a1.angles]),
-                     False)  # both a2 and a6 feature, but never simultaneously
-
-    def test_dihedrals_counts(self):
-        assert_equal(len(self.universe._topology['dihedrals']), 8921)
-        assert_equal(len(self.universe.atoms[0].dihedrals), 14)
-
-    def test_dihedrals_identity(self):
-        a1 = self.universe.atoms[0]
-        a2 = self.universe.atoms[1]
-        a3 = self.universe.atoms[2]
-        a5 = self.universe.atoms[4]
-        a6 = self.universe.atoms[5]
-        a7 = self.universe.atoms[6]
-        a42 = self.universe.atoms[41]
-        assert_equal(all([a1 in b for b in a1.dihedrals]), True)
-        assert_equal(any([a2 in b and a5 in b and a6 in b for b in a1.dihedrals]), True)
-        assert_equal(any([a2 in b and a5 in b and a7 in b for b in a1.dihedrals]), True)
-        assert_equal(any([a42 in b for b in a1.dihedrals]), False)
-        assert_equal(any([a2 in b and a3 in b and a6 in b for b in a1.dihedrals]), False)
 
 
 class TestTopologyObjects(TestCase):
