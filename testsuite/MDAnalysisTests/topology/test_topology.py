@@ -25,8 +25,7 @@ from MDAnalysis.core.topologyobjects import (
     TopologyGroup, TopologyObject, TopologyDict,
     Bond, Angle, Dihedral, ImproperDihedral)
 from MDAnalysis.tests.datafiles import (
-    PRMpbc, PRM12, PSF, PSF_NAMD, PSF_nosegid, DMS, PDB_small, DCD,
-    PDB,
+    PSF, DCD,
 )
 from MDAnalysisTests.plugins.knownfailure import knownfailure
 
@@ -775,37 +774,6 @@ class TestTopologyGroup_Cython(TestCase):
                                    self.igroup.atom3.positions,
                                    self.igroup.atom4.positions,
                                    box=self.u.dimensions))
-
-
-
-# PDB
-
-class RefPDB(object):
-    topology = PDB_small
-    parser = MDAnalysis.topology.PDBParser.PDBParser
-    ref_n_atoms = 3341
-    ref_numresidues = 214
-
-
-class RefPDB_Perm(RefPDB):
-    perm = True
-    parser = MDAnalysis.topology.PrimitivePDBParser.PrimitivePDBParser
-
-
-class TestPDB(_TestTopology, RefPDB):
-    """Testing PDB topology parsing (PrimitivePDB)"""
-    pass
-
-
-class TestPDB_Perm(_TestTopology, RefPDB_Perm):
-    pass
-
-
-class RefXPDB(object):
-    topology = PDB
-    parser = MDAnalysis.topology.ExtendedPDBParser.ExtendedPDBParser
-    ref_n_atoms = 47681
-    ref_numresidues = 11302
 
 
 class TestTopologyGuessers(TestCase):

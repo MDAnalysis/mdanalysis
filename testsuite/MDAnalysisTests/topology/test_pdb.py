@@ -20,14 +20,27 @@ import MDAnalysis as mda
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import (
     PDB,
+    PDB_small,
 )
 
 
 class TestPDBParser(ParserBase):
+    """This one has neither chainids or segids"""
     parser = mda.topology.PrimitivePDBParser.PrimitivePDBParser
     filename = PDB
     expected_attrs = ['ids', 'names',
                       'resids', 'resnames']
     expected_n_atoms = 47681
     expected_n_residues = 11302
+    expected_n_segments = 1
+
+
+class TestPDBParserSegids(ParserBase):
+    """Has segids"""
+    parser = mda.topology.PrimitivePDBParser.PrimitivePDBParser
+    filename = PDB_small
+    expected_attrs = ['ids', 'names',
+                      'resids', 'resnames', 'segids']
+    expected_n_atoms = 3341
+    expected_n_residues = 214
     expected_n_segments = 1
