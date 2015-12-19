@@ -19,10 +19,6 @@ PDB topology parser
 
 Use a PDB file to build a minimum internal structure representation.
 
-.. Note:: Only atoms and their names are read; no bond connectivity of
-          (partial) charges are deduced. Masses are guessed and set to
-          0 if unknown.
-
 .. SeeAlso:: :mod:`MDAnalysis.coordinates.PDB` and :mod:`Bio.PDB`
 
 .. SeeAlso:: :mod:`MDAnalysis.topology.PrimitivePDBParser` (which
@@ -39,6 +35,8 @@ Classes
 """
 from __future__ import absolute_import
 
+import numpy as np
+
 try:
     # BioPython is overkill but potentially extensible (altLoc etc)
     import Bio.PDB
@@ -46,52 +44,87 @@ except ImportError:
     raise ImportError("Bio.PDB from biopython not found."
                       "Required for PDB topology parser.")
 
-from .base import TopologyReader
-from ..core.AtomGroup import Atom
+from .base import TopologyReader, squash_by
 from ..coordinates.pdb.extensions import get_structure
-from .core import guess_atom_type, guess_atom_mass, guess_atom_charge
+from ..core.topology import Topology
+from ..core.topologyattrs import (
+    Atomnames,
+    Bfactors,
+    Occupancies,
+    Resids,
+    Resnames,
+    Segids,
+)
 
 
 class PDBParser(TopologyReader):
-    """Read minimum topology information from a PDB file."""
+    """Read minimum topology information from a PDB file.
 
+    Creates the following Attributes:
+     - names
+     - bfactors
+     - occupancies
+     - resids
+     - resnames
+     - segids
+    """
     def parse(self):
         """Parse atom information from PDB file *pdbfile*.
 
-        Only reads the list of atoms.
-
         This functions uses the :class:`Bio.PDB.PDBParser` as used by
         :func:`MDAnalysis.coordinates.pdb.extensions.get_structure`.
-
-        :Returns: MDAnalysis internal *structure* dict
-
-        .. SeeAlso:: The *structure* dict is defined in `MDAnalysis.topology`.
         """
-        atoms = self._parseatoms()
-
-        structure = {'atoms': atoms}
-
-        return structure
-
-    def _parseatoms(self):
         # use Sloppy PDB parser to cope with big PDBs!
         pdb = get_structure(self.filename, "0UNK")
 
-        atoms = []
+        names = []
+        resids = []
+        resnames = []
+        segids = []
+        bfactors = []
+        occupancies = []
         # translate Bio.PDB atom objects to MDAnalysis Atom.
-        for iatom, atom in enumerate(pdb.get_atoms()):
+        for atom in pdb.get_atoms():
             residue = atom.parent
             chain_id = residue.parent.id
             atomname = atom.name
-            atomtype = guess_atom_type(atomname)
             resname = residue.resname
             resid = int(residue.id[1])
             # no empty segids (or Universe throws IndexError)
             segid = residue.get_segid().strip() or chain_id or "SYSTEM"
-            mass = guess_atom_mass(atomname)
-            charge = guess_atom_charge(atomname)
             bfactor = atom.bfactor
-            # occupancy = atom.occupancy
-            atoms.append(Atom(iatom, atomname, atomtype, resname, resid, segid,
-                              mass, charge, bfactor=bfactor, universe=self._u))
-        return atoms
+            occupancy = atom.occupancy
+
+            names.append(atomname)
+            resids.append(resid)
+            resnames.append(resname)
+            segids.append(segid)
+            bfactors.append(bfactor)
+            occupancies.append(occupancy)
+
+        attrs = []
+        n_atoms = len(names)
+        attrs.append(Atomnames(np.array(names, dtype=object)))
+        attrs.append(Bfactors(np.array(bfactors, dtype=np.float32)))
+        attrs.append(Occupancies(np.array(occupancies, dtype=np.float32)))
+
+        resids = np.array(resids, dtype=np.int32)
+        resnames = np.array(resnames, dtype=object)
+        segids = np.array(segids, dtype=object)
+
+        residx, resids, (resnames, segids) = squash_by(
+            resids, resnames, segids)
+        n_residues = len(resids)
+        attrs.append(Resids(resids))
+        attrs.append(Resnames(resnames))
+
+        segidx, segids = squash_by(segids)[:2]
+        n_segments = len(segids)
+        attrs.append(Segids(segids))
+
+        top = Topology(n_atoms, n_residues, n_segments,
+                       attrs=attrs,
+                       atom_resindex=residx,
+                       residue_segindex=segidx)
+
+        return top
