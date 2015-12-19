@@ -225,17 +225,6 @@ class RefNAMD_CGENFF(object):
     ref_n_atoms = 130
     ref_numresidues = 6
 
-class RefHoomdXML(object):
-    """Hoomd XML test data and answers
-    """
-    topology = HoomdXMLdata
-    parser = MDAnalysis.topology.HoomdXMLParser.HoomdXMLParser
-    ref_n_atoms = 769
-    ref_numresidues = 1
-
-class TestHoomdXML(_TestTopology, RefHoomdXML):
-    """Testing Hoomd XML file"""
-    pass
 
 class TestPSF_NAMD_CGENFF(_TestTopology, RefNAMD_CGENFF):
     """Testing NAMD PSF file (with CGENFF atom types, Issue 107)"""
