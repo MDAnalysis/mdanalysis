@@ -166,7 +166,7 @@ class PrimitivePDBParser(TopologyReader):
 
                     while resid - resid_prev < -5000:
                         resid += 10000
-                        resid_prev = resid
+                    resid_prev = resid
                     resids.append(resid)
 
                 try:
@@ -230,9 +230,13 @@ class PrimitivePDBParser(TopologyReader):
         attrs.append(Resids(resids))
         attrs.append(Resnames(resnames))
 
-        segidx, segids = squash_by(segids)[:2]
-        n_segments = len(segids)
-        attrs.append(Segids(segids))
+        if any(segids):
+            segidx, segids = squash_by(segids)[:2]
+            n_segments = len(segids)
+            attrs.append(Segids(segids))
+        else:
+            n_segments = 1
+            segidx = None
 
         top = Topology(n_atoms, n_residues, n_segments,
                        attrs=attrs,
