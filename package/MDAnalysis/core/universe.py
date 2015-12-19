@@ -161,7 +161,7 @@ class Universe(object):
                                     permissive=perm,
                                     format=topology_format)
         try:
-            with parser(self.filename, universe=self) as p:
+            with parser(self.filename) as p:
                 self._topology = p.parse()
         except IOError as err:
             raise IOError("Failed to load from the topology file {0}"

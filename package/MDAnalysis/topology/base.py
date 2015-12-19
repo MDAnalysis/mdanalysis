@@ -28,7 +28,6 @@ Classes
    :inherited-members:
 
 """
-from itertools import izip
 import numpy as np
 import warnings
 
@@ -40,7 +39,7 @@ class TopologyReader(IObase):
 
     All topology readers must:
       * Be initialised with a filename
-      * Return a struct dict by calling their parse function
+      * Return a Topology object with their `parse` method
 
     :Raises:
        * :exc:`IOError` upon failing to read a topology file
@@ -50,7 +49,7 @@ class TopologyReader(IObase):
     .. versionchanged:: 0.9.2
        Added keyword 'universe' to pass to Atom creation.
     """
-    def __init__(self, filename, universe=None, **kwargs):
+    def __init__(self, filename, **kwargs):
         """Standard arguments for a TopologyReader:
 
         :Arguments:
@@ -59,19 +58,15 @@ class TopologyReader(IObase):
                name of the topology file
 
         :Keywords:
-           *universe*
-               Supply a Universe to the Parser.  This then passes it to the
-               atom instances that are created within parsers.
            *kwargs*
                Other keyword arguments that can vary with the specific format.
                These are stored as self.kwargs
 
         """
         self.filename = filename
-        self._u = universe
         self.kwargs = kwargs
 
-    def parse(self):
+    def parse(self):  # pragma: no cover
         raise NotImplementedError("Override this in each subclass")
 
 
