@@ -41,12 +41,12 @@ The module also contains the :func:`do_inputrec` to read the TPR header with.
 """
 from __future__ import absolute_import
 
-from ...core.AtomGroup import Atom
+import numpy as np
+
 from . import obj
 from . import setting as S
-
-import numpy as np
-from ..base import TopologyReader, squash_by
+from ..base import squash_by
+from ...core.topology import Topology
 from ...core.topologyattrs import (
     Atomids,
     Atomnames,
@@ -61,7 +61,7 @@ from ...core.topologyattrs import (
     Dihedrals,
     Impropers
 )
-from ...core.topology import Topology
+
 
 def ndo_int(data, n):
     """mimic of gmx_fio_ndo_real in gromacs"""
