@@ -41,7 +41,8 @@ class ParserBase(object):
 
     def test_expected_attributes(self):
         for attr in self.expected_attrs:
-            assert_(hasattr(self.top, attr))
+            assert_(hasattr(self.top, attr),
+                    'Missing attribute: {}'.format(attr))
 
     def test_size(self):
         """Check that the Topology is correctly sized"""
