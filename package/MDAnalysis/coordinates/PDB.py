@@ -415,19 +415,19 @@ class PrimitivePDBReader(base.Reader):
     1 -  6         Record name   "ATOM  "
     7 - 11         Integer       serial       Atom  serial number.
     13 - 16        Atom          name         Atom name.
-    17             Character     altLoc       Alternate location indicator. IGNORED
+    17             Character     altLoc       Alternate location indicator.
     18 - 21        Residue name  resName      Residue name.
     22             Character     chainID      Chain identifier.
     23 - 26        Integer       resSeq       Residue sequence number.
-    27             AChar         iCode        Code for insertion of residues. IGNORED
+    27             AChar         iCode        Code for insertion of residues.
     31 - 38        Real(8.3)     x            Orthogonal coordinates for X in Angstroms.
     39 - 46        Real(8.3)     y            Orthogonal coordinates for Y in Angstroms.
     47 - 54        Real(8.3)     z            Orthogonal coordinates for Z in Angstroms.
     55 - 60        Real(6.2)     occupancy    Occupancy.
     61 - 66        Real(6.2)     tempFactor   Temperature  factor.
     67 - 76        String        segID        (unofficial CHARMM extension ?)
-    77 - 78        LString(2)    element      Element symbol, right-justified. IGNORED
-    79 - 80        LString(2)    charge       Charge  on the atom. IGNORED
+    77 - 78        LString(2)    element      Element symbol, right-justified.
+    79 - 80        LString(2)    charge       Charge  on the atom.
     =============  ============  ===========  =============================================
 
 
@@ -587,7 +587,7 @@ class PrimitivePDBReader(base.Reader):
             for i in xrange(line):
                 f.next()  # forward to frame
             for line in f:
-                if line[:6] == 'ENDMDL':
+                if line.startswith('ENDMDL'):
                     break
                 # NOTE - CRYST1 line won't be found if it comes before the MODEL
                 # line, which is sometimes the case, e.g. output from gromacs
