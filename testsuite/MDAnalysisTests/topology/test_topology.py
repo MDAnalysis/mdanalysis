@@ -27,8 +27,7 @@ from MDAnalysis.core.topologyobjects import (
 from MDAnalysis.tests.datafiles import (
     PRMpbc, PRM12, PSF, PSF_NAMD, PSF_nosegid, DMS, PDB_small, DCD,
     TPR, PDB, XYZ_mini, GMS_SYMOPT, GMS_ASYMSURF,
-    DLP_CONFIG, DLP_CONFIG_order, DLP_CONFIG_minimal,
-    DLP_HISTORY, DLP_HISTORY_order, DLP_HISTORY_minimal, HoomdXMLdata)
+)
 from MDAnalysisTests.plugins.knownfailure import knownfailure
 
 from numpy.testing import *
@@ -1009,40 +1008,3 @@ class RefGMSasym(object):
 
 class TestGMS_noSymmetry(_TestTopology, RefGMSasym):
     """Testing GAMESS output file format"""
-
-
-class _DLPolyParser(object):
-    """Test of real data"""
-    def tearDown(self):
-        del self.p
-        del self.f
-
-    def test_usage(self):
-        with self.p(self.f) as parser:
-            struc = parser.parse()
-
-        assert_equal('atoms' in struc, True)
-        assert_equal(len(struc['atoms']), 216)
-
-    def test_names(self):
-        with self.p(self.f) as parser:
-            struc = parser.parse()
-
-        atoms = struc['atoms']
-
-        assert_equal(atoms[0].name, 'K+')
-        assert_equal(atoms[4].name, 'Cl-')
-
-
-class TestDLPolyConfigParser(_DLPolyParser):
-    def setUp(self):
-        self.p = MDAnalysis.topology.DLPolyParser.ConfigParser
-        self.f = DLP_CONFIG
-
-
-class TestDLPolyHistoryParser(_DLPolyParser):
-    def setUp(self):
-        self.p = MDAnalysis.topology.DLPolyParser.HistoryParser
-        self.f = DLP_HISTORY
-
-

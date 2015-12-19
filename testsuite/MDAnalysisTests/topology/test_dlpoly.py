@@ -30,22 +30,25 @@ from MDAnalysisTests.datafiles import (
 )
 
 
-class TestDLPHistoryParser(ParserBase):
+class DLPBase2(ParserBase):
+    expected_attrs = ['ids', 'names']
+    expected_n_atoms = 216
+    expected_n_residues = 1
+    expected_n_segments = 1
+
+    def test_names(self):
+        assert_(self.top.names.values[0] == 'K+')
+        assert_(self.top.names.values[4] == 'Cl-')
+
+
+class TestDLPHistoryParser(DLPBase2):
     parser = mda.topology.DLPolyParser.HistoryParser
     filename = DLP_HISTORY
-    expected_attrs = ['ids', 'names']
-    expected_n_atoms = 216
-    expected_n_residues = 1
-    expected_n_segments = 1
 
 
-class TestDLPConfigParser(ParserBase):
+class TestDLPConfigParser(DLPBase2):
     parser = mda.topology.DLPolyParser.ConfigParser
     filename = DLP_CONFIG
-    expected_attrs = ['ids', 'names']
-    expected_n_atoms = 216
-    expected_n_residues = 1
-    expected_n_segments = 1
 
 
 class DLPBase(ParserBase):
