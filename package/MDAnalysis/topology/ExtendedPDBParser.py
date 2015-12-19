@@ -30,11 +30,6 @@ reads residue numbers up to 99,999 correctly. If you have systems containing at
 least 100,000 residues then you need to use a different file format that can
 handle such residue numbers.
 
-.. Note::
-
-   The parser processes atoms and their names. Masses are guessed and set to 0
-   if unknown. Partial charges are not set.
-
 .. SeeAlso::
 
    * :mod:`MDAnalysis.topology.PrimitivePDBParser`
@@ -55,11 +50,22 @@ from . import PrimitivePDBParser
 
 
 class ExtendedPDBParser(PrimitivePDBParser.PrimitivePDBParser):
-    """Parser that obtains a list of atoms from an non-standard "extended" PDB file.
+    """Parser that handles non-standard "extended" PDB file.
 
     Extended PDB files (MDAnalysis format specifier *XPDB*) may contain residue
     sequence numbers up to 99,999 by utilizing the insertion character field of
     the PDB standard.
+
+    Creates a Topology with the following Attributes (if present):
+     - serials
+     - names
+     - altLocs
+     - chainids
+     - tempfactors
+     - occupancies
+     - resids
+     - resnames
+     - segids
 
     .. SeeAlso:: :class:`MDAnalysis.coordinates.PDB.ExtendedPDBReader`
 
