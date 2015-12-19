@@ -77,6 +77,9 @@ class LammpsBase(ParserBase):
         if self.ref_n_impropers:
             assert_(self.ref_improper in self.top.impropers.values)
 
+    def test_creates_universe(self):
+        u = mda.Universe(self.filename, format='DATA')
+
 
 class TestLammpsData(LammpsBase):
     """Tests the reading of lammps .data topology files.
