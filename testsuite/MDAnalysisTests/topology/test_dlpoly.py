@@ -14,6 +14,7 @@
 #
 from numpy.testing import (
     assert_,
+    assert_array_equal,
 )
 
 import MDAnalysis as mda
@@ -21,7 +22,11 @@ import MDAnalysis as mda
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import (
     DLP_CONFIG,
-    DLP_HISTORY
+    DLP_CONFIG_order,
+    DLP_CONFIG_minimal,
+    DLP_HISTORY,
+    DLP_HISTORY_order,
+    DLP_HISTORY_minimal,
 )
 
 
@@ -41,3 +46,35 @@ class TestDLPConfigParser(ParserBase):
     expected_n_atoms = 216
     expected_n_residues = 1
     expected_n_segments = 1
+
+
+class DLPBase(ParserBase):
+    expected_attrs = ['ids', 'names']
+    expected_n_atoms = 3
+    expected_n_residues = 1
+    expected_n_segments = 1
+
+    def test_dlp_names(self):
+        assert_array_equal(self.top.names.values,
+                           ['C', 'B', 'A'])
+
+
+class TestDLPConfigMinimal(DLPBase):
+    parser = mda.topology.DLPolyParser.ConfigParser
+    filename = DLP_CONFIG_minimal
+
+
+class TestDLPConfigOrder(DLPBase):
+    parser = mda.topology.DLPolyParser.ConfigParser
+    filename = DLP_CONFIG_order
+
+
+class TestDLPHistoryMinimal(DLPBase):
+    parser = mda.topology.DLPolyParser.HistoryParser
+    filename = DLP_HISTORY_minimal
+
+
+class TestDLPHistoryOrder(DLPBase):
+    parser = mda.topology.DLPolyParser.HistoryParser
+    filename = DLP_HISTORY_order
+
