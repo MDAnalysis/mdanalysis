@@ -72,7 +72,7 @@ class DMSParser(TopologyReader):
         - atomname
         - mass
         - charge
-        - chain
+        - chainids
       Residue:
         - resname
         - resid

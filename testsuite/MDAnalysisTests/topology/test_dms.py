@@ -29,7 +29,7 @@ class TestDMSParser(ParserBase):
     filename = DMS
     expected_attrs = ['ids', 'names', 'bonds', 'charges',
                       'masses', 'resids', 'resnames', 'segids',
-                      'chainids', 'atomnums']
+                      'chainIDs', 'atomnums']
     expected_n_atoms = 3341
     expected_n_residues = 214
     expected_n_segments = 1
