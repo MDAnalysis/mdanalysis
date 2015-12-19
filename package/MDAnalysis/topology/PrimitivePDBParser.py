@@ -70,6 +70,22 @@ from ..core.topologyattrs import (
 class PrimitivePDBParser(TopologyReader):
     """Parser that obtains a list of atoms from a standard PDB file.
 
+    Creates the following per atom Attributes:
+    - serials [optional]
+    ` - names
+    - types
+    - altLocs
+    - insertion_codes (non XPDB)
+    - chainids
+    - tempfactors [optional]
+    - occupancies [optional]
+    per residue Attributes:
+    - resids
+    - resnums (non XPDB)
+    - resnames
+    per segment Attributes:
+    - segids
+
     .. seealso:: :class:`MDAnalysis.coordinates.PDB.PrimitivePDBReader`
 
     .. versionadded:: 0.8
@@ -96,24 +112,7 @@ class PrimitivePDBParser(TopologyReader):
         return top
 
     def _parseatoms(self):
-        """Create the initial Topology object
-
-        Creates the following per atom Attributes:
-          - serials [optional]
-        ` - name
-          - types
-          - altLocs
-          - insertion_codes (non XPDB)
-          - chainids
-          - tempfactors [optional]
-          - occupancies [optional]
-        per residue Attributes:
-          - resids
-          - resnums (non XPDB)
-          - resnames
-        per segment Attributes:
-          - segids
-        """
+        """Create the initial Topology object"""
         resid_prev = 0  # resid looping hack
 
         serials = []
@@ -212,8 +211,6 @@ class PrimitivePDBParser(TopologyReader):
             if vals is None:
                 continue
             if any(v == None for v in vals):
-                continue
-            if not any(vals):
                 continue
             attrs.append(Attr(np.array(vals, dtype=dtype)))
 
