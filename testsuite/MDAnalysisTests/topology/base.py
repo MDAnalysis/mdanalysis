@@ -16,8 +16,8 @@ from numpy.testing import (
     assert_,
 )
 
+import MDAnalysis as mda
 from MDAnalysis.core.topology import Topology
-
 
 
 class ParserBase(object):
@@ -61,3 +61,8 @@ class ParserBase(object):
         assert_(self.top.tt.size == (self.expected_n_atoms,
                                      self.expected_n_residues,
                                      self.expected_n_segments))
+
+    def test_creates_universe(self):
+        """Check that Universe works with this Parser"""
+        u = mda.Universe(self.filename)
+        assert_(isinstance(u, mda.Universe))
