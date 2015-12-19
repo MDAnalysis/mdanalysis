@@ -34,7 +34,6 @@ TpxHeader = namedtuple(
         "bIr", "bTop", "bX", "bV", "bF", "bBox"])
 Box = namedtuple("Box", "size rel v")
 Mtop = namedtuple("Mtop", "nmoltype moltypes nmolblock")
-TPRTopology = namedtuple("TPRTopology", "atoms, bonds, angles, dihe, impr")
 Params = namedtuple("Params", "atnr ntypes functype reppow fudgeQQ iparams")
 Atom = namedtuple("Atom", ["m", "q", "mB", "qB", "tp", "typeB", "ptype", "resind", "atomnumber"])
 Atoms = namedtuple("Atoms", "atoms nr nres type typeB atomnames resnames")
