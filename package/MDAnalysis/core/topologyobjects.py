@@ -23,6 +23,7 @@ The building blocks for MDAnalysis' description of topology
 from __future__ import print_function, absolute_import
 
 import numpy as np
+import functools
 
 from ..lib.mdamath import norm, dihedral
 from ..lib.mdamath import angle as slowang
@@ -30,6 +31,7 @@ from ..lib.util import cached
 from ..lib import distances
 
 
+@functools.total_ordering
 class TopologyObject(object):
 
     """Base class for all Topology items.
@@ -44,11 +46,23 @@ class TopologyObject(object):
     .. versionadded:: 0.11.0
        Added the `value` method to return the size of the object
     """
-    __slots__ = ("atoms", "_is_guessed")
+    __slots__ = ("_ix", "_u")
 
-    def __init__(self, atoms, is_guessed=False):
-        self.atoms = tuple(atoms)
-        self._is_guessed = is_guessed
+    def __init__(self, ix, universe):
+        """Create a topology object
+
+        Arguments
+        ---------
+        ix - indices of the Atoms (np array)
+        universe - Universe that the Atoms belong to
+        """
+        self._ix = ix
+        self._u = universe
+
+    @property
+    def atoms(self):
+        """Atoms within this Bond"""
+        return self._u.atoms[self._ix]
 
     @property
     def indices(self):
@@ -56,42 +70,32 @@ class TopologyObject(object):
 
         .. versionadded:: 0.10.0
         """
-        return tuple([a.index for a in self.atoms])
+        return self._ix
+
+    @property
+    def universe(self):
+        return self._u
 
     @property
     def type(self):
         """Type of the bond as a tuple
 
+        Note
+        ----
         When comparing types, it is important to consider the reverse
         of the type too, i.e.::
 
             a.type == b.type or a.type == b.type[::-1]
 
         """
-        return tuple([a.type for a in self.atoms])
-
-    @property
-    def is_guessed(self):  # is property so it gets nice docs?
-        """``True`` if the bond was guessed.
-
-        .. SeeAlso:: :func:`guess_bonds` :func:`guess_angles` and
-                     :func:`guess_dihedrals`
-        """
-        return self._is_guessed
-
-    @is_guessed.setter
-    def is_guessed(self, b):
-        self._is_guessed = b
+        return self.atoms.types
 
     def __repr__(self):
         return "<{cname} between: {conts}>".format(
             cname=self.__class__.__name__,
             conts=", ".join([
-                "Atom {num} ({name} of {resname}-{resid})".format(
-                    num=a.index + 1,
-                    name=a.name,
-                    resname=a.resname,
-                    resid=a.resid)
+                "Atom {num}".format(
+                    num=a.index)
                 for a in self.atoms]))
 
     def __contains__(self, other):
@@ -100,19 +104,16 @@ class TopologyObject(object):
 
     def __eq__(self, other):
         """Check whether two bonds have identical contents"""
-        my_tup = tuple([a.index for a in self.atoms])
-        ot_tup = tuple([a.index for a in other.atoms])
-
-        return (my_tup == ot_tup) or (my_tup == ot_tup[::-1])
+        if not self.universe == other.universe:
+            return False
+        return ((self.indices == other.indices).all()
+                or (self.indices[::-1] == other.indices).all())
 
     def __ne__(self, other):
         return not self.__eq__(other)
 
-    def __lt__(self, other):  # so bondlists can be sorted
-        return self.atoms < other.atoms
-
-    def __gt__(self, other):
-        return self.atoms > other.atoms
+    def __lt__(self, other):
+        return tuple(self.indices) < tuple(other.indices)
 
     def __getitem__(self, item):
         """Can retrieve a given Atom from within"""
@@ -122,7 +123,7 @@ class TopologyObject(object):
         return iter(self.atoms)
 
     def __len__(self):
-        return len(self.atoms)
+        return len(self._ix)
 
 
 class Bond(TopologyObject):
@@ -145,23 +146,17 @@ class Bond(TopologyObject):
        Now a subclass of :class:`TopologyObject`. Changed class to use
        :attr:`__slots__` and stores atoms in :attr:`atoms` attribute.
     """
-    __slots__ = ("atoms", "order", "_is_guessed")
-
-    def __init__(self, atoms, order=None, is_guessed=False):
-        self.atoms = tuple(atoms)
-        self.order = order
-        self._is_guessed = is_guessed
-
     def partner(self, atom):
         """Bond.partner(Atom)
 
-        :Returns: the other :class:`~MDAnalysis.core.AtomGroup.Atom` in this
-                  bond
-
+        Returns
+        -------
+        the other :class:`~MDAnalysis.core.AtomGroup.Atom` in this
+        bond
         """
-        if atom is self.atoms[0]:
+        if atom == self.atoms[0]:
             return self.atoms[1]
-        elif atom is self.atoms[1]:
+        elif atom == self.atoms[1]:
             return self.atoms[0]
         else:
             raise ValueError("Unrecognised Atom")
@@ -173,26 +168,14 @@ class Bond(TopologyObject):
            Added pbc keyword
         """
         if pbc:
-            box = self.atoms[0].universe.dimensions
+            box = self.universe.dimensions
             return distances.self_distance_array(
-                np.array([self.atoms[0].position, self.atoms[1].position]),
+                np.array([self[0].position, self[1].position]),
                 box=box)
         else:
-            return norm(self.atoms[0].position - self.atoms[1].position)
+            return norm(self[0].position - self[1].position)
 
     value = length
-
-    def __repr__(self):
-        a1, a2 = self.atoms
-        s_id = "<Bond between: Atom {0:d} ({1.name} of {1.resname} {1.resid}"\
-               " {1.altLoc}) and Atom {2:d} ({3.name} of {3.resname}"\
-               "{3.resid} {3.altLoc})".format(
-                   a1.index + 1, a1, a2.index + 1, a2)
-        try:
-            s_length = ", length {0:.2f} A".format(self.length())
-        except AttributeError:
-            s_length = ""  # no trajectory/coordinates available
-        return s_id + s_length + ">"
 
 
 class Angle(TopologyObject):
@@ -216,13 +199,15 @@ class Angle(TopologyObject):
             /
            1------0
 
-        .. Note:: The numerical precision is typically not better than
-                  4 decimals (and is only tested to 3 decimals).
+        Note
+        ----
+        The numerical precision is typically not better than
+        4 decimals (and is only tested to 3 decimals).
 
         .. versionadded:: 0.9.0
         """
-        a = self[0].pos - self[1].pos
-        b = self[2].pos - self[1].pos
+        a = self[0].position - self[1].position
+        b = self[2].position - self[1].position
         return np.rad2deg(
             np.arccos(np.dot(a, b) / (norm(a) * norm(b))))
 
@@ -259,8 +244,10 @@ class Dihedral(TopologyObject):
           0
 
 
-        .. Note:: The numerical precision is typically not better than
-                  4 decimals (and is only tested to 3 decimals).
+        Note
+        ----
+        The numerical precision is typically not better than
+        4 decimals (and is only tested to 3 decimals).
 
         .. versionadded:: 0.9.0
         """
@@ -295,8 +282,10 @@ class ImproperDihedral(Dihedral):  # subclass Dihedral to inherit dihedral metho
     def improper(self):
         """Improper dihedral angle in degrees.
 
-        .. Note:: The numerical precision is typically not better than
-                  4 decimals (and is only tested to 3 decimals).
+        Note
+        ----
+        The numerical precision is typically not better than
+        4 decimals (and is only tested to 3 decimals).
         """
         return self.dihedral()
 
@@ -695,19 +684,22 @@ class TopologyGroup(object):
         TopologyObject to a TopologyGroup.
         """
         # check addition is sane
-        if not (isinstance(other, TopologyObject)
-                or isinstance(other, TopologyGroup)):
-            raise TypeError("Can only combine TopologyObject or TopologyGroup to"
-                            " TopologyGroup, not {0}".format(type(other)))
+        if not isinstance(other, (TopologyObject, TopologyGroup)):
+            raise TypeError("Can only combine TopologyObject or "
+                            "TopologyGroup to TopologyGroup, not {0}"
+                            "".format(type(other)))
 
         # cases where either other or self is empty TG
         if not other:  # adding empty TG to me
             return self
         if not self:
             if isinstance(other, TopologyObject):
-                return TopologyGroup([other])
+                # Reshape indices to be 2d array
+                return TopologyGroup(other.indices[:,None],
+                                     other.universe)
             else:
-                return TopologyGroup(other.bondlist)
+                return TopologyGroup(other.indices,
+                                     other.universe)
 
         # add TO to me
         if isinstance(other, TopologyObject):
@@ -715,13 +707,20 @@ class TopologyGroup(object):
                 raise TypeError("Cannot add different types of "
                                 "TopologyObjects together")
             else:
-                return TopologyGroup(self.bondlist + (other,))
+                return TopologyGroup(
+                    np.concatenate([self.indices, other.indices]),
+                    self.universe,
+                    self.btype)
 
         # add TG to me
         if self.btype != other.btype:
-            raise TypeError("Can only combine TopologyGroups of the same type")
+            raise TypeError(
+                "Can only combine TopologyGroups of the same type")
         else:
-            return TopologyGroup(self.bondlist + other.bondlist)
+            return TopologyGroup(
+                np.concatenate([self.indices, other.indices]),
+                self.universe,
+                self.btype)
 
     def __getitem__(self, item):
         """Returns a particular bond as single object or a subset of
@@ -730,12 +729,18 @@ class TopologyGroup(object):
         .. versionchanged:: 0.10.0
            Allows indexing via boolean numpy array
         """
+        if isinstance(item, int):
+            outclass = {'bond':Bond,
+                        'angle':Angle,
+                        'dihedral':Dihedral,
+                        'improper':ImproperDihedral}[self.btype]
+            return outclass(self._bix[item], self._u)
+
         return self.__class__(self._bix[item], self._u, btype=self.btype)
 
     def __contains__(self, item):
         """Tests if this TopologyGroup contains a bond"""
-        # TODO: Check with tuple of indices or Bond object?
-        return item in self._bix
+        return item.indices in self._bix
 
     def __repr__(self):
         return "<TopologyGroup containing {num} {type}s>".format(
