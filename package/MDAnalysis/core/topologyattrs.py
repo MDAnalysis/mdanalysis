@@ -504,8 +504,12 @@ class Bonds(AtomAttr):
         return bd
 
     def get_atoms(self, ag):
-        unique_bonds =  set(itertools.chain(
-            *[self._bondDict[a] for a in ag._ix]))
+        try:
+            unique_bonds =  set(itertools.chain(
+                *[self._bondDict[a] for a in ag._ix]))
+        except TypeError:
+            # maybe we got passed an Atom
+            unique_bonds = self._bondDict[ag._ix]
         bond_idx = np.array(sorted(unique_bonds))
         return TopologyGroup(bond_idx, ag._u, self.singular[:-1])
 
