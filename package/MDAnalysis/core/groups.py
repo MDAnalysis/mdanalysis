@@ -123,9 +123,12 @@ class GroupBase(object):
 
         return self.__class__(np.concatenate([self._ix, o_ix]), self._u)
 
-    # TODO: finish me!
     def __contains__(self, other):
-        pass
+        if not other.level == self.level:
+            # maybe raise TypeError instead?
+            # eq method raises Error for wrong comparisons
+            return False
+        return other.index in self._ix
 
     @property
     def universe(self):
@@ -625,7 +628,7 @@ class ComponentBase(object):
         return self.index == other.index
 
     def __hash__(self):
-        return hash(self.index)
+        return hash(self._ix)
 
     def __add__(self, other):
         """Concatenate the Component with another Component or Group of the
