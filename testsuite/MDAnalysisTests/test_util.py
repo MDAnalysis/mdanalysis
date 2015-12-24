@@ -666,3 +666,17 @@ class TestGuessFormat(object):
         s = cStringIO.StringIO('this is a very fun file')
 
         assert_raises(ValueError, util.guess_format, s)
+
+
+class TestUniqueRows(object):
+    def test_unique_rows_2(self):
+        a = np.array([[0, 1], [1, 2], [2, 1], [0, 1], [0, 1], [2, 1]])
+
+        assert_array_equal(util.unique_rows(a),
+                           np.array([[0, 1], [1, 2], [2, 1]]))
+
+    def test_unique_rows_3(self):
+        a = np.array([[0, 1, 2], [0, 1, 2], [2, 3, 4], [0, 1, 2]])
+
+        assert_array_equal(util.unique_rows(a),
+                           np.array([[0, 1, 2], [2, 3, 4]]))
