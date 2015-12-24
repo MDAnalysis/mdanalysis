@@ -153,7 +153,6 @@ class TestTopologyGroup_Cython(TestCase):
 
     def setUp(self):
         self.u = MDAnalysis.Universe(PSF, DCD)
-        self.u.build_topology()
         # topologygroups for testing
         # bond, angle, dihedral, improper
         ag = self.u.atoms[:5]
@@ -346,7 +345,7 @@ class TestTopologyGuessers(TestCase):
         ag.angles
 
         # Group of angles to work off
-        angs = self.u.angles.atomgroup_intersection(ag, strict=True)
+        angs = self.u.atoms.angles.atomgroup_intersection(ag, strict=True)
 
         # Pre calculated reference result
         result = (
@@ -362,16 +361,16 @@ class TestTopologyGuessers(TestCase):
     # Functional testing for these functions
     # Test that Universe accepts their output as input
     def test_guess_angles_set(self):
-        self.u.angles = guess_angles(self.u.bonds)
+        self.u.atoms.angles = guess_angles(self.u.atoms.bonds)
 
-        assert_equal(len(self.u.angles), 6123)
+        assert_equal(len(self.u.atoms.angles), 6123)
 
     def test_guess_dihedrals_set(self):
-        self.u.dihedrals = guess_dihedrals(self.u.angles)
+        self.u.dihedrals = guess_dihedrals(self.u.atoms.angles)
 
         assert_equal(len(self.u.dihedrals), 8921)
 
     def test_guess_impropers_set(self):
-        self.u.impropers = guess_improper_dihedrals(self.u.angles)
+        self.u.impropers = guess_improper_dihedrals(self.u.atoms.angles)
 
         assert_equal(len(self.u.impropers), 10314)
