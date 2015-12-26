@@ -40,6 +40,7 @@ import logging
 from MDAnalysis.core import flags
 from ..lib import distances
 from ..lib.mdamath import triclinic_vectors
+from ..exceptions import SelectionError
 
 
 logger = logging.getLogger(__name__)

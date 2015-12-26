@@ -8,6 +8,7 @@ import functools
 from . import selection
 from . import flags
 
+
 def make_group():
     """Generate the Group class with attributes according to the topology.
 
@@ -197,16 +198,13 @@ class AtomGroupBase(object):
     """
     level = 'atom'
 
-
-    # TODO: CHECK THAT THIS IS APPROPRIATE IN NEW SCHEME
     def __getattr__(self, name):
         try:
             return self._get_named_atom(name)
-        except SelectionError:
+        except selection.SelectionError:
             raise AttributeError("'{0}' object has no attribute '{1}'".format(
                     self.__class__.__name__, name))
 
-    # TODO: fix me; we need Atom objects!
     def _get_named_atom(self, name):
         """Get all atoms with name *name* in the current AtomGroup.
 
@@ -217,9 +215,10 @@ class AtomGroupBase(object):
         .. versionadded:: 0.9.2
         """
         # There can be more than one atom with the same name
-        atomlist = [atom for atom in self._atoms if name == atom.name]
+        atomlist = self[self.names == name]
         if len(atomlist) == 0:
-            raise SelectionError("No atoms with name '{0}'".format(name))
+            raise selection.SelectionError(
+                "No atoms with name '{0}'".format(name))
         elif len(atomlist) == 1:
             return atomlist[0]  # XXX: keep this, makes more sense for names
         else:
@@ -775,6 +774,13 @@ class AtomBase(ComponentBase):
             ts.forces[self._ix, :] = values
         except (AttributeError, NoDataError):
             raise NoDataError("Timestep does not contain forces")
+
+    @property
+    def bonded_atoms(self):
+        # Requires bonds to work,
+        # Maybe but this into the Bonds attribute as extra method
+        idx = [b.partner(self).index for b in self.bonds]
+        return self._u.atoms[idx]
 
 
 class ResidueBase(ComponentBase):
