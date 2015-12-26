@@ -329,7 +329,9 @@ def make_whole(atomgroup, reference_atom=None):
 
     .. versionadded:: 0.11.0
     """
-    if not atomgroup.bonds:
+    try:
+        b = atomgroup.bonds
+    except (AttributeError, NoDataError):
         raise NoDataError("The atomgroup is required to have bonds")
 
     if reference_atom is None:
