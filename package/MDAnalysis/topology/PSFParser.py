@@ -136,13 +136,8 @@ class PSFParser(TopologyReader):
                     top.add_TopologyAttr(
                         attr(self._parse_sec(psffile, info)))
             except StopIteration:
-                pass
                 # Reached the end of the file before we expected
-                if "atoms" not in structure:
-                    err = ("The PSF file didn't contain the required"
-                           " section of NATOM")
-                    logger.error(err)
-                    raise ValueError(err)
+                pass
 
         return top
 
