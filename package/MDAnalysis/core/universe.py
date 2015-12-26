@@ -394,7 +394,16 @@ class Universe(object):
 
     def add_TopologyAttr(self, topologyattr):
         self._topology.add_TopologyAttr(topologyattr)
+        # Add the Attr to the Group (AtomGroup, RG, SG)
         self._Group._add_prop(topologyattr)
+        # Add the Attr to the component (Atom, Residue, Segment)
+        try:
+            level = topologyattr.level
+            self._components[level]._add_prop(topologyattr)
+        except (AttributeError, KeyError):
+            # .level attribute might not exist on attribute
+            # the .level might not correspond to a component
+            pass
 
 
 # TODO: what is the point of this function???
