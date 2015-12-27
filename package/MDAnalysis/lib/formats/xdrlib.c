@@ -1728,7 +1728,6 @@ static char __pyx_k_name[] = "name";
 static char __pyx_k_ndim[] = "ndim";
 static char __pyx_k_open[] = "open";
 static char __pyx_k_pack[] = "pack";
-static char __pyx_k_prec[] = "prec";
 static char __pyx_k_read[] = "read";
 static char __pyx_k_rtol[] = "rtol";
 static char __pyx_k_size[] = "size";
@@ -1788,6 +1787,7 @@ static char __pyx_k_velocity[] = "velocity";
 static char __pyx_k_TypeError[] = "TypeError";
 static char __pyx_k_endoffile[] = "endoffile";
 static char __pyx_k_enumerate[] = "enumerate";
+static char __pyx_k_precision[] = "precision";
 static char __pyx_k_self_mode[] = "self.mode";
 static char __pyx_k_IndexError[] = "IndexError";
 static char __pyx_k_ValueError[] = "ValueError";
@@ -1987,7 +1987,7 @@ static PyObject *__pyx_n_s_offsets;
 static PyObject *__pyx_n_s_open;
 static PyObject *__pyx_n_s_os_path;
 static PyObject *__pyx_n_s_pack;
-static PyObject *__pyx_n_s_prec;
+static PyObject *__pyx_n_s_precision;
 static PyObject *__pyx_n_s_property;
 static PyObject *__pyx_n_s_pyx_getbuffer;
 static PyObject *__pyx_n_s_pyx_vtable;
@@ -2042,7 +2042,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
 static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile__calc_natoms(CYTHON_UNUSED struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib_XTCFile *__pyx_v_self, PyObject *__pyx_v_fname); /* proto */
 static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_2calc_offsets(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib_XTCFile *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_4read(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib_XTCFile *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib_XTCFile *__pyx_v_self, PyObject *__pyx_v_xyz, PyObject *__pyx_v_box, int __pyx_v_step, float __pyx_v_time, float __pyx_v_prec); /* proto */
+static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib_XTCFile *__pyx_v_self, PyObject *__pyx_v_xyz, PyObject *__pyx_v_box, int __pyx_v_step, float __pyx_v_time, float __pyx_v_precision); /* proto */
 static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags); /* proto */
 static void __pyx_pf_5numpy_7ndarray_2__releasebuffer__(PyArrayObject *__pyx_v_self, Py_buffer *__pyx_v_info); /* proto */
 static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __pyx_array_obj *__pyx_v_self, PyObject *__pyx_v_shape, Py_ssize_t __pyx_v_itemsize, PyObject *__pyx_v_format, PyObject *__pyx_v_mode, int __pyx_v_allocate_buffer); /* proto */
@@ -7743,7 +7743,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_4read(stru
  *             self.current_frame += 1
  *         return XTCFrame(xyz, box, step, time, prec)             # <<<<<<<<<<<<<<
  * 
- *     def write(self, xyz, box, int step, float time, float prec=1000.0):
+ *     def write(self, xyz, box, int step, float time, float precision=3):
  */
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_XTCFrame); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 596; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
@@ -7824,20 +7824,20 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_4read(stru
 /* "MDAnalysis/lib/formats/xdrlib.pyx":598
  *         return XTCFrame(xyz, box, step, time, prec)
  * 
- *     def write(self, xyz, box, int step, float time, float prec=1000.0):             # <<<<<<<<<<<<<<
+ *     def write(self, xyz, box, int step, float time, float precision=3):             # <<<<<<<<<<<<<<
  *         """write one frame to the XTC file
  * 
  */
 
 /* Python wrapper */
 static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_7write(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write[] = "write one frame to the XTC file\n\n        Parameters\n        ----------\n        xyz: ndarray, shape=(n_atoms, 3)\n            cartesion coordinates\n        box: ndarray, shape=(3, 3)\n            Box vectors for this frame\n        step: int\n            current step number, 1 indexed\n        time: float\n            current time\n        pref: float (optional)\n            precision used to save file\n\n        Raises\n        ------\n        RuntimeError\n            Couldn't write the file\n        ValueError\n            The arguments to not match with previous saved frames.\n        ";
+static char __pyx_doc_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write[] = "write one frame to the XTC file\n\n        Parameters\n        ----------\n        xyz: ndarray, shape=(n_atoms, 3)\n            cartesion coordinates\n        box: ndarray, shape=(3, 3)\n            Box vectors for this frame\n        step: int\n            current step number, 1 indexed\n        time: float\n            current time\n        precision: float (optional)\n            set precision of saved trjactory to this number of decimal places.\n\n        Raises\n        ------\n        RuntimeError\n            Couldn't write the file\n        ValueError\n            The arguments to not match with previous saved frames.\n        ";
 static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_7write(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_xyz = 0;
   PyObject *__pyx_v_box = 0;
   int __pyx_v_step;
   float __pyx_v_time;
-  float __pyx_v_prec;
+  float __pyx_v_precision;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -7845,7 +7845,7 @@ static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_7write(PyO
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("write (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_xyz,&__pyx_n_s_box,&__pyx_n_s_step,&__pyx_n_s_time,&__pyx_n_s_prec,0};
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_xyz,&__pyx_n_s_box,&__pyx_n_s_step,&__pyx_n_s_time,&__pyx_n_s_precision,0};
     PyObject* values[5] = {0,0,0,0,0};
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
@@ -7881,7 +7881,7 @@ static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_7write(PyO
         }
         case  4:
         if (kw_args > 0) {
-          PyObject* value = PyDict_GetItem(__pyx_kwds, __pyx_n_s_prec);
+          PyObject* value = PyDict_GetItem(__pyx_kwds, __pyx_n_s_precision);
           if (value) { values[4] = value; kw_args--; }
         }
       }
@@ -7904,9 +7904,9 @@ static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_7write(PyO
     __pyx_v_step = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_step == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 598; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
     __pyx_v_time = __pyx_PyFloat_AsFloat(values[3]); if (unlikely((__pyx_v_time == (float)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 598; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
     if (values[4]) {
-      __pyx_v_prec = __pyx_PyFloat_AsFloat(values[4]); if (unlikely((__pyx_v_prec == (float)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 598; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+      __pyx_v_precision = __pyx_PyFloat_AsFloat(values[4]); if (unlikely((__pyx_v_precision == (float)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 598; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
     } else {
-      __pyx_v_prec = ((float)1000.0);
+      __pyx_v_precision = ((float)3.0);
     }
   }
   goto __pyx_L4_argument_unpacking_done;
@@ -7917,16 +7917,17 @@ static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_7write(PyO
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write(((struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib_XTCFile *)__pyx_v_self), __pyx_v_xyz, __pyx_v_box, __pyx_v_step, __pyx_v_time, __pyx_v_prec);
+  __pyx_r = __pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write(((struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib_XTCFile *)__pyx_v_self), __pyx_v_xyz, __pyx_v_box, __pyx_v_step, __pyx_v_time, __pyx_v_precision);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib_XTCFile *__pyx_v_self, PyObject *__pyx_v_xyz, PyObject *__pyx_v_box, int __pyx_v_step, float __pyx_v_time, float __pyx_v_prec) {
+static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib_XTCFile *__pyx_v_self, PyObject *__pyx_v_xyz, PyObject *__pyx_v_box, int __pyx_v_step, float __pyx_v_time, float __pyx_v_precision) {
   __Pyx_memviewslice __pyx_v_xyz_view = { 0, 0, { 0 }, { 0 }, { 0 } };
   __Pyx_memviewslice __pyx_v_box_view = { 0, 0, { 0 }, { 0 }, { 0 } };
+  float __pyx_v_prec;
   int __pyx_v_return_code;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
@@ -8367,7 +8368,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write(str
  *                                  'are trying to use {}'.format(
  *                                      self.prec, prec))             # <<<<<<<<<<<<<<
  * 
- *         cdef int return_code
+ *         # xdrlib will multiply the coordinated by precision. This means for a
  */
       __pyx_t_6 = PyFloat_FromDouble(__pyx_v_self->prec); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 644; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_6);
@@ -8431,7 +8432,16 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write(str
   }
   __pyx_L4:;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":648
+  /* "MDAnalysis/lib/formats/xdrlib.pyx":649
+ *         # precision of 3 decimal places we need to pass 1000.0 to the xdr
+ *         # library.
+ *         cdef float prec = 10 ** precision             # <<<<<<<<<<<<<<
+ *         cdef int return_code
+ *         return_code = write_xtc(self.xfp, self.n_atoms, step, time,
+ */
+  __pyx_v_prec = powf(10.0, __pyx_v_precision);
+
+  /* "MDAnalysis/lib/formats/xdrlib.pyx":652
  *         cdef int return_code
  *         return_code = write_xtc(self.xfp, self.n_atoms, step, time,
  *                                        <matrix>&box_view[0, 0],             # <<<<<<<<<<<<<<
@@ -8451,10 +8461,10 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write(str
   } else if (unlikely(__pyx_t_13 >= __pyx_v_box_view.shape[1])) __pyx_t_8 = 1;
   if (unlikely(__pyx_t_8 != -1)) {
     __Pyx_RaiseBufferIndexError(__pyx_t_8);
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 648; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 652; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":649
+  /* "MDAnalysis/lib/formats/xdrlib.pyx":653
  *         return_code = write_xtc(self.xfp, self.n_atoms, step, time,
  *                                        <matrix>&box_view[0, 0],
  *                                        <rvec*>&xyz_view[0, 0], prec)             # <<<<<<<<<<<<<<
@@ -8474,11 +8484,11 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write(str
   } else if (unlikely(__pyx_t_15 >= __pyx_v_xyz_view.shape[1])) __pyx_t_8 = 1;
   if (unlikely(__pyx_t_8 != -1)) {
     __Pyx_RaiseBufferIndexError(__pyx_t_8);
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 649; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 653; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":647
- * 
+  /* "MDAnalysis/lib/formats/xdrlib.pyx":651
+ *         cdef float prec = 10 ** precision
  *         cdef int return_code
  *         return_code = write_xtc(self.xfp, self.n_atoms, step, time,             # <<<<<<<<<<<<<<
  *                                        <matrix>&box_view[0, 0],
@@ -8486,7 +8496,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write(str
  */
   __pyx_v_return_code = write_xtc(__pyx_v_self->__pyx_base.xfp, __pyx_v_self->__pyx_base.n_atoms, __pyx_v_step, __pyx_v_time, ((float (*)[3])(&(*((__pyx_t_10MDAnalysis_3lib_7formats_6xdrlib_DTYPE_T *) ( /* dim=1 */ ((char *) (((__pyx_t_10MDAnalysis_3lib_7formats_6xdrlib_DTYPE_T *) ( /* dim=0 */ (__pyx_v_box_view.data + __pyx_t_12 * __pyx_v_box_view.strides[0]) )) + __pyx_t_13)) ))))), ((rvec *)(&(*((__pyx_t_10MDAnalysis_3lib_7formats_6xdrlib_DTYPE_T *) ( /* dim=1 */ ((char *) (((__pyx_t_10MDAnalysis_3lib_7formats_6xdrlib_DTYPE_T *) ( /* dim=0 */ (__pyx_v_xyz_view.data + __pyx_t_14 * __pyx_v_xyz_view.strides[0]) )) + __pyx_t_15)) ))))), __pyx_v_prec);
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":650
+  /* "MDAnalysis/lib/formats/xdrlib.pyx":654
  *                                        <matrix>&box_view[0, 0],
  *                                        <rvec*>&xyz_view[0, 0], prec)
  *         if return_code != EOK:             # <<<<<<<<<<<<<<
@@ -8496,26 +8506,26 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write(str
   __pyx_t_1 = ((__pyx_v_return_code != __pyx_e_10MDAnalysis_3lib_7formats_6xdrlib_EOK) != 0);
   if (__pyx_t_1) {
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":651
+    /* "MDAnalysis/lib/formats/xdrlib.pyx":655
  *                                        <rvec*>&xyz_view[0, 0], prec)
  *         if return_code != EOK:
  *             raise RuntimeError('XTC write error: {}'.format(             # <<<<<<<<<<<<<<
  *                 error_message[return_code]))
  * 
  */
-    __pyx_t_11 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_XTC_write_error, __pyx_n_s_format); if (unlikely(!__pyx_t_11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 651; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_11 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_XTC_write_error, __pyx_n_s_format); if (unlikely(!__pyx_t_11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 655; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_11);
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":652
+    /* "MDAnalysis/lib/formats/xdrlib.pyx":656
  *         if return_code != EOK:
  *             raise RuntimeError('XTC write error: {}'.format(
  *                 error_message[return_code]))             # <<<<<<<<<<<<<<
  * 
  *         self.current_frame += 1
  */
-    __pyx_t_5 = __Pyx_GetModuleGlobalName(__pyx_n_s_error_message); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 652; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_5 = __Pyx_GetModuleGlobalName(__pyx_n_s_error_message); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 656; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_3 = __Pyx_GetItemInt(__pyx_t_5, __pyx_v_return_code, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(__pyx_t_3 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 652; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+    __pyx_t_3 = __Pyx_GetItemInt(__pyx_t_5, __pyx_v_return_code, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(__pyx_t_3 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 656; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __pyx_t_5 = NULL;
@@ -8529,42 +8539,42 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write(str
       }
     }
     if (!__pyx_t_5) {
-      __pyx_t_9 = __Pyx_PyObject_CallOneArg(__pyx_t_11, __pyx_t_3); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 651; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_9 = __Pyx_PyObject_CallOneArg(__pyx_t_11, __pyx_t_3); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 655; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_9);
     } else {
-      __pyx_t_6 = PyTuple_New(1+1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 651; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_6 = PyTuple_New(1+1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 655; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_GIVEREF(__pyx_t_5); PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_5); __pyx_t_5 = NULL;
       __Pyx_GIVEREF(__pyx_t_3);
       PyTuple_SET_ITEM(__pyx_t_6, 0+1, __pyx_t_3);
       __pyx_t_3 = 0;
-      __pyx_t_9 = __Pyx_PyObject_Call(__pyx_t_11, __pyx_t_6, NULL); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 651; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_9 = __Pyx_PyObject_Call(__pyx_t_11, __pyx_t_6, NULL); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 655; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_9);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     }
     __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":651
+    /* "MDAnalysis/lib/formats/xdrlib.pyx":655
  *                                        <rvec*>&xyz_view[0, 0], prec)
  *         if return_code != EOK:
  *             raise RuntimeError('XTC write error: {}'.format(             # <<<<<<<<<<<<<<
  *                 error_message[return_code]))
  * 
  */
-    __pyx_t_11 = PyTuple_New(1); if (unlikely(!__pyx_t_11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 651; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_11 = PyTuple_New(1); if (unlikely(!__pyx_t_11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 655; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_11);
     __Pyx_GIVEREF(__pyx_t_9);
     PyTuple_SET_ITEM(__pyx_t_11, 0, __pyx_t_9);
     __pyx_t_9 = 0;
-    __pyx_t_9 = __Pyx_PyObject_Call(__pyx_builtin_RuntimeError, __pyx_t_11, NULL); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 651; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_9 = __Pyx_PyObject_Call(__pyx_builtin_RuntimeError, __pyx_t_11, NULL); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 655; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_9);
     __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
     __Pyx_Raise(__pyx_t_9, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 651; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 655; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":650
+    /* "MDAnalysis/lib/formats/xdrlib.pyx":654
  *                                        <matrix>&box_view[0, 0],
  *                                        <rvec*>&xyz_view[0, 0], prec)
  *         if return_code != EOK:             # <<<<<<<<<<<<<<
@@ -8573,7 +8583,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write(str
  */
   }
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":654
+  /* "MDAnalysis/lib/formats/xdrlib.pyx":658
  *                 error_message[return_code]))
  * 
  *         self.current_frame += 1             # <<<<<<<<<<<<<<
@@ -8583,7 +8593,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write(str
   /* "MDAnalysis/lib/formats/xdrlib.pyx":598
  *         return XTCFrame(xyz, box, step, time, prec)
  * 
- *     def write(self, xyz, box, int step, float time, float prec=1000.0):             # <<<<<<<<<<<<<<
+ *     def write(self, xyz, box, int step, float time, float precision=3):             # <<<<<<<<<<<<<<
  *         """write one frame to the XTC file
  * 
  */
@@ -23413,7 +23423,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_open, __pyx_k_open, sizeof(__pyx_k_open), 0, 0, 1, 1},
   {&__pyx_n_s_os_path, __pyx_k_os_path, sizeof(__pyx_k_os_path), 0, 0, 1, 1},
   {&__pyx_n_s_pack, __pyx_k_pack, sizeof(__pyx_k_pack), 0, 0, 1, 1},
-  {&__pyx_n_s_prec, __pyx_k_prec, sizeof(__pyx_k_prec), 0, 0, 1, 1},
+  {&__pyx_n_s_precision, __pyx_k_precision, sizeof(__pyx_k_precision), 0, 0, 1, 1},
   {&__pyx_n_s_property, __pyx_k_property, sizeof(__pyx_k_property), 0, 0, 1, 1},
   {&__pyx_n_s_pyx_getbuffer, __pyx_k_pyx_getbuffer, sizeof(__pyx_k_pyx_getbuffer), 0, 0, 1, 1},
   {&__pyx_n_s_pyx_vtable, __pyx_k_pyx_vtable, sizeof(__pyx_k_pyx_vtable), 0, 0, 1, 1},

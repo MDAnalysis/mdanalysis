@@ -595,7 +595,7 @@ cdef class XTCFile(_XDRFile):
             self.current_frame += 1
         return XTCFrame(xyz, box, step, time, prec)
 
-    def write(self, xyz, box, int step, float time, float prec=1000.0):
+    def write(self, xyz, box, int step, float time, float precision=3):
         """write one frame to the XTC file
 
         Parameters
@@ -608,8 +608,8 @@ cdef class XTCFile(_XDRFile):
             current step number, 1 indexed
         time: float
             current time
-        pref: float (optional)
-            precision used to save file
+        precision: float (optional)
+            set precision of saved trjactory to this number of decimal places.
 
         Raises
         ------
@@ -643,6 +643,10 @@ cdef class XTCFile(_XDRFile):
                                  'are trying to use {}'.format(
                                      self.prec, prec))
 
+        # xdrlib will multiply the coordinated by precision. This means for a
+        # precision of 3 decimal places we need to pass 1000.0 to the xdr
+        # library.
+        cdef float prec = 10 ** precision
         cdef int return_code
         return_code = write_xtc(self.xfp, self.n_atoms, step, time,
                                        <matrix>&box_view[0, 0],
