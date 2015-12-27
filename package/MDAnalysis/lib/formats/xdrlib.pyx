@@ -152,6 +152,8 @@ cdef class _XDRFile:
             if res != 0:
                 raise IOError('Couldn\'t close file: {}, Error = XDRLIB-{}'.format(
                     self.fname, error_message[res]))
+        # forget old offsets in case we open a different file with the same instance.
+        self._has_offsets = False
         return True
 
     def open(self, fname, mode):
