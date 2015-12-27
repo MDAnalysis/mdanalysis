@@ -7,6 +7,7 @@ import functools
 
 from . import selection
 from . import flags
+from ..exceptions import NoDataError
 
 
 def make_group():
@@ -658,7 +659,6 @@ class ComponentBase(object):
 
         return self._u._groups[self.level](
                 np.concatenate((np.array([self._ix]), o_ix)), self._u)
-
 
     # TODO: put in mixin with GroupBase method of same name
     @classmethod
