@@ -50,6 +50,25 @@ class XTCWriter(XDRBaseWriter):
 
 
 class XTCReader(XDRBaseReader):
+    """XTC is a compressed trajectory format from Gromacs. The trajectory is saved
+    with reduced precision (3 decimal places) compared to other lossless
+    formarts like TRR and DCD. The main advantage of XTC files is that they
+    require significantly less disk space and the loss of precision is usually
+    not a problem.
+
+    Parameter
+    ---------
+    filename: str
+        filename of the trajectory
+    convert_units: bool (optional)
+        convert into MDAnalysis units
+    sub: atomgroup (optional)
+        Yeah what is that exactly
+    refresh_offsets: bool (optional)
+        Recalculate offsets for random access from file. If ``False`` try to
+        retrieve offsets from hidden offsets file.
+
+    """
     format = 'XTC'
     units = {'time': 'ps', 'length': 'nm'}
     _writer = XTCWriter

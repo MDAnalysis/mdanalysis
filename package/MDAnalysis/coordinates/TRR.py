@@ -66,6 +66,23 @@ class TRRWriter(XDRBaseWriter):
 
 
 class TRRReader(XDRBaseReader):
+    """The Gromacs TRR trajectory format is a lossless format. The TRR format can
+    store *velocoties* and *forces* in addition to the coordinates. It is also
+    used by other Gromacs tools to store and process other data such as modes
+    from a principal component analysis.
+
+    Parameter
+    ---------
+    filename: str
+        filename of the trajectory
+    convert_units: bool (optional)
+        convert into MDAnalysis units
+    sub: atomgroup (optional)
+        Yeah what is that exactly
+    refresh_offsets: bool (optional)
+        Recalculate offsets for random access from file. If ``False`` try to
+        retrieve offsets from hidden offsets file.
+    """
     format = 'TRR'
     units = {'time': 'ps', 'length': 'nm', 'velocity': 'nm/ps',
              'force': 'kJ/(mol*nm)'}
