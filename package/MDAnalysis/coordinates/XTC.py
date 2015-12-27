@@ -19,9 +19,35 @@ from ..lib.mdamath import triclinic_vectors
 
 
 class XTCWriter(XDRBaseWriter):
+    """
+    XTC is a compressed trajectory format from Gromacs. The trajectory is saved
+    with reduced precision (3 decimal places by default) compared to other
+    lossless formarts like TRR and DCD. The main advantage of XTC files is that
+    they require significantly less disk space and the loss of precision is
+    usually not a problem.
+
+    Parameter
+    ---------
+    filename: str
+        filename of the trajectory
+    n_atoms: int
+        number of atoms to write
+    convert_units: bool (optional)
+        convert into MDAnalysis units
+    precision: float (optional)
+        set precision of saved trjactory to this number of decimal places.
+
+
+    """
     format = 'XTC'
     units = {'time': 'ps', 'length': 'nm'}
     _file = XTCFile
+
+    def __init__(self, filename, n_atoms, convert_units=True,
+                 precision=3, **kwargs):
+        super(XTCWriter, self).__init__(filename, n_atoms, convert_units,
+                                        **kwargs)
+        self.precision = precision
 
     def write_next_timestep(self, ts):
         """Write timestep object into trajectory.
@@ -46,7 +72,7 @@ class XTCWriter(XDRBaseWriter):
 
         box = triclinic_vectors(dimensions)
 
-        self._xdr.write(xyz, box, step, time)
+        self._xdr.write(xyz, box, step, time, self.precision)
 
 
 class XTCReader(XDRBaseReader):
