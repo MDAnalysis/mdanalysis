@@ -175,7 +175,6 @@ cdef class _XDRFile:
         """
         if self.is_open:
             self.close()
-        cdef int return_code = 1
         self.fname = fname
         self.n_atoms = 0
         self.reached_eof = False
