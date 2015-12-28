@@ -71,8 +71,11 @@ class XTCWriter(XDRBaseWriter):
             dimensions = self.convert_dimensions_to_unitcell(ts, inplace=False)
 
         box = triclinic_vectors(dimensions)
-
-        self._xdr.write(xyz, box, step, time, self.precision)
+        # xdrlib will multiply the coordinated by precision. This means for a
+        # precision of 3 decimal places we need to pass 1000.0 to the xdr
+        # library.
+        precision = 10 ** self.precision
+        self._xdr.write(xyz, box, step, time, precision)
 
 
 class XTCReader(XDRBaseReader):
