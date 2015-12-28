@@ -519,7 +519,7 @@ cdef class XTCFile(_XDRFile):
     >>>     for frame in f:
     >>>         print(frame.x)
     """
-    cdef float prec
+    cdef float precision
 
     def _calc_natoms(self, fname):
         cdef int n_atoms
@@ -595,7 +595,7 @@ cdef class XTCFile(_XDRFile):
             self.current_frame += 1
         return XTCFrame(xyz, box, step, time, prec)
 
-    def write(self, xyz, box, int step, float time, float precision=3):
+    def write(self, xyz, box, int step, float time, float precision=1000):
         """write one frame to the XTC file
 
         Parameters
@@ -609,7 +609,14 @@ cdef class XTCFile(_XDRFile):
         time: float
             current time
         precision: float (optional)
-            set precision of saved trjactory to this number of decimal places.
+            precision of saved trajectory, see Notes
+
+
+        Notes
+        -----
+        Gromacs specifies the precision a little bit strange. The coordinates
+        will be multiplied by precision and then converted to an integer. This
+        means a precision of 1000 yields an accuracy of 3 decimal places.
 
         Raises
         ------
@@ -617,6 +624,7 @@ cdef class XTCFile(_XDRFile):
             Couldn't write the file
         ValueError
             The arguments to not match with previous saved frames.
+
         """
         if self.mode != 'w':
             raise RuntimeError('File opened in mode: {}. Writing only allow '
@@ -628,7 +636,7 @@ cdef class XTCFile(_XDRFile):
         if self.current_frame == 0:
             self.n_atoms = xyz.shape[0]
             self.box = box
-            self.prec = prec
+            self.precision = precision
         else:
             if self.n_atoms != xyz.shape[0]:
                 raise ValueError('Previous frames contained {} atoms. You '
@@ -638,19 +646,15 @@ cdef class XTCFile(_XDRFile):
                 raise ValueError('Previous frames contained {} box. You '
                                  'are trying to write {} box.'.format(
                                      self.box, box))
-            if self.prec != prec:
+            if self.precision != precision:
                 raise ValueError('Previous frames used precision of {}. You '
                                  'are trying to use {}'.format(
-                                     self.prec, prec))
+                                     self.precision, precision))
 
-        # xdrlib will multiply the coordinated by precision. This means for a
-        # precision of 3 decimal places we need to pass 1000.0 to the xdr
-        # library.
-        cdef float prec = 10 ** precision
         cdef int return_code
         return_code = write_xtc(self.xfp, self.n_atoms, step, time,
                                        <matrix>&box_view[0, 0],
-                                       <rvec*>&xyz_view[0, 0], prec)
+                                       <rvec*>&xyz_view[0, 0], precision)
         if return_code != EOK:
             raise RuntimeError('XTC write error: {}'.format(
                 error_message[return_code]))
