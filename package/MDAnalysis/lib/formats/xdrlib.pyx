@@ -426,7 +426,7 @@ cdef class TRRFile(_XDRFile):
         RuntimeError
             Couldn't write the file
         ValueError
-            The arguments to not match with previous saved frames.
+            The arguments do not match with previous saved frames.
         """
         if self.mode != 'w':
             raise RuntimeError('File opened in mode: {}. Writing only allow '

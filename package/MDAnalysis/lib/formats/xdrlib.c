@@ -5739,7 +5739,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_4read(stru
 
 /* Python wrapper */
 static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_7write(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write[] = "write one frame into TRR file.\n\n        Parameters\n        ----------\n        xyz: ndarray, shape=(n_atoms, 3)\n            cartesion coordinates\n        box: ndarray, shape=(3, 3)\n            Box vectors for this frame\n        step: int\n            current step number, 1 indexed\n        time: float\n            current time\n        _lambda: float\n            current lambda value\n        natoms: int\n            number of atoms in frame\n\n        Raises\n        ------\n        RuntimeError\n            Couldn't write the file\n        ValueError\n            The arguments to not match with previous saved frames.\n        ";
+static char __pyx_doc_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write[] = "write one frame into TRR file.\n\n        Parameters\n        ----------\n        xyz: ndarray, shape=(n_atoms, 3)\n            cartesion coordinates\n        box: ndarray, shape=(3, 3)\n            Box vectors for this frame\n        step: int\n            current step number, 1 indexed\n        time: float\n            current time\n        _lambda: float\n            current lambda value\n        natoms: int\n            number of atoms in frame\n\n        Raises\n        ------\n        RuntimeError\n            Couldn't write the file\n        ValueError\n            The arguments do not match with previous saved frames.\n        ";
 static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_7write(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_xyz = 0;
   PyObject *__pyx_v_velocity = 0;
@@ -5881,7 +5881,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
   __Pyx_RefNannySetupContext("write", 0);
 
   /* "MDAnalysis/lib/formats/xdrlib.pyx":431
- *             The arguments to not match with previous saved frames.
+ *             The arguments do not match with previous saved frames.
  *         """
  *         if self.mode != 'w':             # <<<<<<<<<<<<<<
  *             raise RuntimeError('File opened in mode: {}. Writing only allow '
@@ -5924,7 +5924,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
     {__pyx_filename = __pyx_f[0]; __pyx_lineno = 432; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
     /* "MDAnalysis/lib/formats/xdrlib.pyx":431
- *             The arguments to not match with previous saved frames.
+ *             The arguments do not match with previous saved frames.
  *         """
  *         if self.mode != 'w':             # <<<<<<<<<<<<<<
  *             raise RuntimeError('File opened in mode: {}. Writing only allow '
