@@ -178,23 +178,7 @@ class Universe(object):
 
         # Put Group level stuff from topology into class
         for attr in self._topology.attrs:
-            self._Group._add_prop(attr)
-        # Put stuff into component classes
-        for attr in self._topology.attrs:
-            for level in ['atom', 'residue', 'segment']:
-                if attr.level == level:
-                    self._classes[level]._add_prop(attr)
-        # Add transplants
-        for attr in self._topology.attrs:
-            for dest in ['atom', 'residue', 'segment', 'group',
-                         'atomgroup', 'residuegroup', 'segmentgroup']:
-                try:
-                    for meth in attr.transplants[dest]:
-                        funcname = meth.__name__
-                        setattr(self._classes[dest], funcname, meth)
-                except AttributeError:
-                    # not every Attribute will have a transplant dict
-                    pass
+            self._process_attr(attr)
 
         # Generate atoms, residues and segments
         self.atoms = self._classes['atomgroup'](
@@ -405,16 +389,32 @@ class Universe(object):
 
     def add_TopologyAttr(self, topologyattr):
         self._topology.add_TopologyAttr(topologyattr)
-        # Add the Attr to the Group (AtomGroup, RG, SG)
-        self._Group._add_prop(topologyattr)
-        # Add the Attr to the component (Atom, Residue, Segment)
+        self._process_attr(topologyattr)
+
+    def _process_attr(self, attr):
+        """Squeeze a topologyattr for its information
+
+        Grabs:
+         - Group properties (attribute access)
+         - Component properties
+         - Transplant methods
+        """
+        self._Group._add_prop(attr)
+
         try:
-            level = topologyattr.level
-            self._classes[level]._add_prop(topologyattr)
-        except (AttributeError, KeyError):
-            # .level attribute might not exist on attribute
-            # the .level might not correspond to a component
+            self._classes[attr.level]._add_prop(attr)
+        except (KeyError, AttributeError):
             pass
+
+        for dest in ['atom', 'residue', 'segment', 'group',
+                     'atomgroup', 'residuegroup', 'segmentgroup']:
+            try:
+                for meth in attr.transplants[dest]:
+                    funcname = meth.__name__
+                    setattr(self._classes[dest], funcname, meth)
+            except AttributeError:
+                # not every Attribute will have a transplant dict
+                pass
 
 
 # TODO: what is the point of this function???
