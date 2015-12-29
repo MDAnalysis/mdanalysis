@@ -34,7 +34,7 @@ import numpy as np
 from scipy import sparse
 
 from MDAnalysis.lib.distances import distance_array, self_distance_array
-from MDAnalysis.lib._distances import contact_matrix_no_pbc, contact_matrix_pbc
+from MDAnalysis.lib.c_distances import contact_matrix_no_pbc, contact_matrix_pbc
 
 import logging
 

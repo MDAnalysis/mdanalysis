@@ -16,11 +16,15 @@
 
 # initial simple tests for logging module
 
+import sys
 import os
+import cStringIO
 import tempfile
 import logging
 
-from numpy.testing import TestCase
+from numpy.testing import TestCase, assert_
+
+from six.moves import range
 
 import MDAnalysis
 import MDAnalysis.lib.log
@@ -47,3 +51,66 @@ class TestLogging(TestCase):
             raise AssertionError("Problem with logger: {0}".format(err))
         finally:
             MDAnalysis.log.stop_logging()
+
+
+class RedirectedStderr(object):
+    """Temporarily replaces sys.stderr with *stream*.
+
+    Deals with cached stderr, see
+    http://stackoverflow.com/questions/6796492/temporarily-redirect-stdout-stderr
+    """
+
+    def __init__(self, stream=None):
+        self._stderr = sys.stderr
+        self.stream = stream or sys.stdout
+
+    def __enter__(self):
+        self.old_stderr = sys.stderr
+        self.old_stderr.flush()
+        sys.stderr = self.stream
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self._stderr.flush()
+        sys.stderr = self.old_stderr
+
+class TestProgressMeter(TestCase):
+    def setUp(self):
+        self.buf = cStringIO.StringIO()
+
+    def tearDown(self):
+        del self.buf
+
+    def _assert_in(self, output, string):
+        assert_(string in output,
+                "Output '{0}' does not match required format '{1}'.".format(
+                output.replace('\r', '\\r'), string))
+
+
+    def test_default_ProgressMeter(self, n=101, interval=10):
+        format = "Step %(step)5d/%(numsteps)d [%(percentage)5.1f%%]\r"
+        with RedirectedStderr(self.buf):
+            pm = MDAnalysis.lib.log.ProgressMeter(n, interval=interval, offset=1)
+            for frame in range(n):
+                pm.echo(frame)
+        self.buf.seek(0L)
+        output = "".join(self.buf.readlines())
+        self._assert_in(output, format % {'step': 1, 'numsteps': n, 'percentage': 100./n})
+        # last line always has \n instead of \r!
+        self._assert_in(output, format.replace('\r', '\n') %
+                        {'step': n, 'numsteps': n, 'percentage': 100.})
+
+    def test_custom_ProgressMeter(self, n=51, interval=7):
+        format = "RMSD %(rmsd)5.2f at %(step)03d/%(numsteps)4d [%(percentage)5.1f%%]\r"
+        with RedirectedStderr(self.buf):
+            pm = MDAnalysis.lib.log.ProgressMeter(n, interval=interval,
+                                                  format=format, offset=1)
+            for frame in range(n):
+                rmsd = 0.02 * frame * (n+1)/float(n)  # n+1/n correction for 0-based frame vs 1-based counting
+                pm.echo(frame, rmsd=rmsd)
+        self.buf.seek(0L)
+        output = "".join(self.buf.readlines())
+        self._assert_in(output, format %
+                        {'rmsd': 0.0, 'step': 1, 'numsteps': n, 'percentage': 100./n})
+        # last line always has \n instead of \r!
+        self._assert_in(output, format.replace('\r', '\n') %
+                        {'rmsd': 0.02*n, 'step': n, 'numsteps': n, 'percentage': 100.0})

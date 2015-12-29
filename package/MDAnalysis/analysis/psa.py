@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -54,11 +54,13 @@ preserve the triangle inequality.
 
 .. Rubric:: References
 
-.. [Seyler2015] Sean L. Seyler, Avishek Kumar, Michael F. Thorpe, Oliver Beckstein.
-   *Path Similarity Analysis: a Method for Quantifying Macromolecular
-   Pathways.* `arXiv:1505.04807`_ (2015).
 
-.. _`arXiv:1505.04807`: http://arxiv.org/abs/1505.04807
+.. [Seyler2015] Seyler SL, Kumar A, Thorpe MF, Beckstein O (2015)
+                Path Similarity Analysis: A Method for Quantifying
+                Macromolecular Pathways. PLoS Comput Biol 11(10): e1004568.
+                doi: `10.1371/journal.pcbi.1004568`_
+
+.. _`10.1371/journal.pcbi.1004568`: http://dx.doi.org/10.1371/journal.pcbi.1004568
 .. _`PSAnalysisTutorial`: https://github.com/Becksteinlab/PSAnalysisTutorial
 
 
@@ -249,8 +251,8 @@ def get_path_metric_func(name):
     try:
         return path_metrics[name]
     except KeyError as key:
-        print("Path metric {} not found. Valid selections: ".format(key))
-        for name in path_metrics.keys(): print("  \"{}\"".format(name))
+        print("Path metric {0} not found. Valid selections: ".format(key))
+        for name in path_metrics.keys(): print("  \"{0}\"".format(name))
 
 
 def sqnorm(v, axis=None):
@@ -583,7 +585,7 @@ def dist_mat_to_vec(N, i, j):
     """
     if i > N or j > N:
         err_str = "Matrix indices are out of range; i and j must be less than"  \
-                + " N = {:d}".format(N)
+                + " N = {0:d}".format(N)
         raise ValueError(err_str)
     if j > i:
         return (N*i) + j - (i+2)*(i+1)/2
@@ -595,7 +597,7 @@ def dist_mat_to_vec(N, i, j):
         return (N*j) + i - (j+2)*(j+1)/2
     else:
         err_str = "Error in processing matrix indices; i and j must be integers"\
-                + " less than integer N = {:d} such that j >= i+1.".format(N)
+                + " less than integer N = {0:d} such that j >= i+1.".format(N)
         raise ValueError(err_str)
 
 
@@ -1073,7 +1075,7 @@ class PSAnalysis(object):
     """
     def __init__(self, universes, reference=None, ref_select='name CA',
                  ref_frame=0, path_select=None, labels=None,
-                 targetdir=None):
+                 targetdir=os.path.curdir):
         """Setting up Path Similarity Analysis.
 
         The mutual similarity between all unique pairs of trajectories
@@ -1241,7 +1243,7 @@ class PSAnalysis(object):
             p = Path(u, self.u_reference, ref_select=self.ref_select,           \
                      path_select=self.path_select, ref_frame=ref_frame)
             trj_dir = self.targetdir + self.datadirs['fitted_trajs']
-            postfix = '{}{}{:03n}'.format(infix, '_psa', i+1)
+            postfix = '{0}{1}{2:03n}'.format(infix, '_psa', i+1)
             top_name, fit_trj_name = p.run(align=align, filename=filename,      \
                                            postfix=postfix,                     \
                                            targetdir=trj_dir,                   \
@@ -1298,7 +1300,8 @@ class PSAnalysis(object):
             for j in xrange(i+1, numpaths):
                 P = self.paths[i][start:stop:step]
                 Q = self.paths[j][start:stop:step]
-                D[i,j] = D[j,i] = metric_func(P, Q)
+                D[i,j] = metric_func(P, Q)
+                D[j,i] = D[i,j]
         self.D = D
         if store:
             filename = kwargs.pop('filename', str(metric))
@@ -1396,7 +1399,7 @@ class PSAnalysis(object):
             raise NoDataError("Paths have not been calculated yet")
         path_names = []
         for i, path in enumerate(self.paths):
-            current_outfile = "{}{:03n}.npy".format(outfile, i+1)
+            current_outfile = "{0}{1:03n}.npy".format(outfile, i+1)
             np.save(current_outfile, self.paths[i])
             path_names.append(current_outfile)
             logger.info("Wrote path to file %r", current_outfile)
@@ -1412,7 +1415,7 @@ class PSAnalysis(object):
         """
         if not os.path.exists(self._paths_pkl):
             raise NoDataError("Fitted trajectories cannot be loaded; save file" +
-                              "{} does not exist.".format(self._paths_pkl))
+                              "{0} does not exist.".format(self._paths_pkl))
         self.path_names = np.load(self._paths_pkl)
         self.paths = [np.load(pname) for pname in self.path_names]
         if os.path.exists(self._labels_pkl):

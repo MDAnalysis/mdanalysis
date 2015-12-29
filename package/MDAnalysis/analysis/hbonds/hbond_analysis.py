@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -753,7 +753,7 @@ class HydrogenBondAnalysis(object):
             self._s2 = ns_selection_2.search(self._s1, 3. * self.distance)
         self.logger_debug('Size of selection 2: {0} atoms'.format(len(self._s2)))
         if not self._s2:
-            logger.warn('Selection 2 "{}" did not select any atoms.'.format(
+            logger.warn('Selection 2 "{0}" did not select any atoms.'.format(
                 str(self.selection2)[:80]))
         self._s2_donors = {}
         self._s2_donors_h = {}

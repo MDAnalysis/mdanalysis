@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -172,10 +172,10 @@ also recognized when they are compressed with :program:`gzip` or
    |               | mdcrd     |       | periodic box is autodetected (*experimental*).       |
    |               |           |       | Module :mod:`MDAnalysis.coordinates.TRJ`             |
    +---------------+-----------+-------+------------------------------------------------------+
-   | AMBER         | inpcrd    | r     | formatted (ASCII) coordinate/restart file            |
+   | AMBER         | inpcrd,   | r     | formatted (ASCII) coordinate/restart file            |
    |               | restrt    |       | Module :mod:`MDAnalysis.coordinates.INPCRD`          |
    +---------------+-----------+-------+------------------------------------------------------+
-   | AMBER         | ncdf      |  r/w  | binary (NetCDF) trajectories are fully supported with|
+   | AMBER         | ncdf, nc  |  r/w  | binary (NetCDF) trajectories are fully supported with|
    |               |           |       | optional `netcdf4-python`_ module (coordinates and   |
    |               |           |       | velocities). Module :mod:`MDAnalysis.coordinates.TRJ`|
    +---------------+-----------+-------+------------------------------------------------------+
@@ -777,6 +777,7 @@ _trajectory_writers = {
     'LAMMPS': LAMMPS.DCDWriter,
     'PDB': PDB.MultiPDBWriter,
     'NCDF': TRJ.NCDFWriter,
+    'NC': TRJ.NCDFWriter,
     'TRZ': TRZ.TRZWriter,
     'XYZ': XYZ.XYZWriter,
     'MOL2': MOL2.MOL2Writer,

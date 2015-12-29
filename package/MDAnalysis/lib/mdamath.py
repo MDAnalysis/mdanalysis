@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -242,6 +242,7 @@ def _is_contiguous(atomgroup, atom):
     """
     seen = set([atom])
     walked = set()
+    ag_set = set(atomgroup)
 
     nloops = 0
     while len(seen) < len(atomgroup):
@@ -252,7 +253,7 @@ def _is_contiguous(atomgroup, atom):
         todo = seen.difference(walked)
         for atom in todo:
             for other in atom.bonded_atoms:
-                if other in atomgroup:
+                if other in ag_set:
                     seen.add(other)
             walked.add(atom)
 
@@ -369,6 +370,7 @@ def make_whole(atomgroup, reference_atom=None):
     processed = set()  # Who have I already done?
     ref_points = set([ref])  # Who is safe to use as reference point?
 
+    ag_set = set(atomgroup)
     nres = len(atomgroup)  # total size of the problem
     nloops = 0
     while len(ref_points) < nres:  # While all atoms aren't correct
@@ -386,7 +388,7 @@ def make_whole(atomgroup, reference_atom=None):
             for b in atom.bonds:
                 other = b.partner(atom)
                 # Avoid atoms not in our scope
-                if other not in atomgroup:
+                if other not in ag_set:
                     continue
                 if other in ref_points:
                     continue

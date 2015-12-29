@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -160,7 +160,7 @@ class LeafletFinder(object):
 
     def _get_components(self):
         """Return connected components (as sorted numpy arrays), sorted by size."""
-        return [numpy.sort(component) for component in NX.connected_components(self.graph)]
+        return [np.sort(list(component)) for component in NX.connected_components(self.graph)]
 
     def update(self, cutoff=None):
         """Update components, possibly with a different *cutoff*"""

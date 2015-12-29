@@ -108,6 +108,8 @@ ag.totalMass
 ag.totalCharge
 #centerOfGeometry -> center_of_geometry
 ag.centerOfGeometry
+#centerOfMass -> center_of_mass
+ag.centerOfMass
 #radiusOfGyration -> radius_of_gyration
 ag.radiusOfGyration
 #shapeParameter -> shape_parameter
@@ -217,3 +219,19 @@ class Dummy(object):
     assert_almost_equal(ts.frame, 544)
 
     ts.frame = 77
+
+#numatoms to n_atoms keyword argument conversion while preserving the conversion from numberOfAtoms() to n_atoms as well:
+with MDAnalysis.Writer(pdbtrj, multiframe=True, bonds=False, numatoms=u.atoms.numberOfAtoms()) as PDB:
+    pass
+
+#alternative call syntax:
+with MDAnalysis.coordinates.core.writer(pdbtrj, multiframe=True, bonds=False, numatoms=u.atoms.numberOfAtoms()) as PDB:
+    pass
+
+#the above fix should be specific to .writer or .Writer, so the following should not be recognized (as a probe for specificity) from the keyword argument standpoint [method replacement is ok]:
+with MDAnalysis.coordinates.core.writerr(pdbtrj, multiframe=True, bonds=False, numatoms=u.atoms.numberOfAtoms()) as PDB:
+    pass
+
+#however, the fixer should be sufficiently flexible to recognize a different input filename, the omission of default arguments, spacing between 'numatoms' and '=', and an explicit integer value for numatoms, along with some additional kwargs:
+with MDAnalysis.Writer(other_filename, numatoms = 55, start = 0, step = 2) as GRO:
+    pass

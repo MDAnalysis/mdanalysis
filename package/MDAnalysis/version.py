@@ -1,5 +1,5 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -14,7 +14,7 @@
 #
 
 """
-Version information for MDAnalysis — :mod:`MDAnalysis.version`
+Version information for MDAnalysis - :mod:`MDAnalysis.version`
 ==============================================================
 
 The version information in :mod:`MDAnalysis.version` indicates the
@@ -59,4 +59,4 @@ Data
 # e.g. with lib.log
 
 #: Release of MDAnalysis as a string, using `semantic versioning`_.
-__version__ = "0.12.0"  # NOTE: keep in sync with RELEASE in setup.py
+__version__ = "0.13.0-dev0"  # NOTE: keep in sync with RELEASE in setup.py

@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -254,7 +254,7 @@ class MOL2Writer(base.Writer):
         for a in obj.atoms:
             bonds.update(a.bonds)
         bonds = sorted([(bond[0].id, bond[1].id, bond.order) for bond in bonds])
-        mapping = dict([(a.id, i) for i, a in enumerate(obj.atoms)])
+        mapping = {a.id: i for i, a in enumerate(obj.atoms)}
 
         atom_lines = ["{0:>4} {1:>4} {2:>13.4f} {3:>9.4f} {4:>9.4f} {5:>4} {6} {7} "
                       "{8:>7.4f}".format(mapping[a.id] + 1, a.name,

@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -155,7 +155,7 @@ class Density(Grid):
     1. From a histogram (i.e. counts on a grid)::
 
         h,edges = numpy.histogramdd(...)
-        D = Density(h,edges)
+        D = Density(h, edges, parameters={'isDensity': False}, units={'length': 'A'})
         D.make_density()
 
     2. From a saved density file (e.g. in OpenDX format), where the lengths are
@@ -517,7 +517,7 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
         h[:], edges[:] = np.histogramdd(coord, bins=bins, range=arange, normed=False)
         grid += h  # accumulate average histogram
     print("")
-    n_frames = u.trajectory.n_frames / u.trajectory.skip
+    n_frames = u.trajectory.n_frames
     grid /= float(n_frames)
 
     # pick from kwargs
@@ -529,8 +529,14 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
     metadata['totaltime'] = round(u.trajectory.n_frames * u.trajectory.dt, 3)
     metadata['dt'] = u.trajectory.dt
     metadata['time_unit'] = MDAnalysis.core.flags['time_unit']
-    metadata['trajectory_skip'] = u.trajectory.skip_timestep  # frames
-    metadata['trajectory_delta'] = u.trajectory.delta  # in native units
+    try:
+        metadata['trajectory_skip'] = u.trajectory.skip_timestep  # frames
+    except AttributeError:
+        metadata['trajectory_skip'] = 1  # seems to not be used..
+    try:
+        metadata['trajectory_delta'] = u.trajectory.delta  # in native units
+    except AttributeError:
+        metadata['trajectory_delta'] = 1
     if cutoff > 0 and soluteselection is not None:
         metadata['soluteselection'] = soluteselection
         metadata['cutoff'] = cutoff  # in Angstrom

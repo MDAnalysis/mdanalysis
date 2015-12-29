@@ -26,3 +26,5 @@ examples/output.txt
 .adk_oplsaa.trr_offsets.pkl
 .adk_oplsaa.xtc_offsets.pkl
 .gram_A_identical_frames.xtc_offsets.pkl
+# Ignore html build
+doc/html/

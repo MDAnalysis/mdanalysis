@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -1029,7 +1029,7 @@ canonical_inverse_aa_codes = {
     'THR': 'T', 'VAL': 'V', 'TRP': 'W', 'TYR': 'Y'}
 #: translation table for 1-letter codes --> *canonical* 3-letter codes.
 #: The table is used for :func:`convert_aa_code`.
-amino_acid_codes = dict([(one, three) for three, one in canonical_inverse_aa_codes.items()])
+amino_acid_codes = {one: three for three, one in canonical_inverse_aa_codes.items()}
 #: non-default charge state amino acids or special charge state descriptions
 #: (Not fully synchronized with :class:`MDAnalysis.core.Selection.ProteinSelection`.)
 alternative_inverse_aa_codes = {
@@ -1164,3 +1164,67 @@ def cached(key):
         return wrapper
 
     return cached_lookup
+
+
+def blocks_of(a, n, m):
+    """Extract a view of (n, m) blocks along the diagonal of the array `a`
+ 
+    Parameters
+    ----------
+    a : array_like
+        starting array
+    n : int
+        size of block in first dimension
+    m : int
+        size of block in second dimension
+
+ 
+    Returns
+    -------
+      (nblocks, n, m) view of the original array. 
+      Where nblocks is the number of times the miniblock fits in the original.
+
+    Raises
+    ------
+      ValueError
+        If the supplied `n` and `m` don't divide `a` into an integer number
+        of blocks.
+ 
+    Examples
+    --------
+    >>> arr = np.arange(16).reshape(4, 4)
+    >>> view = blocks_of(arr, 2, 2)
+    >>> view[:] = 100
+    >>> arr
+    array([[100, 100,   2,   3],
+           [100, 100,   6,   7],
+           [  8,   9, 100, 100],
+           [ 12,  13, 100, 100]])
+
+    Notes
+    -----
+      n, m must divide a into an identical integer number of blocks.
+ 
+      Uses strides so probably requires that the array is C contiguous
+ 
+      Returns a view, so editing this modifies the original array
+
+    .. versionadded:: 0.12.0
+    """
+    # based on: 
+    # http://stackoverflow.com/a/10862636
+    # but generalised to handle non square blocks.
+
+    nblocks = a.shape[0] / n
+    nblocks2 = a.shape[1] / m
+ 
+    if not nblocks == nblocks2:
+        raise ValueError("Must divide into same number of blocks in both"
+                         " directions.  Got {} by {}"
+                         "".format(nblocks, nblocks2))
+ 
+    new_shape = (nblocks, n, m)
+    new_strides = (n * a.strides[0] + m * a.strides[1],
+                   a.strides[0], a.strides[1])
+ 
+    return np.lib.stride_tricks.as_strided(a, new_shape, new_strides)

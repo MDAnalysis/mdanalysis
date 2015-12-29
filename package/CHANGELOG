@@ -13,6 +13,85 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
+--/--/15 tyler.je.reddy, kain88-de, richardjgowers, manuel.nuno.melo,
+         orbeckst
+
+  * 0.13.0
+
+API Changes
+
+  * ChainReader `delta` keyword deprecated in favor of `dt`. (Issue #522)
+  * XYZWriter can now be used as a container format for different protein models
+    as well as a normal trajectory. If `n_atoms` is None (default) MDAnalysis
+    assumes that it is used as a container and won't give a warning if the
+    number of atoms differs between frames.
+  * GROWriter.fmt strings updated to use format style (Issue #494)
+  * removed MDAnalysis.lib.parallel.distances; use the new backend="OpenMP"
+    keyword for the functions in MDAnalysis.lib.distances (Issue #530)
+
+Enhancement
+
+  * ChainReader now reports times properly summed over sub-readers (Issue #522)
+  * GRO file reading approximately 50% faster for large files (Issue #212)
+  * GRO file writing now will write velocities where possible (Issue #494)
+  * Added bonded selection (Issue #362)
+  * Spherical layer and spherical zone selections now much faster (Issue #362)
+  * new keyword "backend" for accelerated functions in MDAnalysis.lib.distances
+    to select "serial" or "OpenMP"-enabled versions of the code; the default
+    is "serial" so old code will behave as before (see Issue #530)
+  * Lammps data file parsing improved greatly.  Should now support all files,
+    and triclinic geometry. (Issue #139)
+  * Added analysis.polymer, currently with PersistenceLength tool (Issue #460)
+  * Added analysis.rdf, with InterRDF tool. (Issue #460)
+
+Changes
+
+  * built html doc files are no longer version controlled (Issue #491)
+  * The lib._distances and lib_distances_openmp libraries now have a
+    OPENMP_ENABLED boolean flag which indicates if openmp was used in
+    compilation.  (Issue #530)
+
+Fixes
+
+  * AMBER netcdf writer now correctly uses float32 precision (Issue #518)
+  * Fixed a numpy incompatibility in `analysis.leaflet.LeafletFinder`.
+    (Issue #533)
+  * Cleaned up `MDAnalysis.Writer` docs regarding `dt` usage. (Issue #522)
+  * Fixed setup-time dependency on numpy that broke pip installs. (Issue #479)
+  * Fixed unpickling errors due to lingering dead universes. (Issue #487)
+  * Fixed analysis.density modules requiring the defunct `skip` attribute
+    on trajectories. (Issue #489)
+  * ten2eleven camelcase fixer now deals with centerOfMass (Issue #470)
+  * ten2eleven will now convert numatoms to n_atoms argument
+    for writer() functions (Issue #470)
+  * Fixed non-compliant Amber NCDFWriter (Issue #488)
+  * Fixed many Timestep methods failing when positions weren't present
+    (Issue #512)
+  * Fixed PointSelection using KDTree (Issue #362)
+  * Fixed GROParser getting tripped up by some file (Issue #548)
+  * Fixed writing dx files from analysis.density.density_from_Universe()
+    (Issue #544 and #410)
+
+10/08/15
+
+  * 0.12.1 kain88-de, orbeckst, richardjgowers
+
+API Changes
+
+Enhancements
+
+Changes
+
+Fixes
+  * Fixed OpenMP detection on Linux/OSX #459
+  * Fixed reading of LAMMPS trajectory times: default unit ought
+    to be fs and not ps
+  * Fixed setting of dt for DCDReader (and LAMMPS DCDReader) with
+    keyword argument Universe(..., dt=<dt>)
+  * Fixed a bug in topology.core.guess_atom_element where a
+    single digit atom name would raise an IndexError (#476)
+  * Fixed numpy -> np in LeafletFinder
+
 10/04/15 kain88-de, richardjgowers, dotsdl, sseyler, orbeckst, jbarnoud
 
   * 0.12.0
@@ -47,11 +126,15 @@ Enhancements
   * Function for obtaining coordinate axes from numpy trajectories now
     globally available in MDAnalysis.analysis.psa (Issue #438)
   * TPR parser updated for Gromacs 5.0.x and 5.1 (Issue #456)
+  * Setup.py now looks for some configuration values in a config file. Each
+    config option can also be changed via environment variables if they are
+    prefixed with 'MDA_'. Current options are 'use_cython', 'ues_openmp', 'debug_cflags'
 
 Changes
   * An AtomGroup with 0 atoms now yields an `IndexError` on call to
     `AtomGroup.write` (Issue #434)
   * `PSA` changed to `PSAnalysis` to reduce namespace clutter (Issue #438)
+  * To build with debug-symbols use 'MDA_DEBUG_CFLAGS' instead of 'MDA_DEBUG_CFLAGS'
 
 Fixes
   * Fixed minor issue in lib.mdamath.make_whole where if all bonds

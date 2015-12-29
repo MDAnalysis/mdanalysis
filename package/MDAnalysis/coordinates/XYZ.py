@@ -1,9 +1,9 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver
+# Beckstein and contributors (see AUTHORS for the full list)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
@@ -75,6 +75,9 @@ import errno
 import numpy as np
 import itertools
 
+import logging
+logger = logging.getLogger('MDAnalysis.analysis.psa')
+
 from . import base
 from ..core import flags
 from ..lib import util
@@ -97,41 +100,46 @@ class XYZWriter(base.Writer):
     # these are assumed!
     units = {'time': 'ps', 'length': 'Angstrom'}
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, filename, n_atoms=None, atoms='X', convert_units=None,
+                 remark='default', **kwargs):
         """Initialize the XYZ trajectory writer
 
-        :Arguments:
-            *filename*
-                file name of trajectory file. If it ends with "gz" then the file
-                will be gzip-compressed; if it ends with "bz2" it will be bzip2
-                compressed.
-
-        :Keywords:
-             *atoms*
-                Provide atom names: This can be a list of names or an
-                :class:`AtomGroup`.  If none is provided, atoms will
-                be called 'X' in the output. These atom names will be
-                used when a trajectory is written from raw
-                :class:`Timestep` objects which do not contain atom
-                information.
-
-                If you write a :class:`AtomGroup` with
-                :meth:`XYZWriter.write` then atom information is taken
-                at each step and *atoms* is ignored.
-
-             *remark*
-                single line of text ("molecule name")
+        Parameters
+        ----------
+        filename: str
+            filename of trajectory file. If it ends with "gz" then the file
+            will be gzip-compressed; if it ends with "bz2" it will be bzip2
+            compressed.
+        n_atoms: int (optional)
+            Number of atoms in trajectory. By default assume that this is None
+            and that this file is used to store several different models
+            instead of a single trajectory. If a number is provided each
+            written TimeStep has to contain the same number of atoms.
+        atoms: str | list (optional)
+            Provide atom names: This can be a list of names or an
+            :class:`AtomGroup`.  If none is provided, atoms will
+            be called 'X' in the output. These atom names will be
+            used when a trajectory is written from raw
+            :class:`Timestep` objects which do not contain atom
+            information. If you write a :class:`AtomGroup` with
+            :meth:`XYZWriter.write` then atom information is taken
+            at each step and *atoms* is ignored.
+        remark: str (optional)
+            single line of text ("molecule name"). By default write MDAnalysis
+            version
         """
-        # n_atoms is ignored ...
-        self.filename = args[0]
-        # convert length and time to base units on the fly?
-        convert_units = kwargs.pop('convert_units', None)
-        self.convert_units = convert_units if convert_units is not None else flags['convert_lengths']
-        self.atomnames = self._get_atomnames(kwargs.pop('atoms', "X"))
-        self.remark = kwargs.pop('remark',
-                                 "Written by {0} (release {1})".format(self.__class__.__name__, __version__))
-
-        self.xyz = util.anyopen(self.filename, 'w')  # can also be gz, bz2
+        self.filename = filename
+        self.n_atoms = n_atoms
+        if convert_units is not None:
+            self.convert_units = convert_units
+        else:
+            self.convert_units = flags['convert_lengths']
+        self.atomnames = self._get_atomnames(atoms)
+        default_remark = "Written by {0} (release {1})".format(
+            self.__class__.__name__, __version__)
+        self.remark = default_remark if remark == 'default' else remark
+        # can also be gz, bz2
+        self._xyz = util.anyopen(self.filename, 'w')
 
     def _get_atomnames(self, atoms):
         """Return a list of atom names"""
@@ -145,15 +153,21 @@ class XYZWriter(base.Writer):
             return atoms.atoms.names
         except AttributeError:
             pass
-        # list or string (can be a single atom name... deal with this in write_next_timestep() once we know n_atoms)
-        return np.asarray(util.asiterable(atoms))
+        # list or string (can be a single atom name... deal with this in
+        # write_next_timestep() once we know n_atoms)
+        if self.n_atoms is None:
+            return np.asarray(util.asiterable(atoms))
+        if isinstance(atoms, list):
+            return atoms
+        else:
+            return np.asarray([atoms for _ in range(self.n_atoms)])
 
     def close(self):
         """Close the trajectory file and finalize the writing"""
-        if self.xyz is not None:
-            self.xyz.write("\n")
-            self.xyz.close()
-        self.xyz = None
+        if self._xyz is not None:
+            self._xyz.write("\n")
+            self._xyz.close()
+        self._xyz = None
 
     def write(self, obj):
         """Write object *obj* at current trajectory frame to file.
@@ -193,30 +207,46 @@ class XYZWriter(base.Writer):
             # update atom names
             self.atomnames = atoms.names
         else:
-            ts = obj
+            if isinstance(obj, base.Timestep):
+                ts = obj
+            else:
+                raise TypeError("No Timestep found in obj argument")
 
         self.write_next_timestep(ts)
 
     def write_next_timestep(self, ts=None):
         """Write coordinate information in *ts* to the trajectory"""
         if ts is None:
-            if not hasattr(self, "ts"):
-                raise NoDataError("XYZWriter: no coordinate data to write to trajectory file")
+            if not hasattr(self, 'ts'):
+                raise NoDataError('XYZWriter: no coordinate data to write to '
+                                  'trajectory file')
             else:
                 ts = self.ts
 
-        if len(self.atomnames) != ts.n_atoms:
-            self.atomnames = np.array([self.atomnames[0]] * ts.n_atoms)
+        if self.n_atoms is not None:
+            if self.n_atoms != ts.n_atoms:
+                raise ValueError('n_atoms keyword was specified indicating '
+                                 'that this should be a trajectory of the '
+                                 'same model. But the provided TimeStep has a '
+                                 'different number ({}) then expected ({})'.format(
+                                     ts.n_atoms, self.n_atoms))
+        else:
+            if len(self.atomnames) != ts.n_atoms:
+                logger.info('Trying to write a TimeStep with unkown atoms. '
+                            'Expected {}, got {}. Try using "write" if you are '
+                            'using "write_next_timestep" directly'.format(
+                                len(self.atomnames), ts.n_atoms))
+                self.atomnames = np.array([self.atomnames[0]] * ts.n_atoms)
 
         if self.convert_units:
             coordinates = self.convert_pos_to_native(ts._pos, inplace=False)
         else:
             coordinates = ts._pos
 
-        self.xyz.write("{0:d}\n".format(ts.n_atoms))
-        self.xyz.write("frame {0}\n".format(ts.frame))
+        self._xyz.write("{0:d}\n".format(ts.n_atoms))
+        self._xyz.write("frame {0}\n".format(ts.frame))
         for atom, (x, y, z) in itertools.izip(self.atomnames, coordinates):
-            self.xyz.write("%8s  %10.5f %10.5f %10.5f\n" % (atom, x, y, z))
+            self._xyz.write("%8s  %10.5f %10.5f %10.5f\n" % (atom, x, y, z))
 
 
 class XYZReader(base.Reader):
@@ -357,21 +387,31 @@ class XYZReader(base.Reader):
 
         return self.xyzfile
 
-    def Writer(self, filename, **kwargs):
-        """Returns a XYZWriter for *filename* with the same parameters as this XYZ.
+    def Writer(self, filename, n_atoms=None, **kwargs):
+        """Returns a XYZWriter for *filename* with the same parameters as this
+        XYZ.
 
-        All values can be changed through keyword arguments.
+        Parameters
+        ----------
+        filename: str
+            filename of the output trajectory
+        n_atoms: int (optional)
+            number of atoms. If none is given use the same number of atoms from
+            the reader instance is used
+        **kwargs:
+            See :class:`XYZWriter` for additional kwargs
 
-        :Arguments:
-          *filename*
-              filename of the output DCD trajectory
-        :Keywords:
-          *atoms*
-              names of the atoms (if not taken from atom groups)
+        Returns
+        -------
+        :class:`XYZWriter` (see there for more details)
 
-        :Returns: :class:`XYZWriter` (see there for more details)
+        See Also
+        --------
+        :class: `XYZWriter`
         """
-        return XYZWriter(filename, **kwargs)
+        if n_atoms is None:
+            n_atoms = self.n_atoms
+        return XYZWriter(filename, n_atoms=n_atoms, **kwargs)
 
     def close(self):
         """Close xyz trajectory file if it was open."""

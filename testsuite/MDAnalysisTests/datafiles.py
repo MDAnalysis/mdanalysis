@@ -77,19 +77,31 @@ __all__ = [
     "mol2_molecules", "mol2_molecule", "mol2_broken_molecule",
     "capping_input", "capping_output", "capping_ace", "capping_nma",
     "LAMMPSdata", "trz4data", "LAMMPSdata_mini",
+    "LAMMPSdata2", "LAMMPSdcd2",
+    "LAMMPScnt", "LAMMPScnt2",  # triclinic box
+    "LAMMPShyd", "LAMMPShyd2",
     "unordered_res",  # pdb file with resids non sequential
     "GMS_ASYMOPT",  # GAMESS C1  optimization
     "GMS_SYMOPT",   # GAMESS D4h optimization
     "GMS_ASYMSURF", # GAMESS C1  surface
     "two_water_gro", "two_water_gro_nonames",  # for bond guessing, 2 water molecules, one with weird names
+    "two_water_gro_widebox",  # Issue #548
     "DLP_CONFIG", "DLP_CONFIG_order", "DLP_CONFIG_minimal",  # dl_poly 4 config file
     "DLP_HISTORY", "DLP_HISTORY_order", "DLP_HISTORY_minimal",  # dl_poly 4 history file
     "waterPSF","waterDCD","rmsfArray",
     "HoomdXMLdata",
     "Make_Whole",  # for testing the function lib.mdamath.make_whole, has 9 atoms
+    "Plength",
+    "COORDINATES_XYZ",
+    "COORDINATES_XYZ_BZ2",
+    "Martini_membrane_gro", # for testing the leaflet finder
 ]
 
 from pkg_resources import resource_filename
+
+COORDINATES_XYZ = resource_filename(__name__, 'data/coordinates/test.xyz')
+COORDINATES_XYZ_BZ2 = resource_filename(
+    __name__, 'data/coordinates/test.xyz.bz2')
 
 PSF = resource_filename(__name__, 'data/adk.psf')
 PSF_notop = resource_filename(__name__, 'data/adk_notop.psf')
@@ -163,22 +175,25 @@ XYZ = resource_filename(__name__, 'data/2r9r-1b.xyz')
 XYZ_mini = resource_filename(__name__, 'data/mini.xyz')
 XYZ_five = resource_filename(__name__, 'data/five.xyz')
 
-PRM = resource_filename(__name__, 'data/ache.prmtop')
-TRJ = resource_filename(__name__, 'data/ache.mdcrd')
-INPCRD = resource_filename(__name__, 'data/test.inpcrd')
-TRJ_bz2 = resource_filename(__name__, 'data/ache.mdcrd.bz2')
-PFncdf_Top = resource_filename(__name__, 'data/posfor.top')
-PFncdf_Trj = resource_filename(__name__, 'data/posfor.ncdf')
+PRM = resource_filename(__name__, 'data/Amber/ache.prmtop')
+TRJ = resource_filename(__name__, 'data/Amber/ache.mdcrd')
+INPCRD = resource_filename(__name__, 'data/Amber/test.inpcrd')
+TRJ_bz2 = resource_filename(__name__, 'data/Amber/ache.mdcrd.bz2')
+PFncdf_Top = resource_filename(__name__, 'data/Amber/posfor.top')
+PFncdf_Trj = resource_filename(__name__, 'data/Amber/posfor.ncdf')
 
-PRMpbc = resource_filename(__name__, 'data/capped-ala.prmtop')
-TRJpbc_bz2 = resource_filename(__name__, 'data/capped-ala.mdcrd.bz2')
+PRMpbc = resource_filename(__name__, 'data/Amber/capped-ala.prmtop')
+TRJpbc_bz2 = resource_filename(__name__, 'data/Amber/capped-ala.mdcrd.bz2')
 
-PRMncdf = resource_filename(__name__, 'data/bala.prmtop')
-TRJncdf = resource_filename(__name__, 'data/bala.trj')
-NCDF = resource_filename(__name__, 'data/bala.ncdf')
+PRMncdf = resource_filename(__name__, 'data/Amber/bala.prmtop')
+TRJncdf = resource_filename(__name__, 'data/Amber/bala.trj')
+NCDF = resource_filename(__name__, 'data/Amber/bala.ncdf')
 
-PRM12 = resource_filename(__name__, 'data/anti.top')
-TRJ12_bz2 = resource_filename(__name__, 'data/anti_md1.mdcrd.bz2')
+PRM12 = resource_filename(__name__, 'data/Amber/anti.top')
+TRJ12_bz2 = resource_filename(__name__, 'data/Amber/anti_md1.mdcrd.bz2')
+
+PRM7 =  resource_filename(__name__, 'data/Amber/tz2.truncoct.parm7.bz2')
+NCDFtruncoct =  resource_filename(__name__, 'data/Amber/tz2.truncoct.nc')
 
 PQR = resource_filename(__name__, 'data/adk_open.pqr')
 
@@ -214,12 +229,15 @@ capping_output = resource_filename(__name__, "data/capping/maestro_aaqaa_capped.
 capping_ace = resource_filename(__name__, "data/capping/ace.pdb")
 capping_nma = resource_filename(__name__, "data/capping/nma.pdb")
 
-trz4data = resource_filename(__name__, "data/datatest.trz")
-LAMMPSdata = resource_filename(__name__, "data/datatest.data")
-LAMMPSdata_mini = resource_filename(__name__, "data/mini.data")
-
-LAMMPSdata2 = resource_filename(__name__, "data/lammps2.data")
-LAMMPSdcd2 = resource_filename(__name__, "data/lammps2.dcd")
+trz4data = resource_filename(__name__, "data/lammps/datatest.trz")
+LAMMPSdata = resource_filename(__name__, "data/lammps/datatest.data")
+LAMMPSdata_mini = resource_filename(__name__, "data/lammps/mini.data")
+LAMMPSdata2 = resource_filename(__name__, "data/lammps/ifabp_apo_100mM.data.bz2")
+LAMMPSdcd2 = resource_filename(__name__, "data/lammps/ifabp_apo_100mM.dcd")
+LAMMPScnt = resource_filename(__name__, "data/lammps/cnt-hexagonal-class1.data")
+LAMMPScnt2 = resource_filename(__name__, "data/lammps/cnt-hexagonal-class1.data2")
+LAMMPShyd = resource_filename(__name__, "data/lammps/hydrogen-class1.data")
+LAMMPShyd2 = resource_filename(__name__, "data/lammps/hydrogen-class1.data2")
 
 unordered_res = resource_filename(__name__, "data/unordered_res.pdb")
 
@@ -229,6 +247,7 @@ GMS_ASYMSURF      = resource_filename(__name__, "data/gms/surf2wat.gms")
 
 two_water_gro = resource_filename(__name__, "data/two_water_gro.gro")
 two_water_gro_nonames = resource_filename(__name__, "data/two_water_gro_nonames.gro")
+two_water_gro_widebox = resource_filename(__name__, "data/two_water_gro_widebox.gro")
 
 DLP_CONFIG = resource_filename(__name__, "data/dlpoly/CONFIG")
 DLP_CONFIG_order = resource_filename(__name__, "data/dlpoly/CONFIG_order")
@@ -245,3 +264,6 @@ rmsfArray = resource_filename(__name__, 'data/adk_oplsaa_CA_rmsf.npy')
 HoomdXMLdata = resource_filename(__name__, 'data/C12x64.xml.bz2')
 
 Make_Whole = resource_filename(__name__, 'data/make_whole.gro')
+
+Plength = resource_filename(__name__, 'data/plength.gro')
+Martini_membrane_gro = resource_filename(__name__, 'data/martini_dppc_chol_bilayer.gro')

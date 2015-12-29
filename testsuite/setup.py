@@ -63,7 +63,7 @@ if sys.version_info[:2] < (2, 6):
 
 
 if __name__ == '__main__':
-    RELEASE = "0.12.0"  # this must be in-sync with MDAnalysis
+    RELEASE = "0.13.0-dev0"  # this must be in-sync with MDAnalysis
     LONG_DESCRIPTION = \
         """MDAnalysis is a tool for analyzing molecular dynamics trajectories.
 
@@ -107,7 +107,12 @@ For details see the report for `Issue 87`_.
                   'data/tprs/all_bonded/*.mdp', 'data/*.tpr',
                   'data/*.gro', 'data/*.xtc', 'data/*.trr', 'data/*npy',
                   'data/*.crd', 'data/*.xyz',
-                  'data/*.prmtop', 'data/*.top', 'data/*.trj', 'data/*.mdcrd', 'data/*.ncdf',
+                  'data/Amber/*.bz2',
+                  'data/Amber/*.prmtop', 'data/Amber/*.top',
+                  'data/Amber/*.parm7',
+                  'data/Amber/*.trj', 'data/Amber/*.mdcrd',
+                  'data/Amber/*.ncdf', 'data/Amber/*.nc',
+                  'data/Amber/*.inpcrd',
                   'data/*.pqr', 'data/*.pdbqt', 'data/*.bz2',
                   'data/*.fasta',
                   'data/*.dms',
@@ -115,12 +120,17 @@ For details see the report for `Issue 87`_.
                   'data/*.trz',
                   'data/mol2/*.mol2',
                   'data/capping/*.gro', 'data/capping/*.pdb',
-                  'data/*.data',
+                  'data/lammps/*.data', 'data/lammps/*.data.bz2',
+                  'data/lammps/*.data2',
+                  'data/lammps/*.dcd', 'data/lammps/*.trz',
+                  'data/lammps/*.inp',
                   'data/gms/*.xyz', 'data/gms/*.gms', 'data/gms/*.gms.gz',
                   'data/*.inpcrd',
                   'data/dlpoly/CONFIG*',
                   'data/dlpoly/HISTORY*',
                   'data/*.xml',
+                  'data/coordinates/*xyz',
+                  'data/coordinates/*xyz.bz2',
               ],
           },
           classifiers=CLASSIFIERS,

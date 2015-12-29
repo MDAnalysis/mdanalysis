@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -883,7 +883,7 @@ class PrimitivePDBWriter(base.Writer):
 
         atoms = set([a.index for a in self.obj.atoms])
 
-        mapping = dict([(atom.index, i) for i, atom in enumerate(self.obj.atoms)])
+        mapping = {atom.index: i for i, atom in enumerate(self.obj.atoms)}
 
         # Write out only the bonds that were defined in CONECT records
         if self.bonds == "conect":

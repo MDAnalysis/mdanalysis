@@ -7,6 +7,7 @@ from unittest import TestCase
 
 from MDAnalysisTests.coordinates.reference import RefACHE, RefCappedAla
 from MDAnalysisTests.datafiles import (PRM, TRJ, TRJ_bz2, PRMpbc, TRJpbc_bz2)
+from MDAnalysisTests.coordinates.base import BaseTimestepTest
 
 
 class _TRJReaderTest(TestCase):
@@ -99,3 +100,12 @@ class TestBzippedTRJReaderPBC(_TRJReaderTest, RefCappedAla):
             return list(self.universe.trajectory[::2])
 
         assert_raises(TypeError, trj_iter)
+
+
+class TestTRJTimestep(BaseTimestepTest):
+    Timestep = mda.coordinates.TRJ.Timestep
+    name = "TRJ"
+    has_box = True
+    set_box = True
+    unitcell = np.array([10., 11., 12., 90., 90., 90.])
+    uni_args = (PRM, TRJ)

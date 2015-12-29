@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -172,7 +172,7 @@ def writer(filename, n_atoms=None, **kwargs):
                    starting time [0]
                *step*
                    step size in frames [1]
-               *delta*
+               *dt*
                    length of time between two frames, in ps [1.0]
 
             Some readers accept additional arguments, which need to be looked

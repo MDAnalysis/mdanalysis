@@ -4,8 +4,10 @@ import numpy as np
 from numpy.testing import (assert_equal, assert_array_equal, assert_raises)
 from unittest import TestCase
 
-from MDAnalysisTests.datafiles import (DMS)
+from MDAnalysis.lib.mdamath import triclinic_vectors
 
+from MDAnalysisTests.datafiles import (DMS)
+from MDAnalysisTests.coordinates.base import BaseTimestepTest
 
 class TestDMSReader(TestCase):
     def setUp(self):
@@ -58,3 +60,24 @@ class TestDMSReader(TestCase):
             traj[1]
 
         assert_raises(IndexError, go_to_2)
+
+
+class TestDMSTimestep(BaseTimestepTest):
+    Timestep = mda.coordinates.DMS.Timestep
+    name = "DMS"
+    has_box = True
+    unitcell = {'x':np.array([10., 0, 0]),
+                'y':np.array([0, 11., 0]),
+                'z':np.array([0, 0, 12.])}
+    uni_args = (DMS,)
+
+    def test_dimensions_set_box(self):
+        self.ts.dimensions = self.newbox
+        assert_equal(self.ts.dimensions, self.newbox)
+        assert_equal(self.ts._unitcell, self.unitcell)
+
+    def test_set_triclinic_vectors(self):
+        ref_vec = triclinic_vectors(self.newbox)
+        self.ts.triclinic_dimensions = ref_vec
+        assert_equal(self.ts.dimensions, self.newbox)
+        assert_equal(self.ts._unitcell, self.unitcell)

@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -175,7 +175,10 @@ def guess_atom_element(atomname):
     except KeyError:
         if atomname[0].isdigit():
             # catch 1HH etc
-            return atomname[1]
+            try:
+                return atomname[1]
+            except IndexError:
+                pass
         return atomname[0]
 
 
@@ -252,7 +255,7 @@ def guess_bonds(atoms, coords, **kwargs):
     except AttributeError:  # sometimes atoms is just list of atoms not AG
         atomtypes = set([a.type for a in atoms])
     # check that all types have a defined vdw
-    if not all([val in vdwradii for val in atomtypes]):
+    if not all( val in vdwradii for val in atomtypes):
         raise ValueError(("vdw radii for types: " +
                           ", ".join([t for t in atomtypes if
                                      not t in vdwradii]) +
