@@ -361,14 +361,16 @@ class Masses(AtomAttr):
         return np.sum(positions * masses[:, np.newaxis],
                       axis=0) / masses.sum()
 
-    transplants['atomgroup'].append(center_of_mass)
+    transplants['atomgroup'].append(
+        ('center_of_mass', center_of_mass))
 
     def total_mass(group):
         """Total mass of this Group"""
         masses = group.masses
         return masses.sum()
 
-    transplants['group'].append(total_mass)
+    transplants['group'].append(
+        ('total_mass', total_mass))
 
 
 #TODO: need to add cacheing
@@ -455,8 +457,16 @@ class ResidueAttr(TopologyAttr):
 
 #TODO: update docs to property doc
 class Resids(ResidueAttr):
+    """Residue ID"""
     attrname = 'resids'
     singular = 'resid'
+    transplants = defaultdict(list)
+
+    def atomget(atom):
+        return atom.residue.resid
+
+    transplants['atom'].append(
+        ('resid', property(atomget, None, None, atomget.__doc__)))
 
 
 #TODO: update docs to property doc

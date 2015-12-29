@@ -409,8 +409,7 @@ class Universe(object):
         for dest in ['atom', 'residue', 'segment', 'group',
                      'atomgroup', 'residuegroup', 'segmentgroup']:
             try:
-                for meth in attr.transplants[dest]:
-                    funcname = meth.__name__
+                for funcname, meth in attr.transplants[dest]:
                     setattr(self._classes[dest], funcname, meth)
             except AttributeError:
                 # not every Attribute will have a transplant dict
