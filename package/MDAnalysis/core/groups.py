@@ -90,7 +90,7 @@ class GroupBase(object):
         if not isinstance(item, (int, np.int_)):
             return self.__class__(self._ix[item], self._u)
         else:
-            return self._u._components[self.level](self._ix[item], self._u)
+            return self._u._classes[self.level](self._ix[item], self._u)
 
     def __repr__(self):
         return ("<{}Group with {} {}s>"
@@ -657,7 +657,7 @@ class ComponentBase(object):
         else:
             o_ix = other._ix
 
-        return self._u._groups[self.level](
+        return self._u._classes[self.level + 'group'](
                 np.concatenate((np.array([self._ix]), o_ix)), self._u)
 
     # TODO: put in mixin with GroupBase method of same name
@@ -693,13 +693,13 @@ class AtomBase(ComponentBase):
 
     @property
     def residue(self):
-        residueclass = self._u._components['residue']
+        residueclass = self._u._classes['residue']
         return residueclass(self._u._topology.resindices[self],
                             self._u)
 
     @property
     def segment(self):
-        segmentclass = self._u._components['segment']
+        segmentclass = self._u._classes['segment']
         return segmentclass(self._u._topology.segindices[self],
                             self._u)
 
@@ -796,7 +796,7 @@ class ResidueBase(ComponentBase):
 
     @property
     def atoms(self):
-        atomsclass = self._u._groups['atom']
+        atomsclass = self._u._classes['atomgroup']
 
         # we need to pass a fake residue with a numpy array as its self._ix for
         # downward translation tables to work; this is because they accept
@@ -807,7 +807,7 @@ class ResidueBase(ComponentBase):
 
     @property
     def segment(self):
-        segmentclass = self._u._components['segment']
+        segmentclass = self._u._classes['segment']
         return segmentclass(self._u._topology.segindices[self],
                             self._u)
 
@@ -835,7 +835,7 @@ class SegmentBase(ComponentBase):
 
     @property
     def atoms(self):
-        atomsclass = self._u._groups['atom']
+        atomsclass = self._u._classes['atomgroup']
 
         # we need to pass a fake segment with a numpy array as its self._ix for
         # downward translation tables to work; this is because they accept
@@ -846,7 +846,7 @@ class SegmentBase(ComponentBase):
 
     @property
     def residues(self):
-        residuesclass = self._u._groups['residue']
+        residuesclass = self._u._classes['residuegroup']
 
         # we need to pass a fake residue with a numpy array as its self._ix for
         # downward translation tables to work; this is because they accept arrays only
