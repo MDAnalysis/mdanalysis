@@ -775,13 +775,6 @@ class AtomBase(ComponentBase):
         except (AttributeError, NoDataError):
             raise NoDataError("Timestep does not contain forces")
 
-    @property
-    def bonded_atoms(self):
-        # Requires bonds to work,
-        # Maybe but this into the Bonds attribute as extra method
-        idx = [b.partner(self).index for b in self.bonds]
-        return self._u.atoms[idx]
-
 
 class ResidueBase(ComponentBase):
     """Residue base class.

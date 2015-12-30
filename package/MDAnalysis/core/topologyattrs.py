@@ -519,6 +519,7 @@ class Bonds(AtomAttr):
     # Singular is the same because one Atom might have
     # many bonds, so still asks for "bonds" in the plural
     singular = 'bonds'
+    transplants = defaultdict(list)
 
     def __init__(self, values):
         """
@@ -561,6 +562,15 @@ class Bonds(AtomAttr):
             unique_bonds = self._bondDict[ag._ix]
         bond_idx = np.array(sorted(unique_bonds))
         return TopologyGroup(bond_idx, ag._u, self.singular[:-1])
+
+    def bonded_atoms(self):
+        """An AtomGroup of all atoms bonded to this Atom"""
+        idx = [b.partner(self).index for b in self.bonds]
+        return self._u.atoms[idx]
+
+    transplants['atom'].append(
+        ('bonded_atoms', property(bonded_atoms, None, None,
+                                  bonded_atoms.__doc__)))
 
 
 #TODO: update docs to property doc
