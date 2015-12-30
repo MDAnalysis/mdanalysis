@@ -32,7 +32,7 @@ import MDAnalysis as mda
 import MDAnalysis.core.Selection
 from MDAnalysis.lib.distances import distance_array
 from MDAnalysis.core.topologyobjects import TopologyGroup
-from MDAnalysis.core.Selection import Parser
+from MDAnalysis.core.selection import Parser
 
 from MDAnalysis.tests.datafiles import (
     PSF, DCD,
@@ -291,13 +291,8 @@ class TestSelectionsAMBER(TestCase):
         sel = self.universe.select_atoms('backbone')
         assert_equal(sel.n_atoms, 7)
 
-    def test_resid_single(self):
-        sel = self.universe.select_atoms('resid 3')
-        assert_equal(sel.n_atoms, 6)
-        assert_equal(sel.residues.resnames, ['NME'])
-
     def test_type(self):
-        sel = self.universe.select_atoms('type 1')
+        sel = self.universe.select_atoms('type HC')
         assert_equal(len(sel), 6)
         assert_equal(sel.names, ['HH31', 'HH32', 'HH33', 'HB1', 'HB2', 'HB3'])
 
@@ -341,17 +336,6 @@ class TestSelectionsGRO(TestCase):
     def test_backbone(self):
         sel = self.universe.select_atoms('backbone')
         assert_equal(sel.n_atoms, 855)
-
-    @dec.slow
-    def test_type(self):
-        sel = self.universe.select_atoms('type H')
-        assert_equal(len(sel), 23853)
-        sel = self.universe.select_atoms('type S')
-        assert_equal(len(sel), 7)
-        assert_equal(
-                sel.residues.resnames,
-                self.universe.select_atoms(
-                    "resname CYS or resname MET").residues.resnames)
 
     @dec.slow
     def test_resid_single(self):
@@ -677,7 +661,7 @@ class TestPropSelection(object):
                      set(ag[getattr(ag, self.plurals[prop]) != 500.0].indices))
 
     def test_props(self):
-        u = mda.Universe(GRO)
+        u = mda.Universe(PSF, DCD)
 
         for prop in ['mass', 'charge']:
             for ag in [u.atoms, u.atoms[:100]]:
