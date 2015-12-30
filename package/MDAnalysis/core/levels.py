@@ -21,10 +21,15 @@ Hierarchy levels --- :mod:`MDAnalysis.core.levels`
 Levels are used to define the relationships between different containers in
 MDAnalysis
 
-Singular      Plural
-A         ->  AG      ^ Children
-R         ->  RG      !
-S         ->  SG      v Parents
+Levels can be navigated between using the .child and .parent attributes
+Classes for containers at a given level are accessed using the .singular
+and .plural attributes
+
+                  Level:
+        .singular =====================  .plural
+Atom    <-        Atomlevel    ^ .child  ->  AtomGroup
+Residue <-        Residuelevel !         ->  ResidueGroup
+Segment <-        Segmentlevel v .parent ->  SegmentGroup
 """
 import functools
 
