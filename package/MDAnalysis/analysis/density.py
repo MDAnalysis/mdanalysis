@@ -425,7 +425,7 @@ def density_from_trajectory(*args, **kwargs):
 
 def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
                           metadata=None, padding=2.0, cutoff=0, soluteselection=None,
-                          use_kdtree=True, **kwargs):
+                          use_kdtree=True,sel_update=None, **kwargs):
     """Create a density grid from a MDAnalysis.Universe object.
 
       density_from_Universe(universe, delta=1.0, atomselection='name OH2', ...) --> density
@@ -450,6 +450,7 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
       cutoff
             With *cutoff*, select '<atomsel> NOT WITHIN <cutoff> OF <soluteselection>'
             (Special routines that are faster than the standard AROUND selection) [0]
+      sel_update : When set to True, atom selection is updated for each frame
       parameters
             dict with some special parameters for :class:`Density` (see doc)
       kwargs
@@ -511,7 +512,13 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
     for ts in u.trajectory:
         print("Histograming %6d atoms in frame %5d/%d  [%5.1f%%]\r" % \
               (len(coord), ts.frame, u.trajectory.n_frames, 100.0 * ts.frame / u.trajectory.n_frames),)
-        coord = current_coordinates()
+        if sel_update=True:
+           group=u.select_atoms(atomselection)
+           coord=group.coordinates()
+           
+        else:
+           coord = current_coordinates()
+           
         if len(coord) == 0:
             continue
         h[:], edges[:] = np.histogramdd(coord, bins=bins, range=arange, normed=False)
