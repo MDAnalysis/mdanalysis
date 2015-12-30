@@ -174,7 +174,7 @@ class Universe(object):
 
         # generate Universe version of each class
         # AG, RG, SG, A, R, S
-        self._make_groupclasses()
+        self._classes = groups.make_classes()
 
         # Put Group level stuff from topology into class
         for attr in self._topology.attrs:
@@ -201,30 +201,6 @@ class Universe(object):
 
         # Load coordinates
         self.load_new(coordinatefile, **kwargs)
-
-    def _make_groupclasses(self):
-        """Generates Group classes specific to this Universe based on its
-        Topology.
-
-        """
-        self._classes = {}
-
-        # generate Group class
-        self._Group = groups.make_group()
-        self._classes['group'] = self._Group
-
-        # generate AtomGroup, ResidueGroup, and SegmentGroup classes for this
-        # universe
-        self._classes['atomgroup'] = groups.make_levelgroup(self._Group,
-                                                            level='atom')
-        self._classes['residuegroup'] = groups.make_levelgroup(self._Group,
-                                                               level='residue')
-        self._classes['segmentgroup'] = groups.make_levelgroup(self._Group,
-                                                               level='segment')
-
-        # for each level, generate Component class (Atom, Residue, Segment),
-        for level in ['atom', 'residue', 'segment']:
-            self._classes[level] = groups.make_levelcomponent(level=level)
 
     @property
     def universe(self):
@@ -399,7 +375,7 @@ class Universe(object):
          - Component properties
          - Transplant methods
         """
-        self._Group._add_prop(attr)
+        self._classes['group']._add_prop(attr)
 
         try:
             self._classes[attr.level]._add_prop(attr)

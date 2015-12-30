@@ -7,49 +7,57 @@ import functools
 
 from . import selection
 from . import flags
+from . import levels
 from ..exceptions import NoDataError
 
 
-def make_group():
-    """Generate the Group class with attributes according to the topology.
+def make_classes():
+    """Make a fresh copy of all Classes
 
+    Returns
+    -------
+    A dictionary with a copy of all MDA container classes
     """
-    return type('Group', (GroupBase,), {})
+    def copy_class(newname, *parents):
+        return type(newname, tuple(parents), {})
 
+    classdict = {}
+    GB = classdict['group'] = copy_class(
+        'Group', GroupBase)
+    AG = classdict['atomgroup'] = copy_class(
+        'AtomGroup', GB, AtomGroupBase)
+    RG = classdict['residuegroup'] = copy_class(
+        'ResidueGroup', GB, ResidueGroupBase)
+    SG = classdict['segmentgroup'] = copy_class(
+        'SegmentGroup', GB, SegmentGroupBase)
+    A = classdict['atom'] = copy_class(
+        'Atom', AtomBase)
+    R = classdict['residue'] = copy_class(
+        'Residue', ResidueBase)
+    S = classdict['segment'] = copy_class(
+        'Segment', SegmentBase)
 
-def make_levelgroup(Groupclass, level):
-    """Generate the *Group class at `level` with attributes according to the
-    topology.
+    # Define relationships between these classes
+    # with Level objects
+    Atomlevel = levels.Level('atom', A, AG)
+    Residuelevel = levels.Level('residue', R, RG)
+    Segmentlevel = levels.Level('segment', S, SG)
 
-    """
-    if level == 'atom':
-        levelgroup = 'AtomGroup'
-        baseclass = AtomGroupBase
-    elif level == 'residue':
-        levelgroup = 'ResidueGroup'
-        baseclass = ResidueGroupBase
-    elif level == 'segment':
-        levelgroup = 'SegmentGroup'
-        baseclass = SegmentGroupBase 
+    Atomlevel.parent = Residuelevel
+    Atomlevel.child = None
+    Residuelevel.parent = Segmentlevel
+    Residuelevel.child = Atomlevel
+    Segmentlevel.parent = None
+    Segmentlevel.child = Residuelevel
 
-    return type(levelgroup, (Groupclass, baseclass), {})
+    A.level = Atomlevel
+    AG.level = Atomlevel
+    R.level = Residuelevel
+    RG.level = Residuelevel
+    S.level = Segmentlevel
+    SG.level = Segmentlevel
 
-
-def make_levelcomponent(level):
-    """Generate a copy of the Component class specified by `level`.
-
-    """
-    if level == 'atom':
-        levelgroup = 'Atom'
-        baseclass = AtomBase
-    elif level == 'residue':
-        levelgroup = 'Residue'
-        baseclass = ResidueBase
-    elif level == 'segment':
-        levelgroup = 'Segment'
-        baseclass = SegmentBase 
-
-    return type(levelgroup, (baseclass,), {})
+    return classdict
 
 
 class GroupBase(object):
@@ -90,11 +98,12 @@ class GroupBase(object):
         if not isinstance(item, (int, np.int_)):
             return self.__class__(self._ix[item], self._u)
         else:
-            return self._u._classes[self.level](self._ix[item], self._u)
+            return self.level.singular(self._ix[item], self._u)
 
     def __repr__(self):
+        name = self.level.name
         return ("<{}Group with {} {}s>"
-                "".format(self.level.capitalize(), len(self), self.level))
+                "".format(name.capitalize(), len(self), name))
 
     def __add__(self, other):
         """Concatenate the Group with another Group or Component of the same
@@ -221,9 +230,11 @@ class AtomGroupBase(object):
             raise selection.SelectionError(
                 "No atoms with name '{0}'".format(name))
         elif len(atomlist) == 1:
-            return atomlist[0]  # XXX: keep this, makes more sense for names
+            # XXX: keep this, makes more sense for names
+            return atomlist[0]
         else:
-            return AtomGroup(atomlist)  # XXX: but inconsistent (see residues and Issue 47)
+            # XXX: but inconsistent (see residues and Issue 47)
+            return atomlist
 
     @property
     def dimensions(self):
@@ -615,7 +626,7 @@ class ComponentBase(object):
 
     def __repr__(self):
         return ("<{} {}>"
-                "".format(self.level.capitalize(), self._ix))
+                "".format(self.level.name.capitalize(), self._ix))
 
     def __lt__(self, other):
         if self.level != other.level:
@@ -657,7 +668,7 @@ class ComponentBase(object):
         else:
             o_ix = other._ix
 
-        return self._u._classes[self.level + 'group'](
+        return self.level.plural(
                 np.concatenate((np.array([self._ix]), o_ix)), self._u)
 
     # TODO: put in mixin with GroupBase method of same name
@@ -693,13 +704,13 @@ class AtomBase(ComponentBase):
 
     @property
     def residue(self):
-        residueclass = self._u._classes['residue']
+        residueclass = self.level.parent.singular
         return residueclass(self._u._topology.resindices[self],
                             self._u)
 
     @property
     def segment(self):
-        segmentclass = self._u._classes['segment']
+        segmentclass = self.level.parent.parent.singular
         return segmentclass(self._u._topology.segindices[self],
                             self._u)
 
@@ -789,7 +800,7 @@ class ResidueBase(ComponentBase):
 
     @property
     def atoms(self):
-        atomsclass = self._u._classes['atomgroup']
+        atomsclass = self.level.child.plural
 
         # we need to pass a fake residue with a numpy array as its self._ix for
         # downward translation tables to work; this is because they accept
@@ -800,7 +811,7 @@ class ResidueBase(ComponentBase):
 
     @property
     def segment(self):
-        segmentclass = self._u._classes['segment']
+        segmentclass = self.level.parent.singular
         return segmentclass(self._u._topology.segindices[self],
                             self._u)
 
@@ -828,7 +839,7 @@ class SegmentBase(ComponentBase):
 
     @property
     def atoms(self):
-        atomsclass = self._u._classes['atomgroup']
+        atomsclass = self.level.child.child.plural
 
         # we need to pass a fake segment with a numpy array as its self._ix for
         # downward translation tables to work; this is because they accept
@@ -839,7 +850,7 @@ class SegmentBase(ComponentBase):
 
     @property
     def residues(self):
-        residuesclass = self._u._classes['residuegroup']
+        residuesclass = self.level.child.plural
 
         # we need to pass a fake residue with a numpy array as its self._ix for
         # downward translation tables to work; this is because they accept arrays only
