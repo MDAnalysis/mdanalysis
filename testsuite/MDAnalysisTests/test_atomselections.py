@@ -118,8 +118,10 @@ class TestSelectionsCHARMM(TestCase):
 
     def test_resname(self):
         sel = self.universe.select_atoms('resname LEU')
-        assert_equal(sel.n_atoms, 304, "Failed to find all 'resname LEU' atoms.")
-        assert_equal(sel.n_residues, 16, "Failed to find all 'resname LEU' residues.")
+        assert_equal(sel.n_atoms, 304,
+                     "Failed to find all 'resname LEU' atoms.")
+        assert_equal(sel.n_residues, 16,
+                     "Failed to find all 'resname LEU' residues.")
         assert_array_equal(sorted(sel.indices),
                            sorted(self.universe.s4AKE.LEU.atoms.indices),
                            "selected 'resname LEU' atoms are not the same as auto-generated s4AKE.LEU")
@@ -132,8 +134,10 @@ class TestSelectionsCHARMM(TestCase):
         sel = self.universe.select_atoms('atom 4AKE 100 CA')
         assert_equal(len(sel), 1)
         assert_equal(sel.resnames, ['GLY'])
-        assert_array_almost_equal(sel.positions,
-                                  np.array([[20.38685226, -3.44224262, -5.92158318]], dtype=np.float32))
+        assert_array_almost_equal(
+            sel.positions,
+            np.array([[20.38685226, -3.44224262, -5.92158318]],
+                     dtype=np.float32))
 
     def test_type(self):
         sel = self.universe.select_atoms("type 1")
