@@ -24,6 +24,7 @@ from collections import defaultdict
 import itertools
 import numpy as np
 
+from . import flags
 from ..lib.util import cached
 from ..exceptions import NoDataError
 from .topologyobjects import TopologyGroup
@@ -310,6 +311,7 @@ class Tempfactors(AtomAttr):
 class Masses(AtomAttr):
     attrname = 'masses'
     singular = 'mass'
+    transplants = defaultdict(list)
 
     def get_residues(self, rg):
         masses = np.empty(len(rg))
@@ -330,6 +332,45 @@ class Masses(AtomAttr):
             masses[i] = self.values[row].sum()
 
         return masses
+
+    def center_of_mass(ag, **kwargs):
+        """Center of mass of the AtomGroup
+
+        Keywords
+        --------
+        *pbc*
+          ``True``: Move all atoms within the primary unit
+                    cell before calculation [``False``]
+
+        Note
+        ----
+        The :class:`MDAnalysis.core.flags` flag *use_pbc* when
+        set to ``True`` allows the *pbc* flag to be used by default.
+
+        .. versionchanged:: 0.8 Added *pbc* keyword
+        """
+        masses = ag.masses
+
+        pbc = kwargs.pop('pbc', flags['use_pbc'])
+
+        if pbc:
+            positions = ag.pack_into_box(inplace=False)
+        else:
+            positions = ag.positions
+
+        return np.sum(positions * masses[:, np.newaxis],
+                      axis=0) / masses.sum()
+
+    transplants['atomgroup'].append(
+        ('center_of_mass', center_of_mass))
+
+    def total_mass(group):
+        """Total mass of this Group"""
+        masses = group.masses
+        return masses.sum()
+
+    transplants['group'].append(
+        ('total_mass', total_mass))
 
 
 #TODO: need to add cacheing
@@ -416,8 +457,16 @@ class ResidueAttr(TopologyAttr):
 
 #TODO: update docs to property doc
 class Resids(ResidueAttr):
+    """Residue ID"""
     attrname = 'resids'
     singular = 'resid'
+    transplants = defaultdict(list)
+
+    def atomget(atom):
+        return atom.residue.resid
+
+    transplants['atom'].append(
+        ('resid', property(atomget, None, None, atomget.__doc__)))
 
 
 #TODO: update docs to property doc
@@ -470,6 +519,7 @@ class Bonds(AtomAttr):
     # Singular is the same because one Atom might have
     # many bonds, so still asks for "bonds" in the plural
     singular = 'bonds'
+    transplants = defaultdict(list)
 
     def __init__(self, values):
         """
@@ -512,6 +562,15 @@ class Bonds(AtomAttr):
             unique_bonds = self._bondDict[ag._ix]
         bond_idx = np.array(sorted(unique_bonds))
         return TopologyGroup(bond_idx, ag._u, self.singular[:-1])
+
+    def bonded_atoms(self):
+        """An AtomGroup of all atoms bonded to this Atom"""
+        idx = [b.partner(self).index for b in self.bonds]
+        return self._u.atoms[idx]
+
+    transplants['atom'].append(
+        ('bonded_atoms', property(bonded_atoms, None, None,
+                                  bonded_atoms.__doc__)))
 
 
 #TODO: update docs to property doc

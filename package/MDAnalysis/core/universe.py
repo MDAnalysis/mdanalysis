@@ -172,20 +172,25 @@ class Universe(object):
                              " with parser {1} \n"
                              "Error: {2}".format(self.filename, parser, err))
 
-        # generate Group classes
-        self._make_groupclasses()
-        self._make_componentclasses()
+        # generate Universe version of each class
+        # AG, RG, SG, A, R, S
+        self._classes = groups.make_classes()
+
+        # Put Group level stuff from topology into class
+        for attr in self._topology.attrs:
+            self._process_attr(attr)
 
         # Generate atoms, residues and segments
-        self.atoms = self._groups['atom'](
+        self.atoms = self._classes['atomgroup'](
                 np.arange(self._topology.n_atoms), self)
 
-        self.residues = self._groups['residue'](
+        self.residues = self._classes['residuegroup'](
                 np.arange( self._topology.n_residues), self)
 
-        self.segments = self._groups['segment'](np.arange(
+        self.segments = self._classes['segmentgroup'](np.arange(
             self._topology.n_segments), self)
 
+        # Update Universe namespace with segids
         for seg in self.segments:
             if hasattr(seg, 'segid'):
                 if seg.segid[0].isdigit():
@@ -197,47 +202,13 @@ class Universe(object):
         # Load coordinates
         self.load_new(coordinatefile, **kwargs)
 
-    def _make_groupclasses(self):
-        """Generates Group classes specific to this Universe based on its
-        Topology.
-
-        """
-        self._groups = {}
-
-        # generate Group class based on Topology
-        self._Group = groups.make_group()
-        for attr in self._topology.attrs:
-            self._Group._add_prop(attr)
-
-        # generate AtomGroup, ResidueGroup, and SegmentGroup classes for this
-        # universe
-        self._groups['atom'] = groups.make_levelgroup(self._Group,
-                                                      level='atom')
-        self._groups['residue'] = groups.make_levelgroup(self._Group,
-                                                         level='residue')
-        self._groups['segment'] = groups.make_levelgroup(self._Group,
-                                                         level='segment')
-
-    def _make_componentclasses(self):
-        """Generates component classes specific to this Universe based on its
-        Topology.
-
-        """
-        self._components = {}
-
-        # for each level, generate Component class (Atom, Residue, Segment),
-        # and attach attributes appropriate to that level from Topology
-        for level in ['atom', 'residue', 'segment']:
-            self._components[level] = groups.make_levelcomponent(level=level)
-            for attr in self._topology.attrs:
-                if attr.level == level:
-                    self._components[level]._add_prop(attr)
-
     @property
     def universe(self):
         # for Writer.write(universe), see Issue 49
-        # Encapsulation in an accessor prevents the Universe from having to keep a reference to itself,
-        #  which might be undesirable if it has a __del__ method. It is also cleaner than a weakref.
+        # Encapsulation in an accessor prevents the Universe from
+        # having to keep a reference to itself,
+        #  which might be undesirable if it has a __del__ method.
+        # It is also cleaner than a weakref.
         return self
 
     def load_new(self, filename, **kwargs):
@@ -394,16 +365,31 @@ class Universe(object):
 
     def add_TopologyAttr(self, topologyattr):
         self._topology.add_TopologyAttr(topologyattr)
-        # Add the Attr to the Group (AtomGroup, RG, SG)
-        self._Group._add_prop(topologyattr)
-        # Add the Attr to the component (Atom, Residue, Segment)
+        self._process_attr(topologyattr)
+
+    def _process_attr(self, attr):
+        """Squeeze a topologyattr for its information
+
+        Grabs:
+         - Group properties (attribute access)
+         - Component properties
+         - Transplant methods
+        """
+        self._classes['group']._add_prop(attr)
+
         try:
-            level = topologyattr.level
-            self._components[level]._add_prop(topologyattr)
-        except (AttributeError, KeyError):
-            # .level attribute might not exist on attribute
-            # the .level might not correspond to a component
+            self._classes[attr.level]._add_prop(attr)
+        except (KeyError, AttributeError):
             pass
+
+        for dest in ['atom', 'residue', 'segment', 'group',
+                     'atomgroup', 'residuegroup', 'segmentgroup']:
+            try:
+                for funcname, meth in attr.transplants[dest]:
+                    setattr(self._classes[dest], funcname, meth)
+            except AttributeError:
+                # not every Attribute will have a transplant dict
+                pass
 
 
 # TODO: what is the point of this function???
