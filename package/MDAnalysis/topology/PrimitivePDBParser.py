@@ -151,7 +151,11 @@ class PrimitivePDBParser(TopologyReader):
                 altlocs.append(line[16:17].strip())
                 resnames.append(line[17:21].strip())
                 # empty chainID is a single space ' '!
-                chainids.append(line[21:22].strip())
+                chainid = line[21:22].strip()
+                if not chainid:
+                    chainid = None
+                chainids.append(chainid)
+
                 if self.format == "XPDB":  # fugly but keeps code DRY
                     # extended non-standard format used by VMD
                     resids.append(int(line[22:27]))
@@ -218,6 +222,7 @@ class PrimitivePDBParser(TopologyReader):
         resnames = np.array(resnames, dtype=object)
         resids = np.array(resids, dtype=np.int32)
         segids = np.array(segids, dtype=object)
+
         if resnums:
             resnums = np.array(resnums, dtype=np.int32)
             residx, resids, (resnames, resnums, segids) = squash_by(
@@ -230,7 +235,7 @@ class PrimitivePDBParser(TopologyReader):
         attrs.append(Resids(resids))
         attrs.append(Resnames(resnames))
 
-        if any(segids):
+        if any(segids) and not any(val == None for val in segids):
             segidx, segids = squash_by(segids)[:2]
             n_segments = len(segids)
             attrs.append(Segids(segids))
