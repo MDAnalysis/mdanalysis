@@ -184,7 +184,7 @@ class SphericalLayerSelection(DistanceSelection):
         """Selection using KDTree but periodic = True not supported.
         """
         sel = self.sel.apply(group)
-        ref = sel_atoms.center_of_geometry()
+        ref = sel.center_of_geometry()
         sys = group[~np.in1d(group.indices, sel.indices)]
 
         kdtree = KDTree(dim=3, bucket_size=10)
