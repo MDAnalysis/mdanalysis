@@ -344,12 +344,6 @@ class TestSelectionsGRO(TestCase):
         assert_equal(sel.residues.resnames, ['GLY'])
 
     @dec.slow
-    def test_atom(self):
-        sel = self.universe.select_atoms('atom SYSTEM 100 CA')
-        assert_equal(len(sel), 1)
-        assert_equal(sel.resnames, ['GLY'])
-
-    @dec.slow
     def test_same_coordinate(self):
         """Test the 'same ... as' construct (Issue 217)"""
         # This test comes here because it's hard to get same _x with full precision formats.
