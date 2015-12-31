@@ -260,6 +260,7 @@ class CylindricalSelection(object):
         coords = group.positions
 
         if self.periodic and not np.any(group.dimensions[:3]==0):
+            box = group.dimensions
             cyl_z_hheight = (self.zmax-self.zmin)/2
 
             if 2*self.exRadius > box[0]:
@@ -283,10 +284,10 @@ class CylindricalSelection(object):
 
             #how off-center in z is our CoG relative to the cylinder's center
             cyl_center = sel_CoG + [0,0,(self.zmax+self.zmin)/2]
-            coords += box/2 - cyl_center
-            coords = distances.apply_PBC(coords, box=group.dimensions)
+            coords += box[:3] / 2 - cyl_center
+            coords = distances.apply_PBC(coords, box=box)
 
-            sel_CoG = box/2
+            sel_CoG = box[:3] / 2
             zmin = -cyl_z_hheight
             zmax = cyl_z_hheight
         else:
@@ -578,7 +579,7 @@ class BackboneSelection(ProteinSelection):
         return group[mask]
 
 
-class NucleicBackboneSelection(NucleicSelection):
+class NucleicBackboneSelection(ProteinSelection):
     """Contains all atoms with name "P", "C5'", C3'", "O3'", "O5'".
 
     These atoms are only recognized if they are in a residue matched
@@ -695,7 +696,7 @@ class SameSelection(object):
             return group[mask]
 
         try:
-            pos_idx = {0:'x', 1:'y', 2:'z'}[prop]
+            pos_idx = {0:'x', 1:'y', 2:'z'}[self.prop]
         except KeyError:
             pass
         else:
