@@ -1195,30 +1195,25 @@ class ProtoReader(IObase):
         if step == 0:
             raise ValueError("Step size is zero")
 
-        n = len(self)
+        nframes = len(self)
         step = step or 1
 
-        if start:
-            if start < 0:
-                start += n
-        else:
-            start = 0 if step > 0 else n - 1
+        if start is None:
+            start = 0 if step > 0 else nframes - 1
+        elif start < 0:
+            start += nframes
 
         if stop:
             if stop < 0:
-                stop += n
-            elif stop > n:
-                stop = n
+                stop += nframes
+            elif stop > nframes:
+                stop = nframes
         else:
-            stop = n if step > 0 else -1
+            stop = nframes if step > 0 else -1
 
         if step > 0 and stop <= start:
             raise IndexError("Stop frame is lower than start frame")
-        if (
-            start < 0 or
-            start >= n or
-            stop > n
-        ):
+        if not (0 <= start < nframes) or stop > nframes:
             raise IndexError(
                 "Frame start/stop outside of the range of the trajectory.")
 
