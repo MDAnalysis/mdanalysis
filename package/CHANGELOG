@@ -43,6 +43,7 @@ Enhancement
     and triclinic geometry. (Issue #139)
   * Added analysis.polymer, currently with PersistenceLength tool (Issue #460)
   * Added analysis.rdf, with InterRDF tool. (Issue #460)
+  * Made Reader.check_slice_indices a public method (Issue #604)
 
 Changes
 
@@ -71,6 +72,8 @@ Fixes
   * Fixed GROParser getting tripped up by some file (Issue #548)
   * Fixed writing dx files from analysis.density.density_from_Universe()
     (Issue #544 and #410)
+  * Fixed base.Reader._check_slice_indices not liking numpy ints
+    (Issue #604)
 
 10/08/15
 

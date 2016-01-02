@@ -512,7 +512,7 @@ class DCDReader(base.Reader):
                where the shape is (frame, number of atoms,
                coordinates)
         """
-        start, stop, skip = self._check_slice_indices(start, stop, skip)
+        start, stop, skip = self.check_slice_indices(start, stop, skip)
         if len(asel) == 0:
             raise NoDataError("Timeseries requires at least one atom to analyze")
         if len(format) != 3 and format not in ['afc', 'acf', 'caf', 'cfa', 'fac', 'fca']:
@@ -532,7 +532,7 @@ class DCDReader(base.Reader):
             *start, stop, skip*
                subset of trajectory to use, with start and stop being inclusive
         """
-        start, stop, skip = self._check_slice_indices(start, stop, skip)
+        start, stop, skip = self.check_slice_indices(start, stop, skip)
         atomlist = timeseries._getAtomList()
         format = timeseries._getFormat()
         lowerb, upperb = timeseries._getBounds()
