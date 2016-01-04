@@ -770,9 +770,11 @@ class IObase(object):
     def convert_pos_from_native(self, x, inplace=True):
         """Conversion of coordinate array x from native units to base units.
 
-        Keywords
-        --------
-        inplace : bool
+        Parameters
+        ----------
+        x : array_like
+          Positions to transform
+        inplace : bool, optional
           Whether to modify the array inplace, overwriting previous data
 
         Note
@@ -798,9 +800,11 @@ class IObase(object):
     def convert_velocities_from_native(self, v, inplace=True):
         """Conversion of velocities array *v* from native to base units
 
-        Keywords
-        --------
-        inplace : bool
+        Parameters
+        ----------
+        v : array_like
+          Velocities to transform
+        inplace : bool, optional
           Whether to modify the array inplace, overwriting previous data
 
         Note
@@ -821,9 +825,11 @@ class IObase(object):
     def convert_forces_from_native(self, force, inplace=True):
         """Conversion of forces array *force* from native to base units
 
-        Keywords
-        --------
-        inplace : bool
+        Parameters
+        ----------
+        force : array_like
+          Forces to transform
+        inplace : bool, optional
           Whether to modify the array inplace, overwriting previous data
 
         Note
@@ -844,9 +850,11 @@ class IObase(object):
     def convert_time_from_native(self, t, inplace=True):
         """Convert time *t* from native units to base units.
 
-        Keywords
-        --------
-        inplace : bool
+        Parameters
+        ----------
+        t : array_like
+          Time values to transform
+        inplace : bool, optional
           Whether to modify the array inplace, overwriting previous data
 
         Note
@@ -875,9 +883,11 @@ class IObase(object):
     def convert_pos_to_native(self, x, inplace=True):
         """Conversion of coordinate array x from base units to native units.
 
-        Keywords
-        --------
-        inplace : bool
+        Parameters
+        ----------
+        x : array_like
+          Positions to transform
+        inplace : bool, optional
           Whether to modify the array inplace, overwriting previous data
 
         Note
@@ -903,9 +913,11 @@ class IObase(object):
     def convert_velocities_to_native(self, v, inplace=True):
         """Conversion of coordinate array *v* from base to native units
 
-        Keywords
-        --------
-        inplace : bool
+        Parameters
+        ----------
+        v : array_like
+          Velocities to transform
+        inplace : bool, optional
           Whether to modify the array inplace, overwriting previous data
 
         Note
@@ -926,9 +938,11 @@ class IObase(object):
     def convert_forces_to_native(self, force, inplace=True):
         """Conversion of force array *force* from base to native units.
 
-        Keywords
-        --------
-        inplace : bool
+        Parameters
+        ----------
+        force : array_like
+          Forces to transform
+        inplace : bool, optional
           Whether to modify the array inplace, overwriting previous data
 
         Note
@@ -949,9 +963,11 @@ class IObase(object):
     def convert_time_to_native(self, t, inplace=True):
         """Convert time *t* from base units to native units.
 
-        Keywords
-        --------
-        inplace : bool
+        Parameters
+        ----------
+        t : array_like
+          Time values to transform
+        inplace : bool, optional
           Whether to modify the array inplace, overwriting previous data
 
         Note
@@ -1174,14 +1190,14 @@ class ProtoReader(IObase):
 
         Parameters
         ----------
-        start, stop, step
+        start, stop, step : int or None
           Values representing the slice indices.
           Can use `None` to use defaults of (0, -1, and 1)
           respectively.
 
         Returns
         -------
-        start, stop step
+        start, stop, step : int
           Integers representing the slice
         """
         for var, varname in (
