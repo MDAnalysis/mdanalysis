@@ -152,23 +152,20 @@ class Timestep(object):
     def __init__(self, n_atoms, **kwargs):
         """Create a Timestep, representing a frame of a trajectory
 
-        Arguments
-        ---------
-        *n_atoms*
+        Parameters
+        ----------
+        n_atoms : int
           The total number of atoms this Timestep describes
-
-        Keyword
-        -------
-        *positions*
+        positions : bool, optional
           Whether this Timestep has position information [``True``]
-        *velocities*
+        velocities : bool, optional
           Whether this Timestep has velocity information [``False``]
-        *forces*
+        forces : bool, optional
           Whether this Timestep has force information [``False``]
-        *dt*
+        dt : float, optional
           The time difference between frames (ps).  If :attr:`time`
           is set, then `dt` will be ignored.
-        *time_offset*
+        time_offset : float, optional
           The starting time from which to calculate time (ps)
 
         .. versionchanged:: 0.11.0
@@ -665,7 +662,9 @@ class Timestep(object):
 
         Examples
         --------
-        For example::
+        The unitcell for a given system can be queried as either three
+        vectors lengths followed by their respective angle, or as three
+        triclinic vectors.
 
           >>> ts.dimensions
           array([ 13.,  14.,  15.,  90.,  90.,  90.], dtype=float32)
@@ -1173,8 +1172,8 @@ class ProtoReader(IObase):
     def check_slice_indices(self, start, stop, step):
         """Check frame indices are valid and clip to fit trajectory
 
-        Arguments
-        ---------
+        Parameters
+        ----------
         start, stop, step
           Values representing the slice indices.
           Can use `None` to use defaults of (0, -1, and 1)
