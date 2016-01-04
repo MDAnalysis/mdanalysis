@@ -65,7 +65,7 @@ class AnalysisBase(object):
     def _setup_frames(self, trajectory, start=None,
                       stop=None, step=None):
         self._trajectory = trajectory
-        start, stop, step = trajectory._check_slice_indices(
+        start, stop, step = trajectory.check_slice_indices(
             start, stop, step)
         self.start = start
         self.stop = stop
