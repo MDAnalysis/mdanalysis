@@ -53,6 +53,7 @@ Changes
 
 Fixes
 
+  * GROWriter now truncates atom numbers over 99999 (Issue #550)
   * AMBER netcdf writer now correctly uses float32 precision (Issue #518)
   * Fixed a numpy incompatibility in `analysis.leaflet.LeafletFinder`.
     (Issue #533)

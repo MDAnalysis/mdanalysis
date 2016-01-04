@@ -1,6 +1,7 @@
 import MDAnalysis as mda
 import numpy as np
 import os
+import bz2
 
 from nose.plugins.attrib import attr
 from numpy.testing import (assert_equal, assert_almost_equal, dec,
@@ -8,7 +9,7 @@ from numpy.testing import (assert_equal, assert_almost_equal, dec,
 from unittest import TestCase
 import tempdir
 
-from MDAnalysisTests.datafiles import (GRO, GRO_velocity)
+from MDAnalysisTests.datafiles import (GRO, GRO_velocity, GRO_large)
 from MDAnalysisTests.coordinates.reference import RefAdK
 from MDAnalysisTests.coordinates.base import BaseTimestepTest
 
@@ -234,6 +235,31 @@ class TestGROWriter(TestCase, tempdir.TempDir):
                       convert_units=False)
         del u
 
+
+class TestGROWriterLarge(TestCase, tempdir.TempDir):
+    def setUp(self):
+        self.tmpdir = tempdir.TempDir()
+        self.large_universe = mda.Universe(GRO_large)
+
+    def tearDown(self):
+        del self.tmpdir
+        del self.large_universe
+
+    @dec.slow
+    @attr('issue')
+    def test_writer_large(self):
+        """Test that atom numbers are truncated for large
+        GRO files (Issue 550)."""
+        outfile = self.tmpdir.name + '/outfile1.gro'
+        self.large_universe.atoms.write(outfile)
+        with open(outfile, 'r') as mda_output:
+            with bz2.BZ2File(GRO_large, 'r') as expected_output:
+                produced_lines = mda_output.readlines()[1:]
+                expected_lines = expected_output.readlines()[1:]
+                assert_equal(produced_lines,
+                             expected_lines,
+                             err_msg="Writing GRO file with > 100 000 "
+                                 "coords does not truncate properly.")
 
 class TestGROWriterVels(object):
     def setUp(self):
