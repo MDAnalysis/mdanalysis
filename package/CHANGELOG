@@ -54,6 +54,7 @@ Changes
 
 Fixes
 
+  * AtomGroup timesteps no longer cached (Issue #606)
   * GROWriter now truncates atom numbers over 99999 (Issue #550)
   * AMBER netcdf writer now correctly uses float32 precision (Issue #518)
   * Fixed a numpy incompatibility in `analysis.leaflet.LeafletFinder`.

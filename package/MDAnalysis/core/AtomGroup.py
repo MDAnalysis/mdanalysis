@@ -866,9 +866,6 @@ class AtomGroup(object):
             # empty AtomGroup
             self.__atoms = []
 
-        # managed timestep object
-        self._ts = None
-
         # caches:
         # - built on the fly when they are needed
         # - delete entry to invalidate
@@ -3019,26 +3016,20 @@ class AtomGroup(object):
 
     @property
     def ts(self):
-        """Temporary Timestep that contains the selection coordinates.
+        """Returns a Timestep that contains only the group's coordinates.
 
+        Returns
+        -------
         A :class:`~MDAnalysis.coordinates.base.Timestep` instance,
         which can be passed to a trajectory writer.
 
-        If :attr:`~AtomGroup.ts` is modified then these modifications
-        will be present until the frame number changes (which
-        typically happens when the underlying trajectory frame
-        changes).
-
-        It is not possible to assign a new
-        :class:`~MDAnalysis.coordinates.base.Timestep` to the
-        :attr:`AtomGroup.ts` attribute; change attributes of the object.
+        If the returned timestep is modified the modifications
+        will not be reflected in the base timestep. Likewise,
+        when the underlying timestep changes (either by loading a
+        new frame or by setting new positions by hand) the returned
+        timestep will not reflect those changes.
         """
-        trj_ts = self.universe.trajectory.ts  # original time step
-
-        if self._ts is None or self._ts.frame != trj_ts.frame:
-            # create a timestep of same type as the underlying trajectory
-            self._ts = trj_ts.copy_slice(self.indices)
-        return self._ts
+        return self.universe.trajectory.ts.copy_slice(self.indices)
 
 
 class Residue(AtomGroup):
