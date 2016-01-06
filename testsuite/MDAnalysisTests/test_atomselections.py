@@ -433,9 +433,9 @@ class BaseDistanceSelection(object):
     def choosemeth(self, sel, meth, periodic):
         """hack in the desired apply method"""
         if meth == 'kdtree':
-            sel._apply = sel._apply_KDTree
+            sel.apply = sel._apply_KDTree
         elif meth == 'distmat':
-            sel._apply = sel._apply_distmat
+            sel.apply = sel._apply_distmat
 
         if periodic:
             sel.periodic = True
