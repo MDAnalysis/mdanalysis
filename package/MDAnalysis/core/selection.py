@@ -576,7 +576,7 @@ class BackboneSelection(ProteinSelection):
         return group[mask]
 
 
-class NucleicBackboneSelection(ProteinSelection):
+class NucleicBackboneSelection(NucleicSelection):
     """Contains all atoms with name "P", "C5'", C3'", "O3'", "O5'".
 
     These atoms are only recognized if they are in a residue matched
@@ -586,7 +586,7 @@ class NucleicBackboneSelection(ProteinSelection):
 
     def apply(self, group):
         namemask = np.in1d(group.names, self.bb_atoms)
-        resnamemask = np.in1d(group.resnames, self.prot_res)
+        resnamemask = np.in1d(group.resnames, self.nucl_res)
         mask = namemask & resnamemask
         return group[mask]
 
