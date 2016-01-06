@@ -691,13 +691,16 @@ class SameSelection(object):
             return group[mask]
 
         try:
-            pos_idx = {0:'x', 1:'y', 2:'z'}[self.prop]
+            pos_idx = {'x':0, 'y':1, 'z':2}[self.prop]
         except KeyError:
             pass
         else:
             vals = res.positions[:, pos_idx]
-            mask = np.in1d(group.positions[:, pos_idx], vals)
+            pos = group.positions[:, pos_idx]
 
+            # isclose only does one value at a time
+            mask = np.vstack([np.isclose(pos, v)
+                              for v in vals]).any(axis=0)
             return group[mask]
 
         if self.prop == 'fragment':
