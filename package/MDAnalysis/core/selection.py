@@ -151,7 +151,7 @@ class AroundSelection(DistanceSelection):
         # probing with SEL
         unique_idx = np.unique(np.concatenate(found_indices))
         logger.debug("Unique indices are {}".format(unique_idx))
-        return sys[unique_idx]
+        return sys[unique_idx.astype(np.int32)]
 
     def _apply_distmat(self, group):
         logger.debug("In Around Distmat")
@@ -185,32 +185,29 @@ class SphericalLayerSelection(DistanceSelection):
         """
         sel = self.sel.apply(group)
         ref = sel.center_of_geometry()
-        sys = group[~np.in1d(group.indices, sel.indices)]
 
         kdtree = KDTree(dim=3, bucket_size=10)
-        kdtree.set_coords(sys.positions)
+        kdtree.set_coords(group.positions)
 
         kdtree.search(ref, self.exRadius)
         found_ExtIndices = kdtree.get_indices()
         kdtree.search(ref, self.inRadius)
         found_IntIndices = kdtree.get_indices()
         found_indices = list(set(found_ExtIndices) - set(found_IntIndices))
-        return sys[found_indices]
+        return group[found_indices]
 
     def _apply_distmat(self, group):
         sel = self.sel.apply(group)
-        sel_CoG = sel.center_of_geometry().reshape(1, 3).astype(np.float32)
-
-        sys = group[~np.in1d(group.indices, sel.indices)]
+        ref = sel.center_of_geometry().reshape(1, 3).astype(np.float32)
 
         box = group.dimensions if self.periodic else None
-        d = distances.distance_array(sel_CoG,
-                                     sys.positions,
+        d = distances.distance_array(ref,
+                                     group.positions,
                                      box=box)[0]
         lmask = d < self.exRadius
         rmask = d > self.inRadius
         mask = lmask & rmask
-        return sys[mask]
+        return group[mask]
 
 
 class SphericalZoneSelection(DistanceSelection):
@@ -231,7 +228,7 @@ class SphericalZoneSelection(DistanceSelection):
         kdtree.search(ref, self.cutoff)
         found_indices = kdtree.get_indices()
 
-        return sys[found_indices]
+        return group[found_indices]
 
     def _apply_distmat(self, group):
         sel = self.sel.apply(group)
