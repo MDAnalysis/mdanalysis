@@ -378,13 +378,15 @@ class TestSelectionsXTC(TestCase):
 
     def test_same_fragment(self):
         """Test the 'same ... as' construct (Issue 217)"""
-        # This test comes here because it's a system with solvent, and thus multiple fragments.
-        try:
-            sel = self.universe.select_atoms("same fragment as bynum 1")
-            assert_equal(len(sel), 3341, "Found a wrong number of atoms on the same fragment as id 1")
-            assert_equal(sel._atoms, self.universe.atoms[0].fragment._atoms, "Found a different set of atoms when using the 'same fragment as' construct vs. the .fragment prperty")
-        except MDAnalysis.NoDataError:
-            assert_equal(True, False)
+        # This test comes here because it's a system with solvent,
+        # and thus multiple fragments.
+        sel = self.universe.select_atoms("same fragment as bynum 1")
+        assert_equal(
+            len(sel), 3341,
+            "Found a wrong number of atoms on the same fragment as id 1")
+        assert_array_equal(
+            sel.indices, self.universe.atoms[0].fragment.indices,
+            "Found a different set of atoms when using the 'same fragment as' construct vs. the .fragment prperty")
 
 
 class TestSelectionsNucleicAcids(TestCase):

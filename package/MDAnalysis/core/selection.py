@@ -680,8 +680,6 @@ class SameSelection(object):
         if not res:
             return group[[]]  # empty selection
 
-        # TODO: Fragments!
-
         try:
             attrname = prop_trans[self.prop]
         except KeyError:
@@ -700,6 +698,14 @@ class SameSelection(object):
             vals = res.positions[:, pos_idx]
             mask = np.in1d(group.positions[:, pos_idx], vals)
 
+            return group[mask]
+
+        if self.prop == 'fragment':
+            # Combine all fragments together, then check where group
+            # indices are same as fragment(s) indices
+            allfrags = reduce(lambda x, y: x + y, res.fragments)
+
+            mask = np.in1d(group.indices, allfrags.indices)
             return group[mask]
 
 
