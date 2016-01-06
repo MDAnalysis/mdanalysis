@@ -572,6 +572,32 @@ class Bonds(AtomAttr):
         ('bonded_atoms', property(bonded_atoms, None, None,
                                   bonded_atoms.__doc__)))
 
+    def fragment(self):
+        """The fragment that this Atom is part of
+
+        .. versionadded:: 0.9.0
+        """
+        return self.universe._fragdict[self]
+
+    def fragments(self):
+        """Read-only list of fragments.
+
+        Contains all fragments that any Atom in this AtomGroup is
+        part of, the contents of the fragments may extend beyond the
+        contents of this AtomGroup.
+
+        .. versionadded 0.9.0
+        """
+        return tuple(set(a.fragment for a in self))
+
+    transplants['atom'].append(
+        ('fragment', property(fragment, None, None,
+                              fragment.__doc__)))
+
+    transplants['atomgroup'].append(
+        ('fragments', property(fragments, None, None,
+                               fragments.__doc__)))
+
 
 #TODO: update docs to property doc
 class Angles(Bonds):

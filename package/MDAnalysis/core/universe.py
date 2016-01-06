@@ -116,6 +116,7 @@ class Universe(object):
 
         # managed attribute holding Reader
         self._trajectory = None
+        self._cache = {}
 
         if len(args) == 0:
             # create an empty universe
@@ -390,6 +391,76 @@ class Universe(object):
             except AttributeError:
                 # not every Attribute will have a transplant dict
                 pass
+
+    # TODO: Maybe put this as a Bond attribute transplant
+    # Problems: Can we transplant onto Universe?
+    # Probably a smarter way to do this too, could generate
+    # these on demand *per atom*.
+    # Wouldn't then need the Universe linkage here
+    #
+    # Alternate idea: Bonds Attribute generates a Fragments
+    # Attribute (ie, 2 for the price of 1)
+    # Fragments then gets its own Class/namespace/jazz.
+    @property
+    @cached('fragments')
+    def _fragdict(self):
+        bonds = self.atoms.bonds
+        
+        class _fragset(object):
+            __slots__ = ['ats']
+            """Normal sets aren't hashable, this is"""
+
+            def __init__(self, ats):
+                self.ats = set(ats)
+
+            def __iter__(self):
+                return iter(self.ats)
+
+            def add(self, other):
+                self.ats.add(other)
+
+            def update(self, other):
+                self.ats.update(other.ats)
+
+        # each atom starts with its own list
+        f = dict.fromkeys(self.atoms, None)
+
+        for a1, a2 in bonds:
+            if not (f[a1] or f[a2]):
+                # New set made here
+                new = _fragset([a1, a2])
+                f[a1] = f[a2] = new
+            elif f[a1] and not f[a2]:
+                # If a2 isn't in a fragment, add it to a1's
+                f[a1].add(a2)
+                f[a2] = f[a1]
+            elif not f[a1] and f[a2]:
+                # If a1 isn't in a fragment, add it to a2's
+                f[a2].add(a1)
+                f[a1] = f[a2]
+            elif f[a1] is f[a2]:
+                # If they're in the same fragment, do nothing
+                continue
+            else:
+                # If they are both in different fragments, combine fragments
+                f[a1].update(f[a2])
+                f.update(dict((a, f[a1]) for a in f[a2]))
+
+        # Lone atoms get their own fragment
+        f.update(dict((a, _fragset((a,)))
+                      for a, val in f.items() if not val))
+
+        # All the unique values in f are the fragments
+        AG = self._classes['atomgroup']
+        frags = tuple([AG(np.array([at.index for at in ag]), self)
+                       for ag in set(f.values())])
+
+        fragdict = {}
+        for f in frags:
+            for a in f:
+                fragdict[a] = f
+
+        return fragdict
 
 
 # TODO: what is the point of this function???
