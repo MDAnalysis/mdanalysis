@@ -110,14 +110,16 @@ Functions
 
 """
 
-import sys
 import os
 
 import numpy as np
 
 import MDAnalysis
 from MDAnalysis import FinishTimeException
+from MDAnalysis.lib.log import ProgressMeter
 
+import logging
+logger = logging.getLogger("MDAnalysis.analysis.helanal")
 
 def center(coordinates):
     """Return the geometric center (centroid) of the coordinates.
@@ -126,20 +128,14 @@ def center(coordinates):
     """
     return np.mean(coordinates, axis=0)
 
-
 def veclength(v):
     """Length of vector *v*."""
     # note: this is 3 times faster than np.linalg.norm
     return np.sqrt(np.dot(v, v))
 
-
-vecscaler = np.dot
-
-
 def vecnorm(a):
     """Return a/|a|"""
     return a / veclength(a)
-
 
 def vecangle(a, b):
     """Angle between two vectors *a* and *b* in radians.
@@ -152,14 +148,9 @@ def vecangle(a, b):
         return 0.0
     return angle
 
-
 def vecdist(a, b):
     """Return |a-b|"""
     return veclength(a - b)
-
-
-veccross = np.cross
-
 
 def wrapangle(angle):
     """Wrap angle (in radians) to be within -pi < angle =< pi"""
@@ -169,23 +160,20 @@ def wrapangle(angle):
         angle += 2 * np.pi
     return angle
 
-
 def sample_sd(a, dummy):
     return np.std(a, ddof=1)
-
 
 def mean_abs_dev(a, mean_a=None):
     if mean_a is None:
         mean_a = np.mean(a)
     return np.mean(np.fabs(a - mean_a))
 
-
 def helanal_trajectory(universe, selection="name CA", start=None, end=None, begin=None, finish=None,
                        matrix_filename="bending_matrix.dat", origin_pdbfile="origin.pdb",
                        summary_filename="summary.txt", screw_filename="screw.xvg",
                        tilt_filename="local_tilt.xvg", fitted_tilt_filename="fit_tilt.xvg",
                        bend_filename="local_bend.xvg", twist_filename="unit_twist.xvg",
-                       prefix="helanal_", ref_axis=None):
+                       prefix="helanal_", ref_axis=None, quiet=False):
     """Perform HELANAL_ helix analysis on all frames in *universe*.
 
     .. Note::
@@ -234,11 +222,17 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
        *ref_axis*
           Calculate tilt angle relative to the axis; if ``None`` then ``[0,0,1]``
           is chosen [``None``]
+       *quiet*
+          Suppress most diagnostic output.
 
     :Raises:
        FinishTimeException
         If the specified finish time precedes the specified start time or current time stamp of trajectory object.
 
+    .. versionchanged:: 0.13.0
+       New *quiet* keyword to silence frame progress output and most of the
+       output that used to be printed to stdout is now logged to the logger
+       MDAnalysis.analysis.helanal (at logelevel *INFO*).
     """
     if ref_axis is None:
         ref_axis = np.array([0., 0., 1.])
@@ -247,9 +241,7 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
         # two atoms
         ref_axis = np.asarray(ref_axis)
 
-    if start is None and end is None:
-        pass
-    else:
+    if not (start is None and end is None):
         if start is None:
             start = universe.atoms[0].resid
         if end is None:
@@ -267,12 +259,12 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
                     finish=finish, traj_time=trajectory.time))
 
     if start is not None and end is not None:
-        print "Analysing from residue", start, "to", end
+        logger.info("Analysing from residue %d to %d", start, end)
     elif start is not None and end is None:
-        print "Analysing from residue", start, "to the C termini"
+        logger.info("Analysing from residue %d to the C termini", start)
     elif start is None and end is not None:
-        print "Analysing from the N termini to", end
-    print "Analysing %d/%d residues" % (ca.n_atoms, universe.atoms.n_residues)
+        logger.info("Analysing from the N termini to %d", end)
+    logger.info("Analysing %d/%d residues", ca.n_atoms, universe.atoms.n_residues)
 
     if prefix is not None:
         prefix = str(prefix)
@@ -302,7 +294,10 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
     global_fitted_tilts = []
     global_screw = []
 
+    pm = ProgressMeter(trajectory.n_frames, quiet=quiet,
+                       format="Frame %(step)10d: %(time)20.1f ps\r")
     for ts in trajectory:
+        pm.echo(ts.frame, time=ts.time)
         frame = ts.frame
         if begin is not None:
             if trajectory.time < begin:
@@ -323,7 +318,7 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
 
         for i in range(len(local_helix_axes)):
             for j in range(i + 1, len(local_helix_axes)):
-                angle = np.rad2deg(np.arccos(vecscaler(local_helix_axes[i], local_helix_axes[j])))
+                angle = np.rad2deg(np.arccos(np.dot(local_helix_axes[i], local_helix_axes[j])))
                 global_bending_matrix[i][j].append(angle)
                 #global_bending_matrix[j][i].append(angle)
                 #global_bending_matrix[i][i].append(0.)
@@ -370,16 +365,7 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
             store.append(tmp)
         #for store,tmp in zip(global_tilt,local_helix_axes): store.append(vecangle(tmp,ref_axis))
 
-        #simple ticker
-        formated_time = "%20.1f" % trajectory.time
-        frame += 1
-        formated_frame = "%10d" % frame
 
-        print '\r', formated_time, ' ps', formated_frame,
-
-        sys.stdout.flush()
-
-    print '\nComplete'
     twist_mean, twist_sd, twist_abdev = stats(global_twist)
     height_mean, height_sd, height_abdev = stats(global_height)
     rnou_mean, rnou_sd, rnou_abdev = stats(global_rnou)
@@ -411,29 +397,24 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
                 print >> mat_output, formatted_angle,
             print >> mat_output, ''
 
-    print "Height:", height_mean, "SD", height_sd, "ABDEV", height_abdev, '(Angstroem)'
-    print "Twist:", twist_mean, "SD", twist_sd, "ABDEV", twist_abdev
-    print "Residues/turn:", rnou_mean, "SD", rnou_sd, "ABDEV", rnou_abdev
-    print "Fitted tilt:", ftilt_mean, "SD", ftilt_sd, "ABDEV", ftilt_abdev
-    print "Local bending angles:"
+    logger.info("Height: %g  SD: %g  ABDEV: %g  (Angstroem)", height_mean, height_sd, height_abdev)
+    logger.info("Twist: %g  SD: %g  ABDEV: %g", twist_mean, twist_sd, twist_abdev)
+    logger.info("Residues/turn: %g  SD: %g  ABDEV: %g", rnou_mean, rnou_sd, rnou_abdev)
+    logger.info("Fitted tilt: %g  SD: %g  ABDEV: %g", ftilt_mean, ftilt_sd, ftilt_abdev)
+    logger.info("Local bending angles:")
     residue_statistics = zip(*bending_statistics)
     measure_names = ["Mean ", "SD   ", "ABDEV"]
-    print "ResID",
     if start is None:
-        for item in range(4, len(residue_statistics[0]) + 4):
-            output = "%8d" % item
-            print output,
+        output = " ".join(["%8d" % item
+                           for item in range(4, len(residue_statistics[0]) + 4)])
     else:
-        for item in range(start + 3, len(residue_statistics[0]) + start + 3):
-            output = "%8d" % item
-            print output,
-    print ""
+        output = " ".join(["%8d" % item
+                           for item in range(start + 3, len(residue_statistics[0]) + start + 3)])
+    logger.info("ResID %s", output)
     for measure, name in zip(residue_statistics, measure_names):
-        print name,
-        for residue in measure:
-            output = "%8.1f" % residue
-            print output,
-        print ''
+        output = str(name) + " "
+        output += " ".join(["%8.1f" % residue for residue in measure])
+        logger.info(output)
 
     with open(summary_filename, 'w') as summary_output:
         print >> summary_output, "Height:", height_mean, "SD", height_sd, "ABDEV", height_abdev, '(nm)'
@@ -506,16 +487,15 @@ def helanal_main(pdbfile, selection="name CA", start=None, end=None, ref_axis=No
     """
 
     universe = MDAnalysis.Universe(pdbfile, permissive=permissive)
-    if start is None and end is None:
-        pass
-    else:
+    if not (start is None and end is None):
         if start is None:
             start = universe.atoms[0].resid
         if end is None:
             end = universe.atoms[-1].resid
         selection += " and resid %(start)d:%(end)d" % vars()
     ca = universe.select_atoms(selection)
-    print "Analysing %d/%d residues" % (ca.n_atoms, universe.atoms.n_residues)
+
+    logger.info("Analysing %d/%d residues", ca.n_atoms, universe.atoms.n_residues)
 
     twist, bending_angles, height, rnou, origins, local_helix_axes, local_screw_angles = \
         main_loop(ca.coordinates(), ref_axis=ref_axis)
@@ -539,7 +519,7 @@ def helanal_main(pdbfile, selection="name CA", start=None, end=None, ref_axis=No
             if (i == j).all():
                 angle = 0.
             else:
-                angle = np.rad2deg(np.arccos(vecscaler(i, j)))
+                angle = np.rad2deg(np.arccos(np.dot(i, j)))
             string_angle = "%6.0f\t" % angle
             #print string_angle,
             #print ''
@@ -561,27 +541,22 @@ def helanal_main(pdbfile, selection="name CA", start=None, end=None, ref_axis=No
     abdev_height = mean_abs_dev(height, mean_height)
     #TESTED- average rises
 
-    print "Height:", mean_height, sd_height, abdev_height
-    print "Twist:", mean_twist, sd_twist, abdev_twist
-    print "Residues/turn:", mean_rnou, sd_rnou, abdev_rnou
-    #print mean_height, sd_height, abdev_height
-    print "Local bending angles:"
-    for angle in bending_angles:
-        output = "%8.1f\t" % angle
-        print output,
-    print ''
-    print "Unit twist angles:"
-    for twist_ang in twist:
-        outputtwist = "%8.1f\t" % twist_ang
-        print outputtwist,
-    print ''
+    logger.info("Height: %g  SD: %g  ABDEV: %g  (Angstroem)", mean_height, sd_height, abdev_height)
+    logger.info("Twist: %g  SD: %g  ABDEV: %g", mean_twist, sd_twist, abdev_twist)
+    logger.info("Residues/turn: %g  SD: %g  ABDEV: %g", mean_rnou, sd_rnou, abdev_rnou)
+
+    output = " ".join(["%8.1f\t" % angle for angle in bending_angles])
+    logger.info("Local bending angles: %s", output)
+
+    output = " ".join(["%8.1f\t" % twist_ang for twist_ang in twist])
+    logger.info("Unit twist angles: %s", output)
 
     #calculate best fit vector and tilt of said vector
     fit_vector, fit_tilt = vector_of_best_fit(origins)
-    print "Best fit tilt =", fit_tilt
-    print "Rotation Angles from 1 to n-1"
-    for item in local_screw_angles:
-        print round(item, 1),
+    logger.info("Best fit tilt: %g", fit_tilt)
+
+    output = " ".join(["%.1f" % item for item in local_screw_angles])
+    logger.info("Rotation Angles from 1 to n-1: %s", output)
 
 
 def origin_pdb(origins, pdbfile):
@@ -621,7 +596,7 @@ def main_loop(positions, ref_axis=None):
         dv24 = vec23 - vec34
 
         #direction of the local helix axis
-        current_uloc = vecnorm(veccross(dv13, dv24))
+        current_uloc = vecnorm(np.cross(dv13, dv24))
         local_helix_axes.append(current_uloc)
 
         #TESTED- Axes correct
@@ -630,7 +605,7 @@ def main_loop(positions, ref_axis=None):
         dmag = veclength(dv13)
         emag = veclength(dv24)
 
-        costheta = vecscaler(dv13, dv24) / (dmag * emag)
+        costheta = np.dot(dv13, dv24) / (dmag * emag)
         #rnou is the number of residues per turn
         current_twist = np.arccos(costheta)
         twist.append(np.rad2deg(current_twist))
@@ -641,7 +616,7 @@ def main_loop(positions, ref_axis=None):
         radmag = (dmag * emag) ** 0.5 / (2 * costheta1)
 
         #Height of local helix cylinder
-        current_height = vecscaler(vec23, current_uloc)
+        current_height = np.dot(vec23, current_uloc)
         height.append(current_height)
         #TESTED- Twists etc correct
         #print current_twist*180/np.pi, 2*np.pi/current_twist, height
@@ -669,7 +644,7 @@ def main_loop(positions, ref_axis=None):
 
     bending_angles = [0 for item in range(len(local_helix_axes) - 3)]
     for axis in xrange(len(local_helix_axes) - 3):
-        angle = np.arccos(vecscaler(local_helix_axes[axis], local_helix_axes[axis + 3]))
+        angle = np.arccos(np.dot(local_helix_axes[axis], local_helix_axes[axis + 3]))
         bending_angles[axis] = np.rad2deg(angle)
         #TESTED- angles are correct
         #print np.rad2deg(angle)
@@ -686,11 +661,11 @@ def main_loop(positions, ref_axis=None):
 
 
 def rotation_angle(helix_vector, axis_vector, rotation_vector):
-    reference_vector = veccross(veccross(helix_vector, axis_vector), helix_vector)
-    second_reference_vector = veccross(axis_vector, helix_vector)
+    reference_vector = np.cross(np.cross(helix_vector, axis_vector), helix_vector)
+    second_reference_vector = np.cross(axis_vector, helix_vector)
     screw_angle = vecangle(reference_vector, rotation_vector)
     alt_screw_angle = vecangle(second_reference_vector, rotation_vector)
-    updown = veccross(reference_vector, rotation_vector)
+    updown = np.cross(reference_vector, rotation_vector)
 
     if not (np.pi < screw_angle < 3 * np.pi / 4):
         if screw_angle < np.pi / 4 and alt_screw_angle < np.pi / 2:
@@ -702,11 +677,10 @@ def rotation_angle(helix_vector, axis_vector, rotation_vector):
         elif screw_angle > 3 * np.pi / 4 and alt_screw_angle > np.pi / 2:
             screw_angle = 3 * np.pi / 2 - alt_screw_angle
         else:
-            print "\nBig Screw Up"
+            logger.debug("Big Screw Up: screw_angle=%g degrees", np.rad2deg(screw_angle))
 
     if veclength(updown) == 0:
-        #vector is at 0 or 180
-        print "\nPROBLEM (vector is at 0 or 180)"
+        logger.warn("PROBLEM (vector is at 0 or 180)")
 
     helix_dot_rehelix = vecangle(updown, helix_vector)
 
