@@ -350,10 +350,6 @@ class TestSelectionsGRO(TestCase):
     @dec.slow
     def test_same_coordinate(self):
         """Test the 'same ... as' construct (Issue 217)"""
-        # This test comes here because it's hard to get same _x with full precision formats.
-        #  The 'same' construct uses numpy.in1d to compare floats. It might be sensitive to
-        #  precision issues, but I am expecting .gro coordinates with the same values to
-        #  be converted to the exact same floats, at least in the same machine.
         sel = self.universe.select_atoms("same x as bynum 1 or bynum 10")
         assert_equal(len(sel), 12, "Found a wrong number of atoms with same x as ids 1 or 10")
         target_ids = np.array([ 0, 8, 9, 224, 643, 3515, 11210, 14121, 18430, 25418, 35811, 43618])

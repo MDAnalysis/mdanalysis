@@ -246,66 +246,65 @@ class CylindricalSelection(object):
     def __init__(self, sel, exRadius, zmax, zmin):
         self.sel = sel
         self.exRadius = exRadius
-        self.exRadiusSq = exRadius * exRadius
         self.zmax = zmax
         self.zmin = zmin
         self.periodic = flags['use_periodic_selections']
 
     def apply(self, group):
         sel = self.sel.apply(group)
-        sel_CoG = sel.center_of_geometry()
-        coords = group.positions
+
+        # Calculate vectors between point of interest and our group
+        vecs = group.positions - sel.center_of_geometry()
 
         if self.periodic and not np.any(group.dimensions[:3]==0):
-            box = group.dimensions
-            cyl_z_hheight = (self.zmax-self.zmin)/2
+            box = group.dimensions[:3]
+            cyl_z_hheight = self.zmax - self.zmin
 
-            if 2*self.exRadius > box[0]:
+            if 2 * self.exRadius > box[0]:
                 raise NotImplementedError(
                     "The diameter of the cylinder selection ({:.3f}) is larger "
                     "than the unit cell's x dimension ({:.3f}). Can only do "
                     "selections where it is smaller or equal."
                     "".format(2*self.exRadius, box[0]))
-            if 2*self.exRadius > box[1]:
+            if 2 * self.exRadius > box[1]:
                 raise NotImplementedError(
                     "The diameter of the cylinder selection ({:.3f}) is larger "
                     "than the unit cell's y dimension ({:.3f}). Can only do "
                     "selections where it is smaller or equal."
                     "".format(2*self.exRadius, box[1]))
-            if 2*cyl_z_hheight > box[2]:
+            if cyl_z_hheight > box[2]:
                 raise NotImplementedError(
                     "The total length of the cylinder selection in z ({:.3f}) "
                     "is larger than the unit cell's z dimension ({:.3f}). Can "
                     "only do selections where it is smaller or equal."
-                    "".format(2*cyl_z_hheight, box[2]))
+                    "".format(cyl_z_hheight, box[2]))
 
-            #how off-center in z is our CoG relative to the cylinder's center
-            cyl_center = sel_CoG + [0,0,(self.zmax+self.zmin)/2]
-            coords += box[:3] / 2 - cyl_center
-            coords = distances.apply_PBC(coords, box=box)
+            if all(group.dimensions[3:] == 90.):
+                # Orthogonal version
+                vecs -= box[:3] * np.rint(vecs / box[:3])[:, None]
+            else:
+                #Triclinic version
+                tribox = group.universe.trajectory.ts.triclinic_dimensions
+                vecs -= tribox[2] * np.rint(vecs[:, 2] / tribox[2][2])[:, None]
+                vecs -= tribox[1] * np.rint(vecs[:, 1] / tribox[1][1])[:, None]
+                vecs -= tribox[0] * np.rint(vecs[:, 0] / tribox[0][0])[:, None]
 
-            sel_CoG = box[:3] / 2
-            zmin = -cyl_z_hheight
-            zmax = cyl_z_hheight
-        else:
-            zmin = self.zmin
-            zmax = self.zmax
+        # First deal with Z dimension criteria
+        mask = (vecs[:, 2] > self.zmin) & (vecs[:, 2] < self.zmax)
+        # Mask out based on height to reduce number of radii comparisons
+        vecs = vecs[mask]
+        group = group[mask]
 
-        # For performance we first do the selection of the atoms in the
-        # rectangular parallelepiped that contains the cylinder.
-        lim_min = sel_CoG - [self.exRadius, self.exRadius, -zmin]
-        lim_max = sel_CoG + [self.exRadius, self.exRadius, zmax]
-        mask_sel = np.all((coords >= lim_min) * (coords <= lim_max), axis=1)
-        mask_ndxs = np.where(mask_sel)[0]
-        # Now we do the circular part
-        xy_vecs = coords[mask_ndxs,:2] - sel_CoG[:2]
-        xy_norms = np.sum(xy_vecs**2, axis=1)
-        try: # Generic for both 'Layer' and 'Zone' cases
-            circ_sel = (xy_norms <= self.exRadiusSq) & (xy_norms >= self.inRadiusSq)
+        # Radial vectors from sel to each in group
+        radii = vecs[:, 0]**2 + vecs[:, 1]**2
+        mask = radii < self.exRadius**2
+        try:
+            mask &= radii > self.inRadius**2
         except AttributeError:
-            circ_sel = (xy_norms <= self.exRadiusSq)
-        mask_sel[mask_ndxs] = circ_sel
-        return group[mask_sel]
+            # Only for cylayer, cyzone doesn't have inRadius
+            pass
+
+        return group[mask]
 
 
 class CylindricalZoneSelection(CylindricalSelection):
@@ -319,7 +318,6 @@ class CylindricalLayerSelection(CylindricalSelection):
         super(CylindricalLayerSelection, self).__init__(
             sel, exRadius, zmax, zmin)
         self.inRadius = inRadius
-        self.inRadiusSq = inRadius * inRadius
 
 
 class PointSelection(DistanceSelection):
