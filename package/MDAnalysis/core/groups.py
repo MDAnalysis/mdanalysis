@@ -82,7 +82,7 @@ class GroupBase(object):
         setter = lambda self, values: attr.__setitem__(self, values)
 
         setattr(cls, attr.attrname,
-                property(getter, setter, None, attr.__doc__))
+                property(getter, setter, None, attr.groupdoc))
 
     def __len__(self):
         return len(self._ix)
@@ -671,7 +671,6 @@ class ComponentBase(object):
         return self.level.plural(
                 np.concatenate((np.array([self._ix]), o_ix)), self._u)
 
-    # TODO: put in mixin with GroupBase method of same name
     @classmethod
     def _add_prop(cls, attr):
         """Add attr into the namespace for this class
@@ -685,7 +684,7 @@ class ComponentBase(object):
         setter = lambda self, values: attr.__setitem__(self, values)
 
         setattr(cls, attr.singular,
-                property(getter, setter, None, attr.__doc__))
+                property(getter, setter, None, attr.singledoc))
 
     @property
     def universe(self):
@@ -801,12 +800,7 @@ class ResidueBase(ComponentBase):
     @property
     def atoms(self):
         atomsclass = self.level.child.plural
-
-        # we need to pass a fake residue with a numpy array as its self._ix for
-        # downward translation tables to work; this is because they accept
-        # arrays only for performance
-        r_proxy = self.__class__(np.array([self._ix]), self._u)
-        return atomsclass(self._u._topology.indices[r_proxy],
+        return atomsclass(self._u._topology.indices[self],
                           self._u)
 
     @property
@@ -840,21 +834,11 @@ class SegmentBase(ComponentBase):
     @property
     def atoms(self):
         atomsclass = self.level.child.child.plural
-
-        # we need to pass a fake segment with a numpy array as its self._ix for
-        # downward translation tables to work; this is because they accept
-        # arrays only for performance
-        s_proxy = self.__class__(np.array([self._ix]), self._u)
-        return atomsclass(self._u._topology.indices[s_proxy],
+        return atomsclass(self._u._topology.indices[self],
                           self._u)
 
     @property
     def residues(self):
         residuesclass = self.level.child.plural
-
-        # we need to pass a fake residue with a numpy array as its self._ix for
-        # downward translation tables to work; this is because they accept arrays only
-        # for performance
-        s_proxy = self.__class__(np.array([self._ix]), self._u)
-        return residuesclass(self._u._topology.resindices[s_proxy],
+        return residuesclass(self._u._topology.resindices[self],
                              self._u)

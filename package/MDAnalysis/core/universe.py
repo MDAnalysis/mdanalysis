@@ -377,10 +377,11 @@ class Universe(object):
         """
         self._classes['group']._add_prop(attr)
 
-        try:
-            self._classes[attr.level]._add_prop(attr)
-        except (KeyError, AttributeError):
-            pass
+        for level in attr.levels:
+            try:
+                self._classes[level]._add_prop(attr)
+            except (KeyError, AttributeError):
+                pass
 
         for dest in ['atom', 'residue', 'segment', 'group',
                      'atomgroup', 'residuegroup', 'segmentgroup']:

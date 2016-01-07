@@ -122,8 +122,12 @@ class TransTable(object):
             indices of atoms present in residues, collectively
 
         """
-        return np.concatenate([self._atom_order[x:y]
-                               for x, y in self._res_ptrs[rix]])
+        if isinstance(rix, int):
+            x, y = self._res_ptrs[rix]
+            return self._atom_order[x:y]
+        else:
+            return np.concatenate([self._atom_order[x:y]
+                                   for x, y in self._res_ptrs[rix]])
 
     def r2a_2d(self, rix):
         """Get atom indices represented by each residue index.
@@ -141,7 +145,11 @@ class TransTable(object):
             in that residue
 
         """
-        return (self._atom_order[x:y] for x, y in self._res_ptrs[rix])
+        if isinstance(rix, int):
+            x, y = self._res_ptrs[rix]
+            return self._atom_order[x:y]
+        else:
+            return (self._atom_order[x:y] for x, y in self._res_ptrs[rix])
 
     def r2s(self, rix):
         """Get segment indices for each residue.
@@ -173,8 +181,12 @@ class TransTable(object):
             sorted indices of residues present in segments, collectively
 
         """
-        return np.concatenate([self._res_order[x:y]
-                               for x, y in self._seg_ptrs[six]])
+        if isinstance(six, int):
+            x, y = self._seg_ptrs[six]
+            return self._res_order[x:y]
+        else:
+            return np.concatenate([self._res_order[x:y]
+                                   for x, y in self._seg_ptrs[six]])
 
     def s2r_2d(self, six):
         """Get residue indices represented by each segment index.
@@ -192,7 +204,11 @@ class TransTable(object):
             in that segment
 
         """
-        return (self._res_order[x:y] for x, y in self._seg_ptrs[six])
+        if isinstance(six, int):
+            x, y = self._seg_ptrs[six]
+            return self._res_order[x:y]
+        else:
+            return (self._res_order[x:y] for x, y in self._seg_ptrs[six])
 
     # Compound moves, does 2 translations
     def a2s(self, aix):
@@ -226,8 +242,13 @@ class TransTable(object):
             sorted indices of atoms present in segments, collectively
 
         """
+
         rixs = self.s2r_2d(six)
-        return np.concatenate([self.r2a_1d(rix) for rix in rixs])
+
+        if isinstance(rixs, np.ndarray):
+            return self.r2a_1d(rixs)
+        else:
+            return np.concatenate([self.r2a_1d(rix) for rix in rixs])
 
     def s2a_2d(self, six):
         """Get atom indices represented by each segment index.
@@ -246,7 +267,11 @@ class TransTable(object):
 
         """
         rixs = self.s2r_2d(six)
-        return (self.r2a_1d(rix) for rix in rixs)
+
+        if isinstance(rixs, np.ndarray):
+            return self.r2a_1d(rixs)
+        else:
+            return (self.r2a_1d(rix) for rix in rixs)
 
 
 #TODO: movers and resizers
@@ -318,7 +343,3 @@ class Topology(object):
         self.attrs.append(topologyattr)
         topologyattr.top = self
         self.__setattr__(topologyattr.attrname, topologyattr)
-
-        ## TODO: add checking that TopologyAttr len gives right length for
-        # its level
-

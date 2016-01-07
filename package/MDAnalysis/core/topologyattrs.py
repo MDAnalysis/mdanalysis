@@ -50,6 +50,9 @@ class TopologyAttr(object):
     singular = 'topologyattr'
     top = None
 
+    groupdoc = None
+    singledoc = None
+
     def __init__(self, values):
         self.values = values
 
@@ -116,7 +119,7 @@ class Atomindices(TopologyAttr):
     """
     attrname = 'indices'
     singular = 'index'
-    level = 'atom'
+    levels = ['atom']
 
     def __init__(self):
         pass
@@ -152,7 +155,7 @@ class Resindices(TopologyAttr):
     """
     attrname = 'resindices'
     singular = 'resindex'
-    level = 'residue'
+    levels = ['residue']
 
     def __init__(self):
         pass
@@ -196,7 +199,7 @@ class Segindices(TopologyAttr):
     """
     attrname = 'segindices'
     singular = 'segindex'
-    level = 'segment'
+    levels = ['segment']
 
     def __init__(self):
         pass
@@ -226,7 +229,7 @@ class AtomAttr(TopologyAttr):
     """
     attrname = 'atomattrs'
     singular = 'atomattr'
-    level = 'atom'
+    levels = ['atom']
 
     def get_atoms(self, ag):
         return self.values[ag._ix]
@@ -311,43 +314,62 @@ class Tempfactors(AtomAttr):
 class Masses(AtomAttr):
     attrname = 'masses'
     singular = 'mass'
+    levels = ['atom', 'residue', 'segment']
     transplants = defaultdict(list)
 
+    groupdoc = """Mass of each component in the Group.
+
+    If the Group is an AtomGroup, then the masses are for each atom. If the
+    Group is a ResidueGroup or SegmentGroup, the masses are for each residue or
+    segment, respectively. These are obtained by summation of the member atoms
+    for each component.
+    """
+
+    singledoc = """Mass of the component."""
+
     def get_residues(self, rg):
-        masses = np.empty(len(rg))
 
         resatoms = self.top.tt.r2a_2d(rg._ix)
 
-        for i, row in enumerate(resatoms):
-            masses[i] = self.values[row].sum()
+        if isinstance(rg._ix, int):
+            # for a single residue
+            masses = self.values[resatoms].sum()
+        else:
+            # for a residuegroup
+            masses = np.empty(len(rg))
+            for i, row in enumerate(resatoms):
+                masses[i] = self.values[row].sum()
 
         return masses
 
     def get_segments(self, sg):
-        masses = np.empty(len(sg))
 
         segatoms = self.top.tt.s2a_2d(sg._ix)
 
-        for i, row in enumerate(segatoms):
-            masses[i] = self.values[row].sum()
+        if isinstance(sg._ix, int):
+            # for a single segment
+            masses = self.values[segatoms].sum()
+        else:
+            # for a segmentgroup
+            masses = np.empty(len(sg))
+            for i, row in enumerate(segatoms):
+                masses[i] = self.values[row].sum()
 
         return masses
 
-    def center_of_mass(ag, **kwargs):
+    def center_of_mass(ag, pbc=False):
         """Center of mass of the AtomGroup
 
-        Keywords
+        Parameters
         --------
-        *pbc*
-          ``True``: Move all atoms within the primary unit
-                    cell before calculation [``False``]
+        pbc : bool
+            if ``True``, move all atoms within the primary unit cell before
+            calculation
 
-        Note
-        ----
-        The :class:`MDAnalysis.core.flags` flag *use_pbc* when
-        set to ``True`` allows the *pbc* flag to be used by default.
+        .. note:: The :class:`MDAnalysis.core.flags` flag ``use_pbc`` when set
+                  to ``True`` allows the *pbc* flag to be used by default.
 
-        .. versionchanged:: 0.8 Added *pbc* keyword
+        .. versionchanged:: 0.8 Added `pbc` parameter
         """
         masses = ag.masses
 
@@ -365,12 +387,60 @@ class Masses(AtomAttr):
         ('center_of_mass', center_of_mass))
 
     def total_mass(group):
-        """Total mass of this Group"""
+        """Total mass of this Group.
+        
+        """
         masses = group.masses
         return masses.sum()
 
     transplants['group'].append(
         ('total_mass', total_mass))
+
+    def moment_of_inertia(self, **kwargs):
+        """Tensor of inertia as 3x3 numpy array.
+
+        :Keywords:
+          *pbc*
+            ``True``: Move all atoms within the primary unit cell before calculation [``False``]
+
+        .. Note::
+            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to ``True`` allows the *pbc*
+            flag to be used by default.
+
+        .. versionchanged:: 0.8 Added *pbc* keyword
+        """
+        pbc = kwargs.pop('pbc', MDAnalysis.core.flags['use_pbc'])
+        # Convert to local coordinates
+        if pbc:
+            pos = self.pack_into_box(inplace=False) - self.center_of_mass(pbc=True)
+        else:
+            pos = self.positions - self.center_of_mass(pbc=False)
+
+        masses = self.masses
+        # Create the inertia tensor
+        # m_i = mass of atom i
+        # (x_i, y_i, z_i) = pos of atom i
+        # Ixx = sum(m_i*(y_i^2+z_i^2));
+        # Iyy = sum(m_i*(x_i^2+z_i^2));
+        # Izz = sum(m_i*(x_i^2+y_i^2))
+        # Ixy = Iyx = -1*sum(m_i*x_i*y_i)
+        # Ixz = Izx = -1*sum(m_i*x_i*z_i)
+        # Iyz = Izy = -1*sum(m_i*y_i*z_i)
+        tens = np.zeros((3,3), dtype=np.float64)
+        # xx
+        tens[0][0] = (masses * (pos[:,1] * pos[:,1] + pos[:,2] * pos[:,2])).sum()
+        # xy & yx
+        tens[0][1] = tens[1][0] = - (masses * pos[:,0] * pos[:,1]).sum()
+        # xz & zx
+        tens[0][2] = tens[2][0] = - (masses * pos[:,0] * pos[:,2]).sum()
+        # yy
+        tens[1][1] = (masses * (pos[:,0] * pos[:,0] + pos[:,2] * pos[:,2])).sum()
+        # yz + zy
+        tens[1][2] = tens[2][1] = - (masses * pos[:,1] * pos[:,2]).sum()
+        # zz
+        tens[2][2] = (masses * (pos[:,0] * pos[:,0] + pos[:,1] * pos[:,1])).sum()
+
+        return tens
 
 
 #TODO: need to add cacheing
@@ -433,7 +503,7 @@ class ResidueAttr(TopologyAttr):
     """
     attrname = 'residueattrs'
     singular = 'residueattr'
-    level = 'residue'
+    levels = ['residue']
 
     def get_atoms(self, ag):
         rix = self.top.tt.a2r(ag._ix)
@@ -460,25 +530,21 @@ class Resids(ResidueAttr):
     """Residue ID"""
     attrname = 'resids'
     singular = 'resid'
-    transplants = defaultdict(list)
-
-    def atomget(atom):
-        return atom.residue.resid
-
-    transplants['atom'].append(
-        ('resid', property(atomget, None, None, atomget.__doc__)))
+    levels = ['atom', 'residue']
 
 
 #TODO: update docs to property doc
 class Resnames(ResidueAttr):
     attrname = 'resnames'
     singular = 'resname'
+    levels = ['atom', 'residue']
 
 
 #TODO: update docs to property doc
 class Resnums(ResidueAttr):
     attrname = 'resnums'
     singular = 'resnum'
+    levels = ['atom', 'residue']
 
 
 ## segment attributes
@@ -489,7 +555,7 @@ class SegmentAttr(TopologyAttr):
     """
     attrname = 'segmentattrs'
     singular = 'segmentattr'
-    level = 'segment'
+    levels = ['segment']
 
     def get_atoms(self, ag):
         six = self.top.tt.a2s(ag._ix)
@@ -510,6 +576,7 @@ class SegmentAttr(TopologyAttr):
 class Segids(SegmentAttr):
     attrname = 'segids'
     singular = 'segid'
+    levels = ['atom', 'residue', 'segment']
 
 
 #TODO: update docs to property doc
