@@ -425,7 +425,7 @@ def density_from_trajectory(*args, **kwargs):
 
 def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
                           metadata=None, padding=2.0, cutoff=0, soluteselection=None,
-                          use_kdtree=True,sel_update=None, **kwargs):
+                          use_kdtree=True, update_selection=False, **kwargs):
     """Create a density grid from a MDAnalysis.Universe object.
 
       density_from_Universe(universe, delta=1.0, atomselection='name OH2', ...) --> density
@@ -512,10 +512,8 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
     for ts in u.trajectory:
         print("Histograming %6d atoms in frame %5d/%d  [%5.1f%%]\r" % \
               (len(coord), ts.frame, u.trajectory.n_frames, 100.0 * ts.frame / u.trajectory.n_frames),)
-        if sel_update=True:
-           group=u.select_atoms(atomselection)
-           coord=group.coordinates()
-           
+        if update_selection:
+           coord=group.positions
         else:
            coord = current_coordinates()
            
