@@ -54,6 +54,7 @@ Changes
 
 Fixes
 
+  * Fixed select_atoms requiring a trajectory be loaded (Issue #270)
   * AtomGroup timesteps no longer cached (Issue #606)
   * GROWriter now truncates atom numbers over 99999 (Issue #550)
   * AMBER netcdf writer now correctly uses float32 precision (Issue #518)
