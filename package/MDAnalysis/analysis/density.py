@@ -450,7 +450,8 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
       cutoff
             With *cutoff*, select '<atomsel> NOT WITHIN <cutoff> OF <soluteselection>'
             (Special routines that are faster than the standard AROUND selection) [0]
-      sel_update : When set to True, atom selection is updated for each frame
+      update_selection 
+            When set to True, atom selection is updated for each frame
       parameters
             dict with some special parameters for :class:`Density` (see doc)
       kwargs
