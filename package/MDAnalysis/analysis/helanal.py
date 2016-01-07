@@ -117,6 +117,7 @@ import numpy as np
 import MDAnalysis
 from MDAnalysis import FinishTimeException
 from MDAnalysis.lib.log import ProgressMeter
+from MDAnalysis.lib import mdamath
 
 import logging
 logger = logging.getLogger("MDAnalysis.analysis.helanal")
@@ -128,10 +129,7 @@ def center(coordinates):
     """
     return np.mean(coordinates, axis=0)
 
-def veclength(v):
-    """Length of vector *v*."""
-    # note: this is 3 times faster than np.linalg.norm
-    return np.sqrt(np.dot(v, v))
+veclength = mdamath.norm
 
 def vecnorm(a):
     """Return a/|a|"""
@@ -143,7 +141,7 @@ def vecangle(a, b):
     If one of the lengths is 0 then the angle is returned as 0
     (instead of `nan`).
     """
-    angle = np.arccos(np.dot(a, b) / (veclength(a) * veclength(b)))
+    angle = mdamath.angle(a, b)
     if np.isnan(angle):
         return 0.0
     return angle
@@ -189,9 +187,9 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
        *selection*
           selection string that selects Calpha atoms [``"name CA"``]
        *start*
-          start residue
+          start residue resid
        *end*
-          end residue
+          end residue resid
        *begin*
           start analysing for time (ps) >= *begin*; ``None`` starts from the
           beginning [``None``]
@@ -227,12 +225,13 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
 
     :Raises:
        FinishTimeException
-        If the specified finish time precedes the specified start time or current time stamp of trajectory object.
+          If the specified finish time precedes the specified start time or
+          current time stamp of trajectory object.
 
     .. versionchanged:: 0.13.0
        New *quiet* keyword to silence frame progress output and most of the
        output that used to be printed to stdout is now logged to the logger
-       MDAnalysis.analysis.helanal (at logelevel *INFO*).
+       *MDAnalysis.analysis.helanal* (at logelevel *INFO*).
     """
     if ref_axis is None:
         ref_axis = np.array([0., 0., 1.])
@@ -482,8 +481,38 @@ def stats(some_list):
 def helanal_main(pdbfile, selection="name CA", start=None, end=None, ref_axis=None, permissive=False):
     """Simple HELANAL run on a single frame PDB/GRO.
 
+    Computed data are returned as a dict and also logged at level INFO to the
+    logger *MDAnalysis.analysis.helanal*. A simple way to enable a logger is to
+    use :func:`~MDAnalysis.lib.log.start_logging`.
+
     .. Note:: Only a single helix is analyzed. Use the selection to specify
               the helix, e.g. with "name CA and resid 1:20".
+
+    Returns
+    -------
+
+    Dict with keys for
+    * Height: mean, stdev, abs dev
+    * Twist: mean, stdev, abs dev
+    * Residues/turn: mean, stdev, abs dev
+    * Local bending angles: array for computed angles (per residue)
+    * Unit twist angles: array for computed angles (per residue)
+    * Best fit tilt
+    * Rotation angles: local screw angles (per residue)
+
+    Example
+    -------
+
+    Analyze helix 8 in AdK (PDB 4AKE); the standard logger is started and
+    writes output to the file ``MDAnalysis.log``::
+
+       MDAnalysis.start_logging()
+       data = MDAnalysis.analysis.helanal_main("4ake_A.pdb", selection="name CA and resnum 161-187")
+
+
+    .. versionchanged:: 0.13.0
+       All output is returned as a dict and logged to the logger
+       *MDAnalysis.analysis.helanal* instead of being printed to stdout.
     """
 
     universe = MDAnalysis.Universe(pdbfile, permissive=permissive)
@@ -504,8 +533,8 @@ def helanal_main(pdbfile, selection="name CA", start=None, end=None, ref_axis=No
     #print current_origin
     #print origins
 
-    max_angle = max(bending_angles)
-    mean_angle = mean(bending_angles)
+    max_angle = np.max(bending_angles)
+    mean_angle = np.mean(bending_angles)
     #sd calculated using n-1 to replicate original fortran- assumes a limited sample so uses the sample standard
     # deviation
     sd_angle = sample_sd(bending_angles, mean_angle)
@@ -514,16 +543,17 @@ def helanal_main(pdbfile, selection="name CA", start=None, end=None, ref_axis=No
     #print max_angle, mean_angle, sd_angle, mean_absolute_deviation_angle
 
     #calculate local bending matrix(now it is looking at all i, j combinations)
-    for i in local_helix_axes:
-        for j in local_helix_axes:
-            if (i == j).all():
-                angle = 0.
-            else:
-                angle = np.rad2deg(np.arccos(np.dot(i, j)))
-            string_angle = "%6.0f\t" % angle
-            #print string_angle,
-            #print ''
-            #TESTED- local bending matrix!
+    # (not used for helanal_main())
+#     for i in local_helix_axes:
+#         for j in local_helix_axes:
+#             if (i == j).all():
+#                 angle = 0.
+#             else:
+#                 angle = np.rad2deg(np.arccos(np.dot(i, j)))
+#             #string_angle = "%6.0f\t" % angle
+#             #print string_angle,
+#             #print ''
+#             #TESTED- local bending matrix!
 
     #Average helical parameters
     mean_twist = np.mean(twist)
@@ -541,6 +571,19 @@ def helanal_main(pdbfile, selection="name CA", start=None, end=None, ref_axis=No
     abdev_height = mean_abs_dev(height, mean_height)
     #TESTED- average rises
 
+    #calculate best fit vector and tilt of said vector
+    fit_vector, fit_tilt = vector_of_best_fit(origins)
+
+    data = {
+        'Height': np.array([mean_height, sd_height, abdev_height]),
+        'Twist': np.array([mean_twist, sd_twist, abdev_twist]),
+        'Residues/turn': np.array([mean_rnou, sd_rnou, abdev_rnou]),
+        'Local bending angles': np.asarray(bending_angles),
+        'Unit twist angles': np.asarray(twist),
+        'Best fit tilt': fit_tilt,
+        'Rotation Angles': np.asarray(local_screw_angles),
+        }
+
     logger.info("Height: %g  SD: %g  ABDEV: %g  (Angstroem)", mean_height, sd_height, abdev_height)
     logger.info("Twist: %g  SD: %g  ABDEV: %g", mean_twist, sd_twist, abdev_twist)
     logger.info("Residues/turn: %g  SD: %g  ABDEV: %g", mean_rnou, sd_rnou, abdev_rnou)
@@ -551,13 +594,12 @@ def helanal_main(pdbfile, selection="name CA", start=None, end=None, ref_axis=No
     output = " ".join(["%8.1f\t" % twist_ang for twist_ang in twist])
     logger.info("Unit twist angles: %s", output)
 
-    #calculate best fit vector and tilt of said vector
-    fit_vector, fit_tilt = vector_of_best_fit(origins)
     logger.info("Best fit tilt: %g", fit_tilt)
 
     output = " ".join(["%.1f" % item for item in local_screw_angles])
-    logger.info("Rotation Angles from 1 to n-1: %s", output)
+    logger.info("Rotation Angles from 1 to n-1 (local screw angles): %s", output)
 
+    return data
 
 def origin_pdb(origins, pdbfile):
     """Write origins to PDB (multi-frame).
