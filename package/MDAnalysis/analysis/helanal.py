@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -268,8 +268,9 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
     trajectory = universe.trajectory
 
     if finish is not None:
-        if trajectory.ts.time > finish:  # you'd be starting with a finish time (in ps) that has already passed or not
-        # available
+        if trajectory.ts.time > finish:
+            # you'd be starting with a finish time (in ps) that has already passed or not
+            # available
             raise FinishTimeException(
                 'The input finish time ({finish} ps) precedes the current trajectory time of {traj_time} ps.'.format(
                     finish=finish, traj_time=trajectory.time))
@@ -282,7 +283,7 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
         print "Analysing from the N termini to", end
     print "Analysing %d/%d residues" % (ca.n_atoms, universe.atoms.n_residues)
 
-    if not prefix is None:
+    if prefix is not None:
         prefix = str(prefix)
         matrix_filename = prefix + matrix_filename
         origin_pdbfile = prefix + origin_pdbfile
@@ -500,7 +501,7 @@ def backup_file(filename):
 def stats(some_list):
     if len(some_list) == 0:
         return [0, 0, 0]
-    list_mean = mean(some_list)
+    list_mean = np.mean(some_list)
     list_sd = sample_sd(some_list, list_mean)
     list_abdev = mean_abs_dev(some_list, list_mean)
     return [list_mean, list_sd, list_abdev]
@@ -554,17 +555,17 @@ def helanal_main(pdbfile, selection="name CA", start=None, end=None, ref_axis=No
             #TESTED- local bending matrix!
 
     #Average helical parameters
-    mean_twist = mean(twist)
+    mean_twist = np.mean(twist)
     sd_twist = sample_sd(twist, mean_twist)
     abdev_twist = mean_abs_dev(twist, mean_twist)
     #TESTED-average twists
     #print mean_twist, sd_twist, abdev_twist
-    mean_rnou = mean(rnou)
+    mean_rnou = np.mean(rnou)
     sd_rnou = sample_sd(rnou, mean_rnou)
     abdev_rnou = mean_abs_dev(rnou, mean_rnou)
     #TESTED-average residues per turn
     #print mean_rnou, sd_rnou, abdev_rnou
-    mean_height = mean(height)
+    mean_height = np.mean(height)
     sd_height = sample_sd(height, mean_height)
     abdev_height = mean_abs_dev(height, mean_height)
     #TESTED- average rises
@@ -721,12 +722,8 @@ def rotation_angle(helix_vector, axis_vector, rotation_vector):
     helix_dot_rehelix = vecangle(updown, helix_vector)
 
     #if ( helix_dot_rehelix < np.pi/2 and helix_dot_rehelix >= 0 )or helix_dot_rehelix <-np.pi/2:
-    if (np.pi / 2 > helix_dot_rehelix > -np.pi / 2) or (helix_dot_rehelix > 3 * np.pi / 2):
-        screw_angle = 0 - screw_angle
-        #print "Same     ", helix_dot_rehelix*180/np.pi
-    else:
-        #print "Different", helix_dot_rehelix*180/np.pi
-        pass
+    if (-np.pi / 2 < helix_dot_rehelix < np.pi / 2) or (helix_dot_rehelix > 3 * np.pi / 2):
+        screw_angle = -screw_angle
 
     return screw_angle
 
@@ -741,9 +738,7 @@ def vector_of_best_fit(origins):
     #Correct vector to face towards first residues
     rough_helix = origins[0] - centroids
     agreement = vecangle(rough_helix, vector)
-    if agreement < np.pi / 2 and agreement > -np.pi / 2:
-        pass
-    else:
+    if not (-np.pi / 2 < agreement < np.pi / 2):
         vector = vh[0] * -1
         vector = vector.tolist()[0]
     best_fit_tilt = vecangle(vector, [0, 0, 1])

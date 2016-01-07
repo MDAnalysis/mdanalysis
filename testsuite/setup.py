@@ -104,6 +104,7 @@ For details see the report for `Issue 87`_.
                   'data/Amber/*.inpcrd',
                   'data/*.pqr', 'data/*.pdbqt', 'data/*.bz2',
                   'data/*.fasta',
+                  'data/*.dat',
                   'data/*.dms',
                   'data/merge/2zmm/*.pdb',
                   'data/*.trz',

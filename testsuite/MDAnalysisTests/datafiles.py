@@ -68,6 +68,7 @@ __all__ = [
     "PDBQT_input",  # PDBQT
     "PDBQT_querypdb",
     "FASTA",  # sequence alignment, Issue 112 + 113
+    "HELANAL_BENDING_MATRIX",  # HELANAL test (from PSF+DCD (AdK) helix 8)
     "PDB_HOLE",  # gramicidin A
     "XTC_HOLE",  # gramicidin A, all frames identical, for Issue 129
     "DMS",
@@ -203,6 +204,8 @@ PDBQT_input = resource_filename(__name__, 'data/pdbqt_inputpdbqt.pdbqt')
 PDBQT_querypdb = resource_filename(__name__, 'data/pdbqt_querypdb.pdb')
 
 FASTA = resource_filename(__name__, 'data/test.fasta')
+HELANAL_BENDING_MATRIX = resource_filename(__name__, 'data/helanal_bending_matrix_AdK_DIMS_H8.dat')
+
 
 PDB_HOLE = resource_filename(__name__, 'data/1grm_single.pdb')
 XTC_HOLE = resource_filename(__name__, 'data/gram_A_identical_frames.xtc')
