@@ -13,7 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
---/--/15 tyler.je.reddy, kain88-de, richardjgowers, manuel.nuno.melo,
+--/--/16 tyler.je.reddy, kain88-de, richardjgowers, manuel.nuno.melo,
          orbeckst
 
   * 0.13.0
@@ -44,6 +44,7 @@ Enhancement
   * Added analysis.polymer, currently with PersistenceLength tool (Issue #460)
   * Added analysis.rdf, with InterRDF tool. (Issue #460)
   * Made Reader.check_slice_indices a public method (Issue #604)
+  * analysis.helanal.helanal_main() now returns results as dict
 
 Changes
 
@@ -51,6 +52,9 @@ Changes
   * The lib._distances and lib_distances_openmp libraries now have a
     OPENMP_ENABLED boolean flag which indicates if openmp was used in
     compilation.  (Issue #530)
+  * analysis.helanal.helanal_trajectory() and helanal_main() now use a
+    logger at level INFO to output all their computed values instead
+    of printing to stdout
 
 Fixes
 
@@ -76,6 +80,8 @@ Fixes
     (Issue #544 and #410)
   * Fixed base.Reader._check_slice_indices not liking numpy ints
     (Issue #604)
+  * Fixed broken analysis.helanal.helanal_trajectory() and
+    helanal_main()
 
 10/08/15
 
