@@ -514,6 +514,7 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
         print("Histograming %6d atoms in frame %5d/%d  [%5.1f%%]\r" % \
               (len(coord), ts.frame, u.trajectory.n_frames, 100.0 * ts.frame / u.trajectory.n_frames),)
         if update_selection:
+           group = u.select_atoms(atomselection)
            coord=group.positions
         else:
            coord = current_coordinates()
