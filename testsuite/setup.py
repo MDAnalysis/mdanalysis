@@ -1,5 +1,21 @@
+
 #!/usr/bin/env python
-# coding=utf-8
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+#
+# MDAnalysis --- http://www.MDAnalysis.org
+
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver
+# Beckstein and contributors (see AUTHORS for the full list)
+#
+# Released under the GNU Public Licence, v2 or any higher version
+#
+# Please cite your use of MDAnalysis in published work:
+#
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
+#
 """Setuptools-based setup script for tests of MDAnalysis.
 
 A working installation of NumPy <http://numpy.scipy.org> is required.
@@ -19,44 +35,17 @@ Also free to ask on the MDAnalysis mailing list for help:
 
 (Note that the group really is called `mdnalysis-discussion' because
 Google groups forbids any name that contains the string `anal'.)
-
-By default we use setuptools <http://pypi.python.org/pypi/setuptools>.  The
-details of such an "EasyInstall" installation procedure are shown on
-
-  http://peak.telecommunity.com/DevCenter/EasyInstall
-
-By changing the code below you can also switch to a standard distutils
-installation.
 """
-
-# ------------------------------------------------------------
-# selection of the installation system
-#------------------------------------------------------------
-#
-# Standard distutils-based installation:
-#
-##from distutils.core import setup, Extension
-
-# setuptools ("EasyInstall") installation:
-#
-# If you want EasyInstall features then enable the next three lines and comment
-# out the preceding line 'from distutils.core import ...'
-#
 from __future__ import print_function
-from ez_setup import use_setuptools
-
-use_setuptools()
 from setuptools import setup, Extension, find_packages
-#
-#------------------------------------------------------------
 
 import sys
 import os
 import glob
 
 # Make sure I have the right Python version.
-if sys.version_info[:2] < (2, 6):
-    print("MDAnalysis requires Python 2.6 or better. Python %d.%d detected" %
+if sys.version_info[:2] < (2, 7):
+    print("MDAnalysis requires Python 2.7 or better. Python %d.%d detected" %
           sys.version_info[:2])
     print("Please upgrade your version of Python.")
     sys.exit(-1)
