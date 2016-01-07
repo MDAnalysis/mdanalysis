@@ -129,26 +129,9 @@ def center(coordinates):
     """
     return np.mean(coordinates, axis=0)
 
-veclength = mdamath.norm
-
 def vecnorm(a):
     """Return a/|a|"""
-    return a / veclength(a)
-
-def vecangle(a, b):
-    """Angle between two vectors *a* and *b* in radians.
-
-    If one of the lengths is 0 then the angle is returned as 0
-    (instead of `nan`).
-    """
-    angle = mdamath.angle(a, b)
-    if np.isnan(angle):
-        return 0.0
-    return angle
-
-def vecdist(a, b):
-    """Return |a-b|"""
-    return veclength(a - b)
+    return a / mdamath.norm(a)
 
 def wrapangle(angle):
     """Wrap angle (in radians) to be within -pi < angle =< pi"""
@@ -351,7 +334,7 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
         with open(tilt_filename, "a") as tilt_output:
             print >> tilt_output, frame,
             for tilt in local_helix_axes:
-                print >> tilt_output, np.rad2deg(vecangle(tilt, ref_axis)),
+                print >> tilt_output, np.rad2deg(mdamath.angle(tilt, ref_axis)),
             print >> tilt_output, ""
 
         with open(fitted_tilt_filename, "a") as tilt_output:
@@ -362,7 +345,7 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
             #global_tilt = [ [] for item in local_helix_axes ]
         for store, tmp in zip(global_bending, bending_angles):
             store.append(tmp)
-        #for store,tmp in zip(global_tilt,local_helix_axes): store.append(vecangle(tmp,ref_axis))
+        #for store,tmp in zip(global_tilt,local_helix_axes): store.append(mdamath.angle(tmp,ref_axis))
 
 
     twist_mean, twist_sd, twist_abdev = stats(global_twist)
@@ -644,8 +627,8 @@ def main_loop(positions, ref_axis=None):
         #TESTED- Axes correct
         #print current_uloc
 
-        dmag = veclength(dv13)
-        emag = veclength(dv24)
+        dmag = mdamath.norm(dv13)
+        emag = mdamath.norm(dv24)
 
         costheta = np.dot(dv13, dv24) / (dmag * emag)
         #rnou is the number of residues per turn
@@ -705,8 +688,8 @@ def main_loop(positions, ref_axis=None):
 def rotation_angle(helix_vector, axis_vector, rotation_vector):
     reference_vector = np.cross(np.cross(helix_vector, axis_vector), helix_vector)
     second_reference_vector = np.cross(axis_vector, helix_vector)
-    screw_angle = vecangle(reference_vector, rotation_vector)
-    alt_screw_angle = vecangle(second_reference_vector, rotation_vector)
+    screw_angle = mdamath.angle(reference_vector, rotation_vector)
+    alt_screw_angle = mdamath.angle(second_reference_vector, rotation_vector)
     updown = np.cross(reference_vector, rotation_vector)
 
     if not (np.pi < screw_angle < 3 * np.pi / 4):
@@ -721,10 +704,10 @@ def rotation_angle(helix_vector, axis_vector, rotation_vector):
         else:
             logger.debug("Big Screw Up: screw_angle=%g degrees", np.rad2deg(screw_angle))
 
-    if veclength(updown) == 0:
+    if mdamath.norm(updown) == 0:
         logger.warn("PROBLEM (vector is at 0 or 180)")
 
-    helix_dot_rehelix = vecangle(updown, helix_vector)
+    helix_dot_rehelix = mdamath.angle(updown, helix_vector)
 
     #if ( helix_dot_rehelix < np.pi/2 and helix_dot_rehelix >= 0 )or helix_dot_rehelix <-np.pi/2:
     if (-np.pi / 2 < helix_dot_rehelix < np.pi / 2) or (helix_dot_rehelix > 3 * np.pi / 2):
@@ -742,9 +725,9 @@ def vector_of_best_fit(origins):
     vector = vh[0].tolist()[0]
     #Correct vector to face towards first residues
     rough_helix = origins[0] - centroids
-    agreement = vecangle(rough_helix, vector)
+    agreement = mdamath.angle(rough_helix, vector)
     if not (-np.pi / 2 < agreement < np.pi / 2):
         vector = vh[0] * -1
         vector = vector.tolist()[0]
-    best_fit_tilt = vecangle(vector, [0, 0, 1])
+    best_fit_tilt = mdamath.angle(vector, [0, 0, 1])
     return vector, best_fit_tilt
