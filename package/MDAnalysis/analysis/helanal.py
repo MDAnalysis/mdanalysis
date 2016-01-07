@@ -114,10 +114,7 @@ import sys
 import os
 
 import numpy as np
-# replace CartesianToolkit with NumPy
-# - vecscale(v,a) --> a*c
-# - vecadd(a,b) --> a+b
-# - vecsub(a,b) --> a-b
+
 import MDAnalysis
 from MDAnalysis import FinishTimeException
 
@@ -181,12 +178,6 @@ def mean_abs_dev(a, mean_a=None):
     if mean_a is None:
         mean_a = np.mean(a)
     return np.mean(np.fabs(a - mean_a))
-
-
-try:
-    import psyco
-except:
-    pass
 
 
 def helanal_trajectory(universe, selection="name CA", start=None, end=None, begin=None, finish=None,
@@ -701,9 +692,7 @@ def rotation_angle(helix_vector, axis_vector, rotation_vector):
     alt_screw_angle = vecangle(second_reference_vector, rotation_vector)
     updown = veccross(reference_vector, rotation_vector)
 
-    if screw_angle > np.pi / 4 and screw_angle < 3 * np.pi / 4:
-        pass
-    else:
+    if not (np.pi < screw_angle < 3 * np.pi / 4):
         if screw_angle < np.pi / 4 and alt_screw_angle < np.pi / 2:
             screw_angle = np.pi / 2 - alt_screw_angle
         elif screw_angle < np.pi / 4 and alt_screw_angle > np.pi / 2:
