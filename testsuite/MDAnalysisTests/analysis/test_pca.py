@@ -1,7 +1,10 @@
 #!/usr/bin/env python2.7
 
 import MDAnalysis
-import MDAnalysis.analysis.pca as pca
+try:
+    import MDAnalysis.analysis.pca as pca
+except ImportError:
+    pass
 import numpy as np
 
 from MDAnalysisTests import module_not_found
