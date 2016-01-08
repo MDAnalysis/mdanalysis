@@ -20,21 +20,27 @@ import os
 import itertools
 import tempdir
 
+from numpy.testing import TestCase, assert_equal, assert_almost_equal, dec
+
 import MDAnalysis as mda
-import MDAnalysis.analysis.density
-
-from numpy.testing import TestCase, assert_equal, assert_almost_equal
-
-
+# imported inside a skipif-protected method so that it can
+# be tested in the absence of scipy
+## import MDAnalysis.analysis.density
 
 from MDAnalysisTests.datafiles import TPR, XTC
+from MDAnalysisTests import module_not_found
+
 
 class TestDensity(TestCase):
     nbins = 3, 4, 5
     counts = 100
     Lmax = 10.
 
+    @dec.skipif(module_not_found('scipy'),
+                "Test skipped because scipy is not available.")
     def setUp(self):
+        import MDAnalysis.analysis.density
+
         self.bins = [np.linspace(0, self.Lmax, n+1) for n in self.nbins]
         h, edges = np.histogramdd(self.Lmax*np.random.random((self.counts, 3)), bins=self.bins)
         self.D = MDAnalysis.analysis.density.Density(h, edges,
@@ -77,30 +83,54 @@ class TestDensity(TestCase):
 class Test_density_from_Universe(TestCase):
     topology = TPR
     trajectory = XTC
-    selection = "name OW"
     delta = 2.0
-    meandensity = 0.016764271713091212
+    selections = {'static': "name OW",
+                  'dynamic': "name OW and around 4 (protein and resnum 1-10)",
+                  }
+    references = {'static':
+                      {'meandensity': 0.016764271713091212, },
+                  'dynamic':
+                      {'meandensity': 0.00062423404854011104, },
+                  }
+    precision = 5
 
+    @dec.skipif(module_not_found('scipy'),
+                "Test skipped because scipy is not available.")
     def setUp(self):
-        self.tmpdir = tempdir.TempDir()
-        self.outfile = os.path.join(self.tmpdir.name , 'density.dx')
+        self.outfile = 'density.dx'
+        self.universe = mda.Universe(self.topology, self.trajectory)
 
     def tearDown(self):
-        try:
-            os.unlink(self.outfile)
-        except OSError:
-            pass
+        del self.universe
+
+    def check_density_from_Universe(self, atomselection,
+                                    ref_meandensity, **kwargs):
+        import MDAnalysis.analysis.density
+
+        with tempdir.in_tempdir():
+            D = MDAnalysis.analysis.density.density_from_Universe(
+                self.universe, atomselection=atomselection,
+                delta=self.delta, **kwargs)
+            assert_almost_equal(D.grid.mean(), ref_meandensity,
+                                err_msg="mean density does not match")
+
+            D.export(self.outfile)
+
+            D2 = MDAnalysis.analysis.density.Density(self.outfile)
+            assert_almost_equal(D.grid, D2.grid, decimal=self.precision,
+                                err_msg="DX export failed: different grid sizes")
+
 
     def test_density_from_Universe(self):
-        u = mda.Universe(self.topology, self.trajectory)
-        D = MDAnalysis.analysis.density.density_from_Universe(u, atomselection=self.selection,
-                                                              delta=self.delta)
-        assert_almost_equal(D.grid.mean(), self.meandensity,
-                            err_msg="mean density does not match")
+        self.check_density_from_Universe(
+            self.selections['static'],
+            self.references['static']['meandensity'])
 
-        D.export(self.outfile)
+    def test_density_from_Universe_update_selection(self):
+        self.check_density_from_Universe(
+            self.selections['dynamic'],
+            self.references['dynamic']['meandensity'],
+            update_selections=True)
 
-        D2 = MDAnalysis.analysis.density.Density(self.outfile)
-        assert_almost_equal(D.grid, D2.grid)
 
 

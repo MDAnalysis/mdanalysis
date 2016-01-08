@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -113,10 +113,14 @@ except ImportError:
     )
 
 import MDAnalysis
+import MDAnalysis.core.AtomGroup
 from MDAnalysis.lib.util import fixedwidth_bins, iterable, asiterable
 from MDAnalysis.lib import NeighborSearch as NS
 from MDAnalysis import NoDataError, MissingDataWarning
 from .. import units
+from MDAnalysis.lib.log import ProgressMeter
+
+import MDAnalysis.analysis.distances
 
 import logging
 
@@ -450,7 +454,7 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
       cutoff
             With *cutoff*, select '<atomsel> NOT WITHIN <cutoff> OF <soluteselection>'
             (Special routines that are faster than the standard AROUND selection) [0]
-      update_selection 
+      update_selection
             True: Atom selection is updated for each frame
       parameters
             dict with some special parameters for :class:`Density` (see doc)
@@ -458,9 +462,9 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
             metadata, parameters are modified and passed on to :class:`Density`
 
     :Returns: :class:`Density`
-    
+
     .. versionchanged:: 0.13.0
-    *update_selection* keyword added
+       *update_selection* keyword added
 
     """
     try:
@@ -473,7 +477,6 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
         # special fast selection for '<atomsel> not within <cutoff> of <solutesel>'
         notwithin_coordinates = notwithin_coordinates_factory(u, atomselection, soluteselection, cutoff,
                                                               use_kdtree=use_kdtree)
-
         def current_coordinates():
             return notwithin_coordinates()
     else:
@@ -513,20 +516,22 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
     grid *= 0.0
     h = grid.copy()
 
+    pm = ProgressMeter(u.trajectory.n_frames, interval=1,
+                       format="Histogramming %(n_atoms)6d atoms in frame "
+                       "%(step)5d/%(numsteps)d  [%(percentage)5.1f%%]\r")
     for ts in u.trajectory:
-        print("Histograming %6d atoms in frame %5d/%d  [%5.1f%%]\r" % \
-              (len(coord), ts.frame, u.trajectory.n_frames, 100.0 * ts.frame / u.trajectory.n_frames),)
         if update_selection:
            group = u.select_atoms(atomselection)
            coord=group.positions
         else:
            coord = current_coordinates()
-           
+
+        pm.echo(ts.frame, n_atoms=len(coord))
         if len(coord) == 0:
             continue
+
         h[:], edges[:] = np.histogramdd(coord, bins=bins, range=arange, normed=False)
         grid += h  # accumulate average histogram
-    print("")
     n_frames = u.trajectory.n_frames
     grid /= float(n_frames)
 
@@ -599,8 +604,6 @@ def notwithin_coordinates_factory(universe, sel1, sel2, cutoff, not_within=True,
     protein = universe.select_atoms(sel2)
     if use_kdtree:
         # using faster hand-coded 'not within' selection with kd-tree
-        import MDAnalysis.core.AtomGroup
-
         set_solvent = set(solvent)  # need sets to do bulk = allsolvent - selection
         if not_within is True:  # default
             def notwithin_coordinates(cutoff=cutoff):
@@ -618,8 +621,6 @@ def notwithin_coordinates_factory(universe, sel1, sel2, cutoff, not_within=True,
                 return group.coordinates()
     else:
         # slower distance matrix based (calculate all with all distances first)
-        import MDAnalysis.analysis.distances
-
         dist = np.zeros((len(solvent), len(protein)), dtype=np.float64)
         box = None  # as long as s_coor is not minimum-image remapped
         if not_within is True:  # default
@@ -763,9 +764,7 @@ class BfactorDensityCreator(object):
         that can be easily matched to a broader density distribution.
 
         """
-        from MDAnalysis import as_Universe
-
-        u = as_Universe(pdb)
+        u = MDAnalysis.as_Universe(pdb)
         group = u.select_atoms(atomselection)
         coord = group.coordinates()
         logger.info("Selected %d atoms (%s) out of %d total." %
