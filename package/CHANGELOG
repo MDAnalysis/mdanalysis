@@ -14,7 +14,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 --/--/15 tyler.je.reddy, kain88-de, richardjgowers, manuel.nuno.melo,
-         orbeckst
+         orbeckst,Balasubra
 
   * 0.13.0
 
@@ -43,6 +43,7 @@ Enhancement
     and triclinic geometry. (Issue #139)
   * Added analysis.polymer, currently with PersistenceLength tool (Issue #460)
   * Added analysis.rdf, with InterRDF tool. (Issue #460)
+  * Added keyword to update selection every frame in density calculation (Issue #584) 
 
 Changes
 
