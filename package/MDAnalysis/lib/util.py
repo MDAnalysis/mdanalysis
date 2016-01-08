@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -361,7 +361,26 @@ def _get_stream(filename, openfunction=file, mode='r'):
 
 
 def greedy_splitext(p):
-    """Split extension in path *p* at the left-most separator."""
+    """Split extension in path *p* at the left-most separator.
+
+    Extensions are taken to be separated from the filename with the
+    separator :data:`os.extsep` (as used by :func:`os.path.splitext`).
+
+    Arguments
+    ---------
+    p : path, string
+
+    Returns
+    -------
+    Tuple ``(root, extension)`` where ``root`` is the full path and
+    filename with all extensions removed whereas ``extension`` is the
+    string of all extensions.
+
+    Example
+    -------
+    >>> greedy_splitext("/home/joe/protein.pdb.bz2")
+    ('/home/joe/protein', '.pdb.bz2')
+    """
     path, root = os.path.split(p)
     extension = ''
     while True:
@@ -369,7 +388,7 @@ def greedy_splitext(p):
         extension = ext + extension
         if not ext:
             break
-    return root, extension
+    return os.path.join(path, root), extension
 
 
 def hasmethod(obj, m):
@@ -1168,7 +1187,7 @@ def cached(key):
 
 def blocks_of(a, n, m):
     """Extract a view of (n, m) blocks along the diagonal of the array `a`
- 
+
     Parameters
     ----------
     a : array_like
@@ -1178,10 +1197,10 @@ def blocks_of(a, n, m):
     m : int
         size of block in second dimension
 
- 
+
     Returns
     -------
-      (nblocks, n, m) view of the original array. 
+      (nblocks, n, m) view of the original array.
       Where nblocks is the number of times the miniblock fits in the original.
 
     Raises
@@ -1189,7 +1208,7 @@ def blocks_of(a, n, m):
       ValueError
         If the supplied `n` and `m` don't divide `a` into an integer number
         of blocks.
- 
+
     Examples
     --------
     >>> arr = np.arange(16).reshape(4, 4)
@@ -1204,27 +1223,27 @@ def blocks_of(a, n, m):
     Notes
     -----
       n, m must divide a into an identical integer number of blocks.
- 
+
       Uses strides so probably requires that the array is C contiguous
- 
+
       Returns a view, so editing this modifies the original array
 
     .. versionadded:: 0.12.0
     """
-    # based on: 
+    # based on:
     # http://stackoverflow.com/a/10862636
     # but generalised to handle non square blocks.
 
     nblocks = a.shape[0] / n
     nblocks2 = a.shape[1] / m
- 
+
     if not nblocks == nblocks2:
         raise ValueError("Must divide into same number of blocks in both"
                          " directions.  Got {} by {}"
                          "".format(nblocks, nblocks2))
- 
+
     new_shape = (nblocks, n, m)
     new_strides = (n * a.strides[0] + m * a.strides[1],
                    a.strides[0], a.strides[1])
- 
+
     return np.lib.stride_tricks.as_strided(a, new_shape, new_strides)

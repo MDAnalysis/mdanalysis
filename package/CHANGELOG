@@ -82,6 +82,7 @@ Fixes
     (Issue #604)
   * Fixed broken analysis.helanal.helanal_trajectory() and
     helanal_main()
+  * Fixed lib.util.greedy_splitext() (now returns full path)
 
 10/08/15
 

@@ -13,24 +13,24 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+import cStringIO
+import os.path
+import tempfile
+
 import numpy as np
 import numpy.random
-from numpy.testing import *
+from numpy.testing import (assert_raises, assert_equal, assert_almost_equal,
+                           assert_array_almost_equal, assert_,
+                           TestCase)
 
-
-from MDAnalysisTests.datafiles import PSF, Make_Whole
-
+import MDAnalysis as mda
 import MDAnalysis.lib.util as util
 import MDAnalysis.lib.mdamath as mdamath
 from MDAnalysis.lib.util import cached
 from MDAnalysis.core.topologyobjects import TopologyGroup, Bond
 from MDAnalysis.exceptions import NoDataError
-import MDAnalysis as mda
 
-import cStringIO
-import os.path
-import tempfile
-
+from MDAnalysisTests.datafiles import PSF, Make_Whole
 
 def check_parse_residue(rstring, residue):
     assert_equal(util.parse_residue(rstring), residue)
@@ -86,6 +86,11 @@ class TestStringFunctions(object):
     def test_VE_2(self):
         assert_raises(ValueError, util.convert_aa_code, '£')
 
+def test_greedy_splitext(inp="foo/bar/boing.2.pdb.bz2",
+                         ref=("foo/bar/boing", ".2.pdb.bz2")):
+    root, ext = util.greedy_splitext(inp)
+    assert_equal(root, ref[0], err_msg="root incorrect")
+    assert_equal(ext, ref[1], err_msg="extension incorrect")
 
 class TestIterable(TestCase):
     def test_lists(self):
