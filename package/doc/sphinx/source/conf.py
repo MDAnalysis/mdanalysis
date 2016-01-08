@@ -88,7 +88,7 @@ authors = u"""Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua
     Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
     Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, 
     Gorman Stock, Isaac Virshup, Zhuyi Xue, Carlos Yáñez S.,
-    and Oliver Beckstein"""
+    Balasubramanian, and Oliver Beckstein"""
 project = u'MDAnalysis'
 copyright = u'2005-2015, ' + authors
 
