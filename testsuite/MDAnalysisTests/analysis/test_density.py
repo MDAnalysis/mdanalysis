@@ -89,6 +89,8 @@ class Test_density_from_Universe(TestCase):
                   }
     references = {'static':
                       {'meandensity': 0.016764271713091212, },
+                  'static_sliced':
+                      {'meandensity': 0.0067057088794023143, },
                   'dynamic':
                       {'meandensity': 0.00062423404854011104, },
                   }
@@ -125,6 +127,13 @@ class Test_density_from_Universe(TestCase):
         self.check_density_from_Universe(
             self.selections['static'],
             self.references['static']['meandensity'])
+
+    def test_density_from_Universe_sliced(self):
+        self.check_density_from_Universe(
+            self.selections['static'],
+            self.references['static_sliced']['meandensity'],
+            start=1, stop=-1, step=2,
+            )
 
     def test_density_from_Universe_update_selection(self):
         self.check_density_from_Universe(

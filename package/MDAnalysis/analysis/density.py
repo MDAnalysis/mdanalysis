@@ -389,9 +389,10 @@ class Density(Grid):
 def density_from_trajectory(*args, **kwargs):
     """Create a density grid from a trajectory.
 
+    ::
          density_from_trajectory(PSF, DCD, delta=1.0, atomselection='name OH2', ...) --> density
 
-    or
+    or ::
 
          density_from_trajectory(PDB, XTC, delta=1.0, atomselection='name OH2', ...) --> density
 
@@ -403,36 +404,33 @@ def density_from_trajectory(*args, **kwargs):
             if reading a single PDB file it is sufficient to just
             provide it once as a single argument
 
-    :Keywords:
-      atomselection
-            selection string (MDAnalysis syntax) for the species to be analyzed
-            ["name OH2"]
-      delta
-            bin size for the density grid in Angstroem (same in x,y,z) [1.0]
-      metadata
-            dictionary of additional data to be saved with the object
-      padding
-            increase histogram dimensions by padding (on top of initial box size)
-            in Angstroem [2.0]
-      soluteselection
-            MDAnalysis selection for the solute, e.g. "protein" [``None``]
-      cutoff
-            With *cutoff*, select '<atomsel> NOT WITHIN <cutoff> OF <soluteselection>'
-            (Special routines that are faster than the standard AROUND selection) [0]
-
     :Returns: :class:`Density`
 
-    .. SeeAlso:: docs for :func:`density_from_Universe` (defaults for kwargs are defined there).
+    .. SeeAlso:: :func:`density_from_Universe` shows all available *kwargs*
     """
     return density_from_Universe(MDAnalysis.Universe(*args), **kwargs)
 
 
 def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
+                          start=None, stop=None, step=None,
                           metadata=None, padding=2.0, cutoff=0, soluteselection=None,
-                          use_kdtree=True, update_selection=False, **kwargs):
-    """Create a density grid from a MDAnalysis.Universe object.
+                          use_kdtree=True, update_selection=False,
+                          quiet=False, interval=1,
+                          **kwargs):
+    """Create a density grid from a :class:`MDAnalysis.Universe` object.
+
+    The trajectory is read, frame by frame, and the atoms selected with *atomselection* are
+    histogrammed on a grid with spacing *delta*::
 
       density_from_Universe(universe, delta=1.0, atomselection='name OH2', ...) --> density
+
+    .. Note:: By default, the *atomselection* is static, i.e., atoms are only
+              selected once at the beginning. If you want dynamically changing
+              selections (such as "name OW and around 4.0 (protein and not name
+              H*)") then set ``update_selection=True``. For the special case of
+              calculating a density of the "bulk" solvent away from a solute
+              use the optimized selections with keywords *cutoff* and
+              *soluteselection*.
 
     :Arguments:
       universe
@@ -444,6 +442,9 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
             ["name OH2"]
       delta
             bin size for the density grid in Angstroem (same in x,y,z) [1.0]
+      start, stop, step
+            Slice the trajectory as ``trajectory[start"stop:step]``; default
+            is to read the whole trajectory.
       metadata
             dictionary of additional data to be saved with the object
       padding
@@ -452,10 +453,20 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
       soluteselection
             MDAnalysis selection for the solute, e.g. "protein" [``None``]
       cutoff
-            With *cutoff*, select '<atomsel> NOT WITHIN <cutoff> OF <soluteselection>'
-            (Special routines that are faster than the standard AROUND selection) [0]
+            With *cutoff*, select "<atomsel> NOT WITHIN <cutoff> OF <soluteselection>"
+            (Special routines that are faster than the standard ``AROUND`` selection)
+            [0]
       update_selection
-            True: Atom selection is updated for each frame
+            Should the selection of atoms be updated for every step? [``False``]
+            - ``True``: atom selection is updated for each frame, can be slow
+            - ``False``: atoms are only selected at the beginning
+      quiet
+            Print status update to the screen for every *interval* frame? [``False``]
+            - ``True``: no status updates when a new frame is processed
+            - ``False``: status update every frame (including number of atoms
+              processed, which is interesting with ``update_selection=True``)
+      interval
+           Show status update every *interval* frame [1]
       parameters
             dict with some special parameters for :class:`Density` (see doc)
       kwargs
@@ -464,7 +475,7 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
     :Returns: :class:`Density`
 
     .. versionchanged:: 0.13.0
-       *update_selection* keyword added
+       *update_selection* and *quite* keywords added
 
     """
     try:
@@ -516,10 +527,10 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
     grid *= 0.0
     h = grid.copy()
 
-    pm = ProgressMeter(u.trajectory.n_frames, interval=1,
+    pm = ProgressMeter(u.trajectory.n_frames, interval=interval, quiet=quiet,
                        format="Histogramming %(n_atoms)6d atoms in frame "
                        "%(step)5d/%(numsteps)d  [%(percentage)5.1f%%]\r")
-    for ts in u.trajectory:
+    for ts in u.trajectory[start:stop:step]:
         if update_selection:
            group = u.select_atoms(atomselection)
            coord=group.positions
