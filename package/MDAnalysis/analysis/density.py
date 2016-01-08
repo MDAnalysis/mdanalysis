@@ -458,6 +458,9 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
             metadata, parameters are modified and passed on to :class:`Density`
 
     :Returns: :class:`Density`
+    
+    .. versionchanged:: 0.13.0
+    *update_selection* keyword added
 
     """
     try:
