@@ -72,7 +72,6 @@ Classes and Functions
    :inherited-members:
    :show-inheritance:
 .. autofunction:: density_from_Universe
-.. autofunction:: density_from_trajectory
 .. autofunction:: density_from_PDB
 .. autofunction:: Bfactor2RMSF
 .. autoclass:: BfactorDensityCreator
@@ -384,32 +383,6 @@ class Density(Grid):
         else:
             grid_type = 'histogram'
         return '<Density ' + grid_type + ' with ' + str(self.grid.shape) + ' bins>'
-
-
-def density_from_trajectory(*args, **kwargs):
-    """Create a density grid from a trajectory.
-
-    ::
-         density_from_trajectory(PSF, DCD, delta=1.0, atomselection='name OH2', ...) --> density
-
-    or ::
-
-         density_from_trajectory(PDB, XTC, delta=1.0, atomselection='name OH2', ...) --> density
-
-    :Arguments:
-      topology file
-            any topology file understood by MDAnalysis
-      trajectory
-            any trajectory (coordinate) file understood by MDAnalysis;
-            if reading a single PDB file it is sufficient to just
-            provide it once as a single argument
-
-    :Returns: :class:`Density`
-
-    .. SeeAlso:: :func:`density_from_Universe` shows all available *kwargs*
-    """
-    return density_from_Universe(MDAnalysis.Universe(*args), **kwargs)
-
 
 def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
                           start=None, stop=None, step=None,

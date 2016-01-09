@@ -61,6 +61,9 @@ Changes
     of printing to stdout
   * default offset for ProgressMeter was changed from 0 to 1 (to match
     the change from 1- to 0-based ts.frame counting)
+  * removed superfluous analysis.density.density_from_trajectory();
+    use density_from_Universe(TOPOL, TRAJ) instead.
+  
 
 Fixes
 
