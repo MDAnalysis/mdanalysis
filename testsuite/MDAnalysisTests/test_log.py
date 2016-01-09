@@ -89,7 +89,7 @@ class TestProgressMeter(TestCase):
     def test_default_ProgressMeter(self, n=101, interval=10):
         format = "Step %(step)5d/%(numsteps)d [%(percentage)5.1f%%]\r"
         with RedirectedStderr(self.buf):
-            pm = MDAnalysis.lib.log.ProgressMeter(n, interval=interval, offset=1)
+            pm = MDAnalysis.lib.log.ProgressMeter(n, interval=interval)
             for frame in range(n):
                 pm.echo(frame)
         self.buf.seek(0L)

@@ -14,7 +14,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 --/--/16 tyler.je.reddy, kain88-de, richardjgowers, manuel.nuno.melo,
-         orbeckst
+         orbeckst, Balasubra
 
   * 0.13.0
 
@@ -45,6 +45,10 @@ Enhancement
   * Added analysis.rdf, with InterRDF tool. (Issue #460)
   * Made Reader.check_slice_indices a public method (Issue #604)
   * analysis.helanal.helanal_main() now returns results as dict
+  * Added keyword to update selection every frame in density calculation (Issue #584) 
+  * New keywords start, stop, step for density.density_from_Universe()
+    to slice a trajectory.
+
 
 Changes
 
@@ -55,6 +59,11 @@ Changes
   * analysis.helanal.helanal_trajectory() and helanal_main() now use a
     logger at level INFO to output all their computed values instead
     of printing to stdout
+  * default offset for ProgressMeter was changed from 0 to 1 (to match
+    the change from 1- to 0-based ts.frame counting)
+  * removed superfluous analysis.density.density_from_trajectory();
+    use density_from_Universe(TOPOL, TRAJ) instead.
+  
 
 Fixes
 

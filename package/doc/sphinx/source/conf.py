@@ -79,14 +79,14 @@ master_doc = 'index'
 # Ordering: (1) Naveen (2) Elizabeth, then all contributors in alphabetical order
 #           (last) Oliver
 authors = u"""Naveen Michaud-Agrawal, Elizabeth J. Denning, Joshua
-    Adelman, Jonathan Barnoud, Christian Beckstein (logo), Alejandro
+    Adelman, Balasubramanian, Jonathan Barnoud, Christian Beckstein (logo), Alejandro
     Bernardin, Sébastien Buchoux, David Caplan, Matthieu Chavent,
     Xavier Deupi, Jan Domański, David L. Dotson, Lennard van der
     Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas
     Grossar, Benjamin Hall, Joe Jordan, Max Linke, Jinju Lu, Robert
     McGibbon, Alex Nesterenko, Manuel Nuno Melo, Hai Nguyen,
     Caio S. Souza, Danny Parton, Joshua L. Phillips, Tyler Reddy,
-    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl, 
+    Paul Rigor, Sean L. Seyler, Andy Somogyi, Lukas Stelzl,
     Gorman Stock, Isaac Virshup, Zhuyi Xue, Carlos Yáñez S.,
     and Oliver Beckstein"""
 project = u'MDAnalysis'
