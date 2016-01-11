@@ -29,8 +29,9 @@ matrix operations for manipulating coordinate data.
 :mod:`MDAnalysis.lib.qcprot` contains a fast implementation of
 superposition by minimizing the RMSD.
 
-:mod:`MDAnalysis.lib.util` contains various file, string
-and mathematical utility functions.
+:mod:`MDAnalysis.lib.util` contains various file and string utility
+functions whereas mathematical functions are to be found in
+:mod:`MDAnalysis.lib.mdamath`.
 
 :mod:`MDAnalysis.lib.NeighborSearch` contains classes to do neighbor
 searches with MDAnalysis objects.

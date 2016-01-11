@@ -29,14 +29,16 @@ All functions take the optional keyword *backend*, which determines
 the type of acceleration. Currently, the following choices are
 implemented (*backend* is case-insensitive):
 
-========== ======================== ======================================
-*backend*  module                   description
-========== ======================== ======================================
-"serial"   :mod:`c_distances`        serial implementation in C/Cython
+.. Table:: Available *backends* for accelerated distance functions.
 
-"OpenMP"   :mod:`c_distances_openmp` parallel implementation in C/Cython
-                                    with OpenMP
-========== ======================== ======================================
+   ========== ========================= ======================================
+   *backend*  module                    description
+   ========== ========================= ======================================
+   "serial"   :mod:`c_distances`        serial implementation in C/Cython
+
+   "OpenMP"   :mod:`c_distances_openmp` parallel implementation in C/Cython
+                                        with OpenMP
+   ========== ========================= ======================================
 
 .. versionadded:: 0.13.0
 
