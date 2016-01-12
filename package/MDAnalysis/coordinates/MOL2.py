@@ -132,7 +132,7 @@ class MOL2Reader(base.Reader):
             raise ValueError(
                 "MOL2Reader assumes that the number of atoms remains unchanged"
                 " between frames; the current "
-                "frame has {}, the next frame has {1} atoms"
+                "frame has {0}, the next frame has {1} atoms"
                 "".format(self.n_atoms, len(coords)))
 
         self.ts.positions = np.array(coords, dtype=np.float32)
