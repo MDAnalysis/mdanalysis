@@ -20,6 +20,7 @@ Analysis building blocks --- :mod:`MDAnalysis.analysis.base`
 A collection of useful building blocks for creating Analysis
 classes.
 """
+
 import numpy as np
 import logging
 
@@ -29,9 +30,12 @@ logger = logging.getLogger(__name__)
 
 class AnalysisBase(object):
     """Base class for defining multi frame analysis
+
     The analysis base class is designed as a template for creating
-    multiframe analysis.  
+    multiframe analysis.
+
     The class implements the following methods:
+
     _setup_frames(trajectory, start=None, stop=None, step=None)
       Pass a Reader object and define the desired iteration pattern
       through the trajectory
@@ -39,17 +43,22 @@ class AnalysisBase(object):
     run
       The user facing run method.  Calls the analysis methods
       defined below
+
     Your analysis can implement the following methods, which are
     called from run:
+
     _prepare
       Called before iteration on the trajectory has begun.
       Data structures can be set up at this time, however most
       error checking should be done in the __init__
+
     _single_frame
       Called after the trajectory is moved onto each new frame.
     _conclude
+
       Called once iteration on the trajectory is finished.
       Apply normalisation and averaging to results here.
+
     """
     def _setup_frames(self, trajectory, start=None, stop=None, step=None):
 
@@ -80,21 +89,18 @@ class AnalysisBase(object):
         Called at the end of the run() method to finish everything up.
         """
         pass
-        
+
     def run(self):
         """Perform the calculation"""
         logger.info("Starting preparation")
         self._prepare()
         for i, ts in enumerate(
                 self._trajectory[self.start:self.stop:self.step]):
-            logger.info("--> Doing frame {} of {}".format(i+1, self.nframes))
+            #logger.info("--> Doing frame {} of {}".format(i+1, self.nframes))
             self._single_frame()
         logger.info("Finishing up")
         self._conclude()
 
-    #def __iadd__(self,other):
-    #    return self
-    
     def __getstate__(self):
         state = dict(self.__dict__)
         key = '_trajectory'

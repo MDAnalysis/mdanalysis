@@ -6,7 +6,7 @@ class TotalDipole(AnalysisBase):
     def __init__(self, trajectory=None, filename='order.dat', selection=None, start=None, stop=None, step=None):
 
         if selection is None:
-            raise RuntimeError('In class OrientationalOrder: constructur requires a selection')
+            raise RuntimeError('In class TotalDipole: constroctur requires a selection')
         else:
             self.selection        = selection
 
@@ -52,7 +52,7 @@ def MolecularDipole(residue):
         charge_center.append(np.sum(np.multiply(abscharges,positions[:,coord]))/charge_sum)
 
     dipole = []
-    # 4.803 is to convert in debyes
+    # 4.803 converts to debyes
     for coord in [0,1,2]:
         dipole.append(np.sum(np.multiply(charges,positions[:,coord]-charge_center[coord]))*4.803)
                       
