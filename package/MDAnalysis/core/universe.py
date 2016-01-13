@@ -377,7 +377,7 @@ class Universe(object):
         """
         self._classes['group']._add_prop(attr)
 
-        for level in attr.levels:
+        for level in attr.target_levels:
             try:
                 self._classes[level]._add_prop(attr)
             except (KeyError, AttributeError):

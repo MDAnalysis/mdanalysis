@@ -119,7 +119,7 @@ class Atomindices(TopologyAttr):
     """
     attrname = 'indices'
     singular = 'index'
-    levels = ['atom']
+    target_levels = ['atom']
 
     def __init__(self):
         pass
@@ -155,7 +155,7 @@ class Resindices(TopologyAttr):
     """
     attrname = 'resindices'
     singular = 'resindex'
-    levels = ['residue']
+    target_levels = ['residue']
 
     def __init__(self):
         pass
@@ -199,7 +199,7 @@ class Segindices(TopologyAttr):
     """
     attrname = 'segindices'
     singular = 'segindex'
-    levels = ['segment']
+    target_levels = ['segment']
 
     def __init__(self):
         pass
@@ -229,7 +229,7 @@ class AtomAttr(TopologyAttr):
     """
     attrname = 'atomattrs'
     singular = 'atomattr'
-    levels = ['atom']
+    target_levels = ['atom']
 
     def get_atoms(self, ag):
         return self.values[ag._ix]
@@ -314,7 +314,7 @@ class Tempfactors(AtomAttr):
 class Masses(AtomAttr):
     attrname = 'masses'
     singular = 'mass'
-    levels = ['atom', 'residue', 'segment']
+    target_levels = ['atom', 'residue', 'segment']
     transplants = defaultdict(list)
 
     groupdoc = """Mass of each component in the Group.
@@ -503,7 +503,7 @@ class ResidueAttr(TopologyAttr):
     """
     attrname = 'residueattrs'
     singular = 'residueattr'
-    levels = ['residue']
+    target_levels = ['residue']
 
     def get_atoms(self, ag):
         rix = self.top.tt.a2r(ag._ix)
@@ -530,21 +530,21 @@ class Resids(ResidueAttr):
     """Residue ID"""
     attrname = 'resids'
     singular = 'resid'
-    levels = ['atom', 'residue']
+    target_levels = ['atom', 'residue']
 
 
 #TODO: update docs to property doc
 class Resnames(ResidueAttr):
     attrname = 'resnames'
     singular = 'resname'
-    levels = ['atom', 'residue']
+    target_levels = ['atom', 'residue']
 
 
 #TODO: update docs to property doc
 class Resnums(ResidueAttr):
     attrname = 'resnums'
     singular = 'resnum'
-    levels = ['atom', 'residue']
+    target_levels = ['atom', 'residue']
 
 
 ## segment attributes
@@ -555,7 +555,7 @@ class SegmentAttr(TopologyAttr):
     """
     attrname = 'segmentattrs'
     singular = 'segmentattr'
-    levels = ['segment']
+    target_levels = ['segment']
 
     def get_atoms(self, ag):
         six = self.top.tt.a2s(ag._ix)
@@ -576,7 +576,7 @@ class SegmentAttr(TopologyAttr):
 class Segids(SegmentAttr):
     attrname = 'segids'
     singular = 'segid'
-    levels = ['atom', 'residue', 'segment']
+    target_levels = ['atom', 'residue', 'segment']
 
 
 #TODO: update docs to property doc

@@ -122,12 +122,12 @@ class TransTable(object):
             indices of atoms present in residues, collectively
 
         """
-        if isinstance(rix, int):
-            x, y = self._res_ptrs[rix]
-            return self._atom_order[x:y]
-        else:
+        try:
             return np.concatenate([self._atom_order[x:y]
                                    for x, y in self._res_ptrs[rix]])
+        except TypeError:
+            x, y = self._res_ptrs[rix]
+            return self._atom_order[x:y]
 
     def r2a_2d(self, rix):
         """Get atom indices represented by each residue index.
@@ -145,11 +145,11 @@ class TransTable(object):
             in that residue
 
         """
-        if isinstance(rix, int):
+        try:
+            return [self._atom_order[x:y] for x, y in self._res_ptrs[rix]]
+        except TypeError:
             x, y = self._res_ptrs[rix]
             return self._atom_order[x:y]
-        else:
-            return (self._atom_order[x:y] for x, y in self._res_ptrs[rix])
 
     def r2s(self, rix):
         """Get segment indices for each residue.
@@ -181,12 +181,12 @@ class TransTable(object):
             sorted indices of residues present in segments, collectively
 
         """
-        if isinstance(six, int):
-            x, y = self._seg_ptrs[six]
-            return self._res_order[x:y]
-        else:
+        try:
             return np.concatenate([self._res_order[x:y]
                                    for x, y in self._seg_ptrs[six]])
+        except TypeError:
+            x, y = self._seg_ptrs[six]
+            return self._res_order[x:y]
 
     def s2r_2d(self, six):
         """Get residue indices represented by each segment index.
@@ -204,11 +204,11 @@ class TransTable(object):
             in that segment
 
         """
-        if isinstance(six, int):
+        try:
+            return [self._res_order[x:y] for x, y in self._seg_ptrs[six]]
+        except TypeError:
             x, y = self._seg_ptrs[six]
             return self._res_order[x:y]
-        else:
-            return (self._res_order[x:y] for x, y in self._seg_ptrs[six])
 
     # Compound moves, does 2 translations
     def a2s(self, aix):
@@ -271,7 +271,7 @@ class TransTable(object):
         if isinstance(rixs, np.ndarray):
             return self.r2a_1d(rixs)
         else:
-            return (self.r2a_1d(rix) for rix in rixs)
+            return [self.r2a_1d(rix) for rix in rixs]
 
 
 #TODO: movers and resizers
