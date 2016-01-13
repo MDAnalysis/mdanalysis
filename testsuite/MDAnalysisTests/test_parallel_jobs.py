@@ -15,8 +15,7 @@ class TestParallel(TestCase):
 
         # Single thread analysis
         start_time = time.time()
-        single_analysis = em.TotalDipole(universe=self.universe,
-                                         selection=self.selection_string)
+        single_analysis = em.TotalDipole(universe=self.universe, selection=self.selection_string)
         self.single_result = single_analysis.run()
 
     def test_parallel(self):

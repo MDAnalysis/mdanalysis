@@ -93,7 +93,7 @@ class AnalysisBase(object):
         for i, ts in enumerate(
                 self._trajectory[self.start:self.stop:self.step]):
             #logger.info("--> Doing frame {} of {}".format(i+1, self.nframes))
-            self._single_frame()
+            self._single_frame(ts)
         #logger.info("Finishing up")
         self._conclude()
 

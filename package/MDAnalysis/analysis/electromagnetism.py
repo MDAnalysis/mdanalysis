@@ -18,7 +18,7 @@ class TotalDipole(AnalysisBase):
         self._setup_frames(self._universe, start, stop, step)
         self.dipoles          = []
 
-    def _single_frame(self):
+    def _single_frame(self,timestep):
         selection = self._universe.select_atoms(self.selection_string)
 
         dipole = np.zeros(3)

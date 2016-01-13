@@ -111,7 +111,7 @@ class ParallelProcessor(object):
 
         for timestep in traj[start:stop:step]:
             for job in jobs_list:
-                job._single_frame()
+                job._single_frame(timestep)
             progress.put(order) # Updates the progress bar
 
         out_queue.put((jobs_list, order)) # Returns the results
