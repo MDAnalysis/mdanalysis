@@ -3,23 +3,23 @@ import numpy as np
 
 class TotalDipole(AnalysisBase):
     
-    def __init__(self, trajectory=None, filename='order.dat', selection=None, start=None, stop=None, step=None):
+    def __init__(self, universe=None, filename='order.dat', selection=None, start=None, stop=None, step=None):
 
         if selection is None:
             raise RuntimeError('In class TotalDipole: constroctur requires a selection')
         else:
-            self.selection        = selection
+            self.selection_string        = selection
 
+        self._universe = universe
+        #self._trajectory = self._universe.trajectory
         self.filename         = filename
         self.time             = []
 
-        self._setup_frames(trajectory, start, stop, step)
+        self._setup_frames(self._universe, start, stop, step)
         self.dipoles          = []
 
     def _single_frame(self):
-        selection = self.selection
-
-        selection.wrap(compound='residues')
+        selection = self._universe.select_atoms(self.selection_string)
 
         dipole = np.zeros(3)
 

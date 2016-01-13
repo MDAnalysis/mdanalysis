@@ -1,72 +1,74 @@
+""" Add a docstring later
+
+"""
+import MDAnalysis as mda
 import multiprocessing as mp
 import copy
 from operator import itemgetter
 
-# For fancy progressbar
-try:
-    from blessings import Terminal
-    from progressive.bar import Bar
-    from progressive.tree import ProgressTree, Value, BarDescriptor
-except:
-    pass
+class ParallelProcessor(object):
+    """ Add class docstring later
+    """
+    def __init__(self, jobs_list, universe, start=None, stop=None,
+                 step=None, threads=None):
+        self._universe = universe
+        self.topology = universe.filename
+        self.trajname = universe._trajectory.filename
 
-class ParallelProcessor():
-    
-    def __init__(self, list_of_jobs, trajectory, start=None, stop=None, step=None, threads=None,
-                       progressbar=True):
-        self._trajectory = trajectory
+        start, stop, step = universe.trajectory.check_slice_indices(start,
+                                                                     stop, step)
 
-        start, stop, step = trajectory.check_slice_indices(start, stop, step)
-
-        self.start   = start
-        self.stop    = stop
-        self.step    = step
+        self.start = start
+        self.stop = stop
+        self.step = step
         self.nframes = len(xrange(start, stop, step))
 
-        self.list_of_jobs = list_of_jobs
+        self.jobs_list = jobs_list
 
-        if threads == None:
+        if threads is None:
             self.threads = mp.cpu_count()
-        elif threads > mp.cpu_count(): 
+        elif threads > mp.cpu_count():
             self.threads = mp.cpu_count()
         else:
             self.threads = threads
-        
-        self.progressbar = progressbar
 
+        self.slices = self.compute_slices()
 
-    def slices(self):
-        # This function returns a list containing the start and
-        # last configuration to be analyzed from each thread
+    def compute_slices(self):
+        """
+        This function returns a list containing the start and
+         last configuration to be analyzed from each thread
+        """
+        threads = self.threads # Get number of threads from initialization
+        step = self.step
+        configs = (self.stop-self.start)/step
 
-        threads    = self.threads # Get number of threads from initialization
-        step       = self.step
-        configs    = (self.stop-self.start)/step
+        self.nframes = configs
 
         # Check whether the number of threads is higher than
         # the number of trajectories to be analyzed
-        while (configs/threads == 0):
+        while configs/threads == 0:
             threads -= 1
-            
+
         self.threads = threads # Update the number of threads
 
         print "Total configurations: "+str(configs)
         print "Analysis running on ", threads, " threads.\n"
 
         # Number of cfgs for each thread, and remainder to be added
-        thread_cfg   = configs/threads
-        reminder   = configs%threads
+        thread_cfg = configs/threads
+        reminder = configs%threads
 
-        slices     = []
+        slices = []
         beg = self.start
 
         # Compute the start and last configurations
-        for thread in range(0,threads):
+        for thread in range(0, threads):
             if thread < reminder:
                 end = beg+step*thread_cfg
             else:
                 end = beg+step*(thread_cfg-1)
-            
+
             slices.append([beg, end+1])
             beg = end+step
 
@@ -77,150 +79,102 @@ class ParallelProcessor():
             line = "Thread "+str(thread+1).rjust(len(str(threads)))+": " \
                           +str(slices[thread][0]).rjust(digits)+"/"  \
                           +str(slices[thread][1]-1).rjust(digits)    \
-                          +" | Configurations: "+str(confs).rjust(1+len(str(thread_cfg)))
+                          +" | Configurations: "\
+                          +str(confs).rjust(1+len(str(thread_cfg)))
             print line
 
-        print 
         return slices
 
-    def job_copies(self):
-        # This function creates n=threads copies of the analysis
-        # objects submitted from the user
-        threads    = self.threads
-        job_list   = []
 
-        for thread in range(threads):
-            job_list.append([ copy.deepcopy(job) for job in self.list_of_jobs])
-            
-        return job_list
+    def compute(self, out_queue, order, progress):
+        """
+        Run the single_frame method for each analysis object for all
+        the trajectories in the batch
+        """
+        start = self.slices[order][0]
+        stop = self.slices[order][1]
+        step = self.step
 
-    def compute(self,job_list,start,stop,step, out_queue, order,progress,error):
-        # Run the single_frame method for each analysis object for all
-        # the trajectories in the batch
-        count = 0 # just to track IO errors
+        jobs_list = []
+        universe = mda.Universe(self.topology, self.trajname)
+        traj = universe.trajectory
 
-        try:
-            for i, ts in enumerate(self._trajectory[start:stop:step]):
-                count = i
-                for job in job_list:
-                    job._single_frame()
-                progress.put(order) # Updates the progress bar
-            
-            out_queue.put((job_list,order)) # Returns the results
-        except:
-            error.put([order, start+count*step])
+        for job in self.jobs_list:
+            jobs_list.append(copy.deepcopy(job))
 
-    def prepare(self,pool,slices):
-        # This function runs the setup_frame method from AnalysisBase
-        # and the prepare method from the analysis object. Each job
-        # object is initialized using start and stop from the slice function
-        for thread, elem in zip(pool,slices):
-            for job in thread:
-                job._setup_frames(self._trajectory,start=elem[0],stop=elem[1],step=self.step)
-                job._prepare()
+        for job in jobs_list:
+            # Initialize job objects. start, stop and step are
+            # given so that self.nframes is computed correctly
+            job._setup_frames(universe=universe, start=start,
+                              stop=stop, step=self.step)
+            job._prepare()
 
-    def conclude(self,list_of_jobs):
-        # Run conclude for each job object
-        for job in list_of_jobs:
+        for timestep in traj[start:stop:step]:
+            for job in jobs_list:
+                job._single_frame()
+            progress.put(order) # Updates the progress bar
+
+        out_queue.put((jobs_list, order)) # Returns the results
+
+    def conclude(self, jobs_list):
+        """
+        Run conclude for each job object
+        """
+        for job in jobs_list:
             job._conclude()
-    
+
     def parallel_run(self):
-        # Returns indices for splitting the trajectory
-        slices = self.slices()
-
-        # Create copies of the original object to be
-        # dispatched to multiprocess
-        pool    = self.job_copies()
+        """
+        Create copies of the original object to be
+        dispatched to multiprocess
+        """
         threads = self.threads
-
-        self.prepare(pool,slices)
 
         # Queues for the communication between parent and child processes
         out_queue = mp.Manager().Queue()
-        progress  = mp.Manager().Queue()
-        error     = mp.Manager().Queue()
+        progress = mp.Manager().Queue()
 
         # Prepare multiprocess objects
-        processes = [ mp.Process(target=self.compute, args=(batch, elem[0],elem[1],self.step,out_queue,order,progress,error)) 
-                      for order, (batch, elem) in enumerate(zip(pool,slices)) ]
+        processes = [mp.Process(target=self.compute,
+                                 args=(out_queue, order, progress))
+                      for order in range(threads)]
 
 
         # Run processes
-        for p in processes: p.start()
+        for process in processes:
+            process.start()
 
-        thread_configs = [ 1+(elem[1]-elem[0]-1)/self.step for elem in slices ]
+        thread_configs = [1+(elem[1]-elem[0]-1)/self.step
+                          for elem in self.slices]
 
-        if self.progressbar:
-            try:
-                # Initialize progress bar
-                readings  = [ Value(0) for i in range(threads) ]
-                total_cfg = Value(0)
-                bd_defaults = [ dict(type=Bar, kwargs=dict(max_value=cfg)) for cfg in thread_configs ]
-                bd_defaults.append( dict(type=Bar, kwargs=dict(max_value=sum(thread_configs))) ) # add total cfgs for total counter
-                
-                data_tuple = [ ("Core "+str(thread+1).rjust(len(str(threads))),
-                                BarDescriptor(value=readings[thread], **bd_defaults[thread])) for thread in range(threads) ]
-                
-                data = dict( (key,value) for (key,value) in data_tuple )
-                
-                data.update({'Total': BarDescriptor(value=total_cfg, **bd_defaults[-1])})
-                
-                # Create blessings.Terminal instance
-                t = Terminal()
-                # Initialize a ProgressTree instance
-                n = ProgressTree(term=t)
-                # Make room for the progress bar
-                n.make_room(data)
-                
-                # Updates progress bar
-                while any([ p.is_alive() for p in processes ]):
-                    while not progress.empty():
-                        core = progress.get()
-                        n.cursor.restore()
-                        readings[core].value += 1
-                        total_cfg.value += 1
-                        n.draw(data, BarDescriptor(bd_defaults))
-                        
-                print # lets leave some free space
-            except:
-                data = {}
+        data = {}
+
+        for thread in range(threads):
+            data[thread] = 0
+
+        total = 0
+        print
+        while any([process.is_alive() for process in processes]):
+            while not progress.empty():
+                core = progress.get()
+                data[core] += 1
+                total += 1
+
                 for thread in range(threads):
-                    data[thread]=0
-                while any([ p.is_alive() for p in processes ]):
-                    while not progress.empty():
-                        core = progress.get()
-                        data[core] += 1
-                        
-                        for thread in range(threads):
-                            print "Core "+str(thread)+": "+str(data[thread])+"/"+str(thread_configs[thread])
-                            
-                        print "\r",
+                    print "Core "+str(thread)+": " \
+                        +str(data[thread])+"/" \
+                        +str(thread_configs[thread])
 
-                        print "\033["+str(threads+1)+"A"
-                    
-                print threads*"\n"
-                
+                print "Total: "+str(total)+"/"\
+                    +str(self.nframes)
+
+                print "\033["+str(threads+2)+"A"
+
+        print (threads+1)*"\n"
 
         # Exit the completed processes
-        for p in processes: p.join()
-
-        unread_configurations = []
-
-        # Collect errors from queues
-        while not error.empty():
-            unread_configurations.append(error.get())
-
-        if len(unread_configurations) != 0:
-            unread_counter = 0
-            for error in unread_configurations:
-                unread_counter += (slices[error[0]][1]-error[1])/self.step
-            print "Sorry, there were", unread_counter, "unread configurations."
-            for error in sorted(unread_configurations, key=itemgetter(0)):
-                print "Core", error[0]+1, "did not read from configuration", error[1]+1,\
-                      "to", slices[error[0]][1]
-                
-            print "\n"
-
+        for process in processes:
+            process.join()
 
         results = []
 
@@ -228,8 +182,8 @@ class ParallelProcessor():
         while not out_queue.empty():
             results.append(out_queue.get())
 
-        jobs_num = len(self.list_of_jobs)
-        
+        jobs_num = len(self.jobs_list)
+
         result_list = []
 
         # Sum the job objects from each thread

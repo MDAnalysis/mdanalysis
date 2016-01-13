@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -21,7 +21,6 @@ A collection of useful building blocks for creating Analysis
 classes.
 """
 
-import numpy as np
 import logging
 
 
@@ -30,52 +29,49 @@ logger = logging.getLogger(__name__)
 
 class AnalysisBase(object):
     """Base class for defining multi frame analysis
-
     The analysis base class is designed as a template for creating
     multiframe analysis.
-
     The class implements the following methods:
-
     _setup_frames(trajectory, start=None, stop=None, step=None)
       Pass a Reader object and define the desired iteration pattern
       through the trajectory
-      
+
     run
       The user facing run method.  Calls the analysis methods
       defined below
-
     Your analysis can implement the following methods, which are
     called from run:
-
     _prepare
       Called before iteration on the trajectory has begun.
       Data structures can be set up at this time, however most
       error checking should be done in the __init__
-
     _single_frame
       Called after the trajectory is moved onto each new frame.
     _conclude
-
       Called once iteration on the trajectory is finished.
       Apply normalisation and averaging to results here.
-
     """
-    def _setup_frames(self, trajectory, start=None, stop=None, step=None):
-
-        if trajectory is None:
-            pass            
+    def _setup_frames(self, universe, start=None, stop=None, step=None):
+        """
+        Add method docstring
+        """
+        if universe is None:
+            pass
         else:
-            self._trajectory  = trajectory
+            self._universe = universe
+            self._trajectory = self._universe.trajectory
 
-            start, stop, step = trajectory.check_slice_indices(start, stop, step)
-            self.start   = start
-            self.stop    = stop
-            self.step    = step
+            start, stop, step = self._trajectory.check_slice_indices(start,
+                                                                      stop,
+                                                                      step)
+            self.start = start
+            self.stop = stop
+            self.step = step
             self.nframes = len(xrange(start, stop, step))
 
     def _single_frame(self):
         """Calculate data from a single frame of trajectory
- 
+
         Don't worry about normalising, just deal with a single frame.
         """
         pass
@@ -98,12 +94,12 @@ class AnalysisBase(object):
                 self._trajectory[self.start:self.stop:self.step]):
             #logger.info("--> Doing frame {} of {}".format(i+1, self.nframes))
             self._single_frame()
-        logger.info("Finishing up")
+        #logger.info("Finishing up")
         self._conclude()
 
     def __getstate__(self):
         state = dict(self.__dict__)
-        key = '_trajectory'
-        if key in state:
-            del state ['_trajectory']
+        for key in ['_universe', '_trajectory']:
+            if key in state:
+                del state[key]
         return state
