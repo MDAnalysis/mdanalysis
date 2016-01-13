@@ -56,6 +56,7 @@ __all__ = [
     "TPR510_bonded",
     "PDB_sub_sol", "PDB_sub_dry",  # TRRReader sub selection
     "TRR_sub_sol",
+    "XTC_sub_sol",
     "XYZ", "XYZ_psf", "XYZ_bz2",
     "XYZ_mini", "XYZ_five", # 3 and 5 atoms xyzs for an easy topology
     "PRM", "TRJ", "TRJ_bz2",  # Amber (no periodic box)
@@ -149,6 +150,7 @@ TRR = resource_filename(__name__, 'data/adk_oplsaa.trr')
 TPR = resource_filename(__name__, 'data/adk_oplsaa.tpr')
 PDB_sub_dry = resource_filename(__name__, 'data/cobrotoxin_dry_neutral_0.pdb')
 TRR_sub_sol = resource_filename(__name__, 'data/cobrotoxin.trr')
+XTC_sub_sol = resource_filename(__name__, 'data/cobrotoxin.xtc')
 PDB_sub_sol = resource_filename(__name__, 'data/cobrotoxin.pdb')
 PDB_xlserial = resource_filename(__name__, 'data/xl_serial.pdb')
 XTC_single_frame = resource_filename(

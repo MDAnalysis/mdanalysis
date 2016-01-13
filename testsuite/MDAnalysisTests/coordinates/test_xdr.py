@@ -17,28 +17,28 @@ from unittest import TestCase
 from MDAnalysisTests import module_not_found
 
 from MDAnalysisTests.datafiles import (PDB_sub_dry, PDB_sub_sol, TRR_sub_sol,
-                                       TRR, XTC, GRO, PDB, CRD, PRMncdf, NCDF)
+                                       TRR, XTC, GRO, PDB, CRD, PRMncdf, NCDF,
+                                       XTC_sub_sol)
 
 from MDAnalysisTests.datafiles import (COORDINATES_XTC, COORDINATES_TOPOLOGY,
                                        COORDINATES_TRR)
 from MDAnalysisTests.coordinates.base import (BaseReaderTest, BaseReference,
-                                              BaseWriterTest)
+                                              BaseWriterTest,
+                                              assert_timestep_almost_equal)
 
 import MDAnalysis.core.AtomGroup
 from MDAnalysis.coordinates import XDR
 
 
-class TestTRRReader_Sub(TestCase):
+class XDRReader_Sub(TestCase):
     def setUp(self):
         """
         grab values from selected atoms from full solvated traj,
         later compare to using 'sub'
         """
-        usol = mda.Universe(PDB_sub_sol, TRR_sub_sol)
+        usol = mda.Universe(PDB_sub_sol, self.XDR_SUB_SOL)
         atoms = usol.select_atoms("not resname SOL")
-        self.pos = atoms.positions
-        self.vel = atoms.velocities
-        self.force = atoms.forces
+        self.ts = atoms.ts
         self.sub = atoms.indices
         # universe from un-solvated protein
         self.udry = mda.Universe(PDB_sub_dry)
@@ -47,7 +47,7 @@ class TestTRRReader_Sub(TestCase):
         # should fail if we load universe with a trajectory with different
         # number of atoms when NOT using sub, same as before.
         def load_new_without_sub():
-            self.udry.load_new(TRR_sub_sol)
+            self.udry.load_new(self.XDR_SUB_SOL)
 
         assert_raises(ValueError, load_new_without_sub)
 
@@ -55,16 +55,17 @@ class TestTRRReader_Sub(TestCase):
         """
         load solvated trajectory into universe with unsolvated protein.
         """
-        self.udry.load_new(TRR_sub_sol, sub=self.sub)
-        assert_array_almost_equal(self.pos,
-                                  self.udry.atoms.positions,
-                                  err_msg="positions differ")
-        assert_array_almost_equal(self.vel,
-                                  self.udry.atoms.velocities,
-                                  err_msg="positions differ")
-        assert_array_almost_equal(self.force,
-                                  self.udry.atoms.forces,
-                                  err_msg="positions differ")
+        self.udry.load_new(self.XDR_SUB_SOL, sub=self.sub)
+        ts = self.udry.atoms.ts
+        assert_timestep_almost_equal(ts, self.ts)
+
+
+class TestTRRReader_Sub(XDRReader_Sub):
+    XDR_SUB_SOL = TRR_sub_sol
+
+
+class TestXTCReader_Sub(XDRReader_Sub):
+    XDR_SUB_SOL = XTC_sub_sol
 
 
 class _GromacsReader(TestCase):
