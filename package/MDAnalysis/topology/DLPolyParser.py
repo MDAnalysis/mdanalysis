@@ -38,6 +38,8 @@ class ConfigParser(base.TopologyReader):
 
     .. versionadded:: 0.10.1
     """
+    format = 'CONFIG'
+
     def parse(self):
         with openany(self.filename, 'r') as inf:
             inf.readline()
@@ -101,6 +103,8 @@ class HistoryParser(base.TopologyReader):
 
     .. versionadded:: 0.10.1
     """
+    format = 'HISTORY'
+
     def parse(self):
         with openany(self.filename, 'r') as inf:
             inf.readline()

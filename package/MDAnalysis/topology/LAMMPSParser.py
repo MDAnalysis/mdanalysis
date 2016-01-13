@@ -134,6 +134,8 @@ class DATAParser(TopologyReader):
 
     .. versionadded:: 0.9.0
     """
+    format = 'DATA'
+
     def iterdata(self):
         with anyopen(self.filename, 'r') as f:
             for line in f:

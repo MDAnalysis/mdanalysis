@@ -97,6 +97,7 @@ class XYZWriter(base.Writer):
     """
 
     format = 'XYZ'
+    multiframe = True
     # these are assumed!
     units = {'time': 'ps', 'length': 'Angstrom'}
 

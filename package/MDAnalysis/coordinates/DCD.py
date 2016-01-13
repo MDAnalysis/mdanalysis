@@ -192,6 +192,7 @@ class DCDWriter(base.Writer):
     .. _Issue 187: https://github.com/MDAnalysis/mdanalysis/issues/187
     """
     format = 'DCD'
+    multiframe = True
     flavor = 'CHARMM'
     units = {'time': 'AKMA', 'length': 'Angstrom'}
 

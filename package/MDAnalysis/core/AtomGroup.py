@@ -3756,8 +3756,8 @@ class Universe(object):
                 # or if file is known as a topology & coordinate file, use that
                 if fmt is None:
                     fmt = util.guess_format(self.filename)
-                if (fmt in MDAnalysis.coordinates._trajectory_readers
-                    and fmt in MDAnalysis.topology._topology_parsers):
+                if (fmt in MDAnalysis.coordinates._READERS
+                    and fmt in MDAnalysis.topology._PARSERS):
                     coordinatefile = self.filename
             # Fix by SB: make sure coordinatefile is never an empty tuple
             if len(coordinatefile) == 0:

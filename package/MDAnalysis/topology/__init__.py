@@ -239,6 +239,9 @@ __all__ = ['core', 'PSFParser', 'PDBParser', 'PQRParser', 'GROParser',
            'CRDParser', 'TOPParser', 'PDBQTParser', 'TPRParser',
            'LAMMPSParser', 'XYZParser', 'GMSParser', 'DLPolyParser',
            'HoomdXMLParser']
+# Registry of all Parsers in MDAnalysis
+# Gets filled on class definition by metaclass magic
+_PARSERS = {}
 
 from . import core
 from . import PSFParser
@@ -258,30 +261,3 @@ from . import XYZParser
 from . import GMSParser
 from . import DLPolyParser
 from . import HoomdXMLParser
-
-
-# dictionary of known file formats and the corresponding file parser
-# (all parser should essentially do the same thing; the PSFParser is
-# the reference implementation). The keys in :data:`_topology_parsers`
-# are the known topology formats.
-_topology_parsers = {'PSF': PSFParser.PSFParser,
-                     'PDB': PDBParser.PDBParser,
-                     'Permissive_PDB': PrimitivePDBParser.PrimitivePDBParser,
-                     'XPDB': ExtendedPDBParser.ExtendedPDBParser,
-                     'PQR': PQRParser.PQRParser,
-                     'GRO': GROParser.GROParser,
-                     'CRD': CRDParser.CRDParser,
-                     'TOP': TOPParser.TOPParser,
-                     'PRMTOP': TOPParser.TOPParser,
-                     'PARM7': TOPParser.TOPParser,                     
-                     'PDBQT': PDBQTParser.PDBQTParser,
-                     'TPR': TPRParser.TPRParser,
-                     'DMS': DMSParser.DMSParser,
-                     'MOL2': MOL2Parser.MOL2Parser,
-                     'DATA': LAMMPSParser.DATAParser,
-                     'XYZ': XYZParser.XYZParser,
-                     'GMS': GMSParser.GMSParser,
-                     'CONFIG': DLPolyParser.ConfigParser,
-                     'HISTORY': DLPolyParser.HistoryParser,
-                     'XML': HoomdXMLParser.HoomdXMLParser,
-                     }

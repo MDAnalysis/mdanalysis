@@ -41,6 +41,8 @@ from .base import TopologyReader
 
 
 class GROParser(TopologyReader):
+    format = 'GRO'
+
     def parse(self):
         """Parse GRO file *filename* and return the dict `structure`.
 

@@ -40,13 +40,17 @@ Classes
 
 """
 from __future__ import absolute_import
+
+import xml.etree.ElementTree as ET
+
 from ..lib.util import openany
 from ..core.AtomGroup import Atom
 from .core import guess_atom_element
 from .base import TopologyReader
-import xml.etree.ElementTree as ET
 
 class HoomdXMLParser(TopologyReader):
+    format = 'XML'
+
     def parse(self):
         """Parse Hoomd XML file *filename* and return the dict `structure`.
 

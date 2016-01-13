@@ -49,6 +49,7 @@ class MOL2Parser(TopologyReader):
     .. versionchanged:: 0.9
        Now subclasses TopologyReader
     """
+    format = 'MOL2'
 
     def parse(self, filename=None):
         """Parse MOL2 file *filename* and return the dict `structure`.

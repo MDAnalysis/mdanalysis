@@ -417,6 +417,7 @@ class TRZWriter(base.Writer):
     """
 
     format = 'TRZ'
+    multiframe = True
 
     units = {'time': 'ps', 'length': 'nm', 'velocity': 'nm/ps'}
 

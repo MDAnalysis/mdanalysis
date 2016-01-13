@@ -447,7 +447,7 @@ class PrimitivePDBReader(base.Reader):
        * New :attr:`title` (list with all TITLE lines).
 
     """
-    format = 'PDB'
+    format = 'Permissive_PDB'
     units = {'time': None, 'length': 'Angstrom'}
 
     def __init__(self, filename, **kwargs):
@@ -710,7 +710,7 @@ class PrimitivePDBWriter(base.Writer):
     #: wrap comments into REMARK records that are not longer than
     # :attr:`remark_max_length` characters.
     remark_max_length = 66
-    _multiframe = False
+    multiframe = False
 
     def __init__(self, filename, bonds="conect", n_atoms=None, start=0, step=1,
                  remarks="Created by PrimitivePDBWriter",
@@ -764,7 +764,7 @@ class PrimitivePDBWriter(base.Writer):
         if convert_units is None:
             convert_units = flags['convert_lengths']
         self.convert_units = convert_units  # convert length and time to base units
-        self.multiframe = self._multiframe if multiframe is None else multiframe
+        self._multiframe = self.multiframe if multiframe is None else multiframe
         self.bonds = bonds
 
         self.frames_written = 0
@@ -789,7 +789,7 @@ class PrimitivePDBWriter(base.Writer):
         self.pdbfile = None
 
     def _write_pdb_title(self):
-        if self.multiframe:
+        if self._multiframe:
             self.TITLE("MDANALYSIS FRAMES FROM %d, SKIP %d: %s" % (self.start, self.step, self.remarks))
         else:
             self.TITLE("MDANALYSIS FRAME %d: %s" % (self.start, self.remarks))
@@ -978,7 +978,7 @@ class PrimitivePDBWriter(base.Writer):
         self._write_pdb_header()
         # Issue 105: with write() ONLY write a single frame; use write_all_timesteps() to dump
         # everything in one go, or do the traditional loop over frames
-        self.write_next_timestep(self.ts, multiframe=self.multiframe)
+        self.write_next_timestep(self.ts, multiframe=self._multiframe)
         self._write_pdb_bonds()
         # END record is written when file is being close()d
 
@@ -1313,4 +1313,5 @@ class MultiPDBWriter(PrimitivePDBWriter):
     .. versionadded:: 0.7.6
 
     """
-    _multiframe = True
+    format = 'PDB'
+    multiframe = True  # For Writer registration

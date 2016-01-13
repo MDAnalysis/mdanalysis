@@ -147,6 +147,8 @@ class TPRParser(TopologyReader):
     .. _Gromacs: http://www.gromacs.org
     .. _TPR file: http://manual.gromacs.org/current/online/tpr.html
     """
+    format = 'TPR'
+
     def parse(self):
         """Parse a Gromacs TPR file into a MDAnalysis internal topology structure.
 
