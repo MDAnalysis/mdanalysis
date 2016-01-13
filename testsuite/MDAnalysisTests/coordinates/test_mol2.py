@@ -19,6 +19,7 @@ from numpy.testing import *
 
 from MDAnalysisTests.datafiles import mol2_molecules, mol2_molecule, mol2_broken_molecule
 from MDAnalysis import Universe
+import MDAnalysis as mda
 
 
 class TestMol2(TestCase):
@@ -45,10 +46,7 @@ class TestMol2(TestCase):
         ref.atoms.write(self.outfile)
         u = Universe(self.outfile)
         assert_equal(len(u.atoms), len(ref.atoms))
-        assert_equal(len(u.trajectory), len(ref.trajectory))
-        assert_array_equal(u.atoms.positions, ref.atoms.positions)
-        u.trajectory[199]
-        ref.trajectory[199]
+        assert_equal(len(u.trajectory), 1)
         assert_array_equal(u.atoms.positions, ref.atoms.positions)
 
     def test_write_selection(self):
@@ -58,6 +56,20 @@ class TestMol2(TestCase):
         u = Universe(self.outfile)
         gr1 = u.select_atoms("name C*")
         assert_equal(len(gr0), len(gr1))
+
+    def test_write_in_loop(self):
+        ref = Universe(mol2_molecules)
+
+        with mda.Writer(self.outfile) as W:
+            for ts in ref.trajectory:
+                W.write(ref.atoms)
+        u = Universe(self.outfile)
+        assert_equal(len(u.atoms), len(ref.atoms))
+        assert_equal(len(u.trajectory), len(ref.trajectory))
+        assert_array_equal(u.atoms.positions, ref.atoms.positions)
+        u.trajectory[199]
+        ref.trajectory[199]
+        assert_array_equal(u.atoms.positions, ref.atoms.positions)
 
     def test_broken_molecule(self):
         assert_raises(ValueError, Universe, mol2_broken_molecule)

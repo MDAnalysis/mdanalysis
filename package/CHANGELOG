@@ -45,10 +45,10 @@ Enhancement
   * Added analysis.rdf, with InterRDF tool. (Issue #460)
   * Made Reader.check_slice_indices a public method (Issue #604)
   * analysis.helanal.helanal_main() now returns results as dict
-  * Added keyword to update selection every frame in density calculation (Issue #584) 
+  * Added keyword to update selection every frame in density calculation (Issue #584)
   * New keywords start, stop, step for density.density_from_Universe()
     to slice a trajectory.
-
+  * MOL2Reader now reads molecule and substructure into ts.data
 
 Changes
 
@@ -63,7 +63,7 @@ Changes
     the change from 1- to 0-based ts.frame counting)
   * removed superfluous analysis.density.density_from_trajectory();
     use density_from_Universe(TOPOL, TRAJ) instead.
-  
+  * MOL2Writer.write now only writes a single frame (Issue #521)
 
 Fixes
 
@@ -92,6 +92,9 @@ Fixes
   * Fixed broken analysis.helanal.helanal_trajectory() and
     helanal_main()
   * Fixed lib.util.greedy_splitext() (now returns full path)
+  * Fixed MOL2Reader not reading molecule and substructure on init
+    (Issue #521)
+  * Fixed MOL2Writer rereading frames when writing them (Issue #521)
 
 10/08/15
 
