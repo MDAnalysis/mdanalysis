@@ -74,7 +74,7 @@ class XTCWriter(XDRBaseWriter):
         # xdrlib will multiply the coordinated by precision. This means for a
         # precision of 3 decimal places we need to pass 1000.0 to the xdr
         # library.
-        precision = 10 ** self.precision
+        precision = 10.0 ** self.precision
         self._xdr.write(xyz, box, step, time, precision)
 
 
