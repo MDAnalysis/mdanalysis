@@ -1,5 +1,6 @@
 import errno
 import MDAnalysis as mda
+from MDAnalysis.coordinates.base import Timestep
 import numpy as np
 import os
 import shutil
@@ -626,6 +627,20 @@ class TestXTCWriter_2(BaseWriterTest):
         if reference is None:
             reference = XTCReference()
         super(TestXTCWriter_2, self).__init__(reference)
+
+    def test_different_precision(self):
+        out = self.tmp_file('precision-test')
+        # store more then 9 atoms to enable compression
+        n_atoms = 40
+        with self.ref.writer(out, n_atoms, precision=5) as w:
+            ts = Timestep(n_atoms=n_atoms)
+            ts.positions = np.random.random(size=(n_atoms, 3))
+            w.write(ts)
+        xtc = mda.lib.formats.xdrlib.XTCFile(out)
+        frame = xtc.read()
+        assert_equal(len(xtc), 1)
+        assert_equal(xtc.n_atoms, n_atoms)
+        assert_equal(frame.prec, 10.0 ** 5)
 
 
 class TRRReference(BaseReference):
