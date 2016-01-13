@@ -182,14 +182,29 @@ def test_write_different_x_xtc():
 @raises(ValueError)
 @run_in_tempdir()
 def test_write_different_prec():
-    with XTCFile(XTC_multi_frame) as f_in:
-        with XTCFile('foo.xtc', 'w') as f_out:
-            assert 0 == f_out.n_atoms
-            frame = f_in.read()
-            f_out.write(frame.x, frame.box, frame.step,
-                        frame.time, frame.prec)
-            f_out.write(frame.x, frame.box, frame.step,
-                        frame.time, frame.prec - 900)
+    mf_xtc = XTCFile(XTC_multi_frame)
+    with XTCFile('foo.xtc', 'w') as f_out:
+        assert 0 == f_out.n_atoms
+        frame = mf_xtc.read()
+        f_out.write(frame.x, frame.box, frame.step,
+                    frame.time, frame.prec)
+        f_out.write(frame.x, frame.box, frame.step,
+                    frame.time, 10000.0)
+
+
+@run_in_tempdir()
+def test_write_prec():
+    mf_xtc = XTCFile(XTC_multi_frame)
+    with XTCFile('foo.xtc', 'w') as f_out:
+        assert 0 == f_out.n_atoms
+        frame = mf_xtc.read()
+        f_out.write(frame.x, frame.box, frame.step,
+                    frame.time, 100.0)
+
+    xtc = XTCFile('foo.xtc')
+    assert_equal(len(xtc), 1)
+    frame = xtc.read()
+    assert_equal(frame.prec, 100.0)
 
 
 class Test_TRRFile(XDRFormatBaseTest):
