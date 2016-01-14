@@ -34,7 +34,7 @@ def offsets_filename(filename, ending='npz'):
 
     Returns
     -------
-    offset_filename: str
+    offset_filename : str
     """
     head, tail = split(filename)
     return join(head, '.{tail}_offsets.{ending}'.format(tail=tail,
