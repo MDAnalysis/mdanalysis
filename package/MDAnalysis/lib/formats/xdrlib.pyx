@@ -102,9 +102,9 @@ cdef class _XDRFile:
 
     Parameters
     ----------
-    fname: str
+    fname : str
         The filename to open.
-    mode: ('r', 'w')
+    mode : ('r', 'w')
         The mode in which to open the file, either 'r' read or 'w' write
 
     Raises
@@ -163,9 +163,9 @@ cdef class _XDRFile:
 
         Parameters
         ----------
-        fname: str
+        fname : str
             The filename to open.
-        mode: ('r', 'w')
+        mode : ('r', 'w')
             The mode in which to open the file, either 'r' read or 'w' write
 
         Raises
@@ -243,7 +243,7 @@ cdef class _XDRFile:
 
         Parameters
         ----------
-        frame: int
+        frame : int
             seek the file to given frame
 
         Raises
@@ -267,13 +267,19 @@ cdef class _XDRFile:
 
     @property
     def offsets(self):
-        """get byte offsets from current xdr file"""
+        """get byte offsets from current xdr file
+
+        See Also
+        --------
+        set_offsets
+        """
         if not self._has_offsets:
             self._offsets = self.calc_offsets()
             self._has_offsets = True
         return self._offsets
 
     def set_offsets(self, offsets):
+        """set frame offsets"""
         self._offsets = offsets
         self._has_offsets = True
 
@@ -294,9 +300,9 @@ cdef class TRRFile(_XDRFile):
 
     Parameters
     ----------
-    fname: str
+    fname : str
         The filename to open.
-    mode: ('r', 'w')
+    mode : ('r', 'w')
         The mode in which to open the file, either 'r' read or 'w' write
 
     Examples
@@ -338,7 +344,7 @@ cdef class TRRFile(_XDRFile):
 
         Returns
         -------
-        frame: xdrlib.TRRFrame
+        frame : xdrlib.TRRFrame
             namedtuple with frame information
 
         See Also
@@ -408,17 +414,17 @@ cdef class TRRFile(_XDRFile):
 
         Parameters
         ----------
-        xyz: ndarray, shape=(n_atoms, 3)
+        xyz : ndarray, shape=(n_atoms, 3)
             cartesion coordinates
-        box: ndarray, shape=(3, 3)
+        box : ndarray, shape=(3, 3)
             Box vectors for this frame
-        step: int
+        step : int
             current step number, 1 indexed
-        time: float
+        time : float
             current time
-        _lambda: float
+        _lambda : float
             current lambda value
-        natoms: int
+        natoms : int
             number of atoms in frame
 
         Raises
@@ -428,7 +434,7 @@ cdef class TRRFile(_XDRFile):
         ValueError
             The arguments do not match with previous saved frames.
         """
-        if self.mode != 'w':
+        if self.mode != 'w' :
             raise RuntimeError('File opened in mode: {}. Writing only allow '
                                'in mode "w"'.format('self.mode'))
 
@@ -507,9 +513,9 @@ cdef class XTCFile(_XDRFile):
 
     Parameters
     ----------
-    fname: str
+    fname : str
         The filename to open.
-    mode: ('r', 'w')
+    mode : ('r', 'w')
         The mode in which to open the file, either 'r' read or 'w' write
 
     Examples
@@ -552,7 +558,7 @@ cdef class XTCFile(_XDRFile):
 
         Returns
         -------
-        frame: xdrlib.XTCFrame
+        frame : xdrlib.XTCFrame
             namedtuple with frame information
 
         See Also
@@ -600,15 +606,15 @@ cdef class XTCFile(_XDRFile):
 
         Parameters
         ----------
-        xyz: ndarray, shape=(n_atoms, 3)
+        xyz : ndarray, shape=(n_atoms, 3)
             cartesion coordinates
-        box: ndarray, shape=(3, 3)
+        box : ndarray, shape=(3, 3)
             Box vectors for this frame
-        step: int
+        step : int
             current step number, 1 indexed
-        time: float
+        time : float
             current time
-        precision: float (optional)
+        precision : float (optional)
             precision of saved trajectory, see Notes
 
 
