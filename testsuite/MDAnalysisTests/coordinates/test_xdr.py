@@ -5,6 +5,7 @@ import numpy as np
 import os
 import shutil
 from six.moves import zip
+import warnings
 
 from nose.plugins.attrib import attr
 from numpy.testing import (assert_equal, assert_array_almost_equal, dec,
@@ -744,31 +745,39 @@ class _GromacsReader_offsets(TestCase):
     def test_reload_offsets(self):
         self._reader(self.traj, refresh_offsets=True)
 
-    # TODO: actually tests mismatchs, this only ensures the code-path is run
-    # @dec.slow
-    # def test_persistent_offsets_size_mismatch(self):
-    #     # check that stored offsets are not loaded when trajectory
-    #     # size differs from stored size
-    #     fname = XDR.offsets_filename(self.traj)
-    #     with open(fname) as f:
-    #         saved_offsets = {k: v for k, v in np.load(f).iteritems()}
-    #     saved_offsets['size'] += 1
-    #     with open(fname, 'w') as f:
-    #         np.savez(f, **saved_offsets)
-    #     self._reader(self.traj)
+    @dec.slow
+    def test_persistent_offsets_size_mismatch(self):
+        # check that stored offsets are not loaded when trajectory
+        # size differs from stored size
+        fname = XDR.offsets_filename(self.traj)
+        with open(fname) as f:
+            saved_offsets = {k: v for k, v in np.load(f).iteritems()}
+        saved_offsets['size'] += 1
+        with open(fname, 'w') as f:
+            np.savez(f, **saved_offsets)
 
-    # # TODO: actually tests mismatchs, this only ensures the code-path is run
-    # @dec.slow
-    # def test_persistent_offsets_ctime_mismatch(self):
-    #     # check that stored offsets are not loaded when trajectory
-    #     # ctime differs from stored ctime
-    #     fname = XDR.offsets_filename(self.traj)
-    #     with open(fname) as f:
-    #         saved_offsets = {k: v for k, v in np.load(f).iteritems()}
-    #     saved_offsets['ctime'] += 1
-    #     with open(fname, 'w') as f:
-    #         np.savez(f, **saved_offsets)
-    #     self._reader(self.traj)
+        with warnings.catch_warnings(record=True) as warn:
+            warnings.simplefilter('always')
+            self._reader(self.traj)
+        assert_equal(warn[0].message.args,
+                     ('Reload offsets from trajectory\n ctime or size did not match', ))
+
+    @dec.slow
+    def test_persistent_offsets_ctime_mismatch(self):
+        # check that stored offsets are not loaded when trajectory
+        # ctime differs from stored ctime
+        fname = XDR.offsets_filename(self.traj)
+        with open(fname) as f:
+            saved_offsets = {k: v for k, v in np.load(f).iteritems()}
+        saved_offsets['ctime'] += 1
+        with open(fname, 'w') as f:
+            np.savez(f, **saved_offsets)
+
+        with warnings.catch_warnings(record=True) as warn:
+            warnings.simplefilter('always')
+            self._reader(self.traj)
+        assert_equal(warn[0].message.args,
+                     ('Reload offsets from trajectory\n ctime or size did not match', ))
 
     # TODO: This doesn't test if the offsets work AT ALL. the old
     # implementation only checked if the offsets were ok to set back to the old
