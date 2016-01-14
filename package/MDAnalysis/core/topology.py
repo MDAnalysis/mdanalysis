@@ -248,7 +248,7 @@ class TransTable(object):
         if isinstance(rixs, np.ndarray):
             return self.r2a_1d(rixs)
         else:
-            return np.concatenate([self.r2a_1d(rix) for rix in rixs])
+            return np.concatenate((self.r2a_1d(rix) for rix in rixs))
 
     def s2a_2d(self, six):
         """Get atom indices represented by each segment index.
@@ -271,7 +271,7 @@ class TransTable(object):
         if isinstance(rixs, np.ndarray):
             return self.r2a_1d(rixs)
         else:
-            return [self.r2a_1d(rix) for rix in rixs]
+            return (self.r2a_1d(rix) for rix in rixs)
 
 
 #TODO: movers and resizers
