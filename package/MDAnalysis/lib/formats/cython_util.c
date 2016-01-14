@@ -838,7 +838,7 @@ typedef npy_clongdouble __pyx_t_5numpy_clongdouble_t;
  */
 typedef npy_cdouble __pyx_t_5numpy_complex_t;
 
-/* "MDAnalysis/lib/formats/cython_util.pyx":10
+/* "MDAnalysis/lib/formats/cython_util.pyx":25
  * 
  * 
  * cdef class ArrayWrapper:             # <<<<<<<<<<<<<<
@@ -932,7 +932,7 @@ struct __pyx_memoryviewslice_obj {
 
 
 
-/* "MDAnalysis/lib/formats/cython_util.pyx":10
+/* "MDAnalysis/lib/formats/cython_util.pyx":25
  * 
  * 
  * cdef class ArrayWrapper:             # <<<<<<<<<<<<<<
@@ -1870,7 +1870,7 @@ static PyObject *__pyx_tuple__22;
 static PyObject *__pyx_tuple__23;
 static PyObject *__pyx_tuple__24;
 
-/* "MDAnalysis/lib/formats/cython_util.pyx":31
+/* "MDAnalysis/lib/formats/cython_util.pyx":46
  *     cdef int data_type
  * 
  *     cdef set_data(self, void* data_ptr, int* dim, int ndim, int data_type):             # <<<<<<<<<<<<<<
@@ -1883,7 +1883,7 @@ static PyObject *__pyx_f_10MDAnalysis_3lib_7formats_11cython_util_12ArrayWrapper
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("set_data", 0);
 
-  /* "MDAnalysis/lib/formats/cython_util.pyx":47
+  /* "MDAnalysis/lib/formats/cython_util.pyx":62
  *             Numpy DataType enum
  *         """
  *         self.data_ptr = data_ptr             # <<<<<<<<<<<<<<
@@ -1892,7 +1892,7 @@ static PyObject *__pyx_f_10MDAnalysis_3lib_7formats_11cython_util_12ArrayWrapper
  */
   __pyx_v_self->data_ptr = __pyx_v_data_ptr;
 
-  /* "MDAnalysis/lib/formats/cython_util.pyx":48
+  /* "MDAnalysis/lib/formats/cython_util.pyx":63
  *         """
  *         self.data_ptr = data_ptr
  *         self.dim = dim             # <<<<<<<<<<<<<<
@@ -1901,7 +1901,7 @@ static PyObject *__pyx_f_10MDAnalysis_3lib_7formats_11cython_util_12ArrayWrapper
  */
   __pyx_v_self->dim = __pyx_v_dim;
 
-  /* "MDAnalysis/lib/formats/cython_util.pyx":49
+  /* "MDAnalysis/lib/formats/cython_util.pyx":64
  *         self.data_ptr = data_ptr
  *         self.dim = dim
  *         self.data_type = data_type             # <<<<<<<<<<<<<<
@@ -1910,7 +1910,7 @@ static PyObject *__pyx_f_10MDAnalysis_3lib_7formats_11cython_util_12ArrayWrapper
  */
   __pyx_v_self->data_type = __pyx_v_data_type;
 
-  /* "MDAnalysis/lib/formats/cython_util.pyx":50
+  /* "MDAnalysis/lib/formats/cython_util.pyx":65
  *         self.dim = dim
  *         self.data_type = data_type
  *         self.ndim = ndim             # <<<<<<<<<<<<<<
@@ -1919,7 +1919,7 @@ static PyObject *__pyx_f_10MDAnalysis_3lib_7formats_11cython_util_12ArrayWrapper
  */
   __pyx_v_self->ndim = __pyx_v_ndim;
 
-  /* "MDAnalysis/lib/formats/cython_util.pyx":31
+  /* "MDAnalysis/lib/formats/cython_util.pyx":46
  *     cdef int data_type
  * 
  *     cdef set_data(self, void* data_ptr, int* dim, int ndim, int data_type):             # <<<<<<<<<<<<<<
@@ -1934,7 +1934,7 @@ static PyObject *__pyx_f_10MDAnalysis_3lib_7formats_11cython_util_12ArrayWrapper
   return __pyx_r;
 }
 
-/* "MDAnalysis/lib/formats/cython_util.pyx":52
+/* "MDAnalysis/lib/formats/cython_util.pyx":67
  *         self.ndim = ndim
  * 
  *     def __array__(self):             # <<<<<<<<<<<<<<
@@ -1966,19 +1966,19 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_11cython_util_12ArrayWrappe
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__array__", 0);
 
-  /* "MDAnalysis/lib/formats/cython_util.pyx":55
+  /* "MDAnalysis/lib/formats/cython_util.pyx":70
  *         """ Here we use the __array__ method, that is called when numpy
  *             tries to get an array from the object."""
  *         ndarray = np.PyArray_SimpleNewFromData(self.ndim,             # <<<<<<<<<<<<<<
  *                                                <np.npy_intp*> self.dim,
  *                                                self.data_type,
  */
-  __pyx_t_1 = PyArray_SimpleNewFromData(__pyx_v_self->ndim, ((npy_intp *)__pyx_v_self->dim), __pyx_v_self->data_type, __pyx_v_self->data_ptr); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 55; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyArray_SimpleNewFromData(__pyx_v_self->ndim, ((npy_intp *)__pyx_v_self->dim), __pyx_v_self->data_type, __pyx_v_self->data_ptr); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 70; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_ndarray = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "MDAnalysis/lib/formats/cython_util.pyx":59
+  /* "MDAnalysis/lib/formats/cython_util.pyx":74
  *                                                self.data_type,
  *                                                self.data_ptr)
  *         return ndarray             # <<<<<<<<<<<<<<
@@ -1990,7 +1990,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_11cython_util_12ArrayWrappe
   __pyx_r = __pyx_v_ndarray;
   goto __pyx_L0;
 
-  /* "MDAnalysis/lib/formats/cython_util.pyx":52
+  /* "MDAnalysis/lib/formats/cython_util.pyx":67
  *         self.ndim = ndim
  * 
  *     def __array__(self):             # <<<<<<<<<<<<<<
@@ -2010,7 +2010,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_11cython_util_12ArrayWrappe
   return __pyx_r;
 }
 
-/* "MDAnalysis/lib/formats/cython_util.pyx":61
+/* "MDAnalysis/lib/formats/cython_util.pyx":76
  *         return ndarray
  * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -2033,7 +2033,7 @@ static void __pyx_pf_10MDAnalysis_3lib_7formats_11cython_util_12ArrayWrapper_2__
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__dealloc__", 0);
 
-  /* "MDAnalysis/lib/formats/cython_util.pyx":64
+  /* "MDAnalysis/lib/formats/cython_util.pyx":79
  *         """ Frees the array. This is called by Python when all the
  *         references to the object are gone. """
  *         free(<void*>self.data_ptr)             # <<<<<<<<<<<<<<
@@ -2042,7 +2042,7 @@ static void __pyx_pf_10MDAnalysis_3lib_7formats_11cython_util_12ArrayWrapper_2__
  */
   free(((void *)__pyx_v_self->data_ptr));
 
-  /* "MDAnalysis/lib/formats/cython_util.pyx":61
+  /* "MDAnalysis/lib/formats/cython_util.pyx":76
  *         return ndarray
  * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -2054,7 +2054,7 @@ static void __pyx_pf_10MDAnalysis_3lib_7formats_11cython_util_12ArrayWrapper_2__
   __Pyx_RefNannyFinishContext();
 }
 
-/* "MDAnalysis/lib/formats/cython_util.pyx":68
+/* "MDAnalysis/lib/formats/cython_util.pyx":83
  * 
  * 
  * cdef np.ndarray ptr_to_ndarray(void* data_ptr, np.int64_t[:] dim, int data_type):             # <<<<<<<<<<<<<<
@@ -2078,19 +2078,19 @@ static PyArrayObject *__pyx_f_10MDAnalysis_3lib_7formats_11cython_util_ptr_to_nd
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("ptr_to_ndarray", 0);
 
-  /* "MDAnalysis/lib/formats/cython_util.pyx":88
+  /* "MDAnalysis/lib/formats/cython_util.pyx":103
  * 
  *     """
  *     array_wrapper = ArrayWrapper()             # <<<<<<<<<<<<<<
  *     array_wrapper.set_data(<void*> data_ptr, <int*> &dim[0], dim.size, data_type)
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_10MDAnalysis_3lib_7formats_11cython_util_ArrayWrapper), __pyx_empty_tuple, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 88; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_10MDAnalysis_3lib_7formats_11cython_util_ArrayWrapper), __pyx_empty_tuple, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 103; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_array_wrapper = ((struct __pyx_obj_10MDAnalysis_3lib_7formats_11cython_util_ArrayWrapper *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "MDAnalysis/lib/formats/cython_util.pyx":89
+  /* "MDAnalysis/lib/formats/cython_util.pyx":104
  *     """
  *     array_wrapper = ArrayWrapper()
  *     array_wrapper.set_data(<void*> data_ptr, <int*> &dim[0], dim.size, data_type)             # <<<<<<<<<<<<<<
@@ -2105,49 +2105,49 @@ static PyArrayObject *__pyx_f_10MDAnalysis_3lib_7formats_11cython_util_ptr_to_nd
   } else if (unlikely(__pyx_t_2 >= __pyx_v_dim.shape[0])) __pyx_t_3 = 0;
   if (unlikely(__pyx_t_3 != -1)) {
     __Pyx_RaiseBufferIndexError(__pyx_t_3);
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 89; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 104; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
-  __pyx_t_1 = __pyx_memoryview_fromslice(__pyx_v_dim, 1, (PyObject *(*)(char *)) __pyx_memview_get_nn___pyx_t_5numpy_int64_t, (int (*)(char *, PyObject *)) __pyx_memview_set_nn___pyx_t_5numpy_int64_t, 0);; if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 89; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __pyx_memoryview_fromslice(__pyx_v_dim, 1, (PyObject *(*)(char *)) __pyx_memview_get_nn___pyx_t_5numpy_int64_t, (int (*)(char *, PyObject *)) __pyx_memview_set_nn___pyx_t_5numpy_int64_t, 0);; if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 104; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_size); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 89; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_size); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 104; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_t_4); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 89; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_t_4); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 104; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = ((struct __pyx_vtabstruct_10MDAnalysis_3lib_7formats_11cython_util_ArrayWrapper *)__pyx_v_array_wrapper->__pyx_vtab)->set_data(__pyx_v_array_wrapper, ((void *)__pyx_v_data_ptr), ((int *)(&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ (__pyx_v_dim.data + __pyx_t_2 * __pyx_v_dim.strides[0]) ))))), __pyx_t_3, __pyx_v_data_type); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 89; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = ((struct __pyx_vtabstruct_10MDAnalysis_3lib_7formats_11cython_util_ArrayWrapper *)__pyx_v_array_wrapper->__pyx_vtab)->set_data(__pyx_v_array_wrapper, ((void *)__pyx_v_data_ptr), ((int *)(&(*((__pyx_t_5numpy_int64_t *) ( /* dim=0 */ (__pyx_v_dim.data + __pyx_t_2 * __pyx_v_dim.strides[0]) ))))), __pyx_t_3, __pyx_v_data_type); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 104; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "MDAnalysis/lib/formats/cython_util.pyx":91
+  /* "MDAnalysis/lib/formats/cython_util.pyx":106
  *     array_wrapper.set_data(<void*> data_ptr, <int*> &dim[0], dim.size, data_type)
  * 
  *     cdef np.ndarray ndarray = np.array(array_wrapper, copy=False)             # <<<<<<<<<<<<<<
  *     # Assign our object to the 'base' of the ndarray object
  *     ndarray.base = <PyObject*> array_wrapper
  */
-  __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 91; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 106; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_array); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 91; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_array); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 106; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 91; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 106; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_INCREF(((PyObject *)__pyx_v_array_wrapper));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_array_wrapper));
   PyTuple_SET_ITEM(__pyx_t_4, 0, ((PyObject *)__pyx_v_array_wrapper));
-  __pyx_t_5 = PyDict_New(); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 91; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_5 = PyDict_New(); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 106; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_5);
-  if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_copy, Py_False) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 91; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_4, __pyx_t_5); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 91; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_copy, Py_False) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 106; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_4, __pyx_t_5); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 106; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (!(likely(((__pyx_t_6) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_6, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 91; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_6) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_6, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 106; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ndarray = ((PyArrayObject *)__pyx_t_6);
   __pyx_t_6 = 0;
 
-  /* "MDAnalysis/lib/formats/cython_util.pyx":93
+  /* "MDAnalysis/lib/formats/cython_util.pyx":108
  *     cdef np.ndarray ndarray = np.array(array_wrapper, copy=False)
  *     # Assign our object to the 'base' of the ndarray object
  *     ndarray.base = <PyObject*> array_wrapper             # <<<<<<<<<<<<<<
@@ -2156,7 +2156,7 @@ static PyArrayObject *__pyx_f_10MDAnalysis_3lib_7formats_11cython_util_ptr_to_nd
  */
   __pyx_v_ndarray->base = ((PyObject *)__pyx_v_array_wrapper);
 
-  /* "MDAnalysis/lib/formats/cython_util.pyx":96
+  /* "MDAnalysis/lib/formats/cython_util.pyx":111
  *     # Increment the reference count, as the above assignement was done in
  *     # C, and Python does not know that there is this additional reference
  *     Py_INCREF(array_wrapper)             # <<<<<<<<<<<<<<
@@ -2165,7 +2165,7 @@ static PyArrayObject *__pyx_f_10MDAnalysis_3lib_7formats_11cython_util_ptr_to_nd
  */
   Py_INCREF(((PyObject *)__pyx_v_array_wrapper));
 
-  /* "MDAnalysis/lib/formats/cython_util.pyx":98
+  /* "MDAnalysis/lib/formats/cython_util.pyx":113
  *     Py_INCREF(array_wrapper)
  * 
  *     return ndarray             # <<<<<<<<<<<<<<
@@ -2175,7 +2175,7 @@ static PyArrayObject *__pyx_f_10MDAnalysis_3lib_7formats_11cython_util_ptr_to_nd
   __pyx_r = __pyx_v_ndarray;
   goto __pyx_L0;
 
-  /* "MDAnalysis/lib/formats/cython_util.pyx":68
+  /* "MDAnalysis/lib/formats/cython_util.pyx":83
  * 
  * 
  * cdef np.ndarray ptr_to_ndarray(void* data_ptr, np.int64_t[:] dim, int data_type):             # <<<<<<<<<<<<<<
@@ -17111,10 +17111,10 @@ PyMODINIT_FUNC PyInit_cython_util(void)
   /*--- Type init code ---*/
   __pyx_vtabptr_10MDAnalysis_3lib_7formats_11cython_util_ArrayWrapper = &__pyx_vtable_10MDAnalysis_3lib_7formats_11cython_util_ArrayWrapper;
   __pyx_vtable_10MDAnalysis_3lib_7formats_11cython_util_ArrayWrapper.set_data = (PyObject *(*)(struct __pyx_obj_10MDAnalysis_3lib_7formats_11cython_util_ArrayWrapper *, void *, int *, int, int))__pyx_f_10MDAnalysis_3lib_7formats_11cython_util_12ArrayWrapper_set_data;
-  if (PyType_Ready(&__pyx_type_10MDAnalysis_3lib_7formats_11cython_util_ArrayWrapper) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 10; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyType_Ready(&__pyx_type_10MDAnalysis_3lib_7formats_11cython_util_ArrayWrapper) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 25; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_type_10MDAnalysis_3lib_7formats_11cython_util_ArrayWrapper.tp_print = 0;
-  if (__Pyx_SetVtable(__pyx_type_10MDAnalysis_3lib_7formats_11cython_util_ArrayWrapper.tp_dict, __pyx_vtabptr_10MDAnalysis_3lib_7formats_11cython_util_ArrayWrapper) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 10; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (PyObject_SetAttrString(__pyx_m, "ArrayWrapper", (PyObject *)&__pyx_type_10MDAnalysis_3lib_7formats_11cython_util_ArrayWrapper) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 10; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_SetVtable(__pyx_type_10MDAnalysis_3lib_7formats_11cython_util_ArrayWrapper.tp_dict, __pyx_vtabptr_10MDAnalysis_3lib_7formats_11cython_util_ArrayWrapper) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 25; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyObject_SetAttrString(__pyx_m, "ArrayWrapper", (PyObject *)&__pyx_type_10MDAnalysis_3lib_7formats_11cython_util_ArrayWrapper) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 25; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_ptype_10MDAnalysis_3lib_7formats_11cython_util_ArrayWrapper = &__pyx_type_10MDAnalysis_3lib_7formats_11cython_util_ArrayWrapper;
   if (PyType_Ready(&__pyx_type___pyx_array) < 0) {__pyx_filename = __pyx_f[2]; __pyx_lineno = 101; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_type___pyx_array.tp_print = 0;
@@ -17165,17 +17165,19 @@ PyMODINIT_FUNC PyInit_cython_util(void)
   if (__Pyx_patch_abc() < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   #endif
 
-  /* "MDAnalysis/lib/formats/cython_util.pyx":1
+  /* "MDAnalysis/lib/formats/cython_util.pyx":16
+ * # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
+ * #
  * import numpy as np             # <<<<<<<<<<<<<<
  * cimport numpy as np
  * 
  */
-  __pyx_t_1 = __Pyx_Import(__pyx_n_s_numpy, 0, -1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_Import(__pyx_n_s_numpy, 0, -1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 16; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_np, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_np, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 16; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "MDAnalysis/lib/formats/cython_util.pyx":7
+  /* "MDAnalysis/lib/formats/cython_util.pyx":22
  * from cpython cimport PyObject, Py_INCREF
  * 
  * np.import_array()             # <<<<<<<<<<<<<<
@@ -17185,9 +17187,9 @@ PyMODINIT_FUNC PyInit_cython_util(void)
   import_array();
 
   /* "MDAnalysis/lib/formats/cython_util.pyx":1
- * import numpy as np             # <<<<<<<<<<<<<<
- * cimport numpy as np
- * 
+ * # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-             # <<<<<<<<<<<<<<
+ * # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
+ * #
  */
   __pyx_t_1 = PyDict_New(); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);

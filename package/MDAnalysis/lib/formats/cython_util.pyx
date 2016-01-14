@@ -87,11 +87,11 @@ cdef np.ndarray ptr_to_ndarray(void* data_ptr, np.int64_t[:] dim, int data_type)
 
     Parameters
     ----------
-    data_ptr: void*
+    data_ptr : void*
         Pointer to the data
-    dim: int[:]
+    dim : int[:]
         array containing length in each dimension
-    data_type: int
+    data_type : int
         Numpy DataType enum
 
     Returns
