@@ -31,7 +31,8 @@ import MDAnalysis.core.AtomGroup
 from MDAnalysis.coordinates import XDR
 
 
-class XDRReader_Sub(TestCase):
+class _XDRReader_Sub(TestCase):
+
     def setUp(self):
         """
         grab values from selected atoms from full solvated traj,
@@ -61,11 +62,11 @@ class XDRReader_Sub(TestCase):
         assert_timestep_almost_equal(ts, self.ts)
 
 
-class TestTRRReader_Sub(XDRReader_Sub):
+class TestTRRReader_Sub(_XDRReader_Sub):
     XDR_SUB_SOL = TRR_sub_sol
 
 
-class TestXTCReader_Sub(XDRReader_Sub):
+class TestXTCReader_Sub(_XDRReader_Sub):
     XDR_SUB_SOL = XTC_sub_sol
 
 
