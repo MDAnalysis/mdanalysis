@@ -80,7 +80,7 @@ class XDRBaseReader(base.Reader):
         size_ok = getsize(self.filename) == data['size']
 
         if not (ctime_ok and size_ok):
-            warnings.warn("Relead offsets from trajectory\n "
+            warnings.warn("Reload offsets from trajectory\n "
                           "ctime or size did not match")
             self._read_offsets(store=True)
         else:
