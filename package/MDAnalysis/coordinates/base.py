@@ -1617,7 +1617,6 @@ class Writer(IObase):
             except KeyError:
                 pass
             else:
-                # All multiframe writers work as a singleframe?
                 for f in fmt:
                     _SINGLEFRAME_WRITERS[f] = cls
                 try:

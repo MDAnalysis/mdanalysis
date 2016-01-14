@@ -53,8 +53,14 @@ def get_reader_for(filename, permissive=False, format=None):
     kwargs
         Keyword arguments for the selected Reader class.
 
-    Automatic detection is disabled when an explicit *format* is
-    provided.
+    Returns
+    -------
+    A Reader object
+
+    Notes
+    -----
+        Automatic detection is disabled when an explicit *format* is
+        provided.
     """
     if format is None:
         format = util.guess_format(filename)
@@ -90,13 +96,17 @@ def reader(filename, **kwargs):
 
     Parameters
     ----------
-    filename : str
-        filename of the input trajectory or coordinate file
+    filename : str or tuple
+        filename (or tuple of filenames) of the input coordinate file
     permissive : bool
         If set to ``True``, a reader is selected that is more tolerant of the
         input (currently only implemented for PDB). [``False``]
     kwargs
         Keyword arguments for the selected Reader class.
+
+    Returns
+    -------
+    A Reader object
 
     .. SeeAlso:: For trajectory formats: :class:`~DCD.DCDReader`,
        :class:`~XTC.XTCReader`, :class:`~TRR.TRRReader`,
@@ -135,6 +145,10 @@ def get_writer_for(filename=None, format='DCD', multiframe=None):
         ``True``: write multiple frames to the trajectory; ``False``: only
         write a single coordinate frame; ``None``: first try trajectory (multi
         frame writers), then the single frame ones. Default is ``None``.
+
+    Returns
+    -------
+    A Writer object
 
     .. versionchanged:: 0.7.6
        Added *multiframe* keyword; the default ``None`` reflects the previous
@@ -198,6 +212,10 @@ def writer(filename, n_atoms=None, **kwargs):
                 length of time between two frames, in ps [1.0]
        Some readers accept additional arguments, which need to be looked
        up in the documentation of the reader.
+
+    Returns
+    -------
+    A Writer object
 
     .. SeeAlso:: :class:`~MDAnalysis.coordinates.DCD.DCDWriter` for DCD
                  trajectories or :class:`~MDAnalysis.coordinates.XTC.XTCWriter`
