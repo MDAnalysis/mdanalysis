@@ -424,6 +424,7 @@ import functools
 # Local imports
 import MDAnalysis
 from .. import SelectionError, NoDataError, SelectionWarning
+from . import Selection
 from ..lib import util
 from ..lib import distances
 from ..lib import mdamath
@@ -2823,26 +2824,18 @@ class AtomGroup(object):
             if not all(s == 0.0):
                 o.translate(s)
 
-    def select_atoms(self, sel, *othersel, **selgroups):
+    def select_atoms(self, selstr, *othersel, **selgroups):
         """Selection of atoms using the MDAnalysis selection syntax.
 
         AtomGroup.select_atoms(selection[,selection[,...]], [groupname=atomgroup[,groupname=atomgroup[,...]]])
 
         .. SeeAlso:: :meth:`Universe.select_atoms`
         """
-        from . import Selection  # can ONLY import in method, otherwise cyclical import!
-
-        atomgrp = Selection.Parser.parse(sel, selgroups).apply(self)
-        if len(othersel) == 0:
-            return atomgrp
-        else:
-            # Generate a selection for each selection string
-            #atomselections = [atomgrp]
-            for sel in othersel:
-                atomgrp = atomgrp + Selection.Parser.parse(sel, selgroups).apply(self)
-                #atomselections.append(Selection.Parser.parse(sel).apply(self))
-            #return tuple(atomselections)
-            return atomgrp
+        atomgrp = Selection.Parser.parse(selstr, selgroups).apply(self)
+        # Generate a selection for each selection string
+        for sel in othersel:
+            atomgrp += Selection.Parser.parse(sel, selgroups).apply(self)
+        return atomgrp
 
     selectAtoms = deprecate(select_atoms, old_name='selectAtoms',
                             new_name='select_atoms')
@@ -4493,20 +4486,7 @@ class Universe(object):
         .. versionchanged:: 0.13.0
            Added *bonded* selection
         """
-        # can ONLY import in method, otherwise cyclical import!
-        from . import Selection
-
-        atomgrp = Selection.Parser.parse(sel, selgroups).apply(self)
-        if len(othersel) == 0:
-            return atomgrp
-        else:
-            # Generate a selection for each selection string
-            #atomselections = [atomgrp]
-            for sel in othersel:
-                atomgrp = atomgrp + Selection.Parser.parse(sel, selgroups).apply(self)
-                #atomselections.append(Selection.Parser.parse(sel).apply(self))
-            #return tuple(atomselections)
-            return atomgrp
+        return self.atoms.select_atoms(sel, *othersel, **selgroups)
 
     selectAtoms = deprecate(select_atoms, old_name='selectAtoms',
                             new_name='select_atoms')
