@@ -23,11 +23,26 @@ from ..lib.mdamath import triclinic_box
 
 
 def offsets_filename(filename, ending='npz'):
+    """Return offset filename
+
+    Parameters
+    ----------
+    filename : str
+        filename of trajectory
+    ending : str (optional)
+        fileending of offsets file
+
+    Returns
+    -------
+    offset_filename: str
+    """
     head, tail = split(filename)
-    return join(head, '.{}_offsets.{}'.format(tail, ending))
+    return join(head, '.{tail}_offsets.{ending}'.format(tail=tail,
+                                                        ending=ending))
 
 
 class XDRBaseReader(base.Reader):
+    """Base class for xdrlib file formats xtc and trr"""
     def __init__(self, filename, convert_units=True, sub=None,
                  refresh_offsets=False, **kwargs):
         super(XDRBaseReader, self).__init__(filename,
@@ -45,7 +60,7 @@ class XDRBaseReader(base.Reader):
             xdr_frame = self._xdr.read()
             dt = xdr_frame.time - frame.time
             self._xdr.seek(1)
-        except:
+        except StopIteration:
             dt = 0
 
         self._sub = sub
@@ -64,9 +79,12 @@ class XDRBaseReader(base.Reader):
             self.convert_pos_from_native(self.ts._unitcell[:3])
 
     def close(self):
+        """close reader"""
         self._xdr.close()
 
     def _load_offsets(self):
+        """load frame offsets from file, reread them from the trajectory if that
+        fails"""
         fname = offsets_filename(self.filename)
 
         if not isfile(fname):
@@ -87,6 +105,7 @@ class XDRBaseReader(base.Reader):
             self._xdr.set_offsets(data['offsets'])
 
     def _read_offsets(self, store=False):
+        """read frame offsets from trajectory"""
         offsets = self._xdr.offsets
         if store:
             ctime = getctime(self.filename)
@@ -94,8 +113,9 @@ class XDRBaseReader(base.Reader):
             try:
                 np.savez(offsets_filename(self.filename),
                          offsets=offsets, size=size, ctime=ctime)
-            except:
-                pass
+            except Exception as e:
+                warnings.warn("Couldn't save offsets because: {}".format(
+                    e.message))
 
     def rewind(self):
         """Read the first frame again"""
@@ -103,20 +123,24 @@ class XDRBaseReader(base.Reader):
 
     @property
     def n_frames(self):
+        """number of frames in trajectory"""
         return len(self._xdr)
 
     def _reopen(self):
+        """reopen trajectory"""
         self.ts.frame = 0
         self._frame = -1
         self._xdr.close()
         self._xdr.open(self.filename, 'r')
 
     def _read_frame(self, i):
+        """read frame i"""
         self._xdr.seek(i)
         self._frame = i - 1
         return self._read_next_timestep()
 
     def _read_next_timestep(self, ts=None):
+        """copy next frame into timestep"""
         if self._frame == self.n_frames - 1:
             raise IOError(errno.EIO, 'trying to go over trajectory limit')
         if ts is None:
@@ -134,6 +158,7 @@ class XDRBaseReader(base.Reader):
 
 
 class XDRBaseWriter(base.Writer):
+    """Base class for xdrlib file formats xtc and trr"""
 
     def __init__(self, filename, n_atoms, convert_units=True, **kwargs):
         self.filename = filename
@@ -142,6 +167,7 @@ class XDRBaseWriter(base.Writer):
         self._xdr = self._file(self.filename, 'w')
 
     def close(self):
+        """close trajectory"""
         self._xdr.close()
 
     def __del__(self):
