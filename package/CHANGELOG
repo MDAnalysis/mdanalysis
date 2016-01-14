@@ -96,6 +96,8 @@ Fixes
   * Fixed MOL2Reader not reading molecule and substructure on init
     (Issue #521)
   * Fixed MOL2Writer rereading frames when writing them (Issue #521)
+  * Fixed PDBWriter not writing occupancies from atoms (Issue #620)
+
 
 10/08/15
 
