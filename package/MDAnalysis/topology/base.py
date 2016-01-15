@@ -37,9 +37,19 @@ from ..lib import util
 class TopologyReader(IObase):
     """Base class for topology readers
 
-    All topology readers must:
-      * Be initialised with a filename
-      * Return a struct dict by calling their parse function
+    Parameters
+    ----------
+    filename : str
+        name of the topology file
+    universe : Universe, optional
+        Supply a Universe to the Parser.  This then passes it to the
+        atom instances that are created within parsers.
+    kwargs : optional
+        Other keyword arguments that can vary with the specific format.
+        These are stored as self.kwargs
+
+    All topology readers must define a `parse` method which
+    returns a topology dict.
 
     Raises
     ------
@@ -62,19 +72,6 @@ class TopologyReader(IObase):
                     _PARSERS[f] = cls
 
     def __init__(self, filename, universe=None, **kwargs):
-        """Standard arguments for a TopologyReader:
-
-        Parameters
-        ----------
-        filename : str
-            name of the topology file
-        universe : Universe, optional
-            Supply a Universe to the Parser.  This then passes it to the
-            atom instances that are created within parsers.
-        kwargs : optional
-            Other keyword arguments that can vary with the specific format.
-            These are stored as self.kwargs
-        """
         self.filename = filename
         self._u = universe
         self.kwargs = kwargs
