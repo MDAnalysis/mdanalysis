@@ -228,7 +228,7 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
             start = universe.atoms[0].resid
         if end is None:
             end = universe.atoms[-1].resid
-        selection += " and resid %(start)d:%(end)d" % vars()
+        selection += " and resid {start:d}:{end:d}".format(**vars())
     ca = universe.select_atoms(selection)
     trajectory = universe.trajectory
 
@@ -361,21 +361,21 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
         print >> mat_output, "Mean"
         for row in bending_statistics_matrix:
             for col in row:
-                formatted_angle = "%6.1f" % col[0]
+                formatted_angle = "{0:6.1f}".format(col[0])
                 print >> mat_output, formatted_angle,
             print >> mat_output, ''
 
         print >> mat_output, "\nSD"
         for row in bending_statistics_matrix:
             for col in row:
-                formatted_angle = "%6.1f" % col[1]
+                formatted_angle = "{0:6.1f}".format(col[1])
                 print >> mat_output, formatted_angle,
             print >> mat_output, ''
 
         print >> mat_output, "\nABDEV"
         for row in bending_statistics_matrix:
             for col in row:
-                formatted_angle = "%6.1f" % col[2]
+                formatted_angle = "{0:6.1f}".format(col[2])
                 print >> mat_output, formatted_angle,
             print >> mat_output, ''
 
@@ -387,15 +387,15 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
     residue_statistics = zip(*bending_statistics)
     measure_names = ["Mean ", "SD   ", "ABDEV"]
     if start is None:
-        output = " ".join(["%8d" % item
+        output = " ".join(["{0:8d}".format(item)
                            for item in range(4, len(residue_statistics[0]) + 4)])
     else:
-        output = " ".join(["%8d" % item
+        output = " ".join(["{0:8d}".format(item)
                            for item in range(start + 3, len(residue_statistics[0]) + start + 3)])
     logger.info("ResID %s", output)
     for measure, name in zip(residue_statistics, measure_names):
         output = str(name) + " "
-        output += " ".join(["%8.1f" % residue for residue in measure])
+        output += " ".join(["{0:8.1f}".format(residue) for residue in measure])
         logger.info(output)
 
     with open(summary_filename, 'w') as summary_output:
@@ -408,18 +408,18 @@ def helanal_trajectory(universe, selection="name CA", start=None, end=None, begi
         print >> summary_output, "ResID",
         if start is None:
             for item in range(4, len(residue_statistics[0]) + 4):
-                output = "%8d" % item
+                output = "{0:8d}".format(item)
                 print >> summary_output, output,
         else:
             for item in range(start + 3, len(residue_statistics[0]) + start + 3):
-                output = "%8d" % item
+                output = "{0:8d}".format(item)
                 print >> summary_output, output,
         print >> summary_output, ""
 
         for measure, name in zip(residue_statistics, measure_names):
             print >> summary_output, name,
             for residue in measure:
-                output = "%8.1f" % residue
+                output = "{0:8.1f}".format(residue)
                 print >> summary_output, output,
             print >> summary_output, ''
 
@@ -504,7 +504,7 @@ def helanal_main(pdbfile, selection="name CA", start=None, end=None, ref_axis=No
             start = universe.atoms[0].resid
         if end is None:
             end = universe.atoms[-1].resid
-        selection += " and resid %(start)d:%(end)d" % vars()
+        selection += " and resid {start:d}:{end:d}".format(**vars())
     ca = universe.select_atoms(selection)
 
     logger.info("Analysing %d/%d residues", ca.n_atoms, universe.atoms.n_residues)
@@ -571,15 +571,15 @@ def helanal_main(pdbfile, selection="name CA", start=None, end=None, ref_axis=No
     logger.info("Twist: %g  SD: %g  ABDEV: %g", mean_twist, sd_twist, abdev_twist)
     logger.info("Residues/turn: %g  SD: %g  ABDEV: %g", mean_rnou, sd_rnou, abdev_rnou)
 
-    output = " ".join(["%8.1f\t" % angle for angle in bending_angles])
+    output = " ".join(["{0:8.1f}\t".format(angle) for angle in bending_angles])
     logger.info("Local bending angles: %s", output)
 
-    output = " ".join(["%8.1f\t" % twist_ang for twist_ang in twist])
+    output = " ".join(["{0:8.1f}\t".format(twist_ang) for twist_ang in twist])
     logger.info("Unit twist angles: %s", output)
 
     logger.info("Best fit tilt: %g", fit_tilt)
 
-    output = " ".join(["%.1f" % item for item in local_screw_angles])
+    output = " ".join(["{0:.1f}".format(item) for item in local_screw_angles])
     logger.info("Rotation Angles from 1 to n-1 (local screw angles): %s", output)
 
     return data
@@ -593,7 +593,7 @@ def origin_pdb(origins, pdbfile):
     with open(pdbfile, 'a') as output:
         i = 1
         for xyz in origins:
-            tmp = "ATOM    %3d  CA  ALA   %3d    %8.3f%8.3f%8.3f  1.00  0.00" % (i, i, xyz[0], xyz[1], xyz[2])
+            tmp = "ATOM    {0:3d}  CA  ALA   {1:3d}    {2:8.3f}{3:8.3f}{4:8.3f}  1.00  0.00".format(i, i, xyz[0], xyz[1], xyz[2])
             print >> output, tmp
             i += 1
         print >> output, "TER\nENDMDL"

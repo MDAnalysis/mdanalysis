@@ -292,8 +292,8 @@ class TestTRRReader(_GromacsReader):
                 self.universe.atoms[index].velocity,
                 v_known,
                 self.prec,
-                err_msg="atom[%d].velocity does not match known values" %
-                index)
+                err_msg="atom[{0:d}].velocity does not match known values".format(
+                index))
 
 
 class _XDRNoConversion(TestCase):
@@ -520,7 +520,7 @@ class _GromacsWriterIssue101(TestCase):
             w.atoms.coordinates(),
             u.atoms.coordinates(),
             self.prec,
-            err_msg="coordinates do not match for %r" % filename)
+            err_msg="coordinates do not match for {0!r}".format(filename))
 
 
 class TestXTCWriterSingleFrame(_GromacsWriterIssue101):

@@ -61,7 +61,7 @@ def rmsd_traj(traj, ref, **kwargs):
         b = traj_coordinates.T.astype('float64')
         rmsd[k] = qcp.CalcRMSDRotationalMatrix(a, b, natoms, R, None)
 
-        print "%5d  %8.3f A" % (k, rmsd[k])
+        print "{0:5d}  {1:8.3f} A".format(k, rmsd[k])
 
         ### only comment in if you want to manipulate or write out
         ### the fitted trajectory
@@ -83,15 +83,15 @@ if __name__ == '__main__':
     ref = Universe(PSF, PDB_small)  # reference structure 4AKE
     trj = Universe(PSF, DCD)  # trajectory of change 1AKE->4AKE
 
-    print "CA RMSD for %(DCD)r versus %(PDB_small)r" % vars()
+    print "CA RMSD for {DCD!r} versus {PDB_small!r}".format(**vars())
     rmsds1 = rmsd_traj(trj, ref, select='name CA')
 
-    print "CA RMSD for %(DCD)r versus first frame" % vars()
+    print "CA RMSD for {DCD!r} versus first frame".format(**vars())
     ref = Universe(PSF, DCD)
     ref.trajectory[0]  # go to first frame
     rmsds2 = rmsd_traj(trj, ref, select='name CA')
 
-    print "CA RMSD for %(DCD)r versus last frame" % vars()
+    print "CA RMSD for {DCD!r} versus last frame".format(**vars())
     ref = Universe(PSF, DCD)
     ref.trajectory[-1]  # go to last frame
     rmsds3 = rmsd_traj(trj, ref, select='name CA')

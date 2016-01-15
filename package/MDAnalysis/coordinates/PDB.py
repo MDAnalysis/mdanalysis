@@ -790,9 +790,9 @@ class PrimitivePDBWriter(base.Writer):
 
     def _write_pdb_title(self):
         if self._multiframe:
-            self.TITLE("MDANALYSIS FRAMES FROM %d, SKIP %d: %s" % (self.start, self.step, self.remarks))
+            self.TITLE("MDANALYSIS FRAMES FROM {0:d}, SKIP {1:d}: {2!s}".format(self.start, self.step, self.remarks))
         else:
-            self.TITLE("MDANALYSIS FRAME %d: %s" % (self.start, self.remarks))
+            self.TITLE("MDANALYSIS FRAME {0:d}: {1!s}".format(self.start, self.remarks))
 
     def _write_pdb_header(self):
         if not self.obj or not hasattr(self.obj, 'universe'):
@@ -844,8 +844,7 @@ class PrimitivePDBWriter(base.Writer):
                 if err.errno == errno.ENOENT:
                     pass
         raise ValueError(
-            "PDB files must have coordinate values between %.3f and %.3f Angstroem: file writing was aborted." %
-            (self.pdb_coor_limits["min"], self.pdb_coor_limits["max"]))
+            "PDB files must have coordinate values between {0:.3f} and {1:.3f} Angstroem: file writing was aborted.".format(self.pdb_coor_limits["min"], self.pdb_coor_limits["max"]))
 
     def _write_pdb_bonds(self):
         """Writes out all the bond records; works only for Universe objects.
@@ -1091,7 +1090,7 @@ class PrimitivePDBWriter(base.Writer):
 
         if len(atoms) != len(coor):
             raise ValueError(
-                "Length of the atoms array is %d, this is different form the Timestep coordinate array %d" % (
+                "Length of the atoms array is {0:d}, this is different form the Timestep coordinate array {1:d}".format(
                     len(atoms), len(ts._pos)))
 
         if multiframe:
@@ -1263,7 +1262,7 @@ class PrimitivePDBWriter(base.Writer):
         .. _CONECT: http://www.wwpdb.org/documentation/format32/sect10.html#CONECT
 
         """
-        conect = ["%5d" % (entry + 1) for entry in conect]
+        conect = ["{0:5d}".format((entry + 1)) for entry in conect]
         conect = "".join(conect)
         self.pdbfile.write(self.fmt['CONECT'] % conect)
 

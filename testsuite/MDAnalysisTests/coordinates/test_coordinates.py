@@ -98,8 +98,7 @@ class TestChainReader(TestCase):
             pass  # just forward to last frame
         assert_equal(
             self.trajectory.n_frames - 1, ts.frame,
-            "iteration yielded wrong number of frames (%d), should be %d" %
-            (ts.frame, self.trajectory.n_frames))
+            "iteration yielded wrong number of frames ({0:d}), should be {1:d}".format(ts.frame, self.trajectory.n_frames))
 
     def test_jump_lastframe_trajectory(self):
         self.trajectory[-1]
@@ -152,7 +151,7 @@ class TestChainReader(TestCase):
                 ts_orig._pos,
                 ts_new._pos,
                 self.prec,
-                err_msg="Coordinates disagree at frame %d" % ts_orig.frame)
+                err_msg="Coordinates disagree at frame {0:d}".format(ts_orig.frame))
 
 class TestChainReaderCommonDt(TestCase):
 
@@ -171,7 +170,7 @@ class TestChainReaderCommonDt(TestCase):
             assert_almost_equal(self.trajectory.time,
                             self.trajectory.frame*self.common_dt,
                             5,
-                            err_msg="Wrong time for frame %d" % frame_n )
+                            err_msg="Wrong time for frame {0:d}".format(frame_n) )
 
 
 class TestChainReaderFormats(TestCase):

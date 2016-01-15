@@ -461,7 +461,7 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
     ref_atoms, traj_atoms = get_matching_atoms(ref_atoms, traj_atoms,
                                                  tol_mass=tol_mass, strict=strict)
 
-    logger.info("RMS-fitting on %d atoms." % len(ref_atoms))
+    logger.info("RMS-fitting on {0:d} atoms.".format(len(ref_atoms)))
     if mass_weighted:
         # if performing a mass-weighted alignment/rmsd calculation
         weight = ref_atoms.masses / ref_atoms.masses.mean()
@@ -667,8 +667,8 @@ def fasta2select(fastafilename, is_aligned=False,
             raise
         with open(alnfilename) as aln:
             alignment = Bio.AlignIO.read(aln, "clustal", alphabet=protein_gapped)
-        logger.info("Using clustalw sequence alignment %r" % alnfilename)
-        logger.info("ClustalW Newick guide tree was also produced: %r" % treefilename)
+        logger.info("Using clustalw sequence alignment {0!r}".format(alnfilename))
+        logger.info("ClustalW Newick guide tree was also produced: {0!r}".format(treefilename))
 
     nseq = len(alignment)
     if nseq != 2:
@@ -922,9 +922,8 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
 
         logger.error("Atoms: reference | trajectory")
         for ar, at in itertools.izip(ag1[mismatch_atomindex], ag2[mismatch_atomindex]):
-            logger.error("%4s %3d %3s %3s %6.3f  |  %4s %3d %3s %3s %6.3f" %
-                         (ar.segid, ar.resid, ar.resname, ar.name, ar.mass,
-                          at.segid, at.resid, at.resname, at.name, at.mass,))
+            logger.error("{0!s:>4} {1:3d} {2!s:>3} {3!s:>3} {4:6.3f}  |  {5!s:>4} {6:3d} {7!s:>3} {8!s:>3} {9:6.3f}".format(ar.segid, ar.resid, ar.resname, ar.name, ar.mass,
+                          at.segid, at.resid, at.resname, at.name, at.mass))
         errmsg = ("Inconsistent selections, masses differ by more than {0}; " + \
             "mis-matching atoms are shown above.").format(tol_mass)
         logger.error(errmsg)

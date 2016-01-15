@@ -209,15 +209,14 @@ class LeafletFinder(object):
         SelectionWriter = MDAnalysis.selections.get_writer(filename, kwargs.pop('format', None))
         writer = SelectionWriter(
             filename, mode=kwargs.pop('mode', 'wa'),
-            preamble="leaflets based on selection=%(selectionstring)r cutoff=%(cutoff)f\n" % vars(self),
+            preamble="leaflets based on selection={selectionstring!r} cutoff={cutoff:f}\n".format(**vars(self)),
             **kwargs)
         for i, ag in enumerate(self.groups_iter()):
-            name = "leaflet_%d" % (i + 1)
+            name = "leaflet_{0:d}".format((i + 1))
             writer.write(ag, name=name)
 
     def __repr__(self):
-        return "<LeafletFinder(%r, cutoff=%.1f A) with %d atoms in %d groups>" % \
-               (self.selectionstring, self.cutoff, self.selection.n_atoms,
+        return "<LeafletFinder({0!r}, cutoff={1:.1f} A) with {2:d} atoms in {3:d} groups>".format(self.selectionstring, self.cutoff, self.selection.n_atoms,
                len(self.components))
 
 

@@ -45,8 +45,8 @@ import glob
 
 # Make sure I have the right Python version.
 if sys.version_info[:2] < (2, 7):
-    print("MDAnalysis requires Python 2.7 or better. Python %d.%d detected" %
-          sys.version_info[:2])
+    print("MDAnalysis requires Python 2.7 or better. Python {0:d}.{1:d} detected".format(*
+          sys.version_info[:2]))
     print("Please upgrade your version of Python.")
     sys.exit(-1)
 
@@ -126,7 +126,7 @@ For details see the report for `Issue 87`_.
           classifiers=CLASSIFIERS,
           long_description=LONG_DESCRIPTION,
           install_requires=[
-              'MDAnalysis==%s' % RELEASE,  # same as this release!
+              'MDAnalysis=={0!s}'.format(RELEASE),  # same as this release!
               'numpy>=1.5',
               'nose>=1.3.7',
               'tempdir',

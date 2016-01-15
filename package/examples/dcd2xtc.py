@@ -26,6 +26,6 @@ w = Writer(xtcname, u.trajectory.numatoms)
 # loop through the trajectory and write a frame for every step
 for ts in u.trajectory:
     w.write(ts)
-    print "Converted frame %d" % ts.frame
+    print "Converted frame {0:d}".format(ts.frame)
 w.close_trajectory()
-print "Converted %r --> %r" % (DCD, xtcname)
+print "Converted {0!r} --> {1!r}".format(DCD, xtcname)
