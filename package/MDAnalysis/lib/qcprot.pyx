@@ -336,19 +336,35 @@ def FastCalcRMSDAndRotation(np.ndarray[np.float64_t,ndim=1] rot, np.ndarray[np.f
     #if (i == 50):
     #   print "\nMore than %d iterations needed!\n" % (i)
 
-    # the fabs() is to guard against extremely small, but *negative* numbers due to floating point error
+    # the fabs() is to guard against extremely small,
+    # but *negative* numbers due to floating point error
     rms = sqrt(fabs(2.0 * (E0 - mxEigenV)/N))
 
     if (rot is None):
         return rms # Don't bother with rotation.
 
-    a11 = SxxpSyy + Szz-mxEigenV; a12 = SyzmSzy; a13 = - SxzmSzx; a14 = SxymSyx
-    a21 = SyzmSzy; a22 = SxxmSyy - Szz-mxEigenV; a23 = SxypSyx; a24= SxzpSzx
-    a31 = a13; a32 = a23; a33 = Syy-Sxx-Szz - mxEigenV; a34 = SyzpSzy
-    a41 = a14; a42 = a24; a43 = a34; a44 = Szz - SxxpSyy - mxEigenV
-    a3344_4334 = a33 * a44 - a43 * a34; a3244_4234 = a32 * a44-a42*a34
-    a3243_4233 = a32 * a43 - a42 * a33; a3143_4133 = a31 * a43-a41*a33
-    a3144_4134 = a31 * a44 - a41 * a34; a3142_4132 = a31 * a42-a41*a32
+    a11 = SxxpSyy + Szz-mxEigenV
+    a12 = SyzmSzy
+    a13 = - SxzmSzx
+    a14 = SxymSyx
+    a21 = SyzmSzy
+    a22 = SxxmSyy - Szz-mxEigenV
+    a23 = SxypSyx
+    a24= SxzpSzx
+    a31 = a13
+    a32 = a23
+    a33 = Syy-Sxx-Szz - mxEigenV
+    a34 = SyzpSzy
+    a41 = a14
+    a42 = a24
+    a43 = a34
+    a44 = Szz - SxxpSyy - mxEigenV
+    a3344_4334 = a33 * a44 - a43 * a34
+    a3244_4234 = a32 * a44-a42*a34
+    a3243_4233 = a32 * a43 - a42 * a33
+    a3143_4133 = a31 * a43-a41*a33
+    a3144_4134 = a31 * a44 - a41 * a34
+    a3142_4132 = a31 * a42-a41*a32
     q1 =  a22*a3344_4334-a23*a3244_4234+a24*a3243_4233
     q2 = -a21*a3344_4334+a23*a3144_4134-a24*a3143_4133
     q3 =  a21*a3244_4234-a22*a3144_4134+a24*a3142_4132
