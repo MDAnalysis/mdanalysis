@@ -268,7 +268,7 @@ def contact_matrix_no_pbc(coord, sparse_contacts, cutoff):
     cdef float[:, ::1] coord_view = coord
 
     cdef int i, j
-    cdef double[3] rr;
+    cdef double[3] rr
     cdef double dist
     for i in range(rows):
         sparse_contacts[i, i] = True
@@ -291,7 +291,7 @@ def contact_matrix_pbc(coord, sparse_contacts, box, cutoff):
     cdef float[::1] box_inv = 1. / box
 
     cdef int i, j
-    cdef double[3] rr;
+    cdef double[3] rr
     cdef double dist
     for i in range(rows):
         sparse_contacts[i, i] = True
