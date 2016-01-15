@@ -3088,7 +3088,7 @@ class Residue(AtomGroup):
                   method returns ``None``.
         """
         sel = self.universe.select_atoms(
-            'segid %s and resid %d and name C' % (self.segment.id, self.id - 1)) + \
+            'segid {0!s} and resid {1:d} and name C'.format(self.segment.id, self.id - 1)) + \
               self['N'] + self['CA'] + self['C']
         if len(sel) == 4:  # select_atoms doesnt raise errors if nothing found, so check size
             return sel
@@ -3104,7 +3104,7 @@ class Residue(AtomGroup):
         """
         sel = self['N'] + self['CA'] + self['C'] + \
               self.universe.select_atoms(
-                  'segid %s and resid %d and name N' % (self.segment.id, self.id + 1))
+                  'segid {0!s} and resid {1:d} and name N'.format(self.segment.id, self.id + 1))
         if len(sel) == 4:
             return sel
         else:
@@ -3126,8 +3126,8 @@ class Residue(AtomGroup):
         segid = self.segment.id
         sel = self['CA'] + self['C'] + \
               self.universe.select_atoms(
-                  'segid %s and resid %d and name N' % (segid, nextres),
-                  'segid %s and resid %d and name CA' % (segid, nextres))
+                  'segid {0!s} and resid {1:d} and name N'.format(segid, nextres),
+                  'segid {0!s} and resid {1:d} and name CA'.format(segid, nextres))
         if len(sel) == 4:
             return sel
         else:
@@ -4611,7 +4611,7 @@ def as_Universe(*args, **kwargs):
     :Returns: an instance of :class:`~MDAnalaysis.AtomGroup.Universe`
     """
     if len(args) == 0:
-        raise TypeError("as_Universe() takes at least one argument (%d given)" % len(args))
+        raise TypeError("as_Universe() takes at least one argument ({0:d} given)".format(len(args)))
     elif len(args) == 1 and isinstance(args[0], Universe):
         return args[0]
     return Universe(*args, **kwargs)

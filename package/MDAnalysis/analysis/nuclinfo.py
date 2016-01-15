@@ -127,12 +127,12 @@ def wc_pair(universe, i, bp, seg1="SYSTEM", seg2="SYSTEM"):
 
     .. versionadded:: 0.7.6
     """
-    if universe.select_atoms(" resid %s " % (i,)).resnames[0] in ["DC", "DT", "U", "C", "T", "CYT", "THY", "URA"]:
+    if universe.select_atoms(" resid {0!s} ".format(i)).resnames[0] in ["DC", "DT", "U", "C", "T", "CYT", "THY", "URA"]:
         a1, a2 = "N3", "N1"
-    if universe.select_atoms(" resid %s " % (i,)).resnames[0] in ["DG", "DA", "A", "G", "ADE", "GUA"]:
+    if universe.select_atoms(" resid {0!s} ".format(i)).resnames[0] in ["DG", "DA", "A", "G", "ADE", "GUA"]:
         a1, a2 = "N1", "N3"
     wc_dist = universe.select_atoms(
-        " (segid %s and resid %s and name %s)  or (segid %s and resid %s and name %s) " % (seg1, i, a1, seg2, bp, a2))
+        " (segid {0!s} and resid {1!s} and name {2!s})  or (segid {3!s} and resid {4!s} and name {5!s}) ".format(seg1, i, a1, seg2, bp, a2))
     wc = mdamath.norm(wc_dist[0].pos - wc_dist[1].pos)
     return wc
 
@@ -159,12 +159,12 @@ def minor_pair(universe, i, bp, seg1="SYSTEM", seg2="SYSTEM"):
 
     .. versionadded:: 0.7.6
     """
-    if universe.select_atoms(" resid %s " % (i,)).resnames[0] in ["DC", "DT", "U", "C", "T", "CYT", "THY", "URA"]:
+    if universe.select_atoms(" resid {0!s} ".format(i)).resnames[0] in ["DC", "DT", "U", "C", "T", "CYT", "THY", "URA"]:
         a1, a2 = "O2", "C2"
-    if universe.select_atoms(" resid %s " % (i,)).resnames[0] in ["DG", "DA", "A", "G", "ADE", "GUA"]:
+    if universe.select_atoms(" resid {0!s} ".format(i)).resnames[0] in ["DG", "DA", "A", "G", "ADE", "GUA"]:
         a1, a2 = "C2", "O2"
     c2o2_dist = universe.select_atoms(
-        " (segid %s and resid %s and name %s)  or (segid %s and resid %s and name %s) " % (seg1, i, a1, seg2, bp, a2))
+        " (segid {0!s} and resid {1!s} and name {2!s})  or (segid {3!s} and resid {4!s} and name {5!s}) ".format(seg1, i, a1, seg2, bp, a2))
     c2o2 = mdamath.norm(c2o2_dist[0].pos - c2o2_dist[1].pos)
     return c2o2
 
@@ -191,18 +191,18 @@ def major_pair(universe, i, bp, seg1="SYSTEM", seg2="SYSTEM"):
 
     .. versionadded:: 0.7.6
     """
-    if universe.select_atoms(" resid %s " % (i,)).resnames[0] in ["DC", "DG", "C", "G", "CYT", "GUA"]:
-        if universe.select_atoms(" resid %s " % (i,)).resnames[0] in ["DC", "C", "CYT"]:
+    if universe.select_atoms(" resid {0!s} ".format(i)).resnames[0] in ["DC", "DG", "C", "G", "CYT", "GUA"]:
+        if universe.select_atoms(" resid {0!s} ".format(i)).resnames[0] in ["DC", "C", "CYT"]:
             a1, a2 = "N4", "O6"
         else:
             a1, a2 = "O6", "N4"
-    if universe.select_atoms(" resid %s " % (i,)).resnames[0] in ["DT", "DA", "A", "T", "U", "ADE", "THY", "URA"]:
-        if universe.select_atoms(" resid %s " % (i,)).resnames[0] in ["DT", "T", "THY", "U", "URA"]:
+    if universe.select_atoms(" resid {0!s} ".format(i)).resnames[0] in ["DT", "DA", "A", "T", "U", "ADE", "THY", "URA"]:
+        if universe.select_atoms(" resid {0!s} ".format(i)).resnames[0] in ["DT", "T", "THY", "U", "URA"]:
             a1, a2 = "O4", "N6"
         else:
             a1, a2 = "N6", "O4"
     no_dist = universe.select_atoms(
-        " (segid %s and resid %s and name %s)  or (segid %s and resid %s and name %s) " % (seg1, i, a1, seg2, bp, a2))
+        " (segid {0!s} and resid {1!s} and name {2!s})  or (segid {3!s} and resid {4!s} and name {5!s}) ".format(seg1, i, a1, seg2, bp, a2))
     major = mdamath.norm(no_dist[0].pos - no_dist[1].pos)
     return major
 
@@ -223,11 +223,11 @@ def phase_cp(universe, seg, i):
 
     .. versionadded:: 0.7.6
     """
-    atom1 = universe.select_atoms(" atom %s %s O4\' " % (seg, i))
-    atom2 = universe.select_atoms(" atom %s %s C1\' " % (seg, i))
-    atom3 = universe.select_atoms(" atom %s %s C2\' " % (seg, i))
-    atom4 = universe.select_atoms(" atom %s %s C3\' " % (seg, i))
-    atom5 = universe.select_atoms(" atom %s %s C4\' " % (seg, i))
+    atom1 = universe.select_atoms(" atom {0!s} {1!s} O4\' ".format(seg, i))
+    atom2 = universe.select_atoms(" atom {0!s} {1!s} C1\' ".format(seg, i))
+    atom3 = universe.select_atoms(" atom {0!s} {1!s} C2\' ".format(seg, i))
+    atom4 = universe.select_atoms(" atom {0!s} {1!s} C3\' ".format(seg, i))
+    atom5 = universe.select_atoms(" atom {0!s} {1!s} C4\' ".format(seg, i))
 
     data1 = atom1.coordinates()
     data2 = atom2.coordinates()
@@ -287,16 +287,16 @@ def phase_as(universe, seg, i):
 
     .. versionadded:: 0.7.6
     """
-    angle1 = universe.select_atoms(" atom %s %s C1\' " % (seg, i), " atom %s %s C2\' " % (seg, i),
-                                  " atom %s %s C3\' " % (seg, i), " atom %s %s C4\' " % (seg, i))
-    angle2 = universe.select_atoms(" atom %s %s C2\' " % (seg, i), " atom %s %s C3\' " % (seg, i),
-                                  " atom %s %s C4\' " % (seg, i), " atom %s %s O4\' " % (seg, i))
-    angle3 = universe.select_atoms(" atom %s %s C3\' " % (seg, i), " atom %s %s C4\' " % (seg, i),
-                                  " atom %s %s O4\' " % (seg, i), " atom %s %s C1\' " % (seg, i))
-    angle4 = universe.select_atoms(" atom %s %s C4\' " % (seg, i), " atom %s %s O4\' " % (seg, i),
-                                  " atom %s %s C1\' " % (seg, i), " atom %s %s C2\' " % (seg, i))
-    angle5 = universe.select_atoms(" atom %s %s O4\' " % (seg, i), " atom %s %s C1\' " % (seg, i),
-                                  " atom %s %s C2\' " % (seg, i), " atom %s %s C3\' " % (seg, i))
+    angle1 = universe.select_atoms(" atom {0!s} {1!s} C1\' ".format(seg, i), " atom {0!s} {1!s} C2\' ".format(seg, i),
+                                  " atom {0!s} {1!s} C3\' ".format(seg, i), " atom {0!s} {1!s} C4\' ".format(seg, i))
+    angle2 = universe.select_atoms(" atom {0!s} {1!s} C2\' ".format(seg, i), " atom {0!s} {1!s} C3\' ".format(seg, i),
+                                  " atom {0!s} {1!s} C4\' ".format(seg, i), " atom {0!s} {1!s} O4\' ".format(seg, i))
+    angle3 = universe.select_atoms(" atom {0!s} {1!s} C3\' ".format(seg, i), " atom {0!s} {1!s} C4\' ".format(seg, i),
+                                  " atom {0!s} {1!s} O4\' ".format(seg, i), " atom {0!s} {1!s} C1\' ".format(seg, i))
+    angle4 = universe.select_atoms(" atom {0!s} {1!s} C4\' ".format(seg, i), " atom {0!s} {1!s} O4\' ".format(seg, i),
+                                  " atom {0!s} {1!s} C1\' ".format(seg, i), " atom {0!s} {1!s} C2\' ".format(seg, i))
+    angle5 = universe.select_atoms(" atom {0!s} {1!s} O4\' ".format(seg, i), " atom {0!s} {1!s} C1\' ".format(seg, i),
+                                  " atom {0!s} {1!s} C2\' ".format(seg, i), " atom {0!s} {1!s} C3\' ".format(seg, i))
 
     data1 = angle1.dihedral.value()
     data2 = angle2.dihedral.value()
@@ -336,24 +336,24 @@ def tors(universe, seg, i):
     .. NOTE:: If failure occurs be sure to check the segment identification
 
     """
-    a = universe.select_atoms(" atom %s %s O3\' " % (seg, i - 1), " atom %s %s P  " % (seg, i),
-                             " atom %s %s O5\' " % (seg, i), " atom %s %s C5\' " % (seg, i))
-    b = universe.select_atoms(" atom %s %s P    " % (seg, i), " atom %s %s O5\' " % (seg, i),
-                             " atom %s %s C5\' " % (seg, i), " atom %s %s C4\' " % (seg, i))
-    g = universe.select_atoms(" atom %s %s O5\' " % (seg, i), " atom %s %s C5\' " % (seg, i),
-                             " atom %s %s C4\' " % (seg, i), " atom %s %s C3\' " % (seg, i))
-    d = universe.select_atoms(" atom %s %s C5\' " % (seg, i), " atom %s %s C4\' " % (seg, i),
-                             " atom %s %s C3\' " % (seg, i), " atom %s %s O3\' " % (seg, i))
-    e = universe.select_atoms(" atom %s %s C4\' " % (seg, i), " atom %s %s C3\' " % (seg, i),
-                             " atom %s %s O3\' " % (seg, i), " atom %s %s P    " % (seg, i + 1))
-    z = universe.select_atoms(" atom %s %s C3\' " % (seg, i), " atom %s %s O3\' " % (seg, i),
-                             " atom %s %s P    " % (seg, i + 1), " atom %s %s O5\' " % (seg, i + 1))
+    a = universe.select_atoms(" atom {0!s} {1!s} O3\' ".format(seg, i - 1), " atom {0!s} {1!s} P  ".format(seg, i),
+                             " atom {0!s} {1!s} O5\' ".format(seg, i), " atom {0!s} {1!s} C5\' ".format(seg, i))
+    b = universe.select_atoms(" atom {0!s} {1!s} P    ".format(seg, i), " atom {0!s} {1!s} O5\' ".format(seg, i),
+                             " atom {0!s} {1!s} C5\' ".format(seg, i), " atom {0!s} {1!s} C4\' ".format(seg, i))
+    g = universe.select_atoms(" atom {0!s} {1!s} O5\' ".format(seg, i), " atom {0!s} {1!s} C5\' ".format(seg, i),
+                             " atom {0!s} {1!s} C4\' ".format(seg, i), " atom {0!s} {1!s} C3\' ".format(seg, i))
+    d = universe.select_atoms(" atom {0!s} {1!s} C5\' ".format(seg, i), " atom {0!s} {1!s} C4\' ".format(seg, i),
+                             " atom {0!s} {1!s} C3\' ".format(seg, i), " atom {0!s} {1!s} O3\' ".format(seg, i))
+    e = universe.select_atoms(" atom {0!s} {1!s} C4\' ".format(seg, i), " atom {0!s} {1!s} C3\' ".format(seg, i),
+                             " atom {0!s} {1!s} O3\' ".format(seg, i), " atom {0!s} {1!s} P    ".format(seg, i + 1))
+    z = universe.select_atoms(" atom {0!s} {1!s} C3\' ".format(seg, i), " atom {0!s} {1!s} O3\' ".format(seg, i),
+                             " atom {0!s} {1!s} P    ".format(seg, i + 1), " atom {0!s} {1!s} O5\' ".format(seg, i + 1))
     try:
-        c = universe.select_atoms(" atom %s %s O4\' " % (seg, i), " atom %s %s C1\' " % (seg, i),
-                                 " atom %s %s N1 " % (seg, i), " atom %s %s C2  " % (seg, i))
+        c = universe.select_atoms(" atom {0!s} {1!s} O4\' ".format(seg, i), " atom {0!s} {1!s} C1\' ".format(seg, i),
+                                 " atom {0!s} {1!s} N1 ".format(seg, i), " atom {0!s} {1!s} C2  ".format(seg, i))
     except:
-        c = universe.select_atoms(" atom %s %s O4\' " % (seg, i), " atom %s %s C1\' " % (seg, i),
-                                 " atom %s %s N9 " % (seg, i), " atom %s %s C4  " % (seg, i))
+        c = universe.select_atoms(" atom {0!s} {1!s} O4\' ".format(seg, i), " atom {0!s} {1!s} C1\' ".format(seg, i),
+                                 " atom {0!s} {1!s} N9 ".format(seg, i), " atom {0!s} {1!s} C4  ".format(seg, i))
 
     alpha = a.dihedral.value()
     beta = b.dihedral.value()
@@ -393,8 +393,8 @@ def tors_alpha(universe, seg, i):
 
     .. versionadded:: 0.7.6
     """
-    a = universe.select_atoms(" atom %s %s O3\' " % (seg, i - 1), " atom %s %s P  " % (seg, i),
-                             " atom %s %s O5\' " % (seg, i), " atom %s %s C5\' " % (seg, i))
+    a = universe.select_atoms(" atom {0!s} {1!s} O3\' ".format(seg, i - 1), " atom {0!s} {1!s} P  ".format(seg, i),
+                             " atom {0!s} {1!s} O5\' ".format(seg, i), " atom {0!s} {1!s} C5\' ".format(seg, i))
     alpha = a.dihedral.value()
     if alpha < 0:
         alpha = alpha + 360
@@ -416,8 +416,8 @@ def tors_beta(universe, seg, i):
 
     .. versionadded:: 0.7.6
     """
-    b = universe.select_atoms(" atom %s %s P    " % (seg, i), " atom %s %s O5\' " % (seg, i),
-                             " atom %s %s C5\' " % (seg, i), " atom %s %s C4\' " % (seg, i))
+    b = universe.select_atoms(" atom {0!s} {1!s} P    ".format(seg, i), " atom {0!s} {1!s} O5\' ".format(seg, i),
+                             " atom {0!s} {1!s} C5\' ".format(seg, i), " atom {0!s} {1!s} C4\' ".format(seg, i))
     beta = b.dihedral.value()
     if beta < 0:
         beta = beta + 360
@@ -439,8 +439,8 @@ def tors_gamma(universe, seg, i):
 
     .. versionadded:: 0.7.6
     """
-    g = universe.select_atoms(" atom %s %s O5\' " % (seg, i), " atom %s %s C5\' " % (seg, i),
-                             " atom %s %s C4\' " % (seg, i), " atom %s %s C3\' " % (seg, i))
+    g = universe.select_atoms(" atom {0!s} {1!s} O5\' ".format(seg, i), " atom {0!s} {1!s} C5\' ".format(seg, i),
+                             " atom {0!s} {1!s} C4\' ".format(seg, i), " atom {0!s} {1!s} C3\' ".format(seg, i))
     gamma = g.dihedral.value()
     if gamma < 0:
         gamma = gamma + 360
@@ -462,8 +462,8 @@ def tors_delta(universe, seg, i):
 
     .. versionadded:: 0.7.6
     """
-    d = universe.select_atoms(" atom %s %s C5\' " % (seg, i), " atom %s %s C4\' " % (seg, i),
-                             " atom %s %s C3\' " % (seg, i), " atom %s %s O3\' " % (seg, i))
+    d = universe.select_atoms(" atom {0!s} {1!s} C5\' ".format(seg, i), " atom {0!s} {1!s} C4\' ".format(seg, i),
+                             " atom {0!s} {1!s} C3\' ".format(seg, i), " atom {0!s} {1!s} O3\' ".format(seg, i))
     delta = d.dihedral.value()
     if delta < 0:
         delta = delta + 360
@@ -485,8 +485,8 @@ def tors_eps(universe, seg, i):
 
     .. versionadded:: 0.7.6
     """
-    e = universe.select_atoms(" atom %s %s C4\' " % (seg, i), " atom %s %s C3\' " % (seg, i),
-                             " atom %s %s O3\' " % (seg, i), " atom %s %s P    " % (seg, i + 1))
+    e = universe.select_atoms(" atom {0!s} {1!s} C4\' ".format(seg, i), " atom {0!s} {1!s} C3\' ".format(seg, i),
+                             " atom {0!s} {1!s} O3\' ".format(seg, i), " atom {0!s} {1!s} P    ".format(seg, i + 1))
     epsilon = e.dihedral.value()
     if epsilon < 0:
         epsilon = epsilon + 360
@@ -508,8 +508,8 @@ def tors_zeta(universe, seg, i):
 
     .. versionadded:: 0.7.6
     """
-    z = universe.select_atoms(" atom %s %s C3\' " % (seg, i), " atom %s %s O3\' " % (seg, i),
-                             " atom %s %s P    " % (seg, i + 1), " atom %s %s O5\' " % (seg, i + 1))
+    z = universe.select_atoms(" atom {0!s} {1!s} C3\' ".format(seg, i), " atom {0!s} {1!s} O3\' ".format(seg, i),
+                             " atom {0!s} {1!s} P    ".format(seg, i + 1), " atom {0!s} {1!s} O5\' ".format(seg, i + 1))
     zeta = z.dihedral.value()
     if zeta < 0:
         zeta = zeta + 360
@@ -532,11 +532,11 @@ def tors_chi(universe, seg, i):
     .. versionadded:: 0.7.6
     """
     try:
-        c = universe.select_atoms(" atom %s %s O4\' " % (seg, i), " atom %s %s C1\' " % (seg, i),
-                                 " atom %s %s N1 " % (seg, i), " atom %s %s C2  " % (seg, i))
+        c = universe.select_atoms(" atom {0!s} {1!s} O4\' ".format(seg, i), " atom {0!s} {1!s} C1\' ".format(seg, i),
+                                 " atom {0!s} {1!s} N1 ".format(seg, i), " atom {0!s} {1!s} C2  ".format(seg, i))
     except:
-        c = universe.select_atoms(" atom %s %s O4\' " % (seg, i), " atom %s %s C1\' " % (seg, i),
-                                 " atom %s %s N9 " % (seg, i), " atom %s %s C4  " % (seg, i))
+        c = universe.select_atoms(" atom {0!s} {1!s} O4\' ".format(seg, i), " atom {0!s} {1!s} C1\' ".format(seg, i),
+                                 " atom {0!s} {1!s} N9 ".format(seg, i), " atom {0!s} {1!s} C4  ".format(seg, i))
     chi = c.dihedral.value()
     if chi < 0:
         chi = chi + 360
@@ -559,8 +559,8 @@ def hydroxyl(universe, seg, i):
 
     .. versionadded:: 0.7.6
     """
-    h = universe.select_atoms(" atom %s %s C1\' " % (seg, i), " atom %s %s C2\' " % (seg, i),
-                             " atom %s %s O2\' " % (seg, i), " atom %s %s H2\'\' " % (seg, i))
+    h = universe.select_atoms(" atom {0!s} {1!s} C1\' ".format(seg, i), " atom {0!s} {1!s} C2\' ".format(seg, i),
+                             " atom {0!s} {1!s} O2\' ".format(seg, i), " atom {0!s} {1!s} H2\'\' ".format(seg, i))
     try:
         hydr = h.dihedral.value()
     except ValueError:
@@ -598,11 +598,11 @@ def pseudo_dihe_baseflip(universe, bp1, bp2, i, seg1="SYSTEM", seg2="SYSTEM", se
     .. versionadded:: 0.8.0
     """
     bf1 = universe.select_atoms(
-        " ( segid %s and resid %s and nucleicbase ) or ( segid %s and resid %s and nucleicbase ) " % (
+        " ( segid {0!s} and resid {1!s} and nucleicbase ) or ( segid {2!s} and resid {3!s} and nucleicbase ) ".format(
         seg1, bp1, seg2, bp2))
-    bf4 = universe.select_atoms(" ( segid %s and resid %s and nucleicbase ) " % (seg3, i))
-    bf2 = universe.select_atoms(" ( segid %s and resid %s and nucleicsugar ) " % (seg2, bp2))
-    bf3 = universe.select_atoms(" ( segid %s and resid %s and nucleicsugar ) " % (seg3, i))
+    bf4 = universe.select_atoms(" ( segid {0!s} and resid {1!s} and nucleicbase ) ".format(seg3, i))
+    bf2 = universe.select_atoms(" ( segid {0!s} and resid {1!s} and nucleicsugar ) ".format(seg2, bp2))
+    bf3 = universe.select_atoms(" ( segid {0!s} and resid {1!s} and nucleicsugar ) ".format(seg3, i))
     x = [bf1.center_of_mass(), bf2.center_of_mass(), bf3.center_of_mass(), bf4.center_of_mass()]
     pseudo = mdamath.dihedral(x[0] - x[1], x[1] - x[2], x[2] - x[3])
     pseudo = np.rad2deg(pseudo)

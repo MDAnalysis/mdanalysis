@@ -215,7 +215,7 @@ class TrjWriter(base.Writer):
         status = self._write_next_timestep(ts)
 
         if status != libxdrfile2.exdrOK:
-            raise IOError(errno.EIO, "Error writing %s file (status %d)" % (self.format, status), self.filename)
+            raise IOError(errno.EIO, "Error writing {0!s} file (status {1:d})".format(self.format, status), self.filename)
         self.frames_written += 1
 
     def _write_next_timestep(self, ts):

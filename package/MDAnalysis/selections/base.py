@@ -99,7 +99,7 @@ class SelectionWriter(object):
         """
         self.filename = util.filename(filename, ext=self.ext)
         if not mode in ('a', 'w', 'wa'):
-            raise ValueError("mode must be one of 'w', 'a', 'wa', not %r" % mode)
+            raise ValueError("mode must be one of 'w', 'a', 'wa', not {0!r}".format(mode))
         self.mode = mode
         self._current_mode = mode[0]
         if numterms is None or numterms < 0:
@@ -165,7 +165,7 @@ class SelectionWriter(object):
             if number is None:
                 self.number += 1
                 number = self.number
-            name = "mdanalysis%(number)03d" % vars()
+            name = "mdanalysis{number:03d}".format(**vars())
         # build whole selection in one go (cleaner way to deal with
         # to deal with line breaks after self.numterms entries)
         # selection_list must contain entries to be joined with spaces or linebreaks

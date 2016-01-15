@@ -109,9 +109,8 @@ class SloppyStructureBuilder(Bio.PDB.StructureBuilder.StructureBuilder):
                 fudged_resseq = True
 
             if fudged_resseq and self.verbose:
-                logger.debug("Residues are wrapping (Residue ('%s', %i, '%s') at line %i)."
-                             % (field, resseq, icode, self.line_counter) +
-                             ".... assigning new resid %d.\n" % self.max_resseq)
+                logger.debug("Residues are wrapping (Residue ('{0!s}', {1:d}, '{2!s}') at line {3:d}).".format(field, resseq, icode, self.line_counter) +
+                             ".... assigning new resid {0:d}.\n".format(self.max_resseq))
         residue = Bio.PDB.Residue.Residue(res_id, resname, self.segid)
         self.chain.add(residue)
         self.residue = residue

@@ -50,7 +50,7 @@ class SelectionWriter(base.SelectionWriter):
         return base.join(atoms, ' ', _index)
 
     def _write_head(self, out, **kwargs):
-        out.write("@~%(name)s ({" % kwargs)
+        out.write("@~{name!s} ({{".format(**kwargs))
 
     def _write_tail(self, out, **kwargs):
         out.write("});")

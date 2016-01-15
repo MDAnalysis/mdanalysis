@@ -47,10 +47,10 @@ class SelectionWriter(base.SelectionWriter):
     def _translate(self, atoms, **kwargs):
         # PyMol index is 1-based
         def _index(atom):
-            return "index %d" % (atom.index + 1)
+            return "index {0:d}".format((atom.index + 1))
 
         return base.join(atoms, ' |', _index)
 
     def _write_head(self, out, **kwargs):
         out.write(self.comment("MDAnalysis PyMol selection"))
-        out.write("select %(name)s, " % kwargs + self.continuation + '\n')
+        out.write("select {name!s}, ".format(**kwargs) + self.continuation + '\n')

@@ -68,5 +68,4 @@ def get_writer(filename, defaultformat):
     try:
         return _selection_writers[format]
     except KeyError:
-        raise NotImplementedError("Writing as %r is not implemented; only %r will work."
-                                  % (format, _selection_writers.keys()))
+        raise NotImplementedError("Writing as {0!r} is not implemented; only {1!r} will work.".format(format, _selection_writers.keys()))

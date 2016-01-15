@@ -43,7 +43,7 @@ class SelectionWriter(base.SelectionWriter):
 
     def _write_head(self, out, **kwargs):
         out.write(self.comment("MDAnalysis VMD selection"))
-        out.write("atomselect macro %(name)s {index " % kwargs)
+        out.write("atomselect macro {name!s} {{index ".format(**kwargs))
 
     def _translate(self, atoms, **kwargs):
         # VMD index is 0-based (as is MDAnalysis)
