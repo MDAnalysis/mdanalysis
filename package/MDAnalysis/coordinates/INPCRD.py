@@ -28,7 +28,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 from . import base
 
 class INPReader(base.SingleFrameReader):
-    format = 'INPCRD'
+    format = ['INPCRD', 'RESTRT']
     units = {'length': 'Angstrom'}
 
     def _read_first_frame(self):

@@ -128,8 +128,6 @@ class TrjWriter(base.Writer):
     """
     #: units of time (ps) and length (nm) in Gromacs
     units = {'time': 'ps', 'length': 'nm'}
-    #: override to define trajectory format of the reader (XTC or TRR)
-    format = None
 
     def __init__(self, filename, n_atoms, start=0, step=1, dt=None, precision=1000.0, remarks=None,
                  convert_units=None):
@@ -323,8 +321,7 @@ class TrjReader(base.Reader):
     """
     #: units of time (ps) and length (nm) in Gromacs
     units = {'time': 'ps', 'length': 'nm'}
-    #: override to define trajectory format of the reader (XTC or TRR)
-    format = None
+
     #: supply the appropriate Timestep class, e.g.
     #: :class:`MDAnalysis.coordinates.xdrfile.XTC.Timestep` for XTC
     _Timestep = Timestep

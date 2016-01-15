@@ -33,6 +33,7 @@ from collections import defaultdict
 from itertools import izip
 
 # Local imports
+from . import _PARSERS
 from . import tables
 from ..lib import distances
 from ..lib.util import cached
@@ -120,16 +121,14 @@ def get_parser_for(filename, permissive=False, format=None):
       *ValueError*
         If no appropriate parser could be found.
     """
-    from . import _topology_parsers
-
     if format is None:
         format = util.guess_format(filename)
     format = format.upper()
     if format == 'PDB' and permissive:
-        return _topology_parsers['Permissive_PDB']
+        return _PARSERS['Permissive_PDB']
 
     try:
-        return _topology_parsers[format]
+        return _PARSERS[format]
     except KeyError:
         raise ValueError(
             "Cannot autodetect topology type for file '{0}' "
@@ -140,7 +139,7 @@ def get_parser_for(filename, permissive=False, format=None):
             "           {1}\n"
             "           See http://docs.mdanalysis.org/documentation_pages/topology/init.html#supported-topology-formats\n"
             "           For missing formats, raise an issue at "
-            "http://issues.mdanalysis.org".format(filename, _topology_parsers.keys()))
+            "http://issues.mdanalysis.org".format(filename, _PARSERS.keys()))
 
 
 # following guess_* used by PDB parser

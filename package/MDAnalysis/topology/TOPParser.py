@@ -69,6 +69,7 @@ class TOPParser(TopologyReader):
       parses both amber10 and amber12 formats
 
     """
+    format = ['TOP', 'PRMTOP', 'PARM7']
 
     def parse(self):
         """Parse Amber PRMTOP topology file *filename*.

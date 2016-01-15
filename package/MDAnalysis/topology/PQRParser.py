@@ -54,6 +54,8 @@ class PQRParser(TopologyReader):
        Read chainID from a PQR file and use it as segid (before we always used
        'SYSTEM' as the new segid).
     """
+    format = 'PQR'
+
     def parse(self):
         """Parse atom information from PQR file *filename*.
 

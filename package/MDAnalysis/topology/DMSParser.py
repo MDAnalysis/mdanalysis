@@ -51,6 +51,7 @@ class DMSParser(TopologyReader):
     .. _Desmond: http://www.deshawresearch.com/resources_desmond.html
     .. _DMS: http://www.deshawresearch.com/Desmond_Users_Guide-0.7.pdf
     """
+    format = 'DMS'
 
     def parse(self):
         """Parse DMS file *filename* and return the dict `structure`.

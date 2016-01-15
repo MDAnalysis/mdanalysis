@@ -99,7 +99,8 @@ class DCDWriter(DCD.DCDWriter):
     "Angstrom". See :mod:`MDAnalysis.units` for other recognized
     values.
     """
-    format = 'DCD'
+    format = 'LAMMPS'
+    multiframe = True
     flavor = 'LAMMPS'
 
     def __init__(self, *args, **kwargs):
@@ -125,7 +126,7 @@ class DCDReader(DCD.DCDReader):
 
     .. _units style: http://lammps.sandia.gov/doc/units.html
     """
-    format = 'DCD'
+    format = 'LAMMPS'
     flavor = 'LAMMPS'
 
     def __init__(self, dcdfilename, **kwargs):

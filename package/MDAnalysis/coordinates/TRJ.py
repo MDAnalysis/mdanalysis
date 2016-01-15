@@ -189,7 +189,7 @@ class TRJReader(base.Reader):
        Frames now 0-based instead of 1-based
        kwarg 'delta' renamed to 'dt', for uniformity with other Readers
     """
-    format = 'TRJ'
+    format = ['TRJ', 'MDCRD']
     units = {'time': 'ps', 'length': 'Angstrom'}
     _Timestep = Timestep
 
@@ -405,7 +405,8 @@ class NCDFReader(base.Reader):
        kwarg 'delta' renamed to 'dt', for uniformity with other Readers
     """
 
-    format = 'NCDF'
+    format = ['NCDF', 'NC']
+    multiframe = True
     version = "1.0"
     units = {'time': 'ps', 'length': 'Angstrom', 'velocity': 'Angstrom/ps',
              'force': 'kcal/(mol*Angstrom)'}

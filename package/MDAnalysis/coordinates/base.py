@@ -123,6 +123,11 @@ import numpy as np
 import copy
 import weakref
 
+from . import (
+    _READERS,
+    _SINGLEFRAME_WRITERS,
+    _MULTIFRAME_WRITERS,
+)
 from ..core import flags
 from .. import units
 from ..lib.util import asiterable
@@ -760,8 +765,6 @@ class IObase(object):
     .. versionchanged:: 0.8
        Added context manager protocol.
     """
-    #: override to define trajectory format of the reader/writer (DCD, XTC, ...)
-    format = None
 
     #: dict with units of of *time* and *length* (and *velocity*, *force*,
     #: ... for formats that support it)
@@ -1006,6 +1009,7 @@ class IObase(object):
         return False  # do not suppress exceptions
 
 
+
 class ProtoReader(IObase):
     """Base class for Readers, without a :meth:`__del__` method.
 
@@ -1027,6 +1031,18 @@ class ProtoReader(IObase):
     #: The appropriate Timestep class, e.g.
     #: :class:`MDAnalysis.coordinates.xdrfile.XTC.Timestep` for XTC.
     _Timestep = Timestep
+
+    class __metaclass__(type):
+        # Auto register upon class creation
+        def __init__(cls, name, bases, classdict):
+            type.__init__(type, name, bases, classdict)
+            try:
+                fmt = asiterable(classdict['format'])
+            except KeyError:
+                pass
+            else:
+                for f in fmt:
+                    _READERS[f] = cls
 
     def __len__(self):
         return self.n_frames
@@ -1577,10 +1593,13 @@ class ChainReader(ProtoReader):
         return filename[0] if isinstance(filename, tuple) else filename
 
     def __repr__(self):
-        return "< %s %r with %d frames of %d atoms>" % \
-               (self.__class__.__name__,
-               [os.path.basename(self.get_flname(fn)) for fn in self.filenames],
-               self.n_frames, self.n_atoms)
+        return ("<{clsname} {fname} with {nframes} frames of {natoms} atoms>"
+                "".format(
+                    clsname=self.__class__.__name__,
+                    fname=[os.path.basename(self.get_flname(fn))
+                           for fn in self.filenames],
+                    nframes=self.n_frames,
+                    natoms=self.n_atoms))
 
 
 class Writer(IObase):
@@ -1589,6 +1608,23 @@ class Writer(IObase):
     See Trajectory API definition in :mod:`MDAnalysis.coordinates.__init__` for
     the required attributes and methods.
     """
+    class __metaclass__(type):
+        # Auto register upon class creation
+        def __init__(cls, name, bases, classdict):
+            type.__init__(type, name, bases, classdict)
+            try:
+                fmt = asiterable(classdict['format'])
+            except KeyError:
+                pass
+            else:
+                for f in fmt:
+                    _SINGLEFRAME_WRITERS[f] = cls
+                try:
+                    if classdict['multiframe']:
+                        for f in fmt:
+                            _MULTIFRAME_WRITERS[f] = cls
+                except KeyError:
+                    pass
 
     def convert_dimensions_to_unitcell(self, ts, inplace=True):
         """Read dimensions from timestep *ts* and return appropriate unitcell.
