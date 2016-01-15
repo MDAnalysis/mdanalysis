@@ -128,7 +128,7 @@ def test_helanal_main(reference=HELANAL_SINGLE_DATA):
     assert_equal(sorted(data.keys()), sorted(ref.keys()),
                      err_msg="different contents in data dict")
     for label in ref.keys():
-        assert_array_almost_equal(data[label], ref[label], decimal=5,
+        assert_array_almost_equal(data[label], ref[label], decimal=4,
                                   err_msg="data[{0}] mismatch".format(label))
 
 def test_xtc_striding():
