@@ -328,7 +328,7 @@ class RMSD(object):
             logger.error("Atoms: reference | trajectory")
             for ar, at in izip(self.ref_atoms, self.traj_atoms):
                 if ar.name != at.name:
-                    logger.error("{0:4!s} {1:3d} {2:3!s} {3:3!s} {4:6.3f}  |  {5:4!s} {6:3d} {7:3!s} {8:3!s} {9:6.3f}".format(ar.segid, ar.resid, ar.resname, ar.name, ar.mass,
+                    logger.error("{0!s:>4} {1:3d} {2!s:>3} {3!s:>3} {4:6.3f}  |  {5!s:>4} {6:3d} {7!s:>3} {8!s:>3} {9:6.3f}".format(ar.segid, ar.resid, ar.resname, ar.name, ar.mass,
                                  at.segid, at.resid, at.resname, at.name, at.mass))
             errmsg = "Inconsistent selections, masses differ by more than {0:f}; mis-matching atoms are shown above.".format( \
                      self.tol_mass)

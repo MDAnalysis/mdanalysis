@@ -100,7 +100,7 @@ if __name__ == "__main__":
         print "#" + (12 + 5) * symbol
 
     print_line("=")
-    print "#{0:2!s}  {1:5!s}  {2:6!s}".format("ll", "resn", "count")
+    print "#{0!s:>2}  {1!s:>5}  {2!s:>6}".format("ll", "resn", "count")
     print_line("=")
 
     for groupindex in xrange(len(LF.components)):
@@ -109,9 +109,9 @@ if __name__ == "__main__":
         keys = np.unique(resnames)
         for k in keys:
             count = resnames.count(k)
-            print " {0:2d}  {1:5!s}  {2:6d}".format(groupindex, k, count)
+            print " {0:2d}  {1!s:>5}  {2:6d}".format(groupindex, k, count)
         total = LF.sizes()[groupindex]
         if total > 1:
             print_line()
-            print "#{0:2d}  {1:5!s}  {2:6d}".format(groupindex, '', total)
+            print "#{0:2d}  {1!s:>5}  {2:6d}".format(groupindex, '', total)
         print
