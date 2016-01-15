@@ -262,13 +262,6 @@ class PDBReader(base.SingleFrameReader):
         # metadata
         self.metadata = self.pdb.header
 
-    def get_bfactors(self):
-        """Return an array of bfactors (tempFactor) in atom order."""
-        warnings.warn("get_bfactors() will be removed in MDAnalysis 0.8; "
-                      "use AtomGroup.bfactors [which will become AtomGroup.bfactors()]",
-                      DeprecationWarning)
-        return np.array([a.get_bfactor() for a in self.pdb.get_atoms()])
-
     def Writer(self, filename, **kwargs):
         """Returns a strict PDBWriter for *filename*.
 
@@ -551,10 +544,6 @@ class PrimitivePDBReader(base.Reader):
         self.frames = frames
         self.n_frames = len(frames) if frames else 1
 
-    def get_occupancy(self):
-        """Return an array of occupancies in atom order."""
-        return np.array(self._occupancy)
-
     def Writer(self, filename, **kwargs):
         """Returns a permissive (simple) PDBWriter for *filename*.
 
@@ -691,18 +680,23 @@ class PrimitivePDBWriter(base.Writer):
     # x)8.3f%(y)8.3f%(z)8.3f%(occupancy)6.2f%(tempFactor)6.2f          %(element)2s%(charge)2d\n",
     # PDB format as used by NAMD/CHARMM: 4-letter resnames and segID, altLoc ignored
     fmt = {
-        'ATOM': "ATOM  %(serial)5d %(name)-4s%(altLoc)-1s%(resName)-4s%(chainID)1s%(resSeq)4d%(iCode)1s   %(x)8.3f%("
-                "y)8.3f%(z)8.3f%(occupancy)6.2f%(tempFactor)6.2f      %(segID)-4s%(element)2s%(charge)2d\n",
-        'REMARK': "REMARK     %s\n",
-        'COMPND': "COMPND    %s\n",
-        'HEADER': "HEADER    %s\n",
-        'TITLE': "TITLE     %s\n",
-        'MODEL': "MODEL     %5d\n",
-        'NUMMDL': "NUMMDL    %5d\n",
+        'ATOM': (
+            "ATOM  {serial:5d} {name:<4s}{altLoc:<1s}{resName:<4s}"
+            "{chainID:1s}{resSeq:4d}{iCode:1s}"
+            "   {pos[0]:8.3f}{pos[1]:8.3f}{pos[2]:8.3f}{occupancy:6.2f}"
+            "{tempFactor:6.2f}      {segID:<4s}{element:2s}{charge:.2f}\n"),
+        'REMARK': "REMARK     {0}\n",
+        'COMPND': "COMPND    {0}\n",
+        'HEADER': "HEADER    {0}\n",
+        'TITLE': "TITLE     {0}\n",
+        'MODEL': "MODEL     {0:5d}\n",
+        'NUMMDL': "NUMMDL    {0:5d}\n",
         'ENDMDL': "ENDMDL\n",
         'END': "END\n",
-        'CRYST1': "CRYST1%9.3f%9.3f%9.3f%7.2f%7.2f%7.2f %-11s%4d\n",
-        'CONECT': "CONECT%s\n"
+        'CRYST1': ("CRYST1{box[0]:9.3f}{box[1]:9.3f}{box[2]:9.3f}"
+                   "{ang[0]:7.2f}{ang[1]:7.2f}{ang[2]:7.2f} "
+                   "{spacegroup:<11s}{zvalue:4d}\n"),
+        'CONECT': "CONECT{0}\n"
     }
     format = 'PDB'
     units = {'time': None, 'length': 'Angstrom'}
@@ -763,7 +757,8 @@ class PrimitivePDBWriter(base.Writer):
         self.filename = filename
         if convert_units is None:
             convert_units = flags['convert_lengths']
-        self.convert_units = convert_units  # convert length and time to base units
+        # convert length and time to base units
+        self.convert_units = convert_units
         self._multiframe = self.multiframe if multiframe is None else multiframe
         self.bonds = bonds
 
@@ -784,15 +779,18 @@ class PrimitivePDBWriter(base.Writer):
             if not self.has_END:
                 self.END()
             else:
-                logger.warn("END record has already been written before the final closing of the file")
+                logger.warn("END record has already been written"
+                            " before the final closing of the file")
             self.pdbfile.close()
         self.pdbfile = None
 
     def _write_pdb_title(self):
         if self._multiframe:
-            self.TITLE("MDANALYSIS FRAMES FROM {0:d}, SKIP {1:d}: {2!s}".format(self.start, self.step, self.remarks))
+            self.TITLE("MDANALYSIS FRAMES FROM {0:d}, SKIP {1:d}: {2!s}"
+                       "".format(self.start, self.step, self.remarks))
         else:
-            self.TITLE("MDANALYSIS FRAME {0:d}: {1!s}".format(self.start, self.remarks))
+            self.TITLE("MDANALYSIS FRAME {0:d}: {1!s}"
+                       "".format(self.start, self.remarks))
 
     def _write_pdb_header(self):
         if not self.obj or not hasattr(self.obj, 'universe'):
@@ -804,7 +802,8 @@ class PrimitivePDBWriter(base.Writer):
         self._write_pdb_title()
         self.COMPND(u.trajectory)
         try:
-            # currently inconsistent: DCDReader gives a string, PDB*Reader a list, so always get a list
+            # currently inconsistent: DCDReader gives a string,
+            # PDB*Reader a list, so always get a list
             # split long single lines into chunks of 66 chars
             remarks = []
             for line in util.asiterable(u.trajectory.remarks):
@@ -824,7 +823,8 @@ class PrimitivePDBWriter(base.Writer):
         Raises :exc:`ValueError` if the coordinates fail the check.
         """
         atoms = self.obj.atoms  # make sure to use atoms (Issue 46)
-        coor = atoms.coordinates()  # can write from selection == Universe (Issue 49)
+        # can write from selection == Universe (Issue 49)
+        coor = atoms.positions
 
         # check if any coordinates are illegal (coordinates are already in Angstroem per package default)
         if self.has_valid_coordinates(self.pdb_coor_limits, coor):
@@ -1077,35 +1077,39 @@ class PrimitivePDBWriter(base.Writer):
            have been written.)
 
         """
-
-        traj = self.trajectory
         atoms = self.obj.atoms
+        pos = atoms.ts.positions
         if self.convert_units:
-            coor = self.convert_pos_to_native(ts._pos, inplace=False)
-        else:
-            coor = ts._pos
-
-        if hasattr(self.obj, "indices"):
-            coor = coor[self.obj.indices]
-
-        if len(atoms) != len(coor):
-            raise ValueError(
-                "Length of the atoms array is {0:d}, this is different form the Timestep coordinate array {1:d}".format(
-                    len(atoms), len(ts._pos)))
+            pos = self.convert_pos_to_native(pos, inplace=False)
 
         if multiframe:
             self.MODEL(self.frames_written + 1)
 
         for i, atom in enumerate(atoms):
-            # TODO Jan: see description in ATOM for why this check has to be made
-            if not atom.bfactor:
-                atom.bfactor = 0.
-            self.ATOM(serial=i + 1, name=atom.name.strip(), resName=atom.resname.strip(),
-                      resSeq=atom.resid, chainID=atom.segid.strip(), segID=atom.segid.strip(),
-                      tempFactor=atom.bfactor, altLoc=atom.altLoc,
-                      x=coor[i, 0], y=coor[i, 1], z=coor[i, 2])
-            # get bfactor, too, and add to output?
-            # 'element' is auto-guessed from atom.name in ATOM()
+            segid = atom.segid if atom.segid is not "SYSTEM" else " "
+
+            vals = {}
+            vals['serial'] = int(str(i + 1)[-5:])  # check for overflow here?
+            vals['name'] = atom.name[:4]
+            vals['altLoc'] = atom.altLoc[:1] if atom.altLoc is not None else " "
+            vals['resName'] = atom.resname[:4]
+            vals['chainID'] = segid[:1]
+            vals['resSeq'] = int(str(atom.resid)[-4:])
+            vals['iCode'] = " "
+            vals['pos'] = pos[i]  # don't take off atom so conversion works
+            try:
+                occ = atom.occupancy
+            except NoDataError:
+                occ = 1.0
+            vals['occupancy'] = occ if occ is not None else 1.0
+            temp = atom.bfactor
+            vals['tempFactor'] = temp if temp is not None else 0.0
+            vals['segID'] = segid[:4]
+            vals['element'] = guess_atom_element(atom.name.strip())[:2]
+            vals['charge'] = 0
+
+            # .. _ATOM: http://www.wwpdb.org/documentation/format32/sect9.html 
+            self.pdbfile.write(self.fmt['ATOM'].format(**vals))
         if multiframe:
             self.ENDMDL()
         self.frames_written += 1
@@ -1119,7 +1123,7 @@ class PrimitivePDBWriter(base.Writer):
         if not hasattr(trajectory, 'header'):
             return
         header = trajectory.header
-        self.pdbfile.write(self.fmt['HEADER'] % header)
+        self.pdbfile.write(self.fmt['HEADER'].format(header))
 
     def TITLE(self, *title):
         """Write TITLE_ record.
@@ -1128,7 +1132,7 @@ class PrimitivePDBWriter(base.Writer):
 
         """
         line = " ".join(title)  # TODO: should do continuation automatically
-        self.pdbfile.write(self.fmt['TITLE'] % line)
+        self.pdbfile.write(self.fmt['TITLE'].format(line))
 
     def REMARK(self, *remarks):
         """Write generic REMARK_ record (without number).
@@ -1143,14 +1147,14 @@ class PrimitivePDBWriter(base.Writer):
 
         """
         for remark in remarks:
-            self.pdbfile.write(self.fmt['REMARK'] % (remark))
+            self.pdbfile.write(self.fmt['REMARK'].format(remark))
 
     def COMPND(self, trajectory):
         if not hasattr(trajectory, 'compound'):
             return
         compound = trajectory.compound
         for c in compound:
-            self.pdbfile.write(self.fmt['COMPND'] % c)
+            self.pdbfile.write(self.fmt['COMPND'].format(c))
 
     def CRYST1(self, dimensions, spacegroup='P 1', zvalue=1):
         """Write CRYST1_ record.
@@ -1158,7 +1162,11 @@ class PrimitivePDBWriter(base.Writer):
         .. _CRYST1: http://www.wwpdb.org/documentation/format32/sect8.html
 
         """
-        self.pdbfile.write(self.fmt['CRYST1'] % (tuple(dimensions) + (spacegroup, zvalue)))
+        self.pdbfile.write(self.fmt['CRYST1'].format(
+            box=dimensions[:3],
+            ang=dimensions[3:],
+            spacegroup=spacegroup,
+            zvalue=zvalue))
 
     def MODEL(self, modelnumber):
         """Write the MODEL_ record.
@@ -1166,7 +1174,7 @@ class PrimitivePDBWriter(base.Writer):
         .. _MODEL: http://www.wwpdb.org/documentation/format32/sect9.html#MODEL
 
         """
-        self.pdbfile.write(self.fmt['MODEL'] % modelnumber)
+        self.pdbfile.write(self.fmt['MODEL'].format(modelnumber))
 
     def END(self):
         """Write END_ record.
@@ -1191,80 +1199,15 @@ class PrimitivePDBWriter(base.Writer):
         """
         self.pdbfile.write(self.fmt['ENDMDL'])
 
-    def ATOM(self, serial=None, name=None, altLoc=None, resName=None, chainID=None,
-             resSeq=None, iCode=None, x=None, y=None, z=None, occupancy=1.0, tempFactor=0.0,
-             segID=None, element=None, charge=0):
-        """Write ATOM_ record.
-
-        Only some keword args are optional (*altLoc*, *iCode*, *chainID*), for
-        some defaults are set.
-
-        All inputs are cut to the maximum allowed length. For integer numbers
-        the highest-value digits are chopped (so that the *serial* and *reSeq*
-        wrap); for strings the trailing characters are chopped. The *last*
-        character of *chainID* becomes the PDB *chainID* (unless it has the
-        special value "SYSTEM" (assigned by MDAnalysis if neither *segID* nor
-        *chainID* were available), in which case the PDB will have an empty
-        *chainID*).
-
-        .. Warning: Floats are not checked and can potentially screw up the format.
-
-        .. _ATOM: http://www.wwpdb.org/documentation/format32/sect9.html
-
-        .. versionchanged:: 0.7.6
-           If the *chainID* has the special value "SYSTEM" (case insensitive)
-           then the chain is set to the empty string "".
-
-        """
-
-        # TODO Jan: PDBReader sets the bfactor value corretly to 0.0 if not
-        # defined, DCD error does not. Thus when saving a Universe(DCDfile), the
-        # bfactor is None rather than 0.0.
-        #
-        # Now in the `for` loop below we could remove the offending variable but
-        # this gets us when the fromat `ATOM` expects float and not NoneType.
-        #
-        # Provisional solution for now: custom check if tempfactor is None, in
-        # :meth:`_write_timestep`
-        #
-        # OB: The "provisional" solution is correct. ATOM requires the calling code
-        #     to provide a sane value for tempFactor. This is because a tempFactor of
-        #     0 might actually mean to some programs "ignore this atom". Hence we
-        #     don't want to make this decision in the general I/O routine.
-
-        for arg in (
-                'serial', 'name', 'resName', 'resSeq', 'x', 'y', 'z',
-                'occupancy', 'tempFactor', 'charge'):
-            if locals()[arg] is None:
-                raise ValueError('parameter ' + arg + ' must be defined.')
-        serial = int(str(serial)[-5:])  # check for overflow here?
-        name = name[:4]
-        if len(name) < 4:
-            name = " " + name  # customary to start in column 14
-        altLoc = altLoc or " "
-        altLoc = altLoc[:1]
-        resName = resName[:4]
-        chainID = chainID or ""  # or should we provide a chainID such as 'A'?
-        chainID = chainID if not chainID.upper() == "SYSTEM" else ""  # special case, new in 0.7.6
-        chainID = chainID.strip()[-1:]  # take the last character
-        resSeq = int(str(resSeq)[-4:])  # check for overflow here?
-        iCode = iCode or ""
-        iCode = iCode[:1]
-        element = element or guess_atom_element(name.strip())  # element == 0|False|None will be guessed
-        element = str(element).strip()[:2]  # make sure that is a string for user input
-        segID = segID or chainID
-        segID = segID[:4]
-        self.pdbfile.write(self.fmt['ATOM'] % vars())
-
     def CONECT(self, conect):
         """Write CONECT_ record.
 
         .. _CONECT: http://www.wwpdb.org/documentation/format32/sect10.html#CONECT
 
         """
-        conect = ["{0:5d}".format((entry + 1)) for entry in conect]
+        conect = ["{0:5d}".format(entry + 1) for entry in conect]
         conect = "".join(conect)
-        self.pdbfile.write(self.fmt['CONECT'] % conect)
+        self.pdbfile.write(self.fmt['CONECT'].format(conect))
 
 
 class ExtendedPDBReader(PrimitivePDBReader):

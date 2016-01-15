@@ -689,3 +689,30 @@ class TestPSF_PDBReader(TestPDBReader):
 
         assert_(isinstance(self.universe.trajectory, PDBReader),
                 "failed to choose Biopython PDBReader")
+
+
+class TestPDBWriterOccupancies(object):
+    """Tests for Issue #620"""
+    def setUp(self):
+        self.tempdir = tempdir.TempDir()
+        self.outfile = self.tempdir.name + '/occ.pdb'
+
+    def tearDown(self):
+        try:
+            os.unlink(self.outfile)
+        except OSError:
+            pass
+        del self.tempdir
+        del self.outfile
+
+    def test_write_occupancies(self):
+        """Modify occupancies, write out the file and check"""
+        u = mda.Universe(PDB_small)
+
+        u.atoms.occupancies = 0.12
+
+        u.atoms.write(self.outfile)
+
+        u2 = mda.Universe(self.outfile)
+
+        assert_(all(u2.atoms.occupancies == 0.12))
