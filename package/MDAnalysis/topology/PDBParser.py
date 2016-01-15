@@ -54,6 +54,7 @@ from .core import guess_atom_type, guess_atom_mass, guess_atom_charge
 
 class PDBParser(TopologyReader):
     """Read minimum topology information from a PDB file."""
+    format = 'PDB'
 
     def parse(self):
         """Parse atom information from PDB file *pdbfile*.

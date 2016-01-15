@@ -51,6 +51,7 @@ class PSFParser(TopologyReader):
 
     .. _PSF: http://www.charmm.org/documentation/c35b1/struct.html
     """
+    format = 'PSF'
 
     def parse(self):
         """Parse PSF file *filename*.

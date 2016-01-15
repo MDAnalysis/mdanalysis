@@ -440,7 +440,7 @@ class PrimitivePDBReader(base.Reader):
        * New :attr:`title` (list with all TITLE lines).
 
     """
-    format = 'PDB'
+    format = 'Permissive_PDB'
     units = {'time': None, 'length': 'Angstrom'}
 
     def __init__(self, filename, **kwargs):
@@ -704,7 +704,7 @@ class PrimitivePDBWriter(base.Writer):
     #: wrap comments into REMARK records that are not longer than
     # :attr:`remark_max_length` characters.
     remark_max_length = 66
-    _multiframe = False
+    multiframe = False
 
     def __init__(self, filename, bonds="conect", n_atoms=None, start=0, step=1,
                  remarks="Created by PrimitivePDBWriter",
@@ -759,7 +759,7 @@ class PrimitivePDBWriter(base.Writer):
             convert_units = flags['convert_lengths']
         # convert length and time to base units
         self.convert_units = convert_units
-        self.multiframe = self._multiframe if multiframe is None else multiframe
+        self._multiframe = self.multiframe if multiframe is None else multiframe
         self.bonds = bonds
 
         self.frames_written = 0
@@ -785,11 +785,11 @@ class PrimitivePDBWriter(base.Writer):
         self.pdbfile = None
 
     def _write_pdb_title(self):
-        if self.multiframe:
-            self.TITLE("MDANALYSIS FRAMES FROM {0}, SKIP {1}: {2}"
+        if self._multiframe:
+            self.TITLE("MDANALYSIS FRAMES FROM {0:d}, SKIP {1:d}: {2!s}"
                        "".format(self.start, self.step, self.remarks))
         else:
-            self.TITLE("MDANALYSIS FRAME {0}: {1}"
+            self.TITLE("MDANALYSIS FRAME {0:d}: {1!s}"
                        "".format(self.start, self.remarks))
 
     def _write_pdb_header(self):
@@ -802,7 +802,8 @@ class PrimitivePDBWriter(base.Writer):
         self._write_pdb_title()
         self.COMPND(u.trajectory)
         try:
-            # currently inconsistent: DCDReader gives a string, PDB*Reader a list, so always get a list
+            # currently inconsistent: DCDReader gives a string,
+            # PDB*Reader a list, so always get a list
             # split long single lines into chunks of 66 chars
             remarks = []
             for line in util.asiterable(u.trajectory.remarks):
@@ -843,8 +844,7 @@ class PrimitivePDBWriter(base.Writer):
                 if err.errno == errno.ENOENT:
                     pass
         raise ValueError(
-            "PDB files must have coordinate values between %.3f and %.3f Angstroem: file writing was aborted." %
-            (self.pdb_coor_limits["min"], self.pdb_coor_limits["max"]))
+            "PDB files must have coordinate values between {0:.3f} and {1:.3f} Angstroem: file writing was aborted.".format(self.pdb_coor_limits["min"], self.pdb_coor_limits["max"]))
 
     def _write_pdb_bonds(self):
         """Writes out all the bond records; works only for Universe objects.
@@ -977,7 +977,7 @@ class PrimitivePDBWriter(base.Writer):
         self._write_pdb_header()
         # Issue 105: with write() ONLY write a single frame; use write_all_timesteps() to dump
         # everything in one go, or do the traditional loop over frames
-        self.write_next_timestep(self.ts, multiframe=self.multiframe)
+        self.write_next_timestep(self.ts, multiframe=self._multiframe)
         self._write_pdb_bonds()
         # END record is written when file is being close()d
 
@@ -1255,4 +1255,5 @@ class MultiPDBWriter(PrimitivePDBWriter):
     .. versionadded:: 0.7.6
 
     """
-    _multiframe = True
+    format = 'PDB'
+    multiframe = True  # For Writer registration

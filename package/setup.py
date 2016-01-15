@@ -46,8 +46,8 @@ import tempfile
 
 # Make sure I have the right Python version.
 if sys.version_info[:2] < (2, 7):
-    print('MDAnalysis requires Python 2.7 or better. Python %d.%d detected' %
-          sys.version_info[:2])
+    print('MDAnalysis requires Python 2.7 or better. Python {0:d}.{1:d} detected'.format(*
+          sys.version_info[:2]))
     print('Please upgrade your version of Python.')
     sys.exit(-1)
 
@@ -180,9 +180,9 @@ def hasfunction(cc, funcname, include=None, extra_postargs=None):
             fname = os.path.join(tmpdir, 'funcname.c')
             with open(fname, 'w') as f:
                 if include is not None:
-                    f.write('#include %s\n' % include)
+                    f.write('#include {0!s}\n'.format(include))
                 f.write('int main(void) {\n')
-                f.write('    %s;\n' % funcname)
+                f.write('    {0!s};\n'.format(funcname))
                 f.write('}\n')
             # Redirect stderr to /dev/null to hide any error messages
             # from the compiler.

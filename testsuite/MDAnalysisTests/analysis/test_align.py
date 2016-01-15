@@ -82,7 +82,7 @@ class TestAlign(TestCase):
         fitted.trajectory[frame]
         rmsd = MDAnalysis.analysis.rms.rmsd(self.reference.atoms.coordinates(), fitted.atoms.coordinates())
         assert_almost_equal(rmsd, desired, decimal=5,
-                            err_msg="frame %d of fit does not have expected RMSD" % frame)
+                            err_msg="frame {0:d} of fit does not have expected RMSD".format(frame))
 
     @attr('issue')
     def test_alignto_checks_selections(self):

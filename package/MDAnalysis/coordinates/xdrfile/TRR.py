@@ -212,7 +212,11 @@ class TRRWriter(core.TrjWriter):
     .. _Gromacs: http://www.gromacs.org
     """
     format = "TRR"
-    units = {'time': 'ps', 'length': 'nm', 'velocity': 'nm/ps', 'force': 'kJ/(mol*nm)'}
+    multiframe = True
+    units = {'time': 'ps',
+             'length': 'nm',
+             'velocity': 'nm/ps',
+             'force': 'kJ/(mol*nm)'}
 
 
 class TRRReader(core.TrjReader):
@@ -233,7 +237,10 @@ class TRRReader(core.TrjReader):
     format = "TRR"
     _Timestep = Timestep
     _Writer = TRRWriter
-    units = {'time': 'ps', 'length': 'nm', 'velocity': 'nm/ps', 'force': 'kJ/(mol*nm)'}
+    units = {'time': 'ps',
+             'length': 'nm',
+             'velocity': 'nm/ps',
+             'force': 'kJ/(mol*nm)'}
 
     def _allocate_sub(self, DIM):
         self._pos_buf = np.zeros((self._trr_n_atoms, DIM), dtype=np.float32, order='C')

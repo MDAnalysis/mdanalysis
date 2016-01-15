@@ -31,6 +31,11 @@ Helper functions:
 
 """
 
+from . import (
+    _READERS,
+    _SINGLEFRAME_WRITERS,
+    _MULTIFRAME_WRITERS,
+)
 from ..lib import util
 from ..lib.mdamath import triclinic_box, triclinic_vectors, box_volume
 
@@ -38,18 +43,32 @@ from ..lib.mdamath import triclinic_box, triclinic_vectors, box_volume
 def get_reader_for(filename, permissive=False, format=None):
     """Return the appropriate trajectory reader class for *filename*.
 
-    Automatic detection is disabled when an explicit *format* is
-    provided.
-    """
-    from . import _trajectory_readers
+    Parameters
+    ----------
+    filename : str
+        filename of the input trajectory or coordinate file
+    permissive : bool
+        If set to ``True``, a reader is selected that is more tolerant of the
+        input (currently only implemented for PDB). [``False``]
+    kwargs
+        Keyword arguments for the selected Reader class.
 
+    Returns
+    -------
+    A Reader object
+
+    Notes
+    -----
+        Automatic detection is disabled when an explicit *format* is
+        provided.
+    """
     if format is None:
         format = util.guess_format(filename)
     format = format.upper()
     if permissive and format == 'PDB':
-        return _trajectory_readers['Permissive_PDB']
+        return _READERS['Permissive_PDB']
     try:
-        return _trajectory_readers[format]
+        return _READERS[format]
     except KeyError:
         raise ValueError(
             "Unknown coordinate trajectory format '{0}' for '{1}'. The FORMATs \n"
@@ -59,7 +78,7 @@ def get_reader_for(filename, permissive=False, format=None):
             "           Use the format keyword to explicitly set the format: 'Universe(...,format=FORMAT)'\n"
             "           For missing formats, raise an issue at "
             "http://issues.mdanalysis.org".format(
-                format, filename, _trajectory_readers.keys()))
+                format, filename, _READERS.keys()))
 
 
 def reader(filename, **kwargs):
@@ -75,26 +94,34 @@ def reader(filename, **kwargs):
     All other keywords are passed on to the underlying Reader classes; see
     their documentation for details.
 
+    Parameters
+    ----------
+    filename : str or tuple
+        filename (or tuple of filenames) of the input coordinate file
+    permissive : bool
+        If set to ``True``, a reader is selected that is more tolerant of the
+        input (currently only implemented for PDB). [``False``]
+    kwargs
+        Keyword arguments for the selected Reader class.
+
+    Returns
+    -------
+    A Reader object
+
     .. SeeAlso:: For trajectory formats: :class:`~DCD.DCDReader`,
        :class:`~XTC.XTCReader`, :class:`~TRR.TRRReader`,
        :class:`~XYZ.XYZReader`.  For single frame formats:
        :class:`~CRD.CRDReader`, :class:`~PDB.PDBReader` and
        :class:`~PDB.PrimitivePDBReader`, :class:`~GRO.GROReader`,
-
-    :Arguments:
-       *filename*
-          filename of the input trajectory or coordinate file
-       *permissive*
-          If set to ``True``, a reader is selected that is more tolerant of the
-          input (currently only implemented for PDB). [``False``]
-       *kwargs*
-           Keyword arguments for the selected Reader class.
     """
     if isinstance(filename, tuple):
-        Reader = get_reader_for(filename[0], permissive=kwargs.pop('permissive', False), format=filename[1])
+        Reader = get_reader_for(filename[0],
+                                permissive=kwargs.pop('permissive', False),
+                                format=filename[1])
         return Reader(filename[0], **kwargs)
     else:
-        Reader = get_reader_for(filename, permissive=kwargs.pop('permissive', False))
+        Reader = get_reader_for(filename,
+                                permissive=kwargs.pop('permissive', False))
         return Reader(filename, **kwargs)
 
 
@@ -107,80 +134,92 @@ def get_writer_for(filename=None, format='DCD', multiframe=None):
     :class:`cStringIO.StringIO` instance then the *format* argument must be
     used.
 
-    :Arguments:
-      *filename*
-         The filename for the trajectory is examined for its extension and
-         the Writer is chosen accordingly.
-      *format*
-         If no *filename* is supplied then the format can be explicitly set;
-         possible values are "DCD", "XTC", "TRR"; "PDB", "CRD", "GRO".
-      *multiframe*
-         ``True``: write multiple frames to the trajectory; ``False``: only
-         write a single coordinate frame; ``None``: first try trajectory (multi
-         frame writers), then the single frame ones. Default is ``None``.
+    Parameters
+    ----------
+    filename : str
+        The filename for the trajectory is examined for its extension and
+        the Writer is chosen accordingly.
+    format : str
+        If no *filename* is supplied then the format can be explicitly set
+    multiframe : bool
+        ``True``: write multiple frames to the trajectory; ``False``: only
+        write a single coordinate frame; ``None``: first try trajectory (multi
+        frame writers), then the single frame ones. Default is ``None``.
+
+    Returns
+    -------
+    A Writer object
 
     .. versionchanged:: 0.7.6
        Added *multiframe* keyword; the default ``None`` reflects the previous
        behaviour.
     """
-    from . import _trajectory_writers, _frame_writers
-
     if isinstance(filename, basestring) and filename:
         root, ext = util.get_ext(filename)
         format = util.check_compressed_format(root, ext)
     if multiframe is None:
         try:
-            return _trajectory_writers[format]
+            return _MULTIFRAME_WRITERS[format]
         except KeyError:
             try:
-                return _frame_writers[format]
+                return _SINGLEFRAME_WRITERS[format]
             except KeyError:
-                raise TypeError("No trajectory or frame writer for format %r" % format)
+                raise TypeError(
+                    "No trajectory or frame writer for format {0}"
+                    "".format(format))
     elif multiframe is True:
         try:
-            return _trajectory_writers[format]
+            return _MULTIFRAME_WRITERS[format]
         except KeyError:
-            raise TypeError("No trajectory  writer for format %r" % format)
+            raise TypeError(
+                "No trajectory writer for format {0}"
+                "".format(format))
     elif multiframe is False:
         try:
-            return _frame_writers[format]
+            return _SINGLEFRAME_WRITERS[format]
         except KeyError:
-            raise TypeError("No single frame writer for format %r" % format)
+            raise TypeError(
+                "No single frame writer for format {0}".format(format))
     else:
-        raise ValueError("Unknown value %r for multiframe, only True, False, None allowed" % multiframe)
+        raise ValueError("Unknown value '{0}' for multiframe,"
+                         " only True, False, None allowed"
+                         "".format(multiframe))
 
 
 def writer(filename, n_atoms=None, **kwargs):
     """Initialize a trajectory writer instance for *filename*.
 
-    :Arguments:
-       *filename*
-            Output filename of the trajectory; the extension determines the
-            format.
-       *n_atoms*
-            The number of atoms in the output trajectory; can be ommitted
-            for single-frame writers.
-       *multiframe*
-            ``True``: write a trajectory with multiple frames; ``False``
-            only write a single frame snapshot; ``None`` first try to get
-            a multiframe writer and then fall back to single frame [``None``]
-       *kwargs*
-            Keyword arguments for the writer; all trajectory Writers accept
-            at least
+    Parameters:
+    -----------
+    filename : str
+        Output filename of the trajectory; the extension determines the
+        format.
+    n_atoms : int, optional
+        The number of atoms in the output trajectory; can be ommitted
+        for single-frame writers.
+    multiframe : bool, optional
+        ``True``: write a trajectory with multiple frames; ``False``
+        only write a single frame snapshot; ``None`` first try to get
+        a multiframe writer and then fall back to single frame [``None``]
+    kwargs : optional
+        Keyword arguments for the writer; all trajectory Writers accept
+        at least
+            *start*
+                starting time [0]
+            *step*
+                step size in frames [1]
+            *dt*
+                length of time between two frames, in ps [1.0]
+       Some readers accept additional arguments, which need to be looked
+       up in the documentation of the reader.
 
-               *start*
-                   starting time [0]
-               *step*
-                   step size in frames [1]
-               *dt*
-                   length of time between two frames, in ps [1.0]
+    Returns
+    -------
+    A Writer object
 
-            Some readers accept additional arguments, which need to be looked
-            up in the documentation of the reader.
-
-            .. SeeAlso:: :class:`~MDAnalysis.coordinates.DCD.DCDWriter` for DCD
-               trajectories or :class:`~MDAnalysis.coordinates.XTC.XTCWriter`
-               and :class:`~MDAnalysis.coordinates.TRR.TRRWriter` for Gromacs.
+    .. SeeAlso:: :class:`~MDAnalysis.coordinates.DCD.DCDWriter` for DCD
+                 trajectories or :class:`~MDAnalysis.coordinates.XTC.XTCWriter`
+                 and :class:`~MDAnalysis.coordinates.TRR.TRRWriter` for Gromacs.
 
     .. versionchanged:: 0.7.6
        Added *multiframe* keyword. See also :func:`get_writer_for`.

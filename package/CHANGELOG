@@ -49,6 +49,8 @@ Enhancement
   * New keywords start, stop, step for density.density_from_Universe()
     to slice a trajectory.
   * MOL2Reader now reads molecule and substructure into ts.data
+  * All subclasses of ProtoReader, Writer and TopologyReader are automatically
+    added to the MDAnalysis directory of I/O (Issue #431)
 
 Changes
 

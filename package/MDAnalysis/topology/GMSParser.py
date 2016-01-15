@@ -52,6 +52,8 @@ class GMSParser(TopologyReader):
 
     .. versionadded:: 0.9.1
     """
+    format = 'GMS'
+
     def parse(self):
         """Read list of atoms from a GAMESS file."""
 

@@ -63,7 +63,7 @@ class PrimitivePDBParser(TopologyReader):
 
     .. versionadded:: 0.8
     """
-    format = 'PDB'
+    format = 'Permissive_PDB'
 
     def parse(self):
         """Parse atom information from PDB file *filename*.

@@ -352,10 +352,10 @@ class BaseX3DNA(object):
             ax.set_xlabel(r"Nucleic Acid Number")
             param = self.profiles.values()[0].dtype.names[k]
             if param in ["Shear", "Stretch", "Stagger", "Rise", "Shift", "Slide"]:
-                ax.set_ylabel("%s ($\AA$)" % (param))
+                ax.set_ylabel("{0!s} ($\AA$)".format((param)))
             else:
-                ax.set_ylabel("%s (deg)" % (param))
-            ax.figure.savefig("%s.png" % (param))
+                ax.set_ylabel("{0!s} (deg)".format((param)))
+            ax.figure.savefig("{0!s}.png".format((param)))
             ax.figure.clf()
 
     def sorted_profiles_iter(self):
@@ -438,7 +438,7 @@ class X3DNA(BaseX3DNA):
         self.x3dna_param = kwargs.pop('x3dna_param', True)
         self.exe['xdna_ensemble'] = which(x3dna_exe_name)
         if self.exe['xdna_ensemble'] is None:
-            errmsg = "X3DNA binary %(x3dna_exe_name)r not found." % vars()
+            errmsg = "X3DNA binary {x3dna_exe_name!r} not found.".format(**vars())
             logger.fatal(errmsg)
             logger.fatal("%(x3dna_exe_name)r must be on the PATH or provided as keyword argument 'executable'.",
                          vars())
@@ -533,7 +533,7 @@ class X3DNA(BaseX3DNA):
             length = len(filenames)
             if length == 0:
                 logger.error("Glob pattern %r did not find any files.", self.filename)
-                raise ValueError("Glob pattern %r did not find any files." % (self.filename,))
+                raise ValueError("Glob pattern {0!r} did not find any files.".format(self.filename))
             logger.info("Found %d input files based on glob pattern %s", length, self.filename)
 
         # one recarray for each frame, indexed by frame number
@@ -612,7 +612,7 @@ class X3DNA(BaseX3DNA):
                 os.system("rm -f tmp*.out")
                 if not os.path.exists(rundir):
                     os.makedirs(rundir)
-                frame_x3dna_txt = os.path.join(rundir, "bp_step_%s_%04d.dat.gz" % (run, x3dna_profile_no))
+                frame_x3dna_txt = os.path.join(rundir, "bp_step_{0!s}_{1:04d}.dat.gz".format(run, x3dna_profile_no))
                 np.savetxt(frame_x3dna_txt, frame_x3dna_output)
                 logger.debug("Finished with frame %d, saved as %r", x3dna_profile_no, frame_x3dna_txt)
                 # if we get here then we haven't found anything interesting
@@ -703,7 +703,7 @@ class X3DNAtraj(BaseX3DNA):
             fd, pdbfile = tempfile.mkstemp(suffix=".pdb")
             os.close(fd)
             nucleic.write(pdbfile)
-            os.system("find_pair %s 355d.bps" % pdbfile)
+            os.system("find_pair {0!s} 355d.bps".format(pdbfile))
             try:
                 nucleic.write(pdbfile)
                 '''

@@ -44,6 +44,7 @@ class XYZParser(TopologyReader):
 
     .. versionadded:: 0.9.1
     """
+    format = 'XYZ'
 
     def parse(self):
         """Read the file and return the structure.

@@ -189,7 +189,7 @@ class TRJReader(base.Reader):
        Frames now 0-based instead of 1-based
        kwarg 'delta' renamed to 'dt', for uniformity with other Readers
     """
-    format = 'TRJ'
+    format = ['TRJ', 'MDCRD']
     units = {'time': 'ps', 'length': 'Angstrom'}
     _Timestep = Timestep
 
@@ -211,7 +211,7 @@ class TRJReader(base.Reader):
         # We determine right away what parser we need for the last
         # line because it will be the same for all frames.
         last_per_line = 3 * self.n_atoms % len(self.default_line_parser)
-        self.last_line_parser = util.FORTRANReader("%dF8.3" % last_per_line)
+        self.last_line_parser = util.FORTRANReader("{0:d}F8.3".format(last_per_line))
 
         # FORMAT(10F8.3)  BOX(1), BOX(2), BOX(3)
         # is this always on a separate line??
@@ -405,7 +405,8 @@ class NCDFReader(base.Reader):
        kwarg 'delta' renamed to 'dt', for uniformity with other Readers
     """
 
-    format = 'NCDF'
+    format = ['NCDF', 'NC']
+    multiframe = True
     version = "1.0"
     units = {'time': 'ps', 'length': 'Angstrom', 'velocity': 'Angstrom/ps',
              'force': 'kcal/(mol*Angstrom)'}
@@ -435,7 +436,7 @@ class NCDFReader(base.Reader):
             logger.fatal(errmsg)
             raise TypeError(errmsg)
         if not self.trjfile.ConventionVersion == self.version:
-            wmsg = "NCDF trajectory format is %s but the reader implements format %s" % (
+            wmsg = "NCDF trajectory format is {0!s} but the reader implements format {1!s}".format(
                 self.trjfile.ConventionVersion, self.version)
             warnings.warn(wmsg)
             logger.warn(wmsg)

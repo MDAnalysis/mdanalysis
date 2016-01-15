@@ -207,10 +207,11 @@ class MOL2Writer(base.Writer):
 
     """
     format = 'MOL2'
+    multiframe = True
     units = {'time': None, 'length': 'Angstrom'}
 
     def __init__(self, filename, n_atoms=None,
-                 convert_units=None, multiframe=None):
+                 convert_units=None):
         """Create a new MOL2Writer
 
         :Arguments:

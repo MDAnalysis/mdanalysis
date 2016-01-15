@@ -59,6 +59,7 @@ class XTCWriter(core.TrjWriter):
     .. _Gromacs: http://www.gromacs.org
     """
     format = "XTC"
+    multiframe = True
 
 
 class XTCReader(core.TrjReader):

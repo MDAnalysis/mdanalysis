@@ -51,6 +51,7 @@ from .base import TopologyReader
 
 class PDBQTParser(TopologyReader):
     """Read topology from a PDBQT file."""
+    format = 'PDBQT'
 
     def parse(self):
         """Parse atom information from PDBQT file *filename*.

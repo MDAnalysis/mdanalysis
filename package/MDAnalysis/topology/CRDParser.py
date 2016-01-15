@@ -39,6 +39,7 @@ from .base import TopologyReader
 
 class CRDParser(TopologyReader):
     """Parse a CHARMM CARD coordinate file for topology information."""
+    format = 'CRD'
 
     def parse(self):
         """Parse CRD file *filename* and return the dict `structure`.
