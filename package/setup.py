@@ -363,6 +363,7 @@ if __name__ == '__main__':
               'biopython>=1.59',
               'networkx>=1.0',
               'GridDataFormats>=0.3.2',
+              'six>=1.4.0',
           ],
           # extras can be difficult to install through setuptools and/or
           # you might prefer to use the version available through your
