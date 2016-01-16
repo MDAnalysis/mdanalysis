@@ -59,4 +59,4 @@ Data
 # e.g. with lib.log
 
 #: Release of MDAnalysis as a string, using `semantic versioning`_.
-__version__ = "0.13.0-dev0"  # NOTE: keep in sync with RELEASE in setup.py
+__version__ = "0.13.0"  # NOTE: keep in sync with RELEASE in setup.py
