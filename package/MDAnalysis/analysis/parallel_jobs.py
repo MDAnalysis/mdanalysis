@@ -4,8 +4,9 @@
 import MDAnalysis as mda
 import multiprocessing as mp
 import copy
+import time
 from operator import itemgetter
-import prog
+import utils.prog as prog
 
 class ParallelProcessor(object):
     """ Add class docstring later
@@ -157,7 +158,7 @@ class ParallelProcessor(object):
             while not progress.empty():
                 core = progress.get()
                 pb.update(core)
-            print
+        print
 
         # Exit the completed processes
         for process in processes:

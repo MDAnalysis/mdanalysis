@@ -27,7 +27,7 @@ import multiprocessing as mp
 import copy
 import time
 from operator import itemgetter
-import prog
+import utils.prog as prog
 
 
 logger = logging.getLogger(__name__)
