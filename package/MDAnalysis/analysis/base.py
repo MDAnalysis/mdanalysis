@@ -22,6 +22,12 @@ classes.
 """
 
 import logging
+import MDAnalysis as mda
+import multiprocessing as mp
+import copy
+import time
+from operator import itemgetter
+import prog
 
 
 logger = logging.getLogger(__name__)
@@ -86,16 +92,161 @@ class AnalysisBase(object):
         """
         pass
 
-    def run(self):
+    def run(self, parallel=None, threads=None):
         """Perform the calculation"""
         logger.info("Starting preparation")
-        self._prepare()
-        for i, ts in enumerate(
-                self._trajectory[self.start:self.stop:self.step]):
-            #logger.info("--> Doing frame {} of {}".format(i+1, self.nframes))
-            self._single_frame(ts)
-        #logger.info("Finishing up")
+        if parallel is None:
+            self._prepare()
+            for i, ts in enumerate(
+                    self._trajectory[self.start:self.stop:self.step]):
+                #logger.info("--> Doing frame {} of {}".format(i+1, self.nframes))
+                self._single_frame(ts)
+            #logger.info("Finishing up")
+            self._conclude()
+
+        else:
+            if threads is None:
+                self.threads = mp.cpu_count()-1
+            elif threads > mp.cpu_count():
+                self.threads = mp.cpu_count()-1
+            else:
+                self.threads = threads
+
+            self.slices = self.compute_slices()
+            self.topology = self._universe.filename
+            self.trajname = self._universe._trajectory.filename
+            self.nframes = 0
+            self._parallel_run()
+            
+    def compute_slices(self):
+        """
+        This function returns a list containing the start and
+         last configuration to be analyzed from each thread
+        """
+        threads = self.threads # Get number of threads from initialization
+        step = self.step
+        configs = 1+(self.stop-self.start-1)/step
+
+        #self.nframes = configs
+
+        # Check whether the number of threads is higher than
+        # the number of trajectories to be analyzed
+        while configs/threads == 0:
+            threads -= 1
+
+        self.threads = threads # Update the number of threads
+
+        print "Total configurations: "+str(configs)
+        print "Analysis running on ", threads, " threads.\n"
+
+        # Number of cfgs for each thread, and remainder to be added
+        thread_cfg = configs/threads
+        reminder = configs%threads
+
+        slices = []
+        beg = self.start
+
+        # Compute the start and last configurations
+        for thread in range(0, threads):
+            if thread < reminder:
+                end = beg+step*thread_cfg
+            else:
+                end = beg+step*(thread_cfg-1)
+
+            slices.append([beg, end+1])
+            beg = end+step
+
+        # Print on screen the configurations assigned to each thread
+        for thread in range(threads):
+            confs = 1+(slices[thread][1]-1-slices[thread][0])/step
+            digits = len(str(self.stop))
+            line = "Thread "+str(thread+1).rjust(len(str(threads)))+": " \
+                          +str(slices[thread][0]).rjust(digits)+"/"  \
+                          +str(slices[thread][1]-1).rjust(digits)    \
+                          +" | Configurations: "\
+                          +str(confs).rjust(1+len(str(thread_cfg)))
+            print line
+
+        return slices    
+
+    def _parallel_run(self):
+        """
+        Create copies of the original object to be
+        dispatched to multiprocess
+        """
+
+        threads = self.threads
+
+        # Queues for the communication between parent and child processes
+        out_queue = mp.Manager().Queue()
+        progress = mp.Manager().Queue()
+
+        # Prepare multiprocess objects
+        processes = [mp.Process(target=self.compute,
+                                 args=(out_queue, order, progress))
+                      for order in range(threads)]
+
+        # Run processes
+        for process in processes:
+            process.start()
+
+        thread_configs = [1+(elem[1]-elem[0]-1)/self.step
+                          for elem in self.slices]
+
+        name = self._type()
+
+        pb = prog.ProgressbarMulticore(thread_configs,bar_length=50, name=name)
+
+        while any(process.is_alive() for process in processes):
+            time.sleep(1)
+            pb.timer(1)
+            while not progress.empty():
+                core = progress.get()
+                pb.update(core)
+        print
+
+        # Exit the completed processes
+        for process in processes:
+            process.join()
+
+        results = []
+
+        # Collects results from the queue
+        while not out_queue.empty():
+            results.append(out_queue.get())
+
+        for thread in sorted(results, key=itemgetter(1)):
+            self += thread[0]
+
         self._conclude()
+
+    def compute(self, out_queue, order, progress):
+        """
+        Run the single_frame method for each analysis object for all
+        the trajectories in the batch
+        """
+        start = self.slices[order][0]
+        stop = self.slices[order][1]
+        step = self.step
+
+        universe = mda.Universe(self.topology, self.trajname)
+        traj = universe.trajectory
+
+        analysis_object = copy.deepcopy(self)
+        analysis_object._setup_frames(universe=universe, start=start,
+                                      stop=stop, step=self.step)
+
+        analysis_object._prepare()
+
+        progress.put(order)
+        for timestep in traj[start:stop:step]:
+            analysis_object._single_frame(timestep)
+            progress.put(order) # Updates the progress bar
+
+        out_queue.put((analysis_object, order)) # Returns the results
+
+    def _type(self):
+        return self.__class__.__name__
 
     def __getstate__(self):
         state = dict(self.__dict__)

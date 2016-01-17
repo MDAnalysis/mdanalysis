@@ -5,6 +5,7 @@ import MDAnalysis as mda
 import multiprocessing as mp
 import copy
 from operator import itemgetter
+import prog
 
 class ParallelProcessor(object):
     """ Add class docstring later
@@ -41,7 +42,7 @@ class ParallelProcessor(object):
         """
         threads = self.threads # Get number of threads from initialization
         step = self.step
-        configs = (self.stop-self.start)/step
+        configs = 1+(self.stop-self.start-1)/step
 
         self.nframes = configs
 
@@ -109,6 +110,7 @@ class ParallelProcessor(object):
                               stop=stop, step=self.step)
             job._prepare()
 
+        progress.put(order)
         for timestep in traj[start:stop:step]:
             for job in jobs_list:
                 job._single_frame(timestep)
@@ -147,30 +149,15 @@ class ParallelProcessor(object):
         thread_configs = [1+(elem[1]-elem[0]-1)/self.step
                           for elem in self.slices]
 
-        data = {}
+        pb = prog.ProgressbarMulticore(thread_configs,bar_length=50)
 
-        for thread in range(threads):
-            data[thread] = 0
-
-        total = 0
-        print
         while any([process.is_alive() for process in processes]):
+            time.sleep(1)
+            pb.timer(1)
             while not progress.empty():
                 core = progress.get()
-                data[core] += 1
-                total += 1
-
-                for thread in range(threads):
-                    print "Core "+str(thread)+": " \
-                        +str(data[thread])+"/" \
-                        +str(thread_configs[thread])
-
-                print "Total: "+str(total)+"/"\
-                    +str(self.nframes)
-
-                print "\033["+str(threads+2)+"A"
-
-        print (threads+1)*"\n"
+                pb.update(core)
+            print
 
         # Exit the completed processes
         for process in processes:
