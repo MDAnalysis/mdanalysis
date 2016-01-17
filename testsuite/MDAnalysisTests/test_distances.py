@@ -706,9 +706,3 @@ class TestDistanceBackendSelection(object):
                                       backend="not_implemented_stuff")
 
 
-class TestOpenMP(object):
-    def test_serial(self):
-        assert_(MDAnalysis.lib.c_distances.OPENMP_ENABLED == False)
-
-    def test_openmp(self):
-        assert_(MDAnalysis.lib.c_distances_openmp.OPENMP_ENABLED == True)
