@@ -84,7 +84,7 @@ class ProgressbarMulticore(object):
             self.eta_started = True
             eta=str(datetime.timedelta(seconds=int(self.eta)))
 
-        print self.name+" ["+str(bars*"=")+str(empty*" ")+"] "+str(round(percentage,1)).rjust(4)+"% Elapsed: "+str(datetime.timedelta(seconds=self.elaps))+" ETA: "+eta+left_cfgs+"\r",
+        sys.stderr.write("\r"+self.name+" ["+str(bars*"=")+str(empty*" ")+"] "+str(round(percentage,1)).rjust(4)+"% Elapsed: "+str(datetime.timedelta(seconds=self.elaps))+" ETA: "+eta+left_cfgs,)
         sys.stdout.flush()
 
     def timer(self,diff):
@@ -96,3 +96,7 @@ class ProgressbarMulticore(object):
 
         if any(self.has_started):
             self.elaps += diff
+
+    def summary(self):
+        sys.stderr.write("\n")
+        print self.name+": analyzed "+str(self.total_configs)+" configurations in "+str(datetime.timedelta(seconds=self.elaps))+"\n"

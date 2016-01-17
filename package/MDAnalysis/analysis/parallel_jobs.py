@@ -158,7 +158,8 @@ class ParallelProcessor(object):
             while not progress.empty():
                 core = progress.get()
                 pb.update(core)
-        print
+
+        pb.summary()
 
         # Exit the completed processes
         for process in processes:
