@@ -13,15 +13,21 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/16
+??/??/16 kain88-de
 
   * 0.13.1
 
 API Changes
+  * Offsets files for Gromcas trajectory formats have been changed to a numpy
+    style format '.npz'. Offsets files will be regenerated when you load a
+    xtc/trr trajectory again.
 
 Enhancement
+  * Offsets reading for xtc/trr files has been sped up.
 
 Changes
+
+  * xdrlib has been ported to cython.
 
 Fixes
 
