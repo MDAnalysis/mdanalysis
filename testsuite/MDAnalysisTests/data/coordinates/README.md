@@ -22,3 +22,21 @@ test.xyz.bz2
 
 ## Validation
 unpack and check that the content is the same as test.xyz
+
+test.xtc
+--------
+## Creation
+Written with MDAnalysis using the 'create_data.py script
+
+## Validation
+With `gmx dump -f test.xtc` you can look at the content of the file in
+plain text using Gromacs utilities.
+
+test.trr
+--------
+## Creation
+Written with MDAnalysis using the 'create_data.py script
+
+## Validation
+With `gmx dump -f test.trr` you can look at the content of the file in
+plain text using Gromacs utilities.

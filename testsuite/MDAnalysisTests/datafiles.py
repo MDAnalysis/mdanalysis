@@ -56,6 +56,7 @@ __all__ = [
     "TPR510_bonded",
     "PDB_sub_sol", "PDB_sub_dry",  # TRRReader sub selection
     "TRR_sub_sol",
+    "XTC_sub_sol",
     "XYZ", "XYZ_psf", "XYZ_bz2",
     "XYZ_mini", "XYZ_five", # 3 and 5 atoms xyzs for an easy topology
     "PRM", "TRJ", "TRJ_bz2",  # Amber (no periodic box)
@@ -75,6 +76,10 @@ __all__ = [
     "CONECT",  # HIV Reverse Transcriptase with inhibitor
     "TRZ", "TRZ_psf",
     "TRIC",
+    "XTC_single_frame",
+    "XTC_multi_frame",
+    "TRR_single_frame",
+    "TRR_multi_frame",
     "merge_protein", "merge_ligand", "merge_water",
     "mol2_molecules", "mol2_molecule", "mol2_broken_molecule",
     "capping_input", "capping_output", "capping_ace", "capping_nma",
@@ -97,6 +102,9 @@ __all__ = [
     "COORDINATES_XYZ",
     "COORDINATES_XYZ_BZ2",
     "Martini_membrane_gro", # for testing the leaflet finder
+    "COORDINATES_XTC",
+    "COORDINATES_TRR",
+    "COORDINATES_TOPOLOGY",
 ]
 
 from pkg_resources import resource_filename
@@ -104,6 +112,9 @@ from pkg_resources import resource_filename
 COORDINATES_XYZ = resource_filename(__name__, 'data/coordinates/test.xyz')
 COORDINATES_XYZ_BZ2 = resource_filename(
     __name__, 'data/coordinates/test.xyz.bz2')
+COORDINATES_XTC = resource_filename(__name__, 'data/coordinates/test.xtc')
+COORDINATES_TRR = resource_filename(__name__, 'data/coordinates/test.trr')
+COORDINATES_TOPOLOGY = resource_filename(__name__, 'data/coordinates/test_topology.pdb')
 
 PSF = resource_filename(__name__, 'data/adk.psf')
 PSF_notop = resource_filename(__name__, 'data/adk_notop.psf')
@@ -139,8 +150,19 @@ TRR = resource_filename(__name__, 'data/adk_oplsaa.trr')
 TPR = resource_filename(__name__, 'data/adk_oplsaa.tpr')
 PDB_sub_dry = resource_filename(__name__, 'data/cobrotoxin_dry_neutral_0.pdb')
 TRR_sub_sol = resource_filename(__name__, 'data/cobrotoxin.trr')
+XTC_sub_sol = resource_filename(__name__, 'data/cobrotoxin.xtc')
 PDB_sub_sol = resource_filename(__name__, 'data/cobrotoxin.pdb')
 PDB_xlserial = resource_filename(__name__, 'data/xl_serial.pdb')
+XTC_single_frame = resource_filename(
+    __name__, 'data/xtc_test_only_single_frame_10_atoms.xtc')
+XTC_multi_frame = resource_filename(
+    __name__, 'data/xtc_test_only_10_frame_10_atoms.xtc'
+)
+TRR_single_frame = resource_filename(
+    __name__, 'data/trr_test_only_single_frame_10_atoms.trr')
+TRR_multi_frame = resource_filename(
+    __name__, 'data/trr_test_only_10_frame_10_atoms.trr'
+)
 
 PDB_xvf = resource_filename(__name__, 'data/cobrotoxin.pdb')
 TPR_xvf = resource_filename(__name__, 'data/cobrotoxin.tpr')

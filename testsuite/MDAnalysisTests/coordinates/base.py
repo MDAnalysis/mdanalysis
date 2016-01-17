@@ -192,16 +192,14 @@ class BaseReaderTest(object):
         assert_timestep_almost_equal(ts, self.ref.jump_to_frame,
                                      decimal=self.ref.prec)
 
-    def test_get_writer_container(self):
-        if not self.ref.container_format:
-            return
+    def test_get_writer_1(self):
         with tempdir.in_tempdir():
             self.outfile = 'test-writer' + self.ref.ext
             with self.reader.Writer(self.outfile) as W:
                 assert_equal(isinstance(W, self.ref.writer), True)
                 assert_equal(W.n_atoms, self.reader.n_atoms)
 
-    def test_get_writer(self):
+    def test_get_writer_2(self):
         with tempdir.in_tempdir():
             self.outfile = 'test-writer' + self.ref.ext
             with self.reader.Writer(self.outfile, n_atoms=100) as W:
@@ -890,7 +888,7 @@ def assert_timestep_almost_equal(A, B, decimal=6, verbose=True):
 
     if A.has_positions != B.has_positions:
         raise AssertionError('Only one Timestep has positions:'
-                             'A.has_positions = {}, B.has_positions'.format(
+                             'A.has_positions = {}, B.has_positions = {}'.format(
                                  A.has_positions, B.has_positions))
 
     if A.has_positions:
@@ -900,7 +898,7 @@ def assert_timestep_almost_equal(A, B, decimal=6, verbose=True):
 
     if A.has_velocities != B.has_velocities:
         raise AssertionError('Only one Timestep has velocities:'
-                             'A.has_velocities = {}, B.has_velocities'.format(
+                             'A.has_velocities = {}, B.has_velocities = {}'.format(
                                  A.has_velocities, B.has_velocities))
     if A.has_velocities:
         assert_array_almost_equal(A.velocities, B.velocities, decimal=decimal,
@@ -909,7 +907,7 @@ def assert_timestep_almost_equal(A, B, decimal=6, verbose=True):
 
     if A.has_forces != B.has_forces:
         raise AssertionError('Only one Timestep has forces:'
-                             'A.has_forces = {}, B.has_forces'.format(
+                             'A.has_forces = {}, B.has_forces = {}'.format(
                                  A.has_forces, B.has_forces))
     if A.has_forces:
         assert_array_almost_equal(A.forces, B.forces, decimal=decimal,
