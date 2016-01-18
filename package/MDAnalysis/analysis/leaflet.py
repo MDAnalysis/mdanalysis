@@ -38,10 +38,12 @@ One can use this information to identify
   of distances from the centre of geometry (or possibly simply the
   :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.radius_of_gyration`).
 
-See example scripts in the ``examples/`` directory on how to use
+See example scripts in the MDAnalysisCookbook_ on how to use
 :class:`LeafletFinder`. The function :func:`optimize_cutoff` implements a
 (slow) heuristic method to find the best cut off for the LeafletFinder
 algorithm.
+
+.. MDAnalysisCookbook_: https://github.com/MDAnalysis/MDAnalysisCookbook/tree/master/examples
 
 .. autoclass:: LeafletFinder
    :members:

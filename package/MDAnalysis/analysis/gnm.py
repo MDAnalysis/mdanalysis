@@ -29,8 +29,12 @@ Elastic network analysis of MD trajectories --- :mod:`MDAnalysis.analysis.gnm`
 
 Analyse a trajectory using elastic network models, following the approach of [Hall2007]_.
 
-An example is provided in :file:`examples/GNMExample.py`. The basic
-approach is to pass a trajectory to :class:`GNMAnalysis` and then run
+An example is provided in the MDAnalysis Cookbook_, listed as GNMExample_.
+
+.. GNMExample_: https://github.com/MDAnalysis/MDAnalysisCookbook/blob/master/examples/GNMExample.py
+.. Cookbook_: https://github.com/MDAnalysis/MDAnalysisCookbook
+
+The basic approach is to pass a trajectory to :class:`GNMAnalysis` and then run
 the analysis::
 
    u = MDAnalysis.Universe(PSF,DCD)
