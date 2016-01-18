@@ -1,12 +1,11 @@
 """ Add a docstring later
 
 """
-import MDAnalysis as mda
 import multiprocessing as mp
 import copy
 import time
 from operator import itemgetter
-import utils.prog as prog
+import MDAnalysis as mda
 
 class ParallelProcessor(object):
     """ Add class docstring later
@@ -18,7 +17,7 @@ class ParallelProcessor(object):
         self.trajname = universe._trajectory.filename
 
         start, stop, step = universe.trajectory.check_slice_indices(start,
-                                                                     stop, step)
+                                                                    stop, step)
 
         self.start = start
         self.stop = stop
@@ -139,8 +138,8 @@ class ParallelProcessor(object):
 
         # Prepare multiprocess objects
         processes = [mp.Process(target=self.compute,
-                                 args=(out_queue, order, progress))
-                      for order in range(threads)]
+                                args=(out_queue, order, progress))
+                     for order in range(threads)]
 
 
         # Run processes
@@ -150,16 +149,14 @@ class ParallelProcessor(object):
         thread_configs = [1+(elem[1]-elem[0]-1)/self.step
                           for elem in self.slices]
 
-        pb = prog.ProgressbarMulticore(thread_configs,bar_length=50)
+        prog = mda.lib.log.Progressbar(thread_configs, bar_length=50,
+                                       name="ParallelProcessor")
+        prog.start()
 
         while any([process.is_alive() for process in processes]):
-            time.sleep(1)
-            pb.timer(1)
             while not progress.empty():
                 core = progress.get()
-                pb.update(core)
-
-        pb.summary()
+                prog.update(core)
 
         # Exit the completed processes
         for process in processes:

@@ -22,12 +22,10 @@ classes.
 """
 
 import logging
-import MDAnalysis as mda
 import multiprocessing as mp
 import copy
-import time
 from operator import itemgetter
-import utils.prog as prog
+import MDAnalysis as mda
 
 
 logger = logging.getLogger(__name__)
@@ -68,14 +66,14 @@ class AnalysisBase(object):
             self._trajectory = self._universe.trajectory
 
             start, stop, step = self._trajectory.check_slice_indices(start,
-                                                                      stop,
-                                                                      step)
+                                                                     stop,
+                                                                     step)
             self.start = start
             self.stop = stop
             self.step = step
             self.nframes = len(xrange(start, stop, step))
 
-    def _single_frame(self):
+    def _single_frame(self, timestep):
         """Calculate data from a single frame of trajectory
 
         Don't worry about normalising, just deal with a single frame.
@@ -93,32 +91,89 @@ class AnalysisBase(object):
         pass
 
     def run(self, parallel=None, threads=None):
+        """ Chooses whether to run analysis in serial or parallel
+        mode depending on user input"""
+        if parallel is None:
+            self._serial_run()
+        else:
+            self._parallel_run(threads)
+
+    def _serial_run(self):
         """Perform the calculation"""
         logger.info("Starting preparation")
-        if parallel is None:
-            self._prepare()
-            for i, ts in enumerate(
-                    self._trajectory[self.start:self.stop:self.step]):
-                #logger.info("--> Doing frame {} of {}".format(i+1, self.nframes))
-                self._single_frame(ts)
-            #logger.info("Finishing up")
-            self._conclude()
+        prog = mda.lib.log.Progressbar([self.nframes])
+        prog.start()
+        self._prepare()
+        for i, ts in enumerate(
+                self._trajectory[self.start:self.stop:self.step]):
+            #logger.info("--> Doing frame {} of {}".format(i+1, self.nframes))
+            self._single_frame(ts)
+            prog.update(0)
+        #logger.info("Finishing up")
+        self._conclude()
 
+    def _parallel_run(self, threads=None):
+        """
+        Create copies of the original object to be
+        dispatched to multiprocess
+        """
+
+        if threads is None:
+            self.threads = mp.cpu_count()-1
+        elif threads > mp.cpu_count():
+            self.threads = mp.cpu_count()-1
         else:
-            if threads is None:
-                self.threads = mp.cpu_count()-1
-            elif threads > mp.cpu_count():
-                self.threads = mp.cpu_count()-1
-            else:
-                self.threads = threads
+            self.threads = threads
 
-            self.slices = self.compute_slices()
-            self.topology = self._universe.filename
-            self.trajname = self._universe._trajectory.filename
-            self.nframes = 0
-            self._parallel_run()
-            
-    def compute_slices(self):
+        self.slices = self._compute_slices()
+        self.topology = self._universe.filename
+        self.trajname = self._universe._trajectory.filename
+        self.nframes = 0
+
+        threads = self.threads
+
+        # Queues for the communication between parent and child processes
+        out_queue = mp.Manager().Queue()
+        progress = mp.Manager().Queue()
+
+        # Prepare multiprocess objects
+        processes = [mp.Process(target=self._compute,
+                                args=(out_queue, order, progress))
+                     for order in range(threads)]
+
+        # Run processes
+        for process in processes:
+            process.start()
+
+        thread_configs = [1+(elem[1]-elem[0]-1)/self.step
+                          for elem in self.slices]
+
+        name = self._type()
+
+        prog = mda.lib.log.Progressbar(thread_configs, bar_length=50, name=name)
+        prog.start()
+
+        while any(process.is_alive() for process in processes):
+            while not progress.empty():
+                core = progress.get()
+                prog.update(core)
+
+        # Exit the completed processes
+        for process in processes:
+            process.join()
+
+        results = []
+
+        # Collects results from the queue
+        while not out_queue.empty():
+            results.append(out_queue.get())
+
+        for thread in sorted(results, key=itemgetter(1)):
+            self += thread[0]
+
+        self._conclude()
+
+    def _compute_slices(self):
         """
         This function returns a list containing the start and
          last configuration to be analyzed from each thread
@@ -167,61 +222,9 @@ class AnalysisBase(object):
                           +str(confs).rjust(1+len(str(thread_cfg)))
             print line
 
-        return slices    
+        return slices
 
-    def _parallel_run(self):
-        """
-        Create copies of the original object to be
-        dispatched to multiprocess
-        """
-
-        threads = self.threads
-
-        # Queues for the communication between parent and child processes
-        out_queue = mp.Manager().Queue()
-        progress = mp.Manager().Queue()
-
-        # Prepare multiprocess objects
-        processes = [mp.Process(target=self.compute,
-                                 args=(out_queue, order, progress))
-                      for order in range(threads)]
-
-        # Run processes
-        for process in processes:
-            process.start()
-
-        thread_configs = [1+(elem[1]-elem[0]-1)/self.step
-                          for elem in self.slices]
-
-        name = self._type()
-
-        pb = prog.ProgressbarMulticore(thread_configs,bar_length=50, name=name)
-
-        while any(process.is_alive() for process in processes):
-            time.sleep(1)
-            pb.timer(1)
-            while not progress.empty():
-                core = progress.get()
-                pb.update(core)
-
-        pb.summary()
-
-        # Exit the completed processes
-        for process in processes:
-            process.join()
-
-        results = []
-
-        # Collects results from the queue
-        while not out_queue.empty():
-            results.append(out_queue.get())
-
-        for thread in sorted(results, key=itemgetter(1)):
-            self += thread[0]
-
-        self._conclude()
-
-    def compute(self, out_queue, order, progress):
+    def _compute(self, out_queue, order, progress):
         """
         Run the single_frame method for each analysis object for all
         the trajectories in the batch
