@@ -75,6 +75,10 @@ from __future__ import division
 
 import sys
 import logging
+import time
+import datetime
+import numpy as np
+import threading
 
 from .. import version
 
@@ -303,3 +307,112 @@ class ProgressMeter(object):
         else:
             return
         echo(format % vars(self))
+
+class Progressbar(threading.Thread):
+    """ Add class docstring later
+    """
+    def __init__(self,list_of_totals,name="Analysis", bar_length=40, refresh=1):
+        threading.Thread.__init__(self)
+        # Number of units per thread, total of units and number of threads
+        self.threads_compute_units = np.array(list_of_totals)
+        self.total_units = np.sum(self.threads_compute_units)
+        self.threads = len(self.threads_compute_units)
+
+        self.has_started = [False] * self.threads
+        self.counter = 0 # number of processed units
+        self.last_update = np.zeros(self.threads) # times of last update
+        self.cumulative_time = 0
+        
+        self.daemon = True # kills bar if main thread died
+        self.eta = 0 # estimated time of accomplishment
+        self.elaps = 0 # elapsed time
+        self.speed = 0 # seconds per unit
+        self.freq = refresh # frequency of bar refreshing
+
+        self.remaining_units = np.amax(self.threads_compute_units)
+        self.remaining_changed = False
+
+        # Bar-related variables
+        self.name = name
+        self.bar_length = bar_length
+        self.dots = 0
+        self.eta_started = False
+        self.cfg_len = len(str(self.total_units))
+        
+    def _update_timings(self,core_id):
+        istant = time.time()
+
+        # Update statistics each time a new unit has been completed
+        if self.has_started[core_id]:
+            self.counter += 1
+            self.threads_compute_units[core_id] -= 1
+            self.cumulative_time += istant-self.last_update[core_id]
+            self.last_update[core_id] = istant            
+        else:
+            self.has_started[core_id] = True
+            self.last_update[core_id] = istant
+
+        # Update eta only if the highest number of units left has
+        # decreased (prevents eta from changind all the time)
+        remainings = np.amax(self.threads_compute_units)
+        
+        if remainings != self.remaining_units:
+            self.remaining_changed = True
+            self.remaining_units = remainings
+
+    def _compute_eta(self):
+        # Only update eta if the highest number of units left has changed
+        if self.remaining_changed:
+            self.speed = (self.cumulative_time/self.counter)
+            self.eta = self.speed*self.remaining_units
+            self.remaining_changed = False
+
+    def update(self,core_id):
+        self._update_timings(core_id)
+        self._compute_eta()
+
+    def _print_bar(self):
+        percentage=self.counter*100./self.total_units
+        bars = int(percentage/100.*self.bar_length)
+        empty = self.bar_length-bars
+
+        eta = ""
+
+        left_cfgs = " "+str(self.total_units-self.counter).rjust(self.cfg_len)+"/"+str(self.total_units).rjust(self.cfg_len)
+
+        # Only start timing if at least one unit has arrived
+        if (self.eta < 1 and self.eta_started is False):
+            eta=str(self.dots*'.')+str((3-self.dots)*' ')
+            self.dots += 1
+            timing = ""
+            if self.dots > 3:
+                self.dots = 0
+        else:
+            self.eta_started = True
+            eta=str(datetime.timedelta(seconds=int(self.eta)))
+
+        # Output bar to stderr
+        print "\033[2A" # move cursor one line up
+        sys.stderr.write(self.name+" ["+str(bars*"=")+str(empty*" ")+"] "+str(round(percentage,1)).rjust(4)+"% Elapsed: "+str(datetime.timedelta(seconds=self.elaps))+" ETA: "+eta+left_cfgs+"\n")
+        sys.stdout.flush()
+
+    def run(self):
+        # Avoids negative ETA
+        print "\n" # avoid overwriting previous line in terminal
+        while self.remaining_units > 0:
+            if self.eta > self.freq:
+                self.eta -= self.freq
+                self._print_bar()
+            else:
+                self._print_bar()
+            # Update elaps time only if at least one unit has arrived
+            if any(self.has_started):
+                self.elaps += self.freq
+
+            time.sleep(self.freq)
+        # Print a summary at the end
+        self._summary()
+
+    def _summary(self):
+        sys.stderr.write("\n")
+        print self.name+": analyzed "+str(self.total_units)+" units in "+str(datetime.timedelta(seconds=self.elaps))+"\n"
