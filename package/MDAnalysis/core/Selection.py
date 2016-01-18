@@ -63,6 +63,7 @@ def is_keyword(val):
     """
     return (val in _SELECTIONDICT or
             val in _OPERATIONS or
+            val in ['(', ')'] or
             val is None)
 
 
