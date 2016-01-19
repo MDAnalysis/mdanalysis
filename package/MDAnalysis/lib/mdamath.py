@@ -158,7 +158,7 @@ def triclinic_box(x, y, z):
 
     .. SeeAlso:: Definition of angles: http://en.wikipedia.org/wiki/Lattice_constant
     """
-    A, B, C = [norm(v) for v in x, y, z]
+    A, B, C = [norm(v) for v in (x, y, z)]
     alpha = _angle(y, z)
     beta = _angle(x, z)
     gamma = _angle(x, y)
