@@ -30,6 +30,8 @@ Changes
   * xdrlib has been ported to cython.
 
 Fixes
+  * Fixed PrimitivePDBWriter getting atom type column shifted to the right
+    (Issue #639)
 
 01/16/16 tyler.je.reddy, kain88-de, richardjgowers, manuel.nuno.melo,
          orbeckst, Balasubra
