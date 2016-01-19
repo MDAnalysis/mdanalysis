@@ -13,7 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/16 kain88-de
+??/??/16 tyler.je.reddy, kain88-de
 
   * 0.13.1
 
@@ -30,6 +30,7 @@ Changes
   * xdrlib has been ported to cython.
 
 Fixes
+  * ContactAnalysis1 run method now starts at frame index 0 by deafult (Issue #624)
 
 01/16/16 tyler.je.reddy, kain88-de, richardjgowers, manuel.nuno.melo,
          orbeckst, Balasubra

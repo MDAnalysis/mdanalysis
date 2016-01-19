@@ -584,14 +584,14 @@ class ContactAnalysis1(object):
         """
         return os.path.isfile(self.output) and not (self.force or force)
 
-    def run(self, store=True, force=False, start_frame=1, end_frame=None, step_value=1):
+    def run(self, store=True, force=False, start_frame=0, end_frame=None, step_value=1):
         """Analyze trajectory and produce timeseries.
 
         Stores results in :attr:`ContactAnalysis1.timeseries` (if store=True)
         and writes them to a data file. The average q is written to a second
         data file.
         *start_frame*
-            The value of the first frame number in the trajectory to be used (default: frame 1)
+            The value of the first frame number in the trajectory to be used (default: frame 0)
         *end_frame*
             The value of the last frame number in the trajectory to be used (default: None -- use all frames)
         *step_value*
