@@ -28,13 +28,26 @@ Classes
    :inherited-members:
 
 """
+import six
 
 from . import _PARSERS
 from ..coordinates.base import IObase
 from ..lib import util
 
 
-class TopologyReader(IObase):
+class _Topologymeta(type):
+    def __init__(cls, name, bases, classdict):
+        type.__init__(type, name, bases, classdict)
+        try:
+            fmt = util.asiterable(classdict['format'])
+        except KeyError:
+            pass
+        else:
+            for f in fmt:
+                _PARSERS[f] = cls
+
+
+class TopologyReader(six.with_metaclass(_Topologymeta, IObase)):
     """Base class for topology readers
 
     Parameters
@@ -60,17 +73,6 @@ class TopologyReader(IObase):
     .. versionchanged:: 0.9.2
        Added keyword 'universe' to pass to Atom creation.
     """
-    class __metaclass__(type):
-        def __init__(cls, name, bases, classdict):
-            type.__init__(type, name, bases, classdict)
-            try:
-                fmt = util.asiterable(classdict['format'])
-            except KeyError:
-                pass
-            else:
-                for f in fmt:
-                    _PARSERS[f] = cls
-
     def __init__(self, filename, universe=None, **kwargs):
         self.filename = filename
         self._u = universe

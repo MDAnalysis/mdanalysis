@@ -8,7 +8,6 @@ include MDAnalysis/lib/src/transformations/*
 recursive-include doc * 
 include README INSTALL CHANGELOG LICENSE AUTHORS SUMMARY.txt
 include setup.py
-recursive-include examples *
 global-exclude *.pyc
 global-exclude *.pyo
 global-exclude *.pyd

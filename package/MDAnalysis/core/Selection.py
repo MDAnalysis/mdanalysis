@@ -37,6 +37,7 @@ from numpy.lib.utils import deprecate
 from Bio.KDTree import KDTree
 import warnings
 import logging
+import six
 
 from MDAnalysis.core import flags
 from ..lib import distances
@@ -126,15 +127,17 @@ class OrOperation(LogicOperation):
 
         return group.universe.atoms[idx]
 
+class _Selectionmeta(type):
+    def __init__(cls, name, bases, classdict):
+        type.__init__(type, name, bases, classdict)
+        try:
+            _SELECTIONDICT[classdict['token']] = cls
+        except KeyError:
+            pass
 
-class Selection(object):
-    class __metaclass__(type):
-        def __init__(cls, name, bases, classdict):
-            type.__init__(type, name, bases, classdict)
-            try:
-                _SELECTIONDICT[classdict['token']] = cls
-            except KeyError:
-                pass
+
+class Selection(six.with_metaclass(_Selectionmeta, object)):
+    pass
 
 
 class AllSelection(Selection):

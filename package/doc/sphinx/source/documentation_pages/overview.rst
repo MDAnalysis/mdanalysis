@@ -198,23 +198,23 @@ and more.
 .. Links to the stable git repository:
 
 .. _examples:
-   https://github.com/MDAnalysis/mdanalysis/blob/master/package/examples/
+   https://github.com/MDAnalysis/MDAnalysisCookbook/tree/master/examples/
 
 .. _`rmsfit_qcp.py`:
-   https://github.com/MDAnalysis/mdanalysis/blob/master/package/examples/rmsfit_qcp.py
+   https://github.com/MDAnalysis/MDAnalysisCookbook/blob/master/examples/rmsfit_qcp.py
 .. _`blocks.py`:
-   https://github.com/MDAnalysis/mdanalysis/blob/master/package/examples/blocks.py
+   https://github.com/MDAnalysis/MDAnalysisCookbook/blob/master/examples/blocks.py
 .. _`potential_profile.py`:
-   https://github.com/MDAnalysis/mdanalysis/blob/master/package/examples/potential_profile.py
+   https://github.com/MDAnalysis/MDAnalysisCookbook/blob/master/examples/potential_profile.py
 .. _`nativecontacts.py`:
-   https://github.com/MDAnalysis/mdanalysis/blob/master/package/examples/nativecontacts.py
+   https://github.com/MDAnalysis/MDAnalysisCookbook/blob/master/examples/nativecontacts.py
 .. _`membrane-leaflets.py`:
-   https://github.com/MDAnalysis/mdanalysis/blob/master/package/examples/membrane-leaflets.py
+   https://github.com/MDAnalysis/MDAnalysisCookbook/blob/master/examples/membrane-leaflets.py
 .. _`multimers-analysis.py`:
-   https://github.com/MDAnalysis/mdanalysis/blob/master/package/examples/multimers-analysis.py
+   https://github.com/MDAnalysis/MDAnalysisCookbook/blob/master/examples/multimers-analysis.py
 .. _`dcd2xtc.py`:
-   https://github.com/MDAnalysis/mdanalysis/blob/master/package/examples/dcd2xtc.py
+   https://github.com/MDAnalysis/MDAnalysisCookbook/blob/master/examples/dcd2xtc.py
 .. _`amber2dcd.py`:
-   https://github.com/MDAnalysis/mdanalysis/blob/master/package/examples/amber2dcd.py
+   https://github.com/MDAnalysis/MDAnalysisCookbook/blob/master/examples/amber2dcd.py
 .. _`make_MthK_tetramer.py`:
-   https://github.com/MDAnalysis/mdanalysis/blob/master/package/examples/make_MthK_tetramer.py
+   https://github.com/MDAnalysis/MDAnalysisCookbook/blob/master/examples/make_MthK_tetramer.py
