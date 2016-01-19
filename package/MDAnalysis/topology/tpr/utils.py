@@ -41,18 +41,20 @@ The module also contains the :func:`do_inputrec` to read the TPR header with.
 """
 from __future__ import absolute_import
 
+from six.moves import range
+
 from ...core.AtomGroup import Atom
 from . import obj
 from . import setting as S
 
 def ndo_int(data, n):
     """mimic of gmx_fio_ndo_real in gromacs"""
-    return [data.unpack_int() for i in xrange(n)]
+    return [data.unpack_int() for i in range(n)]
 
 
 def ndo_real(data, n):
     """mimic of gmx_fio_ndo_real in gromacs"""
-    return [data.unpack_real() for i in xrange(n)]
+    return [data.unpack_real() for i in range(n)]
 
 
 def do_rvec(data):
@@ -61,12 +63,12 @@ def do_rvec(data):
 
 def ndo_rvec(data, n):
     """mimic of gmx_fio_ndo_rvec in gromacs"""
-    return [data.unpack_farray(S.DIM, data.unpack_real) for i in xrange(n)]
+    return [data.unpack_farray(S.DIM, data.unpack_real) for i in range(n)]
 
 
 def ndo_ivec(data, n):
     """mimic of gmx_fio_ndo_rvec in gromacs"""
-    return [data.unpack_farray(S.DIM, data.unpack_int) for i in xrange(n)]
+    return [data.unpack_farray(S.DIM, data.unpack_int) for i in range(n)]
 
 
 def fver_err(fver):
@@ -154,7 +156,7 @@ def do_mtop(data, fver, u):
 
     nmoltype = data.unpack_int()
     moltypes = []  # non-gromacs
-    for i in xrange(nmoltype):
+    for i in range(nmoltype):
         moltype = do_moltype(data, symtab, fver)
         moltypes.append(moltype)
 
@@ -162,17 +164,17 @@ def do_mtop(data, fver, u):
 
     mtop = obj.Mtop(nmoltype, moltypes, nmolblock)
 
-    ttop = obj.TPRTopology(*[[] for i in xrange(5)])
+    ttop = obj.TPRTopology(*[[] for i in range(5)])
 
     atom_start_ndx = 0
     res_start_ndx = 0
-    for i in xrange(mtop.nmolblock):
+    for i in range(mtop.nmolblock):
         # molb_type is just an index for moltypes/molecule_types
         mb = do_molblock(data)
         # segment is made to correspond to the molblock as in gromacs, the
         # naming is kind of arbitrary
         segid = "seg_{0}_{1}".format(i, mtop.moltypes[mb.molb_type].name)
-        for j in xrange(mb.molb_nmol):
+        for j in range(mb.molb_nmol):
             mt = mtop.moltypes[mb.molb_type]  # mt: molecule type
             for atomkind in mt.atomkinds:
                 ttop.atoms.append(Atom(atomkind.id + atom_start_ndx,
@@ -213,7 +215,7 @@ def do_symstr(data, symtab):
 def do_symtab(data):
     symtab_nr = data.unpack_int()  # number of symbols
     symtab = []
-    for i in xrange(symtab_nr):
+    for i in range(symtab_nr):
         j = data.unpack_fstring(1)  # strings are separated by void
         j = data.unpack_string()
         symtab.append(j)
@@ -232,7 +234,7 @@ def do_ffparams(data, fver):
 
     # mimicing the c code,
     # remapping the functype due to inconsistency in different versions
-    for i in xrange(len(functype)):
+    for i in range(len(functype)):
         for k in S.ftupd:
             # j[0]: tpx_version, j[1] funtype
             if fver < k[0] and functype[i] >= k[1]:
@@ -555,7 +557,7 @@ def do_atoms(data, symtab, fver):
         fver_err(fver)
 
     atoms = []
-    for i in xrange(nr):
+    for i in range(nr):
         A = do_atom(data, fver)
         atoms.append(A)
 
@@ -580,7 +582,7 @@ def do_resinfo(data, symtab, fver, nres):
         resnames = [symtab[i] for i in ndo_int(data, nres)]
     else:
         resnames = []
-        for i in xrange(nres):
+        for i in range(nres):
             resnames.append(symtab[data.unpack_int()])
             # assume the uchar in gmx is 8 byte, seems right
             data.unpack_fstring(8)
@@ -608,7 +610,7 @@ def do_atom(data, fver):
 def do_ilists(data, fver):
     nr = []  # number of ilist
     iatoms = []  # atoms involved in a particular interaction type
-    for j in xrange(S.F_NRE):  # total number of energies (i.e. interaction types)
+    for j in range(S.F_NRE):  # total number of energies (i.e. interaction types)
         bClear = False
         for k in S.ftupd:
             if fver < k[0] and j == k[1]:
@@ -623,7 +625,7 @@ def do_ilists(data, fver):
             n = data.unpack_int()
             nr.append(n)
             l_ = []
-            for i in xrange(n):
+            for i in range(n):
                 l_.append(data.unpack_int())
             iatoms.append(l_)
 
@@ -665,7 +667,7 @@ def do_blocka(data):
 def do_grps(data):  # pragma: no cover
     grps_nr = []
     myngrps = ngrps = S.egcNR  # remind of version inconsistency
-    for j in xrange(ngrps):
+    for j in range(ngrps):
         if j < myngrps:
             v = data.unpack_int()
             grps_nr.append(v)
@@ -683,14 +685,14 @@ def do_groups(data, symtab):  # pragma: no cover
 
     ngrpnr = []
     grpnr = []
-    for i in xrange(S.egcNR):
+    for i in range(S.egcNR):
         x = data.unpack_int()
         ngrpnr.append(x)
         if x == 0:
             grpnr.append(None)
         else:
             l_ = []
-            for i in xrange(x):
+            for i in range(x):
                 l_.append(data.unpack_uint())
             grpnr.append(l_)
     # print ngrpnr

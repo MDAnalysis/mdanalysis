@@ -43,6 +43,8 @@ Classes
 """
 from __future__ import absolute_import
 
+from six.moves import range
+
 from math import ceil
 
 from ..core.AtomGroup import Atom
@@ -152,7 +154,7 @@ class TOPParser(TopologyReader):
                 header = next_line()
             header = next_line()
 
-            topremarks = [next_line().strip() for i in xrange(4)]
+            topremarks = [next_line().strip() for i in range(4)]
             sys_info = [int(k) for i in topremarks for k in i.split()]
 
             structure = {}
@@ -218,7 +220,7 @@ class TOPParser(TopologyReader):
 
     def _parsebond(self, lines, atoms_per, attr, structure, numlines):
         section = []  # [None,]*numlines
-        for i in xrange(numlines):
+        for i in range(numlines):
             l = lines()
             # Subtract 1 from each number to ensure zero-indexing for the atoms
             f = map(int, l.split())
@@ -232,11 +234,11 @@ class TOPParser(TopologyReader):
         y = lines().strip("%FORMAT(")
         y.strip(")")
         x = FORTRANReader(y)
-        for i in xrange(numlines):
+        for i in range(numlines):
             l = lines()
             # Subtract 1 from each number to ensure zero-indexing for the atoms
             try:
-                for j in xrange(len(x.entries)):
+                for j in range(len(x.entries)):
                     section.append(int(l[x.entries[j].start:x.entries[j].stop].strip()))
             except:
                 continue
@@ -247,7 +249,7 @@ class TOPParser(TopologyReader):
         y = lines().strip("%FORMAT(")
         y.strip(")")
         x = FORTRANReader(y)
-        for i in xrange(numlines):
+        for i in range(numlines):
             l = lines()
             # Subtract 1 from each number to ensure zero-indexing for the atoms
             try:
@@ -262,7 +264,7 @@ class TOPParser(TopologyReader):
         y = lines().strip("%FORMAT(")
         y.strip(")")
         x = FORTRANReader(y)
-        for i in xrange(numlines):
+        for i in range(numlines):
             l = lines()
             # Subtract 1 from each number to ensure zero-indexing for the atoms
             for j in range(0, len(x.entries)):

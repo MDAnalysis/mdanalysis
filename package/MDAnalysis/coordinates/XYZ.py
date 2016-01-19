@@ -70,6 +70,8 @@ the `VMD xyzplugin`_ from whence the definition was taken)::
 
 """
 
+from six.moves import range
+
 import os
 import errno
 import numpy as np
@@ -358,7 +360,7 @@ class XYZReader(base.Reader):
             # we assume that there are only two header lines per frame
             f.readline()
             f.readline()
-            for i in xrange(self.n_atoms):
+            for i in range(self.n_atoms):
                 self.ts._pos[i] = map(float, f.readline().split()[1:4])
             ts.frame += 1
             return ts

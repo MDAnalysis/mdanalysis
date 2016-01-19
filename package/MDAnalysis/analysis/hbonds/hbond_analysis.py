@@ -310,6 +310,8 @@ Classes
 
 """
 
+from six.moves import range
+
 from collections import defaultdict
 import itertools
 import numpy as np
@@ -1148,8 +1150,8 @@ class HydrogenBondAnalysis(object):
 
         def _make_dict(donors, hydrogens):
             # two steps so that entry for one residue can be UPDATED for multiple donors
-            d = dict((donors[k].resid, {}) for k in xrange(len(donors)) if k in hydrogens)
-            for k in xrange(len(donors)):
+            d = dict((donors[k].resid, {}) for k in range(len(donors)) if k in hydrogens)
+            for k in range(len(donors)):
                 if k in hydrogens:
                     d[donors[k].resid].update(dict((atom.name, donors[k].name) for atom in hydrogens[k]))
             return d
@@ -1192,10 +1194,10 @@ class HydrogenBondAnalysis(object):
         s2h = self._s2_donors_h
 
         def _make_dict(donors, hydrogens):
-            #return dict(flatten_1([(atom.id, donors[k].name) for atom in hydrogens[k]] for k in xrange(len(donors))
+            #return dict(flatten_1([(atom.id, donors[k].name) for atom in hydrogens[k]] for k in range(len(donors))
             # if k in hydrogens))
             x = []
-            for k in xrange(len(donors)):
+            for k in range(len(donors)):
                 if k in hydrogens:
                     x.extend([(atom.index, donors[k].name) for atom in hydrogens[k]])
             return dict(x)

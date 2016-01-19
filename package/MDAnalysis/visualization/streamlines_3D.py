@@ -27,6 +27,8 @@ Multicore 3D streamplot Python library for MDAnalysis --- :mod:`MDAnalysis.visua
 
 '''
 
+from six.moves import range
+
 import MDAnalysis
 import multiprocessing
 import numpy as np

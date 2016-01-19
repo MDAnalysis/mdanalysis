@@ -23,6 +23,8 @@ classes.
 
 
 """
+from six.moves import range
+
 import numpy as np
 import logging
 
@@ -70,7 +72,7 @@ class AnalysisBase(object):
         self.start = start
         self.stop = stop
         self.step = step
-        self.nframes = len(xrange(start, stop, step))
+        self.nframes = len(range(start, stop, step))
 
     def _single_frame(self):
         """Calculate data from a single frame of trajectory

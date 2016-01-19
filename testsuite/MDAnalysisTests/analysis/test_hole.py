@@ -15,6 +15,8 @@
 #
 from __future__ import print_function
 
+from six.moves import range
+
 import MDAnalysis
 import MDAnalysis.analysis.hole
 from MDAnalysis.analysis.hole import HOLEtraj
@@ -83,7 +85,7 @@ class TestHoleModule(TestCase):
             # issue 129 isn't fixed, although this depends on the file descriptor
             # open limit for the machine in question
             try:
-                for i in xrange(2):
+                for i in range(2):
                     # will typically get an OSError for too many files being open after
                     # about 2 seconds if issue 129 isn't resolved
                     H.run()

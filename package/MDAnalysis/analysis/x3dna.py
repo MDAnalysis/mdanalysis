@@ -114,6 +114,8 @@ Utilities
 
 """
 
+from six.moves import range
+
 import glob
 import os
 import errno
@@ -346,7 +348,7 @@ class BaseX3DNA(object):
         na_avg, na_std = self.mean_std()
         for k in range(len(na_avg[0])):
             ax = kwargs.pop('ax', plt.subplot(111))
-            x = range(1, len(na_avg[:, k]) + 1)
+            x = list(range(1, len(na_avg[:, k]) + 1))
             ax.errorbar(x, na_avg[:, k], yerr=na_std[:, k], fmt='-o')
             ax.set_xlim(0, len(na_avg[:, k]) + 1)
             ax.set_xlabel(r"Nucleic Acid Number")

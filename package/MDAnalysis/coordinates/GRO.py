@@ -57,6 +57,8 @@ box_triclinic
 .. _GRO format: http://chembytes.wikidot.com/g-grofile
 """
 
+from six.moves import range
+
 import warnings
 import numpy as np
 
@@ -143,7 +145,7 @@ class GROReader(base.SingleFrameReader):
                     continue
                 if pos < 0:
                     continue
-                for i in xrange(3):
+                for i in range(3):
                     ts._pos[pos, i] = float(line[20 + cs*i: 20 + cs*(i+1)])
 
                 if not has_velocities:

@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -156,6 +156,8 @@ normal users.
 .. autofunction:: fasta2select
 .. autofunction:: get_matching_atoms
 """
+from six.moves import range
+
 import os.path
 import itertools
 
@@ -742,7 +744,7 @@ def fasta2select(fastafilename, is_aligned=False,
     GAP = alignment[0].seq.alphabet.gap_char  # should be the same for both seqs
     if GAP != alignment[1].seq.alphabet.gap_char:
         raise ValueError("Different gap characters in sequence 'target' and 'mobile'.")
-    for ipos in xrange(alignment.get_alignment_length()):
+    for ipos in range(alignment.get_alignment_length()):
         aligned = list(alignment[:, ipos])
         if GAP in aligned:
             continue  # skip residue
@@ -754,7 +756,7 @@ def fasta2select(fastafilename, is_aligned=False,
             template += " and backbone"
         template = "( " + template + " )"
 
-        res_list.append([template % resid(iseq, ipos) for iseq in xrange(nseq)])
+        res_list.append([template % resid(iseq, ipos) for iseq in range(nseq)])
 
     sel = np.array(res_list).transpose()
 

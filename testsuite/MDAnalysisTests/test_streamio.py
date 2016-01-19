@@ -13,6 +13,8 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+from six.moves import range
+
 import numpy as np
 from numpy.testing import *
 
@@ -43,7 +45,7 @@ class TestIsstream(TestCase):
         assert_equal(util.isstream(obj), False)
 
     def test_iterator(self):
-        obj = (i for i in xrange(3))
+        obj = (i for i in range(3))
         assert_equal(util.isstream(obj), False)
 
     def test_file(self):

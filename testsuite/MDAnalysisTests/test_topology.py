@@ -13,6 +13,8 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
+from six.moves import range
+
 import MDAnalysis
 from MDAnalysis.core.AtomGroup import AtomGroup
 from MDAnalysis.lib.distances import calc_bonds, calc_angles, calc_dihedrals

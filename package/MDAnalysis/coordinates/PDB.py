@@ -196,6 +196,8 @@ References
 
 """
 
+from six.moves import range
+
 try:
     # BioPython is overkill but potentially extensible (altLoc etc)
     import Bio.PDB
@@ -591,7 +593,7 @@ class PrimitivePDBReader(base.Reader):
         pos = 0
         occupancy = np.ones(self._n_atoms)
         with util.openany(self.filename, 'r') as f:
-            for i in xrange(line):
+            for i in range(line):
                 f.next()  # forward to frame
             for line in f:
                 if line[:6] == 'ENDMDL':
@@ -1018,7 +1020,7 @@ class PrimitivePDBWriter(base.Writer):
         if not start and traj.n_frames > 1:
             start = traj.frame
 
-        for framenumber in xrange(start, len(traj), step):
+        for framenumber in range(start, len(traj), step):
             traj[framenumber]
             self.write_next_timestep(self.ts, multiframe=True)
 

@@ -83,6 +83,8 @@ Classes and Functions
 """
 from __future__ import print_function
 
+from six.moves import range
+
 import numpy as np
 import sys
 import os
@@ -308,7 +310,7 @@ class Density(Grid):
 
         dedges = map(np.diff, self.edges)
         D = len(self.edges)
-        for i in xrange(D):
+        for i in range(D):
             shape = np.ones(D, int)
             shape[i] = len(dedges[i])
             self.grid /= dedges[i].reshape(shape)
@@ -811,7 +813,7 @@ class BfactorDensityCreator(object):
         # rho_smeared = F^-1[ F[g]*F[rho] ]
         g = np.zeros(grid.shape)  # holds the smeared out density
         pos = np.where(grid != 0)  # position in histogram (as bin numbers)
-        for iwat in xrange(len(pos[0])):  # super-ugly loop
+        for iwat in range(len(pos[0])):  # super-ugly loop
             p = tuple([wp[iwat] for wp in pos])
             g += grid[p] * np.fromfunction(self._gaussian, grid.shape, dtype=np.int, p=p, sigma=sigma)
             print("Smearing out atom position {0:4d}/{1:5d} with RMSF {2:4.2f} A\r".format(iwat + 1, len(pos[0]), sigma),)

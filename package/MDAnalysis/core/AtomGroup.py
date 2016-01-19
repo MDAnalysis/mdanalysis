@@ -407,6 +407,8 @@ Classes and functions
 """
 from __future__ import print_function, absolute_import
 
+from six.moves import range
+
 # Global imports
 import warnings
 import numpy as np
@@ -2058,7 +2060,7 @@ class AtomGroup(object):
         else:
             recenteredpos = self.positions - self.center_of_mass(pbc=False)
         tensor = np.zeros((3, 3))
-        for x in xrange(recenteredpos.shape[0]):
+        for x in range(recenteredpos.shape[0]):
             tensor += masses[x] * np.outer(recenteredpos[x, :],
                                               recenteredpos[x, :])
         tensor /= self.total_mass()
@@ -2091,7 +2093,7 @@ class AtomGroup(object):
         else:
             recenteredpos = self.positions - self.center_of_mass(pbc=False)
         tensor = np.zeros((3, 3))
-        for x in xrange(recenteredpos.shape[0]):
+        for x in range(recenteredpos.shape[0]):
             tensor += masses[x] * np.outer(recenteredpos[x, :],
                                               recenteredpos[x, :])
         tensor /= self.total_mass()

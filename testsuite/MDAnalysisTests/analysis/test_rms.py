@@ -15,6 +15,8 @@
 #
 from __future__ import print_function
 
+from six.moves import range
+
 import MDAnalysis
 import MDAnalysis.analysis.rms
 
@@ -59,7 +61,7 @@ class TestRMSF(TestCase):
     def test_rmsf_identical_frames(self):
         # write a dummy trajectory of all the same frame
         with MDAnalysis.Writer(self.outfile, self.universe.atoms.n_atoms) as W:
-            for i in xrange(self.universe.trajectory.n_frames):
+            for i in range(self.universe.trajectory.n_frames):
                 W.write(self.universe)
 
         self.universe = MDAnalysis.Universe(GRO, self.outfile)
