@@ -132,9 +132,8 @@ def wc_pair(universe, i, bp, seg1="SYSTEM", seg2="SYSTEM"):
         a1, a2 = "N3", "N1"
     if universe.select_atoms(" resid {0!s} ".format(i)).resnames[0] in ["DG", "DA", "A", "G", "ADE", "GUA"]:
         a1, a2 = "N1", "N3"
-    wc_dist = universe.select_atoms("(segid {0!s} and resid {1!s} "
-                                    "and name {2!s})  or (segid {3!s} "
-                                    "and resid {4!s} and name {5!s}) "
+    wc_dist = universe.select_atoms("(segid {0!s} and resid {1!s} and name {2!s}) "
+                                    "or (segid {3!s} and resid {4!s} and name {5!s}) "
                                     .format(seg1, i, a1, seg2, bp, a2))
     wc = mdamath.norm(wc_dist[0].pos - wc_dist[1].pos)
     return wc
@@ -166,9 +165,8 @@ def minor_pair(universe, i, bp, seg1="SYSTEM", seg2="SYSTEM"):
         a1, a2 = "O2", "C2"
     if universe.select_atoms(" resid {0!s} ".format(i)).resnames[0] in ["DG", "DA", "A", "G", "ADE", "GUA"]:
         a1, a2 = "C2", "O2"
-    c2o2_dist = universe.select_atoms("(segid {0!s} and resid {1!s} "
-                                      "and name {2!s})  or (segid {3!s} "
-                                      "and resid {4!s} and name {5!s}) "
+    c2o2_dist = universe.select_atoms("(segid {0!s} and resid {1!s} and name {2!s}) "
+                                      "or (segid {3!s} and resid {4!s} and name {5!s})"
                                       .format(seg1, i, a1, seg2, bp, a2))
     c2o2 = mdamath.norm(c2o2_dist[0].pos - c2o2_dist[1].pos)
     return c2o2
