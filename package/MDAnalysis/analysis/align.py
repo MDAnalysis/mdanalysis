@@ -214,7 +214,7 @@ def rotation_matrix(a, b, weights=None):
                  :func:`rms_fit_trj`. A complete fit of two structures can be
                  done with :func:`alignto`.
     """
-    if not weights is None:
+    if weights is not None:
         # weights are constructed as relative to the mean
         weights = np.asarray(weights) / np.mean(weights)
     rot = np.zeros(9, dtype=np.float64)
@@ -516,7 +516,7 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
         percentage.echo(ts.frame)
     logger.info("Wrote %d RMS-fitted coordinate frames to file %r",
                 frames.n_frames, filename)
-    if not rmsdfile is None:
+    if rmsdfile is not None:
         np.savetxt(rmsdfile, rmsd)
         logger.info("Wrote RMSD timeseries  to file %r", rmsdfile)
 

@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -340,7 +340,7 @@ class TRZReader(base.Reader):
 
     def _read_frame(self, frame):
         """Move to *frame* and fill timestep with data.
-        
+
         .. versionchanged:: 0.11.0
            Frames now 0-based instead of 1-based
         """
@@ -385,7 +385,7 @@ class TRZReader(base.Reader):
 
     def open_trajectory(self):
         """Open the trajectory file"""
-        if not self.trzfile is None:
+        if self.trzfile is not None:
             raise IOError(errno.EALREADY, 'TRZ file already opened', self.filename)
         if not os.path.exists(self.filename):
             raise IOError(errno.ENOENT, 'TRZ file not found', self.filename)
@@ -394,7 +394,7 @@ class TRZReader(base.Reader):
 
         #Reset ts
         ts = self.ts
-        ts.frame = -1 
+        ts.frame = -1
 
         return self.trzfile
 
