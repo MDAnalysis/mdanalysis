@@ -26,7 +26,7 @@ import nose
 from nose.plugins.attrib import attr
 
 import os
-import tempfile
+import tempdir
 
 from MDAnalysisTests.datafiles import PSF, DCD
 from MDAnalysisTests import executable_not_found
@@ -35,12 +35,12 @@ class TestContacts(TestCase):
     def setUp(self):
         self.universe = MDAnalysis.Universe(PSF, DCD)
         self.trajectory = self.universe.trajectory
-        self.tmpdir = tempfile.mkdtemp()
+        self.tempdir = tempdir.TempDir()
 
     def tearDown(self):
         del self.universe
         del self.trajectory
-        del self.tmpdir
+        del self.tempdir
 
     def test_startframe(self):
         """For resolution of Issue #624."""
@@ -48,7 +48,7 @@ class TestContacts(TestCase):
         sel_acidic = "(resname ASP or resname GLU) and (name OE* or name OD*)"
         acidic = self.universe.select_atoms(sel_acidic)
         basic = self.universe.select_atoms(sel_basic)
-        outfile = self.tmpdir + 'qsalt.dat'
+        outfile = self.tempdir.name + '/qsalt.dat'
         CA1 = MDAnalysis.analysis.contacts.ContactAnalysis1(self.universe,
                 selection=(sel_acidic, sel_basic), refgroup=(acidic, basic),
                 radius=6.0, outfile=outfile)
