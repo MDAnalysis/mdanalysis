@@ -13,7 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/16 kain88-de
+??/??/16 kain88-de, richardjgowers
 
   * 0.13.1
 
@@ -24,6 +24,8 @@ API Changes
 
 Enhancement
   * Offsets reading for xtc/trr files has been sped up.
+  * select_atoms now implicitly ORs multiple values after a keyword for
+    many types of selections (Issue #345)
 
 Changes
 

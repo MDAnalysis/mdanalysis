@@ -796,42 +796,46 @@ class TestImplicitOr(object):
     def tearDown(self):
         del self.u
 
-    def test_atomname(self):
-        ref = self.u.select_atoms('name HT1 or name HT2 or name HT3')
-        ag = self.u.select_atoms('name HT1 HT2 HT3')
+    def _check_sels(self, ref, sel):
+        ref = self.u.select_atoms(ref)
+        sel = self.u.select_atoms(sel)
 
-        assert_array_equal(ref.indices, ag.indices)
+        assert_array_equal(ref.indices, sel.indices)
 
-    def test_atomtypes(self):
-        ref = self.u.select_atoms('type 2 or type 3 or type 4')
-        ag = self.u.select_atoms('type 2 3 4')
-
-        assert_array_equal(ref.indices, ag.indices)
-
-    def test_resnames(self):
-        ref = self.u.select_atoms('resname MET or resname GLY')
-        ag = self.u.select_atoms('resname MET GLY')
-
-        assert_array_equal(ref.indices, ag.indices)
+    def test_string_selections(self):
+        for ref, sel in (
+                ('name HT1 or name HT2 or name HT3', 'name HT1 HT2 HT3'),
+                ('type 2 or type 3 or type 4', 'type 2 3 4'),
+                ('resname MET or resname GLY', 'resname MET GLY'),
+                ('name H* or name N', 'name H* N'),
+                ('(name N or name HT1) and (resname MET or resname GLY)',
+                 'name N HT1 and resname MET GLY'),
+        ):
+            yield self._check_sels, ref, sel
 
     def test_segids(self):
+        # Don't put me into generator, I use a different Universe
+        # (With multiple segids)
         u = mda.Universe(PDB_full)
         ref = u.select_atoms('segid A or segid B')
         ag = u.select_atoms('segid A B')
 
         assert_array_equal(ref.indices, ag.indices)
-    # segname
 
-    def test_wildcards(self):
-        ref = self.u.select_atoms('name H* or name N')
-        ag = self.u.select_atoms('name H* N')
-
-        assert_array_equal(ref.indices, ag.indices)
-
-    def test_compound(self):
-        ref = self.u.select_atoms('(name N or name HT1) and'
-                                  ' (resname MET or resname GLY)')
-
-        ag = self.u.select_atoms('name N HT1 and resname MET GLY')
-
-        assert_array_equal(ref.indices, ag.indices)
+    def test_range_selections(self):
+        # All these selections just use numeric types,
+        # So loop over what type of selections,
+        # And apply the same numeric constraints to all
+        for seltype in ['resid', 'resnum', 'bynum']:
+            for ref, sel in (
+                    ('{typ} 1 or {typ} 2', '{typ} 1 2'),
+                    ('{typ} 1:10 or {typ} 22', '{typ} 1:10 22'),
+                    ('{typ} 1:10 or {typ} 20:30', '{typ} 1:10 20:30'),
+                    ('{typ} 1-5 or {typ} 7', '{typ} 1-5 7'),
+                    ('{typ} 1-5 or {typ} 7:10 or {typ} 12',
+                     '{typ} 1-5 7:10 12'),
+                    ('{typ} 1 or {typ} 3 or {typ} 5:10', '{typ} 1 3 5:10'),
+            ):
+                yield (self._check_sels,
+                       ref.format(typ=seltype),
+                       sel.format(typ=seltype))

@@ -38,6 +38,7 @@ from Bio.KDTree import KDTree
 import warnings
 import logging
 import six
+import itertools
 
 from MDAnalysis.core import flags
 from ..lib import distances
@@ -253,12 +254,12 @@ class AroundSelection(DistanceSelection):
         for typical problems.
         Limitations: always ignores periodicity
         """
-        logger.debug("In Around KDTree")
+        #logger.debug("In Around KDTree")
         sel = self.sel.apply(group)
-        logger.debug("Reference group is {}".format(sel))
+        #logger.debug("Reference group is {0}".format(sel))
         # All atoms in group that aren't in sel
         sys = group[~np.in1d(group.indices, sel.indices)]
-        logger.debug("Other group is {}".format(sys))
+        #logger.debug("Other group is {0}".format(sys))
 
         kdtree = KDTree(dim=3, bucket_size=10)
         kdtree.set_coords(sys.positions)
@@ -266,29 +267,29 @@ class AroundSelection(DistanceSelection):
         for atom in sel.positions:
             kdtree.search(atom, self.cutoff)
             found_indices.append(kdtree.get_indices())
-        logger.debug("Found indices are {}".format(found_indices))
+        #logger.debug("Found indices are {0}".format(found_indices))
         # These are the indices from SYS that were seen when
         # probing with SEL
         unique_idx = np.unique(np.concatenate(found_indices))
-        logger.debug("Unique indices are {}".format(unique_idx))
+        #logger.debug("Unique indices are {0}".format(unique_idx))
         return unique(sys[unique_idx.astype(np.int32)])
 
     def _apply_distmat(self, group):
-        logger.debug("In Around Distmat")
+        #logger.debug("In Around Distmat")
         sel = self.sel.apply(group)
-        logger.debug("Sel is {}".format(sel))
+        #logger.debug("Sel is {0}".format(sel))
         sys = group[~np.in1d(group.indices, sel.indices)]
-        logger.debug("Sys is {}".format(sys))
+        #logger.debug("Sys is {0}".format(sys))
 
         box = group.dimensions if self.periodic else None
         dist = distances.distance_array(
             sys.positions, sel.positions, box)
-        logger.debug("dist has shape {}".format(dist.shape))
-        logger.debug("dist is {}".format(dist))
+        #logger.debug("dist has shape {0}".format(dist.shape))
+        #logger.debug("dist is {0}".format(dist))
 
         mask = (dist <= self.cutoff).any(axis=1)
 
-        logger.debug("mask has shape {}".format(mask.shape))
+        #logger.debug("mask has shape {0}".format(mask.shape))
 
         return unique(sys[mask])
 
@@ -561,7 +562,7 @@ class StringSelection(Selection):
     def __init__(self, parser, tokens):
         vals = grab_not_keywords(tokens)
         if not vals:
-            raise ValueError("Unexpected token {}".format(tokens[0]))
+            raise ValueError("Unexpected token '{0}'".format(tokens[0]))
 
         self.values = vals
 
@@ -617,28 +618,46 @@ class RangeSelection(Selection):
       resid 1:10
     """
     def __init__(self, parser, tokens):
-        data = tokens.popleft()
-        try:
-            lower = int(data)
-            upper = None
-        except ValueError:
-            # check if in appropriate format 'lower:upper' or 'lower-upper'
-            selrange = re.match("(\d+)[:-](\d+)", data)
-            if not selrange:
-                raise ValueError(
-                    "Failed to parse number: {0}".format(data))
-            lower, upper = map(int, selrange.groups())
+        values = grab_not_keywords(tokens)
+        if not values:
+            raise ValueError("Unexpected token: '{0}'".format(tokens[0]))
 
-        self.lower = lower
-        self.upper = upper
+        uppers = []
+        lowers = []
+
+        for val in values:
+            try:
+                lower = int(val)
+                upper = None
+            except ValueError:
+                # check if in appropriate format 'lower:upper' or 'lower-upper'
+                selrange = re.match("(\d+)[:-](\d+)", val)
+                if not selrange:
+                    raise ValueError(
+                        "Failed to parse number: {0}".format(val))
+                lower, upper = map(int, selrange.groups())
+
+            lowers.append(lower)
+            uppers.append(upper)
+
+        self.lowers = lowers
+        self.uppers = uppers
+
+    def _get_vals(self, group):
+        return getattr(group, self.field)
 
     def apply(self, group):
-        vals = getattr(group, self.field)
-        if self.upper is not None:
-            mask = vals >= self.lower
-            mask &= vals <= self.upper
-        else:
-            mask = vals == self.lower
+        mask = np.zeros(len(group), dtype=np.bool)
+        vals = self._get_vals(group)
+
+        for upper, lower in itertools.izip(self.uppers, self.lowers):
+            if upper is not None:
+                thismask = vals >= lower
+                thismask &= vals <= upper
+            else:
+                thismask = vals == lower
+
+            mask |= thismask
         return unique(group[mask])
 
 
@@ -655,16 +674,10 @@ class ResnumSelection(RangeSelection):
 class ByNumSelection(RangeSelection):
     token = 'bynum'
 
-    def apply(self, group):
+    def _get_vals(self, group):
         # In this case we'll use 1 indexing since that's what the
         # user will be familiar with
-        indices = group.indices + 1
-        if self.upper is not None:
-            mask = indices >= self.lower
-            mask &= indices <= self.upper
-        else:
-            mask = indices == self.lower
-        return unique(group[mask])
+        return group.indices + 1
 
 
 class ProteinSelection(Selection):
