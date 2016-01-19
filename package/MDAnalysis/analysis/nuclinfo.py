@@ -391,12 +391,11 @@ def tors(universe, seg, i):
                               " atom {0!s} {1!s} O3\' ".format(seg, i),
                               " atom {0!s} {1!s} P    ".format(seg, i + 1),
                               " atom {0!s} {1!s} O5\' ".format(seg, i + 1))
-    try:
-        c = universe.select_atoms(" atom {0!s} {1!s} O4\' ".format(seg, i),
-                                  " atom {0!s} {1!s} C1\' ".format(seg, i),
-                                  " atom {0!s} {1!s} N1 ".format(seg, i),
-                                  " atom {0!s} {1!s} C2  ".format(seg, i))
-    except:
+    c = universe.select_atoms(" atom {0!s} {1!s} O4\' ".format(seg, i),
+                              " atom {0!s} {1!s} C1\' ".format(seg, i),
+                              " atom {0!s} {1!s} N1 ".format(seg, i),
+                              " atom {0!s} {1!s} C2  ".format(seg, i))
+    if len(c) < 4:
         c = universe.select_atoms(" atom {0!s} {1!s} O4\' ".format(seg, i),
                                   " atom {0!s} {1!s} C1\' ".format(seg, i),
                                   " atom {0!s} {1!s} N9 ".format(seg, i),
@@ -591,12 +590,11 @@ def tors_chi(universe, seg, i):
 
     .. versionadded:: 0.7.6
     """
-    try:
-        c = universe.select_atoms(" atom {0!s} {1!s} O4\' ".format(seg, i),
-                                  " atom {0!s} {1!s} C1\' ".format(seg, i),
-                                  " atom {0!s} {1!s} N1 ".format(seg, i),
-                                  " atom {0!s} {1!s} C2  ".format(seg, i))
-    except:
+    c = universe.select_atoms(" atom {0!s} {1!s} O4\' ".format(seg, i),
+                              " atom {0!s} {1!s} C1\' ".format(seg, i),
+                              " atom {0!s} {1!s} N1 ".format(seg, i),
+                              " atom {0!s} {1!s} C2  ".format(seg, i))
+    if len(c) < 4:
         c = universe.select_atoms(" atom {0!s} {1!s} O4\' ".format(seg, i),
                                   " atom {0!s} {1!s} C1\' ".format(seg, i),
                                   " atom {0!s} {1!s} N9 ".format(seg, i),
