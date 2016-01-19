@@ -1090,7 +1090,10 @@ class PrimitivePDBWriter(base.Writer):
 
             vals = {}
             vals['serial'] = int(str(i + 1)[-5:])  # check for overflow here?
-            vals['name'] = atom.name[:4]
+            name = atom.name[:4]
+            if len(name) < 4:  # Start names in column 14 if we can
+                name = ' ' + name
+            vals['name'] = name
             vals['altLoc'] = atom.altLoc[:1] if atom.altLoc is not None else " "
             vals['resName'] = atom.resname[:4]
             vals['chainID'] = segid[:1]
