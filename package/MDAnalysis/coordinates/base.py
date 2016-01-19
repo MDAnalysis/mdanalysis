@@ -122,6 +122,7 @@ import bisect
 import numpy as np
 import copy
 import weakref
+import six
 
 from . import (
     _READERS,
@@ -1009,8 +1010,20 @@ class IObase(object):
         return False  # do not suppress exceptions
 
 
+class _Readermeta(type):
+    # Auto register upon class creation
+    def __init__(cls, name, bases, classdict):
+        type.__init__(type, name, bases, classdict)
+        try:
+            fmt = asiterable(classdict['format'])
+        except KeyError:
+            pass
+        else:
+            for f in fmt:
+                _READERS[f] = cls
 
-class ProtoReader(IObase):
+
+class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
     """Base class for Readers, without a :meth:`__del__` method.
 
     Extends :class:`IObase` with most attributes and methods of a generic
@@ -1031,18 +1044,6 @@ class ProtoReader(IObase):
     #: The appropriate Timestep class, e.g.
     #: :class:`MDAnalysis.coordinates.xdrfile.XTC.Timestep` for XTC.
     _Timestep = Timestep
-
-    class __metaclass__(type):
-        # Auto register upon class creation
-        def __init__(cls, name, bases, classdict):
-            type.__init__(type, name, bases, classdict)
-            try:
-                fmt = asiterable(classdict['format'])
-            except KeyError:
-                pass
-            else:
-                for f in fmt:
-                    _READERS[f] = cls
 
     def __len__(self):
         return self.n_frames
@@ -1602,30 +1603,31 @@ class ChainReader(ProtoReader):
                     natoms=self.n_atoms))
 
 
-class Writer(IObase):
+class _Writermeta(type):
+    # Auto register upon class creation
+    def __init__(cls, name, bases, classdict):
+        type.__init__(type, name, bases, classdict)
+        try:
+            fmt = asiterable(classdict['format'])
+        except KeyError:
+            pass
+        else:
+            for f in fmt:
+                _SINGLEFRAME_WRITERS[f] = cls
+            try:
+                if classdict['multiframe']:
+                    for f in fmt:
+                        _MULTIFRAME_WRITERS[f] = cls
+            except KeyError:
+                pass
+
+
+class Writer(six.with_metaclass(_Writermeta, IObase)):
     """Base class for trajectory writers.
 
     See Trajectory API definition in :mod:`MDAnalysis.coordinates.__init__` for
     the required attributes and methods.
     """
-    class __metaclass__(type):
-        # Auto register upon class creation
-        def __init__(cls, name, bases, classdict):
-            type.__init__(type, name, bases, classdict)
-            try:
-                fmt = asiterable(classdict['format'])
-            except KeyError:
-                pass
-            else:
-                for f in fmt:
-                    _SINGLEFRAME_WRITERS[f] = cls
-                try:
-                    if classdict['multiframe']:
-                        for f in fmt:
-                            _MULTIFRAME_WRITERS[f] = cls
-                except KeyError:
-                    pass
-
     def convert_dimensions_to_unitcell(self, ts, inplace=True):
         """Read dimensions from timestep *ts* and return appropriate unitcell.
 
