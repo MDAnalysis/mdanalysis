@@ -13,7 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/16 kain88-de
+??/??/16 kain88-de, jbarnoud
 
   * 0.13.1
 
@@ -32,6 +32,8 @@ Changes
 Fixes
   * Fixed PrimitivePDBWriter getting atom type column shifted to the right
     (Issue #639)
+  * The 'atom' selection keyword returns an empty selection rather than an
+    error when no atoms are are found. (Issue #644)
 
 01/16/16 tyler.je.reddy, kain88-de, richardjgowers, manuel.nuno.melo,
          orbeckst, Balasubra
