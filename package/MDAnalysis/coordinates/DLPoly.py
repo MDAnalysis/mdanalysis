@@ -24,6 +24,8 @@ Read DL Poly_ format coordinate files
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 
+from six.moves import range
+
 import numpy as np
 
 from . import base

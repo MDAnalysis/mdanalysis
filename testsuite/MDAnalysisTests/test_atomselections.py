@@ -14,6 +14,8 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
+from six.moves import range
+
 import numpy as np
 from numpy.testing import(
     TestCase,

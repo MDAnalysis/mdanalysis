@@ -218,6 +218,8 @@ Classes, methods, and functions
 
 """
 
+from six.moves import range
+
 import numpy as np
 
 import MDAnalysis
@@ -1296,8 +1298,8 @@ class PSAnalysis(object):
         numpaths = self.npaths
         D = np.zeros((numpaths,numpaths))
 
-        for i in xrange(0, numpaths-1):
-            for j in xrange(i+1, numpaths):
+        for i in range(0, numpaths-1):
+            for j in range(i+1, numpaths):
                 P = self.paths[i][start:stop:step]
                 Q = self.paths[j][start:stop:step]
                 D[i,j] = metric_func(P, Q)
@@ -1344,8 +1346,8 @@ class PSAnalysis(object):
         self._HP = [] # list of Hausdorff pairs
         self._psa_pairs = [] # list of PSAPairs
 
-        for i in xrange(0, numpaths-1):
-            for j in xrange(i+1, numpaths):
+        for i in range(0, numpaths-1):
+            for j in range(i+1, numpaths):
                 pp = PSAPair(i, j, numpaths)
                 P = self.paths[i][start:stop:step]
                 Q = self.paths[j][start:stop:step]

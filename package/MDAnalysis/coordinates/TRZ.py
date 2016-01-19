@@ -72,6 +72,8 @@ Reads coordinates, velocities and more (see attributes of the
    :members:
 """
 
+from six.moves import range
+
 from sys import maxint
 import warnings
 import numpy as np

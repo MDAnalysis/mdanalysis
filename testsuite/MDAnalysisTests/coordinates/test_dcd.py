@@ -1,7 +1,7 @@
 import MDAnalysis as mda
 import numpy as np
 import os
-from six.moves import zip
+from six.moves import zip, range
 
 from nose.plugins.attrib import attr
 from numpy.testing import (assert_equal, assert_array_equal, assert_raises,
@@ -96,7 +96,8 @@ class TestDCDReader(_TestDCD):
 
     def test_reverse_dcd(self):
         frames = [ts.frame for ts in self.dcd[20:5:-1]]
-        assert_equal(frames, range(20, 5, -1), "reversing dcd [20:5:-1]")
+        assert_equal(frames, list(range(20, 5, -1)),
+                     "reversing dcd [20:5:-1]")
 
     def test_n_atoms(self):
         assert_equal(self.universe.trajectory.n_atoms, 3341,

@@ -110,6 +110,8 @@ Functions
 
 """
 
+from six.moves import range
+
 import os
 
 import numpy as np
@@ -612,7 +614,7 @@ def main_loop(positions, ref_axis=None):
     origins = [[0., 0., 0.] for item in positions[:-2]]
     local_helix_axes = []
     location_rotation_vectors = []
-    for i in xrange(len(positions) - 3):
+    for i in range(len(positions) - 3):
         vec12 = positions[i + 1] - positions[i]
         vec23 = positions[i + 2] - positions[i + 1]
         vec34 = positions[i + 3] - positions[i + 2]
@@ -668,7 +670,7 @@ def main_loop(positions, ref_axis=None):
     #local bending angles (eg i > i+3, i+3 > i+6)
 
     bending_angles = [0 for item in range(len(local_helix_axes) - 3)]
-    for axis in xrange(len(local_helix_axes) - 3):
+    for axis in range(len(local_helix_axes) - 3):
         angle = np.arccos(np.dot(local_helix_axes[axis], local_helix_axes[axis + 3]))
         bending_angles[axis] = np.rad2deg(angle)
         #TESTED- angles are correct

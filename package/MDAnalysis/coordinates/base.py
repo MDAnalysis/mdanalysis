@@ -115,6 +115,9 @@ module. The derived classes must follow the Trajectory API in
 
 """
 
+from six.moves import range
+import six
+
 import itertools
 import os.path
 import warnings
@@ -122,7 +125,6 @@ import bisect
 import numpy as np
 import copy
 import weakref
-import six
 
 from . import (
     _READERS,
@@ -356,7 +358,7 @@ class Timestep(object):
 
             iterate of the coordinates, atom by atom
         """
-        for i in xrange(self.n_atoms):
+        for i in range(self.n_atoms):
             yield self[i]
 
     def __repr__(self):
@@ -1196,7 +1198,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         # override with an appropriate implementation e.g. using self[i] might
         # be much slower than skipping steps in a next() loop
         try:
-            for i in xrange(start, stop, step):
+            for i in range(start, stop, step):
                 yield self._read_frame(i)
         except TypeError:  # if _read_frame not implemented
             raise TypeError("{0} does not support slicing."

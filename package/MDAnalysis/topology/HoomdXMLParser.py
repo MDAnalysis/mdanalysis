@@ -41,6 +41,8 @@ Classes
 """
 from __future__ import absolute_import
 
+from six.moves import range
+
 import xml.etree.ElementTree as ET
 
 from ..lib.util import openany

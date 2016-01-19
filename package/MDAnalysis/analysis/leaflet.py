@@ -52,6 +52,8 @@ algorithm.
 
 """
 
+from six.moves import range
+
 import numpy as np
 import MDAnalysis
 import networkx as NX
@@ -194,7 +196,7 @@ class LeafletFinder(object):
 
     def groups_iter(self):
         """Iterator over all leaflet :meth:`groups`"""
-        for component_index in xrange(len(self.components)):
+        for component_index in range(len(self.components)):
             yield self.group(component_index)
 
     def write_selection(self, filename, **kwargs):

@@ -80,6 +80,8 @@ directly needed to perform the analysis.
 
 # import copy #unused
 
+from six.moves import range
+
 import numpy as np
 from numpy import linalg
 

@@ -25,6 +25,8 @@ Class definitions for the TPRParser
 
 """
 
+from six.moves import range
+
 from collections import namedtuple
 
 TpxHeader = namedtuple(
@@ -122,8 +124,8 @@ class InteractionKind(object):
     def process(self, atom_ndx):
         while atom_ndx:
             # format for all info: (type, [atom1, atom2, ...])
-            # yield atom_ndx.pop(0), [atom_ndx.pop(0) for i in xrange(self.natoms)]
+            # yield atom_ndx.pop(0), [atom_ndx.pop(0) for i in range(self.natoms)]
 
             # but currently only [atom1, atom2, ...] is interested
             atom_ndx.pop(0)
-            yield [atom_ndx.pop(0) for i in xrange(self.natoms)]
+            yield [atom_ndx.pop(0) for i in range(self.natoms)]

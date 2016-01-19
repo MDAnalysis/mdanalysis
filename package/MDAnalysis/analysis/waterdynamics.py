@@ -280,6 +280,8 @@ Classes
 
 """
 
+from six.moves import range
+
 import MDAnalysis.analysis.hbonds
 import numpy as np
 import multiprocessing

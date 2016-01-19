@@ -26,6 +26,8 @@ Polymer analysis --- :mod:`MDAnalysis.analysis.polymer`
 This module contains various commonly used tools in analysing polymers.
 
 """
+from six.moves import range
+
 import numpy as np
 import logging
 
@@ -92,7 +94,7 @@ class PersistenceLength(AnalysisBase):
             vecs /= np.sqrt((vecs * vecs).sum(axis=1))[:, None]
 
             inner_pr = np.inner(vecs, vecs)
-            for i in xrange(n-1):
+            for i in range(n-1):
                 self._results[:(n-1)-i] += inner_pr[i, i:]
 
     def _conclude(self):

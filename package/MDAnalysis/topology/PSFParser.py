@@ -36,6 +36,8 @@ Classes
 """
 from __future__ import absolute_import
 
+from six.moves import range
+
 import logging
 from math import ceil
 
@@ -214,7 +216,7 @@ class PSFParser(TopologyReader):
         #   0:8   9:13   14:18   19:23   24:28   29:33   34:48 48:62 62:70 70:84 84:98
 
         atoms = [None, ]*numlines
-        for i in xrange(numlines):
+        for i in range(numlines):
             line = lines()
             try:
                 iatom, segid, resid, resname, atomname, atomtype, charge, mass = set_type(atom_parser(line))
@@ -234,7 +236,7 @@ class PSFParser(TopologyReader):
     def _parsesection(self, lines, atoms_per, numlines):
         section = []  # [None,]*numlines
 
-        for i in xrange(numlines):
+        for i in range(numlines):
             # Subtract 1 from each number to ensure zero-indexing for the atoms
             fields = map(lambda x: int(x) - 1, lines().split())
             for j in range(0, len(fields), atoms_per):

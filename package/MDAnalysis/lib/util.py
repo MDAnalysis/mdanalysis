@@ -150,6 +150,8 @@ Class decorators
 
 __docformat__ = "restructuredtext en"
 
+from six.moves import range
+
 import os
 import os.path
 import errno

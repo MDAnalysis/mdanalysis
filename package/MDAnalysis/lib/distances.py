@@ -55,6 +55,8 @@ Functions
 .. autofunction:: transform_StoR(coordinates, box [,backend])
 
 """
+from six.moves import range
+
 import numpy as np
 from numpy.lib.utils import deprecate
 
@@ -305,8 +307,8 @@ def self_distance_array(reference, box=None, result=None, backend="serial"):
              N*(N-1)/2 numpy 1D array with the distances dist[i,j] between ref
              coordinates i and j at position d[k]. Loop through d::
 
-                 for i in xrange(N):
-                     for j in xrange(i+1, N):
+                 for i in range(N):
+                     for j in range(i+1, N):
                          k += 1
                          dist[i,j] = d[k]
 
