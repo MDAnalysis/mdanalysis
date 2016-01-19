@@ -157,7 +157,7 @@ class TestMerge(TestCase):
 
         # Make sure that all the atoms in the new universe are assigned to only
         # one, new Universe
-        set0 = set([a.universe for a in u0.atoms])
+        set0 = {a.universe for a in u0.atoms}
         assert_equal(len(set0), 1)
         u = list(set0)[0]
         assert_equal(u, u0)

@@ -252,7 +252,7 @@ def guess_bonds(atoms, coords, **kwargs):
     try:
         atomtypes = set(atoms.types)
     except AttributeError:  # sometimes atoms is just list of atoms not AG
-        atomtypes = set([a.type for a in atoms])
+        atomtypes = {a.type for a in atoms}
     # check that all types have a defined vdw
     if not all( val in vdwradii for val in atomtypes):
         raise ValueError(("vdw radii for types: " +

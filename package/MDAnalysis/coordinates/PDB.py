@@ -882,7 +882,7 @@ class PrimitivePDBWriter(base.Writer):
 
         [[bonds.add(b) for b in a.bonds] for a in self.obj.atoms]
 
-        atoms = set([a.index for a in self.obj.atoms])
+        atoms = {a.index for a in self.obj.atoms}
 
         mapping = {atom.index: i for i, atom in enumerate(self.obj.atoms)}
 

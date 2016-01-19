@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -94,7 +94,7 @@ class AtomNeighborSearch(object):
             else:
                 return AtomGroup(n_atom_list)
         elif level == 'R':
-            return list(set([a.residue for a in n_atom_list]))
+            return list({a.residue for a in n_atom_list})
         elif level == 'S':
             return list(set([a.segment for a in n_atom_list]))
         else:
