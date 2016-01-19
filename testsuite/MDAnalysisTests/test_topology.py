@@ -1038,7 +1038,7 @@ class TestDMSReader(_TestTopology, RefDMS):
         pass
 
     def test_segid(self):
-        segid = set([a.segid for a in self.universe.atoms])
+        segid = {a.segid for a in self.universe.atoms}
         assert_equal(segid, set(("4AKE",)))
 
     def test_atomsels(self):

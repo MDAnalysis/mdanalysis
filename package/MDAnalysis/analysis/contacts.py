@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -706,7 +706,7 @@ class ContactAnalysis1(object):
         xlabel(r"frame number $t$")
         ylabel(r"native contacts $q_1$")
 
-        if not filename is None:
+        if filename is not None:
             savefig(filename)
 
     def _plot_qavg_pcolor(self, filename=None, **kwargs):
@@ -727,7 +727,7 @@ class ContactAnalysis1(object):
 
         colorbar()
 
-        if not filename is None:
+        if filename is not None:
             savefig(filename)
 
     def plot_qavg(self, filename=None, **kwargs):
@@ -762,5 +762,5 @@ class ContactAnalysis1(object):
 
         colorbar()
 
-        if not filename is None:
+        if filename is not None:
             savefig(filename)

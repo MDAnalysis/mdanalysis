@@ -102,7 +102,7 @@ class TestSelectionsCHARMM(TestCase):
         assert_equal(sel2.n_atoms, 7)
         assert_equal(sel2.residues.resnames, ['GLY'])
 
-    # resnum selections are boring here because we haven't really a mechanism 
+    # resnum selections are boring here because we haven't really a mechanism
     # yet to assign the canonical PDB resnums
     def test_resnum_single(self):
         sel = self.universe.select_atoms('resnum 100')
@@ -139,6 +139,10 @@ class TestSelectionsCHARMM(TestCase):
             sel.coordinates(),
             np.array([[20.38685226, -3.44224262, -5.92158318]],
                      dtype=np.float32))
+
+    def test_atom_empty(self):
+        sel = self.universe.select_atoms('atom 4AKE 100 XX')  # Does not exist
+        assert_equal(len(sel), 0)
 
     def test_type(self):
         sel = self.universe.select_atoms("type 1")

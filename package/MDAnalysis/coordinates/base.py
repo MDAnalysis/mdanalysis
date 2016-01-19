@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -267,7 +267,7 @@ class Timestep(object):
         has_forces = forces is not None
 
         lens = [len(a) for a in [positions, velocities, forces]
-                if not a is None]
+                if a is not None]
         if not lens:
             raise ValueError("Must specify at least one set of data")
         n_atoms = max(lens)

@@ -426,8 +426,10 @@ class AtomSelection(Selection):
 
     def apply(self, group):
         sub = group[group.names == self.name]
-        sub = sub[sub.resids == self.resid]
-        sub = sub[sub.segids == self.segid]
+        if sub:
+            sub = sub[sub.resids == self.resid]
+        if sub:
+            sub = sub[sub.segids == self.segid]
         return unique(sub)
 
 

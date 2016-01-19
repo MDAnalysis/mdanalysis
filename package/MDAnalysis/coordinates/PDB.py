@@ -614,7 +614,8 @@ class PrimitivePDBReader(base.Reader):
                     # TODO import bfactors - might these change?
                     try:
                         occupancy[pos] = float(line[54:60])
-                    except:
+                    except ValueError:
+                        # Be tolerant for ill-formated or empty occupancies
                         pass
                     pos += 1
                     continue
@@ -882,7 +883,7 @@ class PrimitivePDBWriter(base.Writer):
 
         [[bonds.add(b) for b in a.bonds] for a in self.obj.atoms]
 
-        atoms = set([a.index for a in self.obj.atoms])
+        atoms = {a.index for a in self.obj.atoms}
 
         mapping = {atom.index: i for i, atom in enumerate(self.obj.atoms)}
 

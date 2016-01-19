@@ -66,7 +66,7 @@ class MoleculeKind(object):
         return len(self.atomkinds)
 
     def number_of_residues(self):
-        return len(set([a.resid for a in self.atomkinds]))
+        return len({a.resid for a in self.atomkinds})
 
     # remap_ method returns [tuple(), tuple(), ..] or []
     # Note: in MDAnalysis, bonds, angles, etc are represented as tuple and not as list

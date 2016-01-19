@@ -110,7 +110,7 @@ class Config(object):
         try:
             option = self.config.get('options', option_name)
             return option
-        except:
+        except configparser.NoOptionError:
             return default
 
 class MDAExtension(Extension, object):

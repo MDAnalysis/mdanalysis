@@ -528,7 +528,7 @@ class TopologyGroup(object):
         """
         if remove_duplicates:
             # always have first index less than last
-            bondlist = set([b if b[0] < b[-1] else b[::-1] for b in bondlist])
+            bondlist = {b if b[0] < b[-1] else b[::-1] for b in bondlist}
 
         if bondclass is None:  # try and guess
             try:
