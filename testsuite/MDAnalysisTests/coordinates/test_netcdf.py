@@ -297,7 +297,7 @@ class TestNCDFWriterVelsForces(TestCase):
     def tearDown(self):
         try:
             os.unlink(self.outfile)
-        except:
+        except OSError:
             pass
 
         del self.ts1

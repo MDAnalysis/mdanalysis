@@ -614,7 +614,8 @@ class PrimitivePDBReader(base.Reader):
                     # TODO import bfactors - might these change?
                     try:
                         occupancy[pos] = float(line[54:60])
-                    except:
+                    except ValueError:
+                        # Be tolerant for ill-formated or empty occupancies
                         pass
                     pos += 1
                     continue

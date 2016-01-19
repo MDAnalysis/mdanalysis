@@ -363,7 +363,7 @@ class _GromacsWriter(TestCase):
     def tearDown(self):
         try:
             os.unlink(self.outfile)
-        except:
+        except OSError:
             pass
         del self.universe
         del self.Writer
