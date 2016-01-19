@@ -15,7 +15,8 @@ from MDAnalysisTests.coordinates.reference import (RefAdKSmall, Ref4e43,
 from MDAnalysisTests.coordinates.base import _SingleFrameReader
 from MDAnalysisTests.datafiles import (PDB, PDB_small, PDB_multiframe,
                                        XPDB_small, PSF, DCD, CONECT, CRD,
-                                       INC_PDB, PDB_xlserial)
+                                       INC_PDB, PDB_xlserial,
+                                       NUCL)
 from MDAnalysisTests.plugins.knownfailure import knownfailure
 
 
@@ -716,3 +717,22 @@ class TestPDBWriterOccupancies(object):
         u2 = mda.Universe(self.outfile)
 
         assert_(all(u2.atoms.occupancies == 0.12))
+
+def test_writer_alignments():
+    u = mda.Universe(NUCL)
+
+    tmpdir = tempdir.TempDir()
+    outfile = tmpdir.name + '/nucl.pdb'
+
+    u.atoms.write(outfile)
+
+    writtenstuff = open(outfile, 'r').readlines()
+
+    # Our PDBWriter adds some stuff up top, so line 1 happens at [4]
+    assert_(writtenstuff[4].startswith(
+        "ATOM      1  H5T GUA"))
+    assert_(writtenstuff[8].startswith(
+        "ATOM      5 H5'' GUA"))
+
+    del tmpdir
+    del outfile
