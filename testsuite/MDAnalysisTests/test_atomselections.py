@@ -776,6 +776,10 @@ class TestSelectionErrors(object):
                 'same resid resname mass 5.0',  # same / expect
                 'name H and',  # check all tokens used
                 'naem H',  # unkonwn (misplet) opertaor
+                'resid and name C',  # rangesel not finding vals
+                'resnum ',
+                'bynum or protein',
+                'prop mass < 4.0 hello',
         ]:
             yield self.selection_fail, selstr
 
