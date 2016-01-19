@@ -53,7 +53,7 @@ Timeseries of observables
 
 """
 
-import AtomGroup
+from . import AtomGroup
 
 
 class TimeseriesCollection(object):
