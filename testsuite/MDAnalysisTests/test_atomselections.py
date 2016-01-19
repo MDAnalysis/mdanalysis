@@ -775,7 +775,6 @@ class TestSelectionErrors(object):
                 'same this as resid 1',  # same selection
                 'same resid resname mass 5.0',  # same / expect
                 'name H and',  # check all tokens used
-                'name H Ca',
                 'naem H',  # unkonwn (misplet) opertaor
         ]:
             yield self.selection_fail, selstr
@@ -788,3 +787,51 @@ def test_segid_and_resid():
     ref = ag.select_atoms('segid B').select_atoms('resid 1-100')
 
     assert_array_equal(ag.indices, ref.indices)
+
+
+class TestImplicitOr(object):
+    def setUp(self):
+        self.u = mda.Universe(PSF)
+
+    def tearDown(self):
+        del self.u
+
+    def test_atomname(self):
+        ref = self.u.select_atoms('name HT1 or name HT2 or name HT3')
+        ag = self.u.select_atoms('name HT1 HT2 HT3')
+
+        assert_array_equal(ref.indices, ag.indices)
+
+    def test_atomtypes(self):
+        ref = self.u.select_atoms('type 2 or type 3 or type 4')
+        ag = self.u.select_atoms('type 2 3 4')
+
+        assert_array_equal(ref.indices, ag.indices)
+
+    def test_resnames(self):
+        ref = self.u.select_atoms('resname MET or resname GLY')
+        ag = self.u.select_atoms('resname MET GLY')
+
+        assert_array_equal(ref.indices, ag.indices)
+
+    def test_segids(self):
+        u = mda.Universe(PDB_full)
+        ref = u.select_atoms('segid A or segid B')
+        ag = u.select_atoms('segid A B')
+
+        assert_array_equal(ref.indices, ag.indices)
+    # segname
+
+    def test_wildcards(self):
+        ref = self.u.select_atoms('name H* or name N')
+        ag = self.u.select_atoms('name H* N')
+
+        assert_array_equal(ref.indices, ag.indices)
+
+    def test_compound(self):
+        ref = self.u.select_atoms('(name N or name HT1) and'
+                                  ' (resname MET or resname GLY)')
+
+        ag = self.u.select_atoms('name N HT1 and resname MET GLY')
+
+        assert_array_equal(ref.indices, ag.indices)

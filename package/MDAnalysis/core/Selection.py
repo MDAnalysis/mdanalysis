@@ -60,7 +60,11 @@ def unique(ag):
 def is_keyword(val):
     """Is val a selection keyword?
 
-    ``None`` (EOF) is considered a keyword here.
+    Returns False on any of the following strings:
+      - keys in SELECTIONDICT (tokens from Selection objects)
+      - keys in OPERATIONS (tokens from LogicOperations)
+      - (Parentheses)
+      - The value `None` (used as EOF in selection strings)
     """
     return (val in _SELECTIONDICT or
             val in _OPERATIONS or
@@ -69,11 +73,37 @@ def is_keyword(val):
 
 
 def grab_not_keywords(tokens):
-    """Pop tokens from the left until you hit a keyword"""
+    """Pop tokens from the left until you hit a keyword
+
+    Parameters
+    ----------
+    tokens : collections.deque
+        deque of strings, some tokens some not
+
+    Returns
+    -------
+    values : list of strings
+        All non keywords found until a keyword was hit
+
+    Note
+    ----
+    This function pops the values from the deque
+
+    Examples
+    --------
+    grab_not_keywords(['H', 'and','resname', 'MET'])
+    >>> ['H']
+
+    grab_not_keywords(['H', 'Ca', 'N', 'and','resname', 'MET'])
+    >>> ['H', 'Ca' ,'N']
+
+    grab_not_keywords(['and','resname', 'MET'])
+    >>> []
+    """
     values = []
     while not is_keyword(tokens[0]):
         val = tokens.popleft()
-        # Insert escape characters here to use keywords as names
+        # Insert escape characters here to use keywords as names?
         values.append(val)
     return values
 
@@ -85,15 +115,16 @@ _OPERATIONS = {}
 # And and Or are exception and aren't strictly a Selection
 # as they work on other Selections rather than doing work themselves.
 # So their init is a little strange too....
-class LogicOperation(object):
-    class __metaclass__(type):
-        def __init__(cls, name, bases, classdict):
-            type.__init__(type, name, bases, classdict)
-            try:
-                _OPERATIONS[classdict['token']] = cls
-            except KeyError:
-                pass
+class _Operationmeta(type):
+    def __init__(cls, name, bases, classdict):
+        type.__init__(type, name, bases, classdict)
+        try:
+            _OPERATIONS[classdict['token']] = cls
+        except KeyError:
+            pass
 
+
+class LogicOperation(six.with_metaclass(_Operationmeta, object)):
     def __init__(self, lsel, rsel):
         self.rsel = rsel
         self.lsel = lsel
