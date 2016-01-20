@@ -196,6 +196,8 @@ References
 
 """
 
+from six.moves import range
+
 try:
     # BioPython is overkill but potentially extensible (altLoc etc)
     import Bio.PDB
@@ -591,7 +593,7 @@ class PrimitivePDBReader(base.Reader):
         pos = 0
         occupancy = np.ones(self._n_atoms)
         with util.openany(self.filename, 'r') as f:
-            for i in xrange(line):
+            for i in range(line):
                 f.next()  # forward to frame
             for line in f:
                 if line[:6] == 'ENDMDL':
@@ -612,7 +614,8 @@ class PrimitivePDBReader(base.Reader):
                     # TODO import bfactors - might these change?
                     try:
                         occupancy[pos] = float(line[54:60])
-                    except:
+                    except ValueError:
+                        # Be tolerant for ill-formated or empty occupancies
                         pass
                     pos += 1
                     continue
@@ -880,7 +883,7 @@ class PrimitivePDBWriter(base.Writer):
 
         [[bonds.add(b) for b in a.bonds] for a in self.obj.atoms]
 
-        atoms = set([a.index for a in self.obj.atoms])
+        atoms = {a.index for a in self.obj.atoms}
 
         mapping = {atom.index: i for i, atom in enumerate(self.obj.atoms)}
 
@@ -1018,7 +1021,7 @@ class PrimitivePDBWriter(base.Writer):
         if not start and traj.n_frames > 1:
             start = traj.frame
 
-        for framenumber in xrange(start, len(traj), step):
+        for framenumber in range(start, len(traj), step):
             traj[framenumber]
             self.write_next_timestep(self.ts, multiframe=True)
 
@@ -1090,7 +1093,10 @@ class PrimitivePDBWriter(base.Writer):
 
             vals = {}
             vals['serial'] = int(str(i + 1)[-5:])  # check for overflow here?
-            vals['name'] = atom.name[:4]
+            name = atom.name[:4]
+            if len(name) < 4:  # Start names in column 14 if we can
+                name = ' ' + name
+            vals['name'] = name
             vals['altLoc'] = atom.altLoc[:1] if atom.altLoc is not None else " "
             vals['resName'] = atom.resname[:4]
             vals['chainID'] = segid[:1]

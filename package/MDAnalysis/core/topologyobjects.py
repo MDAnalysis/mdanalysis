@@ -22,6 +22,7 @@ The building blocks for MDAnalysis' description of topology
 """
 from __future__ import print_function, absolute_import
 
+from six.moves import zip
 import numpy as np
 
 from ..lib.mdamath import norm, dihedral
@@ -528,7 +529,7 @@ class TopologyGroup(object):
         """
         if remove_duplicates:
             # always have first index less than last
-            bondlist = set([b if b[0] < b[-1] else b[::-1] for b in bondlist])
+            bondlist = {b if b[0] < b[-1] else b[::-1] for b in bondlist}
 
         if bondclass is None:  # try and guess
             try:
@@ -897,7 +898,7 @@ class TopologyGroup(object):
         vec1 = self.atom1.positions - self.atom2.positions
         vec2 = self.atom3.positions - self.atom2.positions
 
-        angles = np.array([slowang(a, b) for a, b in izip(vec1, vec2)])
+        angles = np.array([slowang(a, b) for a, b in zip(vec1, vec2)])
         return angles
 
     def angles(self, result=None, pbc=False):
@@ -945,7 +946,7 @@ class TopologyGroup(object):
         vec3 = self.atom4.positions - self.atom3.positions
 
         return np.array([dihedral(a, b, c)
-                         for a, b, c in izip(vec1, vec2, vec3)])
+                         for a, b, c in zip(vec1, vec2, vec3)])
 
     def dihedrals(self, result=None, pbc=False):
         """Calculate the dihedralal angle in radians for this topology

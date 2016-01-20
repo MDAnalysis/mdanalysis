@@ -150,6 +150,8 @@ Class decorators
 
 __docformat__ = "restructuredtext en"
 
+from six.moves import range
+
 import os
 import os.path
 import errno
@@ -306,7 +308,7 @@ def anyopen(datasource, mode='r', reset=True):
             for ext in ('bz2', 'gz', ''):  # file == '' should be last
                 openfunc = handlers[ext]
                 stream = _get_stream(datasource, openfunc, mode=mode)
-                if not stream is None:
+                if stream is not None:
                     break
             if stream is None:
                 raise IOError(errno.EIO, "Cannot open file or stream in mode={mode!r}.".format(**vars()), repr(filename))

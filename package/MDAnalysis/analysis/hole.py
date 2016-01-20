@@ -173,23 +173,24 @@ Utilities
 """
 
 import numpy as np
-
+from six.moves import zip, cPickle
 import glob
 import os
 import errno
 import shutil
 import warnings
-
 import os.path
 import subprocess
 import tempfile
 import textwrap
+import logging
+from itertools import cycle
 
+from MDAnalysis import Universe
 from MDAnalysis import ApplicationError
 from MDAnalysis.lib.util import which, realpath, asiterable
 from MDAnalysis.lib.util import FORTRANReader
 
-import logging
 
 logger = logging.getLogger("MDAnalysis.analysis.hole")
 
@@ -272,13 +273,10 @@ class BaseHOLE(object):
            profiles = cPickle.load(open(filename))
 
         """
-        import cPickle
-
         cPickle.dump(self.profiles, open(filename, "wb"), cPickle.HIGHEST_PROTOCOL)
 
     def _process_plot_kwargs(self, kwargs):
         import matplotlib.colors
-        from itertools import cycle
 
         kw = {}
         frames = kwargs.pop('frames', None)
@@ -339,12 +337,11 @@ class BaseHOLE(object):
         All other *kwargs* are passed to :func:`matplotlib.pyplot.plot`.
         """
         import matplotlib.pyplot as plt
-        from itertools import izip
 
         kw, kwargs = self._process_plot_kwargs(kwargs)
 
         ax = kwargs.pop('ax', plt.subplot(111))
-        for iplot, (frame, color, linestyle) in enumerate(izip(kw['frames'], kw['colors'], kw['linestyles'])):
+        for iplot, (frame, color, linestyle) in enumerate(zip(kw['frames'], kw['colors'], kw['linestyles'])):
             kwargs['color'] = color
             kwargs['linestyle'] = linestyle
             kwargs['zorder'] = -frame
@@ -381,7 +378,6 @@ class BaseHOLE(object):
         """
         import matplotlib.pyplot as plt
         import mpl_toolkits.mplot3d.axes3d as axes3d
-        from itertools import izip
 
         kw, kwargs = self._process_plot_kwargs(kwargs)
         rmax = kw.pop('rmax', None)
@@ -389,7 +385,7 @@ class BaseHOLE(object):
 
         fig = plt.figure(figsize=kwargs.pop('figsize', (6, 6)))
         ax = fig.add_subplot(1, 1, 1, projection='3d')
-        for frame, color, linestyle in izip(kw['frames'], kw['colors'], kw['linestyles']):
+        for frame, color, linestyle in zip(kw['frames'], kw['colors'], kw['linestyles']):
             kwargs['color'] = color
             kwargs['linestyle'] = linestyle
             kwargs['zorder'] = -frame
@@ -914,8 +910,6 @@ class HOLE(BaseHOLE):
         logger.info("Collecting HOLE profiles for run with id %s", run)
         length = 1  # length of trajectory --- is this really needed?? No... just for info
         if '*' in self.filename:
-            import glob
-
             filenames = glob.glob(self.filename)
             length = len(filenames)
             if length == 0:
@@ -923,8 +917,6 @@ class HOLE(BaseHOLE):
                 raise ValueError("Glob pattern {0!r} did not find any files.".format(self.filename))
             logger.info("Found %d input files based on glob pattern %s", length, self.filename)
         if self.dcd:
-            from MDAnalysis import Universe
-
             u = Universe(self.filename, self.dcd)
             length = int((u.trajectory.n_frames - self.dcd_iniskip) / (self.dcd_step + 1))
             logger.info("Found %d input frames in DCD trajectory %r", length, self.dcd)
@@ -1100,8 +1092,6 @@ class HOLEtraj(BaseHOLE):
         Keyword arguments *start*, *stop*, and *step* can be used to only
         analyse part of the trajectory.
         """
-        from itertools import izip
-
         start = kwargs.pop('start', self.start)
         stop = kwargs.pop('stop', self.stop)
         step = kwargs.pop('step', self.step)
@@ -1120,7 +1110,7 @@ class HOLEtraj(BaseHOLE):
         # TODO: alternatively, dump all frames with leading framenumber and use a wildcard
         #       (although the file renaming might create problems...)
         protein = self.universe.select_atoms(self.selection)
-        for q, ts in izip(self.orderparameters[start:stop:step], self.universe.trajectory[start:stop:step]):
+        for q, ts in zip(self.orderparameters[start:stop:step], self.universe.trajectory[start:stop:step]):
             logger.info("HOLE analysis frame %4d (orderparameter %g)", ts.frame, q)
             fd, pdbfile = tempfile.mkstemp(suffix=".pdb")
             os.close(fd)  # only need an empty file that can be overwritten, close right away (Issue 129)

@@ -30,6 +30,8 @@ The currently read file format versions are defined in
 
 """
 
+from six.moves import range
+
 #: Gromacs TPR file format versions that can be read by the TPRParser.
 SUPPORTED_VERSIONS = (58, 73, 83, 100, 103)
 
@@ -70,7 +72,7 @@ tpxv_RestrictedBendingAndCombinedAngleTorsionPotentials = 98
     F_ETOT, F_ECONSERVED, F_TEMP, F_VTEMP_NOLONGERUSED,
     F_PDISPCORR, F_PRES, F_DHDL_CON, F_DVDL,
     F_DKDL, F_DVDL_COUL, F_DVDL_VDW, F_DVDL_BONDED,
-    F_DVDL_RESTRAINT, F_DVDL_TEMPERATURE, F_NRE) = range(92)
+    F_DVDL_RESTRAINT, F_DVDL_TEMPERATURE, F_NRE) = list(range(92))
 
 #: Function types from ``<gromacs_dir>/src/gmxlib/tpxio.c``
 ftupd = [

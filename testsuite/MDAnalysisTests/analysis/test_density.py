@@ -15,9 +15,9 @@
 #
 from __future__ import print_function
 
+from six.moves import zip
 import numpy as np
 import os
-import itertools
 import tempdir
 
 from numpy.testing import TestCase, assert_equal, assert_almost_equal, dec
@@ -52,14 +52,14 @@ class TestDensity(TestCase):
         assert_equal(self.D.grid.shape, self.nbins)
 
     def test_edges(self):
-        for dim, (edges, fixture) in enumerate(itertools.izip(
+        for dim, (edges, fixture) in enumerate(zip(
                 self.D.edges, self.bins)):
             assert_almost_equal(edges, fixture,
                                 err_msg="edges[{0}] mismatch".format(dim))
 
     def test_midpoints(self):
         midpoints = [0.5*(b[:-1] + b[1:]) for b in self.bins]
-        for dim, (mp, fixture) in enumerate(itertools.izip(
+        for dim, (mp, fixture) in enumerate(zip(
                 self.D.midpoints, midpoints)):
             assert_almost_equal(mp, fixture,
                                 err_msg="midpoints[{0}] mismatch".format(dim))

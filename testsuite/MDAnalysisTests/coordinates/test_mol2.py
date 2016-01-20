@@ -13,6 +13,8 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+from six.moves import range
+
 import tempfile
 import os
 from numpy.testing import *
@@ -116,7 +118,8 @@ class TestMol2_traj(TestCase):
 
     def test_reverse_traj(self):
         frames = [ts.frame for ts in self.traj[20:5:-1]]
-        assert_equal(frames, range(20, 5, -1), "reversing traj [20:5:-1]")
+        assert_equal(frames, list(range(20, 5, -1)),
+                     "reversing traj [20:5:-1]")
 
     def test_n_frames(self):
         assert_equal(self.universe.trajectory.n_frames, 200, "wrong number of frames in traj")

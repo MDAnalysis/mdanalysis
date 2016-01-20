@@ -142,7 +142,7 @@ class TestLAMMPSDCDWriter(TestCase, RefLAMMPSDataDCD):
     def tearDown(self):
         try:
             os.unlink(self.outfile)
-        except:
+        except OSError:
             pass
         del self.u
         del self.tmpdir
@@ -202,7 +202,7 @@ class TestLAMMPSDCDWriterClass(TestCase):
     def tearDown(self):
         try:
             os.unlink(self.outfile)
-        except:
+        except OSError:
             pass
         del self.tmpdir
 

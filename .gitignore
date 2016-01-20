@@ -17,6 +17,7 @@ examples/output.txt
 .pydevproject
 .settings
 .idea
+.eggs
 # ignore Vagrant virtual machines
 .vagrant
 # ignore nosetest/coverage files
@@ -29,3 +30,7 @@ examples/output.txt
 *.npz
 # Ignore html build
 doc/html/
+# Ignore vim files
+*.sw[a-z]
+# Ignore MDAnalysis log files
+MDAnalysis.log

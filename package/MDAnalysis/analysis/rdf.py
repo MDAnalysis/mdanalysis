@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -107,7 +107,7 @@ class InterRDF(AnalysisBase):
         self._result = np.zeros((len(self.g1), len(self.g2)), dtype=np.float64)
         # If provided exclusions, create a mask of _result which
         # lets us take these out
-        if not exclusion_block is None:
+        if exclusion_block is not None:
             self._exclusion_block = exclusion_block
             self._exclusion_mask = blocks_of(self._result, *exclusion_block)
             self._maxrange = range[1] + 1.0
@@ -119,7 +119,7 @@ class InterRDF(AnalysisBase):
         distances.distance_array(self.g1.positions, self.g2.positions,
                                  box=self.u.dimensions, result=self._result)
         # Maybe exclude same molecule distances
-        if not self._exclusion_mask is None:
+        if self._exclusion_mask is not None:
             self._exclusion_mask[:] = self._maxrange
 
         count = np.histogram(self._result, **self.rdf_settings)[0]
@@ -150,6 +150,3 @@ class InterRDF(AnalysisBase):
         rdf = self.count / (density * vol * self.nframes)
 
         self.rdf = rdf
-
-    
-

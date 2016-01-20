@@ -107,7 +107,7 @@ parentheses must be included.
 
 """
 
-__version__ = "0.13.1-dev0"  # keep in sync with RELEASE in setup.py
+__version__ = "0.14.0-dev0"  # keep in sync with RELEASE in setup.py
 
 # Do NOT import MDAnalysis at this level. Tests should do it themselves.
 # If MDAnalysis is imported here coverage accounting might fail because all the import

@@ -4,7 +4,7 @@ from MDAnalysis.coordinates.base import Timestep
 import numpy as np
 import os
 import shutil
-from six.moves import zip
+from six.moves import zip, range
 import warnings
 
 from nose.plugins.attrib import attr
@@ -133,7 +133,7 @@ class _GromacsReader(TestCase):
     @dec.slow
     def test_reverse_xdrtrj(self):
         frames = [ts.frame for ts in self.trajectory[::-1]]
-        assert_equal(frames, range(9, -1, -1), "slicing xdrtrj [::-1]")
+        assert_equal(frames, list(range(9, -1, -1)), "slicing xdrtrj [::-1]")
 
     @dec.slow
     def test_coordinates(self):
@@ -363,7 +363,7 @@ class _GromacsWriter(TestCase):
     def tearDown(self):
         try:
             os.unlink(self.outfile)
-        except:
+        except OSError:
             pass
         del self.universe
         del self.Writer

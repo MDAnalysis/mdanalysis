@@ -30,7 +30,7 @@ from tempdir import run_in_tempdir
 import numpy as np
 
 
-class XDRFormatBaseTest():
+class XDRFormatBaseTest(object):
 
     def test_n_atoms(self):
         f = self.xdrfile(self.single_frame)
