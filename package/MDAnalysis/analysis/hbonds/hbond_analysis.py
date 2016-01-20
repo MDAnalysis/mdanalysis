@@ -312,7 +312,7 @@ Classes
 
 
 from collections import defaultdict
-from six.moves import range, zip
+from six.moves import range, zip, map
 import numpy as np
 import warnings
 import logging
@@ -1004,7 +1004,7 @@ class HydrogenBondAnalysis(object):
 
         out = np.empty((len(self.timesteps),), dtype=[('time', float), ('count', int)])
         for cursor, time_count in enumerate(zip(self.timesteps,
-                                                itertools.imap(len, self.timeseries))):
+                                                map(len, self.timeseries))):
             out[cursor] = time_count
         return out.view(np.recarray)
 
