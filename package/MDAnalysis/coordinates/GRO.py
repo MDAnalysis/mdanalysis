@@ -58,7 +58,6 @@ box_triclinic
 """
 
 from six.moves import range
-
 import warnings
 import numpy as np
 
@@ -150,7 +149,7 @@ class GROReader(base.SingleFrameReader):
 
                 if not has_velocities:
                     continue
-                for i, j in enumerate(xrange(3, 6)):
+                for i, j in enumerate(range(3, 6)):
                     ts._velocities[pos, i] = float(line[20+cs*j:20+cs*(j+1)])
 
         self.ts.frame = 0  # 0-based frame number

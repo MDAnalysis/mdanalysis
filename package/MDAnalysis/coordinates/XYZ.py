@@ -70,13 +70,10 @@ the `VMD xyzplugin`_ from whence the definition was taken)::
 
 """
 
-from six.moves import range
-
+from six.moves import range, zip
 import os
 import errno
 import numpy as np
-import itertools
-
 import logging
 logger = logging.getLogger('MDAnalysis.analysis.psa')
 
@@ -231,8 +228,8 @@ class XYZWriter(base.Writer):
                 raise ValueError('n_atoms keyword was specified indicating '
                                  'that this should be a trajectory of the '
                                  'same model. But the provided TimeStep has a '
-                                 'different number ({}) then expected ({})'.format(
-                                     ts.n_atoms, self.n_atoms))
+                                 'different number ({}) then expected ({})'
+                                 ''.format(ts.n_atoms, self.n_atoms))
         else:
             if len(self.atomnames) != ts.n_atoms:
                 logger.info('Trying to write a TimeStep with unkown atoms. '
@@ -242,14 +239,16 @@ class XYZWriter(base.Writer):
                 self.atomnames = np.array([self.atomnames[0]] * ts.n_atoms)
 
         if self.convert_units:
-            coordinates = self.convert_pos_to_native(ts._pos, inplace=False)
+            coordinates = self.convert_pos_to_native(
+                ts.positions, inplace=False)
         else:
-            coordinates = ts._pos
+            coordinates = ts.positions
 
         self._xyz.write("{0:d}\n".format(ts.n_atoms))
         self._xyz.write("frame {0}\n".format(ts.frame))
-        for atom, (x, y, z) in itertools.izip(self.atomnames, coordinates):
-            self._xyz.write("{0!s:>8}  {1:10.5f} {2:10.5f} {3:10.5f}\n".format(atom, x, y, z))
+        for atom, (x, y, z) in zip(self.atomnames, coordinates):
+            self._xyz.write("{0!s:>8}  {1:10.5f} {2:10.5f} {3:10.5f}\n"
+                            "".format(atom, x, y, z))
 
 
 class XYZReader(base.Reader):

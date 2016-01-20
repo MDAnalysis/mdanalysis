@@ -280,12 +280,12 @@ Classes
 
 """
 
-from six.moves import range
-
-import MDAnalysis.analysis.hbonds
+from six.moves import range, zip_longest
 import numpy as np
 import multiprocessing
-import itertools
+
+import MDAnalysis.analysis.hbonds
+
 
 class HydrogenBondLifetimes(object):
     r"""
@@ -798,7 +798,7 @@ class AngularDistribution(object):
         to a column format.
         """
         a = []
-        for x in itertools.izip_longest(*aList, fillvalue="."):
+        for x in zip_longest(*aList, fillvalue="."):
             a.append(" ".join(str(i) for i in x))
         return a
 

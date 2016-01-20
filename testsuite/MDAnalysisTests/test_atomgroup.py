@@ -24,6 +24,7 @@ from MDAnalysis.core.AtomGroup import Atom, AtomGroup, as_Universe
 from MDAnalysis import NoDataError
 from MDAnalysis.core.AtomGroup import _PLURAL_PROPERTIES, _SINGULAR_PROPERTIES
 
+from six.moves import zip
 import numpy as np
 from numpy.testing import *
 from nose.plugins.attrib import attr
@@ -850,7 +851,7 @@ class TestAtomGroup(TestCase):
         ag = self.universe.select_atoms("resid 1:50 and not resname LYS and (name CA or name CB)")
         sg = ag.split("atom")
         assert_equal(len(sg), len(ag))
-        for g, ref_atom in itertools.izip(sg, ag):
+        for g, ref_atom in zip(sg, ag):
             atom = g[0]
             assert_equal(len(g), 1)
             assert_equal(atom.name, ref_atom.name)
@@ -860,7 +861,7 @@ class TestAtomGroup(TestCase):
         ag = self.universe.select_atoms("resid 1:50 and not resname LYS and (name CA or name CB)")
         sg = ag.split("residue")
         assert_equal(len(sg), len(ag.residues.resids))
-        for g, ref_resname in itertools.izip(sg, ag.residues.resnames):
+        for g, ref_resname in zip(sg, ag.residues.resnames):
             if ref_resname == "GLY":
                 assert_equal(len(g), 1)
             else:
@@ -872,7 +873,7 @@ class TestAtomGroup(TestCase):
         ag = self.universe.select_atoms("resid 1:50 and not resname LYS and (name CA or name CB)")
         sg = ag.split("segment")
         assert_equal(len(sg), len(ag.segments.segids))
-        for g, ref_segname in itertools.izip(sg, ag.segments.segids):
+        for g, ref_segname in zip(sg, ag.segments.segids):
             for atom in g:
                 assert_equal(atom.segid, ref_segname)
 
@@ -1153,7 +1154,7 @@ class TestResidueGroup(TestCase):
         resids = np.array(rg.resids) + 1000
         rg.set_resids(resids)
         # check individual atoms
-        for r, resid in itertools.izip(rg, resids):
+        for r, resid in zip(rg, resids):
             assert_equal([a.resid for a in r.atoms],
                          resid * np.ones(r.n_atoms),
                          err_msg="failed to set_resid residues 10:18 to same resid in residue {0}\n"

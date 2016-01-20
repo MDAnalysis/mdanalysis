@@ -139,9 +139,9 @@ Examples
 
 
 """
+from six.moves import zip
 import numpy as np
 import warnings
-from itertools import izip
 
 from MDAnalysis.lib.log import ProgressMeter
 from MDAnalysis.lib.distances import distance_array, calc_angles, calc_bonds
@@ -293,7 +293,7 @@ class HydrogenBondAutoCorrel(object):
                            format="Performing run %(step)5d/%(numsteps)d"
                                   "[%(percentage)5.1f%%]\r")
 
-        for i, (start, stop) in enumerate(izip(self._starts, self._stops)):
+        for i, (start, stop) in enumerate(zip(self._starts, self._stops)):
             pm.echo(i + 1)
 
             # needed else trj seek thinks a np.int64 isn't an int?

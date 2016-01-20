@@ -26,11 +26,11 @@ module. They are mostly of use to developers.
 """
 
 from __future__ import print_function
+
 # Global imports
 import os.path
 import numpy as np
 from collections import defaultdict
-from itertools import izip
 
 # Local imports
 from . import _PARSERS

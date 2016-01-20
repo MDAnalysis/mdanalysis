@@ -407,9 +407,9 @@ Classes and functions
 """
 from __future__ import print_function, absolute_import
 
-from six.moves import range
 
 # Global imports
+from six.moves import range, zip
 import warnings
 import numpy as np
 from numpy.linalg import eig
@@ -1655,7 +1655,7 @@ class AtomGroup(object):
             for x in group:
                 setattr(x, name, conversion(values[0]))
         elif len(group) == len(values):
-            for x, value in itertools.izip(group, values):
+            for x, value in zip(group, values):
                 setattr(x, name, conversion(value))
         else:
             raise ValueError("set_{0}: can only set all atoms to a single value or each atom to a distinct one "
@@ -2821,7 +2821,7 @@ class AtomGroup(object):
         dests = distances.apply_PBC(centers, box=box)
         shifts = dests - centers
 
-        for o, s in itertools.izip(objects, shifts):
+        for o, s in zip(objects, shifts):
             # Save some needless shifts
             if not all(s == 0.0):
                 o.translate(s)
@@ -2874,7 +2874,7 @@ class AtomGroup(object):
         # by indexing self (using advanced slicing eg g[[1,2,3]]
         groups = [
             self[[idx_k[0] for idx_k in groupings]]  # one AtomGroup for each residue or segment
-            for k, groupings in itertools.groupby(itertools.izip(idx, sorted_ids), lambda v: v[1])
+            for k, groupings in itertools.groupby(zip(idx, sorted_ids), lambda v: v[1])
             ]
         return groups
 
@@ -3196,7 +3196,7 @@ class ResidueGroup(AtomGroup):
         if len(values) == 1:
             self._set_atoms(name, values[0], **kwargs)
         elif len(values) == len(self.residues):
-            for r, value in itertools.izip(self.residues, values):
+            for r, value in zip(self.residues, values):
                 r._set_atoms(name, value, **kwargs)
         else:
             raise ValueError("set_residues: can only set all atoms to a single value or each atom to a distinct one "
@@ -3209,7 +3209,7 @@ class ResidueGroup(AtomGroup):
         # instances where they have different names
         attr = {'resname': 'name',
             'resid': 'id'}
-        for r, value in itertools.izip(self.residues, itertools.cycle(values)):
+        for r, value in zip(self.residues, itertools.cycle(values)):
             attrname = attr.get(name, name)
             if hasattr(r, attrname):  # should use __slots__ on Residue and try/except here
                 setattr(r, attrname, value)
@@ -3472,7 +3472,7 @@ class SegmentGroup(ResidueGroup):
         if len(values) == 1:
             self._set_atoms(name, values[0], **kwargs)
         elif len(values) == len(self.segments):
-            for s, value in itertools.izip(self.segments, values):
+            for s, value in zip(self.segments, values):
                 s._set_atoms(name, value, **kwargs)
         else:
             raise ValueError("set_segments: can only set all atoms to a single value or each atom to a distinct one "

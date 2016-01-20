@@ -181,7 +181,7 @@ def InnerProduct(np.ndarray[np.float64_t,ndim=1] A,
     A[0] = A[1] = A[2] = A[3] = A[4] = A[5] = A[6] = A[7] = A[8] = 0.0
 
     if (weight is not None):
-        for i in xrange(N):
+        for i in range(N):
             x1 = weight[i] * coords1[0,i]
             y1 = weight[i] * coords1[1,i]
             z1 = weight[i] * coords1[2,i]
@@ -207,7 +207,7 @@ def InnerProduct(np.ndarray[np.float64_t,ndim=1] A,
             A[8] +=  (z1 * z2)
 
     else:
-        for i in xrange(N):
+        for i in range(N):
             x1 = coords1[0,i]
             y1 = coords1[1,i]
             z1 = coords1[2,i]
@@ -323,7 +323,7 @@ def FastCalcRMSDAndRotation(np.ndarray[np.float64_t,ndim=1] rot, np.ndarray[np.f
          + (+(SxypSyx)*(SyzmSzy)+(SxzmSzx)*(SxxmSyy-Szz)) * (-(SxymSyx)*(SyzpSzy)+(SxzmSzx)*(SxxpSyy-Szz)))
 
     mxEigenV = E0
-    for i in xrange(50):
+    for i in range(50):
         oldg = mxEigenV
         x2 = mxEigenV*mxEigenV
         b = (x2 + C[2])*mxEigenV
