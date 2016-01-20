@@ -39,7 +39,6 @@ class AnalysisBase(object):
     _setup_frames(trajectory, start=None, stop=None, step=None)
       Pass a Reader object and define the desired iteration pattern
       through the trajectory
-
     run
       The user facing run method.  Calls the analysis methods
       defined below
@@ -75,7 +74,6 @@ class AnalysisBase(object):
 
     def _single_frame(self, timestep):
         """Calculate data from a single frame of trajectory
-
         Don't worry about normalising, just deal with a single frame.
         """
         pass
@@ -233,12 +231,10 @@ class AnalysisBase(object):
         stop = self.slices[order][1]
         step = self.step
 
-        universe = mda.Universe(self.topology, self.trajname)
-        traj = universe.trajectory
-
         analysis_object = copy.deepcopy(self)
-        analysis_object._setup_frames(universe=universe, start=start,
-                                      stop=stop, step=self.step)
+
+        analysis_object.nframes = len(xrange(start, stop, step))
+        traj = analysis_object._universe.trajectory
 
         analysis_object._prepare()
 
@@ -247,6 +243,10 @@ class AnalysisBase(object):
             analysis_object._single_frame(timestep)
             progress.put(order) # Updates the progress bar
 
+        # Avoid initializing universe again when results are sent back
+        analysis_object._universe.filename = None
+        analysis_object._universe.trajectory.filename = None
+
         out_queue.put((analysis_object, order)) # Returns the results
 
     def _type(self):
@@ -254,7 +254,28 @@ class AnalysisBase(object):
 
     def __getstate__(self):
         state = dict(self.__dict__)
-        for key in ['_universe', '_trajectory']:
-            if key in state:
-                del state[key]
+        # Replace the _ags entry with indices
+        # pop removes the _ag key, or returns [] (empty list) if the Key didn't exist
+        state['ag indices'] = [ag.indices for ag in state.pop('_ag', [])]
+        try:
+            state['universe filenames'] = self._universe.filename, self._universe.trajectory.filename
+        except:
+            pass
+        state.pop('_universe', None)
+        state.pop('_trajectory', None)
+
         return state
+
+
+    def __setstate__(self, state):
+        self.__dict__ = state
+        # Create my local Universe
+        try:
+            # Create my local Universe
+            self._universe = mda.Universe(*state['universe filenames'])
+            # Create my local AGs
+            self._ag = [self._universe.atoms[idx] for idx in state['ag indices']]
+        except:
+            pass
+
+
