@@ -115,7 +115,6 @@ Utilities
 """
 
 from six.moves import range
-
 import glob
 import os
 import errno
@@ -343,7 +342,6 @@ class BaseX3DNA(object):
 
         """
         import matplotlib.pyplot as plt
-        from itertools import izip
 
         na_avg, na_std = self.mean_std()
         for k in range(len(na_avg[0])):
@@ -686,8 +684,6 @@ class X3DNAtraj(BaseX3DNA):
         Keyword arguments *start*, *stop*, and *step* can be used to only
         analyse part of the trajectory.
         """
-        from itertools import izip
-
         start = kwargs.pop('start', self.start)
         stop = kwargs.pop('stop', self.stop)
         step = kwargs.pop('step', self.step)

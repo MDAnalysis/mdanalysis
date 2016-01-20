@@ -24,8 +24,8 @@ Read DL Poly_ format topology files
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 
+from six.moves import zip
 import numpy as np
-import itertools
 
 from . import base
 from . import core
@@ -85,7 +85,7 @@ class ConfigParser(base.TopologyReader):
         resid = 1
         atoms = []
 
-        for i, (name, num) in enumerate(itertools.izip(names, ids)):
+        for i, (name, num) in enumerate(zip(names, ids)):
             elem = core.guess_atom_element(name)
             mass = core.get_atom_mass(elem)
             charge = core.guess_atom_charge(name)
@@ -151,7 +151,7 @@ class HistoryParser(base.TopologyReader):
         resid = 1
         atoms = []
 
-        for i, (name, num) in enumerate(itertools.izip(names, ids)):
+        for i, (name, num) in enumerate(zip(names, ids)):
             elem = core.guess_atom_element(name)
             mass = core.get_atom_mass(elem)
             charge = core.guess_atom_charge(name)

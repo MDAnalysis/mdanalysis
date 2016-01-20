@@ -123,8 +123,10 @@ Analysis classes
 
 """
 
-from itertools import izip
+from six.moves import zip
 import numpy as np
+import logging
+import warnings
 
 import MDAnalysis
 import MDAnalysis.lib.qcprot as qcp
@@ -132,11 +134,8 @@ from MDAnalysis.exceptions import SelectionError, NoDataError
 from MDAnalysis.lib.log import ProgressMeter
 from MDAnalysis.lib.util import asiterable
 
-import logging
 
 logger = logging.getLogger('MDAnalysis.analysis.rmsd')
-
-import warnings
 
 
 def rmsd(a, b, weights=None, center=False):
@@ -326,7 +325,7 @@ class RMSD(object):
         if np.any(mass_mismatches):
             # diagnostic output:
             logger.error("Atoms: reference | trajectory")
-            for ar, at in izip(self.ref_atoms, self.traj_atoms):
+            for ar, at in zip(self.ref_atoms, self.traj_atoms):
                 if ar.name != at.name:
                     logger.error("{0!s:>4} {1:3d} {2!s:>3} {3!s:>3} {4:6.3f}  |  {5!s:>4} {6:3d} {7!s:>3} {8!s:>3} {9:6.3f}".format(ar.segid, ar.resid, ar.resname, ar.name, ar.mass,
                                  at.segid, at.resid, at.resname, at.name, at.mass))
@@ -376,8 +375,6 @@ class RMSD(object):
              frame index to select frame from *reference*
 
         """
-        from itertools import izip
-
         start = kwargs.pop('start', None)
         stop = kwargs.pop('stop', None)
         step = kwargs.pop('step', None)
@@ -459,7 +456,7 @@ class RMSD(object):
 
                 # 2) calculate secondary RMSDs
                 for igroup, (refpos, atoms) in enumerate(
-                        izip(groupselections_ref_coords_T_64, self.groupselections_atoms), 3):
+                        zip(groupselections_ref_coords_T_64, self.groupselections_atoms), 3):
                     rmsd[k, igroup] = qcp.CalcRMSDRotationalMatrix(refpos,
                                                                    atoms['mobile'].positions.T.astype(np.float64),
                                                                    atoms['mobile'].n_atoms, None, weight)

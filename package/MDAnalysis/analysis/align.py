@@ -156,21 +156,18 @@ normal users.
 .. autofunction:: fasta2select
 .. autofunction:: get_matching_atoms
 """
-from six.moves import range
 
 import os.path
-import itertools
-
+from six.moves import range, zip, zip_longest
 import numpy as np
+import warnings
+import logging
 
 import MDAnalysis.lib.qcprot as qcp
 from MDAnalysis.exceptions import SelectionError, SelectionWarning
 from MDAnalysis.lib.log import ProgressMeter
-
 import MDAnalysis.analysis.rms as rms
 
-import warnings
-import logging
 
 logger = logging.getLogger('MDAnalysis.analysis.align')
 
@@ -833,7 +830,7 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
                 ag1.n_residues, ag2.n_residues)
             dbgmsg = "mismatched residue numbers\n" + \
                 "\n".join(["{0} | {1}"  for r1, r2 in
-                           itertools.izip_longest(ag1.resids, ag2.resids)])
+                           zip_longest(ag1.resids, ag2.resids)])
             logger.error(errmsg)
             logger.debug(dbgmsg)
             raise SelectionError(errmsg)
@@ -878,10 +875,10 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
                     logger.error("Offending residues: group {0}: {1}".format(
                             number,
                             ", ".join(["{0[0]}{0[1]} ({0[2]})".format(r) for r in
-                                       itertools.izip(ag.resnames[mismatch_resindex],
-                                                      ag.resids[mismatch_resindex],
-                                                      rsize[mismatch_resindex]
-                                                      )])))
+                                       zip(ag.resnames[mismatch_resindex],
+                                           ag.resids[mismatch_resindex],
+                                           rsize[mismatch_resindex]
+                                       )])))
                 logger.error("Found {0} residues with non-matching numbers of atoms (#)".format(
                         mismatch_mask.sum()))
                 log_mismatch(1, ag1, rsize1)
@@ -923,7 +920,7 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
         mismatch_atomindex = np.arange(ag1.n_atoms)[mass_mismatches]
 
         logger.error("Atoms: reference | trajectory")
-        for ar, at in itertools.izip(ag1[mismatch_atomindex], ag2[mismatch_atomindex]):
+        for ar, at in zip(ag1[mismatch_atomindex], ag2[mismatch_atomindex]):
             logger.error("{0!s:>4} {1:3d} {2!s:>3} {3!s:>3} {4:6.3f}  |  {5!s:>4} {6:3d} {7!s:>3} {8!s:>3} {9:6.3f}".format(ar.segid, ar.resid, ar.resname, ar.name, ar.mass,
                           at.segid, at.resid, at.resname, at.name, at.mass))
         errmsg = ("Inconsistent selections, masses differ by more than {0}; " + \
