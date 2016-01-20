@@ -20,11 +20,13 @@ Analysis building blocks --- :mod:`MDAnalysis.analysis.base`
 A collection of useful building blocks for creating Analysis
 classes.
 """
+from __future__ import division
 
 import logging
 import multiprocessing as mp
 import copy
 from operator import itemgetter
+
 import MDAnalysis as mda
 
 
@@ -64,9 +66,8 @@ class AnalysisBase(object):
             self._universe = universe
             self._trajectory = self._universe.trajectory
 
-            start, stop, step = self._trajectory.check_slice_indices(start,
-                                                                     stop,
-                                                                     step)
+            start, stop, step = self._trajectory.check_slice_indices(
+                start, stop, step)
             self.start = start
             self.stop = stop
             self.step = step
@@ -88,13 +89,13 @@ class AnalysisBase(object):
         """
         pass
 
-    def run(self, parallel=None, threads=None):
+    def run(self, parallel=None, nthreads=None):
         """ Chooses whether to run analysis in serial or parallel
         mode depending on user input"""
-        if parallel is None:
+        if not parallel:
             self._serial_run()
         else:
-            self._parallel_run(threads)
+            self._parallel_run(nthreads)
 
     def _serial_run(self):
         """Perform the calculation"""
@@ -110,25 +111,18 @@ class AnalysisBase(object):
         #logger.info("Finishing up")
         self._conclude()
 
-    def _parallel_run(self, threads=None):
+    def _parallel_run(self, nthreads=None):
         """
         Create copies of the original object to be
         dispatched to multiprocess
         """
-
-        if threads is None:
-            self.threads = mp.cpu_count()-1
-        elif threads > mp.cpu_count():
-            self.threads = mp.cpu_count()-1
+        if nthreads is None:
+            self.nthreads = mp.cpu_count() - 1
         else:
-            self.threads = threads
+            # Cap number of threads
+            self.nthreads = min([mp.cpu_count(), nthreads, self.nframes])
 
         self.slices = self._compute_slices()
-        self.topology = self._universe.filename
-        self.trajname = self._universe._trajectory.filename
-        self.nframes = 0
-
-        threads = self.threads
 
         # Queues for the communication between parent and child processes
         out_queue = mp.Manager().Queue()
@@ -137,18 +131,17 @@ class AnalysisBase(object):
         # Prepare multiprocess objects
         processes = [mp.Process(target=self._compute,
                                 args=(out_queue, order, progress))
-                     for order in range(threads)]
+                     for order in range(self.nthreads)]
 
         # Run processes
         for process in processes:
             process.start()
 
-        thread_configs = [1+(elem[1]-elem[0]-1)/self.step
+        thread_configs = [1+(elem[1]-elem[0]-1) // self.step
                           for elem in self.slices]
 
-        name = self._type()
-
-        prog = mda.lib.log.Progressbar(thread_configs, bar_length=50, name=name)
+        prog = mda.lib.log.Progressbar(
+            thread_configs, bar_length=50, name=self.__class__.__name__)
         prog.start()
 
         while any(process.is_alive() for process in processes):
@@ -161,14 +154,15 @@ class AnalysisBase(object):
             process.join()
 
         results = []
-
         # Collects results from the queue
         while not out_queue.empty():
             results.append(out_queue.get())
 
-        for thread in sorted(results, key=itemgetter(1)):
-            self += thread[0]
+        # Sort results, then collate them
+        for other_results in sorted(results, key=itemgetter(1)):
+            self._add_other_results(other_results[0])
 
+        # Averaging here
         self._conclude()
 
     def _compute_slices(self):
@@ -176,44 +170,34 @@ class AnalysisBase(object):
         This function returns a list containing the start and
          last configuration to be analyzed from each thread
         """
-        threads = self.threads # Get number of threads from initialization
         step = self.step
-        configs = 1+(self.stop-self.start-1)/step
+        configs = 1 + (self.stop - self.start - 1) // step
 
-        #self.nframes = configs
-
-        # Check whether the number of threads is higher than
-        # the number of trajectories to be analyzed
-        while configs/threads == 0:
-            threads -= 1
-
-        self.threads = threads # Update the number of threads
-
-        print "Total configurations: "+str(configs)
-        print "Analysis running on ", threads, " threads.\n"
+        print "Total configurations: {}".format(configs)
+        print "Analysis running on {} threads.\n".format(self.nthreads)
 
         # Number of cfgs for each thread, and remainder to be added
-        thread_cfg = configs/threads
-        reminder = configs%threads
+        thread_cfg = configs // self.nthreads
+        reminder = configs % self.nthreads
 
         slices = []
         beg = self.start
 
         # Compute the start and last configurations
-        for thread in range(0, threads):
+        for thread in range(0, self.nthreads):
             if thread < reminder:
-                end = beg+step*thread_cfg
+                end = beg + step * thread_cfg
             else:
-                end = beg+step*(thread_cfg-1)
+                end = beg + step * (thread_cfg-1)
 
             slices.append([beg, end+1])
-            beg = end+step
+            beg = end + step
 
         # Print on screen the configurations assigned to each thread
-        for thread in range(threads):
+        for thread in range(self.nthreads):
             confs = 1+(slices[thread][1]-1-slices[thread][0])/step
             digits = len(str(self.stop))
-            line = "Thread "+str(thread+1).rjust(len(str(threads)))+": " \
+            line = "Thread "+str(thread+1).rjust(len(str(self.nthreads)))+": " \
                           +str(slices[thread][0]).rjust(digits)+"/"  \
                           +str(slices[thread][1]-1).rjust(digits)    \
                           +" | Configurations: "\
@@ -226,11 +210,16 @@ class AnalysisBase(object):
         """
         Run the single_frame method for each analysis object for all
         the trajectories in the batch
+
+        order - my id among all the parallel versions
+        out_queue - where to put my results
+        progress - the progressbar to update
         """
         start = self.slices[order][0]
         stop = self.slices[order][1]
         step = self.step
 
+        # Create a local version of the analysis object
         analysis_object = copy.deepcopy(self)
 
         analysis_object.nframes = len(xrange(start, stop, step))
@@ -243,39 +232,28 @@ class AnalysisBase(object):
             analysis_object._single_frame(timestep)
             progress.put(order) # Updates the progress bar
 
-        # Avoid initializing universe again when results are sent back
-        analysis_object._universe.filename = None
-        analysis_object._universe.trajectory.filename = None
-
-        out_queue.put((analysis_object, order)) # Returns the results
-
-    def _type(self):
-        return self.__class__.__name__
+        # Returns the results along with our order index
+        out_queue.put((analysis_object.results, order))
 
     def __getstate__(self):
         state = dict(self.__dict__)
         # Replace the _ags entry with indices
         # pop removes the _ag key, or returns [] (empty list) if the Key didn't exist
-        state['ag indices'] = [ag.indices for ag in state.pop('_ag', [])]
-        try:
-            state['universe filenames'] = self._universe.filename, self._universe.trajectory.filename
-        except:
-            pass
+        ag_indices = [ag.indices for ag in state.pop('_ags', [])]
+        universe_filenames = (self._universe.filename, self._universe.trajectory.filename)
+        state.pop('_ags', None)
         state.pop('_universe', None)
         state.pop('_trajectory', None)
 
-        return state
-
+        return state, universe_filenames, ag_indices
 
     def __setstate__(self, state):
-        self.__dict__ = state
+        statedict, universe_filenames, ag_indices = state
+        self.__dict__ = statedict
         # Create my local Universe
-        try:
-            # Create my local Universe
-            self._universe = mda.Universe(*state['universe filenames'])
-            # Create my local AGs
-            self._ag = [self._universe.atoms[idx] for idx in state['ag indices']]
-        except:
-            pass
+        self._universe = mda.Universe(*universe_filenames)
+        self._ags = [self._universe.atoms[idx]
+                     for idx in ag_indices]
+
 
 
