@@ -84,7 +84,7 @@ class InterRDF(AnalysisBase):
         self.g2 = g2
         self.u = g1.universe
 
-        self._setup_frames(self.u.trajectory,
+        self._setup_frames(self.u,
                            start=start,
                            stop=stop,
                            step=step)
@@ -115,7 +115,7 @@ class InterRDF(AnalysisBase):
             self._exclusion_block = None
             self._exclusion_mask = None
 
-    def _single_frame(self):
+    def _single_frame(self,timestep):
         distances.distance_array(self.g1.positions, self.g2.positions,
                                  box=self.u.dimensions, result=self._result)
         # Maybe exclude same molecule distances
@@ -125,7 +125,7 @@ class InterRDF(AnalysisBase):
         count = np.histogram(self._result, **self.rdf_settings)[0]
         self.count += count
 
-        self.volume += self._ts.volume
+        self.volume += timestep.volume
 
     def _conclude(self):
         # Number of each selection

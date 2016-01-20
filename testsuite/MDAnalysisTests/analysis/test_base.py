@@ -27,17 +27,16 @@ from MDAnalysisTests.datafiles import PSF, DCD
 
 class FrameAnalysis(AnalysisBase):
     """Just grabs frame numbers of frames it goes over"""
-    def __init__(self, reader, start=None, stop=None, step=None):
-        self.traj = reader
-        self._setup_frames(reader,
+    def __init__(self, universe, start=None, stop=None, step=None):
+        self._setup_frames(universe,
                            start=start,
                            stop=stop,
                            step=step)
 
         self.frames = []
 
-    def _single_frame(self):
-        self.frames.append(self._ts.frame)
+    def _single_frame(self, timestep):
+        self.frames.append(timestep.frame)
 
 
 class TestAnalysisBase(object):
@@ -49,28 +48,28 @@ class TestAnalysisBase(object):
         del self.u
 
     def test_default(self):
-        an = FrameAnalysis(self.u.trajectory)
+        an = FrameAnalysis(self.u)
         assert_(an.nframes == len(self.u.trajectory))
 
         an.run()
         assert_(an.frames == range(len(self.u.trajectory)))
 
     def test_start(self):
-        an = FrameAnalysis(self.u.trajectory, start=20)
+        an = FrameAnalysis(self.u, start=20)
         assert_(an.nframes == len(self.u.trajectory) - 20)
 
         an.run()
         assert_(an.frames == range(20, len(self.u.trajectory)))
 
     def test_stop(self):
-        an = FrameAnalysis(self.u.trajectory, stop=20)
+        an = FrameAnalysis(self.u, stop=20)
         assert_(an.nframes == 20)
 
         an.run()
         assert_(an.frames == range(20))
         
     def test_step(self):
-        an = FrameAnalysis(self.u.trajectory, step=20)
+        an = FrameAnalysis(self.u, step=20)
         assert_(an.nframes == 5)
 
         an.run()

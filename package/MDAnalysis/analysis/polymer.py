@@ -73,12 +73,12 @@ class PersistenceLength(AnalysisBase):
         if not all( l == chainlength for l in lens):
             raise ValueError("Not all AtomGroups were the same size")
 
-        self._setup_frames(atomgroups[0].universe.trajectory,
+        self._setup_frames(atomgroups[0].universe,
                            start, stop, step)
 
         self._results = np.zeros(chainlength - 1, dtype=np.float32)
 
-    def _single_frame(self):
+    def _single_frame(self,timestep):
         # could optimise this by writing a "self dot array"
         # we're only using the upper triangle of np.inner
         # function would accept a bunch of coordinates and spit out the
