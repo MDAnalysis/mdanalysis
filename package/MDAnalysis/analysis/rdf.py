@@ -80,11 +80,10 @@ class InterRDF(AnalysisBase):
     def __init__(self, g1, g2,
                  nbins=75, range=(0.0, 15.0), exclusion_block=None,
                  start=None, stop=None, step=None):
-        self.g1 = g1
-        self.g2 = g2
-        self.u = g1.universe
+        self._ags = [g1, g2]
+        self._universe = g1.universe
 
-        self._setup_frames(self.u,
+        self._setup_frames(self._universe,
                            start=start,
                            stop=stop,
                            step=step)
@@ -92,19 +91,22 @@ class InterRDF(AnalysisBase):
         self.rdf_settings = {'bins':nbins,
                              'range':range}
 
+        self.results = {}
+
         # Empty histogram to store the RDF
         count, edges = np.histogram([-1], **self.rdf_settings)
         count = count.astype(np.float64)
         count *= 0.0
-        self.count = count
+        self.results['count'] = count
         self.edges = edges
         self.bins = 0.5 * (edges[:-1] + edges[1:])
 
         # Need to know average volume
-        self.volume = 0.0
+        self.results['volume'] = 0.0
 
         # Allocate a results array which we will reuse
-        self._result = np.zeros((len(self.g1), len(self.g2)), dtype=np.float64)
+        self._result = np.zeros((len(self._ags[0]), len(self._ags[1])),
+                                dtype=np.float64)
         # If provided exclusions, create a mask of _result which
         # lets us take these out
         if not exclusion_block is None:
@@ -115,22 +117,28 @@ class InterRDF(AnalysisBase):
             self._exclusion_block = None
             self._exclusion_mask = None
 
+    def _add_other_results(self, other):
+        for k in ['count', 'volume']:
+            self.results[k] += other[k]
+
     def _single_frame(self,timestep):
-        distances.distance_array(self.g1.positions, self.g2.positions,
-                                 box=self.u.dimensions, result=self._result)
+        distances.distance_array(
+            self._ags[0].positions,
+            self._ags[1].positions,
+            box=self._ags[0].dimensions,
+            result=self._result)
         # Maybe exclude same molecule distances
         if not self._exclusion_mask is None:
             self._exclusion_mask[:] = self._maxrange
 
         count = np.histogram(self._result, **self.rdf_settings)[0]
-        self.count += count
-
-        self.volume += timestep.volume
+        self.results['count'] += count
+        self.results['volume'] += timestep.volume
 
     def _conclude(self):
         # Number of each selection
-        nA = len(self.g1)
-        nB = len(self.g2)
+        nA = len(self._ags[0])
+        nB = len(self._ags[1])
         N = nA * nB
 
         # If we had exclusions, take these into account
@@ -144,10 +152,10 @@ class InterRDF(AnalysisBase):
         vol *= 4/3.0 * np.pi
 
         # Average number density
-        box_vol = self.volume / self.nframes
+        box_vol = self.results['volume'] / self.nframes
         density = N / box_vol
 
-        rdf = self.count / (density * vol * self.nframes)
+        rdf = self.results['count'] / (density * vol * self.nframes)
 
         self.rdf = rdf
 
