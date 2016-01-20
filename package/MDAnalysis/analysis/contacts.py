@@ -584,19 +584,33 @@ class ContactAnalysis1(object):
         """
         return os.path.isfile(self.output) and not (self.force or force)
 
-    def run(self, store=True, force=False, start_frame=0, end_frame=None, step_value=1):
+    def run(self, store=True, force=False, start=0, stop=None, step=1, **kwargs):
         """Analyze trajectory and produce timeseries.
 
         Stores results in :attr:`ContactAnalysis1.timeseries` (if store=True)
         and writes them to a data file. The average q is written to a second
         data file.
-        *start_frame*
-            The value of the first frame number in the trajectory to be used (default: frame 0)
-        *end_frame*
-            The value of the last frame number in the trajectory to be used (default: None -- use all frames)
-        *step_value*
+        *start*
+            The value of the first frame index in the trajectory to be used (default: index 0)
+        *stop*
+            The value of the last frame index in the trajectory to be used (default: None -- use all frames)
+        *step*
             The number of frames to skip during trajectory iteration (default: use every frame)
         """
+        import warnings
+
+        if 'start_frame' in kwargs:
+            warnings.warn("start_frame argument has been deprecated, use start instead")
+            start = kwargs['start_frame']
+
+        if 'end_frame' in kwargs:
+            warnings.warn("end_frame argument has been deprecated, use stop instead")
+            stop = kwargs['end_frame']
+
+        if 'step_value' in kwargs:
+            warnings.warn("step_value argument has been deprecated, use step instead")
+            step = kwargs['step_value']
+
         if self.output_exists(force=force):
             import warnings
 
@@ -614,10 +628,10 @@ class ContactAnalysis1(object):
             A, B = self.selections
             # determine the end_frame value to use:
             total_frames = self.universe.trajectory.n_frames
-            if not end_frame:
+            if not stop:
                 # use the total number of frames in trajectory if no final value specified
                 end_frame = total_frames
-            for ts in self.universe.trajectory[start_frame:end_frame:step_value]:
+            for ts in self.universe.trajectory[start:stop:step]:
                 frame = ts.frame
                 # use pre-allocated distance array to save a little bit of time
                 MDAnalysis.lib.distances.distance_array(A.coordinates(), B.coordinates(), result=self.d)
@@ -629,7 +643,7 @@ class ContactAnalysis1(object):
                 out.write("{frame:4d}  {q1:8.6f} {n1:5d}\n".format(**vars()))
         if store:
             self.timeseries = np.array(records).T
-        n_frames = len(range(total_frames)[start_frame:end_frame:step_value])
+        n_frames = len(range(total_frames)[start:stop:step])
         self.qavg /= n_frames
         np.savetxt(self.outarray, self.qavg, fmt="%8.6f")
         return self.output
