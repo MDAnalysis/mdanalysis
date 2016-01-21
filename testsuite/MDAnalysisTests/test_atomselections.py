@@ -779,7 +779,9 @@ class TestSelectionErrors(object):
                 'resid and name C',  # rangesel not finding vals
                 'resnum ',
                 'bynum or protein',
-                'prop mass < 4.0 hello',
+                'prop mass < 4.0 hello',  # unused token
+                'mass > 10. and group this',  # missing group
+                'mass > 10. and fullgroup this',  # missing fullgroup
         ]:
             yield self.selection_fail, selstr
 

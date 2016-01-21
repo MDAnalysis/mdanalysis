@@ -36,7 +36,6 @@ import numpy as np
 from numpy.lib.utils import deprecate
 from Bio.KDTree import KDTree
 import warnings
-import logging
 import six
 from six.moves import zip
 
@@ -44,9 +43,6 @@ from MDAnalysis.core import flags
 from ..lib import distances
 from ..lib.mdamath import triclinic_vectors
 from ..exceptions import SelectionError, NoDataError
-
-
-logger = logging.getLogger(__name__)
 
 
 def unique(ag):
@@ -255,12 +251,9 @@ class AroundSelection(DistanceSelection):
         for typical problems.
         Limitations: always ignores periodicity
         """
-        #logger.debug("In Around KDTree")
         sel = self.sel.apply(group)
-        #logger.debug("Reference group is {0}".format(sel))
         # All atoms in group that aren't in sel
         sys = group[~np.in1d(group.indices, sel.indices)]
-        #logger.debug("Other group is {0}".format(sys))
 
         kdtree = KDTree(dim=3, bucket_size=10)
         kdtree.set_coords(sys.positions)
@@ -268,29 +261,20 @@ class AroundSelection(DistanceSelection):
         for atom in sel.positions:
             kdtree.search(atom, self.cutoff)
             found_indices.append(kdtree.get_indices())
-        #logger.debug("Found indices are {0}".format(found_indices))
         # These are the indices from SYS that were seen when
         # probing with SEL
         unique_idx = np.unique(np.concatenate(found_indices))
-        #logger.debug("Unique indices are {0}".format(unique_idx))
         return unique(sys[unique_idx.astype(np.int32)])
 
     def _apply_distmat(self, group):
-        #logger.debug("In Around Distmat")
         sel = self.sel.apply(group)
-        #logger.debug("Sel is {0}".format(sel))
         sys = group[~np.in1d(group.indices, sel.indices)]
-        #logger.debug("Sys is {0}".format(sys))
 
         box = group.dimensions if self.periodic else None
         dist = distances.distance_array(
             sys.positions, sel.positions, box)
-        #logger.debug("dist has shape {0}".format(dist.shape))
-        #logger.debug("dist is {0}".format(dist))
 
         mask = (dist <= self.cutoff).any(axis=1)
-
-        #logger.debug("mask has shape {0}".format(mask.shape))
 
         return unique(sys[mask])
 
@@ -536,21 +520,28 @@ class SelgroupSelection(Selection):
 
     def __init__(self, parser, tokens):
         grpname = tokens.popleft()
-        self.grp = parser.selgroups[grpname]
+        try:
+            self.grp = parser.selgroups[grpname]
+        except KeyError:
+            raise ValueError("Failed to find group: {0}".format(grpname))
 
     def apply(self, group):
-        idx = np.intersect1d(self.grp.indices, group.indices)
-        return group.universe.atoms[np.unique(idx)]
+        mask = np.in1d(group.indices, self.grp.indices)
+        return group[mask]
 
 
-@deprecate(old_name='fullgroup', new_name='global group')
 class FullSelgroupSelection(Selection):
     token = 'fullgroup'
 
     def __init__(self, parser, tokens):
         grpname = tokens.popleft()
-        self.grp = parser.selgroups[grpname]
+        try:
+            self.grp = parser.selgroups[grpname]
+        except KeyError:
+            raise ValueError("Failed to find group: {0}".format(grpname))
 
+    @deprecate(old_name='fullgroup', new_name='global group',
+               message=' This will be removed in v0.15.0')
     def apply(self, group):
         return unique(self.grp)
 
