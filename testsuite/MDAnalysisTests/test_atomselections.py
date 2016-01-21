@@ -781,10 +781,16 @@ class TestSelectionErrors(object):
                 'same this as resid 1',  # same selection
                 'same resid resname mass 5.0',  # same / expect
                 'name H and',  # check all tokens used
-                'name H Ca',
                 'naem H',  # unkonwn (misplet) opertaor
+                'resid and name C',  # rangesel not finding vals
+                'resnum ',
+                'bynum or protein',
+                'prop mass < 4.0 hello',  # unused token
+                'mass > 10. and group this',  # missing group
+                'mass > 10. and fullgroup this',  # missing fullgroup
         ]:
             yield self.selection_fail, selstr
+
 
 def test_segid_and_resid():
     u = mda.Universe(PDB_full)
@@ -794,3 +800,55 @@ def test_segid_and_resid():
     ref = ag.select_atoms('segid B').select_atoms('resid 1-100')
 
     assert_array_equal(ag.indices, ref.indices)
+
+
+class TestImplicitOr(object):
+    def setUp(self):
+        self.u = mda.Universe(PSF)
+
+    def tearDown(self):
+        del self.u
+
+    def _check_sels(self, ref, sel):
+        ref = self.u.select_atoms(ref)
+        sel = self.u.select_atoms(sel)
+
+        assert_array_equal(ref.indices, sel.indices)
+
+    def test_string_selections(self):
+        for ref, sel in (
+                ('name HT1 or name HT2 or name HT3', 'name HT1 HT2 HT3'),
+                ('type 2 or type 3 or type 4', 'type 2 3 4'),
+                ('resname MET or resname GLY', 'resname MET GLY'),
+                ('name H* or name N', 'name H* N'),
+                ('(name N or name HT1) and (resname MET or resname GLY)',
+                 'name N HT1 and resname MET GLY'),
+        ):
+            yield self._check_sels, ref, sel
+
+    def test_segids(self):
+        # Don't put me into generator, I use a different Universe
+        # (With multiple segids)
+        u = mda.Universe(PDB_full)
+        ref = u.select_atoms('segid A or segid B')
+        ag = u.select_atoms('segid A B')
+
+        assert_array_equal(ref.indices, ag.indices)
+
+    def test_range_selections(self):
+        # All these selections just use numeric types,
+        # So loop over what type of selections,
+        # And apply the same numeric constraints to all
+        for seltype in ['resid', 'resnum', 'bynum']:
+            for ref, sel in (
+                    ('{typ} 1 or {typ} 2', '{typ} 1 2'),
+                    ('{typ} 1:10 or {typ} 22', '{typ} 1:10 22'),
+                    ('{typ} 1:10 or {typ} 20:30', '{typ} 1:10 20:30'),
+                    ('{typ} 1-5 or {typ} 7', '{typ} 1-5 7'),
+                    ('{typ} 1-5 or {typ} 7:10 or {typ} 12',
+                     '{typ} 1-5 7:10 12'),
+                    ('{typ} 1 or {typ} 3 or {typ} 5:10', '{typ} 1 3 5:10'),
+            ):
+                yield (self._check_sels,
+                       ref.format(typ=seltype),
+                       sel.format(typ=seltype))

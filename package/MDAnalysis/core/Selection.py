@@ -36,16 +36,13 @@ import numpy as np
 from numpy.lib.utils import deprecate
 from Bio.KDTree import KDTree
 import warnings
-import logging
 import six
+from six.moves import zip
 
 from MDAnalysis.core import flags
 from ..lib import distances
 from ..lib.mdamath import triclinic_vectors
 from ..exceptions import SelectionError, NoDataError
-
-
-logger = logging.getLogger(__name__)
 
 
 def unique(ag):
@@ -57,7 +54,107 @@ def unique(ag):
         return ag
 
 
+def is_keyword(val):
+    """Is val a selection keyword?
+
+    Returns False on any of the following strings:
+      - keys in SELECTIONDICT (tokens from Selection objects)
+      - keys in OPERATIONS (tokens from LogicOperations)
+      - (Parentheses)
+      - The value `None` (used as EOF in selection strings)
+    """
+    return (val in _SELECTIONDICT or
+            val in _OPERATIONS or
+            val in ['(', ')'] or
+            val is None)
+
+
+def grab_not_keywords(tokens):
+    """Pop tokens from the left until you hit a keyword
+
+    Parameters
+    ----------
+    tokens : collections.deque
+        deque of strings, some tokens some not
+
+    Returns
+    -------
+    values : list of strings
+        All non keywords found until a keyword was hit
+
+    Note
+    ----
+    This function pops the values from the deque
+
+    Examples
+    --------
+    grab_not_keywords(['H', 'and','resname', 'MET'])
+    >>> ['H']
+
+    grab_not_keywords(['H', 'Ca', 'N', 'and','resname', 'MET'])
+    >>> ['H', 'Ca' ,'N']
+
+    grab_not_keywords(['and','resname', 'MET'])
+    >>> []
+    """
+    values = []
+    while not is_keyword(tokens[0]):
+        val = tokens.popleft()
+        # Insert escape characters here to use keywords as names?
+        values.append(val)
+    return values
+
+
 _SELECTIONDICT = {}
+_OPERATIONS = {}
+
+
+# And and Or are exception and aren't strictly a Selection
+# as they work on other Selections rather than doing work themselves.
+# So their init is a little strange too....
+class _Operationmeta(type):
+    def __init__(cls, name, bases, classdict):
+        type.__init__(type, name, bases, classdict)
+        try:
+            _OPERATIONS[classdict['token']] = cls
+        except KeyError:
+            pass
+
+
+class LogicOperation(six.with_metaclass(_Operationmeta, object)):
+    def __init__(self, lsel, rsel):
+        self.rsel = rsel
+        self.lsel = lsel
+
+
+class AndOperation(LogicOperation):
+    token = 'and'
+    precedence = 3
+
+    def apply(self, group):
+        rsel = self.rsel.apply(group)
+        lsel = self.lsel.apply(group)
+
+        # Mask which lsel indices appear in rsel
+        mask = np.in1d(rsel.indices, lsel.indices)
+        # and mask rsel according to that
+        return unique(rsel[mask])
+
+
+class OrOperation(LogicOperation):
+    token = 'or'
+    precedence = 3
+
+    def apply(self, group):
+        lsel = self.lsel.apply(group)
+        rsel = self.rsel.apply(group)
+
+        # Find unique indices from both these AtomGroups
+        # and slice master list using them
+        idx = np.union1d(lsel.indices, rsel.indices).astype(np.int32)
+
+        return group.universe.atoms[idx]
+
 
 class _Selectionmeta(type):
     def __init__(cls, name, bases, classdict):
@@ -117,37 +214,6 @@ class ByResSelection(UnarySelection):
         return unique(group[mask])
 
 
-# And and Or are exception and aren't strictly a Selection
-# as they work on other Selections rather than doing work themselves.
-# So their init is a little strange too....
-class LogicOperation(object):
-    def __init__(self, lsel, rsel):
-        self.rsel = rsel
-        self.lsel = lsel
-
-class AndOperation(LogicOperation):
-    def apply(self, group):
-        rsel = self.rsel.apply(group)
-        lsel = self.lsel.apply(group)
-
-        # Mask which lsel indices appear in rsel
-        mask = np.in1d(rsel.indices, lsel.indices)
-        # and mask rsel according to that
-        return unique(rsel[mask])
-
-
-class OrOperation(LogicOperation):
-    def apply(self, group):
-        lsel = self.lsel.apply(group)
-        rsel = self.rsel.apply(group)
-
-        # Find unique indices from both these AtomGroups
-        # and slice master list using them
-        idx = np.union1d(lsel.indices, rsel.indices).astype(np.int32)
-
-        return group.universe.atoms[idx]
-
-
 class DistanceSelection(Selection):
     """Base class for distance search based selections
 
@@ -185,12 +251,9 @@ class AroundSelection(DistanceSelection):
         for typical problems.
         Limitations: always ignores periodicity
         """
-        logger.debug("In Around KDTree")
         sel = self.sel.apply(group)
-        logger.debug("Reference group is {}".format(sel))
         # All atoms in group that aren't in sel
         sys = group[~np.in1d(group.indices, sel.indices)]
-        logger.debug("Other group is {}".format(sys))
 
         kdtree = KDTree(dim=3, bucket_size=10)
         kdtree.set_coords(sys.positions)
@@ -198,29 +261,20 @@ class AroundSelection(DistanceSelection):
         for atom in sel.positions:
             kdtree.search(atom, self.cutoff)
             found_indices.append(kdtree.get_indices())
-        logger.debug("Found indices are {}".format(found_indices))
         # These are the indices from SYS that were seen when
         # probing with SEL
         unique_idx = np.unique(np.concatenate(found_indices))
-        logger.debug("Unique indices are {}".format(unique_idx))
         return unique(sys[unique_idx.astype(np.int32)])
 
     def _apply_distmat(self, group):
-        logger.debug("In Around Distmat")
         sel = self.sel.apply(group)
-        logger.debug("Sel is {}".format(sel))
         sys = group[~np.in1d(group.indices, sel.indices)]
-        logger.debug("Sys is {}".format(sys))
 
         box = group.dimensions if self.periodic else None
         dist = distances.distance_array(
             sys.positions, sel.positions, box)
-        logger.debug("dist has shape {}".format(dist.shape))
-        logger.debug("dist is {}".format(dist))
 
         mask = (dist <= self.cutoff).any(axis=1)
-
-        logger.debug("mask has shape {}".format(mask.shape))
 
         return unique(sys[mask])
 
@@ -468,21 +522,28 @@ class SelgroupSelection(Selection):
 
     def __init__(self, parser, tokens):
         grpname = tokens.popleft()
-        self.grp = parser.selgroups[grpname]
+        try:
+            self.grp = parser.selgroups[grpname]
+        except KeyError:
+            raise ValueError("Failed to find group: {0}".format(grpname))
 
     def apply(self, group):
-        idx = np.intersect1d(self.grp.indices, group.indices)
-        return group.universe.atoms[np.unique(idx)]
+        mask = np.in1d(group.indices, self.grp.indices)
+        return group[mask]
 
 
-@deprecate(old_name='fullgroup', new_name='global group')
 class FullSelgroupSelection(Selection):
     token = 'fullgroup'
 
     def __init__(self, parser, tokens):
         grpname = tokens.popleft()
-        self.grp = parser.selgroups[grpname]
+        try:
+            self.grp = parser.selgroups[grpname]
+        except KeyError:
+            raise ValueError("Failed to find group: {0}".format(grpname))
 
+    @deprecate(old_name='fullgroup', new_name='global group',
+               message=' This will be removed in v0.15.0')
     def apply(self, group):
         return unique(self.grp)
 
@@ -492,23 +553,22 @@ class StringSelection(Selection):
 
     Supports the use of wildcards at the end of strings
     """
-    badtokens = {'(', ')', 'and', 'or', 'not', 'segid', 'resid', 'resname'
-                 'name', 'type'}
-
     def __init__(self, parser, tokens):
-        data = tokens.popleft()
-        if data in self.badtokens:
-            raise ValueError("Unexpected token: {}".format(data))
+        vals = grab_not_keywords(tokens)
+        if not vals:
+            raise ValueError("Unexpected token '{0}'".format(tokens[0]))
 
-        self.val = data
+        self.values = vals
 
     def apply(self, group):
-        wc_pos = self.val.find('*')
-        if wc_pos == -1:  # No wildcard found
-            mask = getattr(group, self.field) == self.val
-        else:
-            values = getattr(group, self.field).astype(np.str_)
-            mask = np.char.startswith(values, self.val[:wc_pos])
+        mask = np.zeros(len(group), dtype=np.bool)
+        for val in self.values:
+            wc_pos = val.find('*')
+            if wc_pos == -1:  # No wildcard found
+                mask |= getattr(group, self.field) == val
+            else:
+                values = getattr(group, self.field).astype(np.str_)
+                mask |= np.char.startswith(values, val[:wc_pos])
 
         return unique(group[mask])
 
@@ -552,28 +612,46 @@ class RangeSelection(Selection):
       resid 1:10
     """
     def __init__(self, parser, tokens):
-        data = tokens.popleft()
-        try:
-            lower = int(data)
-            upper = None
-        except ValueError:
-            # check if in appropriate format 'lower:upper' or 'lower-upper'
-            selrange = re.match("(\d+)[:-](\d+)", data)
-            if not selrange:
-                raise ValueError(
-                    "Failed to parse number: {0}".format(data))
-            lower, upper = map(int, selrange.groups())
+        values = grab_not_keywords(tokens)
+        if not values:
+            raise ValueError("Unexpected token: '{0}'".format(tokens[0]))
 
-        self.lower = lower
-        self.upper = upper
+        uppers = []
+        lowers = []
+
+        for val in values:
+            try:
+                lower = int(val)
+                upper = None
+            except ValueError:
+                # check if in appropriate format 'lower:upper' or 'lower-upper'
+                selrange = re.match("(\d+)[:-](\d+)", val)
+                if not selrange:
+                    raise ValueError(
+                        "Failed to parse number: {0}".format(val))
+                lower, upper = map(int, selrange.groups())
+
+            lowers.append(lower)
+            uppers.append(upper)
+
+        self.lowers = lowers
+        self.uppers = uppers
+
+    def _get_vals(self, group):
+        return getattr(group, self.field)
 
     def apply(self, group):
-        vals = getattr(group, self.field)
-        if self.upper is not None:
-            mask = vals >= self.lower
-            mask &= vals <= self.upper
-        else:
-            mask = vals == self.lower
+        mask = np.zeros(len(group), dtype=np.bool)
+        vals = self._get_vals(group)
+
+        for upper, lower in zip(self.uppers, self.lowers):
+            if upper is not None:
+                thismask = vals >= lower
+                thismask &= vals <= upper
+            else:
+                thismask = vals == lower
+
+            mask |= thismask
         return unique(group[mask])
 
 
@@ -590,16 +668,10 @@ class ResnumSelection(RangeSelection):
 class ByNumSelection(RangeSelection):
     token = 'bynum'
 
-    def apply(self, group):
+    def _get_vals(self, group):
         # In this case we'll use 1 indexing since that's what the
         # user will be familiar with
-        indices = group.indices + 1
-        if self.upper is not None:
-            mask = indices >= self.lower
-            mask &= indices <= self.upper
-        else:
-            mask = indices == self.lower
-        return unique(group[mask])
+        return group.indices + 1
 
 
 class ProteinSelection(Selection):
@@ -878,22 +950,6 @@ class SelectionParser(object):
                        | name [value]
                        | type [value]
    """
-
-    #Here are the symbolic tokens that we'll process:
-    LPAREN = '('
-    RPAREN = ')'
-    AND = 'and'
-    OR = 'or'
-
-    operations = dict([
-        (AND, AndOperation),
-        (OR, OrOperation),
-    ])
-    op_precedence = dict([
-         (AND, 3),
-         (OR, 3),
-    ])
-
     # Borg pattern: http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/66531
     _shared_state = {}
 
@@ -944,20 +1000,20 @@ class SelectionParser(object):
 
     def parse_expression(self, p):
         exp1 = self._parse_subexp()
-        while (self.tokens[0] in self.operations and
-               self.op_precedence[self.tokens[0]] >= p):  # bin ops
-            op = self.tokens.popleft()
-            q = 1 + self.op_precedence[op]
+        while (self.tokens[0] in _OPERATIONS and 
+               _OPERATIONS[self.tokens[0]].precedence >= p):
+            op = _OPERATIONS[self.tokens.popleft()]
+            q = 1 + op.precedence
             exp2 = self.parse_expression(q)
-            exp1 = self.operations[op](exp1, exp2)
+            exp1 = op(exp1, exp2)
         return exp1
 
     def _parse_subexp(self):
         op = self.tokens.popleft()
 
-        if op == self.LPAREN:
+        if op == '(':
             exp = self.parse_expression(0)
-            self.expect(self.RPAREN)
+            self.expect(')')
             return exp
 
         try:

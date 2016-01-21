@@ -24,6 +24,8 @@ API Changes
 
 Enhancement
   * Offsets reading for xtc/trr files has been sped up. (Issue #441)
+  * select_atoms now implicitly ORs multiple values after a keyword for
+    many types of selections (Issue #345)
 
 Changes
 

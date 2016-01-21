@@ -2827,11 +2827,199 @@ class AtomGroup(object):
                 o.translate(s)
 
     def select_atoms(self, selstr, *othersel, **selgroups):
-        """Selection of atoms using the MDAnalysis selection syntax.
+        """Select atoms using a MDAnalysis selection string.
 
-        AtomGroup.select_atoms(selection[,selection[,...]], [groupname=atomgroup[,groupname=atomgroup[,...]]])
+        Parameters
+        ----------
+        sel : str
+            The selection string to be parsed (following the language below)
+        *othersel : str, optional
+            More selection strings to be parsed
+        **selgroups : AtomGroup(s), optional
+            groups to be referred to using the 'group' keyword
 
-        .. SeeAlso:: :meth:`Universe.select_atoms`
+        Returns
+        -------
+        A :class:`AtomGroup`, with atoms sorted according to their
+        index.  This AtomGroup will not contain any duplicate atoms,
+        even if the original selection had so.
+
+        Note
+        ----
+        If exact ordering of atoms is required (for instance, for
+        :meth:`~AtomGroup.angle` or :meth:`~AtomGroup.dihedral` calculations)
+        then one supplies selections *separately* in the required order.
+        For example::
+           ag.select_atoms('name HT*', 'name N')
+        Gives anything matching HT* before anything matching N
+
+        Examples
+        --------
+        The selection parser understands the following *keywords*:
+
+        Simple field selections
+        -----------------------
+        The following selections allow implicit OR of any number of values after
+        their keyword. For example::
+            'name HT1 HT2' == 'name HT1 or name HT2'
+        They also allow the use of the wildcard character '*', for example::
+            'name HT*'
+        Selects all atoms whose name starts with 'HT'
+
+        name *atom-name*
+            select by atom name (as given in the topology). Often, this is
+            force field dependent.
+            e.g. ``name CA`` (for C alpha atoms)
+            or ``name OW`` (for SPC water oxygen)
+        type *atom-type*
+            select by atom type; this is either a string or a number and
+            depends on the force field; it is read from the topology file
+            (e.g. the CHARMM PSF file contains numeric atom types).
+        resname *residue-name*
+            select by residue name, e.g. ``resname LYS``
+        segid *seg-name*
+            select by segid (as given in the topology),
+            e.g. ``segid 4AKE`` or ``segid DMPC``
+        altloc *alternative-location*
+            a selection for atoms where alternative locations are available,
+            which is often the case with high-resolution crystal structures
+            e.g. `resid 4 and resname ALA and altloc B` selects only the
+            atoms of ALA-4 that have an altloc B record.
+
+        Numerical ranges
+        ----------------
+        These selections support implicit OR as above, and also selecting
+        a range of numerical values using either ':' or '-'
+        For example::
+            'resid 1:10'
+        Selects all resid from 1 to 10 inclusive
+            'resid 1 3 5 20-30'
+        Selects 1, 3, 5, and 20 through 30
+
+        resid *residue-number-range*
+            resid can take a single residue number or a range of numbers.
+            A residue number ("resid") is taken directly from the topology.
+        resnum *resnum-number-range*
+            resnum is the canonical residue number; typically it is set to
+            the residue id in the original PDB structure.
+        bynum *index-range*
+            selects all atoms within a range of (1-based) inclusive indices,
+            e.g. ``bynum 1`` selects the first atom in the universe;
+            ``bynum 5:10`` selects atoms 5 through 10 inclusive. All atoms
+            in the :class:`MDAnalysis.Universe` are consecutively numbered,
+            and the index runs from 1 up to the total number of atoms.
+
+        Convienience selections
+        -----------------------
+        protein, backbone, nucleic, nucleicbackbone, nucleicbase, nucleicsugar
+            selects all atoms that belong to a standard set of residues;
+            a protein is identfied by a hard-coded set of residue names so
+            it  may not work for esoteric residues.
+        atom *seg-name*  *residue-number*  *atom-name*
+            a selector for a single atom consisting of segid resid atomname,
+            e.g. ``DMPC 1 C2`` selects the C2 carbon of the first residue of
+            the DMPC segment
+
+        Boolean modifiers
+        -----------------
+        not
+            all atoms not in the selection. e.g. ``not protein``
+            selects all atoms that aren't part of a protein
+        and, or
+            combine two selections according to the rules of boolean
+            algebra, e.g. ``protein and not resname ALA LYS`` selects
+            all atoms that belong to a protein, but are not in a lysine
+            or alanine residue
+        parentheses '(' ')'
+            Subselections can be grouped with parentheses to evaluate
+            this before other parts of the selection
+
+        Geometric
+        ---------
+        around *distance*  *selection*
+            selects all atoms a certain cutoff away from another selection,
+            e.g. ``around 3.5 protein`` selects all atoms not belonging to
+            protein that are within 3.5 Angstroms from the protein
+        point *x* *y* *z*  *distance*
+            selects all atoms within a cutoff of a point in space, make sure
+            coordinate is separated by spaces,
+            e.g. ``point 5.0 5.0 5.0  3.5`` selects all atoms within 3.5
+            Angstroms of the coordinate (5.0, 5.0, 5.0)
+        prop [abs] *property*  *operator*  *value*
+            selects atoms based on position, using *property*  **x**, **y**,
+            or **z** coordinate. Supports the **abs** keyword (for absolute
+            value) and the following *operators*: **<, >, <=, >=, ==, !=**.
+            For example, ``prop z >= 5.0`` selects all atoms with z
+            coordinate greater than 5.0; ``prop abs z <= 5.0`` selects all
+            atoms within -5.0 <= z <= 5.0.
+        sphzone *radius* *selection*
+            Selects all atoms that are within *radius* of the center of
+            geometry of *selection*
+        sphlayer *inner radius* *outer radius* *selection*
+            Similar to sphzone, but also excludes atoms that are within
+            *inner radius* of the selection COG
+
+        Connectivity
+        ------------
+        bonded *selection*
+            selects all atoms that are bonded to selection
+            eg: ``select name H bonded name O`` selects only hydrogens
+            bonded to oxygens
+        same *keyword* as *selection*
+            Selects all atoms that have the same property as those in
+            the other *selection*
+            *keyword* can be one of:
+                x, y, z (to match the position)
+                residue, fragment, segment
+                type, segid, mass, charge, radius, bfactor
+                resid, resnum, resname, segid
+            e.g. 'same mass as name CT1' would select all atoms that
+            had the same mass as those called CT1
+        byres *selection*
+            selects all atoms that are in the same segment and residue as
+            selection,
+            e.g. specify the subselection after the byres keyword
+
+        Preexisting selections
+        ----------------------
+        group *group-name*
+            selects the atoms in the :class:`AtomGroup` passed to the
+            function as an argument named *group-name*. Only the atoms
+            common to *group-name* and the instance :meth:`~select_atoms`
+            was called from will be considered. *group-name* will be
+            included in the parsing just by comparison of atom indices.
+            This means that it is up to the user to make sure they were
+            defined in an appropriate :class:`Universe`.
+        fullgroup *group-name*
+            just like the ``group`` keyword with the difference that all the
+            atoms of *group-name* are included. The resulting selection may
+            therefore have atoms that were initially absent from the
+            instance :meth:`~select_atoms` was called from.
+            Deprecated in 0.11, use `global group` instead
+
+        Global selections
+        -----------------
+        global *selection*
+            By default, select_atoms works on the AtomGroup it is called
+            from.  By placing the global prefix, the selection is instead
+            applied to the entire Universe the AtomGroup belongs to.
+            e.g.
+                lipids.select_atoms('around 10 global protein')
+            Selects all atoms from group `lipids` which are within 10 of
+            the selection u.select_atoms('protein')
+            Without the *global* modifier, the selection `protein` would
+            have only been applied to the lipids group itself.
+
+        .. SeeAlso:: :ref:`selection-commands-label` for further details.
+
+        .. versionchanged:: 0.7.4
+           Added *resnum* selection.
+        .. versionchanged:: 0.8.1
+           Added *group* and *fullgroup* selections.
+        .. versionchanged:: 0.13.0
+           Added *bonded* selection
+        .. versionchanged:: 0.13.1
+           Added implicit OR syntax to field and range selections
         """
         atomgrp = Selection.Parser.parse(selstr, selgroups).apply(self)
         # Generate a selection for each selection string
@@ -4338,155 +4526,24 @@ class Universe(object):
         return filename, self.trajectory.format
 
     def select_atoms(self, sel, *othersel, **selgroups):
-        """Select atoms using a CHARMM selection string.
+        """Selection of atoms using the MDAnalysis selection syntax.
 
-        Returns an :class:`AtomGroup` with atoms sorted according to their
-        index in the psf (this is to ensure that there aren't any duplicates,
-        which can happen with complicated selections).
+        Parameters
+        ----------
+        sel : str
+            The selection string to be parsed (following the language below)
+        *othersel : str, optional
+            More selection strings to be parsed
+        **selgroups : AtomGroup(s), optional
+            groups to be referred to using the 'group' keyword
 
-        Existing :class:`AtomGroup` objects can be passed as named arguments,
-        which will then be available to the selection parser.
+        Returns
+        -------
+        A :class:`AtomGroup`, with atoms sorted according to their
+        index.  This AtomGroup will not contain any duplicate atoms,
+        even if the original selection had so.
 
-        Subselections can be grouped with parentheses.
-
-        Example::
-           >>> sel = universe.select_atoms("segid DMPC and not ( name H* or name O* )")
-           >>> sel
-           <AtomGroup with 3420 atoms>
-
-           >>> universe.select_atoms("around 10 group notHO", notHO=sel)
-           <AtomGroup with 1250 atoms>
-
-        .. Note::
-
-           If exact ordering of atoms is required (for instance, for
-           :meth:`~AtomGroup.angle` or :meth:`~AtomGroup.dihedral`
-           calculations) then one supplies selections *separately* in the
-           required order. Also, when multiple :class:`AtomGroup` instances are
-           concatenated with the ``+`` operator then the order of :class:`Atom`
-           instances is preserved and duplicates are not removed.
-
-        .. SeeAlso:: :ref:`selection-commands-label` for further details and examples.
-
-        The selection parser understands the following CASE SENSITIVE *keywords*:
-
-        **Simple selections**
-
-            protein, backbone, nucleic, nucleicbackbone
-                selects all atoms that belong to a standard set of residues;
-                a protein is identfied by a hard-coded set of residue names so
-                it  may not work for esoteric residues.
-            segid *seg-name*
-                select by segid (as given in the topology), e.g. ``segid 4AKE``
-                or ``segid DMPC``
-            resid *residue-number-range*
-                resid can take a single residue number or a range of numbers. A
-                range consists of two numbers separated by a colon (inclusive)
-                such as ``resid 1:5``. A residue number ("resid") is taken
-                directly from the topology.
-            resnum *resnum-number-range*
-                resnum is the canonical residue number; typically it is set to
-                the residue id in the original PDB structure.
-            resname *residue-name*
-                select by residue name, e.g. ``resname LYS``
-            name *atom-name*
-                select by atom name (as given in the topology). Often, this is
-                force field dependent. Example: ``name CA`` (for C&alpha; atoms)
-                or ``name OW`` (for SPC water oxygen)
-            type *atom-type*
-                select by atom type; this is either a string or a number and
-                depends on the force field; it is read from the topology file
-                (e.g. the CHARMM PSF file contains numeric atom types). It has
-                non-sensical values when a PDB or GRO file is used as a topology
-            atom *seg-name*  *residue-number*  *atom-name*
-                a selector for a single atom consisting of segid resid atomname,
-                e.g. ``DMPC 1 C2`` selects the C2 carbon of the first residue of
-                the DMPC segment
-            altloc *alternative-location*
-                a selection for atoms where alternative locations are available,
-                which is often the case with high-resolution crystal structures
-                e.g. `resid 4 and resname ALA and altloc B` selects only the
-                atoms of ALA-4 that have an altloc B record.
-
-        **Boolean**
-
-            not
-                all atoms not in the selection, e.g. ``not protein`` selects
-                all atoms that aren't part of a protein
-
-            and, or
-                combine two selections according to the rules of boolean
-                algebra, e.g. ``protein and not (resname ALA or resname LYS)``
-                selects all atoms that belong to a protein, but are not in a
-                lysine or alanine residue
-
-        **Geometric**
-
-            around *distance*  *selection*
-                selects all atoms a certain cutoff away from another selection,
-                e.g. ``around 3.5 protein`` selects all atoms not belonging to
-                protein that are within 3.5 Angstroms from the protein
-            point *x* *y* *z*  *distance*
-                selects all atoms within a cutoff of a point in space, make sure
-                coordinate is separated by spaces,
-                e.g. ``point 5.0 5.0 5.0  3.5`` selects all atoms within 3.5
-                Angstroms of the coordinate (5.0, 5.0, 5.0)
-            prop [abs] *property*  *operator*  *value*
-                selects atoms based on position, using *property*  **x**, **y**,
-                or **z** coordinate. Supports the **abs** keyword (for absolute
-                value) and the following *operators*: **<, >, <=, >=, ==, !=**.
-                For example, ``prop z >= 5.0`` selects all atoms with z
-                coordinate greater than 5.0; ``prop abs z <= 5.0`` selects all
-                atoms within -5.0 <= z <= 5.0.
-            sphzone *radius* *selection*
-                Selects all atoms that are within *radius* of the center of
-                geometry of *selection*
-            sphlayer *inner radius* *outer radius* *selection*
-                Similar to sphzone, but also excludes atoms that are within
-                *inner radius* of the selection COG
-
-        **Connectivity**
-
-            byres *selection*
-                selects all atoms that are in the same segment and residue as
-                selection, e.g. specify the subselection after the byres keyword
-            bonded *selection*
-                selects all atoms that are bonded to selection
-                eg: ``select name H bonded name O`` selects only hydrogens
-                bonded to oxygens
-
-        **Index**
-
-            bynum *index-range*
-                selects all atoms within a range of (1-based) inclusive indices,
-                e.g. ``bynum 1`` selects the first atom in the universe;
-                ``bynum 5:10`` selects atoms 5 through 10 inclusive. All atoms
-                in the :class:`MDAnalysis.Universe` are consecutively numbered,
-                and the index runs from 1 up to the total number of atoms.
-
-        **Preexisting selections**
-
-            group *group-name*
-                selects the atoms in the :class:`AtomGroup` passed to the
-                function as an argument named *group-name*. Only the atoms
-                common to *group-name* and the instance :meth:`~select_atoms`
-                was called from will be considered. *group-name* will be
-                 included in the parsing just by comparison of atom indices.
-                This means that it is up to the user to make sure they were
-                defined in an appropriate :class:`Universe`.
-
-            fullgroup *group-name*
-                just like the ``group`` keyword with the difference that all the
-                atoms of *group-name* are included. The resulting selection may
-                therefore have atoms that were initially absent from the
-                instance :meth:`~select_atoms` was called from.
-
-        .. versionchanged:: 0.7.4
-           Added *resnum* selection.
-        .. versionchanged:: 0.8.1
-           Added *group* and *fullgroup* selections.
-        .. versionchanged:: 0.13.0
-           Added *bonded* selection
+        .. SeeAlso:: :meth:`AtomGroup.select_atoms` for more details.
         """
         return self.atoms.select_atoms(sel, *othersel, **selgroups)
 
