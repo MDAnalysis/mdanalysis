@@ -38,7 +38,7 @@ from Bio.KDTree import KDTree
 import warnings
 import logging
 import six
-import itertools
+from six.moves import zip
 
 from MDAnalysis.core import flags
 from ..lib import distances
@@ -158,6 +158,7 @@ class OrOperation(LogicOperation):
         idx = np.union1d(lsel.indices, rsel.indices).astype(np.int32)
 
         return group.universe.atoms[idx]
+
 
 class _Selectionmeta(type):
     def __init__(cls, name, bases, classdict):
@@ -650,7 +651,7 @@ class RangeSelection(Selection):
         mask = np.zeros(len(group), dtype=np.bool)
         vals = self._get_vals(group)
 
-        for upper, lower in itertools.izip(self.uppers, self.lowers):
+        for upper, lower in zip(self.uppers, self.lowers):
             if upper is not None:
                 thismask = vals >= lower
                 thismask &= vals <= upper

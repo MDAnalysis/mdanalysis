@@ -783,6 +783,7 @@ class TestSelectionErrors(object):
         ]:
             yield self.selection_fail, selstr
 
+
 def test_segid_and_resid():
     u = mda.Universe(PDB_full)
 

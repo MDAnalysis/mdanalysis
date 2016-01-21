@@ -2825,7 +2825,7 @@ class AtomGroup(object):
                 o.translate(s)
 
     def select_atoms(self, selstr, *othersel, **selgroups):
-        """Select atoms using a CHARMM selection string.
+        """Select atoms using a MDAnalysis selection string.
 
         Parameters
         ----------
