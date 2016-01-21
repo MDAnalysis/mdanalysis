@@ -600,15 +600,18 @@ class ContactAnalysis1(object):
         import warnings
 
         if 'start_frame' in kwargs:
-            warnings.warn("start_frame argument has been deprecated, use start instead", DeprecationWarning)
+            warnings.warn("start_frame argument has been deprecated, use start instead --"
+                           "removal targeted for version 0.15.0", DeprecationWarning)
             start = kwargs['start_frame']
 
         if 'end_frame' in kwargs:
-            warnings.warn("end_frame argument has been deprecated, use stop instead", DeprecationWarning)
+            warnings.warn("end_frame argument has been deprecated, use stop instead --"
+                           "removal targeted for version 0.15.0", DeprecationWarning)
             stop = kwargs['end_frame']
 
         if 'step_value' in kwargs:
-            warnings.warn("step_value argument has been deprecated, use step instead", DeprecationWarning)
+            warnings.warn("step_value argument has been deprecated, use step instead --"
+                           "removal targeted for version 0.15.0", DeprecationWarning)
             step = kwargs['step_value']
 
         if self.output_exists(force=force):
