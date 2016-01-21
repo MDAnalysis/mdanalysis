@@ -80,6 +80,8 @@ directly needed to perform the analysis.
 
 # import copy #unused
 
+from six.moves import range
+
 import numpy as np
 from numpy import linalg
 
@@ -285,7 +287,7 @@ class GNMAnalysis(object):
             matrix = self.generate_kirchoff()
             try:
                 [u, w, v] = linalg.svd(matrix)
-            except:
+            except linalg.LinAlgError:
                 print "\nFrame skip at", timestep, "(SVD failed to converge). Cutoff", self.cutoff
                 continue
             #Save the results somewhere useful in some useful format. Usefully.

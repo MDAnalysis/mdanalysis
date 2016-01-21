@@ -13,6 +13,8 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+from six.moves import range
+
 import cStringIO
 import os.path
 import tempfile
@@ -102,7 +104,7 @@ class TestIterable(TestCase):
         assert_equal(util.iterable(()), True)
 
     def test_iterator(self):
-        assert_equal(util.iterable(xrange(3)), True)
+        assert_equal(util.iterable(range(3)), True)
 
     def test_arrays(self):
         assert_equal(util.iterable(np.array([1, 2, 3])), True)

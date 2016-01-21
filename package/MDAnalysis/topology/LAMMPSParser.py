@@ -38,6 +38,8 @@ Deprecated classes
 """
 from __future__ import absolute_import
 
+from six.moves import range
+
 import numpy as np
 import logging
 import string
@@ -498,7 +500,7 @@ class LAMMPSDataConverter(object):  # pragma: no cover
                         # skip line
                         file_iter.next()
                         data = []
-                        for i in xrange(headers[h]):
+                        for i in range(headers[h]):
                             fields = file_iter.next().strip().split()
                             data.append(tuple(map(conv_float, fields[1:])))
                         sections[line] = data
@@ -514,7 +516,7 @@ class LAMMPSDataConverter(object):  # pragma: no cover
                     elif line == "Atoms":
                         file_iter.next()
                         data = []
-                        for i in xrange(headers["atoms"]):
+                        for i in range(headers["atoms"]):
                             fields = file_iter.next().strip().split()
                             index = int(fields[0]) - 1
                             a = LAMMPSAtom(index=index, name=fields[2], type=int(fields[2]), chain_id=int(fields[1]),
@@ -526,7 +528,7 @@ class LAMMPSDataConverter(object):  # pragma: no cover
                     elif line == "Masses":
                         file_iter.next()
                         data = []
-                        for i in xrange(headers["atom type"]):
+                        for i in range(headers["atom type"]):
                             fields = file_iter.next().strip().split()
                             print "help"
                 self.positions = positions

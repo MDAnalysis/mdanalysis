@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -156,19 +156,18 @@ normal users.
 .. autofunction:: fasta2select
 .. autofunction:: get_matching_atoms
 """
-import os.path
-import itertools
 
+import os.path
+from six.moves import range, zip, zip_longest
 import numpy as np
+import warnings
+import logging
 
 import MDAnalysis.lib.qcprot as qcp
 from MDAnalysis.exceptions import SelectionError, SelectionWarning
 from MDAnalysis.lib.log import ProgressMeter
-
 import MDAnalysis.analysis.rms as rms
 
-import warnings
-import logging
 
 logger = logging.getLogger('MDAnalysis.analysis.align')
 
@@ -212,7 +211,7 @@ def rotation_matrix(a, b, weights=None):
                  :func:`rms_fit_trj`. A complete fit of two structures can be
                  done with :func:`alignto`.
     """
-    if not weights is None:
+    if weights is not None:
         # weights are constructed as relative to the mean
         weights = np.asarray(weights) / np.mean(weights)
     rot = np.zeros(9, dtype=np.float64)
@@ -514,7 +513,7 @@ def rms_fit_trj(traj, reference, select='all', filename=None, rmsdfile=None, pre
         percentage.echo(ts.frame)
     logger.info("Wrote %d RMS-fitted coordinate frames to file %r",
                 frames.n_frames, filename)
-    if not rmsdfile is None:
+    if rmsdfile is not None:
         np.savetxt(rmsdfile, rmsd)
         logger.info("Wrote RMSD timeseries  to file %r", rmsdfile)
 
@@ -742,7 +741,7 @@ def fasta2select(fastafilename, is_aligned=False,
     GAP = alignment[0].seq.alphabet.gap_char  # should be the same for both seqs
     if GAP != alignment[1].seq.alphabet.gap_char:
         raise ValueError("Different gap characters in sequence 'target' and 'mobile'.")
-    for ipos in xrange(alignment.get_alignment_length()):
+    for ipos in range(alignment.get_alignment_length()):
         aligned = list(alignment[:, ipos])
         if GAP in aligned:
             continue  # skip residue
@@ -754,7 +753,7 @@ def fasta2select(fastafilename, is_aligned=False,
             template += " and backbone"
         template = "( " + template + " )"
 
-        res_list.append([template % resid(iseq, ipos) for iseq in xrange(nseq)])
+        res_list.append([template % resid(iseq, ipos) for iseq in range(nseq)])
 
     sel = np.array(res_list).transpose()
 
@@ -831,7 +830,7 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
                 ag1.n_residues, ag2.n_residues)
             dbgmsg = "mismatched residue numbers\n" + \
                 "\n".join(["{0} | {1}"  for r1, r2 in
-                           itertools.izip_longest(ag1.resids, ag2.resids)])
+                           zip_longest(ag1.resids, ag2.resids)])
             logger.error(errmsg)
             logger.debug(dbgmsg)
             raise SelectionError(errmsg)
@@ -876,10 +875,10 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
                     logger.error("Offending residues: group {0}: {1}".format(
                             number,
                             ", ".join(["{0[0]}{0[1]} ({0[2]})".format(r) for r in
-                                       itertools.izip(ag.resnames[mismatch_resindex],
-                                                      ag.resids[mismatch_resindex],
-                                                      rsize[mismatch_resindex]
-                                                      )])))
+                                       zip(ag.resnames[mismatch_resindex],
+                                           ag.resids[mismatch_resindex],
+                                           rsize[mismatch_resindex]
+                                       )])))
                 logger.error("Found {0} residues with non-matching numbers of atoms (#)".format(
                         mismatch_mask.sum()))
                 log_mismatch(1, ag1, rsize1)
@@ -921,7 +920,7 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False):
         mismatch_atomindex = np.arange(ag1.n_atoms)[mass_mismatches]
 
         logger.error("Atoms: reference | trajectory")
-        for ar, at in itertools.izip(ag1[mismatch_atomindex], ag2[mismatch_atomindex]):
+        for ar, at in zip(ag1[mismatch_atomindex], ag2[mismatch_atomindex]):
             logger.error("{0!s:>4} {1:3d} {2!s:>3} {3!s:>3} {4:6.3f}  |  {5!s:>4} {6:3d} {7!s:>3} {8!s:>3} {9:6.3f}".format(ar.segid, ar.resid, ar.resname, ar.name, ar.mass,
                           at.segid, at.resid, at.resname, at.name, at.mass))
         errmsg = ("Inconsistent selections, masses differ by more than {0}; " + \

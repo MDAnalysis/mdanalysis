@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -144,7 +144,7 @@ import os
 import errno
 import warnings
 import bz2
-from itertools import izip
+from six.moves import zip
 import numpy as np
 import logging
 
@@ -545,7 +545,7 @@ class ContactAnalysis1(object):
         for x in self.references:
             if x is None:
                 raise ValueError("a reference AtomGroup must be supplied")
-        for ref, sel, s in izip(self.references, self.selections, self.selection_strings):
+        for ref, sel, s in zip(self.references, self.selections, self.selection_strings):
             if ref.atoms.n_atoms != sel.atoms.n_atoms:
                 raise ValueError("selection=%r: Number of atoms differ between "
                                  "reference (%d) and trajectory (%d)" %
@@ -584,19 +584,36 @@ class ContactAnalysis1(object):
         """
         return os.path.isfile(self.output) and not (self.force or force)
 
-    def run(self, store=True, force=False, start_frame=1, end_frame=None, step_value=1):
+    def run(self, store=True, force=False, start=0, stop=None, step=1, **kwargs):
         """Analyze trajectory and produce timeseries.
 
         Stores results in :attr:`ContactAnalysis1.timeseries` (if store=True)
         and writes them to a data file. The average q is written to a second
         data file.
-        *start_frame*
-            The value of the first frame number in the trajectory to be used (default: frame 1)
-        *end_frame*
-            The value of the last frame number in the trajectory to be used (default: None -- use all frames)
-        *step_value*
+        *start*
+            The value of the first frame index in the trajectory to be used (default: index 0)
+        *stop*
+            The value of the last frame index in the trajectory to be used (default: None -- use all frames)
+        *step*
             The number of frames to skip during trajectory iteration (default: use every frame)
         """
+        import warnings
+
+        if 'start_frame' in kwargs:
+            warnings.warn("start_frame argument has been deprecated, use start instead --"
+                           "removal targeted for version 0.15.0", DeprecationWarning)
+            start = kwargs.pop('start_frame')
+
+        if 'end_frame' in kwargs:
+            warnings.warn("end_frame argument has been deprecated, use stop instead --"
+                           "removal targeted for version 0.15.0", DeprecationWarning)
+            stop = kwargs.pop('end_frame')
+
+        if 'step_value' in kwargs:
+            warnings.warn("step_value argument has been deprecated, use step instead --"
+                           "removal targeted for version 0.15.0", DeprecationWarning)
+            step = kwargs.pop('step_value')
+
         if self.output_exists(force=force):
             import warnings
 
@@ -614,10 +631,10 @@ class ContactAnalysis1(object):
             A, B = self.selections
             # determine the end_frame value to use:
             total_frames = self.universe.trajectory.n_frames
-            if not end_frame:
+            if not stop:
                 # use the total number of frames in trajectory if no final value specified
                 end_frame = total_frames
-            for ts in self.universe.trajectory[start_frame:end_frame:step_value]:
+            for ts in self.universe.trajectory[start:stop:step]:
                 frame = ts.frame
                 # use pre-allocated distance array to save a little bit of time
                 MDAnalysis.lib.distances.distance_array(A.coordinates(), B.coordinates(), result=self.d)
@@ -629,7 +646,7 @@ class ContactAnalysis1(object):
                 out.write("{frame:4d}  {q1:8.6f} {n1:5d}\n".format(**vars()))
         if store:
             self.timeseries = np.array(records).T
-        n_frames = len(range(total_frames)[start_frame:end_frame:step_value])
+        n_frames = len(range(total_frames)[start:stop:step])
         self.qavg /= n_frames
         np.savetxt(self.outarray, self.qavg, fmt="%8.6f")
         return self.output
@@ -706,7 +723,7 @@ class ContactAnalysis1(object):
         xlabel(r"frame number $t$")
         ylabel(r"native contacts $q_1$")
 
-        if not filename is None:
+        if filename is not None:
             savefig(filename)
 
     def _plot_qavg_pcolor(self, filename=None, **kwargs):
@@ -727,7 +744,7 @@ class ContactAnalysis1(object):
 
         colorbar()
 
-        if not filename is None:
+        if filename is not None:
             savefig(filename)
 
     def plot_qavg(self, filename=None, **kwargs):
@@ -762,5 +779,5 @@ class ContactAnalysis1(object):
 
         colorbar()
 
-        if not filename is None:
+        if filename is not None:
             savefig(filename)

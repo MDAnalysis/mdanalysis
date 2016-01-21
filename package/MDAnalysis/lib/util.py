@@ -150,6 +150,8 @@ Class decorators
 
 __docformat__ = "restructuredtext en"
 
+from six.moves import range
+
 import os
 import os.path
 import errno
@@ -295,7 +297,7 @@ def anyopen(datasource, mode='r', reset=True):
                     stream.reset()
                 except (AttributeError, IOError):
                     try:
-                        stream.seek(0L)
+                        stream.seek(0)
                     except (AttributeError, IOError):
                         warnings.warn("Stream {0}: not guaranteed to be at the beginning."
                                       "".format(filename),
@@ -306,7 +308,7 @@ def anyopen(datasource, mode='r', reset=True):
             for ext in ('bz2', 'gz', ''):  # file == '' should be last
                 openfunc = handlers[ext]
                 stream = _get_stream(datasource, openfunc, mode=mode)
-                if not stream is None:
+                if stream is not None:
                     break
             if stream is None:
                 raise IOError(errno.EIO, "Cannot open file or stream in mode={mode!r}.".format(**vars()), repr(filename))
@@ -338,7 +340,7 @@ def anyopen(datasource, mode='r', reset=True):
     return stream
 
 
-def _get_stream(filename, openfunction=file, mode='r'):
+def _get_stream(filename, openfunction=open, mode='r'):
     """Return open stream if *filename* can be opened with *openfunction* or else ``None``."""
     try:
         stream = openfunction(filename, mode=mode)
@@ -554,7 +556,7 @@ class NamedStream(io.IOBase, basestring):
             self.stream.reset()  # e.g. StreamIO
         except (AttributeError, IOError):
             try:
-                self.stream.seek(0L)  # typical file objects
+                self.stream.seek(0)  # typical file objects
             except (AttributeError, IOError):
                 warnings.warn("NamedStream {0}: not guaranteed to be at the beginning."
                               "".format(self.name),

@@ -33,6 +33,8 @@ Classes
 """
 from __future__ import absolute_import
 
+from six.moves import range
+
 from ..core.AtomGroup import Atom
 from ..lib.util import openany
 from .core import get_atom_mass, guess_atom_charge, guess_atom_element

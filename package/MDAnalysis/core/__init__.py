@@ -82,6 +82,8 @@ Classes
 
 """
 
+import six
+
 __all__ = ['AtomGroup', 'Selection', 'Timeseries']
 
 
@@ -133,7 +135,7 @@ class Flags(dict):
         self.get_flag(name).set(value)
 
     def _itervalues(self):
-        return super(Flags, self).itervalues()
+        return six.itervalues(super(Flags, self))
 
     def _items(self):
         return super(Flags, self).items()
@@ -443,6 +445,6 @@ class flagsDocs(object):
     __doc__ = flags.doc()
 
 
-import AtomGroup
-import Selection
-import Timeseries
+from . import AtomGroup
+from . import Selection
+from . import Timeseries

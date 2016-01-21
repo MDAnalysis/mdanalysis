@@ -25,6 +25,8 @@ Class definitions for the TPRParser
 
 """
 
+from six.moves import range
+
 from collections import namedtuple
 
 TpxHeader = namedtuple(
@@ -64,7 +66,7 @@ class MoleculeKind(object):
         return len(self.atomkinds)
 
     def number_of_residues(self):
-        return len(set([a.resid for a in self.atomkinds]))
+        return len({a.resid for a in self.atomkinds})
 
     # remap_ method returns [tuple(), tuple(), ..] or []
     # Note: in MDAnalysis, bonds, angles, etc are represented as tuple and not as list
@@ -122,8 +124,8 @@ class InteractionKind(object):
     def process(self, atom_ndx):
         while atom_ndx:
             # format for all info: (type, [atom1, atom2, ...])
-            # yield atom_ndx.pop(0), [atom_ndx.pop(0) for i in xrange(self.natoms)]
+            # yield atom_ndx.pop(0), [atom_ndx.pop(0) for i in range(self.natoms)]
 
             # but currently only [atom1, atom2, ...] is interested
             atom_ndx.pop(0)
-            yield [atom_ndx.pop(0) for i in xrange(self.natoms)]
+            yield [atom_ndx.pop(0) for i in range(self.natoms)]

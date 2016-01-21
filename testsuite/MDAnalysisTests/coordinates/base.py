@@ -1,6 +1,6 @@
 import itertools
 import numpy as np
-from six.moves import zip
+from six.moves import zip, range
 from nose.plugins.attrib import attr
 from unittest import TestCase
 import tempdir

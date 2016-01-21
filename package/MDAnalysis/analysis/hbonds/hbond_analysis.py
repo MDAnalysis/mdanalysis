@@ -310,9 +310,12 @@ Classes
 
 """
 
+
 from collections import defaultdict
-import itertools
+from six.moves import range, zip, map
 import numpy as np
+import warnings
+import logging
 
 from MDAnalysis import MissingDataWarning, NoDataError, SelectionError, SelectionWarning
 from MDAnalysis.core.AtomGroup import AtomGroup
@@ -321,8 +324,6 @@ from MDAnalysis.lib.mdamath import norm, angle
 from MDAnalysis.lib.log import ProgressMeter
 from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
 
-import warnings
-import logging
 
 logger = logging.getLogger('MDAnalysis.analysis.hbonds')
 
@@ -964,7 +965,7 @@ class HydrogenBondAnalysis(object):
         # and speedups of ~x10 can be achieved by filling a standard array, like this:
         out = np.empty((num_records,), dtype=dtype)
         cursor = 0  # current row
-        for t, hframe in itertools.izip(self.timesteps, self.timeseries):
+        for t, hframe in zip(self.timesteps, self.timeseries):
             for donor_idx, acceptor_idx, donor, acceptor, distance, angle in hframe:
                 out[cursor] = (t, donor_idx, acceptor_idx) + parse_residue(donor) + \
                     parse_residue(acceptor) + (distance, angle)
@@ -1002,8 +1003,8 @@ class HydrogenBondAnalysis(object):
             return
 
         out = np.empty((len(self.timesteps),), dtype=[('time', float), ('count', int)])
-        for cursor, time_count in enumerate(itertools.izip(self.timesteps,
-                                                           itertools.imap(len, self.timeseries))):
+        for cursor, time_count in enumerate(zip(self.timesteps,
+                                                map(len, self.timeseries))):
             out[cursor] = time_count
         return out.view(np.recarray)
 
@@ -1082,7 +1083,7 @@ class HydrogenBondAnalysis(object):
             return
 
         hbonds = defaultdict(list)
-        for (t, hframe) in itertools.izip(self.timesteps, self.timeseries):
+        for (t, hframe) in zip(self.timesteps, self.timeseries):
             for donor_idx, acceptor_idx, donor, acceptor, distance, angle in hframe:
                 donor_resnm, donor_resid, donor_atom = parse_residue(donor)
                 acceptor_resnm, acceptor_resid, acceptor_atom = parse_residue(acceptor)
@@ -1148,8 +1149,8 @@ class HydrogenBondAnalysis(object):
 
         def _make_dict(donors, hydrogens):
             # two steps so that entry for one residue can be UPDATED for multiple donors
-            d = dict((donors[k].resid, {}) for k in xrange(len(donors)) if k in hydrogens)
-            for k in xrange(len(donors)):
+            d = dict((donors[k].resid, {}) for k in range(len(donors)) if k in hydrogens)
+            for k in range(len(donors)):
                 if k in hydrogens:
                     d[donors[k].resid].update(dict((atom.name, donors[k].name) for atom in hydrogens[k]))
             return d
@@ -1192,10 +1193,10 @@ class HydrogenBondAnalysis(object):
         s2h = self._s2_donors_h
 
         def _make_dict(donors, hydrogens):
-            #return dict(flatten_1([(atom.id, donors[k].name) for atom in hydrogens[k]] for k in xrange(len(donors))
+            #return dict(flatten_1([(atom.id, donors[k].name) for atom in hydrogens[k]] for k in range(len(donors))
             # if k in hydrogens))
             x = []
-            for k in xrange(len(donors)):
+            for k in range(len(donors)):
                 if k in hydrogens:
                     x.extend([(atom.index, donors[k].name) for atom in hydrogens[k]])
             return dict(x)

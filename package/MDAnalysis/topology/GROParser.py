@@ -34,6 +34,8 @@ Classes
 """
 from __future__ import absolute_import
 
+from six.moves import range
+
 from ..lib.util import openany
 from ..core.AtomGroup import Atom
 from .core import get_atom_mass, guess_atom_charge, guess_atom_element
@@ -58,7 +60,7 @@ class GROParser(TopologyReader):
         with openany(self.filename, "r") as grofile:
             grofile.readline()
             natoms = int(grofile.readline())
-            for atom_iter in xrange(natoms):
+            for atom_iter in range(natoms):
                 line = grofile.readline()
                 try:
                     resid, resname, name = int(line[0:5]), line[5:10].strip(), line[10:15].strip()

@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -348,7 +348,7 @@ class DCDWriter(base.Writer):
 
     def close(self):
         """Close trajectory and flush buffers."""
-        if hasattr(self, 'dcdfile') and not self.dcdfile is None:
+        if hasattr(self, 'dcdfile') and self.dcdfile is not None:
             self._finish_dcd_write()
             self.dcdfile.close()
             self.dcdfile = None

@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -309,7 +309,7 @@ class TRJReader(base.Reader):
     @property
     def n_frames(self):
         """Number of frames (obtained from reading the whole trajectory)."""
-        if not self._n_frames is None:  # return cached value
+        if self._n_frames is not None:  # return cached value
             return self._n_frames
         try:
             self._n_frames = self._read_trj_n_frames(self.filename)
@@ -349,7 +349,7 @@ class TRJReader(base.Reader):
                           "This is probably not a AMBER trajectory.")
         # reset ts
         ts = self.ts
-        ts.frame = -1 
+        ts.frame = -1
 
         return self.trjfile
 
@@ -533,7 +533,7 @@ class NCDFReader(base.Reader):
 
     def close(self):
         """Close trajectory; any further access will raise an :exc:`IOError`"""
-        if not self.trjfile is None:
+        if self.trjfile is not None:
             self.trjfile.close()
             self.trjfile = None
 
@@ -698,7 +698,7 @@ class NCDFWriter(base.Writer):
 
         spatial = ncfile.createVariable('spatial', 'c', ('spatial',))
         spatial[:] = np.asarray(list('xyz'))
-        
+
         time = ncfile.createVariable('time', 'f4', ('frame',),
                                      zlib=self.zlib, complevel=self.cmplevel)
         setattr(time, 'units', 'picosecond')
@@ -712,7 +712,7 @@ class NCDFWriter(base.Writer):
             cell_spatial = ncfile.createVariable('cell_spatial', 'c',
                                                  ('cell_spatial',))
             cell_spatial[:] = np.asarray(list('abc'))
-            
+
             cell_angles = ncfile.createVariable('cell_angles', 'f8', ('frame', 'cell_angular'),
                                                 zlib=self.zlib, complevel=self.cmplevel)
             setattr(cell_angles, 'units', 'degrees')
@@ -721,7 +721,7 @@ class NCDFWriter(base.Writer):
                                                  ('cell_angular', 'label'))
             cell_angular[:] = np.asarray([list('alpha'), list('beta '),
                                           list('gamma')])
-            
+
         # These properties are optional, and are specified on Writer creation
         if self.has_velocities:
             velocs = ncfile.createVariable('velocities', 'f8', ('frame', 'atom', 'spatial'),
@@ -818,6 +818,6 @@ class NCDFWriter(base.Writer):
         self.curr_frame += 1
 
     def close(self):
-        if not self.trjfile is None:
+        if self.trjfile is not None:
             self.trjfile.close()
             self.trjfile = None

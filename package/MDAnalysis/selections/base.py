@@ -32,6 +32,8 @@ methods.
 """
 from __future__ import absolute_import
 
+from six.moves import range
+
 import os.path
 
 from ..lib import util
@@ -173,7 +175,7 @@ class SelectionWriter(object):
         step = self.numterms or len(selection.atoms)
         with util.openany(self.filename, self._current_mode) as out:
             self._write_head(out, name=name)
-            for iatom in xrange(0, len(selection.atoms), step):
+            for iatom in range(0, len(selection.atoms), step):
                 line = selection_terms[iatom:iatom + step]
                 out.write(" ".join(line))
                 if len(line) == step and not iatom + step == len(selection.atoms):

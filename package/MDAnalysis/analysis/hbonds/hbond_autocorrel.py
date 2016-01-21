@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -139,9 +139,9 @@ Examples
 
 
 """
+from six.moves import zip
 import numpy as np
 import warnings
-from itertools import izip
 
 from MDAnalysis.lib.log import ProgressMeter
 from MDAnalysis.lib.distances import distance_array, calc_angles, calc_bonds
@@ -279,7 +279,7 @@ class HydrogenBondAutoCorrel(object):
             Will overwrite previous results if they exist
         """
         # if results exist, don't waste any time
-        if not self.solution['results'] is None and not force:
+        if self.solution['results'] is not None and not force:
             return
 
         master_results = np.zeros_like(np.arange(self._starts[0],
@@ -293,7 +293,7 @@ class HydrogenBondAutoCorrel(object):
                            format="Performing run %(step)5d/%(numsteps)d"
                                   "[%(percentage)5.1f%%]\r")
 
-        for i, (start, stop) in enumerate(izip(self._starts, self._stops)):
+        for i, (start, stop) in enumerate(zip(self._starts, self._stops)):
             pm.echo(i + 1)
 
             # needed else trj seek thinks a np.int64 isn't an int?
@@ -391,7 +391,7 @@ class HydrogenBondAutoCorrel(object):
           *filename*
             The desired filename [hbond_autocorrel]
         """
-        if not self.solution['results'] is None:
+        if self.solution['results'] is not None:
             np.savez(filename, time=self.solution['time'],
                         results=self.solution['results'])
         else:
