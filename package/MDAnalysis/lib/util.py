@@ -471,8 +471,8 @@ class NamedStream(io.IOBase):
     The class can be used as a context manager.
 
     :class:`NamedStream` is derived from :class:`io.IOBase` (to indicate that
-    it is a stream) *and* :class:`basestring` (that one can use
-    :func:`iterable` in the same way as for strings).
+    it is a stream); some operations that normally expect a string will also
+    work with a :class:`NamedStream`.
 
     .. rubric:: Example
 
@@ -824,7 +824,8 @@ def guess_format(filename):
 
 
 def iterable(obj):
-    """Returns ``True`` if *obj* can be iterated over and is *not* a  string."""
+    """Returns ``True`` if *obj* can be iterated over and is *not* a  string
+    nor a :class:`NamedStream`"""
     if isinstance(obj, (basestring, NamedStream)):
         return False  # avoid iterating over characters of a string
 
