@@ -163,6 +163,7 @@ import io
 import warnings
 from functools import wraps
 import numpy as np
+import functools
 
 from ..exceptions import StreamWarning
 
@@ -458,7 +459,8 @@ def which(program):
     return None
 
 
-class NamedStream(io.IOBase, basestring):
+@functools.total_ordering
+class NamedStream(io.IOBase):
     """Stream that also provides a (fake) name.
 
     By wrapping a stream *stream* in this class, it can be passed to
@@ -721,20 +723,8 @@ class NamedStream(io.IOBase, basestring):
     def __eq__(self, x):
         return self.name == x
 
-    def __neq__(self, x):
-        return self.name != x
-
-    def __gt__(self, x):
-        return self.name > x
-
-    def __ge__(self, x):
-        return self.name >= x
-
     def __lt__(self, x):
         return self.name < x
-
-    def __le__(self, x):
-        return self.name <= x
 
     def __len__(self):
         return len(self.name)
@@ -835,7 +825,7 @@ def guess_format(filename):
 
 def iterable(obj):
     """Returns ``True`` if *obj* can be iterated over and is *not* a  string."""
-    if isinstance(obj, basestring):
+    if isinstance(obj, (basestring, NamedStream)):
         return False  # avoid iterating over characters of a string
 
     if hasattr(obj, 'next'):
