@@ -471,8 +471,8 @@ class NamedStream(io.IOBase):
     The class can be used as a context manager.
 
     :class:`NamedStream` is derived from :class:`io.IOBase` (to indicate that
-    it is a stream) *and* :class:`basestring` (that one can use
-    :func:`iterable` in the same way as for strings).
+    it is a stream); some operations that normally expect a string will also
+    work with a :class:`NamedStream`.
 
     .. rubric:: Example
 
