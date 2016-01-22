@@ -1,10 +1,12 @@
+import six
+from six.moves import zip, range
+
 import errno
 import MDAnalysis as mda
 from MDAnalysis.coordinates.base import Timestep
 import numpy as np
 import os
 import shutil
-from six.moves import zip, range
 import warnings
 
 from nose.plugins.attrib import attr
@@ -727,7 +729,7 @@ class _GromacsReader_offsets(TestCase):
 
         outfile_offsets = XDR.offsets_filename(self.traj)
         with open(outfile_offsets) as f:
-            saved_offsets = {k: v for k, v in np.load(f).iteritems()}
+            saved_offsets = {k: v for k, v in six.iteritems(np.load(f))}
 
         assert_array_almost_equal(self.trajectory._xdr.offsets,
                                   saved_offsets['offsets'],
@@ -752,7 +754,7 @@ class _GromacsReader_offsets(TestCase):
         # size differs from stored size
         fname = XDR.offsets_filename(self.traj)
         with open(fname) as f:
-            saved_offsets = {k: v for k, v in np.load(f).iteritems()}
+            saved_offsets = {k: v for k, v in six.iteritems(np.load(f))}
         saved_offsets['size'] += 1
         with open(fname, 'w') as f:
             np.savez(f, **saved_offsets)
@@ -769,7 +771,7 @@ class _GromacsReader_offsets(TestCase):
         # ctime differs from stored ctime
         fname = XDR.offsets_filename(self.traj)
         with open(fname) as f:
-            saved_offsets = {k: v for k, v in np.load(f).iteritems()}
+            saved_offsets = {k: v for k, v in six.iteritems(np.load(f))}
         saved_offsets['ctime'] += 1
         with open(fname, 'w') as f:
             np.savez(f, **saved_offsets)
@@ -790,7 +792,7 @@ class _GromacsReader_offsets(TestCase):
     #     # check that stored offsets are not loaded when the offsets
     #     # themselves appear to be wrong
     #     with open(XDR.offsets_filename(self.traj), 'rb') as f:
-    #         saved_offsets = {k: v for k, v in np.load(f).iteritems()}
+    #         saved_offsets = {k: v for k, v in six.iteritems(np.load(f))}
     #     saved_offsets['offsets'] += 1
     #     with open(XDR.offsets_filename(self.traj), 'wb') as f:
     #         np.savez(f, **saved_offsets)

@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -217,7 +217,7 @@ Classes, methods, and functions
 .. |Np| replace:: :math:`N_p`
 
 """
-
+import six
 from six.moves import range
 
 import numpy as np
@@ -1144,7 +1144,7 @@ class PSAnalysis(object):
                          'paths' : '/paths',
                          'distance_matrices' : '/distance_matrices',
                          'plots' : '/plots'}
-        for dir_name, directory in self.datadirs.iteritems():
+        for dir_name, directory in six.iteritems(self.datadirs):
             try:
                 full_dir_name = os.path.join(self.targetdir, dir_name)
                 os.makedirs(full_dir_name)

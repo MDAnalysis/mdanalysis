@@ -14,6 +14,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import unicode_literals
+import six
 
 import numpy as np
 from numpy.testing import *
@@ -62,7 +63,7 @@ class TestConstants(object):
         }
 
     def test_constant(self):
-        for name, value in self.constants_reference.iteritems():
+        for name, value in six.iteritems(self.constants_reference):
             yield self.check_physical_constant, name, value
 
     @staticmethod
