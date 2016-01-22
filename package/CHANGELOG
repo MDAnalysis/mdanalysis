@@ -30,6 +30,7 @@ Enhancement
 Changes
 
   * xdrlib has been ported to cython. (Issue #441)
+  * util.NamedStream no longer inherits from basestring (Issue #649)
 
 Fixes
   * ContactAnalysis1 run method now starts at frame index 0 by deafult (Issue #624)
