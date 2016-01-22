@@ -469,7 +469,7 @@ class TestSelectionsNucleicAcids(TestCase):
 
         sel = u.select_atoms('nucleic')
 
-        assert_(len(sel) == len(u.atoms))
+        assert_(len(sel) == 34)
 
     def test_nucleicbackbone(self):
         rna = self.universe.select_atoms("nucleicbackbone")
