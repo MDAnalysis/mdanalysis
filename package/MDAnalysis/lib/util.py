@@ -824,7 +824,8 @@ def guess_format(filename):
 
 
 def iterable(obj):
-    """Returns ``True`` if *obj* can be iterated over and is *not* a  string."""
+    """Returns ``True`` if *obj* can be iterated over and is *not* a  string
+    nor a :class:`NamedStream`"""
     if isinstance(obj, (basestring, NamedStream)):
         return False  # avoid iterating over characters of a string
 
