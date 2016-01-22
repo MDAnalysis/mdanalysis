@@ -18,6 +18,7 @@ from __future__ import division
 from numpy.testing import (
     assert_,
 )
+from multiprocessing import cpu_count
 
 import MDAnalysis as mda
 from MDAnalysis.analysis.base import AnalysisBase
@@ -33,44 +34,71 @@ class FrameAnalysis(AnalysisBase):
                            stop=stop,
                            step=step)
 
-        self.frames = []
+        self.results = {}
+        self.results['frames'] = []
 
     def _single_frame(self, timestep):
-        self.frames.append(timestep.frame)
+        self.results['frames'].append(timestep.frame)
 
+    def _add_other_results(self, other_result):
+        self.results['frames'] += other_result['frames']
 
 class TestAnalysisBase(object):
     def setUp(self):
         # has 98 frames
         self.u = mda.Universe(PSF, DCD)
+        self.frames = len(self.u.trajectory)
 
     def tearDown(self):
         del self.u
 
     def test_default(self):
         an = FrameAnalysis(self.u)
-        assert_(an.nframes == len(self.u.trajectory))
-
+        assert_(an.nframes == self.frames)
         an.run()
-        assert_(an.frames == range(len(self.u.trajectory)))
+        assert_(an.results['frames'] == range(self.frames))
+
+        for cores in range(1, cpu_count() + 1):
+                an_par = FrameAnalysis(self.u)
+                assert_(an_par.nframes == self.frames)
+                an_par.run(parallel=True, nthreads=cores)
+                assert_(an_par.results['frames'] == range(self.frames))
 
     def test_start(self):
         an = FrameAnalysis(self.u, start=20)
-        assert_(an.nframes == len(self.u.trajectory) - 20)
+        assert_(an.nframes == self.frames - 20)
 
         an.run()
-        assert_(an.frames == range(20, len(self.u.trajectory)))
+        assert_(an.results['frames'] == range(20, self.frames))
+
+        for cores in range(1, cpu_count() + 1):
+                an_par = FrameAnalysis(self.u, start=20)
+                assert_(an_par.nframes == self.frames - 20)
+                an_par.run(parallel=True, nthreads=cores)
+                assert_(an_par.results['frames'] == range(20, self.frames))        
 
     def test_stop(self):
         an = FrameAnalysis(self.u, stop=20)
         assert_(an.nframes == 20)
 
         an.run()
-        assert_(an.frames == range(20))
+        assert_(an.results['frames'] == range(20))
+
+        for cores in range(1, cpu_count() + 1):
+                an_par = FrameAnalysis(self.u, stop=20)
+                assert_(an_par.nframes == 20)
+                an_par.run(parallel=True, nthreads=cores)
+                assert_(an_par.results['frames'] == range(20)) 
         
     def test_step(self):
         an = FrameAnalysis(self.u, step=20)
         assert_(an.nframes == 5)
 
         an.run()
-        assert_(an.frames == range(98)[::20])
+        assert_(an.results['frames'] == range(98)[::20])
+
+        for cores in range(1, cpu_count() + 1):
+                an_par = FrameAnalysis(self.u, step=20)
+                assert_(an_par.nframes == 5)
+                an_par.run(parallel=True, nthreads=cores)
+                assert_(an_par.results['frames'] == range(98)[::20])        
