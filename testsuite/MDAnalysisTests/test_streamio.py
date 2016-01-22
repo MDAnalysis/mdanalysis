@@ -86,14 +86,14 @@ class TestNamedStream(TestCase):
         self.textname = "jabberwock.txt"
         self.numtextlines = len(self.text)
 
-    def testClosing(self):
+    def test_closing(self):
         obj = cStringIO.StringIO("".join(self.text))
         ns = util.NamedStream(obj, self.textname, close=True)
         assert_equal(ns.closed, False)
         ns.close()
         assert_equal(ns.closed, True)
 
-    def testClosingForce(self):
+    def test_closing_force(self):
         obj = cStringIO.StringIO("".join(self.text))
         ns = util.NamedStream(obj, self.textname)
         assert_equal(ns.closed, False)
@@ -102,7 +102,7 @@ class TestNamedStream(TestCase):
         ns.close(force=True)
         assert_equal(ns.closed, True)
 
-    def testcStringIO_read(self):
+    def test_cStringIO_read(self):
         obj = cStringIO.StringIO("".join(self.text))
         ns = util.NamedStream(obj, self.textname)
         assert_equal(ns.name, self.textname)
@@ -112,7 +112,7 @@ class TestNamedStream(TestCase):
         assert_equal(len(ns.readlines()), self.numtextlines)
         ns.close(force=True)
 
-    def testFile_read(self):
+    def test_File_read(self):
         obj = open(self.filename, 'r')
         ns = util.NamedStream(obj, self.filename)
         assert_equal(ns.name, self.filename)
@@ -122,7 +122,7 @@ class TestNamedStream(TestCase):
         assert_equal(len(ns.readlines()), self.numlines)
         ns.close(force=True)
 
-    def testcStringIO_write(self):
+    def test_cStringIO_write(self):
         obj = cStringIO.StringIO()
         ns = util.NamedStream(obj, self.textname)
         ns.writelines(self.text)
@@ -134,7 +134,7 @@ class TestNamedStream(TestCase):
         assert_equal(ns.read(20), "".join(self.text)[:20])
         ns.close(force=True)
 
-    def testFile_write(self):
+    def test_File_write(self):
         fd, outfile = tempfile.mkstemp(suffix=".txt")
         os.close(fd)
         try:
@@ -155,6 +155,34 @@ class TestNamedStream(TestCase):
                 os.unlink(outfile)
             except OSError:
                 pass
+class TestNamedStream_filename_behavior(object):
+    textname = "jabberwock.txt"
+    # note: no setUp() because classes with generators would run it
+    #       *for each generated test* and we need it for the generator method
+
+    def test_ospath_funcs(self):
+        obj = cStringIO.StringIO()
+        ns = util.NamedStream(obj, self.textname)
+
+        funcs = ("abspath", "basename", "dirname", "normpath",
+                 "relpath", "split", "splitext")
+        def _test_func(funcname, fn=self.textname, ns=ns):
+            func = getattr(os.path, funcname)
+            reference = func(fn)
+            value = func(ns)
+            assert_equal(value, reference,
+                         err_msg=("os.path.{0}() does not work with "
+                                  "NamedStream").format(funcname))
+        # join not included because of different call signature
+        def _test_join(func="join", fn=self.textname, ns=ns, path="/tmp/MDAnalysisTests"):
+            reference = os.path.join(path, fn)
+            value = os.path.join(path, ns)
+            assert_equal(value, reference,
+                         err_msg=("os.path.join() does not work with "
+                                  "NamedStream"))
+        for func in funcs:
+            yield _test_func, func
+        yield _test_join, "join"
 
 
 class _StreamData(object):
