@@ -472,8 +472,11 @@ class NamedStream(io.IOBase):
     The class can be used as a context manager.
 
     :class:`NamedStream` is derived from :class:`io.IOBase` (to indicate that
-    it is a stream); some operations that normally expect a string will also
-    work with a :class:`NamedStream`.
+    it is a stream). Many operations that normally expect a string will also
+    work with a :class:`NamedStream`; for instance, most of the functions in
+    :mod:`os.path` will work with the exception of :func:`os.path.expandvars`
+    and :func:`os.path.expanduser`, which will return the :class:`NamedStream`
+    itself instead of a string if no substitutions were made.
 
     .. rubric:: Example
 
@@ -527,22 +530,22 @@ class NamedStream(io.IOBase):
            :meth:`close` (see there) unless the *close* keyword is set to
            ``True``.
 
-        :Arguments:
-
-           *stream*
-               open stream (e.g. :class:`file` or :func:`cStringIO.StringIO`)
-           *filename*
+        Arguments
+        ---------
+        stream : stream
+               an open stream (e.g. :class:`file` or :func:`cStringIO.StringIO`)
+        filename : str
                the filename that should be associated with the stream
 
-        :Keywords:
-
-           *reset*
+        Keywords
+        --------
+        reset : boolean, default ``True``
                start the stream from the beginning (either :meth:`reset` or :meth:`seek`)
-               when the class instance is constructed [``True``]
-           *close*
+               when the class instance is constructed
+        close : booelan, default ``True``
                close the stream when a :keyword:`with` block exits or when
                :meth:`close` is called; note that the default is **not to close
-               the stream** [``False``]
+               the stream**
 
         .. versionadded:: 0.9.0
         """
@@ -576,7 +579,7 @@ class NamedStream(io.IOBase):
         return iter(self.stream)
 
     def __enter__(self):
-        # do not call the stream __enter__ because the stream is already open
+        # do not call the stream's __enter__ because the stream is already open
         return self
 
     def __exit__(self, *args):
@@ -729,6 +732,17 @@ class NamedStream(io.IOBase):
 
     def __len__(self):
         return len(self.name)
+
+    def __add__(self, x):
+        return self.name + x
+
+    def __radd__(self, x):
+        return x + self.name
+
+    def __mul__(self, x):
+        return self.name * x
+
+    __rmul__ = __mul__
 
     def __format__(self, format_spec):
         return self.name.format(format_spec)
