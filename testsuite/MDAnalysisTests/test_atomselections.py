@@ -786,8 +786,8 @@ class TestSelectionErrors(object):
                 'resnum ',
                 'bynum or protein',
                 'prop mass < 4.0 hello',  # unused token
-                'mass > 10. and group this',  # missing group
-                'mass > 10. and fullgroup this',  # missing fullgroup
+                'prop mass > 10. and group this',  # missing group
+                'prop mass > 10. and fullgroup this',  # missing fullgroup
         ]:
             yield self.selection_fail, selstr
 
