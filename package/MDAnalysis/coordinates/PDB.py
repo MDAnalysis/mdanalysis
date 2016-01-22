@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -201,7 +201,7 @@ from six.moves import range
 try:
     # BioPython is overkill but potentially extensible (altLoc etc)
     import Bio.PDB
-    import pdb.extensions
+    from . import pdb
     # disable PDBConstructionWarning from picky builder
     import warnings
 
@@ -1114,7 +1114,7 @@ class PrimitivePDBWriter(base.Writer):
             vals['element'] = guess_atom_element(atom.name.strip())[:2]
             vals['charge'] = 0
 
-            # .. _ATOM: http://www.wwpdb.org/documentation/format32/sect9.html 
+            # .. _ATOM: http://www.wwpdb.org/documentation/format32/sect9.html
             self.pdbfile.write(self.fmt['ATOM'].format(**vals))
         if multiframe:
             self.ENDMDL()
