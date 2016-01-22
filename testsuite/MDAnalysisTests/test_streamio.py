@@ -29,8 +29,9 @@ from MDAnalysisTests.plugins.knownfailure import knownfailure
 
 import StringIO
 import cStringIO
-import tempfile
 import os
+
+import tempdir
 
 
 class TestIsstream(TestCase):
@@ -138,26 +139,24 @@ class TestNamedStream(TestCase):
         ns.close(force=True)
 
     def test_File_write(self):
-        fd, outfile = tempfile.mkstemp(suffix=".txt")
-        os.close(fd)
-        try:
-            obj = open(outfile, "w")
-            ns = util.NamedStream(obj, outfile, close=True)
-            ns.writelines(self.text)
-            ns.close()
-            text = open(outfile).readlines()
-
-            assert_equal(ns.name, outfile)
-            assert_equal(str(ns), outfile)
-            assert_equal(len(text), len(self.text))
-            assert_equal("".join(text), "".join(self.text))
-        finally:
-            ns.close()
-            obj.close()
+        with tempdir.in_tempdir():
+            outfile = "lookingglas.txt"
             try:
-                os.unlink(outfile)
-            except OSError:
-                pass
+                obj = open(outfile, "w")
+                ns = util.NamedStream(obj, outfile, close=True)
+                ns.writelines(self.text)
+                ns.close()
+                text = open(outfile).readlines()
+
+                assert_equal(ns.name, outfile)
+                assert_equal(str(ns), outfile)
+                assert_equal(len(text), len(self.text))
+                assert_equal("".join(text), "".join(self.text))
+            finally:
+                ns.close()
+                obj.close()
+
+
 class TestNamedStream_filename_behavior(object):
     textname = "~/stories/jabberwock.txt"  # with tilde ~ to test regular expanduser()
     # note: no setUp() because classes with generators would run it
@@ -187,12 +186,14 @@ class TestNamedStream_filename_behavior(object):
                          err_msg=("os.path.{0}() does not work with "
                                   "NamedStream").format(funcname))
         # join not included because of different call signature
+        # but added first argument for the sake of it showing up in the verbose
+        # nose output
         def _test_join(funcname="join", fn=self.textname, ns=ns, path="/tmp/MDAnalysisTests"):
             reference = os.path.join(path, fn)
             value = os.path.join(path, ns)
             assert_equal(value, reference,
-                         err_msg=("os.path.join() does not work with "
-                                  "NamedStream"))
+                         err_msg=("os.path.{0}() does not work with "
+                                  "NamedStream").format(funcname))
         for func in funcs:
             yield _test_func, func
         yield _test_join, "join"
