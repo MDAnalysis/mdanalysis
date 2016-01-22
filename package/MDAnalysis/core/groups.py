@@ -25,17 +25,17 @@ def make_classes():
     GB = classdict['group'] = copy_class(
         'Group', GroupBase)
     AG = classdict['atomgroup'] = copy_class(
-        'AtomGroup', GB, AtomGroupBase)
+        'AtomGroup', GB, AtomGroup)
     RG = classdict['residuegroup'] = copy_class(
-        'ResidueGroup', GB, ResidueGroupBase)
+        'ResidueGroup', GB, ResidueGroup)
     SG = classdict['segmentgroup'] = copy_class(
-        'SegmentGroup', GB, SegmentGroupBase)
+        'SegmentGroup', GB, SegmentGroup)
     A = classdict['atom'] = copy_class(
-        'Atom', AtomBase)
+        'Atom', Atom)
     R = classdict['residue'] = copy_class(
-        'Residue', ResidueBase)
+        'Residue', Residue)
     S = classdict['segment'] = copy_class(
-        'Segment', SegmentBase)
+        'Segment', Segment)
 
     # Define relationships between these classes
     # with Level objects
@@ -197,15 +197,66 @@ class GroupBase(object):
         return len(self.segments)
 
 
-class AtomGroupBase(object):
-    """AtomGroup base class.
+class AtomGroup(object):
+    """A group of atoms.
 
-    This class is used by a Universe for generating its Topology-specific
-    AtomGroup class. All the TopologyAttr components are obtained from
-    GroupBase, so this class only includes ad-hoc methods specific to
-    AtomGroups.
+    An AtomGroup is an ordered collection of atoms. Typically, an AtomGroup is
+    generated from a selection, or by indexing/slcing the AtomGroup of all
+    atoms in the Universe at :attr:`MDAnalysis.core.universe.Universe.atoms`.
+
+    An AtomGroup can be indexed and sliced like a list::
+
+        ag[0], ag[-1]
+
+    will return the first and the last :class:`Atom` in the group whereas the
+    slice ::
+
+        ag[0:6:2]
+
+    returns an AtomGroup of every second element, corresponding to indices 0,
+    2, and 4.
+
+    It also supports "advanced slicing" when the argument is a
+    :class:`numpy.ndarray` or a :class:`list`::
+
+        aslice = [0, 3, -1, 10, 3]
+        ag[aslice]
+
+    will return a new AtomGroup of atoms with those indices in the old
+    AtomGroup.
+
+    .. note::
+
+        AtomGroups originating from a selection are sorted and
+        duplicate elements are removed. This is not true for AtomGroups
+        produced by slicing. Thus slicing can be used when the order of
+        atoms is crucial (for instance, in order to define angles or
+        dihedrals).
+
+    Atoms can also be accessed in a Pythonic fashion by using the atom name as
+    an attribute. For instance, ::
+
+        ag.CA
+
+    will provide a :class:`AtomGroup` of all CA atoms in the
+    group. These *instant selector* attributes are auto-generated for
+    each atom name encountered in the group.
+
+    .. note::
+
+        The name-attribute instant selector access to atoms is mainly
+        meant for quick interactive work. Thus it either returns a
+        single :class:`Atom` if there is only one matching atom, *or* a
+        new :class:`AtomGroup` for multiple matches.  This makes it
+        difficult to use the feature consistently in scripts.
+
+    AtomGroup instances are always bound to a
+    :class:`MDAnalysis.core.universe.Universe`. They cannot exist in isolation.
+
+    .. SeeAlso:: :class:`MDAnalysis.core.universe.Universe`
 
     """
+
     level = 'atom'
 
     def __getattr__(self, name):
@@ -495,8 +546,152 @@ class AtomGroupBase(object):
                 atomgrp += selection.Parser.parse(sel, selgroups).apply(self)
         return atomgrp
 
+    def bbox(self, **kwargs):
+        """Return the bounding box of the selection.
 
-class ResidueGroupBase(object):
+        The lengths A,B,C of the orthorhombic enclosing box are ::
+
+          L = AtomGroup.bbox()
+          A,B,C = L[1] - L[0]
+
+        Parameters
+        ----------
+        pbc : bool, optional
+            If ``True``, move all atoms within the primary unit cell before
+            calculation. [``False``]
+
+        .. note::
+            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
+            ``True`` allows the *pbc* flag to be used by default.
+
+        Returns
+        -------
+         corners : 2 x 3 array
+            Array giving corners of bounding box as
+            [[xmin, ymin, zmin], [xmax, ymax, zmax]].
+
+        .. versionadded:: 0.7.2
+        .. versionchanged:: 0.8 Added *pbc* keyword
+        """
+        pbc = kwargs.pop('pbc', MDAnalysis.core.flags['use_pbc'])
+        if pbc:
+            x = self.pack_into_box(inplace=False)
+        else:
+            x = self.coordinates()
+        return np.array([x.min(axis=0), x.max(axis=0)])
+
+    def bsphere(self, **kwargs):
+        """Return the bounding sphere of the selection.
+
+        The sphere is calculated relative to the centre of geometry.
+
+        Parameters
+        ----------
+        pbc : bool, optional
+            If ``True``, move all atoms within the primary unit cell before
+            calculation. [``False``]
+
+        .. note::
+            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
+            ``True`` allows the *pbc* flag to be used by default.
+
+        Returns
+        -------
+        R : float
+            Radius of bounding sphere.
+        center : array 
+            Coordinates of sphere center as ``[xcen,ycen,zcen]``.
+
+        .. versionadded:: 0.7.3
+        .. versionchanged:: 0.8 Added *pbc* keyword
+        """
+        pbc = kwargs.pop('pbc', MDAnalysis.core.flags['use_pbc'])
+        if pbc:
+            x = self.pack_into_box(inplace=False)
+            centroid = self.center_of_geometry(pbc=True)
+        else:
+            x = self.coordinates()
+            centroid = self.center_of_geometry(pbc=False)
+        R = np.sqrt(np.max(np.sum(np.square(x - centroid), axis=1)))
+        return R, centroid
+
+    def transform(self, M):
+        """Apply homogenous transformation matrix `M` to the coordinates.
+
+        The matrix *M* must be a 4x4 matrix, with the rotation in
+        ``R = M[:3,:3]`` and the translation in ``t = M[:3,3]``.
+
+        The rotation :math:`\mathsf{R}` is applied before the translation
+        :math:`\mathbf{t}`:
+
+        .. math::
+
+           \mathbf{x}' = \mathsf{R}\mathbf{x} + \mathbf{t}
+
+        See Also
+        --------
+        MDAnalysis.lib.transformations : module of all coordinate transforms
+
+        """
+        R = M[:3, :3]
+        t = M[:3, 3]
+        # changes the coordinates (in place)
+        x = self.universe.trajectory.ts.positions
+        idx = self.indices
+        x[idx] = np.dot(x[idx], R.T)
+        x[idx] += t
+        return R
+
+    def translate(self, t):
+        """Apply translation vector `t` to the selection's coordinates.
+
+            >>> AtomGroup.translate(t)
+            >>> AtomGroup.translate((A, B))
+
+        The method applies a translation to the AtomGroup from current
+        coordinates :math:`\mathbf{x}` to new coordinates :math:`\mathbf{x}'`:
+
+        .. math::
+
+            \mathbf{x}' = \mathbf{x} + \mathbf{t}
+
+        The translation can also be given as a tuple of two MDAnalysis objects
+        such as two selections `(selA, selB)`, i.e. two :class:`AtomGroup`, or
+        two :class:`Atom`. The translation vector is computed as the
+        difference between the centers of geometry (centroid) of B and A::
+
+            t = B.centroid() - A.centroid()
+        """
+        try:
+            sel1, sel2 = t
+            x1, x2 = sel1.centroid(), sel2.centroid()
+            vector = x2 - x1
+        except (ValueError, AttributeError):
+            vector = np.asarray(t)
+        # changes the coordinates (in place)
+        self.universe.trajectory.ts.positions[self.indices] += vector
+        return vector
+
+    def rotate(self, R):
+        """Apply a rotation matrix `R` to the selection's coordinates.
+
+             >>> AtomGroup.rotate(R)
+
+        :math:`\mathsf{R}` is a 3x3 orthogonal matrix that transforms a vector
+        :math:`\mathbf{x} \rightarrow \mathbf{x}'`:
+
+        .. math::
+
+            \mathbf{x}' = \mathsf{R}\mathbf{x}
+        """
+        R = np.matrix(R, copy=False, dtype=np.float32)
+        # changes the coordinates (in place)
+        x = self.universe.trajectory.ts.positions
+        idx = self.indices
+        x[idx] = x[idx] * R.T  # R.T acts to the left & is broadcasted N times.
+        return R
+
+class ResidueGroup(object):
     """ResidueGroup base class.
 
     This class is used by a Universe for generating its Topology-specific
@@ -601,7 +796,7 @@ class ResidueGroupBase(object):
         return Bio.SeqRecord.SeqRecord(seq, **kwargs)
 
 
-class SegmentGroupBase(object):
+class SegmentGroup(object):
     """SegmentGroup base class.
 
     This class is used by a Universe for generating its Topology-specific
@@ -691,7 +886,7 @@ class ComponentBase(object):
         return self._u
 
 
-class AtomBase(ComponentBase):
+class Atom(ComponentBase):
     """Atom base class.
 
     This class is used by a Universe for generating its Topology-specific Atom
@@ -786,7 +981,7 @@ class AtomBase(ComponentBase):
             raise NoDataError("Timestep does not contain forces")
 
 
-class ResidueBase(ComponentBase):
+class Residue(ComponentBase):
     """Residue base class.
 
     This class is used by a Universe for generating its Topology-specific
@@ -810,7 +1005,7 @@ class ResidueBase(ComponentBase):
                             self._u)
 
 
-class SegmentBase(ComponentBase):
+class Segment(ComponentBase):
     """Segment base class.
 
     This class is used by a Universe for generating its Topology-specific Segment
