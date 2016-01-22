@@ -76,7 +76,7 @@ import nose.plugins.multiprocess
 
 def _nose_config():
     """Function that exposes nose's configuration via a hack in one of our plugins
-    
+
     The external plugins managed by this module are scanned for the :attr:`config` attribute,
     which at least one should implement upon configuration. Plugins need only to be loaded
     for this to work, not necessarily enabled.
@@ -88,7 +88,7 @@ def _nose_config():
 
 def _check_plugins_loaded():
     """Function that checks whether external plugins were loaded.
-    
+
     It can be used to ascertain whether nose tests were launched using `nosetests` from the
     command-line, and hence that external plugins aren't available.
 
@@ -103,7 +103,7 @@ def _check_plugins_loaded():
 loaded_plugins = dict()
 
 # ADD HERE your plugin import
-import memleak, capture_err, knownfailure
+from . import memleak, capture_err, knownfailure
 
 plugin_classes = []
 for plugin in __all__:
