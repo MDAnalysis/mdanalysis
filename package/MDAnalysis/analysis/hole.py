@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -172,8 +172,10 @@ Utilities
 
 """
 
-import numpy as np
 from six.moves import zip, cPickle
+import six
+
+import numpy as np
 import glob
 import os
 import errno
@@ -1069,7 +1071,7 @@ class HOLEtraj(BaseHOLE):
         * If data is a array/list: use as is
         * If ``None``: assign frame numbers from trajectory
         """
-        if isinstance(data, basestring):
+        if isinstance(data, six.string_types):
             q = np.loadtxt(data)
         elif data is None:
             # frame numbers

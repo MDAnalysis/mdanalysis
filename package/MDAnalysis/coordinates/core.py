@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -30,6 +30,8 @@ Helper functions:
 .. autofunction:: get_writer_for
 
 """
+
+import six
 
 from . import (
     _READERS,
@@ -154,7 +156,7 @@ def get_writer_for(filename=None, format='DCD', multiframe=None):
        Added *multiframe* keyword; the default ``None`` reflects the previous
        behaviour.
     """
-    if isinstance(filename, basestring) and filename:
+    if isinstance(filename, six.string_types) and filename:
         root, ext = util.get_ext(filename)
         format = util.check_compressed_format(root, ext)
     if multiframe is None:
