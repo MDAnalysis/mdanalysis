@@ -730,6 +730,17 @@ class NamedStream(io.IOBase):
     def __len__(self):
         return len(self.name)
 
+    def __add__(self, x):
+        return self.name + x
+
+    def __radd__(self, x):
+        return x + self.name
+
+    def __mul__(self, x):
+        return self.name * x
+
+    __rmul__ = __mul__
+
     def __format__(self, format_spec):
         return self.name.format(format_spec)
 

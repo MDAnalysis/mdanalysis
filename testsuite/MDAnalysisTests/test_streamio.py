@@ -160,9 +160,12 @@ class TestNamedStream_filename_behavior(object):
     # note: no setUp() because classes with generators would run it
     #       *for each generated test* and we need it for the generator method
 
-    def test_ospath_funcs(self):
+    def create_NamedStream(self):
         obj = cStringIO.StringIO()
-        ns = util.NamedStream(obj, self.textname)
+        return util.NamedStream(obj, self.textname)
+
+    def test_ospath_funcs(self):
+        ns = self.create_NamedStream()
 
         funcs = ("abspath", "basename", "dirname", "normpath",
                  "relpath", "split", "splitext")
@@ -174,7 +177,7 @@ class TestNamedStream_filename_behavior(object):
                          err_msg=("os.path.{0}() does not work with "
                                   "NamedStream").format(funcname))
         # join not included because of different call signature
-        def _test_join(func="join", fn=self.textname, ns=ns, path="/tmp/MDAnalysisTests"):
+        def _test_join(funcname="join", fn=self.textname, ns=ns, path="/tmp/MDAnalysisTests"):
             reference = os.path.join(path, fn)
             value = os.path.join(path, ns)
             assert_equal(value, reference,
@@ -183,6 +186,22 @@ class TestNamedStream_filename_behavior(object):
         for func in funcs:
             yield _test_func, func
         yield _test_join, "join"
+
+    def test_add(self):
+        ns = self.create_NamedStream()
+        try:
+            assert_equal(ns + "foo", self.textname + "foo")
+        except TypeError:
+            raise AssertionError("NamedStream does not support  "
+                                 "string concatenation, NamedStream + str")
+
+    def test_radd(self):
+        ns = self.create_NamedStream()
+        try:
+            assert_equal("foo" + ns, "foo" + self.textname)
+        except TypeError:
+            raise AssertionError("NamedStream does not support right "
+                                 "string concatenation, str + NamedStream")
 
 
 class _StreamData(object):
