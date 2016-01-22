@@ -105,6 +105,7 @@ __all__ = [
     "COORDINATES_XTC",
     "COORDINATES_TRR",
     "COORDINATES_TOPOLOGY",
+    "NUCLsel",
 ]
 
 from pkg_resources import resource_filename
@@ -294,3 +295,6 @@ Make_Whole = resource_filename(__name__, 'data/make_whole.gro')
 
 Plength = resource_filename(__name__, 'data/plength.gro')
 Martini_membrane_gro = resource_filename(__name__, 'data/martini_dppc_chol_bilayer.gro')
+
+# Contains one of each residue in 'nucleic' selections
+NUCLsel = resource_filename(__name__, 'data/nucl_res.pdb')

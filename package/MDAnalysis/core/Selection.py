@@ -735,7 +735,11 @@ class NucleicSelection(Selection):
 
     nucl_res = np.array([
         'ADE', 'URA', 'CYT', 'GUA', 'THY', 'DA', 'DC', 'DG', 'DT', 'RA',
-        'RU', 'RG', 'RC', 'A', 'T', 'U', 'C', 'G'
+        'RU', 'RG', 'RC', 'A', 'T', 'U', 'C', 'G',
+        'DA5', 'DC5', 'DG5', 'DT5',
+        'DA3', 'DC3', 'DG3', 'DT3',
+        'RA5', 'RU5', 'RG5', 'RC5',
+        'RA3', 'RU3', 'RG3', 'RC3'
     ])
 
     def __init__(self, parser, tokens):
