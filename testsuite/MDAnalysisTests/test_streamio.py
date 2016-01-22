@@ -16,7 +16,10 @@
 from six.moves import range
 
 import numpy as np
-from numpy.testing import *
+from numpy.testing import (TestCase, dec,
+                           assert_equal, assert_almost_equal,
+                           assert_array_almost_equal,
+                           )
 
 import MDAnalysis
 import MDAnalysis.lib.util as util
@@ -156,19 +159,26 @@ class TestNamedStream(TestCase):
             except OSError:
                 pass
 class TestNamedStream_filename_behavior(object):
-    textname = "jabberwock.txt"
+    textname = "~/stories/jabberwock.txt"  # with tilde ~ to test regular expanduser()
     # note: no setUp() because classes with generators would run it
     #       *for each generated test* and we need it for the generator method
 
-    def create_NamedStream(self):
+    def create_NamedStream(self, name=None):
+        if name is None:
+            name = self.textname
         obj = cStringIO.StringIO()
-        return util.NamedStream(obj, self.textname)
+        return util.NamedStream(obj, name)
 
     def test_ospath_funcs(self):
         ns = self.create_NamedStream()
 
-        funcs = ("abspath", "basename", "dirname", "normpath",
-                 "relpath", "split", "splitext")
+        # - "expandvars" gave Segmentation fault (OS X 10.6, Python 2.7.11 -- orbeckst)
+        # - "expanduser" will either return a string if it carried out interpolation
+        #   or "will do nothing" and return the NamedStream (see extra test below).
+        #   On systems without a user or HOME, it will also do nothing and the test
+        #   below will fail.
+        funcs = ("abspath", "basename", "dirname", "expanduser",
+                 "normpath", "relpath", "split", "splitext")
         def _test_func(funcname, fn=self.textname, ns=ns):
             func = getattr(os.path, funcname)
             reference = func(fn)
@@ -186,6 +196,39 @@ class TestNamedStream_filename_behavior(object):
         for func in funcs:
             yield _test_func, func
         yield _test_join, "join"
+
+    # Segmentation fault when run as a test on Mac OS X 10.6, Py 2.7.11 [orbeckst]
+    @dec.skipif(True)
+    def test_expanduser_noexpansion_returns_NamedStream(self):
+        ns = self.create_NamedStream("de/zipferlack.txt")  # no tilde ~ in name!
+        reference = ns
+        value = os.path.expanduser(ns)
+        assert_equal(value, reference,
+                     err_msg=("os.path.expanduser() without '~' did not "
+                              "return NamedStream --- weird!!"))
+
+    # expandvars(NamedStream) does not work interactively, so it is a knownfailure
+    # Segmentation fault when run as a test on Mac OS X 10.6, Py 2.7.11 [orbeckst]
+    @dec.skipif(True)
+    @dec.skipif("HOME" not in os.environ)
+    @knownfailure()
+    def test_expandvars(self):
+        name = "${HOME}/stories/jabberwock.txt"
+        ns = self.create_NamedStream(name)
+        reference = os.path.expandvars(name)
+        value = os.path.expandvars(ns)
+        assert_equal(value, reference,
+                     err_msg="os.path.expandvars() did not expand HOME")
+
+    # Segmentation fault when run as a test on Mac OS X 10.6, Py 2.7.11 [orbeckst]
+    @dec.skipif(True)
+    def test_expandvars_noexpansion_returns_NamedStream(self):
+        ns = self.create_NamedStream() # no $VAR constructs
+        reference = ns
+        value = os.path.expandvars(ns)
+        assert_equal(value, reference,
+                     err_msg=("os.path.expandvars() without '$VARS' did not "
+                              "return NamedStream --- weird!!"))
 
     def test_add(self):
         ns = self.create_NamedStream()
