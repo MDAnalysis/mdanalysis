@@ -151,6 +151,7 @@ Class decorators
 __docformat__ = "restructuredtext en"
 
 from six.moves import range
+import six
 
 import os
 import os.path
@@ -826,7 +827,7 @@ def guess_format(filename):
 def iterable(obj):
     """Returns ``True`` if *obj* can be iterated over and is *not* a  string
     nor a :class:`NamedStream`"""
-    if isinstance(obj, (basestring, NamedStream)):
+    if isinstance(obj, (six.string_types, NamedStream)):
         return False  # avoid iterating over characters of a string
 
     if hasattr(obj, 'next'):
