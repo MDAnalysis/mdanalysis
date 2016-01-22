@@ -92,7 +92,7 @@ class TransTable(object):
         """The shape of the table, (n_atoms, n_residues, n_segments)"""
         return (self.n_atoms, self.n_residues, self.n_segments)
 
-    def a2r(self, aix):
+    def atom2residues(self, aix):
         """Get residue indices for each atom.
 
         Parameters
@@ -108,7 +108,7 @@ class TransTable(object):
         """
         return self.AR[aix]
 
-    def r2a_1d(self, rix):
+    def residues2atoms_1d(self, rix):
         """Get atom indices collectively represented by given residue indices.
 
         Parameters
@@ -129,7 +129,7 @@ class TransTable(object):
             x, y = self._res_ptrs[rix]
             return self._atom_order[x:y]
 
-    def r2a_2d(self, rix):
+    def residues2atoms_2d(self, rix):
         """Get atom indices represented by each residue index.
 
         Parameters
@@ -151,7 +151,7 @@ class TransTable(object):
             x, y = self._res_ptrs[rix]
             return self._atom_order[x:y]
 
-    def r2s(self, rix):
+    def residues2segments(self, rix):
         """Get segment indices for each residue.
 
         Parameters
@@ -167,7 +167,7 @@ class TransTable(object):
         """
         return self.RS[rix]
 
-    def s2r_1d(self, six):
+    def segments2residues_1d(self, six):
         """Get residue indices collectively represented by given segment indices
 
         Parameters
@@ -188,7 +188,7 @@ class TransTable(object):
             x, y = self._seg_ptrs[six]
             return self._res_order[x:y]
 
-    def s2r_2d(self, six):
+    def segments2residues_2d(self, six):
         """Get residue indices represented by each segment index.
 
         Parameters
@@ -211,7 +211,7 @@ class TransTable(object):
             return self._res_order[x:y]
 
     # Compound moves, does 2 translations
-    def a2s(self, aix):
+    def atoms2segments(self, aix):
         """Get segment indices for each atom.
 
         Parameters
@@ -225,10 +225,10 @@ class TransTable(object):
             segment index for each atom
 
         """
-        rix = self.a2r(aix)
-        return self.r2s(rix)
+        rix = self.atomsegments2residuesesidues(aix)
+        return self.residues2segments(rix)
 
-    def s2a_1d(self, six):
+    def segments2atoms_1d(self, six):
         """Get atom indices collectively represented by given segment indices.
 
         Parameters
@@ -243,14 +243,14 @@ class TransTable(object):
 
         """
 
-        rixs = self.s2r_2d(six)
+        rixs = self.segments2residues_2d(six)
 
         if isinstance(rixs, np.ndarray):
-            return self.r2a_1d(rixs)
+            return self.residues2atoms_1d(rixs)
         else:
-            return np.concatenate((self.r2a_1d(rix) for rix in rixs))
+            return np.concatenate((self.residues2atoms_1d(rix) for rix in rixs))
 
-    def s2a_2d(self, six):
+    def segments2atoms_2d(self, six):
         """Get atom indices represented by each segment index.
 
         Parameters
@@ -266,12 +266,12 @@ class TransTable(object):
             in that segment
 
         """
-        rixs = self.s2r_2d(six)
+        rixs = self.segments2residues_2d(six)
 
         if isinstance(rixs, np.ndarray):
-            return self.r2a_1d(rixs)
+            return self.residues2atoms_1d(rixs)
         else:
-            return (self.r2a_1d(rix) for rix in rixs)
+            return (self.residues2atoms_1d(rix) for rix in rixs)
 
 
 #TODO: movers and resizers

@@ -135,10 +135,10 @@ class Atomindices(TopologyAttr):
         return ag._ix
 
     def get_residues(self, rg):
-        return self.top.tt.r2a_1d(rg._ix)
+        return self.top.tt.residues2atoms_1d(rg._ix)
 
     def get_segments(self, sg):
-        return self.top.tt.s2a_1d(sg._ix)
+        return self.top.tt.segments2atoms_1d(sg._ix)
 
 
 class Resindices(TopologyAttr):
@@ -165,7 +165,7 @@ class Resindices(TopologyAttr):
         return len(self.top.n_residues)
 
     def get_atoms(self, ag):
-        return self.top.tt.a2r(ag._ix)
+        return self.top.tt.atoms2residues(ag._ix)
 
     def set_atoms(self, ag, values):
         """Set resindex for each atom given. Effectively moves each atom to
@@ -181,7 +181,7 @@ class Resindices(TopologyAttr):
         raise AttributeError("Residue indices are fixed; they cannot be reset")
 
     def get_segments(self, sg):
-        return self.top.tt.s2r_1d(sg._ix)
+        return self.top.tt.segments2residues_1d(sg._ix)
 
 
 class Segindices(TopologyAttr):
@@ -209,10 +209,10 @@ class Segindices(TopologyAttr):
         return len(self.top.n_segments)
 
     def get_atoms(self, ag):
-        return self.top.tt.a2s(ag._ix)
+        return self.top.tt.atoms2segments(ag._ix)
 
     def get_residues(self, rg):
-        return self.top.tt.r2s(rg._ix)
+        return self.top.tt.residues2segments(rg._ix)
 
     def get_segments(self, sg):
         return sg._ix
@@ -243,7 +243,7 @@ class AtomAttr(TopologyAttr):
         attributes.
 
         """
-        aix = self.top.tt.r2a_1d(rg._ix)
+        aix = self.top.tt.residues2atoms_1d(rg._ix)
         return self.values[aix]
 
     def get_segments(self, sg):
@@ -329,7 +329,7 @@ class Masses(AtomAttr):
 
     def get_residues(self, rg):
 
-        resatoms = self.top.tt.r2a_2d(rg._ix)
+        resatoms = self.top.tt.residues2atoms_2d(rg._ix)
 
         if isinstance(rg._ix, int):
             # for a single residue
@@ -452,7 +452,7 @@ class Charges(AtomAttr):
     def get_residues(self, rg):
         charges = np.empty(len(rg))
 
-        resatoms = self.top.tt.r2a_2d(rg._ix)
+        resatoms = self.top.tt.residues2atoms_2d(rg._ix)
 
         for i, row in enumerate(resatoms):
             charges[i] = self.values[row].sum()
@@ -506,7 +506,7 @@ class ResidueAttr(TopologyAttr):
     target_levels = ['residue']
 
     def get_atoms(self, ag):
-        rix = self.top.tt.a2r(ag._ix)
+        rix = self.top.tt.atoms2residues(ag._ix)
         return self.values[rix]
 
     def get_residues(self, rg):
@@ -521,7 +521,7 @@ class ResidueAttr(TopologyAttr):
         in child attributes.
 
         """
-        rix = self.top.tt.s2r_1d(sg._ix)
+        rix = self.top.tt.segments2residues_1d(sg._ix)
         return self.values[rix]
 
 
@@ -558,11 +558,11 @@ class SegmentAttr(TopologyAttr):
     target_levels = ['segment']
 
     def get_atoms(self, ag):
-        six = self.top.tt.a2s(ag._ix)
+        six = self.top.tt.atoms2segments(ag._ix)
         return self.values[six]
 
     def get_residues(self, rg):
-        six = self.top.tt.r2s(rg._ix)
+        six = self.top.tt.residues2segments(rg._ix)
         return self.values[six]
 
     def get_segments(self, sg):
