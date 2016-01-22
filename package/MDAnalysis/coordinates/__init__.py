@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -274,7 +274,7 @@ Registry
 
 In various places, MDAnalysis tries to automatically select appropriate formats
 (e.g. by looking at file extensions). In order to allow it to choose the
-correct format, all I/O classes must subclass either 
+correct format, all I/O classes must subclass either
 :class:`MDAnalysis.coordinates.base.ProtoReader` or
 :class:`MDAnalysis.coordinates.base.Writer` and set the `format` attribute
 with a string defining the expected suffix.
@@ -678,22 +678,31 @@ _READERS = {}
 _SINGLEFRAME_WRITERS = {}
 _MULTIFRAME_WRITERS = {}
 
+import six
+
 from . import base
 from .core import reader, writer
 from . import CRD
-from . import DCD
 from . import DLPoly
 from . import DMS
 from . import GMS
 from . import GRO
 from . import INPCRD
-from . import LAMMPS
 from . import MOL2
 from . import PDB
 from . import PDBQT
 from . import PQR
 from . import TRJ
 from . import TRR
-from . import TRZ
 from . import XTC
 from . import XYZ
+
+try:
+    from . import DCD
+    from . import LAMMPS
+    from . import TRZ
+except ImportError as e:
+    # The import is expected to fail under Python 3.
+    # It should not fail on Python 2, however.
+    if six.PY2:
+        raise e
