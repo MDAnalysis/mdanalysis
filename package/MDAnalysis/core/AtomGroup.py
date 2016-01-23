@@ -1016,7 +1016,7 @@ class AtomGroup(object):
         cls = self._cls
 
         # consistent with the way list indexing/slicing behaves:
-        if isinstance(item, int):
+        if isinstance(item, (int, np.integer)):
             try:
                 return container[item]
             except IndexError:
