@@ -433,7 +433,7 @@ The following methods must be implemented in a Reader class.
      allow iteration from beginning to end::
 
         for ts in trajectory:
-            print ts.frame
+            print(ts.frame)
 
  ``close()``
      close the file and cease I/O

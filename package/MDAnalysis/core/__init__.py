@@ -59,7 +59,7 @@ through the pseudo-dictionary :data:`MDAnalysis.core.flags`.
 The entries appear as 'name'-'value' pairs. Flags check values and illegal ones
 raise a :exc:`ValueError`. Documentation on all flags can be obtained with ::
 
- print MDAnalysis.core.flags.doc()
+ print(MDAnalysis.core.flags.doc())
 
 
 List of MDAnalysis flags with default values
@@ -100,7 +100,7 @@ class Flags(dict):
     The entries appear as 'name'-'value' pairs. Flags check values and illegal ones
     raise a :exc:`ValueError`. Documentation on all flags can be obtained with ::
 
-      print MDAnalysis.core.flags.__doc__
+      print(MDAnalysis.core.flags.__doc__)
 
     New flags are added with the :meth:`Flags.register` method which takes a new :class:`Flag`
     instance as an argument.

@@ -13,6 +13,8 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+from __future__ import print_function
+
 from nose.tools import raises
 from numpy.testing import assert_equal, assert_array_equal
 from numpy.testing import assert_array_almost_equal
@@ -120,7 +122,7 @@ def test_read_multi_frame_xtc():
         ones = np.ones(30).reshape(10, 3)
         box_compare = np.eye(3) * 20
         for i, frame in enumerate(f):
-            print i
+            print(i)
             xyz, box, step, time, prec = frame
             assert_array_almost_equal(xyz, ones * i, decimal=3)
             assert_array_almost_equal(box, box_compare, decimal=3)
@@ -142,7 +144,7 @@ def test_write_xtc():
         ones = np.ones(30).reshape(10, 3)
         box_compare = np.eye(3) * 20
         for i, frame in enumerate(f):
-            print i
+            print(i)
             xyz, box, step, time, prec = frame
             assert_array_almost_equal(xyz, ones * i, decimal=3)
             assert_array_almost_equal(box, box_compare, decimal=3)

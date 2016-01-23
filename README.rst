@@ -28,7 +28,7 @@ lists of  supported `trajectory formats`_ and `topology formats`_.)
    
    # Iterate through trajectories
    for ts in u.trajectory:
-       print ag.center_of_mass()
+       print(ag.center_of_mass())
 
 Source code
 ===========

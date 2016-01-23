@@ -101,8 +101,8 @@ ascending order parameter. To access the individual profiles one can simply
 iterate over the sorted profiles (see :meth:`HOLEtraj.sorted_profiles_iter`) ::
 
   for q, profile in H:
-     print "orderparameter = %g" % q
-     print "min(R) = %g" % profile.radius.min()
+     print("orderparameter = %g" % q)
+     print("min(R) = %g" % profile.radius.min())
 
 
 Data structures

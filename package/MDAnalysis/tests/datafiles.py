@@ -29,18 +29,19 @@ Real MD simulation data, used for examples and the unit tests::
    :mod:`MDAnalysisTests` package which must be downloaded from
    http://pypi.python.org/pypi/MDAnalysisTests and installed.
 """
+from __future__ import print_function
 
 try:
     from MDAnalysisTests.datafiles import *
 except ImportError:
-    print "*** ERROR ***"
-    print "In order to run the MDAnalysis test cases you must install the"
-    print "MDAnalysisTestData package (which has been separated from the "
-    print "library code itself since release 0.7.4). Go to "
-    print
-    print "     http://pypi.python.org/pypi/MDAnalysisTests"
-    print
-    print "and download and install the `MDAnalysisTests-x.y.z.tar.gz'"
-    print "that matches your MDAnalysis release."
+    print("*** ERROR ***")
+    print("In order to run the MDAnalysis test cases you must install the")
+    print("MDAnalysisTestData package (which has been separated from the ")
+    print("library code itself since release 0.7.4). Go to ")
+    print()
+    print("     http://pypi.python.org/pypi/MDAnalysisTests")
+    print()
+    print("and download and install the `MDAnalysisTests-x.y.z.tar.gz'")
+    print("that matches your MDAnalysis release.")
     raise ImportError("MDAnalysisTests package not installed.")
 

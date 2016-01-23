@@ -29,7 +29,7 @@ To open a mol2, remove all hydrogens and save as a new file, use the following::
 
   u = Universe("MDAnalysis/testsuite/MDAnalysisTests/data/mol2/Molecule.mol2")
   gr = u.select_atoms("not name H*")
-  print len(u.atoms), len(gr)
+  print(len(u.atoms), len(gr))
   gr.write("Molecule_noh.mol2")
 
 .. _MOL2: http://www.tripos.com/data/support/mol2.pdf

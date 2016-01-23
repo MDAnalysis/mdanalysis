@@ -80,6 +80,7 @@ directly needed to perform the analysis.
 
 # import copy #unused
 
+from __future__ import print_function
 from six.moves import range
 
 import numpy as np
@@ -113,7 +114,7 @@ def backup_file(filename):
                     failure = False
                     break
         if failure:
-            print "Too many backups. Clean up and try again"
+            print("Too many backups. Clean up and try again")
             exit()
 
 
@@ -195,7 +196,8 @@ class GNMAnalysis(object):
         if ReportVector:
             with open(ReportVector, "a") as oup:
                 for item in enumerate(v[list_map[1]]):
-                    print >> oup, "", counter, time, item[0] + 1, w[list_map[1]], item[1]
+                    print("", counter, time, item[0] + 1,
+                          w[list_map[1]], item[1], file=oup)
         outputobject.append((time, w[list_map[1]], v[list_map[1]]))
         #outputobject.append((time, [ w[list_map[i]] for i in range(nmodes) ], [ v[list_map[i]] for i in range(
         # nmodes) ] ))
@@ -288,7 +290,8 @@ class GNMAnalysis(object):
             try:
                 [u, w, v] = linalg.svd(matrix)
             except linalg.LinAlgError:
-                print "\nFrame skip at", timestep, "(SVD failed to converge). Cutoff", self.cutoff
+                print("\nFrame skip at", timestep,
+                      "(SVD failed to converge). Cutoff", self.cutoff)
                 continue
             #Save the results somewhere useful in some useful format. Usefully.
             self.generate_output(w, v, self.results, timestep, matrix, ReportVector=self.ReportVector, counter=counter)
