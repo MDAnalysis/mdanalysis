@@ -82,7 +82,6 @@ Classes and Functions
 
 """
 from __future__ import print_function
-
 from six.moves import range
 
 import numpy as np
@@ -90,7 +89,6 @@ import sys
 import os
 import os.path
 import errno
-import cPickle
 import warnings
 
 try:

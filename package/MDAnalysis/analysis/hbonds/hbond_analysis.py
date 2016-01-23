@@ -310,7 +310,7 @@ Classes
 
 """
 import six
-from six.moves import range, zip, map
+from six.moves import range, zip, map, cPickle
 
 from collections import defaultdict
 import numpy as np
@@ -984,8 +984,6 @@ class HydrogenBondAnalysis(object):
 
         .. SeeAlso:: :mod:`cPickle` module and :class:`numpy.recarray`
         """
-        import cPickle
-
         if self.table is None:
             self.generate_table()
         cPickle.dump(self.table, open(filename, 'wb'), protocol=cPickle.HIGHEST_PROTOCOL)

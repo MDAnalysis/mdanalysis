@@ -13,6 +13,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+from six.moves import zip, cPickle
 
 import MDAnalysis
 from MDAnalysis.tests.datafiles import PSF, DCD, PDB_small, GRO, TRR, \
@@ -24,7 +25,6 @@ from MDAnalysis.core.AtomGroup import Atom, AtomGroup, as_Universe
 from MDAnalysis import NoDataError
 from MDAnalysis.core.AtomGroup import _PLURAL_PROPERTIES, _SINGULAR_PROPERTIES
 
-from six.moves import zip
 import numpy as np
 from numpy.testing import *
 from nose.plugins.attrib import attr
@@ -1608,8 +1608,6 @@ class TestUniverse(TestCase):
         assert_equal(u.trajectory.n_frames, 2 * ref.trajectory.n_frames)
 
     def test_pickle_raises_NotImplementedError(self):
-        import cPickle
-
         u = MDAnalysis.Universe(PSF, DCD)
         assert_raises(NotImplementedError, cPickle.dumps, u, protocol=cPickle.HIGHEST_PROTOCOL)
 

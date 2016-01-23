@@ -218,7 +218,7 @@ Classes, methods, and functions
 
 """
 import six
-from six.moves import range
+from six.moves import range, cPickle
 
 import numpy as np
 
@@ -226,7 +226,6 @@ import MDAnalysis
 import MDAnalysis.analysis.align
 from MDAnalysis import NoDataError
 
-import cPickle as pickle
 import os
 
 import logging
@@ -1173,11 +1172,11 @@ class PSAnalysis(object):
         self._labels_pkl = os.path.join(self.targetdir, "psa_labels.pkl")
         # Pickle topology and trajectory filenames for this analysis to curdir
         with open(self._top_pkl, 'wb') as output:
-            pickle.dump(self.top_name, output)
+            cPickle.dump(self.top_name, output)
         with open(self._trjs_pkl, 'wb') as output:
-            pickle.dump(self.trj_names, output)
+            cPickle.dump(self.trj_names, output)
         with open(self._labels_pkl, 'wb') as output:
-            pickle.dump(self.labels, output)
+            cPickle.dump(self.labels, output)
 
         self.natoms = None
         self.npaths = None
@@ -1259,7 +1258,7 @@ class PSAnalysis(object):
         self.fit_trj_names = fit_trj_names
         if save:
             with open(self._fit_trjs_pkl, 'wb') as output:
-                pickle.dump(self.fit_trj_names, output)
+                cPickle.dump(self.fit_trj_names, output)
         if store:
             filename = kwargs.pop('filename', None)
             self.save_paths(filename=filename)
@@ -1407,7 +1406,7 @@ class PSAnalysis(object):
             logger.info("Wrote path to file %r", current_outfile)
         self.path_names = path_names
         with open(self._paths_pkl, 'wb') as output:
-            pickle.dump(self.path_names, output)
+            cPickle.dump(self.path_names, output)
         return filename
 
 

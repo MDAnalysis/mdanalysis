@@ -16,8 +16,9 @@
 
 # Test the selection exporters in MDAnalysis.selections
 
-# use cStringIO and NamedStream to write to memory instead to temp files
-import cStringIO
+# use StringIO and NamedStream to write to memory instead to temp files
+from six.moves import cPickle, StringIO
+
 import re
 
 import numpy as np
@@ -37,7 +38,7 @@ class _SelectionWriter(TestCase):
 
     def setUp(self):
         self.universe = MDAnalysis.Universe(PSF, DCD)
-        stream = cStringIO.StringIO()
+        stream = StringIO()
         self.namedfile = NamedStream(stream, self.filename)
 
     def tearDown(self):
