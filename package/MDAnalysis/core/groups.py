@@ -5,6 +5,7 @@
 import numpy as np
 import functools
 
+from ..lib import mdamath
 from . import selection
 from . import flags
 from . import levels
@@ -566,8 +567,8 @@ class AtomGroup(object):
 
         Returns
         -------
-         corners : 2 x 3 array
-            Array giving corners of bounding box as
+         corners : array
+            2x3 array giving corners of bounding box as
             [[xmin, ymin, zmin], [xmax, ymax, zmax]].
 
         .. versionadded:: 0.7.2
@@ -618,19 +619,29 @@ class AtomGroup(object):
     def transform(self, M):
         """Apply homogenous transformation matrix `M` to the coordinates.
 
-        The matrix *M* must be a 4x4 matrix, with the rotation in
-        ``R = M[:3,:3]`` and the translation in ``t = M[:3,3]``.
+        Parameters
+        ----------
+        M : array
+            4x4 matrix, with the rotation in ``R = M[:3,:3]`` and the
+            translation in ``t = M[:3,3]``.
 
+        Returns
+        -------
+        R : array
+            Rotation matrix applied to coordinates.
+
+        See Also
+        --------
+        MDAnalysis.lib.transformations : module of all coordinate transforms
+
+        Notes
+        -----
         The rotation :math:`\mathsf{R}` is applied before the translation
         :math:`\mathbf{t}`:
 
         .. math::
 
            \mathbf{x}' = \mathsf{R}\mathbf{x} + \mathbf{t}
-
-        See Also
-        --------
-        MDAnalysis.lib.transformations : module of all coordinate transforms
 
         """
         R = M[:3, :3]
@@ -645,9 +656,24 @@ class AtomGroup(object):
     def translate(self, t):
         """Apply translation vector `t` to the selection's coordinates.
 
-            >>> AtomGroup.translate(t)
-            >>> AtomGroup.translate((A, B))
+        Atom coordinates are translated in-place.
 
+        Parameters
+        ----------
+        t : array_like
+            vector to translate coordinates with
+
+        Returns
+        -------
+        t : array
+            vector coordinates translated with
+
+        See Also
+        --------
+        MDAnalysis.lib.transformations : module of all coordinate transforms
+
+        Notes
+        -----
         The method applies a translation to the AtomGroup from current
         coordinates :math:`\mathbf{x}` to new coordinates :math:`\mathbf{x}'`:
 
@@ -655,28 +681,34 @@ class AtomGroup(object):
 
             \mathbf{x}' = \mathbf{x} + \mathbf{t}
 
-        The translation can also be given as a tuple of two MDAnalysis objects
-        such as two selections `(selA, selB)`, i.e. two :class:`AtomGroup`, or
-        two :class:`Atom`. The translation vector is computed as the
-        difference between the centers of geometry (centroid) of B and A::
-
-            t = B.centroid() - A.centroid()
         """
-        try:
-            sel1, sel2 = t
-            x1, x2 = sel1.centroid(), sel2.centroid()
-            vector = x2 - x1
-        except (ValueError, AttributeError):
-            vector = np.asarray(t)
-        # changes the coordinates (in place)
+        vector = np.asarray(t)
+        # changes the coordinates in place
         self.universe.trajectory.ts.positions[self.indices] += vector
         return vector
 
     def rotate(self, R):
         """Apply a rotation matrix `R` to the selection's coordinates.
 
-             >>> AtomGroup.rotate(R)
+        No translation is done before the rotation is applied, so coordinates
+        are rotated about the origin.
 
+        Parameters
+        ----------
+        R : array_like
+            3x3 rotation matrix to use for applying rotation.
+
+        Returns
+        -------
+        R : array
+            Rotation matrix applied to coordinates.
+
+        See Also
+        --------
+        MDAnalysis.lib.transformations : module of all coordinate transforms
+
+        Notes
+        -----
         :math:`\mathsf{R}` is a 3x3 orthogonal matrix that transforms a vector
         :math:`\mathbf{x} \rightarrow \mathbf{x}'`:
 
@@ -691,15 +723,147 @@ class AtomGroup(object):
         x[idx] = x[idx] * R.T  # R.T acts to the left & is broadcasted N times.
         return R
 
+    def rotateby(self, angle, axis, point=None):
+        """Apply a rotation to the selection's coordinates.
+
+        Parameters
+        ----------
+        angle : float
+            Rotation angle in degrees.
+        axis : array_like
+            Rotation axis vector.
+        point : array_like
+            Point on the rotation axis; if ``None`` the center of geometry of
+            the selection is chosen .
+
+        Returns
+        -------
+        M : array
+            The 4x4 matrix which consists of the rotation matrix ``M[:3,:3]``
+            and the translation vector ``M[:3,3]``.
+
+        Notes
+        -----
+        The transformation from current coordinates :math:`\mathbf{x}`
+        to new coordinates :math:`\mathbf{x}'` is
+
+        .. math::
+
+          \mathbf{x}' = \mathsf{R}\,(\mathbf{x}-\mathbf{p}) + \mathbf{p}
+
+        where :math:`\mathsf{R}` is the rotation by *angle* around the
+        *axis* going through *point* :math:`\mathbf{p}`.
+
+        """
+        alpha = np.radians(angle)
+        try:
+            sel1, sel2 = axis
+            x1, x2 = sel1.centroid(), sel2.centroid()
+            v = x2 - x1
+            n = v / np.linalg.norm(v)
+            if point is None:
+                point = x1
+        except (ValueError, AttributeError):
+            n = np.asarray(axis)
+        if point is None:
+            p = self.centroid()
+        else:
+            try:
+                p = point.centroid()
+            except AttributeError:
+                p = np.asarray(point)
+        M = transformations.rotation_matrix(alpha, n, point=p)
+        self.transform(M)
+        return M
+
+    def align_principal_axis(self, axis, vector):
+        """Align principal axis with index `axis` with `vector`.
+
+        Parameters
+        ----------
+        axis : {0, 1, 2}
+            Index of the principal axis (0, 1, or 2), as produced by
+            :meth:`~principal_axes`.
+        vector : array_like
+            Vector to align principal axis with.
+
+        Notes
+        -----
+        To align the long axis of a channel (the first principal axis, i.e.
+        *axis* = 0) with the z-axis::
+
+          u.atoms.align_principal_axis(0, [0,0,1])
+          u.atoms.write("aligned.pdb")
+        """
+        p = self.principal_axes()[axis]
+        angle = np.degrees(mdamath.angle(p, vector))
+        ax = transformations.rotaxis(p, vector)
+        #print "principal[%d] = %r" % (axis, p)
+        #print "axis = %r, angle = %f deg" % (ax, angle)
+        return self.rotateby(angle, ax)
+
+    def pack_into_box(self, box=None, inplace=True):
+        """Shift all atoms in this group to be within the primary unit cell.
+
+        Parameters
+        ----------
+        box : array_like
+            Box dimensions, can be either orthogonal or triclinic information.
+            Cell dimensions must be in an identical to format to those returned
+            by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`,
+            ``[lx, ly, lz, alpha, beta, gamma]``.
+        inplace : bool
+            ``True`` to change coordinates in place.
+
+        Returns
+        -------
+        coords : array
+            Shifted atom coordinates.
+
+        Notes
+        -----
+        All atoms will be moved so that they lie between 0 and boxlength
+        :math:`L_i` in all dimensions, i.e. the lower left corner of the
+        simulation box is taken to be at (0,0,0):
+
+        .. math::
+
+           x_i' = x_i - \left\lfloor\frac{x_i}{L_i}\right\rfloor
+
+        The default is to take unit cell information from the underlying
+        :class:`~MDAnalysis.coordinates.base.Timestep` instance. The optional
+        argument *box* can be used to provide alternative unit cell information
+        (in the MDAnalysis standard format ``[Lx, Ly, Lz, alpha, beta,
+        gamma]``).
+
+        Works with either orthogonal or triclinic box types.
+
+        .. versionadded:: 0.8
+
+        """
+        if box is None:  #Try and auto detect box dimensions
+            box = self.dimensions  # Can accept any box
+
+        if box.shape == (3, 3):
+            # for a vector representation, diagonal cannot be zero
+            if (box.diagonal() == 0.0).any():
+                raise ValueError("One or more box dimensions is zero."
+                                 "  You can specify a boxsize with 'box ='")
+        else:
+            if (box == 0).any():  #Check that a box dimension isn't zero
+                raise ValueError("One or more box dimensions is zero."
+                                 "  You can specify a boxsize with 'box='")
+
+        coords = self.universe.coord.positions[self.indices]
+        if not inplace:
+            return distances.apply_PBC(coords, box)
+
+        self.universe.coord.positions[self.indices] = distances.apply_PBC(coords, box)
+
+        return self.universe.coord.positions[self.indices]
+
+
 class ResidueGroup(object):
-    """ResidueGroup base class.
-
-    This class is used by a Universe for generating its Topology-specific
-    ResidueGroup class. All the TopologyAttr components are obtained from
-    GroupBase, so this class only includes ad-hoc methods specific to
-    ResidueGroups.
-
-    """
     level = 'residue'
 
     def sequence(self, **kwargs):
