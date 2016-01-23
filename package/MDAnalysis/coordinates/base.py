@@ -1054,6 +1054,10 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         """Forward one step to next frame."""
         return self._read_next_timestep()
 
+    def __next__(self):
+        """Forward one step to next frame when using the `next` builtin."""
+        return self.next()
+
     def rewind(self):
         """Position at beginning of trajectory"""
         self._reopen()
@@ -1568,14 +1572,14 @@ class ChainReader(ProtoReader):
             yield ts
 
     def _read_next_timestep(self, ts=None):
-        self.ts = self.__chained_trajectories_iter.next()
+        self.ts = next(self.__chained_trajectories_iter)
         return self.ts
 
     def rewind(self):
         """Set current frame to the beginning."""
         self._rewind()
         self.__chained_trajectories_iter = self._chained_iterator()
-        self.ts = self.__chained_trajectories_iter.next()  # set time step to frame 1
+        self.ts = next(self.__chained_trajectories_iter)  # set time step to frame 1
 
     def _rewind(self):
         """Internal method: Rewind trajectories themselves and trj pointer."""
