@@ -514,7 +514,9 @@ class PrimitivePDBReader(base.Reader):
                     # on the trajectory reader
                     if len(frames) > 1:
                         continue
-                    self.ts._pos[pos] = map(float, [line[30:38], line[38:46], line[46:54]])
+                    self.ts._pos[pos] = list(map(float, [line[30:38],
+                                                         line[38:46],
+                                                         line[46:54]]))
                     try:
                         occupancy[pos] = float(line[54:60])
                     except ValueError:
