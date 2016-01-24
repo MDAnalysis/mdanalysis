@@ -159,7 +159,7 @@ class TPRParser(TopologyReader):
         #ndo_rvec = U.ndo_rvec
         #ndo_ivec = U.ndo_ivec
 
-        tprf = anyopen(self.filename).read()
+        tprf = anyopen(self.filename, mode='rb').read()
         data = xdrlib.Unpacker(tprf)
         try:
             th = U.read_tpxheader(data)                    # tpxheader
