@@ -33,7 +33,8 @@ from MDAnalysis.tests.datafiles import (
     DLP_HISTORY, DLP_HISTORY_order, DLP_HISTORY_minimal, HoomdXMLdata)
 from MDAnalysisTests.plugins.knownfailure import knownfailure
 
-from numpy.testing import *
+from numpy.testing import (TestCase, assert_equal, assert_raises, assert_,
+                           assert_array_equal, assert_almost_equal)
 from nose.plugins.attrib import attr
 import numpy as np
 
