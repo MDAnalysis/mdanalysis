@@ -172,3 +172,12 @@ _named_anchor_universes = weakref.WeakSet()
 del weakref
 
 from .migration.ten2eleven import ten2eleven
+
+import six
+if six.PY3:
+    warnings.warn('''\
+#####
+MDAnalysis on python 3 is highly experimental!
+It is mostly non functional and dramatically untested.
+Use at your own risks!!!
+''')
