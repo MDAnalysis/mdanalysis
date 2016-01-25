@@ -26,7 +26,10 @@ from MDAnalysis import NoDataError
 from MDAnalysis.core.AtomGroup import _PLURAL_PROPERTIES, _SINGULAR_PROPERTIES
 
 import numpy as np
-from numpy.testing import *
+from numpy.testing import (TestCase, dec, raises, assert_equal,
+                           assert_almost_equal, assert_raises, assert_,
+                           assert_array_almost_equal, assert_array_equal,
+                           assert_allclose)
 from nose.plugins.attrib import attr
 
 import os
