@@ -24,7 +24,7 @@ from MDAnalysis.core.AtomGroup import Atom, AtomGroup
 from MDAnalysis import NoDataError
 
 import numpy as np
-from numpy.testing import *
+from numpy.testing import TestCase, assert_equal, assert_raises, assert_, assert_array_equal 
 from nose.plugins.attrib import attr
 
 import os
