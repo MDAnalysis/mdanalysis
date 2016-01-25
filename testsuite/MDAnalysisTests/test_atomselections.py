@@ -42,7 +42,7 @@ from MDAnalysis.tests.datafiles import (
     PSF, DCD,
     PRMpbc, TRJpbc_bz2,
     PSF_NAMD, PDB_NAMD,
-    GRO, NUCL, TPR, XTC,
+    GRO, NUCL, NUCLsel, TPR, XTC,
     TRZ_psf, TRZ,
     PDB_full,
 )
@@ -463,6 +463,13 @@ class TestSelectionsNucleicAcids(TestCase):
         rna = self.universe.select_atoms("nucleic")
         assert_equal(rna.n_atoms, 739)
         assert_equal(rna.n_residues, 23)
+
+    def test_nucleic_all(self):
+        u = mda.Universe(NUCLsel)
+
+        sel = u.select_atoms('nucleic')
+
+        assert_(len(sel) == 34)
 
     def test_nucleicbackbone(self):
         rna = self.universe.select_atoms("nucleicbackbone")

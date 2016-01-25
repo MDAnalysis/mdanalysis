@@ -38,6 +38,8 @@ Fixes
     (Issue #639)
   * The 'atom' selection keyword returns an empty selection rather than an
     error when no atoms are are found. (Issue #644)
+  * nucleic selection will now detect nucleic residue names suffixed with 3 or 5
+    (Issue #461)
 
 
 01/16/16 tyler.je.reddy, kain88-de, richardjgowers, manuel.nuno.melo,
