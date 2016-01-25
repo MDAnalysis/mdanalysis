@@ -37,11 +37,14 @@ import tempfile
 import itertools
 
 from MDAnalysisTests.plugins.knownfailure import knownfailure
+from MDAnalysisTests import parser_not_found
 
 
 class TestAtom(TestCase):
     """Tests of Atom."""
 
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         """Set up the standard AdK system in implicit solvent."""
         self.universe = MDAnalysis.Universe(PSF, DCD)
@@ -225,6 +228,8 @@ class TestAtomGroup(TestCase):
         "YYSKEAEAGNTKYAKVDGTKPVAEVRADLEKILG"
     )
 
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         """Set up the standard AdK system in implicit solvent."""
         self.universe = MDAnalysis.Universe(PSF, DCD)
@@ -890,6 +895,8 @@ class TestAtomGroup(TestCase):
 
 
 class TestAtomGroupNoTop(TestCase):
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.u = MDAnalysis.Universe(PSF_notop, DCD)
         self.ag = self.u.atoms[:10]
@@ -983,6 +990,8 @@ class TestAtomGroupNoTop(TestCase):
 class TestUniverseSetTopology(TestCase):
     """Tests setting of bonds/angles/dihedrals/impropers from Universe."""
 
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.u = MDAnalysis.Universe(PSF, DCD)
 
@@ -1080,6 +1089,8 @@ class TestUniverseSetTopology(TestCase):
 
 
 class TestResidue(TestCase):
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.universe = MDAnalysis.Universe(PSF, DCD)
         self.res = self.universe.residues[100]
@@ -1109,6 +1120,8 @@ class TestResidue(TestCase):
 
 
 class TestResidueGroup(TestCase):
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         """Set up the standard AdK system in implicit solvent."""
         self.universe = MDAnalysis.Universe(PSF, DCD)
@@ -1254,6 +1267,8 @@ class TestResidueGroup(TestCase):
 
 
 class TestSegment(TestCase):
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.universe = MDAnalysis.Universe(PSF, DCD)
         self.universe.residues[:100].set_segids("A")  # make up some segments
@@ -1292,6 +1307,8 @@ class TestSegment(TestCase):
 
 
 class TestSegmentGroup(TestCase):
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         """Set up the standard AdK system in implicit solvent."""
         self.universe = MDAnalysis.Universe(PSF, DCD)
@@ -1398,6 +1415,8 @@ class TestAtomGroupVelocities(TestCase):
 class TestAtomGroupTimestep(TestCase):
     """Tests the AtomGroup.ts attribute (partial timestep)"""
 
+    @dec.skipif(parser_not_found('TRZ'),
+                'TRZ parser not available. Are you using python 3?')
     def setUp(self):
         self.universe = MDAnalysis.Universe(TRZ_psf, TRZ)
         self.prec = 6
@@ -1430,6 +1449,8 @@ class _WriteAtoms(TestCase):
     ext = None  # override to test various output writers
     precision = 3
 
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.universe = MDAnalysis.Universe(PSF, DCD)
         suffix = '.' + self.ext
@@ -1528,6 +1549,8 @@ class TestWriteGRO(_WriteAtoms):
 
 
 @attr("issue")
+@dec.skipif(parser_not_found('DCD'),
+            'DCD parser not available. Are you using python 3?')
 def test_generated_residueselection():
     """Test that a generated residue group always returns a ResidueGroup (Issue 47)"""
     universe = MDAnalysis.Universe(PSF, DCD)
@@ -1545,6 +1568,8 @@ def test_generated_residueselection():
 
 
 @attr('issue')
+@dec.skipif(parser_not_found('DCD'),
+            'DCD parser not available. Are you using python 3?')
 def test_instantselection_termini():
     """Test that instant selections work, even for residues that are also termini (Issue 70)"""
     universe = MDAnalysis.Universe(PSF, DCD)
@@ -1558,6 +1583,8 @@ class TestUniverse(TestCase):
         u = MDAnalysis.Universe(PSF, PDB_small)
         assert_equal(len(u.atoms), 3341, "Loading universe failed somehow")
 
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def test_load_bad_topology(self):
         # tests that Universe builds produce the right error message
         def bad_load():
@@ -1566,21 +1593,29 @@ class TestUniverse(TestCase):
         assert_raises(ValueError, bad_load)
 
     @attr('issue')
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def test_load_new(self):
         u = MDAnalysis.Universe(PSF, DCD)
         u.load_new(PDB_small)
         assert_equal(len(u.trajectory), 1, "Failed to load_new(PDB)")
 
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def test_load_new_strict(self):
         u = MDAnalysis.Universe(PSF, DCD)
         u.load_new(PDB_small, permissive=False)
         assert_equal(len(u.trajectory), 1, "Failed to load_new(PDB, permissive=False)")
 
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def test_load_new_permissive(self):
         u = MDAnalysis.Universe(PSF, DCD)
         u.load_new(PDB_small, permissive=True)
         assert_equal(len(u.trajectory), 1, "Failed to load_new(PDB, permissive=True)")
 
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def test_load_new_TypeError(self):
         u = MDAnalysis.Universe(PSF, DCD)
 
@@ -1596,6 +1631,8 @@ class TestUniverse(TestCase):
         assert_equal(len(u.atoms), 3341, "Loading universe failed somehow")
         assert_almost_equal(u.atoms.positions, ref.atoms.positions)
 
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def test_load_multiple_list(self):
         # Universe(top, [trj, trj, ...])
         ref = MDAnalysis.Universe(PSF, DCD)
@@ -1603,6 +1640,8 @@ class TestUniverse(TestCase):
         assert_equal(len(u.atoms), 3341, "Loading universe failed somehow")
         assert_equal(u.trajectory.n_frames, 2 * ref.trajectory.n_frames)
 
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def test_load_multiple_args(self):
         # Universe(top, trj, trj, ...)
         ref = MDAnalysis.Universe(PSF, DCD)
@@ -1610,10 +1649,14 @@ class TestUniverse(TestCase):
         assert_equal(len(u.atoms), 3341, "Loading universe failed somehow")
         assert_equal(u.trajectory.n_frames, 2 * ref.trajectory.n_frames)
 
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def test_pickle_raises_NotImplementedError(self):
         u = MDAnalysis.Universe(PSF, DCD)
         assert_raises(NotImplementedError, cPickle.dumps, u, protocol=cPickle.HIGHEST_PROTOCOL)
 
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def test_set_dimensions(self):
         u = MDAnalysis.Universe(PSF, DCD)
         box = np.array([10, 11, 12, 90, 90, 90])
@@ -1622,6 +1665,8 @@ class TestUniverse(TestCase):
 
 
 class TestPBCFlag(TestCase):
+    @dec.skipif(parser_not_found('TRZ'),
+                'TRZ parser not available. Are you using python 3?')
     def setUp(self):
         self.prec = 3
         self.universe = MDAnalysis.Universe(TRZ_psf, TRZ)
@@ -1731,6 +1776,8 @@ class TestPBCFlag(TestCase):
 
 
 class TestAsUniverse(TestCase):
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.u = MDAnalysis.Universe(PSF_notop, DCD)
 
@@ -1753,6 +1800,8 @@ class TestAsUniverse(TestCase):
 
 
 class TestFragments(TestCase):
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.u = MDAnalysis.Universe(PSF, DCD)
         # To create a fragment with only one atom in, remove a bond
@@ -1881,6 +1930,8 @@ class TestCustomReaders(TestCase):
     """
     Can pass a reader as kwarg on Universe creation
     """
+    @dec.skipif(parser_not_found('TRZ'),
+                'TRZ parser not available. Are you using python 3?')
     def test_custom_reader(self):
         # check that reader passing works
         u = MDAnalysis.Universe(TRZ_psf, TRZ, format=MDAnalysis.coordinates.TRZ.TRZReader)
@@ -1901,11 +1952,15 @@ class TestCustomReaders(TestCase):
                                 topology_format=T, format=R)
         assert_equal(len(u.atoms), 6)
 
+    @dec.skipif(parser_not_found('TRZ'),
+                'TRZ parser not available. Are you using python 3?')
     def test_custom_parser(self):
         # topology reader passing works
         u = MDAnalysis.Universe(TRZ_psf, TRZ, topology_format=MDAnalysis.topology.PSFParser.PSFParser)
         assert_equal(len(u.atoms), 8184)
 
+    @dec.skipif(parser_not_found('TRZ'),
+                'TRZ parser not available. Are you using python 3?')
     def test_custom_both(self):
         # use custom for both
         u = MDAnalysis.Universe(TRZ_psf, TRZ, format=MDAnalysis.coordinates.TRZ.TRZReader,
@@ -1914,6 +1969,8 @@ class TestCustomReaders(TestCase):
 
 
 class TestWrap(TestCase):
+    @dec.skipif(parser_not_found('TRZ'),
+                'TRZ parser not available. Are you using python 3?')
     def setUp(self):
         self.u = MDAnalysis.Universe(TRZ_psf, TRZ)
         self.ag = self.u.atoms[:100]
@@ -2117,6 +2174,8 @@ class TestAtomGroupProperties(object):
             assert_equal(getattr(atom, att), val,
                          err_msg="Change to AtomGroup not reflected in Atoms for propert: {0}".format(att))
 
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def test_attributes(self):
         u = MDAnalysis.Universe(PSF, DCD)
         u.atoms.occupancies = 1.0

@@ -22,9 +22,11 @@ from MDAnalysis.tests.datafiles import PSF, DCD, PDB_small, GRO, TRR, \
 import MDAnalysis.core.AtomGroup
 from MDAnalysis.core.AtomGroup import Atom, AtomGroup
 from MDAnalysis import NoDataError
+from MDAnalysisTests import parser_not_found
 
 import numpy as np
-from numpy.testing import TestCase, assert_equal, assert_raises, assert_, assert_array_equal 
+from numpy.testing import (TestCase, dec, assert_equal, assert_raises, assert_,
+                           assert_array_equal)
 from nose.plugins.attrib import attr
 
 import os
@@ -203,6 +205,8 @@ class TestMerge(TestCase):
 
 class TestMergeTopology(object):
     """Test that Merge correct does topology"""
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.u = MDAnalysis.Universe(PSF, DCD)
 

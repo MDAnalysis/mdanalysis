@@ -28,6 +28,7 @@ from unittest import TestCase
 from MDAnalysisTests.datafiles import (PDB, INPCRD, XYZ_five, PSF, CRD, DCD,
                                        GRO, XTC, TRR, PDB_small, PDB_closed)
 from MDAnalysisTests.plugins.knownfailure import knownfailure
+from MDAnalysisTests import parser_not_found
 
 
 class TestINPCRDReader(TestCase):
@@ -63,6 +64,8 @@ class TestINPCRDReader(TestCase):
 
 class TestChainReader(TestCase):
 
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parset not available. Are you using python 3?')
     def setUp(self):
         self.universe = mda.Universe(PSF,
                                      [DCD, CRD, DCD, CRD, DCD, CRD, CRD])
@@ -155,6 +158,8 @@ class TestChainReader(TestCase):
 
 class TestChainReaderCommonDt(TestCase):
 
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parset not available. Are you using python 3?')
     def setUp(self):
         self.common_dt = 100.0
         self.universe = mda.Universe(PSF,
@@ -183,6 +188,8 @@ class TestChainReaderFormats(TestCase):
         assert_equal(universe.trajectory.n_frames, 21)
 
     @attr('issue')
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parset not available. Are you using python 3?')
     def test_set_one_format_tuple(self):
         universe = mda.Universe(PSF, [(PDB_small, 'pdb'), DCD])
         assert_equal(universe.trajectory.n_frames, 99)

@@ -18,6 +18,7 @@ from MDAnalysisTests.datafiles import (PDB, PDB_small, PDB_multiframe,
                                        INC_PDB, PDB_xlserial,
                                        NUCL)
 from MDAnalysisTests.plugins.knownfailure import knownfailure
+from MDAnalysisTests import parser_not_found
 
 
 class TestPDBReader(_SingleFrameReader):
@@ -159,6 +160,8 @@ class TestPSF_PrimitivePDBReader(TestPrimitivePDBReader):
 
 
 class TestPrimitivePDBWriter(TestCase):
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.universe = mda.Universe(PSF, PDB_small, permissive=True)
         self.universe2 = mda.Universe(PSF, DCD, permissive=True)
@@ -400,6 +403,8 @@ class TestMultiPDBReader(TestCase):
 
 
 class TestMultiPDBWriter(TestCase):
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.universe = mda.Universe(PSF, PDB_small, permissive=True)
         self.multiverse = mda.Universe(PDB_multiframe, permissive=True)

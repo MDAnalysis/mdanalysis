@@ -32,8 +32,9 @@ from MDAnalysis.tests.datafiles import (
     DLP_CONFIG, DLP_CONFIG_order, DLP_CONFIG_minimal,
     DLP_HISTORY, DLP_HISTORY_order, DLP_HISTORY_minimal, HoomdXMLdata)
 from MDAnalysisTests.plugins.knownfailure import knownfailure
+from MDAnalysisTests import parser_not_found
 
-from numpy.testing import (TestCase, assert_equal, assert_raises, assert_,
+from numpy.testing import (TestCase, dec, assert_equal, assert_raises, assert_,
                            assert_array_equal, assert_almost_equal)
 from nose.plugins.attrib import attr
 import numpy as np
@@ -335,6 +336,8 @@ class TestTopologyObjects(TestCase):
     len
     """
 
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.precision = 3  # rather lenient but see #271
         self.u = MDAnalysis.Universe(PSF, DCD)
@@ -840,6 +843,8 @@ class TestTopologyGroup_Cython(TestCase):
      - catch errors
     """
 
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.u = MDAnalysis.Universe(PSF, DCD)
         self.u.build_topology()
@@ -1085,6 +1090,8 @@ class TestTopologyGuessers(TestCase):
     guess_improper_dihedrals
     """
 
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.u = MDAnalysis.Universe(PSF, DCD)
 

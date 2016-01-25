@@ -30,9 +30,11 @@ import os
 import tempfile
 
 from MDAnalysisTests.datafiles import PSF, DCD, FASTA
-from MDAnalysisTests import executable_not_found
+from MDAnalysisTests import executable_not_found, parser_not_found
 
 class TestAlign(TestCase):
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.universe = MDAnalysis.Universe(PSF, DCD)
         self.reference = MDAnalysis.Universe(PSF, DCD)

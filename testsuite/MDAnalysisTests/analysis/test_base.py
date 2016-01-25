@@ -18,13 +18,14 @@ from __future__ import division
 from six.moves import range
 
 from numpy.testing import (
-    assert_,
+    assert_, dec
 )
 
 import MDAnalysis as mda
 from MDAnalysis.analysis.base import AnalysisBase
 
 from MDAnalysisTests.datafiles import PSF, DCD
+from MDAnalysisTests import parser_not_found
 
 
 class FrameAnalysis(AnalysisBase):
@@ -43,6 +44,8 @@ class FrameAnalysis(AnalysisBase):
 
 
 class TestAnalysisBase(object):
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         # has 98 frames
         self.u = mda.Universe(PSF, DCD)

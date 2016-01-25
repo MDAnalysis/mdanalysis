@@ -17,13 +17,14 @@ import MDAnalysis
 import MDAnalysis.lib.distances
 
 import numpy as np
-from numpy.testing import (TestCase, raises, assert_,
+from numpy.testing import (TestCase, dec, raises, assert_,
                            assert_almost_equal, assert_equal, assert_raises,)
 
 from nose.plugins.attrib import attr
 
 from MDAnalysis.tests.datafiles import PSF, DCD, TRIC
 from MDAnalysis.lib import mdamath
+from MDAnalysisTests import parser_not_found
 
 class _TestDistanceArray(TestCase):
     # override backend in test classes
@@ -81,6 +82,9 @@ class TestDistanceArray_OpenMP(_TestDistanceArray):
 
 class _TestDistanceArrayDCD(TestCase):
     backend = None
+
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.universe = MDAnalysis.Universe(PSF, DCD)
         self.trajectory = self.universe.trajectory
@@ -151,6 +155,9 @@ class TestDistanceArrayDCD_OpenMP(_TestDistanceArrayDCD):
 
 class _TestSelfDistanceArrayDCD(TestCase):
     backend = None
+
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.universe = MDAnalysis.Universe(PSF, DCD)
         self.trajectory = self.universe.trajectory
@@ -562,6 +569,8 @@ class _Test_apply_PBC(TestCase):
     def tearDown(self):
         del self.prec
 
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def test_ortho_PBC(self):
         from MDAnalysis.lib.distances import apply_PBC
 

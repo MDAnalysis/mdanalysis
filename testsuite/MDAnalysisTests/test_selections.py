@@ -22,20 +22,23 @@ from six.moves import cPickle, StringIO
 import re
 
 import numpy as np
-from numpy.testing import TestCase, assert_equal, assert_array_equal
+from numpy.testing import TestCase, assert_equal, assert_array_equal, dec
 from nose.plugins.attrib import attr
 
 from MDAnalysisTests.plugins.knownfailure import knownfailure
-from MDAnalysis.lib.util import NamedStream
+from MDAnalysis.tests.datafiles import PSF, DCD
+from MDAnalysisTests import parser_not_found
 
 import MDAnalysis
-from MDAnalysis.tests.datafiles import PSF, DCD
+from MDAnalysis.lib.util import NamedStream
 
 
 class _SelectionWriter(TestCase):
     filename = None
     max_number = 357  # to keep fixtures smallish, only select CAs up to number 357
 
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.universe = MDAnalysis.Universe(PSF, DCD)
         stream = StringIO()
