@@ -506,12 +506,12 @@ class TestTopologyGroup(TestCase):
         assert_equal(('23', '73', '1') in self.a_td, True)
 
     def test_angles_uniqueness(self):
-        bondtypes = self.a_td.keys()
+        bondtypes = list(self.a_td.keys())
         assert_equal(any(b[::-1] in bondtypes for b in bondtypes if b[::-1] != b),
                      False)
 
     def test_angles_reversal(self):
-        bondtypes = self.a_td.keys()
+        bondtypes = list(self.a_td.keys())
         b = bondtypes[1]
         assert_equal(all([b in self.a_td, b[::-1] in self.a_td]), True)
 
@@ -527,12 +527,12 @@ class TestTopologyGroup(TestCase):
         assert_equal(('30', '29', '20', '70') in self.t_td, True)
 
     def test_dihedrals_uniqueness(self):
-        bondtypes = self.t_td.keys()
+        bondtypes = list(self.t_td.keys())
         assert_equal(any(b[::-1] in bondtypes for b in bondtypes if b[::-1] != b),
                      False)
 
     def test_dihedrals_reversal(self):
-        bondtypes = self.t_td.keys()
+        bondtypes = list(self.t_td.keys())
         b = bondtypes[1]
         assert_equal(all([b in self.t_td, b[::-1] in self.t_td]), True)
 

@@ -42,9 +42,9 @@ Classes
 
 """
 from __future__ import absolute_import
-
 from six.moves import range
 
+import functools
 from math import ceil
 
 from ..core.AtomGroup import Atom
@@ -143,7 +143,7 @@ class TOPParser(TopologyReader):
         # Open and check top validity
         # Reading header info POINTERS
         with openany(self.filename) as topfile:
-            next_line = topfile.next
+            next_line = functools.partial(next, topfile)
             header = next_line()
             if header[:3] != "%VE":
                 raise ValueError("{0} is not a valid TOP file. %VE Missing in header".format(topfile))

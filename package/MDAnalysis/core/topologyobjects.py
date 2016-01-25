@@ -571,7 +571,7 @@ class TopologyGroup(object):
 
         .. versionadded 0.9.0
         """
-        return self.topDict.keys()
+        return list(self.topDict.keys())
 
     @property
     @cached('dict')
