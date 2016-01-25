@@ -127,7 +127,7 @@ class TopologyObject(object):
     def _cmp_key(self):
         """Unique key for the object to be used to generate the object hash"""
         # This key must be equal for two object considered as equal by __eq__
-        return '_'.join(map(str, sorted(self.indices)))
+        return self.__class__, tuple(sorted(self.indices))
 
     def __hash__(self):
         """Makes the object hashable"""
