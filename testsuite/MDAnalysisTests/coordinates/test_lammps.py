@@ -210,8 +210,6 @@ class TestLAMMPSDCDWriterClass(TestCase):
         with mda.coordinates.LAMMPS.DCDWriter(self.outfile, n_atoms=10) as W:
             assert_(W.flavor, self.flavor)
 
-    @dec.skipif(parser_not_found('LAMMPS'),
-                'LAMMPS parser not available. Are you using python 3?')
     def test_open(self):
         def open_dcd():
             try:

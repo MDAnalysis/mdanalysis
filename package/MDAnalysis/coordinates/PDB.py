@@ -596,7 +596,7 @@ class PrimitivePDBReader(base.Reader):
         occupancy = np.ones(self._n_atoms)
         with util.openany(self.filename, 'r') as f:
             for i in range(line):
-                f.next()  # forward to frame
+                next(f)  # forward to frame
             for line in f:
                 if line[:6] == 'ENDMDL':
                     break
@@ -611,8 +611,9 @@ class PrimitivePDBReader(base.Reader):
                     continue
                 elif line[:6] in ('ATOM  ', 'HETATM'):
                     # we only care about coordinates
-                    self.ts._pos[pos] = map(float, [line[30:38], line[38:46],
-                                                    line[46:54]])
+                    self.ts._pos[pos] = list(map(float, [line[30:38],
+                                                         line[38:46],
+                                                         line[46:54]]))
                     # TODO import bfactors - might these change?
                     try:
                         occupancy[pos] = float(line[54:60])

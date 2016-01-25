@@ -807,7 +807,7 @@ class _GromacsReader_offsets(TestCase):
         assert_equal(os.path.exists(
             XDR.offsets_filename(self.trajectory.filename)), False)
 
-        os.chmod(self.tmpdir.name, 0555)
+        os.chmod(self.tmpdir.name, 0o555)
         self.trajectory._read_offsets(store=True)
         assert_equal(os.path.exists(
             XDR.offsets_filename(self.trajectory.filename)), False)
