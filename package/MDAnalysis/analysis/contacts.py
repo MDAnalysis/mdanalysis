@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -243,7 +243,7 @@ class ContactAnalysis(object):
         # don't bother if trajectory is empty (can lead to segfaults so better catch it)
         stats = os.stat(trajectory)
         if stats.st_size == 0:
-            warnings.warn('trajectory = %(trajectory)s is empty, skipping...' % vars())
+            warnings.warn('trajectory = {trajectory!s} is empty, skipping...'.format(**vars()))
             self._skip = True
             return
         # under normal circumstances we do not skip
@@ -320,7 +320,7 @@ class ContactAnalysis(object):
         if self._skip or self.output_exists(force=force):
             import warnings
 
-            warnings.warn("File %(output)r or %(output_bz2)r already exists, loading %(trajectory)r." % vars(self))
+            warnings.warn("File {output!r} or {output_bz2!r} already exists, loading {trajectory!r}.".format(**vars(self)))
             try:
                 self.load(self.output)
             except IOError:
@@ -329,8 +329,7 @@ class ContactAnalysis(object):
 
         outbz2 = bz2.BZ2File(self.output_bz2, mode='w', buffering=8192)
         try:
-            outbz2.write("# q1-q2 analysis\n# nref1 = %d\n# nref2 = %d\n"
-                         % (self.nref[0], self.nref[1]))
+            outbz2.write("# q1-q2 analysis\n# nref1 = {0:d}\n# nref2 = {1:d}\n".format(self.nref[0], self.nref[1]))
             outbz2.write("# frame  q1  q2   n1  n2\n")
             records = []
             for ts in self.u.trajectory:
@@ -343,7 +342,7 @@ class ContactAnalysis(object):
 
                 if store:
                     records.append((frame, q1, q2, n1, n2))
-                outbz2.write("%(frame)4d  %(q1)8.6f %(q2)8.6f  %(n1)5d %(n2)5d\n" % vars())
+                outbz2.write("{frame:4d}  {q1:8.6f} {q2:8.6f}  {n1:5d} {n2:5d}\n".format(**vars()))
         finally:
             outbz2.close()
         if store:
@@ -608,7 +607,7 @@ class ContactAnalysis1(object):
             return None
 
         with openany(self.output, 'w') as out:
-            out.write("# q1 analysis\n# nref = %d\n" % (self.nref))
+            out.write("# q1 analysis\n# nref = {0:d}\n".format((self.nref)))
             out.write("# frame  q1  n1\n")
             records = []
             self.qavg *= 0  # average contact existence
@@ -627,7 +626,7 @@ class ContactAnalysis1(object):
                 self.qavg += self.q
                 if store:
                     records.append((frame, q1, n1))
-                out.write("%(frame)4d  %(q1)8.6f %(n1)5d\n" % vars())
+                out.write("{frame:4d}  {q1:8.6f} {n1:5d}\n".format(**vars()))
         if store:
             self.timeseries = np.array(records).T
         n_frames = len(range(total_frames)[start_frame:end_frame:step_value])
@@ -758,8 +757,8 @@ class ContactAnalysis1(object):
         xlim(min(x), max(x))
         ylim(min(y), max(y))
 
-        xlabel("residue from %r" % self.selection_strings[0])
-        ylabel("residue from %r" % self.selection_strings[1])
+        xlabel("residue from {0!r}".format(self.selection_strings[0]))
+        ylabel("residue from {0!r}".format(self.selection_strings[1]))
 
         colorbar()
 

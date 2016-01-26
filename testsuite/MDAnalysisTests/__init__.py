@@ -107,7 +107,7 @@ parentheses must be included.
 
 """
 
-__version__ = "0.12.1"  # keep in sync with RELEASE in setup.py
+__version__ = "0.13.0"  # keep in sync with RELEASE in setup.py
 
 # Do NOT import MDAnalysis at this level. Tests should do it themselves.
 # If MDAnalysis is imported here coverage accounting might fail because all the import
@@ -117,6 +117,7 @@ from os.path import dirname
 # We get our nose from the plugins so that version-checking needs only be done there.
 from MDAnalysisTests.plugins import nose, loaded_plugins
 import sys
+import importlib
 # This is a de facto test for numpy's version, since we don't actually need assert_ here.
 #  Should we be clean about this and just call distutils to compare version strings?
 try:
@@ -149,29 +150,28 @@ def run(*args, **kwargs):
     return nose.run_exit(*args, **kwargs)
 
 
-def executable_not_found_runtime(*args):
-    """Factory function that returns a :func:`executable_not_found`.
+def executable_not_found(*args):
+    """Return ``True`` if none of the executables in args can be found.
 
-    The returned function has its input set to *args* but is only
-    evaluated at run time.
+    ``False`` otherwise (i.e. at least one was found).
 
     To be used as the argument of::
 
-      @dec.skipif(executable_not_found_runtime("binary_name"), msg="skip test because binary_name not available")
-      ...
+    @dec.skipif(executable_not_found("binary_name"), msg="skip test because binary_name not available")
     """
-    # This must come here so that MDAnalysis isn't imported prematurely, which spoils
-    #  coverage accounting (see Issue 344).
+    # This must come here so that MDAnalysis isn't imported prematurely,
+    #  which spoils coverage accounting (see Issue 344).
     import MDAnalysis.lib.util
-    def executable_not_found(*args):
-        """Return ``True`` if not at least one of the executables in args can be found.
+    for name in args:
+        if MDAnalysis.lib.util.which(name) is not None:
+            return False
+    return True
 
-        ``False`` otherwise (i.e. at least one was found).
-        """
-        for name in args:
-            found = MDAnalysis.lib.util.which(name) is not None
-            if found:
-                break
-        return not found
 
-    return lambda: executable_not_found(*args)
+def module_not_found(module):
+    try:
+        importlib.import_module(module)
+    except ImportError:
+        return True
+    else:
+        return False

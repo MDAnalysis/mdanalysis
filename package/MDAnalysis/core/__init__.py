@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -222,7 +222,7 @@ class Flag(object):
         return {'fget': self.get, 'fset': self.set, 'doc': self.__doc__}
 
     def __repr__(self):
-        return """Flag('%(name)s',%(value)r)""" % self.__dict__
+        return """Flag('{name!s}',{value!r})""".format(**self.__dict__)
 
 
 class _Flag(Flag):

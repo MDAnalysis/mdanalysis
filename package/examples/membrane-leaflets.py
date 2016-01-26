@@ -38,9 +38,9 @@ if __name__ == "__main__":
     except ValueError:
         print "usage: leaflet.py PDB SELECTION"
         sys.exit(1)
-    print "PDB=%(PDB)r selection=%(selection)r" % vars()
+    print "PDB={PDB!r} selection={selection!r}".format(**vars())
     L = LeafletFinder(PDB, selection)
-    print "Number of lipids in leaflets: %r" % L.sizes()
+    print "Number of lipids in leaflets: {0!r}".format(L.sizes())
     macrovmd = PDB + ".vmd"
     L.write_vmd(macrovmd)
-    print "Load macros for vmd from file %r" % macrovmd
+    print "Load macros for vmd from file {0!r}".format(macrovmd)

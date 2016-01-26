@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -309,7 +309,7 @@ def anyopen(datasource, mode='r', reset=True):
                 if not stream is None:
                     break
             if stream is None:
-                raise IOError(errno.EIO, "Cannot open file or stream in mode=%(mode)r." % vars(), repr(filename))
+                raise IOError(errno.EIO, "Cannot open file or stream in mode={mode!r}.".format(**vars()), repr(filename))
     elif mode.startswith('w') or mode.startswith('a'):  # append 'a' not tested...
         if isstream(datasource):
             stream = datasource
@@ -328,9 +328,9 @@ def anyopen(datasource, mode='r', reset=True):
             openfunc = handlers[ext]
             stream = openfunc(datasource, mode=mode)
             if stream is None:
-                raise IOError(errno.EIO, "Cannot open file or stream in mode=%(mode)r." % vars(), repr(filename))
+                raise IOError(errno.EIO, "Cannot open file or stream in mode={mode!r}.".format(**vars()), repr(filename))
     else:
-        raise NotImplementedError("Sorry, mode=%(mode)r is not implemented for %(datasource)r" % vars())
+        raise NotImplementedError("Sorry, mode={mode!r} is not implemented for {datasource!r}".format(**vars()))
     try:
         stream.name = filename
     except (AttributeError, TypeError):
@@ -361,7 +361,26 @@ def _get_stream(filename, openfunction=file, mode='r'):
 
 
 def greedy_splitext(p):
-    """Split extension in path *p* at the left-most separator."""
+    """Split extension in path *p* at the left-most separator.
+
+    Extensions are taken to be separated from the filename with the
+    separator :data:`os.extsep` (as used by :func:`os.path.splitext`).
+
+    Arguments
+    ---------
+    p : path, string
+
+    Returns
+    -------
+    Tuple ``(root, extension)`` where ``root`` is the full path and
+    filename with all extensions removed whereas ``extension`` is the
+    string of all extensions.
+
+    Example
+    -------
+    >>> greedy_splitext("/home/joe/protein.pdb.bz2")
+    ('/home/joe/protein', '.pdb.bz2')
+    """
     path, root = os.path.split(p)
     extension = ''
     while True:
@@ -369,7 +388,7 @@ def greedy_splitext(p):
         extension = ext + extension
         if not ext:
             break
-    return root, extension
+    return os.path.join(path, root), extension
 
 
 def hasmethod(obj, m):
@@ -876,14 +895,14 @@ class FixedcolumnEntry(object):
         try:
             return self.convertor(line[self.start:self.stop])
         except ValueError:
-            raise ValueError("%r: Failed to read&convert %r" % (self, line[self.start:self.stop]))
+            raise ValueError("{0!r}: Failed to read&convert {1!r}".format(self, line[self.start:self.stop]))
 
     def __len__(self):
         """Length of the field in columns (stop - start)"""
         return self.stop - self.start
 
     def __repr__(self):
-        return "FixedcolumnEntry(%d,%d,%r)" % (self.start, self.stop, self.typespecifier)
+        return "FixedcolumnEntry({0:d},{1:d},{2!r})".format(self.start, self.stop, self.typespecifier)
 
 
 class FORTRANReader(object):
@@ -974,7 +993,7 @@ class FORTRANReader(object):
                 if m is None:
                     raise ValueError  # really no idea what the descriptor is supposed to mean
             except:
-                raise ValueError("unrecognized FORTRAN format %r" % edit_descriptor)
+                raise ValueError("unrecognized FORTRAN format {0!r}".format(edit_descriptor))
         d = m.groupdict()
         if d['repeat'] == '':
             d['repeat'] = 1
@@ -1029,7 +1048,7 @@ canonical_inverse_aa_codes = {
     'THR': 'T', 'VAL': 'V', 'TRP': 'W', 'TYR': 'Y'}
 #: translation table for 1-letter codes --> *canonical* 3-letter codes.
 #: The table is used for :func:`convert_aa_code`.
-amino_acid_codes = dict([(one, three) for three, one in canonical_inverse_aa_codes.items()])
+amino_acid_codes = {one: three for three, one in canonical_inverse_aa_codes.items()}
 #: non-default charge state amino acids or special charge state descriptions
 #: (Not fully synchronized with :class:`MDAnalysis.core.Selection.ProteinSelection`.)
 alternative_inverse_aa_codes = {
@@ -1106,7 +1125,7 @@ def parse_residue(residue):
     # XXX: use _translate_residue() ....
     m = RESIDUE.match(residue)
     if not m:
-        raise ValueError("Selection %(residue)r is not valid (only 1/3/4 letter resnames, resid required)." % vars())
+        raise ValueError("Selection {residue!r} is not valid (only 1/3/4 letter resnames, resid required).".format(**vars()))
     resid = int(m.group('resid'))
     residue = m.group('aa')
     if len(residue) == 1:
@@ -1164,3 +1183,67 @@ def cached(key):
         return wrapper
 
     return cached_lookup
+
+
+def blocks_of(a, n, m):
+    """Extract a view of (n, m) blocks along the diagonal of the array `a`
+
+    Parameters
+    ----------
+    a : array_like
+        starting array
+    n : int
+        size of block in first dimension
+    m : int
+        size of block in second dimension
+
+
+    Returns
+    -------
+      (nblocks, n, m) view of the original array.
+      Where nblocks is the number of times the miniblock fits in the original.
+
+    Raises
+    ------
+      ValueError
+        If the supplied `n` and `m` don't divide `a` into an integer number
+        of blocks.
+
+    Examples
+    --------
+    >>> arr = np.arange(16).reshape(4, 4)
+    >>> view = blocks_of(arr, 2, 2)
+    >>> view[:] = 100
+    >>> arr
+    array([[100, 100,   2,   3],
+           [100, 100,   6,   7],
+           [  8,   9, 100, 100],
+           [ 12,  13, 100, 100]])
+
+    Notes
+    -----
+      n, m must divide a into an identical integer number of blocks.
+
+      Uses strides so probably requires that the array is C contiguous
+
+      Returns a view, so editing this modifies the original array
+
+    .. versionadded:: 0.12.0
+    """
+    # based on:
+    # http://stackoverflow.com/a/10862636
+    # but generalised to handle non square blocks.
+
+    nblocks = a.shape[0] / n
+    nblocks2 = a.shape[1] / m
+
+    if not nblocks == nblocks2:
+        raise ValueError("Must divide into same number of blocks in both"
+                         " directions.  Got {} by {}"
+                         "".format(nblocks, nblocks2))
+
+    new_shape = (nblocks, n, m)
+    new_strides = (n * a.strides[0] + m * a.strides[1],
+                   a.strides[0], a.strides[1])
+
+    return np.lib.stride_tricks.as_strided(a, new_shape, new_strides)

@@ -11,7 +11,7 @@ from unittest import TestCase
 from MDAnalysisTests.coordinates.reference import (RefLAMMPSData,
                                                    RefLAMMPSDataMini,
                                                    RefLAMMPSDataDCD)
-
+from MDAnalysis.tests.datafiles import LAMMPScnt
 
 def test_datareader_ValueError():
     from MDAnalysis.coordinates.LAMMPS import DATAReader
@@ -236,3 +236,14 @@ class TestLAMMPSDCDWriterClass(TestCase):
         assert_raises(ValueError, wrong_load)
 
 
+class TestLammpsDataTriclinic(object):
+    def setUp(self):
+        self.u = mda.Universe(LAMMPScnt)
+
+    def tearDown(self):
+        del self.u
+
+    def test_triclinicness(self):
+        assert_(self.u.dimensions[3] == 90.)
+        assert_(self.u.dimensions[4] == 90.)
+        assert_(self.u.dimensions[5] == 120.)

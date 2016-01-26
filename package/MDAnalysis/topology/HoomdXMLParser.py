@@ -1,3 +1,5 @@
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
 # and contributors (see AUTHORS for the full list)
@@ -38,13 +40,17 @@ Classes
 
 """
 from __future__ import absolute_import
+
+import xml.etree.ElementTree as ET
+
 from ..lib.util import openany
 from ..core.AtomGroup import Atom
 from .core import guess_atom_element
 from .base import TopologyReader
-import xml.etree.ElementTree as ET
 
 class HoomdXMLParser(TopologyReader):
+    format = 'XML'
+
     def parse(self):
         """Parse Hoomd XML file *filename* and return the dict `structure`.
 

@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -75,6 +75,9 @@ Available analysis modules
     their mutual similarities, including the ability to perform hierarchical
     clustering and generate heat map-dendrogram plots.
 
+:mod:`~MDAnalysis.analysis.rdf`
+    Calculation of pair distribution functions
+
 :mod:`~MDAnalysis.analysis.rms`
     Calculation of RMSD and RMSF.
 
@@ -95,9 +98,22 @@ Available analysis modules
 """
 
 __all__ = [
-    'align', 'contacts', 'density', 'distances',
-    'gnm', 'hbonds', 'helanal', 'hole', 'leaflet',
-    'nuclinfo', 'psa', 'rms', 'waterdynamics',
+    'align',
+    'base',
+    'contacts',
+    'density',
+    'distances',
+    'gnm',
+    'hbonds',
+    'helanal',
+    'hole',
+    'leaflet',
+    'nuclinfo',
+    'polymer',
+    'psa',
+    'rdf',
+    'rms',
+    'waterdynamics',
     'x3dna',
 ]
 

@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -266,7 +266,7 @@ class HydrogenBondAutoCorrel(object):
 
         self._skip = req_frames / self.nsamples
         if self._skip == 0:  # If nsamples > req_frames
-            warnings.warn("Desired number of sample points too high, using {}"
+            warnings.warn("Desired number of sample points too high, using {0}"
                           .format(req_frames), RuntimeWarning)
             self._skip = 1
 

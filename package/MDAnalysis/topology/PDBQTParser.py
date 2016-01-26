@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -51,6 +51,7 @@ from .base import TopologyReader
 
 class PDBQTParser(TopologyReader):
     """Read topology from a PDBQT file."""
+    format = 'PDBQT'
 
     def parse(self):
         """Parse atom information from PDBQT file *filename*.

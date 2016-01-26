@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -209,7 +209,7 @@ class ProgressMeter(object):
 
     """
 
-    def __init__(self, numsteps, format=None, interval=10, offset=0, quiet=False):
+    def __init__(self, numsteps, format=None, interval=10, offset=1, quiet=False):
         """Set up the ProgressMeter
 
         :Arguments:
@@ -233,8 +233,8 @@ class ProgressMeter(object):
               If *format* is ``None`` then the default is used.
               ["Step %(step)5d/%(numsteps)d [%(percentage)5.1f%%]\\r"]
            *offset*
-              number to add to *step*; e.g. if *step* is 0-based then one would
-              set *offset* = 1 [0]
+              number to add to *step*; e.g. if *step* is 0-based (as in MDAnalysis)
+              then one should set *offset* = 1; for 1-based steps, choose 0. [1]
            *quiet*
               If ``True``, disable all output, ``False`` print all messages as
               specified, [``False``]

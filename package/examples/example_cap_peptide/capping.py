@@ -41,21 +41,21 @@ def capping(ref, ace, nma, output):
         ace,
         ref,
         select={
-            "mobile": "resid {} and backbone".format(resid_min),
-            "reference": "resid {} and backbone".format(resid_min)}
+            "mobile": "resid {0} and backbone".format(resid_min),
+            "reference": "resid {0} and backbone".format(resid_min)}
     )
     alignto(
         nma,
         ref,
         select={
-            "mobile": "resid {} and backbone and not (resname NMA or resname NME)".format(resid_max),
-            "reference": "resid {} and (backbone or name OT2)".format(resid_max)}
+            "mobile": "resid {0} and backbone and not (resname NMA or resname NME)".format(resid_max),
+            "reference": "resid {0} and (backbone or name OT2)".format(resid_max)}
     )
 
     # TODO remove the Hydrogen closest to ACE's oxygen
     u = Merge(
         ace.select_atoms("resname ACE"),
-        ref.select_atoms("not (resid {} and name HT*) and not (resid {} and (name HT* or name OT1))".format(resid_min,
+        ref.select_atoms("not (resid {0} and name HT*) and not (resid {1} and (name HT* or name OT1))".format(resid_min,
                                                                                                            resid_max)),
         nma.select_atoms("resname NME or resname NMA"))
     u.trajectory.ts.dimensions = ref.trajectory.ts.dimensions

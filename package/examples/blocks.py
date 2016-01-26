@@ -68,4 +68,4 @@ if __name__ == "__main__":
         savefig("./figures/blocks.pdf")
         savefig("./figures/blocks.png")
 
-        print "Wrote ./figures/blocks.{pdf,png}" % vars()
+        print "Wrote ./figures/blocks.{{pdf,png}}".format(*vars())

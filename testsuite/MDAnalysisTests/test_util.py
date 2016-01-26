@@ -13,24 +13,24 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+import cStringIO
+import os.path
+import tempfile
+
 import numpy as np
 import numpy.random
-from numpy.testing import *
+from numpy.testing import (assert_raises, assert_equal, assert_almost_equal,
+                           assert_array_almost_equal, assert_,
+                           TestCase)
 
-
-from MDAnalysisTests.datafiles import PSF, Make_Whole
-
+import MDAnalysis as mda
 import MDAnalysis.lib.util as util
 import MDAnalysis.lib.mdamath as mdamath
 from MDAnalysis.lib.util import cached
 from MDAnalysis.core.topologyobjects import TopologyGroup, Bond
 from MDAnalysis.exceptions import NoDataError
-import MDAnalysis as mda
 
-import cStringIO
-import os.path
-import tempfile
-
+from MDAnalysisTests.datafiles import PSF, Make_Whole
 
 def check_parse_residue(rstring, residue):
     assert_equal(util.parse_residue(rstring), residue)
@@ -86,6 +86,11 @@ class TestStringFunctions(object):
     def test_VE_2(self):
         assert_raises(ValueError, util.convert_aa_code, '£')
 
+def test_greedy_splitext(inp="foo/bar/boing.2.pdb.bz2",
+                         ref=("foo/bar/boing", ".2.pdb.bz2")):
+    root, ext = util.greedy_splitext(inp)
+    assert_equal(root, ref[0], err_msg="root incorrect")
+    assert_equal(ext, ref[1], err_msg="extension incorrect")
 
 class TestIterable(TestCase):
     def test_lists(self):
@@ -627,7 +632,7 @@ class TestGuessFormat(object):
         # P - parser class or None
         # R - reader class or None
         for f, P, R in self.formats:
-            fn = 'file.{}'.format(f)
+            fn = 'file.{0}'.format(f)
             # check f doesn't trip up get_ext or guess_format
             yield self._check_get_ext, f, fn
             yield self._check_guess_format, f, fn
@@ -666,3 +671,56 @@ class TestGuessFormat(object):
         s = cStringIO.StringIO('this is a very fun file')
 
         assert_raises(ValueError, util.guess_format, s)
+
+
+class TestBlocksOf(object):
+    def test_blocks_of_1(self):
+        arr = np.arange(16).reshape(4, 4)
+
+        view = util.blocks_of(arr, 1, 1)
+
+        # should return a (4, 1, 1) view
+        # ie 4 lots of 1x1
+        assert_(view.shape == (4, 1, 1))
+        assert_array_almost_equal(view, np.array([[[0]], [[5]], [[10]], [[15]]]))
+
+        # Change my view, check changes are reflected in arr
+        view[:] = 1001
+
+        assert_array_almost_equal(arr,
+                                  np.array([[1001, 1, 2, 3],
+                                            [4, 1001, 6, 7],
+                                            [8, 9, 1001, 11],
+                                            [12, 13, 14, 1001]]))
+
+    def test_blocks_of_2(self):
+        arr = np.arange(16).reshape(4, 4)
+
+        view = util.blocks_of(arr, 2, 2)
+
+        # should return (2, 2, 2)
+        assert_(view.shape == (2, 2, 2))
+        assert_array_almost_equal(view, np.array([[[0, 1], [4, 5]],
+                                                  [[10, 11], [14, 15]]]))
+
+        view[0] = 100
+        view[1] = 200
+
+        assert_array_almost_equal(arr,
+                                  np.array([[100, 100, 2, 3],
+                                            [100, 100, 6, 7],
+                                            [8, 9, 200, 200],
+                                            [12, 13, 200, 200]]))
+
+    def test_blocks_of_3(self):
+        # testing non square array
+        arr = np.arange(32).reshape(8, 4)
+
+        view = util.blocks_of(arr, 2, 1)
+
+        assert_(view.shape == (4, 2, 1))
+
+    def test_blocks_of_VE(self):
+        arr = np.arange(16).reshape(4, 4)
+
+        assert_raises(ValueError, util.blocks_of, arr, 2, 1)

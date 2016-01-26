@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -418,11 +418,13 @@ import copy
 import logging
 import os.path
 import weakref
+import gc
 import functools
 
 # Local imports
 import MDAnalysis
 from .. import SelectionError, NoDataError, SelectionWarning
+from . import Selection
 from ..lib import util
 from ..lib import distances
 from ..lib import mdamath
@@ -532,6 +534,8 @@ class Atom(object):
         if not isinstance(other, (Atom, AtomGroup)):
             raise TypeError('Can only add Atoms or AtomGroups (not "{0}")'
                             ' to Atom'.format(other.__class__.__name__))
+        if not self.universe is other.universe:
+            raise ValueError("Can only add objects from the same Universe")
         if isinstance(other, Atom):
             return AtomGroup([self, other])
         else:
@@ -863,9 +867,6 @@ class AtomGroup(object):
             # empty AtomGroup
             self.__atoms = []
 
-        # managed timestep object
-        self._ts = None
-
         # caches:
         # - built on the fly when they are needed
         # - delete entry to invalidate
@@ -1073,6 +1074,8 @@ class AtomGroup(object):
         if not isinstance(other, (Atom, AtomGroup)):
             raise TypeError('Can only concatenate Atom or AtomGroup (not "{0}") to'
                             ' AtomGroup'.format(other.__class__.__name__))
+        if (self and other) and (not self.universe is other.universe):
+            raise ValueError("Can only add objects from the same Universe")
         if isinstance(other, AtomGroup):
             return AtomGroup(self._atoms + other._atoms)
         else:
@@ -1101,8 +1104,14 @@ class AtomGroup(object):
             self.__init__([])
             return
         if np.max(indices) >= universe_n_atoms:
-            raise ValueError("Trying to unpickle an inconsistent AtomGroup")
-        lookup_set = MDAnalysis._anchor_universes if anchor_name is None else MDAnalysis._named_anchor_universes
+            raise ValueError("Trying to unpickle an inconsistent AtomGroup: "
+                      "it has higher indices than the universe it refers to.")
+        lookup_set = (MDAnalysis._anchor_universes if anchor_name is None
+                      else MDAnalysis._named_anchor_universes)
+        # Universes that go out-of-scope but haven't been garbage-collected
+        #  yet may be (wrongly) brought back to life by unpickling onto them.
+        # gc.collect() makes sure all is clean (Issue 487).
+        gc.collect()
         for test_universe in lookup_set:
             if test_universe._matches_unpickling(*state[1:]):
                 self.__init__(test_universe.atoms[indices]._atoms)
@@ -1110,7 +1119,7 @@ class AtomGroup(object):
         raise RuntimeError(("Couldn't find a suitable Universe to unpickle AtomGroup "
                 "onto. (needed a universe with {}{} atoms, topology filename: '{}', and "
                 "trajectory filename: '{}')").format(
-                        "anchor_name: '{}', ".format(anchor_name) if anchor_name is not None else "",
+                        "anchor_name: '{0}', ".format(anchor_name) if anchor_name is not None else "",
                         *state[2:]))
 
     @property
@@ -2815,26 +2824,18 @@ class AtomGroup(object):
             if not all(s == 0.0):
                 o.translate(s)
 
-    def select_atoms(self, sel, *othersel, **selgroups):
+    def select_atoms(self, selstr, *othersel, **selgroups):
         """Selection of atoms using the MDAnalysis selection syntax.
 
         AtomGroup.select_atoms(selection[,selection[,...]], [groupname=atomgroup[,groupname=atomgroup[,...]]])
 
         .. SeeAlso:: :meth:`Universe.select_atoms`
         """
-        from . import Selection  # can ONLY import in method, otherwise cyclical import!
-
-        atomgrp = Selection.Parser.parse(sel, selgroups).apply(self)
-        if len(othersel) == 0:
-            return atomgrp
-        else:
-            # Generate a selection for each selection string
-            #atomselections = [atomgrp]
-            for sel in othersel:
-                atomgrp = atomgrp + Selection.Parser.parse(sel, selgroups).apply(self)
-                #atomselections.append(Selection.Parser.parse(sel).apply(self))
-            #return tuple(atomselections)
-            return atomgrp
+        atomgrp = Selection.Parser.parse(selstr, selgroups).apply(self)
+        # Generate a selection for each selection string
+        for sel in othersel:
+            atomgrp += Selection.Parser.parse(sel, selgroups).apply(self)
+        return atomgrp
 
     selectAtoms = deprecate(select_atoms, old_name='selectAtoms',
                             new_name='select_atoms')
@@ -3008,26 +3009,20 @@ class AtomGroup(object):
 
     @property
     def ts(self):
-        """Temporary Timestep that contains the selection coordinates.
+        """Returns a Timestep that contains only the group's coordinates.
 
+        Returns
+        -------
         A :class:`~MDAnalysis.coordinates.base.Timestep` instance,
         which can be passed to a trajectory writer.
 
-        If :attr:`~AtomGroup.ts` is modified then these modifications
-        will be present until the frame number changes (which
-        typically happens when the underlying trajectory frame
-        changes).
-
-        It is not possible to assign a new
-        :class:`~MDAnalysis.coordinates.base.Timestep` to the
-        :attr:`AtomGroup.ts` attribute; change attributes of the object.
+        If the returned timestep is modified the modifications
+        will not be reflected in the base timestep. Likewise,
+        when the underlying timestep changes (either by loading a
+        new frame or by setting new positions by hand) the returned
+        timestep will not reflect those changes.
         """
-        trj_ts = self.universe.trajectory.ts  # original time step
-
-        if self._ts is None or self._ts.frame != trj_ts.frame:
-            # create a timestep of same type as the underlying trajectory
-            self._ts = trj_ts.copy_slice(self.indices)
-        return self._ts
+        return self.universe.trajectory.ts.copy_slice(self.indices)
 
 
 class Residue(AtomGroup):
@@ -3093,7 +3088,7 @@ class Residue(AtomGroup):
                   method returns ``None``.
         """
         sel = self.universe.select_atoms(
-            'segid %s and resid %d and name C' % (self.segment.id, self.id - 1)) + \
+            'segid {0!s} and resid {1:d} and name C'.format(self.segment.id, self.id - 1)) + \
               self['N'] + self['CA'] + self['C']
         if len(sel) == 4:  # select_atoms doesnt raise errors if nothing found, so check size
             return sel
@@ -3109,7 +3104,7 @@ class Residue(AtomGroup):
         """
         sel = self['N'] + self['CA'] + self['C'] + \
               self.universe.select_atoms(
-                  'segid %s and resid %d and name N' % (self.segment.id, self.id + 1))
+                  'segid {0!s} and resid {1:d} and name N'.format(self.segment.id, self.id + 1))
         if len(sel) == 4:
             return sel
         else:
@@ -3131,8 +3126,8 @@ class Residue(AtomGroup):
         segid = self.segment.id
         sel = self['CA'] + self['C'] + \
               self.universe.select_atoms(
-                  'segid %s and resid %d and name N' % (segid, nextres),
-                  'segid %s and resid %d and name CA' % (segid, nextres))
+                  'segid {0!s} and resid {1:d} and name N'.format(segid, nextres),
+                  'segid {0!s} and resid {1:d} and name CA'.format(segid, nextres))
         if len(sel) == 4:
             return sel
         else:
@@ -3754,8 +3749,8 @@ class Universe(object):
                 # or if file is known as a topology & coordinate file, use that
                 if fmt is None:
                     fmt = util.guess_format(self.filename)
-                if (fmt in MDAnalysis.coordinates._trajectory_readers
-                    and fmt in MDAnalysis.topology._topology_parsers):
+                if (fmt in MDAnalysis.coordinates._READERS
+                    and fmt in MDAnalysis.topology._PARSERS):
                     coordinatefile = self.filename
             # Fix by SB: make sure coordinatefile is never an empty tuple
             if len(coordinatefile) == 0:
@@ -4376,38 +4371,40 @@ class Universe(object):
         **Simple selections**
 
             protein, backbone, nucleic, nucleicbackbone
-                selects all atoms that belong to a standard set of residues; a protein
-                is identfied by a hard-coded set of residue names so it  may not
-                work for esoteric residues.
+                selects all atoms that belong to a standard set of residues;
+                a protein is identfied by a hard-coded set of residue names so
+                it  may not work for esoteric residues.
             segid *seg-name*
-                select by segid (as given in the topology), e.g. ``segid 4AKE`` or ``segid DMPC``
+                select by segid (as given in the topology), e.g. ``segid 4AKE``
+                or ``segid DMPC``
             resid *residue-number-range*
-                resid can take a single residue number or a range of numbers. A range
-                consists of two numbers separated by a colon (inclusive) such
-                as ``resid 1:5``. A residue number ("resid") is taken directly from the
-                topology.
+                resid can take a single residue number or a range of numbers. A
+                range consists of two numbers separated by a colon (inclusive)
+                such as ``resid 1:5``. A residue number ("resid") is taken
+                directly from the topology.
             resnum *resnum-number-range*
-                resnum is the canonical residue number; typically it is set to the residue id
-                in the original PDB structure.
+                resnum is the canonical residue number; typically it is set to
+                the residue id in the original PDB structure.
             resname *residue-name*
                 select by residue name, e.g. ``resname LYS``
             name *atom-name*
-                select by atom name (as given in the topology). Often, this is force
-                field dependent. Example: ``name CA`` (for C&alpha; atoms) or ``name OW`` (for SPC water oxygen)
+                select by atom name (as given in the topology). Often, this is
+                force field dependent. Example: ``name CA`` (for C&alpha; atoms)
+                or ``name OW`` (for SPC water oxygen)
             type *atom-type*
-                select by atom type; this is either a string or a number and depends on
-                the force field; it is read from the topology file (e.g. the CHARMM PSF
-                file contains numeric atom types). It has non-sensical values when a
-                PDB or GRO file is used as a topology.
+                select by atom type; this is either a string or a number and
+                depends on the force field; it is read from the topology file
+                (e.g. the CHARMM PSF file contains numeric atom types). It has
+                non-sensical values when a PDB or GRO file is used as a topology
             atom *seg-name*  *residue-number*  *atom-name*
                 a selector for a single atom consisting of segid resid atomname,
-                e.g. ``DMPC 1 C2`` selects the C2 carbon of the first residue of the DMPC
-                segment
+                e.g. ``DMPC 1 C2`` selects the C2 carbon of the first residue of
+                the DMPC segment
             altloc *alternative-location*
                 a selection for atoms where alternative locations are available,
                 which is often the case with high-resolution crystal structures
-                e.g. `resid 4 and resname ALA and altloc B` selects only the atoms
-                of ALA-4 that have an altloc B record.
+                e.g. `resid 4 and resname ALA and altloc B` selects only the
+                atoms of ALA-4 that have an altloc B record.
 
         **Boolean**
 
@@ -4416,77 +4413,80 @@ class Universe(object):
                 all atoms that aren't part of a protein
 
             and, or
-                combine two selections according to the rules of boolean algebra,
-                e.g. ``protein and not (resname ALA or resname LYS)`` selects all atoms
-                that belong to a protein, but are not in a lysine or alanine residue
+                combine two selections according to the rules of boolean
+                algebra, e.g. ``protein and not (resname ALA or resname LYS)``
+                selects all atoms that belong to a protein, but are not in a
+                lysine or alanine residue
 
         **Geometric**
 
             around *distance*  *selection*
                 selects all atoms a certain cutoff away from another selection,
-                e.g. ``around 3.5 protein`` selects all atoms not belonging to protein
-                that are within 3.5 Angstroms from the protein
+                e.g. ``around 3.5 protein`` selects all atoms not belonging to
+                protein that are within 3.5 Angstroms from the protein
             point *x* *y* *z*  *distance*
                 selects all atoms within a cutoff of a point in space, make sure
-                coordinate is separated by spaces, e.g. ``point 5.0 5.0 5.0  3.5`` selects
-                all atoms within 3.5 Angstroms of the coordinate (5.0, 5.0, 5.0)
+                coordinate is separated by spaces,
+                e.g. ``point 5.0 5.0 5.0  3.5`` selects all atoms within 3.5
+                Angstroms of the coordinate (5.0, 5.0, 5.0)
             prop [abs] *property*  *operator*  *value*
-                selects atoms based on position, using *property*  **x**, **y**, or
-                **z** coordinate. Supports the **abs** keyword (for absolute value) and
-                the following *operators*: **<, >, <=, >=, ==, !=**. For example, ``prop z >= 5.0``
-                selects all atoms with z coordinate greater than 5.0; ``prop abs z <= 5.0``
-                selects all atoms within -5.0 <= z <= 5.0.
+                selects atoms based on position, using *property*  **x**, **y**,
+                or **z** coordinate. Supports the **abs** keyword (for absolute
+                value) and the following *operators*: **<, >, <=, >=, ==, !=**.
+                For example, ``prop z >= 5.0`` selects all atoms with z
+                coordinate greater than 5.0; ``prop abs z <= 5.0`` selects all
+                atoms within -5.0 <= z <= 5.0.
+            sphzone *radius* *selection*
+                Selects all atoms that are within *radius* of the center of
+                geometry of *selection*
+            sphlayer *inner radius* *outer radius* *selection*
+                Similar to sphzone, but also excludes atoms that are within
+                *inner radius* of the selection COG
 
         **Connectivity**
 
             byres *selection*
                 selects all atoms that are in the same segment and residue as
                 selection, e.g. specify the subselection after the byres keyword
+            bonded *selection*
+                selects all atoms that are bonded to selection
+                eg: ``select name H bonded name O`` selects only hydrogens
+                bonded to oxygens
 
         **Index**
 
             bynum *index-range*
                 selects all atoms within a range of (1-based) inclusive indices,
-                e.g. ``bynum 1`` selects the first atom in the universe; ``bynum 5:10``
-                selects atoms 5 through 10 inclusive. All atoms in the
-                :class:`MDAnalysis.Universe` are consecutively numbered, and the index
-                runs from 1 up to the total number of atoms.
+                e.g. ``bynum 1`` selects the first atom in the universe;
+                ``bynum 5:10`` selects atoms 5 through 10 inclusive. All atoms
+                in the :class:`MDAnalysis.Universe` are consecutively numbered,
+                and the index runs from 1 up to the total number of atoms.
 
         **Preexisting selections**
 
             group *group-name*
-                selects the atoms in the :class:`AtomGroup` passed to the function as an
-                argument named *group-name*. Only the atoms common to *group-name* and the
-                instance :meth:`~select_atoms` was called from will be considered.
-                *group-name* will be included in the parsing just by comparison of atom indices.
-                This means that it is up to the user to make sure they were defined in an
-                appropriate :class:`Universe`.
+                selects the atoms in the :class:`AtomGroup` passed to the
+                function as an argument named *group-name*. Only the atoms
+                common to *group-name* and the instance :meth:`~select_atoms`
+                was called from will be considered. *group-name* will be
+                 included in the parsing just by comparison of atom indices.
+                This means that it is up to the user to make sure they were
+                defined in an appropriate :class:`Universe`.
 
             fullgroup *group-name*
-                just like the ``group`` keyword with the difference that all the atoms of
-                *group-name* are included. The resulting selection may therefore have atoms
-                that were initially absent from the instance :meth:`~select_atoms` was
-                called from.
-
+                just like the ``group`` keyword with the difference that all the
+                atoms of *group-name* are included. The resulting selection may
+                therefore have atoms that were initially absent from the
+                instance :meth:`~select_atoms` was called from.
 
         .. versionchanged:: 0.7.4
            Added *resnum* selection.
         .. versionchanged:: 0.8.1
            Added *group* and *fullgroup* selections.
+        .. versionchanged:: 0.13.0
+           Added *bonded* selection
         """
-        from . import Selection  # can ONLY import in method, otherwise cyclical import!
-
-        atomgrp = Selection.Parser.parse(sel, selgroups).apply(self)
-        if len(othersel) == 0:
-            return atomgrp
-        else:
-            # Generate a selection for each selection string
-            #atomselections = [atomgrp]
-            for sel in othersel:
-                atomgrp = atomgrp + Selection.Parser.parse(sel, selgroups).apply(self)
-                #atomselections.append(Selection.Parser.parse(sel).apply(self))
-            #return tuple(atomselections)
-            return atomgrp
+        return self.atoms.select_atoms(sel, *othersel, **selgroups)
 
     selectAtoms = deprecate(select_atoms, old_name='selectAtoms',
                             new_name='select_atoms')
@@ -4611,7 +4611,7 @@ def as_Universe(*args, **kwargs):
     :Returns: an instance of :class:`~MDAnalaysis.AtomGroup.Universe`
     """
     if len(args) == 0:
-        raise TypeError("as_Universe() takes at least one argument (%d given)" % len(args))
+        raise TypeError("as_Universe() takes at least one argument ({0:d} given)".format(len(args)))
     elif len(args) == 1 and isinstance(args[0], Universe):
         return args[0]
     return Universe(*args, **kwargs)

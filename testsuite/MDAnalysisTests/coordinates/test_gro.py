@@ -1,6 +1,7 @@
 import MDAnalysis as mda
 import numpy as np
 import os
+import bz2
 
 from nose.plugins.attrib import attr
 from numpy.testing import (assert_equal, assert_almost_equal, dec,
@@ -8,8 +9,9 @@ from numpy.testing import (assert_equal, assert_almost_equal, dec,
 from unittest import TestCase
 import tempdir
 
-from MDAnalysisTests.datafiles import (GRO)
+from MDAnalysisTests.datafiles import (GRO, GRO_velocity, GRO_large)
 from MDAnalysisTests.coordinates.reference import RefAdK
+from MDAnalysisTests.coordinates.base import BaseTimestepTest
 
 
 class TestGROReader(TestCase, RefAdK):
@@ -232,3 +234,73 @@ class TestGROWriter(TestCase, tempdir.TempDir):
         assert_raises(ValueError, u.atoms.write, self.outfile2,
                       convert_units=False)
         del u
+
+
+class TestGROWriterLarge(TestCase, tempdir.TempDir):
+    def setUp(self):
+        self.tmpdir = tempdir.TempDir()
+        self.large_universe = mda.Universe(GRO_large)
+
+    def tearDown(self):
+        del self.tmpdir
+        del self.large_universe
+
+    @dec.slow
+    @attr('issue')
+    def test_writer_large(self):
+        """Test that atom numbers are truncated for large
+        GRO files (Issue 550)."""
+        outfile = self.tmpdir.name + '/outfile1.gro'
+        self.large_universe.atoms.write(outfile)
+        with open(outfile, 'r') as mda_output:
+            with bz2.BZ2File(GRO_large, 'r') as expected_output:
+                produced_lines = mda_output.readlines()[1:]
+                expected_lines = expected_output.readlines()[1:]
+                assert_equal(produced_lines,
+                             expected_lines,
+                             err_msg="Writing GRO file with > 100 000 "
+                                 "coords does not truncate properly.")
+
+class TestGROWriterVels(object):
+    def setUp(self):
+        self.tmpdir = tempdir.TempDir()
+        self.outfile = self.tmpdir.name + '/gro-writervels.gro'
+
+    def tearDown(self):
+        try:
+            os.unlink(self.outfile)
+        except OSError:
+            pass
+        del self.tmpdir
+
+    def test_write_velocities(self):
+        u = mda.Universe(GRO_velocity)
+
+        u.atoms.write(self.outfile)
+
+        u2 = mda.Universe(self.outfile)
+        
+        assert_array_almost_equal(u.atoms.velocities,
+                                  u2.atoms.velocities)
+
+
+class TestGROTimestep(BaseTimestepTest):
+    Timestep = mda.coordinates.GRO.Timestep
+    name = "GRO"
+    has_box = True
+    set_box = True
+    unitcell = np.array([10., 11., 12.,
+                         0., 0., 0.,
+                         0., 0., 0.])
+    uni_args = (GRO,)
+
+    def test_unitcell_set2(self):
+        box = np.array([80.017, 80.017, 80.017, 60.00, 60.00, 90.00],
+                       dtype=np.float32)
+
+        ref = np.array([80.00515747, 80.00515747, 56.57218552,  # v1x, v2y, v3z
+                        0., 0.,  # v1y v1z
+                        0., 0.,  # v2x v2y
+                        40.00257874, 40.00257874],dtype=np.float32)  # v3x, v3y
+        self.ts.dimensions = box
+        assert_array_almost_equal(self.ts._unitcell, ref, decimal=2)

@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -172,10 +172,10 @@ also recognized when they are compressed with :program:`gzip` or
    |               | mdcrd     |       | periodic box is autodetected (*experimental*).       |
    |               |           |       | Module :mod:`MDAnalysis.coordinates.TRJ`             |
    +---------------+-----------+-------+------------------------------------------------------+
-   | AMBER         | inpcrd    | r     | formatted (ASCII) coordinate/restart file            |
+   | AMBER         | inpcrd,   | r     | formatted (ASCII) coordinate/restart file            |
    |               | restrt    |       | Module :mod:`MDAnalysis.coordinates.INPCRD`          |
    +---------------+-----------+-------+------------------------------------------------------+
-   | AMBER         | ncdf      |  r/w  | binary (NetCDF) trajectories are fully supported with|
+   | AMBER         | ncdf, nc  |  r/w  | binary (NetCDF) trajectories are fully supported with|
    |               |           |       | optional `netcdf4-python`_ module (coordinates and   |
    |               |           |       | velocities). Module :mod:`MDAnalysis.coordinates.TRJ`|
    +---------------+-----------+-------+------------------------------------------------------+
@@ -274,17 +274,15 @@ Registry
 
 In various places, MDAnalysis tries to automatically select appropriate formats
 (e.g. by looking at file extensions). In order to allow it to choose the
-correct format, all I/O classes must be registered in one of three dictionaries
-with the format (typically the file extension in upper case):
+correct format, all I/O classes must subclass either 
+:class:`MDAnalysis.coordinates.base.ProtoReader` or
+:class:`MDAnalysis.coordinates.base.Writer` and set the `format` attribute
+with a string defining the expected suffix.
+To assign multiple suffixes to an I/O class, a list of suffixes
+can be given.
 
-- Trajectory reader classes must be added to
-  :data:`MDAnalysis.coordinates._trajectory_readers`.
-
-- Trajectory writer classes must be added to
-  :data:`MDAnalysis.coordinates._trajectory_writers`.
-
-- Single-frame writer classes must be added to to
-  :data:`MDAnalysis.coordinates._frame_writers`.
+To define that a Writer can write multiple trajectory frames, set the
+`multiframe` attribute to True.  The default is False.
 
 
 .. _Timestep API:
@@ -670,28 +668,15 @@ Methods
    manner with the one difference that Frame writers cannot deal with
    raw :class:`~MDAnalysis.coordinates.base.Timestep` objects.
 
-
-Reader/Writer registry
-----------------------
-
-The following data structures connect reader/writer classes to their
-format identifiers. They are documented for programmers who want to
-enhance MDAnalysis; the casual user is unlikely to access them
-directly.
-
-Some formats can either write single frames or trajectories (such as
-PDB). In theses cases, the kind of writer is selected with the
-*multiframe* keyword to :func:`MDAnalysis.coordinates.core.get_writer`
-(or the writer itself).
-
-.. autodata:: _trajectory_readers
-.. autodata:: _compressed_formats
-.. autodata:: _frame_writers
-.. autodata:: _trajectory_writers
-
 """
 
 __all__ = ['reader', 'writer']
+
+# Registry of all Readers & Writers
+# Get filled on class definition by metaclass magic
+_READERS = {}
+_SINGLEFRAME_WRITERS = {}
+_MULTIFRAME_WRITERS = {}
 
 from . import base
 from .core import reader, writer
@@ -712,72 +697,3 @@ from . import TRR
 from . import TRZ
 from . import XTC
 from . import XYZ
-
-#: standard trajectory readers (dict with identifier as key and reader class as value)
-_trajectory_readers = {
-    'DCD': DCD.DCDReader,
-    # 'TRJ': DCD.DCDReader, #commented out because overridden by TRJ.TRJReader
-    'CONFIG': DLPoly.ConfigReader,
-    'HISTORY': DLPoly.HistoryReader,
-    'XTC': XTC.XTCReader,
-    'XYZ': XYZ.XYZReader,
-    'TRR': TRR.TRRReader,
-    'Permissive_PDB': PDB.PrimitivePDBReader,
-    'PDB': PDB.PDBReader,
-    'XPDB': PDB.ExtendedPDBReader,
-    'PDBQT': PDBQT.PDBQTReader,
-    'CRD': CRD.CRDReader,
-    'GRO': GRO.GROReader,
-    'MOL2': MOL2.MOL2Reader,
-    'TRJ': TRJ.TRJReader,  # AMBER text
-    'MDCRD': TRJ.TRJReader,  # AMBER text
-    'NCDF': TRJ.NCDFReader,  # AMBER netcdf
-    'NC': TRJ.NCDFReader,
-    'INPCRD': INPCRD.INPReader,
-    'RESTRT': INPCRD.INPReader,
-    'PQR': PQR.PQRReader,
-    'LAMMPS': LAMMPS.DCDReader,
-    'CHAIN': base.ChainReader,
-    'DMS': DMS.DMSReader,
-    'TRZ': TRZ.TRZReader,
-    'DATA': LAMMPS.DATAReader,
-    'GMS': GMS.GMSReader,
-}
-
-#: formats of readers that can also handle gzip or bzip2 compressed files
-_compressed_formats = ['XYZ', 'TRJ', 'MDCRD', 'PQR', 'PDBQT']
-
-#: frame writers: export to single frame formats such as PDB, gro, crd
-#: Signature::
-#:
-#:   W = FrameWriter(filename)
-#:   W.write(AtomGroup)
-_frame_writers = {
-    'PDBQT': PDBQT.PDBQTWriter,
-    'CRD': CRD.CRDWriter,
-    'GRO': GRO.GROWriter,
-    'PDB': PDB.PrimitivePDBWriter,
-    'PQR': PQR.PQRWriter,
-    'XYZ': XYZ.XYZWriter,
-    'MOL2': MOL2.MOL2Writer,
-}
-
-#: trajectory writers: export frames, typically only saving coordinates
-#: Signature::
-#:
-#:   W = TrajectoryWriter(filename,n_atoms,**kwargs)
-#:   W.write_next_timestep(TimeStep)
-#:   W.write(Timestep)
-#:   W.write(AtomGroup)
-#:   W.write(Universe)
-_trajectory_writers = {
-    'DCD': DCD.DCDWriter,
-    'XTC': XTC.XTCWriter,
-    'TRR': TRR.TRRWriter,
-    'LAMMPS': LAMMPS.DCDWriter,
-    'PDB': PDB.MultiPDBWriter,
-    'NCDF': TRJ.NCDFWriter,
-    'TRZ': TRZ.TRZWriter,
-    'XYZ': XYZ.XYZWriter,
-    'MOL2': MOL2.MOL2Writer,
-}

@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -696,7 +696,7 @@ class HOLE(BaseHOLE):
         hole_exe_name = kwargs.pop('executable', 'hole')
         self.exe['hole'] = which(hole_exe_name)
         if self.exe['hole'] is None:
-            errmsg = "HOLE binary %(hole_exe_name)r not found." % vars()
+            errmsg = "HOLE binary {hole_exe_name!r} not found.".format(**vars())
             logger.fatal(errmsg)
             logger.fatal("%(hole_exe_name)r must be on the PATH or provided as keyword argument 'executable'.",
                          vars())
@@ -823,7 +823,7 @@ class HOLE(BaseHOLE):
             logger.fatal("HOLE Failure (%d). Check output %r", hole.returncode, outname)
             if stderr is not None:
                 logger.fatal(stderr)
-            raise ApplicationError(hole.returncode, "HOLE %r failed. Check output %r." % (self.exe['hole'], outname))
+            raise ApplicationError(hole.returncode, "HOLE {0!r} failed. Check output {1!r}.".format(self.exe['hole'], outname))
         logger.info("HOLE finished: output file %(outname)r", vars())
 
     def create_vmd_surface(self, filename="hole.vmd", **kwargs):
@@ -920,7 +920,7 @@ class HOLE(BaseHOLE):
             length = len(filenames)
             if length == 0:
                 logger.error("Glob pattern %r did not find any files.", self.filename)
-                raise ValueError("Glob pattern %r did not find any files." % (self.filename,))
+                raise ValueError("Glob pattern {0!r} did not find any files.".format(self.filename))
             logger.info("Found %d input files based on glob pattern %s", length, self.filename)
         if self.dcd:
             from MDAnalysis import Universe
@@ -975,7 +975,7 @@ class HOLE(BaseHOLE):
                             rundir = os.path.join(outdir, "run_" + str(run))
                             if not os.path.exists(rundir):
                                 os.makedirs(rundir)
-                            frame_hole_txt = os.path.join(rundir, "radii_%s_%04d.dat.gz" % (run, hole_profile_no))
+                            frame_hole_txt = os.path.join(rundir, "radii_{0!s}_{1:04d}.dat.gz".format(run, hole_profile_no))
                             np.savetxt(frame_hole_txt, frame_hole_output)
                             logger.debug("Finished with frame %d, saved as %r", hole_profile_no, frame_hole_txt)
                         continue

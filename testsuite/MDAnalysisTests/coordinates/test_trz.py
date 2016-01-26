@@ -5,10 +5,14 @@ from six.moves import zip
 from numpy.testing import (assert_equal, assert_array_almost_equal,
                            assert_almost_equal)
 import tempdir
+import numpy as np
 
 from unittest import TestCase
 
+from MDAnalysis import NoDataError
+
 from MDAnalysisTests.coordinates.reference import RefTRZ
+from MDAnalysisTests.coordinates.base import BaseTimestepTest
 from MDAnalysisTests.datafiles import (TRZ_psf, TRZ, two_water_gro)
 
 
@@ -163,7 +167,7 @@ class TestTRZWriter(TestCase, RefTRZ):
             for att in orig_ts.data:
                 assert_array_almost_equal(orig_ts.data[att],
                                           written_ts.data[att], self.prec,
-                                          err_msg="TS equal failed for %s" % att)
+                                          err_msg="TS equal failed for {0!s}".format(att))
 
 
 class TestTRZWriter2(object):
@@ -226,3 +230,15 @@ class TestWrite_Partial_Timestep(TestCase):
                                   u_ag.atoms.coordinates(),
                                   self.prec,
                                   err_msg="Writing AtomGroup timestep failed.")
+
+
+class TestTRZTimestep(BaseTimestepTest):
+    Timestep = mda.coordinates.TRZ.Timestep
+    name = "TRZ"
+    has_box = True
+    set_box = True
+    unitcell = np.array([10., 0., 0.,
+                         0., 11., 0.,
+                         0., 0., 12.])
+    uni_args = (TRZ_psf, TRZ)
+

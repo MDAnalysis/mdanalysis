@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -320,20 +320,18 @@ class RMSD(object):
         if len(self.ref_atoms) != len(self.traj_atoms):
             logger.exception()
             raise SelectionError("Reference and trajectory atom selections do not contain " +
-                                 "the same number of atoms: N_ref=%d, N_traj=%d" %
-                                 (len(self.ref_atoms), len(self.traj_atoms)))
-        logger.info("RMS calculation for %d atoms." % len(self.ref_atoms))
+                                 "the same number of atoms: N_ref={0:d}, N_traj={1:d}".format(len(self.ref_atoms), len(self.traj_atoms)))
+        logger.info("RMS calculation for {0:d} atoms.".format(len(self.ref_atoms)))
         mass_mismatches = (np.absolute(self.ref_atoms.masses - self.traj_atoms.masses) > self.tol_mass)
         if np.any(mass_mismatches):
             # diagnostic output:
             logger.error("Atoms: reference | trajectory")
             for ar, at in izip(self.ref_atoms, self.traj_atoms):
                 if ar.name != at.name:
-                    logger.error("%4s %3d %3s %3s %6.3f  |  %4s %3d %3s %3s %6.3f" %
-                                 (ar.segid, ar.resid, ar.resname, ar.name, ar.mass,
-                                 at.segid, at.resid, at.resname, at.name, at.mass,))
-            errmsg = "Inconsistent selections, masses differ by more than %f; mis-matching atoms are shown above." % \
-                     self.tol_mass
+                    logger.error("{0!s:>4} {1:3d} {2!s:>3} {3!s:>3} {4:6.3f}  |  {5!s:>4} {6:3d} {7!s:>3} {8!s:>3} {9:6.3f}".format(ar.segid, ar.resid, ar.resname, ar.name, ar.mass,
+                                 at.segid, at.resid, at.resname, at.name, at.mass))
+            errmsg = "Inconsistent selections, masses differ by more than {0:f}; mis-matching atoms are shown above.".format( \
+                     self.tol_mass)
             logger.error(errmsg)
             raise SelectionError(errmsg)
         del mass_mismatches

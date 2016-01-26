@@ -57,11 +57,11 @@ rdf = rdf.astype(np.float64)  # avoid possible problems with '/' later on
 n = solvent.numberOfAtoms()
 dist = np.zeros((n * (n - 1) / 2,), dtype=np.float64)
 
-print "Start: n = %d, size of dist = %d " % (n, len(dist))
+print "Start: n = {0:d}, size of dist = {1:d} ".format(n, len(dist))
 
 boxvolume = 0
 for ts in universe.trajectory:
-    print "Frame %4d" % ts.frame
+    print "Frame {0:4d}".format(ts.frame)
     boxvolume += ts.volume  # correct unitcell volume
     coor = solvent.coordinates()
     # periodicity is NOT handled correctly in this example because
@@ -92,8 +92,8 @@ rdf /= norm * vol
 outfile = './output/rdf.dat'
 with open(outfile, 'w') as output:
     for radius, gofr in izip(radii, rdf):
-        output.write("%(radius)8.3f \t %(gofr)8.3f\n" % vars())
-print "g(r) data written to %(outfile)r" % vars()
+        output.write("{radius:8.3f} \t {gofr:8.3f}\n".format(**vars()))
+print "g(r) data written to {outfile!r}".format(**vars())
 
 if have_matplotlib:
     matplotlib.rc('font', size=14)

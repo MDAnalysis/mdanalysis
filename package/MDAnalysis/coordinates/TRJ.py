@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -189,7 +189,7 @@ class TRJReader(base.Reader):
        Frames now 0-based instead of 1-based
        kwarg 'delta' renamed to 'dt', for uniformity with other Readers
     """
-    format = 'TRJ'
+    format = ['TRJ', 'MDCRD']
     units = {'time': 'ps', 'length': 'Angstrom'}
     _Timestep = Timestep
 
@@ -211,7 +211,7 @@ class TRJReader(base.Reader):
         # We determine right away what parser we need for the last
         # line because it will be the same for all frames.
         last_per_line = 3 * self.n_atoms % len(self.default_line_parser)
-        self.last_line_parser = util.FORTRANReader("%dF8.3" % last_per_line)
+        self.last_line_parser = util.FORTRANReader("{0:d}F8.3".format(last_per_line))
 
         # FORMAT(10F8.3)  BOX(1), BOX(2), BOX(3)
         # is this always on a separate line??
@@ -405,7 +405,8 @@ class NCDFReader(base.Reader):
        kwarg 'delta' renamed to 'dt', for uniformity with other Readers
     """
 
-    format = 'NCDF'
+    format = ['NCDF', 'NC']
+    multiframe = True
     version = "1.0"
     units = {'time': 'ps', 'length': 'Angstrom', 'velocity': 'Angstrom/ps',
              'force': 'kcal/(mol*Angstrom)'}
@@ -435,7 +436,7 @@ class NCDFReader(base.Reader):
             logger.fatal(errmsg)
             raise TypeError(errmsg)
         if not self.trjfile.ConventionVersion == self.version:
-            wmsg = "NCDF trajectory format is %s but the reader implements format %s" % (
+            wmsg = "NCDF trajectory format is {0!s} but the reader implements format {1!s}".format(
                 self.trjfile.ConventionVersion, self.version)
             warnings.warn(wmsg)
             logger.warn(wmsg)
@@ -564,7 +565,7 @@ class NCDFWriter(base.Writer):
     """Writer for `AMBER NETCDF format`_ (version 1.0).
 
     AMBER binary trajectories are automatically recognised by the
-    file extension ".ncdf".
+    file extension ".ncdf" or ".nc".
 
     Velocities are written out if they are detected in the input
     :class:`Timestep`. The trajectories are always written with ångström
@@ -608,9 +609,9 @@ class NCDFWriter(base.Writer):
           *dt*
             timestep
           *convert_units*
-            ``True``: units are converted to the AMBER base format; ``None`` selects
-            the value of :data:`MDAnalysis.core.flags` ['convert_lengths'].
-            (see :ref:`flags-label`)
+            ``True``: units are converted to the AMBER base format; ``None``
+            selects the value of :data:`MDAnalysis.core.flags`
+            ['convert_lengths'] (see :ref:`flags-label`).
           *zlib*
             compress data [``False``]
           *cmplevel*
@@ -648,7 +649,7 @@ class NCDFWriter(base.Writer):
         """Initialize netcdf AMBER 1.0 trajectory.
 
         The trajectory is opened when the first frame is written
-        because that is the earlies time that we can detect if the
+        because that this is the earliest time that we can detect if the
         output should contain periodicity information (i.e. the unit
         cell dimensions).
 
@@ -688,12 +689,17 @@ class NCDFWriter(base.Writer):
         ncfile.createDimension('spatial', 3)  # number of spatial dimensions
         ncfile.createDimension('cell_spatial', 3)  # unitcell lengths
         ncfile.createDimension('cell_angular', 3)  # unitcell angles
+        ncfile.createDimension('label', 5)  # needed for cell_angular
 
         # Create variables.
-        coords = ncfile.createVariable('coordinates', 'f8', ('frame', 'atom', 'spatial'),
+        coords = ncfile.createVariable('coordinates', 'f4', ('frame', 'atom', 'spatial'),
                                        zlib=self.zlib, complevel=self.cmplevel)
         setattr(coords, 'units', 'angstrom')
-        time = ncfile.createVariable('time', 'f8', ('frame',),
+
+        spatial = ncfile.createVariable('spatial', 'c', ('spatial',))
+        spatial[:] = np.asarray(list('xyz'))
+        
+        time = ncfile.createVariable('time', 'f4', ('frame',),
                                      zlib=self.zlib, complevel=self.cmplevel)
         setattr(time, 'units', 'picosecond')
 
@@ -702,9 +708,20 @@ class NCDFWriter(base.Writer):
             cell_lengths = ncfile.createVariable('cell_lengths', 'f8', ('frame', 'cell_spatial'),
                                                  zlib=self.zlib, complevel=self.cmplevel)
             setattr(cell_lengths, 'units', 'angstrom')
+
+            cell_spatial = ncfile.createVariable('cell_spatial', 'c',
+                                                 ('cell_spatial',))
+            cell_spatial[:] = np.asarray(list('abc'))
+            
             cell_angles = ncfile.createVariable('cell_angles', 'f8', ('frame', 'cell_angular'),
                                                 zlib=self.zlib, complevel=self.cmplevel)
             setattr(cell_angles, 'units', 'degrees')
+
+            cell_angular = ncfile.createVariable('cell_angular', 'c',
+                                                 ('cell_angular', 'label'))
+            cell_angular[:] = np.asarray([list('alpha'), list('beta '),
+                                          list('gamma')])
+            
         # These properties are optional, and are specified on Writer creation
         if self.has_velocities:
             velocs = ncfile.createVariable('velocities', 'f8', ('frame', 'atom', 'spatial'),

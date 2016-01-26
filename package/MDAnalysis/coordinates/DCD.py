@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -192,6 +192,7 @@ class DCDWriter(base.Writer):
     .. _Issue 187: https://github.com/MDAnalysis/mdanalysis/issues/187
     """
     format = 'DCD'
+    multiframe = True
     flavor = 'CHARMM'
     units = {'time': 'AKMA', 'length': 'Angstrom'}
 
@@ -512,7 +513,7 @@ class DCDReader(base.Reader):
                where the shape is (frame, number of atoms,
                coordinates)
         """
-        start, stop, skip = self._check_slice_indices(start, stop, skip)
+        start, stop, skip = self.check_slice_indices(start, stop, skip)
         if len(asel) == 0:
             raise NoDataError("Timeseries requires at least one atom to analyze")
         if len(format) != 3 and format not in ['afc', 'acf', 'caf', 'cfa', 'fac', 'fca']:
@@ -532,7 +533,7 @@ class DCDReader(base.Reader):
             *start, stop, skip*
                subset of trajectory to use, with start and stop being inclusive
         """
-        start, stop, skip = self._check_slice_indices(start, stop, skip)
+        start, stop, skip = self.check_slice_indices(start, stop, skip)
         atomlist = timeseries._getAtomList()
         format = timeseries._getFormat()
         lowerb, upperb = timeseries._getBounds()

@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -128,8 +128,6 @@ class TrjWriter(base.Writer):
     """
     #: units of time (ps) and length (nm) in Gromacs
     units = {'time': 'ps', 'length': 'nm'}
-    #: override to define trajectory format of the reader (XTC or TRR)
-    format = None
 
     def __init__(self, filename, n_atoms, start=0, step=1, dt=None, precision=1000.0, remarks=None,
                  convert_units=None):
@@ -217,7 +215,7 @@ class TrjWriter(base.Writer):
         status = self._write_next_timestep(ts)
 
         if status != libxdrfile2.exdrOK:
-            raise IOError(errno.EIO, "Error writing %s file (status %d)" % (self.format, status), self.filename)
+            raise IOError(errno.EIO, "Error writing {0!s} file (status {1:d})".format(self.format, status), self.filename)
         self.frames_written += 1
 
     def _write_next_timestep(self, ts):
@@ -323,8 +321,7 @@ class TrjReader(base.Reader):
     """
     #: units of time (ps) and length (nm) in Gromacs
     units = {'time': 'ps', 'length': 'nm'}
-    #: override to define trajectory format of the reader (XTC or TRR)
-    format = None
+
     #: supply the appropriate Timestep class, e.g.
     #: :class:`MDAnalysis.coordinates.xdrfile.XTC.Timestep` for XTC
     _Timestep = Timestep

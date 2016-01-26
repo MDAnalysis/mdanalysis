@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -536,8 +536,8 @@ class HydrogenBondAnalysis(object):
             "heuristic": self._get_bonded_hydrogens_list,  # pre 0.7.6
         }
         if not detect_hydrogens in self._get_bonded_hydrogens_algorithms:
-            raise ValueError("detect_hydrogens must be one of %r" %
-                             self._get_bonded_hydrogens_algorithms.keys())
+            raise ValueError("detect_hydrogens must be one of {0!r}".format(
+                             self._get_bonded_hydrogens_algorithms.keys()))
         self.detect_hydrogens = detect_hydrogens
 
         self.u = universe
@@ -566,7 +566,7 @@ class HydrogenBondAnalysis(object):
         if not (self.selection1 and self.selection2):
             raise ValueError('HydrogenBondAnalysis: invalid selections')
         elif self.selection1_type not in ('both', 'donor', 'acceptor'):
-            raise ValueError('HydrogenBondAnalysis: Invalid selection type %s' % self.selection1_type)
+            raise ValueError('HydrogenBondAnalysis: Invalid selection type {0!s}'.format(self.selection1_type))
 
         self.timeseries = None  # final result
         self.timesteps = None  # time for each frame
@@ -679,8 +679,7 @@ class HydrogenBondAnalysis(object):
         """
         try:
             return atom.residue.select_atoms(
-                "(name H* or name 1H* or name 2H* or name 3H* or type H) and around %f name %s" %
-                (self.r_cov[atom.name[0]], atom.name))
+                "(name H* or name 1H* or name 2H* or name 3H* or type H) and around {0:f} name {1!s}".format(self.r_cov[atom.name[0]], atom.name))
         except NoDataError:
             return []
 
@@ -753,25 +752,25 @@ class HydrogenBondAnalysis(object):
             self._s2 = ns_selection_2.search(self._s1, 3. * self.distance)
         self.logger_debug('Size of selection 2: {0} atoms'.format(len(self._s2)))
         if not self._s2:
-            logger.warn('Selection 2 "{}" did not select any atoms.'.format(
+            logger.warn('Selection 2 "{0}" did not select any atoms.'.format(
                 str(self.selection2)[:80]))
         self._s2_donors = {}
         self._s2_donors_h = {}
         self._s2_acceptors = {}
         if self.selection1_type in ('donor', 'both'):
             self._s2_acceptors = self._s2.select_atoms(
-                ' or '.join(['name %s' % i for i in self.acceptors]))
-            self.logger_debug("Selection 2 acceptors: %d" % len(self._s2_acceptors))
+                ' or '.join(['name {0!s}'.format(i) for i in self.acceptors]))
+            self.logger_debug("Selection 2 acceptors: {0:d}".format(len(self._s2_acceptors)))
         if self.selection1_type in ('acceptor', 'both'):
             self._s2_donors = self._s2.select_atoms(
-                ' or '.join(['name %s' % i for i in self.donors]))
+                ' or '.join(['name {0!s}'.format(i) for i in self.donors]))
             self._s2_donors_h = {}
             for i, d in enumerate(self._s2_donors):
                 tmp = self._get_bonded_hydrogens(d)
                 if tmp:
                     self._s2_donors_h[i] = tmp
-            self.logger_debug("Selection 2 donors: %d" % len(self._s2_donors))
-            self.logger_debug("Selection 2 donor hydrogens: %d" % len(self._s2_donors_h))
+            self.logger_debug("Selection 2 donors: {0:d}".format(len(self._s2_donors)))
+            self.logger_debug("Selection 2 donor hydrogens: {0:d}".format(len(self._s2_donors_h)))
 
     def logger_debug(self, *args):
         if self.verbose:
@@ -881,11 +880,11 @@ class HydrogenBondAnalysis(object):
                             dist = self.calc_eucl_distance(donor_atom, a)
                             if angle >= self.angle and dist <= self.distance:
                                 self.logger_debug(
-                                    "S1-D: %s <-> S2-A: %s %f A, %f DEG" % (h.index + 1, a.index + 1, dist, angle))
+                                    "S1-D: {0!s} <-> S2-A: {1!s} {2:f} A, {3:f} DEG".format(h.index + 1, a.index + 1, dist, angle))
                                 #self.logger_debug("S1-D: %r <-> S2-A: %r %f A, %f DEG" % (h, a, dist, angle))
                                 frame_results.append(
-                                    [h.index + 1, a.index + 1, '%s%s:%s' % (h.resname, repr(h.resid), h.name),
-                                        '%s%s:%s' % (a.resname, repr(a.resid), a.name), dist, angle])
+                                    [h.index + 1, a.index + 1, '{0!s}{1!s}:{2!s}'.format(h.resname, repr(h.resid), h.name),
+                                        '{0!s}{1!s}:{2!s}'.format(a.resname, repr(a.resid), a.name), dist, angle])
                                 already_found[(h.index + 1, a.index + 1)] = True
             if self.selection1_type in ('acceptor', 'both') and len(self._s1_acceptors) > 0:
                 self.logger_debug("Selection 1 Acceptors <-> Donors")
@@ -904,11 +903,11 @@ class HydrogenBondAnalysis(object):
                             dist = self.calc_eucl_distance(donor_atom, a)
                             if angle >= self.angle and dist <= self.distance:
                                 self.logger_debug(
-                                    "S1-A: %s <-> S2-D: %s %f A, %f DEG" % (a.index + 1, h.index + 1, dist, angle))
+                                    "S1-A: {0!s} <-> S2-D: {1!s} {2:f} A, {3:f} DEG".format(a.index + 1, h.index + 1, dist, angle))
                                 #self.logger_debug("S1-A: %r <-> S2-D: %r %f A, %f DEG" % (a, h, dist, angle))
                                 frame_results.append(
-                                    [h.index + 1, a.index + 1, '%s%s:%s' % (h.resname, repr(h.resid), h.name),
-                                        '%s%s:%s' % (a.resname, repr(a.resid), a.name), dist, angle])
+                                    [h.index + 1, a.index + 1, '{0!s}{1!s}:{2!s}'.format(h.resname, repr(h.resid), h.name),
+                                        '{0!s}{1!s}:{2!s}'.format(a.resname, repr(a.resid), a.name), dist, angle])
             self.timeseries.append(frame_results)
 
         logger.info("HBond analysis: complete; timeseries with %d hbonds in %s.timeseries",

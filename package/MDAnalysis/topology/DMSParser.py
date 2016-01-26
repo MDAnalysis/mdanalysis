@@ -1,5 +1,5 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -51,6 +51,7 @@ class DMSParser(TopologyReader):
     .. _Desmond: http://www.deshawresearch.com/resources_desmond.html
     .. _DMS: http://www.deshawresearch.com/Desmond_Users_Guide-0.7.pdf
     """
+    format = 'DMS'
 
     def parse(self):
         """Parse DMS file *filename* and return the dict `structure`.

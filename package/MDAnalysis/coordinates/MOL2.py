@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -67,24 +67,15 @@ class MOL2Reader(base.Reader):
                 if "@<TRIPOS>MOLECULE" in line:
                     blocks.append({"start_line": i, "lines": []})
                 blocks[-1]["lines"].append(line)
-
-        block = blocks[0]
-
-        sections, coords = self.parse_block(block)
-
-        self.n_atoms = len(coords)
-        self.ts = self._Timestep.from_coordinates(np.array(coords, dtype=np.float32),
-                                                  **self._ts_kwargs)
-        self.ts.frame = 0  # 0-based frame number as starting frame
-
-        if self.convert_units:
-            self.convert_pos_from_native(self.ts._pos)  # in-place !
-            self.convert_pos_from_native(self.ts._unitcell[:3])  # in-place ! (only lengths)
-
-        self.molecule = {}
-        self.substructure = {}
-        self.frames = blocks
         self.n_frames = len(blocks)
+        self.frames = blocks
+
+        sections, coords = self.parse_block(blocks[0])
+        self.n_atoms = len(coords)
+
+        self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
+
+        self.ts = self._read_frame(0)
 
     def parse_block(self, block):
         sections = {}
@@ -111,7 +102,7 @@ class MOL2Reader(base.Reader):
             aid, name, x, y, z, atom_type, resid, resname, charge = a.split()
             x, y, z = float(x), float(y), float(z)
             coords.append((x, y, z))
-        coords = np.array(coords)
+        coords = np.array(coords, dtype=np.float32)
         return sections, coords
 
     def _read_next_timestep(self, ts=None):
@@ -119,32 +110,39 @@ class MOL2Reader(base.Reader):
             ts = self.ts
         else:
             # TODO: cleanup _read_frame() to use a "free" Timestep
-            raise NotImplementedError("PrimitiveMOL2Reader cannot assign to a timestep")
+            raise NotImplementedError("MOL2Reader cannot assign to a timestep")
         frame = self.frame + 1
         return self._read_frame(frame)
 
     def _read_frame(self, frame):
         unitcell = np.zeros(6, dtype=np.float32)
-        block = self.frames[frame]
+        try:
+            block = self.frames[frame]
+        except IndexError:
+            raise IOError("Invalid frame {0} for trajectory with length {1}"
+                          "".format(frame, len(self)))
 
         sections, coords = self.parse_block(block)
 
-        self.molecule[frame] = sections["molecule"]
-        self.substructure[frame] = sections["substructure"]
+        self.ts.data['molecule'] = sections["molecule"]
+        self.ts.data['substructure'] = sections["substructure"]
 
         # check if atom number changed
-        if len(coords) != len(self.ts._pos):
+        if len(coords) != self.n_atoms:
             raise ValueError(
-                "PrimitiveMOL2Reader assumes that the number of atoms remains unchanged between frames; the current "
-                "frame has %d, the next frame has %d atoms" % (
-                len(self.ts._pos), len(coords)))
+                "MOL2Reader assumes that the number of atoms remains unchanged"
+                " between frames; the current "
+                "frame has {0}, the next frame has {1} atoms"
+                "".format(self.n_atoms, len(coords)))
 
         self.ts.positions = np.array(coords, dtype=np.float32)
-        self.ts._unitcell[:] = unitcell
+        self.ts.unitcell = unitcell
         if self.convert_units:
-            self.convert_pos_from_native(self.ts._pos)  # in-place !
-            self.convert_pos_from_native(self.ts._unitcell[:3])  # in-place ! (only lengths)
+            # in-place !
+            self.convert_pos_from_native(self.ts._pos)
+            self.convert_pos_from_native(self.ts._unitcell[:3])
         self.ts.frame = frame
+
         return self.ts
 
     def _reopen(self):
@@ -209,23 +207,19 @@ class MOL2Writer(base.Writer):
 
     """
     format = 'MOL2'
+    multiframe = True
     units = {'time': None, 'length': 'Angstrom'}
 
-    def __init__(self, filename, n_atoms=None, start=0, step=1,
-                 convert_units=None, multiframe=None):
+    def __init__(self, filename, n_atoms=None,
+                 convert_units=None):
         """Create a new MOL2Writer
 
         :Arguments:
          *filename*
            name of output file
-         *start*
-           starting timestep
-         *step*
-           skip between subsequent timesteps
          *convert_units*
            units are converted to the MDAnalysis base format; ``None`` selects
            the value of :data:`MDAnalysis.core.flags` ['convert_lengths']
-
         """
         self.filename = filename
         if convert_units is None:
@@ -233,11 +227,6 @@ class MOL2Writer(base.Writer):
         self.convert_units = convert_units  # convert length and time to base units
 
         self.frames_written = 0
-        if start < 0:
-            raise ValueError("'Start' must be a positive value")
-
-        self.start = start
-        self.step = step
 
         self.file = util.anyopen(self.filename, 'w')  # open file on init
 
@@ -245,87 +234,77 @@ class MOL2Writer(base.Writer):
         self.file.close()
 
     def encode_block(self, obj):
+        """
+        Parameters
+        ----------
+        obj : AtomGroup or Universe
+        """
         traj = obj.universe.trajectory
+        ts = traj.ts
 
-        # Make sure Universe has loaded bonds
-        obj.universe.bonds
+        # Need to remap atom indices to 1 based in this selection
+        mapping = {a: i for i, a in enumerate(obj.atoms, start=1)}
 
-        bonds = set()
-        for a in obj.atoms:
-            bonds.update(a.bonds)
-        bonds = sorted([(bond[0].id, bond[1].id, bond.order) for bond in bonds])
-        mapping = dict([(a.id, i) for i, a in enumerate(obj.atoms)])
-
-        atom_lines = ["{0:>4} {1:>4} {2:>13.4f} {3:>9.4f} {4:>9.4f} {5:>4} {6} {7} "
-                      "{8:>7.4f}".format(mapping[a.id] + 1, a.name,
-                                        float(a.pos[0]),
-                                        float(a.pos[1]),
-                                        float(a.pos[2]), a.type,
-                                        a.resid, a.resname,
-                                        a.charge) for a in obj.atoms]
-        atom_lines = ["@<TRIPOS>ATOM"] + atom_lines + ["\n"]
-        atom_lines = "\n".join(atom_lines)
-
-        bonds = [(atom1, atom2, order) for atom1, atom2, order in bonds if atom1 in mapping and atom2 in mapping]
-        bond_lines = ["{0:>5} {1:>5} {2:>5} {3:>2}"
-                      "".format(bid + 1,
-                                mapping[atom1] + 1,
-                                mapping[atom2] + 1,
-                                order) for bid, (atom1, atom2, order) in enumerate(bonds)]
-        bond_lines = ["@<TRIPOS>BOND"] + bond_lines + ["\n"]
+        # Grab only bonds between atoms in the obj
+        # ie none that extend out of it
+        bondgroup = obj.bonds.atomgroup_intersection(obj, strict=True)
+        bonds = sorted((b[0], b[1], b.order) for b in bondgroup)
+        bond_lines = ["@<TRIPOS>BOND"]
+        bond_lines.extend("{0:>5} {1:>5} {2:>5} {3:>2}"
+                          "".format(bid,
+                                    mapping[atom1],
+                                    mapping[atom2],
+                                    order)
+                          for bid, (atom1, atom2, order)in enumerate(
+                                  bonds, start=1))
+        bond_lines.append("\n")
         bond_lines = "\n".join(bond_lines)
 
+        atom_lines = ["@<TRIPOS>ATOM"]
+        atom_lines.extend("{0:>4} {1:>4} {2:>13.4f} {3:>9.4f} {4:>9.4f}"
+                          " {5:>4} {6} {7} {8:>7.4f}"
+                          "".format(mapping[a],
+                                    a.name,
+                                    a.position[0],
+                                    a.position[1],
+                                    a.position[2],
+                                    a.type,
+                                    a.resid,
+                                    a.resname,
+                                    a.charge)
+                          for a in obj.atoms)
+        atom_lines.append("\n")
+        atom_lines = "\n".join(atom_lines)
+
         try:
-            substructure = traj.substructure[traj.frame]
-        except AttributeError:
+            substructure = ["@<TRIPOS>SUBSTRUCTURE\n"]
+            substructure.extend(ts.data['substructure'])
+        except KeyError:
             raise NotImplementedError("No MOL2 substructure type found in traj")
 
-        substructure = ["@<TRIPOS>SUBSTRUCTURE\n"] + substructure
-
-        molecule = traj.molecule[traj.frame]
+        molecule = ts.data['molecule']
         check_sums = molecule[1].split()
-        check_sums[0], check_sums[1] = str(len(obj.atoms)), str(len(bonds))
+        check_sums[0], check_sums[1] = str(len(obj.atoms)), str(len(bondgroup))
         molecule[1] = "{0}\n".format(" ".join(check_sums))
         molecule = ["@<TRIPOS>MOLECULE\n"] + molecule
 
         return "".join(molecule) + atom_lines + bond_lines + "".join(substructure)
 
     def write(self, obj):
-        """Write object *obj* at current trajectory frame to file.
+        """Write a new frame to the MOL2 file.
 
-        *obj* can be a selection (i.e. a
-        :class:`~MDAnalysis.core.AtomGroup.AtomGroup`) or a whole
-        :class:`~MDAnalysis.core.AtomGroup.Universe`.
-
-        :Arguments:
-          *obj*
-            :class:`~MDAnalysis.core.AtomGroup.AtomGroup` or
-            :class:`~MDAnalysis.core.AtomGroup.Universe`
+        Parameters
+        ----------
+        obj : AtomGroup or Universe
         """
-
-        start, step = self.start, self.step
-        traj = obj.universe.trajectory
-
-        # Start from trajectory[0]/frame 1, if there are more than 1 frame.
-        # If there is only 1 frame, the traj.frames is not like a python list:
-        # accessing trajectory[-1] raises key error.
-        if not start and traj.n_frames > 1:
-            start = traj.frame
-
-        for framenumber in xrange(start, len(traj), step):
-            traj[framenumber]
-            self.write_next_timestep(obj)
-
-        self.close()
-
-        # Set the trajectory to the starting position
-        traj[start]
+        self.write_next_timestep(obj)
 
     def write_next_timestep(self, obj):
         """Write a new frame to the MOL2 file.
 
-        *obj* can be a :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
-        or a :class:`~MDAnalysis.core.AtomGroup.Universe`.
+        Parameters
+        ----------
+        obj : AtomGroup or Universe
         """
         block = self.encode_block(obj)
         self.file.writelines(block)

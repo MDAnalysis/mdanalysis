@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -54,6 +54,7 @@ from .core import guess_atom_type, guess_atom_mass, guess_atom_charge
 
 class PDBParser(TopologyReader):
     """Read minimum topology information from a PDB file."""
+    format = 'PDB'
 
     def parse(self):
         """Parse atom information from PDB file *pdbfile*.

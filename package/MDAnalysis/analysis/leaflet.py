@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -160,7 +160,7 @@ class LeafletFinder(object):
 
     def _get_components(self):
         """Return connected components (as sorted numpy arrays), sorted by size."""
-        return [np.sort(component) for component in NX.connected_components(self.graph)]
+        return [np.sort(list(component)) for component in NX.connected_components(self.graph)]
 
     def update(self, cutoff=None):
         """Update components, possibly with a different *cutoff*"""
@@ -209,15 +209,14 @@ class LeafletFinder(object):
         SelectionWriter = MDAnalysis.selections.get_writer(filename, kwargs.pop('format', None))
         writer = SelectionWriter(
             filename, mode=kwargs.pop('mode', 'wa'),
-            preamble="leaflets based on selection=%(selectionstring)r cutoff=%(cutoff)f\n" % vars(self),
+            preamble="leaflets based on selection={selectionstring!r} cutoff={cutoff:f}\n".format(**vars(self)),
             **kwargs)
         for i, ag in enumerate(self.groups_iter()):
-            name = "leaflet_%d" % (i + 1)
+            name = "leaflet_{0:d}".format((i + 1))
             writer.write(ag, name=name)
 
     def __repr__(self):
-        return "<LeafletFinder(%r, cutoff=%.1f A) with %d atoms in %d groups>" % \
-               (self.selectionstring, self.cutoff, self.selection.n_atoms,
+        return "<LeafletFinder({0!r}, cutoff={1:.1f} A) with {2:d} atoms in {3:d} groups>".format(self.selectionstring, self.cutoff, self.selection.n_atoms,
                len(self.components))
 
 

@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -44,11 +44,76 @@ import string
 import functools
 
 from ..core.AtomGroup import Atom
-from ..lib.util import openany, conv_float
+from ..lib.util import openany, anyopen, conv_float
+from ..lib.mdamath import triclinic_box
 from .base import TopologyReader
 from .core import guess_atom_mass, guess_atom_charge
 
 logger = logging.getLogger("MDAnalysis.topology.LAMMPS")
+
+
+# Sections will all start with one of these words
+# and run until the next section title
+SECTIONS = set([
+    'Atoms',  # Molecular topology sections
+    'Velocities',
+    'Masses',
+    'Ellipsoids',
+    'Lines',
+    'Triangles',
+    'Bodies',
+    'Bonds',  # Forcefield sections
+    'Angles',
+    'Dihedrals',
+    'Impropers',
+    'Pair',
+    'Pair LJCoeffs',
+    'Bond Coeffs',
+    'Angle Coeffs',
+    'Dihedral Coeffs',
+    'Improper Coeffs',
+    'BondBond Coeffs',  # Class 2 FF sections
+    'BondAngle Coeffs',
+    'MiddleBondTorsion Coeffs',
+    'EndBondTorsion Coeffs',
+    'AngleTorsion Coeffs',
+    'AngleAngleTorsion Coeffs',
+    'BondBond13 Coeffs',
+    'AngleAngle Coeffs',
+])
+# We usually check by splitting around whitespace, so check
+# if any SECTION keywords will trip up on this
+# and add them
+for val in list(SECTIONS):
+    if len(val.split()) > 1:
+        SECTIONS.add(val.split()[0])
+
+
+HEADERS = set([
+    'atoms',
+    'bonds',
+    'angles',
+    'dihedrals',
+    'impropers',
+    'atom types',
+    'bond types',
+    'angle types',
+    'dihedral types',
+    'improper types',
+    'extra bond per atom',
+    'extra angle per atom',
+    'extra dihedral per atom',
+    'extra improper per atom',
+    'extra special per atom',
+    'ellipsoids',
+    'lines',
+    'triangles',
+    'bodies',
+    'xlo xhi',
+    'ylo yhi',
+    'zlo zhi',
+    'xy xz yz',
+])
 
 
 class DATAParser(TopologyReader):
@@ -69,95 +134,79 @@ class DATAParser(TopologyReader):
 
     .. versionadded:: 0.9.0
     """
+    format = 'DATA'
+
+    def iterdata(self):
+        with anyopen(self.filename, 'r') as f:
+            for line in f:
+                line = line.partition('#')[0].strip()
+                if line:
+                    yield line        
+
+    def grab_datafile(self):
+        """Split a data file into dict of header and sections
+
+        Returns
+        -------
+        header - dict of header section: value
+        sections - dict of section name: content
+        """
+        f = list(self.iterdata())
+
+        starts = [i for i, line in enumerate(f)
+                  if line.split()[0] in SECTIONS]
+        starts += [None]
+
+        header = {}
+        for line in f[:starts[0]]:
+            for token in HEADERS:
+                if line.endswith(token):
+                    header[token] = line.split(token)[0]
+                    continue
+
+        sects = {f[l]:f[l+1:starts[i+1]]
+                 for i, l in enumerate(starts[:-1])}
+
+        return header, sects
 
     def parse(self):
         """Parses a LAMMPS_ DATA file.
 
-        :Returns: MDAnalysis internal *structure* dict.
+        Returns
+        -------
+        MDAnalysis internal *structure* dict.
         """
-
         # Can pass atom_style to help parsing
         atom_style = self.kwargs.get('atom_style', None)
 
-        # Used this to do data format:
-        # http://lammps.sandia.gov/doc/2001/data_format.html
-        with openany(self.filename, 'r') as psffile:
-            # Check format of file somehow
-            structure = {}
+        head, sects = self.grab_datafile()
 
-            try:
-                nitems, ntypes, box = self._parse_header(psffile)
-            except:
-                raise IOError("Failed to read DATA header")
+        structure = {}
 
-            strkey = {
-                'Bonds': 'bonds',
-                'Angles': 'angles',
-                'Dihedrals': 'dihedrals',
-                'Impropers': 'impropers'}
-            nentries = {
-                'bonds': 2,
-                'angles': 3,
-                'dihedrals': 4,
-                'impropers': 4}
-            # Masses can appear after Atoms section.
-            # If this happens, this blank dict will be used and all atoms
-            # will have zero mass, can fix this later
+        try:
+            masses = self._parse_masses(sects['Masses'])
+        except KeyError:
             masses = {}
-            read_masses = False
-            read_coords = False
 
-            # Now go through section by section
-            while True:
-                try:
-                    section = psffile.next().strip().split()[0]
-                except IndexError:
-                    section = ''  # blank lines don't split
-                except StopIteration:
-                    break
+        try:
+            structure['atoms'] = self._parse_atoms(
+                sects['Atoms'],
+                masses,
+                atom_style)
+        except KeyError:
+            raise ValueError("Data file was missing Atoms section")
 
-                logger.info("Parsing section '{0}'".format(section))
-                if section == 'Atoms':
-                    fix_masses = False if read_masses else True
+        for L, M, nentries in [('Bonds', 'bonds', 2),
+                               ('Angles', 'angles', 3),
+                               ('Dihedrals', 'dihedrals', 4),
+                               ('Impropers', 'impropers', 4)]:
+            try:
+                structure[M] = self._parse_section(
+                    sects[L], nentries)
+            except KeyError:
+                pass
 
-                    structure['atoms'] = self._parse_atoms(psffile,
-                                                           nitems['atoms'],
-                                                           masses,
-                                                           atom_style)
-                    read_coords = True
-                elif section == 'Masses':
-                    read_masses = True
-                    try:
-                        masses = self._parse_masses(psffile, ntypes['atoms'])
-                    except:
-                        raise IOError("Failed to read masses section")
-                elif section in strkey:  # for sections we use in MDAnalysis
-                    logger.debug("Doing strkey section for {0}".format(section))
-                    f = strkey[section]
-                    try:
-                        structure[f] = self._parse_section(psffile,
-                                                           nitems[f],
-                                                           nentries[f])
-                    except:
-                        raise IOError("Failed to read section {0}".format(section))
-                elif len(section) > 0:  # for sections we don't use in MDAnalysis
-                    logger.debug("Skipping section, found: {0}".format(section))
-                    self._skip_section(psffile)
-                else:  # for blank lines
-                    continue
-
-            if not read_coords:
-                raise IOError("Failed to find coordinate data")
-
-            if fix_masses:
-                for a in structure['atoms']:
-                    try:
-                        a.mass = masses[a.type]
-                    except KeyError:
-                        a.mass = 0.0
-                    #                        a.mass = guess_atom_mass(a.name)
-
-            return structure
+        return structure
 
     def read_DATA_timestep(self, n_atoms, TS_class, TS_kwargs):
         """Read a DATA file and try and extract x, v, box.
@@ -170,59 +219,34 @@ class DATAParser(TopologyReader):
 
         .. versionadded:: 0.9.0
         """
-        read_coords = False
-        read_velocities = False
-        velocities = None
+        header, sects = self.grab_datafile()
 
-        with openany(self.filename, 'r') as datafile:
-            nitems, ntypes, box = self._parse_header(datafile)
+        unitcell = self._parse_box(header)
 
-            # lammps box: xlo, xhi, ylo, yhi, zlo, zhi
-            lx = box[1] - box[0]
-            ly = box[3] - box[2]
-            lz = box[5] - box[4]
-            # mda unitcell: A alpha B beta gamma C
-            unitcell = np.zeros(6, dtype=np.float32)
-            unitcell[[0, 1, 2]] = lx, ly, lz
-            unitcell[[3, 4, 5]] = 90.0
-
-            while not (read_coords & read_velocities):
-                try:
-                    section = datafile.next().strip().split()[0]
-                except IndexError:  # blank lines don't split
-                    section = ''
-                except StopIteration:
-                    break
-
-                if section == 'Atoms':
-                    positions = np.zeros((n_atoms, 3),
-                                         dtype=np.float32, order='F')
-                    self._parse_pos(datafile, positions)
-                    read_coords = True
-                elif section == 'Velocities':
-                    velocities = np.zeros((n_atoms, 3),
-                                          dtype=np.float32, order='F')
-                    self._parse_vel(datafile, velocities)
-                    read_velocities = True
-                elif len(section) > 0:
-                    self._skip_section(datafile)
-                else:
-                    continue
-
-        if not read_coords:  # Reaches here if StopIteration hit
+        positions = np.zeros((n_atoms, 3),
+                             dtype=np.float32, order='F')
+        try:
+            self._parse_pos(sects['Atoms'], positions)
+        except KeyError:
             raise IOError("Position information not found")
 
-        ts = TS_class.from_coordinates(positions, velocities=velocities,
+        if 'Velocities' in sects:
+            velocities = np.zeros((n_atoms, 3),
+                                  dtype=np.float32, order='F')
+            self._parse_vel(sects['Velocities'], velocities)
+        else:
+            velocities = None
+
+        ts = TS_class.from_coordinates(positions,
+                                       velocities=velocities,
                                        **TS_kwargs)
         ts._unitcell = unitcell
 
         return ts
 
-    def _parse_pos(self, datafile, pos):
+    def _parse_pos(self, datalines, pos):
         """Strip coordinate info into np array"""
-        datafile.next()
-        for i in xrange(pos.shape[0]):
-            line = datafile.next()
+        for line in datalines:
             idx, resid, atype, q, x, y, z = self._parse_atom_line(line)
             # assumes atom ids are well behaved?
             # LAMMPS sometimes dumps atoms in random order
@@ -256,31 +280,28 @@ class DATAParser(TopologyReader):
 
         return idx, resid, atype, q, x, y, z
 
-    def _parse_vel(self, datafile, vel):
-        """Strip velocity info into np array"""
-        datafile.next()
-        for i in xrange(vel.shape[0]):
-            line = datafile.next().split()
+    def _parse_vel(self, datalines, vel):
+        """Strip velocity info into np array in place"""
+        for line in datalines:
+            line = line.split()
             idx = int(line[0]) - 1
             vx, vy, vz = map(float, line[1:4])
             vel[idx] = vx, vy, vz
 
-    def _parse_section(self, datafile, nlines, nentries):
+    def _parse_section(self, datalines, nentries):
         """Read lines and strip information"""
-        datafile.next()
         section = []
-        for i in xrange(nlines):
-            line = datafile.next().split()
-            # logging.debug("Line is: {}".format(line))
+        for line in datalines:
+            line = line.split()
             # map to 0 based int
-            section.append(tuple(map(lambda x: int(x) - 1, line[2:2 + nentries])))
-
+            section.append(tuple(map(lambda x: int(x) - 1, 
+                                     line[2:2 + nentries])))
         return tuple(section)
 
-    def _parse_atoms(self, datafile, natoms, mass, atom_style):
+    def _parse_atoms(self, datalines, mass, atom_style):
         """Special parsing for atoms
 
-        Lammps atoms can have lots of different formats, and even custom formats.
+        Lammps atoms can have lots of different formats, and even custom formats
 
         http://lammps.sandia.gov/doc/atom_style.html
 
@@ -290,17 +311,13 @@ class DATAParser(TopologyReader):
         """
         logger.info("Doing Atoms section")
         atoms = []
-        datafile.next()
-        for i in xrange(natoms):
-            line = datafile.next().strip()
-            # logger.debug("Line: {} contains: {}".format(i, line))
+        for line in datalines:
             idx, resid, atype, q, x, y, z = self._parse_atom_line(line)
             name = str(atype)
             try:
                 m = mass[atype]
             except KeyError:
                 m = 0.0
-            #                m = guess_atom_mass(name)  # i think types are just ints though?
             # Atom() format:
             # Number, name, type, resname, resid, segid, mass, charge
             atoms.append(Atom(idx, name, atype,
@@ -309,71 +326,49 @@ class DATAParser(TopologyReader):
 
         return atoms
 
-    def _parse_masses(self, datafile, ntypes):
-        """Lammps defines mass on a per atom basis.
+    def _parse_masses(self, datalines):
+        """Lammps defines mass on a per atom type basis.
 
         This reads mass for each type and stores in dict
         """
         logger.info("Doing Masses section")
 
         masses = {}
-
-        datafile.next()
-        for i in xrange(ntypes):
-            line = datafile.next().split()
+        for line in datalines:
+            line = line.split()
             masses[int(line[0])] = float(line[1])
 
         return masses
 
-    def _skip_section(self, datafile):
-        """Read lines but don't parse"""
-        datafile.next()
-        line = datafile.next().split()
-        while len(line) != 0:
-            try:
-                line = datafile.next().split()
-            except StopIteration:
-                break
+    def _parse_box(self, header):
+        x1, x2 = map(float, header['xlo xhi'].split())
+        x = x2 - x1
+        y1, y2 = map(float, header['ylo yhi'].split())
+        y = y2 - y1
+        z1, z2 = map(float, header['zlo zhi'].split())
+        z = z2 - z1
 
-        return
+        if 'xy xz yz' in header:
+            # Triclinic
+            unitcell = np.zeros((3, 3), dtype=np.float32)
 
-    def _parse_header(self, datafile):
-        """Parse the header of DATA file
+            xy, xz, yz = map(float, header['xy xz yz'].split())
 
-        This should be fixed in all files
-        """
-        hvals = {
-            'atoms': 'atoms',
-            'bonds': 'bonds',
-            'angles': 'angles',
-            'dihedrals': 'dihedrals',
-            'impropers': 'impropers'}
-        nitems = dict.fromkeys(hvals.values(), 0)
+            unitcell[0][0] = x
+            unitcell[1][0] = xy
+            unitcell[1][1] = y
+            unitcell[2][0] = xz
+            unitcell[2][1] = yz
+            unitcell[2][2] = z
 
-        datafile.next()  # Title
-        datafile.next()  # Blank line
+            unitcell = triclinic_box(*unitcell)
+        else:
+            # Orthogonal
+            unitcell = np.zeros(6, dtype=np.float32)
+            unitcell[:3] = x, y, z
+            unitcell[3:] = 90., 90., 90.
 
-        line = datafile.next().strip()
-        while line:
-            val, key = line.split()
-            nitems[hvals[key]] = int(val)
-            line = datafile.next().strip()
-
-        ntypes = dict.fromkeys(hvals.values(), 0)
-        line = datafile.next().strip()
-        while line:
-            val, key, _ = line.split()
-            ntypes[hvals[key + 's']] = int(val)
-            line = datafile.next().strip()
-
-        # Read box information next
-        box = np.zeros(6, dtype=np.float64)
-        box[0:2] = datafile.next().split()[:2]
-        box[2:4] = datafile.next().split()[:2]
-        box[4:6] = datafile.next().split()[:2]
-        datafile.next()
-
-        return nitems, ntypes, box
+        return unitcell
 
 
 @functools.total_ordering

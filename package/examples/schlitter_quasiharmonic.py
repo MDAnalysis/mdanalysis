@@ -46,7 +46,7 @@ eigenv, eigenvec = LinearAlgebra.eigenvectors(ca_cov2)
 real = [e.real / 100. for e in eigenv]
 f = open('eigenval.dat', 'w')
 for i, val in enumerate(real):
-    f.write("%i\t%s\n" % (i + 1, val))
+    f.write("{0:d}\t{1!s}\n".format(i + 1, val))
 f.close()
 
 eigenval = eigenv * 1.6605402e-27 * 1e-20
