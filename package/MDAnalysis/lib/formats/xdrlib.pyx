@@ -38,25 +38,23 @@ cdef extern from 'include/xdrfile_xtc.h':
     int write_xtc(XDRFILE * xfp, int natoms, int step, float time, matrix box,
                   rvec * x, float prec)
 
+
+
+cdef extern from 'include/xdrfile_trr.h':
+    int read_trr_natoms(char *fname, int *natoms)
+    int read_trr(XDRFILE *xfp, int natoms, int *step, float *time, float *_lambda,
+                 matrix box, rvec *x, rvec *v, rvec *f, int *has_prop)
+    int write_trr(XDRFILE *xfp, int natoms, int step, float time, float _lambda,
+                  matrix box, rvec *x, rvec *v, rvec *f)
+
+
+cdef extern from 'include/xtc_seek.h':
     int read_xtc_n_frames(char *fn, int *n_frames, int *est_nframes, int64_t **offsets);
 
 
-cdef extern from 'include/xdrfile_trr.h':
-    int read_trr_natoms(char *fname, int *natoms)
-    int read_trr(XDRFILE *xfp, int natoms, int *step, float *time, float *_lambda,
-                 matrix box, rvec *x, rvec *v, rvec *f, int *has_prop)
-    int write_trr(XDRFILE *xfp, int natoms, int step, float time, float _lambda,
-                  matrix box, rvec *x, rvec *v, rvec *f)
+cdef extern from 'include/trr_seek.h':
     int read_trr_n_frames(char *fn, int *n_frames, int *est_nframes, int64_t **offsets);
 
-
-
-cdef extern from 'include/xdrfile_trr.h':
-    int read_trr_natoms(char *fname, int *natoms)
-    int read_trr(XDRFILE *xfp, int natoms, int *step, float *time, float *_lambda,
-                 matrix box, rvec *x, rvec *v, rvec *f, int *has_prop)
-    int write_trr(XDRFILE *xfp, int natoms, int step, float time, float _lambda,
-                  matrix box, rvec *x, rvec *v, rvec *f)
 
 cdef enum:
     EOK = 0
