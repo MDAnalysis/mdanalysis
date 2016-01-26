@@ -6,6 +6,7 @@ import MDAnalysis
 from ..lib import util
 from ..lib.util import cached
 from . import groups
+from .topology import Topology
 
 logger = logging.getLogger("MDAnalysis.core.universe")
 
@@ -49,25 +50,26 @@ class Universe(object):
 
     Parameters
     ----------
-    topologyfile
+    topology : filename or Topology object
         A CHARMM/XPLOR PSF topology file, PDB file or Gromacs GRO file; used to
         define the list of atoms. If the file includes bond information,
         partial charges, atom masses, ... then these data will be available to
         MDAnalysis. A "structure" file (PSF, PDB or GRO, in the sense of a
-        topology) is always required.
+        topology) is always required. Alternatively, an existing
+        :class:`MDAnalysis.core.topology.Topology` instance may also be given.
     permissive
-        currently only relevant for PDB files: Set to ``True`` in order to
+        Currently only relevant for PDB files: Set to ``True`` in order to
         ignore most errors and read typical MD simulation PDB files; set to
         ``False`` to read with the Bio.PDB reader, which can be useful for real
         Protein Databank PDB files. ``None``  selects the MDAnalysis default
         (which is set in :class:`MDAnalysis.core.flags`) [``None``]
     topology_format
-        provide the file format of the topology file; ``None`` guesses it from
+        Provide the file format of the topology file; ``None`` guesses it from
         the file extension [``None``] Can also pass a subclass of
         :class:`MDAnalysis.topology.base.TopologyReader` to define a custom
         reader to be used on the topology file.
     format
-        provide the file format of the coordinate or trajectory file; ``None``
+        Provide the file format of the coordinate or trajectory file; ``None``
         guesses it from the file extension. Note that this keyword has no
         effect if a list of file names is supplied because the "chained" reader
         has to guess the file format for each individual list member.
@@ -124,54 +126,59 @@ class Universe(object):
             self.atoms = None
             return
 
-        self.filename = args[0]
         coordinatefile = args[1:]
 
-        topology_format = kwargs.pop('topology_format', None)
+        # if we're given a Topology object, we don't need to parse anything
+        if isinstance(args[0], Topology):
+            self._topology = args[0]
+            self.filename = None
+        else:
+            self.filename = args[0]
+            topology_format = kwargs.pop('topology_format', None)
 
-        if len(args) == 1:
-            # special hacks to treat a coordinate file as a coordinate AND topology file
-            if kwargs.get('format', None) is None:
-                kwargs['format'] = topology_format
-            elif topology_format is None:
-                topology_format = kwargs.get('format', None)
+            if len(args) == 1:
+                # special hacks to treat a coordinate file as a coordinate AND topology file
+                if kwargs.get('format', None) is None:
+                    kwargs['format'] = topology_format
+                elif topology_format is None:
+                    topology_format = kwargs.get('format', None)
 
-            # if passed a Reader, use that
-            fmt = kwargs.get('format', None)
+                # if passed a Reader, use that
+                fmt = kwargs.get('format', None)
+                try:
+                    if issubclass(fmt, ProtoReader):
+                        coordinatefile = self.filename
+                except TypeError:
+                    # or if file is known as a topology & coordinate file, use that
+                    if fmt is None:
+                        fmt = util.guess_format(self.filename)
+                    if (fmt in MDAnalysis.coordinates._trajectory_readers
+                        and fmt in MDAnalysis.topology._topology_parsers):
+                        coordinatefile = self.filename
+                if len(coordinatefile) == 0:
+                    coordinatefile = None
+
+            # build the topology (or at least a list of atoms)
+            try:  # Try and check if the topology format is a TopologyReader
+                if issubclass(topology_format, TopologyReader):
+                    parser = topology_format
+            except TypeError:  # But strings/None raise TypeError in issubclass
+                perm = kwargs.get('permissive',
+                                  MDAnalysis.core.flags['permissive_pdb_reader'])
+                parser = get_parser_for(self.filename,
+                                        permissive=perm,
+                                        format=topology_format)
             try:
-                if issubclass(fmt, ProtoReader):
-                    coordinatefile = self.filename
-            except TypeError:
-                # or if file is known as a topology & coordinate file, use that
-                if fmt is None:
-                    fmt = util.guess_format(self.filename)
-                if (fmt in MDAnalysis.coordinates._trajectory_readers
-                    and fmt in MDAnalysis.topology._topology_parsers):
-                    coordinatefile = self.filename
-            if len(coordinatefile) == 0:
-                coordinatefile = None
-
-        # build the topology (or at least a list of atoms)
-        try:  # Try and check if the topology format is a TopologyReader
-            if issubclass(topology_format, TopologyReader):
-                parser = topology_format
-        except TypeError:  # But strings/None raise TypeError in issubclass
-            perm = kwargs.get('permissive',
-                              MDAnalysis.core.flags['permissive_pdb_reader'])
-            parser = get_parser_for(self.filename,
-                                    permissive=perm,
-                                    format=topology_format)
-        try:
-            with parser(self.filename) as p:
-                self._topology = p.parse()
-        except IOError as err:
-            raise IOError("Failed to load from the topology file {0}"
-                          " with parser {1}.\n"
-                          "Error: {2}".format(self.filename, parser, err))
-        except ValueError as err:
-            raise ValueError("Failed to construct topology from file {0}"
-                             " with parser {1} \n"
-                             "Error: {2}".format(self.filename, parser, err))
+                with parser(self.filename) as p:
+                    self._topology = p.parse()
+            except IOError as err:
+                raise IOError("Failed to load from the topology file {0}"
+                              " with parser {1}.\n"
+                              "Error: {2}".format(self.filename, parser, err))
+            except ValueError as err:
+                raise ValueError("Failed to construct topology from file {0}"
+                                 " with parser {1} \n"
+                                 "Error: {2}".format(self.filename, parser, err))
 
         # generate Universe version of each class
         # AG, RG, SG, A, R, S
