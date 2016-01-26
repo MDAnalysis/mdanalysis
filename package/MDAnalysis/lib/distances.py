@@ -729,8 +729,10 @@ def calc_dihedrals(coords1, coords2, coords3, coords4, box=None, result=None,
 
     return angles
 
-calc_torsions = deprecate(calc_dihedrals, old_name='calc_torsions',
-                          new_name='calc_dihedrals')
+calc_torsions = deprecate(calc_dihedrals,
+                          old_name='calc_torsions',
+                          new_name='calc_dihedrals',
+                          message="This will be removed in v0.15.0")
 
 
 def apply_PBC(incoords, box, backend="serial"):
@@ -791,4 +793,7 @@ def apply_PBC(incoords, box, backend="serial"):
 
     return coords
 
-applyPBC = deprecate(apply_PBC, old_name='applyPBC', new_name='apply_PBC')
+applyPBC = deprecate(apply_PBC,
+                     old_name='applyPBC',
+                     new_name='apply_PBC',
+                     message="This will be removed in v0.15.0")
