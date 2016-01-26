@@ -35,10 +35,10 @@ Classes
 
 """
 from __future__ import absolute_import
-
 from six.moves import range
 
 import logging
+import functools
 from math import ceil
 
 from ..core.AtomGroup import Atom
@@ -62,7 +62,7 @@ class PSFParser(TopologyReader):
         """
         # Open and check psf validity
         with openany(self.filename, 'r') as psffile:
-            header = psffile.next()
+            header = next(psffile)
             if header[:3] != "PSF":
                 err = ("{0} is not valid PSF file (header = {1})"
                        "".format(self.filename, header))
@@ -77,15 +77,15 @@ class PSFParser(TopologyReader):
             else:
                 self._format = "STANDARD"    # CHARMM
 
-            psffile.next()
-            title = psffile.next().split()
+            next(psffile)
+            title = next(psffile).split()
             if not (title[1] == "!NTITLE"):
                 err = "{0} is not a valid PSF file".format(psffile.name)
                 logger.error(err)
                 raise ValueError(err)
             # psfremarks = [psffile.next() for i in range(int(title[0]))]
             for _ in range(int(title[0])):
-                psffile.next()
+                next(psffile)
             logger.debug("PSF file {0}: format {1}"
                          "".format(psffile.name, self._format))
 
@@ -103,7 +103,7 @@ class PSFParser(TopologyReader):
 
             try:
                 for attr, info in sections:
-                    psffile.next()
+                    next(psffile)
                     structure[attr] = self._parse_sec(psffile, info)
             except StopIteration:
                 # Reached the end of the file before we expected
@@ -118,9 +118,9 @@ class PSFParser(TopologyReader):
 
     def _parse_sec(self, psffile, section_info):
         desc, atoms_per, per_line, parsefunc = section_info
-        header = psffile.next()
+        header = next(psffile)
         while header.strip() == "":
-            header = psffile.next()
+            header = next(psffile)
         header = header.split()
         # Get the number
         num = float(header[0])
@@ -133,7 +133,8 @@ class PSFParser(TopologyReader):
         # Now figure out how many lines to read
         numlines = int(ceil(num/per_line))
 
-        return parsefunc(psffile.next, atoms_per, numlines)
+        psffile_next = functools.partial(next, psffile)
+        return parsefunc(psffile_next, atoms_per, numlines)
 
     def _parseatoms(self, lines, atoms_per, numlines):
         """Parses atom section in a Charmm PSF file.
@@ -238,7 +239,7 @@ class PSFParser(TopologyReader):
 
         for i in range(numlines):
             # Subtract 1 from each number to ensure zero-indexing for the atoms
-            fields = map(lambda x: int(x) - 1, lines().split())
+            fields = list(map(lambda x: int(x) - 1, lines().split()))
             for j in range(0, len(fields), atoms_per):
                 section.append(tuple(fields[j:j+atoms_per]))
         return section

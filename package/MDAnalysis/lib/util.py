@@ -150,7 +150,7 @@ Class decorators
 
 __docformat__ = "restructuredtext en"
 
-from six.moves import range
+from six.moves import range, map
 import six
 
 import os
@@ -285,7 +285,7 @@ def anyopen(datasource, mode='r', reset=True):
        Only returns the ``stream`` and tries to set ``stream.name = filename`` instead of the previous
        behavior to return a tuple ``(stream, filename)``.
     """
-    handlers = {'bz2': bz2.BZ2File, 'gz': gzip.open, '': file}
+    handlers = {'bz2': bz2.BZ2File, 'gz': gzip.open, '': open}
 
     if mode.startswith('r'):
         if isstream(datasource):

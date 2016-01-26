@@ -29,9 +29,11 @@ import os
 import tempdir
 
 from MDAnalysisTests.datafiles import PSF, DCD
-from MDAnalysisTests import executable_not_found
+from MDAnalysisTests import executable_not_found, parser_not_found
 
 class TestContacts(TestCase):
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.universe = MDAnalysis.Universe(PSF, DCD)
         self.trajectory = self.universe.trajectory

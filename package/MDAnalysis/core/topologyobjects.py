@@ -124,6 +124,15 @@ class TopologyObject(object):
     def __len__(self):
         return len(self.atoms)
 
+    def _cmp_key(self):
+        """Unique key for the object to be used to generate the object hash"""
+        # This key must be equal for two object considered as equal by __eq__
+        return self.__class__, tuple(sorted(self.indices))
+
+    def __hash__(self):
+        """Makes the object hashable"""
+        return hash(self._cmp_key())
+
 
 class Bond(TopologyObject):
 
@@ -562,7 +571,7 @@ class TopologyGroup(object):
 
         .. versionadded 0.9.0
         """
-        return self.topDict.keys()
+        return list(self.topDict.keys())
 
     @property
     @cached('dict')

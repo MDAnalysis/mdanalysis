@@ -113,8 +113,9 @@ Utilities
 
 
 """
-
+from __future__ import print_function
 from six.moves import range
+
 import glob
 import os
 import errno
@@ -695,8 +696,8 @@ class X3DNAtraj(BaseX3DNA):
 
         nucleic = self.universe.select_atoms(self.selection)
         for ts in self.universe.trajectory[start:stop:step]:
-            print ts.frame
-            print nucleic.atoms
+            print(ts.frame)
+            print(nucleic.atoms)
             logger.info("X3DNA analysis frame %4d ", ts.frame)
             fd, pdbfile = tempfile.mkstemp(suffix=".pdb")
             os.close(fd)

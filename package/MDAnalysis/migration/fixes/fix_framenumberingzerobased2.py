@@ -2,6 +2,7 @@
 run with: python ten2eleven.py -f framenumberingzerobased2 test_dummy_old_MDA_code.py 
 Author: Tyler Reddy
 '''
+from __future__ import print_function
 
 from lib2to3.fixer_base import BaseFix
 from lib2to3.fixer_util import Name, Call, LParen, RParen, ArgList, Dot
@@ -28,7 +29,7 @@ class FixFramenumberingzerobased2(BaseFix):
             argstring = ''
             for leaf in args.leaves(): 
                 argstring += leaf.value
-            print 'argstring:', argstring
+            print('argstring:', argstring)
             if '.frame' in argstring:
                 node.set_prefix(comment_string + node.prefix)
                 node.changed()

@@ -13,7 +13,8 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from six.moves import range
+import six
+from six.moves import range, cStringIO, StringIO
 
 import numpy as np
 from numpy.testing import (TestCase, dec,
@@ -27,8 +28,7 @@ import MDAnalysis.tests.datafiles as datafiles
 from MDAnalysisTests.coordinates.reference import RefAdKSmall
 from MDAnalysisTests.plugins.knownfailure import knownfailure
 
-import StringIO
-import cStringIO
+import tempfile
 import os
 
 import tempdir
@@ -58,23 +58,23 @@ class TestIsstream(TestCase):
 
     def test_cStringIO_read(self):
         with open(datafiles.PSF, "r") as f:
-            obj = cStringIO.StringIO(f.read())
+            obj = cStringIO(f.read())
         assert_equal(util.isstream(obj), True)
         obj.close()
 
     def test_cStringIO_write(self):
-        obj = cStringIO.StringIO()
+        obj = cStringIO()
         assert_equal(util.isstream(obj), True)
         obj.close()
 
     def test_StringIO_read(self):
         with open(datafiles.PSF, "r") as f:
-            obj = StringIO.StringIO(f)
+            obj = StringIO(f)
         assert_equal(util.isstream(obj), True)
         obj.close()
 
     def test_StringIO_write(self):
-        obj = StringIO.StringIO()
+        obj = StringIO()
         assert_equal(util.isstream(obj), True)
         obj.close()
 
@@ -91,14 +91,14 @@ class TestNamedStream(TestCase):
         self.numtextlines = len(self.text)
 
     def test_closing(self):
-        obj = cStringIO.StringIO("".join(self.text))
+        obj = cStringIO("".join(self.text))
         ns = util.NamedStream(obj, self.textname, close=True)
         assert_equal(ns.closed, False)
         ns.close()
         assert_equal(ns.closed, True)
 
     def test_closing_force(self):
-        obj = cStringIO.StringIO("".join(self.text))
+        obj = cStringIO("".join(self.text))
         ns = util.NamedStream(obj, self.textname)
         assert_equal(ns.closed, False)
         ns.close()
@@ -107,7 +107,7 @@ class TestNamedStream(TestCase):
         assert_equal(ns.closed, True)
 
     def test_cStringIO_read(self):
-        obj = cStringIO.StringIO("".join(self.text))
+        obj = cStringIO("".join(self.text))
         ns = util.NamedStream(obj, self.textname)
         assert_equal(ns.name, self.textname)
         assert_equal(str(ns), self.textname)
@@ -127,7 +127,7 @@ class TestNamedStream(TestCase):
         ns.close(force=True)
 
     def test_cStringIO_write(self):
-        obj = cStringIO.StringIO()
+        obj = cStringIO()
         ns = util.NamedStream(obj, self.textname)
         ns.writelines(self.text)
         assert_equal(ns.name, self.textname)
@@ -165,7 +165,7 @@ class TestNamedStream_filename_behavior(object):
     def create_NamedStream(self, name=None):
         if name is None:
             name = self.textname
-        obj = cStringIO.StringIO()
+        obj = cStringIO()
         return util.NamedStream(obj, name)
 
     def test_ospath_funcs(self):
@@ -262,7 +262,7 @@ class _StreamData(object):
 
     def __init__(self):
         self.buffers = dict(
-            (name, "".join(open(fn).readlines())) for name, fn in self.filenames.iteritems())
+            (name, "".join(open(fn).readlines())) for name, fn in six.iteritems(self.filenames))
         self.filenames['XYZ_PSF'] = "bogus/path/mini.psf"
         self.buffers['XYZ_PSF'] = """\
 PSF CMAP
@@ -316,10 +316,10 @@ frame 3
 """
 
     def as_StringIO(self, name):
-        return StringIO.StringIO(self.buffers[name])
+        return StringIO(self.buffers[name])
 
     def as_cStringIO(self, name):
-        return cStringIO.StringIO(self.buffers[name])
+        return cStringIO(self.buffers[name])
 
     def as_NamedStream(self, name):
         return util.NamedStream(self.as_cStringIO(name), self.filenames[name])

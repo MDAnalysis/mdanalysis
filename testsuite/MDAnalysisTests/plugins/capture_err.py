@@ -27,7 +27,7 @@ import sys
 from nose.plugins.base import Plugin
 from nose.pyversion import exc_to_unicode, force_unicode
 from nose.util import ln
-from StringIO import StringIO
+from six import StringIO
 
 class CaptureStdErr(Plugin):
     """

@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -309,10 +309,10 @@ Classes
    .. automethod:: _get_bonded_hydrogens_list
 
 """
-
+import six
+from six.moves import range, zip, map, cPickle
 
 from collections import defaultdict
-from six.moves import range, zip, map
 import numpy as np
 import warnings
 import logging
@@ -984,8 +984,6 @@ class HydrogenBondAnalysis(object):
 
         .. SeeAlso:: :mod:`cPickle` module and :class:`numpy.recarray`
         """
-        import cPickle
-
         if self.table is None:
             self.generate_table()
         cPickle.dump(self.table, open(filename, 'wb'), protocol=cPickle.HIGHEST_PROTOCOL)
@@ -1050,7 +1048,7 @@ class HydrogenBondAnalysis(object):
 
         # float because of division later
         tsteps = float(len(self.timesteps))
-        for cursor, (key, count) in enumerate(hbonds.iteritems()):
+        for cursor, (key, count) in enumerate(six.iteritems(hbonds)):
             out[cursor] = key + (count / tsteps,)
 
         # return array as recarray
@@ -1109,7 +1107,7 @@ class HydrogenBondAnalysis(object):
         out = np.empty((out_nrows,), dtype=dtype)
 
         out_row = 0
-        for (key, times) in hbonds.iteritems():
+        for (key, times) in six.iteritems(hbonds):
             for tstep in times:
                 out[out_row] = key + (tstep,)
                 out_row += 1

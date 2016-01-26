@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -26,6 +26,7 @@ module. They are mostly of use to developers.
 """
 
 from __future__ import print_function
+import six
 
 # Global imports
 import os.path
@@ -72,7 +73,7 @@ def build_segments(atoms):
             # We've come to a new segment
             # Build the Segment we just left
             residues = [AtomGroup.Residue(ats[0].resname, k, ats)
-                        for k, ats in resatomlist.iteritems()]
+                        for k, ats in six.iteritems(resatomlist)]
             struc.append(AtomGroup.Segment(curr_segname, residues))
 
             # Reset things and start again
@@ -82,7 +83,7 @@ def build_segments(atoms):
 
     # Add the last segment
     residues = [AtomGroup.Residue(ats[0].resname, k, ats)
-                for k, ats in resatomlist.iteritems()]
+                for k, ats in six.iteritems(resatomlist)]
     struc.append(AtomGroup.Segment(curr_segname, residues))
     return struc
 
@@ -106,7 +107,7 @@ def build_residues(atoms):
         resatomlist[a.resid].append(a)
 
     residues = [AtomGroup.Residue(ats[0].resname, k, ats)
-                for k, ats in resatomlist.iteritems()]
+                for k, ats in six.iteritems(resatomlist)]
 
     return residues
 

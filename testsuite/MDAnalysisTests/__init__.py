@@ -175,3 +175,23 @@ def module_not_found(module):
         return True
     else:
         return False
+
+
+def parser_not_found(parser_name):
+    """Return ``True`` if the parser of the given name cannot be found.
+
+    This allows to skip a test when the parser is unavailable (e.g in python 3
+    when the parser is not compatible).
+
+    To be used as the argument of::
+
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser is not available. Are you on python 3?')
+    """
+    import MDAnalysis.coordinates
+    try:
+        getattr(MDAnalysis.coordinates, parser_name)
+    except AttributeError:
+        return True
+    else:
+        return False

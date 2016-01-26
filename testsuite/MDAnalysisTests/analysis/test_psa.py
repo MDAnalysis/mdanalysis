@@ -18,16 +18,20 @@ from __future__ import print_function
 import MDAnalysis
 import MDAnalysis.analysis.psa
 
-from numpy.testing import TestCase, assert_array_less, assert_array_almost_equal
+from numpy.testing import (TestCase, dec, assert_array_less,
+                           assert_array_almost_equal)
 import numpy as np
 
 import tempfile
 import shutil
 
 from MDAnalysisTests.datafiles import PSF, DCD, DCD2
+from MDAnalysisTests import parser_not_found
 
 
 class TestPSAnalysis(TestCase):
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         self.tmpdir = tempfile.mkdtemp()
         self.iu1 = np.triu_indices(3, k=1)

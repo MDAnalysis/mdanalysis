@@ -195,7 +195,7 @@ constants = {
 #: *x* can be *nm*/*nanometer* or *fm*.
 lengthUnit_factor = {
     'Angstrom': 1.0, 'A': 1.0, 'angstrom': 1.0,
-    '\u212b': 1.0, b'\xe2\x84\xab': 1.0,  # Unicode and UTF-8 encoded symbol for angstroms
+    u'\u212b': 1.0,   # Unicode and UTF-8 encoded symbol for angstroms
     'nm': 1.0 / 10, 'nanometer': 1.0 / 10,
     'pm': 1e2, 'picometer': 1e2,
     'fm': 1e5, 'femtometer': 1e5,

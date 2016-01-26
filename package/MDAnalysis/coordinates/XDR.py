@@ -13,6 +13,8 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+import six
+
 import errno
 import numpy as np
 from os.path import getctime, getsize, isfile, split, join
@@ -92,7 +94,7 @@ class XDRBaseReader(base.Reader):
             return
 
         with open(fname) as f:
-            data = {k: v for k, v in np.load(f).iteritems()}
+            data = {k: v for k, v in six.iteritems(np.load(f))}
 
         ctime_ok = getctime(self.filename) == data['ctime']
         size_ok = getsize(self.filename) == data['size']

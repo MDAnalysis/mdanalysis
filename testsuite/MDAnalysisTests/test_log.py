@@ -15,10 +15,10 @@
 #
 
 # initial simple tests for logging module
+from six.moves import StringIO
 
 import sys
 import os
-import cStringIO
 import tempfile
 import logging
 
@@ -75,7 +75,7 @@ class RedirectedStderr(object):
 
 class TestProgressMeter(TestCase):
     def setUp(self):
-        self.buf = cStringIO.StringIO()
+        self.buf = StringIO()
 
     def tearDown(self):
         del self.buf
@@ -92,7 +92,7 @@ class TestProgressMeter(TestCase):
             pm = MDAnalysis.lib.log.ProgressMeter(n, interval=interval)
             for frame in range(n):
                 pm.echo(frame)
-        self.buf.seek(0L)
+        self.buf.seek(0)
         output = "".join(self.buf.readlines())
         self._assert_in(output, format % {'step': 1, 'numsteps': n, 'percentage': 100./n})
         # last line always has \n instead of \r!
@@ -107,7 +107,7 @@ class TestProgressMeter(TestCase):
             for frame in range(n):
                 rmsd = 0.02 * frame * (n+1)/float(n)  # n+1/n correction for 0-based frame vs 1-based counting
                 pm.echo(frame, rmsd=rmsd)
-        self.buf.seek(0L)
+        self.buf.seek(0)
         output = "".join(self.buf.readlines())
         self._assert_in(output, format %
                         {'rmsd': 0.0, 'step': 1, 'numsteps': n, 'percentage': 100./n})

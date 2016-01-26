@@ -13,6 +13,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+from six.moves import cPickle
 
 import MDAnalysis
 from MDAnalysis.tests.datafiles import PDB_small, GRO, XTC, TRR
@@ -28,7 +29,6 @@ from numpy.testing import (assert_array_almost_equal, TestCase,
 import os
 import gc
 import shutil
-import cPickle
 import warnings
 import tempdir
 

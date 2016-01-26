@@ -13,9 +13,9 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from six.moves import range
+from six.moves import range, StringIO
+import six
 
-import cStringIO
 import os.path
 import tempfile
 
@@ -146,7 +146,7 @@ class TestFilename(TestCase):
         assert_equal(fn, self.filename2)
 
     def testNamedStream(self):
-        ns = util.NamedStream(cStringIO.StringIO(), self.filename)
+        ns = util.NamedStream(StringIO(), self.filename)
         fn = util.filename(ns, ext=self.ext)
         # assert_equal replace by this if loop to avoid segfault on some systems
         if fn != ns:
@@ -521,11 +521,11 @@ class TestConvFloat(object):
         assert_equal(util.conv_float('a.b'), 'a.b')
 
     def test_map_1(self):
-        ret = map(util.conv_float, ['0.45', '0.56', '6.7'])
+        ret = list(map(util.conv_float, ['0.45', '0.56', '6.7']))
         assert_equal(ret, [0.45, 0.56, 6.7])
 
     def test_map_2(self):
-        ret = map(util.conv_float, ['0.45', 'a.b', '!!'])
+        ret = list(map(util.conv_float, ['0.45', 'a.b', '!!']))
         assert_equal(ret, [0.45, 'a.b', '!!'])
 
 class TestFixedwidthBins(object):
@@ -563,14 +563,11 @@ class TestGuessFormat(object):
         ('CHAIN', None, mda.coordinates.base.ChainReader),
         ('CONFIG', mda.topology.DLPolyParser.ConfigParser, mda.coordinates.DLPoly.ConfigReader),
         ('CRD', mda.topology.CRDParser.CRDParser, mda.coordinates.CRD.CRDReader),
-        ('DATA', mda.topology.LAMMPSParser.DATAParser, mda.coordinates.LAMMPS.DATAReader),
-        ('DCD', None, mda.coordinates.DCD.DCDReader),
         ('DMS', mda.topology.DMSParser.DMSParser, mda.coordinates.DMS.DMSReader),
         ('GMS', mda.topology.GMSParser.GMSParser, mda.coordinates.GMS.GMSReader),
         ('GRO', mda.topology.GROParser.GROParser, mda.coordinates.GRO.GROReader),
         ('HISTORY', mda.topology.DLPolyParser.HistoryParser, mda.coordinates.DLPoly.HistoryReader),
         ('INPCRD', None, mda.coordinates.INPCRD.INPReader),
-        ('LAMMPS', None, mda.coordinates.LAMMPS.DCDReader),
         ('MDCRD', None, mda.coordinates.TRJ.TRJReader),
         ('MOL2', mda.topology.MOL2Parser.MOL2Parser, mda.coordinates.MOL2.MOL2Reader),
         ('NC', None, mda.coordinates.TRJ.NCDFReader),
@@ -585,12 +582,20 @@ class TestGuessFormat(object):
         ('TPR', mda.topology.TPRParser.TPRParser, None),
         ('TRJ', None, mda.coordinates.TRJ.TRJReader),
         ('TRR', None, mda.coordinates.TRR.TRRReader),
-        ('TRZ', None, mda.coordinates.TRZ.TRZReader),
         ('XML', mda.topology.HoomdXMLParser.HoomdXMLParser, None),
         ('XPDB', mda.topology.ExtendedPDBParser.ExtendedPDBParser, mda.coordinates.PDB.ExtendedPDBReader),
         ('XTC', None, mda.coordinates.XTC.XTCReader),
         ('XYZ', mda.topology.XYZParser.XYZParser, mda.coordinates.XYZ.XYZReader),
     ]
+    if six.PY2:
+        # DCD, LAMMPS, and TRZ are not supported on Python 3 yet
+        formats += [
+            ('DATA', mda.topology.LAMMPSParser.DATAParser,
+             mda.coordinates.LAMMPS.DATAReader),
+            ('DCD', None, mda.coordinates.DCD.DCDReader),
+            ('LAMMPS', None, mda.coordinates.LAMMPS.DCDReader),
+            ('TRZ', None, mda.coordinates.TRZ.TRZReader),
+        ]
     # list of possible compressed extensions
     # include no extension too!
     compressed_extensions = ['.bz2', '.gz']
@@ -670,7 +675,7 @@ class TestGuessFormat(object):
 
     def test_guess_format_stream_VE(self):
         # This stream has no name, so can't guess format
-        s = cStringIO.StringIO('this is a very fun file')
+        s = StringIO('this is a very fun file')
 
         assert_raises(ValueError, util.guess_format, s)
 

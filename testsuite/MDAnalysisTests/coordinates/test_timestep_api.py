@@ -21,7 +21,7 @@ _TestTimestepInterface tests the Readers are correctly using Timesteps
 """
 
 from numpy.testing import assert_equal, dec
-from MDAnalysisTests import module_not_found
+from MDAnalysisTests import module_not_found, parser_not_found
 
 import MDAnalysis as mda
 from MDAnalysisTests.datafiles import (PSF, XYZ_five, INPCRD, DCD, DLP_CONFIG,
@@ -36,6 +36,8 @@ from MDAnalysisTests.coordinates.base import BaseTimestepTest
 
 # Can add in custom tests for a given Timestep here!
 class TestBaseTimestep(BaseTimestepTest):
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def test_other_timestep(self):
         # use a subclass to base.Timestep to check it works
         ts1 = mda.coordinates.base.Timestep(10)
@@ -86,6 +88,8 @@ class TestCRD(BaseTimestepInterfaceTest):
 
 
 class TestDCD(BaseTimestepInterfaceTest):
+    @dec.skipif(parser_not_found('DCD'),
+                'DCD parser not available. Are you using python 3?')
     def setUp(self):
         u = self.u = mda.Universe(PSF, DCD)
         self.ts = u.trajectory.ts
@@ -129,12 +133,16 @@ class TestINPCRD(BaseTimestepInterfaceTest):
 
 
 class TestLAMMPS(BaseTimestepInterfaceTest):
+    @dec.skipif(parser_not_found('LAMMPS'),
+                'LAMMPS parser not available. Are you using python 3?')
     def setUp(self):
         u = self.u = mda.Universe(LAMMPSdata)
         self.ts = u.trajectory.ts
 
 
 class TestLAMMPSDCD(BaseTimestepInterfaceTest):
+    @dec.skipif(parser_not_found('LAMMPS'),
+                'LAMMPS parser not available. Are you using python 3?')
     def setUp(self):
         u = self.u = mda.Universe(LAMMPSdata2, LAMMPSdcd2,
                                   format='LAMMPS', topology_format='DATA',
@@ -187,6 +195,8 @@ class TestTRR(BaseTimestepInterfaceTest):
 
 
 class TestTRZ(BaseTimestepInterfaceTest):
+    @dec.skipif(parser_not_found('TRZ'),
+                'TRZ parser not available. Are you using python 3?')
     def setUp(self):
         u = self.u = mda.Universe(TRZ_psf, TRZ)
         self.ts = u.trajectory.ts
