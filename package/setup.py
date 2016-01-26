@@ -44,6 +44,7 @@ details of such an "EasyInstall" installation procedure are shown on
 By changing the code below you can also switch to a standard distutils
 installation.
 """
+
 from __future__ import print_function
 from setuptools import setup, Extension, find_packages
 from distutils.ccompiler import new_compiler
@@ -230,7 +231,7 @@ def extensions(config):
 
     source_suffix = '.pyx' if use_cython else '.c'
 
-    include_dirs = [get_numpy_include()]
+    include_dirs = [get_numpy_include(), 'src/clustering']
 
     dcd = Extension('coordinates._dcdmodule',
                     ['MDAnalysis/coordinates/src/dcd.c'],
@@ -276,13 +277,24 @@ def extensions(config):
                            for f in ('libxdrfile2_wrap.c',
                                      'xdrfile.c',
                                      'xdrfile_trr.c',
-                                     'xdrfile_xtc.c')
-                    ],
-                    include_dirs=include_dirs,
-                    define_macros=largefile_macros)
+                                     'xdrfile_xtc.c')])
+    encore_utils = Extension('analysis.encore.cutils',
+                            sources = ['MDAnalysis/lib/src/encore_cutils/cutils' + source_suffix],
+                            include_dirs = include_dirs,
+                            extra_compile_args = ["-O3", "-ffast-math"])
+    ap_clustering = Extension('analysis.encore.clustering.affinityprop',
+                            sources = ['MDAnalysis/lib/src/clustering/affinityprop' + source_suffix, "MDAnalysis/lib/src/clustering/ap.c"],
+                            include_dirs = include_dirs,
+                            libraries=["m"],
+                            extra_compile_args=["-O3", "-ffast-math","-std=c99"])
+    spe_dimred = Extension('analysis.encore.dimensionality_reduction.stochasticproxembed',
+                            sources = ['MDAnalysis/lib/src/dimensionality_reduction/stochasticproxembed' + source_suffix, "MDAnalysis/lib/src/dimensionality_reduction/spe.c"],
+                            include_dirs = include_dirs,
+                            libraries=["m"],
+                            extra_compile_args=["-O3", "-ffast-math","-std=c99"])
 
     return [dcd, dcd_time, distances, distances_omp, parallel_dist, qcprot,
-            transformation, xdr]
+            transformation, xdr, encore_utils, ap_clustering, spe_dimred]
 
 if __name__ == '__main__':
     # NOTE: keep in sync with MDAnalysis.__version__ in version.py
