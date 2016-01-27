@@ -3187,8 +3187,8 @@ class AtomGroup(object):
         try:
             writer = MDAnalysis.coordinates.writer(filename, **kwargs)
         except TypeError:
+            # might be selections format
             coords = False
-            pass  # might be selections format
         else:
             coords = True
 
@@ -3196,7 +3196,6 @@ class AtomGroup(object):
             SelectionWriter = MDAnalysis.selections.get_writer(filename, format)
         except (TypeError, NotImplementedError):
             selection = False
-            pass
         else:
             writer = SelectionWriter(filename, **kwargs)
             selection = True
