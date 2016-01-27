@@ -13,6 +13,13 @@ Also see https://github.com/MDAnalysis/mdanalysis/wiki/MDAnalysisTests
 and https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
 
 ------------------------------------------------------------------------------
+??/??/16 manuel.nuno.melo
+
+  * 0.14.0
+
+    - Made memleak testing python 3 compliant (Issue 662). It may be a moot
+      point since python 3.4 now cleverly deals with leaks.
+
 01/16/16 orbeckst
   * 0.13.0
 
