@@ -300,7 +300,10 @@ def extensions(config):
                           sources=['MDAnalysis/lib/formats/xdrlib.pyx',
                                    'MDAnalysis/lib/formats/src/xdrfile.c',
                                    'MDAnalysis/lib/formats/src/xdrfile_xtc.c',
-                                   'MDAnalysis/lib/formats/src/xdrfile_trr.c'],
+                                   'MDAnalysis/lib/formats/src/xdrfile_trr.c',
+                                   'MDAnalysis/lib/formats/src/trr_seek.c',
+                                   'MDAnalysis/lib/formats/src/xtc_seek.c',
+                                   ],
                           include_dirs=include_dirs + ['MDAnalysis/lib/formats/include',
                                                        'MDAnalysis/lib/formats'],
                           define_macros=largefile_macros)
