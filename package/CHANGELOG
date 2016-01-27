@@ -40,6 +40,7 @@ Fixes
     error when no atoms are are found. (Issue #644)
   * nucleic selection will now detect nucleic residue names suffixed with 3 or 5
     (Issue #461)
+  * Fixed Reader returning all frames with stop in slice was 0 (Issue #672)
 
 
 01/16/16 tyler.je.reddy, kain88-de, richardjgowers, manuel.nuno.melo,
