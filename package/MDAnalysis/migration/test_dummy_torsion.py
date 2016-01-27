@@ -4,11 +4,9 @@
 #Torsion -> Dihedral
 class NewDihedral(Torsion, NewParent):
     __metaclass__ = MyMeta
-    pass
 
 class NewDihedral(NewParent, Torsion):
     __metaclass__ = MyMeta
-    pass
 
 class NewDihedral(Torsion):
     pass
