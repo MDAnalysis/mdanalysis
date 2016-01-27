@@ -1,26 +1,23 @@
 # -*- coding: utf-8 -*-
 #     pylint: disable=E1101
 from __future__ import division
+
 import os.path as path
-from MDAnalysis.analysis.base import AnalysisBase
 import numpy as np
 
+from MDAnalysis.analysis.base import AnalysisBase
+
 class LinearDensity(AnalysisBase):
-    def __init__(self, universe, selection, description="", grouping='atoms', binsize=0.25,
+    def __init__(self, universe, selection, grouping='atoms', binsize=0.25,
                  start=None, stop=None, step=None):
         self._ags = [selection] # allows use of run(parallel=True)
         self._setup_frames(universe, start, stop, step)
 
         self.binsize = binsize
-        
+
         # group of atoms on which to compute the COM (same as used in
         # AtomGroup.wrap())
         self.grouping = grouping
-
-        # Take root of trajectory filename for output file naming
-        self.trajname = path.splitext(path.basename(universe.trajectory.dcdfilename))[0]
-        # additional string for naming the output file
-        self.description = description+"_"+str(grouping)
 
         # Dictionary containing results
         self.results = {'x': {'dim': 0}, 'y': {'dim': 1}, 'z': {'dim': 2}}
@@ -55,11 +52,11 @@ class LinearDensity(AnalysisBase):
 
         # Get masses and charges for the selection
         try: # in case it's not an atom
-            self.masses = [elem.total_mass() for elem in group]
-            self.charges = [elem.total_charge() for elem in group]
+            self.masses = np.array([elem.total_mass() for elem in group])
+            self.charges = np.array([elem.total_charge() for elem in group])
         except AttributeError: # much much faster for atoms
-            self.masses = self._ags[0].masses
-            self.charges = self._ags[0].charges
+            self.masses = np.array(self._ags[0].masses)
+            self.charges = np.array(self._ags[0].charges)
 
         self.totalmass = np.sum(self.masses)
 
@@ -83,9 +80,8 @@ class LinearDensity(AnalysisBase):
             hist, _ = np.histogram(positions[:, idx], weights=self.masses,
                                    bins=self.nbins, range=(0.0, max(self.dimensions)))
 
-            self.results[dim][key] = np.sum([self.results[dim][key], hist], axis=0)
-            self.results[dim][key_std] = np.sum([self.results[dim][key_std],
-                                                 np.square(hist)], axis=0)
+            self.results[dim][key] += hist
+            self.results[dim][key_std] += np.square(hist)
 
             key = 'char'
             key_std = 'char_std'
@@ -93,43 +89,73 @@ class LinearDensity(AnalysisBase):
             hist, _ = np.histogram(positions[:, idx], weights=self.charges,
                                    bins=self.nbins, range=(0.0, max(self.dimensions)))
 
-            self.results[dim][key] = np.sum([self.results[dim][key], hist], axis=0)
-            self.results[dim][key_std] = np.sum([self.results[dim][key_std], np.square(hist)],
-                                                axis=0)
+            self.results[dim][key] += hist
+            self.results[dim][key_std] += np.square(hist)
 
     def _conclude(self):
         k = 6.022e-1 # divide by avodagro and convert from A3 to cm3
-        bins = np.linspace(0.0, max(self.dimensions), num=self.nbins)
 
         # Average results over the  number of configurations
         for dim in ['x', 'y', 'z']:
             for key in ['pos', 'pos_std', 'char', 'char_std']:
                 self.results[dim][key] /= self.nframes
-            # Computed standard deviation for the error
+            # Compute standard deviation for the error
             self.results[dim]['pos_std'] = np.sqrt(self.results[dim]['pos_std']
                                                    - np.square(self.results[dim]['pos']))
             self.results[dim]['char_std'] = np.sqrt(self.results[dim]['char_std']
                                                     - np.square(self.results[dim]['char']))
 
+        for dim in ['x', 'y', 'z']:
+            self.results[dim]['pos'] /= (self.results[dim]['slice volume']*k)
+            self.results[dim]['char'] /= (self.results[dim]['slice volume']*k)
+            self.results[dim]['pos_std'] /= (self.results[dim]['slice volume']*k)
+            self.results[dim]['char_std'] /= (self.results[dim]['slice volume']*k)
+
+    def save(self, description='', form='txt'):
+        # Take root of trajectory filename for output file naming
+        trajname = path.splitext(path.basename(self._universe.trajectory.dcdfilename))[0]
+        # additional string for naming the output file
+        description = description + "_" + str(self.grouping)
+        filename = trajname+"." + description + ".ldens"
+
+        if form is 'txt':
+            self._savetxt(filename)
+        elif form is 'npz':
+            self._savez(filename)
+        else:
+            raise ValueError('form argument must be either txt or npz')
+
+    def _savetxt(self, filename):
+        bins = np.linspace(0.0, max(self.dimensions), num=self.nbins)
 
         # Create list of results which will be output
         output = [bins]
 
         for dim in ['x', 'y', 'z']:
-            output.append(self.results[dim]['pos']/(self.results[dim]['slice volume']*k))
-            output.append(self.results[dim]['pos_std']/(self.results[dim]['slice volume']*k))
+            output.append(self.results[dim]['pos'])
+            output.append(self.results[dim]['pos_std'])
 
         for dim in ['x', 'y', 'z']:
-            output.append(self.results[dim]['char']/(self.results[dim]['slice volume']*k))
-            output.append(self.results[dim]['char_std']/(self.results[dim]['slice volume']*k))
+            output.append(self.results[dim]['char'])
+            output.append(self.results[dim]['char_std'])
 
-        # Define filename and write to output
-        filename = self.trajname+"."+self.description+".ldens"
         density = self.totalmass/self.volume
         header = "1 coord [Ang] 2-7 mass density (x,sx,y,sz,z,sz) [g/cm^3]" + \
             "8-13 charge density (x,sx,y,sz,z,sz) [e/A^3]\n Average density: "\
-            +str(density)+" g/cm3"
-        np.savetxt(filename, np.column_stack(output), header=header)
+            + str(density) + " g/cm3"
+        np.savetxt(filename, np.column_stack(output), fmt='%10.5f', header=header)
+
+    def _savez(self, filename):
+        bins = np.linspace(0.0, max(self.dimensions), num=self.nbins)
+        dictionary = {'bins': bins}
+
+        for dim in self.results:
+            self.results[dim].pop('dim')
+            self.results[dim].pop('slice volume')
+            for key in self.results[dim]:
+                dictionary[dim+"_"+key] = self.results[dim][key]
+
+        np.savez(filename, **dictionary)
 
     def _add_other_results(self, other):
         # For parallel analysis
@@ -137,10 +163,10 @@ class LinearDensity(AnalysisBase):
         for dim in ['x', 'y', 'z']:
             key = 'pos'
             key_std = 'pos_std'
-            results[dim][key] = np.sum([results[dim][key], other[dim][key]], axis=0)
-            results[dim][key_std] = np.sum([results[dim][key_std], other[dim][key_std]], axis=0)
+            results[dim][key] += other[dim][key]
+            results[dim][key_std] += other[dim][key_std]
 
             key = 'char'
             key_std = 'char_std'
-            results[dim][key] = np.sum([results[dim][key], other[dim][key]], axis=0)
-            results[dim][key_std] = np.sum([results[dim][key_std], other[dim][key_std]], axis=0)
+            results[dim][key] += other[dim][key]
+            results[dim][key_std] += other[dim][key_std]
