@@ -47,7 +47,7 @@ install:
   - chmod +x testsuite/MDAnalysisTests/mda_nosetests
 # command to run tests
 script:
-  - ./testsuite/MDAnalysisTests/mda_nosetests --with-coverage --cover-package MDAnalysis --processes=2 --process-timeout=300 $( if [[ $TRAVIS_PYTHON_VERSION == 2.7 ]]; then echo '--with-memleak'; fi )
+  - ./testsuite/MDAnalysisTests/mda_nosetests --with-coverage --cover-package MDAnalysis --processes=2 --process-timeout=300 --with-memleak
   - |
      test ${TRAVIS_PULL_REQUEST} == "false" && \
      test ${TRAVIS_BRANCH} == ${GH_DOC_BRANCH} && \
