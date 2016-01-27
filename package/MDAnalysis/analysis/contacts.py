@@ -320,8 +320,6 @@ class ContactAnalysis(object):
         store=True) and writes them to a bzip2-compressed data file.
         """
         if self._skip or self.output_exists(force=force):
-            import warnings
-
             warnings.warn("File {output!r} or {output_bz2!r} already exists, loading {trajectory!r}.".format(**vars(self)))
             try:
                 self.load(self.output)
@@ -594,7 +592,6 @@ class ContactAnalysis1(object):
         *step*
             The number of frames to skip during trajectory iteration (default: use every frame)
         """
-        import warnings
 
         if 'start_frame' in kwargs:
             warnings.warn("start_frame argument has been deprecated, use start instead --"
@@ -612,8 +609,6 @@ class ContactAnalysis1(object):
             step = kwargs.pop('step_value')
 
         if self.output_exists(force=force):
-            import warnings
-
             warnings.warn("File %r already exists, loading it INSTEAD of trajectory %r. "
                           "Use force=True to overwrite the output file. " %
                           (self.output, self.universe.trajectory.filename))
@@ -626,11 +621,6 @@ class ContactAnalysis1(object):
             records = []
             self.qavg *= 0  # average contact existence
             A, B = self.selections
-            # determine the end_frame value to use:
-            total_frames = self.universe.trajectory.n_frames
-            if not stop:
-                # use the total number of frames in trajectory if no final value specified
-                end_frame = total_frames
             for ts in self.universe.trajectory[start:stop:step]:
                 frame = ts.frame
                 # use pre-allocated distance array to save a little bit of time
@@ -643,8 +633,13 @@ class ContactAnalysis1(object):
                 out.write("{frame:4d}  {q1:8.6f} {n1:5d}\n".format(**vars()))
         if store:
             self.timeseries = np.array(records).T
-        n_frames = len(range(total_frames)[start:stop:step])
-        self.qavg /= n_frames
+        n_frames = len(np.arange(
+            self.universe.trajectory.n_frames)[start:stop:step])
+        if n_frames > 0:
+            self.qavg /= n_frames
+        else:
+            logger.warn("No frames were analyzed. Check values of start, stop, step.") 
+            logger.debug("start={start} stop={stop} step={step}".format(**vars()))
         np.savetxt(self.outarray, self.qavg, fmt="%8.6f")
         return self.output
 
