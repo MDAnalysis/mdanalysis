@@ -18,7 +18,7 @@ The rules for this file:
   * 0.14.0
 
 API Changes
-  * Offsets files for Gromcas trajectory formats have been changed to a numpy
+  * Offsets files for Gromacs trajectory formats have been changed to a numpy
     style format '.npz'. Offsets files will be regenerated when you load a
     xtc/trr trajectory again. (Issue #441)
 
