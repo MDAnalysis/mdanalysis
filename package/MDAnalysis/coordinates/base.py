@@ -1241,7 +1241,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         elif start < 0:
             start += nframes
 
-        if not stop is None:
+        if stop is not None:
             if stop < 0:
                 stop += nframes
             elif stop > nframes:
