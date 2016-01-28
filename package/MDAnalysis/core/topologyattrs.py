@@ -28,6 +28,7 @@ from . import flags
 from ..lib.util import cached
 from ..exceptions import NoDataError
 from .topologyobjects import TopologyGroup
+from . import selection
 from . import flags
 
 
@@ -156,7 +157,7 @@ class Resindices(TopologyAttr):
     """
     attrname = 'resindices'
     singular = 'resindex'
-    target_levels = ['residue']
+    target_levels = ['atom', 'residue']
 
     def __init__(self):
         pass
@@ -200,7 +201,7 @@ class Segindices(TopologyAttr):
     """
     attrname = 'segindices'
     singular = 'segindex'
-    target_levels = ['segment']
+    target_levels = ['atom', 'residue', 'segment']
 
     def __init__(self):
         pass
@@ -690,34 +691,37 @@ class Resnames(ResidueAttr):
     singular = 'resname'
     target_levels = ['atom', 'residue']
 
-    def __getattr__(residuegroup, resname):
-        try:
-            return residuegroup._get_named_residue(resname)
-        except selection.SelectionError:
-            raise AttributeError("'{0}' object has no attribute '{1}'".format(
-                    residuegroup.__class__.__name__, resname))
+    #TODO: must figure out how to transplant these, since
+    # we don't want to override __getattr__ for the TopologyAttr!
 
-    def _get_named_residue(residuegroup, resname):
-        """Get all residues with name *resname* in the current ResidueGroup.
+    #def __getattr__(residuegroup, resname):
+    #    try:
+    #        return residuegroup._get_named_residue(resname)
+    #    except selection.SelectionError:
+    #        raise AttributeError("'{0}' object has no attribute '{1}'".format(
+    #                residuegroup.__class__.__name__, resname))
 
-        For more than one residue it returns a
-        :class:`MDAnalysis.core.groups.ResidueGroup` instance. A single
-        :class:`MDAnalysis.core.group.Residue` is returned for a single match. If no
-        residues are found, a :exc:`SelectionError` is raised.
+    #def _get_named_residue(residuegroup, resname):
+    #    """Get all residues with name *resname* in the current ResidueGroup.
 
-        .. versionadded:: 0.9.2
-        """
-        # There can be more than one atom with the same name
-        residues = residuegroup[residuegroup.resnames == resname]
-        if len(residues) == 0:
-            raise selection.SelectionError(
-                "No residues with resname '{0}'".format(resname))
-        elif len(residues) == 1:
-            # XXX: keep this, makes more sense for names
-            return residues[0]
-        else:
-            # XXX: but inconsistent (see residues and Issue 47)
-            return residues
+    #    For more than one residue it returns a
+    #    :class:`MDAnalysis.core.groups.ResidueGroup` instance. A single
+    #    :class:`MDAnalysis.core.group.Residue` is returned for a single match. If no
+    #    residues are found, a :exc:`SelectionError` is raised.
+
+    #    .. versionadded:: 0.9.2
+    #    """
+    #    # There can be more than one atom with the same name
+    #    residues = residuegroup[residuegroup.resnames == resname]
+    #    if len(residues) == 0:
+    #        raise selection.SelectionError(
+    #            "No residues with resname '{0}'".format(resname))
+    #    elif len(residues) == 1:
+    #        # XXX: keep this, makes more sense for names
+    #        return residues[0]
+    #    else:
+    #        # XXX: but inconsistent (see residues and Issue 47)
+    #        return residues
 
 
 #TODO: update docs to property doc

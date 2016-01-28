@@ -4,6 +4,7 @@
 """
 import numpy as np
 import functools
+import itertools
 
 from ..lib import mdamath
 from . import selection
@@ -811,7 +812,8 @@ class AtomGroup(object):
             Box dimensions, can be either orthogonal or triclinic information.
             Cell dimensions must be in an identical to format to those returned
             by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`,
-            ``[lx, ly, lz, alpha, beta, gamma]``.
+            ``[lx, ly, lz, alpha, beta, gamma]``. If ``None``, uses these
+            timestep dimensions.
         inplace : bool
             ``True`` to change coordinates in place.
 
@@ -861,6 +863,108 @@ class AtomGroup(object):
         self.universe.coord.positions[self.indices] = distances.apply_PBC(coords, box)
 
         return self.universe.coord.positions[self.indices]
+
+    def wrap(self, compound="atoms", center="com", box=None):
+        """Shift the contents of this AtomGroup back into the unit cell.
+
+        This is a more powerful version of :meth:`pack_into_box`, allowing
+        groups of atoms to be kept together through the process.
+
+        Parameters
+        ----------
+        compound : {'atoms', 'group', 'residues', 'segments', 'fragments'}
+            The group which will be kept together through the shifting process.
+        center : {'com', 'cog'}
+            How to define the center of a given group of atoms.
+        box : array
+            Box dimensions, can be either orthogonal or triclinic information.
+            Cell dimensions must be in an identical to format to those returned
+            by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`,
+            ``[lx, ly, lz, alpha, beta, gamma]``. If ``None``, uses these
+            timestep dimensions.
+
+        Notes
+        -----
+        When specifying a `compound`, the translation is calculated based on
+        each compound. The same translation is applied to all atoms
+        within this compound, meaning it will not be broken by the shift.
+        This might however mean that all atoms from the compound are not
+        inside the unit cell, but rather the center of the compound is.
+
+        `center` allows the definition of the center of each group to be
+        specified. This can be either 'com' for center of mass, or 'cog' for
+        center of geometry.
+
+        `box` allows a unit cell to be given for the transformation. If not
+        specified, an the dimensions information from the current Timestep will
+        be used.
+
+        .. note::
+           wrap with all default keywords is identical to :meth:`pack_into_box`
+
+        .. versionadded:: 0.9.2
+        """
+        if compound.lower() == "atoms":
+            return self.pack_into_box(box=box)
+
+        if compound.lower() == 'group':
+            objects = [self.atoms]
+        elif compound.lower() == 'residues':
+            objects = self.residues
+        elif compound.lower() == 'segments':
+            objects = self.segments
+        elif compound.lower() == 'fragments':
+            objects = self.fragments
+        else:
+            raise ValueError("Unrecognised compound definition: {0}"
+                             "Please use one of 'group' 'residues' 'segments'"
+                             "or 'fragments'".format(compound))
+
+        if center.lower() in ('com', 'centerofmass'):
+            centers = np.vstack([o.center_of_mass() for o in objects])
+        elif center.lower() in ('cog', 'centroid', 'centerofgeometry'):
+            centers = np.vstack([o.center_of_geometry() for o in objects])
+        else:
+            raise ValueError("Unrecognised center definition: {0}"
+                             "Please use one of 'com' or 'cog'".format(center))
+        centers = centers.astype(np.float32)
+
+        if box is None:
+            box = self.dimensions
+
+        # calculate shift per object center
+        dests = distances.apply_PBC(centers, box=box)
+        shifts = dests - centers
+
+        for o, s in itertools.izip(objects, shifts):
+            # Save some needless shifts
+            if not all(s == 0.0):
+                o.translate(s)
+
+    def split(self, level):
+        """Split AtomGroup into a list of atomgroups by `level`.
+
+        Parameters
+        ----------
+        level : {'atom', 'residue', 'segment'}
+            
+        .. versionadded:: 0.9.0
+        """
+        accessors = {'segment': 'segindices',
+                     'residue': 'resindices'}
+
+        if level == "atom":
+            return [self[[a.index]] for a in self]
+
+        # higher level groupings
+        try:
+            levelindices = getattr(self, accessors[level])
+        except KeyError:
+            raise ValueError("level = '{0}' not supported, must be one of {1}".format(
+                    level, accessors.keys()))
+
+        return [self[levelindices == index] for index in
+                np.unique(levelindices)]
 
 
 class ResidueGroup(object):

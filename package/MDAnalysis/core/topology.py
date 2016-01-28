@@ -92,7 +92,7 @@ class TransTable(object):
         """The shape of the table, (n_atoms, n_residues, n_segments)"""
         return (self.n_atoms, self.n_residues, self.n_segments)
 
-    def atom2residues(self, aix):
+    def atoms2residues(self, aix):
         """Get residue indices for each atom.
 
         Parameters
@@ -225,7 +225,7 @@ class TransTable(object):
             segment index for each atom
 
         """
-        rix = self.atomsegments2residuesesidues(aix)
+        rix = self.atoms2residues(aix)
         return self.residues2segments(rix)
 
     def segments2atoms_1d(self, six):
