@@ -27,6 +27,7 @@ cdef extern from 'include/xdrfile.h':
     XDRFILE* xdrfile_open (char * path, char * mode)
     int xdrfile_close (XDRFILE * xfp)
     int xdr_seek(XDRFILE *xfp, int64_t pos, int whence)
+    int64_t xdr_tell(XDRFILE *xfp)
     ctypedef float matrix[3][3]
     ctypedef float rvec[3]
 
@@ -237,7 +238,7 @@ cdef class _XDRFile:
 
         Please note if that this function will generate internal file offsets if
         they haven't been set before. For large file this means the first seek
-        can be very slow. Later seeks will be very fast
+        can be very slow. Later seeks will be very fast.
 
         Parameters
         ----------
@@ -247,9 +248,9 @@ cdef class _XDRFile:
         Raises
         ------
         RuntimeError
-            If you seek for more frames then are available
+            If you seek for more frames than are available
         """
-        cdef int offset
+        cdef int64_t offset
         if frame == 0:
             offset = 0
         else:
