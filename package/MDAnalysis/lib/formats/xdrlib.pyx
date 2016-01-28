@@ -18,7 +18,7 @@ cimport cython
 from cython_util cimport ptr_to_ndarray
 from libc.stdint cimport int64_t
 
-from libc.stdio cimport SEEK_SET
+from libc.stdio cimport SEEK_SET, SEEK_CUR, SEEK_END
 
 cdef extern from 'include/xdrfile.h':
     ctypedef struct XDRFILE:
@@ -70,7 +70,7 @@ cdef enum:
     EMAGIC = 9
     EMEMORY = 10
     EENDOFFILE = 11
-    ENOTFOUND = 11
+    ENOTFOUND = 12
 
 error_message = ['OK', 'header', 'string', 'double', 'integer',
                  'float', 'unsigned integer', 'compression',
@@ -192,7 +192,7 @@ cdef class _XDRFile:
 
         if self.mode == 'r':
             if not exists(self.fname):
-                raise IOError('File does not exists: {}'.format(self.fname))
+                raise IOError('File does not exist: {}'.format(self.fname))
 
             return_code, self.n_atoms = self._calc_natoms(fname);
 
@@ -236,7 +236,7 @@ cdef class _XDRFile:
     def seek(self, frame):
         """Seek to Frame.
 
-        Please note if that this function will generate internal file offsets if
+        Please note that this function will generate internal file offsets if
         they haven't been set before. For large file this means the first seek
         can be very slow. Later seeks will be very fast.
 
@@ -248,9 +248,11 @@ cdef class _XDRFile:
         Raises
         ------
         RuntimeError
-            If you seek for more frames than are available
+            If you seek for more frames than are available or if the
+            seek fails (the low-level system error is reported).
         """
         cdef int64_t offset
+        cdef int ok
         if frame == 0:
             offset = 0
         else:
@@ -260,9 +262,63 @@ cdef class _XDRFile:
         self.reached_eof = False
         ok = xdr_seek(self.xfp, offset, SEEK_SET)
         if ok != 0:
-            raise RuntimeError("XDR seek failed, error-message={}".format(
-                error_message[ok]))
+            # errno is the direct system error, not from the XDR library.
+            # errno=22 can be cryptic, since it means a wrong 'whence'
+            #  parameter but it will also be issued when the resulting file
+            #  offset is negative, or if the offset overflows the filesystem
+            #  limit (ext3 is 16TB, for instance).
+            raise RuntimeError("XDR seek failed with system errno={}".format(ok))
         self.current_frame = frame
+
+    def _bytes_seek(self, offset, whence="SEEK_SET"):
+        """Low-level access to the stream repositioning xdr_seek call.
+
+        Beware that this function will not update :attr:`current_frame`,
+        even on a successful seek, and might render the :class:`Reader`
+        unstable.
+
+        Parameters
+        ----------
+        offset : int
+            move the stream *offset* bytes relative to *whence*
+            (can be negative).
+
+        whence : str, optional
+            must be one of:
+             "SEEK_SET": *offset* is applied relative to the beginning
+                         of the file.
+             "SEEK_CUR": *offset* is applied relative to the current
+                         position in the stream.
+             "SEEK_END": *offset* is applied relative to the end of
+                         the file (a positive *offset* will seek beyond the
+                         end of the file, without an error)
+
+        Raises
+        ------
+        ValueError
+            If *whence* is not one of the expected strings.
+
+        RuntimeError
+            If the seek fails (the low-level system error is reported).
+        """
+        cdef int whn = SEEK_SET
+        cdef int ok
+        cdef int64_t offst
+
+        if whence == "SEEK_CUR":
+            whn = SEEK_CUR
+        elif whence == "SEEK_END":
+            whn = SEEK_END
+        elif whence != "SEEK_SET":
+            raise ValueError("Parameter 'whence' must be one of 'SEEK_SET', "
+                             "'SEEK_CUR', or 'SEEK_END'.")
+        offst = offset
+        self.reached_eof = False
+        ok = xdr_seek(self.xfp, offst, whn)
+        if ok != 0:
+            # See the comments to seek() for hints on errno meaning.
+            raise RuntimeError("XDR seek failed with "
+                               "system errno={}".format(ok))
 
     @property
     def offsets(self):
@@ -285,6 +341,10 @@ cdef class _XDRFile:
     def tell(self):
         """Get current frame"""
         return self.current_frame
+
+    def _bytes_tell(self):
+        """Low-level call to xdr_tell to get current byte offset."""
+        return xdr_tell(self.xfp)
 
 
 TRRFrame = namedtuple('TRRFrame', 'x v f box step time lmbda hasx hasv hasf')
@@ -322,6 +382,7 @@ cdef class TRRFile(_XDRFile):
         """read byte offsets from TRR file directly"""
         if not self.is_open:
             return np.array([])
+        cdef int ok
         cdef int n_frames = 0
         cdef int est_nframes = 0
         cdef int64_t* offsets = NULL
@@ -393,7 +454,7 @@ cdef class TRRFile(_XDRFile):
 
         # In a trr the integer error seems to indicate that the file is ending.
         # There might be corrupted files where this is a legitimate error. But
-        # then we just can't read it and stop there which is not to bad.
+        # then we just can't read it and stop there which is not too bad.
         if return_code == EENDOFFILE or return_code == EINTEGER:
             self.reached_eof = True
             raise StopIteration

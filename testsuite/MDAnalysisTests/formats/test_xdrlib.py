@@ -91,6 +91,34 @@ class XDRFormatBaseTest(object):
         f.seek(6)
         f.read()
 
+    @raises(OverflowError)
+    def test_seek_overflow(self):
+        f = self.xdrfile(self.multi_frame)
+        f._bytes_seek(2**65)
+
+    def test_seek_tell_all(self):
+        f = self.xdrfile(self.multi_frame)
+        for frame, offset in enumerate(self.offsets):
+            f.seek(frame)
+            assert f._bytes_tell() == offset
+
+    def test_seek_tell_all_bytes(self):
+        f = self.xdrfile(self.multi_frame)
+        for offset in self.offsets:
+            f._bytes_seek(offset)
+            assert f._bytes_tell() == offset
+
+    def test_seek_tell_largefile(self):
+        # Seeking/telling can be done on offsets larger than the file.
+        # Filesize won't change unless a write is done at the offset.
+        # We attempt to go just beyond a 4GB limit.
+        big_offset = 2**32+1000
+        f = self.xdrfile(self.multi_frame)
+        f._bytes_seek(big_offset)
+        assert f._bytes_tell() == big_offset
+        # It should be safe to leave the read head so far away
+        # because the file is open read-only.
+
 
 class Test_XTCFile(XDRFormatBaseTest):
     xdrfile = XTCFile
