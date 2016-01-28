@@ -36,14 +36,6 @@ class AmazingMultiFrameReader(Reader):
         self.ts.frame = -1
         self._read_next_timestep()
 
-    def __iter__(self):
-        self._reopen()
-        while True:
-            try:
-                yield self._read_next_timestep()
-            except IOError:
-                break
-
     def _read_next_timestep(self):
         self.ts.frame += 1
         if (self.ts.frame + 1) > self.n_frames:
@@ -79,7 +71,8 @@ class _TestReader(object):
         """Test that Reader has the required attributes"""
         for attr in ['filename', 'n_atoms', 'n_frames', 'ts',
                      'units', 'format']:
-            assert_equal(hasattr(self.reader, attr), True, "Missing attr: {0}".format(attr))
+            assert_equal(hasattr(self.reader, attr), True,
+                         "Missing attr: {0}".format(attr))
         
     def test_iter(self):
         l = [ts for ts in self.reader]
@@ -128,16 +121,17 @@ class TestMultiFrameReader(_Multi):
     
     def test_slices(self):
         for start, stop, step in [
-                (None, None, None),
-                (None, 5, None),
-                (2, None, None),
-                (2, 5, None),
-                (None, None, 2),
-                (None, None, -1),
+                (None, None, None),  # blank slice
+                (None, 5, None),  # set end point
+                (2, None, None),  # set start point
+                (2, 5, None),  # start & end
+                (None, None, 2),  # set skip
+                (None, None, -1),  # backwards skip
                 (0, 10, 1),
                 (0, 10, 2),
+                (None, 20, None),  # end beyond real end
+                (None, 20, 2),  # with skip
                 (0, 5, 2),
-                (None, None, -1),
                 (5, None, -1),
                 (None, 5, -1),
         ]:
