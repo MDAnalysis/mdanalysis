@@ -46,7 +46,7 @@ class XDRFormatBaseTest(object):
     def test_open_wrong_mode(self):
         self.xdrfile('foo', 'e')
 
-    @raises(RuntimeError)
+    @raises(IOError)
     def test_over_seek(self):
         with self.xdrfile(self.multi_frame) as f:
             f.seek(100)

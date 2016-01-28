@@ -19,6 +19,7 @@ from cython_util cimport ptr_to_ndarray
 from libc.stdint cimport int64_t
 
 from libc.stdio cimport SEEK_SET, SEEK_CUR, SEEK_END
+_whence_vals = {"SEEK_SET": SEEK_SET, "SEEK_CUR": SEEK_CUR, "SEEK_END": SEEK_END}
 
 cdef extern from 'include/xdrfile.h':
     ctypedef struct XDRFILE:
@@ -247,7 +248,7 @@ cdef class _XDRFile:
 
         Raises
         ------
-        RuntimeError
+        IOError
             If you seek for more frames than are available or if the
             seek fails (the low-level system error is reported).
         """
@@ -257,7 +258,7 @@ cdef class _XDRFile:
             offset = 0
         else:
             if frame >= self.offsets.size:
-                raise RuntimeError('Trying to seek over max number of frames')
+                raise IOError('Trying to seek over max number of frames')
             offset = self.offsets[frame]
         self.reached_eof = False
         ok = xdr_seek(self.xfp, offset, SEEK_SET)
@@ -267,7 +268,7 @@ cdef class _XDRFile:
             #  parameter but it will also be issued when the resulting file
             #  offset is negative, or if the offset overflows the filesystem
             #  limit (ext3 is 16TB, for instance).
-            raise RuntimeError("XDR seek failed with system errno={}".format(ok))
+            raise IOError("XDR seek failed with system errno={}".format(ok))
         self.current_frame = frame
 
     def _bytes_seek(self, offset, whence="SEEK_SET"):
@@ -298,27 +299,24 @@ cdef class _XDRFile:
         ValueError
             If *whence* is not one of the expected strings.
 
-        RuntimeError
+        IOError
             If the seek fails (the low-level system error is reported).
         """
-        cdef int whn = SEEK_SET
+        cdef int whn
         cdef int ok
         cdef int64_t offst
 
-        if whence == "SEEK_CUR":
-            whn = SEEK_CUR
-        elif whence == "SEEK_END":
-            whn = SEEK_END
-        elif whence != "SEEK_SET":
-            raise ValueError("Parameter 'whence' must be one of 'SEEK_SET', "
-                             "'SEEK_CUR', or 'SEEK_END'.")
+        try:
+            whn = _whence_vals[whence]
+        except KeyError:
+            raise ValueError("Parameter 'whence' must be "
+                             "one of {}".format(tuple(_whence_vals.keys())))
         offst = offset
         self.reached_eof = False
         ok = xdr_seek(self.xfp, offst, whn)
         if ok != 0:
             # See the comments to seek() for hints on errno meaning.
-            raise RuntimeError("XDR seek failed with "
-                               "system errno={}".format(ok))
+            raise IOError("XDR seek failed with system errno={}".format(ok))
 
     @property
     def offsets(self):
