@@ -252,8 +252,8 @@ class TestGROWriterLarge(TestCase, tempdir.TempDir):
         GRO files (Issue 550)."""
         outfile = self.tmpdir.name + '/outfile1.gro'
         self.large_universe.atoms.write(outfile)
-        with open(outfile, 'r') as mda_output:
-            with bz2.BZ2File(GRO_large, 'r') as expected_output:
+        with open(outfile, 'rt') as mda_output:
+            with mda.lib.util.anyopen(GRO_large, 'rt') as expected_output:
                 produced_lines = mda_output.readlines()[1:]
                 expected_lines = expected_output.readlines()[1:]
                 assert_equal(produced_lines,

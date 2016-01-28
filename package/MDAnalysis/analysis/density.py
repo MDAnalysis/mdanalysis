@@ -306,7 +306,7 @@ class Density(Grid):
             warnings.warn(msg)
             return
 
-        dedges = map(np.diff, self.edges)
+        dedges = list(map(np.diff, self.edges))
         D = len(self.edges)
         for i in range(D):
             shape = np.ones(D, int)

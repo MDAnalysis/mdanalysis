@@ -257,6 +257,20 @@ def openany(datasource, mode='r', reset=True):
         stream.close()
 
 
+def _bz2_open_py2(filename, mode):
+    mode = mode.replace('t', '').replace('b', '')
+    return bz2.BZ2File(filename, mode)
+
+try:
+    bz2.open
+except AttributeError:
+    # We are on python 2 and bz2.open is not available
+    bz2_open = _bz2_open_py2
+else:
+    # We are on python 3 so we can use bz2.open
+    bz2_open = bz2.open
+
+
 def anyopen(datasource, mode='r', reset=True):
     """Open datasource (gzipped, bzipped, uncompressed) and return a stream.
 
@@ -285,7 +299,7 @@ def anyopen(datasource, mode='r', reset=True):
        Only returns the ``stream`` and tries to set ``stream.name = filename`` instead of the previous
        behavior to return a tuple ``(stream, filename)``.
     """
-    handlers = {'bz2': bz2.BZ2File, 'gz': gzip.open, '': open}
+    handlers = {'bz2': bz2_open, 'gz': gzip.open, '': open}
 
     if mode.startswith('r'):
         if isstream(datasource):

@@ -1165,7 +1165,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         elif isinstance(frame, (list, np.ndarray)):
             def listiter(frames):
                 for f in frames:
-                    if not isinstance(f, int):
+                    if not isinstance(f, (int, np.integer)):
                         raise TypeError("Frames indices must be integers")
                     yield self._read_frame(apply_limits(f))
             return listiter(frame)

@@ -130,7 +130,7 @@ cdef class _XDRFile:
     cdef int _has_offsets
 
     def __cinit__(self, fname, mode='r'):
-        self.fname = fname
+        self.fname = fname.encode('utf-8')
         self.is_open = False
         self.open(self.fname, mode)
 

@@ -171,6 +171,10 @@ class TestMultiFrameReader(_Multi):
         assert_raises(TypeError, sl)
 
     def _check_getitem(self, sl):
+        try:
+            print(sl.dtype)
+        except AttributeError:
+            pass
         res = [ts.frame for ts in self.reader[sl]]
         ref = self.reference[sl]
 

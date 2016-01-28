@@ -122,7 +122,7 @@ class GROReader(base.SingleFrameReader):
     _Timestep = Timestep
 
     def _read_first_frame(self):
-        with util.openany(self.filename, 'r') as grofile:
+        with util.openany(self.filename, 'rt') as grofile:
             # Read first two lines to get number of atoms
             grofile.readline()
             self.n_atoms = n_atoms = int(grofile.readline())
@@ -281,7 +281,7 @@ class GROWriter(base.Writer):
                              "".format(self.gro_coor_limits["min"],
                                        self.gro_coor_limits["max"]))
 
-        with util.openany(self.filename, 'w') as output_gro:
+        with util.openany(self.filename, 'wt') as output_gro:
             # Header
             output_gro.write('Written by MDAnalysis\n')
             output_gro.write(self.fmt['n_atoms'].format(len(atoms)))

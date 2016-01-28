@@ -139,7 +139,7 @@ class XYZWriter(base.Writer):
             self.__class__.__name__, __version__)
         self.remark = default_remark if remark == 'default' else remark
         # can also be gz, bz2
-        self._xyz = util.anyopen(self.filename, 'w')
+        self._xyz = util.anyopen(self.filename, 'wt')
 
     def _get_atomnames(self, atoms):
         """Return a list of atom names"""

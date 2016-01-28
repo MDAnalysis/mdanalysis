@@ -475,7 +475,7 @@ class PrimitivePDBReader(base.Reader):
 
         pos = 0  # atom position for filling coordinates array
         occupancy = np.ones(self._n_atoms)
-        with util.openany(filename, 'r') as pdbfile:
+        with util.openany(filename, 'rt') as pdbfile:
             for i, line in enumerate(pdbfile):
                 line = line.strip()  # Remove extra spaces
                 if len(line) == 0:  # Skip line if empty
@@ -594,7 +594,7 @@ class PrimitivePDBReader(base.Reader):
         #       forth; should improve performance substantially
         pos = 0
         occupancy = np.ones(self._n_atoms)
-        with util.openany(self.filename, 'r') as f:
+        with util.openany(self.filename, 'rt') as f:
             for i in range(line):
                 next(f)  # forward to frame
             for line in f:
@@ -776,7 +776,7 @@ class PrimitivePDBWriter(base.Writer):
         self.step = step
         self.remarks = remarks
 
-        self.pdbfile = util.anyopen(self.filename, 'w')  # open file on init
+        self.pdbfile = util.anyopen(self.filename, 'wt')  # open file on init
         self.has_END = False
 
     def close(self):
