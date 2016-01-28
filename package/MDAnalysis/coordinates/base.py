@@ -1241,7 +1241,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         elif start < 0:
             start += nframes
 
-        if stop:
+        if stop is not None:
             if stop < 0:
                 stop += nframes
             elif stop > nframes:
@@ -1249,8 +1249,10 @@ class ProtoReader(six.with_metaclass(_Readermeta, IObase)):
         else:
             stop = nframes if step > 0 else -1
 
-        if step > 0 and stop <= start:
+        if step > 0 and stop < start:
             raise IndexError("Stop frame is lower than start frame")
+        elif step < 0 and start < stop:
+            raise IndexError("Start frame is lower than stop frame")
         if not (0 <= start < nframes) or stop > nframes:
             raise IndexError(
                 "Frame start/stop outside of the range of the trajectory.")
