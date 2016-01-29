@@ -23,6 +23,26 @@
 
 #include "readdcd.h"
 
+/* Compatibility macros for Python 3 */
+#if PY_VERSION_HEX >= 0x03000000
+
+#define PyClass_Check(obj) PyObject_IsInstance(obj, (PyObject *)&PyType_Type)
+#define PyInt_Check(x) PyLong_Check(x)
+#define PyInt_AsLong(x) PyLong_AsLong(x)
+#define PyInt_FromLong(x) PyLong_FromLong(x)
+#define PyInt_FromSize_t(x) PyLong_FromSize_t(x)
+#define PyString_Check(name) PyBytes_Check(name)
+#define PyString_FromString(x) PyUnicode_FromString(x)
+#define PyString_Format(fmt, args)  PyUnicode_Format(fmt, args)
+#define PyString_AsString(str) PyBytes_AsString(str)
+#define PyString_Size(str) PyBytes_Size(str)
+#define PyString_InternFromString(key) PyUnicode_InternFromString(key)
+#define Py_TPFLAGS_HAVE_CLASS Py_TPFLAGS_BASETYPE
+#define PyString_AS_STRING(x) PyUnicode_AS_STRING(x)
+#define _PyLong_FromSsize_t(x) PyLong_FromSsize_t(x)
+
+#endif
+
 typedef struct {
   fio_fd fd;
   fio_size_t header_size;
@@ -87,13 +107,15 @@ __write_dcd_header(PyObject *self, PyObject *args)
     return NULL;
   }
   
-  if (!PyFile_CheckExact(temp)) {
-    // Raise exception
-    PyErr_SetString(PyExc_TypeError, "dcdfile does not refer to a file object");
-    Py_DECREF(temp);
-    return NULL;
-  }
-  fd = fileno(PyFile_AsFile(temp)); 
+  #if PY_MAJOR_VERSION < 3
+    if (PyUnicode_Check(temp)) {
+        fio_open(PyString_AsString(PyUnicode_AsUTF8String(temp)),FIO_READ,&fd);
+    }else{
+      fio_open(PyString_AsString(temp),FIO_READ,&fd);
+    }
+  #else
+    fio_open(PyUnicode_AsUTF8(temp),FIO_READ,&fd);
+  #endif
   // No longer need the reference to temp
   Py_DECREF(temp);
   
@@ -114,7 +136,11 @@ __write_dcd_header(PyObject *self, PyObject *args)
   dcd->delta = delta;
   dcd->with_unitcell = with_unitcell;
   dcd->charmm = charmm;
-  temp = PyCObject_FromVoidPtr(dcd, free); // Creates a New Reference
+  #if PY_MAJOR_VERSION < 3
+	temp = PyCObject_FromVoidPtr(dcd, free);
+  #else
+	temp = PyCapsule_New(dcd, NULL, NULL);
+  #endif
   if (PyObject_SetAttrString(self, "_dcd_C_ptr", temp) == -1) {
     // Raise exception - who knows what exception to raise??
     PyErr_SetString(PyExc_AttributeError, "Could not create attribute _dcd_C_ptr");
@@ -123,6 +149,7 @@ __write_dcd_header(PyObject *self, PyObject *args)
   }
   Py_DECREF(temp);
   
+  #if PY_MAJOR_VERSION < 3
   // For debugging purposes
   temp = PyBuffer_FromMemory(dcd, sizeof(dcdhandle)); // Creates a New Reference
   if (PyObject_SetAttrString(self, "_dcd_C_str", temp) == -1) {
@@ -131,6 +158,7 @@ __write_dcd_header(PyObject *self, PyObject *args)
     Py_DECREF(temp);
     return NULL;
   }
+  #endif
   Py_DECREF(temp);
   
   Py_INCREF(Py_None);
@@ -165,7 +193,11 @@ __write_next_frame(PyObject *self, PyObject *args)
     return NULL;
   }
 
-  dcd = (dcdhandle*)PyCObject_AsVoidPtr(temp);
+  #if PY_MAJOR_VERSION < 3
+	dcd = (dcdhandle*)PyCObject_AsVoidPtr(temp);
+  #else
+	dcd = (dcdhandle*)PyCapsule_GetPointer(temp,NULL);
+  #endif
   Py_DECREF(temp);
   dcd->nsets++;
   curstep = dcd->istart + dcd->nsets * dcd->nsavc;
@@ -274,12 +306,15 @@ __read_dcd_header(PyObject *self, PyObject *args)
     return NULL;
   }
 	
-  if (!PyFile_CheckExact(temp)) {
-    // Raise exception
-    PyErr_SetString(PyExc_TypeError, "dcdfile does not refer to a file object");
-    goto error;
-  }
-  fd = fileno(PyFile_AsFile(temp));
+  #if PY_MAJOR_VERSION < 3
+    if (PyUnicode_Check(temp)) {
+        fio_open(PyString_AsString(PyUnicode_AsUTF8String(temp)),FIO_READ,&fd);
+    }else{
+      fio_open(PyString_AsString(temp),FIO_READ,&fd);
+    }
+  #else
+    fio_open(PyUnicode_AsUTF8(temp),FIO_READ,&fd);
+  #endif
   // No longer need the reference to temp
   Py_DECREF(temp);
 	
@@ -385,7 +420,11 @@ __read_dcd_header(PyObject *self, PyObject *args)
   }
   Py_DECREF(temp);
 	
-  temp = PyCObject_FromVoidPtr(dcd, NULL);
+  #if PY_MAJOR_VERSION < 3
+	temp = PyCObject_FromVoidPtr(dcd, NULL);
+  #else
+	temp = PyCapsule_New(dcd, NULL, NULL);
+  #endif
   if (temp == NULL) goto error;
   if (PyObject_SetAttrString(self, "_dcd_C_ptr", temp) == -1) {
     PyErr_SetString(PyExc_AttributeError, "Could not create attribute _dcd_C_ptr");
@@ -405,6 +444,7 @@ __read_dcd_header(PyObject *self, PyObject *args)
   }
   Py_DECREF(temp);
 	
+  #if PY_MAJOR_VERSION < 3
   // For debugging purposes
   temp = PyBuffer_FromMemory(dcd, sizeof(dcdhandle));
   if (temp == NULL) goto error;
@@ -412,6 +452,7 @@ __read_dcd_header(PyObject *self, PyObject *args)
     PyErr_SetString(PyExc_AttributeError, "Could not create attribute _dcd_C_str");
     goto error;
   }
+  #endif
   Py_DECREF(temp);
 
   Py_INCREF(Py_None);
@@ -460,7 +501,11 @@ __read_timeseries(PyObject *self, PyObject *args)
     return NULL;
   }
 
-  dcd = (dcdhandle*)PyCObject_AsVoidPtr(temp);
+  #if PY_MAJOR_VERSION < 3
+	dcd = (dcdhandle*)PyCObject_AsVoidPtr(temp);
+  #else
+	dcd = (dcdhandle*)PyCapsule_GetPointer(temp,NULL);
+  #endif
   Py_DECREF(temp);
 
   // Assume that start and stop are valid
@@ -664,7 +709,11 @@ __read_next_frame(PyObject *self, PyObject *args)
     return NULL;
   }
 
-  dcd = (dcdhandle*)PyCObject_AsVoidPtr(temp);
+  #if PY_MAJOR_VERSION < 3
+	dcd = (dcdhandle*)PyCObject_AsVoidPtr(temp);
+  #else
+	dcd = (dcdhandle*)PyCapsule_GetPointer(temp,NULL);
+  #endif
   Py_DECREF(temp);
 
   unitcell = (float*) uc->data;
@@ -782,7 +831,11 @@ __finish_dcd_read(PyObject *self, PyObject *args)
     return NULL;
   }
 
-  dcd = (dcdhandle*)PyCObject_AsVoidPtr(temp);
+  #if PY_MAJOR_VERSION < 3
+	dcd = (dcdhandle*)PyCObject_AsVoidPtr(temp);
+  #else
+	dcd = (dcdhandle*)PyCapsule_GetPointer(temp,NULL);
+  #endif
 	
   close_dcd_read(dcd->freeind, dcd->fixedcoords);
   free(dcd);
@@ -850,7 +903,11 @@ __jump_to_frame(PyObject *self, PyObject *args)
     PyErr_SetString(PyExc_AttributeError, "_dcd_C_ptr is not an attribute");
     return NULL;
   }
-  dcd = (dcdhandle*)PyCObject_AsVoidPtr(temp);
+  #if PY_MAJOR_VERSION < 3
+	dcd = (dcdhandle*)PyCObject_AsVoidPtr(temp);
+  #else
+	dcd = (dcdhandle*)PyCapsule_GetPointer(temp,NULL);
+  #endif
   Py_DECREF(temp);
 	
   /*if (frame > dcd->nsets) {
@@ -915,7 +972,11 @@ __reset_dcd_read(PyObject *self, PyObject *args)
     return NULL;
   }
 
-  dcd = (dcdhandle*)PyCObject_AsVoidPtr(temp);
+  #if PY_MAJOR_VERSION < 3
+	dcd = (dcdhandle*)PyCObject_AsVoidPtr(temp);
+  #else
+	dcd = (dcdhandle*)PyCapsule_GetPointer(temp,NULL);
+  #endif
   rc = fio_fseek(dcd->fd, dcd->header_size, FIO_SEEK_SET);
   dcd->setsread = 0;
   dcd->first = 1;
@@ -937,10 +998,27 @@ static PyMethodDef DCDMethods[] = {
   {NULL, NULL, 0, NULL}	/* Sentinel */
 };
 
-PyMODINIT_FUNC
-init_dcdmodule(void)
-{
-  (void) Py_InitModule("_dcdmodule", DCDMethods);
-  import_array();
-}
-
+#if PY_VERSION_HEX >= 0x03000000
+  PyObject*
+  PyInit__dcdmodule(void)
+  {
+    static struct PyModuleDef dcd_module_def = {
+      PyModuleDef_HEAD_INIT,
+      "_dcdmodule",  /* name of module */
+      NULL,          /* module documentation, may be NULL */
+      -1,            /* size of per-interpreter state of the module, or -1 if the module keeps state in global variables. */
+      DCDMethods
+    };
+    PyObject *m = PyModule_Create(&dcd_module_def);
+    import_array();
+    return m;
+  }
+#else
+  PyMODINIT_FUNC
+  init_dcdmodule(void)
+  {
+    (void) Py_InitModule("_dcdmodule", DCDMethods);
+    import_array();
+    return;
+  }
+#endif
