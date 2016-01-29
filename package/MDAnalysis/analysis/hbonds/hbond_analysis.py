@@ -1095,7 +1095,7 @@ class HydrogenBondAnalysis(object):
 
         out_nrows = 0
         # count number of timesteps per key to get length of output table
-        for ts_list in hbonds.itervalues():
+        for ts_list in six.itervalues(hbonds):
             out_nrows += len(ts_list)
 
         # build empty output table
