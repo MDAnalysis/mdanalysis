@@ -14,15 +14,19 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/16 tyler.je.reddy, kain88-de, jbarnoud, richardjgowers, orbeckst
+         manuel.nuno.melo
 
   * 0.14.0
 
 API Changes
+
   * Offsets files for Gromacs trajectory formats have been changed to a numpy
     style format '.npz'. Offsets files will be regenerated when you load a
     xtc/trr trajectory again. (Issue #441)
 
 Enhancement
+
+  * XDR file seeking errors now report system errno. (PR #678)
   * Offsets reading for xtc/trr files has been sped up. (Issue #441)
   * select_atoms now implicitly ORs multiple values after a keyword for
     many types of selections (Issue #345)
@@ -33,6 +37,8 @@ Changes
   * util.NamedStream no longer inherits from basestring (Issue #649)
 
 Fixes
+  
+  * XDR file seeking and telling working again for large files (Issue #677).
   * ContactAnalysis1 run method now starts at frame index 0 by deafult (Issue #624)
   * Fixed PrimitivePDBWriter getting atom type column shifted to the right
     (Issue #639)

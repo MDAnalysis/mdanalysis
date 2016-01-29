@@ -18,7 +18,8 @@ cimport cython
 from cython_util cimport ptr_to_ndarray
 from libc.stdint cimport int64_t
 
-from libc.stdio cimport SEEK_SET
+from libc.stdio cimport SEEK_SET, SEEK_CUR, SEEK_END
+_whence_vals = {"SEEK_SET": SEEK_SET, "SEEK_CUR": SEEK_CUR, "SEEK_END": SEEK_END}
 
 cdef extern from 'include/xdrfile.h':
     ctypedef struct XDRFILE:
@@ -27,6 +28,7 @@ cdef extern from 'include/xdrfile.h':
     XDRFILE* xdrfile_open (char * path, char * mode)
     int xdrfile_close (XDRFILE * xfp)
     int xdr_seek(XDRFILE *xfp, int64_t pos, int whence)
+    int64_t xdr_tell(XDRFILE *xfp)
     ctypedef float matrix[3][3]
     ctypedef float rvec[3]
 
@@ -69,7 +71,7 @@ cdef enum:
     EMAGIC = 9
     EMEMORY = 10
     EENDOFFILE = 11
-    ENOTFOUND = 11
+    ENOTFOUND = 12
 
 error_message = ['OK', 'header', 'string', 'double', 'integer',
                  'float', 'unsigned integer', 'compression',
@@ -143,11 +145,11 @@ cdef class _XDRFile:
         IOError
             If the TRR file can't be closed for some reason
         """
-        cdef int res = 1
+        res = 1
         if self.is_open:
             res = xdrfile_close(self.xfp)
             self.is_open = False
-            if res != 0:
+            if res != EOK:
                 raise IOError('Couldn\'t close file: {}, Error = XDRLIB-{}'.format(
                     self.fname, error_message[res]))
         # forget old offsets in case we open a different file with the same instance.
@@ -191,11 +193,11 @@ cdef class _XDRFile:
 
         if self.mode == 'r':
             if not exists(self.fname):
-                raise IOError('File does not exists: {}'.format(self.fname))
+                raise IOError('File does not exist: {}'.format(self.fname))
 
             return_code, self.n_atoms = self._calc_natoms(fname);
 
-            if return_code != 0:
+            if return_code != EOK:
                 raise IOError('XDRLIB read error: {}'.format(
                     error_message[return_code]))
             if self.n_atoms <= 0:
@@ -235,9 +237,9 @@ cdef class _XDRFile:
     def seek(self, frame):
         """Seek to Frame.
 
-        Please note if that this function will generate internal file offsets if
+        Please note that this function will generate internal file offsets if
         they haven't been set before. For large file this means the first seek
-        can be very slow. Later seeks will be very fast
+        can be very slow. Later seeks will be very fast.
 
         Parameters
         ----------
@@ -246,22 +248,73 @@ cdef class _XDRFile:
 
         Raises
         ------
-        RuntimeError
-            If you seek for more frames then are available
+        IOError
+            If you seek for more frames than are available or if the
+            seek fails (the low-level system error is reported).
         """
-        cdef int offset
+        cdef int64_t offset
         if frame == 0:
             offset = 0
         else:
             if frame >= self.offsets.size:
-                raise RuntimeError('Trying to seek over max number of frames')
+                raise IOError('Trying to seek over max number of frames')
             offset = self.offsets[frame]
         self.reached_eof = False
         ok = xdr_seek(self.xfp, offset, SEEK_SET)
-        if ok != 0:
-            raise RuntimeError("XDR seek failed, error-message={}".format(
-                error_message[ok]))
+        if ok != EOK:
+            # errno is the direct system error, not from the XDR library.
+            # errno=22 can be cryptic, since it means a wrong 'whence'
+            #  parameter but it will also be issued when the resulting file
+            #  offset is negative, or if the offset overflows the filesystem
+            #  limit (ext3 is 16TB, for instance).
+            raise IOError("XDR seek failed with system errno={}".format(ok))
         self.current_frame = frame
+
+    def _bytes_seek(self, offset, whence="SEEK_SET"):
+        """Low-level access to the stream repositioning xdr_seek call.
+
+        Beware that this function will not update :attr:`current_frame`,
+        even on a successful seek, and might render the :class:`Reader`
+        unstable.
+
+        Parameters
+        ----------
+        offset : int
+            move the stream *offset* bytes relative to *whence*
+            (can be negative).
+
+        whence : str, optional
+            must be one of:
+             "SEEK_SET": *offset* is applied relative to the beginning
+                         of the file.
+             "SEEK_CUR": *offset* is applied relative to the current
+                         position in the stream.
+             "SEEK_END": *offset* is applied relative to the end of
+                         the file (a positive *offset* will seek beyond the
+                         end of the file, without an error)
+
+        Raises
+        ------
+        ValueError
+            If *whence* is not one of the expected strings.
+
+        IOError
+            If the seek fails (the low-level system error is reported).
+        """
+        cdef int whn
+        cdef int64_t offst
+
+        try:
+            whn = _whence_vals[whence]
+        except KeyError:
+            raise ValueError("Parameter 'whence' must be "
+                             "one of {}".format(tuple(_whence_vals.keys())))
+        offst = offset
+        self.reached_eof = False
+        ok = xdr_seek(self.xfp, offst, whn)
+        if ok != EOK:
+            # See the comments to seek() for hints on errno meaning.
+            raise IOError("XDR seek failed with system errno={}".format(ok))
 
     @property
     def offsets(self):
@@ -284,6 +337,10 @@ cdef class _XDRFile:
     def tell(self):
         """Get current frame"""
         return self.current_frame
+
+    def _bytes_tell(self):
+        """Low-level call to xdr_tell to get current byte offset."""
+        return xdr_tell(self.xfp)
 
 
 TRRFrame = namedtuple('TRRFrame', 'x v f box step time lmbda hasx hasv hasf')
@@ -325,7 +382,7 @@ cdef class TRRFile(_XDRFile):
         cdef int est_nframes = 0
         cdef int64_t* offsets = NULL
         ok = read_trr_n_frames(self.fname, &n_frames, &est_nframes, &offsets);
-        if ok != 0:
+        if ok != EOK:
             raise RuntimeError("TRR couldn't calculate offsets, error={}".format(
                 error_message[ok]))
         # the read_xtc_n_frames allocates memory for the offsets with an
@@ -363,7 +420,7 @@ cdef class TRRFile(_XDRFile):
             raise RuntimeError('File opened in mode: {}. Reading only allow '
                                'in mode "r"'.format('self.mode'))
 
-        cdef int return_code = 1
+        return_code = 1
         cdef int step = 0
         cdef int has_prop = 0
         cdef float time = 0
@@ -392,7 +449,7 @@ cdef class TRRFile(_XDRFile):
 
         # In a trr the integer error seems to indicate that the file is ending.
         # There might be corrupted files where this is a legitimate error. But
-        # then we just can't read it and stop there which is not to bad.
+        # then we just can't read it and stop there which is not too bad.
         if return_code == EENDOFFILE or return_code == EINTEGER:
             self.reached_eof = True
             raise StopIteration
@@ -486,7 +543,6 @@ cdef class TRRFile(_XDRFile):
                                  'are trying to write {} box.'.format(
                                      self.box, box))
 
-        cdef int return_code
         return_code = write_trr(self.xfp, self.n_atoms, step, time,
                                        _lambda, <matrix> box_ptr,
                                        <rvec*> xyz_ptr,
@@ -539,7 +595,7 @@ cdef class XTCFile(_XDRFile):
         cdef int est_nframes = 0
         cdef int64_t* offsets = NULL
         ok = read_xtc_n_frames(self.fname, &n_frames, &est_nframes, &offsets);
-        if ok != 0:
+        if ok != EOK:
             raise RuntimeError("XTC couldn't calculate offsets, error={}".format(
                 error_message[ok]))
         # the read_xtc_n_frames allocates memory for the offsets with an
@@ -577,7 +633,7 @@ cdef class XTCFile(_XDRFile):
             raise RuntimeError('File opened in mode: {}. Reading only allow '
                                'in mode "r"'.format('self.mode'))
 
-        cdef int return_code = 1
+        return_code = 1
         cdef int step
         cdef float time, prec
 
@@ -655,7 +711,6 @@ cdef class XTCFile(_XDRFile):
                                  'are trying to use {}'.format(
                                      self.precision, precision))
 
-        cdef int return_code
         return_code = write_xtc(self.xfp, self.n_atoms, step, time,
                                        <matrix>&box_view[0, 0],
                                        <rvec*>&xyz_view[0, 0], precision)
