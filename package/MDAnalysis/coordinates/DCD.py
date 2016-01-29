@@ -472,6 +472,7 @@ try:
     DCDReader._reset_dcd_read = new.instancemethod( _dcdmodule._reset_dcd_read, None, DCDReader )
     DCDReader._finish_dcd_read = new.instancemethod( _dcdmodule._finish_dcd_read, None, DCDReader )
     DCDReader._read_timeseries = new.instancemethod( _dcdmodule._read_timeseries, None, DCDReader )
+    DCDReader._read_timecorrel = new.instancemethod(dcdtimeseries.__read_timecorrel, None, DCDReader)
     del( _dcdmodule )
 except ImportError:
     DCDReader._read_dcd_header = lambda self: _dcdmodule._read_dcd_header( self )
@@ -480,3 +481,4 @@ except ImportError:
     DCDReader._reset_dcd_read = lambda self: _dcdmodule._reset_dcd_read( self )
     DCDReader._finish_dcd_read = lambda self: _dcdmodule._finish_dcd_read( self )
     DCDReader._read_timeseries = lambda self: _dcdmodule._read_timeseries( self )
+    DCDReader._read_timecorrel = lambda self: dcdtimeseries.__read_timecorrel( self )

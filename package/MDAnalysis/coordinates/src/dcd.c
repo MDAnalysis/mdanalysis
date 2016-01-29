@@ -1011,7 +1011,7 @@ _reset_dcd_read(PyObject *self, PyObject *args)
       if( !PyArg_ParseTuple(args, "") )
         return NULL;
     #else
-      if( !PyArg_ParseTuple(args, "i", &self) )
+      if( !PyArg_ParseTuple(args, "O", &self) )
         return NULL;
     #endif
   }
