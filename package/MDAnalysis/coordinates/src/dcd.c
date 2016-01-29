@@ -23,6 +23,7 @@
 
 #include "readdcd.h"
 
+
 /* Compatibility macros for Python 3 */
 #if PY_VERSION_HEX >= 0x03000000
 
@@ -42,6 +43,7 @@
 #define _PyLong_FromSsize_t(x) PyLong_FromSsize_t(x)
 
 #endif
+
 
 typedef struct {
   fio_fd fd;
@@ -65,7 +67,7 @@ typedef struct {
 int jump_to_frame(dcdhandle *dcd, int frame);
 
 static PyObject *
-__write_dcd_header(PyObject *self, PyObject *args)
+_write_dcd_header(PyObject *self, PyObject *args)
 {
   /* At this point we assume the file has been opened for writing */
   PyObject *temp = NULL;
@@ -83,15 +85,20 @@ __write_dcd_header(PyObject *self, PyObject *args)
     charmm |= DCD_HAS_EXTRA_BLOCK;
 
   if (! self) {
-    /* we were in fact called as a module function, try to retrieve 
+    /* we were in fact called as a module function, try to retrieve
        a matching object from args */
     if( !PyArg_ParseTuple(args, "Oi|iids", &self, &natoms, &istart, &nsavc, &delta, &remarks) )
       return NULL;
   } else {
-    /* we were obviously called as an object method so args should 
+    /* we were obviously called as an object method so args should
        only have the int value. */
-    if( !PyArg_ParseTuple(args, "i|iids", &natoms, &istart, &nsavc, &delta, &remarks) )
-      return NULL;
+    #if PY_MAJOR_VERSION < 3
+      if( !PyArg_ParseTuple(args, "i|iids", &natoms, &istart, &nsavc, &delta, &remarks) )
+        return NULL;
+    #else
+      if( !PyArg_ParseTuple(args, "Oi|iids", &self, &natoms, &istart, &nsavc, &delta, &remarks) )
+        return NULL;
+    #endif
   }
 
   // Get the file object from the class
@@ -100,25 +107,26 @@ __write_dcd_header(PyObject *self, PyObject *args)
     PyErr_SetString(PyExc_AttributeError, "dcdfile is not an attribute");
     return NULL;
   }
-  
+
   if ((temp = PyObject_GetAttrString(self, "dcdfile")) == NULL) { // This gives me a New Reference
     // Raise exception
     PyErr_SetString(PyExc_AttributeError, "dcdfile is not an attribute");
     return NULL;
   }
-  
+
   #if PY_MAJOR_VERSION < 3
     if (PyUnicode_Check(temp)) {
-        fio_open(PyString_AsString(PyUnicode_AsUTF8String(temp)),FIO_READ,&fd);
+        fio_open(PyString_AsString(PyUnicode_AsUTF8String(temp)),FIO_WRITE,&fd);
     }else{
-      fio_open(PyString_AsString(temp),FIO_READ,&fd);
+      fio_open(PyString_AsString(temp),FIO_WRITE,&fd);
     }
   #else
-    fio_open(PyUnicode_AsUTF8(temp),FIO_READ,&fd);
+    fio_open(PyUnicode_AsUTF8(temp),FIO_WRITE,&fd);
   #endif
+
   // No longer need the reference to temp
   Py_DECREF(temp);
-  
+
   dcd = (dcdhandle *)malloc(sizeof(dcdhandle));
   memset(dcd, 0, sizeof(dcdhandle));
   dcd->fd = fd;
@@ -136,10 +144,11 @@ __write_dcd_header(PyObject *self, PyObject *args)
   dcd->delta = delta;
   dcd->with_unitcell = with_unitcell;
   dcd->charmm = charmm;
+  // temp = PyCObject_FromVoidPtr(dcd, free); // Creates a New Reference
   #if PY_MAJOR_VERSION < 3
-	temp = PyCObject_FromVoidPtr(dcd, free);
+    temp = PyCObject_FromVoidPtr(dcd, free);
   #else
-	temp = PyCapsule_New(dcd, NULL, NULL);
+    temp = PyCapsule_New(dcd, NULL, NULL);
   #endif
   if (PyObject_SetAttrString(self, "_dcd_C_ptr", temp) == -1) {
     // Raise exception - who knows what exception to raise??
@@ -148,25 +157,26 @@ __write_dcd_header(PyObject *self, PyObject *args)
     return NULL;
   }
   Py_DECREF(temp);
-  
+
+  // FIXME
   #if PY_MAJOR_VERSION < 3
-  // For debugging purposes
-  temp = PyBuffer_FromMemory(dcd, sizeof(dcdhandle)); // Creates a New Reference
-  if (PyObject_SetAttrString(self, "_dcd_C_str", temp) == -1) {
-    // Raise exception - who knows what exception to raise??
-    PyErr_SetString(PyExc_AttributeError, "Could not create attribute _dcd_C_str");
+    // For debugging purposes
+    temp = PyBuffer_FromMemory(dcd, sizeof(dcdhandle)); // Creates a New Reference
+    if (PyObject_SetAttrString(self, "_dcd_C_str", temp) == -1) {
+      // Raise exception - who knows what exception to raise??
+      PyErr_SetString(PyExc_AttributeError, "Could not create attribute _dcd_C_str");
+      Py_DECREF(temp);
+      return NULL;
+    }
     Py_DECREF(temp);
-    return NULL;
-  }
   #endif
-  Py_DECREF(temp);
-  
+
   Py_INCREF(Py_None);
   return Py_None;
 }
 
 static PyObject *
-__write_next_frame(PyObject *self, PyObject *args)
+_write_next_frame(PyObject *self, PyObject *args)
 {
   dcdhandle *dcd;
   PyObject *temp;
@@ -174,17 +184,22 @@ __write_next_frame(PyObject *self, PyObject *args)
   int rc, curstep;
   float* uc_array;
   double unitcell[6];
-	
+
   if (!self) {
-    /* we were in fact called as a module function, try to retrieve 
+    /* we were in fact called as a module function, try to retrieve
        a matching object from args */
     if( !PyArg_ParseTuple(args, "OO!O!O!O!", &self, &PyArray_Type, &x, &PyArray_Type, &y, &PyArray_Type, &z, &PyArray_Type, &uc) )
       return NULL;
   } else {
-    /* we were obviously called as an object method so args should 
+    /* we were obviously called as an object method so args should
        only have the int value. */
-    if( !PyArg_ParseTuple(args, "O!O!O!O!", &PyArray_Type, &x, &PyArray_Type, &y, &PyArray_Type, &z, &PyArray_Type, &uc) )
-      return NULL;
+    #if PY_MAJOR_VERSION < 3
+      if( !PyArg_ParseTuple(args, "O!O!O!O!", &PyArray_Type, &x, &PyArray_Type, &y, &PyArray_Type, &z, &PyArray_Type, &uc) )
+        return NULL;
+    #else
+      if( !PyArg_ParseTuple(args, "OO!O!O!O!", &self, &PyArray_Type, &x, &PyArray_Type, &y, &PyArray_Type, &z, &PyArray_Type, &uc) )
+        return NULL;
+    #endif
   }
 
   if ((temp = PyObject_GetAttrString(self, "_dcd_C_ptr")) == NULL) { // This gives me a New Reference
@@ -194,23 +209,21 @@ __write_next_frame(PyObject *self, PyObject *args)
   }
 
   #if PY_MAJOR_VERSION < 3
-	dcd = (dcdhandle*)PyCObject_AsVoidPtr(temp);
+    dcd = (dcdhandle*)PyCObject_AsVoidPtr(temp);
   #else
-	dcd = (dcdhandle*)PyCapsule_GetPointer(temp,NULL);
+    dcd = (dcdhandle*)PyCapsule_GetPointer(temp,NULL);
   #endif
   Py_DECREF(temp);
   dcd->nsets++;
   curstep = dcd->istart + dcd->nsets * dcd->nsavc;
 
   uc_array = (float*) uc->data;
-  unitcell[0] = uc_array[0];  /* A */
-  unitcell[2] = uc_array[2];  /* B */
-  unitcell[5] = uc_array[5];  /* C */
-  /* write angle cosines with NAMD ordering [orbeckst] */
-  /* (changed in MDAnalysis 0.9.0) */
-  unitcell[4] = sin((M_PI_2 / 90.0 ) * (90.0 - uc_array[4]));  /* cos(alpha) */
-  unitcell[3] = sin((M_PI_2 / 90.0 ) * (90.0 - uc_array[3]));  /* cos(beta) */
-  unitcell[1] = sin((M_PI_2 / 90.0 ) * (90.0 - uc_array[1]));  /* cos(gamma) */
+  unitcell[0] = uc_array[0];
+  unitcell[2] = uc_array[2];
+  unitcell[5] = uc_array[5];
+  unitcell[1] = sin((M_PI_2 / 90.0 ) * (90.0 - uc_array[1]));
+  unitcell[3] = sin((M_PI_2 / 90.0 ) * (90.0 - uc_array[3]));
+  unitcell[4] = sin((M_PI_2 / 90.0 ) * (90.0 - uc_array[4]));
 
   if ((rc = write_dcdstep(dcd->fd, dcd->nsets, curstep, dcd->natoms, (float*)x->data, (float*)y->data, (float*)z->data,
 			  dcd->with_unitcell ? unitcell: NULL,
@@ -225,35 +238,44 @@ __write_next_frame(PyObject *self, PyObject *args)
 }
 
 static PyObject *
-__finish_dcd_write(PyObject *self, PyObject *args)
+_finish_dcd_write(PyObject *self, PyObject *args)
 {
   //PyObject* temp;
   //dcdhandle *dcd;
 
-  if (! self) { 
-    /* we were in fact called as a module function, try to retrieve 
+  if (! self) {
+    /* we were in fact called as a module function, try to retrieve
        a matching object from args */
     if( !PyArg_ParseTuple(args, "O", &self) )
       return NULL;
-  } else { 
-    /* we were obviously called as an object method so args should 
+  } else {
+    /* we were obviously called as an object method so args should
        only have the int value. */
-    if( !PyArg_ParseTuple(args, "") )
-      return NULL; 
-  } 
+    #if PY_MAJOR_VERSION < 3
+      if( !PyArg_ParseTuple(args, "") )
+        return NULL;
+    #else
+      if( !PyArg_ParseTuple(args, "O", &self) )
+        return NULL;
+    #endif
+  }
 
   /*if ( !PyObject_HasAttrString(self, "_dcd_C_ptr") ) {
   // Raise exception
   PyErr_SetString(PyExc_AttributeError, "_dcd_C_ptr is not an attribute");
   return NULL;
   }
-  
+
   if ((temp = PyObject_GetAttrString(self, "_dcd_C_ptr")) == NULL) { // This gives me a New Reference
   // Raise exception
   PyErr_SetString(PyExc_AttributeError, "_dcd_C_ptr is not an attribute");
   return NULL;
-  } 
-  dcd = (dcdhandle*)PyCObject_AsVoidPtr(temp);
+  }
+  #if PY_MAJOR_VERSION < 3
+    dcd = (dcdhandle*)PyCObject_AsVoidPtr(temp);
+  #else
+    dcd = (dcdhandle*)PyCapsule_GetPointer(temp,NULL);
+  #endif
   free(dcd);
   Py_DECREF(temp);*/
 
@@ -268,7 +290,7 @@ __finish_dcd_write(PyObject *self, PyObject *args)
 }
 
 static PyObject *
-__read_dcd_header(PyObject *self, PyObject *args)
+_read_dcd_header(PyObject *self, PyObject *args)
 {
 
   /* At this point we assume the file has been checked for existence and opened, and the DCD class
@@ -282,30 +304,37 @@ __read_dcd_header(PyObject *self, PyObject *args)
   dcdhandle *dcd = NULL;
 
   if (! self) {
-    /* we were in fact called as a module function, try to retrieve 
-       a matching object from args */ 
-    if( !PyArg_ParseTuple(args, "O", &self) ) 
-      return NULL; 
-  } else { 
-    /* we were obviously called as an object method so args should 
-       only have the int value. */ 
-    if( !PyArg_ParseTuple(args, "") ) 
-      return NULL; 
-  } 
+    /* we were in fact called as a module function, try to retrieve
+       a matching object from args */
+    if( !PyArg_ParseTuple(args, "O", &self) )
+      return NULL;
+  } else {
+    /* we were obviously called as an object method so args should
+       only have the int value. */
+    if( !PyArg_ParseTuple(args, "O", &self) )
+      return NULL;
+    #if PY_MAJOR_VERSION < 3
+      if( !PyArg_ParseTuple(args, "") )
+        return NULL;
+    #else
+      if( !PyArg_ParseTuple(args, "O", &self) )
+        return NULL;
+    #endif
+  }
 
   // Get the file object from the class
   if (!PyObject_HasAttrString(self, "dcdfile")) {
     // Raise exception
-    PyErr_SetString(PyExc_AttributeError, "dcdfile is not an attribute");
+    PyErr_SetString(PyExc_AttributeError, "dcdfile is not an attribute1");
     return NULL;
   }
 
   if ((temp = PyObject_GetAttrString(self, "dcdfile")) == NULL) { // This gives me a New Reference
     // Raise exception
-    PyErr_SetString(PyExc_AttributeError, "dcdfile is not an attribute");
+    PyErr_SetString(PyExc_AttributeError, "dcdfile is not an attribute2");
     return NULL;
   }
-	
+
   #if PY_MAJOR_VERSION < 3
     if (PyUnicode_Check(temp)) {
         fio_open(PyString_AsString(PyUnicode_AsUTF8String(temp)),FIO_READ,&fd);
@@ -315,9 +344,10 @@ __read_dcd_header(PyObject *self, PyObject *args)
   #else
     fio_open(PyUnicode_AsUTF8(temp),FIO_READ,&fd);
   #endif
+
   // No longer need the reference to temp
   Py_DECREF(temp);
-	
+
   dcd = (dcdhandle *)malloc(sizeof(dcdhandle));
   memset(dcd, 0, sizeof(dcdhandle));
   dcd->fd = fd;
@@ -330,7 +360,7 @@ __read_dcd_header(PyObject *self, PyObject *args)
     goto error;
   }
 
-  /* 
+  /*
    * Check that the file is big enough to really hold all the frames it claims to have
    */
   {
@@ -354,8 +384,8 @@ __read_dcd_header(PyObject *self, PyObject *args)
     // Size of header
     dcd->header_size = fio_ftell(dcd->fd);
 
-    /* 
-     * It's safe to use ftell, even though ftell returns a long, because the 
+    /*
+     * It's safe to use ftell, even though ftell returns a long, because the
      * header size is < 4GB.
      */
     filesize = stbuf.st_size - fio_ftell(dcd->fd) - firstframesize;
@@ -380,14 +410,14 @@ __read_dcd_header(PyObject *self, PyObject *args)
   temp = Py_BuildValue("i", dcd->natoms);
   if (temp == NULL) goto error;
   if (PyObject_SetAttrString(self, "n_atoms", temp) == -1) {
-    PyErr_SetString(PyExc_AttributeError, "Could not create attribute n_atoms");
+    PyErr_SetString(PyExc_AttributeError, "Could not create attribute numatoms");
     goto error;
   }
   Py_DECREF(temp);
   temp = Py_BuildValue("i", dcd->nsets);
   if (temp == NULL) goto error;
   if (PyObject_SetAttrString(self, "n_frames", temp) == -1) {
-    PyErr_SetString(PyExc_AttributeError, "Could not create attribute n_frames");
+    PyErr_SetString(PyExc_AttributeError, "Could not create attribute numframes");
     goto error;
   }
   Py_DECREF(temp);
@@ -419,11 +449,12 @@ __read_dcd_header(PyObject *self, PyObject *args)
     goto error;
   }
   Py_DECREF(temp);
-	
+
+  // temp = PyCObject_FromVoidPtr(dcd, NULL);
   #if PY_MAJOR_VERSION < 3
-	temp = PyCObject_FromVoidPtr(dcd, NULL);
+    temp = PyCObject_FromVoidPtr(dcd, NULL);
   #else
-	temp = PyCapsule_New(dcd, NULL, NULL);
+    temp = PyCapsule_New(dcd, NULL, NULL);
   #endif
   if (temp == NULL) goto error;
   if (PyObject_SetAttrString(self, "_dcd_C_ptr", temp) == -1) {
@@ -443,17 +474,18 @@ __read_dcd_header(PyObject *self, PyObject *args)
     goto error;
   }
   Py_DECREF(temp);
-	
+
+  // FIXME
   #if PY_MAJOR_VERSION < 3
-  // For debugging purposes
-  temp = PyBuffer_FromMemory(dcd, sizeof(dcdhandle));
-  if (temp == NULL) goto error;
-  if (PyObject_SetAttrString(self, "_dcd_C_str", temp) == -1) {
-    PyErr_SetString(PyExc_AttributeError, "Could not create attribute _dcd_C_str");
-    goto error;
-  }
+    // For debugging purposes
+    temp = PyBuffer_FromMemory(dcd, sizeof(dcdhandle));
+    if (temp == NULL) goto error;
+    if (PyObject_SetAttrString(self, "_dcd_C_str", temp) == -1) {
+      PyErr_SetString(PyExc_AttributeError, "Could not create attribute _dcd_C_str");
+      goto error;
+    }
+    Py_DECREF(temp);
   #endif
-  Py_DECREF(temp);
 
   Py_INCREF(Py_None);
   return Py_None;
@@ -466,7 +498,7 @@ __read_dcd_header(PyObject *self, PyObject *args)
 }
 
 static PyObject *
-__read_timeseries(PyObject *self, PyObject *args)
+_read_timeseries(PyObject *self, PyObject *args)
 {
   PyObject *temp = NULL;
   PyArrayObject *coord = NULL;
@@ -482,17 +514,22 @@ __read_timeseries(PyObject *self, PyObject *args)
   npy_intp dimensions[3];
   float unitcell[6];
   const char* format = "afc";
-	
+
   if (!self) {
-    /* we were in fact called as a module function, try to retrieve 
+    /* we were in fact called as a module function, try to retrieve
        a matching object from args */
     if( !PyArg_ParseTuple(args, "OO!|iiis", &self, &PyList_Type, &atoms, &start, &stop, &skip, &format) )
-      return NULL; 
-  } else {
-    /* we were obviously called as an object method so args should 
-       only have the int value. */
-    if( !PyArg_ParseTuple(args, "O!|iiis", &PyList_Type, &atoms, &start, &stop, &skip, &format) )
       return NULL;
+  } else {
+    /* we were obviously called as an object method so args should
+       only have the int value. */
+    #if PY_MAJOR_VERSION < 3
+      if( !PyArg_ParseTuple(args, "O!|iiis", &PyList_Type, &atoms, &start, &stop, &skip, &format) )
+        return NULL;
+    #else
+      if( !PyArg_ParseTuple(args, "OO!|iiis", &self, &PyList_Type, &atoms, &start, &stop, &skip, &format) )
+        return NULL;
+    #endif
   }
 
   if ((temp = PyObject_GetAttrString(self, "_dcd_C_ptr")) == NULL) { // This gives me a New Reference
@@ -502,16 +539,16 @@ __read_timeseries(PyObject *self, PyObject *args)
   }
 
   #if PY_MAJOR_VERSION < 3
-	dcd = (dcdhandle*)PyCObject_AsVoidPtr(temp);
+    dcd = (dcdhandle*)PyCObject_AsVoidPtr(temp);
   #else
-	dcd = (dcdhandle*)PyCapsule_GetPointer(temp,NULL);
+    dcd = (dcdhandle*)PyCapsule_GetPointer(temp,NULL);
   #endif
   Py_DECREF(temp);
 
   // Assume that start and stop are valid
   if (stop == -1) { stop = dcd->nsets; }
   n_frames = (stop-start+1) / skip;
-  //n_frames = dcd->nsets / skip;
+  //numframes = dcd->nsets / skip;
   n_atoms = PyList_Size((PyObject*)atoms);
   if (n_atoms == 0) {
     PyErr_SetString(PyExc_Exception, "No atoms passed into _read_timeseries function");
@@ -538,7 +575,7 @@ __read_timeseries(PyObject *self, PyObject *args)
 
   lowerb = atomlist[0]; upperb = atomlist[n_atoms-1];
   range = upperb-lowerb+1;
-	
+
   // Figure out the format string
   if (strncasecmp(format, "afc", 3) == 0) {
     dimensions[0] = n_atoms; dimensions[1] = n_frames; dimensions[2] = 3;
@@ -558,7 +595,7 @@ __read_timeseries(PyObject *self, PyObject *args)
 	    if (strncasecmp(format, "cfa", 3) == 0) {
 	      dimensions[0] = 3; dimensions[1] = n_frames; dimensions[2] = n_atoms;
 	    }
-	
+
   coord = (PyArrayObject*) PyArray_SimpleNew(3, dimensions, NPY_DOUBLE);
   if (coord == NULL) goto error;
 
@@ -569,7 +606,7 @@ __read_timeseries(PyObject *self, PyObject *args)
 
   // Jump to starting frame
   jump_to_frame(dcd, start);
-	
+
   // Now read through trajectory and get the atom pos
   tempX = (float*)malloc(sizeof(float)*range);
   tempY = (float*)malloc(sizeof(float)*range);
@@ -578,7 +615,7 @@ __read_timeseries(PyObject *self, PyObject *args)
     PyErr_SetString(PyExc_MemoryError, "Can't allocate temporary space for coordinate arrays");
     goto error;
   }
-	
+
   for (i=0;i<n_frames;i++)
     {
       if (skip > 1) {
@@ -604,7 +641,7 @@ __read_timeseries(PyObject *self, PyObject *args)
 	  PyErr_SetString(PyExc_IOError, "Error skipping frame from DCD file");
 	  goto error;
     	}
-    	dcd->setsread+=numskip;                                                                              
+    	dcd->setsread+=numskip;
       }
       rc = read_dcdsubset(dcd->fd, dcd->natoms, lowerb, upperb, tempX, tempY, tempZ,
 			  unitcell, dcd->nfixed, dcd->first, dcd->freeind, dcd->fixedcoords,
@@ -619,7 +656,7 @@ __read_timeseries(PyObject *self, PyObject *args)
       // Copy into Numeric array only those atoms we are interested in
       for (j=0;j<n_atoms;j++) {
 	index = atomlist[j]-lowerb;
-	/* 
+	/*
 	 * coord[a][b][c] = *(float*)(coord->data + a*coord->strides[0] + b*coord->strides[1] + c*coord->strides[2])
 	 */
 	if (strncasecmp(format, "afc", 3) == 0) {
@@ -660,7 +697,7 @@ __read_timeseries(PyObject *self, PyObject *args)
   // Reset trajectory
   rc = fio_fseek(dcd->fd, dcd->header_size, FIO_SEEK_SET);
   dcd->setsread = 0;
-  dcd->first = 1;	
+  dcd->first = 1;
   free(atomlist);
   free(tempX);
   free(tempY);
@@ -671,7 +708,7 @@ __read_timeseries(PyObject *self, PyObject *args)
   // Reset trajectory
   rc = fio_fseek(dcd->fd, dcd->header_size, FIO_SEEK_SET);
   dcd->setsread = 0;
-  dcd->first = 1;	
+  dcd->first = 1;
   Py_XDECREF(coord);
   if (atomlist != NULL) free(atomlist);
   if (tempX != NULL) free(tempX);
@@ -681,7 +718,7 @@ __read_timeseries(PyObject *self, PyObject *args)
 }
 
 static PyObject *
-__read_next_frame(PyObject *self, PyObject *args)
+_read_next_frame(PyObject *self, PyObject *args)
 {
   dcdhandle *dcd;
   PyObject *temp;
@@ -690,17 +727,22 @@ __read_next_frame(PyObject *self, PyObject *args)
   int rc,numskip;
   float* unitcell;
   float alpha, beta, gamma;
-	
+
   if (!self) {
-    /* we were in fact called as a module function, try to retrieve 
+    /* we were in fact called as a module function, try to retrieve
        a matching object from args */
     if( !PyArg_ParseTuple(args, "OO!O!O!O!|i", &self, &PyArray_Type, &x, &PyArray_Type, &y, &PyArray_Type, &z, &PyArray_Type, &uc, &skip) )
-      return NULL; 
-  } else {
-    /* we were obviously called as an object method so args should 
-       only have the int value. */
-    if( !PyArg_ParseTuple(args, "O!O!O!O!|i", &PyArray_Type, &x, &PyArray_Type, &y, &PyArray_Type, &z, &PyArray_Type, &uc, &skip) ) 
       return NULL;
+  } else {
+    /* we were obviously called as an object method so args should
+       only have the int value. */
+    #if PY_MAJOR_VERSION < 3
+      if( !PyArg_ParseTuple(args, "O!O!O!O!|i", &PyArray_Type, &x, &PyArray_Type, &y, &PyArray_Type, &z, &PyArray_Type, &uc, &skip) )
+        return NULL;
+    #else
+      if( !PyArg_ParseTuple(args, "OO!O!O!O!|i", &self, &PyArray_Type, &x, &PyArray_Type, &y, &PyArray_Type, &z, &PyArray_Type, &uc, &skip) )
+        return NULL;
+    #endif
   }
 
   if ((temp = PyObject_GetAttrString(self, "_dcd_C_ptr")) == NULL) { // This gives me a New Reference
@@ -710,15 +752,15 @@ __read_next_frame(PyObject *self, PyObject *args)
   }
 
   #if PY_MAJOR_VERSION < 3
-	dcd = (dcdhandle*)PyCObject_AsVoidPtr(temp);
+    dcd = (dcdhandle*)PyCObject_AsVoidPtr(temp);
   #else
-	dcd = (dcdhandle*)PyCapsule_GetPointer(temp,NULL);
+    dcd = (dcdhandle*)PyCapsule_GetPointer(temp,NULL);
   #endif
   Py_DECREF(temp);
 
   unitcell = (float*) uc->data;
   unitcell[0] = unitcell[2] = unitcell[5] = 0.0f;
-  unitcell[1] = unitcell[3] = unitcell[4] = 90.0f;                                                                     
+  unitcell[1] = unitcell[3] = unitcell[4] = 90.0f;
 
   /* Check for EOF here; that way all EOF's encountered later must be errors */
   if (dcd->setsread == dcd->nsets) {
@@ -735,11 +777,11 @@ __read_next_frame(PyObject *self, PyObject *args)
 			dcd->reverse, dcd->charmm);
       dcd->first = 0;
       if (rc < 0) {
-        // return an exception
-        PyErr_SetString(PyExc_IOError, "Error reading first frame from DCD file");
-        //fprintf(stderr, "read_dcdstep returned %d\n", rc);
-        return NULL;
-        //return MOLFILE_ERROR;
+	// return an exception
+	PyErr_SetString(PyExc_IOError, "Error reading first frame from DCD file");
+	//fprintf(stderr, "read_dcdstep returned %d\n", rc);
+	return NULL;
+	//return MOLFILE_ERROR;
       }
       dcd->setsread++;
       temp = Py_BuildValue("i", dcd->setsread);
@@ -771,7 +813,7 @@ __read_next_frame(PyObject *self, PyObject *args)
     //fprintf(stderr, "read_dcdstep returned %d\n", rc);
     return NULL;
     //return MOLFILE_ERROR;
-  }                                                                                            
+  }
 
   if (unitcell[1] >= -1.0 && unitcell[1] <= 1.0 &&
       unitcell[3] >= -1.0 && unitcell[3] <= 1.0 &&
@@ -780,69 +822,73 @@ __read_next_frame(PyObject *self, PyObject *args)
     /* cosines of the periodic cell angles written to the DCD file.        */
     /* This formulation improves rounding behavior for orthogonal cells    */
     /* so that the angles end up at precisely 90 degrees, unlike acos().   */
-    /* (changed in MDAnalysis 0.9.0 to have NAMD ordering of the angles;   */
-    /* see Issue 187) */
-    alpha = 90.0 - asin(unitcell[4]) * 90.0 / M_PI_2;
+    alpha = 90.0 - asin(unitcell[1]) * 90.0 / M_PI_2;
     beta  = 90.0 - asin(unitcell[3]) * 90.0 / M_PI_2;
-    gamma = 90.0 - asin(unitcell[1]) * 90.0 / M_PI_2;
+    gamma = 90.0 - asin(unitcell[4]) * 90.0 / M_PI_2;
   } else {
     /* This file was likely generated by NAMD 2.5 and the periodic cell    */
     /* angles are specified in degrees rather than angle cosines.          */
-    alpha = unitcell[4];
+    alpha = unitcell[1];
     beta  = unitcell[3];
-    gamma = unitcell[1];
+    gamma = unitcell[4];
   }
-  unitcell[4] = alpha;
+  unitcell[1] = alpha;
   unitcell[3] = beta;
-  unitcell[1] = gamma;
-	
+  unitcell[4] = gamma;
+
   // Return the frame read
   temp = Py_BuildValue("i", dcd->setsread);
   return temp;
 }
 
 static PyObject *
-__finish_dcd_read(PyObject *self, PyObject *args)
+_finish_dcd_read(PyObject *self, PyObject *args)
 {
   PyObject* temp;
   dcdhandle *dcd;
 
   if (! self) {
-    /* we were in fact called as a module function, try to retrieve 
-       a matching object from args */ 
+    /* we were in fact called as a module function, try to retrieve
+       a matching object from args */
     if( !PyArg_ParseTuple(args, "O", &self) )
-      return NULL; 
-  } else { 
-    /* we were obviously called as an object method so args should 
-       only have the int value. */ 
-    if( !PyArg_ParseTuple(args, "") )
-      return NULL; 
+      return NULL;
+  } else {
+    /* we were obviously called as an object method so args should
+       only have the int value. */
+    #if PY_MAJOR_VERSION < 3
+      if( !PyArg_ParseTuple(args, "") )
+        return NULL;
+    #else
+      if( !PyArg_ParseTuple(args, "O", &self) )
+        return NULL;
+    #endif
+
   }
- 
+
   if ( !PyObject_HasAttrString(self, "_dcd_C_ptr") ) {
     // Raise exception
-    PyErr_SetString(PyExc_AttributeError, "_dcd_C_ptr is not an attribute");
+    PyErr_SetString(PyExc_AttributeError, "_dcd_C_ptr is not an attribute1");
     return NULL;
   }
 
   if ((temp = PyObject_GetAttrString(self, "_dcd_C_ptr")) == NULL) { // This gives me a New Reference
     // Raise exception
-    PyErr_SetString(PyExc_AttributeError, "_dcd_C_ptr is not an attribute");
+    PyErr_SetString(PyExc_AttributeError, "_dcd_C_ptr is not an attribute2");
     return NULL;
   }
 
   #if PY_MAJOR_VERSION < 3
-	dcd = (dcdhandle*)PyCObject_AsVoidPtr(temp);
+    dcd = (dcdhandle*)PyCObject_AsVoidPtr(temp);
   #else
-	dcd = (dcdhandle*)PyCapsule_GetPointer(temp,NULL);
+    dcd = (dcdhandle*)PyCapsule_GetPointer(temp,NULL);
   #endif
-	
+
   close_dcd_read(dcd->freeind, dcd->fixedcoords);
   free(dcd);
   Py_DECREF(temp);
   Py_INCREF(Py_None);
   return Py_None;
-}                                                                                                                      
+}
 int jump_to_frame(dcdhandle *dcd, int frame)
 {
   int rc;
@@ -874,42 +920,47 @@ int jump_to_frame(dcdhandle *dcd, int frame)
 }
 
 static PyObject *
-__jump_to_frame(PyObject *self, PyObject *args)
+_jump_to_frame(PyObject *self, PyObject *args)
 {
   PyObject* temp;
   dcdhandle *dcd;
   int frame;
 
   if (! self) {
-    /* we were in fact called as a module function, try to retrieve 
+    /* we were in fact called as a module function, try to retrieve
        a matching object from args */
     if( !PyArg_ParseTuple(args, "Oi", &self, &frame) )
       return NULL;
   } else {
-    /* we were obviously called as an object method so args should 
+    /* we were obviously called as an object method so args should
        only have the int value. */
-    if( !PyArg_ParseTuple(args, "i", &frame) )
-      return NULL;
-  }             
-  
+    #if PY_MAJOR_VERSION < 3
+      if( !PyArg_ParseTuple(args, "i", &frame) )
+        return NULL;
+    #else
+      if( !PyArg_ParseTuple(args, "Oi", &self, &frame) )
+        return NULL;
+    #endif
+  }
+
   if ( !PyObject_HasAttrString(self, "_dcd_C_ptr") ) {
     // Raise exception
     PyErr_SetString(PyExc_AttributeError, "_dcd_C_ptr is not an attribute");
     return NULL;
-  } 
-  
+  }
+
   if ((temp = PyObject_GetAttrString(self, "_dcd_C_ptr")) == NULL) { // This gives me a New Reference
     // Raise exception
     PyErr_SetString(PyExc_AttributeError, "_dcd_C_ptr is not an attribute");
     return NULL;
   }
   #if PY_MAJOR_VERSION < 3
-	dcd = (dcdhandle*)PyCObject_AsVoidPtr(temp);
+    dcd = (dcdhandle*)PyCObject_AsVoidPtr(temp);
   #else
-	dcd = (dcdhandle*)PyCapsule_GetPointer(temp,NULL);
+    dcd = (dcdhandle*)PyCapsule_GetPointer(temp,NULL);
   #endif
   Py_DECREF(temp);
-	
+
   /*if (frame > dcd->nsets) {
     PyErr_SetString(PyExc_IndexError, "Invalid frame");
     return NULL;
@@ -922,7 +973,7 @@ __jump_to_frame(PyObject *self, PyObject *args)
     extrablocksize = dcd->charmm & DCD_HAS_EXTRA_BLOCK ? 48 + 8 : 0;
     ndims = dcd->charmm & DCD_HAS_4DIMS ? 4 : 3;
     firstframesize = (dcd->natoms+2) * ndims * sizeof(float) + extrablocksize;
-    framesize = (dcd->natoms-dcd->nfixed+2) * ndims * sizeof(float) 
+    framesize = (dcd->natoms-dcd->nfixed+2) * ndims * sizeof(float)
     + extrablocksize;
     // Use zero indexing
     if (frame == 0) {
@@ -942,40 +993,45 @@ __jump_to_frame(PyObject *self, PyObject *args)
 }
 
 static PyObject *
-__reset_dcd_read(PyObject *self, PyObject *args)
+_reset_dcd_read(PyObject *self, PyObject *args)
 {
   PyObject* temp;
   dcdhandle *dcd;
   int rc;
-	
+
   if (! self) {
-    /* we were in fact called as a module function, try to retrieve 
+    /* we were in fact called as a module function, try to retrieve
        a matching object from args */
     if( !PyArg_ParseTuple(args, "O", &self) )
       return NULL;
   } else {
-    /* we were obviously called as an object method so args should 
+    /* we were obviously called as an object method so args should
        only have the int value. */
-    if( !PyArg_ParseTuple(args, "") )
-      return NULL;
-  }                                                                                                                    
+    #if PY_MAJOR_VERSION < 3
+      if( !PyArg_ParseTuple(args, "") )
+        return NULL;
+    #else
+      if( !PyArg_ParseTuple(args, "i", &self) )
+        return NULL;
+    #endif
+  }
 
   if ( !PyObject_HasAttrString(self, "_dcd_C_ptr") ) {
     // Raise exception
-    PyErr_SetString(PyExc_AttributeError, "_dcd_C_ptr is not an attribute");
+    PyErr_SetString(PyExc_AttributeError, "_dcd_C_ptr is not an attribute1");
     return NULL;
   }
 
   if ((temp = PyObject_GetAttrString(self, "_dcd_C_ptr")) == NULL) { // This gives me a New Reference
     // Raise exception
-    PyErr_SetString(PyExc_AttributeError, "_dcd_C_ptr is not an attribute");
+    PyErr_SetString(PyExc_AttributeError, "_dcd_C_ptr is not an attribute2");
     return NULL;
   }
 
   #if PY_MAJOR_VERSION < 3
-	dcd = (dcdhandle*)PyCObject_AsVoidPtr(temp);
+    dcd = (dcdhandle*)PyCObject_AsVoidPtr(temp);
   #else
-	dcd = (dcdhandle*)PyCapsule_GetPointer(temp,NULL);
+    dcd = (dcdhandle*)PyCapsule_GetPointer(temp,NULL);
   #endif
   rc = fio_fseek(dcd->fd, dcd->header_size, FIO_SEEK_SET);
   dcd->setsread = 0;
@@ -986,17 +1042,18 @@ __reset_dcd_read(PyObject *self, PyObject *args)
 }
 
 static PyMethodDef DCDMethods[] = {
-  {"__write_dcd_header", __write_dcd_header, METH_VARARGS, "Write a DCD header."},
-  {"__write_next_frame", __write_next_frame, METH_VARARGS, "Write the next timestep."},
-  {"__finish_dcd_write", __finish_dcd_write, METH_VARARGS, "Clean up and data for handling dcd file."},
-  {"__read_dcd_header", __read_dcd_header, METH_VARARGS, "Read in a DCD header."},
-  {"__read_next_frame", __read_next_frame, METH_VARARGS, "Read in the next timestep."},
-  {"__jump_to_frame", __jump_to_frame, METH_VARARGS, "Jump to specified timestep."},
-  {"__reset_dcd_read", __reset_dcd_read, METH_VARARGS, "Reset dcd file reading."},
-  {"__finish_dcd_read", __finish_dcd_read, METH_VARARGS, "Clean up any data for handling dcd file."},
-  {"__read_timeseries", __read_timeseries, METH_VARARGS, "Return a Numpy array of the coordinates for a set of atoms for the whole trajectory."},
+  {"_write_dcd_header", _write_dcd_header, METH_VARARGS, "Write a DCD header."},
+  {"_write_next_frame", _write_next_frame, METH_VARARGS, "Write the next timestep."},
+  {"_finish_dcd_write", _finish_dcd_write, METH_VARARGS, "Clean up and data for handling dcd file."},
+  {"_read_dcd_header", _read_dcd_header, METH_VARARGS, "Read in a DCD header."},
+  {"_read_next_frame", _read_next_frame, METH_VARARGS, "Read in the next timestep."},
+  {"_jump_to_frame", _jump_to_frame, METH_VARARGS, "Jump to specified timestep."},
+  {"_reset_dcd_read", _reset_dcd_read, METH_VARARGS, "Reset dcd file reading."},
+  {"_finish_dcd_read", _finish_dcd_read, METH_VARARGS, "Clean up any data for handling dcd file."},
+  {"_read_timeseries", _read_timeseries, METH_VARARGS, "Return a Numeric array of the coordinates for a set of atoms for the whole trajectory."},
   {NULL, NULL, 0, NULL}	/* Sentinel */
 };
+
 
 #if PY_VERSION_HEX >= 0x03000000
   PyObject*
