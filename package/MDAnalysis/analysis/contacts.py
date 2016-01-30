@@ -101,8 +101,7 @@ in MDAnalysis. ::
 The first graph shows that when AdK opens, about 20% of the salt
 bridges that existed in the closed state disappear when the enzyme
 opens. They open in a step-wise fashion (made more clear by the movie
-http://sbcb.bioch.ox.ac.uk/oliver/Movies/AdK/AdK_zipper_cartoon.avi
-(divx, on Mac use http://perian.org)).
+`AdK_zipper_cartoon.avi`_).
 
 The output graphs can be made prettier but if you look at the code
 itself then you'll quickly figure out what to do. The qavg plot is the
@@ -113,6 +112,9 @@ but is is included for illustration.
 See the docs for :class:`ContactAnalysis1` for another example.
 
 
+.. AdK_zipper_cartoon.avi:
+   http://www.ncbi.nlm.nih.gov/pmc/articles/PMC2803350/bin/NIHMS150766-supplement-03.avi
+
 Two-dimensional contact analysis (q1-q2)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -120,7 +122,7 @@ Analyze a single DIMS transition of AdK between its closed and open
 conformation and plot the trajectory projected on q1-q2::
 
   import MDAnalysis.analysis.contacts
-  from MDAnalysis.tests.datafiles import *
+  from MDAnalysis.tests.datafiles import PSF, DCD
   C = MDAnalysis.analysis.contacts.ContactAnalysis(PSF, DCD)
   C.run()
   C.plot()
@@ -199,9 +201,9 @@ class ContactAnalysis(object):
             interest; the default is to only select the C-alpha atoms
             in *ref1* and *ref*2 ["name CA"]
 
-           .. Note:: If *selection* produces more than one atom per
-                     residue then you will get multiple contacts per
-                     residue unless you also set *centroids* = ``True``
+            .. Note:: If *selection* produces more than one atom per
+                      residue then you will get multiple contacts per
+                      residue unless you also set *centroids* = ``True``
           *centroids*
             If set to ``True``, use the centroids for the selected atoms on a
             per-residue basis to compute contacts. This allows, for instance
@@ -318,8 +320,6 @@ class ContactAnalysis(object):
         store=True) and writes them to a bzip2-compressed data file.
         """
         if self._skip or self.output_exists(force=force):
-            import warnings
-
             warnings.warn("File {output!r} or {output_bz2!r} already exists, loading {trajectory!r}.".format(**vars(self)))
             try:
                 self.load(self.output)
@@ -409,11 +409,6 @@ class ContactAnalysis(object):
 class ContactAnalysis1(object):
     """Perform a very flexible native contact analysis with respect to a single reference.
 
-    .. class:: ContactAnalysis1(topology, trajectory[,selection[,refgroup[,radius[,outfile]]]])
-
-    .. class:: ContactAnalysis1(universe[,selection[,refgroup[,radius[,outfile]]]])
-
-
     This analysis class allows one to calculate the fraction of native contacts
     *q* between two arbitrary groups of atoms with respect to an arbitrary
     reference structure. For instance, as a reference one could take a crystal
@@ -425,8 +420,8 @@ class ContactAnalysis1(object):
     the reference atoms; this example uses some arbitrary selections::
 
       ref = Universe('crystal.pdb')
-      refA = re.select_atoms('name CA and segid A and resid 6:100')
-      refB = re.select_atoms('name CA and segid B and resid 1:40')
+      refA = ref.select_atoms('name CA and segid A and resid 6:100')
+      refB = ref.select_atoms('name CA and segid B and resid 1:40')
 
     Load the trajectory::
 
@@ -597,7 +592,6 @@ class ContactAnalysis1(object):
         *step*
             The number of frames to skip during trajectory iteration (default: use every frame)
         """
-        import warnings
 
         if 'start_frame' in kwargs:
             warnings.warn("start_frame argument has been deprecated, use start instead --"
@@ -615,8 +609,6 @@ class ContactAnalysis1(object):
             step = kwargs.pop('step_value')
 
         if self.output_exists(force=force):
-            import warnings
-
             warnings.warn("File %r already exists, loading it INSTEAD of trajectory %r. "
                           "Use force=True to overwrite the output file. " %
                           (self.output, self.universe.trajectory.filename))
@@ -629,11 +621,6 @@ class ContactAnalysis1(object):
             records = []
             self.qavg *= 0  # average contact existence
             A, B = self.selections
-            # determine the end_frame value to use:
-            total_frames = self.universe.trajectory.n_frames
-            if not stop:
-                # use the total number of frames in trajectory if no final value specified
-                end_frame = total_frames
             for ts in self.universe.trajectory[start:stop:step]:
                 frame = ts.frame
                 # use pre-allocated distance array to save a little bit of time
@@ -646,8 +633,13 @@ class ContactAnalysis1(object):
                 out.write("{frame:4d}  {q1:8.6f} {n1:5d}\n".format(**vars()))
         if store:
             self.timeseries = np.array(records).T
-        n_frames = len(range(total_frames)[start:stop:step])
-        self.qavg /= n_frames
+        n_frames = len(np.arange(
+            self.universe.trajectory.n_frames)[start:stop:step])
+        if n_frames > 0:
+            self.qavg /= n_frames
+        else:
+            logger.warn("No frames were analyzed. Check values of start, stop, step.") 
+            logger.debug("start={start} stop={stop} step={step}".format(**vars()))
         np.savetxt(self.outarray, self.qavg, fmt="%8.6f")
         return self.output
 

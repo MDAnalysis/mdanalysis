@@ -1,3 +1,9 @@
+# Only build for develop and master (and PRs)
+branches:
+  only:
+    - master
+    - develop
+
 language: python
 env:
   global:
