@@ -472,7 +472,13 @@ try:
     DCDReader._reset_dcd_read = new.instancemethod( _dcdmodule._reset_dcd_read, None, DCDReader )
     DCDReader._finish_dcd_read = new.instancemethod( _dcdmodule._finish_dcd_read, None, DCDReader )
     DCDReader._read_timeseries = new.instancemethod( _dcdmodule._read_timeseries, None, DCDReader )
+
+    DCDWriter._write_dcd_header = new.instancemethod(_dcdmodule._write_dcd_header, None, DCDWriter)
+    DCDWriter._write_next_frame = new.instancemethod(_dcdmodule._write_next_frame, None, DCDWriter)
+    DCDWriter._finish_dcd_write = new.instancemethod(_dcdmodule._finish_dcd_write, None, DCDWriter)
+
     DCDReader._read_timecorrel = new.instancemethod(dcdtimeseries.__read_timecorrel, None, DCDReader)
+
     del( _dcdmodule )
 except ImportError:
     DCDReader._read_dcd_header = lambda self: _dcdmodule._read_dcd_header( self )
@@ -481,4 +487,10 @@ except ImportError:
     DCDReader._reset_dcd_read = lambda self: _dcdmodule._reset_dcd_read( self )
     DCDReader._finish_dcd_read = lambda self: _dcdmodule._finish_dcd_read( self )
     DCDReader._read_timeseries = lambda self: _dcdmodule._read_timeseries( self )
-    DCDReader._read_timecorrel = lambda self: dcdtimeseries.__read_timecorrel( self )
+
+    #DCDWriter._write_dcd_header = new.instancemethod(_dcdmodule._write_dcd_header, None, DCDWriter)
+    DCDWriter._write_dcd_header = lambda self, n_atoms, start, step, delta, remarks: _dcdmodule._write_dcd_header( self, n_atoms, start, step, delta, remarks)
+    DCDWriter._write_next_frame = lambda self, x, y , z, unitcell: _dcdmodule._write_next_frame( self , x, y, z, unitcell)
+    DCDWriter._finish_dcd_write = lambda self: _dcdmodule._finish_dcd_write( self )
+
+    #DCDReader._read_timecorrel = lambda self, atomlist, atomcounts, format, auxdata, sizedata, lowerb, upperb, start, stop, skip : dcdtimeseries.__read_timecorrel( self, atomlist, atomcounts, format, auxdata,sizedata, lowerb, upperb, start, stop, skip)
