@@ -62,6 +62,7 @@ __all__ = [
     "PRM", "TRJ", "TRJ_bz2",  # Amber (no periodic box)
     "INPCRD",
     "PRMpbc", "TRJpbc_bz2",  # Amber (periodic box)
+    "PRM7", "NCDFtruncoct",  # Amber (cpptrj test trajectory, see Issue 488)
     "PRM12", "TRJ12_bz2",  # Amber (v12 format, Issue 100)
     "PRMncdf", "TRJncdf", "NCDF",  # Amber (netcdf)
     "PFncdf_Top", "PFncdf_Trj", # Amber ncdf with Positions and Forces
@@ -298,3 +299,8 @@ Martini_membrane_gro = resource_filename(__name__, 'data/martini_dppc_chol_bilay
 
 # Contains one of each residue in 'nucleic' selections
 NUCLsel = resource_filename(__name__, 'data/nucl_res.pdb')
+
+
+#------------------------------------------------------------
+# This should be the last line: clean up namespace
+del resource_filename
