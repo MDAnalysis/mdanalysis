@@ -301,6 +301,5 @@ Martini_membrane_gro = resource_filename(__name__, 'data/martini_dppc_chol_bilay
 NUCLsel = resource_filename(__name__, 'data/nucl_res.pdb')
 
 
-#------------------------------------------------------------
 # This should be the last line: clean up namespace
 del resource_filename
