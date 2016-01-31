@@ -310,9 +310,12 @@ def extensions(config):
     util = MDAExtension('lib.formats.cython_util',
                         sources=['MDAnalysis/lib/formats/cython_util.pyx'],
                         include_dirs=include_dirs)
+    trans = MDAExtension('lib.trans',
+                         sources=['MDAnalysis/lib/trans.pyx'],
+                         include_dirs=include_dirs)
 
     extensions = [dcd, dcd_time, distances, distances_omp, qcprot,
-                  transformation, xdrlib, util]
+                  transformation, xdrlib, util, trans]
     if use_cython:
         extensions = cythonize(extensions)
     return extensions
