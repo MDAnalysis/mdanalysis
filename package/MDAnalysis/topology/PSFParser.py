@@ -62,7 +62,6 @@ class PSFParser(TopologyReader):
         """
         # Open and check psf validity
         with openany(self.filename, 'rt') as psffile:
-            print(type(psffile))
             header = next(psffile)
             if header[:3] != "PSF":
                 err = ("{0} is not valid PSF file (header = {1})"
