@@ -1,5 +1,14 @@
 # -*- coding: utf-8 -*-
 #     pylint: disable=E1101
+
+"""
+Linear Density --- :mod:`MDAnalysis.analysis.lineardensity`
+===========================================================
+
+A tool to compute mass and charge density profiles along the three
+cartesian axes of the simulation cell. Works only for orthorombic,
+fixed volume cells (thus for simulations in canonical NVT ensemble).
+"""
 from __future__ import division
 
 import os.path as path
@@ -8,6 +17,52 @@ import numpy as np
 from MDAnalysis.analysis.base import AnalysisBase
 
 class LinearDensity(AnalysisBase):
+    """Linear density profile
+    LinearDensity(universe, selection, grouping='atoms', binsize=0.25)
+
+    Parameters
+    ----------
+    universe : `Universe` object
+      universe whose density profiles will be computed
+    selection : `AtomGroup` object
+      Any atomgroup belonging to universe
+
+    Keywords
+    --------
+    grouping : str {'atoms', 'residues', 'segments', 'fragments'}
+          Density profiles will be computed on the center of geometry
+          of a selected group of atoms ['atoms']
+
+    binsize : float
+          Bin width in Angstrom used to build linear density
+          histograms. Defines the resolution of the resulting density 
+          profile (smaller --> higher resolution) [0.25]
+
+    start : int
+          The frame to start at [0]
+    stop : int
+          The frame to end at [-1]
+    step : int
+          The step size through the trajectory in frames [0]
+
+    Example
+    -------
+    First create a LinearDensity object by supplying a universe and
+    a selection, then use the `run` method
+      ldens = LinearDensity(universe, selection)
+      ldens.run()
+    Analysis can be run in parallel on multicore machines by supplying
+    the argument `parallel=True` to the `run` method:
+      ldens.run(parallel=True, nthreads=4)
+    
+    Density proiles are output to file through the `save` method:
+      ldens.save(description='mydensprof', form='txt')
+    which will write the density profiles in a file named
+    <trajectory_filename>.mydensprof_<grouping>.ldens
+    Results can be output in npz format by specifying `form='npz'`
+
+    .. versionadded:: 0.14.0
+    """
     def __init__(self, universe, selection, grouping='atoms', binsize=0.25,
                  start=None, stop=None, step=None):
         self._ags = [selection] # allows use of run(parallel=True)
@@ -22,14 +77,14 @@ class LinearDensity(AnalysisBase):
         # Dictionary containing results
         self.results = {'x': {'dim': 0}, 'y': {'dim': 1}, 'z': {'dim': 2}}
         # Box sides
-        self.dimensions = [side for side in self._universe.dimensions[0:3]]
+        self.dimensions = self._universe.dimensions[:3]
         self.volume = np.prod(self.dimensions)
-        bins = [int(side//self.binsize) for side in self.dimensions] # number of bins
+        bins = (self.dimensions // self.binsize).astype(int) # number of bins
 
         # Here we choose a number of bins of the largest cell side so that
         # x, y and z values can use the same "coord" column in the output file
-        self.nbins = max(bins)
-        slices_vol = [self.volume/n for n in bins]
+        self.nbins = bins.max()
+        slices_vol = self.volume/bins
 
         self.keys = ['pos', 'pos_std', 'char', 'char_std']
 
@@ -55,13 +110,12 @@ class LinearDensity(AnalysisBase):
             self.masses = np.array([elem.total_mass() for elem in group])
             self.charges = np.array([elem.total_charge() for elem in group])
         except AttributeError: # much much faster for atoms
-            self.masses = np.array(self._ags[0].masses)
-            self.charges = np.array(self._ags[0].charges)
+            self.masses = self._ags[0].masses
+            self.charges = self._ags[0].charges
 
         self.totalmass = np.sum(self.masses)
 
-    #@profile
-    def _single_frame(self, timestep):
+    def _single_frame(self, _):
         self.group = getattr(self._ags[0], self.grouping)
         self._ags[0].wrap(compound=self.grouping)
 
@@ -112,6 +166,27 @@ class LinearDensity(AnalysisBase):
             self.results[dim]['char_std'] /= (self.results[dim]['slice volume']*k)
 
     def save(self, description='', form='txt'):
+        """ Save density profile to file
+        Allows to save the density profile to either a ASCII txt file or a
+        binary numpy npz file. Output file has extension 'ldens' and begins
+        with the name of the trajectory file.
+
+        Keywords
+        --------
+        description : str
+          An arbitrary description added to the output filename. Can be useful
+        form : str {'txt', 'npz'}
+          Format of the output. 'txt' will generate an ASCII text file while 'npz'
+          will produce a numpy binary file.
+
+        Example
+        -------
+        After initializing and running a `LinearDensity` object, results can be written
+        to file as follows:
+          ldens.save(description='mydensprof', form='txt')
+        which will output the linear density profiles in a file named
+        <trajectory_filename>.mydensprof_<grouping>.ldens
+        """
         # Take root of trajectory filename for output file naming
         trajname = path.splitext(path.basename(self._universe.trajectory.dcdfilename))[0]
         # additional string for naming the output file
