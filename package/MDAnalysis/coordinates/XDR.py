@@ -43,6 +43,22 @@ def offsets_filename(filename, ending='npz'):
                                                         ending=ending))
 
 
+def read_numpy_offsets(filename):
+    """read offsets into a dictionary
+
+    Parameters
+    ----------
+    filename : str
+        filename of offsets
+
+    Returns
+    -------
+    offsets : dict
+        dictionary of offsets information
+    """
+    return {k: v for k, v in six.iteritems(np.load(filename))}
+
+
 class XDRBaseReader(base.Reader):
     """Base class for xdrlib file formats xtc and trr"""
     def __init__(self, filename, convert_units=True, sub=None,
@@ -93,8 +109,7 @@ class XDRBaseReader(base.Reader):
             self._read_offsets(store=True)
             return
 
-        with open(fname, 'rb') as f:
-            data = {k: v for k, v in six.iteritems(np.load(f))}
+        data = read_numpy_offsets(fname)
 
         ctime_ok = getctime(self.filename) == data['ctime']
         size_ok = getsize(self.filename) == data['size']

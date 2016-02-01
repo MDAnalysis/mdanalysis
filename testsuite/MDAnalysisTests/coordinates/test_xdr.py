@@ -728,8 +728,7 @@ class _GromacsReader_offsets(TestCase):
                                   err_msg="wrong frame offsets")
 
         outfile_offsets = XDR.offsets_filename(self.traj)
-        with open(outfile_offsets, 'rb') as f:
-            saved_offsets = {k: v for k, v in six.iteritems(np.load(f))}
+        saved_offsets = XDR.read_numpy_offsets(outfile_offsets)
 
         assert_array_almost_equal(self.trajectory._xdr.offsets,
                                   saved_offsets['offsets'],
@@ -753,8 +752,7 @@ class _GromacsReader_offsets(TestCase):
         # check that stored offsets are not loaded when trajectory
         # size differs from stored size
         fname = XDR.offsets_filename(self.traj)
-        with open(fname, 'rb') as f:
-            saved_offsets = {k: v for k, v in six.iteritems(np.load(f))}
+        saved_offsets = XDR.read_numpy_offsets(fname)
         saved_offsets['size'] += 1
         with open(fname, 'wb') as f:
             np.savez(f, **saved_offsets)
@@ -770,8 +768,7 @@ class _GromacsReader_offsets(TestCase):
         # check that stored offsets are not loaded when trajectory
         # ctime differs from stored ctime
         fname = XDR.offsets_filename(self.traj)
-        with open(fname, 'rb') as f:
-            saved_offsets = {k: v for k, v in six.iteritems(np.load(f))}
+        saved_offsets = XDR.read_numpy_offsets(fname)
         saved_offsets['ctime'] += 1
         with open(fname, 'wb') as f:
             np.savez(f, **saved_offsets)
