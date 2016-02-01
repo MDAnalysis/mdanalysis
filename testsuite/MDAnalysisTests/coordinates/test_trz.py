@@ -96,6 +96,9 @@ class TestTRZReader(TestCase, RefTRZ):
         assert_almost_equal(self.trz.time, self.ref_time, self.prec,
                             "wrong time value in trz")
 
+    def test_title(self):
+        assert_equal(self.ref_title, self.trz.title, "wrong title in trz")
+
     def test_get_writer(self):
         with tempdir.in_tempdir():
             self.outfile = 'test-trz-writer.trz'
@@ -126,6 +129,7 @@ class TestTRZWriter(TestCase, RefTRZ):
         self.tmpdir = tempdir.TempDir()
         self.outfile = self.tmpdir.name + '/test-trz-writer.trz'
         self.Writer = mda.coordinates.TRZ.TRZWriter
+        self.title_to_write = 'Test title TRZ'
 
     def tearDown(self):
         del self.universe
@@ -139,7 +143,7 @@ class TestTRZWriter(TestCase, RefTRZ):
 
     def test_write_trajectory(self):
         t = self.universe.trajectory
-        W = self.Writer(self.outfile, t.n_atoms)
+        W = self.Writer(self.outfile, t.n_atoms, title=self.title_to_write)
         self._copy_traj(W)
 
     def _copy_traj(self, writer):
@@ -148,6 +152,9 @@ class TestTRZWriter(TestCase, RefTRZ):
         writer.close()
 
         uw = mda.Universe(TRZ_psf, self.outfile)
+
+        assert_equal(uw.trajectory.title, self.title_to_write,
+                     "Title mismatch between original and written files.")
 
         for orig_ts, written_ts in zip(self.universe.trajectory,
                                        uw.trajectory):
