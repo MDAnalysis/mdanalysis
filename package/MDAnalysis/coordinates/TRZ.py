@@ -443,7 +443,8 @@ class TRZWriter(base.Writer):
 
         :Keywords:
          *title*
-          title of the trajectory
+          title of the trajectory; the title must be 80 characters or shorter,
+          a longer title raises a ValueError exception.
          *convert_units*
           units are converted to the MDAnalysis base format; ``None`` selects
           the value of :data:`MDAnalysis.core.flags` ['convert_lengths'].
@@ -455,6 +456,9 @@ class TRZWriter(base.Writer):
         if n_atoms == 0:
             raise ValueError("TRZWriter: no atoms in output trajectory")
         self.n_atoms = n_atoms
+
+        if len(title) > 80:
+            raise ValueError("TRZWriter: 'title' must be 80 characters of shorter")
 
         if convert_units is None:
             convert_units = flags['convert_lengths']

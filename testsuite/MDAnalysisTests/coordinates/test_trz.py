@@ -3,7 +3,7 @@ import os
 from six.moves import zip
 
 from numpy.testing import (assert_equal, assert_array_almost_equal,
-                           assert_almost_equal)
+                           assert_almost_equal, assert_raises)
 import tempdir
 import numpy as np
 
@@ -128,6 +128,7 @@ class TestTRZWriter(TestCase, RefTRZ):
         self.prec = 3
         self.tmpdir = tempdir.TempDir()
         self.outfile = self.tmpdir.name + '/test-trz-writer.trz'
+        self.outfile_long = self.tmpdir.name + '/test-trz-writer-long.trz'
         self.Writer = mda.coordinates.TRZ.TRZWriter
         self.title_to_write = 'Test title TRZ'
 
@@ -136,6 +137,7 @@ class TestTRZWriter(TestCase, RefTRZ):
         del self.prec
         try:
             os.unlink(self.outfile)
+            os.unlink(self.outfile_long)
         except OSError:
             pass
         del self.Writer
@@ -175,6 +177,11 @@ class TestTRZWriter(TestCase, RefTRZ):
                 assert_array_almost_equal(orig_ts.data[att],
                                           written_ts.data[att], self.prec,
                                           err_msg="TS equal failed for {0!s}".format(att))
+
+    def test_long_title(self):
+        title = '*' * 81
+        assert_raises(ValueError,
+                      self.Writer, self.outfile, self.ref_n_atoms, title=title)
 
 
 class TestTRZWriter2(object):
