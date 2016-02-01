@@ -32,6 +32,10 @@ from MDAnalysisTests.coordinates.base import (BaseReaderTest, BaseReference,
 import MDAnalysis.core.AtomGroup
 from MDAnalysis.coordinates import XDR
 
+# I want to catch all warnings in the tests. If this is not set at the start it
+# could cause test that check for warnings to fail.
+warnings.simplefilter('always')
+
 
 class _XDRReader_Sub(TestCase):
 
