@@ -761,7 +761,7 @@ class _GromacsReader_offsets(TestCase):
             warnings.simplefilter('always')
             self._reader(self.traj)
         assert_equal(warn[0].message.args,
-                     ('Reload offsets from trajectory\n ctime or size did not match', ))
+                     ('Reload offsets from trajectory\n ctime or size or n_atoms did not match', ))
 
     @dec.slow
     def test_persistent_offsets_ctime_mismatch(self):
@@ -777,7 +777,23 @@ class _GromacsReader_offsets(TestCase):
             warnings.simplefilter('always')
             self._reader(self.traj)
         assert_equal(warn[0].message.args,
-                     ('Reload offsets from trajectory\n ctime or size did not match', ))
+                     ('Reload offsets from trajectory\n ctime or size or n_atoms did not match', ))
+
+    @dec.slow
+    def test_persistent_offsets_natoms_mismatch(self):
+        # check that stored offsets are not loaded when trajectory
+        # ctime differs from stored ctime
+        fname = XDR.offsets_filename(self.traj)
+        saved_offsets = XDR.read_numpy_offsets(fname)
+        saved_offsets['n_atoms'] += 1
+        with open(fname, 'wb') as f:
+            np.savez(f, **saved_offsets)
+
+        with warnings.catch_warnings(record=True) as warn:
+            warnings.simplefilter('always')
+            self._reader(self.traj)
+        assert_equal(warn[0].message.args,
+                     ('Reload offsets from trajectory\n ctime or size or n_atoms did not match', ))
 
     # TODO: This doesn't test if the offsets work AT ALL. the old
     # implementation only checked if the offsets were ok to set back to the old

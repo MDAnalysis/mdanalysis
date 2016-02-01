@@ -68,6 +68,12 @@ class XDRBaseReader(base.Reader):
                                             **kwargs)
         self._xdr = self._file(self.filename)
 
+        self._sub = sub
+        if self._sub is not None:
+            self.n_atoms = len(self._sub)
+        else:
+            self.n_atoms = self._xdr.n_atoms
+
         if not refresh_offsets:
             self._load_offsets()
         else:
@@ -80,12 +86,6 @@ class XDRBaseReader(base.Reader):
             self._xdr.seek(1)
         except StopIteration:
             dt = 0
-
-        self._sub = sub
-        if self._sub is not None:
-            self.n_atoms = len(self._sub)
-        else:
-            self.n_atoms = self._xdr.n_atoms
 
         self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
         self._frame = 0
@@ -113,10 +113,11 @@ class XDRBaseReader(base.Reader):
 
         ctime_ok = getctime(self.filename) == data['ctime']
         size_ok = getsize(self.filename) == data['size']
+        n_atoms_ok = self.n_atoms == data['n_atoms']
 
-        if not (ctime_ok and size_ok):
+        if not (ctime_ok and size_ok and n_atoms_ok):
             warnings.warn("Reload offsets from trajectory\n "
-                          "ctime or size did not match")
+                          "ctime or size or n_atoms did not match")
             self._read_offsets(store=True)
         else:
             self._xdr.set_offsets(data['offsets'])
@@ -129,7 +130,8 @@ class XDRBaseReader(base.Reader):
             size = getsize(self.filename)
             try:
                 np.savez(offsets_filename(self.filename),
-                         offsets=offsets, size=size, ctime=ctime)
+                         offsets=offsets, size=size, ctime=ctime,
+                         n_atoms=self.n_atoms)
             except Exception as e:
                 try:
                     warnings.warn("Couldn't save offsets because: {}".format(
