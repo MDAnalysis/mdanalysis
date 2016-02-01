@@ -71,10 +71,10 @@ Reads coordinates, velocities and more (see attributes of the
 .. autoclass:: TRZWriter
    :members:
 """
-
+import six
 from six.moves import range
 
-from sys import maxint
+import sys
 import warnings
 import numpy as np
 import os
@@ -358,13 +358,21 @@ class TRZReader(base.Reader):
 
         .. versionadded:: 0.9.0
         """
-        maxi_l = long(maxint)
-
-        framesize = long(self._dtype.itemsize)
-        seeksize = framesize * nframes
+        # On python 2, seek has issues with long int. This is solve in python 3
+        # where there is no longer a distinction between int and long int.
+        if six.PY2:
+            framesize = long(self._dtype.itemsize)
+            seeksize = framesize * nframes
+            maxi_l = long(sys.maxint)
+        else:
+            framesize = self._dtype.itemsize
+            seeksize = framesize * nframes
+            maxi_l = seeksize + 1
 
         if seeksize > maxi_l:
             # Workaround for seek not liking long ints
+            # On python 3 this branch will never be used as we defined maxi_l
+            # greater than seeksize.
             framesize = long(framesize)
             seeksize = framesize * nframes
 

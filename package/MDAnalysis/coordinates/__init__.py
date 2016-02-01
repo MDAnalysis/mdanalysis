@@ -694,13 +694,13 @@ from . import PDBQT
 from . import PQR
 from . import TRJ
 from . import TRR
+from . import TRZ
 from . import XTC
 from . import XYZ
 
 try:
     from . import DCD
     from . import LAMMPS
-    from . import TRZ
 except ImportError as e:
     # The import is expected to fail under Python 3.
     # It should not fail on Python 2, however.
