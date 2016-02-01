@@ -641,7 +641,7 @@ class TestXTCWriter_2(BaseWriterTest):
             ts = Timestep(n_atoms=n_atoms)
             ts.positions = np.random.random(size=(n_atoms, 3))
             w.write(ts)
-        xtc = mda.lib.formats.xdrlib.XTCFile(out)
+        xtc = mda.lib.formats.libmdaxdr.XTCFile(out)
         frame = xtc.read()
         assert_equal(len(xtc), 1)
         assert_equal(xtc.n_atoms, n_atoms)
