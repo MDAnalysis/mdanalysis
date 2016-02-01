@@ -33,6 +33,11 @@ class _NCDFReaderTest(_TRJReaderTest):
         assert_equal(data.Conventions, 'AMBER')
         assert_equal(data.ConventionVersion, '1.0')
 
+    def test_dt(self):
+        ref = 0.0
+        assert_almost_equal(ref, self.universe.trajectory.dt, self.prec)
+        assert_almost_equal(ref, self.universe.trajectory.ts.dt, self.prec)
+
 
 class TestNCDFReader(_NCDFReaderTest, RefVGV):
     pass
@@ -101,6 +106,11 @@ class TestNCDFReader2(TestCase):
         """Check time on second frame"""
         ref = 35.04
         assert_almost_equal(ref, self.u.trajectory[1].time, self.prec)
+
+    def test_dt(self):
+        ref = 0.02
+        assert_almost_equal(ref, self.u.trajectory.dt, self.prec)
+        assert_almost_equal(ref, self.u.trajectory.ts.dt, self.prec)
 
 
 class _NCDFWriterTest(TestCase):
