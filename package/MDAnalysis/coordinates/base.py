@@ -170,6 +170,9 @@ class Timestep(object):
           Whether this Timestep has velocity information [``False``]
         forces : bool, optional
           Whether this Timestep has force information [``False``]
+        reader : Reader, optional
+          A weak reference to the owning Reader.  Used for
+          when attributes require trajectory manipulation (e.g. dt)
         dt : float, optional
           The time difference between frames (ps).  If :attr:`time`
           is set, then `dt` will be ignored.
@@ -193,6 +196,11 @@ class Timestep(object):
                 self.data[att] = kwargs[att]
             except KeyError:
                 pass
+        try:
+            # do I have a hook back to the Reader?
+            self._reader = weakref.ref(kwargs['reader'])
+        except KeyError:
+            pass
 
         # Stupid hack to make it allocate first time round
         # ie we have to go from not having, to having positions

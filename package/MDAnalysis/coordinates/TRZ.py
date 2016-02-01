@@ -79,7 +79,6 @@ import warnings
 import numpy as np
 import os
 import errno
-import weakref
 
 from . import base
 from ..core import flags
@@ -163,9 +162,11 @@ class TRZReader(base.Reader):
         self._n_atoms = n_atoms
 
         self._read_trz_header()
-        self.ts = Timestep(self.n_atoms, velocities=True, forces=self.has_force,
+        self.ts = Timestep(self.n_atoms,
+                           velocities=True,
+                           forces=self.has_force,
+                           reader=self,
                            **self._ts_kwargs)
-        self.ts._reader = weakref.ref(self)
 
         # structured dtype of a single trajectory frame
         readarg = str(n_atoms) + 'f4'
