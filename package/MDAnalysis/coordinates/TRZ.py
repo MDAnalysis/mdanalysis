@@ -222,7 +222,7 @@ class TRZReader(base.Reader):
             ('force', 'i4'),
             ('p3', 'i4')])
         data = np.fromfile(self.trzfile, dtype=self._headerdtype, count=1)
-        self.title = ''.join(data['title'][0])
+        self.title = ''.join((c.decode('utf-8') for c in data['title'][0]))
         if data['force'] == 10:
             self.has_force = False
         elif data['force'] == 20:
@@ -512,7 +512,7 @@ class TRZWriter(base.Writer):
             ('pad3', 'i4'), ('nrec', 'i4'), ('pad4', 'i4')])
         out = np.zeros((), dtype=hdt)
         out['pad1'], out['pad2'] = 80, 80
-        out['title'] = title
+        out['title'] = title + ' ' * (80 - len(title))
         out['pad3'], out['pad4'] = 4, 4
         out['nrec'] = 10
         out.tofile(self.trzfile)
@@ -525,8 +525,8 @@ class TRZWriter(base.Writer):
         # Gather data, faking it when unavailable
         data = {}
         faked_attrs = []
-        for att in ['pressure', 'pressure_tensor', 'total_energy', 'potential_energy',
-                    'kinetic_energy', 'temperature']:
+        for att in ['pressure', 'pressure_tensor', 'total_energy',
+                    'potential_energy', 'kinetic_energy', 'temperature']:
             try:
                 data[att] = ts.data[att]
             except KeyError:
