@@ -18,8 +18,8 @@
             ]
         ], 
         "depends": [
-            "/home/jon/Envs/mda2/local/lib/python2.7/site-packages/numpy/core/include/numpy/arrayobject.h", 
-            "/home/jon/Envs/mda2/local/lib/python2.7/site-packages/numpy/core/include/numpy/ufuncobject.h", 
+            "/usr/local/lib/python2.7/dist-packages/numpy/core/include/numpy/arrayobject.h", 
+            "/usr/local/lib/python2.7/dist-packages/numpy/core/include/numpy/ufuncobject.h", 
             "MDAnalysis/lib/formats/include/trr_seek.h", 
             "MDAnalysis/lib/formats/include/xdrfile.h", 
             "MDAnalysis/lib/formats/include/xdrfile_trr.h", 
@@ -27,7 +27,7 @@
             "MDAnalysis/lib/formats/include/xtc_seek.h"
         ], 
         "include_dirs": [
-            "/home/jon/Envs/mda2/local/lib/python2.7/site-packages/numpy/core/include", 
+            "/usr/local/lib/python2.7/dist-packages/numpy/core/include", 
             "MDAnalysis/lib/formats/include", 
             "MDAnalysis/lib/formats"
         ]
@@ -269,8 +269,8 @@ static CYTHON_INLINE float __PYX_NAN() {
   #endif
 #endif
 
-#define __PYX_HAVE__MDAnalysis__lib__formats__xdrlib
-#define __PYX_HAVE_API__MDAnalysis__lib__formats__xdrlib
+#define __PYX_HAVE__MDAnalysis__lib__formats__libmdaxdr
+#define __PYX_HAVE_API__MDAnalysis__lib__formats__libmdaxdr
 #include "string.h"
 #include "stdio.h"
 #include "stdlib.h"
@@ -513,7 +513,7 @@ static const char *__pyx_filename;
 
 
 static const char *__pyx_f[] = {
-  "MDAnalysis/lib/formats/xdrlib.pyx",
+  "MDAnalysis/lib/formats/libmdaxdr.pyx",
   "__init__.pxd",
   "stringsource",
   "type.pxd",
@@ -611,7 +611,7 @@ typedef volatile __pyx_atomic_int_type __pyx_atomic_int;
 #endif
 
 
-/* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":725
+/* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":725
  * # in Cython to enable them only on the right systems.
  * 
  * ctypedef npy_int8       int8_t             # <<<<<<<<<<<<<<
@@ -620,7 +620,7 @@ typedef volatile __pyx_atomic_int_type __pyx_atomic_int;
  */
 typedef npy_int8 __pyx_t_5numpy_int8_t;
 
-/* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":726
+/* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":726
  * 
  * ctypedef npy_int8       int8_t
  * ctypedef npy_int16      int16_t             # <<<<<<<<<<<<<<
@@ -629,7 +629,7 @@ typedef npy_int8 __pyx_t_5numpy_int8_t;
  */
 typedef npy_int16 __pyx_t_5numpy_int16_t;
 
-/* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":727
+/* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":727
  * ctypedef npy_int8       int8_t
  * ctypedef npy_int16      int16_t
  * ctypedef npy_int32      int32_t             # <<<<<<<<<<<<<<
@@ -638,7 +638,7 @@ typedef npy_int16 __pyx_t_5numpy_int16_t;
  */
 typedef npy_int32 __pyx_t_5numpy_int32_t;
 
-/* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":728
+/* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":728
  * ctypedef npy_int16      int16_t
  * ctypedef npy_int32      int32_t
  * ctypedef npy_int64      int64_t             # <<<<<<<<<<<<<<
@@ -647,7 +647,7 @@ typedef npy_int32 __pyx_t_5numpy_int32_t;
  */
 typedef npy_int64 __pyx_t_5numpy_int64_t;
 
-/* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":732
+/* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":732
  * #ctypedef npy_int128     int128_t
  * 
  * ctypedef npy_uint8      uint8_t             # <<<<<<<<<<<<<<
@@ -656,7 +656,7 @@ typedef npy_int64 __pyx_t_5numpy_int64_t;
  */
 typedef npy_uint8 __pyx_t_5numpy_uint8_t;
 
-/* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":733
+/* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":733
  * 
  * ctypedef npy_uint8      uint8_t
  * ctypedef npy_uint16     uint16_t             # <<<<<<<<<<<<<<
@@ -665,7 +665,7 @@ typedef npy_uint8 __pyx_t_5numpy_uint8_t;
  */
 typedef npy_uint16 __pyx_t_5numpy_uint16_t;
 
-/* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":734
+/* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":734
  * ctypedef npy_uint8      uint8_t
  * ctypedef npy_uint16     uint16_t
  * ctypedef npy_uint32     uint32_t             # <<<<<<<<<<<<<<
@@ -674,7 +674,7 @@ typedef npy_uint16 __pyx_t_5numpy_uint16_t;
  */
 typedef npy_uint32 __pyx_t_5numpy_uint32_t;
 
-/* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":735
+/* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":735
  * ctypedef npy_uint16     uint16_t
  * ctypedef npy_uint32     uint32_t
  * ctypedef npy_uint64     uint64_t             # <<<<<<<<<<<<<<
@@ -683,7 +683,7 @@ typedef npy_uint32 __pyx_t_5numpy_uint32_t;
  */
 typedef npy_uint64 __pyx_t_5numpy_uint64_t;
 
-/* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":739
+/* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":739
  * #ctypedef npy_uint128    uint128_t
  * 
  * ctypedef npy_float32    float32_t             # <<<<<<<<<<<<<<
@@ -692,7 +692,7 @@ typedef npy_uint64 __pyx_t_5numpy_uint64_t;
  */
 typedef npy_float32 __pyx_t_5numpy_float32_t;
 
-/* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":740
+/* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":740
  * 
  * ctypedef npy_float32    float32_t
  * ctypedef npy_float64    float64_t             # <<<<<<<<<<<<<<
@@ -701,7 +701,7 @@ typedef npy_float32 __pyx_t_5numpy_float32_t;
  */
 typedef npy_float64 __pyx_t_5numpy_float64_t;
 
-/* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":749
+/* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":749
  * # The int types are mapped a bit surprising --
  * # numpy.int corresponds to 'l' and numpy.long to 'q'
  * ctypedef npy_long       int_t             # <<<<<<<<<<<<<<
@@ -710,7 +710,7 @@ typedef npy_float64 __pyx_t_5numpy_float64_t;
  */
 typedef npy_long __pyx_t_5numpy_int_t;
 
-/* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":750
+/* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":750
  * # numpy.int corresponds to 'l' and numpy.long to 'q'
  * ctypedef npy_long       int_t
  * ctypedef npy_longlong   long_t             # <<<<<<<<<<<<<<
@@ -719,7 +719,7 @@ typedef npy_long __pyx_t_5numpy_int_t;
  */
 typedef npy_longlong __pyx_t_5numpy_long_t;
 
-/* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":751
+/* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":751
  * ctypedef npy_long       int_t
  * ctypedef npy_longlong   long_t
  * ctypedef npy_longlong   longlong_t             # <<<<<<<<<<<<<<
@@ -728,7 +728,7 @@ typedef npy_longlong __pyx_t_5numpy_long_t;
  */
 typedef npy_longlong __pyx_t_5numpy_longlong_t;
 
-/* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":753
+/* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":753
  * ctypedef npy_longlong   longlong_t
  * 
  * ctypedef npy_ulong      uint_t             # <<<<<<<<<<<<<<
@@ -737,7 +737,7 @@ typedef npy_longlong __pyx_t_5numpy_longlong_t;
  */
 typedef npy_ulong __pyx_t_5numpy_uint_t;
 
-/* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":754
+/* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":754
  * 
  * ctypedef npy_ulong      uint_t
  * ctypedef npy_ulonglong  ulong_t             # <<<<<<<<<<<<<<
@@ -746,7 +746,7 @@ typedef npy_ulong __pyx_t_5numpy_uint_t;
  */
 typedef npy_ulonglong __pyx_t_5numpy_ulong_t;
 
-/* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":755
+/* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":755
  * ctypedef npy_ulong      uint_t
  * ctypedef npy_ulonglong  ulong_t
  * ctypedef npy_ulonglong  ulonglong_t             # <<<<<<<<<<<<<<
@@ -755,7 +755,7 @@ typedef npy_ulonglong __pyx_t_5numpy_ulong_t;
  */
 typedef npy_ulonglong __pyx_t_5numpy_ulonglong_t;
 
-/* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":757
+/* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":757
  * ctypedef npy_ulonglong  ulonglong_t
  * 
  * ctypedef npy_intp       intp_t             # <<<<<<<<<<<<<<
@@ -764,7 +764,7 @@ typedef npy_ulonglong __pyx_t_5numpy_ulonglong_t;
  */
 typedef npy_intp __pyx_t_5numpy_intp_t;
 
-/* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":758
+/* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":758
  * 
  * ctypedef npy_intp       intp_t
  * ctypedef npy_uintp      uintp_t             # <<<<<<<<<<<<<<
@@ -773,7 +773,7 @@ typedef npy_intp __pyx_t_5numpy_intp_t;
  */
 typedef npy_uintp __pyx_t_5numpy_uintp_t;
 
-/* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":760
+/* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":760
  * ctypedef npy_uintp      uintp_t
  * 
  * ctypedef npy_double     float_t             # <<<<<<<<<<<<<<
@@ -782,7 +782,7 @@ typedef npy_uintp __pyx_t_5numpy_uintp_t;
  */
 typedef npy_double __pyx_t_5numpy_float_t;
 
-/* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":761
+/* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":761
  * 
  * ctypedef npy_double     float_t
  * ctypedef npy_double     double_t             # <<<<<<<<<<<<<<
@@ -791,7 +791,7 @@ typedef npy_double __pyx_t_5numpy_float_t;
  */
 typedef npy_double __pyx_t_5numpy_double_t;
 
-/* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":762
+/* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":762
  * ctypedef npy_double     float_t
  * ctypedef npy_double     double_t
  * ctypedef npy_longdouble longdouble_t             # <<<<<<<<<<<<<<
@@ -800,14 +800,14 @@ typedef npy_double __pyx_t_5numpy_double_t;
  */
 typedef npy_longdouble __pyx_t_5numpy_longdouble_t;
 
-/* "MDAnalysis/lib/formats/xdrlib.pyx":88
+/* "MDAnalysis/lib/formats/libmdaxdr.pyx":88
  * np.import_array()
  * 
  * ctypedef np.float32_t DTYPE_T             # <<<<<<<<<<<<<<
  * DTYPE = np.float32
  * cdef int DIMS = 3
  */
-typedef __pyx_t_5numpy_float32_t __pyx_t_10MDAnalysis_3lib_7formats_6xdrlib_DTYPE_T;
+typedef __pyx_t_5numpy_float32_t __pyx_t_10MDAnalysis_3lib_7formats_9libmdaxdr_DTYPE_T;
 #if CYTHON_CCOMPLEX
   #ifdef __cplusplus
     typedef ::std::complex< float > __pyx_t_float_complex;
@@ -830,15 +830,15 @@ typedef __pyx_t_5numpy_float32_t __pyx_t_10MDAnalysis_3lib_7formats_6xdrlib_DTYP
 
 
 /*--- Type declarations ---*/
-struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile;
-struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib_TRRFile;
-struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib_XTCFile;
+struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile;
+struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr_TRRFile;
+struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr_XTCFile;
 struct __pyx_array_obj;
 struct __pyx_MemviewEnum_obj;
 struct __pyx_memoryview_obj;
 struct __pyx_memoryviewslice_obj;
 
-/* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":764
+/* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":764
  * ctypedef npy_longdouble longdouble_t
  * 
  * ctypedef npy_cfloat      cfloat_t             # <<<<<<<<<<<<<<
@@ -847,7 +847,7 @@ struct __pyx_memoryviewslice_obj;
  */
 typedef npy_cfloat __pyx_t_5numpy_cfloat_t;
 
-/* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":765
+/* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":765
  * 
  * ctypedef npy_cfloat      cfloat_t
  * ctypedef npy_cdouble     cdouble_t             # <<<<<<<<<<<<<<
@@ -856,7 +856,7 @@ typedef npy_cfloat __pyx_t_5numpy_cfloat_t;
  */
 typedef npy_cdouble __pyx_t_5numpy_cdouble_t;
 
-/* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":766
+/* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":766
  * ctypedef npy_cfloat      cfloat_t
  * ctypedef npy_cdouble     cdouble_t
  * ctypedef npy_clongdouble clongdouble_t             # <<<<<<<<<<<<<<
@@ -865,7 +865,7 @@ typedef npy_cdouble __pyx_t_5numpy_cdouble_t;
  */
 typedef npy_clongdouble __pyx_t_5numpy_clongdouble_t;
 
-/* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":768
+/* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":768
  * ctypedef npy_clongdouble clongdouble_t
  * 
  * ctypedef npy_cdouble     complex_t             # <<<<<<<<<<<<<<
@@ -874,7 +874,7 @@ typedef npy_clongdouble __pyx_t_5numpy_clongdouble_t;
  */
 typedef npy_cdouble __pyx_t_5numpy_complex_t;
 
-/* "MDAnalysis/lib/formats/xdrlib.pyx":61
+/* "MDAnalysis/lib/formats/libmdaxdr.pyx":61
  * 
  * 
  * cdef enum:             # <<<<<<<<<<<<<<
@@ -882,29 +882,29 @@ typedef npy_cdouble __pyx_t_5numpy_complex_t;
  *     EHEADER = 1
  */
 enum  {
-  __pyx_e_10MDAnalysis_3lib_7formats_6xdrlib_EOK = 0,
-  __pyx_e_10MDAnalysis_3lib_7formats_6xdrlib_EHEADER = 1,
-  __pyx_e_10MDAnalysis_3lib_7formats_6xdrlib_ESTRING = 2,
-  __pyx_e_10MDAnalysis_3lib_7formats_6xdrlib_EDOUBLE = 3,
-  __pyx_e_10MDAnalysis_3lib_7formats_6xdrlib_EINTEGER = 4,
-  __pyx_e_10MDAnalysis_3lib_7formats_6xdrlib_EFLOAT = 5,
-  __pyx_e_10MDAnalysis_3lib_7formats_6xdrlib_EUNSIGNEDINTEGER = 6,
-  __pyx_e_10MDAnalysis_3lib_7formats_6xdrlib_ECOMPRESSION = 7,
-  __pyx_e_10MDAnalysis_3lib_7formats_6xdrlib_ECLOSE = 8,
-  __pyx_e_10MDAnalysis_3lib_7formats_6xdrlib_EMAGIC = 9,
-  __pyx_e_10MDAnalysis_3lib_7formats_6xdrlib_EMEMORY = 10,
-  __pyx_e_10MDAnalysis_3lib_7formats_6xdrlib_EENDOFFILE = 11,
-  __pyx_e_10MDAnalysis_3lib_7formats_6xdrlib_ENOTFOUND = 12
+  __pyx_e_10MDAnalysis_3lib_7formats_9libmdaxdr_EOK = 0,
+  __pyx_e_10MDAnalysis_3lib_7formats_9libmdaxdr_EHEADER = 1,
+  __pyx_e_10MDAnalysis_3lib_7formats_9libmdaxdr_ESTRING = 2,
+  __pyx_e_10MDAnalysis_3lib_7formats_9libmdaxdr_EDOUBLE = 3,
+  __pyx_e_10MDAnalysis_3lib_7formats_9libmdaxdr_EINTEGER = 4,
+  __pyx_e_10MDAnalysis_3lib_7formats_9libmdaxdr_EFLOAT = 5,
+  __pyx_e_10MDAnalysis_3lib_7formats_9libmdaxdr_EUNSIGNEDINTEGER = 6,
+  __pyx_e_10MDAnalysis_3lib_7formats_9libmdaxdr_ECOMPRESSION = 7,
+  __pyx_e_10MDAnalysis_3lib_7formats_9libmdaxdr_ECLOSE = 8,
+  __pyx_e_10MDAnalysis_3lib_7formats_9libmdaxdr_EMAGIC = 9,
+  __pyx_e_10MDAnalysis_3lib_7formats_9libmdaxdr_EMEMORY = 10,
+  __pyx_e_10MDAnalysis_3lib_7formats_9libmdaxdr_EENDOFFILE = 11,
+  __pyx_e_10MDAnalysis_3lib_7formats_9libmdaxdr_ENOTFOUND = 12
 };
 
-/* "MDAnalysis/lib/formats/xdrlib.pyx":96
+/* "MDAnalysis/lib/formats/libmdaxdr.pyx":96
  * 
  * 
  * cdef class _XDRFile:             # <<<<<<<<<<<<<<
  *     """Base python wrapper for gromacs-xdr formats
  * 
  */
-struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile {
+struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile {
   PyObject_HEAD
   int n_atoms;
   int is_open;
@@ -919,27 +919,27 @@ struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile {
 };
 
 
-/* "MDAnalysis/lib/formats/xdrlib.pyx":349
+/* "MDAnalysis/lib/formats/libmdaxdr.pyx":349
  * 
  * 
  * cdef class TRRFile(_XDRFile):             # <<<<<<<<<<<<<<
  *     """File-like wrapper for gromacs TRR files.
  * 
  */
-struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib_TRRFile {
-  struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile __pyx_base;
+struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr_TRRFile {
+  struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile __pyx_base;
 };
 
 
-/* "MDAnalysis/lib/formats/xdrlib.pyx":561
+/* "MDAnalysis/lib/formats/libmdaxdr.pyx":561
  * 
  * 
  * cdef class XTCFile(_XDRFile):             # <<<<<<<<<<<<<<
  *     """File-like wrapper for gromacs XTC files.
  * 
  */
-struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib_XTCFile {
-  struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile __pyx_base;
+struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr_XTCFile {
+  struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile __pyx_base;
   float precision;
 };
 
@@ -1567,7 +1567,7 @@ static int __Pyx_ValidateAndInit_memviewslice(
 
 static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_ds_nn___pyx_t_5numpy_int64_t(PyObject *);
 
-static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn___pyx_t_10MDAnalysis_3lib_7formats_6xdrlib_DTYPE_T(PyObject *);
+static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn___pyx_t_10MDAnalysis_3lib_7formats_9libmdaxdr_DTYPE_T(PyObject *);
 
 static int __Pyx_check_binary_version(void);
 
@@ -1635,18 +1635,18 @@ static PyArrayObject *(*__pyx_f_10MDAnalysis_3lib_7formats_11cython_util_ptr_to_
 
 /* Module declarations from 'libc.stdint' */
 
-/* Module declarations from 'MDAnalysis.lib.formats.xdrlib' */
-static PyTypeObject *__pyx_ptype_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile = 0;
-static PyTypeObject *__pyx_ptype_10MDAnalysis_3lib_7formats_6xdrlib_TRRFile = 0;
-static PyTypeObject *__pyx_ptype_10MDAnalysis_3lib_7formats_6xdrlib_XTCFile = 0;
+/* Module declarations from 'MDAnalysis.lib.formats.libmdaxdr' */
+static PyTypeObject *__pyx_ptype_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile = 0;
+static PyTypeObject *__pyx_ptype_10MDAnalysis_3lib_7formats_9libmdaxdr_TRRFile = 0;
+static PyTypeObject *__pyx_ptype_10MDAnalysis_3lib_7formats_9libmdaxdr_XTCFile = 0;
 static PyTypeObject *__pyx_array_type = 0;
 static PyTypeObject *__pyx_MemviewEnum_type = 0;
 static PyTypeObject *__pyx_memoryview_type = 0;
 static PyTypeObject *__pyx_memoryviewslice_type = 0;
-static int __pyx_v_10MDAnalysis_3lib_7formats_6xdrlib_DIMS;
-static int __pyx_v_10MDAnalysis_3lib_7formats_6xdrlib_HASX;
-static int __pyx_v_10MDAnalysis_3lib_7formats_6xdrlib_HASV;
-static int __pyx_v_10MDAnalysis_3lib_7formats_6xdrlib_HASF;
+static int __pyx_v_10MDAnalysis_3lib_7formats_9libmdaxdr_DIMS;
+static int __pyx_v_10MDAnalysis_3lib_7formats_9libmdaxdr_HASX;
+static int __pyx_v_10MDAnalysis_3lib_7formats_9libmdaxdr_HASV;
+static int __pyx_v_10MDAnalysis_3lib_7formats_9libmdaxdr_HASF;
 static PyObject *generic = 0;
 static PyObject *strided = 0;
 static PyObject *indirect = 0;
@@ -1685,11 +1685,11 @@ static void __pyx_memoryview_refcount_objects_in_slice(char *, Py_ssize_t *, Py_
 static void __pyx_memoryview_slice_assign_scalar(__Pyx_memviewslice *, int, size_t, void *, int); /*proto*/
 static void __pyx_memoryview__slice_assign_scalar(char *, Py_ssize_t *, Py_ssize_t *, int, size_t, void *); /*proto*/
 static __Pyx_TypeInfo __Pyx_TypeInfo_nn___pyx_t_5numpy_int64_t = { "int64_t", NULL, sizeof(__pyx_t_5numpy_int64_t), { 0 }, 0, IS_UNSIGNED(__pyx_t_5numpy_int64_t) ? 'U' : 'I', IS_UNSIGNED(__pyx_t_5numpy_int64_t), 0 };
-static __Pyx_TypeInfo __Pyx_TypeInfo_nn___pyx_t_10MDAnalysis_3lib_7formats_6xdrlib_DTYPE_T = { "DTYPE_T", NULL, sizeof(__pyx_t_10MDAnalysis_3lib_7formats_6xdrlib_DTYPE_T), { 0 }, 0, 'R', 0, 0 };
-#define __Pyx_MODULE_NAME "MDAnalysis.lib.formats.xdrlib"
-int __pyx_module_is_main_MDAnalysis__lib__formats__xdrlib = 0;
+static __Pyx_TypeInfo __Pyx_TypeInfo_nn___pyx_t_10MDAnalysis_3lib_7formats_9libmdaxdr_DTYPE_T = { "DTYPE_T", NULL, sizeof(__pyx_t_10MDAnalysis_3lib_7formats_9libmdaxdr_DTYPE_T), { 0 }, 0, 'R', 0, 0 };
+#define __Pyx_MODULE_NAME "MDAnalysis.lib.formats.libmdaxdr"
+int __pyx_module_is_main_MDAnalysis__lib__formats__libmdaxdr = 0;
 
-/* Implementation of 'MDAnalysis.lib.formats.xdrlib' */
+/* Implementation of 'MDAnalysis.lib.formats.libmdaxdr' */
 static PyObject *__pyx_builtin_property;
 static PyObject *__pyx_builtin_IOError;
 static PyObject *__pyx_builtin_ValueError;
@@ -1821,12 +1821,14 @@ static char __pyx_k_StopIteration[] = "StopIteration";
 static char __pyx_k_error_message[] = "error_message";
 static char __pyx_k_pyx_getbuffer[] = "__pyx_getbuffer";
 static char __pyx_k_No_file_opened[] = "No file opened";
-static char __pyx_k_TRR_write_error[] = "TRR write error: {}";
-static char __pyx_k_XTC_write_error[] = "XTC write error: {}";
+static char __pyx_k_TRR_read_error[] = "TRR read error = {}";
+static char __pyx_k_XDR_read_error[] = "XDR read error = {}";
+static char __pyx_k_XTC_read_error[] = "XTC read error = {}";
+static char __pyx_k_TRR_write_error[] = "TRR write error = {}";
+static char __pyx_k_XTC_write_error[] = "XTC write error = {}";
 static char __pyx_k_allocate_buffer[] = "allocate_buffer";
 static char __pyx_k_dtype_is_object[] = "dtype_is_object";
 static char __pyx_k_unsigned_integer[] = "unsigned integer";
-static char __pyx_k_XDRLIB_read_error[] = "XDRLIB read error: {}";
 static char __pyx_k_ascontiguousarray[] = "ascontiguousarray";
 static char __pyx_k_strided_and_direct[] = "<strided and direct>";
 static char __pyx_k_File_does_not_exist[] = "File does not exist: {}";
@@ -1834,9 +1836,6 @@ static char __pyx_k_strided_and_indirect[] = "<strided and indirect>";
 static char __pyx_k_x_box_step_time_prec[] = "x box step time prec";
 static char __pyx_k_contiguous_and_direct[] = "<contiguous and direct>";
 static char __pyx_k_MemoryView_of_r_object[] = "<MemoryView of %r object>";
-static char __pyx_k_TRR_Read_Error_occured[] = "TRR Read Error occured: {}";
-static char __pyx_k_XTC_Read_Error_occured[] = "XTC Read Error occured: {}";
-static char __pyx_k_error_opening_xtf_file[] = "error opening xtf file: {}";
 static char __pyx_k_MemoryView_of_r_at_0x_x[] = "<MemoryView of %r at 0x%x>";
 static char __pyx_k_contiguous_and_indirect[] = "<contiguous and indirect>";
 static char __pyx_k_Cannot_index_with_type_s[] = "Cannot index with type '%s'";
@@ -1844,10 +1843,12 @@ static char __pyx_k_No_file_currently_opened[] = "No file currently opened";
 static char __pyx_k_getbuffer_obj_view_flags[] = "getbuffer(obj, view, flags)";
 static char __pyx_k_Dimension_d_is_not_direct[] = "Dimension %d is not direct";
 static char __pyx_k_Invalid_shape_in_axis_d_d[] = "Invalid shape in axis %d: %d.";
+static char __pyx_k_Error_opening_XTC_TRR_file[] = "Error opening XTC/TRR file: {}";
 static char __pyx_k_Index_out_of_bounds_axis_d[] = "Index out of bounds (axis %d)";
 static char __pyx_k_Step_may_not_be_zero_axis_d[] = "Step may not be zero (axis %d)";
 static char __pyx_k_itemsize_0_for_cython_array[] = "itemsize <= 0 for cython.array";
 static char __pyx_k_ndarray_is_not_C_contiguous[] = "ndarray is not C contiguous";
+static char __pyx_k_Couldn_t_close_file_XDR_error[] = "Couldn't close file: {}  XDR error = {}";
 static char __pyx_k_Couldn_t_read_number_of_atoms[] = "Couldn't read number of atoms: {}";
 static char __pyx_k_unable_to_allocate_array_data[] = "unable to allocate array data.";
 static char __pyx_k_strided_and_direct_or_indirect[] = "<strided and direct or indirect>";
@@ -1858,7 +1859,6 @@ static char __pyx_k_All_dimensions_preceding_dimensi[] = "All dimensions precedi
 static char __pyx_k_Buffer_view_does_not_expose_stri[] = "Buffer view does not expose strides";
 static char __pyx_k_Can_only_create_a_buffer_that_is[] = "Can only create a buffer that is contiguous in memory.";
 static char __pyx_k_Cannot_transpose_memoryview_with[] = "Cannot transpose memoryview with indirect dimensions";
-static char __pyx_k_Couldn_t_close_file_Error_XDRLIB[] = "Couldn't close file: {}, Error = XDRLIB-{}";
 static char __pyx_k_Empty_shape_tuple_for_cython_arr[] = "Empty shape tuple for cython.array";
 static char __pyx_k_File_opened_in_mode_Reading_only[] = "File opened in mode: {}. Reading only allow in mode \"r\"";
 static char __pyx_k_File_opened_in_mode_Writing_only[] = "File opened in mode: {}. Writing only allow in mode \"w\"";
@@ -1874,11 +1874,11 @@ static char __pyx_k_Previous_frames_velocity_contain[] = "Previous frames veloci
 static char __pyx_k_Previous_frames_xyz_contained_at[] = "Previous frames xyz contained {} atoms. You are trying to write {} atoms.";
 static char __pyx_k_Reached_last_frame_in_TRR_seek_t[] = "Reached last frame in TRR, seek to 0";
 static char __pyx_k_Reached_last_frame_in_XTC_seek_t[] = "Reached last frame in XTC, seek to 0";
-static char __pyx_k_TRR_couldn_t_calculate_offsets_e[] = "TRR couldn't calculate offsets, error={}";
+static char __pyx_k_TRR_couldn_t_calculate_offsets_X[] = "TRR couldn't calculate offsets. XDR error = {}";
 static char __pyx_k_Trying_to_seek_over_max_number_o[] = "Trying to seek over max number of frames";
 static char __pyx_k_Unable_to_convert_item_to_object[] = "Unable to convert item to object";
 static char __pyx_k_XDR_seek_failed_with_system_errn[] = "XDR seek failed with system errno={}";
-static char __pyx_k_XTC_couldn_t_calculate_offsets_e[] = "XTC couldn't calculate offsets, error={}";
+static char __pyx_k_XTC_couldn_t_calculate_offsets_X[] = "XTC couldn't calculate offsets. XDR error = {}";
 static char __pyx_k_got_differing_extents_in_dimensi[] = "got differing extents in dimension %d (got %d and %d)";
 static char __pyx_k_mode_must_be_one_of_r_or_w_you_s[] = "mode must be one of \"r\" or \"w\", you supplied {}";
 static char __pyx_k_ndarray_is_not_Fortran_contiguou[] = "ndarray is not Fortran contiguous";
@@ -1889,11 +1889,12 @@ static PyObject *__pyx_n_s_ASCII;
 static PyObject *__pyx_kp_s_Buffer_view_does_not_expose_stri;
 static PyObject *__pyx_kp_s_Can_only_create_a_buffer_that_is;
 static PyObject *__pyx_kp_s_Cannot_index_with_type_s;
-static PyObject *__pyx_kp_s_Couldn_t_close_file_Error_XDRLIB;
+static PyObject *__pyx_kp_s_Couldn_t_close_file_XDR_error;
 static PyObject *__pyx_kp_s_Couldn_t_read_number_of_atoms;
 static PyObject *__pyx_n_s_DTYPE;
 static PyObject *__pyx_n_s_Ellipsis;
 static PyObject *__pyx_kp_s_Empty_shape_tuple_for_cython_arr;
+static PyObject *__pyx_kp_s_Error_opening_XTC_TRR_file;
 static PyObject *__pyx_kp_s_File_does_not_exist;
 static PyObject *__pyx_kp_s_File_opened_in_mode_Reading_only;
 static PyObject *__pyx_kp_s_File_opened_in_mode_Writing_only;
@@ -1929,18 +1930,18 @@ static PyObject *__pyx_n_s_SEEK_END;
 static PyObject *__pyx_n_s_SEEK_SET;
 static PyObject *__pyx_n_s_StopIteration;
 static PyObject *__pyx_n_s_TRRFrame;
-static PyObject *__pyx_kp_s_TRR_Read_Error_occured;
-static PyObject *__pyx_kp_s_TRR_couldn_t_calculate_offsets_e;
+static PyObject *__pyx_kp_s_TRR_couldn_t_calculate_offsets_X;
+static PyObject *__pyx_kp_s_TRR_read_error;
 static PyObject *__pyx_kp_s_TRR_write_error;
 static PyObject *__pyx_kp_s_Trying_to_seek_over_max_number_o;
 static PyObject *__pyx_n_s_TypeError;
 static PyObject *__pyx_kp_s_Unable_to_convert_item_to_object;
 static PyObject *__pyx_n_s_ValueError;
-static PyObject *__pyx_kp_s_XDRLIB_read_error;
+static PyObject *__pyx_kp_s_XDR_read_error;
 static PyObject *__pyx_kp_s_XDR_seek_failed_with_system_errn;
 static PyObject *__pyx_n_s_XTCFrame;
-static PyObject *__pyx_kp_s_XTC_Read_Error_occured;
-static PyObject *__pyx_kp_s_XTC_couldn_t_calculate_offsets_e;
+static PyObject *__pyx_kp_s_XTC_couldn_t_calculate_offsets_X;
+static PyObject *__pyx_kp_s_XTC_read_error;
 static PyObject *__pyx_kp_s_XTC_write_error;
 static PyObject *__pyx_n_s_allclose;
 static PyObject *__pyx_n_s_allocate_buffer;
@@ -1968,7 +1969,6 @@ static PyObject *__pyx_n_s_endoffile;
 static PyObject *__pyx_n_s_enumerate;
 static PyObject *__pyx_n_s_error;
 static PyObject *__pyx_n_s_error_message;
-static PyObject *__pyx_kp_s_error_opening_xtf_file;
 static PyObject *__pyx_n_s_exc_tb;
 static PyObject *__pyx_n_s_exc_type;
 static PyObject *__pyx_n_s_exc_val;
@@ -2049,31 +2049,31 @@ static PyObject *__pyx_n_s_whence_vals;
 static PyObject *__pyx_kp_s_x_box_step_time_prec;
 static PyObject *__pyx_kp_s_x_v_f_box_step_time_lmbda_hasx_h;
 static PyObject *__pyx_n_s_xyz;
-static int __pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile___cinit__(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *__pyx_v_self, PyObject *__pyx_v_fname, PyObject *__pyx_v_mode); /* proto */
-static void __pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_2__dealloc__(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_4close(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_6open(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *__pyx_v_self, PyObject *__pyx_v_fname, PyObject *__pyx_v_mode); /* proto */
-static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_8__enter__(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_10__exit__(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v_exc_type, CYTHON_UNUSED PyObject *__pyx_v_exc_val, CYTHON_UNUSED PyObject *__pyx_v_exc_tb); /* proto */
-static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_12__iter__(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_14__next__(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *__pyx_v_self); /* proto */
-static Py_ssize_t __pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_16__len__(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_18seek(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *__pyx_v_self, PyObject *__pyx_v_frame); /* proto */
-static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_20_bytes_seek(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *__pyx_v_self, PyObject *__pyx_v_offset, PyObject *__pyx_v_whence); /* proto */
-static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_22offsets(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_24set_offsets(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *__pyx_v_self, PyObject *__pyx_v_offsets); /* proto */
-static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_26tell(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_28_bytes_tell(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_7n_atoms___get__(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_5fname___get__(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile__calc_natoms(CYTHON_UNUSED struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib_TRRFile *__pyx_v_self, PyObject *__pyx_v_fname); /* proto */
-static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_2calc_offsets(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib_TRRFile *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_4read(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib_TRRFile *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib_TRRFile *__pyx_v_self, PyObject *__pyx_v_xyz, PyObject *__pyx_v_velocity, PyObject *__pyx_v_forces, PyObject *__pyx_v_box, int __pyx_v_step, float __pyx_v_time, float __pyx_v__lambda, int __pyx_v_natoms); /* proto */
-static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile__calc_natoms(CYTHON_UNUSED struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib_XTCFile *__pyx_v_self, PyObject *__pyx_v_fname); /* proto */
-static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_2calc_offsets(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib_XTCFile *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_4read(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib_XTCFile *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib_XTCFile *__pyx_v_self, PyObject *__pyx_v_xyz, PyObject *__pyx_v_box, int __pyx_v_step, float __pyx_v_time, float __pyx_v_precision); /* proto */
+static int __pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile___cinit__(struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *__pyx_v_self, PyObject *__pyx_v_fname, PyObject *__pyx_v_mode); /* proto */
+static void __pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_2__dealloc__(struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_4close(struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_6open(struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *__pyx_v_self, PyObject *__pyx_v_fname, PyObject *__pyx_v_mode); /* proto */
+static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_8__enter__(struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_10__exit__(struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v_exc_type, CYTHON_UNUSED PyObject *__pyx_v_exc_val, CYTHON_UNUSED PyObject *__pyx_v_exc_tb); /* proto */
+static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_12__iter__(struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_14__next__(struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *__pyx_v_self); /* proto */
+static Py_ssize_t __pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_16__len__(struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_18seek(struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *__pyx_v_self, PyObject *__pyx_v_frame); /* proto */
+static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_20_bytes_seek(struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *__pyx_v_self, PyObject *__pyx_v_offset, PyObject *__pyx_v_whence); /* proto */
+static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_22offsets(struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_24set_offsets(struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *__pyx_v_self, PyObject *__pyx_v_offsets); /* proto */
+static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_26tell(struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_28_bytes_tell(struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_7n_atoms___get__(struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_5fname___get__(struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_7TRRFile__calc_natoms(CYTHON_UNUSED struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr_TRRFile *__pyx_v_self, PyObject *__pyx_v_fname); /* proto */
+static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_7TRRFile_2calc_offsets(struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr_TRRFile *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_7TRRFile_4read(struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr_TRRFile *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_7TRRFile_6write(struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr_TRRFile *__pyx_v_self, PyObject *__pyx_v_xyz, PyObject *__pyx_v_velocity, PyObject *__pyx_v_forces, PyObject *__pyx_v_box, int __pyx_v_step, float __pyx_v_time, float __pyx_v__lambda, int __pyx_v_natoms); /* proto */
+static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_7XTCFile__calc_natoms(CYTHON_UNUSED struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr_XTCFile *__pyx_v_self, PyObject *__pyx_v_fname); /* proto */
+static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_7XTCFile_2calc_offsets(struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr_XTCFile *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_7XTCFile_4read(struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr_XTCFile *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_7XTCFile_6write(struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr_XTCFile *__pyx_v_self, PyObject *__pyx_v_xyz, PyObject *__pyx_v_box, int __pyx_v_step, float __pyx_v_time, float __pyx_v_precision); /* proto */
 static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags); /* proto */
 static void __pyx_pf_5numpy_7ndarray_2__releasebuffer__(PyArrayObject *__pyx_v_self, Py_buffer *__pyx_v_info); /* proto */
 static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __pyx_array_obj *__pyx_v_self, PyObject *__pyx_v_shape, Py_ssize_t __pyx_v_itemsize, PyObject *__pyx_v_format, PyObject *__pyx_v_mode, int __pyx_v_allocate_buffer); /* proto */
@@ -2108,9 +2108,9 @@ static PyObject *__pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_20
 static PyObject *__pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_22copy_fortran(struct __pyx_memoryview_obj *__pyx_v_self); /* proto */
 static void __pyx_memoryviewslice___pyx_pf_15View_dot_MemoryView_16_memoryviewslice___dealloc__(struct __pyx_memoryviewslice_obj *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_15View_dot_MemoryView_16_memoryviewslice_4base___get__(struct __pyx_memoryviewslice_obj *__pyx_v_self); /* proto */
-static PyObject *__pyx_tp_new_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
-static PyObject *__pyx_tp_new_10MDAnalysis_3lib_7formats_6xdrlib_TRRFile(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
-static PyObject *__pyx_tp_new_10MDAnalysis_3lib_7formats_6xdrlib_XTCFile(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
+static PyObject *__pyx_tp_new_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
+static PyObject *__pyx_tp_new_10MDAnalysis_3lib_7formats_9libmdaxdr_TRRFile(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
+static PyObject *__pyx_tp_new_10MDAnalysis_3lib_7formats_9libmdaxdr_XTCFile(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_array(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_Enum(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_memoryview(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
@@ -2157,7 +2157,7 @@ static PyObject *__pyx_tuple__35;
 static PyObject *__pyx_tuple__36;
 static PyObject *__pyx_tuple__37;
 
-/* "MDAnalysis/lib/formats/xdrlib.pyx":132
+/* "MDAnalysis/lib/formats/libmdaxdr.pyx":132
  *     cdef int _has_offsets
  * 
  *     def __cinit__(self, fname, mode='r'):             # <<<<<<<<<<<<<<
@@ -2166,8 +2166,8 @@ static PyObject *__pyx_tuple__37;
  */
 
 /* Python wrapper */
-static int __pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static int __pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static int __pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static int __pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_fname = 0;
   PyObject *__pyx_v_mode = 0;
   int __pyx_lineno = 0;
@@ -2218,18 +2218,18 @@ static int __pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_1__cinit__(PyOb
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 132; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
-  __Pyx_AddTraceback("MDAnalysis.lib.formats.xdrlib._XDRFile.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("MDAnalysis.lib.formats.libmdaxdr._XDRFile.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return -1;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile___cinit__(((struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *)__pyx_v_self), __pyx_v_fname, __pyx_v_mode);
+  __pyx_r = __pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile___cinit__(((struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *)__pyx_v_self), __pyx_v_fname, __pyx_v_mode);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static int __pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile___cinit__(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *__pyx_v_self, PyObject *__pyx_v_fname, PyObject *__pyx_v_mode) {
+static int __pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile___cinit__(struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *__pyx_v_self, PyObject *__pyx_v_fname, PyObject *__pyx_v_mode) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2242,7 +2242,7 @@ static int __pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile___cinit__(struc
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":133
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":133
  * 
  *     def __cinit__(self, fname, mode='r'):
  *         self.fname = fname.encode('utf-8')             # <<<<<<<<<<<<<<
@@ -2260,7 +2260,7 @@ static int __pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile___cinit__(struc
   __pyx_v_self->fname = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":134
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":134
  *     def __cinit__(self, fname, mode='r'):
  *         self.fname = fname.encode('utf-8')
  *         self.is_open = False             # <<<<<<<<<<<<<<
@@ -2269,7 +2269,7 @@ static int __pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile___cinit__(struc
  */
   __pyx_v_self->is_open = 0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":135
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":135
  *         self.fname = fname.encode('utf-8')
  *         self.is_open = False
  *         self.open(self.fname, mode)             # <<<<<<<<<<<<<<
@@ -2307,7 +2307,7 @@ static int __pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile___cinit__(struc
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":132
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":132
  *     cdef int _has_offsets
  * 
  *     def __cinit__(self, fname, mode='r'):             # <<<<<<<<<<<<<<
@@ -2323,14 +2323,14 @@ static int __pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile___cinit__(struc
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_AddTraceback("MDAnalysis.lib.formats.xdrlib._XDRFile.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("MDAnalysis.lib.formats.libmdaxdr._XDRFile.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = -1;
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "MDAnalysis/lib/formats/xdrlib.pyx":137
+/* "MDAnalysis/lib/formats/libmdaxdr.pyx":137
  *         self.open(self.fname, mode)
  * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -2339,17 +2339,17 @@ static int __pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile___cinit__(struc
  */
 
 /* Python wrapper */
-static void __pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_3__dealloc__(PyObject *__pyx_v_self); /*proto*/
-static void __pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_3__dealloc__(PyObject *__pyx_v_self) {
+static void __pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_3__dealloc__(PyObject *__pyx_v_self); /*proto*/
+static void __pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_3__dealloc__(PyObject *__pyx_v_self) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__dealloc__ (wrapper)", 0);
-  __pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_2__dealloc__(((struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *)__pyx_v_self));
+  __pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_2__dealloc__(((struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
 }
 
-static void __pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_2__dealloc__(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *__pyx_v_self) {
+static void __pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_2__dealloc__(struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *__pyx_v_self) {
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
@@ -2359,7 +2359,7 @@ static void __pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_2__dealloc__(s
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__dealloc__", 0);
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":138
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":138
  * 
  *     def __dealloc__(self):
  *         self.close()             # <<<<<<<<<<<<<<
@@ -2388,7 +2388,7 @@ static void __pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_2__dealloc__(s
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":137
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":137
  *         self.open(self.fname, mode)
  * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -2402,12 +2402,12 @@ static void __pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_2__dealloc__(s
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_WriteUnraisable("MDAnalysis.lib.formats.xdrlib._XDRFile.__dealloc__", __pyx_clineno, __pyx_lineno, __pyx_filename, 0, 0);
+  __Pyx_WriteUnraisable("MDAnalysis.lib.formats.libmdaxdr._XDRFile.__dealloc__", __pyx_clineno, __pyx_lineno, __pyx_filename, 0, 0);
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
 }
 
-/* "MDAnalysis/lib/formats/xdrlib.pyx":140
+/* "MDAnalysis/lib/formats/libmdaxdr.pyx":140
  *         self.close()
  * 
  *     def close(self):             # <<<<<<<<<<<<<<
@@ -2416,20 +2416,20 @@ static void __pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_2__dealloc__(s
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_5close(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static char __pyx_doc_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_4close[] = "Close the open XDR file\n\n        Raises\n        ------\n        IOError\n            If the TRR file can't be closed for some reason\n        ";
-static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_5close(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_5close(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_4close[] = "Close the open XDR file\n\n        Raises\n        ------\n        IOError\n            If the TRR file can't be closed for some reason\n        ";
+static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_5close(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("close (wrapper)", 0);
-  __pyx_r = __pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_4close(((struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *)__pyx_v_self));
+  __pyx_r = __pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_4close(((struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_4close(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *__pyx_v_self) {
+static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_4close(struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *__pyx_v_self) {
   long __pyx_v_res;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
@@ -2445,7 +2445,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_4close(st
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("close", 0);
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":148
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":148
  *             If the TRR file can't be closed for some reason
  *         """
  *         res = 1             # <<<<<<<<<<<<<<
@@ -2454,7 +2454,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_4close(st
  */
   __pyx_v_res = 1;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":149
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":149
  *         """
  *         res = 1
  *         if self.is_open:             # <<<<<<<<<<<<<<
@@ -2464,7 +2464,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_4close(st
   __pyx_t_1 = (__pyx_v_self->is_open != 0);
   if (__pyx_t_1) {
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":150
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":150
  *         res = 1
  *         if self.is_open:
  *             res = xdrfile_close(self.xfp)             # <<<<<<<<<<<<<<
@@ -2473,38 +2473,38 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_4close(st
  */
     __pyx_v_res = xdrfile_close(__pyx_v_self->xfp);
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":151
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":151
  *         if self.is_open:
  *             res = xdrfile_close(self.xfp)
  *             self.is_open = False             # <<<<<<<<<<<<<<
  *             if res != EOK:
- *                 raise IOError('Couldn\'t close file: {}, Error = XDRLIB-{}'.format(
+ *                 raise IOError('Couldn\'t close file: {}  XDR error = {}'.format(
  */
     __pyx_v_self->is_open = 0;
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":152
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":152
  *             res = xdrfile_close(self.xfp)
  *             self.is_open = False
  *             if res != EOK:             # <<<<<<<<<<<<<<
- *                 raise IOError('Couldn\'t close file: {}, Error = XDRLIB-{}'.format(
+ *                 raise IOError('Couldn\'t close file: {}  XDR error = {}'.format(
  *                     self.fname, error_message[res]))
  */
-    __pyx_t_1 = ((__pyx_v_res != __pyx_e_10MDAnalysis_3lib_7formats_6xdrlib_EOK) != 0);
+    __pyx_t_1 = ((__pyx_v_res != __pyx_e_10MDAnalysis_3lib_7formats_9libmdaxdr_EOK) != 0);
     if (__pyx_t_1) {
 
-      /* "MDAnalysis/lib/formats/xdrlib.pyx":153
+      /* "MDAnalysis/lib/formats/libmdaxdr.pyx":153
  *             self.is_open = False
  *             if res != EOK:
- *                 raise IOError('Couldn\'t close file: {}, Error = XDRLIB-{}'.format(             # <<<<<<<<<<<<<<
+ *                 raise IOError('Couldn\'t close file: {}  XDR error = {}'.format(             # <<<<<<<<<<<<<<
  *                     self.fname, error_message[res]))
  *         # forget old offsets in case we open a different file with the same instance.
  */
-      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_Couldn_t_close_file_Error_XDRLIB, __pyx_n_s_format); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 153; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_Couldn_t_close_file_XDR_error, __pyx_n_s_format); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 153; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_3);
 
-      /* "MDAnalysis/lib/formats/xdrlib.pyx":154
+      /* "MDAnalysis/lib/formats/libmdaxdr.pyx":154
  *             if res != EOK:
- *                 raise IOError('Couldn\'t close file: {}, Error = XDRLIB-{}'.format(
+ *                 raise IOError('Couldn\'t close file: {}  XDR error = {}'.format(
  *                     self.fname, error_message[res]))             # <<<<<<<<<<<<<<
  *         # forget old offsets in case we open a different file with the same instance.
  *         self._has_offsets = False
@@ -2542,10 +2542,10 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_4close(st
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-      /* "MDAnalysis/lib/formats/xdrlib.pyx":153
+      /* "MDAnalysis/lib/formats/libmdaxdr.pyx":153
  *             self.is_open = False
  *             if res != EOK:
- *                 raise IOError('Couldn\'t close file: {}, Error = XDRLIB-{}'.format(             # <<<<<<<<<<<<<<
+ *                 raise IOError('Couldn\'t close file: {}  XDR error = {}'.format(             # <<<<<<<<<<<<<<
  *                     self.fname, error_message[res]))
  *         # forget old offsets in case we open a different file with the same instance.
  */
@@ -2561,16 +2561,16 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_4close(st
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       {__pyx_filename = __pyx_f[0]; __pyx_lineno = 153; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-      /* "MDAnalysis/lib/formats/xdrlib.pyx":152
+      /* "MDAnalysis/lib/formats/libmdaxdr.pyx":152
  *             res = xdrfile_close(self.xfp)
  *             self.is_open = False
  *             if res != EOK:             # <<<<<<<<<<<<<<
- *                 raise IOError('Couldn\'t close file: {}, Error = XDRLIB-{}'.format(
+ *                 raise IOError('Couldn\'t close file: {}  XDR error = {}'.format(
  *                     self.fname, error_message[res]))
  */
     }
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":149
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":149
  *         """
  *         res = 1
  *         if self.is_open:             # <<<<<<<<<<<<<<
@@ -2579,7 +2579,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_4close(st
  */
   }
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":156
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":156
  *                     self.fname, error_message[res]))
  *         # forget old offsets in case we open a different file with the same instance.
  *         self._has_offsets = False             # <<<<<<<<<<<<<<
@@ -2588,7 +2588,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_4close(st
  */
   __pyx_v_self->_has_offsets = 0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":157
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":157
  *         # forget old offsets in case we open a different file with the same instance.
  *         self._has_offsets = False
  *         return True             # <<<<<<<<<<<<<<
@@ -2600,7 +2600,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_4close(st
   __pyx_r = Py_True;
   goto __pyx_L0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":140
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":140
  *         self.close()
  * 
  *     def close(self):             # <<<<<<<<<<<<<<
@@ -2615,7 +2615,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_4close(st
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
   __Pyx_XDECREF(__pyx_t_7);
-  __Pyx_AddTraceback("MDAnalysis.lib.formats.xdrlib._XDRFile.close", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("MDAnalysis.lib.formats.libmdaxdr._XDRFile.close", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -2623,7 +2623,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_4close(st
   return __pyx_r;
 }
 
-/* "MDAnalysis/lib/formats/xdrlib.pyx":159
+/* "MDAnalysis/lib/formats/libmdaxdr.pyx":159
  *         return True
  * 
  *     def open(self, fname, mode):             # <<<<<<<<<<<<<<
@@ -2632,9 +2632,9 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_4close(st
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_7open(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_6open[] = "Open a XDR file\n\n        If another XDR file is currently opened it will be closed\n\n        Parameters\n        ----------\n        fname : str\n            The filename to open.\n        mode : ('r', 'w')\n            The mode in which to open the file, either 'r' read or 'w' write\n\n        Raises\n        ------\n        ValueError\n            Wrong mode given\n        IOError\n            Couldn't read the file\n        ";
-static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_7open(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_7open(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_6open[] = "Open a XDR file\n\n        If another XDR file is currently opened it will be closed\n\n        Parameters\n        ----------\n        fname : str\n            The filename to open.\n        mode : ('r', 'w')\n            The mode in which to open the file, either 'r' read or 'w' write\n\n        Raises\n        ------\n        ValueError\n            Wrong mode given\n        IOError\n            Couldn't read the file\n        ";
+static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_7open(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_fname = 0;
   PyObject *__pyx_v_mode = 0;
   int __pyx_lineno = 0;
@@ -2682,18 +2682,18 @@ static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_7open(PyO
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("open", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 159; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
-  __Pyx_AddTraceback("MDAnalysis.lib.formats.xdrlib._XDRFile.open", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("MDAnalysis.lib.formats.libmdaxdr._XDRFile.open", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_6open(((struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *)__pyx_v_self), __pyx_v_fname, __pyx_v_mode);
+  __pyx_r = __pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_6open(((struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *)__pyx_v_self), __pyx_v_fname, __pyx_v_mode);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_6open(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *__pyx_v_self, PyObject *__pyx_v_fname, PyObject *__pyx_v_mode) {
+static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_6open(struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *__pyx_v_self, PyObject *__pyx_v_fname, PyObject *__pyx_v_mode) {
   PyObject *__pyx_v_opening_mode = NULL;
   PyObject *__pyx_v_return_code = NULL;
   PyObject *__pyx_r = NULL;
@@ -2714,7 +2714,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_6open(str
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("open", 0);
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":178
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":178
  *             Couldn't read the file
  *         """
  *         if self.is_open:             # <<<<<<<<<<<<<<
@@ -2724,7 +2724,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_6open(str
   __pyx_t_1 = (__pyx_v_self->is_open != 0);
   if (__pyx_t_1) {
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":179
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":179
  *         """
  *         if self.is_open:
  *             self.close()             # <<<<<<<<<<<<<<
@@ -2753,7 +2753,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_6open(str
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":178
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":178
  *             Couldn't read the file
  *         """
  *         if self.is_open:             # <<<<<<<<<<<<<<
@@ -2762,7 +2762,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_6open(str
  */
   }
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":180
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":180
  *         if self.is_open:
  *             self.close()
  *         self.fname = fname             # <<<<<<<<<<<<<<
@@ -2775,7 +2775,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_6open(str
   __Pyx_DECREF(__pyx_v_self->fname);
   __pyx_v_self->fname = __pyx_v_fname;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":181
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":181
  *             self.close()
  *         self.fname = fname
  *         self.n_atoms = 0             # <<<<<<<<<<<<<<
@@ -2784,7 +2784,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_6open(str
  */
   __pyx_v_self->n_atoms = 0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":182
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":182
  *         self.fname = fname
  *         self.n_atoms = 0
  *         self.reached_eof = False             # <<<<<<<<<<<<<<
@@ -2793,7 +2793,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_6open(str
  */
   __pyx_v_self->reached_eof = 0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":183
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":183
  *         self.n_atoms = 0
  *         self.reached_eof = False
  *         self.current_frame = 0             # <<<<<<<<<<<<<<
@@ -2802,7 +2802,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_6open(str
  */
   __pyx_v_self->current_frame = 0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":185
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":185
  *         self.current_frame = 0
  * 
  *         if mode == 'r':             # <<<<<<<<<<<<<<
@@ -2812,7 +2812,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_6open(str
   __pyx_t_1 = (__Pyx_PyString_Equals(__pyx_v_mode, __pyx_n_s_r, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 185; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   if (__pyx_t_1) {
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":186
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":186
  * 
  *         if mode == 'r':
  *             opening_mode = b'r'             # <<<<<<<<<<<<<<
@@ -2822,7 +2822,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_6open(str
     __Pyx_INCREF(__pyx_n_b_r);
     __pyx_v_opening_mode = __pyx_n_b_r;
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":185
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":185
  *         self.current_frame = 0
  * 
  *         if mode == 'r':             # <<<<<<<<<<<<<<
@@ -2832,7 +2832,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_6open(str
     goto __pyx_L4;
   }
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":187
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":187
  *         if mode == 'r':
  *             opening_mode = b'r'
  *         elif mode == 'w':             # <<<<<<<<<<<<<<
@@ -2842,7 +2842,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_6open(str
   __pyx_t_1 = (__Pyx_PyString_Equals(__pyx_v_mode, __pyx_n_s_w, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 187; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   if (__pyx_t_1) {
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":188
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":188
  *             opening_mode = b'r'
  *         elif mode == 'w':
  *             opening_mode = b'w'             # <<<<<<<<<<<<<<
@@ -2852,7 +2852,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_6open(str
     __Pyx_INCREF(__pyx_n_b_w);
     __pyx_v_opening_mode = __pyx_n_b_w;
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":187
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":187
  *         if mode == 'r':
  *             opening_mode = b'r'
  *         elif mode == 'w':             # <<<<<<<<<<<<<<
@@ -2862,7 +2862,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_6open(str
     goto __pyx_L4;
   }
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":190
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":190
  *             opening_mode = b'w'
  *         else:
  *             raise ValueError('mode must be one of "r" or "w", you '             # <<<<<<<<<<<<<<
@@ -2871,7 +2871,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_6open(str
  */
   /*else*/ {
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":191
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":191
  *         else:
  *             raise ValueError('mode must be one of "r" or "w", you '
  *                              'supplied {}'.format(mode))             # <<<<<<<<<<<<<<
@@ -2906,7 +2906,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_6open(str
     }
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":190
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":190
  *             opening_mode = b'w'
  *         else:
  *             raise ValueError('mode must be one of "r" or "w", you '             # <<<<<<<<<<<<<<
@@ -2927,7 +2927,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_6open(str
   }
   __pyx_L4:;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":192
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":192
  *             raise ValueError('mode must be one of "r" or "w", you '
  *                              'supplied {}'.format(mode))
  *         self.mode = mode             # <<<<<<<<<<<<<<
@@ -2943,7 +2943,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_6open(str
   __pyx_v_self->mode = ((PyObject*)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":194
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":194
  *         self.mode = mode
  * 
  *         if self.mode == 'r':             # <<<<<<<<<<<<<<
@@ -2954,7 +2954,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_6open(str
   __pyx_t_6 = (__pyx_t_1 != 0);
   if (__pyx_t_6) {
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":195
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":195
  * 
  *         if self.mode == 'r':
  *             if not exists(self.fname):             # <<<<<<<<<<<<<<
@@ -2993,7 +2993,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_6open(str
     __pyx_t_1 = ((!__pyx_t_6) != 0);
     if (__pyx_t_1) {
 
-      /* "MDAnalysis/lib/formats/xdrlib.pyx":196
+      /* "MDAnalysis/lib/formats/libmdaxdr.pyx":196
  *         if self.mode == 'r':
  *             if not exists(self.fname):
  *                 raise IOError('File does not exist: {}'.format(self.fname))             # <<<<<<<<<<<<<<
@@ -3039,7 +3039,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_6open(str
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       {__pyx_filename = __pyx_f[0]; __pyx_lineno = 196; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-      /* "MDAnalysis/lib/formats/xdrlib.pyx":195
+      /* "MDAnalysis/lib/formats/libmdaxdr.pyx":195
  * 
  *         if self.mode == 'r':
  *             if not exists(self.fname):             # <<<<<<<<<<<<<<
@@ -3048,7 +3048,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_6open(str
  */
     }
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":198
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":198
  *                 raise IOError('File does not exist: {}'.format(self.fname))
  * 
  *             return_code, self.n_atoms = self._calc_natoms(fname);             # <<<<<<<<<<<<<<
@@ -3138,14 +3138,14 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_6open(str
     __pyx_t_3 = 0;
     __pyx_v_self->n_atoms = __pyx_t_8;
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":200
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":200
  *             return_code, self.n_atoms = self._calc_natoms(fname);
  * 
  *             if return_code != EOK:             # <<<<<<<<<<<<<<
- *                 raise IOError('XDRLIB read error: {}'.format(
+ *                 raise IOError('XDR read error = {}'.format(
  *                     error_message[return_code]))
  */
-    __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_e_10MDAnalysis_3lib_7formats_6xdrlib_EOK); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 200; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_e_10MDAnalysis_3lib_7formats_9libmdaxdr_EOK); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 200; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
     __pyx_t_4 = PyObject_RichCompare(__pyx_v_return_code, __pyx_t_2, Py_NE); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 200; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -3153,19 +3153,19 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_6open(str
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     if (__pyx_t_1) {
 
-      /* "MDAnalysis/lib/formats/xdrlib.pyx":201
+      /* "MDAnalysis/lib/formats/libmdaxdr.pyx":201
  * 
  *             if return_code != EOK:
- *                 raise IOError('XDRLIB read error: {}'.format(             # <<<<<<<<<<<<<<
+ *                 raise IOError('XDR read error = {}'.format(             # <<<<<<<<<<<<<<
  *                     error_message[return_code]))
  *             if self.n_atoms <= 0:
  */
-      __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_XDRLIB_read_error, __pyx_n_s_format); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 201; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_XDR_read_error, __pyx_n_s_format); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 201; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_2);
 
-      /* "MDAnalysis/lib/formats/xdrlib.pyx":202
+      /* "MDAnalysis/lib/formats/libmdaxdr.pyx":202
  *             if return_code != EOK:
- *                 raise IOError('XDRLIB read error: {}'.format(
+ *                 raise IOError('XDR read error = {}'.format(
  *                     error_message[return_code]))             # <<<<<<<<<<<<<<
  *             if self.n_atoms <= 0:
  *                 raise IOError('Couldn\'t read number of atoms: {}'.format(
@@ -3202,10 +3202,10 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_6open(str
       }
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-      /* "MDAnalysis/lib/formats/xdrlib.pyx":201
+      /* "MDAnalysis/lib/formats/libmdaxdr.pyx":201
  * 
  *             if return_code != EOK:
- *                 raise IOError('XDRLIB read error: {}'.format(             # <<<<<<<<<<<<<<
+ *                 raise IOError('XDR read error = {}'.format(             # <<<<<<<<<<<<<<
  *                     error_message[return_code]))
  *             if self.n_atoms <= 0:
  */
@@ -3221,17 +3221,17 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_6open(str
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       {__pyx_filename = __pyx_f[0]; __pyx_lineno = 201; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-      /* "MDAnalysis/lib/formats/xdrlib.pyx":200
+      /* "MDAnalysis/lib/formats/libmdaxdr.pyx":200
  *             return_code, self.n_atoms = self._calc_natoms(fname);
  * 
  *             if return_code != EOK:             # <<<<<<<<<<<<<<
- *                 raise IOError('XDRLIB read error: {}'.format(
+ *                 raise IOError('XDR read error = {}'.format(
  *                     error_message[return_code]))
  */
     }
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":203
- *                 raise IOError('XDRLIB read error: {}'.format(
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":203
+ *                 raise IOError('XDR read error = {}'.format(
  *                     error_message[return_code]))
  *             if self.n_atoms <= 0:             # <<<<<<<<<<<<<<
  *                 raise IOError('Couldn\'t read number of atoms: {}'.format(
@@ -3240,7 +3240,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_6open(str
     __pyx_t_1 = ((__pyx_v_self->n_atoms <= 0) != 0);
     if (__pyx_t_1) {
 
-      /* "MDAnalysis/lib/formats/xdrlib.pyx":204
+      /* "MDAnalysis/lib/formats/libmdaxdr.pyx":204
  *                     error_message[return_code]))
  *             if self.n_atoms <= 0:
  *                 raise IOError('Couldn\'t read number of atoms: {}'.format(             # <<<<<<<<<<<<<<
@@ -3250,7 +3250,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_6open(str
       __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_Couldn_t_read_number_of_atoms, __pyx_n_s_format); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 204; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_2);
 
-      /* "MDAnalysis/lib/formats/xdrlib.pyx":205
+      /* "MDAnalysis/lib/formats/libmdaxdr.pyx":205
  *             if self.n_atoms <= 0:
  *                 raise IOError('Couldn\'t read number of atoms: {}'.format(
  *                     fname))             # <<<<<<<<<<<<<<
@@ -3283,7 +3283,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_6open(str
       }
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-      /* "MDAnalysis/lib/formats/xdrlib.pyx":204
+      /* "MDAnalysis/lib/formats/libmdaxdr.pyx":204
  *                     error_message[return_code]))
  *             if self.n_atoms <= 0:
  *                 raise IOError('Couldn\'t read number of atoms: {}'.format(             # <<<<<<<<<<<<<<
@@ -3302,8 +3302,8 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_6open(str
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       {__pyx_filename = __pyx_f[0]; __pyx_lineno = 204; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-      /* "MDAnalysis/lib/formats/xdrlib.pyx":203
- *                 raise IOError('XDRLIB read error: {}'.format(
+      /* "MDAnalysis/lib/formats/libmdaxdr.pyx":203
+ *                 raise IOError('XDR read error = {}'.format(
  *                     error_message[return_code]))
  *             if self.n_atoms <= 0:             # <<<<<<<<<<<<<<
  *                 raise IOError('Couldn\'t read number of atoms: {}'.format(
@@ -3311,7 +3311,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_6open(str
  */
     }
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":194
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":194
  *         self.mode = mode
  * 
  *         if self.mode == 'r':             # <<<<<<<<<<<<<<
@@ -3320,35 +3320,35 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_6open(str
  */
   }
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":207
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":207
  *                     fname))
  * 
  *         self.xfp = xdrfile_open(fname, opening_mode)             # <<<<<<<<<<<<<<
  *         if self.xfp is NULL:
- *             raise IOError('error opening xtf file: {}'.format(self.fname))
+ *             raise IOError('Error opening XTC/TRR file: {}'.format(self.fname))
  */
   __pyx_t_10 = __Pyx_PyObject_AsString(__pyx_v_fname); if (unlikely((!__pyx_t_10) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 207; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_t_11 = __Pyx_PyObject_AsString(__pyx_v_opening_mode); if (unlikely((!__pyx_t_11) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 207; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_self->xfp = xdrfile_open(__pyx_t_10, __pyx_t_11);
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":208
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":208
  * 
  *         self.xfp = xdrfile_open(fname, opening_mode)
  *         if self.xfp is NULL:             # <<<<<<<<<<<<<<
- *             raise IOError('error opening xtf file: {}'.format(self.fname))
+ *             raise IOError('Error opening XTC/TRR file: {}'.format(self.fname))
  *         self.is_open = True
  */
   __pyx_t_1 = ((__pyx_v_self->xfp == NULL) != 0);
   if (__pyx_t_1) {
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":209
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":209
  *         self.xfp = xdrfile_open(fname, opening_mode)
  *         if self.xfp is NULL:
- *             raise IOError('error opening xtf file: {}'.format(self.fname))             # <<<<<<<<<<<<<<
+ *             raise IOError('Error opening XTC/TRR file: {}'.format(self.fname))             # <<<<<<<<<<<<<<
  *         self.is_open = True
  * 
  */
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_error_opening_xtf_file, __pyx_n_s_format); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 209; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_Error_opening_XTC_TRR_file, __pyx_n_s_format); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 209; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
     __pyx_t_5 = NULL;
     if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_2))) {
@@ -3387,25 +3387,25 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_6open(str
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     {__pyx_filename = __pyx_f[0]; __pyx_lineno = 209; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":208
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":208
  * 
  *         self.xfp = xdrfile_open(fname, opening_mode)
  *         if self.xfp is NULL:             # <<<<<<<<<<<<<<
- *             raise IOError('error opening xtf file: {}'.format(self.fname))
+ *             raise IOError('Error opening XTC/TRR file: {}'.format(self.fname))
  *         self.is_open = True
  */
   }
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":210
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":210
  *         if self.xfp is NULL:
- *             raise IOError('error opening xtf file: {}'.format(self.fname))
+ *             raise IOError('Error opening XTC/TRR file: {}'.format(self.fname))
  *         self.is_open = True             # <<<<<<<<<<<<<<
  * 
  *     def __enter__(self):
  */
   __pyx_v_self->is_open = 1;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":159
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":159
  *         return True
  * 
  *     def open(self, fname, mode):             # <<<<<<<<<<<<<<
@@ -3422,7 +3422,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_6open(str
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
   __Pyx_XDECREF(__pyx_t_9);
-  __Pyx_AddTraceback("MDAnalysis.lib.formats.xdrlib._XDRFile.open", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("MDAnalysis.lib.formats.libmdaxdr._XDRFile.open", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_opening_mode);
@@ -3432,7 +3432,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_6open(str
   return __pyx_r;
 }
 
-/* "MDAnalysis/lib/formats/xdrlib.pyx":212
+/* "MDAnalysis/lib/formats/libmdaxdr.pyx":212
  *         self.is_open = True
  * 
  *     def __enter__(self):             # <<<<<<<<<<<<<<
@@ -3441,25 +3441,25 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_6open(str
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_9__enter__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static char __pyx_doc_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_8__enter__[] = "Support context manager";
-static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_9__enter__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_9__enter__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_8__enter__[] = "Support context manager";
+static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_9__enter__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__enter__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_8__enter__(((struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *)__pyx_v_self));
+  __pyx_r = __pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_8__enter__(((struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_8__enter__(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *__pyx_v_self) {
+static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_8__enter__(struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__enter__", 0);
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":214
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":214
  *     def __enter__(self):
  *         """Support context manager"""
  *         return self             # <<<<<<<<<<<<<<
@@ -3471,7 +3471,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_8__enter_
   __pyx_r = ((PyObject *)__pyx_v_self);
   goto __pyx_L0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":212
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":212
  *         self.is_open = True
  * 
  *     def __enter__(self):             # <<<<<<<<<<<<<<
@@ -3486,7 +3486,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_8__enter_
   return __pyx_r;
 }
 
-/* "MDAnalysis/lib/formats/xdrlib.pyx":216
+/* "MDAnalysis/lib/formats/libmdaxdr.pyx":216
  *         return self
  * 
  *     def __exit__(self, exc_type, exc_val, exc_tb):             # <<<<<<<<<<<<<<
@@ -3495,9 +3495,9 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_8__enter_
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_11__exit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_10__exit__[] = "Support context manager";
-static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_11__exit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_11__exit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_10__exit__[] = "Support context manager";
+static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_11__exit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   CYTHON_UNUSED PyObject *__pyx_v_exc_type = 0;
   CYTHON_UNUSED PyObject *__pyx_v_exc_val = 0;
   CYTHON_UNUSED PyObject *__pyx_v_exc_tb = 0;
@@ -3554,18 +3554,18 @@ static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_11__exit_
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("__exit__", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 216; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
-  __Pyx_AddTraceback("MDAnalysis.lib.formats.xdrlib._XDRFile.__exit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("MDAnalysis.lib.formats.libmdaxdr._XDRFile.__exit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_10__exit__(((struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *)__pyx_v_self), __pyx_v_exc_type, __pyx_v_exc_val, __pyx_v_exc_tb);
+  __pyx_r = __pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_10__exit__(((struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *)__pyx_v_self), __pyx_v_exc_type, __pyx_v_exc_val, __pyx_v_exc_tb);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_10__exit__(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v_exc_type, CYTHON_UNUSED PyObject *__pyx_v_exc_val, CYTHON_UNUSED PyObject *__pyx_v_exc_tb) {
+static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_10__exit__(struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v_exc_type, CYTHON_UNUSED PyObject *__pyx_v_exc_val, CYTHON_UNUSED PyObject *__pyx_v_exc_tb) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -3576,7 +3576,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_10__exit_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__exit__", 0);
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":218
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":218
  *     def __exit__(self, exc_type, exc_val, exc_tb):
  *         """Support context manager"""
  *         self.close()             # <<<<<<<<<<<<<<
@@ -3605,7 +3605,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_10__exit_
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":220
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":220
  *         self.close()
  *         # always propagate exceptions forward
  *         return False             # <<<<<<<<<<<<<<
@@ -3617,7 +3617,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_10__exit_
   __pyx_r = Py_False;
   goto __pyx_L0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":216
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":216
  *         return self
  * 
  *     def __exit__(self, exc_type, exc_val, exc_tb):             # <<<<<<<<<<<<<<
@@ -3630,7 +3630,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_10__exit_
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_AddTraceback("MDAnalysis.lib.formats.xdrlib._XDRFile.__exit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("MDAnalysis.lib.formats.libmdaxdr._XDRFile.__exit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -3638,7 +3638,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_10__exit_
   return __pyx_r;
 }
 
-/* "MDAnalysis/lib/formats/xdrlib.pyx":222
+/* "MDAnalysis/lib/formats/libmdaxdr.pyx":222
  *         return False
  * 
  *     def __iter__(self):             # <<<<<<<<<<<<<<
@@ -3647,19 +3647,19 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_10__exit_
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_13__iter__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_13__iter__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_13__iter__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_13__iter__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__iter__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_12__iter__(((struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *)__pyx_v_self));
+  __pyx_r = __pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_12__iter__(((struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_12__iter__(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *__pyx_v_self) {
+static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_12__iter__(struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -3672,7 +3672,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_12__iter_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__iter__", 0);
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":223
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":223
  * 
  *     def __iter__(self):
  *         self.close()             # <<<<<<<<<<<<<<
@@ -3701,7 +3701,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_12__iter_
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":224
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":224
  *     def __iter__(self):
  *         self.close()
  *         self.open(self.fname, self.mode)             # <<<<<<<<<<<<<<
@@ -3739,7 +3739,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_12__iter_
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":225
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":225
  *         self.close()
  *         self.open(self.fname, self.mode)
  *         return self             # <<<<<<<<<<<<<<
@@ -3751,7 +3751,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_12__iter_
   __pyx_r = ((PyObject *)__pyx_v_self);
   goto __pyx_L0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":222
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":222
  *         return False
  * 
  *     def __iter__(self):             # <<<<<<<<<<<<<<
@@ -3765,7 +3765,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_12__iter_
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_AddTraceback("MDAnalysis.lib.formats.xdrlib._XDRFile.__iter__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("MDAnalysis.lib.formats.libmdaxdr._XDRFile.__iter__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -3773,7 +3773,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_12__iter_
   return __pyx_r;
 }
 
-/* "MDAnalysis/lib/formats/xdrlib.pyx":227
+/* "MDAnalysis/lib/formats/libmdaxdr.pyx":227
  *         return self
  * 
  *     def __next__(self):             # <<<<<<<<<<<<<<
@@ -3782,19 +3782,19 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_12__iter_
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_15__next__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_15__next__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_15__next__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_15__next__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__next__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_14__next__(((struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *)__pyx_v_self));
+  __pyx_r = __pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_14__next__(((struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_14__next__(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *__pyx_v_self) {
+static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_14__next__(struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
@@ -3806,7 +3806,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_14__next_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__next__", 0);
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":228
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":228
  * 
  *     def __next__(self):
  *         if self.reached_eof:             # <<<<<<<<<<<<<<
@@ -3816,7 +3816,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_14__next_
   __pyx_t_1 = (__pyx_v_self->reached_eof != 0);
   if (__pyx_t_1) {
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":229
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":229
  *     def __next__(self):
  *         if self.reached_eof:
  *             raise StopIteration             # <<<<<<<<<<<<<<
@@ -3826,7 +3826,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_14__next_
     __Pyx_Raise(__pyx_builtin_StopIteration, 0, 0, 0);
     {__pyx_filename = __pyx_f[0]; __pyx_lineno = 229; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":228
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":228
  * 
  *     def __next__(self):
  *         if self.reached_eof:             # <<<<<<<<<<<<<<
@@ -3835,7 +3835,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_14__next_
  */
   }
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":230
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":230
  *         if self.reached_eof:
  *             raise StopIteration
  *         return self.read()             # <<<<<<<<<<<<<<
@@ -3867,7 +3867,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_14__next_
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":227
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":227
  *         return self
  * 
  *     def __next__(self):             # <<<<<<<<<<<<<<
@@ -3880,7 +3880,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_14__next_
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_AddTraceback("MDAnalysis.lib.formats.xdrlib._XDRFile.__next__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("MDAnalysis.lib.formats.libmdaxdr._XDRFile.__next__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -3888,7 +3888,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_14__next_
   return __pyx_r;
 }
 
-/* "MDAnalysis/lib/formats/xdrlib.pyx":232
+/* "MDAnalysis/lib/formats/libmdaxdr.pyx":232
  *         return self.read()
  * 
  *     def __len__(self):             # <<<<<<<<<<<<<<
@@ -3897,19 +3897,19 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_14__next_
  */
 
 /* Python wrapper */
-static Py_ssize_t __pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_17__len__(PyObject *__pyx_v_self); /*proto*/
-static Py_ssize_t __pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_17__len__(PyObject *__pyx_v_self) {
+static Py_ssize_t __pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_17__len__(PyObject *__pyx_v_self); /*proto*/
+static Py_ssize_t __pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_17__len__(PyObject *__pyx_v_self) {
   Py_ssize_t __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__len__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_16__len__(((struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *)__pyx_v_self));
+  __pyx_r = __pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_16__len__(((struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static Py_ssize_t __pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_16__len__(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *__pyx_v_self) {
+static Py_ssize_t __pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_16__len__(struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *__pyx_v_self) {
   Py_ssize_t __pyx_r;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
@@ -3921,7 +3921,7 @@ static Py_ssize_t __pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_16__len_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__len__", 0);
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":233
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":233
  * 
  *     def __len__(self):
  *         if not self.is_open:             # <<<<<<<<<<<<<<
@@ -3931,7 +3931,7 @@ static Py_ssize_t __pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_16__len_
   __pyx_t_1 = ((!(__pyx_v_self->is_open != 0)) != 0);
   if (__pyx_t_1) {
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":234
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":234
  *     def __len__(self):
  *         if not self.is_open:
  *             raise RuntimeError('No file currently opened')             # <<<<<<<<<<<<<<
@@ -3944,7 +3944,7 @@ static Py_ssize_t __pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_16__len_
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     {__pyx_filename = __pyx_f[0]; __pyx_lineno = 234; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":233
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":233
  * 
  *     def __len__(self):
  *         if not self.is_open:             # <<<<<<<<<<<<<<
@@ -3953,7 +3953,7 @@ static Py_ssize_t __pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_16__len_
  */
   }
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":235
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":235
  *         if not self.is_open:
  *             raise RuntimeError('No file currently opened')
  *         return self.offsets.size             # <<<<<<<<<<<<<<
@@ -3970,7 +3970,7 @@ static Py_ssize_t __pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_16__len_
   __pyx_r = __pyx_t_4;
   goto __pyx_L0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":232
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":232
  *         return self.read()
  * 
  *     def __len__(self):             # <<<<<<<<<<<<<<
@@ -3982,14 +3982,14 @@ static Py_ssize_t __pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_16__len_
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_AddTraceback("MDAnalysis.lib.formats.xdrlib._XDRFile.__len__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("MDAnalysis.lib.formats.libmdaxdr._XDRFile.__len__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = -1;
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "MDAnalysis/lib/formats/xdrlib.pyx":237
+/* "MDAnalysis/lib/formats/libmdaxdr.pyx":237
  *         return self.offsets.size
  * 
  *     def seek(self, frame):             # <<<<<<<<<<<<<<
@@ -3998,20 +3998,20 @@ static Py_ssize_t __pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_16__len_
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_19seek(PyObject *__pyx_v_self, PyObject *__pyx_v_frame); /*proto*/
-static char __pyx_doc_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_18seek[] = "Seek to Frame.\n\n        Please note that this function will generate internal file offsets if\n        they haven't been set before. For large file this means the first seek\n        can be very slow. Later seeks will be very fast.\n\n        Parameters\n        ----------\n        frame : int\n            seek the file to given frame\n\n        Raises\n        ------\n        IOError\n            If you seek for more frames than are available or if the\n            seek fails (the low-level system error is reported).\n        ";
-static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_19seek(PyObject *__pyx_v_self, PyObject *__pyx_v_frame) {
+static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_19seek(PyObject *__pyx_v_self, PyObject *__pyx_v_frame); /*proto*/
+static char __pyx_doc_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_18seek[] = "Seek to Frame.\n\n        Please note that this function will generate internal file offsets if\n        they haven't been set before. For large file this means the first seek\n        can be very slow. Later seeks will be very fast.\n\n        Parameters\n        ----------\n        frame : int\n            seek the file to given frame\n\n        Raises\n        ------\n        IOError\n            If you seek for more frames than are available or if the\n            seek fails (the low-level system error is reported).\n        ";
+static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_19seek(PyObject *__pyx_v_self, PyObject *__pyx_v_frame) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("seek (wrapper)", 0);
-  __pyx_r = __pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_18seek(((struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *)__pyx_v_self), ((PyObject *)__pyx_v_frame));
+  __pyx_r = __pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_18seek(((struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *)__pyx_v_self), ((PyObject *)__pyx_v_frame));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_18seek(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *__pyx_v_self, PyObject *__pyx_v_frame) {
+static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_18seek(struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *__pyx_v_self, PyObject *__pyx_v_frame) {
   int64_t __pyx_v_offset;
   int __pyx_v_ok;
   PyObject *__pyx_r = NULL;
@@ -4029,7 +4029,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_18seek(st
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("seek", 0);
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":256
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":256
  *         """
  *         cdef int64_t offset
  *         if frame == 0:             # <<<<<<<<<<<<<<
@@ -4042,7 +4042,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_18seek(st
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":257
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":257
  *         cdef int64_t offset
  *         if frame == 0:
  *             offset = 0             # <<<<<<<<<<<<<<
@@ -4051,7 +4051,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_18seek(st
  */
     __pyx_v_offset = 0;
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":256
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":256
  *         """
  *         cdef int64_t offset
  *         if frame == 0:             # <<<<<<<<<<<<<<
@@ -4061,7 +4061,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_18seek(st
     goto __pyx_L3;
   }
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":259
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":259
  *             offset = 0
  *         else:
  *             if frame >= self.offsets.size:             # <<<<<<<<<<<<<<
@@ -4080,7 +4080,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_18seek(st
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     if (__pyx_t_2) {
 
-      /* "MDAnalysis/lib/formats/xdrlib.pyx":260
+      /* "MDAnalysis/lib/formats/libmdaxdr.pyx":260
  *         else:
  *             if frame >= self.offsets.size:
  *                 raise IOError('Trying to seek over max number of frames')             # <<<<<<<<<<<<<<
@@ -4093,7 +4093,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_18seek(st
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       {__pyx_filename = __pyx_f[0]; __pyx_lineno = 260; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-      /* "MDAnalysis/lib/formats/xdrlib.pyx":259
+      /* "MDAnalysis/lib/formats/libmdaxdr.pyx":259
  *             offset = 0
  *         else:
  *             if frame >= self.offsets.size:             # <<<<<<<<<<<<<<
@@ -4102,7 +4102,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_18seek(st
  */
     }
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":261
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":261
  *             if frame >= self.offsets.size:
  *                 raise IOError('Trying to seek over max number of frames')
  *             offset = self.offsets[frame]             # <<<<<<<<<<<<<<
@@ -4120,7 +4120,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_18seek(st
   }
   __pyx_L3:;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":262
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":262
  *                 raise IOError('Trying to seek over max number of frames')
  *             offset = self.offsets[frame]
  *         self.reached_eof = False             # <<<<<<<<<<<<<<
@@ -4129,7 +4129,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_18seek(st
  */
   __pyx_v_self->reached_eof = 0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":263
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":263
  *             offset = self.offsets[frame]
  *         self.reached_eof = False
  *         ok = xdr_seek(self.xfp, offset, SEEK_SET)             # <<<<<<<<<<<<<<
@@ -4138,17 +4138,17 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_18seek(st
  */
   __pyx_v_ok = xdr_seek(__pyx_v_self->xfp, __pyx_v_offset, SEEK_SET);
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":264
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":264
  *         self.reached_eof = False
  *         ok = xdr_seek(self.xfp, offset, SEEK_SET)
  *         if ok != EOK:             # <<<<<<<<<<<<<<
  *             # errno is the direct system error, not from the XDR library.
  *             # errno=22 can be cryptic, since it means a wrong 'whence'
  */
-  __pyx_t_2 = ((__pyx_v_ok != __pyx_e_10MDAnalysis_3lib_7formats_6xdrlib_EOK) != 0);
+  __pyx_t_2 = ((__pyx_v_ok != __pyx_e_10MDAnalysis_3lib_7formats_9libmdaxdr_EOK) != 0);
   if (__pyx_t_2) {
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":270
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":270
  *             #  offset is negative, or if the offset overflows the filesystem
  *             #  limit (ext3 is 16TB, for instance).
  *             raise IOError("XDR seek failed with system errno={}".format(ok))             # <<<<<<<<<<<<<<
@@ -4197,7 +4197,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_18seek(st
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     {__pyx_filename = __pyx_f[0]; __pyx_lineno = 270; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":264
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":264
  *         self.reached_eof = False
  *         ok = xdr_seek(self.xfp, offset, SEEK_SET)
  *         if ok != EOK:             # <<<<<<<<<<<<<<
@@ -4206,7 +4206,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_18seek(st
  */
   }
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":271
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":271
  *             #  limit (ext3 is 16TB, for instance).
  *             raise IOError("XDR seek failed with system errno={}".format(ok))
  *         self.current_frame = frame             # <<<<<<<<<<<<<<
@@ -4216,7 +4216,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_18seek(st
   __pyx_t_8 = __Pyx_PyInt_As_int(__pyx_v_frame); if (unlikely((__pyx_t_8 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 271; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_self->current_frame = __pyx_t_8;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":237
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":237
  *         return self.offsets.size
  * 
  *     def seek(self, frame):             # <<<<<<<<<<<<<<
@@ -4233,7 +4233,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_18seek(st
   __Pyx_XDECREF(__pyx_t_5);
   __Pyx_XDECREF(__pyx_t_6);
   __Pyx_XDECREF(__pyx_t_7);
-  __Pyx_AddTraceback("MDAnalysis.lib.formats.xdrlib._XDRFile.seek", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("MDAnalysis.lib.formats.libmdaxdr._XDRFile.seek", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -4241,7 +4241,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_18seek(st
   return __pyx_r;
 }
 
-/* "MDAnalysis/lib/formats/xdrlib.pyx":273
+/* "MDAnalysis/lib/formats/libmdaxdr.pyx":273
  *         self.current_frame = frame
  * 
  *     def _bytes_seek(self, offset, whence="SEEK_SET"):             # <<<<<<<<<<<<<<
@@ -4250,9 +4250,9 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_18seek(st
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_21_bytes_seek(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_20_bytes_seek[] = "Low-level access to the stream repositioning xdr_seek call.\n\n        Beware that this function will not update :attr:`current_frame`,\n        even on a successful seek, and might render the :class:`Reader`\n        unstable.\n\n        Parameters\n        ----------\n        offset : int\n            move the stream *offset* bytes relative to *whence*\n            (can be negative).\n\n        whence : str, optional\n            must be one of:\n             \"SEEK_SET\": *offset* is applied relative to the beginning\n                         of the file.\n             \"SEEK_CUR\": *offset* is applied relative to the current\n                         position in the stream.\n             \"SEEK_END\": *offset* is applied relative to the end of\n                         the file (a positive *offset* will seek beyond the\n                         end of the file, without an error)\n\n        Raises\n        ------\n        ValueError\n            If *whence* is not one of the expected strings.\n\n        IOError\n            If the seek fails (the low-level system error is reported).\n        ";
-static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_21_bytes_seek(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_21_bytes_seek(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_20_bytes_seek[] = "Low-level access to the stream repositioning xdr_seek call.\n\n        Beware that this function will not update :attr:`current_frame`,\n        even on a successful seek, and might render the :class:`Reader`\n        unstable.\n\n        Parameters\n        ----------\n        offset : int\n            move the stream *offset* bytes relative to *whence*\n            (can be negative).\n\n        whence : str, optional\n            must be one of:\n             \"SEEK_SET\": *offset* is applied relative to the beginning\n                         of the file.\n             \"SEEK_CUR\": *offset* is applied relative to the current\n                         position in the stream.\n             \"SEEK_END\": *offset* is applied relative to the end of\n                         the file (a positive *offset* will seek beyond the\n                         end of the file, without an error)\n\n        Raises\n        ------\n        ValueError\n            If *whence* is not one of the expected strings.\n\n        IOError\n            If the seek fails (the low-level system error is reported).\n        ";
+static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_21_bytes_seek(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_offset = 0;
   PyObject *__pyx_v_whence = 0;
   int __pyx_lineno = 0;
@@ -4303,18 +4303,18 @@ static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_21_bytes_
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("_bytes_seek", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 273; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
-  __Pyx_AddTraceback("MDAnalysis.lib.formats.xdrlib._XDRFile._bytes_seek", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("MDAnalysis.lib.formats.libmdaxdr._XDRFile._bytes_seek", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_20_bytes_seek(((struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *)__pyx_v_self), __pyx_v_offset, __pyx_v_whence);
+  __pyx_r = __pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_20_bytes_seek(((struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *)__pyx_v_self), __pyx_v_offset, __pyx_v_whence);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_20_bytes_seek(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *__pyx_v_self, PyObject *__pyx_v_offset, PyObject *__pyx_v_whence) {
+static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_20_bytes_seek(struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *__pyx_v_self, PyObject *__pyx_v_offset, PyObject *__pyx_v_whence) {
   int __pyx_v_whn;
   int64_t __pyx_v_offst;
   int __pyx_v_ok;
@@ -4339,7 +4339,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_20_bytes_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("_bytes_seek", 0);
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":307
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":307
  *         cdef int64_t offst
  * 
  *         try:             # <<<<<<<<<<<<<<
@@ -4353,7 +4353,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_20_bytes_
     __Pyx_XGOTREF(__pyx_t_3);
     /*try:*/ {
 
-      /* "MDAnalysis/lib/formats/xdrlib.pyx":308
+      /* "MDAnalysis/lib/formats/libmdaxdr.pyx":308
  * 
  *         try:
  *             whn = _whence_vals[whence]             # <<<<<<<<<<<<<<
@@ -4369,7 +4369,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_20_bytes_
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __pyx_v_whn = __pyx_t_6;
 
-      /* "MDAnalysis/lib/formats/xdrlib.pyx":307
+      /* "MDAnalysis/lib/formats/libmdaxdr.pyx":307
  *         cdef int64_t offst
  * 
  *         try:             # <<<<<<<<<<<<<<
@@ -4385,7 +4385,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_20_bytes_
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":309
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":309
  *         try:
  *             whn = _whence_vals[whence]
  *         except KeyError:             # <<<<<<<<<<<<<<
@@ -4394,13 +4394,13 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_20_bytes_
  */
     __pyx_t_6 = PyErr_ExceptionMatches(__pyx_builtin_KeyError);
     if (__pyx_t_6) {
-      __Pyx_AddTraceback("MDAnalysis.lib.formats.xdrlib._XDRFile._bytes_seek", __pyx_clineno, __pyx_lineno, __pyx_filename);
+      __Pyx_AddTraceback("MDAnalysis.lib.formats.libmdaxdr._XDRFile._bytes_seek", __pyx_clineno, __pyx_lineno, __pyx_filename);
       if (__Pyx_GetException(&__pyx_t_5, &__pyx_t_4, &__pyx_t_7) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 309; __pyx_clineno = __LINE__; goto __pyx_L5_except_error;}
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_GOTREF(__pyx_t_7);
 
-      /* "MDAnalysis/lib/formats/xdrlib.pyx":311
+      /* "MDAnalysis/lib/formats/libmdaxdr.pyx":311
  *         except KeyError:
  *             raise ValueError("Parameter 'whence' must be "
  *                              "one of {}".format(tuple(_whence_vals.keys())))             # <<<<<<<<<<<<<<
@@ -4462,7 +4462,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_20_bytes_
       }
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
 
-      /* "MDAnalysis/lib/formats/xdrlib.pyx":310
+      /* "MDAnalysis/lib/formats/libmdaxdr.pyx":310
  *             whn = _whence_vals[whence]
  *         except KeyError:
  *             raise ValueError("Parameter 'whence' must be "             # <<<<<<<<<<<<<<
@@ -4484,7 +4484,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_20_bytes_
     goto __pyx_L5_except_error;
     __pyx_L5_except_error:;
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":307
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":307
  *         cdef int64_t offst
  * 
  *         try:             # <<<<<<<<<<<<<<
@@ -4499,7 +4499,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_20_bytes_
     __pyx_L10_try_end:;
   }
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":312
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":312
  *             raise ValueError("Parameter 'whence' must be "
  *                              "one of {}".format(tuple(_whence_vals.keys())))
  *         offst = offset             # <<<<<<<<<<<<<<
@@ -4509,7 +4509,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_20_bytes_
   __pyx_t_13 = __Pyx_PyInt_As_int64_t(__pyx_v_offset); if (unlikely((__pyx_t_13 == (int64_t)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 312; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_offst = __pyx_t_13;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":313
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":313
  *                              "one of {}".format(tuple(_whence_vals.keys())))
  *         offst = offset
  *         self.reached_eof = False             # <<<<<<<<<<<<<<
@@ -4518,7 +4518,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_20_bytes_
  */
   __pyx_v_self->reached_eof = 0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":314
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":314
  *         offst = offset
  *         self.reached_eof = False
  *         ok = xdr_seek(self.xfp, offst, whn)             # <<<<<<<<<<<<<<
@@ -4527,17 +4527,17 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_20_bytes_
  */
   __pyx_v_ok = xdr_seek(__pyx_v_self->xfp, __pyx_v_offst, __pyx_v_whn);
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":315
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":315
  *         self.reached_eof = False
  *         ok = xdr_seek(self.xfp, offst, whn)
  *         if ok != EOK:             # <<<<<<<<<<<<<<
  *             # See the comments to seek() for hints on errno meaning.
  *             raise IOError("XDR seek failed with system errno={}".format(ok))
  */
-  __pyx_t_14 = ((__pyx_v_ok != __pyx_e_10MDAnalysis_3lib_7formats_6xdrlib_EOK) != 0);
+  __pyx_t_14 = ((__pyx_v_ok != __pyx_e_10MDAnalysis_3lib_7formats_9libmdaxdr_EOK) != 0);
   if (__pyx_t_14) {
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":317
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":317
  *         if ok != EOK:
  *             # See the comments to seek() for hints on errno meaning.
  *             raise IOError("XDR seek failed with system errno={}".format(ok))             # <<<<<<<<<<<<<<
@@ -4586,7 +4586,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_20_bytes_
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     {__pyx_filename = __pyx_f[0]; __pyx_lineno = 317; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":315
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":315
  *         self.reached_eof = False
  *         ok = xdr_seek(self.xfp, offst, whn)
  *         if ok != EOK:             # <<<<<<<<<<<<<<
@@ -4595,7 +4595,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_20_bytes_
  */
   }
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":273
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":273
  *         self.current_frame = frame
  * 
  *     def _bytes_seek(self, offset, whence="SEEK_SET"):             # <<<<<<<<<<<<<<
@@ -4615,7 +4615,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_20_bytes_
   __Pyx_XDECREF(__pyx_t_10);
   __Pyx_XDECREF(__pyx_t_11);
   __Pyx_XDECREF(__pyx_t_12);
-  __Pyx_AddTraceback("MDAnalysis.lib.formats.xdrlib._XDRFile._bytes_seek", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("MDAnalysis.lib.formats.libmdaxdr._XDRFile._bytes_seek", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -4623,7 +4623,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_20_bytes_
   return __pyx_r;
 }
 
-/* "MDAnalysis/lib/formats/xdrlib.pyx":320
+/* "MDAnalysis/lib/formats/libmdaxdr.pyx":320
  * 
  *     @property
  *     def offsets(self):             # <<<<<<<<<<<<<<
@@ -4632,20 +4632,20 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_20_bytes_
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_23offsets(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static char __pyx_doc_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_22offsets[] = "get byte offsets from current xdr file\n\n        See Also\n        --------\n        set_offsets\n        ";
-static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_23offsets(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_23offsets(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_22offsets[] = "get byte offsets from current xdr file\n\n        See Also\n        --------\n        set_offsets\n        ";
+static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_23offsets(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("offsets (wrapper)", 0);
-  __pyx_r = __pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_22offsets(((struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *)__pyx_v_self));
+  __pyx_r = __pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_22offsets(((struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_22offsets(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *__pyx_v_self) {
+static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_22offsets(struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
@@ -4657,7 +4657,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_22offsets
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("offsets", 0);
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":327
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":327
  *         set_offsets
  *         """
  *         if not self._has_offsets:             # <<<<<<<<<<<<<<
@@ -4667,7 +4667,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_22offsets
   __pyx_t_1 = ((!(__pyx_v_self->_has_offsets != 0)) != 0);
   if (__pyx_t_1) {
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":328
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":328
  *         """
  *         if not self._has_offsets:
  *             self._offsets = self.calc_offsets()             # <<<<<<<<<<<<<<
@@ -4701,7 +4701,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_22offsets
     __pyx_v_self->_offsets = ((PyArrayObject *)__pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":329
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":329
  *         if not self._has_offsets:
  *             self._offsets = self.calc_offsets()
  *             self._has_offsets = True             # <<<<<<<<<<<<<<
@@ -4710,7 +4710,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_22offsets
  */
     __pyx_v_self->_has_offsets = 1;
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":327
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":327
  *         set_offsets
  *         """
  *         if not self._has_offsets:             # <<<<<<<<<<<<<<
@@ -4719,7 +4719,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_22offsets
  */
   }
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":330
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":330
  *             self._offsets = self.calc_offsets()
  *             self._has_offsets = True
  *         return self._offsets             # <<<<<<<<<<<<<<
@@ -4731,7 +4731,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_22offsets
   __pyx_r = ((PyObject *)__pyx_v_self->_offsets);
   goto __pyx_L0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":320
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":320
  * 
  *     @property
  *     def offsets(self):             # <<<<<<<<<<<<<<
@@ -4744,7 +4744,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_22offsets
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_AddTraceback("MDAnalysis.lib.formats.xdrlib._XDRFile.offsets", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("MDAnalysis.lib.formats.libmdaxdr._XDRFile.offsets", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -4752,7 +4752,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_22offsets
   return __pyx_r;
 }
 
-/* "MDAnalysis/lib/formats/xdrlib.pyx":332
+/* "MDAnalysis/lib/formats/libmdaxdr.pyx":332
  *         return self._offsets
  * 
  *     def set_offsets(self, offsets):             # <<<<<<<<<<<<<<
@@ -4761,20 +4761,20 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_22offsets
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_25set_offsets(PyObject *__pyx_v_self, PyObject *__pyx_v_offsets); /*proto*/
-static char __pyx_doc_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_24set_offsets[] = "set frame offsets";
-static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_25set_offsets(PyObject *__pyx_v_self, PyObject *__pyx_v_offsets) {
+static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_25set_offsets(PyObject *__pyx_v_self, PyObject *__pyx_v_offsets); /*proto*/
+static char __pyx_doc_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_24set_offsets[] = "set frame offsets";
+static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_25set_offsets(PyObject *__pyx_v_self, PyObject *__pyx_v_offsets) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("set_offsets (wrapper)", 0);
-  __pyx_r = __pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_24set_offsets(((struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *)__pyx_v_self), ((PyObject *)__pyx_v_offsets));
+  __pyx_r = __pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_24set_offsets(((struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *)__pyx_v_self), ((PyObject *)__pyx_v_offsets));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_24set_offsets(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *__pyx_v_self, PyObject *__pyx_v_offsets) {
+static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_24set_offsets(struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *__pyx_v_self, PyObject *__pyx_v_offsets) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -4783,7 +4783,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_24set_off
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("set_offsets", 0);
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":334
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":334
  *     def set_offsets(self, offsets):
  *         """set frame offsets"""
  *         self._offsets = offsets             # <<<<<<<<<<<<<<
@@ -4799,7 +4799,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_24set_off
   __pyx_v_self->_offsets = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":335
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":335
  *         """set frame offsets"""
  *         self._offsets = offsets
  *         self._has_offsets = True             # <<<<<<<<<<<<<<
@@ -4808,7 +4808,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_24set_off
  */
   __pyx_v_self->_has_offsets = 1;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":332
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":332
  *         return self._offsets
  * 
  *     def set_offsets(self, offsets):             # <<<<<<<<<<<<<<
@@ -4821,7 +4821,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_24set_off
   goto __pyx_L0;
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("MDAnalysis.lib.formats.xdrlib._XDRFile.set_offsets", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("MDAnalysis.lib.formats.libmdaxdr._XDRFile.set_offsets", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -4829,7 +4829,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_24set_off
   return __pyx_r;
 }
 
-/* "MDAnalysis/lib/formats/xdrlib.pyx":337
+/* "MDAnalysis/lib/formats/libmdaxdr.pyx":337
  *         self._has_offsets = True
  * 
  *     def tell(self):             # <<<<<<<<<<<<<<
@@ -4838,20 +4838,20 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_24set_off
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_27tell(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static char __pyx_doc_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_26tell[] = "Get current frame";
-static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_27tell(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_27tell(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_26tell[] = "Get current frame";
+static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_27tell(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("tell (wrapper)", 0);
-  __pyx_r = __pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_26tell(((struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *)__pyx_v_self));
+  __pyx_r = __pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_26tell(((struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_26tell(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *__pyx_v_self) {
+static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_26tell(struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -4860,7 +4860,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_26tell(st
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("tell", 0);
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":339
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":339
  *     def tell(self):
  *         """Get current frame"""
  *         return self.current_frame             # <<<<<<<<<<<<<<
@@ -4874,7 +4874,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_26tell(st
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":337
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":337
  *         self._has_offsets = True
  * 
  *     def tell(self):             # <<<<<<<<<<<<<<
@@ -4885,7 +4885,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_26tell(st
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("MDAnalysis.lib.formats.xdrlib._XDRFile.tell", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("MDAnalysis.lib.formats.libmdaxdr._XDRFile.tell", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -4893,7 +4893,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_26tell(st
   return __pyx_r;
 }
 
-/* "MDAnalysis/lib/formats/xdrlib.pyx":341
+/* "MDAnalysis/lib/formats/libmdaxdr.pyx":341
  *         return self.current_frame
  * 
  *     def _bytes_tell(self):             # <<<<<<<<<<<<<<
@@ -4902,20 +4902,20 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_26tell(st
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_29_bytes_tell(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static char __pyx_doc_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_28_bytes_tell[] = "Low-level call to xdr_tell to get current byte offset.";
-static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_29_bytes_tell(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_29_bytes_tell(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_28_bytes_tell[] = "Low-level call to xdr_tell to get current byte offset.";
+static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_29_bytes_tell(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("_bytes_tell (wrapper)", 0);
-  __pyx_r = __pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_28_bytes_tell(((struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *)__pyx_v_self));
+  __pyx_r = __pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_28_bytes_tell(((struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_28_bytes_tell(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *__pyx_v_self) {
+static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_28_bytes_tell(struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -4924,7 +4924,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_28_bytes_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("_bytes_tell", 0);
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":343
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":343
  *     def _bytes_tell(self):
  *         """Low-level call to xdr_tell to get current byte offset."""
  *         return xdr_tell(self.xfp)             # <<<<<<<<<<<<<<
@@ -4938,7 +4938,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_28_bytes_
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":341
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":341
  *         return self.current_frame
  * 
  *     def _bytes_tell(self):             # <<<<<<<<<<<<<<
@@ -4949,7 +4949,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_28_bytes_
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("MDAnalysis.lib.formats.xdrlib._XDRFile._bytes_tell", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("MDAnalysis.lib.formats.libmdaxdr._XDRFile._bytes_tell", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -4957,7 +4957,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_28_bytes_
   return __pyx_r;
 }
 
-/* "MDAnalysis/lib/formats/xdrlib.pyx":121
+/* "MDAnalysis/lib/formats/libmdaxdr.pyx":121
  *     This class can't be initialized use one of the subclasses XTCFile, TRRFile
  *     """
  *     cdef readonly int n_atoms             # <<<<<<<<<<<<<<
@@ -4966,19 +4966,19 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_28_bytes_
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_7n_atoms_1__get__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_7n_atoms_1__get__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_7n_atoms_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_7n_atoms_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_7n_atoms___get__(((struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *)__pyx_v_self));
+  __pyx_r = __pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_7n_atoms___get__(((struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_7n_atoms___get__(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *__pyx_v_self) {
+static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_7n_atoms___get__(struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -4996,7 +4996,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_7n_atoms_
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("MDAnalysis.lib.formats.xdrlib._XDRFile.n_atoms.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("MDAnalysis.lib.formats.libmdaxdr._XDRFile.n_atoms.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -5004,7 +5004,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_7n_atoms_
   return __pyx_r;
 }
 
-/* "MDAnalysis/lib/formats/xdrlib.pyx":125
+/* "MDAnalysis/lib/formats/libmdaxdr.pyx":125
  *     cdef int reached_eof
  *     cdef XDRFILE *xfp
  *     cdef readonly fname             # <<<<<<<<<<<<<<
@@ -5013,19 +5013,19 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_7n_atoms_
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_5fname_1__get__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_5fname_1__get__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_5fname_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_5fname_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_5fname___get__(((struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *)__pyx_v_self));
+  __pyx_r = __pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_5fname___get__(((struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_5fname___get__(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *__pyx_v_self) {
+static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_5fname___get__(struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__", 0);
@@ -5041,7 +5041,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_5fname___
   return __pyx_r;
 }
 
-/* "MDAnalysis/lib/formats/xdrlib.pyx":371
+/* "MDAnalysis/lib/formats/libmdaxdr.pyx":371
  *     """
  * 
  *     def _calc_natoms(self, fname):             # <<<<<<<<<<<<<<
@@ -5050,19 +5050,19 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_5fname___
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_1_calc_natoms(PyObject *__pyx_v_self, PyObject *__pyx_v_fname); /*proto*/
-static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_1_calc_natoms(PyObject *__pyx_v_self, PyObject *__pyx_v_fname) {
+static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_7TRRFile_1_calc_natoms(PyObject *__pyx_v_self, PyObject *__pyx_v_fname); /*proto*/
+static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_7TRRFile_1_calc_natoms(PyObject *__pyx_v_self, PyObject *__pyx_v_fname) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("_calc_natoms (wrapper)", 0);
-  __pyx_r = __pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile__calc_natoms(((struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib_TRRFile *)__pyx_v_self), ((PyObject *)__pyx_v_fname));
+  __pyx_r = __pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_7TRRFile__calc_natoms(((struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr_TRRFile *)__pyx_v_self), ((PyObject *)__pyx_v_fname));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile__calc_natoms(CYTHON_UNUSED struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib_TRRFile *__pyx_v_self, PyObject *__pyx_v_fname) {
+static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_7TRRFile__calc_natoms(CYTHON_UNUSED struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr_TRRFile *__pyx_v_self, PyObject *__pyx_v_fname) {
   int __pyx_v_n_atoms;
   int __pyx_v_return_code;
   PyObject *__pyx_r = NULL;
@@ -5076,7 +5076,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile__calc_nato
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("_calc_natoms", 0);
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":373
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":373
  *     def _calc_natoms(self, fname):
  *         cdef int n_atoms
  *         return_code = read_trr_natoms(fname, &n_atoms)             # <<<<<<<<<<<<<<
@@ -5086,7 +5086,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile__calc_nato
   __pyx_t_1 = __Pyx_PyObject_AsString(__pyx_v_fname); if (unlikely((!__pyx_t_1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 373; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_return_code = read_trr_natoms(__pyx_t_1, (&__pyx_v_n_atoms));
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":374
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":374
  *         cdef int n_atoms
  *         return_code = read_trr_natoms(fname, &n_atoms)
  *         return return_code, n_atoms             # <<<<<<<<<<<<<<
@@ -5110,7 +5110,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile__calc_nato
   __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":371
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":371
  *     """
  * 
  *     def _calc_natoms(self, fname):             # <<<<<<<<<<<<<<
@@ -5123,7 +5123,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile__calc_nato
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_AddTraceback("MDAnalysis.lib.formats.xdrlib.TRRFile._calc_natoms", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("MDAnalysis.lib.formats.libmdaxdr.TRRFile._calc_natoms", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -5131,7 +5131,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile__calc_nato
   return __pyx_r;
 }
 
-/* "MDAnalysis/lib/formats/xdrlib.pyx":377
+/* "MDAnalysis/lib/formats/libmdaxdr.pyx":377
  * 
  * 
  *     def calc_offsets(self):             # <<<<<<<<<<<<<<
@@ -5140,20 +5140,20 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile__calc_nato
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_3calc_offsets(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static char __pyx_doc_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_2calc_offsets[] = "read byte offsets from TRR file directly";
-static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_3calc_offsets(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_7TRRFile_3calc_offsets(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_10MDAnalysis_3lib_7formats_9libmdaxdr_7TRRFile_2calc_offsets[] = "read byte offsets from TRR file directly";
+static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_7TRRFile_3calc_offsets(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("calc_offsets (wrapper)", 0);
-  __pyx_r = __pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_2calc_offsets(((struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib_TRRFile *)__pyx_v_self));
+  __pyx_r = __pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_7TRRFile_2calc_offsets(((struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr_TRRFile *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_2calc_offsets(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib_TRRFile *__pyx_v_self) {
+static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_7TRRFile_2calc_offsets(struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr_TRRFile *__pyx_v_self) {
   int __pyx_v_n_frames;
   int __pyx_v_est_nframes;
   int64_t *__pyx_v_offsets;
@@ -5175,7 +5175,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_2calc_offs
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("calc_offsets", 0);
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":379
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":379
  *     def calc_offsets(self):
  *         """read byte offsets from TRR file directly"""
  *         if not self.is_open:             # <<<<<<<<<<<<<<
@@ -5185,7 +5185,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_2calc_offs
   __pyx_t_1 = ((!(__pyx_v_self->__pyx_base.is_open != 0)) != 0);
   if (__pyx_t_1) {
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":380
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":380
  *         """read byte offsets from TRR file directly"""
  *         if not self.is_open:
  *             return np.array([])             # <<<<<<<<<<<<<<
@@ -5230,7 +5230,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_2calc_offs
     __pyx_t_2 = 0;
     goto __pyx_L0;
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":379
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":379
  *     def calc_offsets(self):
  *         """read byte offsets from TRR file directly"""
  *         if not self.is_open:             # <<<<<<<<<<<<<<
@@ -5239,7 +5239,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_2calc_offs
  */
   }
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":381
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":381
  *         if not self.is_open:
  *             return np.array([])
  *         cdef int n_frames = 0             # <<<<<<<<<<<<<<
@@ -5248,7 +5248,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_2calc_offs
  */
   __pyx_v_n_frames = 0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":382
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":382
  *             return np.array([])
  *         cdef int n_frames = 0
  *         cdef int est_nframes = 0             # <<<<<<<<<<<<<<
@@ -5257,7 +5257,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_2calc_offs
  */
   __pyx_v_est_nframes = 0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":383
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":383
  *         cdef int n_frames = 0
  *         cdef int est_nframes = 0
  *         cdef int64_t* offsets = NULL             # <<<<<<<<<<<<<<
@@ -5266,43 +5266,35 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_2calc_offs
  */
   __pyx_v_offsets = NULL;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":384
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":384
  *         cdef int est_nframes = 0
  *         cdef int64_t* offsets = NULL
  *         ok = read_trr_n_frames(self.fname, &n_frames, &est_nframes, &offsets);             # <<<<<<<<<<<<<<
  *         if ok != EOK:
- *             raise RuntimeError("TRR couldn't calculate offsets, error={}".format(
+ *             raise RuntimeError("TRR couldn't calculate offsets. "
  */
   __pyx_t_7 = __Pyx_PyObject_AsString(__pyx_v_self->__pyx_base.fname); if (unlikely((!__pyx_t_7) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 384; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ok = read_trr_n_frames(__pyx_t_7, (&__pyx_v_n_frames), (&__pyx_v_est_nframes), (&__pyx_v_offsets));
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":385
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":385
  *         cdef int64_t* offsets = NULL
  *         ok = read_trr_n_frames(self.fname, &n_frames, &est_nframes, &offsets);
  *         if ok != EOK:             # <<<<<<<<<<<<<<
- *             raise RuntimeError("TRR couldn't calculate offsets, error={}".format(
- *                 error_message[ok]))
+ *             raise RuntimeError("TRR couldn't calculate offsets. "
+ *                                "XDR error = {}".format(error_message[ok]))
  */
-  __pyx_t_1 = ((__pyx_v_ok != __pyx_e_10MDAnalysis_3lib_7formats_6xdrlib_EOK) != 0);
+  __pyx_t_1 = ((__pyx_v_ok != __pyx_e_10MDAnalysis_3lib_7formats_9libmdaxdr_EOK) != 0);
   if (__pyx_t_1) {
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":386
- *         ok = read_trr_n_frames(self.fname, &n_frames, &est_nframes, &offsets);
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":387
  *         if ok != EOK:
- *             raise RuntimeError("TRR couldn't calculate offsets, error={}".format(             # <<<<<<<<<<<<<<
- *                 error_message[ok]))
- *         # the read_xtc_n_frames allocates memory for the offsets with an
- */
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_TRR_couldn_t_calculate_offsets_e, __pyx_n_s_format); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 386; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_4);
-
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":387
- *         if ok != EOK:
- *             raise RuntimeError("TRR couldn't calculate offsets, error={}".format(
- *                 error_message[ok]))             # <<<<<<<<<<<<<<
+ *             raise RuntimeError("TRR couldn't calculate offsets. "
+ *                                "XDR error = {}".format(error_message[ok]))             # <<<<<<<<<<<<<<
  *         # the read_xtc_n_frames allocates memory for the offsets with an
  *         # overestimation. This number is saved in est_nframes and we need to
  */
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_TRR_couldn_t_calculate_offsets_X, __pyx_n_s_format); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 387; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_6 = __Pyx_GetModuleGlobalName(__pyx_n_s_error_message); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 387; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_6);
     __pyx_t_3 = __Pyx_GetItemInt(__pyx_t_6, __pyx_v_ok, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(__pyx_t_3 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 387; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
@@ -5319,27 +5311,27 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_2calc_offs
       }
     }
     if (!__pyx_t_6) {
-      __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_3); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 386; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_3); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 387; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_2);
     } else {
-      __pyx_t_5 = PyTuple_New(1+1); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 386; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_5 = PyTuple_New(1+1); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 387; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_GIVEREF(__pyx_t_6); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_6); __pyx_t_6 = NULL;
       __Pyx_GIVEREF(__pyx_t_3);
       PyTuple_SET_ITEM(__pyx_t_5, 0+1, __pyx_t_3);
       __pyx_t_3 = 0;
-      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 386; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 387; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     }
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":386
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":386
  *         ok = read_trr_n_frames(self.fname, &n_frames, &est_nframes, &offsets);
  *         if ok != EOK:
- *             raise RuntimeError("TRR couldn't calculate offsets, error={}".format(             # <<<<<<<<<<<<<<
- *                 error_message[ok]))
+ *             raise RuntimeError("TRR couldn't calculate offsets. "             # <<<<<<<<<<<<<<
+ *                                "XDR error = {}".format(error_message[ok]))
  *         # the read_xtc_n_frames allocates memory for the offsets with an
  */
     __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 386; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
@@ -5354,16 +5346,16 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_2calc_offs
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     {__pyx_filename = __pyx_f[0]; __pyx_lineno = 386; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":385
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":385
  *         cdef int64_t* offsets = NULL
  *         ok = read_trr_n_frames(self.fname, &n_frames, &est_nframes, &offsets);
  *         if ok != EOK:             # <<<<<<<<<<<<<<
- *             raise RuntimeError("TRR couldn't calculate offsets, error={}".format(
- *                 error_message[ok]))
+ *             raise RuntimeError("TRR couldn't calculate offsets. "
+ *                                "XDR error = {}".format(error_message[ok]))
  */
   }
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":392
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":392
  *         # tell the new numpy array about the whole allocated memory to avoid
  *         # memory leaks.
  *         cdef np.ndarray dims = np.array([est_nframes], dtype=np.int64)             # <<<<<<<<<<<<<<
@@ -5405,7 +5397,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_2calc_offs
   __pyx_v_dims = ((PyArrayObject *)__pyx_t_6);
   __pyx_t_6 = 0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":394
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":394
  *         cdef np.ndarray dims = np.array([est_nframes], dtype=np.int64)
  *         # this handles freeing the allocated memory correctly.
  *         cdef np.ndarray nd_offsets = ptr_to_ndarray(<void*> offsets, dims, np.NPY_INT64)             # <<<<<<<<<<<<<<
@@ -5420,7 +5412,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_2calc_offs
   __pyx_v_nd_offsets = ((PyArrayObject *)__pyx_t_6);
   __pyx_t_6 = 0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":395
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":395
  *         # this handles freeing the allocated memory correctly.
  *         cdef np.ndarray nd_offsets = ptr_to_ndarray(<void*> offsets, dims, np.NPY_INT64)
  *         return nd_offsets[:n_frames]             # <<<<<<<<<<<<<<
@@ -5434,7 +5426,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_2calc_offs
   __pyx_t_6 = 0;
   goto __pyx_L0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":377
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":377
  * 
  * 
  *     def calc_offsets(self):             # <<<<<<<<<<<<<<
@@ -5450,7 +5442,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_2calc_offs
   __Pyx_XDECREF(__pyx_t_5);
   __Pyx_XDECREF(__pyx_t_6);
   __PYX_XDEC_MEMVIEW(&__pyx_t_8, 1);
-  __Pyx_AddTraceback("MDAnalysis.lib.formats.xdrlib.TRRFile.calc_offsets", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("MDAnalysis.lib.formats.libmdaxdr.TRRFile.calc_offsets", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF((PyObject *)__pyx_v_dims);
@@ -5460,7 +5452,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_2calc_offs
   return __pyx_r;
 }
 
-/* "MDAnalysis/lib/formats/xdrlib.pyx":397
+/* "MDAnalysis/lib/formats/libmdaxdr.pyx":397
  *         return nd_offsets[:n_frames]
  * 
  *     def read(self):             # <<<<<<<<<<<<<<
@@ -5469,20 +5461,20 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_2calc_offs
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_5read(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static char __pyx_doc_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_4read[] = "Read next frame in the TRR file\n\n        Returns\n        -------\n        frame : xdrlib.TRRFrame\n            namedtuple with frame information\n\n        See Also\n        --------\n        TRRFrame\n        XTCFile\n\n        Raises\n        ------\n        RuntimeError\n            Something must have happened reading the file\n        ";
-static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_5read(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_7TRRFile_5read(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_10MDAnalysis_3lib_7formats_9libmdaxdr_7TRRFile_4read[] = "Read next frame in the TRR file\n\n        Returns\n        -------\n        frame : libmdaxdr.TRRFrame\n            namedtuple with frame information\n\n        See Also\n        --------\n        TRRFrame\n        XTCFile\n\n        Raises\n        ------\n        RuntimeError\n            Something must have happened reading the file\n        ";
+static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_7TRRFile_5read(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("read (wrapper)", 0);
-  __pyx_r = __pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_4read(((struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib_TRRFile *)__pyx_v_self));
+  __pyx_r = __pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_7TRRFile_4read(((struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr_TRRFile *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_4read(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib_TRRFile *__pyx_v_self) {
+static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_7TRRFile_4read(struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr_TRRFile *__pyx_v_self) {
   long __pyx_v_return_code;
   int __pyx_v_step;
   int __pyx_v_has_prop;
@@ -5512,7 +5504,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_4read(stru
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("read", 0);
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":415
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":415
  *             Something must have happened reading the file
  *         """
  *         if self.reached_eof:             # <<<<<<<<<<<<<<
@@ -5522,7 +5514,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_4read(stru
   __pyx_t_1 = (__pyx_v_self->__pyx_base.reached_eof != 0);
   if (__pyx_t_1) {
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":416
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":416
  *         """
  *         if self.reached_eof:
  *             raise RuntimeError('Reached last frame in TRR, seek to 0')             # <<<<<<<<<<<<<<
@@ -5535,7 +5527,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_4read(stru
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     {__pyx_filename = __pyx_f[0]; __pyx_lineno = 416; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":415
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":415
  *             Something must have happened reading the file
  *         """
  *         if self.reached_eof:             # <<<<<<<<<<<<<<
@@ -5544,7 +5536,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_4read(stru
  */
   }
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":417
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":417
  *         if self.reached_eof:
  *             raise RuntimeError('Reached last frame in TRR, seek to 0')
  *         if not self.is_open:             # <<<<<<<<<<<<<<
@@ -5554,7 +5546,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_4read(stru
   __pyx_t_1 = ((!(__pyx_v_self->__pyx_base.is_open != 0)) != 0);
   if (__pyx_t_1) {
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":418
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":418
  *             raise RuntimeError('Reached last frame in TRR, seek to 0')
  *         if not self.is_open:
  *             raise RuntimeError('No file opened')             # <<<<<<<<<<<<<<
@@ -5567,7 +5559,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_4read(stru
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     {__pyx_filename = __pyx_f[0]; __pyx_lineno = 418; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":417
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":417
  *         if self.reached_eof:
  *             raise RuntimeError('Reached last frame in TRR, seek to 0')
  *         if not self.is_open:             # <<<<<<<<<<<<<<
@@ -5576,7 +5568,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_4read(stru
  */
   }
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":419
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":419
  *         if not self.is_open:
  *             raise RuntimeError('No file opened')
  *         if self.mode != 'r':             # <<<<<<<<<<<<<<
@@ -5587,7 +5579,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_4read(stru
   __pyx_t_3 = (__pyx_t_1 != 0);
   if (__pyx_t_3) {
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":421
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":421
  *         if self.mode != 'r':
  *             raise RuntimeError('File opened in mode: {}. Reading only allow '
  *                                'in mode "r"'.format('self.mode'))             # <<<<<<<<<<<<<<
@@ -5600,7 +5592,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_4read(stru
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":420
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":420
  *             raise RuntimeError('No file opened')
  *         if self.mode != 'r':
  *             raise RuntimeError('File opened in mode: {}. Reading only allow '             # <<<<<<<<<<<<<<
@@ -5619,7 +5611,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_4read(stru
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     {__pyx_filename = __pyx_f[0]; __pyx_lineno = 420; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":419
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":419
  *         if not self.is_open:
  *             raise RuntimeError('No file opened')
  *         if self.mode != 'r':             # <<<<<<<<<<<<<<
@@ -5628,7 +5620,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_4read(stru
  */
   }
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":423
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":423
  *                                'in mode "r"'.format('self.mode'))
  * 
  *         return_code = 1             # <<<<<<<<<<<<<<
@@ -5637,7 +5629,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_4read(stru
  */
   __pyx_v_return_code = 1;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":424
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":424
  * 
  *         return_code = 1
  *         cdef int step = 0             # <<<<<<<<<<<<<<
@@ -5646,7 +5638,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_4read(stru
  */
   __pyx_v_step = 0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":425
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":425
  *         return_code = 1
  *         cdef int step = 0
  *         cdef int has_prop = 0             # <<<<<<<<<<<<<<
@@ -5655,7 +5647,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_4read(stru
  */
   __pyx_v_has_prop = 0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":426
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":426
  *         cdef int step = 0
  *         cdef int has_prop = 0
  *         cdef float time = 0             # <<<<<<<<<<<<<<
@@ -5664,7 +5656,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_4read(stru
  */
   __pyx_v_time = 0.0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":427
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":427
  *         cdef int has_prop = 0
  *         cdef float time = 0
  *         cdef float lmbda = 0             # <<<<<<<<<<<<<<
@@ -5673,7 +5665,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_4read(stru
  */
   __pyx_v_lmbda = 0.0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":431
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":431
  *         # Use this instead of memviews here to make sure that references are
  *         # counted correctly
  *         cdef np.ndarray xyz = np.empty((self.n_atoms, DIMS), dtype=DTYPE)             # <<<<<<<<<<<<<<
@@ -5687,7 +5679,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_4read(stru
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_self->__pyx_base.n_atoms); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 431; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_10MDAnalysis_3lib_7formats_6xdrlib_DIMS); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 431; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_10MDAnalysis_3lib_7formats_9libmdaxdr_DIMS); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 431; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_5);
   __pyx_t_6 = PyTuple_New(2); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 431; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_6);
@@ -5717,7 +5709,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_4read(stru
   __pyx_v_xyz = ((PyArrayObject *)__pyx_t_4);
   __pyx_t_4 = 0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":432
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":432
  *         # counted correctly
  *         cdef np.ndarray xyz = np.empty((self.n_atoms, DIMS), dtype=DTYPE)
  *         cdef np.ndarray velocity = np.empty((self.n_atoms, DIMS), dtype=DTYPE)             # <<<<<<<<<<<<<<
@@ -5731,7 +5723,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_4read(stru
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_self->__pyx_base.n_atoms); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 432; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_10MDAnalysis_3lib_7formats_6xdrlib_DIMS); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 432; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_10MDAnalysis_3lib_7formats_9libmdaxdr_DIMS); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 432; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_5);
   __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 432; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
@@ -5761,7 +5753,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_4read(stru
   __pyx_v_velocity = ((PyArrayObject *)__pyx_t_4);
   __pyx_t_4 = 0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":433
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":433
  *         cdef np.ndarray xyz = np.empty((self.n_atoms, DIMS), dtype=DTYPE)
  *         cdef np.ndarray velocity = np.empty((self.n_atoms, DIMS), dtype=DTYPE)
  *         cdef np.ndarray forces = np.empty((self.n_atoms, DIMS), dtype=DTYPE)             # <<<<<<<<<<<<<<
@@ -5775,7 +5767,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_4read(stru
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_self->__pyx_base.n_atoms); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 433; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_10MDAnalysis_3lib_7formats_6xdrlib_DIMS); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 433; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_10MDAnalysis_3lib_7formats_9libmdaxdr_DIMS); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 433; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_5);
   __pyx_t_6 = PyTuple_New(2); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 433; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_6);
@@ -5805,7 +5797,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_4read(stru
   __pyx_v_forces = ((PyArrayObject *)__pyx_t_4);
   __pyx_t_4 = 0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":434
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":434
  *         cdef np.ndarray velocity = np.empty((self.n_atoms, DIMS), dtype=DTYPE)
  *         cdef np.ndarray forces = np.empty((self.n_atoms, DIMS), dtype=DTYPE)
  *         cdef np.ndarray box = np.empty((DIMS, DIMS), dtype=DTYPE)             # <<<<<<<<<<<<<<
@@ -5817,9 +5809,9 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_4read(stru
   __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_empty); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 434; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_10MDAnalysis_3lib_7formats_6xdrlib_DIMS); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 434; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_10MDAnalysis_3lib_7formats_9libmdaxdr_DIMS); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 434; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_10MDAnalysis_3lib_7formats_6xdrlib_DIMS); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 434; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_10MDAnalysis_3lib_7formats_9libmdaxdr_DIMS); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 434; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_5);
   __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 434; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
@@ -5849,7 +5841,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_4read(stru
   __pyx_v_box = ((PyArrayObject *)__pyx_t_4);
   __pyx_t_4 = 0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":436
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":436
  *         cdef np.ndarray box = np.empty((DIMS, DIMS), dtype=DTYPE)
  * 
  *         return_code = read_trr(self.xfp, self.n_atoms, <int*> &step,             # <<<<<<<<<<<<<<
@@ -5858,32 +5850,32 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_4read(stru
  */
   __pyx_v_return_code = read_trr(__pyx_v_self->__pyx_base.xfp, __pyx_v_self->__pyx_base.n_atoms, ((int *)(&__pyx_v_step)), (&__pyx_v_time), (&__pyx_v_lmbda), ((float (*)[3])__pyx_v_box->data), ((rvec *)__pyx_v_xyz->data), ((rvec *)__pyx_v_velocity->data), ((rvec *)__pyx_v_forces->data), ((int *)(&__pyx_v_has_prop)));
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":445
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":445
  *         # results in an integer error while reading. I tried it also with trr
  *         # produced by different codes (Gromacs, ...).
  *         if return_code != EOK and return_code != EENDOFFILE \             # <<<<<<<<<<<<<<
  *            and return_code != EINTEGER:
- *             raise RuntimeError('TRR Read Error occured: {}'.format(
+ *             raise IOError('TRR read error = {}'.format(
  */
   switch (__pyx_v_return_code) {
-    case __pyx_e_10MDAnalysis_3lib_7formats_6xdrlib_EOK:
+    case __pyx_e_10MDAnalysis_3lib_7formats_9libmdaxdr_EOK:
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":446
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":446
  *         # produced by different codes (Gromacs, ...).
  *         if return_code != EOK and return_code != EENDOFFILE \
  *            and return_code != EINTEGER:             # <<<<<<<<<<<<<<
- *             raise RuntimeError('TRR Read Error occured: {}'.format(
+ *             raise IOError('TRR read error = {}'.format(
  *                 error_message[return_code]))
  */
-    case __pyx_e_10MDAnalysis_3lib_7formats_6xdrlib_EENDOFFILE:
-    case __pyx_e_10MDAnalysis_3lib_7formats_6xdrlib_EINTEGER:
+    case __pyx_e_10MDAnalysis_3lib_7formats_9libmdaxdr_EENDOFFILE:
+    case __pyx_e_10MDAnalysis_3lib_7formats_9libmdaxdr_EINTEGER:
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":445
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":445
  *         # results in an integer error while reading. I tried it also with trr
  *         # produced by different codes (Gromacs, ...).
  *         if return_code != EOK and return_code != EENDOFFILE \             # <<<<<<<<<<<<<<
  *            and return_code != EINTEGER:
- *             raise RuntimeError('TRR Read Error occured: {}'.format(
+ *             raise IOError('TRR read error = {}'.format(
  */
     __pyx_t_3 = 0;
     break;
@@ -5893,19 +5885,19 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_4read(stru
   }
   if (__pyx_t_3) {
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":447
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":447
  *         if return_code != EOK and return_code != EENDOFFILE \
  *            and return_code != EINTEGER:
- *             raise RuntimeError('TRR Read Error occured: {}'.format(             # <<<<<<<<<<<<<<
+ *             raise IOError('TRR read error = {}'.format(             # <<<<<<<<<<<<<<
  *                 error_message[return_code]))
  * 
  */
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_TRR_Read_Error_occured, __pyx_n_s_format); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 447; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_TRR_read_error, __pyx_n_s_format); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 447; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":448
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":448
  *            and return_code != EINTEGER:
- *             raise RuntimeError('TRR Read Error occured: {}'.format(
+ *             raise IOError('TRR read error = {}'.format(
  *                 error_message[return_code]))             # <<<<<<<<<<<<<<
  * 
  *         # In a trr the integer error seems to indicate that the file is ending.
@@ -5942,10 +5934,10 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_4read(stru
     }
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":447
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":447
  *         if return_code != EOK and return_code != EENDOFFILE \
  *            and return_code != EINTEGER:
- *             raise RuntimeError('TRR Read Error occured: {}'.format(             # <<<<<<<<<<<<<<
+ *             raise IOError('TRR read error = {}'.format(             # <<<<<<<<<<<<<<
  *                 error_message[return_code]))
  * 
  */
@@ -5954,23 +5946,23 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_4read(stru
     __Pyx_GIVEREF(__pyx_t_4);
     PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_4);
     __pyx_t_4 = 0;
-    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin_RuntimeError, __pyx_t_2, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 447; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin_IOError, __pyx_t_2, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 447; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_Raise(__pyx_t_4, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     {__pyx_filename = __pyx_f[0]; __pyx_lineno = 447; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":445
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":445
  *         # results in an integer error while reading. I tried it also with trr
  *         # produced by different codes (Gromacs, ...).
  *         if return_code != EOK and return_code != EENDOFFILE \             # <<<<<<<<<<<<<<
  *            and return_code != EINTEGER:
- *             raise RuntimeError('TRR Read Error occured: {}'.format(
+ *             raise IOError('TRR read error = {}'.format(
  */
   }
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":453
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":453
  *         # There might be corrupted files where this is a legitimate error. But
  *         # then we just can't read it and stop there which is not too bad.
  *         if return_code == EENDOFFILE or return_code == EINTEGER:             # <<<<<<<<<<<<<<
@@ -5978,10 +5970,10 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_4read(stru
  *             raise StopIteration
  */
   switch (__pyx_v_return_code) {
-    case __pyx_e_10MDAnalysis_3lib_7formats_6xdrlib_EENDOFFILE:
-    case __pyx_e_10MDAnalysis_3lib_7formats_6xdrlib_EINTEGER:
+    case __pyx_e_10MDAnalysis_3lib_7formats_9libmdaxdr_EENDOFFILE:
+    case __pyx_e_10MDAnalysis_3lib_7formats_9libmdaxdr_EINTEGER:
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":454
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":454
  *         # then we just can't read it and stop there which is not too bad.
  *         if return_code == EENDOFFILE or return_code == EINTEGER:
  *             self.reached_eof = True             # <<<<<<<<<<<<<<
@@ -5990,7 +5982,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_4read(stru
  */
     __pyx_v_self->__pyx_base.reached_eof = 1;
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":455
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":455
  *         if return_code == EENDOFFILE or return_code == EINTEGER:
  *             self.reached_eof = True
  *             raise StopIteration             # <<<<<<<<<<<<<<
@@ -6000,7 +5992,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_4read(stru
     __Pyx_Raise(__pyx_builtin_StopIteration, 0, 0, 0);
     {__pyx_filename = __pyx_f[0]; __pyx_lineno = 455; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":453
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":453
  *         # There might be corrupted files where this is a legitimate error. But
  *         # then we just can't read it and stop there which is not too bad.
  *         if return_code == EENDOFFILE or return_code == EINTEGER:             # <<<<<<<<<<<<<<
@@ -6011,17 +6003,17 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_4read(stru
     default: break;
   }
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":457
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":457
  *             raise StopIteration
  * 
  *         if return_code == EOK:             # <<<<<<<<<<<<<<
  *             self.current_frame += 1
  * 
  */
-  __pyx_t_3 = ((__pyx_v_return_code == __pyx_e_10MDAnalysis_3lib_7formats_6xdrlib_EOK) != 0);
+  __pyx_t_3 = ((__pyx_v_return_code == __pyx_e_10MDAnalysis_3lib_7formats_9libmdaxdr_EOK) != 0);
   if (__pyx_t_3) {
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":458
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":458
  * 
  *         if return_code == EOK:
  *             self.current_frame += 1             # <<<<<<<<<<<<<<
@@ -6030,7 +6022,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_4read(stru
  */
     __pyx_v_self->__pyx_base.current_frame = (__pyx_v_self->__pyx_base.current_frame + 1);
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":457
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":457
  *             raise StopIteration
  * 
  *         if return_code == EOK:             # <<<<<<<<<<<<<<
@@ -6039,14 +6031,14 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_4read(stru
  */
   }
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":460
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":460
  *             self.current_frame += 1
  * 
  *         has_x = bool(has_prop & HASX)             # <<<<<<<<<<<<<<
  *         has_v = bool(has_prop & HASV)
  *         has_f = bool(has_prop & HASF)
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int((__pyx_v_has_prop & __pyx_v_10MDAnalysis_3lib_7formats_6xdrlib_HASX)); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 460; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = __Pyx_PyInt_From_int((__pyx_v_has_prop & __pyx_v_10MDAnalysis_3lib_7formats_9libmdaxdr_HASX)); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 460; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_3 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 460; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -6055,14 +6047,14 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_4read(stru
   __pyx_v_has_x = __pyx_t_4;
   __pyx_t_4 = 0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":461
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":461
  * 
  *         has_x = bool(has_prop & HASX)
  *         has_v = bool(has_prop & HASV)             # <<<<<<<<<<<<<<
  *         has_f = bool(has_prop & HASF)
  *         return TRRFrame(xyz, velocity, forces, box, step, time, lmbda,
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int((__pyx_v_has_prop & __pyx_v_10MDAnalysis_3lib_7formats_6xdrlib_HASV)); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 461; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = __Pyx_PyInt_From_int((__pyx_v_has_prop & __pyx_v_10MDAnalysis_3lib_7formats_9libmdaxdr_HASV)); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 461; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_3 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 461; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -6071,14 +6063,14 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_4read(stru
   __pyx_v_has_v = __pyx_t_4;
   __pyx_t_4 = 0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":462
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":462
  *         has_x = bool(has_prop & HASX)
  *         has_v = bool(has_prop & HASV)
  *         has_f = bool(has_prop & HASF)             # <<<<<<<<<<<<<<
  *         return TRRFrame(xyz, velocity, forces, box, step, time, lmbda,
  *                         has_x, has_v, has_f)
  */
-  __pyx_t_4 = __Pyx_PyInt_From_int((__pyx_v_has_prop & __pyx_v_10MDAnalysis_3lib_7formats_6xdrlib_HASF)); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 462; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = __Pyx_PyInt_From_int((__pyx_v_has_prop & __pyx_v_10MDAnalysis_3lib_7formats_9libmdaxdr_HASF)); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 462; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_3 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 462; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -6087,7 +6079,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_4read(stru
   __pyx_v_has_f = __pyx_t_4;
   __pyx_t_4 = 0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":463
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":463
  *         has_v = bool(has_prop & HASV)
  *         has_f = bool(has_prop & HASF)
  *         return TRRFrame(xyz, velocity, forces, box, step, time, lmbda,             # <<<<<<<<<<<<<<
@@ -6104,7 +6096,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_4read(stru
   __pyx_t_5 = PyFloat_FromDouble(__pyx_v_lmbda); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 463; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_5);
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":464
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":464
  *         has_f = bool(has_prop & HASF)
  *         return TRRFrame(xyz, velocity, forces, box, step, time, lmbda,
  *                         has_x, has_v, has_f)             # <<<<<<<<<<<<<<
@@ -6166,7 +6158,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_4read(stru
   __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":397
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":397
  *         return nd_offsets[:n_frames]
  * 
  *     def read(self):             # <<<<<<<<<<<<<<
@@ -6183,7 +6175,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_4read(stru
   __Pyx_XDECREF(__pyx_t_7);
   __Pyx_XDECREF(__pyx_t_8);
   __Pyx_XDECREF(__pyx_t_10);
-  __Pyx_AddTraceback("MDAnalysis.lib.formats.xdrlib.TRRFile.read", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("MDAnalysis.lib.formats.libmdaxdr.TRRFile.read", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF((PyObject *)__pyx_v_xyz);
@@ -6198,7 +6190,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_4read(stru
   return __pyx_r;
 }
 
-/* "MDAnalysis/lib/formats/xdrlib.pyx":466
+/* "MDAnalysis/lib/formats/libmdaxdr.pyx":466
  *                         has_x, has_v, has_f)
  * 
  *     def write(self, xyz, velocity, forces, box, int step, float time,             # <<<<<<<<<<<<<<
@@ -6207,9 +6199,9 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_4read(stru
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_7write(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write[] = "write one frame into TRR file.\n\n        Parameters\n        ----------\n        xyz : ndarray, shape=(n_atoms, 3)\n            cartesion coordinates\n        box : ndarray, shape=(3, 3)\n            Box vectors for this frame\n        step : int\n            current step number, 1 indexed\n        time : float\n            current time\n        _lambda : float\n            current lambda value\n        natoms : int\n            number of atoms in frame\n\n        Raises\n        ------\n        RuntimeError\n            Couldn't write the file\n        ValueError\n            The arguments do not match with previous saved frames.\n        ";
-static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_7write(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_7TRRFile_7write(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_10MDAnalysis_3lib_7formats_9libmdaxdr_7TRRFile_6write[] = "write one frame into TRR file.\n\n        Parameters\n        ----------\n        xyz : ndarray, shape=(n_atoms, 3)\n            cartesion coordinates\n        box : ndarray, shape=(3, 3)\n            Box vectors for this frame\n        step : int\n            current step number, 1 indexed\n        time : float\n            current time\n        _lambda : float\n            current lambda value\n        natoms : int\n            number of atoms in frame\n\n        Raises\n        ------\n        RuntimeError\n            Couldn't write the file\n        ValueError\n            The arguments do not match with previous saved frames.\n        ";
+static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_7TRRFile_7write(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_xyz = 0;
   PyObject *__pyx_v_velocity = 0;
   PyObject *__pyx_v_forces = 0;
@@ -6311,18 +6303,18 @@ static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_7write(PyO
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("write", 1, 8, 8, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 466; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
-  __Pyx_AddTraceback("MDAnalysis.lib.formats.xdrlib.TRRFile.write", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("MDAnalysis.lib.formats.libmdaxdr.TRRFile.write", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(((struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib_TRRFile *)__pyx_v_self), __pyx_v_xyz, __pyx_v_velocity, __pyx_v_forces, __pyx_v_box, __pyx_v_step, __pyx_v_time, __pyx_v__lambda, __pyx_v_natoms);
+  __pyx_r = __pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_7TRRFile_6write(((struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr_TRRFile *)__pyx_v_self), __pyx_v_xyz, __pyx_v_velocity, __pyx_v_forces, __pyx_v_box, __pyx_v_step, __pyx_v_time, __pyx_v__lambda, __pyx_v_natoms);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib_TRRFile *__pyx_v_self, PyObject *__pyx_v_xyz, PyObject *__pyx_v_velocity, PyObject *__pyx_v_forces, PyObject *__pyx_v_box, int __pyx_v_step, float __pyx_v_time, float __pyx_v__lambda, int __pyx_v_natoms) {
+static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_7TRRFile_6write(struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr_TRRFile *__pyx_v_self, PyObject *__pyx_v_xyz, PyObject *__pyx_v_velocity, PyObject *__pyx_v_forces, PyObject *__pyx_v_box, int __pyx_v_step, float __pyx_v_time, float __pyx_v__lambda, int __pyx_v_natoms) {
   float *__pyx_v_xyz_ptr;
   float *__pyx_v_velocity_ptr;
   float *__pyx_v_forces_ptr;
@@ -6349,7 +6341,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("write", 0);
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":492
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":492
  *             The arguments do not match with previous saved frames.
  *         """
  *         if self.mode != 'w' :             # <<<<<<<<<<<<<<
@@ -6360,7 +6352,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":494
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":494
  *         if self.mode != 'w' :
  *             raise RuntimeError('File opened in mode: {}. Writing only allow '
  *                                'in mode "w"'.format('self.mode'))             # <<<<<<<<<<<<<<
@@ -6373,7 +6365,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":493
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":493
  *         """
  *         if self.mode != 'w' :
  *             raise RuntimeError('File opened in mode: {}. Writing only allow '             # <<<<<<<<<<<<<<
@@ -6392,7 +6384,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     {__pyx_filename = __pyx_f[0]; __pyx_lineno = 493; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":492
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":492
  *             The arguments do not match with previous saved frames.
  *         """
  *         if self.mode != 'w' :             # <<<<<<<<<<<<<<
@@ -6401,7 +6393,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
  */
   }
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":496
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":496
  *                                'in mode "w"'.format('self.mode'))
  * 
  *         cdef float* xyz_ptr = NULL             # <<<<<<<<<<<<<<
@@ -6410,7 +6402,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
  */
   __pyx_v_xyz_ptr = NULL;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":497
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":497
  * 
  *         cdef float* xyz_ptr = NULL
  *         cdef float* velocity_ptr = NULL             # <<<<<<<<<<<<<<
@@ -6419,7 +6411,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
  */
   __pyx_v_velocity_ptr = NULL;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":498
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":498
  *         cdef float* xyz_ptr = NULL
  *         cdef float* velocity_ptr = NULL
  *         cdef float* forces_ptr = NULL             # <<<<<<<<<<<<<<
@@ -6428,7 +6420,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
  */
   __pyx_v_forces_ptr = NULL;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":508
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":508
  *         cdef np.ndarray forces_helper
  * 
  *         if xyz is not None:             # <<<<<<<<<<<<<<
@@ -6439,7 +6431,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
   __pyx_t_1 = (__pyx_t_2 != 0);
   if (__pyx_t_1) {
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":509
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":509
  * 
  *         if xyz is not None:
  *             xyz_helper = np.ascontiguousarray(xyz, dtype=DTYPE)             # <<<<<<<<<<<<<<
@@ -6471,7 +6463,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
     __pyx_v_xyz_helper = ((PyArrayObject *)__pyx_t_6);
     __pyx_t_6 = 0;
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":510
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":510
  *         if xyz is not None:
  *             xyz_helper = np.ascontiguousarray(xyz, dtype=DTYPE)
  *             xyz_ptr = <float*>xyz_helper.data             # <<<<<<<<<<<<<<
@@ -6480,7 +6472,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
  */
     __pyx_v_xyz_ptr = ((float *)__pyx_v_xyz_helper->data);
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":508
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":508
  *         cdef np.ndarray forces_helper
  * 
  *         if xyz is not None:             # <<<<<<<<<<<<<<
@@ -6489,7 +6481,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
  */
   }
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":511
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":511
  *             xyz_helper = np.ascontiguousarray(xyz, dtype=DTYPE)
  *             xyz_ptr = <float*>xyz_helper.data
  *         if velocity is not None:             # <<<<<<<<<<<<<<
@@ -6500,7 +6492,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":512
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":512
  *             xyz_ptr = <float*>xyz_helper.data
  *         if velocity is not None:
  *             velocity_helper = np.ascontiguousarray(velocity, dtype=DTYPE)             # <<<<<<<<<<<<<<
@@ -6532,7 +6524,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
     __pyx_v_velocity_helper = ((PyArrayObject *)__pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":513
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":513
  *         if velocity is not None:
  *             velocity_helper = np.ascontiguousarray(velocity, dtype=DTYPE)
  *             velocity_ptr = <float*>velocity_helper.data             # <<<<<<<<<<<<<<
@@ -6541,7 +6533,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
  */
     __pyx_v_velocity_ptr = ((float *)__pyx_v_velocity_helper->data);
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":511
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":511
  *             xyz_helper = np.ascontiguousarray(xyz, dtype=DTYPE)
  *             xyz_ptr = <float*>xyz_helper.data
  *         if velocity is not None:             # <<<<<<<<<<<<<<
@@ -6550,7 +6542,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
  */
   }
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":514
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":514
  *             velocity_helper = np.ascontiguousarray(velocity, dtype=DTYPE)
  *             velocity_ptr = <float*>velocity_helper.data
  *         if forces is not None:             # <<<<<<<<<<<<<<
@@ -6561,7 +6553,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
   __pyx_t_1 = (__pyx_t_2 != 0);
   if (__pyx_t_1) {
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":515
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":515
  *             velocity_ptr = <float*>velocity_helper.data
  *         if forces is not None:
  *             forces_helper = np.ascontiguousarray(forces, dtype=DTYPE)             # <<<<<<<<<<<<<<
@@ -6593,7 +6585,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
     __pyx_v_forces_helper = ((PyArrayObject *)__pyx_t_5);
     __pyx_t_5 = 0;
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":516
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":516
  *         if forces is not None:
  *             forces_helper = np.ascontiguousarray(forces, dtype=DTYPE)
  *             forces_ptr = <float*>forces_helper.data             # <<<<<<<<<<<<<<
@@ -6602,7 +6594,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
  */
     __pyx_v_forces_ptr = ((float *)__pyx_v_forces_helper->data);
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":514
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":514
  *             velocity_helper = np.ascontiguousarray(velocity, dtype=DTYPE)
  *             velocity_ptr = <float*>velocity_helper.data
  *         if forces is not None:             # <<<<<<<<<<<<<<
@@ -6611,7 +6603,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
  */
   }
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":518
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":518
  *             forces_ptr = <float*>forces_helper.data
  * 
  *         cdef np.ndarray box_helper = np.ascontiguousarray(box, dtype=DTYPE)             # <<<<<<<<<<<<<<
@@ -6643,7 +6635,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
   __pyx_v_box_helper = ((PyArrayObject *)__pyx_t_4);
   __pyx_t_4 = 0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":519
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":519
  * 
  *         cdef np.ndarray box_helper = np.ascontiguousarray(box, dtype=DTYPE)
  *         cdef float* box_ptr = <float*>box_helper.data             # <<<<<<<<<<<<<<
@@ -6652,7 +6644,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
  */
   __pyx_v_box_ptr = ((float *)__pyx_v_box_helper->data);
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":521
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":521
  *         cdef float* box_ptr = <float*>box_helper.data
  * 
  *         if self.current_frame == 0:             # <<<<<<<<<<<<<<
@@ -6662,7 +6654,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
   __pyx_t_1 = ((__pyx_v_self->__pyx_base.current_frame == 0) != 0);
   if (__pyx_t_1) {
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":522
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":522
  * 
  *         if self.current_frame == 0:
  *             self.box = box             # <<<<<<<<<<<<<<
@@ -6678,7 +6670,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
     __pyx_v_self->__pyx_base.box = ((PyArrayObject *)__pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":523
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":523
  *         if self.current_frame == 0:
  *             self.box = box
  *             self.n_atoms = natoms             # <<<<<<<<<<<<<<
@@ -6687,7 +6679,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
  */
     __pyx_v_self->__pyx_base.n_atoms = __pyx_v_natoms;
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":521
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":521
  *         cdef float* box_ptr = <float*>box_helper.data
  * 
  *         if self.current_frame == 0:             # <<<<<<<<<<<<<<
@@ -6697,7 +6689,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
     goto __pyx_L7;
   }
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":525
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":525
  *             self.n_atoms = natoms
  *         else:
  *             if self.n_atoms != natoms:             # <<<<<<<<<<<<<<
@@ -6708,7 +6700,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
     __pyx_t_1 = ((__pyx_v_self->__pyx_base.n_atoms != __pyx_v_natoms) != 0);
     if (__pyx_t_1) {
 
-      /* "MDAnalysis/lib/formats/xdrlib.pyx":527
+      /* "MDAnalysis/lib/formats/libmdaxdr.pyx":527
  *             if self.n_atoms != natoms:
  *                 raise ValueError('Previous frames contained {} atoms. You '
  *                                  'are trying to write {} atoms.'.format(             # <<<<<<<<<<<<<<
@@ -6718,7 +6710,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
       __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_Previous_frames_contained_atoms, __pyx_n_s_format); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 527; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_3);
 
-      /* "MDAnalysis/lib/formats/xdrlib.pyx":528
+      /* "MDAnalysis/lib/formats/libmdaxdr.pyx":528
  *                 raise ValueError('Previous frames contained {} atoms. You '
  *                                  'are trying to write {} atoms.'.format(
  *                                      self.n_atoms, natoms))             # <<<<<<<<<<<<<<
@@ -6757,7 +6749,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-      /* "MDAnalysis/lib/formats/xdrlib.pyx":526
+      /* "MDAnalysis/lib/formats/libmdaxdr.pyx":526
  *         else:
  *             if self.n_atoms != natoms:
  *                 raise ValueError('Previous frames contained {} atoms. You '             # <<<<<<<<<<<<<<
@@ -6776,7 +6768,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       {__pyx_filename = __pyx_f[0]; __pyx_lineno = 526; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-      /* "MDAnalysis/lib/formats/xdrlib.pyx":525
+      /* "MDAnalysis/lib/formats/libmdaxdr.pyx":525
  *             self.n_atoms = natoms
  *         else:
  *             if self.n_atoms != natoms:             # <<<<<<<<<<<<<<
@@ -6785,7 +6777,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
  */
     }
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":529
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":529
  *                                  'are trying to write {} atoms.'.format(
  *                                      self.n_atoms, natoms))
  *             if xyz is not None and self.n_atoms != xyz.shape[0]:             # <<<<<<<<<<<<<<
@@ -6815,7 +6807,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
     __pyx_L10_bool_binop_done:;
     if (__pyx_t_1) {
 
-      /* "MDAnalysis/lib/formats/xdrlib.pyx":531
+      /* "MDAnalysis/lib/formats/libmdaxdr.pyx":531
  *             if xyz is not None and self.n_atoms != xyz.shape[0]:
  *                 raise ValueError('Previous frames xyz contained {} atoms. You '
  *                                  'are trying to write {} atoms.'.format(             # <<<<<<<<<<<<<<
@@ -6825,7 +6817,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
       __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_Previous_frames_xyz_contained_at, __pyx_n_s_format); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 531; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_9);
 
-      /* "MDAnalysis/lib/formats/xdrlib.pyx":532
+      /* "MDAnalysis/lib/formats/libmdaxdr.pyx":532
  *                 raise ValueError('Previous frames xyz contained {} atoms. You '
  *                                  'are trying to write {} atoms.'.format(
  *                                      self.n_atoms, xyz.shape[0]))             # <<<<<<<<<<<<<<
@@ -6867,7 +6859,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
 
-      /* "MDAnalysis/lib/formats/xdrlib.pyx":530
+      /* "MDAnalysis/lib/formats/libmdaxdr.pyx":530
  *                                      self.n_atoms, natoms))
  *             if xyz is not None and self.n_atoms != xyz.shape[0]:
  *                 raise ValueError('Previous frames xyz contained {} atoms. You '             # <<<<<<<<<<<<<<
@@ -6886,7 +6878,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       {__pyx_filename = __pyx_f[0]; __pyx_lineno = 530; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-      /* "MDAnalysis/lib/formats/xdrlib.pyx":529
+      /* "MDAnalysis/lib/formats/libmdaxdr.pyx":529
  *                                  'are trying to write {} atoms.'.format(
  *                                      self.n_atoms, natoms))
  *             if xyz is not None and self.n_atoms != xyz.shape[0]:             # <<<<<<<<<<<<<<
@@ -6895,7 +6887,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
  */
     }
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":533
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":533
  *                                  'are trying to write {} atoms.'.format(
  *                                      self.n_atoms, xyz.shape[0]))
  *             if velocity is not None and self.n_atoms != velocity.shape[0]:             # <<<<<<<<<<<<<<
@@ -6925,7 +6917,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
     __pyx_L13_bool_binop_done:;
     if (__pyx_t_1) {
 
-      /* "MDAnalysis/lib/formats/xdrlib.pyx":535
+      /* "MDAnalysis/lib/formats/libmdaxdr.pyx":535
  *             if velocity is not None and self.n_atoms != velocity.shape[0]:
  *                 raise ValueError('Previous frames velocity contained {} atoms. You '
  *                                  'are trying to write {} atoms.'.format(             # <<<<<<<<<<<<<<
@@ -6935,7 +6927,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
       __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_Previous_frames_velocity_contain, __pyx_n_s_format); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 535; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_7);
 
-      /* "MDAnalysis/lib/formats/xdrlib.pyx":536
+      /* "MDAnalysis/lib/formats/libmdaxdr.pyx":536
  *                 raise ValueError('Previous frames velocity contained {} atoms. You '
  *                                  'are trying to write {} atoms.'.format(
  *                                      self.n_atoms, velocity.shape[0]))             # <<<<<<<<<<<<<<
@@ -6977,7 +6969,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-      /* "MDAnalysis/lib/formats/xdrlib.pyx":534
+      /* "MDAnalysis/lib/formats/libmdaxdr.pyx":534
  *                                      self.n_atoms, xyz.shape[0]))
  *             if velocity is not None and self.n_atoms != velocity.shape[0]:
  *                 raise ValueError('Previous frames velocity contained {} atoms. You '             # <<<<<<<<<<<<<<
@@ -6996,7 +6988,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       {__pyx_filename = __pyx_f[0]; __pyx_lineno = 534; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-      /* "MDAnalysis/lib/formats/xdrlib.pyx":533
+      /* "MDAnalysis/lib/formats/libmdaxdr.pyx":533
  *                                  'are trying to write {} atoms.'.format(
  *                                      self.n_atoms, xyz.shape[0]))
  *             if velocity is not None and self.n_atoms != velocity.shape[0]:             # <<<<<<<<<<<<<<
@@ -7005,7 +6997,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
  */
     }
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":537
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":537
  *                                  'are trying to write {} atoms.'.format(
  *                                      self.n_atoms, velocity.shape[0]))
  *             if forces is not None and self.n_atoms != forces.shape[0]:             # <<<<<<<<<<<<<<
@@ -7035,7 +7027,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
     __pyx_L16_bool_binop_done:;
     if (__pyx_t_1) {
 
-      /* "MDAnalysis/lib/formats/xdrlib.pyx":539
+      /* "MDAnalysis/lib/formats/libmdaxdr.pyx":539
  *             if forces is not None and self.n_atoms != forces.shape[0]:
  *                 raise ValueError('Previous frames forces contained {} atoms. You '
  *                                  'are trying to write {} atoms.'.format(             # <<<<<<<<<<<<<<
@@ -7045,7 +7037,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
       __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_Previous_frames_forces_contained, __pyx_n_s_format); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 539; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_6);
 
-      /* "MDAnalysis/lib/formats/xdrlib.pyx":540
+      /* "MDAnalysis/lib/formats/libmdaxdr.pyx":540
  *                 raise ValueError('Previous frames forces contained {} atoms. You '
  *                                  'are trying to write {} atoms.'.format(
  *                                      self.n_atoms, forces.shape[0]))             # <<<<<<<<<<<<<<
@@ -7087,7 +7079,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-      /* "MDAnalysis/lib/formats/xdrlib.pyx":538
+      /* "MDAnalysis/lib/formats/libmdaxdr.pyx":538
  *                                      self.n_atoms, velocity.shape[0]))
  *             if forces is not None and self.n_atoms != forces.shape[0]:
  *                 raise ValueError('Previous frames forces contained {} atoms. You '             # <<<<<<<<<<<<<<
@@ -7106,7 +7098,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       {__pyx_filename = __pyx_f[0]; __pyx_lineno = 538; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-      /* "MDAnalysis/lib/formats/xdrlib.pyx":537
+      /* "MDAnalysis/lib/formats/libmdaxdr.pyx":537
  *                                  'are trying to write {} atoms.'.format(
  *                                      self.n_atoms, velocity.shape[0]))
  *             if forces is not None and self.n_atoms != forces.shape[0]:             # <<<<<<<<<<<<<<
@@ -7115,7 +7107,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
  */
     }
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":541
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":541
  *                                  'are trying to write {} atoms.'.format(
  *                                      self.n_atoms, forces.shape[0]))
  *             if not np.allclose(self.box, box, rtol=0, atol=1e-2):             # <<<<<<<<<<<<<<
@@ -7149,7 +7141,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
     __pyx_t_10 = ((!__pyx_t_1) != 0);
     if (__pyx_t_10) {
 
-      /* "MDAnalysis/lib/formats/xdrlib.pyx":543
+      /* "MDAnalysis/lib/formats/libmdaxdr.pyx":543
  *             if not np.allclose(self.box, box, rtol=0, atol=1e-2):
  *                 raise ValueError('Previous frames contained {} box. You '
  *                                  'are trying to write {} box.'.format(             # <<<<<<<<<<<<<<
@@ -7159,7 +7151,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
       __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_Previous_frames_contained_box_Yo, __pyx_n_s_format); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 543; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_5);
 
-      /* "MDAnalysis/lib/formats/xdrlib.pyx":544
+      /* "MDAnalysis/lib/formats/libmdaxdr.pyx":544
  *                 raise ValueError('Previous frames contained {} box. You '
  *                                  'are trying to write {} box.'.format(
  *                                      self.box, box))             # <<<<<<<<<<<<<<
@@ -7194,7 +7186,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-      /* "MDAnalysis/lib/formats/xdrlib.pyx":542
+      /* "MDAnalysis/lib/formats/libmdaxdr.pyx":542
  *                                      self.n_atoms, forces.shape[0]))
  *             if not np.allclose(self.box, box, rtol=0, atol=1e-2):
  *                 raise ValueError('Previous frames contained {} box. You '             # <<<<<<<<<<<<<<
@@ -7213,7 +7205,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       {__pyx_filename = __pyx_f[0]; __pyx_lineno = 542; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-      /* "MDAnalysis/lib/formats/xdrlib.pyx":541
+      /* "MDAnalysis/lib/formats/libmdaxdr.pyx":541
  *                                  'are trying to write {} atoms.'.format(
  *                                      self.n_atoms, forces.shape[0]))
  *             if not np.allclose(self.box, box, rtol=0, atol=1e-2):             # <<<<<<<<<<<<<<
@@ -7224,7 +7216,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
   }
   __pyx_L7:;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":546
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":546
  *                                      self.box, box))
  * 
  *         return_code = write_trr(self.xfp, self.n_atoms, step, time,             # <<<<<<<<<<<<<<
@@ -7233,29 +7225,29 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
  */
   __pyx_v_return_code = write_trr(__pyx_v_self->__pyx_base.xfp, __pyx_v_self->__pyx_base.n_atoms, __pyx_v_step, __pyx_v_time, __pyx_v__lambda, ((float (*)[3])__pyx_v_box_ptr), ((rvec *)__pyx_v_xyz_ptr), ((rvec *)__pyx_v_velocity_ptr), ((rvec *)__pyx_v_forces_ptr));
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":551
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":551
  *                                        <rvec*> velocity_ptr,
  *                                        <rvec*> forces_ptr)
  *         if return_code != EOK:             # <<<<<<<<<<<<<<
- *             raise RuntimeError('TRR write error: {}'.format(
+ *             raise IOError('TRR write error = {}'.format(
  *                 error_message[return_code]))
  */
-  __pyx_t_10 = ((__pyx_v_return_code != __pyx_e_10MDAnalysis_3lib_7formats_6xdrlib_EOK) != 0);
+  __pyx_t_10 = ((__pyx_v_return_code != __pyx_e_10MDAnalysis_3lib_7formats_9libmdaxdr_EOK) != 0);
   if (__pyx_t_10) {
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":552
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":552
  *                                        <rvec*> forces_ptr)
  *         if return_code != EOK:
- *             raise RuntimeError('TRR write error: {}'.format(             # <<<<<<<<<<<<<<
+ *             raise IOError('TRR write error = {}'.format(             # <<<<<<<<<<<<<<
  *                 error_message[return_code]))
  * 
  */
     __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_TRR_write_error, __pyx_n_s_format); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 552; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_5);
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":553
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":553
  *         if return_code != EOK:
- *             raise RuntimeError('TRR write error: {}'.format(
+ *             raise IOError('TRR write error = {}'.format(
  *                 error_message[return_code]))             # <<<<<<<<<<<<<<
  * 
  *         self.current_frame += 1
@@ -7292,10 +7284,10 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
     }
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":552
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":552
  *                                        <rvec*> forces_ptr)
  *         if return_code != EOK:
- *             raise RuntimeError('TRR write error: {}'.format(             # <<<<<<<<<<<<<<
+ *             raise IOError('TRR write error = {}'.format(             # <<<<<<<<<<<<<<
  *                 error_message[return_code]))
  * 
  */
@@ -7304,23 +7296,23 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
     __Pyx_GIVEREF(__pyx_t_3);
     PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_3);
     __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_RuntimeError, __pyx_t_5, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 552; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_IOError, __pyx_t_5, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 552; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     {__pyx_filename = __pyx_f[0]; __pyx_lineno = 552; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":551
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":551
  *                                        <rvec*> velocity_ptr,
  *                                        <rvec*> forces_ptr)
  *         if return_code != EOK:             # <<<<<<<<<<<<<<
- *             raise RuntimeError('TRR write error: {}'.format(
+ *             raise IOError('TRR write error = {}'.format(
  *                 error_message[return_code]))
  */
   }
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":555
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":555
  *                 error_message[return_code]))
  * 
  *         self.current_frame += 1             # <<<<<<<<<<<<<<
@@ -7329,7 +7321,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
  */
   __pyx_v_self->__pyx_base.current_frame = (__pyx_v_self->__pyx_base.current_frame + 1);
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":466
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":466
  *                         has_x, has_v, has_f)
  * 
  *     def write(self, xyz, velocity, forces, box, int step, float time,             # <<<<<<<<<<<<<<
@@ -7347,7 +7339,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
   __Pyx_XDECREF(__pyx_t_6);
   __Pyx_XDECREF(__pyx_t_7);
   __Pyx_XDECREF(__pyx_t_9);
-  __Pyx_AddTraceback("MDAnalysis.lib.formats.xdrlib.TRRFile.write", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("MDAnalysis.lib.formats.libmdaxdr.TRRFile.write", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF((PyObject *)__pyx_v_xyz_helper);
@@ -7359,7 +7351,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
   return __pyx_r;
 }
 
-/* "MDAnalysis/lib/formats/xdrlib.pyx":584
+/* "MDAnalysis/lib/formats/libmdaxdr.pyx":584
  *     cdef float precision
  * 
  *     def _calc_natoms(self, fname):             # <<<<<<<<<<<<<<
@@ -7368,19 +7360,19 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write(str
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_1_calc_natoms(PyObject *__pyx_v_self, PyObject *__pyx_v_fname); /*proto*/
-static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_1_calc_natoms(PyObject *__pyx_v_self, PyObject *__pyx_v_fname) {
+static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_7XTCFile_1_calc_natoms(PyObject *__pyx_v_self, PyObject *__pyx_v_fname); /*proto*/
+static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_7XTCFile_1_calc_natoms(PyObject *__pyx_v_self, PyObject *__pyx_v_fname) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("_calc_natoms (wrapper)", 0);
-  __pyx_r = __pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile__calc_natoms(((struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib_XTCFile *)__pyx_v_self), ((PyObject *)__pyx_v_fname));
+  __pyx_r = __pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_7XTCFile__calc_natoms(((struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr_XTCFile *)__pyx_v_self), ((PyObject *)__pyx_v_fname));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile__calc_natoms(CYTHON_UNUSED struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib_XTCFile *__pyx_v_self, PyObject *__pyx_v_fname) {
+static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_7XTCFile__calc_natoms(CYTHON_UNUSED struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr_XTCFile *__pyx_v_self, PyObject *__pyx_v_fname) {
   int __pyx_v_n_atoms;
   int __pyx_v_return_code;
   PyObject *__pyx_r = NULL;
@@ -7394,7 +7386,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile__calc_nato
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("_calc_natoms", 0);
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":586
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":586
  *     def _calc_natoms(self, fname):
  *         cdef int n_atoms
  *         return_code = read_xtc_natoms(fname, &n_atoms)             # <<<<<<<<<<<<<<
@@ -7404,7 +7396,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile__calc_nato
   __pyx_t_1 = __Pyx_PyObject_AsString(__pyx_v_fname); if (unlikely((!__pyx_t_1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 586; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_return_code = read_xtc_natoms(__pyx_t_1, (&__pyx_v_n_atoms));
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":587
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":587
  *         cdef int n_atoms
  *         return_code = read_xtc_natoms(fname, &n_atoms)
  *         return return_code, n_atoms             # <<<<<<<<<<<<<<
@@ -7428,7 +7420,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile__calc_nato
   __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":584
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":584
  *     cdef float precision
  * 
  *     def _calc_natoms(self, fname):             # <<<<<<<<<<<<<<
@@ -7441,7 +7433,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile__calc_nato
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_AddTraceback("MDAnalysis.lib.formats.xdrlib.XTCFile._calc_natoms", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("MDAnalysis.lib.formats.libmdaxdr.XTCFile._calc_natoms", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -7449,7 +7441,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile__calc_nato
   return __pyx_r;
 }
 
-/* "MDAnalysis/lib/formats/xdrlib.pyx":590
+/* "MDAnalysis/lib/formats/libmdaxdr.pyx":590
  * 
  * 
  *     def calc_offsets(self):             # <<<<<<<<<<<<<<
@@ -7458,20 +7450,20 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile__calc_nato
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_3calc_offsets(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static char __pyx_doc_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_2calc_offsets[] = "Calculate offsets from XTC file directly";
-static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_3calc_offsets(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_7XTCFile_3calc_offsets(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_10MDAnalysis_3lib_7formats_9libmdaxdr_7XTCFile_2calc_offsets[] = "Calculate offsets from XTC file directly";
+static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_7XTCFile_3calc_offsets(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("calc_offsets (wrapper)", 0);
-  __pyx_r = __pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_2calc_offsets(((struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib_XTCFile *)__pyx_v_self));
+  __pyx_r = __pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_7XTCFile_2calc_offsets(((struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr_XTCFile *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_2calc_offsets(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib_XTCFile *__pyx_v_self) {
+static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_7XTCFile_2calc_offsets(struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr_XTCFile *__pyx_v_self) {
   int __pyx_v_n_frames;
   int __pyx_v_est_nframes;
   int64_t *__pyx_v_offsets;
@@ -7493,7 +7485,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_2calc_offs
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("calc_offsets", 0);
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":592
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":592
  *     def calc_offsets(self):
  *         """Calculate offsets from XTC file directly"""
  *         if not self.is_open:             # <<<<<<<<<<<<<<
@@ -7503,7 +7495,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_2calc_offs
   __pyx_t_1 = ((!(__pyx_v_self->__pyx_base.is_open != 0)) != 0);
   if (__pyx_t_1) {
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":593
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":593
  *         """Calculate offsets from XTC file directly"""
  *         if not self.is_open:
  *             return np.array([])             # <<<<<<<<<<<<<<
@@ -7548,7 +7540,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_2calc_offs
     __pyx_t_2 = 0;
     goto __pyx_L0;
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":592
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":592
  *     def calc_offsets(self):
  *         """Calculate offsets from XTC file directly"""
  *         if not self.is_open:             # <<<<<<<<<<<<<<
@@ -7557,7 +7549,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_2calc_offs
  */
   }
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":594
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":594
  *         if not self.is_open:
  *             return np.array([])
  *         cdef int n_frames = 0             # <<<<<<<<<<<<<<
@@ -7566,7 +7558,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_2calc_offs
  */
   __pyx_v_n_frames = 0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":595
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":595
  *             return np.array([])
  *         cdef int n_frames = 0
  *         cdef int est_nframes = 0             # <<<<<<<<<<<<<<
@@ -7575,7 +7567,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_2calc_offs
  */
   __pyx_v_est_nframes = 0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":596
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":596
  *         cdef int n_frames = 0
  *         cdef int est_nframes = 0
  *         cdef int64_t* offsets = NULL             # <<<<<<<<<<<<<<
@@ -7584,43 +7576,35 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_2calc_offs
  */
   __pyx_v_offsets = NULL;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":597
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":597
  *         cdef int est_nframes = 0
  *         cdef int64_t* offsets = NULL
  *         ok = read_xtc_n_frames(self.fname, &n_frames, &est_nframes, &offsets);             # <<<<<<<<<<<<<<
  *         if ok != EOK:
- *             raise RuntimeError("XTC couldn't calculate offsets, error={}".format(
+ *             raise RuntimeError("XTC couldn't calculate offsets. "
  */
   __pyx_t_7 = __Pyx_PyObject_AsString(__pyx_v_self->__pyx_base.fname); if (unlikely((!__pyx_t_7) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 597; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_ok = read_xtc_n_frames(__pyx_t_7, (&__pyx_v_n_frames), (&__pyx_v_est_nframes), (&__pyx_v_offsets));
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":598
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":598
  *         cdef int64_t* offsets = NULL
  *         ok = read_xtc_n_frames(self.fname, &n_frames, &est_nframes, &offsets);
  *         if ok != EOK:             # <<<<<<<<<<<<<<
- *             raise RuntimeError("XTC couldn't calculate offsets, error={}".format(
- *                 error_message[ok]))
+ *             raise RuntimeError("XTC couldn't calculate offsets. "
+ *                                "XDR error = {}".format(error_message[ok]))
  */
-  __pyx_t_1 = ((__pyx_v_ok != __pyx_e_10MDAnalysis_3lib_7formats_6xdrlib_EOK) != 0);
+  __pyx_t_1 = ((__pyx_v_ok != __pyx_e_10MDAnalysis_3lib_7formats_9libmdaxdr_EOK) != 0);
   if (__pyx_t_1) {
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":599
- *         ok = read_xtc_n_frames(self.fname, &n_frames, &est_nframes, &offsets);
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":600
  *         if ok != EOK:
- *             raise RuntimeError("XTC couldn't calculate offsets, error={}".format(             # <<<<<<<<<<<<<<
- *                 error_message[ok]))
- *         # the read_xtc_n_frames allocates memory for the offsets with an
- */
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_XTC_couldn_t_calculate_offsets_e, __pyx_n_s_format); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 599; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_4);
-
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":600
- *         if ok != EOK:
- *             raise RuntimeError("XTC couldn't calculate offsets, error={}".format(
- *                 error_message[ok]))             # <<<<<<<<<<<<<<
+ *             raise RuntimeError("XTC couldn't calculate offsets. "
+ *                                "XDR error = {}".format(error_message[ok]))             # <<<<<<<<<<<<<<
  *         # the read_xtc_n_frames allocates memory for the offsets with an
  *         # overestimation. This number is saved in est_nframes and we need to
  */
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_XTC_couldn_t_calculate_offsets_X, __pyx_n_s_format); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 600; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_6 = __Pyx_GetModuleGlobalName(__pyx_n_s_error_message); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 600; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_6);
     __pyx_t_3 = __Pyx_GetItemInt(__pyx_t_6, __pyx_v_ok, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(__pyx_t_3 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 600; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
@@ -7637,27 +7621,27 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_2calc_offs
       }
     }
     if (!__pyx_t_6) {
-      __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_3); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 599; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_3); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 600; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_2);
     } else {
-      __pyx_t_5 = PyTuple_New(1+1); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 599; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_5 = PyTuple_New(1+1); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 600; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_GIVEREF(__pyx_t_6); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_6); __pyx_t_6 = NULL;
       __Pyx_GIVEREF(__pyx_t_3);
       PyTuple_SET_ITEM(__pyx_t_5, 0+1, __pyx_t_3);
       __pyx_t_3 = 0;
-      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 599; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 600; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     }
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":599
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":599
  *         ok = read_xtc_n_frames(self.fname, &n_frames, &est_nframes, &offsets);
  *         if ok != EOK:
- *             raise RuntimeError("XTC couldn't calculate offsets, error={}".format(             # <<<<<<<<<<<<<<
- *                 error_message[ok]))
+ *             raise RuntimeError("XTC couldn't calculate offsets. "             # <<<<<<<<<<<<<<
+ *                                "XDR error = {}".format(error_message[ok]))
  *         # the read_xtc_n_frames allocates memory for the offsets with an
  */
     __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 599; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
@@ -7672,16 +7656,16 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_2calc_offs
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     {__pyx_filename = __pyx_f[0]; __pyx_lineno = 599; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":598
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":598
  *         cdef int64_t* offsets = NULL
  *         ok = read_xtc_n_frames(self.fname, &n_frames, &est_nframes, &offsets);
  *         if ok != EOK:             # <<<<<<<<<<<<<<
- *             raise RuntimeError("XTC couldn't calculate offsets, error={}".format(
- *                 error_message[ok]))
+ *             raise RuntimeError("XTC couldn't calculate offsets. "
+ *                                "XDR error = {}".format(error_message[ok]))
  */
   }
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":605
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":605
  *         # tell the new numpy array about the whole allocated memory to avoid
  *         # memory leaks.
  *         cdef np.ndarray dims = np.array([est_nframes], dtype=np.int64)             # <<<<<<<<<<<<<<
@@ -7723,7 +7707,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_2calc_offs
   __pyx_v_dims = ((PyArrayObject *)__pyx_t_6);
   __pyx_t_6 = 0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":607
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":607
  *         cdef np.ndarray dims = np.array([est_nframes], dtype=np.int64)
  *         # this handles freeing the allocated memory correctly.
  *         cdef np.ndarray nd_offsets = ptr_to_ndarray(<void*> offsets, dims, np.NPY_INT64)             # <<<<<<<<<<<<<<
@@ -7738,7 +7722,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_2calc_offs
   __pyx_v_nd_offsets = ((PyArrayObject *)__pyx_t_6);
   __pyx_t_6 = 0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":608
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":608
  *         # this handles freeing the allocated memory correctly.
  *         cdef np.ndarray nd_offsets = ptr_to_ndarray(<void*> offsets, dims, np.NPY_INT64)
  *         return nd_offsets[:n_frames]             # <<<<<<<<<<<<<<
@@ -7752,7 +7736,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_2calc_offs
   __pyx_t_6 = 0;
   goto __pyx_L0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":590
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":590
  * 
  * 
  *     def calc_offsets(self):             # <<<<<<<<<<<<<<
@@ -7768,7 +7752,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_2calc_offs
   __Pyx_XDECREF(__pyx_t_5);
   __Pyx_XDECREF(__pyx_t_6);
   __PYX_XDEC_MEMVIEW(&__pyx_t_8, 1);
-  __Pyx_AddTraceback("MDAnalysis.lib.formats.xdrlib.XTCFile.calc_offsets", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("MDAnalysis.lib.formats.libmdaxdr.XTCFile.calc_offsets", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF((PyObject *)__pyx_v_dims);
@@ -7778,7 +7762,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_2calc_offs
   return __pyx_r;
 }
 
-/* "MDAnalysis/lib/formats/xdrlib.pyx":610
+/* "MDAnalysis/lib/formats/libmdaxdr.pyx":610
  *         return nd_offsets[:n_frames]
  * 
  *     def read(self):             # <<<<<<<<<<<<<<
@@ -7787,20 +7771,20 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_2calc_offs
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_5read(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static char __pyx_doc_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_4read[] = "Read next frame in the XTC file\n\n        Returns\n        -------\n        frame : xdrlib.XTCFrame\n            namedtuple with frame information\n\n        See Also\n        --------\n        XTCFrame\n        TRRFile\n\n        Raises\n        ------\n        RuntimeError\n            Something must have happened reading the file\n        ";
-static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_5read(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_7XTCFile_5read(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_10MDAnalysis_3lib_7formats_9libmdaxdr_7XTCFile_4read[] = "Read next frame in the XTC file\n\n        Returns\n        -------\n        frame : libmdaxdr.XTCFrame\n            namedtuple with frame information\n\n        See Also\n        --------\n        XTCFrame\n        TRRFile\n\n        Raises\n        ------\n        RuntimeError\n            Something must have happened reading the file\n        ";
+static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_7XTCFile_5read(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("read (wrapper)", 0);
-  __pyx_r = __pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_4read(((struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib_XTCFile *)__pyx_v_self));
+  __pyx_r = __pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_7XTCFile_4read(((struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr_XTCFile *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_4read(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib_XTCFile *__pyx_v_self) {
+static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_7XTCFile_4read(struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr_XTCFile *__pyx_v_self) {
   long __pyx_v_return_code;
   int __pyx_v_step;
   float __pyx_v_time;
@@ -7824,7 +7808,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_4read(stru
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("read", 0);
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":628
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":628
  *             Something must have happened reading the file
  *         """
  *         if self.reached_eof:             # <<<<<<<<<<<<<<
@@ -7834,7 +7818,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_4read(stru
   __pyx_t_1 = (__pyx_v_self->__pyx_base.reached_eof != 0);
   if (__pyx_t_1) {
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":629
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":629
  *         """
  *         if self.reached_eof:
  *             raise RuntimeError('Reached last frame in XTC, seek to 0')             # <<<<<<<<<<<<<<
@@ -7847,7 +7831,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_4read(stru
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     {__pyx_filename = __pyx_f[0]; __pyx_lineno = 629; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":628
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":628
  *             Something must have happened reading the file
  *         """
  *         if self.reached_eof:             # <<<<<<<<<<<<<<
@@ -7856,7 +7840,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_4read(stru
  */
   }
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":630
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":630
  *         if self.reached_eof:
  *             raise RuntimeError('Reached last frame in XTC, seek to 0')
  *         if not self.is_open:             # <<<<<<<<<<<<<<
@@ -7866,7 +7850,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_4read(stru
   __pyx_t_1 = ((!(__pyx_v_self->__pyx_base.is_open != 0)) != 0);
   if (__pyx_t_1) {
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":631
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":631
  *             raise RuntimeError('Reached last frame in XTC, seek to 0')
  *         if not self.is_open:
  *             raise RuntimeError('No file opened')             # <<<<<<<<<<<<<<
@@ -7879,7 +7863,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_4read(stru
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     {__pyx_filename = __pyx_f[0]; __pyx_lineno = 631; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":630
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":630
  *         if self.reached_eof:
  *             raise RuntimeError('Reached last frame in XTC, seek to 0')
  *         if not self.is_open:             # <<<<<<<<<<<<<<
@@ -7888,7 +7872,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_4read(stru
  */
   }
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":632
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":632
  *         if not self.is_open:
  *             raise RuntimeError('No file opened')
  *         if self.mode != 'r':             # <<<<<<<<<<<<<<
@@ -7899,7 +7883,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_4read(stru
   __pyx_t_3 = (__pyx_t_1 != 0);
   if (__pyx_t_3) {
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":634
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":634
  *         if self.mode != 'r':
  *             raise RuntimeError('File opened in mode: {}. Reading only allow '
  *                                'in mode "r"'.format('self.mode'))             # <<<<<<<<<<<<<<
@@ -7912,7 +7896,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_4read(stru
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":633
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":633
  *             raise RuntimeError('No file opened')
  *         if self.mode != 'r':
  *             raise RuntimeError('File opened in mode: {}. Reading only allow '             # <<<<<<<<<<<<<<
@@ -7931,7 +7915,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_4read(stru
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     {__pyx_filename = __pyx_f[0]; __pyx_lineno = 633; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":632
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":632
  *         if not self.is_open:
  *             raise RuntimeError('No file opened')
  *         if self.mode != 'r':             # <<<<<<<<<<<<<<
@@ -7940,7 +7924,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_4read(stru
  */
   }
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":636
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":636
  *                                'in mode "r"'.format('self.mode'))
  * 
  *         return_code = 1             # <<<<<<<<<<<<<<
@@ -7949,7 +7933,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_4read(stru
  */
   __pyx_v_return_code = 1;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":640
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":640
  *         cdef float time, prec
  * 
  *         cdef np.ndarray xyz = np.empty((self.n_atoms, DIMS), dtype=DTYPE)             # <<<<<<<<<<<<<<
@@ -7963,7 +7947,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_4read(stru
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_self->__pyx_base.n_atoms); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 640; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_10MDAnalysis_3lib_7formats_6xdrlib_DIMS); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 640; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_10MDAnalysis_3lib_7formats_9libmdaxdr_DIMS); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 640; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_5);
   __pyx_t_6 = PyTuple_New(2); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 640; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_6);
@@ -7993,7 +7977,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_4read(stru
   __pyx_v_xyz = ((PyArrayObject *)__pyx_t_4);
   __pyx_t_4 = 0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":641
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":641
  * 
  *         cdef np.ndarray xyz = np.empty((self.n_atoms, DIMS), dtype=DTYPE)
  *         cdef np.ndarray box = np.empty((DIMS, DIMS), dtype=DTYPE)             # <<<<<<<<<<<<<<
@@ -8005,9 +7989,9 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_4read(stru
   __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_empty); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 641; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_10MDAnalysis_3lib_7formats_6xdrlib_DIMS); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 641; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_10MDAnalysis_3lib_7formats_9libmdaxdr_DIMS); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 641; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_10MDAnalysis_3lib_7formats_6xdrlib_DIMS); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 641; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_10MDAnalysis_3lib_7formats_9libmdaxdr_DIMS); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 641; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_5);
   __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 641; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
@@ -8037,7 +8021,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_4read(stru
   __pyx_v_box = ((PyArrayObject *)__pyx_t_4);
   __pyx_t_4 = 0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":643
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":643
  *         cdef np.ndarray box = np.empty((DIMS, DIMS), dtype=DTYPE)
  * 
  *         return_code = read_xtc(self.xfp, self.n_atoms, <int*> &step,             # <<<<<<<<<<<<<<
@@ -8046,16 +8030,16 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_4read(stru
  */
   __pyx_v_return_code = read_xtc(__pyx_v_self->__pyx_base.xfp, __pyx_v_self->__pyx_base.n_atoms, ((int *)(&__pyx_v_step)), (&__pyx_v_time), ((float (*)[3])__pyx_v_box->data), ((rvec *)__pyx_v_xyz->data), ((float *)(&__pyx_v_prec)));
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":646
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":646
  *                                       &time, <matrix>box.data,
  *                                       <rvec*>xyz.data, <float*> &prec)
  *         if return_code != EOK and return_code != EENDOFFILE:             # <<<<<<<<<<<<<<
- *             raise RuntimeError('XTC Read Error occured: {}'.format(
+ *             raise IOError('XTC read error = {}'.format(
  *                 error_message[return_code]))
  */
   switch (__pyx_v_return_code) {
-    case __pyx_e_10MDAnalysis_3lib_7formats_6xdrlib_EOK:
-    case __pyx_e_10MDAnalysis_3lib_7formats_6xdrlib_EENDOFFILE:
+    case __pyx_e_10MDAnalysis_3lib_7formats_9libmdaxdr_EOK:
+    case __pyx_e_10MDAnalysis_3lib_7formats_9libmdaxdr_EENDOFFILE:
     __pyx_t_3 = 0;
     break;
     default:
@@ -8064,19 +8048,19 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_4read(stru
   }
   if (__pyx_t_3) {
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":647
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":647
  *                                       <rvec*>xyz.data, <float*> &prec)
  *         if return_code != EOK and return_code != EENDOFFILE:
- *             raise RuntimeError('XTC Read Error occured: {}'.format(             # <<<<<<<<<<<<<<
+ *             raise IOError('XTC read error = {}'.format(             # <<<<<<<<<<<<<<
  *                 error_message[return_code]))
  * 
  */
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_XTC_Read_Error_occured, __pyx_n_s_format); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 647; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_XTC_read_error, __pyx_n_s_format); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 647; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":648
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":648
  *         if return_code != EOK and return_code != EENDOFFILE:
- *             raise RuntimeError('XTC Read Error occured: {}'.format(
+ *             raise IOError('XTC read error = {}'.format(
  *                 error_message[return_code]))             # <<<<<<<<<<<<<<
  * 
  *         if return_code == EENDOFFILE:
@@ -8113,10 +8097,10 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_4read(stru
     }
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":647
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":647
  *                                       <rvec*>xyz.data, <float*> &prec)
  *         if return_code != EOK and return_code != EENDOFFILE:
- *             raise RuntimeError('XTC Read Error occured: {}'.format(             # <<<<<<<<<<<<<<
+ *             raise IOError('XTC read error = {}'.format(             # <<<<<<<<<<<<<<
  *                 error_message[return_code]))
  * 
  */
@@ -8125,33 +8109,33 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_4read(stru
     __Pyx_GIVEREF(__pyx_t_4);
     PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_4);
     __pyx_t_4 = 0;
-    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin_RuntimeError, __pyx_t_2, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 647; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin_IOError, __pyx_t_2, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 647; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_Raise(__pyx_t_4, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     {__pyx_filename = __pyx_f[0]; __pyx_lineno = 647; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":646
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":646
  *                                       &time, <matrix>box.data,
  *                                       <rvec*>xyz.data, <float*> &prec)
  *         if return_code != EOK and return_code != EENDOFFILE:             # <<<<<<<<<<<<<<
- *             raise RuntimeError('XTC Read Error occured: {}'.format(
+ *             raise IOError('XTC read error = {}'.format(
  *                 error_message[return_code]))
  */
   }
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":650
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":650
  *                 error_message[return_code]))
  * 
  *         if return_code == EENDOFFILE:             # <<<<<<<<<<<<<<
  *             self.reached_eof = True
  *             raise StopIteration
  */
-  __pyx_t_3 = ((__pyx_v_return_code == __pyx_e_10MDAnalysis_3lib_7formats_6xdrlib_EENDOFFILE) != 0);
+  __pyx_t_3 = ((__pyx_v_return_code == __pyx_e_10MDAnalysis_3lib_7formats_9libmdaxdr_EENDOFFILE) != 0);
   if (__pyx_t_3) {
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":651
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":651
  * 
  *         if return_code == EENDOFFILE:
  *             self.reached_eof = True             # <<<<<<<<<<<<<<
@@ -8160,7 +8144,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_4read(stru
  */
     __pyx_v_self->__pyx_base.reached_eof = 1;
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":652
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":652
  *         if return_code == EENDOFFILE:
  *             self.reached_eof = True
  *             raise StopIteration             # <<<<<<<<<<<<<<
@@ -8170,7 +8154,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_4read(stru
     __Pyx_Raise(__pyx_builtin_StopIteration, 0, 0, 0);
     {__pyx_filename = __pyx_f[0]; __pyx_lineno = 652; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":650
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":650
  *                 error_message[return_code]))
  * 
  *         if return_code == EENDOFFILE:             # <<<<<<<<<<<<<<
@@ -8179,17 +8163,17 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_4read(stru
  */
   }
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":654
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":654
  *             raise StopIteration
  * 
  *         if return_code == EOK:             # <<<<<<<<<<<<<<
  *             self.current_frame += 1
  *         return XTCFrame(xyz, box, step, time, prec)
  */
-  __pyx_t_3 = ((__pyx_v_return_code == __pyx_e_10MDAnalysis_3lib_7formats_6xdrlib_EOK) != 0);
+  __pyx_t_3 = ((__pyx_v_return_code == __pyx_e_10MDAnalysis_3lib_7formats_9libmdaxdr_EOK) != 0);
   if (__pyx_t_3) {
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":655
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":655
  * 
  *         if return_code == EOK:
  *             self.current_frame += 1             # <<<<<<<<<<<<<<
@@ -8198,7 +8182,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_4read(stru
  */
     __pyx_v_self->__pyx_base.current_frame = (__pyx_v_self->__pyx_base.current_frame + 1);
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":654
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":654
  *             raise StopIteration
  * 
  *         if return_code == EOK:             # <<<<<<<<<<<<<<
@@ -8207,7 +8191,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_4read(stru
  */
   }
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":656
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":656
  *         if return_code == EOK:
  *             self.current_frame += 1
  *         return XTCFrame(xyz, box, step, time, prec)             # <<<<<<<<<<<<<<
@@ -8263,7 +8247,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_4read(stru
   __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":610
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":610
  *         return nd_offsets[:n_frames]
  * 
  *     def read(self):             # <<<<<<<<<<<<<<
@@ -8280,7 +8264,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_4read(stru
   __Pyx_XDECREF(__pyx_t_7);
   __Pyx_XDECREF(__pyx_t_8);
   __Pyx_XDECREF(__pyx_t_10);
-  __Pyx_AddTraceback("MDAnalysis.lib.formats.xdrlib.XTCFile.read", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("MDAnalysis.lib.formats.libmdaxdr.XTCFile.read", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF((PyObject *)__pyx_v_xyz);
@@ -8290,7 +8274,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_4read(stru
   return __pyx_r;
 }
 
-/* "MDAnalysis/lib/formats/xdrlib.pyx":658
+/* "MDAnalysis/lib/formats/libmdaxdr.pyx":658
  *         return XTCFrame(xyz, box, step, time, prec)
  * 
  *     def write(self, xyz, box, int step, float time, float precision=1000):             # <<<<<<<<<<<<<<
@@ -8299,9 +8283,9 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_4read(stru
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_7write(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write[] = "write one frame to the XTC file\n\n        Parameters\n        ----------\n        xyz : ndarray, shape=(n_atoms, 3)\n            cartesion coordinates\n        box : ndarray, shape=(3, 3)\n            Box vectors for this frame\n        step : int\n            current step number, 1 indexed\n        time : float\n            current time\n        precision : float (optional)\n            precision of saved trajectory, see Notes\n\n\n        Notes\n        -----\n        Gromacs specifies the precision a little bit strange. The coordinates\n        will be multiplied by precision and then converted to an integer. This\n        means a precision of 1000 yields an accuracy of 3 decimal places.\n\n        Raises\n        ------\n        RuntimeError\n            Couldn't write the file\n        ValueError\n            The arguments to not match with previous saved frames.\n\n        ";
-static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_7write(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_7XTCFile_7write(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_10MDAnalysis_3lib_7formats_9libmdaxdr_7XTCFile_6write[] = "write one frame to the XTC file\n\n        Parameters\n        ----------\n        xyz : ndarray, shape=(n_atoms, 3)\n            cartesion coordinates\n        box : ndarray, shape=(3, 3)\n            Box vectors for this frame\n        step : int\n            current step number, 1 indexed\n        time : float\n            current time\n        precision : float (optional)\n            precision of saved trajectory, see Notes\n\n\n        Notes\n        -----\n        Gromacs specifies the precision a little bit strange. The coordinates\n        will be multiplied by precision and then converted to an integer. This\n        means a precision of 1000 yields an accuracy of 3 decimal places.\n\n        Raises\n        ------\n        RuntimeError\n            Couldn't write the file\n        ValueError\n            The arguments to not match with previous saved frames.\n\n        ";
+static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_7XTCFile_7write(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_xyz = 0;
   PyObject *__pyx_v_box = 0;
   int __pyx_v_step;
@@ -8382,18 +8366,18 @@ static PyObject *__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_7write(PyO
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("write", 0, 4, 5, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 658; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
-  __Pyx_AddTraceback("MDAnalysis.lib.formats.xdrlib.XTCFile.write", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("MDAnalysis.lib.formats.libmdaxdr.XTCFile.write", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write(((struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib_XTCFile *)__pyx_v_self), __pyx_v_xyz, __pyx_v_box, __pyx_v_step, __pyx_v_time, __pyx_v_precision);
+  __pyx_r = __pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_7XTCFile_6write(((struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr_XTCFile *)__pyx_v_self), __pyx_v_xyz, __pyx_v_box, __pyx_v_step, __pyx_v_time, __pyx_v_precision);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib_XTCFile *__pyx_v_self, PyObject *__pyx_v_xyz, PyObject *__pyx_v_box, int __pyx_v_step, float __pyx_v_time, float __pyx_v_precision) {
+static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_9libmdaxdr_7XTCFile_6write(struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr_XTCFile *__pyx_v_self, PyObject *__pyx_v_xyz, PyObject *__pyx_v_box, int __pyx_v_step, float __pyx_v_time, float __pyx_v_precision) {
   __Pyx_memviewslice __pyx_v_xyz_view = { 0, 0, { 0 }, { 0 }, { 0 } };
   __Pyx_memviewslice __pyx_v_box_view = { 0, 0, { 0 }, { 0 }, { 0 } };
   int __pyx_v_return_code;
@@ -8419,7 +8403,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write(str
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("write", 0);
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":689
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":689
  * 
  *         """
  *         if self.mode != 'w':             # <<<<<<<<<<<<<<
@@ -8430,7 +8414,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write(str
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":691
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":691
  *         if self.mode != 'w':
  *             raise RuntimeError('File opened in mode: {}. Writing only allow '
  *                                'in mode "w"'.format('self.mode'))             # <<<<<<<<<<<<<<
@@ -8443,7 +8427,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write(str
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":690
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":690
  *         """
  *         if self.mode != 'w':
  *             raise RuntimeError('File opened in mode: {}. Writing only allow '             # <<<<<<<<<<<<<<
@@ -8462,7 +8446,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write(str
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     {__pyx_filename = __pyx_f[0]; __pyx_lineno = 690; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":689
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":689
  * 
  *         """
  *         if self.mode != 'w':             # <<<<<<<<<<<<<<
@@ -8471,7 +8455,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write(str
  */
   }
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":693
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":693
  *                                'in mode "w"'.format('self.mode'))
  * 
  *         cdef DTYPE_T[:, ::1] xyz_view = np.ascontiguousarray(xyz, dtype=DTYPE)             # <<<<<<<<<<<<<<
@@ -8499,14 +8483,14 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write(str
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_7 = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn___pyx_t_10MDAnalysis_3lib_7formats_6xdrlib_DTYPE_T(__pyx_t_6);
+  __pyx_t_7 = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn___pyx_t_10MDAnalysis_3lib_7formats_9libmdaxdr_DTYPE_T(__pyx_t_6);
   if (unlikely(!__pyx_t_7.memview)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 693; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __pyx_v_xyz_view = __pyx_t_7;
   __pyx_t_7.memview = NULL;
   __pyx_t_7.data = NULL;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":694
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":694
  * 
  *         cdef DTYPE_T[:, ::1] xyz_view = np.ascontiguousarray(xyz, dtype=DTYPE)
  *         cdef DTYPE_T[:, ::1] box_view = np.ascontiguousarray(box, dtype=DTYPE)             # <<<<<<<<<<<<<<
@@ -8534,14 +8518,14 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write(str
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_7 = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn___pyx_t_10MDAnalysis_3lib_7formats_6xdrlib_DTYPE_T(__pyx_t_3);
+  __pyx_t_7 = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn___pyx_t_10MDAnalysis_3lib_7formats_9libmdaxdr_DTYPE_T(__pyx_t_3);
   if (unlikely(!__pyx_t_7.memview)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 694; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_v_box_view = __pyx_t_7;
   __pyx_t_7.memview = NULL;
   __pyx_t_7.data = NULL;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":696
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":696
  *         cdef DTYPE_T[:, ::1] box_view = np.ascontiguousarray(box, dtype=DTYPE)
  * 
  *         if self.current_frame == 0:             # <<<<<<<<<<<<<<
@@ -8551,7 +8535,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write(str
   __pyx_t_2 = ((__pyx_v_self->__pyx_base.current_frame == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":697
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":697
  * 
  *         if self.current_frame == 0:
  *             self.n_atoms = xyz.shape[0]             # <<<<<<<<<<<<<<
@@ -8567,7 +8551,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write(str
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_v_self->__pyx_base.n_atoms = __pyx_t_8;
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":698
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":698
  *         if self.current_frame == 0:
  *             self.n_atoms = xyz.shape[0]
  *             self.box = box             # <<<<<<<<<<<<<<
@@ -8583,7 +8567,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write(str
     __pyx_v_self->__pyx_base.box = ((PyArrayObject *)__pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":699
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":699
  *             self.n_atoms = xyz.shape[0]
  *             self.box = box
  *             self.precision = precision             # <<<<<<<<<<<<<<
@@ -8592,7 +8576,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write(str
  */
     __pyx_v_self->precision = __pyx_v_precision;
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":696
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":696
  *         cdef DTYPE_T[:, ::1] box_view = np.ascontiguousarray(box, dtype=DTYPE)
  * 
  *         if self.current_frame == 0:             # <<<<<<<<<<<<<<
@@ -8602,7 +8586,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write(str
     goto __pyx_L4;
   }
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":701
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":701
  *             self.precision = precision
  *         else:
  *             if self.n_atoms != xyz.shape[0]:             # <<<<<<<<<<<<<<
@@ -8624,7 +8608,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write(str
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     if (__pyx_t_2) {
 
-      /* "MDAnalysis/lib/formats/xdrlib.pyx":703
+      /* "MDAnalysis/lib/formats/libmdaxdr.pyx":703
  *             if self.n_atoms != xyz.shape[0]:
  *                 raise ValueError('Previous frames contained {} atoms. You '
  *                                  'are trying to write {} atoms.'.format(             # <<<<<<<<<<<<<<
@@ -8634,7 +8618,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write(str
       __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_Previous_frames_contained_atoms, __pyx_n_s_format); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 703; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_6);
 
-      /* "MDAnalysis/lib/formats/xdrlib.pyx":704
+      /* "MDAnalysis/lib/formats/libmdaxdr.pyx":704
  *                 raise ValueError('Previous frames contained {} atoms. You '
  *                                  'are trying to write {} atoms.'.format(
  *                                      self.n_atoms, xyz.shape[1]))             # <<<<<<<<<<<<<<
@@ -8676,7 +8660,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write(str
       __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-      /* "MDAnalysis/lib/formats/xdrlib.pyx":702
+      /* "MDAnalysis/lib/formats/libmdaxdr.pyx":702
  *         else:
  *             if self.n_atoms != xyz.shape[0]:
  *                 raise ValueError('Previous frames contained {} atoms. You '             # <<<<<<<<<<<<<<
@@ -8695,7 +8679,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write(str
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       {__pyx_filename = __pyx_f[0]; __pyx_lineno = 702; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-      /* "MDAnalysis/lib/formats/xdrlib.pyx":701
+      /* "MDAnalysis/lib/formats/libmdaxdr.pyx":701
  *             self.precision = precision
  *         else:
  *             if self.n_atoms != xyz.shape[0]:             # <<<<<<<<<<<<<<
@@ -8704,7 +8688,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write(str
  */
     }
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":705
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":705
  *                                  'are trying to write {} atoms.'.format(
  *                                      self.n_atoms, xyz.shape[1]))
  *             if not np.allclose(self.box, box, rtol=0, atol=1e-2):             # <<<<<<<<<<<<<<
@@ -8738,7 +8722,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write(str
     __pyx_t_1 = ((!__pyx_t_2) != 0);
     if (__pyx_t_1) {
 
-      /* "MDAnalysis/lib/formats/xdrlib.pyx":707
+      /* "MDAnalysis/lib/formats/libmdaxdr.pyx":707
  *             if not np.allclose(self.box, box, rtol=0, atol=1e-2):
  *                 raise ValueError('Previous frames contained {} box. You '
  *                                  'are trying to write {} box.'.format(             # <<<<<<<<<<<<<<
@@ -8748,7 +8732,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write(str
       __pyx_t_11 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_Previous_frames_contained_box_Yo, __pyx_n_s_format); if (unlikely(!__pyx_t_11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 707; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_11);
 
-      /* "MDAnalysis/lib/formats/xdrlib.pyx":708
+      /* "MDAnalysis/lib/formats/libmdaxdr.pyx":708
  *                 raise ValueError('Previous frames contained {} box. You '
  *                                  'are trying to write {} box.'.format(
  *                                      self.box, box))             # <<<<<<<<<<<<<<
@@ -8783,7 +8767,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write(str
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
 
-      /* "MDAnalysis/lib/formats/xdrlib.pyx":706
+      /* "MDAnalysis/lib/formats/libmdaxdr.pyx":706
  *                                      self.n_atoms, xyz.shape[1]))
  *             if not np.allclose(self.box, box, rtol=0, atol=1e-2):
  *                 raise ValueError('Previous frames contained {} box. You '             # <<<<<<<<<<<<<<
@@ -8802,7 +8786,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write(str
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       {__pyx_filename = __pyx_f[0]; __pyx_lineno = 706; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-      /* "MDAnalysis/lib/formats/xdrlib.pyx":705
+      /* "MDAnalysis/lib/formats/libmdaxdr.pyx":705
  *                                  'are trying to write {} atoms.'.format(
  *                                      self.n_atoms, xyz.shape[1]))
  *             if not np.allclose(self.box, box, rtol=0, atol=1e-2):             # <<<<<<<<<<<<<<
@@ -8811,7 +8795,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write(str
  */
     }
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":709
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":709
  *                                  'are trying to write {} box.'.format(
  *                                      self.box, box))
  *             if self.precision != precision:             # <<<<<<<<<<<<<<
@@ -8821,7 +8805,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write(str
     __pyx_t_1 = ((__pyx_v_self->precision != __pyx_v_precision) != 0);
     if (__pyx_t_1) {
 
-      /* "MDAnalysis/lib/formats/xdrlib.pyx":711
+      /* "MDAnalysis/lib/formats/libmdaxdr.pyx":711
  *             if self.precision != precision:
  *                 raise ValueError('Previous frames used precision of {}. You '
  *                                  'are trying to use {}'.format(             # <<<<<<<<<<<<<<
@@ -8831,7 +8815,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write(str
       __pyx_t_11 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_Previous_frames_used_precision_o, __pyx_n_s_format); if (unlikely(!__pyx_t_11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 711; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_11);
 
-      /* "MDAnalysis/lib/formats/xdrlib.pyx":712
+      /* "MDAnalysis/lib/formats/libmdaxdr.pyx":712
  *                 raise ValueError('Previous frames used precision of {}. You '
  *                                  'are trying to use {}'.format(
  *                                      self.precision, precision))             # <<<<<<<<<<<<<<
@@ -8870,7 +8854,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write(str
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
 
-      /* "MDAnalysis/lib/formats/xdrlib.pyx":710
+      /* "MDAnalysis/lib/formats/libmdaxdr.pyx":710
  *                                      self.box, box))
  *             if self.precision != precision:
  *                 raise ValueError('Previous frames used precision of {}. You '             # <<<<<<<<<<<<<<
@@ -8889,7 +8873,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write(str
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       {__pyx_filename = __pyx_f[0]; __pyx_lineno = 710; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-      /* "MDAnalysis/lib/formats/xdrlib.pyx":709
+      /* "MDAnalysis/lib/formats/libmdaxdr.pyx":709
  *                                  'are trying to write {} box.'.format(
  *                                      self.box, box))
  *             if self.precision != precision:             # <<<<<<<<<<<<<<
@@ -8900,7 +8884,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write(str
   }
   __pyx_L4:;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":715
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":715
  * 
  *         return_code = write_xtc(self.xfp, self.n_atoms, step, time,
  *                                        <matrix>&box_view[0, 0],             # <<<<<<<<<<<<<<
@@ -8923,12 +8907,12 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write(str
     {__pyx_filename = __pyx_f[0]; __pyx_lineno = 715; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":716
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":716
  *         return_code = write_xtc(self.xfp, self.n_atoms, step, time,
  *                                        <matrix>&box_view[0, 0],
  *                                        <rvec*>&xyz_view[0, 0], precision)             # <<<<<<<<<<<<<<
  *         if return_code != EOK:
- *             raise RuntimeError('XTC write error: {}'.format(
+ *             raise IOError('XTC write error = {}'.format(
  */
   __pyx_t_14 = 0;
   __pyx_t_15 = 0;
@@ -8946,38 +8930,38 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write(str
     {__pyx_filename = __pyx_f[0]; __pyx_lineno = 716; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":714
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":714
  *                                      self.precision, precision))
  * 
  *         return_code = write_xtc(self.xfp, self.n_atoms, step, time,             # <<<<<<<<<<<<<<
  *                                        <matrix>&box_view[0, 0],
  *                                        <rvec*>&xyz_view[0, 0], precision)
  */
-  __pyx_v_return_code = write_xtc(__pyx_v_self->__pyx_base.xfp, __pyx_v_self->__pyx_base.n_atoms, __pyx_v_step, __pyx_v_time, ((float (*)[3])(&(*((__pyx_t_10MDAnalysis_3lib_7formats_6xdrlib_DTYPE_T *) ( /* dim=1 */ ((char *) (((__pyx_t_10MDAnalysis_3lib_7formats_6xdrlib_DTYPE_T *) ( /* dim=0 */ (__pyx_v_box_view.data + __pyx_t_12 * __pyx_v_box_view.strides[0]) )) + __pyx_t_13)) ))))), ((rvec *)(&(*((__pyx_t_10MDAnalysis_3lib_7formats_6xdrlib_DTYPE_T *) ( /* dim=1 */ ((char *) (((__pyx_t_10MDAnalysis_3lib_7formats_6xdrlib_DTYPE_T *) ( /* dim=0 */ (__pyx_v_xyz_view.data + __pyx_t_14 * __pyx_v_xyz_view.strides[0]) )) + __pyx_t_15)) ))))), __pyx_v_precision);
+  __pyx_v_return_code = write_xtc(__pyx_v_self->__pyx_base.xfp, __pyx_v_self->__pyx_base.n_atoms, __pyx_v_step, __pyx_v_time, ((float (*)[3])(&(*((__pyx_t_10MDAnalysis_3lib_7formats_9libmdaxdr_DTYPE_T *) ( /* dim=1 */ ((char *) (((__pyx_t_10MDAnalysis_3lib_7formats_9libmdaxdr_DTYPE_T *) ( /* dim=0 */ (__pyx_v_box_view.data + __pyx_t_12 * __pyx_v_box_view.strides[0]) )) + __pyx_t_13)) ))))), ((rvec *)(&(*((__pyx_t_10MDAnalysis_3lib_7formats_9libmdaxdr_DTYPE_T *) ( /* dim=1 */ ((char *) (((__pyx_t_10MDAnalysis_3lib_7formats_9libmdaxdr_DTYPE_T *) ( /* dim=0 */ (__pyx_v_xyz_view.data + __pyx_t_14 * __pyx_v_xyz_view.strides[0]) )) + __pyx_t_15)) ))))), __pyx_v_precision);
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":717
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":717
  *                                        <matrix>&box_view[0, 0],
  *                                        <rvec*>&xyz_view[0, 0], precision)
  *         if return_code != EOK:             # <<<<<<<<<<<<<<
- *             raise RuntimeError('XTC write error: {}'.format(
+ *             raise IOError('XTC write error = {}'.format(
  *                 error_message[return_code]))
  */
-  __pyx_t_1 = ((__pyx_v_return_code != __pyx_e_10MDAnalysis_3lib_7formats_6xdrlib_EOK) != 0);
+  __pyx_t_1 = ((__pyx_v_return_code != __pyx_e_10MDAnalysis_3lib_7formats_9libmdaxdr_EOK) != 0);
   if (__pyx_t_1) {
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":718
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":718
  *                                        <rvec*>&xyz_view[0, 0], precision)
  *         if return_code != EOK:
- *             raise RuntimeError('XTC write error: {}'.format(             # <<<<<<<<<<<<<<
+ *             raise IOError('XTC write error = {}'.format(             # <<<<<<<<<<<<<<
  *                 error_message[return_code]))
  * 
  */
     __pyx_t_11 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_XTC_write_error, __pyx_n_s_format); if (unlikely(!__pyx_t_11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 718; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_11);
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":719
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":719
  *         if return_code != EOK:
- *             raise RuntimeError('XTC write error: {}'.format(
+ *             raise IOError('XTC write error = {}'.format(
  *                 error_message[return_code]))             # <<<<<<<<<<<<<<
  * 
  *         self.current_frame += 1
@@ -9014,10 +8998,10 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write(str
     }
     __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":718
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":718
  *                                        <rvec*>&xyz_view[0, 0], precision)
  *         if return_code != EOK:
- *             raise RuntimeError('XTC write error: {}'.format(             # <<<<<<<<<<<<<<
+ *             raise IOError('XTC write error = {}'.format(             # <<<<<<<<<<<<<<
  *                 error_message[return_code]))
  * 
  */
@@ -9026,30 +9010,30 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write(str
     __Pyx_GIVEREF(__pyx_t_9);
     PyTuple_SET_ITEM(__pyx_t_11, 0, __pyx_t_9);
     __pyx_t_9 = 0;
-    __pyx_t_9 = __Pyx_PyObject_Call(__pyx_builtin_RuntimeError, __pyx_t_11, NULL); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 718; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_9 = __Pyx_PyObject_Call(__pyx_builtin_IOError, __pyx_t_11, NULL); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 718; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_9);
     __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
     __Pyx_Raise(__pyx_t_9, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
     {__pyx_filename = __pyx_f[0]; __pyx_lineno = 718; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-    /* "MDAnalysis/lib/formats/xdrlib.pyx":717
+    /* "MDAnalysis/lib/formats/libmdaxdr.pyx":717
  *                                        <matrix>&box_view[0, 0],
  *                                        <rvec*>&xyz_view[0, 0], precision)
  *         if return_code != EOK:             # <<<<<<<<<<<<<<
- *             raise RuntimeError('XTC write error: {}'.format(
+ *             raise IOError('XTC write error = {}'.format(
  *                 error_message[return_code]))
  */
   }
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":721
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":721
  *                 error_message[return_code]))
  * 
  *         self.current_frame += 1             # <<<<<<<<<<<<<<
  */
   __pyx_v_self->__pyx_base.current_frame = (__pyx_v_self->__pyx_base.current_frame + 1);
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":658
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":658
  *         return XTCFrame(xyz, box, step, time, prec)
  * 
  *     def write(self, xyz, box, int step, float time, float precision=1000):             # <<<<<<<<<<<<<<
@@ -9068,7 +9052,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write(str
   __PYX_XDEC_MEMVIEW(&__pyx_t_7, 1);
   __Pyx_XDECREF(__pyx_t_9);
   __Pyx_XDECREF(__pyx_t_11);
-  __Pyx_AddTraceback("MDAnalysis.lib.formats.xdrlib.XTCFile.write", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("MDAnalysis.lib.formats.libmdaxdr.XTCFile.write", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __PYX_XDEC_MEMVIEW(&__pyx_v_xyz_view, 1);
@@ -9078,7 +9062,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write(str
   return __pyx_r;
 }
 
-/* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":197
+/* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":197
  *         # experimental exception made for __getbuffer__ and __releasebuffer__
  *         # -- the details of this may change.
  *         def __getbuffer__(ndarray self, Py_buffer* info, int flags):             # <<<<<<<<<<<<<<
@@ -9128,7 +9112,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
     __Pyx_GIVEREF(__pyx_v_info->obj);
   }
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":203
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":203
  *             # of flags
  * 
  *             if info == NULL: return             # <<<<<<<<<<<<<<
@@ -9141,7 +9125,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
     goto __pyx_L0;
   }
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":206
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":206
  * 
  *             cdef int copy_shape, i, ndim
  *             cdef int endian_detector = 1             # <<<<<<<<<<<<<<
@@ -9150,7 +9134,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  */
   __pyx_v_endian_detector = 1;
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":207
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":207
  *             cdef int copy_shape, i, ndim
  *             cdef int endian_detector = 1
  *             cdef bint little_endian = ((<char*>&endian_detector)[0] != 0)             # <<<<<<<<<<<<<<
@@ -9159,7 +9143,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  */
   __pyx_v_little_endian = ((((char *)(&__pyx_v_endian_detector))[0]) != 0);
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":209
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":209
  *             cdef bint little_endian = ((<char*>&endian_detector)[0] != 0)
  * 
  *             ndim = PyArray_NDIM(self)             # <<<<<<<<<<<<<<
@@ -9168,7 +9152,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  */
   __pyx_v_ndim = PyArray_NDIM(__pyx_v_self);
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":211
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":211
  *             ndim = PyArray_NDIM(self)
  * 
  *             if sizeof(npy_intp) != sizeof(Py_ssize_t):             # <<<<<<<<<<<<<<
@@ -9178,7 +9162,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
   __pyx_t_1 = (((sizeof(npy_intp)) != (sizeof(Py_ssize_t))) != 0);
   if (__pyx_t_1) {
 
-    /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":212
+    /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":212
  * 
  *             if sizeof(npy_intp) != sizeof(Py_ssize_t):
  *                 copy_shape = 1             # <<<<<<<<<<<<<<
@@ -9187,7 +9171,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  */
     __pyx_v_copy_shape = 1;
 
-    /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":211
+    /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":211
  *             ndim = PyArray_NDIM(self)
  * 
  *             if sizeof(npy_intp) != sizeof(Py_ssize_t):             # <<<<<<<<<<<<<<
@@ -9197,7 +9181,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
     goto __pyx_L4;
   }
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":214
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":214
  *                 copy_shape = 1
  *             else:
  *                 copy_shape = 0             # <<<<<<<<<<<<<<
@@ -9209,7 +9193,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
   }
   __pyx_L4:;
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":216
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":216
  *                 copy_shape = 0
  * 
  *             if ((flags & pybuf.PyBUF_C_CONTIGUOUS == pybuf.PyBUF_C_CONTIGUOUS)             # <<<<<<<<<<<<<<
@@ -9223,7 +9207,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
     goto __pyx_L6_bool_binop_done;
   }
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":217
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":217
  * 
  *             if ((flags & pybuf.PyBUF_C_CONTIGUOUS == pybuf.PyBUF_C_CONTIGUOUS)
  *                 and not PyArray_CHKFLAGS(self, NPY_C_CONTIGUOUS)):             # <<<<<<<<<<<<<<
@@ -9234,7 +9218,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
   __pyx_t_1 = __pyx_t_2;
   __pyx_L6_bool_binop_done:;
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":216
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":216
  *                 copy_shape = 0
  * 
  *             if ((flags & pybuf.PyBUF_C_CONTIGUOUS == pybuf.PyBUF_C_CONTIGUOUS)             # <<<<<<<<<<<<<<
@@ -9243,7 +9227,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  */
   if (__pyx_t_1) {
 
-    /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":218
+    /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":218
  *             if ((flags & pybuf.PyBUF_C_CONTIGUOUS == pybuf.PyBUF_C_CONTIGUOUS)
  *                 and not PyArray_CHKFLAGS(self, NPY_C_CONTIGUOUS)):
  *                 raise ValueError(u"ndarray is not C contiguous")             # <<<<<<<<<<<<<<
@@ -9256,7 +9240,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     {__pyx_filename = __pyx_f[1]; __pyx_lineno = 218; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-    /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":216
+    /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":216
  *                 copy_shape = 0
  * 
  *             if ((flags & pybuf.PyBUF_C_CONTIGUOUS == pybuf.PyBUF_C_CONTIGUOUS)             # <<<<<<<<<<<<<<
@@ -9265,7 +9249,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  */
   }
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":220
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":220
  *                 raise ValueError(u"ndarray is not C contiguous")
  * 
  *             if ((flags & pybuf.PyBUF_F_CONTIGUOUS == pybuf.PyBUF_F_CONTIGUOUS)             # <<<<<<<<<<<<<<
@@ -9279,7 +9263,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
     goto __pyx_L9_bool_binop_done;
   }
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":221
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":221
  * 
  *             if ((flags & pybuf.PyBUF_F_CONTIGUOUS == pybuf.PyBUF_F_CONTIGUOUS)
  *                 and not PyArray_CHKFLAGS(self, NPY_F_CONTIGUOUS)):             # <<<<<<<<<<<<<<
@@ -9290,7 +9274,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
   __pyx_t_1 = __pyx_t_2;
   __pyx_L9_bool_binop_done:;
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":220
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":220
  *                 raise ValueError(u"ndarray is not C contiguous")
  * 
  *             if ((flags & pybuf.PyBUF_F_CONTIGUOUS == pybuf.PyBUF_F_CONTIGUOUS)             # <<<<<<<<<<<<<<
@@ -9299,7 +9283,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  */
   if (__pyx_t_1) {
 
-    /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":222
+    /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":222
  *             if ((flags & pybuf.PyBUF_F_CONTIGUOUS == pybuf.PyBUF_F_CONTIGUOUS)
  *                 and not PyArray_CHKFLAGS(self, NPY_F_CONTIGUOUS)):
  *                 raise ValueError(u"ndarray is not Fortran contiguous")             # <<<<<<<<<<<<<<
@@ -9312,7 +9296,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     {__pyx_filename = __pyx_f[1]; __pyx_lineno = 222; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-    /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":220
+    /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":220
  *                 raise ValueError(u"ndarray is not C contiguous")
  * 
  *             if ((flags & pybuf.PyBUF_F_CONTIGUOUS == pybuf.PyBUF_F_CONTIGUOUS)             # <<<<<<<<<<<<<<
@@ -9321,7 +9305,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  */
   }
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":224
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":224
  *                 raise ValueError(u"ndarray is not Fortran contiguous")
  * 
  *             info.buf = PyArray_DATA(self)             # <<<<<<<<<<<<<<
@@ -9330,7 +9314,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  */
   __pyx_v_info->buf = PyArray_DATA(__pyx_v_self);
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":225
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":225
  * 
  *             info.buf = PyArray_DATA(self)
  *             info.ndim = ndim             # <<<<<<<<<<<<<<
@@ -9339,7 +9323,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  */
   __pyx_v_info->ndim = __pyx_v_ndim;
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":226
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":226
  *             info.buf = PyArray_DATA(self)
  *             info.ndim = ndim
  *             if copy_shape:             # <<<<<<<<<<<<<<
@@ -9349,7 +9333,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
   __pyx_t_1 = (__pyx_v_copy_shape != 0);
   if (__pyx_t_1) {
 
-    /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":229
+    /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":229
  *                 # Allocate new buffer for strides and shape info.
  *                 # This is allocated as one block, strides first.
  *                 info.strides = <Py_ssize_t*>stdlib.malloc(sizeof(Py_ssize_t) * <size_t>ndim * 2)             # <<<<<<<<<<<<<<
@@ -9358,7 +9342,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  */
     __pyx_v_info->strides = ((Py_ssize_t *)malloc((((sizeof(Py_ssize_t)) * ((size_t)__pyx_v_ndim)) * 2)));
 
-    /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":230
+    /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":230
  *                 # This is allocated as one block, strides first.
  *                 info.strides = <Py_ssize_t*>stdlib.malloc(sizeof(Py_ssize_t) * <size_t>ndim * 2)
  *                 info.shape = info.strides + ndim             # <<<<<<<<<<<<<<
@@ -9367,7 +9351,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  */
     __pyx_v_info->shape = (__pyx_v_info->strides + __pyx_v_ndim);
 
-    /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":231
+    /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":231
  *                 info.strides = <Py_ssize_t*>stdlib.malloc(sizeof(Py_ssize_t) * <size_t>ndim * 2)
  *                 info.shape = info.strides + ndim
  *                 for i in range(ndim):             # <<<<<<<<<<<<<<
@@ -9378,7 +9362,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
     for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
       __pyx_v_i = __pyx_t_5;
 
-      /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":232
+      /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":232
  *                 info.shape = info.strides + ndim
  *                 for i in range(ndim):
  *                     info.strides[i] = PyArray_STRIDES(self)[i]             # <<<<<<<<<<<<<<
@@ -9387,7 +9371,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  */
       (__pyx_v_info->strides[__pyx_v_i]) = (PyArray_STRIDES(__pyx_v_self)[__pyx_v_i]);
 
-      /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":233
+      /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":233
  *                 for i in range(ndim):
  *                     info.strides[i] = PyArray_STRIDES(self)[i]
  *                     info.shape[i] = PyArray_DIMS(self)[i]             # <<<<<<<<<<<<<<
@@ -9397,7 +9381,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
       (__pyx_v_info->shape[__pyx_v_i]) = (PyArray_DIMS(__pyx_v_self)[__pyx_v_i]);
     }
 
-    /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":226
+    /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":226
  *             info.buf = PyArray_DATA(self)
  *             info.ndim = ndim
  *             if copy_shape:             # <<<<<<<<<<<<<<
@@ -9407,7 +9391,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
     goto __pyx_L11;
   }
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":235
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":235
  *                     info.shape[i] = PyArray_DIMS(self)[i]
  *             else:
  *                 info.strides = <Py_ssize_t*>PyArray_STRIDES(self)             # <<<<<<<<<<<<<<
@@ -9417,7 +9401,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
   /*else*/ {
     __pyx_v_info->strides = ((Py_ssize_t *)PyArray_STRIDES(__pyx_v_self));
 
-    /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":236
+    /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":236
  *             else:
  *                 info.strides = <Py_ssize_t*>PyArray_STRIDES(self)
  *                 info.shape = <Py_ssize_t*>PyArray_DIMS(self)             # <<<<<<<<<<<<<<
@@ -9428,7 +9412,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
   }
   __pyx_L11:;
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":237
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":237
  *                 info.strides = <Py_ssize_t*>PyArray_STRIDES(self)
  *                 info.shape = <Py_ssize_t*>PyArray_DIMS(self)
  *             info.suboffsets = NULL             # <<<<<<<<<<<<<<
@@ -9437,7 +9421,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  */
   __pyx_v_info->suboffsets = NULL;
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":238
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":238
  *                 info.shape = <Py_ssize_t*>PyArray_DIMS(self)
  *             info.suboffsets = NULL
  *             info.itemsize = PyArray_ITEMSIZE(self)             # <<<<<<<<<<<<<<
@@ -9446,7 +9430,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  */
   __pyx_v_info->itemsize = PyArray_ITEMSIZE(__pyx_v_self);
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":239
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":239
  *             info.suboffsets = NULL
  *             info.itemsize = PyArray_ITEMSIZE(self)
  *             info.readonly = not PyArray_ISWRITEABLE(self)             # <<<<<<<<<<<<<<
@@ -9455,7 +9439,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  */
   __pyx_v_info->readonly = (!(PyArray_ISWRITEABLE(__pyx_v_self) != 0));
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":242
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":242
  * 
  *             cdef int t
  *             cdef char* f = NULL             # <<<<<<<<<<<<<<
@@ -9464,7 +9448,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  */
   __pyx_v_f = NULL;
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":243
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":243
  *             cdef int t
  *             cdef char* f = NULL
  *             cdef dtype descr = self.descr             # <<<<<<<<<<<<<<
@@ -9476,7 +9460,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
   __pyx_v_descr = ((PyArray_Descr *)__pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":246
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":246
  *             cdef int offset
  * 
  *             cdef bint hasfields = PyDataType_HASFIELDS(descr)             # <<<<<<<<<<<<<<
@@ -9485,7 +9469,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  */
   __pyx_v_hasfields = PyDataType_HASFIELDS(__pyx_v_descr);
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":248
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":248
  *             cdef bint hasfields = PyDataType_HASFIELDS(descr)
  * 
  *             if not hasfields and not copy_shape:             # <<<<<<<<<<<<<<
@@ -9503,7 +9487,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
   __pyx_L15_bool_binop_done:;
   if (__pyx_t_1) {
 
-    /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":250
+    /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":250
  *             if not hasfields and not copy_shape:
  *                 # do not call releasebuffer
  *                 info.obj = None             # <<<<<<<<<<<<<<
@@ -9516,7 +9500,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
     __Pyx_DECREF(__pyx_v_info->obj);
     __pyx_v_info->obj = Py_None;
 
-    /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":248
+    /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":248
  *             cdef bint hasfields = PyDataType_HASFIELDS(descr)
  * 
  *             if not hasfields and not copy_shape:             # <<<<<<<<<<<<<<
@@ -9526,7 +9510,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
     goto __pyx_L14;
   }
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":253
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":253
  *             else:
  *                 # need to call releasebuffer
  *                 info.obj = self             # <<<<<<<<<<<<<<
@@ -9542,7 +9526,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
   }
   __pyx_L14:;
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":255
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":255
  *                 info.obj = self
  * 
  *             if not hasfields:             # <<<<<<<<<<<<<<
@@ -9552,7 +9536,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
   __pyx_t_1 = ((!(__pyx_v_hasfields != 0)) != 0);
   if (__pyx_t_1) {
 
-    /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":256
+    /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":256
  * 
  *             if not hasfields:
  *                 t = descr.type_num             # <<<<<<<<<<<<<<
@@ -9562,7 +9546,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
     __pyx_t_4 = __pyx_v_descr->type_num;
     __pyx_v_t = __pyx_t_4;
 
-    /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":257
+    /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":257
  *             if not hasfields:
  *                 t = descr.type_num
  *                 if ((descr.byteorder == c'>' and little_endian) or             # <<<<<<<<<<<<<<
@@ -9582,7 +9566,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
     }
     __pyx_L20_next_or:;
 
-    /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":258
+    /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":258
  *                 t = descr.type_num
  *                 if ((descr.byteorder == c'>' and little_endian) or
  *                     (descr.byteorder == c'<' and not little_endian)):             # <<<<<<<<<<<<<<
@@ -9599,7 +9583,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
     __pyx_t_1 = __pyx_t_2;
     __pyx_L19_bool_binop_done:;
 
-    /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":257
+    /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":257
  *             if not hasfields:
  *                 t = descr.type_num
  *                 if ((descr.byteorder == c'>' and little_endian) or             # <<<<<<<<<<<<<<
@@ -9608,7 +9592,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  */
     if (__pyx_t_1) {
 
-      /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":259
+      /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":259
  *                 if ((descr.byteorder == c'>' and little_endian) or
  *                     (descr.byteorder == c'<' and not little_endian)):
  *                     raise ValueError(u"Non-native byte order not supported")             # <<<<<<<<<<<<<<
@@ -9621,7 +9605,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       {__pyx_filename = __pyx_f[1]; __pyx_lineno = 259; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-      /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":257
+      /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":257
  *             if not hasfields:
  *                 t = descr.type_num
  *                 if ((descr.byteorder == c'>' and little_endian) or             # <<<<<<<<<<<<<<
@@ -9630,7 +9614,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  */
     }
 
-    /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":260
+    /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":260
  *                     (descr.byteorder == c'<' and not little_endian)):
  *                     raise ValueError(u"Non-native byte order not supported")
  *                 if   t == NPY_BYTE:        f = "b"             # <<<<<<<<<<<<<<
@@ -9642,7 +9626,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
       __pyx_v_f = __pyx_k_b;
       break;
 
-      /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":261
+      /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":261
  *                     raise ValueError(u"Non-native byte order not supported")
  *                 if   t == NPY_BYTE:        f = "b"
  *                 elif t == NPY_UBYTE:       f = "B"             # <<<<<<<<<<<<<<
@@ -9653,7 +9637,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
       __pyx_v_f = __pyx_k_B;
       break;
 
-      /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":262
+      /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":262
  *                 if   t == NPY_BYTE:        f = "b"
  *                 elif t == NPY_UBYTE:       f = "B"
  *                 elif t == NPY_SHORT:       f = "h"             # <<<<<<<<<<<<<<
@@ -9664,7 +9648,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
       __pyx_v_f = __pyx_k_h;
       break;
 
-      /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":263
+      /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":263
  *                 elif t == NPY_UBYTE:       f = "B"
  *                 elif t == NPY_SHORT:       f = "h"
  *                 elif t == NPY_USHORT:      f = "H"             # <<<<<<<<<<<<<<
@@ -9675,7 +9659,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
       __pyx_v_f = __pyx_k_H;
       break;
 
-      /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":264
+      /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":264
  *                 elif t == NPY_SHORT:       f = "h"
  *                 elif t == NPY_USHORT:      f = "H"
  *                 elif t == NPY_INT:         f = "i"             # <<<<<<<<<<<<<<
@@ -9686,7 +9670,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
       __pyx_v_f = __pyx_k_i;
       break;
 
-      /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":265
+      /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":265
  *                 elif t == NPY_USHORT:      f = "H"
  *                 elif t == NPY_INT:         f = "i"
  *                 elif t == NPY_UINT:        f = "I"             # <<<<<<<<<<<<<<
@@ -9697,7 +9681,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
       __pyx_v_f = __pyx_k_I;
       break;
 
-      /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":266
+      /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":266
  *                 elif t == NPY_INT:         f = "i"
  *                 elif t == NPY_UINT:        f = "I"
  *                 elif t == NPY_LONG:        f = "l"             # <<<<<<<<<<<<<<
@@ -9708,7 +9692,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
       __pyx_v_f = __pyx_k_l;
       break;
 
-      /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":267
+      /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":267
  *                 elif t == NPY_UINT:        f = "I"
  *                 elif t == NPY_LONG:        f = "l"
  *                 elif t == NPY_ULONG:       f = "L"             # <<<<<<<<<<<<<<
@@ -9719,7 +9703,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
       __pyx_v_f = __pyx_k_L;
       break;
 
-      /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":268
+      /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":268
  *                 elif t == NPY_LONG:        f = "l"
  *                 elif t == NPY_ULONG:       f = "L"
  *                 elif t == NPY_LONGLONG:    f = "q"             # <<<<<<<<<<<<<<
@@ -9730,7 +9714,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
       __pyx_v_f = __pyx_k_q;
       break;
 
-      /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":269
+      /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":269
  *                 elif t == NPY_ULONG:       f = "L"
  *                 elif t == NPY_LONGLONG:    f = "q"
  *                 elif t == NPY_ULONGLONG:   f = "Q"             # <<<<<<<<<<<<<<
@@ -9741,7 +9725,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
       __pyx_v_f = __pyx_k_Q;
       break;
 
-      /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":270
+      /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":270
  *                 elif t == NPY_LONGLONG:    f = "q"
  *                 elif t == NPY_ULONGLONG:   f = "Q"
  *                 elif t == NPY_FLOAT:       f = "f"             # <<<<<<<<<<<<<<
@@ -9752,7 +9736,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
       __pyx_v_f = __pyx_k_f;
       break;
 
-      /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":271
+      /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":271
  *                 elif t == NPY_ULONGLONG:   f = "Q"
  *                 elif t == NPY_FLOAT:       f = "f"
  *                 elif t == NPY_DOUBLE:      f = "d"             # <<<<<<<<<<<<<<
@@ -9763,7 +9747,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
       __pyx_v_f = __pyx_k_d;
       break;
 
-      /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":272
+      /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":272
  *                 elif t == NPY_FLOAT:       f = "f"
  *                 elif t == NPY_DOUBLE:      f = "d"
  *                 elif t == NPY_LONGDOUBLE:  f = "g"             # <<<<<<<<<<<<<<
@@ -9774,7 +9758,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
       __pyx_v_f = __pyx_k_g;
       break;
 
-      /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":273
+      /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":273
  *                 elif t == NPY_DOUBLE:      f = "d"
  *                 elif t == NPY_LONGDOUBLE:  f = "g"
  *                 elif t == NPY_CFLOAT:      f = "Zf"             # <<<<<<<<<<<<<<
@@ -9785,7 +9769,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
       __pyx_v_f = __pyx_k_Zf;
       break;
 
-      /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":274
+      /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":274
  *                 elif t == NPY_LONGDOUBLE:  f = "g"
  *                 elif t == NPY_CFLOAT:      f = "Zf"
  *                 elif t == NPY_CDOUBLE:     f = "Zd"             # <<<<<<<<<<<<<<
@@ -9796,7 +9780,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
       __pyx_v_f = __pyx_k_Zd;
       break;
 
-      /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":275
+      /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":275
  *                 elif t == NPY_CFLOAT:      f = "Zf"
  *                 elif t == NPY_CDOUBLE:     f = "Zd"
  *                 elif t == NPY_CLONGDOUBLE: f = "Zg"             # <<<<<<<<<<<<<<
@@ -9807,7 +9791,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
       __pyx_v_f = __pyx_k_Zg;
       break;
 
-      /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":276
+      /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":276
  *                 elif t == NPY_CDOUBLE:     f = "Zd"
  *                 elif t == NPY_CLONGDOUBLE: f = "Zg"
  *                 elif t == NPY_OBJECT:      f = "O"             # <<<<<<<<<<<<<<
@@ -9819,7 +9803,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
       break;
       default:
 
-      /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":278
+      /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":278
  *                 elif t == NPY_OBJECT:      f = "O"
  *                 else:
  *                     raise ValueError(u"unknown dtype code in numpy.pxd (%d)" % t)             # <<<<<<<<<<<<<<
@@ -9845,7 +9829,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
       break;
     }
 
-    /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":279
+    /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":279
  *                 else:
  *                     raise ValueError(u"unknown dtype code in numpy.pxd (%d)" % t)
  *                 info.format = f             # <<<<<<<<<<<<<<
@@ -9854,7 +9838,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  */
     __pyx_v_info->format = __pyx_v_f;
 
-    /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":280
+    /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":280
  *                     raise ValueError(u"unknown dtype code in numpy.pxd (%d)" % t)
  *                 info.format = f
  *                 return             # <<<<<<<<<<<<<<
@@ -9864,7 +9848,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
     __pyx_r = 0;
     goto __pyx_L0;
 
-    /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":255
+    /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":255
  *                 info.obj = self
  * 
  *             if not hasfields:             # <<<<<<<<<<<<<<
@@ -9873,7 +9857,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  */
   }
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":282
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":282
  *                 return
  *             else:
  *                 info.format = <char*>stdlib.malloc(_buffer_format_string_len)             # <<<<<<<<<<<<<<
@@ -9883,7 +9867,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
   /*else*/ {
     __pyx_v_info->format = ((char *)malloc(0xFF));
 
-    /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":283
+    /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":283
  *             else:
  *                 info.format = <char*>stdlib.malloc(_buffer_format_string_len)
  *                 info.format[0] = c'^' # Native data types, manual alignment             # <<<<<<<<<<<<<<
@@ -9892,7 +9876,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  */
     (__pyx_v_info->format[0]) = '^';
 
-    /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":284
+    /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":284
  *                 info.format = <char*>stdlib.malloc(_buffer_format_string_len)
  *                 info.format[0] = c'^' # Native data types, manual alignment
  *                 offset = 0             # <<<<<<<<<<<<<<
@@ -9901,7 +9885,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  */
     __pyx_v_offset = 0;
 
-    /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":285
+    /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":285
  *                 info.format[0] = c'^' # Native data types, manual alignment
  *                 offset = 0
  *                 f = _util_dtypestring(descr, info.format + 1,             # <<<<<<<<<<<<<<
@@ -9911,7 +9895,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
     __pyx_t_7 = __pyx_f_5numpy__util_dtypestring(__pyx_v_descr, (__pyx_v_info->format + 1), (__pyx_v_info->format + 0xFF), (&__pyx_v_offset)); if (unlikely(__pyx_t_7 == NULL)) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 285; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __pyx_v_f = __pyx_t_7;
 
-    /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":288
+    /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":288
  *                                       info.format + _buffer_format_string_len,
  *                                       &offset)
  *                 f[0] = c'\0' # Terminate format string             # <<<<<<<<<<<<<<
@@ -9921,7 +9905,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
     (__pyx_v_f[0]) = '\x00';
   }
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":197
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":197
  *         # experimental exception made for __getbuffer__ and __releasebuffer__
  *         # -- the details of this may change.
  *         def __getbuffer__(ndarray self, Py_buffer* info, int flags):             # <<<<<<<<<<<<<<
@@ -9953,7 +9937,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
   return __pyx_r;
 }
 
-/* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":290
+/* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":290
  *                 f[0] = c'\0' # Terminate format string
  * 
  *         def __releasebuffer__(ndarray self, Py_buffer* info):             # <<<<<<<<<<<<<<
@@ -9977,7 +9961,7 @@ static void __pyx_pf_5numpy_7ndarray_2__releasebuffer__(PyArrayObject *__pyx_v_s
   int __pyx_t_1;
   __Pyx_RefNannySetupContext("__releasebuffer__", 0);
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":291
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":291
  * 
  *         def __releasebuffer__(ndarray self, Py_buffer* info):
  *             if PyArray_HASFIELDS(self):             # <<<<<<<<<<<<<<
@@ -9987,7 +9971,7 @@ static void __pyx_pf_5numpy_7ndarray_2__releasebuffer__(PyArrayObject *__pyx_v_s
   __pyx_t_1 = (PyArray_HASFIELDS(__pyx_v_self) != 0);
   if (__pyx_t_1) {
 
-    /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":292
+    /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":292
  *         def __releasebuffer__(ndarray self, Py_buffer* info):
  *             if PyArray_HASFIELDS(self):
  *                 stdlib.free(info.format)             # <<<<<<<<<<<<<<
@@ -9996,7 +9980,7 @@ static void __pyx_pf_5numpy_7ndarray_2__releasebuffer__(PyArrayObject *__pyx_v_s
  */
     free(__pyx_v_info->format);
 
-    /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":291
+    /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":291
  * 
  *         def __releasebuffer__(ndarray self, Py_buffer* info):
  *             if PyArray_HASFIELDS(self):             # <<<<<<<<<<<<<<
@@ -10005,7 +9989,7 @@ static void __pyx_pf_5numpy_7ndarray_2__releasebuffer__(PyArrayObject *__pyx_v_s
  */
   }
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":293
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":293
  *             if PyArray_HASFIELDS(self):
  *                 stdlib.free(info.format)
  *             if sizeof(npy_intp) != sizeof(Py_ssize_t):             # <<<<<<<<<<<<<<
@@ -10015,7 +9999,7 @@ static void __pyx_pf_5numpy_7ndarray_2__releasebuffer__(PyArrayObject *__pyx_v_s
   __pyx_t_1 = (((sizeof(npy_intp)) != (sizeof(Py_ssize_t))) != 0);
   if (__pyx_t_1) {
 
-    /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":294
+    /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":294
  *                 stdlib.free(info.format)
  *             if sizeof(npy_intp) != sizeof(Py_ssize_t):
  *                 stdlib.free(info.strides)             # <<<<<<<<<<<<<<
@@ -10024,7 +10008,7 @@ static void __pyx_pf_5numpy_7ndarray_2__releasebuffer__(PyArrayObject *__pyx_v_s
  */
     free(__pyx_v_info->strides);
 
-    /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":293
+    /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":293
  *             if PyArray_HASFIELDS(self):
  *                 stdlib.free(info.format)
  *             if sizeof(npy_intp) != sizeof(Py_ssize_t):             # <<<<<<<<<<<<<<
@@ -10033,7 +10017,7 @@ static void __pyx_pf_5numpy_7ndarray_2__releasebuffer__(PyArrayObject *__pyx_v_s
  */
   }
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":290
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":290
  *                 f[0] = c'\0' # Terminate format string
  * 
  *         def __releasebuffer__(ndarray self, Py_buffer* info):             # <<<<<<<<<<<<<<
@@ -10045,7 +10029,7 @@ static void __pyx_pf_5numpy_7ndarray_2__releasebuffer__(PyArrayObject *__pyx_v_s
   __Pyx_RefNannyFinishContext();
 }
 
-/* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":770
+/* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":770
  * ctypedef npy_cdouble     complex_t
  * 
  * cdef inline object PyArray_MultiIterNew1(a):             # <<<<<<<<<<<<<<
@@ -10062,7 +10046,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew1(PyObject *__
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("PyArray_MultiIterNew1", 0);
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":771
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":771
  * 
  * cdef inline object PyArray_MultiIterNew1(a):
  *     return PyArray_MultiIterNew(1, <void*>a)             # <<<<<<<<<<<<<<
@@ -10076,7 +10060,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew1(PyObject *__
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":770
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":770
  * ctypedef npy_cdouble     complex_t
  * 
  * cdef inline object PyArray_MultiIterNew1(a):             # <<<<<<<<<<<<<<
@@ -10095,7 +10079,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew1(PyObject *__
   return __pyx_r;
 }
 
-/* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":773
+/* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":773
  *     return PyArray_MultiIterNew(1, <void*>a)
  * 
  * cdef inline object PyArray_MultiIterNew2(a, b):             # <<<<<<<<<<<<<<
@@ -10112,7 +10096,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew2(PyObject *__
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("PyArray_MultiIterNew2", 0);
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":774
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":774
  * 
  * cdef inline object PyArray_MultiIterNew2(a, b):
  *     return PyArray_MultiIterNew(2, <void*>a, <void*>b)             # <<<<<<<<<<<<<<
@@ -10126,7 +10110,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew2(PyObject *__
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":773
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":773
  *     return PyArray_MultiIterNew(1, <void*>a)
  * 
  * cdef inline object PyArray_MultiIterNew2(a, b):             # <<<<<<<<<<<<<<
@@ -10145,7 +10129,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew2(PyObject *__
   return __pyx_r;
 }
 
-/* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":776
+/* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":776
  *     return PyArray_MultiIterNew(2, <void*>a, <void*>b)
  * 
  * cdef inline object PyArray_MultiIterNew3(a, b, c):             # <<<<<<<<<<<<<<
@@ -10162,7 +10146,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew3(PyObject *__
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("PyArray_MultiIterNew3", 0);
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":777
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":777
  * 
  * cdef inline object PyArray_MultiIterNew3(a, b, c):
  *     return PyArray_MultiIterNew(3, <void*>a, <void*>b, <void*> c)             # <<<<<<<<<<<<<<
@@ -10176,7 +10160,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew3(PyObject *__
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":776
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":776
  *     return PyArray_MultiIterNew(2, <void*>a, <void*>b)
  * 
  * cdef inline object PyArray_MultiIterNew3(a, b, c):             # <<<<<<<<<<<<<<
@@ -10195,7 +10179,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew3(PyObject *__
   return __pyx_r;
 }
 
-/* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":779
+/* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":779
  *     return PyArray_MultiIterNew(3, <void*>a, <void*>b, <void*> c)
  * 
  * cdef inline object PyArray_MultiIterNew4(a, b, c, d):             # <<<<<<<<<<<<<<
@@ -10212,7 +10196,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew4(PyObject *__
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("PyArray_MultiIterNew4", 0);
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":780
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":780
  * 
  * cdef inline object PyArray_MultiIterNew4(a, b, c, d):
  *     return PyArray_MultiIterNew(4, <void*>a, <void*>b, <void*>c, <void*> d)             # <<<<<<<<<<<<<<
@@ -10226,7 +10210,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew4(PyObject *__
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":779
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":779
  *     return PyArray_MultiIterNew(3, <void*>a, <void*>b, <void*> c)
  * 
  * cdef inline object PyArray_MultiIterNew4(a, b, c, d):             # <<<<<<<<<<<<<<
@@ -10245,7 +10229,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew4(PyObject *__
   return __pyx_r;
 }
 
-/* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":782
+/* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":782
  *     return PyArray_MultiIterNew(4, <void*>a, <void*>b, <void*>c, <void*> d)
  * 
  * cdef inline object PyArray_MultiIterNew5(a, b, c, d, e):             # <<<<<<<<<<<<<<
@@ -10262,7 +10246,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew5(PyObject *__
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("PyArray_MultiIterNew5", 0);
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":783
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":783
  * 
  * cdef inline object PyArray_MultiIterNew5(a, b, c, d, e):
  *     return PyArray_MultiIterNew(5, <void*>a, <void*>b, <void*>c, <void*> d, <void*> e)             # <<<<<<<<<<<<<<
@@ -10276,7 +10260,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew5(PyObject *__
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":782
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":782
  *     return PyArray_MultiIterNew(4, <void*>a, <void*>b, <void*>c, <void*> d)
  * 
  * cdef inline object PyArray_MultiIterNew5(a, b, c, d, e):             # <<<<<<<<<<<<<<
@@ -10295,7 +10279,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew5(PyObject *__
   return __pyx_r;
 }
 
-/* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":785
+/* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":785
  *     return PyArray_MultiIterNew(5, <void*>a, <void*>b, <void*>c, <void*> d, <void*> e)
  * 
  * cdef inline char* _util_dtypestring(dtype descr, char* f, char* end, int* offset) except NULL:             # <<<<<<<<<<<<<<
@@ -10327,7 +10311,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("_util_dtypestring", 0);
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":790
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":790
  * 
  *     cdef dtype child
  *     cdef int endian_detector = 1             # <<<<<<<<<<<<<<
@@ -10336,7 +10320,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
  */
   __pyx_v_endian_detector = 1;
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":791
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":791
  *     cdef dtype child
  *     cdef int endian_detector = 1
  *     cdef bint little_endian = ((<char*>&endian_detector)[0] != 0)             # <<<<<<<<<<<<<<
@@ -10345,7 +10329,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
  */
   __pyx_v_little_endian = ((((char *)(&__pyx_v_endian_detector))[0]) != 0);
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":794
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":794
  *     cdef tuple fields
  * 
  *     for childname in descr.names:             # <<<<<<<<<<<<<<
@@ -10368,7 +10352,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
     __Pyx_XDECREF_SET(__pyx_v_childname, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":795
+    /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":795
  * 
  *     for childname in descr.names:
  *         fields = descr.fields[childname]             # <<<<<<<<<<<<<<
@@ -10385,7 +10369,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
     __Pyx_XDECREF_SET(__pyx_v_fields, ((PyObject*)__pyx_t_3));
     __pyx_t_3 = 0;
 
-    /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":796
+    /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":796
  *     for childname in descr.names:
  *         fields = descr.fields[childname]
  *         child, new_offset = fields             # <<<<<<<<<<<<<<
@@ -10424,7 +10408,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
     __Pyx_XDECREF_SET(__pyx_v_new_offset, __pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":798
+    /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":798
  *         child, new_offset = fields
  * 
  *         if (end - f) - <int>(new_offset - offset[0]) < 15:             # <<<<<<<<<<<<<<
@@ -10441,7 +10425,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
     __pyx_t_6 = ((((__pyx_v_end - __pyx_v_f) - ((int)__pyx_t_5)) < 15) != 0);
     if (__pyx_t_6) {
 
-      /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":799
+      /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":799
  * 
  *         if (end - f) - <int>(new_offset - offset[0]) < 15:
  *             raise RuntimeError(u"Format string allocated too short, see comment in numpy.pxd")             # <<<<<<<<<<<<<<
@@ -10454,7 +10438,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       {__pyx_filename = __pyx_f[1]; __pyx_lineno = 799; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-      /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":798
+      /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":798
  *         child, new_offset = fields
  * 
  *         if (end - f) - <int>(new_offset - offset[0]) < 15:             # <<<<<<<<<<<<<<
@@ -10463,7 +10447,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
  */
     }
 
-    /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":801
+    /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":801
  *             raise RuntimeError(u"Format string allocated too short, see comment in numpy.pxd")
  * 
  *         if ((child.byteorder == c'>' and little_endian) or             # <<<<<<<<<<<<<<
@@ -10483,7 +10467,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
     }
     __pyx_L8_next_or:;
 
-    /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":802
+    /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":802
  * 
  *         if ((child.byteorder == c'>' and little_endian) or
  *             (child.byteorder == c'<' and not little_endian)):             # <<<<<<<<<<<<<<
@@ -10500,7 +10484,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
     __pyx_t_6 = __pyx_t_7;
     __pyx_L7_bool_binop_done:;
 
-    /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":801
+    /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":801
  *             raise RuntimeError(u"Format string allocated too short, see comment in numpy.pxd")
  * 
  *         if ((child.byteorder == c'>' and little_endian) or             # <<<<<<<<<<<<<<
@@ -10509,7 +10493,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
  */
     if (__pyx_t_6) {
 
-      /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":803
+      /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":803
  *         if ((child.byteorder == c'>' and little_endian) or
  *             (child.byteorder == c'<' and not little_endian)):
  *             raise ValueError(u"Non-native byte order not supported")             # <<<<<<<<<<<<<<
@@ -10522,7 +10506,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       {__pyx_filename = __pyx_f[1]; __pyx_lineno = 803; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-      /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":801
+      /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":801
  *             raise RuntimeError(u"Format string allocated too short, see comment in numpy.pxd")
  * 
  *         if ((child.byteorder == c'>' and little_endian) or             # <<<<<<<<<<<<<<
@@ -10531,7 +10515,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
  */
     }
 
-    /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":813
+    /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":813
  * 
  *         # Output padding bytes
  *         while offset[0] < new_offset:             # <<<<<<<<<<<<<<
@@ -10547,7 +10531,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       if (!__pyx_t_6) break;
 
-      /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":814
+      /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":814
  *         # Output padding bytes
  *         while offset[0] < new_offset:
  *             f[0] = 120 # "x"; pad byte             # <<<<<<<<<<<<<<
@@ -10556,7 +10540,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
  */
       (__pyx_v_f[0]) = 0x78;
 
-      /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":815
+      /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":815
  *         while offset[0] < new_offset:
  *             f[0] = 120 # "x"; pad byte
  *             f += 1             # <<<<<<<<<<<<<<
@@ -10565,7 +10549,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
  */
       __pyx_v_f = (__pyx_v_f + 1);
 
-      /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":816
+      /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":816
  *             f[0] = 120 # "x"; pad byte
  *             f += 1
  *             offset[0] += 1             # <<<<<<<<<<<<<<
@@ -10576,7 +10560,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
       (__pyx_v_offset[__pyx_t_8]) = ((__pyx_v_offset[__pyx_t_8]) + 1);
     }
 
-    /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":818
+    /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":818
  *             offset[0] += 1
  * 
  *         offset[0] += child.itemsize             # <<<<<<<<<<<<<<
@@ -10586,7 +10570,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
     __pyx_t_8 = 0;
     (__pyx_v_offset[__pyx_t_8]) = ((__pyx_v_offset[__pyx_t_8]) + __pyx_v_child->elsize);
 
-    /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":820
+    /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":820
  *         offset[0] += child.itemsize
  * 
  *         if not PyDataType_HASFIELDS(child):             # <<<<<<<<<<<<<<
@@ -10596,7 +10580,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
     __pyx_t_6 = ((!(PyDataType_HASFIELDS(__pyx_v_child) != 0)) != 0);
     if (__pyx_t_6) {
 
-      /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":821
+      /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":821
  * 
  *         if not PyDataType_HASFIELDS(child):
  *             t = child.type_num             # <<<<<<<<<<<<<<
@@ -10608,7 +10592,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
       __Pyx_XDECREF_SET(__pyx_v_t, __pyx_t_4);
       __pyx_t_4 = 0;
 
-      /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":822
+      /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":822
  *         if not PyDataType_HASFIELDS(child):
  *             t = child.type_num
  *             if end - f < 5:             # <<<<<<<<<<<<<<
@@ -10618,7 +10602,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
       __pyx_t_6 = (((__pyx_v_end - __pyx_v_f) < 5) != 0);
       if (__pyx_t_6) {
 
-        /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":823
+        /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":823
  *             t = child.type_num
  *             if end - f < 5:
  *                 raise RuntimeError(u"Format string allocated too short.")             # <<<<<<<<<<<<<<
@@ -10631,7 +10615,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
         {__pyx_filename = __pyx_f[1]; __pyx_lineno = 823; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-        /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":822
+        /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":822
  *         if not PyDataType_HASFIELDS(child):
  *             t = child.type_num
  *             if end - f < 5:             # <<<<<<<<<<<<<<
@@ -10640,7 +10624,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
  */
       }
 
-      /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":826
+      /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":826
  * 
  *             # Until ticket #99 is fixed, use integers to avoid warnings
  *             if   t == NPY_BYTE:        f[0] =  98 #"b"             # <<<<<<<<<<<<<<
@@ -10658,7 +10642,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         goto __pyx_L15;
       }
 
-      /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":827
+      /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":827
  *             # Until ticket #99 is fixed, use integers to avoid warnings
  *             if   t == NPY_BYTE:        f[0] =  98 #"b"
  *             elif t == NPY_UBYTE:       f[0] =  66 #"B"             # <<<<<<<<<<<<<<
@@ -10676,7 +10660,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         goto __pyx_L15;
       }
 
-      /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":828
+      /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":828
  *             if   t == NPY_BYTE:        f[0] =  98 #"b"
  *             elif t == NPY_UBYTE:       f[0] =  66 #"B"
  *             elif t == NPY_SHORT:       f[0] = 104 #"h"             # <<<<<<<<<<<<<<
@@ -10694,7 +10678,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         goto __pyx_L15;
       }
 
-      /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":829
+      /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":829
  *             elif t == NPY_UBYTE:       f[0] =  66 #"B"
  *             elif t == NPY_SHORT:       f[0] = 104 #"h"
  *             elif t == NPY_USHORT:      f[0] =  72 #"H"             # <<<<<<<<<<<<<<
@@ -10712,7 +10696,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         goto __pyx_L15;
       }
 
-      /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":830
+      /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":830
  *             elif t == NPY_SHORT:       f[0] = 104 #"h"
  *             elif t == NPY_USHORT:      f[0] =  72 #"H"
  *             elif t == NPY_INT:         f[0] = 105 #"i"             # <<<<<<<<<<<<<<
@@ -10730,7 +10714,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         goto __pyx_L15;
       }
 
-      /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":831
+      /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":831
  *             elif t == NPY_USHORT:      f[0] =  72 #"H"
  *             elif t == NPY_INT:         f[0] = 105 #"i"
  *             elif t == NPY_UINT:        f[0] =  73 #"I"             # <<<<<<<<<<<<<<
@@ -10748,7 +10732,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         goto __pyx_L15;
       }
 
-      /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":832
+      /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":832
  *             elif t == NPY_INT:         f[0] = 105 #"i"
  *             elif t == NPY_UINT:        f[0] =  73 #"I"
  *             elif t == NPY_LONG:        f[0] = 108 #"l"             # <<<<<<<<<<<<<<
@@ -10766,7 +10750,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         goto __pyx_L15;
       }
 
-      /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":833
+      /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":833
  *             elif t == NPY_UINT:        f[0] =  73 #"I"
  *             elif t == NPY_LONG:        f[0] = 108 #"l"
  *             elif t == NPY_ULONG:       f[0] = 76  #"L"             # <<<<<<<<<<<<<<
@@ -10784,7 +10768,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         goto __pyx_L15;
       }
 
-      /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":834
+      /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":834
  *             elif t == NPY_LONG:        f[0] = 108 #"l"
  *             elif t == NPY_ULONG:       f[0] = 76  #"L"
  *             elif t == NPY_LONGLONG:    f[0] = 113 #"q"             # <<<<<<<<<<<<<<
@@ -10802,7 +10786,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         goto __pyx_L15;
       }
 
-      /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":835
+      /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":835
  *             elif t == NPY_ULONG:       f[0] = 76  #"L"
  *             elif t == NPY_LONGLONG:    f[0] = 113 #"q"
  *             elif t == NPY_ULONGLONG:   f[0] = 81  #"Q"             # <<<<<<<<<<<<<<
@@ -10820,7 +10804,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         goto __pyx_L15;
       }
 
-      /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":836
+      /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":836
  *             elif t == NPY_LONGLONG:    f[0] = 113 #"q"
  *             elif t == NPY_ULONGLONG:   f[0] = 81  #"Q"
  *             elif t == NPY_FLOAT:       f[0] = 102 #"f"             # <<<<<<<<<<<<<<
@@ -10838,7 +10822,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         goto __pyx_L15;
       }
 
-      /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":837
+      /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":837
  *             elif t == NPY_ULONGLONG:   f[0] = 81  #"Q"
  *             elif t == NPY_FLOAT:       f[0] = 102 #"f"
  *             elif t == NPY_DOUBLE:      f[0] = 100 #"d"             # <<<<<<<<<<<<<<
@@ -10856,7 +10840,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         goto __pyx_L15;
       }
 
-      /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":838
+      /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":838
  *             elif t == NPY_FLOAT:       f[0] = 102 #"f"
  *             elif t == NPY_DOUBLE:      f[0] = 100 #"d"
  *             elif t == NPY_LONGDOUBLE:  f[0] = 103 #"g"             # <<<<<<<<<<<<<<
@@ -10874,7 +10858,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         goto __pyx_L15;
       }
 
-      /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":839
+      /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":839
  *             elif t == NPY_DOUBLE:      f[0] = 100 #"d"
  *             elif t == NPY_LONGDOUBLE:  f[0] = 103 #"g"
  *             elif t == NPY_CFLOAT:      f[0] = 90; f[1] = 102; f += 1 # Zf             # <<<<<<<<<<<<<<
@@ -10894,7 +10878,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         goto __pyx_L15;
       }
 
-      /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":840
+      /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":840
  *             elif t == NPY_LONGDOUBLE:  f[0] = 103 #"g"
  *             elif t == NPY_CFLOAT:      f[0] = 90; f[1] = 102; f += 1 # Zf
  *             elif t == NPY_CDOUBLE:     f[0] = 90; f[1] = 100; f += 1 # Zd             # <<<<<<<<<<<<<<
@@ -10914,7 +10898,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         goto __pyx_L15;
       }
 
-      /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":841
+      /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":841
  *             elif t == NPY_CFLOAT:      f[0] = 90; f[1] = 102; f += 1 # Zf
  *             elif t == NPY_CDOUBLE:     f[0] = 90; f[1] = 100; f += 1 # Zd
  *             elif t == NPY_CLONGDOUBLE: f[0] = 90; f[1] = 103; f += 1 # Zg             # <<<<<<<<<<<<<<
@@ -10934,7 +10918,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         goto __pyx_L15;
       }
 
-      /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":842
+      /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":842
  *             elif t == NPY_CDOUBLE:     f[0] = 90; f[1] = 100; f += 1 # Zd
  *             elif t == NPY_CLONGDOUBLE: f[0] = 90; f[1] = 103; f += 1 # Zg
  *             elif t == NPY_OBJECT:      f[0] = 79 #"O"             # <<<<<<<<<<<<<<
@@ -10952,7 +10936,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         goto __pyx_L15;
       }
 
-      /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":844
+      /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":844
  *             elif t == NPY_OBJECT:      f[0] = 79 #"O"
  *             else:
  *                 raise ValueError(u"unknown dtype code in numpy.pxd (%d)" % t)             # <<<<<<<<<<<<<<
@@ -10976,7 +10960,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
       }
       __pyx_L15:;
 
-      /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":845
+      /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":845
  *             else:
  *                 raise ValueError(u"unknown dtype code in numpy.pxd (%d)" % t)
  *             f += 1             # <<<<<<<<<<<<<<
@@ -10985,7 +10969,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
  */
       __pyx_v_f = (__pyx_v_f + 1);
 
-      /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":820
+      /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":820
  *         offset[0] += child.itemsize
  * 
  *         if not PyDataType_HASFIELDS(child):             # <<<<<<<<<<<<<<
@@ -10995,7 +10979,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
       goto __pyx_L13;
     }
 
-    /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":849
+    /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":849
  *             # Cython ignores struct boundary information ("T{...}"),
  *             # so don't output it
  *             f = _util_dtypestring(child, f, end, offset)             # <<<<<<<<<<<<<<
@@ -11008,7 +10992,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
     }
     __pyx_L13:;
 
-    /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":794
+    /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":794
  *     cdef tuple fields
  * 
  *     for childname in descr.names:             # <<<<<<<<<<<<<<
@@ -11018,7 +11002,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":850
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":850
  *             # so don't output it
  *             f = _util_dtypestring(child, f, end, offset)
  *     return f             # <<<<<<<<<<<<<<
@@ -11028,7 +11012,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
   __pyx_r = __pyx_v_f;
   goto __pyx_L0;
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":785
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":785
  *     return PyArray_MultiIterNew(5, <void*>a, <void*>b, <void*>c, <void*> d, <void*> e)
  * 
  * cdef inline char* _util_dtypestring(dtype descr, char* f, char* end, int* offset) except NULL:             # <<<<<<<<<<<<<<
@@ -11053,7 +11037,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
   return __pyx_r;
 }
 
-/* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":966
+/* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":966
  * 
  * 
  * cdef inline void set_array_base(ndarray arr, object base):             # <<<<<<<<<<<<<<
@@ -11068,7 +11052,7 @@ static CYTHON_INLINE void __pyx_f_5numpy_set_array_base(PyArrayObject *__pyx_v_a
   int __pyx_t_2;
   __Pyx_RefNannySetupContext("set_array_base", 0);
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":968
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":968
  * cdef inline void set_array_base(ndarray arr, object base):
  *      cdef PyObject* baseptr
  *      if base is None:             # <<<<<<<<<<<<<<
@@ -11079,7 +11063,7 @@ static CYTHON_INLINE void __pyx_f_5numpy_set_array_base(PyArrayObject *__pyx_v_a
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":969
+    /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":969
  *      cdef PyObject* baseptr
  *      if base is None:
  *          baseptr = NULL             # <<<<<<<<<<<<<<
@@ -11088,7 +11072,7 @@ static CYTHON_INLINE void __pyx_f_5numpy_set_array_base(PyArrayObject *__pyx_v_a
  */
     __pyx_v_baseptr = NULL;
 
-    /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":968
+    /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":968
  * cdef inline void set_array_base(ndarray arr, object base):
  *      cdef PyObject* baseptr
  *      if base is None:             # <<<<<<<<<<<<<<
@@ -11098,7 +11082,7 @@ static CYTHON_INLINE void __pyx_f_5numpy_set_array_base(PyArrayObject *__pyx_v_a
     goto __pyx_L3;
   }
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":971
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":971
  *          baseptr = NULL
  *      else:
  *          Py_INCREF(base) # important to do this before decref below!             # <<<<<<<<<<<<<<
@@ -11108,7 +11092,7 @@ static CYTHON_INLINE void __pyx_f_5numpy_set_array_base(PyArrayObject *__pyx_v_a
   /*else*/ {
     Py_INCREF(__pyx_v_base);
 
-    /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":972
+    /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":972
  *      else:
  *          Py_INCREF(base) # important to do this before decref below!
  *          baseptr = <PyObject*>base             # <<<<<<<<<<<<<<
@@ -11119,7 +11103,7 @@ static CYTHON_INLINE void __pyx_f_5numpy_set_array_base(PyArrayObject *__pyx_v_a
   }
   __pyx_L3:;
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":973
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":973
  *          Py_INCREF(base) # important to do this before decref below!
  *          baseptr = <PyObject*>base
  *      Py_XDECREF(arr.base)             # <<<<<<<<<<<<<<
@@ -11128,7 +11112,7 @@ static CYTHON_INLINE void __pyx_f_5numpy_set_array_base(PyArrayObject *__pyx_v_a
  */
   Py_XDECREF(__pyx_v_arr->base);
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":974
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":974
  *          baseptr = <PyObject*>base
  *      Py_XDECREF(arr.base)
  *      arr.base = baseptr             # <<<<<<<<<<<<<<
@@ -11137,7 +11121,7 @@ static CYTHON_INLINE void __pyx_f_5numpy_set_array_base(PyArrayObject *__pyx_v_a
  */
   __pyx_v_arr->base = __pyx_v_baseptr;
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":966
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":966
  * 
  * 
  * cdef inline void set_array_base(ndarray arr, object base):             # <<<<<<<<<<<<<<
@@ -11149,7 +11133,7 @@ static CYTHON_INLINE void __pyx_f_5numpy_set_array_base(PyArrayObject *__pyx_v_a
   __Pyx_RefNannyFinishContext();
 }
 
-/* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":976
+/* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":976
  *      arr.base = baseptr
  * 
  * cdef inline object get_array_base(ndarray arr):             # <<<<<<<<<<<<<<
@@ -11163,7 +11147,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_get_array_base(PyArrayObject *__py
   int __pyx_t_1;
   __Pyx_RefNannySetupContext("get_array_base", 0);
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":977
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":977
  * 
  * cdef inline object get_array_base(ndarray arr):
  *     if arr.base is NULL:             # <<<<<<<<<<<<<<
@@ -11173,7 +11157,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_get_array_base(PyArrayObject *__py
   __pyx_t_1 = ((__pyx_v_arr->base == NULL) != 0);
   if (__pyx_t_1) {
 
-    /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":978
+    /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":978
  * cdef inline object get_array_base(ndarray arr):
  *     if arr.base is NULL:
  *         return None             # <<<<<<<<<<<<<<
@@ -11185,7 +11169,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_get_array_base(PyArrayObject *__py
     __pyx_r = Py_None;
     goto __pyx_L0;
 
-    /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":977
+    /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":977
  * 
  * cdef inline object get_array_base(ndarray arr):
  *     if arr.base is NULL:             # <<<<<<<<<<<<<<
@@ -11194,7 +11178,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_get_array_base(PyArrayObject *__py
  */
   }
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":980
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":980
  *         return None
  *     else:
  *         return <object>arr.base             # <<<<<<<<<<<<<<
@@ -11206,7 +11190,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_get_array_base(PyArrayObject *__py
     goto __pyx_L0;
   }
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":976
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":976
  *      arr.base = baseptr
  * 
  * cdef inline object get_array_base(ndarray arr):             # <<<<<<<<<<<<<<
@@ -22742,8 +22726,8 @@ static void __pyx_memoryview__slice_assign_scalar(char *__pyx_v_data, Py_ssize_t
   /* function exit code */
 }
 
-static PyObject *__pyx_tp_new_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile(PyTypeObject *t, PyObject *a, PyObject *k) {
-  struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *p;
+static PyObject *__pyx_tp_new_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile(PyTypeObject *t, PyObject *a, PyObject *k) {
+  struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *p;
   PyObject *o;
   if (likely((t->tp_flags & Py_TPFLAGS_IS_ABSTRACT) == 0)) {
     o = (*t->tp_alloc)(t, 0);
@@ -22751,19 +22735,19 @@ static PyObject *__pyx_tp_new_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile(PyType
     o = (PyObject *) PyBaseObject_Type.tp_new(t, __pyx_empty_tuple, 0);
   }
   if (unlikely(!o)) return 0;
-  p = ((struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *)o);
+  p = ((struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *)o);
   p->fname = Py_None; Py_INCREF(Py_None);
   p->mode = ((PyObject*)Py_None); Py_INCREF(Py_None);
   p->box = ((PyArrayObject *)Py_None); Py_INCREF(Py_None);
   p->_offsets = ((PyArrayObject *)Py_None); Py_INCREF(Py_None);
-  if (unlikely(__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_1__cinit__(o, a, k) < 0)) {
+  if (unlikely(__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_1__cinit__(o, a, k) < 0)) {
     Py_DECREF(o); o = 0;
   }
   return o;
 }
 
-static void __pyx_tp_dealloc_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile(PyObject *o) {
-  struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *p = (struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *)o;
+static void __pyx_tp_dealloc_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile(PyObject *o) {
+  struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *p = (struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *)o;
   #if PY_VERSION_HEX >= 0x030400a1
   if (unlikely(Py_TYPE(o)->tp_finalize) && !_PyGC_FINALIZED(o)) {
     if (PyObject_CallFinalizerFromDealloc(o)) return;
@@ -22774,7 +22758,7 @@ static void __pyx_tp_dealloc_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile(PyObjec
     PyObject *etype, *eval, *etb;
     PyErr_Fetch(&etype, &eval, &etb);
     ++Py_REFCNT(o);
-    __pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_3__dealloc__(o);
+    __pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_3__dealloc__(o);
     --Py_REFCNT(o);
     PyErr_Restore(etype, eval, etb);
   }
@@ -22785,9 +22769,9 @@ static void __pyx_tp_dealloc_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile(PyObjec
   (*Py_TYPE(o)->tp_free)(o);
 }
 
-static int __pyx_tp_traverse_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile(PyObject *o, visitproc v, void *a) {
+static int __pyx_tp_traverse_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile(PyObject *o, visitproc v, void *a) {
   int e;
-  struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *p = (struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *)o;
+  struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *p = (struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *)o;
   if (p->fname) {
     e = (*v)(p->fname, a); if (e) return e;
   }
@@ -22800,9 +22784,9 @@ static int __pyx_tp_traverse_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile(PyObjec
   return 0;
 }
 
-static int __pyx_tp_clear_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile(PyObject *o) {
+static int __pyx_tp_clear_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile(PyObject *o) {
   PyObject* tmp;
-  struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *p = (struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile *)o;
+  struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *p = (struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile *)o;
   tmp = ((PyObject*)p->fname);
   p->fname = Py_None; Py_INCREF(Py_None);
   Py_XDECREF(tmp);
@@ -22815,37 +22799,37 @@ static int __pyx_tp_clear_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile(PyObject *
   return 0;
 }
 
-static PyObject *__pyx_getprop_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_n_atoms(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_7n_atoms_1__get__(o);
+static PyObject *__pyx_getprop_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_n_atoms(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_7n_atoms_1__get__(o);
 }
 
-static PyObject *__pyx_getprop_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_fname(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_5fname_1__get__(o);
+static PyObject *__pyx_getprop_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_fname(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_5fname_1__get__(o);
 }
 
-static PyMethodDef __pyx_methods_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile[] = {
-  {"close", (PyCFunction)__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_5close, METH_NOARGS, __pyx_doc_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_4close},
-  {"open", (PyCFunction)__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_7open, METH_VARARGS|METH_KEYWORDS, __pyx_doc_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_6open},
-  {"__enter__", (PyCFunction)__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_9__enter__, METH_NOARGS, __pyx_doc_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_8__enter__},
-  {"__exit__", (PyCFunction)__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_11__exit__, METH_VARARGS|METH_KEYWORDS, __pyx_doc_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_10__exit__},
-  {"__next__", (PyCFunction)__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_15__next__, METH_NOARGS|METH_COEXIST, 0},
-  {"seek", (PyCFunction)__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_19seek, METH_O, __pyx_doc_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_18seek},
-  {"_bytes_seek", (PyCFunction)__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_21_bytes_seek, METH_VARARGS|METH_KEYWORDS, __pyx_doc_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_20_bytes_seek},
-  {"offsets", (PyCFunction)__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_23offsets, METH_NOARGS, __pyx_doc_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_22offsets},
-  {"set_offsets", (PyCFunction)__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_25set_offsets, METH_O, __pyx_doc_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_24set_offsets},
-  {"tell", (PyCFunction)__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_27tell, METH_NOARGS, __pyx_doc_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_26tell},
-  {"_bytes_tell", (PyCFunction)__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_29_bytes_tell, METH_NOARGS, __pyx_doc_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_28_bytes_tell},
+static PyMethodDef __pyx_methods_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile[] = {
+  {"close", (PyCFunction)__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_5close, METH_NOARGS, __pyx_doc_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_4close},
+  {"open", (PyCFunction)__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_7open, METH_VARARGS|METH_KEYWORDS, __pyx_doc_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_6open},
+  {"__enter__", (PyCFunction)__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_9__enter__, METH_NOARGS, __pyx_doc_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_8__enter__},
+  {"__exit__", (PyCFunction)__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_11__exit__, METH_VARARGS|METH_KEYWORDS, __pyx_doc_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_10__exit__},
+  {"__next__", (PyCFunction)__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_15__next__, METH_NOARGS|METH_COEXIST, 0},
+  {"seek", (PyCFunction)__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_19seek, METH_O, __pyx_doc_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_18seek},
+  {"_bytes_seek", (PyCFunction)__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_21_bytes_seek, METH_VARARGS|METH_KEYWORDS, __pyx_doc_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_20_bytes_seek},
+  {"offsets", (PyCFunction)__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_23offsets, METH_NOARGS, __pyx_doc_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_22offsets},
+  {"set_offsets", (PyCFunction)__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_25set_offsets, METH_O, __pyx_doc_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_24set_offsets},
+  {"tell", (PyCFunction)__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_27tell, METH_NOARGS, __pyx_doc_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_26tell},
+  {"_bytes_tell", (PyCFunction)__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_29_bytes_tell, METH_NOARGS, __pyx_doc_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_28_bytes_tell},
   {0, 0, 0, 0}
 };
 
-static struct PyGetSetDef __pyx_getsets_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile[] = {
-  {(char *)"n_atoms", __pyx_getprop_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_n_atoms, 0, 0, 0},
-  {(char *)"fname", __pyx_getprop_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_fname, 0, 0, 0},
+static struct PyGetSetDef __pyx_getsets_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile[] = {
+  {(char *)"n_atoms", __pyx_getprop_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_n_atoms, 0, 0, 0},
+  {(char *)"fname", __pyx_getprop_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_fname, 0, 0, 0},
   {0, 0, 0, 0, 0}
 };
 
 static PySequenceMethods __pyx_tp_as_sequence__XDRFile = {
-  __pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_17__len__, /*sq_length*/
+  __pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_17__len__, /*sq_length*/
   0, /*sq_concat*/
   0, /*sq_repeat*/
   0, /*sq_item*/
@@ -22858,17 +22842,17 @@ static PySequenceMethods __pyx_tp_as_sequence__XDRFile = {
 };
 
 static PyMappingMethods __pyx_tp_as_mapping__XDRFile = {
-  __pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_17__len__, /*mp_length*/
+  __pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_17__len__, /*mp_length*/
   0, /*mp_subscript*/
   0, /*mp_ass_subscript*/
 };
 
-static PyTypeObject __pyx_type_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile = {
+static PyTypeObject __pyx_type_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile = {
   PyVarObject_HEAD_INIT(0, 0)
-  "MDAnalysis.lib.formats.xdrlib._XDRFile", /*tp_name*/
-  sizeof(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile), /*tp_basicsize*/
+  "MDAnalysis.lib.formats.libmdaxdr._XDRFile", /*tp_name*/
+  sizeof(struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile), /*tp_basicsize*/
   0, /*tp_itemsize*/
-  __pyx_tp_dealloc_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile, /*tp_dealloc*/
+  __pyx_tp_dealloc_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile, /*tp_dealloc*/
   0, /*tp_print*/
   0, /*tp_getattr*/
   0, /*tp_setattr*/
@@ -22890,15 +22874,15 @@ static PyTypeObject __pyx_type_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile = {
   0, /*tp_as_buffer*/
   Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_GC, /*tp_flags*/
   "Base python wrapper for gromacs-xdr formats\n\n    This class can be similar to the normal file objects in python. The read()\n    function will return a frame and all information in it instead of a single\n    line. Additionally the context-manager protocoll is supported as well.\n\n    Parameters\n    ----------\n    fname : str\n        The filename to open.\n    mode : ('r', 'w')\n        The mode in which to open the file, either 'r' read or 'w' write\n\n    Raises\n    ------\n    ValueError\n        Wrong mode given\n    IOError\n        Couldn't read the file\n\n    Note\n    ----\n    This class can't be initialized use one of the subclasses XTCFile, TRRFile\n    ", /*tp_doc*/
-  __pyx_tp_traverse_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile, /*tp_traverse*/
-  __pyx_tp_clear_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile, /*tp_clear*/
+  __pyx_tp_traverse_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile, /*tp_traverse*/
+  __pyx_tp_clear_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile, /*tp_clear*/
   0, /*tp_richcompare*/
   0, /*tp_weaklistoffset*/
-  __pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_13__iter__, /*tp_iter*/
-  __pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_15__next__, /*tp_iternext*/
-  __pyx_methods_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile, /*tp_methods*/
+  __pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_13__iter__, /*tp_iter*/
+  __pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_15__next__, /*tp_iternext*/
+  __pyx_methods_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile, /*tp_methods*/
   0, /*tp_members*/
-  __pyx_getsets_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile, /*tp_getset*/
+  __pyx_getsets_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile, /*tp_getset*/
   0, /*tp_base*/
   0, /*tp_dict*/
   0, /*tp_descr_get*/
@@ -22906,7 +22890,7 @@ static PyTypeObject __pyx_type_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile = {
   0, /*tp_dictoffset*/
   0, /*tp_init*/
   0, /*tp_alloc*/
-  __pyx_tp_new_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile, /*tp_new*/
+  __pyx_tp_new_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile, /*tp_new*/
   0, /*tp_free*/
   0, /*tp_is_gc*/
   0, /*tp_bases*/
@@ -22921,26 +22905,26 @@ static PyTypeObject __pyx_type_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile = {
   #endif
 };
 
-static PyObject *__pyx_tp_new_10MDAnalysis_3lib_7formats_6xdrlib_TRRFile(PyTypeObject *t, PyObject *a, PyObject *k) {
-  PyObject *o = __pyx_tp_new_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile(t, a, k);
+static PyObject *__pyx_tp_new_10MDAnalysis_3lib_7formats_9libmdaxdr_TRRFile(PyTypeObject *t, PyObject *a, PyObject *k) {
+  PyObject *o = __pyx_tp_new_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile(t, a, k);
   if (unlikely(!o)) return 0;
   return o;
 }
 
-static PyMethodDef __pyx_methods_10MDAnalysis_3lib_7formats_6xdrlib_TRRFile[] = {
-  {"_calc_natoms", (PyCFunction)__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_1_calc_natoms, METH_O, 0},
-  {"calc_offsets", (PyCFunction)__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_3calc_offsets, METH_NOARGS, __pyx_doc_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_2calc_offsets},
-  {"read", (PyCFunction)__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_5read, METH_NOARGS, __pyx_doc_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_4read},
-  {"write", (PyCFunction)__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_7write, METH_VARARGS|METH_KEYWORDS, __pyx_doc_10MDAnalysis_3lib_7formats_6xdrlib_7TRRFile_6write},
+static PyMethodDef __pyx_methods_10MDAnalysis_3lib_7formats_9libmdaxdr_TRRFile[] = {
+  {"_calc_natoms", (PyCFunction)__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_7TRRFile_1_calc_natoms, METH_O, 0},
+  {"calc_offsets", (PyCFunction)__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_7TRRFile_3calc_offsets, METH_NOARGS, __pyx_doc_10MDAnalysis_3lib_7formats_9libmdaxdr_7TRRFile_2calc_offsets},
+  {"read", (PyCFunction)__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_7TRRFile_5read, METH_NOARGS, __pyx_doc_10MDAnalysis_3lib_7formats_9libmdaxdr_7TRRFile_4read},
+  {"write", (PyCFunction)__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_7TRRFile_7write, METH_VARARGS|METH_KEYWORDS, __pyx_doc_10MDAnalysis_3lib_7formats_9libmdaxdr_7TRRFile_6write},
   {0, 0, 0, 0}
 };
 
-static PyTypeObject __pyx_type_10MDAnalysis_3lib_7formats_6xdrlib_TRRFile = {
+static PyTypeObject __pyx_type_10MDAnalysis_3lib_7formats_9libmdaxdr_TRRFile = {
   PyVarObject_HEAD_INIT(0, 0)
-  "MDAnalysis.lib.formats.xdrlib.TRRFile", /*tp_name*/
-  sizeof(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib_TRRFile), /*tp_basicsize*/
+  "MDAnalysis.lib.formats.libmdaxdr.TRRFile", /*tp_name*/
+  sizeof(struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr_TRRFile), /*tp_basicsize*/
   0, /*tp_itemsize*/
-  __pyx_tp_dealloc_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile, /*tp_dealloc*/
+  __pyx_tp_dealloc_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile, /*tp_dealloc*/
   0, /*tp_print*/
   0, /*tp_getattr*/
   0, /*tp_setattr*/
@@ -22961,22 +22945,22 @@ static PyTypeObject __pyx_type_10MDAnalysis_3lib_7formats_6xdrlib_TRRFile = {
   0, /*tp_setattro*/
   0, /*tp_as_buffer*/
   Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_GC, /*tp_flags*/
-  "File-like wrapper for gromacs TRR files.\n\n    This class can be similar to the normal file objects in python. The read()\n    function will return a frame and all information in it instead of a single\n    line. Additionally the context-manager protocoll is supported as well.\n\n    Parameters\n    ----------\n    fname : str\n        The filename to open.\n    mode : ('r', 'w')\n        The mode in which to open the file, either 'r' read or 'w' write\n\n    Examples\n    --------\n    >>> from MDAnalysis.lib.formats.xdrlib import TRRFile\n    >>> with TRRFile('foo.trr') as f:\n    >>>     for frame in f:\n    >>>         print(frame.x)\n    ", /*tp_doc*/
-  __pyx_tp_traverse_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile, /*tp_traverse*/
-  __pyx_tp_clear_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile, /*tp_clear*/
+  "File-like wrapper for gromacs TRR files.\n\n    This class can be similar to the normal file objects in python. The read()\n    function will return a frame and all information in it instead of a single\n    line. Additionally the context-manager protocoll is supported as well.\n\n    Parameters\n    ----------\n    fname : str\n        The filename to open.\n    mode : ('r', 'w')\n        The mode in which to open the file, either 'r' read or 'w' write\n\n    Examples\n    --------\n    >>> from MDAnalysis.lib.formats.libmdaxdr import TRRFile\n    >>> with TRRFile('foo.trr') as f:\n    >>>     for frame in f:\n    >>>         print(frame.x)\n    ", /*tp_doc*/
+  __pyx_tp_traverse_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile, /*tp_traverse*/
+  __pyx_tp_clear_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile, /*tp_clear*/
   0, /*tp_richcompare*/
   0, /*tp_weaklistoffset*/
   #if CYTHON_COMPILING_IN_PYPY
-  __pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_13__iter__, /*tp_iter*/
+  __pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_13__iter__, /*tp_iter*/
   #else
   0, /*tp_iter*/
   #endif
   #if CYTHON_COMPILING_IN_PYPY
-  __pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_15__next__, /*tp_iternext*/
+  __pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_15__next__, /*tp_iternext*/
   #else
   0, /*tp_iternext*/
   #endif
-  __pyx_methods_10MDAnalysis_3lib_7formats_6xdrlib_TRRFile, /*tp_methods*/
+  __pyx_methods_10MDAnalysis_3lib_7formats_9libmdaxdr_TRRFile, /*tp_methods*/
   0, /*tp_members*/
   0, /*tp_getset*/
   0, /*tp_base*/
@@ -22986,7 +22970,7 @@ static PyTypeObject __pyx_type_10MDAnalysis_3lib_7formats_6xdrlib_TRRFile = {
   0, /*tp_dictoffset*/
   0, /*tp_init*/
   0, /*tp_alloc*/
-  __pyx_tp_new_10MDAnalysis_3lib_7formats_6xdrlib_TRRFile, /*tp_new*/
+  __pyx_tp_new_10MDAnalysis_3lib_7formats_9libmdaxdr_TRRFile, /*tp_new*/
   0, /*tp_free*/
   0, /*tp_is_gc*/
   0, /*tp_bases*/
@@ -23001,26 +22985,26 @@ static PyTypeObject __pyx_type_10MDAnalysis_3lib_7formats_6xdrlib_TRRFile = {
   #endif
 };
 
-static PyObject *__pyx_tp_new_10MDAnalysis_3lib_7formats_6xdrlib_XTCFile(PyTypeObject *t, PyObject *a, PyObject *k) {
-  PyObject *o = __pyx_tp_new_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile(t, a, k);
+static PyObject *__pyx_tp_new_10MDAnalysis_3lib_7formats_9libmdaxdr_XTCFile(PyTypeObject *t, PyObject *a, PyObject *k) {
+  PyObject *o = __pyx_tp_new_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile(t, a, k);
   if (unlikely(!o)) return 0;
   return o;
 }
 
-static PyMethodDef __pyx_methods_10MDAnalysis_3lib_7formats_6xdrlib_XTCFile[] = {
-  {"_calc_natoms", (PyCFunction)__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_1_calc_natoms, METH_O, 0},
-  {"calc_offsets", (PyCFunction)__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_3calc_offsets, METH_NOARGS, __pyx_doc_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_2calc_offsets},
-  {"read", (PyCFunction)__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_5read, METH_NOARGS, __pyx_doc_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_4read},
-  {"write", (PyCFunction)__pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_7write, METH_VARARGS|METH_KEYWORDS, __pyx_doc_10MDAnalysis_3lib_7formats_6xdrlib_7XTCFile_6write},
+static PyMethodDef __pyx_methods_10MDAnalysis_3lib_7formats_9libmdaxdr_XTCFile[] = {
+  {"_calc_natoms", (PyCFunction)__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_7XTCFile_1_calc_natoms, METH_O, 0},
+  {"calc_offsets", (PyCFunction)__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_7XTCFile_3calc_offsets, METH_NOARGS, __pyx_doc_10MDAnalysis_3lib_7formats_9libmdaxdr_7XTCFile_2calc_offsets},
+  {"read", (PyCFunction)__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_7XTCFile_5read, METH_NOARGS, __pyx_doc_10MDAnalysis_3lib_7formats_9libmdaxdr_7XTCFile_4read},
+  {"write", (PyCFunction)__pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_7XTCFile_7write, METH_VARARGS|METH_KEYWORDS, __pyx_doc_10MDAnalysis_3lib_7formats_9libmdaxdr_7XTCFile_6write},
   {0, 0, 0, 0}
 };
 
-static PyTypeObject __pyx_type_10MDAnalysis_3lib_7formats_6xdrlib_XTCFile = {
+static PyTypeObject __pyx_type_10MDAnalysis_3lib_7formats_9libmdaxdr_XTCFile = {
   PyVarObject_HEAD_INIT(0, 0)
-  "MDAnalysis.lib.formats.xdrlib.XTCFile", /*tp_name*/
-  sizeof(struct __pyx_obj_10MDAnalysis_3lib_7formats_6xdrlib_XTCFile), /*tp_basicsize*/
+  "MDAnalysis.lib.formats.libmdaxdr.XTCFile", /*tp_name*/
+  sizeof(struct __pyx_obj_10MDAnalysis_3lib_7formats_9libmdaxdr_XTCFile), /*tp_basicsize*/
   0, /*tp_itemsize*/
-  __pyx_tp_dealloc_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile, /*tp_dealloc*/
+  __pyx_tp_dealloc_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile, /*tp_dealloc*/
   0, /*tp_print*/
   0, /*tp_getattr*/
   0, /*tp_setattr*/
@@ -23041,22 +23025,22 @@ static PyTypeObject __pyx_type_10MDAnalysis_3lib_7formats_6xdrlib_XTCFile = {
   0, /*tp_setattro*/
   0, /*tp_as_buffer*/
   Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_GC, /*tp_flags*/
-  "File-like wrapper for gromacs XTC files.\n\n    This class can be similar to the normal file objects in python. The read()\n    function will return a frame and all information in it instead of a single\n    line. Additionally the context-manager protocoll is supported as well.\n\n    Parameters\n    ----------\n    fname : str\n        The filename to open.\n    mode : ('r', 'w')\n        The mode in which to open the file, either 'r' read or 'w' write\n\n    Examples\n    --------\n    >>> from MDAnalysis.lib.formats.xdrlib import XTCFile\n    >>> with XTCFile('foo.trr') as f:\n    >>>     for frame in f:\n    >>>         print(frame.x)\n    ", /*tp_doc*/
-  __pyx_tp_traverse_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile, /*tp_traverse*/
-  __pyx_tp_clear_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile, /*tp_clear*/
+  "File-like wrapper for gromacs XTC files.\n\n    This class can be similar to the normal file objects in python. The read()\n    function will return a frame and all information in it instead of a single\n    line. Additionally the context-manager protocoll is supported as well.\n\n    Parameters\n    ----------\n    fname : str\n        The filename to open.\n    mode : ('r', 'w')\n        The mode in which to open the file, either 'r' read or 'w' write\n\n    Examples\n    --------\n    >>> from MDAnalysis.lib.formats.libmdaxdr import XTCFile\n    >>> with XTCFile('foo.trr') as f:\n    >>>     for frame in f:\n    >>>         print(frame.x)\n    ", /*tp_doc*/
+  __pyx_tp_traverse_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile, /*tp_traverse*/
+  __pyx_tp_clear_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile, /*tp_clear*/
   0, /*tp_richcompare*/
   0, /*tp_weaklistoffset*/
   #if CYTHON_COMPILING_IN_PYPY
-  __pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_13__iter__, /*tp_iter*/
+  __pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_13__iter__, /*tp_iter*/
   #else
   0, /*tp_iter*/
   #endif
   #if CYTHON_COMPILING_IN_PYPY
-  __pyx_pw_10MDAnalysis_3lib_7formats_6xdrlib_8_XDRFile_15__next__, /*tp_iternext*/
+  __pyx_pw_10MDAnalysis_3lib_7formats_9libmdaxdr_8_XDRFile_15__next__, /*tp_iternext*/
   #else
   0, /*tp_iternext*/
   #endif
-  __pyx_methods_10MDAnalysis_3lib_7formats_6xdrlib_XTCFile, /*tp_methods*/
+  __pyx_methods_10MDAnalysis_3lib_7formats_9libmdaxdr_XTCFile, /*tp_methods*/
   0, /*tp_members*/
   0, /*tp_getset*/
   0, /*tp_base*/
@@ -23066,7 +23050,7 @@ static PyTypeObject __pyx_type_10MDAnalysis_3lib_7formats_6xdrlib_XTCFile = {
   0, /*tp_dictoffset*/
   0, /*tp_init*/
   0, /*tp_alloc*/
-  __pyx_tp_new_10MDAnalysis_3lib_7formats_6xdrlib_XTCFile, /*tp_new*/
+  __pyx_tp_new_10MDAnalysis_3lib_7formats_9libmdaxdr_XTCFile, /*tp_new*/
   0, /*tp_free*/
   0, /*tp_is_gc*/
   0, /*tp_bases*/
@@ -23198,7 +23182,7 @@ static PyBufferProcs __pyx_tp_as_buffer_array = {
 
 static PyTypeObject __pyx_type___pyx_array = {
   PyVarObject_HEAD_INIT(0, 0)
-  "MDAnalysis.lib.formats.xdrlib.array", /*tp_name*/
+  "MDAnalysis.lib.formats.libmdaxdr.array", /*tp_name*/
   sizeof(struct __pyx_array_obj), /*tp_basicsize*/
   0, /*tp_itemsize*/
   __pyx_tp_dealloc_array, /*tp_dealloc*/
@@ -23304,7 +23288,7 @@ static PyMethodDef __pyx_methods_Enum[] = {
 
 static PyTypeObject __pyx_type___pyx_MemviewEnum = {
   PyVarObject_HEAD_INIT(0, 0)
-  "MDAnalysis.lib.formats.xdrlib.Enum", /*tp_name*/
+  "MDAnalysis.lib.formats.libmdaxdr.Enum", /*tp_name*/
   sizeof(struct __pyx_MemviewEnum_obj), /*tp_basicsize*/
   0, /*tp_itemsize*/
   __pyx_tp_dealloc_Enum, /*tp_dealloc*/
@@ -23551,7 +23535,7 @@ static PyBufferProcs __pyx_tp_as_buffer_memoryview = {
 
 static PyTypeObject __pyx_type___pyx_memoryview = {
   PyVarObject_HEAD_INIT(0, 0)
-  "MDAnalysis.lib.formats.xdrlib.memoryview", /*tp_name*/
+  "MDAnalysis.lib.formats.libmdaxdr.memoryview", /*tp_name*/
   sizeof(struct __pyx_memoryview_obj), /*tp_basicsize*/
   0, /*tp_itemsize*/
   __pyx_tp_dealloc_memoryview, /*tp_dealloc*/
@@ -23676,7 +23660,7 @@ static struct PyGetSetDef __pyx_getsets__memoryviewslice[] = {
 
 static PyTypeObject __pyx_type___pyx_memoryviewslice = {
   PyVarObject_HEAD_INIT(0, 0)
-  "MDAnalysis.lib.formats.xdrlib._memoryviewslice", /*tp_name*/
+  "MDAnalysis.lib.formats.libmdaxdr._memoryviewslice", /*tp_name*/
   sizeof(struct __pyx_memoryviewslice_obj), /*tp_basicsize*/
   0, /*tp_itemsize*/
   __pyx_tp_dealloc__memoryviewslice, /*tp_dealloc*/
@@ -23751,7 +23735,7 @@ static struct PyModuleDef __pyx_moduledef = {
   #else
     PyModuleDef_HEAD_INIT,
   #endif
-    "xdrlib",
+    "libmdaxdr",
     0, /* m_doc */
     -1, /* m_size */
     __pyx_methods /* m_methods */,
@@ -23767,11 +23751,12 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_s_Buffer_view_does_not_expose_stri, __pyx_k_Buffer_view_does_not_expose_stri, sizeof(__pyx_k_Buffer_view_does_not_expose_stri), 0, 0, 1, 0},
   {&__pyx_kp_s_Can_only_create_a_buffer_that_is, __pyx_k_Can_only_create_a_buffer_that_is, sizeof(__pyx_k_Can_only_create_a_buffer_that_is), 0, 0, 1, 0},
   {&__pyx_kp_s_Cannot_index_with_type_s, __pyx_k_Cannot_index_with_type_s, sizeof(__pyx_k_Cannot_index_with_type_s), 0, 0, 1, 0},
-  {&__pyx_kp_s_Couldn_t_close_file_Error_XDRLIB, __pyx_k_Couldn_t_close_file_Error_XDRLIB, sizeof(__pyx_k_Couldn_t_close_file_Error_XDRLIB), 0, 0, 1, 0},
+  {&__pyx_kp_s_Couldn_t_close_file_XDR_error, __pyx_k_Couldn_t_close_file_XDR_error, sizeof(__pyx_k_Couldn_t_close_file_XDR_error), 0, 0, 1, 0},
   {&__pyx_kp_s_Couldn_t_read_number_of_atoms, __pyx_k_Couldn_t_read_number_of_atoms, sizeof(__pyx_k_Couldn_t_read_number_of_atoms), 0, 0, 1, 0},
   {&__pyx_n_s_DTYPE, __pyx_k_DTYPE, sizeof(__pyx_k_DTYPE), 0, 0, 1, 1},
   {&__pyx_n_s_Ellipsis, __pyx_k_Ellipsis, sizeof(__pyx_k_Ellipsis), 0, 0, 1, 1},
   {&__pyx_kp_s_Empty_shape_tuple_for_cython_arr, __pyx_k_Empty_shape_tuple_for_cython_arr, sizeof(__pyx_k_Empty_shape_tuple_for_cython_arr), 0, 0, 1, 0},
+  {&__pyx_kp_s_Error_opening_XTC_TRR_file, __pyx_k_Error_opening_XTC_TRR_file, sizeof(__pyx_k_Error_opening_XTC_TRR_file), 0, 0, 1, 0},
   {&__pyx_kp_s_File_does_not_exist, __pyx_k_File_does_not_exist, sizeof(__pyx_k_File_does_not_exist), 0, 0, 1, 0},
   {&__pyx_kp_s_File_opened_in_mode_Reading_only, __pyx_k_File_opened_in_mode_Reading_only, sizeof(__pyx_k_File_opened_in_mode_Reading_only), 0, 0, 1, 0},
   {&__pyx_kp_s_File_opened_in_mode_Writing_only, __pyx_k_File_opened_in_mode_Writing_only, sizeof(__pyx_k_File_opened_in_mode_Writing_only), 0, 0, 1, 0},
@@ -23807,18 +23792,18 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_SEEK_SET, __pyx_k_SEEK_SET, sizeof(__pyx_k_SEEK_SET), 0, 0, 1, 1},
   {&__pyx_n_s_StopIteration, __pyx_k_StopIteration, sizeof(__pyx_k_StopIteration), 0, 0, 1, 1},
   {&__pyx_n_s_TRRFrame, __pyx_k_TRRFrame, sizeof(__pyx_k_TRRFrame), 0, 0, 1, 1},
-  {&__pyx_kp_s_TRR_Read_Error_occured, __pyx_k_TRR_Read_Error_occured, sizeof(__pyx_k_TRR_Read_Error_occured), 0, 0, 1, 0},
-  {&__pyx_kp_s_TRR_couldn_t_calculate_offsets_e, __pyx_k_TRR_couldn_t_calculate_offsets_e, sizeof(__pyx_k_TRR_couldn_t_calculate_offsets_e), 0, 0, 1, 0},
+  {&__pyx_kp_s_TRR_couldn_t_calculate_offsets_X, __pyx_k_TRR_couldn_t_calculate_offsets_X, sizeof(__pyx_k_TRR_couldn_t_calculate_offsets_X), 0, 0, 1, 0},
+  {&__pyx_kp_s_TRR_read_error, __pyx_k_TRR_read_error, sizeof(__pyx_k_TRR_read_error), 0, 0, 1, 0},
   {&__pyx_kp_s_TRR_write_error, __pyx_k_TRR_write_error, sizeof(__pyx_k_TRR_write_error), 0, 0, 1, 0},
   {&__pyx_kp_s_Trying_to_seek_over_max_number_o, __pyx_k_Trying_to_seek_over_max_number_o, sizeof(__pyx_k_Trying_to_seek_over_max_number_o), 0, 0, 1, 0},
   {&__pyx_n_s_TypeError, __pyx_k_TypeError, sizeof(__pyx_k_TypeError), 0, 0, 1, 1},
   {&__pyx_kp_s_Unable_to_convert_item_to_object, __pyx_k_Unable_to_convert_item_to_object, sizeof(__pyx_k_Unable_to_convert_item_to_object), 0, 0, 1, 0},
   {&__pyx_n_s_ValueError, __pyx_k_ValueError, sizeof(__pyx_k_ValueError), 0, 0, 1, 1},
-  {&__pyx_kp_s_XDRLIB_read_error, __pyx_k_XDRLIB_read_error, sizeof(__pyx_k_XDRLIB_read_error), 0, 0, 1, 0},
+  {&__pyx_kp_s_XDR_read_error, __pyx_k_XDR_read_error, sizeof(__pyx_k_XDR_read_error), 0, 0, 1, 0},
   {&__pyx_kp_s_XDR_seek_failed_with_system_errn, __pyx_k_XDR_seek_failed_with_system_errn, sizeof(__pyx_k_XDR_seek_failed_with_system_errn), 0, 0, 1, 0},
   {&__pyx_n_s_XTCFrame, __pyx_k_XTCFrame, sizeof(__pyx_k_XTCFrame), 0, 0, 1, 1},
-  {&__pyx_kp_s_XTC_Read_Error_occured, __pyx_k_XTC_Read_Error_occured, sizeof(__pyx_k_XTC_Read_Error_occured), 0, 0, 1, 0},
-  {&__pyx_kp_s_XTC_couldn_t_calculate_offsets_e, __pyx_k_XTC_couldn_t_calculate_offsets_e, sizeof(__pyx_k_XTC_couldn_t_calculate_offsets_e), 0, 0, 1, 0},
+  {&__pyx_kp_s_XTC_couldn_t_calculate_offsets_X, __pyx_k_XTC_couldn_t_calculate_offsets_X, sizeof(__pyx_k_XTC_couldn_t_calculate_offsets_X), 0, 0, 1, 0},
+  {&__pyx_kp_s_XTC_read_error, __pyx_k_XTC_read_error, sizeof(__pyx_k_XTC_read_error), 0, 0, 1, 0},
   {&__pyx_kp_s_XTC_write_error, __pyx_k_XTC_write_error, sizeof(__pyx_k_XTC_write_error), 0, 0, 1, 0},
   {&__pyx_n_s_allclose, __pyx_k_allclose, sizeof(__pyx_k_allclose), 0, 0, 1, 1},
   {&__pyx_n_s_allocate_buffer, __pyx_k_allocate_buffer, sizeof(__pyx_k_allocate_buffer), 0, 0, 1, 1},
@@ -23846,7 +23831,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_enumerate, __pyx_k_enumerate, sizeof(__pyx_k_enumerate), 0, 0, 1, 1},
   {&__pyx_n_s_error, __pyx_k_error, sizeof(__pyx_k_error), 0, 0, 1, 1},
   {&__pyx_n_s_error_message, __pyx_k_error_message, sizeof(__pyx_k_error_message), 0, 0, 1, 1},
-  {&__pyx_kp_s_error_opening_xtf_file, __pyx_k_error_opening_xtf_file, sizeof(__pyx_k_error_opening_xtf_file), 0, 0, 1, 0},
   {&__pyx_n_s_exc_tb, __pyx_k_exc_tb, sizeof(__pyx_k_exc_tb), 0, 0, 1, 1},
   {&__pyx_n_s_exc_type, __pyx_k_exc_type, sizeof(__pyx_k_exc_type), 0, 0, 1, 1},
   {&__pyx_n_s_exc_val, __pyx_k_exc_val, sizeof(__pyx_k_exc_val), 0, 0, 1, 1},
@@ -23952,7 +23936,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":133
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":133
  * 
  *     def __cinit__(self, fname, mode='r'):
  *         self.fname = fname.encode('utf-8')             # <<<<<<<<<<<<<<
@@ -23963,7 +23947,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple_);
   __Pyx_GIVEREF(__pyx_tuple_);
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":234
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":234
  *     def __len__(self):
  *         if not self.is_open:
  *             raise RuntimeError('No file currently opened')             # <<<<<<<<<<<<<<
@@ -23974,7 +23958,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__2);
   __Pyx_GIVEREF(__pyx_tuple__2);
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":260
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":260
  *         else:
  *             if frame >= self.offsets.size:
  *                 raise IOError('Trying to seek over max number of frames')             # <<<<<<<<<<<<<<
@@ -23985,7 +23969,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__3);
   __Pyx_GIVEREF(__pyx_tuple__3);
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":416
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":416
  *         """
  *         if self.reached_eof:
  *             raise RuntimeError('Reached last frame in TRR, seek to 0')             # <<<<<<<<<<<<<<
@@ -23996,7 +23980,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__4);
   __Pyx_GIVEREF(__pyx_tuple__4);
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":418
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":418
  *             raise RuntimeError('Reached last frame in TRR, seek to 0')
  *         if not self.is_open:
  *             raise RuntimeError('No file opened')             # <<<<<<<<<<<<<<
@@ -24007,7 +23991,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__5);
   __Pyx_GIVEREF(__pyx_tuple__5);
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":421
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":421
  *         if self.mode != 'r':
  *             raise RuntimeError('File opened in mode: {}. Reading only allow '
  *                                'in mode "r"'.format('self.mode'))             # <<<<<<<<<<<<<<
@@ -24018,7 +24002,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__6);
   __Pyx_GIVEREF(__pyx_tuple__6);
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":494
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":494
  *         if self.mode != 'w' :
  *             raise RuntimeError('File opened in mode: {}. Writing only allow '
  *                                'in mode "w"'.format('self.mode'))             # <<<<<<<<<<<<<<
@@ -24029,7 +24013,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__7);
   __Pyx_GIVEREF(__pyx_tuple__7);
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":629
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":629
  *         """
  *         if self.reached_eof:
  *             raise RuntimeError('Reached last frame in XTC, seek to 0')             # <<<<<<<<<<<<<<
@@ -24040,7 +24024,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__8);
   __Pyx_GIVEREF(__pyx_tuple__8);
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":631
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":631
  *             raise RuntimeError('Reached last frame in XTC, seek to 0')
  *         if not self.is_open:
  *             raise RuntimeError('No file opened')             # <<<<<<<<<<<<<<
@@ -24051,7 +24035,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__9);
   __Pyx_GIVEREF(__pyx_tuple__9);
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":634
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":634
  *         if self.mode != 'r':
  *             raise RuntimeError('File opened in mode: {}. Reading only allow '
  *                                'in mode "r"'.format('self.mode'))             # <<<<<<<<<<<<<<
@@ -24062,7 +24046,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__10);
   __Pyx_GIVEREF(__pyx_tuple__10);
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":691
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":691
  *         if self.mode != 'w':
  *             raise RuntimeError('File opened in mode: {}. Writing only allow '
  *                                'in mode "w"'.format('self.mode'))             # <<<<<<<<<<<<<<
@@ -24073,7 +24057,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__11);
   __Pyx_GIVEREF(__pyx_tuple__11);
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":218
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":218
  *             if ((flags & pybuf.PyBUF_C_CONTIGUOUS == pybuf.PyBUF_C_CONTIGUOUS)
  *                 and not PyArray_CHKFLAGS(self, NPY_C_CONTIGUOUS)):
  *                 raise ValueError(u"ndarray is not C contiguous")             # <<<<<<<<<<<<<<
@@ -24084,7 +24068,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__12);
   __Pyx_GIVEREF(__pyx_tuple__12);
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":222
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":222
  *             if ((flags & pybuf.PyBUF_F_CONTIGUOUS == pybuf.PyBUF_F_CONTIGUOUS)
  *                 and not PyArray_CHKFLAGS(self, NPY_F_CONTIGUOUS)):
  *                 raise ValueError(u"ndarray is not Fortran contiguous")             # <<<<<<<<<<<<<<
@@ -24095,7 +24079,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__13);
   __Pyx_GIVEREF(__pyx_tuple__13);
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":259
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":259
  *                 if ((descr.byteorder == c'>' and little_endian) or
  *                     (descr.byteorder == c'<' and not little_endian)):
  *                     raise ValueError(u"Non-native byte order not supported")             # <<<<<<<<<<<<<<
@@ -24106,7 +24090,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__14);
   __Pyx_GIVEREF(__pyx_tuple__14);
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":799
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":799
  * 
  *         if (end - f) - <int>(new_offset - offset[0]) < 15:
  *             raise RuntimeError(u"Format string allocated too short, see comment in numpy.pxd")             # <<<<<<<<<<<<<<
@@ -24117,7 +24101,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__15);
   __Pyx_GIVEREF(__pyx_tuple__15);
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":803
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":803
  *         if ((child.byteorder == c'>' and little_endian) or
  *             (child.byteorder == c'<' and not little_endian)):
  *             raise ValueError(u"Non-native byte order not supported")             # <<<<<<<<<<<<<<
@@ -24128,7 +24112,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__16);
   __Pyx_GIVEREF(__pyx_tuple__16);
 
-  /* "../../../Envs/mda2/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":823
+  /* "../../../../../../usr/local/lib/python2.7/dist-packages/Cython/Includes/numpy/__init__.pxd":823
  *             t = child.type_num
  *             if end - f < 5:
  *                 raise RuntimeError(u"Format string allocated too short.")             # <<<<<<<<<<<<<<
@@ -24285,7 +24269,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__30);
   __Pyx_GIVEREF(__pyx_tuple__30);
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":346
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":346
  * 
  * 
  * TRRFrame = namedtuple('TRRFrame', 'x v f box step time lmbda hasx hasv hasf')             # <<<<<<<<<<<<<<
@@ -24296,7 +24280,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__31);
   __Pyx_GIVEREF(__pyx_tuple__31);
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":558
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":558
  * 
  * 
  * XTCFrame = namedtuple('XTCFrame', 'x box step time prec')             # <<<<<<<<<<<<<<
@@ -24380,11 +24364,11 @@ static int __Pyx_InitGlobals(void) {
 }
 
 #if PY_MAJOR_VERSION < 3
-PyMODINIT_FUNC initxdrlib(void); /*proto*/
-PyMODINIT_FUNC initxdrlib(void)
+PyMODINIT_FUNC initlibmdaxdr(void); /*proto*/
+PyMODINIT_FUNC initlibmdaxdr(void)
 #else
-PyMODINIT_FUNC PyInit_xdrlib(void); /*proto*/
-PyMODINIT_FUNC PyInit_xdrlib(void)
+PyMODINIT_FUNC PyInit_libmdaxdr(void); /*proto*/
+PyMODINIT_FUNC PyInit_libmdaxdr(void)
 #endif
 {
   PyObject *__pyx_t_1 = NULL;
@@ -24403,7 +24387,7 @@ PyMODINIT_FUNC PyInit_xdrlib(void)
           Py_FatalError("failed to import 'refnanny' module");
   }
   #endif
-  __Pyx_RefNannySetupContext("PyMODINIT_FUNC PyInit_xdrlib(void)", 0);
+  __Pyx_RefNannySetupContext("PyMODINIT_FUNC PyInit_libmdaxdr(void)", 0);
   if (__Pyx_check_binary_version() < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_empty_tuple = PyTuple_New(0); if (unlikely(!__pyx_empty_tuple)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_empty_bytes = PyBytes_FromStringAndSize("", 0); if (unlikely(!__pyx_empty_bytes)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
@@ -24431,7 +24415,7 @@ PyMODINIT_FUNC PyInit_xdrlib(void)
   #endif
   /*--- Module creation code ---*/
   #if PY_MAJOR_VERSION < 3
-  __pyx_m = Py_InitModule4("xdrlib", __pyx_methods, 0, 0, PYTHON_API_VERSION); Py_XINCREF(__pyx_m);
+  __pyx_m = Py_InitModule4("libmdaxdr", __pyx_methods, 0, 0, PYTHON_API_VERSION); Py_XINCREF(__pyx_m);
   #else
   __pyx_m = PyModule_Create(&__pyx_moduledef);
   #endif
@@ -24448,14 +24432,14 @@ PyMODINIT_FUNC PyInit_xdrlib(void)
   #if PY_MAJOR_VERSION < 3 && (__PYX_DEFAULT_STRING_ENCODING_IS_ASCII || __PYX_DEFAULT_STRING_ENCODING_IS_DEFAULT)
   if (__Pyx_init_sys_getdefaultencoding_params() < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   #endif
-  if (__pyx_module_is_main_MDAnalysis__lib__formats__xdrlib) {
+  if (__pyx_module_is_main_MDAnalysis__lib__formats__libmdaxdr) {
     if (PyObject_SetAttrString(__pyx_m, "__name__", __pyx_n_s_main) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   #if PY_MAJOR_VERSION >= 3
   {
     PyObject *modules = PyImport_GetModuleDict(); if (unlikely(!modules)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    if (!PyDict_GetItemString(modules, "MDAnalysis.lib.formats.xdrlib")) {
-      if (unlikely(PyDict_SetItemString(modules, "MDAnalysis.lib.formats.xdrlib", __pyx_m) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (!PyDict_GetItemString(modules, "MDAnalysis.lib.formats.libmdaxdr")) {
+      if (unlikely(PyDict_SetItemString(modules, "MDAnalysis.lib.formats.libmdaxdr", __pyx_m) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
   }
   #endif
@@ -24472,20 +24456,20 @@ PyMODINIT_FUNC PyInit_xdrlib(void)
   /*--- Variable export code ---*/
   /*--- Function export code ---*/
   /*--- Type init code ---*/
-  if (PyType_Ready(&__pyx_type_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 96; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_type_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile.tp_print = 0;
-  if (PyObject_SetAttrString(__pyx_m, "_XDRFile", (PyObject *)&__pyx_type_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 96; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_ptype_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile = &__pyx_type_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile;
-  __pyx_type_10MDAnalysis_3lib_7formats_6xdrlib_TRRFile.tp_base = __pyx_ptype_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile;
-  if (PyType_Ready(&__pyx_type_10MDAnalysis_3lib_7formats_6xdrlib_TRRFile) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 349; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_type_10MDAnalysis_3lib_7formats_6xdrlib_TRRFile.tp_print = 0;
-  if (PyObject_SetAttrString(__pyx_m, "TRRFile", (PyObject *)&__pyx_type_10MDAnalysis_3lib_7formats_6xdrlib_TRRFile) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 349; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_ptype_10MDAnalysis_3lib_7formats_6xdrlib_TRRFile = &__pyx_type_10MDAnalysis_3lib_7formats_6xdrlib_TRRFile;
-  __pyx_type_10MDAnalysis_3lib_7formats_6xdrlib_XTCFile.tp_base = __pyx_ptype_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile;
-  if (PyType_Ready(&__pyx_type_10MDAnalysis_3lib_7formats_6xdrlib_XTCFile) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 561; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_type_10MDAnalysis_3lib_7formats_6xdrlib_XTCFile.tp_print = 0;
-  if (PyObject_SetAttrString(__pyx_m, "XTCFile", (PyObject *)&__pyx_type_10MDAnalysis_3lib_7formats_6xdrlib_XTCFile) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 561; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_ptype_10MDAnalysis_3lib_7formats_6xdrlib_XTCFile = &__pyx_type_10MDAnalysis_3lib_7formats_6xdrlib_XTCFile;
+  if (PyType_Ready(&__pyx_type_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 96; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_type_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile.tp_print = 0;
+  if (PyObject_SetAttrString(__pyx_m, "_XDRFile", (PyObject *)&__pyx_type_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 96; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_ptype_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile = &__pyx_type_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile;
+  __pyx_type_10MDAnalysis_3lib_7formats_9libmdaxdr_TRRFile.tp_base = __pyx_ptype_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile;
+  if (PyType_Ready(&__pyx_type_10MDAnalysis_3lib_7formats_9libmdaxdr_TRRFile) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 349; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_type_10MDAnalysis_3lib_7formats_9libmdaxdr_TRRFile.tp_print = 0;
+  if (PyObject_SetAttrString(__pyx_m, "TRRFile", (PyObject *)&__pyx_type_10MDAnalysis_3lib_7formats_9libmdaxdr_TRRFile) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 349; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_ptype_10MDAnalysis_3lib_7formats_9libmdaxdr_TRRFile = &__pyx_type_10MDAnalysis_3lib_7formats_9libmdaxdr_TRRFile;
+  __pyx_type_10MDAnalysis_3lib_7formats_9libmdaxdr_XTCFile.tp_base = __pyx_ptype_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile;
+  if (PyType_Ready(&__pyx_type_10MDAnalysis_3lib_7formats_9libmdaxdr_XTCFile) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 561; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_type_10MDAnalysis_3lib_7formats_9libmdaxdr_XTCFile.tp_print = 0;
+  if (PyObject_SetAttrString(__pyx_m, "XTCFile", (PyObject *)&__pyx_type_10MDAnalysis_3lib_7formats_9libmdaxdr_XTCFile) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 561; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_ptype_10MDAnalysis_3lib_7formats_9libmdaxdr_XTCFile = &__pyx_type_10MDAnalysis_3lib_7formats_9libmdaxdr_XTCFile;
   if (PyType_Ready(&__pyx_type___pyx_array) < 0) {__pyx_filename = __pyx_f[2]; __pyx_lineno = 101; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_type___pyx_array.tp_print = 0;
   __pyx_array_type = &__pyx_type___pyx_array;
@@ -24536,7 +24520,7 @@ PyMODINIT_FUNC PyInit_xdrlib(void)
   if (__Pyx_patch_abc() < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   #endif
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":22
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":22
  * 
  * from libc.stdio cimport SEEK_SET, SEEK_CUR, SEEK_END
  * _whence_vals = {"SEEK_SET": SEEK_SET, "SEEK_CUR": SEEK_CUR, "SEEK_END": SEEK_END}             # <<<<<<<<<<<<<<
@@ -24560,7 +24544,7 @@ PyMODINIT_FUNC PyInit_xdrlib(void)
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_whence_vals, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 22; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":76
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":76
  *     ENOTFOUND = 12
  * 
  * error_message = ['OK', 'header', 'string', 'double', 'integer',             # <<<<<<<<<<<<<<
@@ -24611,7 +24595,7 @@ PyMODINIT_FUNC PyInit_xdrlib(void)
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_error_message, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 76; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":82
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":82
  * 
  * import cython
  * import numpy as np             # <<<<<<<<<<<<<<
@@ -24623,7 +24607,7 @@ PyMODINIT_FUNC PyInit_xdrlib(void)
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_np, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 82; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":83
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":83
  * import cython
  * import numpy as np
  * from os.path import exists             # <<<<<<<<<<<<<<
@@ -24644,7 +24628,7 @@ PyMODINIT_FUNC PyInit_xdrlib(void)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":84
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":84
  * import numpy as np
  * from os.path import exists
  * from collections import namedtuple             # <<<<<<<<<<<<<<
@@ -24665,7 +24649,7 @@ PyMODINIT_FUNC PyInit_xdrlib(void)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":86
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":86
  * from collections import namedtuple
  * 
  * np.import_array()             # <<<<<<<<<<<<<<
@@ -24674,7 +24658,7 @@ PyMODINIT_FUNC PyInit_xdrlib(void)
  */
   import_array();
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":89
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":89
  * 
  * ctypedef np.float32_t DTYPE_T
  * DTYPE = np.float32             # <<<<<<<<<<<<<<
@@ -24689,53 +24673,53 @@ PyMODINIT_FUNC PyInit_xdrlib(void)
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_DTYPE, __pyx_t_3) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 89; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":90
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":90
  * ctypedef np.float32_t DTYPE_T
  * DTYPE = np.float32
  * cdef int DIMS = 3             # <<<<<<<<<<<<<<
  * cdef int HASX = 1
  * cdef int HASV = 2
  */
-  __pyx_v_10MDAnalysis_3lib_7formats_6xdrlib_DIMS = 3;
+  __pyx_v_10MDAnalysis_3lib_7formats_9libmdaxdr_DIMS = 3;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":91
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":91
  * DTYPE = np.float32
  * cdef int DIMS = 3
  * cdef int HASX = 1             # <<<<<<<<<<<<<<
  * cdef int HASV = 2
  * cdef int HASF = 4
  */
-  __pyx_v_10MDAnalysis_3lib_7formats_6xdrlib_HASX = 1;
+  __pyx_v_10MDAnalysis_3lib_7formats_9libmdaxdr_HASX = 1;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":92
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":92
  * cdef int DIMS = 3
  * cdef int HASX = 1
  * cdef int HASV = 2             # <<<<<<<<<<<<<<
  * cdef int HASF = 4
  * 
  */
-  __pyx_v_10MDAnalysis_3lib_7formats_6xdrlib_HASV = 2;
+  __pyx_v_10MDAnalysis_3lib_7formats_9libmdaxdr_HASV = 2;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":93
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":93
  * cdef int HASX = 1
  * cdef int HASV = 2
  * cdef int HASF = 4             # <<<<<<<<<<<<<<
  * 
  * 
  */
-  __pyx_v_10MDAnalysis_3lib_7formats_6xdrlib_HASF = 4;
+  __pyx_v_10MDAnalysis_3lib_7formats_9libmdaxdr_HASF = 4;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":320
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":320
  * 
  *     @property
  *     def offsets(self):             # <<<<<<<<<<<<<<
  *         """get byte offsets from current xdr file
  * 
  */
-  __pyx_t_3 = __Pyx_GetNameInClass((PyObject *)__pyx_ptype_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile, __pyx_n_s_offsets); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 320; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __Pyx_GetNameInClass((PyObject *)__pyx_ptype_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile, __pyx_n_s_offsets); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 320; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":319
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":319
  *             raise IOError("XDR seek failed with system errno={}".format(ok))
  * 
  *     @property             # <<<<<<<<<<<<<<
@@ -24750,11 +24734,11 @@ PyMODINIT_FUNC PyInit_xdrlib(void)
   __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_property, __pyx_t_2, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 319; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile->tp_dict, __pyx_n_s_offsets, __pyx_t_3) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 320; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile->tp_dict, __pyx_n_s_offsets, __pyx_t_3) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 320; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  PyType_Modified(__pyx_ptype_10MDAnalysis_3lib_7formats_6xdrlib__XDRFile);
+  PyType_Modified(__pyx_ptype_10MDAnalysis_3lib_7formats_9libmdaxdr__XDRFile);
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":346
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":346
  * 
  * 
  * TRRFrame = namedtuple('TRRFrame', 'x v f box step time lmbda hasx hasv hasf')             # <<<<<<<<<<<<<<
@@ -24769,7 +24753,7 @@ PyMODINIT_FUNC PyInit_xdrlib(void)
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_TRRFrame, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 346; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":558
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":558
  * 
  * 
  * XTCFrame = namedtuple('XTCFrame', 'x box step time prec')             # <<<<<<<<<<<<<<
@@ -24784,7 +24768,7 @@ PyMODINIT_FUNC PyInit_xdrlib(void)
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_XTCFrame, __pyx_t_3) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 558; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "MDAnalysis/lib/formats/xdrlib.pyx":1
+  /* "MDAnalysis/lib/formats/libmdaxdr.pyx":1
  * # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-             # <<<<<<<<<<<<<<
  * # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
  * #
@@ -24920,11 +24904,11 @@ PyMODINIT_FUNC PyInit_xdrlib(void)
   __Pyx_XDECREF(__pyx_t_3);
   if (__pyx_m) {
     if (__pyx_d) {
-      __Pyx_AddTraceback("init MDAnalysis.lib.formats.xdrlib", __pyx_clineno, __pyx_lineno, __pyx_filename);
+      __Pyx_AddTraceback("init MDAnalysis.lib.formats.libmdaxdr", __pyx_clineno, __pyx_lineno, __pyx_filename);
     }
     Py_DECREF(__pyx_m); __pyx_m = 0;
   } else if (!PyErr_Occurred()) {
-    PyErr_SetString(PyExc_ImportError, "init MDAnalysis.lib.formats.xdrlib");
+    PyErr_SetString(PyExc_ImportError, "init MDAnalysis.lib.formats.libmdaxdr");
   }
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
@@ -28645,7 +28629,7 @@ __pyx_fail:
     return result;
 }
 
-static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn___pyx_t_10MDAnalysis_3lib_7formats_6xdrlib_DTYPE_T(PyObject *obj) {
+static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn___pyx_t_10MDAnalysis_3lib_7formats_9libmdaxdr_DTYPE_T(PyObject *obj) {
     __Pyx_memviewslice result = { 0, 0, { 0 }, { 0 }, { 0 } };
     __Pyx_BufFmt_StackElem stack[1];
     int axes_specs[] = { (__Pyx_MEMVIEW_DIRECT | __Pyx_MEMVIEW_FOLLOW), (__Pyx_MEMVIEW_DIRECT | __Pyx_MEMVIEW_CONTIG) };
@@ -28656,7 +28640,7 @@ static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_d_dc_n
     }
     retcode = __Pyx_ValidateAndInit_memviewslice(axes_specs, __Pyx_IS_C_CONTIG,
                                                  (PyBUF_C_CONTIGUOUS | PyBUF_FORMAT | PyBUF_WRITABLE), 2,
-                                                 &__Pyx_TypeInfo_nn___pyx_t_10MDAnalysis_3lib_7formats_6xdrlib_DTYPE_T, stack,
+                                                 &__Pyx_TypeInfo_nn___pyx_t_10MDAnalysis_3lib_7formats_9libmdaxdr_DTYPE_T, stack,
                                                  &result, obj);
     if (unlikely(retcode == -1))
         goto __pyx_fail;

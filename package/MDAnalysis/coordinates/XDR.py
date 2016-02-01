@@ -62,7 +62,7 @@ def read_numpy_offsets(filename):
 
 
 class XDRBaseReader(base.Reader):
-    """Base class for xdrlib file formats xtc and trr"""
+    """Base class for libmdaxdr file formats xtc and trr"""
     def __init__(self, filename, convert_units=True, sub=None,
                  refresh_offsets=False, **kwargs):
         super(XDRBaseReader, self).__init__(filename,
@@ -163,7 +163,7 @@ class XDRBaseReader(base.Reader):
         try:
             self._xdr.seek(i)
             timestep = self._read_next_timestep()
-        except RuntimeError:
+        except IOError:
             warnings.warn('seek failed, recalculating offsets and retrying')
             offsets = self._xdr.calc_offsets()
             self._xdr.set_offsets(offsets)
@@ -191,7 +191,7 @@ class XDRBaseReader(base.Reader):
 
 
 class XDRBaseWriter(base.Writer):
-    """Base class for xdrlib file formats xtc and trr"""
+    """Base class for libmdaxdr file formats xtc and trr"""
 
     def __init__(self, filename, n_atoms, convert_units=True, **kwargs):
         self.filename = filename
