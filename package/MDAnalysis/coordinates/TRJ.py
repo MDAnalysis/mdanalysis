@@ -408,7 +408,9 @@ class NCDFReader(base.Reader):
     format = ['NCDF', 'NC']
     multiframe = True
     version = "1.0"
-    units = {'time': 'ps', 'length': 'Angstrom', 'velocity': 'Angstrom/ps',
+    units = {'time': 'ps',
+             'length': 'Angstrom',
+             'velocity': 'Angstrom/ps',
              'force': 'kcal/(mol*Angstrom)'}
     _Timestep = Timestep
 
@@ -416,13 +418,13 @@ class NCDFReader(base.Reader):
         try:
             import netCDF4 as netcdf
         except ImportError:
-            logger.fatal(
-                "netcdf4-python with the netCDF and HDF5 libraries must be installed for the AMBER ncdf Reader.")
-            logger.fatal("See installation instructions at https://github.com/MDAnalysis/mdanalysis/wiki/netcdf")
-            raise ImportError("netCDF4 package missing.\n"
-                              "netcdf4-python with the netCDF and HDF5 libraries must be installed for the AMBER ncdf "
-                              "Reader.\n"
-                              "See installation instructions at https://github.com/MDAnalysis/mdanalysis/wiki/netcdf")
+            errmsg = ("netCDF4 package missing.\n"
+                      "netcdf4-python with the netCDF and HDF5 libraries must"
+                      " be installed for the AMBER ncdf Reader.\n"
+                      "See installation instructions at "
+                      "https://github.com/MDAnalysis/mdanalysis/wiki/netcdf")
+            logger.fatal(errmsg)
+            raise ImportError(errmsg)
 
         super(NCDFReader, self).__init__(filename, **kwargs)
 
@@ -471,9 +473,10 @@ class NCDFReader(base.Reader):
             raise NotImplementedError("scale_factors are not implemented")
         if n_atoms is not None:
             if n_atoms != self.n_atoms:
-                raise ValueError("Supplied n_atoms (%d) != natom from ncdf (%d). "
-                                 "Note: n_atoms can be None and then the ncdf value is used!" % (
-                                 n_atoms, self.n_atoms))
+                raise ValueError(
+                    "Supplied n_atoms ({0}) != natom from ncdf ({1}). "
+                    "Note: n_atoms can be None and then the ncdf value is used!"
+                    "".format(n_atoms, self.n_atoms))
 
         self.has_velocities = 'velocities' in self.trjfile.variables
         self.has_forces = 'forces' in self.trjfile.variables
@@ -481,8 +484,11 @@ class NCDFReader(base.Reader):
         self.periodic = 'cell_lengths' in self.trjfile.variables
         self._current_frame = 0
 
-        self.ts = self._Timestep(self.n_atoms, velocities=self.has_velocities,
-                                 forces=self.has_forces, **self._ts_kwargs)
+        self.ts = self._Timestep(self.n_atoms,
+                                 velocities=self.has_velocities,
+                                 forces=self.has_forces,
+                                 reader=self,  # for dt
+                                 **self._ts_kwargs)
 
         # load first data frame
         self._read_frame(0)
@@ -492,11 +498,9 @@ class NCDFReader(base.Reader):
 
         if self.trjfile is None:
             raise IOError("Trajectory is closed")
-        if np.dtype(type(frame)) != np.dtype(int):
-            # convention... for netcdf could also be a slice
-            raise TypeError("frame must be a positive integer")
         if frame >= self.n_frames or frame < 0:
-            raise IndexError("frame index must be 0 <= frame < {0}".format(self.n_frames))
+            raise IndexError("frame index must be 0 <= frame < {0}"
+                             "".format(self.n_frames))
         # note: self.trjfile.variables['coordinates'].shape == (frames, n_atoms, 3)
         ts._pos[:] = self.trjfile.variables['coordinates'][frame]
         ts.time = self.trjfile.variables['time'][frame]
@@ -530,6 +534,11 @@ class NCDFReader(base.Reader):
             return self._read_frame(self._current_frame + 1)
         except IndexError:
             raise IOError
+
+    def _get_dt(self):
+        t1 = self.trjfile.variables['time'][1]
+        t0 = self.trjfile.variables['time'][0]
+        return t1 - t0
 
     def close(self):
         """Close trajectory; any further access will raise an :exc:`IOError`"""
