@@ -29,15 +29,17 @@ apply method to apply the Selection to the AtomGroup.
 
 This is all invisible to the user through ag.select_atoms
 """
+import six
+from six.moves import zip
 
 import collections
 import re
+import functools
+import warnings
+
 import numpy as np
 from numpy.lib.utils import deprecate
 from Bio.KDTree import KDTree
-import warnings
-import six
-from six.moves import zip
 
 from MDAnalysis.core import flags
 from ..lib import distances
@@ -909,7 +911,7 @@ class SameSelection(Selection):
         if self.prop == 'fragment':
             # Combine all fragments together, then check where group
             # indices are same as fragment(s) indices
-            allfrags = reduce(lambda x, y: x + y, res.fragments)
+            allfrags = functools.reduce(lambda x, y: x + y, res.fragments)
 
             mask = np.in1d(group.indices, allfrags.indices)
             return unique(group[mask])

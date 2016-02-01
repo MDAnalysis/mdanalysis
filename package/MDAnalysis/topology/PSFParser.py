@@ -61,7 +61,7 @@ class PSFParser(TopologyReader):
         :Returns: MDAnalysis internal *structure* dict as defined here.
         """
         # Open and check psf validity
-        with openany(self.filename, 'r') as psffile:
+        with openany(self.filename, 'rt') as psffile:
             header = next(psffile)
             if header[:3] != "PSF":
                 err = ("{0} is not valid PSF file (header = {1})"

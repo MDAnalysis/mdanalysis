@@ -261,10 +261,10 @@ class _StreamData(object):
     }
 
     def __init__(self):
-        self.buffers = dict(
-            (name, "".join(open(fn).readlines())) for name, fn in six.iteritems(self.filenames))
-        self.filenames['XYZ_PSF'] = "bogus/path/mini.psf"
-        self.buffers['XYZ_PSF'] = """\
+        self.buffers = {name: "".join(open(fn).readlines())
+                        for name, fn in six.iteritems(self.filenames)}
+        self.filenames['XYZ_PSF'] = u"bogus/path/mini.psf"
+        self.buffers['XYZ_PSF'] = u"""\
 PSF CMAP
 
       1 !NTITLE
