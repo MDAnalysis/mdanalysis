@@ -294,13 +294,13 @@ class MOL2Writer(base.Writer):
         """Write object *obj* at current trajectory frame to file.
 
         *obj* can be a selection (i.e. a
-        :class:`~MDAnalysis.core.AtomGroup.AtomGroup`) or a whole
-        :class:`~MDAnalysis.core.AtomGroup.Universe`.
+        :class:`~MDAnalysis.core.groups.AtomGroup`) or a whole
+        :class:`~MDAnalysis.core.universe.Universe`.
 
         :Arguments:
           *obj*
-            :class:`~MDAnalysis.core.AtomGroup.AtomGroup` or
-            :class:`~MDAnalysis.core.AtomGroup.Universe`
+            :class:`~MDAnalysis.core.groups.AtomGroup` or
+            :class:`~MDAnalysis.core.universe.Universe`
         """
 
         start, step = self.start, self.step
@@ -324,8 +324,8 @@ class MOL2Writer(base.Writer):
     def write_next_timestep(self, obj):
         """Write a new frame to the MOL2 file.
 
-        *obj* can be a :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
-        or a :class:`~MDAnalysis.core.AtomGroup.Universe`.
+        *obj* can be a :class:`~MDAnalysis.core.groups.AtomGroup`
+        or a :class:`~MDAnalysis.core.universe.Universe`.
         """
         block = self.encode_block(obj)
         self.file.writelines(block)

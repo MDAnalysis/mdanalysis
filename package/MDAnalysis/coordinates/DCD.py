@@ -502,7 +502,7 @@ class DCDReader(base.Reader):
 
         :Arguments:
             *asel*
-               :class:`~MDAnalysis.core.AtomGroup.AtomGroup` object
+               :class:`~MDAnalysis.core.groups.AtomGroup` object
             *start, stop, skip*
                range of trajectory to access, start and stop are inclusive
             *format*

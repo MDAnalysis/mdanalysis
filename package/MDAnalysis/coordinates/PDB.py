@@ -32,7 +32,7 @@ recognized; the only difference is thath the single-frame PDB is represented as
 a trajectory with only one frame.
 
 In order to write a selection to a PDB file one typically uses the
-:meth:`MDAnalysis.core.AtomGroup.AtomGroup.write` method of the selection::
+:meth:`MDAnalysis.core.groups.AtomGroup.write` method of the selection::
 
   calphas = universe.select_atoms("name CA")
   calphas.write("calpha_only.pdb")
@@ -71,7 +71,7 @@ The *default for MDAnalysis* is to use the
    MDAnalysis.core.flags["permissive_pdb_reader"] = True
 
 On a case-by-case basis one kind of reader can be selected with the
-*permissive* keyword to :class:`~MDAnalysis.core.AtomGroup.Universe`, e.g. ::
+*permissive* keyword to :class:`~MDAnalysis.core.universe.Universe`, e.g. ::
 
   u = MDAnalysis.Universe(PDB, permissive=False)
 
@@ -90,7 +90,7 @@ simulations comes under the names :class:`PrimitivePDBReader` and
 typical enhancements such as 4-letter resids (introduced by CHARMM/NAMD). The
 "primitive PDB Reader/Writer" are the *default* in MDAnalysis (equivalent to
 supplying the *permissive* = ``True`` keyword to
-:class:`~MDAnalysis.core.AtomGroup.Universe`).
+:class:`~MDAnalysis.core.universe.Universe`).
 
 The :class:`PrimitivePDBReader` can read multi-frame PDB files and represents
 them as a trajectory. The :class:`PrimitivePDBWriter` can write single and
@@ -119,14 +119,14 @@ Similarly, writing only a protein::
   pdb.close()
 
 A single frame can be written with the
-:meth:`~MDAnalysis.core.AtomGroup.AtomGroup.write` method of any
-:class:`~MDAnalysis.core.AtomGroup.AtomGroup`::
+:meth:`~MDAnalysis.core.groups.AtomGroup.write` method of any
+:class:`~MDAnalysis.core.groups.AtomGroup`::
 
    protein = u.select_atoms("protein")
    protein.write("protein.pdb")
 
 Alternatively, get the single frame writer and supply the
-:class:`~MDAnalysis.core.AtomGroup.AtomGroup`::
+:class:`~MDAnalysis.core.groups.AtomGroup`::
 
   pdb = MDAnalysis.Writer("protein.pdb")
   protein = u.select_atoms("protein")
@@ -165,7 +165,7 @@ Biopython-based :class:`PDBReader` has the advantage that it implements the
 performance. It is also difficult to write out selections using this
 implementation (:class:`PDBWriter`) and multi frame PDB files are not
 implemented. The Biopython Reader/Writer can be selected when loading data into
-a :class:`~MDAnalysis.core.AtomGroup.Universe` by providing the keyword
+a :class:`~MDAnalysis.core.universe.Universe` by providing the keyword
 *permissive* = ``False``.
 
 The Biopython PDB parser :class:`Bio.PDB.PDBParser` is fairly strict and even
@@ -220,7 +220,7 @@ from ..core import flags
 from ..lib import util
 from . import base
 from ..topology.core import guess_atom_element
-from ..core.AtomGroup import Universe
+from ..core.universe import Universe
 from ..exceptions import NoDataError
 
 
@@ -302,8 +302,8 @@ class PDBWriter(base.Writer):
        The standard PDBWriter can only write the *whole system*.  In
        order to write a selection, use the :class:`PrimitivePDBWriter` ,
        which happens automatically when the
-       :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.write` method of a
-       :class:`~MDAnalysis.core.AtomGroup.AtomGroup` instance is used.
+       :meth:`~MDAnalysis.core.groups.AtomGroup.write` method of a
+       :class:`~MDAnalysis.core.groups.AtomGroup` instance is used.
     """
     format = 'PDB'
     units = {'time': None, 'length': 'Angstrom'}
@@ -800,7 +800,7 @@ class PrimitivePDBWriter(base.Writer):
         Raises :exc:`ValueError` if the coordinates fail the check.
         """
         atoms = self.obj.atoms  # make sure to use atoms (Issue 46)
-        coor = atoms.coordinates()  # can write from selection == Universe (Issue 49)
+        coor = atoms.positions # can write from selection == Universe (Issue 49)
 
         # check if any coordinates are illegal (coordinates are already in Angstroem per package default)
         if self.has_valid_coordinates(self.pdb_coor_limits, coor):
@@ -896,8 +896,8 @@ class PrimitivePDBWriter(base.Writer):
         Attributes initialized/updated:
 
         * :attr:`PrimitivePDBWriter.obj` (the entity that provides topology information *and*
-          coordinates, either a :class:`~MDAnalysis.core.AtomGroup.AtomGroup` or a whole
-          :class:`~MDAnalysis.core.AtomGroup.Universe`)
+          coordinates, either a :class:`~MDAnalysis.core.groups.AtomGroup` or a whole
+          :class:`~MDAnalysis.core.universe.Universe`)
         * :attr:`PrimitivePDBWriter.trajectory` (the underlying trajectory
           :class:`~MDAnalysis.coordinates.base.Reader`)
         * :attr:`PrimitivePDBWriter.timestep` (the underlying trajectory
@@ -937,17 +937,17 @@ class PrimitivePDBWriter(base.Writer):
         """Write object *obj* at current trajectory frame to file.
 
         *obj* can be a selection (i.e. a
-        :class:`~MDAnalysis.core.AtomGroup.AtomGroup`) or a whole
-        :class:`~MDAnalysis.core.AtomGroup.Universe`.
+        :class:`~MDAnalysis.core.groups.AtomGroup`) or a whole
+        :class:`~MDAnalysis.core.universe.Universe`.
 
-        The last letter of the :attr:`~MDAnalysis.core.AtomGroup.Atom.segid` is
+        The last letter of the :attr:`~MDAnalysis.core.groups.Atom.segid` is
         used as the PDB chainID (but see :meth:`~PrimitivePDBWriter.ATOM` for
         details).
 
         :Arguments:
           *obj*
-            :class:`~MDAnalysis.core.AtomGroup.AtomGroup` or
-            :class:`~MDAnalysis.core.AtomGroup.Universe`
+            :class:`~MDAnalysis.core.groups.AtomGroup` or
+            :class:`~MDAnalysis.core.universe.Universe`
         """
 
         self._update_frame(obj)
@@ -961,8 +961,8 @@ class PrimitivePDBWriter(base.Writer):
     def write_all_timesteps(self, obj):
         """Write all timesteps associated with *obj* to the PDB file.
 
-        *obj* can be a :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
-        or a :class:`~MDAnalysis.core.AtomGroup.Universe`.
+        *obj* can be a :class:`~MDAnalysis.core.groups.AtomGroup`
+        or a :class:`~MDAnalysis.core.universe.Universe`.
 
         The method writes the frames from the one specified as *start* until
         the end, using a step of *skip* (*start* and *skip* are set in the
@@ -1019,7 +1019,7 @@ class PrimitivePDBWriter(base.Writer):
 
            Before using this method with another :class:`base.Timestep` in the *ts*
            argument, :meth:`PrimitivePDBWriter._update_frame` *must* be called
-           with the :class:`~MDAnalysis.core.AtomGroup.AtomGroup.Universe` as
+           with the :class:`~MDAnalysis.core.groups.AtomGroup.Universe` as
            its argument so that topology information can be gathered.
         '''
         if ts is None:
@@ -1074,9 +1074,10 @@ class PrimitivePDBWriter(base.Writer):
             self.MODEL(self.frames_written + 1)
 
         for i, atom in enumerate(atoms):
-            # TODO Jan: see description in ATOM for why this check has to be made
-            if not atom.bfactor:
+            if not hasattr(atom, 'bfactor'):
                 atom.bfactor = 0.
+            if not hasattr(atom, 'segid'):
+                atom.segid = 'A'
             self.ATOM(serial=i + 1, name=atom.name.strip(), resName=atom.resname.strip(),
                       resSeq=atom.resid, chainID=atom.segid.strip(), segID=atom.segid.strip(),
                       tempFactor=atom.bfactor, altLoc=atom.altLoc,
