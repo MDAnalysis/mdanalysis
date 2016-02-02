@@ -64,9 +64,9 @@ class CRDReader(base.SingleFrameReader):
                 # process coordinates
                 try:
                     if extended:
-                        coords_list.append(np.array(list(map(float, line[45:100].split()[0:3]))))
+                        coords_list.append(np.array(line[45:100].split()[:3], dtype='f4'))
                     else:
-                        coords_list.append(np.array(list(map(float, line[20:50].split()[0:3]))))
+                        coords_list.append(np.array(line[20:50].split()[:3], dtype='f4'))
                 except:
                     raise ValueError("Check CRD format at line {0}: {1}"
                                      "".format(linenum, line.rstrip()))
