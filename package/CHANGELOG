@@ -35,6 +35,9 @@ Changes
 
   * xdrlib has been ported to cython. (Issue #441)
   * util.NamedStream no longer inherits from basestring (Issue #649)
+  * Short TRZ titles are striped from trailing spaces. A friendlier error
+    message is raised when the TRZ writer is asked to write a title longer
+    than 80 characters. (Issue #689)
 
 Fixes
   
@@ -47,6 +50,7 @@ Fixes
   * nucleic selection will now detect nucleic residue names suffixed with 3 or 5
     (Issue #461)
   * Fixed Reader returning all frames with stop in slice was 0 (Issue #672)
+  * Fixed NCDFReader not reading dt (Issue #676)
 
 
 01/16/16 tyler.je.reddy, kain88-de, richardjgowers, manuel.nuno.melo,

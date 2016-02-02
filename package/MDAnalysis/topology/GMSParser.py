@@ -57,7 +57,7 @@ class GMSParser(TopologyReader):
     def parse(self):
         """Read list of atoms from a GAMESS file."""
 
-        with openany(self.filename, 'r') as inf:
+        with openany(self.filename, 'rt') as inf:
             natoms = 0
             while True:
                 line = inf.readline()

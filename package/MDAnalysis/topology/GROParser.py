@@ -57,7 +57,7 @@ class GROParser(TopologyReader):
         """
         segid = "SYSTEM"
         atoms = []
-        with openany(self.filename, "r") as grofile:
+        with openany(self.filename, "rt") as grofile:
             grofile.readline()
             natoms = int(grofile.readline())
             for atom_iter in range(natoms):

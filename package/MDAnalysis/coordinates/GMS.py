@@ -66,7 +66,7 @@ class GMSReader(base.Reader):
         super(GMSReader, self).__init__(outfilename, **kwargs)
 
         # the filename has been parsed to be either b(g)zipped or not
-        self.outfile = util.anyopen(self.filename, 'r')
+        self.outfile = util.anyopen(self.filename, 'rt')
 
         # note that, like for xtc and trr files, _n_atoms and _n_frames are used quasi-private variables
         # to prevent the properties being recalculated
@@ -242,7 +242,7 @@ class GMSReader(base.Reader):
             # must check; otherwise might segmentation fault
             raise IOError(errno.ENOENT, 'GMS file not found', self.filename)
 
-        self.outfile = util.anyopen(self.filename, 'r')
+        self.outfile = util.anyopen(self.filename, 'rt')
 
         # reset ts
         ts = self.ts
