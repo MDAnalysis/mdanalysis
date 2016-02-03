@@ -137,9 +137,9 @@ class PQRWriter(base.Writer):
     """Write a single coordinate frame in whitespace-separated PQR format.
 
     Charges ("Q") are taken from the
-    :attr:`MDAnalysis.core.AtomGroup.Atom.charge` attribute while
+    :attr:`MDAnalysis.core.groups.Atom.charge` attribute while
     radii are obtaine from the
-    :attr:`MDAnalysis.core.AtomGroup.Atom.radius` attribute.
+    :attr:`MDAnalysis.core.groups.Atom.radius` attribute.
 
     * If the segid is 'SYSTEM' then it will be set to the empty
       string. Otherwise the first letter will be used as the chain ID.

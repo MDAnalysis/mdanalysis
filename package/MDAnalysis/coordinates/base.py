@@ -54,8 +54,8 @@ module. The derived classes must follow the Trajectory API in
       .. Note::
 
          Normally one does not directly access :attr:`_pos` but uses
-         the :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.coordinates`
-         method of an :class:`~MDAnalysis.core.AtomGroup.AtomGroup` but
+         the :meth:`~MDAnalysis.core.groups.AtomGroup.coordinates`
+         method of an :class:`~MDAnalysis.core.groups.AtomGroup` but
          sometimes it can be faster to directly use the raw
          coordinates. Any changes to this array are immediately
          reflected in atom positions. If the frame is written to a new
@@ -73,8 +73,8 @@ module. The derived classes must follow the Trajectory API in
 
          Normally velocities are accessed through the
          :attr:`velocities` or the
-         :meth:`~MDAnalysis.core.AtomGroup.AtomGroup.velocities`
-         method of an :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
+         :meth:`~MDAnalysis.core.groups.AtomGroup.velocities`
+         method of an :class:`~MDAnalysis.core.groups.AtomGroup`
 
          :attr:`~Timestep._velocities` only exists if the :attr:`has_velocities`
          flag is True
@@ -332,7 +332,7 @@ class Timestep(object):
 
            return an array of coordinates, where start, stop and skip
            correspond to atom indices,
-           :attr:`MDAnalysis.core.AtomGroup.Atom.index` (0-based)
+           :attr:`MDAnalysis.core.groups.Atom.index` (0-based)
         """
         if isinstance(atoms, int):
             return self._pos[atoms]
@@ -1495,7 +1495,7 @@ class Writer(IObase):
     def write(self, obj):
         """Write current timestep, using the supplied *obj*.
 
-        The argument should be a :class:`~MDAnalysis.core.AtomGroup.AtomGroup` or
+        The argument should be a :class:`~MDAnalysis.core.groups.AtomGroup` or
         a :class:`~MDAnalysis.Universe` or a :class:`Timestep` instance.
 
         .. Note::

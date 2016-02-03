@@ -36,7 +36,7 @@ the unit from the file. By default we are assuming that the unit for
 length is the ångström and for the time is the femtosecond. If this is
 not true then the user *should supply the appropriate units* in the
 keywords *timeunit* and/or *lengthunit* to :class:`DCDWriter` and
-:class:`~MDAnalysis.core.AtomGroup.Universe` (which then calls
+:class:`~MDAnalysis.core.universe.Universe` (which then calls
 :class:`DCDReader`).
 
 .. Rubric:: Example: Loading a LAMMPS simulation

@@ -28,6 +28,8 @@ from . import flags
 from ..lib.util import cached
 from ..exceptions import NoDataError
 from .topologyobjects import TopologyGroup
+from . import selection
+from . import flags
 
 
 class TopologyAttr(object):
@@ -155,7 +157,7 @@ class Resindices(TopologyAttr):
     """
     attrname = 'resindices'
     singular = 'resindex'
-    target_levels = ['residue']
+    target_levels = ['atom', 'residue']
 
     def __init__(self):
         pass
@@ -199,7 +201,7 @@ class Segindices(TopologyAttr):
     """
     attrname = 'segindices'
     singular = 'segindex'
-    target_levels = ['segment']
+    target_levels = ['atom', 'residue', 'segment']
 
     def __init__(self):
         pass
@@ -270,6 +272,47 @@ class Atomnames(AtomAttr):
     """
     attrname = 'names'
     singular = 'name'
+    transplants = defaultdict(list)
+
+    def getattr__(self, name):
+        try:
+            return self._get_named_atom(name)
+        except selection.SelectionError:
+            raise AttributeError("'{0}' object has no attribute '{1}'".format(
+                    self.__class__.__name__, name))
+
+    transplants['atomgroup'].append(
+        ('__getattr__', getattr__))
+
+    transplants['residue'].append(
+        ('__getattr__', getattr__))
+
+    def _get_named_atom(self, name):
+        """Get all atoms with name *name* in the current AtomGroup.
+
+        For more than one atom it returns a list of :class:`Atom`
+        instance. A single :class:`Atom` is returned just as such. If
+        no atoms are found, a :exc:`SelectionError` is raised.
+
+        .. versionadded:: 0.9.2
+        """
+        # There can be more than one atom with the same name
+        atomlist = self.atoms[self.atoms.names == name]
+        if len(atomlist) == 0:
+            raise selection.SelectionError(
+                "No atoms with name '{0}'".format(name))
+        elif len(atomlist) == 1:
+            # XXX: keep this, makes more sense for names
+            return atomlist[0]
+        else:
+            # XXX: but inconsistent (see residues and Issue 47)
+            return atomlist
+
+    transplants['atomgroup'].append(
+        ('_get_named_atom', _get_named_atom))
+
+    transplants['residue'].append(
+        ('_get_named_atom', _get_named_atom))
 
 
 #TODO: update docs to property doc
@@ -310,7 +353,6 @@ class Tempfactors(AtomAttr):
 
 
 #TODO: need to add cacheing
-#TODO: update docs to property doc
 class Masses(AtomAttr):
     attrname = 'masses'
     singular = 'mass'
@@ -328,7 +370,6 @@ class Masses(AtomAttr):
     singledoc = """Mass of the component."""
 
     def get_residues(self, rg):
-
         resatoms = self.top.tt.residues2atoms_2d(rg._ix)
 
         if isinstance(rg._ix, int):
@@ -343,7 +384,6 @@ class Masses(AtomAttr):
         return masses
 
     def get_segments(self, sg):
-
         segatoms = self.top.tt.s2a_2d(sg._ix)
 
         if isinstance(sg._ix, int):
@@ -357,28 +397,28 @@ class Masses(AtomAttr):
 
         return masses
 
-    def center_of_mass(ag, pbc=False):
+    def center_of_mass(atomgroup, **kwargs):
         """Center of mass of the AtomGroup
 
         Parameters
-        --------
-        pbc : bool
-            if ``True``, move all atoms within the primary unit cell before
-            calculation
+        ----------
+        pbc : bool, optional
+            If ``True``, move all atoms within the primary unit cell before
+            calculation. [``False``]
 
-        .. note:: The :class:`MDAnalysis.core.flags` flag ``use_pbc`` when set
-                  to ``True`` allows the *pbc* flag to be used by default.
+        .. note::
+            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
+            ``True`` allows the *pbc* flag to be used by default.
 
         .. versionchanged:: 0.8 Added `pbc` parameter
         """
-        masses = ag.masses
-
         pbc = kwargs.pop('pbc', flags['use_pbc'])
+        masses = atomgroup.masses
 
         if pbc:
-            positions = ag.pack_into_box(inplace=False)
+            positions = atomgroup.pack_into_box(inplace=False)
         else:
-            positions = ag.positions
+            positions = atomgroup.positions
 
         return np.sum(positions * masses[:, np.newaxis],
                       axis=0) / masses.sum()
@@ -387,7 +427,7 @@ class Masses(AtomAttr):
         ('center_of_mass', center_of_mass))
 
     def total_mass(group):
-        """Total mass of this Group.
+        """Total mass of the Group.
         
         """
         masses = group.masses
@@ -396,27 +436,31 @@ class Masses(AtomAttr):
     transplants['group'].append(
         ('total_mass', total_mass))
 
-    def moment_of_inertia(self, **kwargs):
-        """Tensor of inertia as 3x3 numpy array.
+    def moment_of_inertia(atomgroup, **kwargs):
+        """Tensor moment of inertia relative to center of mass as 3x3 numpy
+        array.
 
-        :Keywords:
-          *pbc*
-            ``True``: Move all atoms within the primary unit cell before calculation [``False``]
+        Parameters
+        ----------
+        pbc : bool, optional
+            If ``True``, move all atoms within the primary unit cell before
+            calculation. [``False``]
 
-        .. Note::
-            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to ``True`` allows the *pbc*
-            flag to be used by default.
+        .. note::
+            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
+            ``True`` allows the *pbc* flag to be used by default.
 
         .. versionchanged:: 0.8 Added *pbc* keyword
         """
-        pbc = kwargs.pop('pbc', MDAnalysis.core.flags['use_pbc'])
+        pbc = kwargs.pop('pbc', flags['use_pbc'])
+
         # Convert to local coordinates
         if pbc:
-            pos = self.pack_into_box(inplace=False) - self.center_of_mass(pbc=True)
+            pos = atomgroup.pack_into_box(inplace=False) - atomgroup.center_of_mass(pbc=True)
         else:
-            pos = self.positions - self.center_of_mass(pbc=False)
+            pos = atomgroup.positions - atomgroup.center_of_mass(pbc=False)
 
-        masses = self.masses
+        masses = atomgroup.masses
         # Create the inertia tensor
         # m_i = mass of atom i
         # (x_i, y_i, z_i) = pos of atom i
@@ -441,6 +485,155 @@ class Masses(AtomAttr):
         tens[2][2] = (masses * (pos[:,0] * pos[:,0] + pos[:,1] * pos[:,1])).sum()
 
         return tens
+
+    transplants['atomgroup'].append(
+        ('moment_of_inertia', moment_of_inertia))
+
+    def radius_of_gyration(atomgroup, **kwargs):
+        """Radius of gyration.
+
+        Parameters
+        ----------
+        pbc : bool, optional
+            If ``True``, move all atoms within the primary unit cell before
+            calculation. [``False``]
+
+        .. note::
+            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
+            ``True`` allows the *pbc* flag to be used by default.
+
+        .. versionchanged:: 0.8 Added *pbc* keyword
+        """
+        pbc = kwargs.pop('pbc', flags['use_pbc'])
+        masses = atomgroup.masses
+        if pbc:
+            recenteredpos = atomgroup.pack_into_box(inplace=False) - atomgroup.center_of_mass(pbc=True)
+        else:
+            recenteredpos = atomgroup.positions - atomgroup.center_of_mass(pbc=False)
+        rog_sq = np.sum(masses * np.sum(np.power(recenteredpos, 2), axis=1)) / atomgroup.total_mass()
+        return np.sqrt(rog_sq)
+
+    transplants['atomgroup'].append(
+        ('radius_of_gyration', radius_of_gyration))
+
+    def shape_parameter(atomgroup, **kwargs):
+        """Shape parameter.
+
+        See [Dima2004]_ for background information.
+
+        Parameters
+        ----------
+        pbc : bool, optional
+            If ``True``, move all atoms within the primary unit cell before
+            calculation. [``False``]
+
+        .. note::
+            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
+            ``True`` allows the *pbc* flag to be used by default.
+
+        .. [Dima2004] Dima, R. I., & Thirumalai, D. (2004). Asymmetry in the
+                  shapes of folded and denatured states of proteins. *J
+                  Phys Chem B*, 108(21),
+                  6564-6570. doi:`10.1021/jp037128y`_
+
+        .. versionadded:: 0.7.7
+        .. versionchanged:: 0.8 Added *pbc* keyword
+        """
+        pbc = kwargs.pop('pbc', flags['use_pbc'])
+        masses = atomgroup.masses
+        if pbc:
+            recenteredpos = atomgroup.pack_into_box(inplace=False) - atomgroup.center_of_mass(pbc=True)
+        else:
+            recenteredpos = atomgroup.positions - atomgroup.center_of_mass(pbc=False)
+        tensor = np.zeros((3, 3))
+        for x in xrange(recenteredpos.shape[0]):
+            tensor += masses[x] * np.outer(recenteredpos[x, :],
+                                              recenteredpos[x, :])
+        tensor /= atomgroup.total_mass()
+        eig_vals = np.linalg.eigvalsh(tensor)
+        shape = 27.0 * np.prod(eig_vals - np.mean(eig_vals)) / np.power(np.sum(eig_vals), 3)
+        return shape
+
+    transplants['atomgroup'].append(
+        ('shape_parameter', shape_parameter))
+
+    def asphericity(atomgroup, **kwargs):
+        """Asphericity.
+
+        See [Dima2004]_ for background information.
+
+        Parameters
+        ----------
+        pbc : bool, optional
+            If ``True``, move all atoms within the primary unit cell before
+            calculation. [``False``]
+
+        .. note::
+            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
+            ``True`` allows the *pbc* flag to be used by default.
+
+        .. [Dima2004] Dima, R. I., & Thirumalai, D. (2004). Asymmetry in the
+                  shapes of folded and denatured states of proteins. *J
+                  Phys Chem B*, 108(21),
+                  6564-6570. doi:`10.1021/jp037128y`_
+
+        .. versionadded:: 0.7.7
+        .. versionchanged:: 0.8 Added *pbc* keyword
+        """
+        pbc = kwargs.pop('pbc', MDAnalysis.core.flags['use_pbc'])
+        masses = atomgroup.masses
+        if pbc:
+            recenteredpos = atomgroup.pack_into_box(inplace=False) - atomgroup.center_of_mass(pbc=True)
+        else:
+            recenteredpos = atomgroup.positions - atomgroup.center_of_mass(pbc=False)
+        tensor = np.zeros((3, 3))
+        for x in xrange(recenteredpos.shape[0]):
+            tensor += masses[x] * np.outer(recenteredpos[x, :],
+                                              recenteredpos[x, :])
+        tensor /= atomgroup.total_mass()
+        eig_vals = np.linalg.eigvalsh(tensor)
+        shape = (3.0 / 2.0) * np.sum(np.power(eig_vals - np.mean(eig_vals), 2)) / np.power(
+            np.sum(eig_vals), 2)
+        return shape
+
+    transplants['atomgroup'].append(
+        ('asphericity', asphericity))
+
+    def principal_axes(atomgroup, **kwargs):
+        """Calculate the principal axes from the moment of inertia.
+
+        e1,e2,e3 = AtomGroup.principal_axes()
+
+        The eigenvectors are sorted by eigenvalue, i.e. the first one
+        corresponds to the highest eigenvalue and is thus the first principal axes.
+
+        Parameters
+        ----------
+        pbc : bool, optional
+            If ``True``, move all atoms within the primary unit cell before
+            calculation. [``False``]
+
+        .. note::
+            The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
+            ``True`` allows the *pbc* flag to be used by default.
+
+        Returns
+        -------
+        axis_vectors : array
+            3 x 3 array with ``v[0]`` as first, ``v[1]`` as second, and
+            ``v[2]`` as third eigenvector.
+
+        .. versionchanged:: 0.8 Added *pbc* keyword
+        """
+        pbc = kwargs.pop('pbc', MDAnalysis.core.flags['use_pbc'])
+        if pbc:
+            eigenval, eigenvec = eig(atomgroup.moment_of_inertia(pbc=True))
+        else:
+            eigenval, eigenvec = eig(atomgroup.moment_of_inertia(pbc=False))
+        # Sort
+        indices = np.argsort(eigenval)
+        # Return transposed in more logical form. See Issue 33.
+        return eigenvec[:, indices].T
 
 
 #TODO: need to add cacheing
@@ -538,6 +731,48 @@ class Resnames(ResidueAttr):
     attrname = 'resnames'
     singular = 'resname'
     target_levels = ['atom', 'residue']
+    transplants = defaultdict(list)
+
+    def getattr__(residuegroup, resname):
+        try:
+            return residuegroup._get_named_residue(resname)
+        except selection.SelectionError:
+            raise AttributeError("'{0}' object has no attribute '{1}'".format(
+                    residuegroup.__class__.__name__, resname))
+
+    transplants['residuegroup'].append(('__getattr__', getattr__))
+
+    transplants['segment'].append(('__getattr__', getattr__))
+
+    def _get_named_residue(residuegroup, resname):
+        """Get all residues with name *resname* in the current ResidueGroup
+        or Segment.
+
+        For more than one residue it returns a
+        :class:`MDAnalysis.core.groups.ResidueGroup` instance. A single
+        :class:`MDAnalysis.core.group.Residue` is returned for a single match. If no
+        residues are found, a :exc:`SelectionError` is raised.
+
+        .. versionadded:: 0.9.2
+        """
+        # There can be more than one atom with the same name
+        residues = residuegroup.residues[
+                residuegroup.residues.resnames == resname]
+        if len(residues) == 0:
+            raise selection.SelectionError(
+                "No residues with resname '{0}'".format(resname))
+        elif len(residues) == 1:
+            # XXX: keep this, makes more sense for names
+            return residues[0]
+        else:
+            # XXX: but inconsistent (see residues and Issue 47)
+            return residues
+
+    transplants['residuegroup'].append(
+        ('_get_named_residue', _get_named_residue))
+
+    transplants['segment'].append(
+        ('_get_named_residue', _get_named_residue))
 
 
 #TODO: update docs to property doc
@@ -577,6 +812,42 @@ class Segids(SegmentAttr):
     attrname = 'segids'
     singular = 'segid'
     target_levels = ['atom', 'residue', 'segment']
+    transplants = defaultdict(list)
+
+    def getattr__(segmentgroup, segid):
+        try:
+            return segmentgroup._get_named_segment(segid)
+        except selection.SelectionError:
+            raise AttributeError("'{0}' object has no attribute '{1}'".format(
+                    segmentgroup.__class__.__name__, segid))
+
+    transplants['segmentgroup'].append(
+        ('__getattr__', getattr__))
+
+    def _get_named_segment(segmentgroup, segid):
+        """Get all segments with name *segid* in the current SegmentGroup.
+
+        For more than one residue it returns a
+        :class:`MDAnalysis.core.groups.SegmentGroup` instance. A single
+        :class:`MDAnalysis.core.group.Segment` is returned for a single match. If no
+        residues are found, a :exc:`SelectionError` is raised.
+
+        .. versionadded:: 0.9.2
+        """
+        # There can be more than one segment with the same name
+        segments  = segmentgroup[segmentgroup.segids == segid]
+        if len(residues) == 0:
+            raise selection.SelectionError(
+                "No atoms with name '{0}'".format(segid))
+        elif len(residues) == 1:
+            # XXX: keep this, makes more sense for names
+            return residues[0]
+        else:
+            # XXX: but inconsistent (see residues and Issue 47)
+            return residues
+
+    transplants['segmentgroup'].append(
+        ('_get_named_segment', _get_named_segment))
 
 
 #TODO: update docs to property doc

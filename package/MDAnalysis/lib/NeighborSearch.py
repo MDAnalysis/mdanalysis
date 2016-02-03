@@ -25,7 +25,7 @@ This module contains classes that allow neighbor searches directly with
 import numpy as np
 from Bio.KDTree import KDTree
 
-from MDAnalysis.core.AtomGroup import AtomGroup
+from MDAnalysis.core.groups import AtomGroup
 
 
 class AtomNeighborSearch():

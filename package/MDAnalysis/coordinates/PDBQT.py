@@ -228,14 +228,14 @@ class PDBQTWriter(base.Writer):
 
         :Arguments:
           *selection*
-            a :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
+            a :class:`~MDAnalysis.core.groups.AtomGroup`
           *frame*
             optionally move to frame *FRAME*
 
         .. Note::
 
            The first letter of the
-           :attr:`~MDAnalysis.core.AtomGroup.Atom.segid` is used as the PDB
+           :attr:`~MDAnalysis.core.groups.Atom.segid` is used as the PDB
            chainID.
 
         .. versionchanged:: 0.11.0

@@ -31,7 +31,7 @@ Readers
 All Readers are supposed to expose a :class:`ProtoReader` object
 that presents a common `Trajectory API`_ to other code.
 
-The :class:`~MDAnalysis.core.AtomGroup.Universe` contains the API
+The :class:`~MDAnalysis.core.universe.Universe` contains the API
 entry point attribute
 
   :attr:`Universe.trajectory`
@@ -60,10 +60,10 @@ for each specific format. These are:
    sequence of files in different formats.
 
 Normally, one does not explicitly need to select a reader. This is handled
-automatically when creating a :class:`~MDAnalysis.core.AtomGroup.Universe` and
+automatically when creating a :class:`~MDAnalysis.core.universe.Universe` and
 the appropriate reader for the file type is selected (typically by the file
 extension but this choice can be overriden with the ``format`` argument to
-:class:`~MDAnalysis.core.AtomGroup.Universe`).
+:class:`~MDAnalysis.core.universe.Universe`).
 
 
 Writers
@@ -83,7 +83,7 @@ In analogy to :func:`MDAnalysis.coordinates.core.writer`, there is
 also a :func:`MDAnalysis.coordinates.core.reader` function available
 to return a trajectory :class:`~MDAnalysis.coordinates.base.Reader`
 instance although this is often not needed because the
-:class:`~MDAnalysis.core.AtomGroup.Universe` class can choose an
+:class:`~MDAnalysis.core.universe.Universe` class can choose an
 appropriate reader automatically.
 
 .. _duck typing: http://c2.com/cgi/wiki?DuckTyping
@@ -107,11 +107,11 @@ Timesteps
 
 Both Readers and Writers use Timesteps as their working object.  A Timestep
 represents all data for a given frame in a trajectory.  The data inside a
-Timestep is often accessed indirectly through a :class:`~MDAnalysis.core.AtomGroup.AtomGroup`
+Timestep is often accessed indirectly through a :class:`~MDAnalysis.core.groups.AtomGroup`
 but it is also possible to manipulate Timesteps directly.
 
 The current Timestep can be accessed through the trajectory read attached
-to the active :class:`~MDAnalysis.core.AtomGroup.Universe`
+to the active :class:`~MDAnalysis.core.universe.Universe`
 
    ts = u.trajectory.ts
    ts.positions  # returns a numpy array of positions
@@ -130,8 +130,8 @@ emphasis is on formats that are used in popular molecular dynamics codes. By
 default, MDAnalysis figures out formats by looking at the extension. Thus, a
 DCD file always has to end with ".dcd" to be recognized as such unless the
 format is explicitly specified with the *format* keyword to
-:class:`~MDAnalysis.core.AtomGroup.Universe` or
-:meth:`~MDAnalysis.core.AtomGroup.Universe.load_new`.  A number of files are
+:class:`~MDAnalysis.core.universe.Universe` or
+:meth:`~MDAnalysis.core.universe.Universe.load_new`.  A number of files are
 also recognized when they are compressed with :program:`gzip` or
 :program:`bzip2` such as ".xyz.bz2".
 
@@ -224,7 +224,7 @@ also recognized when they are compressed with :program:`gzip` or
 
 .. [#a] This format can also be used to provide basic *topology*
    information (i.e. the list of atoms); it is possible to create a
-   full :mod:`~MDAnalysis.core.AtomGroup.Universe` by simply
+   full :mod:`~MDAnalysis.core.universe.Universe` by simply
    providing a file of this format: ``u = Universe(filename)``
 
 .. _`netcdf4-python`: https://github.com/Unidata/netcdf4-python
@@ -660,8 +660,8 @@ Methods
    opens *filename* for writing; `kwargs` are typically ignored
  ``write(obj)``
    writes the object *obj*, containing a
-   :class:`~MDAnalysis.core.AtomGroup.AtomGroup` group of atoms (typically
-   obtained from a selection) or :class:`~MDAnalysis.core.AtomGroup.Universe`
+   :class:`~MDAnalysis.core.groups.AtomGroup` group of atoms (typically
+   obtained from a selection) or :class:`~MDAnalysis.core.universe.Universe`
    to the file and closes the file
 
 .. Note::

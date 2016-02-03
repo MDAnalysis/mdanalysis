@@ -172,8 +172,8 @@ class XYZWriter(base.Writer):
     def write(self, obj):
         """Write object *obj* at current trajectory frame to file.
 
-        *obj* can be a :class:`~MDAnalysis.core.AtomGroup.AtomGroup`)
-        or a whole :class:`~MDAnalysis.core.AtomGroup.Universe`.
+        *obj* can be a :class:`~MDAnalysis.core.groups.AtomGroup`)
+        or a whole :class:`~MDAnalysis.core.universe.Universe`.
 
         Atom names in the output are taken from the *obj* or default
         to the value of the *atoms* keyword supplied to the
@@ -181,8 +181,8 @@ class XYZWriter(base.Writer):
 
         :Arguments:
           *obj*
-            :class:`~MDAnalysis.core.AtomGroup.AtomGroup` or
-            :class:`~MDAnalysis.core.AtomGroup.Universe`
+            :class:`~MDAnalysis.core.groups.AtomGroup` or
+            :class:`~MDAnalysis.core.universe.Universe`
         """
         # prepare the Timestep and extract atom names if possible
         # (The way it is written it should be possible to write

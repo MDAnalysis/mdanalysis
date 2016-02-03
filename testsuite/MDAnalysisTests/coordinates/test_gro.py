@@ -59,7 +59,7 @@ class TestGROReader(TestCase, RefAdK):
 
     def test_coordinates(self):
         A10CA = self.universe.SYSTEM.CA[10]
-        assert_almost_equal(A10CA.pos,
+        assert_almost_equal(A10CA.position,
                             self.ref_coordinates['A10CA'],
                             self.prec,
                             err_msg="wrong coordinates for A10:CA")
@@ -116,7 +116,7 @@ class TestGROReaderNoConversion(TestCase, RefAdK):
         # we loaded with convert_units=False
         A10CA = self.universe.SYSTEM.CA[10]
         # coordinates in nm
-        assert_almost_equal(A10CA.pos, RefAdK.ref_coordinates['A10CA'] / 10.0,
+        assert_almost_equal(A10CA.position, RefAdK.ref_coordinates['A10CA'] / 10.0,
                             self.prec, err_msg="wrong native coordinates "
                             "(in nm) for A10:CA")
 
@@ -183,8 +183,8 @@ class TestGROWriter(TestCase, tempdir.TempDir):
     def test_writer(self):
         self.universe.atoms.write(self.outfile)
         u = mda.Universe(self.outfile)
-        assert_almost_equal(u.atoms.coordinates(),
-                            self.universe.atoms.coordinates(), self.prec,
+        assert_almost_equal(u.atoms.positions,
+                            self.universe.atoms.positions, self.prec,
                             err_msg="Writing GRO file with GROWriter does "
                             "not reproduce original coordinates")
 
@@ -205,7 +205,7 @@ class TestGROWriter(TestCase, tempdir.TempDir):
         # modify coordinates so we need our own copy or we could mess up
         # parallel tests
         u = mda.Universe(GRO)
-        u.atoms[2000].pos[1] = -999.9995 * 10  # nm -> A
+        u.atoms[2000].position[1] = -999.9995 * 10  # nm -> A
         assert_raises(ValueError, u.atoms.write, self.outfile2)
         del u
 
@@ -218,7 +218,7 @@ class TestGROWriter(TestCase, tempdir.TempDir):
         # parallel tests
         u = mda.Universe(GRO)
         # nm -> A  ; [ob] 9999.9996 not caught
-        u.atoms[1000].pos[1] = 9999.9999 * 10
+        u.atoms[1000].position[1] = 9999.9999 * 10
         assert_raises(ValueError, u.atoms.write, self.outfile2)
         del u
 
@@ -229,7 +229,7 @@ class TestGROWriter(TestCase, tempdir.TempDir):
         # modify coordinates so we need our own copy or we could mess up
         # parallel tests
         u = mda.Universe(GRO, convert_units=False)
-        u.atoms[1000].pos[1] = 9999.9999
+        u.atoms[1000].position[1] = 9999.9999
         assert_raises(ValueError, u.atoms.write, self.outfile2,
                       convert_units=False)
         del u
