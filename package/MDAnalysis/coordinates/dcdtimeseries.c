@@ -264,6 +264,26 @@ static CYTHON_INLINE float __PYX_NAN() {
 #include <omp.h>
 #endif /* _OPENMP */
 
+/* Compatibility macros for Python 3 */
+#if PY_VERSION_HEX >= 0x03000000
+
+#define PyClass_Check(obj) PyObject_IsInstance(obj, (PyObject *)&PyType_Type)
+#define PyInt_Check(x) PyLong_Check(x)
+#define PyInt_AsLong(x) PyLong_AsLong(x)
+#define PyInt_FromLong(x) PyLong_FromLong(x)
+#define PyInt_FromSize_t(x) PyLong_FromSize_t(x)
+#define PyString_Check(name) PyBytes_Check(name)
+#define PyString_FromString(x) PyUnicode_FromString(x)
+#define PyString_Format(fmt, args)  PyUnicode_Format(fmt, args)
+#define PyString_AsString(str) PyBytes_AsString(str)
+#define PyString_Size(str) PyBytes_Size(str)
+#define PyString_InternFromString(key) PyUnicode_InternFromString(key)
+#define Py_TPFLAGS_HAVE_CLASS Py_TPFLAGS_BASETYPE
+#define PyString_AS_STRING(x) PyUnicode_AS_STRING(x)
+#define _PyLong_FromSsize_t(x) PyLong_FromSsize_t(x)
+
+#endif
+
 #ifdef PYREX_WITHOUT_ASSERTIONS
 #define CYTHON_WITHOUT_ASSERTIONS
 #endif
@@ -1484,7 +1504,11 @@ static PyObject *__pyx_pf_10MDAnalysis_11coordinates_13dcdtimeseries___read_time
  */
   __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_dcd_C_ptr); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 70; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_v_dcd = ((__pyx_t_10MDAnalysis_11coordinates_13dcdtimeseries_dcdhandle *)PyCObject_AsVoidPtr(__pyx_t_1));
+  #if PY_MAJOR_VERSION < 3
+	  __pyx_v_dcd = ((__pyx_t_10MDAnalysis_11coordinates_13dcdtimeseries_dcdhandle *)PyCObject_AsVoidPtr(__pyx_t_1));
+  #else
+	  __pyx_v_dcd = ((__pyx_t_10MDAnalysis_11coordinates_13dcdtimeseries_dcdhandle *)PyCapsule_GetPointer(__pyx_t_1,NULL));
+  #endif
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "MDAnalysis/coordinates/dcdtimeseries.pyx":72
@@ -2334,7 +2358,11 @@ static PyObject *__pyx_pf_10MDAnalysis_11coordinates_13dcdtimeseries_2__read_tim
  */
   __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_dcd_C_ptr); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 143; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_v_dcd = ((__pyx_t_10MDAnalysis_11coordinates_13dcdtimeseries_dcdhandle *)PyCObject_AsVoidPtr(__pyx_t_1));
+  #if PY_MAJOR_VERSION < 3
+	  __pyx_v_dcd = ((__pyx_t_10MDAnalysis_11coordinates_13dcdtimeseries_dcdhandle *)PyCObject_AsVoidPtr(__pyx_t_1));
+  #else
+	  __pyx_v_dcd = ((__pyx_t_10MDAnalysis_11coordinates_13dcdtimeseries_dcdhandle *)PyCapsule_GetPointer(__pyx_t_1,NULL));
+  #endif
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "MDAnalysis/coordinates/dcdtimeseries.pyx":145

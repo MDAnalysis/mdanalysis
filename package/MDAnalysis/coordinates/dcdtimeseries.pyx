@@ -17,13 +17,19 @@
 
 import numpy
 cimport numpy
+from cpython cimport PY_MAJOR_VERSION
 
 ctypedef int size_t
 
 cdef extern from "Python.h":
     int PyErr_CheckSignals()
+    #if PY_MAJOR_VERSION < 3
     void* PyCObject_AsVoidPtr(object o)
     char* PyString_AsString(object o)
+    #else
+    void* PyCapsule_GetPointer(object o,void *)
+    char* PyBytes_AsString(object o) #should check unicode if we're being really careful
+    #endif
 
 cdef extern from *:
     ctypedef int fio_fd
@@ -66,8 +72,12 @@ def __read_timecorrel(object self, object atoms, object atomcounts, object forma
     cdef float *tempX, *tempY, *tempZ
     cdef int rc
     cdef char* fmtstr
+    cdef void* null
 
-    dcd = <dcdhandle*>PyCObject_AsVoidPtr(self._dcd_C_ptr)
+    if PY_MAJOR_VERSION < 3:
+      dcd = <dcdhandle*>PyCObject_AsVoidPtr(self._dcd_C_ptr)
+    else:
+      dcd = <dcdhandle*>PyCapsule_GetPointer(self._dcd_C_ptr,null)
     cdef int n_frames
     if (stop == -1): stop = dcd.nsets
     n_frames = (stop-start+1) / skip
@@ -75,7 +85,10 @@ def __read_timecorrel(object self, object atoms, object atomcounts, object forma
     numdata = len(format)
     if numdata==0:
         raise Exception("No data requested, timeseries is empty")
-    fmtstr = PyString_AsString(format)
+    if PY_MAJOR_VERSION < 3:
+     fmtstr = PyString_AsString(format)
+    else:
+     fmtstr = PyBytes_AsString(format) #should check unicode though
 
     atomlist = np.array(atoms, np.int32)
     atomcountslist = np.array(atomcounts, np.int32)
@@ -139,8 +152,12 @@ def __read_timeseries(object self, object atoms, int skip):
     cdef numpy.ndarray coord, temp
     cdef float *tempX, *tempY, *tempZ
     cdef int rc
+    cdef void* null
 
-    dcd = <dcdhandle*>PyCObject_AsVoidPtr(self._dcd_C_ptr)
+    if PY_MAJOR_VERSION < 3:
+      dcd = <dcdhandle*>PyCObject_AsVoidPtr(self._dcd_C_ptr)
+    else:
+      dcd = <dcdhandle*>PyCapsule_GetPointer(self._dcd_C_ptr,null)
     cdef int n_frames
     n_frames = dcd.nsets / skip
     cdef int n_atoms

@@ -4661,7 +4661,8 @@ class Universe(object):
     @property
     def trajectory(self):
         """Reference to trajectory reader object containing trajectory data."""
-        if self._trajectory is not None:
+        print('self._trajectory:', self._trajectory)
+        if self._trajectory is not None or os.path.isfile(self._trajectory):
             return self._trajectory
         else:
             raise AttributeError("No trajectory loaded into Universe")
