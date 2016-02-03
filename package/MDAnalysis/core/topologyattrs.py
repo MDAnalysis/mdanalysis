@@ -272,6 +272,47 @@ class Atomnames(AtomAttr):
     """
     attrname = 'names'
     singular = 'name'
+    transplants = defaultdict(list)
+
+    def getattr__(self, name):
+        try:
+            return self._get_named_atom(name)
+        except selection.SelectionError:
+            raise AttributeError("'{0}' object has no attribute '{1}'".format(
+                    self.__class__.__name__, name))
+
+    transplants['atomgroup'].append(
+        ('__getattr__', getattr__))
+
+    transplants['residue'].append(
+        ('__getattr__', getattr__))
+
+    def _get_named_atom(self, name):
+        """Get all atoms with name *name* in the current AtomGroup.
+
+        For more than one atom it returns a list of :class:`Atom`
+        instance. A single :class:`Atom` is returned just as such. If
+        no atoms are found, a :exc:`SelectionError` is raised.
+
+        .. versionadded:: 0.9.2
+        """
+        # There can be more than one atom with the same name
+        atomlist = self.atoms[self.atoms.names == name]
+        if len(atomlist) == 0:
+            raise selection.SelectionError(
+                "No atoms with name '{0}'".format(name))
+        elif len(atomlist) == 1:
+            # XXX: keep this, makes more sense for names
+            return atomlist[0]
+        else:
+            # XXX: but inconsistent (see residues and Issue 47)
+            return atomlist
+
+    transplants['atomgroup'].append(
+        ('_get_named_atom', _get_named_atom))
+
+    transplants['residue'].append(
+        ('_get_named_atom', _get_named_atom))
 
 
 #TODO: update docs to property doc
@@ -690,38 +731,48 @@ class Resnames(ResidueAttr):
     attrname = 'resnames'
     singular = 'resname'
     target_levels = ['atom', 'residue']
+    transplants = defaultdict(list)
 
-    #TODO: must figure out how to transplant these, since
-    # we don't want to override __getattr__ for the TopologyAttr!
+    def getattr__(residuegroup, resname):
+        try:
+            return residuegroup._get_named_residue(resname)
+        except selection.SelectionError:
+            raise AttributeError("'{0}' object has no attribute '{1}'".format(
+                    residuegroup.__class__.__name__, resname))
 
-    #def __getattr__(residuegroup, resname):
-    #    try:
-    #        return residuegroup._get_named_residue(resname)
-    #    except selection.SelectionError:
-    #        raise AttributeError("'{0}' object has no attribute '{1}'".format(
-    #                residuegroup.__class__.__name__, resname))
+    transplants['residuegroup'].append(('__getattr__', getattr__))
 
-    #def _get_named_residue(residuegroup, resname):
-    #    """Get all residues with name *resname* in the current ResidueGroup.
+    transplants['segment'].append(('__getattr__', getattr__))
 
-    #    For more than one residue it returns a
-    #    :class:`MDAnalysis.core.groups.ResidueGroup` instance. A single
-    #    :class:`MDAnalysis.core.group.Residue` is returned for a single match. If no
-    #    residues are found, a :exc:`SelectionError` is raised.
+    def _get_named_residue(residuegroup, resname):
+        """Get all residues with name *resname* in the current ResidueGroup
+        or Segment.
 
-    #    .. versionadded:: 0.9.2
-    #    """
-    #    # There can be more than one atom with the same name
-    #    residues = residuegroup[residuegroup.resnames == resname]
-    #    if len(residues) == 0:
-    #        raise selection.SelectionError(
-    #            "No residues with resname '{0}'".format(resname))
-    #    elif len(residues) == 1:
-    #        # XXX: keep this, makes more sense for names
-    #        return residues[0]
-    #    else:
-    #        # XXX: but inconsistent (see residues and Issue 47)
-    #        return residues
+        For more than one residue it returns a
+        :class:`MDAnalysis.core.groups.ResidueGroup` instance. A single
+        :class:`MDAnalysis.core.group.Residue` is returned for a single match. If no
+        residues are found, a :exc:`SelectionError` is raised.
+
+        .. versionadded:: 0.9.2
+        """
+        # There can be more than one atom with the same name
+        residues = residuegroup.residues[
+                residuegroup.residues.resnames == resname]
+        if len(residues) == 0:
+            raise selection.SelectionError(
+                "No residues with resname '{0}'".format(resname))
+        elif len(residues) == 1:
+            # XXX: keep this, makes more sense for names
+            return residues[0]
+        else:
+            # XXX: but inconsistent (see residues and Issue 47)
+            return residues
+
+    transplants['residuegroup'].append(
+        ('_get_named_residue', _get_named_residue))
+
+    transplants['segment'].append(
+        ('_get_named_residue', _get_named_residue))
 
 
 #TODO: update docs to property doc
@@ -761,15 +812,19 @@ class Segids(SegmentAttr):
     attrname = 'segids'
     singular = 'segid'
     target_levels = ['atom', 'residue', 'segment']
+    transplants = defaultdict(list)
 
-    def __getattr__(segmentgroup, segid):
+    def getattr__(segmentgroup, segid):
         try:
             return segmentgroup._get_named_segment(segid)
         except selection.SelectionError:
             raise AttributeError("'{0}' object has no attribute '{1}'".format(
                     segmentgroup.__class__.__name__, segid))
 
-    def _get_named_residue(segmentgroup, segid):
+    transplants['segmentgroup'].append(
+        ('__getattr__', getattr__))
+
+    def _get_named_segment(segmentgroup, segid):
         """Get all segments with name *segid* in the current SegmentGroup.
 
         For more than one residue it returns a
@@ -779,8 +834,8 @@ class Segids(SegmentAttr):
 
         .. versionadded:: 0.9.2
         """
-        # There can be more than one atom with the same name
-        residues = segmentgroup[segmentgroup.segids == segid]
+        # There can be more than one segment with the same name
+        segments  = segmentgroup[segmentgroup.segids == segid]
         if len(residues) == 0:
             raise selection.SelectionError(
                 "No atoms with name '{0}'".format(segid))
@@ -790,6 +845,9 @@ class Segids(SegmentAttr):
         else:
             # XXX: but inconsistent (see residues and Issue 47)
             return residues
+
+    transplants['segmentgroup'].append(
+        ('_get_named_segment', _get_named_segment))
 
 
 #TODO: update docs to property doc

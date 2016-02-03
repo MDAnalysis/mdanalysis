@@ -261,34 +261,6 @@ class AtomGroup(object):
 
     level = 'atom'
 
-    def __getattr__(self, name):
-        try:
-            return self._get_named_atom(name)
-        except selection.SelectionError:
-            raise AttributeError("'{0}' object has no attribute '{1}'".format(
-                    self.__class__.__name__, name))
-
-    def _get_named_atom(self, name):
-        """Get all atoms with name *name* in the current AtomGroup.
-
-        For more than one atom it returns a list of :class:`Atom`
-        instance. A single :class:`Atom` is returned just as such. If
-        no atoms are found, a :exc:`SelectionError` is raised.
-
-        .. versionadded:: 0.9.2
-        """
-        # There can be more than one atom with the same name
-        atomlist = self[self.names == name]
-        if len(atomlist) == 0:
-            raise selection.SelectionError(
-                "No atoms with name '{0}'".format(name))
-        elif len(atomlist) == 1:
-            # XXX: keep this, makes more sense for names
-            return atomlist[0]
-        else:
-            # XXX: but inconsistent (see residues and Issue 47)
-            return atomlist
-
     @property
     def dimensions(self):
         return self._u.trajectory.ts.dimensions
@@ -1247,6 +1219,29 @@ class Atom(ComponentBase):
             ts.forces[self._ix, :] = values
         except (AttributeError, NoDataError):
             raise NoDataError("Timestep does not contain forces")
+
+    @property
+    def ts(self):
+        """Temporary Timestep that contains the selection coordinates.
+
+        A :class:`~MDAnalysis.coordinates.base.Timestep` instance,
+        which can be passed to a trajectory writer.
+
+        If :attr:`~AtomGroup.ts` is modified then these modifications
+        will be present until the frame number changes (which
+        typically happens when the underlying trajectory frame
+        changes).
+
+        It is not possible to assign a new
+        :class:`~MDAnalysis.coordinates.base.Timestep` to the
+        :attr:`AtomGroup.ts` attribute; change attributes of the object.
+        """
+        trj_ts = self.universe.trajectory.ts  # original time step
+
+        if self._ts is None or self._ts.frame != trj_ts.frame:
+            # create a timestep of same type as the underlying trajectory
+            self._ts = trj_ts.copy_slice(self.indices)
+        return self._ts
 
 
 class Residue(ComponentBase):
