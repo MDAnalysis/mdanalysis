@@ -180,8 +180,8 @@ class TestPrimitivePDBWriter(TestCase):
         "Test writing from a single frame PDB file to a PDB file." ""
         self.universe.atoms.write(self.outfile)
         u = mda.Universe(PSF, self.outfile, permissive=True)
-        assert_almost_equal(u.atoms.coordinates(),
-                            self.universe.atoms.coordinates(), self.prec,
+        assert_almost_equal(u.atoms.positions,
+                            self.universe.atoms.positions, self.prec,
                             err_msg="Writing PDB file with PrimitivePDBWriter "
                             "does not reproduce original coordinates")
 
@@ -210,7 +210,7 @@ class TestPrimitivePDBWriter(TestCase):
         assert_equal(u2.trajectory.n_frames,
                      1,
                      err_msg="Output PDB should only contain a single frame")
-        assert_almost_equal(u2.atoms.coordinates(), u.atoms.coordinates(),
+        assert_almost_equal(u2.atoms.positions, u.atoms.positions,
                             self.prec, err_msg="Written coordinates do not "
                             "agree with original coordinates from frame %d" %
                             u.trajectory.frame)
@@ -222,7 +222,7 @@ class TestPrimitivePDBWriter(TestCase):
         # modify coordinates so we need our own copy or we could mess up
         # parallel tests
         u = mda.Universe(PSF, PDB_small, permissive=True)
-        u.atoms[2000].pos[1] = -999.9995
+        u.atoms[2000].position[1] = -999.9995
         assert_raises(ValueError, u.atoms.write, self.outfile)
         del u
 
@@ -234,7 +234,7 @@ class TestPrimitivePDBWriter(TestCase):
         # parallel tests
         u = mda.Universe(PSF, PDB_small, permissive=True)
         # OB: 9999.99951 is not caught by '<=' ?!?
-        u.atoms[1000].pos[1] = 9999.9996
+        u.atoms[1000].position[1] = 9999.9996
         assert_raises(ValueError, u.atoms.write, self.outfile)
         del u
 
@@ -534,7 +534,7 @@ class TestPDBReaderBig(TestCase, RefAdK):
     @dec.slow
     def test_coordinates(self):
         A10CA = self.universe.SYSTEM.CA[10]
-        assert_almost_equal(A10CA.pos,
+        assert_almost_equal(A10CA.position,
                             self.ref_coordinates['A10CA'],
                             self.prec,
                             err_msg="wrong coordinates for A10:CA")

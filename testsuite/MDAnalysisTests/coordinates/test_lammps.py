@@ -34,7 +34,7 @@ class _TestLammpsData_Coords(TestCase):
         assert_equal(self.u.atoms.n_atoms, self.n_atoms)
 
     def test_coords(self):
-        assert_equal(self.u.atoms[0].pos, self.pos_atom1)
+        assert_equal(self.u.atoms[0].position, self.pos_atom1)
 
     def test_velos(self):
         assert_equal(self.u.atoms[0].velocity, self.vel_atom1)

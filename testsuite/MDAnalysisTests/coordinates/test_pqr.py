@@ -61,8 +61,8 @@ class TestPQRWriter(TestCase, RefAdKSmall):
         self.universe.atoms.write(self.outfile)
         u = mda.Universe(self.outfile)
         assert_equal(u.segments.segids[0], 'SYSTEM')
-        assert_almost_equal(u.atoms.coordinates(),
-                            self.universe.atoms.coordinates(), self.prec,
+        assert_almost_equal(u.atoms.positions,
+                            self.universe.atoms.positions, self.prec,
                             err_msg="Writing PQR file with PQRWriter does "
                             "not reproduce original coordinates")
         assert_almost_equal(u.atoms.charges, self.universe.atoms.charges,
@@ -78,8 +78,8 @@ class TestPQRWriter(TestCase, RefAdKSmall):
         self.universe.atoms.write(self.outfile)
         u = mda.Universe(self.outfile)
         assert_equal(u.segments.segids[0], 'A')
-        assert_almost_equal(u.atoms.coordinates(),
-                            self.universe.atoms.coordinates(), self.prec,
+        assert_almost_equal(u.atoms.positions,
+                            self.universe.atoms.positions, self.prec,
                             err_msg="Writing PQR file with PQRWriter does "
                             "not reproduce original coordinates")
         assert_almost_equal(u.atoms.charges, self.universe.atoms.charges,

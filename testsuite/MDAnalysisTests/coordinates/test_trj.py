@@ -52,8 +52,8 @@ class _TRJReaderTest(TestCase):
     def test_starts_with_first_frame(self):
         """Test that coordinate arrays are filled as soon as the trajectory
         has been opened."""
-        assert_(np.any(self.universe.atoms.coordinates() > 0),
-                "Reader does not populate coordinates() right away.")
+        assert_(np.any(self.universe.atoms.positions > 0),
+                "Reader does not populate positions right away.")
 
     def test_rewind(self):
         trj = self.universe.trajectory
@@ -63,8 +63,8 @@ class _TRJReaderTest(TestCase):
                      "failed to forward to frame 2 (frameindex 2)")
         trj.rewind()
         assert_equal(trj.ts.frame, 0, "failed to rewind to first frame")
-        assert_(np.any(self.universe.atoms.coordinates() > 0),
-                "Reader does not populate coordinates() after rewinding.")
+        assert_(np.any(self.universe.atoms.positions > 0),
+                "Reader does not populate positions after rewinding.")
 
     def test_full_slice(self):
         trj_iter = self.universe.trajectory[:]

@@ -80,7 +80,7 @@ class TestTRZReader(TestCase, RefTRZ):
 
     def test_coordinates(self):
         fortytwo = self.universe.atoms[41]  # 41 because is 0 based
-        assert_almost_equal(fortytwo.pos, self.ref_coordinates, self.prec,
+        assert_almost_equal(fortytwo.position, self.ref_coordinates, self.prec,
                             "wrong coordinates in trz")
 
     def test_velocities(self):
@@ -226,8 +226,8 @@ class TestWrite_Partial_Timestep(TestCase):
 
         u_ag = mda.Universe(self.outfile)
 
-        assert_array_almost_equal(self.ag.coordinates(),
-                                  u_ag.atoms.coordinates(),
+        assert_array_almost_equal(self.ag.positions,
+                                  u_ag.atoms.positions,
                                   self.prec,
                                   err_msg="Writing AtomGroup timestep failed.")
 

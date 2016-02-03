@@ -224,8 +224,8 @@ class TestDCDWriter(TestCase):
         w = mda.Universe(PSF, self.outfile)
         assert_equal(w.trajectory.n_frames, 1,
                      "single frame trajectory has wrong number of frames")
-        assert_almost_equal(w.atoms.coordinates(),
-                            u.atoms.coordinates(),
+        assert_almost_equal(w.atoms.positions,
+                            u.atoms.positions,
                             3,
                             err_msg="coordinates do not match")
 
@@ -240,8 +240,8 @@ class TestDCDWriter(TestCase):
         assert_equal(w.trajectory.n_frames, 1,
                      "with_statement: single frame trajectory has wrong "
                      "number of frames")
-        assert_almost_equal(w.atoms.coordinates(),
-                            u.atoms.coordinates(),
+        assert_almost_equal(w.atoms.positions,
+                            u.atoms.positions,
                             3,
                             err_msg="with_statement: coordinates do not match")
 
@@ -285,8 +285,8 @@ class TestDCDWriter_Issue59(TestCase):
         dcd.trajectory.rewind()
 
         assert_array_almost_equal(
-            xtc.atoms.coordinates(),
-            dcd.atoms.coordinates(),
+            xtc.atoms.positions,
+            dcd.atoms.positions,
             3,
             err_msg="XTC -> DCD: DCD coordinates are messed up (Issue 59)")
 
@@ -302,16 +302,16 @@ class TestDCDWriter_Issue59(TestCase):
         dcd.trajectory.rewind()
 
         assert_array_almost_equal(
-            dcd.atoms.coordinates(),
-            xtc.atoms.coordinates(),
+            dcd.atoms.positions,
+            xtc.atoms.positions,
             2,
             err_msg="DCD -> XTC: coordinates are messed up (frame %d)" %
             dcd.trajectory.frame)
         xtc.trajectory[3]
         dcd.trajectory[3]
         assert_array_almost_equal(
-            dcd.atoms.coordinates(),
-            xtc.atoms.coordinates(),
+            dcd.atoms.positions,
+            xtc.atoms.positions,
             2,
             err_msg="DCD -> XTC: coordinates are messed up (frame %d)" %
             dcd.trajectory.frame)
@@ -422,8 +422,8 @@ class TestDCDCorrel(_TestDCD):
         self.collection = TS.TimeseriesCollection()
         C = self.collection
         all = self.universe.atoms
-        ca = self.universe.s4AKE.CA
-        ca_termini = mda.core.AtomGroup.AtomGroup([ca[0], ca[-1]])
+        ca = self.universe.s4AKE.atoms.CA
+        ca_termini = ca[[0, -1]]
         # note that this is not quite phi... HN should be C of prec. residue
         phi151 = self.universe.select_atoms('resid 151').select_atoms(
             'name HN', 'name N', 'name CA', 'name CB')
