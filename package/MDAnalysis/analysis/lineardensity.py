@@ -31,14 +31,12 @@ from MDAnalysis.analysis.base import AnalysisBase
 
 class LinearDensity(AnalysisBase):
     """Linear density profile
-    LinearDensity(universe, selection, grouping='atoms', binsize=0.25)
+    LinearDensity(selection, grouping='atoms', binsize=0.25)
 
     Parameters
     ----------
-    universe : `Universe` object
-      universe whose density profiles will be computed
     selection : `AtomGroup` object
-      Any atomgroup belonging to universe
+      Any atomgroup
 
     Keywords
     --------
@@ -60,26 +58,24 @@ class LinearDensity(AnalysisBase):
 
     Example
     -------
-    First create a LinearDensity object by supplying a universe and
-    a selection, then use the `run` method
-      ldens = LinearDensity(universe, selection)
+    First create a LinearDensity object by supplying a selection, 
+    then use the `run` method:
+      ldens = LinearDensity(selection)
       ldens.run()
-    Analysis can be run in parallel on multicore machines by supplying
-    the argument `parallel=True` to the `run` method:
-      ldens.run(parallel=True, nthreads=4)
-    
-    Density proiles are output to file through the `save` method:
+
+    Density profiles can be written to file through the `save` method:
       ldens.save(description='mydensprof', form='txt')
-    which will write the density profiles in a file named
+    which will output the density profiles in a file named
     <trajectory_filename>.mydensprof_<grouping>.ldens
-    Results can be output in npz format by specifying `form='npz'`
+    Results can be saved in npz format by specifying `form='npz'`
 
     .. versionadded:: 0.14.0
     """
-    def __init__(self, universe, selection, grouping='atoms', binsize=0.25,
+    def __init__(self, selection, grouping='atoms', binsize=0.25,
                  start=None, stop=None, step=None):
         self._ags = [selection] # allows use of run(parallel=True)
-        self._setup_frames(universe, start, stop, step)
+        self._universe = selection.universe
+        self._setup_frames(self._universe.trajectory, start, stop, step)
 
         self.binsize = binsize
 
@@ -128,7 +124,7 @@ class LinearDensity(AnalysisBase):
 
         self.totalmass = np.sum(self.masses)
 
-    def _single_frame(self, _):
+    def _single_frame(self):
         self.group = getattr(self._ags[0], self.grouping)
         self._ags[0].wrap(compound=self.grouping)
 
