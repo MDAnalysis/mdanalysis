@@ -139,7 +139,6 @@ class XDRBaseReader(base.Reader):
                 except AttributeError:
                     warnings.warn("Couldn't save offsets because: {}".format(e))
 
-
     def rewind(self):
         """Read the first frame again"""
         self._read_frame(0)
@@ -158,9 +157,18 @@ class XDRBaseReader(base.Reader):
 
     def _read_frame(self, i):
         """read frame i"""
-        self._xdr.seek(i)
         self._frame = i - 1
-        return self._read_next_timestep()
+        try:
+            self._xdr.seek(i)
+            timestep = self._read_next_timestep()
+        except RuntimeError:
+            warnings.warn('seek failed, recalculating offsets and retry')
+            offsets = self._xdr.calc_offsets()
+            self._xdr.set_offsets(offsets)
+            self._read_offsets(store=True)
+            self._xdr.seek(i)
+            timestep = self._read_next_timestep()
+        return timestep
 
     def _read_next_timestep(self, ts=None):
         """copy next frame into timestep"""
