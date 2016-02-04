@@ -1,9 +1,9 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver
+# Beckstein and contributors (see AUTHORS for the full list)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
@@ -59,7 +59,9 @@ from .base import TopologyReader
 class PrimitivePDBParser(TopologyReader):
     """Parser that obtains a list of atoms from a standard PDB file.
 
-    .. seealso:: :class:`MDAnalysis.coordinates.PDB.PrimitivePDBReader`
+    See Also
+    --------
+    :class:`MDAnalysis.coordinates.PDB.PrimitivePDBReader`
 
     .. versionadded:: 0.8
     """
@@ -68,12 +70,15 @@ class PrimitivePDBParser(TopologyReader):
     def parse(self):
         """Parse atom information from PDB file *filename*.
 
-        :Returns: MDAnalysis internal *structure* dict
+        Returns
+        -------
+        MDAnalysis internal *structure* dict
 
-        .. SeeAlso:: The *structure* dict is defined in
-                     `MDAnalysis.topology` and the file is
-                     read with
-                     :class:`MDAnalysis.coordinates.PDB.PrimitivePDBReader`.
+        See Also
+        --------
+        The *structure* dict is defined in `MDAnalysis.topology` and the file
+        is read with :class:`MDAnalysis.coordinates.PDB.PrimitivePDBReader`.
+
         """
         structure = {}
 
@@ -109,9 +114,11 @@ class PrimitivePDBParser(TopologyReader):
                     name = line[12:16].strip()
                     altLoc = line[16:17].strip()
                     resName = line[17:21].strip()
-                    chainID = line[21:22].strip()  # empty chainID is a single space ' '!
+                    # empty chainID is a single space ' '!
+                    chainID = line[21:22].strip()
                     if self.format == "XPDB":  # fugly but keeps code DRY
-                        resSeq = int(line[22:27])  # extended non-standard format used by VMD
+                        # extended non-standard format used by VMD
+                        resSeq = int(line[22:27])
                         resid = resSeq
                     else:
                         resSeq = int(line[22:26])
@@ -132,7 +139,7 @@ class PrimitivePDBParser(TopologyReader):
                     segid = segID.strip() or chainID.strip() or "SYSTEM"
 
                     elem = guess_atom_element(name)
-                    
+
                     atomtype = element or elem
                     mass = get_atom_mass(elem)
                     # charge = guess_atom_charge(name)
@@ -151,7 +158,7 @@ class PrimitivePDBParser(TopologyReader):
     def _parsebonds(self, atoms):
         # Could optimise this by saving lines in the main loop
         # then doing post processing after all Atoms have been read
-        # ie do one pass through the file only        
+        # ie do one pass through the file only
         # Problem is that in multiframe PDB, the CONECT is at end of file,
         # so the "break" call happens before bonds are reached.
 
