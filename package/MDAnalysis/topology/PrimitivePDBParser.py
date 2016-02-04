@@ -46,8 +46,9 @@ Classes
    :inherited-members:
 
 """
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 
+import numpy as np
 import warnings
 
 from ..core.AtomGroup import Atom
@@ -174,10 +175,9 @@ class PrimitivePDBParser(TopologyReader):
 
         bonds = set()
         with openany(self.filename, "r") as f:
-            lines = (line[6:].split() for line in f
-                     if line[:6] == "CONECT")
-            for bond in lines:
-                atom, atoms = int(bond[0]), map(int, bond[1:])
+            lines = (line for line in f if line[:6] == "CONECT")
+            for line in lines:
+                atom, atoms = _parse_conect(line.strip())
                 for a in atoms:
                     bond = tuple([mapping[atom], mapping[a]])
                     bonds.add(bond)
@@ -185,3 +185,33 @@ class PrimitivePDBParser(TopologyReader):
         bonds = tuple(bonds)
 
         return bonds
+
+
+def _parse_conect(conect):
+    """parse a CONECT record from pdbs
+
+    Parameters
+    ----------
+    conect : str
+        white space striped CONECT record
+
+    Returns
+    -------
+    atom_id : int
+        atom index of bond
+    bonds : set
+        atom ids of bonded atoms
+
+    Raises
+    ------
+    RuntimeError
+        Raised if ``conect`` is not a valid CONECT record
+    """
+    atom_id = np.int(conect[6:11])
+    n_bond_atoms = len(conect[11:]) // 5
+    if len(conect[11:]) % n_bond_atoms != 0:
+        raise RuntimeError("Bond atoms aren't aligned proberly for CONECT "
+                           "record: {}".format(conect))
+    bond_atoms = (int(conect[11 + i * 5: 16 + i * 5]) for i in
+                  range(n_bond_atoms))
+    return atom_id, bond_atoms
