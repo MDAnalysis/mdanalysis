@@ -493,9 +493,9 @@ class PrimitivePDBReader(base.Reader):
                 if record == 'END':
                     break
                 elif record == 'CRYST1':
-                    A, B, C = map(float, [line[6:15], line[15:24], line[24:33]])
-                    alpha, beta, gamma = map(float, [line[33:40], line[40:47], line[47:54]])
-                    self.ts._unitcell[:] = A, B, C, alpha, beta, gamma
+                    self.ts._unitcell[:] = [line[6:15], line[15:24],
+                                            line[24:33], line[33:40],
+                                            line[40:47], line[47:54]]
                     continue
                 elif record == 'HEADER':
                     # classification = line[10:50]
@@ -522,11 +522,11 @@ class PrimitivePDBReader(base.Reader):
                     # on the trajectory reader
                     if len(frames) > 1:
                         continue
-                    self.ts._pos[pos] = list(map(float, [line[30:38],
-                                                         line[38:46],
-                                                         line[46:54]]))
+                    self.ts._pos[pos] = [line[30:38],
+                                         line[38:46],
+                                         line[46:54]]
                     try:
-                        occupancy[pos] = float(line[54:60])
+                        occupancy[pos] = line[54:60]
                     except ValueError:
                         pass
                     pos += 1
@@ -612,20 +612,18 @@ class PrimitivePDBReader(base.Reader):
                 # MODEL line, which is sometimes the case, e.g. output from
                 # gromacs trjconv
                 elif line[:6] == 'CRYST1':
-                    A, B, C = np.float32([line[6:15], line[15:24],
-                                          line[24:33]])
-                    alpha, beta, gamma = np.float32([line[33:40], line[40:47],
-                                                     line[47:54]])
-                    self.ts._unitcell[:] = A, B, C, alpha, beta, gamma
+                    self.ts._unitcell[:] = [line[6:15], line[15:24],
+                                            line[24:33], line[33:40],
+                                            line[40:47], line[47:54]]
                     continue
                 elif line[:6] in ('ATOM  ', 'HETATM'):
                     # we only care about coordinates
-                    self.ts._pos[pos] = np.float32([line[30:38],
-                                                    line[38:46],
-                                                    line[46:54]])
+                    self.ts._pos[pos] = [line[30:38],
+                                         line[38:46],
+                                         line[46:54]]
                     # TODO import bfactors - might these change?
                     try:
-                        occupancy[pos] = np.float32(line[54:60])
+                        occupancy[pos] = line[54:60]
                     except ValueError:
                         # Be tolerant for ill-formated or empty occupancies
                         pass
@@ -924,7 +922,6 @@ class PrimitivePDBWriter(base.Writer):
             con[a2].append(a1)
             con[a1].append(a2)
 
-        # print con
         atoms = sorted([a.index for a in self.obj.atoms])
 
         conect = [([a, ] + sorted(con[a])) for a in atoms if a in con]
