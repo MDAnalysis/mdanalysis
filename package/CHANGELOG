@@ -30,6 +30,7 @@ Enhancement
   * Offsets reading for xtc/trr files has been sped up. (Issue #441)
   * select_atoms now implicitly ORs multiple values after a keyword for
     many types of selections (Issue #345)
+  * Performance improvements for the PDBReader of about 10%
 
 Changes
 
@@ -40,7 +41,7 @@ Changes
     than 80 characters. (Issue #689)
 
 Fixes
-  
+
   * XDR file seeking and telling working again for large files (Issue #677).
   * ContactAnalysis1 run method now starts at frame index 0 by deafult (Issue #624)
   * Fixed PrimitivePDBWriter getting atom type column shifted to the right
@@ -51,6 +52,7 @@ Fixes
     (Issue #461)
   * Fixed Reader returning all frames with stop in slice was 0 (Issue #672)
   * Fixed NCDFReader not reading dt (Issue #676)
+  * Fixed PDB-Topology read bonds for atom ids larger then 10000 (Issue #693)
 
 
 01/16/16 tyler.je.reddy, kain88-de, richardjgowers, manuel.nuno.melo,
