@@ -13,9 +13,10 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-from six.moves import range
+from six.moves import range, zip
 
 import MDAnalysis
+import MDAnalysis as mda
 from MDAnalysis.core.AtomGroup import AtomGroup
 from MDAnalysis.lib.distances import calc_bonds, calc_angles, calc_dihedrals
 from MDAnalysis.lib.util import guess_format
@@ -28,7 +29,7 @@ from MDAnalysis.core.topologyobjects import (
     Bond, Angle, Dihedral, ImproperDihedral)
 from MDAnalysis.tests.datafiles import (
     PRMpbc, PRM12, PSF, PSF_NAMD, PSF_nosegid, DMS, PDB_small, DCD,
-    TPR, PDB, XYZ_mini, GMS_SYMOPT, GMS_ASYMSURF,
+    TPR, PDB, XYZ_mini, GMS_SYMOPT, GMS_ASYMSURF, PDB_conect,
     DLP_CONFIG, DLP_CONFIG_order, DLP_CONFIG_minimal,
     DLP_HISTORY, DLP_HISTORY_order, DLP_HISTORY_minimal, HoomdXMLdata)
 from MDAnalysisTests.plugins.knownfailure import knownfailure
@@ -1012,7 +1013,38 @@ class RefPDB_Perm(RefPDB):
 
 class TestPDB(_TestTopology, RefPDB):
     """Testing PDB topology parsing (PrimitivePDB)"""
-    pass
+    @staticmethod
+    def test_conect_parser():
+        lines = ("CONECT1233212331",
+                 "CONECT123331233112334",
+                 "CONECT123341233312335",
+                 "CONECT123351233412336",
+                 "CONECT12336123271233012335",
+                 "CONECT12337 7718 84081234012344",
+                 "CONECT1233812339123401234112345")
+        results = ((12332, [12331]),
+                   (12333, [12331, 12334]),
+                   (12334, [12333, 12335]),
+                   (12335, [12334, 12336]),
+                   (12336, [12327, 12330, 12335]),
+                   (12337, [7718, 8408, 12340, 12344]),
+                   (12338, [12339, 12340, 12341, 12345]))
+        for line, res in zip(lines, results):
+            bonds = mda.topology.PrimitivePDBParser._parse_conect(line)
+            assert_equal(bonds[0], res[0])
+            for bond, res_bond in zip(bonds[1], res[1]):
+                assert_equal(bond, res_bond)
+
+        assert_raises(RuntimeError,
+                      mda.topology.PrimitivePDBParser._parse_conect,
+                      'CONECT12337 7718 84081234012344123')
+
+    def test_conect_topo_parser(self):
+        """Check that the parser works as intended,
+        and that the returned value is a dictionary
+        """
+        with self.parser(PDB_conect) as p:
+            p.parse()
 
 
 class TestPDB_Perm(_TestTopology, RefPDB_Perm):

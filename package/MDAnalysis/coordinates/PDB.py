@@ -2,8 +2,8 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver
+# Beckstein and contributors (see AUTHORS for the full list)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
@@ -15,8 +15,7 @@
 #
 
 
-"""
-PDB structure files in MDAnalysis --- :mod:`MDAnalysis.coordinates.PDB`
+"""PDB structure files in MDAnalysis --- :mod:`MDAnalysis.coordinates.PDB`
 ========================================================================
 
 MDAnalysis reads coordinates from PDB files and additional optional
@@ -57,10 +56,11 @@ standard`_.
 Implementations
 ---------------
 
-Two different implementations of PDB I/O are available: the ":ref:`permissive<permissive>`"
-and the ":ref:`strict<strict>`" Reader/Writers. The default are the "permissive" ones
-but this can be changed by setting the flag "permissive_pdb_reader" in
-:data:`MDAnalysis.core.flags` (see :ref:`flags-label`) to ``False``::
+Two different implementations of PDB I/O are available: the
+":ref:`permissive<permissive>`" and the ":ref:`strict<strict>`" Reader/Writers.
+The default are the "permissive" ones but this can be changed by setting the
+flag "permissive_pdb_reader" in :data:`MDAnalysis.core.flags` (see
+:ref:`flags-label`) to ``False``::
 
    MDAnalysis.core.flags["permissive_pdb_reader"] = False
 
@@ -188,8 +188,9 @@ Classes
 References
 ----------
 
-.. [Hamelryck2003]  Hamelryck, T., Manderick, B. (2003) PDB parser and structure class
-                    implemented in Python. Bioinformatics, 19, 2308-2310. http://biopython.org
+.. [Hamelryck2003] Hamelryck, T., Manderick, B. (2003) PDB parser and structure
+                    class implemented in Python. Bioinformatics, 19, 2308-2310.
+                    http://biopython.org
 
 .. _PDB standard: http://www.wwpdb.org/documentation/format32/v3.2.html
 .. _END: http://www.wwpdb.org/documentation/format32/sect11.html#END
@@ -205,7 +206,8 @@ try:
     # disable PDBConstructionWarning from picky builder
     import warnings
 
-    warnings.filterwarnings("ignore", category=Bio.PDB.PDBExceptions.PDBConstructionWarning,
+    warnings.filterwarnings('ignore',
+                            category=Bio.PDB.PDBExceptions.PDBConstructionWarning,
                             message="Could not assign element|Used element .* for Atom")
 except ImportError:
     # TODO: fall back to PrimitivePDBReader
@@ -280,12 +282,14 @@ class PDBReader(base.SingleFrameReader):
            not optional anymore when the Writer is obtained through
            this method of :class:`PDBReader` .)
         """
-        # This is messy; we cannot get a universe from the Reader, which would be
-        # also needed to be fed to the PDBWriter (which is a total mess...).
-        # Hence we ignore the problem and document it in the doc string... --- the
-        # limitation is simply that PDBWriter.write() must always be called with an argument.
+        # This is messy; we cannot get a universe from the Reader, which would
+        # be also needed to be fed to the PDBWriter (which is a total mess...).
+        # Hence we ignore the problem and document it in the doc string... ---
+        # the limitation is simply that PDBWriter.write() must always be called
+        # with an argument.
         kwargs['BioPDBstructure'] = self.pdb  # make sure that this Writer is
-        kwargs.pop('universe', None)  # always linked to this reader, don't bother with Universe
+        # always linked to this reader, don't bother with Universe
+        kwargs.pop('universe', None)
         return PDBWriter(filename, **kwargs)
 
 
@@ -332,7 +336,8 @@ class PDBWriter(base.Writer):
         import Bio.PDB.Structure
 
         self.universe = universe
-        self.PDBstructure = kwargs.pop('BioPDBstructure', None)  # hack for PDBReader.Writer()
+        # hack for PDBReader.Writer()
+        self.PDBstructure = kwargs.pop('BioPDBstructure', None)
         if not self.PDBstructure:
             try:
                 self.PDBstructure = universe.trajectory.pdb
@@ -374,8 +379,10 @@ class PDBWriter(base.Writer):
                     warnings.warn("PDBWriter: Not writing frame as neither universe nor timestep supplied.")
                     return
             if not hasattr(ts, '_pos'):
-                raise TypeError("The PDBWriter can only process a Timestep as optional argument, not "
-                                "e.g. a selection. Use the PrimitivePDBWriter instead and see the docs.")
+                raise TypeError("The PDBWriter can only process a Timestep as "
+                                " optional argument, not e.g. a selection. "
+                                "Use the PrimitivePDBWriter instead and see "
+                                "the docs.")
             for a, pos in zip(self.PDBstructure.get_atoms(), ts._pos):
                 a.set_coord(pos)
             io = pdb.extensions.SloppyPDBIO()
@@ -386,7 +393,8 @@ class PDBWriter(base.Writer):
 class PrimitivePDBReader(base.Reader):
     """PDBReader that reads a `PDB-formatted`_ file, no frills.
 
-    The following *PDB records* are parsed (see `PDB coordinate section`_ for details):
+    The following *PDB records* are parsed (see `PDB coordinate section`_ for
+    details):
 
      - *CRYST1* for unitcell A,B,C, alpha,beta,gamma
      - *ATOM* or *HETATM* for serial,name,resName,chainID,resSeq,x,y,z,occupancy,tempFactor
@@ -485,9 +493,9 @@ class PrimitivePDBReader(base.Reader):
                 if record == 'END':
                     break
                 elif record == 'CRYST1':
-                    A, B, C = map(float, [line[6:15], line[15:24], line[24:33]])
-                    alpha, beta, gamma = map(float, [line[33:40], line[40:47], line[47:54]])
-                    self.ts._unitcell[:] = A, B, C, alpha, beta, gamma
+                    self.ts._unitcell[:] = [line[6:15], line[15:24],
+                                            line[24:33], line[33:40],
+                                            line[40:47], line[47:54]]
                     continue
                 elif record == 'HEADER':
                     # classification = line[10:50]
@@ -514,11 +522,11 @@ class PrimitivePDBReader(base.Reader):
                     # on the trajectory reader
                     if len(frames) > 1:
                         continue
-                    self.ts._pos[pos] = list(map(float, [line[30:38],
-                                                         line[38:46],
-                                                         line[46:54]]))
+                    self.ts._pos[pos] = [line[30:38],
+                                         line[38:46],
+                                         line[46:54]]
                     try:
-                        occupancy[pos] = float(line[54:60])
+                        occupancy[pos] = line[54:60]
                     except ValueError:
                         pass
                     pos += 1
@@ -600,23 +608,22 @@ class PrimitivePDBReader(base.Reader):
             for line in f:
                 if line[:6] == 'ENDMDL':
                     break
-                # NOTE - CRYST1 line won't be found if it comes before the MODEL
-                # line, which is sometimes the case, e.g. output from gromacs
-                # trjconv
+                # NOTE - CRYST1 line won't be found if it comes before the
+                # MODEL line, which is sometimes the case, e.g. output from
+                # gromacs trjconv
                 elif line[:6] == 'CRYST1':
-                    A, B, C = map(float, [line[6:15], line[15:24], line[24:33]])
-                    alpha, beta, gamma = map(float, [line[33:40], line[40:47],
-                                                     line[47:54]])
-                    self.ts._unitcell[:] = A, B, C, alpha, beta, gamma
+                    self.ts._unitcell[:] = [line[6:15], line[15:24],
+                                            line[24:33], line[33:40],
+                                            line[40:47], line[47:54]]
                     continue
                 elif line[:6] in ('ATOM  ', 'HETATM'):
                     # we only care about coordinates
-                    self.ts._pos[pos] = list(map(float, [line[30:38],
-                                                         line[38:46],
-                                                         line[46:54]]))
+                    self.ts._pos[pos] = [line[30:38],
+                                         line[38:46],
+                                         line[46:54]]
                     # TODO import bfactors - might these change?
                     try:
-                        occupancy[pos] = float(line[54:60])
+                        occupancy[pos] = line[54:60]
                     except ValueError:
                         # Be tolerant for ill-formated or empty occupancies
                         pass
@@ -630,8 +637,9 @@ class PrimitivePDBReader(base.Reader):
                              "".format(expected=self._n_atoms, actual=pos+1))
 
         if self.convert_units:
-            self.convert_pos_from_native(self.ts._pos)  # in-place !
-            self.convert_pos_from_native(self.ts._unitcell[:3])  # in-place ! (only lengths)
+            # both happen inplace
+            self.convert_pos_from_native(self.ts._pos)
+            self.convert_pos_from_native(self.ts._unitcell[:3])
         self.ts.frame = frame
         self.ts.data['occupancy'] = occupancy
         return self.ts
@@ -832,15 +840,18 @@ class PrimitivePDBWriter(base.Writer):
         # can write from selection == Universe (Issue 49)
         coor = atoms.positions
 
-        # check if any coordinates are illegal (coordinates are already in Angstroem per package default)
+        # check if any coordinates are illegal (coordinates are already in
+        # Angstroem per package default)
         if self.has_valid_coordinates(self.pdb_coor_limits, coor):
             return True
-        # note the precarious close() here: we know that the file is open and we now
-        # prepare to remove what we have already written (header and such) or add a REMARK
-        # (which allows the user to look at the previously written frames)
+        # note the precarious close() here: we know that the file is open and
+        # we now prepare to remove what we have already written (header and
+        # such) or add a REMARK (which allows the user to look at the
+        # previously written frames)
         if self.frames_written > 1:
             self.REMARK("Incomplete multi-frame trajectory.",
-                        "Coordinates for the current frame cannot be represented in the PDB format.")
+                        "Coordinates for the current frame cannot be "
+                        "represented in the PDB format.")
             self.close()
         else:
             self.close()
@@ -849,8 +860,10 @@ class PrimitivePDBWriter(base.Writer):
             except OSError as err:
                 if err.errno == errno.ENOENT:
                     pass
-        raise ValueError(
-            "PDB files must have coordinate values between {0:.3f} and {1:.3f} Angstroem: file writing was aborted.".format(self.pdb_coor_limits["min"], self.pdb_coor_limits["max"]))
+        raise ValueError("PDB files must have coordinate values between "
+                         "{0:.3f} and {1:.3f} Angstroem: file writing was "
+                         "aborted.".format(self.pdb_coor_limits["min"],
+                                           self.pdb_coor_limits["max"]))
 
     def _write_pdb_bonds(self):
         """Writes out all the bond records; works only for Universe objects.
@@ -909,7 +922,6 @@ class PrimitivePDBWriter(base.Writer):
             con[a2].append(a1)
             con[a1].append(a2)
 
-        #print con
         atoms = sorted([a.index for a in self.obj.atoms])
 
         conect = [([a, ] + sorted(con[a])) for a in atoms if a in con]
@@ -938,11 +950,12 @@ class PrimitivePDBWriter(base.Writer):
         """
 
         if isinstance(obj, base.Timestep):
-            raise TypeError(
-                "PrimitivePDBWriter cannot write Timestep objects directly, since they lack topology information ("
-                "atom names and types) required in PDB files")
-
-        self.obj = obj  # remember obj for some of other methods  --- NOTE: this is an evil/lazy hack...
+            raise TypeError("PrimitivePDBWriter cannot write Timestep objects "
+                            "directly, since they lack topology information ("
+                            "atom names and types) required in PDB files")
+        # remember obj for some of other methods --- NOTE: this is an evil/lazy
+        # hack...
+        self.obj = obj
         ts, traj = None, None
         if hasattr(obj, 'universe') and not isinstance(obj, Universe):
             # For AtomGroup and children (Residue, ResidueGroup, Segment)
@@ -954,9 +967,9 @@ class PrimitivePDBWriter(base.Writer):
             traj = obj.trajectory
 
         if not (ts and traj):
-            raise AssertionError(
-                "PrimitivePDBWriter couldn't extract trajectory and timestep information from an object; inheritance "
-                "problem.")
+            raise AssertionError("PrimitivePDBWriter couldn't extract "
+                                 "trajectory and timestep information "
+                                 "from an object; inheritance problem.")
 
         self.trajectory = traj  # update trajectory (used by other methods)
         self.ts = ts  # update timestep (used by other methods)
@@ -981,8 +994,9 @@ class PrimitivePDBWriter(base.Writer):
 
         self._update_frame(obj)
         self._write_pdb_header()
-        # Issue 105: with write() ONLY write a single frame; use write_all_timesteps() to dump
-        # everything in one go, or do the traditional loop over frames
+        # Issue 105: with write() ONLY write a single frame; use
+        # write_all_timesteps() to dump everything in one go, or do the
+        # traditional loop over frames
         self.write_next_timestep(self.ts, multiframe=self._multiframe)
         self._write_pdb_bonds()
         # END record is written when file is being close()d
@@ -1053,7 +1067,8 @@ class PrimitivePDBWriter(base.Writer):
         '''
         if ts is None:
             if not hasattr(self, "ts"):
-                raise NoDataError("PBDWriter: no coordinate data to write to trajectory file")
+                raise NoDataError("PBDWriter: no coordinate data to write to "
+                                  "trajectory file")
             else:
                 ts = self.ts
         self._check_pdb_coordinates()
@@ -1197,7 +1212,8 @@ class PrimitivePDBWriter(base.Writer):
 
         """
         if not self.has_END:
-            self.pdbfile.write(self.fmt['END'])  # only write a single END record
+            # only write a single END record
+            self.pdbfile.write(self.fmt['END'])
         self.has_END = True
 
     def ENDMDL(self):
