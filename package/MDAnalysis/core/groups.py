@@ -158,46 +158,6 @@ class GroupBase(object):
         """
         return self._ix
     
-    @property
-    def atoms(self):
-        """Get a unique (non-repeating) AtomGroup of the atoms in the group.
-        """
-        return self._u.atoms[np.unique(self.indices)]
-
-    @property
-    def n_atoms(self):
-        """Total number of unique atoms represented in the group.
-        """
-        return len(self.atoms)
-
-    @property
-    def residues(self):
-        """Get a unique (non-repeating) ResidueGroup of the residues
-        represented in the group.
-        """
-        return self._u.residues[np.unique(self.resindices)]
-
-    @property
-    def n_residues(self):
-        """Total number of unique residues represented in the group.
-
-        """
-        return len(self.residues)
-
-    @property
-    def segments(self):
-        """Get a unique (non-repeating) SegmentGroup of the segments 
-        represented in the group.
-        """
-        return self._u.segments[np.unique(self.segindices)]
-                                                
-    @property
-    def n_segments(self):
-        """Total number of unique segments represented in the group.
-
-        """
-        return len(self.segments)
-
 
 class AtomGroup(object):
     """A group of atoms.
@@ -262,6 +222,61 @@ class AtomGroup(object):
     level = 'atom'
 
     @property
+    def atoms(self):
+        """Get another AtomGroup identical to this one.
+
+        """
+        return self._u.atoms[self.ix]
+
+    @property
+    def n_atoms(self):
+        """Number of atoms in AtomGroup. Equivalent to ``len(self)``.
+
+        """
+        return len(self)
+
+    @property
+    def residues(self):
+        """Get sorted ResidueGroup of the (unique) residues represented in the
+        AtomGroup.
+
+        """
+        return self._u.residues[np.unique(self.resindices)]
+
+    @property
+    def n_residues(self):
+        """Number of unique residues represented in the AtomGroup.
+
+        Equivalent to ``len(self.residues)``.
+
+        """
+        return len(self.residues)
+
+    @property
+    def segments(self):
+        """Get sorted SegmentGroup of the (unique) segments represented in the
+        AtomGroup.
+
+        """
+        return self._u.segments[np.unique(self.segindices)]
+                                                
+    @property
+    def n_segments(self):
+        """Number of unique segments represented in the AtomGroup.
+
+        Equivalent to ``len(self.segments)``.
+
+        """
+        return len(self.segments)
+
+    @property
+    def unique(self):
+        """Return an AtomGroup containing sorted and unique atoms only.
+
+        """
+        return self._u.atoms[np.unique(self.ix)]
+
+    @property
     def dimensions(self):
         return self._u.trajectory.ts.dimensions
 
@@ -321,7 +336,6 @@ class AtomGroup(object):
         shape, i.e. either Nx3 to assign individual velocities or 3 to assign
         the *same* velocity to all atoms (e.g. ``ag.velocity = array([0,0,0])``
         will give all particles zero velocity).
-
 
         """
         ts = self._u.trajectory.ts
@@ -942,6 +956,64 @@ class AtomGroup(object):
 class ResidueGroup(object):
     level = 'residue'
 
+    @property
+    def atoms(self):
+        """Get an AtomGroup of atoms represented in this ResidueGroup.
+
+        The atoms are ordered locally by residue in the ResidueGroup.
+        No duplicates are removed.
+
+        """
+        return self._u.atoms[self.indices]
+
+    @property
+    def n_atoms(self):
+        """Number of atoms represented in ResidueGroup, including duplicate
+        residues.
+        
+        Equivalent to ``len(self.atoms)``.
+
+        """
+        return len(self.atoms)
+
+    @property
+    def residues(self):
+        """Get another ResidueGroup identical to this one.
+
+        """
+        return self._u.residues[self.ix]
+
+    @property
+    def n_residues(self):
+        """Number of residues in ResidueGroup. Equivalent to ``len(self)``.
+
+        """
+        return len(self)
+
+    @property
+    def segments(self):
+        """Get sorted SegmentGroup of the (unique) segments represented in the
+        ResidueGroup.
+
+        """
+        return self._u.segments[np.unique(self.segindices)]
+                                                
+    @property
+    def n_segments(self):
+        """Number of unique segments represented in the ResidueGroup.
+
+        Equivalent to ``len(self.segments)``.
+
+        """
+        return len(self.segments)
+
+    @property
+    def unique(self):
+        """Return a ResidueGroup containing sorted and unique residues only.
+
+        """
+        return self._u.residues[np.unique(self.ix)]
+
     def sequence(self, **kwargs):
         """Returns the amino acid sequence.
 
@@ -1046,6 +1118,67 @@ class SegmentGroup(object):
 
     """
     level = 'segment'
+
+    @property
+    def atoms(self):
+        """Get an AtomGroup of atoms represented in this SegmentGroup. 
+
+        The atoms are ordered locally by residue, which are further ordered by
+        segment in the SegmentGroup. No duplicates are removed.
+
+        """
+        return self._u.atoms[self.indices]
+
+    @property
+    def n_atoms(self):
+        """Number of atoms represented in SegmentGroup, including duplicate
+        segments.
+        
+        Equivalent to ``len(self.atoms)``.
+
+        """
+        return len(self.atoms)
+
+    @property
+    def residues(self):
+        """Get a ResidueGroup of residues represented in this SegmentGroup. 
+
+        The residues are ordered locally by segment in the SegmentGroup.
+        No duplicates are removed.
+
+        """
+        return self._u.residues[self.resindices]
+
+    @property
+    def n_residues(self):
+        """Number of residues represented in SegmentGroup, including duplicate
+        segments.
+        
+        Equivalent to ``len(self.residues)``.
+
+        """
+        return len(self.residues)
+
+    @property
+    def segments(self):
+        """Get another SegmentGroup identical to this one.
+
+        """
+        return self._u.segments[self.ix]
+                                                
+    @property
+    def n_segments(self):
+        """Number of segments in SegmentGroup. Equivalent to ``len(self)``.
+
+        """
+        return len(self)
+
+    @property
+    def unique(self):
+        """Return a SegmentGroup containing sorted and unique segments only.
+
+        """
+        return self._u.segments[np.unique(self.ix)]
 
 
 @functools.total_ordering
