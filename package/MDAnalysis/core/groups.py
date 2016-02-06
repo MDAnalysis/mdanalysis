@@ -1258,6 +1258,17 @@ class ComponentBase(object):
     def universe(self):
         return self._u
 
+    @property
+    def ix(self):
+        """Unique index of this component.
+
+        If this component is an Atom, this is the index of the atom.
+        If it is a Residue, this is the index of the residue.
+        If it is a Segment, this is the index of the segment.
+
+        """
+        return self._ix
+
 
 class Atom(ComponentBase):
     """Atom base class.

@@ -245,10 +245,11 @@ class TransTable(object):
 
         rixs = self.segments2residues_2d(six)
 
-        if isinstance(rixs, np.ndarray):
+        try:
+            return np.concatenate([self.residues2atoms_1d(rix)
+                                   for rix in rixs])
+        except TypeError:
             return self.residues2atoms_1d(rixs)
-        else:
-            return np.concatenate((self.residues2atoms_1d(rix) for rix in rixs))
 
     def segments2atoms_2d(self, six):
         """Get atom indices represented by each segment index.
