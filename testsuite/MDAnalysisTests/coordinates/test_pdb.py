@@ -723,21 +723,21 @@ class TestPDBWriterOccupancies(object):
 
         assert_(all(u2.atoms.occupancies == 0.12))
 
-def test_writer_alignments():
-    u = mda.Universe(NUCL)
 
-    tmpdir = tempdir.TempDir()
-    outfile = tmpdir.name + '/nucl.pdb'
+class TestWriterAlignments(object):
+    def __init__(self):
+        u = mda.Universe(NUCL)
+        self.tmpdir = tempdir.TempDir()
+        outfile = self.tmpdir.name + '/nucl.pdb'
+        u.atoms.write(outfile)
+        self.writtenstuff = open(outfile, 'r').readlines()
 
-    u.atoms.write(outfile)
+    def test_atomname_alignment(self):
+        # Our PDBWriter adds some stuff up top, so line 1 happens at [4]
+        assert_(self.writtenstuff[4].startswith("ATOM      1  H5T GUA"))
+        assert_(self.writtenstuff[8].startswith("ATOM      5 H5'' GUA"))
 
-    writtenstuff = open(outfile, 'r').readlines()
-
-    # Our PDBWriter adds some stuff up top, so line 1 happens at [4]
-    assert_(writtenstuff[4].startswith(
-        "ATOM      1  H5T GUA"))
-    assert_(writtenstuff[8].startswith(
-        "ATOM      5 H5'' GUA"))
-
-    del tmpdir
-    del outfile
+    def test_atomtype_alignment(self):
+        result_line = ("ATOM      1  H5T GUA R   1       7.974   6.430   9.561"
+                       "  1.00  0.00      RNAA H0.00\n")
+        assert_equal(result_line, self.writtenstuff[4])
