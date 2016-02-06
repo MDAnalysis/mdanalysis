@@ -789,8 +789,7 @@ class _GromacsReader_offsets(TestCase):
         fname = XDR.offsets_filename(self.traj)
         saved_offsets = XDR.read_numpy_offsets(fname)
         saved_offsets['n_atoms'] += 1
-        with open(fname, 'wb') as f:
-            np.savez(f, **saved_offsets)
+        np.savez(fname, **saved_offsets)
 
         with warnings.catch_warnings(record=True) as warn:
             warnings.simplefilter('always')
@@ -813,7 +812,7 @@ class _GromacsReader_offsets(TestCase):
             reader[idx_frame]
 
         assert_equal(warn[0].message.args[0],
-                     'seek failed, recalculating offsets and retry')
+                     'seek failed, recalculating offsets and retrying')
 
     @dec.slow
     def test_persistent_offsets_readonly(self):

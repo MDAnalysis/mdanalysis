@@ -164,7 +164,7 @@ class XDRBaseReader(base.Reader):
             self._xdr.seek(i)
             timestep = self._read_next_timestep()
         except RuntimeError:
-            warnings.warn('seek failed, recalculating offsets and retry')
+            warnings.warn('seek failed, recalculating offsets and retrying')
             offsets = self._xdr.calc_offsets()
             self._xdr.set_offsets(offsets)
             self._read_offsets(store=True)
