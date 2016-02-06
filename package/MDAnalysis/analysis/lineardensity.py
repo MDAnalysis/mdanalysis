@@ -197,7 +197,7 @@ class LinearDensity(AnalysisBase):
         <trajectory_filename>.mydensprof_<grouping>.ldens
         """
         # Take root of trajectory filename for output file naming
-        trajname = path.splitext(path.basename(self._universe.trajectory.dcdfilename))[0]
+        trajname = path.splitext(path.basename(self._universe.trajectory.filename))[0]
         # additional string for naming the output file
         description = description + "_" + str(self.grouping)
         filename = trajname+"." + description + ".ldens"

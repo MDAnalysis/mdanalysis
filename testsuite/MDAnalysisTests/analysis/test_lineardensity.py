@@ -32,8 +32,6 @@ class TestLinearDensity(TestCase):
     def test_serial(self):
         ld = LinearDensity(self.selection, binsize=5)
         ld.run()
-        print self.xpos
-        print ld.results['x']['pos']
         assert_allclose(self.xpos, ld.results['x']['pos'], rtol=1e-6, atol=0)
 
 #    def test_parallel(self):
