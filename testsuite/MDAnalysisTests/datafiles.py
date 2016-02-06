@@ -98,6 +98,7 @@ __all__ = [
     "DLP_CONFIG", "DLP_CONFIG_order", "DLP_CONFIG_minimal",  # dl_poly 4 config file
     "DLP_HISTORY", "DLP_HISTORY_order", "DLP_HISTORY_minimal",  # dl_poly 4 history file
     "waterPSF","waterDCD","rmsfArray",
+    "evalsArray","evecsArray","scoresArray", # for PCA tests
     "HoomdXMLdata",
     "Make_Whole",  # for testing the function lib.mdamath.make_whole, has 9 atoms
     "Plength",
@@ -291,6 +292,10 @@ waterPSF = resource_filename(__name__, 'data/watdyn.psf')
 waterDCD = resource_filename(__name__, 'data/watdyn.dcd')
 
 rmsfArray = resource_filename(__name__, 'data/adk_oplsaa_CA_rmsf.npy')
+
+evalsArray = resource_filename(__name__, 'data/test_evals.npy')
+evecsArray = resource_filename(__name__, 'data/test_evecs.npy')
+scoresArray = resource_filename(__name__, 'data/test_scores.npy')
 
 HoomdXMLdata = resource_filename(__name__, 'data/C12x64.xml.bz2')
 
