@@ -55,12 +55,17 @@ Where the final pre expoential factor :math:`A_n` is subject to the condition:
 
     :math:`A_n = 1 - \\sum\\limits_{i=1}^{n-1} A_i`
 
+For further details see [Gowers2015]_.
+
 .. rubric:: References
 
-.. [notsure]  Multiscale modelling of polymeric systems with hydrogen bonding: Selective removal of degrees of freedom
+.. [Gowers2015]  Richard J. Gowers and Paola Carbone,
+                 A multiscale approach to model hydrogen bonding: The case of polyamide
+                 The Journal of Chemical Physics, 142, 224907 (2015),
+                 DOI:http://dx.doi.org/10.1063/1.4922445
 
 Input
----------------
+-----
 
 Three AtomGroup selections representing the **hydrogens**, **donors** and
 **acceptors** that you wish to analyse.  Note that the **hydrogens** and
@@ -87,7 +92,7 @@ of points along the run are calculated.
 
 
 Output
----------------
+------
 
 All results of the analysis are available through the *solution* attribute.
 This is a dictionary with the following keys
@@ -106,7 +111,7 @@ used.
 
 
 Examples
----------------
+--------
 
 ::
 
@@ -148,7 +153,45 @@ from MDAnalysis.lib.distances import distance_array, calc_angles, calc_bonds
 
 
 class HydrogenBondAutoCorrel(object):
-    """Perform a time autocorrelation of the hydrogen bonds in the system. """
+    """Perform a time autocorrelation of the hydrogen bonds in the system. 
+
+    Parameters
+    ----------
+    universe : Universe
+        MDAnalysis Universe that all selections belong to
+    hydrogens : AtomGroup
+        AtomGroup of Hydrogens which can form hydrogen bonds
+    acceptors : AtomGroup
+        AtomGroup of all Acceptor atoms
+    donors : AtomGroup
+        The atoms which are connected to the hydrogens.  This group
+        must be identical in length to the hydrogen group and matched,
+        ie hydrogens[0] is bonded to donors[0].
+        For many cases, this will mean a donor appears twice in this
+        group.
+    bond_type : str
+        Which definition of hydrogen bond lifetime to consider, either
+        'continuous' or 'intermittent'.
+    exclusions : ndarray, optional
+        Indices of Hydrogen-Acceptor pairs to be excluded.
+        With nH and nA Hydrogens and Acceptors, a (nH x nA) array of distances
+        is calculated, *exclusions* is used as a mask on this array to exclude
+        some pairs.
+    angle_crit : float, optional
+        The angle (in degrees) which all bonds must be greater than [130.0]
+    dist_crit : float, optional
+        The maximum distance (in Angstroms) for a hydrogen bond [3.0]
+    sample_time : float, optional
+        The amount of time, in ps, that you wish to observe hydrogen
+        bonds for [100]
+    nruns : int, optional
+        The number of different start points within the trajectory
+        to use [1]
+    nsamples : int, optional
+        Within each run, the number of frames to analyse [50]
+    pbc : bool, optional
+        Whether to consider periodic boundaries in calculations [``True``]
+    """
 
     def __init__(self, universe,
                  hydrogens=None, acceptors=None, donors=None,
@@ -160,45 +203,6 @@ class HydrogenBondAutoCorrel(object):
                  nruns=1,  # number of times to iterate through the trajectory
                  nsamples=50,  # number of different points to sample in a run
                  pbc=True):
-        """
-        :Arguments:
-          *universe*
-            The MDA universe
-          *hydrogens*
-            AtomGroup of Hydrogens which can form hydrogen bonds
-          *acceptors*
-            AtomGroup of all Acceptor atoms
-          *donors*
-            The atoms which are connected to the hydrogens.  This group
-            must be identical in length to the hydrogen group and matched,
-            ie hydrogens[1] is bonded to donors[0].
-            For many cases, this will mean a donor appears twice in this
-            group.
-          *bond_type*
-            Which definition of hydrogen bond lifetime to consider, either
-            'continuous' or 'intermittent'.
-
-        :Keywords:
-          *exclusions*
-            Indices of Hydrogen-Acceptor pairs to be excluded.
-            With nH and nA Hydrogens and Acceptors, a (nH x nA) array of distances
-            is calculated, *exclusions* is used as a mask on this array to exclude
-            some pairs.
-          *angle_crit*
-            The angle (in degrees) which all bonds must be greater than [130.0]
-          *dist_crit*
-            The maximum distance (in Angstroms) for a hydrogen bond [3.0]
-          *sample_time*
-            The amount of time, in ps, that you wish to observe hydrogen
-            bonds for [100]
-          *nruns*
-            The number of different start points within the trajectory
-            to use [1]
-          *nsamples*
-            Within each run, the number of frames to analyse [50]
-          *pbc*
-            Whether to consider periodic boundaries in calculations [``True``]
-        """
         self.u = universe
         # check that slicing is possible
         try:
@@ -271,11 +275,11 @@ class HydrogenBondAutoCorrel(object):
             self._skip = 1
 
     def run(self, force=False):
-        """
-        Run all the required passes
+        """Run all the required passes
 
-        :Keywords:
-          *force*
+        Parameters:
+        -----------
+        force : bool, optional
             Will overwrite previous results if they exist
         """
         # if results exist, don't waste any time
@@ -382,13 +386,13 @@ class HydrogenBondAutoCorrel(object):
         return results
 
     def save_results(self, filename='hbond_autocorrel'):
-        """
-        Saves the results to a numpy zipped array (.npz, see np.savez)
+        """Saves the results to a numpy zipped array (.npz, see np.savez)
 
         This can be loaded using np.load(filename)
 
-        :Keywords:
-          *filename*
+        Parameters
+        ----------
+        filename : str, optional
             The desired filename [hbond_autocorrel]
         """
         if self.solution['results'] is not None:
@@ -402,8 +406,9 @@ class HydrogenBondAutoCorrel(object):
         """Fit results to an multi exponential decay and integrate to find
         characteristic time
 
-        :Keywords:
-          *p_guess*
+        Parameters
+        ----------
+        p_guess : tuple of floats, optional
             Initial guess for the leastsq fit, must match the shape of the
             expected coefficients
 
@@ -495,7 +500,8 @@ class HydrogenBondAutoCorrel(object):
             self._my_solve = triple
 
             if p_guess is None:
-                p_guess = (0.33, 0.33, 10 * self.sample_time, self.sample_time, 0.1 * self.sample_time)
+                p_guess = (0.33, 0.33, 10 * self.sample_time,
+                           self.sample_time, 0.1 * self.sample_time)
 
             p, cov, infodict, mesg, ier = leastsq(err, p_guess,
                                                   args=(time, results),
@@ -516,6 +522,6 @@ class HydrogenBondAutoCorrel(object):
             warnings.warn("Solution to results not found", RuntimeWarning)
 
     def __repr__(self):
-        return "< MDAnalysis HydrogenBondAutoCorrel analysis measuring the " + \
-               self.bond_type + \
-               " lifetime of {0} different hydrogens >".format(len(self.h))
+        return ("<MDAnalysis HydrogenBondAutoCorrel analysis measuring the "
+                "{btype} lifetime of {n} different hydrogens>"
+                "".format(btype=self.bond_type, n=len(self.h)))
