@@ -10,6 +10,8 @@
 # Please cite your use of MDAnalysis in published work:
 #
 # N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+
+
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
@@ -113,7 +115,7 @@ class XDRBaseReader(base.Reader):
 
         ctime_ok = getctime(self.filename) == data['ctime']
         size_ok = getsize(self.filename) == data['size']
-        n_atoms_ok = self.n_atoms == data['n_atoms']
+        n_atoms_ok = self._xdr.n_atoms == data['n_atoms']
 
         if not (ctime_ok and size_ok and n_atoms_ok):
             warnings.warn("Reload offsets from trajectory\n "
@@ -131,7 +133,7 @@ class XDRBaseReader(base.Reader):
             try:
                 np.savez(offsets_filename(self.filename),
                          offsets=offsets, size=size, ctime=ctime,
-                         n_atoms=self.n_atoms)
+                         n_atoms=self._xdr.n_atoms)
             except Exception as e:
                 try:
                     warnings.warn("Couldn't save offsets because: {}".format(
