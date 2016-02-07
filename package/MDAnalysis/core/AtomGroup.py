@@ -3378,6 +3378,7 @@ class Residue(AtomGroup):
         ##if not Residue._cache.has_key(name):
         ##    Residue._cache[name] = dict([(a.name, i) for i, a in enumerate(self._atoms)])
 
+    @deprecate(message=_FIFTEEN_DEPRECATION)
     def phi_selection(self):
         """AtomGroup corresponding to the phi protein backbone dihedral C'-N-CA-C.
 
@@ -3393,6 +3394,7 @@ class Residue(AtomGroup):
         else:
             return None
 
+    @deprecate(message=_FIFTEEN_DEPRECATION)
     def psi_selection(self):
         """AtomGroup corresponding to the psi protein backbone dihedral N-CA-C-N'.
 
@@ -3408,6 +3410,7 @@ class Residue(AtomGroup):
         else:
             return None
 
+    @deprecate(message=_FIFTEEN_DEPRECATION)
     def omega_selection(self):
         """AtomGroup corresponding to the omega protein backbone dihedral CA-C-N'-CA'.
 
@@ -3431,6 +3434,7 @@ class Residue(AtomGroup):
         else:
             return None
 
+    @deprecate(message=_FIFTEEN_DEPRECATION)
     def chi1_selection(self):
         """AtomGroup corresponding to the chi1 sidechain dihedral N-CA-CB-CG.
 
