@@ -1,4 +1,3 @@
-import six
 from six.moves import zip, range
 
 import errno
@@ -31,6 +30,10 @@ from MDAnalysisTests.coordinates.base import (BaseReaderTest, BaseReference,
 
 import MDAnalysis.core.AtomGroup
 from MDAnalysis.coordinates import XDR
+
+# I want to catch all warnings in the tests. If this is not set at the start it
+# could cause test that check for warnings to fail.
+warnings.simplefilter('always')
 
 
 class _XDRReader_Sub(TestCase):
@@ -728,8 +731,7 @@ class _GromacsReader_offsets(TestCase):
                                   err_msg="wrong frame offsets")
 
         outfile_offsets = XDR.offsets_filename(self.traj)
-        with open(outfile_offsets, 'rb') as f:
-            saved_offsets = {k: v for k, v in six.iteritems(np.load(f))}
+        saved_offsets = XDR.read_numpy_offsets(outfile_offsets)
 
         assert_array_almost_equal(self.trajectory._xdr.offsets,
                                   saved_offsets['offsets'],
@@ -753,8 +755,7 @@ class _GromacsReader_offsets(TestCase):
         # check that stored offsets are not loaded when trajectory
         # size differs from stored size
         fname = XDR.offsets_filename(self.traj)
-        with open(fname, 'rb') as f:
-            saved_offsets = {k: v for k, v in six.iteritems(np.load(f))}
+        saved_offsets = XDR.read_numpy_offsets(fname)
         saved_offsets['size'] += 1
         with open(fname, 'wb') as f:
             np.savez(f, **saved_offsets)
@@ -763,15 +764,14 @@ class _GromacsReader_offsets(TestCase):
             warnings.simplefilter('always')
             self._reader(self.traj)
         assert_equal(warn[0].message.args,
-                     ('Reload offsets from trajectory\n ctime or size did not match', ))
+                     ('Reload offsets from trajectory\n ctime or size or n_atoms did not match', ))
 
     @dec.slow
     def test_persistent_offsets_ctime_mismatch(self):
         # check that stored offsets are not loaded when trajectory
         # ctime differs from stored ctime
         fname = XDR.offsets_filename(self.traj)
-        with open(fname, 'rb') as f:
-            saved_offsets = {k: v for k, v in six.iteritems(np.load(f))}
+        saved_offsets = XDR.read_numpy_offsets(fname)
         saved_offsets['ctime'] += 1
         with open(fname, 'wb') as f:
             np.savez(f, **saved_offsets)
@@ -780,26 +780,39 @@ class _GromacsReader_offsets(TestCase):
             warnings.simplefilter('always')
             self._reader(self.traj)
         assert_equal(warn[0].message.args,
-                     ('Reload offsets from trajectory\n ctime or size did not match', ))
+                     ('Reload offsets from trajectory\n ctime or size or n_atoms did not match', ))
 
-    # TODO: This doesn't test if the offsets work AT ALL. the old
-    # implementation only checked if the offsets were ok to set back to the old
-    # frame. But that doesn't check if any of the other offsets is potentially
-    # wrong. Basically the only way to check that would be to scan through the
-    # whole trajectory.
-    # @dec.slow
-    # def test_persistent_offsets_last_frame_wrong(self):
-    #     # check that stored offsets are not loaded when the offsets
-    #     # themselves appear to be wrong
-    #     with open(XDR.offsets_filename(self.traj), 'rb') as f:
-    #         saved_offsets = {k: v for k, v in six.iteritems(np.load(f))}
-    #     saved_offsets['offsets'] += 1
-    #     with open(XDR.offsets_filename(self.traj), 'wb') as f:
-    #         np.savez(f, **saved_offsets)
+    @dec.slow
+    def test_persistent_offsets_natoms_mismatch(self):
+        # check that stored offsets are not loaded when trajectory
+        # ctime differs from stored ctime
+        fname = XDR.offsets_filename(self.traj)
+        saved_offsets = XDR.read_numpy_offsets(fname)
+        saved_offsets['n_atoms'] += 1
+        np.savez(fname, **saved_offsets)
 
-    #     # with warnings.catch_warnings():
-    #     #     u = MDAnalysis.Universe(self.top, self.traj)
-    #     #     assert_equal((u.trajectory._xdr.offsets is None), True)
+        with warnings.catch_warnings(record=True) as warn:
+            warnings.simplefilter('always')
+            self._reader(self.traj)
+        assert_equal(warn[0].message.args,
+                     ('Reload offsets from trajectory\n ctime or size or n_atoms did not match', ))
+
+    @dec.slow
+    def test_persistent_offsets_last_frame_wrong(self):
+        fname = XDR.offsets_filename(self.traj)
+        saved_offsets = XDR.read_numpy_offsets(fname)
+
+        idx_frame = 3
+        saved_offsets['offsets'][idx_frame] += 42
+        np.savez(fname, **saved_offsets)
+
+        with warnings.catch_warnings(record=True) as warn:
+            warnings.simplefilter('always')
+            reader = self._reader(self.traj)
+            reader[idx_frame]
+
+        assert_equal(warn[0].message.args[0],
+                     'seek failed, recalculating offsets and retrying')
 
     @dec.slow
     def test_persistent_offsets_readonly(self):
