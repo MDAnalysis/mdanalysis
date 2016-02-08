@@ -398,7 +398,7 @@ class Masses(AtomAttr):
         return masses
 
     def center_of_mass(atomgroup, **kwargs):
-        """Center of mass of the AtomGroup
+        """Center of mass of the AtomGroup.
 
         Parameters
         ----------
@@ -430,8 +430,7 @@ class Masses(AtomAttr):
         """Total mass of the Group.
         
         """
-        masses = group.masses
-        return masses.sum()
+        return group.masses.sum()
 
     transplants['group'].append(
         ('total_mass', total_mass))
@@ -641,6 +640,8 @@ class Masses(AtomAttr):
 class Charges(AtomAttr):
     attrname = 'charges'
     singular = 'charge'
+    target_levels = ['atom', 'residue', 'segment']
+    transplants = defaultdict(list)
 
     def get_residues(self, rg):
         charges = np.empty(len(rg))
@@ -661,6 +662,15 @@ class Charges(AtomAttr):
             charges[i] = self.values[row].sum()
 
         return charges
+
+    def total_charge(group):
+        """Total charge of the Group.
+        
+        """
+        return group.charges.sum()
+
+    transplants['group'].append(
+        ('total_charge', total_charge))
 
 
 #TODO: update docs to property doc
