@@ -40,6 +40,7 @@ Changes
   * Short TRZ titles are striped from trailing spaces. A friendlier error
     message is raised when the TRZ writer is asked to write a title longer
     than 80 characters. (Issue #689)
+  * PDB doesn't save charge information anymore
 
 Fixes
 

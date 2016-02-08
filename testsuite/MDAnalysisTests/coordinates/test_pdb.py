@@ -739,5 +739,5 @@ class TestWriterAlignments(object):
 
     def test_atomtype_alignment(self):
         result_line = ("ATOM      1  H5T GUA R   1       7.974   6.430   9.561"
-                       "  1.00  0.00      RNAA H0.00\n")
-        assert_equal(result_line, self.writtenstuff[4])
+                       "  1.00  0.00      RNAA H\n")
+        assert_equal(self.writtenstuff[4], result_line)
