@@ -141,33 +141,37 @@ def InnerProduct(np.ndarray[np.float64_t,ndim=1] A,
                  np.ndarray[np.float64_t,ndim=2] coords2,
                  int N,
                  np.ndarray[np.float64_t,ndim=1] weight):
-    """
-    Calculate the inner product of two structures.
+    """Calculate the weighted inner product of two structures.
 
-    InnerProduct(A, coords1, coords2, N, weight) --> (G1+G2)/2
+    Parameters
+    ----------
+    A : ndarray float64_t
+        result inner product array, modified in place
+    coords1 : ndarray float64_t
+        reference structure
+    coord2 : ndarray float64_t
+        candidate structure
+    N : int
+        size of system
+    weights : ndarray float64_t
+        weights for each component
 
-    If weight array is not ``None``, calculate the weighted inner product.
+    Returns
+    -------
+    E0 : float
+    0.5 * (G1 + G2), can be used as input for :func:`FastCalcRMSDAndRotation`
 
-            :Input:
-                   - A[9]    -- inner product array (modified in place)
-                   - coords1 -- reference structure
-                   - coords2 -- candidate structure
-                   - N       -- the size of the system
-                   - weight  -- the weight array of size N
-            :Output:
-                   - A[9]    -- the inner product matrix
-            :Returns:
-                   - (G1 + G2) * 0.5; used as E0 in function :func:`FastCalcRMSDAndRotation`
+    Notes
+    -----
+    1. You MUST center the structures, coords1 and coords2, before calling this
+       function.
 
-            .. Warning::
-                1. You MUST center the structures, coords1 and coords2, before calling this function.
+    2. Please note how the structure coordinates are stored as 3xN arrays,
+       not Nx3 arrays as is also commonly used. The difference is
+       something like this for storage of a structure with 8 atoms::
 
-                2. Please note how the structure coordinates are stored as 3xN arrays,
-                   not Nx3 arrays as is also commonly used. The difference is
-                   something like this for storage of a structure with 8 atoms::
-
-                      Nx3: xyzxyzxyzxyzxyzxyzxyzxyz
-                      3xN: xxxxxxxxyyyyyyyyzzzzzzzz
+          Nx3: xyzxyzxyzxyzxyzxyzxyzxyz
+          3xN: xxxxxxxxyyyyyyyyzzzzzzzz
 
     """
 
@@ -209,24 +213,27 @@ def InnerProduct(np.ndarray[np.float64_t,ndim=1] A,
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def FastCalcRMSDAndRotation(np.ndarray[np.float64_t,ndim=1] rot, np.ndarray[np.float64_t,ndim=1] A, double E0, int N):
+def FastCalcRMSDAndRotation(np.ndarray[np.float64_t,ndim=1] rot,
+                            np.ndarray[np.float64_t,ndim=1] A,
+                            double E0, int N):
     """
     Calculate the RMSD, and/or the optimal rotation matrix.
 
-    FastCalcRMSDAndRotation(rot, A, E0, N)
+    Parameters
+    ----------
+    rot : ndarray
+        result rotation matrix, modified inplace
+    A : ndarray
+        the inner product of two structures
+    E0 : float64
+        0.5 * (G1 + G2)
+    N : int
+        size of the system
 
-            :Input:
-                    - rot[9]  -- rotation matrix (modified in place)
-                    - A[9]    -- the inner product of two structures
-                    - E0      -- (G1 + G2) * 0.5
-                    - N       -- the size of the system
-            :Output:
-                    - rot[9]   -- the rotation matrix in the order of xx, xy, xz, yx, yy, yz, zx, zy, zz
-                    - rmsd     -- the RMSD value
-            :Returns:
-                    - only the rmsd was calculated if rot is None
-                    - both the RMSD & rotational matrix calculated if rot is not None
-
+    Returns
+    -------
+    rmsd : float
+        RMSD value for two structures
     """
     cdef double rmsd
     cdef double Sxx, Sxy, Sxz, Syx, Syy, Syz, Szx, Szy, Szz
@@ -313,9 +320,6 @@ def FastCalcRMSDAndRotation(np.ndarray[np.float64_t,ndim=1] rot, np.ndarray[np.f
     # but *negative* numbers due to floating point error
     rms = sqrt(fabs(2.0 * (E0 - mxEigenV)/N))
 
-    if (rot is None):
-        return rms # Don't bother with rotation.
-
     a11 = SxxpSyy + Szz-mxEigenV
     a12 = SyzmSzy
     a13 = - SxzmSzx
@@ -345,10 +349,10 @@ def FastCalcRMSDAndRotation(np.ndarray[np.float64_t,ndim=1] rot, np.ndarray[np.f
 
     qsqr = q1 * q1 + q2 * q2 + q3 * q3 + q4 * q4
 
-# The following code tries to calculate another column in the adjoint matrix when the norm of the
-#   current column is too small.
-#   Usually this commented block will never be activated.  To be absolutely safe this should be
-#   uncommented, but it is most likely unnecessary.
+    # The following code tries to calculate another column in the adjoint matrix
+    # when the norm of the current column is too small. Usually this commented
+    # block will never be activated. To be absolutely safe this should be
+    # uncommented, but it is most likely unnecessary.
 
     if (qsqr < evecprec):
         q1 =  a12*a3344_4334 - a13*a3244_4234 + a14*a3243_4233
@@ -424,24 +428,26 @@ def CalcRMSDRotationalMatrix(np.ndarray[np.float64_t,ndim=2] ref,
     """
     Calculate the RMSD & rotational matrix.
 
-    CalcRMSDRotationalMatrix(ref, conf, N, rot, weights):
-            :Input:
-                   - ref     -- reference structure coordinates (*must* be `numpy.float64`)
-                   - conf    -- candidate structure coordinates (*must* be `numpy.float64`)
-                   - N       -- the size of the system
-                   - rot[9]  -- array to store rotation matrix; set to None if only calculating rmsd (modified in place)
-                   - weight  -- the weight array of size len
-            :Output:
-                   - rot[9]  -- rotation matrix
-            :Returns:
-                   - RMSD value
+    Parameters
+    ----------
+    ref : ndarray, dtype float64_t
+        reference structure coordinates
+    conf : ndarray, dtype float64_t
+        condidate structure coordinates
+    N : int
+        size of the system
+    rot : ndarray, dtype float64_t
+        array to store rotation matrix. Must be flat
+    weights : ndarray, dtype float64_t
+        weights for each component
 
-    .. Note:: All arrays *must* be of type `numpy.float64`.
+    Returns
+    -------
+    rmsd : float
+        RMSD value
     """
     cdef double E0, rmsd
     cdef np.ndarray[np.float64_t,ndim=1] A = np.zeros(9,)
 
     E0 = InnerProduct(A,conf,ref,N,weights)
-    rmsd = FastCalcRMSDAndRotation(rot,A,E0,N)
-
-    return rmsd
+    return FastCalcRMSDAndRotation(rot,A,E0,N)

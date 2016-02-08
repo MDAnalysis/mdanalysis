@@ -4,15 +4,15 @@
 {
     "distutils": {
         "depends": [
-            "/home/max/.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/numpy/core/include/numpy/arrayobject.h", 
-            "/home/max/.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/numpy/core/include/numpy/ufuncobject.h"
+            "/home/max/.virtualenvs/mda-py2/lib/python2.7/site-packages/numpy/core/include/numpy/arrayobject.h", 
+            "/home/max/.virtualenvs/mda-py2/lib/python2.7/site-packages/numpy/core/include/numpy/ufuncobject.h"
         ], 
         "extra_compile_args": [
             "-O3", 
             "-ffast-math"
         ], 
         "include_dirs": [
-            "/home/max/.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/numpy/core/include"
+            "/home/max/.virtualenvs/mda-py2/lib/python2.7/site-packages/numpy/core/include"
         ]
     }
 }
@@ -529,7 +529,7 @@ typedef struct {
 } __Pyx_BufFmt_Context;
 
 
-/* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":725
+/* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":725
  * # in Cython to enable them only on the right systems.
  * 
  * ctypedef npy_int8       int8_t             # <<<<<<<<<<<<<<
@@ -538,7 +538,7 @@ typedef struct {
  */
 typedef npy_int8 __pyx_t_5numpy_int8_t;
 
-/* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":726
+/* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":726
  * 
  * ctypedef npy_int8       int8_t
  * ctypedef npy_int16      int16_t             # <<<<<<<<<<<<<<
@@ -547,7 +547,7 @@ typedef npy_int8 __pyx_t_5numpy_int8_t;
  */
 typedef npy_int16 __pyx_t_5numpy_int16_t;
 
-/* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":727
+/* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":727
  * ctypedef npy_int8       int8_t
  * ctypedef npy_int16      int16_t
  * ctypedef npy_int32      int32_t             # <<<<<<<<<<<<<<
@@ -556,7 +556,7 @@ typedef npy_int16 __pyx_t_5numpy_int16_t;
  */
 typedef npy_int32 __pyx_t_5numpy_int32_t;
 
-/* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":728
+/* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":728
  * ctypedef npy_int16      int16_t
  * ctypedef npy_int32      int32_t
  * ctypedef npy_int64      int64_t             # <<<<<<<<<<<<<<
@@ -565,7 +565,7 @@ typedef npy_int32 __pyx_t_5numpy_int32_t;
  */
 typedef npy_int64 __pyx_t_5numpy_int64_t;
 
-/* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":732
+/* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":732
  * #ctypedef npy_int128     int128_t
  * 
  * ctypedef npy_uint8      uint8_t             # <<<<<<<<<<<<<<
@@ -574,7 +574,7 @@ typedef npy_int64 __pyx_t_5numpy_int64_t;
  */
 typedef npy_uint8 __pyx_t_5numpy_uint8_t;
 
-/* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":733
+/* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":733
  * 
  * ctypedef npy_uint8      uint8_t
  * ctypedef npy_uint16     uint16_t             # <<<<<<<<<<<<<<
@@ -583,7 +583,7 @@ typedef npy_uint8 __pyx_t_5numpy_uint8_t;
  */
 typedef npy_uint16 __pyx_t_5numpy_uint16_t;
 
-/* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":734
+/* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":734
  * ctypedef npy_uint8      uint8_t
  * ctypedef npy_uint16     uint16_t
  * ctypedef npy_uint32     uint32_t             # <<<<<<<<<<<<<<
@@ -592,7 +592,7 @@ typedef npy_uint16 __pyx_t_5numpy_uint16_t;
  */
 typedef npy_uint32 __pyx_t_5numpy_uint32_t;
 
-/* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":735
+/* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":735
  * ctypedef npy_uint16     uint16_t
  * ctypedef npy_uint32     uint32_t
  * ctypedef npy_uint64     uint64_t             # <<<<<<<<<<<<<<
@@ -601,7 +601,7 @@ typedef npy_uint32 __pyx_t_5numpy_uint32_t;
  */
 typedef npy_uint64 __pyx_t_5numpy_uint64_t;
 
-/* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":739
+/* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":739
  * #ctypedef npy_uint128    uint128_t
  * 
  * ctypedef npy_float32    float32_t             # <<<<<<<<<<<<<<
@@ -610,7 +610,7 @@ typedef npy_uint64 __pyx_t_5numpy_uint64_t;
  */
 typedef npy_float32 __pyx_t_5numpy_float32_t;
 
-/* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":740
+/* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":740
  * 
  * ctypedef npy_float32    float32_t
  * ctypedef npy_float64    float64_t             # <<<<<<<<<<<<<<
@@ -619,7 +619,7 @@ typedef npy_float32 __pyx_t_5numpy_float32_t;
  */
 typedef npy_float64 __pyx_t_5numpy_float64_t;
 
-/* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":749
+/* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":749
  * # The int types are mapped a bit surprising --
  * # numpy.int corresponds to 'l' and numpy.long to 'q'
  * ctypedef npy_long       int_t             # <<<<<<<<<<<<<<
@@ -628,7 +628,7 @@ typedef npy_float64 __pyx_t_5numpy_float64_t;
  */
 typedef npy_long __pyx_t_5numpy_int_t;
 
-/* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":750
+/* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":750
  * # numpy.int corresponds to 'l' and numpy.long to 'q'
  * ctypedef npy_long       int_t
  * ctypedef npy_longlong   long_t             # <<<<<<<<<<<<<<
@@ -637,7 +637,7 @@ typedef npy_long __pyx_t_5numpy_int_t;
  */
 typedef npy_longlong __pyx_t_5numpy_long_t;
 
-/* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":751
+/* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":751
  * ctypedef npy_long       int_t
  * ctypedef npy_longlong   long_t
  * ctypedef npy_longlong   longlong_t             # <<<<<<<<<<<<<<
@@ -646,7 +646,7 @@ typedef npy_longlong __pyx_t_5numpy_long_t;
  */
 typedef npy_longlong __pyx_t_5numpy_longlong_t;
 
-/* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":753
+/* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":753
  * ctypedef npy_longlong   longlong_t
  * 
  * ctypedef npy_ulong      uint_t             # <<<<<<<<<<<<<<
@@ -655,7 +655,7 @@ typedef npy_longlong __pyx_t_5numpy_longlong_t;
  */
 typedef npy_ulong __pyx_t_5numpy_uint_t;
 
-/* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":754
+/* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":754
  * 
  * ctypedef npy_ulong      uint_t
  * ctypedef npy_ulonglong  ulong_t             # <<<<<<<<<<<<<<
@@ -664,7 +664,7 @@ typedef npy_ulong __pyx_t_5numpy_uint_t;
  */
 typedef npy_ulonglong __pyx_t_5numpy_ulong_t;
 
-/* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":755
+/* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":755
  * ctypedef npy_ulong      uint_t
  * ctypedef npy_ulonglong  ulong_t
  * ctypedef npy_ulonglong  ulonglong_t             # <<<<<<<<<<<<<<
@@ -673,7 +673,7 @@ typedef npy_ulonglong __pyx_t_5numpy_ulong_t;
  */
 typedef npy_ulonglong __pyx_t_5numpy_ulonglong_t;
 
-/* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":757
+/* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":757
  * ctypedef npy_ulonglong  ulonglong_t
  * 
  * ctypedef npy_intp       intp_t             # <<<<<<<<<<<<<<
@@ -682,7 +682,7 @@ typedef npy_ulonglong __pyx_t_5numpy_ulonglong_t;
  */
 typedef npy_intp __pyx_t_5numpy_intp_t;
 
-/* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":758
+/* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":758
  * 
  * ctypedef npy_intp       intp_t
  * ctypedef npy_uintp      uintp_t             # <<<<<<<<<<<<<<
@@ -691,7 +691,7 @@ typedef npy_intp __pyx_t_5numpy_intp_t;
  */
 typedef npy_uintp __pyx_t_5numpy_uintp_t;
 
-/* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":760
+/* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":760
  * ctypedef npy_uintp      uintp_t
  * 
  * ctypedef npy_double     float_t             # <<<<<<<<<<<<<<
@@ -700,7 +700,7 @@ typedef npy_uintp __pyx_t_5numpy_uintp_t;
  */
 typedef npy_double __pyx_t_5numpy_float_t;
 
-/* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":761
+/* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":761
  * 
  * ctypedef npy_double     float_t
  * ctypedef npy_double     double_t             # <<<<<<<<<<<<<<
@@ -709,7 +709,7 @@ typedef npy_double __pyx_t_5numpy_float_t;
  */
 typedef npy_double __pyx_t_5numpy_double_t;
 
-/* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":762
+/* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":762
  * ctypedef npy_double     float_t
  * ctypedef npy_double     double_t
  * ctypedef npy_longdouble longdouble_t             # <<<<<<<<<<<<<<
@@ -740,7 +740,7 @@ typedef npy_longdouble __pyx_t_5numpy_longdouble_t;
 
 /*--- Type declarations ---*/
 
-/* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":764
+/* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":764
  * ctypedef npy_longdouble longdouble_t
  * 
  * ctypedef npy_cfloat      cfloat_t             # <<<<<<<<<<<<<<
@@ -749,7 +749,7 @@ typedef npy_longdouble __pyx_t_5numpy_longdouble_t;
  */
 typedef npy_cfloat __pyx_t_5numpy_cfloat_t;
 
-/* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":765
+/* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":765
  * 
  * ctypedef npy_cfloat      cfloat_t
  * ctypedef npy_cdouble     cdouble_t             # <<<<<<<<<<<<<<
@@ -758,7 +758,7 @@ typedef npy_cfloat __pyx_t_5numpy_cfloat_t;
  */
 typedef npy_cdouble __pyx_t_5numpy_cdouble_t;
 
-/* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":766
+/* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":766
  * ctypedef npy_cfloat      cfloat_t
  * ctypedef npy_cdouble     cdouble_t
  * ctypedef npy_clongdouble clongdouble_t             # <<<<<<<<<<<<<<
@@ -767,7 +767,7 @@ typedef npy_cdouble __pyx_t_5numpy_cdouble_t;
  */
 typedef npy_clongdouble __pyx_t_5numpy_clongdouble_t;
 
-/* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":768
+/* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":768
  * ctypedef npy_clongdouble clongdouble_t
  * 
  * ctypedef npy_cdouble     complex_t             # <<<<<<<<<<<<<<
@@ -1123,9 +1123,8 @@ static __Pyx_TypeInfo __Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t = { "float64_t"
 int __pyx_module_is_main_MDAnalysis__lib__qcprot = 0;
 
 /* Implementation of 'MDAnalysis.lib.qcprot' */
-static PyObject *__pyx_builtin_xrange;
-static PyObject *__pyx_builtin_ValueError;
 static PyObject *__pyx_builtin_range;
+static PyObject *__pyx_builtin_ValueError;
 static PyObject *__pyx_builtin_RuntimeError;
 static char __pyx_k_A[] = "A";
 static char __pyx_k_B[] = "B";
@@ -1219,7 +1218,6 @@ static char __pyx_k_range[] = "range";
 static char __pyx_k_zeros[] = "zeros";
 static char __pyx_k_import[] = "__import__";
 static char __pyx_k_weight[] = "weight";
-static char __pyx_k_xrange[] = "xrange";
 static char __pyx_k_SxxmSyy[] = "SxxmSyy";
 static char __pyx_k_SxxpSyy[] = "SxxpSyy";
 static char __pyx_k_SxymSyx[] = "SxymSyx";
@@ -1374,7 +1372,6 @@ static PyObject *__pyx_n_s_weight;
 static PyObject *__pyx_n_s_weights;
 static PyObject *__pyx_n_s_x1;
 static PyObject *__pyx_n_s_x2;
-static PyObject *__pyx_n_s_xrange;
 static PyObject *__pyx_n_s_xy;
 static PyObject *__pyx_n_s_y1;
 static PyObject *__pyx_n_s_y2;
@@ -1383,7 +1380,7 @@ static PyObject *__pyx_n_s_z1;
 static PyObject *__pyx_n_s_z2;
 static PyObject *__pyx_n_s_zeros;
 static PyObject *__pyx_n_s_zx;
-static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_InnerProduct(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_A, PyArrayObject *__pyx_v_coords1, PyArrayObject *__pyx_v_coords2, int __pyx_v_N, PyArrayObject *__pyx_v_weight); /* proto */
+static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_InnerProduct(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_A, PyArrayObject *__pyx_v_coords1, PyArrayObject *__pyx_v_coords2, int __pyx_v_N, CYTHON_UNUSED PyArrayObject *__pyx_v_weight); /* proto */
 static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_rot, PyArrayObject *__pyx_v_A, double __pyx_v_E0, int __pyx_v_N); /* proto */
 static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_4CalcRMSDRotationalMatrix(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_ref, PyArrayObject *__pyx_v_conf, int __pyx_v_N, PyArrayObject *__pyx_v_rot, PyArrayObject *__pyx_v_weights); /* proto */
 static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags); /* proto */
@@ -1415,14 +1412,14 @@ static PyObject *__pyx_codeobj__14;
 
 /* Python wrapper */
 static PyObject *__pyx_pw_10MDAnalysis_3lib_6qcprot_1InnerProduct(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_10MDAnalysis_3lib_6qcprot_InnerProduct[] = "\n    Calculate the inner product of two structures.\n\n    InnerProduct(A, coords1, coords2, N, weight) --> (G1+G2)/2\n\n    If weight array is not ``None``, calculate the weighted inner product.\n\n            :Input:\n                   - A[9]    -- inner product array (modified in place)\n                   - coords1 -- reference structure\n                   - coords2 -- candidate structure\n                   - N       -- the size of the system\n                   - weight  -- the weight array of size N: set to None if not needed\n            :Output:\n                   - A[9]    -- the inner product matrix\n            :Returns:\n                   - (G1 + G2) * 0.5; used as E0 in function :func:`FastCalcRMSDAndRotation`\n\n            .. Warning::\n                1. You MUST center the structures, coords1 and coords2, before calling this function.\n\n                2. Please note how the structure coordinates are stored as 3xN arrays,\n                   not Nx3 arrays as is also commonly used. The difference is\n                   something like this for storage of a structure with 8 atoms::\n\n                      Nx3: xyzxyzxyzxyzxyzxyzxyzxyz\n                      3xN: xxxxxxxxyyyyyyyyzzzzzzzz\n\n    ";
+static char __pyx_doc_10MDAnalysis_3lib_6qcprot_InnerProduct[] = "Calculate the weighted inner product of two structures.\n\n    Parameters\n    ----------\n    A : ndarray float64_t\n        result inner product array, modified in place\n    coords1 : ndarray float64_t\n        reference structure\n    coord2 : ndarray float64_t\n        candidate structure\n    N : int\n        size of system\n    weights : ndarray float64_t\n        weights for each component\n\n    Returns\n    -------\n    E0 : float\n    0.5 * (G1 + G2), can be used as input for :func:`FastCalcRMSDAndRotation`\n\n    Notes\n    -----\n    1. You MUST center the structures, coords1 and coords2, before calling this\n       function.\n\n    2. Please note how the structure coordinates are stored as 3xN arrays,\n       not Nx3 arrays as is also commonly used. The difference is\n       something like this for storage of a structure with 8 atoms::\n\n          Nx3: xyzxyzxyzxyzxyzxyzxyzxyz\n          3xN: xxxxxxxxyyyyyyyyzzzzzzzz\n\n    ";
 static PyMethodDef __pyx_mdef_10MDAnalysis_3lib_6qcprot_1InnerProduct = {"InnerProduct", (PyCFunction)__pyx_pw_10MDAnalysis_3lib_6qcprot_1InnerProduct, METH_VARARGS|METH_KEYWORDS, __pyx_doc_10MDAnalysis_3lib_6qcprot_InnerProduct};
 static PyObject *__pyx_pw_10MDAnalysis_3lib_6qcprot_1InnerProduct(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyArrayObject *__pyx_v_A = 0;
   PyArrayObject *__pyx_v_coords1 = 0;
   PyArrayObject *__pyx_v_coords2 = 0;
   int __pyx_v_N;
-  PyArrayObject *__pyx_v_weight = 0;
+  CYTHON_UNUSED PyArrayObject *__pyx_v_weight = 0;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -1511,7 +1508,7 @@ static PyObject *__pyx_pw_10MDAnalysis_3lib_6qcprot_1InnerProduct(PyObject *__py
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_InnerProduct(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_A, PyArrayObject *__pyx_v_coords1, PyArrayObject *__pyx_v_coords2, int __pyx_v_N, PyArrayObject *__pyx_v_weight) {
+static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_InnerProduct(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_A, PyArrayObject *__pyx_v_coords1, PyArrayObject *__pyx_v_coords2, int __pyx_v_N, CYTHON_UNUSED PyArrayObject *__pyx_v_weight) {
   double __pyx_v_x1;
   double __pyx_v_x2;
   double __pyx_v_y1;
@@ -1541,62 +1538,29 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_InnerProduct(CYTHON_UNUSED P
   Py_ssize_t __pyx_t_8;
   Py_ssize_t __pyx_t_9;
   int __pyx_t_10;
-  int __pyx_t_11;
-  int __pyx_t_12;
-  unsigned int __pyx_t_13;
-  size_t __pyx_t_14;
-  Py_ssize_t __pyx_t_15;
-  size_t __pyx_t_16;
+  unsigned int __pyx_t_11;
+  Py_ssize_t __pyx_t_12;
+  size_t __pyx_t_13;
+  Py_ssize_t __pyx_t_14;
+  size_t __pyx_t_15;
+  Py_ssize_t __pyx_t_16;
   size_t __pyx_t_17;
   Py_ssize_t __pyx_t_18;
   size_t __pyx_t_19;
-  size_t __pyx_t_20;
-  Py_ssize_t __pyx_t_21;
-  size_t __pyx_t_22;
-  Py_ssize_t __pyx_t_23;
-  size_t __pyx_t_24;
+  Py_ssize_t __pyx_t_20;
+  size_t __pyx_t_21;
+  Py_ssize_t __pyx_t_22;
+  size_t __pyx_t_23;
+  Py_ssize_t __pyx_t_24;
   Py_ssize_t __pyx_t_25;
-  size_t __pyx_t_26;
+  Py_ssize_t __pyx_t_26;
   Py_ssize_t __pyx_t_27;
-  size_t __pyx_t_28;
+  Py_ssize_t __pyx_t_28;
   Py_ssize_t __pyx_t_29;
-  size_t __pyx_t_30;
+  Py_ssize_t __pyx_t_30;
   Py_ssize_t __pyx_t_31;
-  size_t __pyx_t_32;
-  Py_ssize_t __pyx_t_33;
-  size_t __pyx_t_34;
-  size_t __pyx_t_35;
-  Py_ssize_t __pyx_t_36;
-  Py_ssize_t __pyx_t_37;
-  Py_ssize_t __pyx_t_38;
-  Py_ssize_t __pyx_t_39;
-  Py_ssize_t __pyx_t_40;
-  Py_ssize_t __pyx_t_41;
-  Py_ssize_t __pyx_t_42;
-  Py_ssize_t __pyx_t_43;
-  Py_ssize_t __pyx_t_44;
-  Py_ssize_t __pyx_t_45;
-  size_t __pyx_t_46;
-  Py_ssize_t __pyx_t_47;
-  size_t __pyx_t_48;
-  Py_ssize_t __pyx_t_49;
-  size_t __pyx_t_50;
-  Py_ssize_t __pyx_t_51;
-  size_t __pyx_t_52;
-  Py_ssize_t __pyx_t_53;
-  size_t __pyx_t_54;
-  Py_ssize_t __pyx_t_55;
-  size_t __pyx_t_56;
-  Py_ssize_t __pyx_t_57;
-  Py_ssize_t __pyx_t_58;
-  Py_ssize_t __pyx_t_59;
-  Py_ssize_t __pyx_t_60;
-  Py_ssize_t __pyx_t_61;
-  Py_ssize_t __pyx_t_62;
-  Py_ssize_t __pyx_t_63;
-  Py_ssize_t __pyx_t_64;
-  Py_ssize_t __pyx_t_65;
-  PyObject *__pyx_t_66 = NULL;
+  Py_ssize_t __pyx_t_32;
+  PyObject *__pyx_t_33 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -1638,7 +1602,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_InnerProduct(CYTHON_UNUSED P
   }
   __pyx_pybuffernd_weight.diminfo[0].strides = __pyx_pybuffernd_weight.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_weight.diminfo[0].shape = __pyx_pybuffernd_weight.rcbuffer->pybuffer.shape[0];
 
-  /* "MDAnalysis/lib/qcprot.pyx":178
+  /* "MDAnalysis/lib/qcprot.pyx":182
  *     cdef double          G1, G2
  * 
  *     G1 = 0.0             # <<<<<<<<<<<<<<
@@ -1647,7 +1611,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_InnerProduct(CYTHON_UNUSED P
  */
   __pyx_v_G1 = 0.0;
 
-  /* "MDAnalysis/lib/qcprot.pyx":179
+  /* "MDAnalysis/lib/qcprot.pyx":183
  * 
  *     G1 = 0.0
  *     G2 = 0.0             # <<<<<<<<<<<<<<
@@ -1656,12 +1620,12 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_InnerProduct(CYTHON_UNUSED P
  */
   __pyx_v_G2 = 0.0;
 
-  /* "MDAnalysis/lib/qcprot.pyx":181
+  /* "MDAnalysis/lib/qcprot.pyx":185
  *     G2 = 0.0
  * 
  *     A[0] = A[1] = A[2] = A[3] = A[4] = A[5] = A[6] = A[7] = A[8] = 0.0             # <<<<<<<<<<<<<<
  * 
- *     if (weight is not None):
+ *     for i in range(N):
  */
   __pyx_t_1 = 0;
   *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_A.rcbuffer->pybuffer.buf, __pyx_t_1, __pyx_pybuffernd_A.diminfo[0].strides) = 0.0;
@@ -1682,424 +1646,204 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_InnerProduct(CYTHON_UNUSED P
   __pyx_t_9 = 8;
   *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_A.rcbuffer->pybuffer.buf, __pyx_t_9, __pyx_pybuffernd_A.diminfo[0].strides) = 0.0;
 
-  /* "MDAnalysis/lib/qcprot.pyx":183
+  /* "MDAnalysis/lib/qcprot.pyx":187
  *     A[0] = A[1] = A[2] = A[3] = A[4] = A[5] = A[6] = A[7] = A[8] = 0.0
  * 
- *     if (weight is not None):             # <<<<<<<<<<<<<<
- *         for i in xrange(N):
- *             x1 = weight[i] * coords1[0,i]
+ *     for i in range(N):             # <<<<<<<<<<<<<<
+ *         x1 = coords1[0,i]
+ *         y1 = coords1[1,i]
  */
-  __pyx_t_10 = (((PyObject *)__pyx_v_weight) != Py_None);
-  __pyx_t_11 = (__pyx_t_10 != 0);
-  if (__pyx_t_11) {
+  __pyx_t_10 = __pyx_v_N;
+  for (__pyx_t_11 = 0; __pyx_t_11 < __pyx_t_10; __pyx_t_11+=1) {
+    __pyx_v_i = __pyx_t_11;
 
-    /* "MDAnalysis/lib/qcprot.pyx":184
+    /* "MDAnalysis/lib/qcprot.pyx":188
  * 
- *     if (weight is not None):
- *         for i in xrange(N):             # <<<<<<<<<<<<<<
- *             x1 = weight[i] * coords1[0,i]
- *             y1 = weight[i] * coords1[1,i]
+ *     for i in range(N):
+ *         x1 = coords1[0,i]             # <<<<<<<<<<<<<<
+ *         y1 = coords1[1,i]
+ *         z1 = coords1[2,i]
  */
-    __pyx_t_12 = __pyx_v_N;
-    for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
-      __pyx_v_i = __pyx_t_13;
+    __pyx_t_12 = 0;
+    __pyx_t_13 = __pyx_v_i;
+    __pyx_v_x1 = (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_coords1.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_coords1.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_coords1.diminfo[1].strides));
 
-      /* "MDAnalysis/lib/qcprot.pyx":185
- *     if (weight is not None):
- *         for i in xrange(N):
- *             x1 = weight[i] * coords1[0,i]             # <<<<<<<<<<<<<<
- *             y1 = weight[i] * coords1[1,i]
- *             z1 = weight[i] * coords1[2,i]
- */
-      __pyx_t_14 = __pyx_v_i;
-      __pyx_t_15 = 0;
-      __pyx_t_16 = __pyx_v_i;
-      __pyx_v_x1 = ((*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_weight.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_weight.diminfo[0].strides)) * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_coords1.rcbuffer->pybuffer.buf, __pyx_t_15, __pyx_pybuffernd_coords1.diminfo[0].strides, __pyx_t_16, __pyx_pybuffernd_coords1.diminfo[1].strides)));
-
-      /* "MDAnalysis/lib/qcprot.pyx":186
- *         for i in xrange(N):
- *             x1 = weight[i] * coords1[0,i]
- *             y1 = weight[i] * coords1[1,i]             # <<<<<<<<<<<<<<
- *             z1 = weight[i] * coords1[2,i]
+    /* "MDAnalysis/lib/qcprot.pyx":189
+ *     for i in range(N):
+ *         x1 = coords1[0,i]
+ *         y1 = coords1[1,i]             # <<<<<<<<<<<<<<
+ *         z1 = coords1[2,i]
  * 
  */
-      __pyx_t_17 = __pyx_v_i;
-      __pyx_t_18 = 1;
-      __pyx_t_19 = __pyx_v_i;
-      __pyx_v_y1 = ((*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_weight.rcbuffer->pybuffer.buf, __pyx_t_17, __pyx_pybuffernd_weight.diminfo[0].strides)) * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_coords1.rcbuffer->pybuffer.buf, __pyx_t_18, __pyx_pybuffernd_coords1.diminfo[0].strides, __pyx_t_19, __pyx_pybuffernd_coords1.diminfo[1].strides)));
+    __pyx_t_14 = 1;
+    __pyx_t_15 = __pyx_v_i;
+    __pyx_v_y1 = (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_coords1.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_coords1.diminfo[0].strides, __pyx_t_15, __pyx_pybuffernd_coords1.diminfo[1].strides));
 
-      /* "MDAnalysis/lib/qcprot.pyx":187
- *             x1 = weight[i] * coords1[0,i]
- *             y1 = weight[i] * coords1[1,i]
- *             z1 = weight[i] * coords1[2,i]             # <<<<<<<<<<<<<<
+    /* "MDAnalysis/lib/qcprot.pyx":190
+ *         x1 = coords1[0,i]
+ *         y1 = coords1[1,i]
+ *         z1 = coords1[2,i]             # <<<<<<<<<<<<<<
  * 
- *             G1 += x1*coords1[0,i] + y1*coords1[1,i] + z1*coords1[2,i]
+ *         G1 += (x1*x1 + y1*y1 + z1*z1)
  */
-      __pyx_t_20 = __pyx_v_i;
-      __pyx_t_21 = 2;
-      __pyx_t_22 = __pyx_v_i;
-      __pyx_v_z1 = ((*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_weight.rcbuffer->pybuffer.buf, __pyx_t_20, __pyx_pybuffernd_weight.diminfo[0].strides)) * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_coords1.rcbuffer->pybuffer.buf, __pyx_t_21, __pyx_pybuffernd_coords1.diminfo[0].strides, __pyx_t_22, __pyx_pybuffernd_coords1.diminfo[1].strides)));
+    __pyx_t_16 = 2;
+    __pyx_t_17 = __pyx_v_i;
+    __pyx_v_z1 = (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_coords1.rcbuffer->pybuffer.buf, __pyx_t_16, __pyx_pybuffernd_coords1.diminfo[0].strides, __pyx_t_17, __pyx_pybuffernd_coords1.diminfo[1].strides));
 
-      /* "MDAnalysis/lib/qcprot.pyx":189
- *             z1 = weight[i] * coords1[2,i]
+    /* "MDAnalysis/lib/qcprot.pyx":192
+ *         z1 = coords1[2,i]
  * 
- *             G1 += x1*coords1[0,i] + y1*coords1[1,i] + z1*coords1[2,i]             # <<<<<<<<<<<<<<
+ *         G1 += (x1*x1 + y1*y1 + z1*z1)             # <<<<<<<<<<<<<<
  * 
- *             x2 = coords2[0,i]
+ *         x2 = coords2[0,i]
  */
-      __pyx_t_23 = 0;
-      __pyx_t_24 = __pyx_v_i;
-      __pyx_t_25 = 1;
-      __pyx_t_26 = __pyx_v_i;
-      __pyx_t_27 = 2;
-      __pyx_t_28 = __pyx_v_i;
-      __pyx_v_G1 = (__pyx_v_G1 + (((__pyx_v_x1 * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_coords1.rcbuffer->pybuffer.buf, __pyx_t_23, __pyx_pybuffernd_coords1.diminfo[0].strides, __pyx_t_24, __pyx_pybuffernd_coords1.diminfo[1].strides))) + (__pyx_v_y1 * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_coords1.rcbuffer->pybuffer.buf, __pyx_t_25, __pyx_pybuffernd_coords1.diminfo[0].strides, __pyx_t_26, __pyx_pybuffernd_coords1.diminfo[1].strides)))) + (__pyx_v_z1 * (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_coords1.rcbuffer->pybuffer.buf, __pyx_t_27, __pyx_pybuffernd_coords1.diminfo[0].strides, __pyx_t_28, __pyx_pybuffernd_coords1.diminfo[1].strides)))));
+    __pyx_v_G1 = (__pyx_v_G1 + (((__pyx_v_x1 * __pyx_v_x1) + (__pyx_v_y1 * __pyx_v_y1)) + (__pyx_v_z1 * __pyx_v_z1)));
 
-      /* "MDAnalysis/lib/qcprot.pyx":191
- *             G1 += x1*coords1[0,i] + y1*coords1[1,i] + z1*coords1[2,i]
+    /* "MDAnalysis/lib/qcprot.pyx":194
+ *         G1 += (x1*x1 + y1*y1 + z1*z1)
  * 
- *             x2 = coords2[0,i]             # <<<<<<<<<<<<<<
- *             y2 = coords2[1,i]
- *             z2 = coords2[2,i]
+ *         x2 = coords2[0,i]             # <<<<<<<<<<<<<<
+ *         y2 = coords2[1,i]
+ *         z2 = coords2[2,i]
  */
-      __pyx_t_29 = 0;
-      __pyx_t_30 = __pyx_v_i;
-      __pyx_v_x2 = (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_coords2.rcbuffer->pybuffer.buf, __pyx_t_29, __pyx_pybuffernd_coords2.diminfo[0].strides, __pyx_t_30, __pyx_pybuffernd_coords2.diminfo[1].strides));
+    __pyx_t_18 = 0;
+    __pyx_t_19 = __pyx_v_i;
+    __pyx_v_x2 = (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_coords2.rcbuffer->pybuffer.buf, __pyx_t_18, __pyx_pybuffernd_coords2.diminfo[0].strides, __pyx_t_19, __pyx_pybuffernd_coords2.diminfo[1].strides));
 
-      /* "MDAnalysis/lib/qcprot.pyx":192
+    /* "MDAnalysis/lib/qcprot.pyx":195
  * 
- *             x2 = coords2[0,i]
- *             y2 = coords2[1,i]             # <<<<<<<<<<<<<<
- *             z2 = coords2[2,i]
+ *         x2 = coords2[0,i]
+ *         y2 = coords2[1,i]             # <<<<<<<<<<<<<<
+ *         z2 = coords2[2,i]
  * 
  */
-      __pyx_t_31 = 1;
-      __pyx_t_32 = __pyx_v_i;
-      __pyx_v_y2 = (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_coords2.rcbuffer->pybuffer.buf, __pyx_t_31, __pyx_pybuffernd_coords2.diminfo[0].strides, __pyx_t_32, __pyx_pybuffernd_coords2.diminfo[1].strides));
+    __pyx_t_20 = 1;
+    __pyx_t_21 = __pyx_v_i;
+    __pyx_v_y2 = (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_coords2.rcbuffer->pybuffer.buf, __pyx_t_20, __pyx_pybuffernd_coords2.diminfo[0].strides, __pyx_t_21, __pyx_pybuffernd_coords2.diminfo[1].strides));
 
-      /* "MDAnalysis/lib/qcprot.pyx":193
- *             x2 = coords2[0,i]
- *             y2 = coords2[1,i]
- *             z2 = coords2[2,i]             # <<<<<<<<<<<<<<
+    /* "MDAnalysis/lib/qcprot.pyx":196
+ *         x2 = coords2[0,i]
+ *         y2 = coords2[1,i]
+ *         z2 = coords2[2,i]             # <<<<<<<<<<<<<<
  * 
- *             G2 += weight[i] * (x2*x2 + y2*y2 + z2*z2)
+ *         G2 += (x2*x2 + y2*y2 + z2*z2)
  */
-      __pyx_t_33 = 2;
-      __pyx_t_34 = __pyx_v_i;
-      __pyx_v_z2 = (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_coords2.rcbuffer->pybuffer.buf, __pyx_t_33, __pyx_pybuffernd_coords2.diminfo[0].strides, __pyx_t_34, __pyx_pybuffernd_coords2.diminfo[1].strides));
+    __pyx_t_22 = 2;
+    __pyx_t_23 = __pyx_v_i;
+    __pyx_v_z2 = (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_coords2.rcbuffer->pybuffer.buf, __pyx_t_22, __pyx_pybuffernd_coords2.diminfo[0].strides, __pyx_t_23, __pyx_pybuffernd_coords2.diminfo[1].strides));
 
-      /* "MDAnalysis/lib/qcprot.pyx":195
- *             z2 = coords2[2,i]
+    /* "MDAnalysis/lib/qcprot.pyx":198
+ *         z2 = coords2[2,i]
  * 
- *             G2 += weight[i] * (x2*x2 + y2*y2 + z2*z2)             # <<<<<<<<<<<<<<
+ *         G2 += (x2*x2 + y2*y2 + z2*z2)             # <<<<<<<<<<<<<<
  * 
- *             A[0] +=  (x1 * x2)
+ *         A[0] +=  (x1 * x2)
  */
-      __pyx_t_35 = __pyx_v_i;
-      __pyx_v_G2 = (__pyx_v_G2 + ((*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_weight.rcbuffer->pybuffer.buf, __pyx_t_35, __pyx_pybuffernd_weight.diminfo[0].strides)) * (((__pyx_v_x2 * __pyx_v_x2) + (__pyx_v_y2 * __pyx_v_y2)) + (__pyx_v_z2 * __pyx_v_z2))));
+    __pyx_v_G2 = (__pyx_v_G2 + (((__pyx_v_x2 * __pyx_v_x2) + (__pyx_v_y2 * __pyx_v_y2)) + (__pyx_v_z2 * __pyx_v_z2)));
 
-      /* "MDAnalysis/lib/qcprot.pyx":197
- *             G2 += weight[i] * (x2*x2 + y2*y2 + z2*z2)
+    /* "MDAnalysis/lib/qcprot.pyx":200
+ *         G2 += (x2*x2 + y2*y2 + z2*z2)
  * 
- *             A[0] +=  (x1 * x2)             # <<<<<<<<<<<<<<
- *             A[1] +=  (x1 * y2)
- *             A[2] +=  (x1 * z2)
+ *         A[0] +=  (x1 * x2)             # <<<<<<<<<<<<<<
+ *         A[1] +=  (x1 * y2)
+ *         A[2] +=  (x1 * z2)
  */
-      __pyx_t_36 = 0;
-      *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_A.rcbuffer->pybuffer.buf, __pyx_t_36, __pyx_pybuffernd_A.diminfo[0].strides) += (__pyx_v_x1 * __pyx_v_x2);
+    __pyx_t_24 = 0;
+    *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_A.rcbuffer->pybuffer.buf, __pyx_t_24, __pyx_pybuffernd_A.diminfo[0].strides) += (__pyx_v_x1 * __pyx_v_x2);
 
-      /* "MDAnalysis/lib/qcprot.pyx":198
+    /* "MDAnalysis/lib/qcprot.pyx":201
  * 
- *             A[0] +=  (x1 * x2)
- *             A[1] +=  (x1 * y2)             # <<<<<<<<<<<<<<
- *             A[2] +=  (x1 * z2)
- * 
- */
-      __pyx_t_37 = 1;
-      *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_A.rcbuffer->pybuffer.buf, __pyx_t_37, __pyx_pybuffernd_A.diminfo[0].strides) += (__pyx_v_x1 * __pyx_v_y2);
-
-      /* "MDAnalysis/lib/qcprot.pyx":199
- *             A[0] +=  (x1 * x2)
- *             A[1] +=  (x1 * y2)
- *             A[2] +=  (x1 * z2)             # <<<<<<<<<<<<<<
- * 
- *             A[3] +=  (y1 * x2)
- */
-      __pyx_t_38 = 2;
-      *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_A.rcbuffer->pybuffer.buf, __pyx_t_38, __pyx_pybuffernd_A.diminfo[0].strides) += (__pyx_v_x1 * __pyx_v_z2);
-
-      /* "MDAnalysis/lib/qcprot.pyx":201
- *             A[2] +=  (x1 * z2)
- * 
- *             A[3] +=  (y1 * x2)             # <<<<<<<<<<<<<<
- *             A[4] +=  (y1 * y2)
- *             A[5] +=  (y1 * z2)
- */
-      __pyx_t_39 = 3;
-      *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_A.rcbuffer->pybuffer.buf, __pyx_t_39, __pyx_pybuffernd_A.diminfo[0].strides) += (__pyx_v_y1 * __pyx_v_x2);
-
-      /* "MDAnalysis/lib/qcprot.pyx":202
- * 
- *             A[3] +=  (y1 * x2)
- *             A[4] +=  (y1 * y2)             # <<<<<<<<<<<<<<
- *             A[5] +=  (y1 * z2)
+ *         A[0] +=  (x1 * x2)
+ *         A[1] +=  (x1 * y2)             # <<<<<<<<<<<<<<
+ *         A[2] +=  (x1 * z2)
  * 
  */
-      __pyx_t_40 = 4;
-      *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_A.rcbuffer->pybuffer.buf, __pyx_t_40, __pyx_pybuffernd_A.diminfo[0].strides) += (__pyx_v_y1 * __pyx_v_y2);
+    __pyx_t_25 = 1;
+    *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_A.rcbuffer->pybuffer.buf, __pyx_t_25, __pyx_pybuffernd_A.diminfo[0].strides) += (__pyx_v_x1 * __pyx_v_y2);
 
-      /* "MDAnalysis/lib/qcprot.pyx":203
- *             A[3] +=  (y1 * x2)
- *             A[4] +=  (y1 * y2)
- *             A[5] +=  (y1 * z2)             # <<<<<<<<<<<<<<
+    /* "MDAnalysis/lib/qcprot.pyx":202
+ *         A[0] +=  (x1 * x2)
+ *         A[1] +=  (x1 * y2)
+ *         A[2] +=  (x1 * z2)             # <<<<<<<<<<<<<<
  * 
- *             A[6] +=  (z1 * x2)
+ *         A[3] +=  (y1 * x2)
  */
-      __pyx_t_41 = 5;
-      *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_A.rcbuffer->pybuffer.buf, __pyx_t_41, __pyx_pybuffernd_A.diminfo[0].strides) += (__pyx_v_y1 * __pyx_v_z2);
+    __pyx_t_26 = 2;
+    *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_A.rcbuffer->pybuffer.buf, __pyx_t_26, __pyx_pybuffernd_A.diminfo[0].strides) += (__pyx_v_x1 * __pyx_v_z2);
 
-      /* "MDAnalysis/lib/qcprot.pyx":205
- *             A[5] +=  (y1 * z2)
+    /* "MDAnalysis/lib/qcprot.pyx":204
+ *         A[2] +=  (x1 * z2)
  * 
- *             A[6] +=  (z1 * x2)             # <<<<<<<<<<<<<<
- *             A[7] +=  (z1 * y2)
- *             A[8] +=  (z1 * z2)
+ *         A[3] +=  (y1 * x2)             # <<<<<<<<<<<<<<
+ *         A[4] +=  (y1 * y2)
+ *         A[5] +=  (y1 * z2)
  */
-      __pyx_t_42 = 6;
-      *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_A.rcbuffer->pybuffer.buf, __pyx_t_42, __pyx_pybuffernd_A.diminfo[0].strides) += (__pyx_v_z1 * __pyx_v_x2);
+    __pyx_t_27 = 3;
+    *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_A.rcbuffer->pybuffer.buf, __pyx_t_27, __pyx_pybuffernd_A.diminfo[0].strides) += (__pyx_v_y1 * __pyx_v_x2);
 
-      /* "MDAnalysis/lib/qcprot.pyx":206
+    /* "MDAnalysis/lib/qcprot.pyx":205
  * 
- *             A[6] +=  (z1 * x2)
- *             A[7] +=  (z1 * y2)             # <<<<<<<<<<<<<<
- *             A[8] +=  (z1 * z2)
- * 
- */
-      __pyx_t_43 = 7;
-      *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_A.rcbuffer->pybuffer.buf, __pyx_t_43, __pyx_pybuffernd_A.diminfo[0].strides) += (__pyx_v_z1 * __pyx_v_y2);
-
-      /* "MDAnalysis/lib/qcprot.pyx":207
- *             A[6] +=  (z1 * x2)
- *             A[7] +=  (z1 * y2)
- *             A[8] +=  (z1 * z2)             # <<<<<<<<<<<<<<
- * 
- *     else:
- */
-      __pyx_t_44 = 8;
-      *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_A.rcbuffer->pybuffer.buf, __pyx_t_44, __pyx_pybuffernd_A.diminfo[0].strides) += (__pyx_v_z1 * __pyx_v_z2);
-    }
-
-    /* "MDAnalysis/lib/qcprot.pyx":183
- *     A[0] = A[1] = A[2] = A[3] = A[4] = A[5] = A[6] = A[7] = A[8] = 0.0
- * 
- *     if (weight is not None):             # <<<<<<<<<<<<<<
- *         for i in xrange(N):
- *             x1 = weight[i] * coords1[0,i]
- */
-    goto __pyx_L3;
-  }
-
-  /* "MDAnalysis/lib/qcprot.pyx":210
- * 
- *     else:
- *         for i in xrange(N):             # <<<<<<<<<<<<<<
- *             x1 = coords1[0,i]
- *             y1 = coords1[1,i]
- */
-  /*else*/ {
-    __pyx_t_12 = __pyx_v_N;
-    for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
-      __pyx_v_i = __pyx_t_13;
-
-      /* "MDAnalysis/lib/qcprot.pyx":211
- *     else:
- *         for i in xrange(N):
- *             x1 = coords1[0,i]             # <<<<<<<<<<<<<<
- *             y1 = coords1[1,i]
- *             z1 = coords1[2,i]
- */
-      __pyx_t_45 = 0;
-      __pyx_t_46 = __pyx_v_i;
-      __pyx_v_x1 = (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_coords1.rcbuffer->pybuffer.buf, __pyx_t_45, __pyx_pybuffernd_coords1.diminfo[0].strides, __pyx_t_46, __pyx_pybuffernd_coords1.diminfo[1].strides));
-
-      /* "MDAnalysis/lib/qcprot.pyx":212
- *         for i in xrange(N):
- *             x1 = coords1[0,i]
- *             y1 = coords1[1,i]             # <<<<<<<<<<<<<<
- *             z1 = coords1[2,i]
+ *         A[3] +=  (y1 * x2)
+ *         A[4] +=  (y1 * y2)             # <<<<<<<<<<<<<<
+ *         A[5] +=  (y1 * z2)
  * 
  */
-      __pyx_t_47 = 1;
-      __pyx_t_48 = __pyx_v_i;
-      __pyx_v_y1 = (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_coords1.rcbuffer->pybuffer.buf, __pyx_t_47, __pyx_pybuffernd_coords1.diminfo[0].strides, __pyx_t_48, __pyx_pybuffernd_coords1.diminfo[1].strides));
+    __pyx_t_28 = 4;
+    *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_A.rcbuffer->pybuffer.buf, __pyx_t_28, __pyx_pybuffernd_A.diminfo[0].strides) += (__pyx_v_y1 * __pyx_v_y2);
 
-      /* "MDAnalysis/lib/qcprot.pyx":213
- *             x1 = coords1[0,i]
- *             y1 = coords1[1,i]
- *             z1 = coords1[2,i]             # <<<<<<<<<<<<<<
+    /* "MDAnalysis/lib/qcprot.pyx":206
+ *         A[3] +=  (y1 * x2)
+ *         A[4] +=  (y1 * y2)
+ *         A[5] +=  (y1 * z2)             # <<<<<<<<<<<<<<
  * 
- *             G1 += (x1*x1 + y1*y1 + z1*z1)
+ *         A[6] +=  (z1 * x2)
  */
-      __pyx_t_49 = 2;
-      __pyx_t_50 = __pyx_v_i;
-      __pyx_v_z1 = (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_coords1.rcbuffer->pybuffer.buf, __pyx_t_49, __pyx_pybuffernd_coords1.diminfo[0].strides, __pyx_t_50, __pyx_pybuffernd_coords1.diminfo[1].strides));
+    __pyx_t_29 = 5;
+    *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_A.rcbuffer->pybuffer.buf, __pyx_t_29, __pyx_pybuffernd_A.diminfo[0].strides) += (__pyx_v_y1 * __pyx_v_z2);
 
-      /* "MDAnalysis/lib/qcprot.pyx":215
- *             z1 = coords1[2,i]
+    /* "MDAnalysis/lib/qcprot.pyx":208
+ *         A[5] +=  (y1 * z2)
  * 
- *             G1 += (x1*x1 + y1*y1 + z1*z1)             # <<<<<<<<<<<<<<
- * 
- *             x2 = coords2[0,i]
+ *         A[6] +=  (z1 * x2)             # <<<<<<<<<<<<<<
+ *         A[7] +=  (z1 * y2)
+ *         A[8] +=  (z1 * z2)
  */
-      __pyx_v_G1 = (__pyx_v_G1 + (((__pyx_v_x1 * __pyx_v_x1) + (__pyx_v_y1 * __pyx_v_y1)) + (__pyx_v_z1 * __pyx_v_z1)));
+    __pyx_t_30 = 6;
+    *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_A.rcbuffer->pybuffer.buf, __pyx_t_30, __pyx_pybuffernd_A.diminfo[0].strides) += (__pyx_v_z1 * __pyx_v_x2);
 
-      /* "MDAnalysis/lib/qcprot.pyx":217
- *             G1 += (x1*x1 + y1*y1 + z1*z1)
+    /* "MDAnalysis/lib/qcprot.pyx":209
  * 
- *             x2 = coords2[0,i]             # <<<<<<<<<<<<<<
- *             y2 = coords2[1,i]
- *             z2 = coords2[2,i]
- */
-      __pyx_t_51 = 0;
-      __pyx_t_52 = __pyx_v_i;
-      __pyx_v_x2 = (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_coords2.rcbuffer->pybuffer.buf, __pyx_t_51, __pyx_pybuffernd_coords2.diminfo[0].strides, __pyx_t_52, __pyx_pybuffernd_coords2.diminfo[1].strides));
-
-      /* "MDAnalysis/lib/qcprot.pyx":218
- * 
- *             x2 = coords2[0,i]
- *             y2 = coords2[1,i]             # <<<<<<<<<<<<<<
- *             z2 = coords2[2,i]
+ *         A[6] +=  (z1 * x2)
+ *         A[7] +=  (z1 * y2)             # <<<<<<<<<<<<<<
+ *         A[8] +=  (z1 * z2)
  * 
  */
-      __pyx_t_53 = 1;
-      __pyx_t_54 = __pyx_v_i;
-      __pyx_v_y2 = (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_coords2.rcbuffer->pybuffer.buf, __pyx_t_53, __pyx_pybuffernd_coords2.diminfo[0].strides, __pyx_t_54, __pyx_pybuffernd_coords2.diminfo[1].strides));
+    __pyx_t_31 = 7;
+    *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_A.rcbuffer->pybuffer.buf, __pyx_t_31, __pyx_pybuffernd_A.diminfo[0].strides) += (__pyx_v_z1 * __pyx_v_y2);
 
-      /* "MDAnalysis/lib/qcprot.pyx":219
- *             x2 = coords2[0,i]
- *             y2 = coords2[1,i]
- *             z2 = coords2[2,i]             # <<<<<<<<<<<<<<
- * 
- *             G2 += (x2*x2 + y2*y2 + z2*z2)
- */
-      __pyx_t_55 = 2;
-      __pyx_t_56 = __pyx_v_i;
-      __pyx_v_z2 = (*__Pyx_BufPtrStrided2d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_coords2.rcbuffer->pybuffer.buf, __pyx_t_55, __pyx_pybuffernd_coords2.diminfo[0].strides, __pyx_t_56, __pyx_pybuffernd_coords2.diminfo[1].strides));
-
-      /* "MDAnalysis/lib/qcprot.pyx":221
- *             z2 = coords2[2,i]
- * 
- *             G2 += (x2*x2 + y2*y2 + z2*z2)             # <<<<<<<<<<<<<<
- * 
- *             A[0] +=  (x1 * x2)
- */
-      __pyx_v_G2 = (__pyx_v_G2 + (((__pyx_v_x2 * __pyx_v_x2) + (__pyx_v_y2 * __pyx_v_y2)) + (__pyx_v_z2 * __pyx_v_z2)));
-
-      /* "MDAnalysis/lib/qcprot.pyx":223
- *             G2 += (x2*x2 + y2*y2 + z2*z2)
- * 
- *             A[0] +=  (x1 * x2)             # <<<<<<<<<<<<<<
- *             A[1] +=  (x1 * y2)
- *             A[2] +=  (x1 * z2)
- */
-      __pyx_t_57 = 0;
-      *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_A.rcbuffer->pybuffer.buf, __pyx_t_57, __pyx_pybuffernd_A.diminfo[0].strides) += (__pyx_v_x1 * __pyx_v_x2);
-
-      /* "MDAnalysis/lib/qcprot.pyx":224
- * 
- *             A[0] +=  (x1 * x2)
- *             A[1] +=  (x1 * y2)             # <<<<<<<<<<<<<<
- *             A[2] +=  (x1 * z2)
- * 
- */
-      __pyx_t_58 = 1;
-      *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_A.rcbuffer->pybuffer.buf, __pyx_t_58, __pyx_pybuffernd_A.diminfo[0].strides) += (__pyx_v_x1 * __pyx_v_y2);
-
-      /* "MDAnalysis/lib/qcprot.pyx":225
- *             A[0] +=  (x1 * x2)
- *             A[1] +=  (x1 * y2)
- *             A[2] +=  (x1 * z2)             # <<<<<<<<<<<<<<
- * 
- *             A[3] +=  (y1 * x2)
- */
-      __pyx_t_59 = 2;
-      *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_A.rcbuffer->pybuffer.buf, __pyx_t_59, __pyx_pybuffernd_A.diminfo[0].strides) += (__pyx_v_x1 * __pyx_v_z2);
-
-      /* "MDAnalysis/lib/qcprot.pyx":227
- *             A[2] +=  (x1 * z2)
- * 
- *             A[3] +=  (y1 * x2)             # <<<<<<<<<<<<<<
- *             A[4] +=  (y1 * y2)
- *             A[5] +=  (y1 * z2)
- */
-      __pyx_t_60 = 3;
-      *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_A.rcbuffer->pybuffer.buf, __pyx_t_60, __pyx_pybuffernd_A.diminfo[0].strides) += (__pyx_v_y1 * __pyx_v_x2);
-
-      /* "MDAnalysis/lib/qcprot.pyx":228
- * 
- *             A[3] +=  (y1 * x2)
- *             A[4] +=  (y1 * y2)             # <<<<<<<<<<<<<<
- *             A[5] +=  (y1 * z2)
- * 
- */
-      __pyx_t_61 = 4;
-      *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_A.rcbuffer->pybuffer.buf, __pyx_t_61, __pyx_pybuffernd_A.diminfo[0].strides) += (__pyx_v_y1 * __pyx_v_y2);
-
-      /* "MDAnalysis/lib/qcprot.pyx":229
- *             A[3] +=  (y1 * x2)
- *             A[4] +=  (y1 * y2)
- *             A[5] +=  (y1 * z2)             # <<<<<<<<<<<<<<
- * 
- *             A[6] +=  (z1 * x2)
- */
-      __pyx_t_62 = 5;
-      *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_A.rcbuffer->pybuffer.buf, __pyx_t_62, __pyx_pybuffernd_A.diminfo[0].strides) += (__pyx_v_y1 * __pyx_v_z2);
-
-      /* "MDAnalysis/lib/qcprot.pyx":231
- *             A[5] +=  (y1 * z2)
- * 
- *             A[6] +=  (z1 * x2)             # <<<<<<<<<<<<<<
- *             A[7] +=  (z1 * y2)
- *             A[8] +=  (z1 * z2)
- */
-      __pyx_t_63 = 6;
-      *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_A.rcbuffer->pybuffer.buf, __pyx_t_63, __pyx_pybuffernd_A.diminfo[0].strides) += (__pyx_v_z1 * __pyx_v_x2);
-
-      /* "MDAnalysis/lib/qcprot.pyx":232
- * 
- *             A[6] +=  (z1 * x2)
- *             A[7] +=  (z1 * y2)             # <<<<<<<<<<<<<<
- *             A[8] +=  (z1 * z2)
- * 
- */
-      __pyx_t_64 = 7;
-      *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_A.rcbuffer->pybuffer.buf, __pyx_t_64, __pyx_pybuffernd_A.diminfo[0].strides) += (__pyx_v_z1 * __pyx_v_y2);
-
-      /* "MDAnalysis/lib/qcprot.pyx":233
- *             A[6] +=  (z1 * x2)
- *             A[7] +=  (z1 * y2)
- *             A[8] +=  (z1 * z2)             # <<<<<<<<<<<<<<
+    /* "MDAnalysis/lib/qcprot.pyx":210
+ *         A[6] +=  (z1 * x2)
+ *         A[7] +=  (z1 * y2)
+ *         A[8] +=  (z1 * z2)             # <<<<<<<<<<<<<<
  * 
  *     return (G1 + G2) * 0.5
  */
-      __pyx_t_65 = 8;
-      *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_A.rcbuffer->pybuffer.buf, __pyx_t_65, __pyx_pybuffernd_A.diminfo[0].strides) += (__pyx_v_z1 * __pyx_v_z2);
-    }
+    __pyx_t_32 = 8;
+    *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_A.rcbuffer->pybuffer.buf, __pyx_t_32, __pyx_pybuffernd_A.diminfo[0].strides) += (__pyx_v_z1 * __pyx_v_z2);
   }
-  __pyx_L3:;
 
-  /* "MDAnalysis/lib/qcprot.pyx":235
- *             A[8] +=  (z1 * z2)
+  /* "MDAnalysis/lib/qcprot.pyx":212
+ *         A[8] +=  (z1 * z2)
  * 
  *     return (G1 + G2) * 0.5             # <<<<<<<<<<<<<<
  * 
  * @cython.boundscheck(False)
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_66 = PyFloat_FromDouble(((__pyx_v_G1 + __pyx_v_G2) * 0.5)); if (unlikely(!__pyx_t_66)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 235; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_66);
-  __pyx_r = __pyx_t_66;
-  __pyx_t_66 = 0;
+  __pyx_t_33 = PyFloat_FromDouble(((__pyx_v_G1 + __pyx_v_G2) * 0.5)); if (unlikely(!__pyx_t_33)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 212; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_33);
+  __pyx_r = __pyx_t_33;
+  __pyx_t_33 = 0;
   goto __pyx_L0;
 
   /* "MDAnalysis/lib/qcprot.pyx":139
@@ -2112,7 +1856,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_InnerProduct(CYTHON_UNUSED P
 
   /* function exit code */
   __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_66);
+  __Pyx_XDECREF(__pyx_t_33);
   { PyObject *__pyx_type, *__pyx_value, *__pyx_tb;
     __Pyx_ErrFetch(&__pyx_type, &__pyx_value, &__pyx_tb);
     __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_A.rcbuffer->pybuffer);
@@ -2134,17 +1878,17 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_InnerProduct(CYTHON_UNUSED P
   return __pyx_r;
 }
 
-/* "MDAnalysis/lib/qcprot.pyx":239
+/* "MDAnalysis/lib/qcprot.pyx":216
  * @cython.boundscheck(False)
  * @cython.wraparound(False)
- * def FastCalcRMSDAndRotation(np.ndarray[np.float64_t,ndim=1] rot, np.ndarray[np.float64_t,ndim=1] A, double E0, int N):             # <<<<<<<<<<<<<<
- *     """
- *     Calculate the RMSD, and/or the optimal rotation matrix.
+ * def FastCalcRMSDAndRotation(np.ndarray[np.float64_t,ndim=1] rot,             # <<<<<<<<<<<<<<
+ *                             np.ndarray[np.float64_t,ndim=1] A,
+ *                             double E0, int N):
  */
 
 /* Python wrapper */
 static PyObject *__pyx_pw_10MDAnalysis_3lib_6qcprot_3FastCalcRMSDAndRotation(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation[] = "\n    Calculate the RMSD, and/or the optimal rotation matrix.\n\n    FastCalcRMSDAndRotation(rot, A, E0, N)\n\n            :Input:\n                    - rot[9]  -- rotation matrix (modified in place)\n                    - A[9]    -- the inner product of two structures\n                    - E0      -- (G1 + G2) * 0.5\n                    - N       -- the size of the system\n            :Output:\n                    - rot[9]   -- the rotation matrix in the order of xx, xy, xz, yx, yy, yz, zx, zy, zz\n                    - rmsd     -- the RMSD value\n            :Returns:\n                    - only the rmsd was calculated if rot is None\n                    - both the RMSD & rotational matrix calculated if rot is not None\n\n    ";
+static char __pyx_doc_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation[] = "\n    Calculate the RMSD, and/or the optimal rotation matrix.\n\n    Parameters\n    ----------\n    rot : ndarray\n        result rotation matrix, modified inplace\n    A : ndarray\n        the inner product of two structures\n    E0 : float64\n        0.5 * (G1 + G2)\n    N : int\n        size of the system\n\n    Returns\n    -------\n    rmsd : float\n        RMSD value for two structures\n    ";
 static PyMethodDef __pyx_mdef_10MDAnalysis_3lib_6qcprot_3FastCalcRMSDAndRotation = {"FastCalcRMSDAndRotation", (PyCFunction)__pyx_pw_10MDAnalysis_3lib_6qcprot_3FastCalcRMSDAndRotation, METH_VARARGS|METH_KEYWORDS, __pyx_doc_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation};
 static PyObject *__pyx_pw_10MDAnalysis_3lib_6qcprot_3FastCalcRMSDAndRotation(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyArrayObject *__pyx_v_rot = 0;
@@ -2179,21 +1923,21 @@ static PyObject *__pyx_pw_10MDAnalysis_3lib_6qcprot_3FastCalcRMSDAndRotation(PyO
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_A)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("FastCalcRMSDAndRotation", 1, 4, 4, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 239; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("FastCalcRMSDAndRotation", 1, 4, 4, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 216; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_E0)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("FastCalcRMSDAndRotation", 1, 4, 4, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 239; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("FastCalcRMSDAndRotation", 1, 4, 4, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 216; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  3:
         if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_N)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("FastCalcRMSDAndRotation", 1, 4, 4, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 239; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("FastCalcRMSDAndRotation", 1, 4, 4, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 216; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "FastCalcRMSDAndRotation") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 239; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "FastCalcRMSDAndRotation") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 216; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 4) {
       goto __pyx_L5_argtuple_error;
@@ -2205,19 +1949,19 @@ static PyObject *__pyx_pw_10MDAnalysis_3lib_6qcprot_3FastCalcRMSDAndRotation(PyO
     }
     __pyx_v_rot = ((PyArrayObject *)values[0]);
     __pyx_v_A = ((PyArrayObject *)values[1]);
-    __pyx_v_E0 = __pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_E0 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 239; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    __pyx_v_N = __Pyx_PyInt_As_int(values[3]); if (unlikely((__pyx_v_N == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 239; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_E0 = __pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_E0 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 218; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_N = __Pyx_PyInt_As_int(values[3]); if (unlikely((__pyx_v_N == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 218; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("FastCalcRMSDAndRotation", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 239; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("FastCalcRMSDAndRotation", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 216; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("MDAnalysis.lib.qcprot.FastCalcRMSDAndRotation", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_rot), __pyx_ptype_5numpy_ndarray, 1, "rot", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 239; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_A), __pyx_ptype_5numpy_ndarray, 1, "A", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 239; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_rot), __pyx_ptype_5numpy_ndarray, 1, "rot", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 216; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_A), __pyx_ptype_5numpy_ndarray, 1, "A", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 217; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_r = __pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(__pyx_self, __pyx_v_rot, __pyx_v_A, __pyx_v_E0, __pyx_v_N);
 
   /* function exit code */
@@ -2343,7 +2087,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
   __pyx_t_5numpy_float64_t __pyx_t_20;
   double __pyx_t_21;
   int __pyx_t_22;
-  int __pyx_t_23;
+  Py_ssize_t __pyx_t_23;
   Py_ssize_t __pyx_t_24;
   Py_ssize_t __pyx_t_25;
   Py_ssize_t __pyx_t_26;
@@ -2361,7 +2105,6 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
   Py_ssize_t __pyx_t_38;
   Py_ssize_t __pyx_t_39;
   Py_ssize_t __pyx_t_40;
-  Py_ssize_t __pyx_t_41;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -2380,37 +2123,37 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
   __pyx_pybuffernd_A.rcbuffer = &__pyx_pybuffer_A;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_rot.rcbuffer->pybuffer, (PyObject*)__pyx_v_rot, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_STRIDES| PyBUF_WRITABLE, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 239; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_rot.rcbuffer->pybuffer, (PyObject*)__pyx_v_rot, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_STRIDES| PyBUF_WRITABLE, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 216; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __pyx_pybuffernd_rot.diminfo[0].strides = __pyx_pybuffernd_rot.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_rot.diminfo[0].shape = __pyx_pybuffernd_rot.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_A.rcbuffer->pybuffer, (PyObject*)__pyx_v_A, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 239; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_A.rcbuffer->pybuffer, (PyObject*)__pyx_v_A, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 216; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __pyx_pybuffernd_A.diminfo[0].strides = __pyx_pybuffernd_A.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_A.diminfo[0].shape = __pyx_pybuffernd_A.rcbuffer->pybuffer.shape[0];
 
-  /* "MDAnalysis/lib/qcprot.pyx":265
+  /* "MDAnalysis/lib/qcprot.pyx":245
  *     cdef double SxzmSzx, SxymSyx, SxxpSyy, SxxmSyy
  * 
  *     cdef np.ndarray[np.float64_t,ndim=1] C = np.zeros(4,)             # <<<<<<<<<<<<<<
  *     cdef unsigned int i
  *     cdef double mxEigenV
  */
-  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 265; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 245; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_zeros); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 265; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_zeros); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 245; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_tuple_, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 265; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_tuple_, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 245; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 265; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 245; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_t_3 = ((PyArrayObject *)__pyx_t_1);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_C.rcbuffer->pybuffer, (PyObject*)__pyx_t_3, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_STRIDES| PyBUF_WRITABLE, 1, 0, __pyx_stack) == -1)) {
       __pyx_v_C = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_C.rcbuffer->pybuffer.buf = NULL;
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 265; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 245; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     } else {__pyx_pybuffernd_C.diminfo[0].strides = __pyx_pybuffernd_C.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_C.diminfo[0].shape = __pyx_pybuffernd_C.rcbuffer->pybuffer.shape[0];
     }
   }
@@ -2418,7 +2161,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
   __pyx_v_C = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "MDAnalysis/lib/qcprot.pyx":268
+  /* "MDAnalysis/lib/qcprot.pyx":248
  *     cdef unsigned int i
  *     cdef double mxEigenV
  *     cdef double oldg = 0.0             # <<<<<<<<<<<<<<
@@ -2427,7 +2170,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
   __pyx_v_oldg = 0.0;
 
-  /* "MDAnalysis/lib/qcprot.pyx":276
+  /* "MDAnalysis/lib/qcprot.pyx":256
  *     cdef double xy, az, zx, ay, yz, ax
  *     cdef double a3344_4334, a3244_4234, a3243_4233, a3143_4133,a3144_4134, a3142_4132
  *     cdef double evecprec = 1e-6             # <<<<<<<<<<<<<<
@@ -2436,7 +2179,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
   __pyx_v_evecprec = 1e-6;
 
-  /* "MDAnalysis/lib/qcprot.pyx":277
+  /* "MDAnalysis/lib/qcprot.pyx":257
  *     cdef double a3344_4334, a3244_4234, a3243_4233, a3143_4133,a3144_4134, a3142_4132
  *     cdef double evecprec = 1e-6
  *     cdef double evalprec = 1e-14             # <<<<<<<<<<<<<<
@@ -2445,7 +2188,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
   __pyx_v_evalprec = 1e-14;
 
-  /* "MDAnalysis/lib/qcprot.pyx":280
+  /* "MDAnalysis/lib/qcprot.pyx":260
  * 
  *     cdef double a1324_1423, a1224_1422, a1223_1322, a1124_1421, a1123_1321, a1122_1221
  *     Sxx = A[0]             # <<<<<<<<<<<<<<
@@ -2455,7 +2198,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
   __pyx_t_4 = 0;
   __pyx_v_Sxx = (*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_A.rcbuffer->pybuffer.buf, __pyx_t_4, __pyx_pybuffernd_A.diminfo[0].strides));
 
-  /* "MDAnalysis/lib/qcprot.pyx":281
+  /* "MDAnalysis/lib/qcprot.pyx":261
  *     cdef double a1324_1423, a1224_1422, a1223_1322, a1124_1421, a1123_1321, a1122_1221
  *     Sxx = A[0]
  *     Sxy = A[1]             # <<<<<<<<<<<<<<
@@ -2465,7 +2208,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
   __pyx_t_5 = 1;
   __pyx_v_Sxy = (*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_A.rcbuffer->pybuffer.buf, __pyx_t_5, __pyx_pybuffernd_A.diminfo[0].strides));
 
-  /* "MDAnalysis/lib/qcprot.pyx":282
+  /* "MDAnalysis/lib/qcprot.pyx":262
  *     Sxx = A[0]
  *     Sxy = A[1]
  *     Sxz = A[2]             # <<<<<<<<<<<<<<
@@ -2475,7 +2218,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
   __pyx_t_6 = 2;
   __pyx_v_Sxz = (*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_A.rcbuffer->pybuffer.buf, __pyx_t_6, __pyx_pybuffernd_A.diminfo[0].strides));
 
-  /* "MDAnalysis/lib/qcprot.pyx":283
+  /* "MDAnalysis/lib/qcprot.pyx":263
  *     Sxy = A[1]
  *     Sxz = A[2]
  *     Syx = A[3]             # <<<<<<<<<<<<<<
@@ -2485,7 +2228,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
   __pyx_t_7 = 3;
   __pyx_v_Syx = (*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_A.rcbuffer->pybuffer.buf, __pyx_t_7, __pyx_pybuffernd_A.diminfo[0].strides));
 
-  /* "MDAnalysis/lib/qcprot.pyx":284
+  /* "MDAnalysis/lib/qcprot.pyx":264
  *     Sxz = A[2]
  *     Syx = A[3]
  *     Syy = A[4]             # <<<<<<<<<<<<<<
@@ -2495,7 +2238,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
   __pyx_t_8 = 4;
   __pyx_v_Syy = (*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_A.rcbuffer->pybuffer.buf, __pyx_t_8, __pyx_pybuffernd_A.diminfo[0].strides));
 
-  /* "MDAnalysis/lib/qcprot.pyx":285
+  /* "MDAnalysis/lib/qcprot.pyx":265
  *     Syx = A[3]
  *     Syy = A[4]
  *     Syz = A[5]             # <<<<<<<<<<<<<<
@@ -2505,7 +2248,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
   __pyx_t_9 = 5;
   __pyx_v_Syz = (*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_A.rcbuffer->pybuffer.buf, __pyx_t_9, __pyx_pybuffernd_A.diminfo[0].strides));
 
-  /* "MDAnalysis/lib/qcprot.pyx":286
+  /* "MDAnalysis/lib/qcprot.pyx":266
  *     Syy = A[4]
  *     Syz = A[5]
  *     Szx = A[6]             # <<<<<<<<<<<<<<
@@ -2515,7 +2258,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
   __pyx_t_10 = 6;
   __pyx_v_Szx = (*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_A.rcbuffer->pybuffer.buf, __pyx_t_10, __pyx_pybuffernd_A.diminfo[0].strides));
 
-  /* "MDAnalysis/lib/qcprot.pyx":287
+  /* "MDAnalysis/lib/qcprot.pyx":267
  *     Syz = A[5]
  *     Szx = A[6]
  *     Szy = A[7]             # <<<<<<<<<<<<<<
@@ -2525,7 +2268,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
   __pyx_t_11 = 7;
   __pyx_v_Szy = (*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_A.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_A.diminfo[0].strides));
 
-  /* "MDAnalysis/lib/qcprot.pyx":288
+  /* "MDAnalysis/lib/qcprot.pyx":268
  *     Szx = A[6]
  *     Szy = A[7]
  *     Szz = A[8]             # <<<<<<<<<<<<<<
@@ -2535,7 +2278,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
   __pyx_t_12 = 8;
   __pyx_v_Szz = (*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_A.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_A.diminfo[0].strides));
 
-  /* "MDAnalysis/lib/qcprot.pyx":290
+  /* "MDAnalysis/lib/qcprot.pyx":270
  *     Szz = A[8]
  * 
  *     Sxx2 = Sxx * Sxx             # <<<<<<<<<<<<<<
@@ -2544,7 +2287,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
   __pyx_v_Sxx2 = (__pyx_v_Sxx * __pyx_v_Sxx);
 
-  /* "MDAnalysis/lib/qcprot.pyx":291
+  /* "MDAnalysis/lib/qcprot.pyx":271
  * 
  *     Sxx2 = Sxx * Sxx
  *     Syy2 = Syy * Syy             # <<<<<<<<<<<<<<
@@ -2553,7 +2296,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
   __pyx_v_Syy2 = (__pyx_v_Syy * __pyx_v_Syy);
 
-  /* "MDAnalysis/lib/qcprot.pyx":292
+  /* "MDAnalysis/lib/qcprot.pyx":272
  *     Sxx2 = Sxx * Sxx
  *     Syy2 = Syy * Syy
  *     Szz2 = Szz * Szz             # <<<<<<<<<<<<<<
@@ -2562,7 +2305,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
   __pyx_v_Szz2 = (__pyx_v_Szz * __pyx_v_Szz);
 
-  /* "MDAnalysis/lib/qcprot.pyx":294
+  /* "MDAnalysis/lib/qcprot.pyx":274
  *     Szz2 = Szz * Szz
  * 
  *     Sxy2 = Sxy * Sxy             # <<<<<<<<<<<<<<
@@ -2571,7 +2314,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
   __pyx_v_Sxy2 = (__pyx_v_Sxy * __pyx_v_Sxy);
 
-  /* "MDAnalysis/lib/qcprot.pyx":295
+  /* "MDAnalysis/lib/qcprot.pyx":275
  * 
  *     Sxy2 = Sxy * Sxy
  *     Syz2 = Syz * Syz             # <<<<<<<<<<<<<<
@@ -2580,7 +2323,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
   __pyx_v_Syz2 = (__pyx_v_Syz * __pyx_v_Syz);
 
-  /* "MDAnalysis/lib/qcprot.pyx":296
+  /* "MDAnalysis/lib/qcprot.pyx":276
  *     Sxy2 = Sxy * Sxy
  *     Syz2 = Syz * Syz
  *     Sxz2 = Sxz * Sxz             # <<<<<<<<<<<<<<
@@ -2589,7 +2332,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
   __pyx_v_Sxz2 = (__pyx_v_Sxz * __pyx_v_Sxz);
 
-  /* "MDAnalysis/lib/qcprot.pyx":298
+  /* "MDAnalysis/lib/qcprot.pyx":278
  *     Sxz2 = Sxz * Sxz
  * 
  *     Syx2 = Syx * Syx             # <<<<<<<<<<<<<<
@@ -2598,7 +2341,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
   __pyx_v_Syx2 = (__pyx_v_Syx * __pyx_v_Syx);
 
-  /* "MDAnalysis/lib/qcprot.pyx":299
+  /* "MDAnalysis/lib/qcprot.pyx":279
  * 
  *     Syx2 = Syx * Syx
  *     Szy2 = Szy * Szy             # <<<<<<<<<<<<<<
@@ -2607,7 +2350,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
   __pyx_v_Szy2 = (__pyx_v_Szy * __pyx_v_Szy);
 
-  /* "MDAnalysis/lib/qcprot.pyx":300
+  /* "MDAnalysis/lib/qcprot.pyx":280
  *     Syx2 = Syx * Syx
  *     Szy2 = Szy * Szy
  *     Szx2 = Szx * Szx             # <<<<<<<<<<<<<<
@@ -2616,7 +2359,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
   __pyx_v_Szx2 = (__pyx_v_Szx * __pyx_v_Szx);
 
-  /* "MDAnalysis/lib/qcprot.pyx":302
+  /* "MDAnalysis/lib/qcprot.pyx":282
  *     Szx2 = Szx * Szx
  * 
  *     SyzSzymSyySzz2 = 2.0*(Syz*Szy - Syy*Szz)             # <<<<<<<<<<<<<<
@@ -2625,7 +2368,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
   __pyx_v_SyzSzymSyySzz2 = (2.0 * ((__pyx_v_Syz * __pyx_v_Szy) - (__pyx_v_Syy * __pyx_v_Szz)));
 
-  /* "MDAnalysis/lib/qcprot.pyx":303
+  /* "MDAnalysis/lib/qcprot.pyx":283
  * 
  *     SyzSzymSyySzz2 = 2.0*(Syz*Szy - Syy*Szz)
  *     Sxx2Syy2Szz2Syz2Szy2 = Syy2 + Szz2 - Sxx2 + Syz2 + Szy2             # <<<<<<<<<<<<<<
@@ -2634,7 +2377,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
   __pyx_v_Sxx2Syy2Szz2Syz2Szy2 = ((((__pyx_v_Syy2 + __pyx_v_Szz2) - __pyx_v_Sxx2) + __pyx_v_Syz2) + __pyx_v_Szy2);
 
-  /* "MDAnalysis/lib/qcprot.pyx":305
+  /* "MDAnalysis/lib/qcprot.pyx":285
  *     Sxx2Syy2Szz2Syz2Szy2 = Syy2 + Szz2 - Sxx2 + Syz2 + Szy2
  * 
  *     C[2] = -2.0 * (Sxx2 + Syy2 + Szz2 + Sxy2 + Syx2 + Sxz2 + Szx2 + Syz2 + Szy2)             # <<<<<<<<<<<<<<
@@ -2644,7 +2387,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
   __pyx_t_13 = 2;
   *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_C.rcbuffer->pybuffer.buf, __pyx_t_13, __pyx_pybuffernd_C.diminfo[0].strides) = (-2.0 * ((((((((__pyx_v_Sxx2 + __pyx_v_Syy2) + __pyx_v_Szz2) + __pyx_v_Sxy2) + __pyx_v_Syx2) + __pyx_v_Sxz2) + __pyx_v_Szx2) + __pyx_v_Syz2) + __pyx_v_Szy2));
 
-  /* "MDAnalysis/lib/qcprot.pyx":306
+  /* "MDAnalysis/lib/qcprot.pyx":286
  * 
  *     C[2] = -2.0 * (Sxx2 + Syy2 + Szz2 + Sxy2 + Syx2 + Sxz2 + Szx2 + Syz2 + Szy2)
  *     C[1] = 8.0 * (Sxx*Syz*Szy + Syy*Szx*Sxz + Szz*Sxy*Syx - Sxx*Syy*Szz - Syz*Szx*Sxy - Szy*Syx*Sxz)             # <<<<<<<<<<<<<<
@@ -2654,7 +2397,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
   __pyx_t_14 = 1;
   *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_C.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_C.diminfo[0].strides) = (8.0 * (((((((__pyx_v_Sxx * __pyx_v_Syz) * __pyx_v_Szy) + ((__pyx_v_Syy * __pyx_v_Szx) * __pyx_v_Sxz)) + ((__pyx_v_Szz * __pyx_v_Sxy) * __pyx_v_Syx)) - ((__pyx_v_Sxx * __pyx_v_Syy) * __pyx_v_Szz)) - ((__pyx_v_Syz * __pyx_v_Szx) * __pyx_v_Sxy)) - ((__pyx_v_Szy * __pyx_v_Syx) * __pyx_v_Sxz)));
 
-  /* "MDAnalysis/lib/qcprot.pyx":308
+  /* "MDAnalysis/lib/qcprot.pyx":288
  *     C[1] = 8.0 * (Sxx*Syz*Szy + Syy*Szx*Sxz + Szz*Sxy*Syx - Sxx*Syy*Szz - Syz*Szx*Sxy - Szy*Syx*Sxz)
  * 
  *     SxzpSzx = Sxz + Szx             # <<<<<<<<<<<<<<
@@ -2663,7 +2406,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
   __pyx_v_SxzpSzx = (__pyx_v_Sxz + __pyx_v_Szx);
 
-  /* "MDAnalysis/lib/qcprot.pyx":309
+  /* "MDAnalysis/lib/qcprot.pyx":289
  * 
  *     SxzpSzx = Sxz + Szx
  *     SyzpSzy = Syz + Szy             # <<<<<<<<<<<<<<
@@ -2672,7 +2415,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
   __pyx_v_SyzpSzy = (__pyx_v_Syz + __pyx_v_Szy);
 
-  /* "MDAnalysis/lib/qcprot.pyx":310
+  /* "MDAnalysis/lib/qcprot.pyx":290
  *     SxzpSzx = Sxz + Szx
  *     SyzpSzy = Syz + Szy
  *     SxypSyx = Sxy + Syx             # <<<<<<<<<<<<<<
@@ -2681,7 +2424,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
   __pyx_v_SxypSyx = (__pyx_v_Sxy + __pyx_v_Syx);
 
-  /* "MDAnalysis/lib/qcprot.pyx":311
+  /* "MDAnalysis/lib/qcprot.pyx":291
  *     SyzpSzy = Syz + Szy
  *     SxypSyx = Sxy + Syx
  *     SyzmSzy = Syz - Szy             # <<<<<<<<<<<<<<
@@ -2690,7 +2433,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
   __pyx_v_SyzmSzy = (__pyx_v_Syz - __pyx_v_Szy);
 
-  /* "MDAnalysis/lib/qcprot.pyx":312
+  /* "MDAnalysis/lib/qcprot.pyx":292
  *     SxypSyx = Sxy + Syx
  *     SyzmSzy = Syz - Szy
  *     SxzmSzx = Sxz - Szx             # <<<<<<<<<<<<<<
@@ -2699,7 +2442,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
   __pyx_v_SxzmSzx = (__pyx_v_Sxz - __pyx_v_Szx);
 
-  /* "MDAnalysis/lib/qcprot.pyx":313
+  /* "MDAnalysis/lib/qcprot.pyx":293
  *     SyzmSzy = Syz - Szy
  *     SxzmSzx = Sxz - Szx
  *     SxymSyx = Sxy - Syx             # <<<<<<<<<<<<<<
@@ -2708,7 +2451,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
   __pyx_v_SxymSyx = (__pyx_v_Sxy - __pyx_v_Syx);
 
-  /* "MDAnalysis/lib/qcprot.pyx":314
+  /* "MDAnalysis/lib/qcprot.pyx":294
  *     SxzmSzx = Sxz - Szx
  *     SxymSyx = Sxy - Syx
  *     SxxpSyy = Sxx + Syy             # <<<<<<<<<<<<<<
@@ -2717,7 +2460,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
   __pyx_v_SxxpSyy = (__pyx_v_Sxx + __pyx_v_Syy);
 
-  /* "MDAnalysis/lib/qcprot.pyx":315
+  /* "MDAnalysis/lib/qcprot.pyx":295
  *     SxymSyx = Sxy - Syx
  *     SxxpSyy = Sxx + Syy
  *     SxxmSyy = Sxx - Syy             # <<<<<<<<<<<<<<
@@ -2726,7 +2469,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
   __pyx_v_SxxmSyy = (__pyx_v_Sxx - __pyx_v_Syy);
 
-  /* "MDAnalysis/lib/qcprot.pyx":316
+  /* "MDAnalysis/lib/qcprot.pyx":296
  *     SxxpSyy = Sxx + Syy
  *     SxxmSyy = Sxx - Syy
  *     Sxy2Sxz2Syx2Szx2 = Sxy2 + Sxz2 - Syx2 - Szx2             # <<<<<<<<<<<<<<
@@ -2735,7 +2478,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
   __pyx_v_Sxy2Sxz2Syx2Szx2 = (((__pyx_v_Sxy2 + __pyx_v_Sxz2) - __pyx_v_Syx2) - __pyx_v_Szx2);
 
-  /* "MDAnalysis/lib/qcprot.pyx":318
+  /* "MDAnalysis/lib/qcprot.pyx":298
  *     Sxy2Sxz2Syx2Szx2 = Sxy2 + Sxz2 - Syx2 - Szx2
  * 
  *     C[0] = (Sxy2Sxz2Syx2Szx2 * Sxy2Sxz2Syx2Szx2             # <<<<<<<<<<<<<<
@@ -2745,36 +2488,36 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
   __pyx_t_15 = 0;
   *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_C.rcbuffer->pybuffer.buf, __pyx_t_15, __pyx_pybuffernd_C.diminfo[0].strides) = ((((((__pyx_v_Sxy2Sxz2Syx2Szx2 * __pyx_v_Sxy2Sxz2Syx2Szx2) + ((__pyx_v_Sxx2Syy2Szz2Syz2Szy2 + __pyx_v_SyzSzymSyySzz2) * (__pyx_v_Sxx2Syy2Szz2Syz2Szy2 - __pyx_v_SyzSzymSyySzz2))) + ((((-__pyx_v_SxzpSzx) * __pyx_v_SyzmSzy) + (__pyx_v_SxymSyx * (__pyx_v_SxxmSyy - __pyx_v_Szz))) * (((-__pyx_v_SxzmSzx) * __pyx_v_SyzpSzy) + (__pyx_v_SxymSyx * (__pyx_v_SxxmSyy + __pyx_v_Szz))))) + ((((-__pyx_v_SxzpSzx) * __pyx_v_SyzpSzy) - (__pyx_v_SxypSyx * (__pyx_v_SxxpSyy - __pyx_v_Szz))) * (((-__pyx_v_SxzmSzx) * __pyx_v_SyzmSzy) - (__pyx_v_SxypSyx * (__pyx_v_SxxpSyy + __pyx_v_Szz))))) + (((__pyx_v_SxypSyx * __pyx_v_SyzpSzy) + (__pyx_v_SxzpSzx * (__pyx_v_SxxmSyy + __pyx_v_Szz))) * (((-__pyx_v_SxymSyx) * __pyx_v_SyzmSzy) + (__pyx_v_SxzpSzx * (__pyx_v_SxxpSyy + __pyx_v_Szz))))) + (((__pyx_v_SxypSyx * __pyx_v_SyzmSzy) + (__pyx_v_SxzmSzx * (__pyx_v_SxxmSyy - __pyx_v_Szz))) * (((-__pyx_v_SxymSyx) * __pyx_v_SyzpSzy) + (__pyx_v_SxzmSzx * (__pyx_v_SxxpSyy - __pyx_v_Szz)))));
 
-  /* "MDAnalysis/lib/qcprot.pyx":325
+  /* "MDAnalysis/lib/qcprot.pyx":305
  *          + (+(SxypSyx)*(SyzmSzy)+(SxzmSzx)*(SxxmSyy-Szz)) * (-(SxymSyx)*(SyzpSzy)+(SxzmSzx)*(SxxpSyy-Szz)))
  * 
  *     mxEigenV = E0             # <<<<<<<<<<<<<<
- *     for i in xrange(50):
+ *     for i in range(50):
  *         oldg = mxEigenV
  */
   __pyx_v_mxEigenV = __pyx_v_E0;
 
-  /* "MDAnalysis/lib/qcprot.pyx":326
+  /* "MDAnalysis/lib/qcprot.pyx":306
  * 
  *     mxEigenV = E0
- *     for i in xrange(50):             # <<<<<<<<<<<<<<
+ *     for i in range(50):             # <<<<<<<<<<<<<<
  *         oldg = mxEigenV
  *         x2 = mxEigenV*mxEigenV
  */
   for (__pyx_t_16 = 0; __pyx_t_16 < 50; __pyx_t_16+=1) {
     __pyx_v_i = __pyx_t_16;
 
-    /* "MDAnalysis/lib/qcprot.pyx":327
+    /* "MDAnalysis/lib/qcprot.pyx":307
  *     mxEigenV = E0
- *     for i in xrange(50):
+ *     for i in range(50):
  *         oldg = mxEigenV             # <<<<<<<<<<<<<<
  *         x2 = mxEigenV*mxEigenV
  *         b = (x2 + C[2])*mxEigenV
  */
     __pyx_v_oldg = __pyx_v_mxEigenV;
 
-    /* "MDAnalysis/lib/qcprot.pyx":328
- *     for i in xrange(50):
+    /* "MDAnalysis/lib/qcprot.pyx":308
+ *     for i in range(50):
  *         oldg = mxEigenV
  *         x2 = mxEigenV*mxEigenV             # <<<<<<<<<<<<<<
  *         b = (x2 + C[2])*mxEigenV
@@ -2782,7 +2525,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
     __pyx_v_x2 = (__pyx_v_mxEigenV * __pyx_v_mxEigenV);
 
-    /* "MDAnalysis/lib/qcprot.pyx":329
+    /* "MDAnalysis/lib/qcprot.pyx":309
  *         oldg = mxEigenV
  *         x2 = mxEigenV*mxEigenV
  *         b = (x2 + C[2])*mxEigenV             # <<<<<<<<<<<<<<
@@ -2792,7 +2535,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
     __pyx_t_17 = 2;
     __pyx_v_b = ((__pyx_v_x2 + (*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_C.rcbuffer->pybuffer.buf, __pyx_t_17, __pyx_pybuffernd_C.diminfo[0].strides))) * __pyx_v_mxEigenV);
 
-    /* "MDAnalysis/lib/qcprot.pyx":330
+    /* "MDAnalysis/lib/qcprot.pyx":310
  *         x2 = mxEigenV*mxEigenV
  *         b = (x2 + C[2])*mxEigenV
  *         a = b + C[1]             # <<<<<<<<<<<<<<
@@ -2802,7 +2545,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
     __pyx_t_18 = 1;
     __pyx_v_a = (__pyx_v_b + (*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_C.rcbuffer->pybuffer.buf, __pyx_t_18, __pyx_pybuffernd_C.diminfo[0].strides)));
 
-    /* "MDAnalysis/lib/qcprot.pyx":331
+    /* "MDAnalysis/lib/qcprot.pyx":311
  *         b = (x2 + C[2])*mxEigenV
  *         a = b + C[1]
  *         delta = ((a*mxEigenV + C[0])/(2.0*x2*mxEigenV + b + a))             # <<<<<<<<<<<<<<
@@ -2814,11 +2557,11 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
     __pyx_t_21 = ((((2.0 * __pyx_v_x2) * __pyx_v_mxEigenV) + __pyx_v_b) + __pyx_v_a);
     if (unlikely(__pyx_t_21 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 331; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 311; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
     __pyx_v_delta = (__pyx_t_20 / __pyx_t_21);
 
-    /* "MDAnalysis/lib/qcprot.pyx":332
+    /* "MDAnalysis/lib/qcprot.pyx":312
  *         a = b + C[1]
  *         delta = ((a*mxEigenV + C[0])/(2.0*x2*mxEigenV + b + a))
  *         mxEigenV -= delta             # <<<<<<<<<<<<<<
@@ -2827,7 +2570,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
     __pyx_v_mxEigenV = (__pyx_v_mxEigenV - __pyx_v_delta);
 
-    /* "MDAnalysis/lib/qcprot.pyx":333
+    /* "MDAnalysis/lib/qcprot.pyx":313
  *         delta = ((a*mxEigenV + C[0])/(2.0*x2*mxEigenV + b + a))
  *         mxEigenV -= delta
  *         if (fabs(mxEigenV - oldg) < fabs((evalprec)*mxEigenV)):             # <<<<<<<<<<<<<<
@@ -2837,7 +2580,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
     __pyx_t_22 = ((fabs((__pyx_v_mxEigenV - __pyx_v_oldg)) < fabs((__pyx_v_evalprec * __pyx_v_mxEigenV))) != 0);
     if (__pyx_t_22) {
 
-      /* "MDAnalysis/lib/qcprot.pyx":334
+      /* "MDAnalysis/lib/qcprot.pyx":314
  *         mxEigenV -= delta
  *         if (fabs(mxEigenV - oldg) < fabs((evalprec)*mxEigenV)):
  *             break             # <<<<<<<<<<<<<<
@@ -2846,7 +2589,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
       goto __pyx_L4_break;
 
-      /* "MDAnalysis/lib/qcprot.pyx":333
+      /* "MDAnalysis/lib/qcprot.pyx":313
  *         delta = ((a*mxEigenV + C[0])/(2.0*x2*mxEigenV + b + a))
  *         mxEigenV -= delta
  *         if (fabs(mxEigenV - oldg) < fabs((evalprec)*mxEigenV)):             # <<<<<<<<<<<<<<
@@ -2857,143 +2600,229 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
   }
   __pyx_L4_break:;
 
-  /* "MDAnalysis/lib/qcprot.pyx":340
- * 
- *     # the fabs() is to guard against extremely small, but *negative* numbers due to floating point error
+  /* "MDAnalysis/lib/qcprot.pyx":321
+ *     # the fabs() is to guard against extremely small,
+ *     # but *negative* numbers due to floating point error
  *     rms = sqrt(fabs(2.0 * (E0 - mxEigenV)/N))             # <<<<<<<<<<<<<<
  * 
- *     if (rot is None):
+ *     a11 = SxxpSyy + Szz-mxEigenV
  */
   __pyx_t_21 = (2.0 * (__pyx_v_E0 - __pyx_v_mxEigenV));
   if (unlikely(__pyx_v_N == 0)) {
     PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 340; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 321; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __pyx_v_rms = sqrt(fabs((__pyx_t_21 / __pyx_v_N)));
 
-  /* "MDAnalysis/lib/qcprot.pyx":342
+  /* "MDAnalysis/lib/qcprot.pyx":323
  *     rms = sqrt(fabs(2.0 * (E0 - mxEigenV)/N))
  * 
- *     if (rot is None):             # <<<<<<<<<<<<<<
- *         return rms # Don't bother with rotation.
- * 
- */
-  __pyx_t_22 = (((PyObject *)__pyx_v_rot) == Py_None);
-  __pyx_t_23 = (__pyx_t_22 != 0);
-  if (__pyx_t_23) {
-
-    /* "MDAnalysis/lib/qcprot.pyx":343
- * 
- *     if (rot is None):
- *         return rms # Don't bother with rotation.             # <<<<<<<<<<<<<<
- * 
- *     a11 = SxxpSyy + Szz-mxEigenV; a12 = SyzmSzy; a13 = - SxzmSzx; a14 = SxymSyx
- */
-    __Pyx_XDECREF(__pyx_r);
-    __pyx_t_1 = PyFloat_FromDouble(__pyx_v_rms); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 343; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_1);
-    __pyx_r = __pyx_t_1;
-    __pyx_t_1 = 0;
-    goto __pyx_L0;
-
-    /* "MDAnalysis/lib/qcprot.pyx":342
- *     rms = sqrt(fabs(2.0 * (E0 - mxEigenV)/N))
- * 
- *     if (rot is None):             # <<<<<<<<<<<<<<
- *         return rms # Don't bother with rotation.
- * 
- */
-  }
-
-  /* "MDAnalysis/lib/qcprot.pyx":345
- *         return rms # Don't bother with rotation.
- * 
- *     a11 = SxxpSyy + Szz-mxEigenV; a12 = SyzmSzy; a13 = - SxzmSzx; a14 = SxymSyx             # <<<<<<<<<<<<<<
- *     a21 = SyzmSzy; a22 = SxxmSyy - Szz-mxEigenV; a23 = SxypSyx; a24= SxzpSzx
- *     a31 = a13; a32 = a23; a33 = Syy-Sxx-Szz - mxEigenV; a34 = SyzpSzy
+ *     a11 = SxxpSyy + Szz-mxEigenV             # <<<<<<<<<<<<<<
+ *     a12 = SyzmSzy
+ *     a13 = - SxzmSzx
  */
   __pyx_v_a11 = ((__pyx_v_SxxpSyy + __pyx_v_Szz) - __pyx_v_mxEigenV);
+
+  /* "MDAnalysis/lib/qcprot.pyx":324
+ * 
+ *     a11 = SxxpSyy + Szz-mxEigenV
+ *     a12 = SyzmSzy             # <<<<<<<<<<<<<<
+ *     a13 = - SxzmSzx
+ *     a14 = SxymSyx
+ */
   __pyx_v_a12 = __pyx_v_SyzmSzy;
+
+  /* "MDAnalysis/lib/qcprot.pyx":325
+ *     a11 = SxxpSyy + Szz-mxEigenV
+ *     a12 = SyzmSzy
+ *     a13 = - SxzmSzx             # <<<<<<<<<<<<<<
+ *     a14 = SxymSyx
+ *     a21 = SyzmSzy
+ */
   __pyx_v_a13 = (-__pyx_v_SxzmSzx);
+
+  /* "MDAnalysis/lib/qcprot.pyx":326
+ *     a12 = SyzmSzy
+ *     a13 = - SxzmSzx
+ *     a14 = SxymSyx             # <<<<<<<<<<<<<<
+ *     a21 = SyzmSzy
+ *     a22 = SxxmSyy - Szz-mxEigenV
+ */
   __pyx_v_a14 = __pyx_v_SxymSyx;
 
-  /* "MDAnalysis/lib/qcprot.pyx":346
- * 
- *     a11 = SxxpSyy + Szz-mxEigenV; a12 = SyzmSzy; a13 = - SxzmSzx; a14 = SxymSyx
- *     a21 = SyzmSzy; a22 = SxxmSyy - Szz-mxEigenV; a23 = SxypSyx; a24= SxzpSzx             # <<<<<<<<<<<<<<
- *     a31 = a13; a32 = a23; a33 = Syy-Sxx-Szz - mxEigenV; a34 = SyzpSzy
- *     a41 = a14; a42 = a24; a43 = a34; a44 = Szz - SxxpSyy - mxEigenV
+  /* "MDAnalysis/lib/qcprot.pyx":327
+ *     a13 = - SxzmSzx
+ *     a14 = SxymSyx
+ *     a21 = SyzmSzy             # <<<<<<<<<<<<<<
+ *     a22 = SxxmSyy - Szz-mxEigenV
+ *     a23 = SxypSyx
  */
   __pyx_v_a21 = __pyx_v_SyzmSzy;
+
+  /* "MDAnalysis/lib/qcprot.pyx":328
+ *     a14 = SxymSyx
+ *     a21 = SyzmSzy
+ *     a22 = SxxmSyy - Szz-mxEigenV             # <<<<<<<<<<<<<<
+ *     a23 = SxypSyx
+ *     a24= SxzpSzx
+ */
   __pyx_v_a22 = ((__pyx_v_SxxmSyy - __pyx_v_Szz) - __pyx_v_mxEigenV);
+
+  /* "MDAnalysis/lib/qcprot.pyx":329
+ *     a21 = SyzmSzy
+ *     a22 = SxxmSyy - Szz-mxEigenV
+ *     a23 = SxypSyx             # <<<<<<<<<<<<<<
+ *     a24= SxzpSzx
+ *     a31 = a13
+ */
   __pyx_v_a23 = __pyx_v_SxypSyx;
+
+  /* "MDAnalysis/lib/qcprot.pyx":330
+ *     a22 = SxxmSyy - Szz-mxEigenV
+ *     a23 = SxypSyx
+ *     a24= SxzpSzx             # <<<<<<<<<<<<<<
+ *     a31 = a13
+ *     a32 = a23
+ */
   __pyx_v_a24 = __pyx_v_SxzpSzx;
 
-  /* "MDAnalysis/lib/qcprot.pyx":347
- *     a11 = SxxpSyy + Szz-mxEigenV; a12 = SyzmSzy; a13 = - SxzmSzx; a14 = SxymSyx
- *     a21 = SyzmSzy; a22 = SxxmSyy - Szz-mxEigenV; a23 = SxypSyx; a24= SxzpSzx
- *     a31 = a13; a32 = a23; a33 = Syy-Sxx-Szz - mxEigenV; a34 = SyzpSzy             # <<<<<<<<<<<<<<
- *     a41 = a14; a42 = a24; a43 = a34; a44 = Szz - SxxpSyy - mxEigenV
- *     a3344_4334 = a33 * a44 - a43 * a34; a3244_4234 = a32 * a44-a42*a34
+  /* "MDAnalysis/lib/qcprot.pyx":331
+ *     a23 = SxypSyx
+ *     a24= SxzpSzx
+ *     a31 = a13             # <<<<<<<<<<<<<<
+ *     a32 = a23
+ *     a33 = Syy-Sxx-Szz - mxEigenV
  */
   __pyx_v_a31 = __pyx_v_a13;
+
+  /* "MDAnalysis/lib/qcprot.pyx":332
+ *     a24= SxzpSzx
+ *     a31 = a13
+ *     a32 = a23             # <<<<<<<<<<<<<<
+ *     a33 = Syy-Sxx-Szz - mxEigenV
+ *     a34 = SyzpSzy
+ */
   __pyx_v_a32 = __pyx_v_a23;
+
+  /* "MDAnalysis/lib/qcprot.pyx":333
+ *     a31 = a13
+ *     a32 = a23
+ *     a33 = Syy-Sxx-Szz - mxEigenV             # <<<<<<<<<<<<<<
+ *     a34 = SyzpSzy
+ *     a41 = a14
+ */
   __pyx_v_a33 = (((__pyx_v_Syy - __pyx_v_Sxx) - __pyx_v_Szz) - __pyx_v_mxEigenV);
+
+  /* "MDAnalysis/lib/qcprot.pyx":334
+ *     a32 = a23
+ *     a33 = Syy-Sxx-Szz - mxEigenV
+ *     a34 = SyzpSzy             # <<<<<<<<<<<<<<
+ *     a41 = a14
+ *     a42 = a24
+ */
   __pyx_v_a34 = __pyx_v_SyzpSzy;
 
-  /* "MDAnalysis/lib/qcprot.pyx":348
- *     a21 = SyzmSzy; a22 = SxxmSyy - Szz-mxEigenV; a23 = SxypSyx; a24= SxzpSzx
- *     a31 = a13; a32 = a23; a33 = Syy-Sxx-Szz - mxEigenV; a34 = SyzpSzy
- *     a41 = a14; a42 = a24; a43 = a34; a44 = Szz - SxxpSyy - mxEigenV             # <<<<<<<<<<<<<<
- *     a3344_4334 = a33 * a44 - a43 * a34; a3244_4234 = a32 * a44-a42*a34
- *     a3243_4233 = a32 * a43 - a42 * a33; a3143_4133 = a31 * a43-a41*a33
+  /* "MDAnalysis/lib/qcprot.pyx":335
+ *     a33 = Syy-Sxx-Szz - mxEigenV
+ *     a34 = SyzpSzy
+ *     a41 = a14             # <<<<<<<<<<<<<<
+ *     a42 = a24
+ *     a43 = a34
  */
   __pyx_v_a41 = __pyx_v_a14;
+
+  /* "MDAnalysis/lib/qcprot.pyx":336
+ *     a34 = SyzpSzy
+ *     a41 = a14
+ *     a42 = a24             # <<<<<<<<<<<<<<
+ *     a43 = a34
+ *     a44 = Szz - SxxpSyy - mxEigenV
+ */
   __pyx_v_a42 = __pyx_v_a24;
+
+  /* "MDAnalysis/lib/qcprot.pyx":337
+ *     a41 = a14
+ *     a42 = a24
+ *     a43 = a34             # <<<<<<<<<<<<<<
+ *     a44 = Szz - SxxpSyy - mxEigenV
+ *     a3344_4334 = a33 * a44 - a43 * a34
+ */
   __pyx_v_a43 = __pyx_v_a34;
+
+  /* "MDAnalysis/lib/qcprot.pyx":338
+ *     a42 = a24
+ *     a43 = a34
+ *     a44 = Szz - SxxpSyy - mxEigenV             # <<<<<<<<<<<<<<
+ *     a3344_4334 = a33 * a44 - a43 * a34
+ *     a3244_4234 = a32 * a44-a42*a34
+ */
   __pyx_v_a44 = ((__pyx_v_Szz - __pyx_v_SxxpSyy) - __pyx_v_mxEigenV);
 
-  /* "MDAnalysis/lib/qcprot.pyx":349
- *     a31 = a13; a32 = a23; a33 = Syy-Sxx-Szz - mxEigenV; a34 = SyzpSzy
- *     a41 = a14; a42 = a24; a43 = a34; a44 = Szz - SxxpSyy - mxEigenV
- *     a3344_4334 = a33 * a44 - a43 * a34; a3244_4234 = a32 * a44-a42*a34             # <<<<<<<<<<<<<<
- *     a3243_4233 = a32 * a43 - a42 * a33; a3143_4133 = a31 * a43-a41*a33
- *     a3144_4134 = a31 * a44 - a41 * a34; a3142_4132 = a31 * a42-a41*a32
+  /* "MDAnalysis/lib/qcprot.pyx":339
+ *     a43 = a34
+ *     a44 = Szz - SxxpSyy - mxEigenV
+ *     a3344_4334 = a33 * a44 - a43 * a34             # <<<<<<<<<<<<<<
+ *     a3244_4234 = a32 * a44-a42*a34
+ *     a3243_4233 = a32 * a43 - a42 * a33
  */
   __pyx_v_a3344_4334 = ((__pyx_v_a33 * __pyx_v_a44) - (__pyx_v_a43 * __pyx_v_a34));
+
+  /* "MDAnalysis/lib/qcprot.pyx":340
+ *     a44 = Szz - SxxpSyy - mxEigenV
+ *     a3344_4334 = a33 * a44 - a43 * a34
+ *     a3244_4234 = a32 * a44-a42*a34             # <<<<<<<<<<<<<<
+ *     a3243_4233 = a32 * a43 - a42 * a33
+ *     a3143_4133 = a31 * a43-a41*a33
+ */
   __pyx_v_a3244_4234 = ((__pyx_v_a32 * __pyx_v_a44) - (__pyx_v_a42 * __pyx_v_a34));
 
-  /* "MDAnalysis/lib/qcprot.pyx":350
- *     a41 = a14; a42 = a24; a43 = a34; a44 = Szz - SxxpSyy - mxEigenV
- *     a3344_4334 = a33 * a44 - a43 * a34; a3244_4234 = a32 * a44-a42*a34
- *     a3243_4233 = a32 * a43 - a42 * a33; a3143_4133 = a31 * a43-a41*a33             # <<<<<<<<<<<<<<
- *     a3144_4134 = a31 * a44 - a41 * a34; a3142_4132 = a31 * a42-a41*a32
- *     q1 =  a22*a3344_4334-a23*a3244_4234+a24*a3243_4233
+  /* "MDAnalysis/lib/qcprot.pyx":341
+ *     a3344_4334 = a33 * a44 - a43 * a34
+ *     a3244_4234 = a32 * a44-a42*a34
+ *     a3243_4233 = a32 * a43 - a42 * a33             # <<<<<<<<<<<<<<
+ *     a3143_4133 = a31 * a43-a41*a33
+ *     a3144_4134 = a31 * a44 - a41 * a34
  */
   __pyx_v_a3243_4233 = ((__pyx_v_a32 * __pyx_v_a43) - (__pyx_v_a42 * __pyx_v_a33));
+
+  /* "MDAnalysis/lib/qcprot.pyx":342
+ *     a3244_4234 = a32 * a44-a42*a34
+ *     a3243_4233 = a32 * a43 - a42 * a33
+ *     a3143_4133 = a31 * a43-a41*a33             # <<<<<<<<<<<<<<
+ *     a3144_4134 = a31 * a44 - a41 * a34
+ *     a3142_4132 = a31 * a42-a41*a32
+ */
   __pyx_v_a3143_4133 = ((__pyx_v_a31 * __pyx_v_a43) - (__pyx_v_a41 * __pyx_v_a33));
 
-  /* "MDAnalysis/lib/qcprot.pyx":351
- *     a3344_4334 = a33 * a44 - a43 * a34; a3244_4234 = a32 * a44-a42*a34
- *     a3243_4233 = a32 * a43 - a42 * a33; a3143_4133 = a31 * a43-a41*a33
- *     a3144_4134 = a31 * a44 - a41 * a34; a3142_4132 = a31 * a42-a41*a32             # <<<<<<<<<<<<<<
+  /* "MDAnalysis/lib/qcprot.pyx":343
+ *     a3243_4233 = a32 * a43 - a42 * a33
+ *     a3143_4133 = a31 * a43-a41*a33
+ *     a3144_4134 = a31 * a44 - a41 * a34             # <<<<<<<<<<<<<<
+ *     a3142_4132 = a31 * a42-a41*a32
+ *     q1 =  a22*a3344_4334-a23*a3244_4234+a24*a3243_4233
+ */
+  __pyx_v_a3144_4134 = ((__pyx_v_a31 * __pyx_v_a44) - (__pyx_v_a41 * __pyx_v_a34));
+
+  /* "MDAnalysis/lib/qcprot.pyx":344
+ *     a3143_4133 = a31 * a43-a41*a33
+ *     a3144_4134 = a31 * a44 - a41 * a34
+ *     a3142_4132 = a31 * a42-a41*a32             # <<<<<<<<<<<<<<
  *     q1 =  a22*a3344_4334-a23*a3244_4234+a24*a3243_4233
  *     q2 = -a21*a3344_4334+a23*a3144_4134-a24*a3143_4133
  */
-  __pyx_v_a3144_4134 = ((__pyx_v_a31 * __pyx_v_a44) - (__pyx_v_a41 * __pyx_v_a34));
   __pyx_v_a3142_4132 = ((__pyx_v_a31 * __pyx_v_a42) - (__pyx_v_a41 * __pyx_v_a32));
 
-  /* "MDAnalysis/lib/qcprot.pyx":352
- *     a3243_4233 = a32 * a43 - a42 * a33; a3143_4133 = a31 * a43-a41*a33
- *     a3144_4134 = a31 * a44 - a41 * a34; a3142_4132 = a31 * a42-a41*a32
+  /* "MDAnalysis/lib/qcprot.pyx":345
+ *     a3144_4134 = a31 * a44 - a41 * a34
+ *     a3142_4132 = a31 * a42-a41*a32
  *     q1 =  a22*a3344_4334-a23*a3244_4234+a24*a3243_4233             # <<<<<<<<<<<<<<
  *     q2 = -a21*a3344_4334+a23*a3144_4134-a24*a3143_4133
  *     q3 =  a21*a3244_4234-a22*a3144_4134+a24*a3142_4132
  */
   __pyx_v_q1 = (((__pyx_v_a22 * __pyx_v_a3344_4334) - (__pyx_v_a23 * __pyx_v_a3244_4234)) + (__pyx_v_a24 * __pyx_v_a3243_4233));
 
-  /* "MDAnalysis/lib/qcprot.pyx":353
- *     a3144_4134 = a31 * a44 - a41 * a34; a3142_4132 = a31 * a42-a41*a32
+  /* "MDAnalysis/lib/qcprot.pyx":346
+ *     a3142_4132 = a31 * a42-a41*a32
  *     q1 =  a22*a3344_4334-a23*a3244_4234+a24*a3243_4233
  *     q2 = -a21*a3344_4334+a23*a3144_4134-a24*a3143_4133             # <<<<<<<<<<<<<<
  *     q3 =  a21*a3244_4234-a22*a3144_4134+a24*a3142_4132
@@ -3001,7 +2830,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
   __pyx_v_q2 = ((((-__pyx_v_a21) * __pyx_v_a3344_4334) + (__pyx_v_a23 * __pyx_v_a3144_4134)) - (__pyx_v_a24 * __pyx_v_a3143_4133));
 
-  /* "MDAnalysis/lib/qcprot.pyx":354
+  /* "MDAnalysis/lib/qcprot.pyx":347
  *     q1 =  a22*a3344_4334-a23*a3244_4234+a24*a3243_4233
  *     q2 = -a21*a3344_4334+a23*a3144_4134-a24*a3143_4133
  *     q3 =  a21*a3244_4234-a22*a3144_4134+a24*a3142_4132             # <<<<<<<<<<<<<<
@@ -3010,7 +2839,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
   __pyx_v_q3 = (((__pyx_v_a21 * __pyx_v_a3244_4234) - (__pyx_v_a22 * __pyx_v_a3144_4134)) + (__pyx_v_a24 * __pyx_v_a3142_4132));
 
-  /* "MDAnalysis/lib/qcprot.pyx":355
+  /* "MDAnalysis/lib/qcprot.pyx":348
  *     q2 = -a21*a3344_4334+a23*a3144_4134-a24*a3143_4133
  *     q3 =  a21*a3244_4234-a22*a3144_4134+a24*a3142_4132
  *     q4 = -a21*a3243_4233+a22*a3143_4133-a23*a3142_4132             # <<<<<<<<<<<<<<
@@ -3019,26 +2848,26 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
   __pyx_v_q4 = ((((-__pyx_v_a21) * __pyx_v_a3243_4233) + (__pyx_v_a22 * __pyx_v_a3143_4133)) - (__pyx_v_a23 * __pyx_v_a3142_4132));
 
-  /* "MDAnalysis/lib/qcprot.pyx":357
+  /* "MDAnalysis/lib/qcprot.pyx":350
  *     q4 = -a21*a3243_4233+a22*a3143_4133-a23*a3142_4132
  * 
  *     qsqr = q1 * q1 + q2 * q2 + q3 * q3 + q4 * q4             # <<<<<<<<<<<<<<
  * 
- * # The following code tries to calculate another column in the adjoint matrix when the norm of the
+ *     # The following code tries to calculate another column in the adjoint matrix
  */
   __pyx_v_qsqr = ((((__pyx_v_q1 * __pyx_v_q1) + (__pyx_v_q2 * __pyx_v_q2)) + (__pyx_v_q3 * __pyx_v_q3)) + (__pyx_v_q4 * __pyx_v_q4));
 
-  /* "MDAnalysis/lib/qcprot.pyx":364
- * #   uncommented, but it is most likely unnecessary.
+  /* "MDAnalysis/lib/qcprot.pyx":357
+ *     # uncommented, but it is most likely unnecessary.
  * 
  *     if (qsqr < evecprec):             # <<<<<<<<<<<<<<
  *         q1 =  a12*a3344_4334 - a13*a3244_4234 + a14*a3243_4233
  *         q2 = -a11*a3344_4334 + a13*a3144_4134 - a14*a3143_4133
  */
-  __pyx_t_23 = ((__pyx_v_qsqr < __pyx_v_evecprec) != 0);
-  if (__pyx_t_23) {
+  __pyx_t_22 = ((__pyx_v_qsqr < __pyx_v_evecprec) != 0);
+  if (__pyx_t_22) {
 
-    /* "MDAnalysis/lib/qcprot.pyx":365
+    /* "MDAnalysis/lib/qcprot.pyx":358
  * 
  *     if (qsqr < evecprec):
  *         q1 =  a12*a3344_4334 - a13*a3244_4234 + a14*a3243_4233             # <<<<<<<<<<<<<<
@@ -3047,7 +2876,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
     __pyx_v_q1 = (((__pyx_v_a12 * __pyx_v_a3344_4334) - (__pyx_v_a13 * __pyx_v_a3244_4234)) + (__pyx_v_a14 * __pyx_v_a3243_4233));
 
-    /* "MDAnalysis/lib/qcprot.pyx":366
+    /* "MDAnalysis/lib/qcprot.pyx":359
  *     if (qsqr < evecprec):
  *         q1 =  a12*a3344_4334 - a13*a3244_4234 + a14*a3243_4233
  *         q2 = -a11*a3344_4334 + a13*a3144_4134 - a14*a3143_4133             # <<<<<<<<<<<<<<
@@ -3056,7 +2885,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
     __pyx_v_q2 = ((((-__pyx_v_a11) * __pyx_v_a3344_4334) + (__pyx_v_a13 * __pyx_v_a3144_4134)) - (__pyx_v_a14 * __pyx_v_a3143_4133));
 
-    /* "MDAnalysis/lib/qcprot.pyx":367
+    /* "MDAnalysis/lib/qcprot.pyx":360
  *         q1 =  a12*a3344_4334 - a13*a3244_4234 + a14*a3243_4233
  *         q2 = -a11*a3344_4334 + a13*a3144_4134 - a14*a3143_4133
  *         q3 =  a11*a3244_4234 - a12*a3144_4134 + a14*a3142_4132             # <<<<<<<<<<<<<<
@@ -3065,7 +2894,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
     __pyx_v_q3 = (((__pyx_v_a11 * __pyx_v_a3244_4234) - (__pyx_v_a12 * __pyx_v_a3144_4134)) + (__pyx_v_a14 * __pyx_v_a3142_4132));
 
-    /* "MDAnalysis/lib/qcprot.pyx":368
+    /* "MDAnalysis/lib/qcprot.pyx":361
  *         q2 = -a11*a3344_4334 + a13*a3144_4134 - a14*a3143_4133
  *         q3 =  a11*a3244_4234 - a12*a3144_4134 + a14*a3142_4132
  *         q4 = -a11*a3243_4233 + a12*a3143_4133 - a13*a3142_4132             # <<<<<<<<<<<<<<
@@ -3074,7 +2903,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
     __pyx_v_q4 = ((((-__pyx_v_a11) * __pyx_v_a3243_4233) + (__pyx_v_a12 * __pyx_v_a3143_4133)) - (__pyx_v_a13 * __pyx_v_a3142_4132));
 
-    /* "MDAnalysis/lib/qcprot.pyx":369
+    /* "MDAnalysis/lib/qcprot.pyx":362
  *         q3 =  a11*a3244_4234 - a12*a3144_4134 + a14*a3142_4132
  *         q4 = -a11*a3243_4233 + a12*a3143_4133 - a13*a3142_4132
  *         qsqr = q1*q1 + q2 *q2 + q3*q3+q4*q4             # <<<<<<<<<<<<<<
@@ -3083,17 +2912,17 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
     __pyx_v_qsqr = ((((__pyx_v_q1 * __pyx_v_q1) + (__pyx_v_q2 * __pyx_v_q2)) + (__pyx_v_q3 * __pyx_v_q3)) + (__pyx_v_q4 * __pyx_v_q4));
 
-    /* "MDAnalysis/lib/qcprot.pyx":371
+    /* "MDAnalysis/lib/qcprot.pyx":364
  *         qsqr = q1*q1 + q2 *q2 + q3*q3+q4*q4
  * 
  *         if (qsqr < evecprec):             # <<<<<<<<<<<<<<
  *             a1324_1423 = a13 * a24 - a14 * a23
  *             a1224_1422 = a12 * a24 - a14 * a22
  */
-    __pyx_t_23 = ((__pyx_v_qsqr < __pyx_v_evecprec) != 0);
-    if (__pyx_t_23) {
+    __pyx_t_22 = ((__pyx_v_qsqr < __pyx_v_evecprec) != 0);
+    if (__pyx_t_22) {
 
-      /* "MDAnalysis/lib/qcprot.pyx":372
+      /* "MDAnalysis/lib/qcprot.pyx":365
  * 
  *         if (qsqr < evecprec):
  *             a1324_1423 = a13 * a24 - a14 * a23             # <<<<<<<<<<<<<<
@@ -3102,7 +2931,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
       __pyx_v_a1324_1423 = ((__pyx_v_a13 * __pyx_v_a24) - (__pyx_v_a14 * __pyx_v_a23));
 
-      /* "MDAnalysis/lib/qcprot.pyx":373
+      /* "MDAnalysis/lib/qcprot.pyx":366
  *         if (qsqr < evecprec):
  *             a1324_1423 = a13 * a24 - a14 * a23
  *             a1224_1422 = a12 * a24 - a14 * a22             # <<<<<<<<<<<<<<
@@ -3111,7 +2940,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
       __pyx_v_a1224_1422 = ((__pyx_v_a12 * __pyx_v_a24) - (__pyx_v_a14 * __pyx_v_a22));
 
-      /* "MDAnalysis/lib/qcprot.pyx":374
+      /* "MDAnalysis/lib/qcprot.pyx":367
  *             a1324_1423 = a13 * a24 - a14 * a23
  *             a1224_1422 = a12 * a24 - a14 * a22
  *             a1223_1322 = a12 * a23 - a13 * a22             # <<<<<<<<<<<<<<
@@ -3120,7 +2949,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
       __pyx_v_a1223_1322 = ((__pyx_v_a12 * __pyx_v_a23) - (__pyx_v_a13 * __pyx_v_a22));
 
-      /* "MDAnalysis/lib/qcprot.pyx":375
+      /* "MDAnalysis/lib/qcprot.pyx":368
  *             a1224_1422 = a12 * a24 - a14 * a22
  *             a1223_1322 = a12 * a23 - a13 * a22
  *             a1124_1421 = a11 * a24 - a14 * a21             # <<<<<<<<<<<<<<
@@ -3129,7 +2958,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
       __pyx_v_a1124_1421 = ((__pyx_v_a11 * __pyx_v_a24) - (__pyx_v_a14 * __pyx_v_a21));
 
-      /* "MDAnalysis/lib/qcprot.pyx":376
+      /* "MDAnalysis/lib/qcprot.pyx":369
  *             a1223_1322 = a12 * a23 - a13 * a22
  *             a1124_1421 = a11 * a24 - a14 * a21
  *             a1123_1321 = a11 * a23 - a13 * a21             # <<<<<<<<<<<<<<
@@ -3138,7 +2967,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
       __pyx_v_a1123_1321 = ((__pyx_v_a11 * __pyx_v_a23) - (__pyx_v_a13 * __pyx_v_a21));
 
-      /* "MDAnalysis/lib/qcprot.pyx":377
+      /* "MDAnalysis/lib/qcprot.pyx":370
  *             a1124_1421 = a11 * a24 - a14 * a21
  *             a1123_1321 = a11 * a23 - a13 * a21
  *             a1122_1221 = a11 * a22 - a12 * a21             # <<<<<<<<<<<<<<
@@ -3147,7 +2976,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
       __pyx_v_a1122_1221 = ((__pyx_v_a11 * __pyx_v_a22) - (__pyx_v_a12 * __pyx_v_a21));
 
-      /* "MDAnalysis/lib/qcprot.pyx":379
+      /* "MDAnalysis/lib/qcprot.pyx":372
  *             a1122_1221 = a11 * a22 - a12 * a21
  * 
  *             q1 =  a42 * a1324_1423 - a43 * a1224_1422 + a44 * a1223_1322             # <<<<<<<<<<<<<<
@@ -3156,7 +2985,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
       __pyx_v_q1 = (((__pyx_v_a42 * __pyx_v_a1324_1423) - (__pyx_v_a43 * __pyx_v_a1224_1422)) + (__pyx_v_a44 * __pyx_v_a1223_1322));
 
-      /* "MDAnalysis/lib/qcprot.pyx":380
+      /* "MDAnalysis/lib/qcprot.pyx":373
  * 
  *             q1 =  a42 * a1324_1423 - a43 * a1224_1422 + a44 * a1223_1322
  *             q2 = -a41 * a1324_1423 + a43 * a1124_1421 - a44 * a1123_1321             # <<<<<<<<<<<<<<
@@ -3165,7 +2994,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
       __pyx_v_q2 = ((((-__pyx_v_a41) * __pyx_v_a1324_1423) + (__pyx_v_a43 * __pyx_v_a1124_1421)) - (__pyx_v_a44 * __pyx_v_a1123_1321));
 
-      /* "MDAnalysis/lib/qcprot.pyx":381
+      /* "MDAnalysis/lib/qcprot.pyx":374
  *             q1 =  a42 * a1324_1423 - a43 * a1224_1422 + a44 * a1223_1322
  *             q2 = -a41 * a1324_1423 + a43 * a1124_1421 - a44 * a1123_1321
  *             q3 =  a41 * a1224_1422 - a42 * a1124_1421 + a44 * a1122_1221             # <<<<<<<<<<<<<<
@@ -3174,7 +3003,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
       __pyx_v_q3 = (((__pyx_v_a41 * __pyx_v_a1224_1422) - (__pyx_v_a42 * __pyx_v_a1124_1421)) + (__pyx_v_a44 * __pyx_v_a1122_1221));
 
-      /* "MDAnalysis/lib/qcprot.pyx":382
+      /* "MDAnalysis/lib/qcprot.pyx":375
  *             q2 = -a41 * a1324_1423 + a43 * a1124_1421 - a44 * a1123_1321
  *             q3 =  a41 * a1224_1422 - a42 * a1124_1421 + a44 * a1122_1221
  *             q4 = -a41 * a1223_1322 + a42 * a1123_1321 - a43 * a1122_1221             # <<<<<<<<<<<<<<
@@ -3183,7 +3012,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
       __pyx_v_q4 = ((((-__pyx_v_a41) * __pyx_v_a1223_1322) + (__pyx_v_a42 * __pyx_v_a1123_1321)) - (__pyx_v_a43 * __pyx_v_a1122_1221));
 
-      /* "MDAnalysis/lib/qcprot.pyx":383
+      /* "MDAnalysis/lib/qcprot.pyx":376
  *             q3 =  a41 * a1224_1422 - a42 * a1124_1421 + a44 * a1122_1221
  *             q4 = -a41 * a1223_1322 + a42 * a1123_1321 - a43 * a1122_1221
  *             qsqr = q1*q1 + q2 *q2 + q3*q3+q4*q4             # <<<<<<<<<<<<<<
@@ -3192,17 +3021,17 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
       __pyx_v_qsqr = ((((__pyx_v_q1 * __pyx_v_q1) + (__pyx_v_q2 * __pyx_v_q2)) + (__pyx_v_q3 * __pyx_v_q3)) + (__pyx_v_q4 * __pyx_v_q4));
 
-      /* "MDAnalysis/lib/qcprot.pyx":385
+      /* "MDAnalysis/lib/qcprot.pyx":378
  *             qsqr = q1*q1 + q2 *q2 + q3*q3+q4*q4
  * 
  *             if (qsqr < evecprec):             # <<<<<<<<<<<<<<
  *                 q1 =  a32 * a1324_1423 - a33 * a1224_1422 + a34 * a1223_1322
  *                 q2 = -a31 * a1324_1423 + a33 * a1124_1421 - a34 * a1123_1321
  */
-      __pyx_t_23 = ((__pyx_v_qsqr < __pyx_v_evecprec) != 0);
-      if (__pyx_t_23) {
+      __pyx_t_22 = ((__pyx_v_qsqr < __pyx_v_evecprec) != 0);
+      if (__pyx_t_22) {
 
-        /* "MDAnalysis/lib/qcprot.pyx":386
+        /* "MDAnalysis/lib/qcprot.pyx":379
  * 
  *             if (qsqr < evecprec):
  *                 q1 =  a32 * a1324_1423 - a33 * a1224_1422 + a34 * a1223_1322             # <<<<<<<<<<<<<<
@@ -3211,7 +3040,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
         __pyx_v_q1 = (((__pyx_v_a32 * __pyx_v_a1324_1423) - (__pyx_v_a33 * __pyx_v_a1224_1422)) + (__pyx_v_a34 * __pyx_v_a1223_1322));
 
-        /* "MDAnalysis/lib/qcprot.pyx":387
+        /* "MDAnalysis/lib/qcprot.pyx":380
  *             if (qsqr < evecprec):
  *                 q1 =  a32 * a1324_1423 - a33 * a1224_1422 + a34 * a1223_1322
  *                 q2 = -a31 * a1324_1423 + a33 * a1124_1421 - a34 * a1123_1321             # <<<<<<<<<<<<<<
@@ -3220,7 +3049,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
         __pyx_v_q2 = ((((-__pyx_v_a31) * __pyx_v_a1324_1423) + (__pyx_v_a33 * __pyx_v_a1124_1421)) - (__pyx_v_a34 * __pyx_v_a1123_1321));
 
-        /* "MDAnalysis/lib/qcprot.pyx":388
+        /* "MDAnalysis/lib/qcprot.pyx":381
  *                 q1 =  a32 * a1324_1423 - a33 * a1224_1422 + a34 * a1223_1322
  *                 q2 = -a31 * a1324_1423 + a33 * a1124_1421 - a34 * a1123_1321
  *                 q3 =  a31 * a1224_1422 - a32 * a1124_1421 + a34 * a1122_1221             # <<<<<<<<<<<<<<
@@ -3229,7 +3058,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
         __pyx_v_q3 = (((__pyx_v_a31 * __pyx_v_a1224_1422) - (__pyx_v_a32 * __pyx_v_a1124_1421)) + (__pyx_v_a34 * __pyx_v_a1122_1221));
 
-        /* "MDAnalysis/lib/qcprot.pyx":389
+        /* "MDAnalysis/lib/qcprot.pyx":382
  *                 q2 = -a31 * a1324_1423 + a33 * a1124_1421 - a34 * a1123_1321
  *                 q3 =  a31 * a1224_1422 - a32 * a1124_1421 + a34 * a1122_1221
  *                 q4 = -a31 * a1223_1322 + a32 * a1123_1321 - a33 * a1122_1221             # <<<<<<<<<<<<<<
@@ -3238,7 +3067,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
         __pyx_v_q4 = ((((-__pyx_v_a31) * __pyx_v_a1223_1322) + (__pyx_v_a32 * __pyx_v_a1123_1321)) - (__pyx_v_a33 * __pyx_v_a1122_1221));
 
-        /* "MDAnalysis/lib/qcprot.pyx":390
+        /* "MDAnalysis/lib/qcprot.pyx":383
  *                 q3 =  a31 * a1224_1422 - a32 * a1124_1421 + a34 * a1122_1221
  *                 q4 = -a31 * a1223_1322 + a32 * a1123_1321 - a33 * a1122_1221
  *                 qsqr = q1*q1 + q2 *q2 + q3*q3 + q4*q4             # <<<<<<<<<<<<<<
@@ -3247,51 +3076,51 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
         __pyx_v_qsqr = ((((__pyx_v_q1 * __pyx_v_q1) + (__pyx_v_q2 * __pyx_v_q2)) + (__pyx_v_q3 * __pyx_v_q3)) + (__pyx_v_q4 * __pyx_v_q4));
 
-        /* "MDAnalysis/lib/qcprot.pyx":392
+        /* "MDAnalysis/lib/qcprot.pyx":385
  *                 qsqr = q1*q1 + q2 *q2 + q3*q3 + q4*q4
  * 
  *                 if (qsqr < evecprec):             # <<<<<<<<<<<<<<
  *                     # if qsqr is still too small, return the identity matrix. #
  *                     rot[0] = rot[4] = rot[8] = 1.0
  */
-        __pyx_t_23 = ((__pyx_v_qsqr < __pyx_v_evecprec) != 0);
-        if (__pyx_t_23) {
+        __pyx_t_22 = ((__pyx_v_qsqr < __pyx_v_evecprec) != 0);
+        if (__pyx_t_22) {
 
-          /* "MDAnalysis/lib/qcprot.pyx":394
+          /* "MDAnalysis/lib/qcprot.pyx":387
  *                 if (qsqr < evecprec):
  *                     # if qsqr is still too small, return the identity matrix. #
  *                     rot[0] = rot[4] = rot[8] = 1.0             # <<<<<<<<<<<<<<
  *                     rot[1] = rot[2] = rot[3] = rot[5] = rot[6] = rot[7] = 0.0
  * 
  */
-          __pyx_t_24 = 0;
+          __pyx_t_23 = 0;
+          *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_23, __pyx_pybuffernd_rot.diminfo[0].strides) = 1.0;
+          __pyx_t_24 = 4;
           *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_24, __pyx_pybuffernd_rot.diminfo[0].strides) = 1.0;
-          __pyx_t_25 = 4;
+          __pyx_t_25 = 8;
           *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_25, __pyx_pybuffernd_rot.diminfo[0].strides) = 1.0;
-          __pyx_t_26 = 8;
-          *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_26, __pyx_pybuffernd_rot.diminfo[0].strides) = 1.0;
 
-          /* "MDAnalysis/lib/qcprot.pyx":395
+          /* "MDAnalysis/lib/qcprot.pyx":388
  *                     # if qsqr is still too small, return the identity matrix. #
  *                     rot[0] = rot[4] = rot[8] = 1.0
  *                     rot[1] = rot[2] = rot[3] = rot[5] = rot[6] = rot[7] = 0.0             # <<<<<<<<<<<<<<
  * 
  *                     return
  */
-          __pyx_t_27 = 1;
+          __pyx_t_26 = 1;
+          *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_26, __pyx_pybuffernd_rot.diminfo[0].strides) = 0.0;
+          __pyx_t_27 = 2;
           *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_27, __pyx_pybuffernd_rot.diminfo[0].strides) = 0.0;
-          __pyx_t_28 = 2;
+          __pyx_t_28 = 3;
           *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_28, __pyx_pybuffernd_rot.diminfo[0].strides) = 0.0;
-          __pyx_t_29 = 3;
+          __pyx_t_29 = 5;
           *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_29, __pyx_pybuffernd_rot.diminfo[0].strides) = 0.0;
-          __pyx_t_30 = 5;
+          __pyx_t_30 = 6;
           *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_30, __pyx_pybuffernd_rot.diminfo[0].strides) = 0.0;
-          __pyx_t_31 = 6;
+          __pyx_t_31 = 7;
           *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_31, __pyx_pybuffernd_rot.diminfo[0].strides) = 0.0;
-          __pyx_t_32 = 7;
-          *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_32, __pyx_pybuffernd_rot.diminfo[0].strides) = 0.0;
 
-          /* "MDAnalysis/lib/qcprot.pyx":397
+          /* "MDAnalysis/lib/qcprot.pyx":390
  *                     rot[1] = rot[2] = rot[3] = rot[5] = rot[6] = rot[7] = 0.0
  * 
  *                     return             # <<<<<<<<<<<<<<
@@ -3302,7 +3131,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
           __pyx_r = Py_None; __Pyx_INCREF(Py_None);
           goto __pyx_L0;
 
-          /* "MDAnalysis/lib/qcprot.pyx":392
+          /* "MDAnalysis/lib/qcprot.pyx":385
  *                 qsqr = q1*q1 + q2 *q2 + q3*q3 + q4*q4
  * 
  *                 if (qsqr < evecprec):             # <<<<<<<<<<<<<<
@@ -3311,7 +3140,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
         }
 
-        /* "MDAnalysis/lib/qcprot.pyx":385
+        /* "MDAnalysis/lib/qcprot.pyx":378
  *             qsqr = q1*q1 + q2 *q2 + q3*q3+q4*q4
  * 
  *             if (qsqr < evecprec):             # <<<<<<<<<<<<<<
@@ -3320,7 +3149,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
       }
 
-      /* "MDAnalysis/lib/qcprot.pyx":371
+      /* "MDAnalysis/lib/qcprot.pyx":364
  *         qsqr = q1*q1 + q2 *q2 + q3*q3+q4*q4
  * 
  *         if (qsqr < evecprec):             # <<<<<<<<<<<<<<
@@ -3329,8 +3158,8 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
     }
 
-    /* "MDAnalysis/lib/qcprot.pyx":364
- * #   uncommented, but it is most likely unnecessary.
+    /* "MDAnalysis/lib/qcprot.pyx":357
+ *     # uncommented, but it is most likely unnecessary.
  * 
  *     if (qsqr < evecprec):             # <<<<<<<<<<<<<<
  *         q1 =  a12*a3344_4334 - a13*a3244_4234 + a14*a3243_4233
@@ -3338,7 +3167,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
   }
 
-  /* "MDAnalysis/lib/qcprot.pyx":400
+  /* "MDAnalysis/lib/qcprot.pyx":393
  * 
  * 
  *     normq = sqrt(qsqr)             # <<<<<<<<<<<<<<
@@ -3347,7 +3176,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
   __pyx_v_normq = sqrt(__pyx_v_qsqr);
 
-  /* "MDAnalysis/lib/qcprot.pyx":401
+  /* "MDAnalysis/lib/qcprot.pyx":394
  * 
  *     normq = sqrt(qsqr)
  *     q1 /= normq             # <<<<<<<<<<<<<<
@@ -3356,11 +3185,11 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
   if (unlikely(__pyx_v_normq == 0)) {
     PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 401; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 394; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __pyx_v_q1 = (__pyx_v_q1 / __pyx_v_normq);
 
-  /* "MDAnalysis/lib/qcprot.pyx":402
+  /* "MDAnalysis/lib/qcprot.pyx":395
  *     normq = sqrt(qsqr)
  *     q1 /= normq
  *     q2 /= normq             # <<<<<<<<<<<<<<
@@ -3369,11 +3198,11 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
   if (unlikely(__pyx_v_normq == 0)) {
     PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 402; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 395; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __pyx_v_q2 = (__pyx_v_q2 / __pyx_v_normq);
 
-  /* "MDAnalysis/lib/qcprot.pyx":403
+  /* "MDAnalysis/lib/qcprot.pyx":396
  *     q1 /= normq
  *     q2 /= normq
  *     q3 /= normq             # <<<<<<<<<<<<<<
@@ -3382,11 +3211,11 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
   if (unlikely(__pyx_v_normq == 0)) {
     PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 403; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 396; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __pyx_v_q3 = (__pyx_v_q3 / __pyx_v_normq);
 
-  /* "MDAnalysis/lib/qcprot.pyx":404
+  /* "MDAnalysis/lib/qcprot.pyx":397
  *     q2 /= normq
  *     q3 /= normq
  *     q4 /= normq             # <<<<<<<<<<<<<<
@@ -3395,11 +3224,11 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
   if (unlikely(__pyx_v_normq == 0)) {
     PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 404; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 397; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __pyx_v_q4 = (__pyx_v_q4 / __pyx_v_normq);
 
-  /* "MDAnalysis/lib/qcprot.pyx":406
+  /* "MDAnalysis/lib/qcprot.pyx":399
  *     q4 /= normq
  * 
  *     a2 = q1 * q1             # <<<<<<<<<<<<<<
@@ -3408,7 +3237,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
   __pyx_v_a2 = (__pyx_v_q1 * __pyx_v_q1);
 
-  /* "MDAnalysis/lib/qcprot.pyx":407
+  /* "MDAnalysis/lib/qcprot.pyx":400
  * 
  *     a2 = q1 * q1
  *     x2 = q2 * q2             # <<<<<<<<<<<<<<
@@ -3417,7 +3246,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
   __pyx_v_x2 = (__pyx_v_q2 * __pyx_v_q2);
 
-  /* "MDAnalysis/lib/qcprot.pyx":408
+  /* "MDAnalysis/lib/qcprot.pyx":401
  *     a2 = q1 * q1
  *     x2 = q2 * q2
  *     y2 = q3 * q3             # <<<<<<<<<<<<<<
@@ -3426,7 +3255,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
   __pyx_v_y2 = (__pyx_v_q3 * __pyx_v_q3);
 
-  /* "MDAnalysis/lib/qcprot.pyx":409
+  /* "MDAnalysis/lib/qcprot.pyx":402
  *     x2 = q2 * q2
  *     y2 = q3 * q3
  *     z2 = q4 * q4             # <<<<<<<<<<<<<<
@@ -3435,7 +3264,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
   __pyx_v_z2 = (__pyx_v_q4 * __pyx_v_q4);
 
-  /* "MDAnalysis/lib/qcprot.pyx":411
+  /* "MDAnalysis/lib/qcprot.pyx":404
  *     z2 = q4 * q4
  * 
  *     xy = q2 * q3             # <<<<<<<<<<<<<<
@@ -3444,7 +3273,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
   __pyx_v_xy = (__pyx_v_q2 * __pyx_v_q3);
 
-  /* "MDAnalysis/lib/qcprot.pyx":412
+  /* "MDAnalysis/lib/qcprot.pyx":405
  * 
  *     xy = q2 * q3
  *     az = q1 * q4             # <<<<<<<<<<<<<<
@@ -3453,7 +3282,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
   __pyx_v_az = (__pyx_v_q1 * __pyx_v_q4);
 
-  /* "MDAnalysis/lib/qcprot.pyx":413
+  /* "MDAnalysis/lib/qcprot.pyx":406
  *     xy = q2 * q3
  *     az = q1 * q4
  *     zx = q4 * q2             # <<<<<<<<<<<<<<
@@ -3462,7 +3291,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
   __pyx_v_zx = (__pyx_v_q4 * __pyx_v_q2);
 
-  /* "MDAnalysis/lib/qcprot.pyx":414
+  /* "MDAnalysis/lib/qcprot.pyx":407
  *     az = q1 * q4
  *     zx = q4 * q2
  *     ay = q1 * q3             # <<<<<<<<<<<<<<
@@ -3471,7 +3300,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
   __pyx_v_ay = (__pyx_v_q1 * __pyx_v_q3);
 
-  /* "MDAnalysis/lib/qcprot.pyx":415
+  /* "MDAnalysis/lib/qcprot.pyx":408
  *     zx = q4 * q2
  *     ay = q1 * q3
  *     yz = q3 * q4             # <<<<<<<<<<<<<<
@@ -3480,7 +3309,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
   __pyx_v_yz = (__pyx_v_q3 * __pyx_v_q4);
 
-  /* "MDAnalysis/lib/qcprot.pyx":416
+  /* "MDAnalysis/lib/qcprot.pyx":409
  *     ay = q1 * q3
  *     yz = q3 * q4
  *     ax = q1 * q2             # <<<<<<<<<<<<<<
@@ -3489,97 +3318,97 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  */
   __pyx_v_ax = (__pyx_v_q1 * __pyx_v_q2);
 
-  /* "MDAnalysis/lib/qcprot.pyx":418
+  /* "MDAnalysis/lib/qcprot.pyx":411
  *     ax = q1 * q2
  * 
  *     rot[0] = a2 + x2 - y2 - z2             # <<<<<<<<<<<<<<
  *     rot[1] = 2 * (xy + az)
  *     rot[2] = 2 * (zx - ay)
  */
-  __pyx_t_33 = 0;
-  *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_33, __pyx_pybuffernd_rot.diminfo[0].strides) = (((__pyx_v_a2 + __pyx_v_x2) - __pyx_v_y2) - __pyx_v_z2);
+  __pyx_t_32 = 0;
+  *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_32, __pyx_pybuffernd_rot.diminfo[0].strides) = (((__pyx_v_a2 + __pyx_v_x2) - __pyx_v_y2) - __pyx_v_z2);
 
-  /* "MDAnalysis/lib/qcprot.pyx":419
+  /* "MDAnalysis/lib/qcprot.pyx":412
  * 
  *     rot[0] = a2 + x2 - y2 - z2
  *     rot[1] = 2 * (xy + az)             # <<<<<<<<<<<<<<
  *     rot[2] = 2 * (zx - ay)
  *     rot[3] = 2 * (xy - az)
  */
-  __pyx_t_34 = 1;
-  *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_34, __pyx_pybuffernd_rot.diminfo[0].strides) = (2.0 * (__pyx_v_xy + __pyx_v_az));
+  __pyx_t_33 = 1;
+  *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_33, __pyx_pybuffernd_rot.diminfo[0].strides) = (2.0 * (__pyx_v_xy + __pyx_v_az));
 
-  /* "MDAnalysis/lib/qcprot.pyx":420
+  /* "MDAnalysis/lib/qcprot.pyx":413
  *     rot[0] = a2 + x2 - y2 - z2
  *     rot[1] = 2 * (xy + az)
  *     rot[2] = 2 * (zx - ay)             # <<<<<<<<<<<<<<
  *     rot[3] = 2 * (xy - az)
  *     rot[4] = a2 - x2 + y2 - z2
  */
-  __pyx_t_35 = 2;
-  *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_35, __pyx_pybuffernd_rot.diminfo[0].strides) = (2.0 * (__pyx_v_zx - __pyx_v_ay));
+  __pyx_t_34 = 2;
+  *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_34, __pyx_pybuffernd_rot.diminfo[0].strides) = (2.0 * (__pyx_v_zx - __pyx_v_ay));
 
-  /* "MDAnalysis/lib/qcprot.pyx":421
+  /* "MDAnalysis/lib/qcprot.pyx":414
  *     rot[1] = 2 * (xy + az)
  *     rot[2] = 2 * (zx - ay)
  *     rot[3] = 2 * (xy - az)             # <<<<<<<<<<<<<<
  *     rot[4] = a2 - x2 + y2 - z2
  *     rot[5] = 2 * (yz + ax)
  */
-  __pyx_t_36 = 3;
-  *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_36, __pyx_pybuffernd_rot.diminfo[0].strides) = (2.0 * (__pyx_v_xy - __pyx_v_az));
+  __pyx_t_35 = 3;
+  *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_35, __pyx_pybuffernd_rot.diminfo[0].strides) = (2.0 * (__pyx_v_xy - __pyx_v_az));
 
-  /* "MDAnalysis/lib/qcprot.pyx":422
+  /* "MDAnalysis/lib/qcprot.pyx":415
  *     rot[2] = 2 * (zx - ay)
  *     rot[3] = 2 * (xy - az)
  *     rot[4] = a2 - x2 + y2 - z2             # <<<<<<<<<<<<<<
  *     rot[5] = 2 * (yz + ax)
  *     rot[6] = 2 * (zx + ay)
  */
-  __pyx_t_37 = 4;
-  *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_37, __pyx_pybuffernd_rot.diminfo[0].strides) = (((__pyx_v_a2 - __pyx_v_x2) + __pyx_v_y2) - __pyx_v_z2);
+  __pyx_t_36 = 4;
+  *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_36, __pyx_pybuffernd_rot.diminfo[0].strides) = (((__pyx_v_a2 - __pyx_v_x2) + __pyx_v_y2) - __pyx_v_z2);
 
-  /* "MDAnalysis/lib/qcprot.pyx":423
+  /* "MDAnalysis/lib/qcprot.pyx":416
  *     rot[3] = 2 * (xy - az)
  *     rot[4] = a2 - x2 + y2 - z2
  *     rot[5] = 2 * (yz + ax)             # <<<<<<<<<<<<<<
  *     rot[6] = 2 * (zx + ay)
  *     rot[7] = 2 * (yz - ax)
  */
-  __pyx_t_38 = 5;
-  *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_38, __pyx_pybuffernd_rot.diminfo[0].strides) = (2.0 * (__pyx_v_yz + __pyx_v_ax));
+  __pyx_t_37 = 5;
+  *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_37, __pyx_pybuffernd_rot.diminfo[0].strides) = (2.0 * (__pyx_v_yz + __pyx_v_ax));
 
-  /* "MDAnalysis/lib/qcprot.pyx":424
+  /* "MDAnalysis/lib/qcprot.pyx":417
  *     rot[4] = a2 - x2 + y2 - z2
  *     rot[5] = 2 * (yz + ax)
  *     rot[6] = 2 * (zx + ay)             # <<<<<<<<<<<<<<
  *     rot[7] = 2 * (yz - ax)
  *     rot[8] = a2 - x2 - y2 + z2
  */
-  __pyx_t_39 = 6;
-  *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_39, __pyx_pybuffernd_rot.diminfo[0].strides) = (2.0 * (__pyx_v_zx + __pyx_v_ay));
+  __pyx_t_38 = 6;
+  *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_38, __pyx_pybuffernd_rot.diminfo[0].strides) = (2.0 * (__pyx_v_zx + __pyx_v_ay));
 
-  /* "MDAnalysis/lib/qcprot.pyx":425
+  /* "MDAnalysis/lib/qcprot.pyx":418
  *     rot[5] = 2 * (yz + ax)
  *     rot[6] = 2 * (zx + ay)
  *     rot[7] = 2 * (yz - ax)             # <<<<<<<<<<<<<<
  *     rot[8] = a2 - x2 - y2 + z2
  * 
  */
-  __pyx_t_40 = 7;
-  *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_40, __pyx_pybuffernd_rot.diminfo[0].strides) = (2.0 * (__pyx_v_yz - __pyx_v_ax));
+  __pyx_t_39 = 7;
+  *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_39, __pyx_pybuffernd_rot.diminfo[0].strides) = (2.0 * (__pyx_v_yz - __pyx_v_ax));
 
-  /* "MDAnalysis/lib/qcprot.pyx":426
+  /* "MDAnalysis/lib/qcprot.pyx":419
  *     rot[6] = 2 * (zx + ay)
  *     rot[7] = 2 * (yz - ax)
  *     rot[8] = a2 - x2 - y2 + z2             # <<<<<<<<<<<<<<
  * 
  *     return rms
  */
-  __pyx_t_41 = 8;
-  *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_41, __pyx_pybuffernd_rot.diminfo[0].strides) = (((__pyx_v_a2 - __pyx_v_x2) - __pyx_v_y2) + __pyx_v_z2);
+  __pyx_t_40 = 8;
+  *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_rot.rcbuffer->pybuffer.buf, __pyx_t_40, __pyx_pybuffernd_rot.diminfo[0].strides) = (((__pyx_v_a2 - __pyx_v_x2) - __pyx_v_y2) + __pyx_v_z2);
 
-  /* "MDAnalysis/lib/qcprot.pyx":428
+  /* "MDAnalysis/lib/qcprot.pyx":421
  *     rot[8] = a2 - x2 - y2 + z2
  * 
  *     return rms             # <<<<<<<<<<<<<<
@@ -3587,18 +3416,18 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
  * def CalcRMSDRotationalMatrix(np.ndarray[np.float64_t,ndim=2] ref,
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_rms); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 428; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_rms); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 421; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "MDAnalysis/lib/qcprot.pyx":239
+  /* "MDAnalysis/lib/qcprot.pyx":216
  * @cython.boundscheck(False)
  * @cython.wraparound(False)
- * def FastCalcRMSDAndRotation(np.ndarray[np.float64_t,ndim=1] rot, np.ndarray[np.float64_t,ndim=1] A, double E0, int N):             # <<<<<<<<<<<<<<
- *     """
- *     Calculate the RMSD, and/or the optimal rotation matrix.
+ * def FastCalcRMSDAndRotation(np.ndarray[np.float64_t,ndim=1] rot,             # <<<<<<<<<<<<<<
+ *                             np.ndarray[np.float64_t,ndim=1] A,
+ *                             double E0, int N):
  */
 
   /* function exit code */
@@ -3625,7 +3454,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
   return __pyx_r;
 }
 
-/* "MDAnalysis/lib/qcprot.pyx":430
+/* "MDAnalysis/lib/qcprot.pyx":423
  *     return rms
  * 
  * def CalcRMSDRotationalMatrix(np.ndarray[np.float64_t,ndim=2] ref,             # <<<<<<<<<<<<<<
@@ -3635,7 +3464,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_2FastCalcRMSDAndRotation(CYT
 
 /* Python wrapper */
 static PyObject *__pyx_pw_10MDAnalysis_3lib_6qcprot_5CalcRMSDRotationalMatrix(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_10MDAnalysis_3lib_6qcprot_4CalcRMSDRotationalMatrix[] = "\n    Calculate the RMSD & rotational matrix.\n\n    CalcRMSDRotationalMatrix(ref, conf, N, rot, weights):\n            :Input:\n                   - ref     -- reference structure coordinates (*must* be `numpy.float64`)\n                   - conf    -- candidate structure coordinates (*must* be `numpy.float64`)\n                   - N       -- the size of the system\n                   - rot[9]  -- array to store rotation matrix; set to None if only calculating rmsd (modified in place)\n                   - weight  -- the weight array of size len; set to None if not needed\n            :Output:\n                   - rot[9]  -- rotation matrix\n            :Returns:\n                   - RMSD value\n\n    .. Note:: All arrays *must* be of type `numpy.float64`.\n    ";
+static char __pyx_doc_10MDAnalysis_3lib_6qcprot_4CalcRMSDRotationalMatrix[] = "\n    Calculate the RMSD & rotational matrix.\n\n    Parameters\n    ----------\n    ref : ndarray, dtype float64_t\n        reference structure coordinates\n    conf : ndarray, dtype float64_t\n        condidate structure coordinates\n    N : int\n        size of the system\n    rot : ndarray, dtype float64_t\n        array to store rotation matrix. Must be flat\n    weights : ndarray, dtype float64_t\n        weights for each component\n\n    Returns\n    -------\n    rmsd : float\n        RMSD value\n    ";
 static PyMethodDef __pyx_mdef_10MDAnalysis_3lib_6qcprot_5CalcRMSDRotationalMatrix = {"CalcRMSDRotationalMatrix", (PyCFunction)__pyx_pw_10MDAnalysis_3lib_6qcprot_5CalcRMSDRotationalMatrix, METH_VARARGS|METH_KEYWORDS, __pyx_doc_10MDAnalysis_3lib_6qcprot_4CalcRMSDRotationalMatrix};
 static PyObject *__pyx_pw_10MDAnalysis_3lib_6qcprot_5CalcRMSDRotationalMatrix(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyArrayObject *__pyx_v_ref = 0;
@@ -3672,26 +3501,26 @@ static PyObject *__pyx_pw_10MDAnalysis_3lib_6qcprot_5CalcRMSDRotationalMatrix(Py
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_conf)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("CalcRMSDRotationalMatrix", 1, 5, 5, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 430; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("CalcRMSDRotationalMatrix", 1, 5, 5, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 423; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_N)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("CalcRMSDRotationalMatrix", 1, 5, 5, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 430; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("CalcRMSDRotationalMatrix", 1, 5, 5, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 423; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  3:
         if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_rot)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("CalcRMSDRotationalMatrix", 1, 5, 5, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 430; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("CalcRMSDRotationalMatrix", 1, 5, 5, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 423; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  4:
         if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_weights)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("CalcRMSDRotationalMatrix", 1, 5, 5, 4); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 430; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("CalcRMSDRotationalMatrix", 1, 5, 5, 4); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 423; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "CalcRMSDRotationalMatrix") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 430; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "CalcRMSDRotationalMatrix") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 423; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 5) {
       goto __pyx_L5_argtuple_error;
@@ -3704,22 +3533,22 @@ static PyObject *__pyx_pw_10MDAnalysis_3lib_6qcprot_5CalcRMSDRotationalMatrix(Py
     }
     __pyx_v_ref = ((PyArrayObject *)values[0]);
     __pyx_v_conf = ((PyArrayObject *)values[1]);
-    __pyx_v_N = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_N == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 432; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_N = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_N == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 425; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
     __pyx_v_rot = ((PyArrayObject *)values[3]);
     __pyx_v_weights = ((PyArrayObject *)values[4]);
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("CalcRMSDRotationalMatrix", 1, 5, 5, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 430; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("CalcRMSDRotationalMatrix", 1, 5, 5, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 423; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("MDAnalysis.lib.qcprot.CalcRMSDRotationalMatrix", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_ref), __pyx_ptype_5numpy_ndarray, 1, "ref", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 430; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_conf), __pyx_ptype_5numpy_ndarray, 1, "conf", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 431; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_rot), __pyx_ptype_5numpy_ndarray, 1, "rot", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 433; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_weights), __pyx_ptype_5numpy_ndarray, 1, "weights", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 434; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_ref), __pyx_ptype_5numpy_ndarray, 1, "ref", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 423; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_conf), __pyx_ptype_5numpy_ndarray, 1, "conf", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 424; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_rot), __pyx_ptype_5numpy_ndarray, 1, "rot", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 426; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_weights), __pyx_ptype_5numpy_ndarray, 1, "weights", 0))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 427; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_r = __pyx_pf_10MDAnalysis_3lib_6qcprot_4CalcRMSDRotationalMatrix(__pyx_self, __pyx_v_ref, __pyx_v_conf, __pyx_v_N, __pyx_v_rot, __pyx_v_weights);
 
   /* function exit code */
@@ -3733,7 +3562,6 @@ static PyObject *__pyx_pw_10MDAnalysis_3lib_6qcprot_5CalcRMSDRotationalMatrix(Py
 
 static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_4CalcRMSDRotationalMatrix(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_ref, PyArrayObject *__pyx_v_conf, int __pyx_v_N, PyArrayObject *__pyx_v_rot, PyArrayObject *__pyx_v_weights) {
   double __pyx_v_E0;
-  double __pyx_v_rmsd;
   PyArrayObject *__pyx_v_A = 0;
   __Pyx_LocalBuf_ND __pyx_pybuffernd_A;
   __Pyx_Buffer __pyx_pybuffer_A;
@@ -3782,47 +3610,47 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_4CalcRMSDRotationalMatrix(CY
   __pyx_pybuffernd_weights.rcbuffer = &__pyx_pybuffer_weights;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_ref.rcbuffer->pybuffer, (PyObject*)__pyx_v_ref, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 430; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_ref.rcbuffer->pybuffer, (PyObject*)__pyx_v_ref, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 423; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __pyx_pybuffernd_ref.diminfo[0].strides = __pyx_pybuffernd_ref.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_ref.diminfo[0].shape = __pyx_pybuffernd_ref.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_ref.diminfo[1].strides = __pyx_pybuffernd_ref.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_ref.diminfo[1].shape = __pyx_pybuffernd_ref.rcbuffer->pybuffer.shape[1];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_conf.rcbuffer->pybuffer, (PyObject*)__pyx_v_conf, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 430; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_conf.rcbuffer->pybuffer, (PyObject*)__pyx_v_conf, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 423; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __pyx_pybuffernd_conf.diminfo[0].strides = __pyx_pybuffernd_conf.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_conf.diminfo[0].shape = __pyx_pybuffernd_conf.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_conf.diminfo[1].strides = __pyx_pybuffernd_conf.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_conf.diminfo[1].shape = __pyx_pybuffernd_conf.rcbuffer->pybuffer.shape[1];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_rot.rcbuffer->pybuffer, (PyObject*)__pyx_v_rot, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 430; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_rot.rcbuffer->pybuffer, (PyObject*)__pyx_v_rot, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 423; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __pyx_pybuffernd_rot.diminfo[0].strides = __pyx_pybuffernd_rot.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_rot.diminfo[0].shape = __pyx_pybuffernd_rot.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_weights.rcbuffer->pybuffer, (PyObject*)__pyx_v_weights, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 430; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_weights.rcbuffer->pybuffer, (PyObject*)__pyx_v_weights, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 423; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __pyx_pybuffernd_weights.diminfo[0].strides = __pyx_pybuffernd_weights.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_weights.diminfo[0].shape = __pyx_pybuffernd_weights.rcbuffer->pybuffer.shape[0];
 
-  /* "MDAnalysis/lib/qcprot.pyx":453
+  /* "MDAnalysis/lib/qcprot.pyx":450
  *     """
  *     cdef double E0, rmsd
  *     cdef np.ndarray[np.float64_t,ndim=1] A = np.zeros(9,)             # <<<<<<<<<<<<<<
  * 
  *     E0 = InnerProduct(A,conf,ref,N,weights)
  */
-  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 453; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 450; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_zeros); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 453; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_zeros); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 450; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_tuple__2, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 453; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_tuple__2, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 450; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 453; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 450; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_t_3 = ((PyArrayObject *)__pyx_t_1);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_A.rcbuffer->pybuffer, (PyObject*)__pyx_t_3, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) {
       __pyx_v_A = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_A.rcbuffer->pybuffer.buf = NULL;
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 453; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 450; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     } else {__pyx_pybuffernd_A.diminfo[0].strides = __pyx_pybuffernd_A.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_A.diminfo[0].shape = __pyx_pybuffernd_A.rcbuffer->pybuffer.shape[0];
     }
   }
@@ -3830,16 +3658,15 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_4CalcRMSDRotationalMatrix(CY
   __pyx_v_A = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "MDAnalysis/lib/qcprot.pyx":455
+  /* "MDAnalysis/lib/qcprot.pyx":452
  *     cdef np.ndarray[np.float64_t,ndim=1] A = np.zeros(9,)
  * 
  *     E0 = InnerProduct(A,conf,ref,N,weights)             # <<<<<<<<<<<<<<
- *     rmsd = FastCalcRMSDAndRotation(rot,A,E0,N)
- * 
+ *     return FastCalcRMSDAndRotation(rot,A,E0,N)
  */
-  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_InnerProduct); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 455; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_InnerProduct); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 452; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_N); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 455; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_N); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 452; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = NULL;
   __pyx_t_6 = 0;
@@ -3853,7 +3680,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_4CalcRMSDRotationalMatrix(CY
       __pyx_t_6 = 1;
     }
   }
-  __pyx_t_7 = PyTuple_New(5+__pyx_t_6); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 455; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_7 = PyTuple_New(5+__pyx_t_6); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 452; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_7);
   if (__pyx_t_5) {
     __Pyx_GIVEREF(__pyx_t_5); PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_5); __pyx_t_5 = NULL;
@@ -3873,26 +3700,25 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_4CalcRMSDRotationalMatrix(CY
   __Pyx_GIVEREF(((PyObject *)__pyx_v_weights));
   PyTuple_SET_ITEM(__pyx_t_7, 4+__pyx_t_6, ((PyObject *)__pyx_v_weights));
   __pyx_t_4 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_7, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 455; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_7, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 452; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_8 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_8 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 455; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_8 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_8 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 452; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_E0 = __pyx_t_8;
 
-  /* "MDAnalysis/lib/qcprot.pyx":456
+  /* "MDAnalysis/lib/qcprot.pyx":453
  * 
  *     E0 = InnerProduct(A,conf,ref,N,weights)
- *     rmsd = FastCalcRMSDAndRotation(rot,A,E0,N)             # <<<<<<<<<<<<<<
- * 
- *     return rmsd
+ *     return FastCalcRMSDAndRotation(rot,A,E0,N)             # <<<<<<<<<<<<<<
  */
-  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_FastCalcRMSDAndRotation); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 456; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_FastCalcRMSDAndRotation); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 453; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_7 = PyFloat_FromDouble(__pyx_v_E0); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 456; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_7 = PyFloat_FromDouble(__pyx_v_E0); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 453; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_N); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 456; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_N); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 453; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = NULL;
   __pyx_t_6 = 0;
@@ -3906,7 +3732,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_4CalcRMSDRotationalMatrix(CY
       __pyx_t_6 = 1;
     }
   }
-  __pyx_t_9 = PyTuple_New(4+__pyx_t_6); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 456; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_9 = PyTuple_New(4+__pyx_t_6); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 453; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_9);
   if (__pyx_t_5) {
     __Pyx_GIVEREF(__pyx_t_5); PyTuple_SET_ITEM(__pyx_t_9, 0, __pyx_t_5); __pyx_t_5 = NULL;
@@ -3923,29 +3749,15 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_4CalcRMSDRotationalMatrix(CY
   PyTuple_SET_ITEM(__pyx_t_9, 3+__pyx_t_6, __pyx_t_4);
   __pyx_t_7 = 0;
   __pyx_t_4 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_9, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 456; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_9, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 453; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_8 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_8 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 456; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_v_rmsd = __pyx_t_8;
-
-  /* "MDAnalysis/lib/qcprot.pyx":458
- *     rmsd = FastCalcRMSDAndRotation(rot,A,E0,N)
- * 
- *     return rmsd             # <<<<<<<<<<<<<<
- * 
- * 
- */
-  __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_rmsd); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 458; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "MDAnalysis/lib/qcprot.pyx":430
+  /* "MDAnalysis/lib/qcprot.pyx":423
  *     return rms
  * 
  * def CalcRMSDRotationalMatrix(np.ndarray[np.float64_t,ndim=2] ref,             # <<<<<<<<<<<<<<
@@ -3985,7 +3797,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6qcprot_4CalcRMSDRotationalMatrix(CY
   return __pyx_r;
 }
 
-/* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":197
+/* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":197
  *         # experimental exception made for __getbuffer__ and __releasebuffer__
  *         # -- the details of this may change.
  *         def __getbuffer__(ndarray self, Py_buffer* info, int flags):             # <<<<<<<<<<<<<<
@@ -4035,7 +3847,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
     __Pyx_GIVEREF(__pyx_v_info->obj);
   }
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":203
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":203
  *             # of flags
  * 
  *             if info == NULL: return             # <<<<<<<<<<<<<<
@@ -4048,7 +3860,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
     goto __pyx_L0;
   }
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":206
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":206
  * 
  *             cdef int copy_shape, i, ndim
  *             cdef int endian_detector = 1             # <<<<<<<<<<<<<<
@@ -4057,7 +3869,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  */
   __pyx_v_endian_detector = 1;
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":207
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":207
  *             cdef int copy_shape, i, ndim
  *             cdef int endian_detector = 1
  *             cdef bint little_endian = ((<char*>&endian_detector)[0] != 0)             # <<<<<<<<<<<<<<
@@ -4066,7 +3878,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  */
   __pyx_v_little_endian = ((((char *)(&__pyx_v_endian_detector))[0]) != 0);
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":209
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":209
  *             cdef bint little_endian = ((<char*>&endian_detector)[0] != 0)
  * 
  *             ndim = PyArray_NDIM(self)             # <<<<<<<<<<<<<<
@@ -4075,7 +3887,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  */
   __pyx_v_ndim = PyArray_NDIM(__pyx_v_self);
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":211
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":211
  *             ndim = PyArray_NDIM(self)
  * 
  *             if sizeof(npy_intp) != sizeof(Py_ssize_t):             # <<<<<<<<<<<<<<
@@ -4085,7 +3897,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
   __pyx_t_1 = (((sizeof(npy_intp)) != (sizeof(Py_ssize_t))) != 0);
   if (__pyx_t_1) {
 
-    /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":212
+    /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":212
  * 
  *             if sizeof(npy_intp) != sizeof(Py_ssize_t):
  *                 copy_shape = 1             # <<<<<<<<<<<<<<
@@ -4094,7 +3906,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  */
     __pyx_v_copy_shape = 1;
 
-    /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":211
+    /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":211
  *             ndim = PyArray_NDIM(self)
  * 
  *             if sizeof(npy_intp) != sizeof(Py_ssize_t):             # <<<<<<<<<<<<<<
@@ -4104,7 +3916,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
     goto __pyx_L4;
   }
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":214
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":214
  *                 copy_shape = 1
  *             else:
  *                 copy_shape = 0             # <<<<<<<<<<<<<<
@@ -4116,7 +3928,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
   }
   __pyx_L4:;
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":216
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":216
  *                 copy_shape = 0
  * 
  *             if ((flags & pybuf.PyBUF_C_CONTIGUOUS == pybuf.PyBUF_C_CONTIGUOUS)             # <<<<<<<<<<<<<<
@@ -4130,7 +3942,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
     goto __pyx_L6_bool_binop_done;
   }
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":217
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":217
  * 
  *             if ((flags & pybuf.PyBUF_C_CONTIGUOUS == pybuf.PyBUF_C_CONTIGUOUS)
  *                 and not PyArray_CHKFLAGS(self, NPY_C_CONTIGUOUS)):             # <<<<<<<<<<<<<<
@@ -4141,7 +3953,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
   __pyx_t_1 = __pyx_t_2;
   __pyx_L6_bool_binop_done:;
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":216
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":216
  *                 copy_shape = 0
  * 
  *             if ((flags & pybuf.PyBUF_C_CONTIGUOUS == pybuf.PyBUF_C_CONTIGUOUS)             # <<<<<<<<<<<<<<
@@ -4150,7 +3962,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  */
   if (__pyx_t_1) {
 
-    /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":218
+    /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":218
  *             if ((flags & pybuf.PyBUF_C_CONTIGUOUS == pybuf.PyBUF_C_CONTIGUOUS)
  *                 and not PyArray_CHKFLAGS(self, NPY_C_CONTIGUOUS)):
  *                 raise ValueError(u"ndarray is not C contiguous")             # <<<<<<<<<<<<<<
@@ -4163,7 +3975,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     {__pyx_filename = __pyx_f[1]; __pyx_lineno = 218; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-    /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":216
+    /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":216
  *                 copy_shape = 0
  * 
  *             if ((flags & pybuf.PyBUF_C_CONTIGUOUS == pybuf.PyBUF_C_CONTIGUOUS)             # <<<<<<<<<<<<<<
@@ -4172,7 +3984,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  */
   }
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":220
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":220
  *                 raise ValueError(u"ndarray is not C contiguous")
  * 
  *             if ((flags & pybuf.PyBUF_F_CONTIGUOUS == pybuf.PyBUF_F_CONTIGUOUS)             # <<<<<<<<<<<<<<
@@ -4186,7 +3998,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
     goto __pyx_L9_bool_binop_done;
   }
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":221
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":221
  * 
  *             if ((flags & pybuf.PyBUF_F_CONTIGUOUS == pybuf.PyBUF_F_CONTIGUOUS)
  *                 and not PyArray_CHKFLAGS(self, NPY_F_CONTIGUOUS)):             # <<<<<<<<<<<<<<
@@ -4197,7 +4009,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
   __pyx_t_1 = __pyx_t_2;
   __pyx_L9_bool_binop_done:;
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":220
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":220
  *                 raise ValueError(u"ndarray is not C contiguous")
  * 
  *             if ((flags & pybuf.PyBUF_F_CONTIGUOUS == pybuf.PyBUF_F_CONTIGUOUS)             # <<<<<<<<<<<<<<
@@ -4206,7 +4018,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  */
   if (__pyx_t_1) {
 
-    /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":222
+    /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":222
  *             if ((flags & pybuf.PyBUF_F_CONTIGUOUS == pybuf.PyBUF_F_CONTIGUOUS)
  *                 and not PyArray_CHKFLAGS(self, NPY_F_CONTIGUOUS)):
  *                 raise ValueError(u"ndarray is not Fortran contiguous")             # <<<<<<<<<<<<<<
@@ -4219,7 +4031,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     {__pyx_filename = __pyx_f[1]; __pyx_lineno = 222; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-    /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":220
+    /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":220
  *                 raise ValueError(u"ndarray is not C contiguous")
  * 
  *             if ((flags & pybuf.PyBUF_F_CONTIGUOUS == pybuf.PyBUF_F_CONTIGUOUS)             # <<<<<<<<<<<<<<
@@ -4228,7 +4040,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  */
   }
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":224
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":224
  *                 raise ValueError(u"ndarray is not Fortran contiguous")
  * 
  *             info.buf = PyArray_DATA(self)             # <<<<<<<<<<<<<<
@@ -4237,7 +4049,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  */
   __pyx_v_info->buf = PyArray_DATA(__pyx_v_self);
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":225
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":225
  * 
  *             info.buf = PyArray_DATA(self)
  *             info.ndim = ndim             # <<<<<<<<<<<<<<
@@ -4246,7 +4058,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  */
   __pyx_v_info->ndim = __pyx_v_ndim;
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":226
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":226
  *             info.buf = PyArray_DATA(self)
  *             info.ndim = ndim
  *             if copy_shape:             # <<<<<<<<<<<<<<
@@ -4256,7 +4068,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
   __pyx_t_1 = (__pyx_v_copy_shape != 0);
   if (__pyx_t_1) {
 
-    /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":229
+    /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":229
  *                 # Allocate new buffer for strides and shape info.
  *                 # This is allocated as one block, strides first.
  *                 info.strides = <Py_ssize_t*>stdlib.malloc(sizeof(Py_ssize_t) * <size_t>ndim * 2)             # <<<<<<<<<<<<<<
@@ -4265,7 +4077,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  */
     __pyx_v_info->strides = ((Py_ssize_t *)malloc((((sizeof(Py_ssize_t)) * ((size_t)__pyx_v_ndim)) * 2)));
 
-    /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":230
+    /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":230
  *                 # This is allocated as one block, strides first.
  *                 info.strides = <Py_ssize_t*>stdlib.malloc(sizeof(Py_ssize_t) * <size_t>ndim * 2)
  *                 info.shape = info.strides + ndim             # <<<<<<<<<<<<<<
@@ -4274,7 +4086,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  */
     __pyx_v_info->shape = (__pyx_v_info->strides + __pyx_v_ndim);
 
-    /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":231
+    /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":231
  *                 info.strides = <Py_ssize_t*>stdlib.malloc(sizeof(Py_ssize_t) * <size_t>ndim * 2)
  *                 info.shape = info.strides + ndim
  *                 for i in range(ndim):             # <<<<<<<<<<<<<<
@@ -4285,7 +4097,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
     for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
       __pyx_v_i = __pyx_t_5;
 
-      /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":232
+      /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":232
  *                 info.shape = info.strides + ndim
  *                 for i in range(ndim):
  *                     info.strides[i] = PyArray_STRIDES(self)[i]             # <<<<<<<<<<<<<<
@@ -4294,7 +4106,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  */
       (__pyx_v_info->strides[__pyx_v_i]) = (PyArray_STRIDES(__pyx_v_self)[__pyx_v_i]);
 
-      /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":233
+      /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":233
  *                 for i in range(ndim):
  *                     info.strides[i] = PyArray_STRIDES(self)[i]
  *                     info.shape[i] = PyArray_DIMS(self)[i]             # <<<<<<<<<<<<<<
@@ -4304,7 +4116,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
       (__pyx_v_info->shape[__pyx_v_i]) = (PyArray_DIMS(__pyx_v_self)[__pyx_v_i]);
     }
 
-    /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":226
+    /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":226
  *             info.buf = PyArray_DATA(self)
  *             info.ndim = ndim
  *             if copy_shape:             # <<<<<<<<<<<<<<
@@ -4314,7 +4126,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
     goto __pyx_L11;
   }
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":235
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":235
  *                     info.shape[i] = PyArray_DIMS(self)[i]
  *             else:
  *                 info.strides = <Py_ssize_t*>PyArray_STRIDES(self)             # <<<<<<<<<<<<<<
@@ -4324,7 +4136,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
   /*else*/ {
     __pyx_v_info->strides = ((Py_ssize_t *)PyArray_STRIDES(__pyx_v_self));
 
-    /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":236
+    /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":236
  *             else:
  *                 info.strides = <Py_ssize_t*>PyArray_STRIDES(self)
  *                 info.shape = <Py_ssize_t*>PyArray_DIMS(self)             # <<<<<<<<<<<<<<
@@ -4335,7 +4147,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
   }
   __pyx_L11:;
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":237
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":237
  *                 info.strides = <Py_ssize_t*>PyArray_STRIDES(self)
  *                 info.shape = <Py_ssize_t*>PyArray_DIMS(self)
  *             info.suboffsets = NULL             # <<<<<<<<<<<<<<
@@ -4344,7 +4156,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  */
   __pyx_v_info->suboffsets = NULL;
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":238
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":238
  *                 info.shape = <Py_ssize_t*>PyArray_DIMS(self)
  *             info.suboffsets = NULL
  *             info.itemsize = PyArray_ITEMSIZE(self)             # <<<<<<<<<<<<<<
@@ -4353,7 +4165,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  */
   __pyx_v_info->itemsize = PyArray_ITEMSIZE(__pyx_v_self);
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":239
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":239
  *             info.suboffsets = NULL
  *             info.itemsize = PyArray_ITEMSIZE(self)
  *             info.readonly = not PyArray_ISWRITEABLE(self)             # <<<<<<<<<<<<<<
@@ -4362,7 +4174,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  */
   __pyx_v_info->readonly = (!(PyArray_ISWRITEABLE(__pyx_v_self) != 0));
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":242
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":242
  * 
  *             cdef int t
  *             cdef char* f = NULL             # <<<<<<<<<<<<<<
@@ -4371,7 +4183,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  */
   __pyx_v_f = NULL;
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":243
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":243
  *             cdef int t
  *             cdef char* f = NULL
  *             cdef dtype descr = self.descr             # <<<<<<<<<<<<<<
@@ -4383,7 +4195,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
   __pyx_v_descr = ((PyArray_Descr *)__pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":246
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":246
  *             cdef int offset
  * 
  *             cdef bint hasfields = PyDataType_HASFIELDS(descr)             # <<<<<<<<<<<<<<
@@ -4392,7 +4204,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  */
   __pyx_v_hasfields = PyDataType_HASFIELDS(__pyx_v_descr);
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":248
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":248
  *             cdef bint hasfields = PyDataType_HASFIELDS(descr)
  * 
  *             if not hasfields and not copy_shape:             # <<<<<<<<<<<<<<
@@ -4410,7 +4222,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
   __pyx_L15_bool_binop_done:;
   if (__pyx_t_1) {
 
-    /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":250
+    /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":250
  *             if not hasfields and not copy_shape:
  *                 # do not call releasebuffer
  *                 info.obj = None             # <<<<<<<<<<<<<<
@@ -4423,7 +4235,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
     __Pyx_DECREF(__pyx_v_info->obj);
     __pyx_v_info->obj = Py_None;
 
-    /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":248
+    /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":248
  *             cdef bint hasfields = PyDataType_HASFIELDS(descr)
  * 
  *             if not hasfields and not copy_shape:             # <<<<<<<<<<<<<<
@@ -4433,7 +4245,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
     goto __pyx_L14;
   }
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":253
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":253
  *             else:
  *                 # need to call releasebuffer
  *                 info.obj = self             # <<<<<<<<<<<<<<
@@ -4449,7 +4261,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
   }
   __pyx_L14:;
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":255
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":255
  *                 info.obj = self
  * 
  *             if not hasfields:             # <<<<<<<<<<<<<<
@@ -4459,7 +4271,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
   __pyx_t_1 = ((!(__pyx_v_hasfields != 0)) != 0);
   if (__pyx_t_1) {
 
-    /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":256
+    /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":256
  * 
  *             if not hasfields:
  *                 t = descr.type_num             # <<<<<<<<<<<<<<
@@ -4469,7 +4281,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
     __pyx_t_4 = __pyx_v_descr->type_num;
     __pyx_v_t = __pyx_t_4;
 
-    /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":257
+    /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":257
  *             if not hasfields:
  *                 t = descr.type_num
  *                 if ((descr.byteorder == c'>' and little_endian) or             # <<<<<<<<<<<<<<
@@ -4489,7 +4301,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
     }
     __pyx_L20_next_or:;
 
-    /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":258
+    /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":258
  *                 t = descr.type_num
  *                 if ((descr.byteorder == c'>' and little_endian) or
  *                     (descr.byteorder == c'<' and not little_endian)):             # <<<<<<<<<<<<<<
@@ -4506,7 +4318,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
     __pyx_t_1 = __pyx_t_2;
     __pyx_L19_bool_binop_done:;
 
-    /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":257
+    /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":257
  *             if not hasfields:
  *                 t = descr.type_num
  *                 if ((descr.byteorder == c'>' and little_endian) or             # <<<<<<<<<<<<<<
@@ -4515,7 +4327,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  */
     if (__pyx_t_1) {
 
-      /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":259
+      /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":259
  *                 if ((descr.byteorder == c'>' and little_endian) or
  *                     (descr.byteorder == c'<' and not little_endian)):
  *                     raise ValueError(u"Non-native byte order not supported")             # <<<<<<<<<<<<<<
@@ -4528,7 +4340,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       {__pyx_filename = __pyx_f[1]; __pyx_lineno = 259; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-      /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":257
+      /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":257
  *             if not hasfields:
  *                 t = descr.type_num
  *                 if ((descr.byteorder == c'>' and little_endian) or             # <<<<<<<<<<<<<<
@@ -4537,7 +4349,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  */
     }
 
-    /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":260
+    /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":260
  *                     (descr.byteorder == c'<' and not little_endian)):
  *                     raise ValueError(u"Non-native byte order not supported")
  *                 if   t == NPY_BYTE:        f = "b"             # <<<<<<<<<<<<<<
@@ -4549,7 +4361,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
       __pyx_v_f = __pyx_k_b;
       break;
 
-      /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":261
+      /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":261
  *                     raise ValueError(u"Non-native byte order not supported")
  *                 if   t == NPY_BYTE:        f = "b"
  *                 elif t == NPY_UBYTE:       f = "B"             # <<<<<<<<<<<<<<
@@ -4560,7 +4372,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
       __pyx_v_f = __pyx_k_B;
       break;
 
-      /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":262
+      /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":262
  *                 if   t == NPY_BYTE:        f = "b"
  *                 elif t == NPY_UBYTE:       f = "B"
  *                 elif t == NPY_SHORT:       f = "h"             # <<<<<<<<<<<<<<
@@ -4571,7 +4383,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
       __pyx_v_f = __pyx_k_h;
       break;
 
-      /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":263
+      /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":263
  *                 elif t == NPY_UBYTE:       f = "B"
  *                 elif t == NPY_SHORT:       f = "h"
  *                 elif t == NPY_USHORT:      f = "H"             # <<<<<<<<<<<<<<
@@ -4582,7 +4394,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
       __pyx_v_f = __pyx_k_H;
       break;
 
-      /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":264
+      /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":264
  *                 elif t == NPY_SHORT:       f = "h"
  *                 elif t == NPY_USHORT:      f = "H"
  *                 elif t == NPY_INT:         f = "i"             # <<<<<<<<<<<<<<
@@ -4593,7 +4405,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
       __pyx_v_f = __pyx_k_i;
       break;
 
-      /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":265
+      /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":265
  *                 elif t == NPY_USHORT:      f = "H"
  *                 elif t == NPY_INT:         f = "i"
  *                 elif t == NPY_UINT:        f = "I"             # <<<<<<<<<<<<<<
@@ -4604,7 +4416,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
       __pyx_v_f = __pyx_k_I;
       break;
 
-      /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":266
+      /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":266
  *                 elif t == NPY_INT:         f = "i"
  *                 elif t == NPY_UINT:        f = "I"
  *                 elif t == NPY_LONG:        f = "l"             # <<<<<<<<<<<<<<
@@ -4615,7 +4427,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
       __pyx_v_f = __pyx_k_l;
       break;
 
-      /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":267
+      /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":267
  *                 elif t == NPY_UINT:        f = "I"
  *                 elif t == NPY_LONG:        f = "l"
  *                 elif t == NPY_ULONG:       f = "L"             # <<<<<<<<<<<<<<
@@ -4626,7 +4438,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
       __pyx_v_f = __pyx_k_L;
       break;
 
-      /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":268
+      /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":268
  *                 elif t == NPY_LONG:        f = "l"
  *                 elif t == NPY_ULONG:       f = "L"
  *                 elif t == NPY_LONGLONG:    f = "q"             # <<<<<<<<<<<<<<
@@ -4637,7 +4449,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
       __pyx_v_f = __pyx_k_q;
       break;
 
-      /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":269
+      /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":269
  *                 elif t == NPY_ULONG:       f = "L"
  *                 elif t == NPY_LONGLONG:    f = "q"
  *                 elif t == NPY_ULONGLONG:   f = "Q"             # <<<<<<<<<<<<<<
@@ -4648,7 +4460,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
       __pyx_v_f = __pyx_k_Q;
       break;
 
-      /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":270
+      /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":270
  *                 elif t == NPY_LONGLONG:    f = "q"
  *                 elif t == NPY_ULONGLONG:   f = "Q"
  *                 elif t == NPY_FLOAT:       f = "f"             # <<<<<<<<<<<<<<
@@ -4659,7 +4471,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
       __pyx_v_f = __pyx_k_f;
       break;
 
-      /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":271
+      /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":271
  *                 elif t == NPY_ULONGLONG:   f = "Q"
  *                 elif t == NPY_FLOAT:       f = "f"
  *                 elif t == NPY_DOUBLE:      f = "d"             # <<<<<<<<<<<<<<
@@ -4670,7 +4482,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
       __pyx_v_f = __pyx_k_d;
       break;
 
-      /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":272
+      /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":272
  *                 elif t == NPY_FLOAT:       f = "f"
  *                 elif t == NPY_DOUBLE:      f = "d"
  *                 elif t == NPY_LONGDOUBLE:  f = "g"             # <<<<<<<<<<<<<<
@@ -4681,7 +4493,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
       __pyx_v_f = __pyx_k_g;
       break;
 
-      /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":273
+      /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":273
  *                 elif t == NPY_DOUBLE:      f = "d"
  *                 elif t == NPY_LONGDOUBLE:  f = "g"
  *                 elif t == NPY_CFLOAT:      f = "Zf"             # <<<<<<<<<<<<<<
@@ -4692,7 +4504,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
       __pyx_v_f = __pyx_k_Zf;
       break;
 
-      /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":274
+      /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":274
  *                 elif t == NPY_LONGDOUBLE:  f = "g"
  *                 elif t == NPY_CFLOAT:      f = "Zf"
  *                 elif t == NPY_CDOUBLE:     f = "Zd"             # <<<<<<<<<<<<<<
@@ -4703,7 +4515,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
       __pyx_v_f = __pyx_k_Zd;
       break;
 
-      /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":275
+      /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":275
  *                 elif t == NPY_CFLOAT:      f = "Zf"
  *                 elif t == NPY_CDOUBLE:     f = "Zd"
  *                 elif t == NPY_CLONGDOUBLE: f = "Zg"             # <<<<<<<<<<<<<<
@@ -4714,7 +4526,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
       __pyx_v_f = __pyx_k_Zg;
       break;
 
-      /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":276
+      /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":276
  *                 elif t == NPY_CDOUBLE:     f = "Zd"
  *                 elif t == NPY_CLONGDOUBLE: f = "Zg"
  *                 elif t == NPY_OBJECT:      f = "O"             # <<<<<<<<<<<<<<
@@ -4726,7 +4538,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
       break;
       default:
 
-      /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":278
+      /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":278
  *                 elif t == NPY_OBJECT:      f = "O"
  *                 else:
  *                     raise ValueError(u"unknown dtype code in numpy.pxd (%d)" % t)             # <<<<<<<<<<<<<<
@@ -4752,7 +4564,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
       break;
     }
 
-    /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":279
+    /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":279
  *                 else:
  *                     raise ValueError(u"unknown dtype code in numpy.pxd (%d)" % t)
  *                 info.format = f             # <<<<<<<<<<<<<<
@@ -4761,7 +4573,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  */
     __pyx_v_info->format = __pyx_v_f;
 
-    /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":280
+    /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":280
  *                     raise ValueError(u"unknown dtype code in numpy.pxd (%d)" % t)
  *                 info.format = f
  *                 return             # <<<<<<<<<<<<<<
@@ -4771,7 +4583,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
     __pyx_r = 0;
     goto __pyx_L0;
 
-    /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":255
+    /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":255
  *                 info.obj = self
  * 
  *             if not hasfields:             # <<<<<<<<<<<<<<
@@ -4780,7 +4592,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  */
   }
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":282
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":282
  *                 return
  *             else:
  *                 info.format = <char*>stdlib.malloc(_buffer_format_string_len)             # <<<<<<<<<<<<<<
@@ -4790,7 +4602,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
   /*else*/ {
     __pyx_v_info->format = ((char *)malloc(0xFF));
 
-    /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":283
+    /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":283
  *             else:
  *                 info.format = <char*>stdlib.malloc(_buffer_format_string_len)
  *                 info.format[0] = c'^' # Native data types, manual alignment             # <<<<<<<<<<<<<<
@@ -4799,7 +4611,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  */
     (__pyx_v_info->format[0]) = '^';
 
-    /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":284
+    /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":284
  *                 info.format = <char*>stdlib.malloc(_buffer_format_string_len)
  *                 info.format[0] = c'^' # Native data types, manual alignment
  *                 offset = 0             # <<<<<<<<<<<<<<
@@ -4808,7 +4620,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  */
     __pyx_v_offset = 0;
 
-    /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":285
+    /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":285
  *                 info.format[0] = c'^' # Native data types, manual alignment
  *                 offset = 0
  *                 f = _util_dtypestring(descr, info.format + 1,             # <<<<<<<<<<<<<<
@@ -4818,7 +4630,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
     __pyx_t_7 = __pyx_f_5numpy__util_dtypestring(__pyx_v_descr, (__pyx_v_info->format + 1), (__pyx_v_info->format + 0xFF), (&__pyx_v_offset)); if (unlikely(__pyx_t_7 == NULL)) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 285; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __pyx_v_f = __pyx_t_7;
 
-    /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":288
+    /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":288
  *                                       info.format + _buffer_format_string_len,
  *                                       &offset)
  *                 f[0] = c'\0' # Terminate format string             # <<<<<<<<<<<<<<
@@ -4828,7 +4640,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
     (__pyx_v_f[0]) = '\x00';
   }
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":197
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":197
  *         # experimental exception made for __getbuffer__ and __releasebuffer__
  *         # -- the details of this may change.
  *         def __getbuffer__(ndarray self, Py_buffer* info, int flags):             # <<<<<<<<<<<<<<
@@ -4860,7 +4672,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
   return __pyx_r;
 }
 
-/* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":290
+/* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":290
  *                 f[0] = c'\0' # Terminate format string
  * 
  *         def __releasebuffer__(ndarray self, Py_buffer* info):             # <<<<<<<<<<<<<<
@@ -4884,7 +4696,7 @@ static void __pyx_pf_5numpy_7ndarray_2__releasebuffer__(PyArrayObject *__pyx_v_s
   int __pyx_t_1;
   __Pyx_RefNannySetupContext("__releasebuffer__", 0);
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":291
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":291
  * 
  *         def __releasebuffer__(ndarray self, Py_buffer* info):
  *             if PyArray_HASFIELDS(self):             # <<<<<<<<<<<<<<
@@ -4894,7 +4706,7 @@ static void __pyx_pf_5numpy_7ndarray_2__releasebuffer__(PyArrayObject *__pyx_v_s
   __pyx_t_1 = (PyArray_HASFIELDS(__pyx_v_self) != 0);
   if (__pyx_t_1) {
 
-    /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":292
+    /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":292
  *         def __releasebuffer__(ndarray self, Py_buffer* info):
  *             if PyArray_HASFIELDS(self):
  *                 stdlib.free(info.format)             # <<<<<<<<<<<<<<
@@ -4903,7 +4715,7 @@ static void __pyx_pf_5numpy_7ndarray_2__releasebuffer__(PyArrayObject *__pyx_v_s
  */
     free(__pyx_v_info->format);
 
-    /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":291
+    /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":291
  * 
  *         def __releasebuffer__(ndarray self, Py_buffer* info):
  *             if PyArray_HASFIELDS(self):             # <<<<<<<<<<<<<<
@@ -4912,7 +4724,7 @@ static void __pyx_pf_5numpy_7ndarray_2__releasebuffer__(PyArrayObject *__pyx_v_s
  */
   }
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":293
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":293
  *             if PyArray_HASFIELDS(self):
  *                 stdlib.free(info.format)
  *             if sizeof(npy_intp) != sizeof(Py_ssize_t):             # <<<<<<<<<<<<<<
@@ -4922,7 +4734,7 @@ static void __pyx_pf_5numpy_7ndarray_2__releasebuffer__(PyArrayObject *__pyx_v_s
   __pyx_t_1 = (((sizeof(npy_intp)) != (sizeof(Py_ssize_t))) != 0);
   if (__pyx_t_1) {
 
-    /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":294
+    /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":294
  *                 stdlib.free(info.format)
  *             if sizeof(npy_intp) != sizeof(Py_ssize_t):
  *                 stdlib.free(info.strides)             # <<<<<<<<<<<<<<
@@ -4931,7 +4743,7 @@ static void __pyx_pf_5numpy_7ndarray_2__releasebuffer__(PyArrayObject *__pyx_v_s
  */
     free(__pyx_v_info->strides);
 
-    /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":293
+    /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":293
  *             if PyArray_HASFIELDS(self):
  *                 stdlib.free(info.format)
  *             if sizeof(npy_intp) != sizeof(Py_ssize_t):             # <<<<<<<<<<<<<<
@@ -4940,7 +4752,7 @@ static void __pyx_pf_5numpy_7ndarray_2__releasebuffer__(PyArrayObject *__pyx_v_s
  */
   }
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":290
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":290
  *                 f[0] = c'\0' # Terminate format string
  * 
  *         def __releasebuffer__(ndarray self, Py_buffer* info):             # <<<<<<<<<<<<<<
@@ -4952,7 +4764,7 @@ static void __pyx_pf_5numpy_7ndarray_2__releasebuffer__(PyArrayObject *__pyx_v_s
   __Pyx_RefNannyFinishContext();
 }
 
-/* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":770
+/* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":770
  * ctypedef npy_cdouble     complex_t
  * 
  * cdef inline object PyArray_MultiIterNew1(a):             # <<<<<<<<<<<<<<
@@ -4969,7 +4781,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew1(PyObject *__
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("PyArray_MultiIterNew1", 0);
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":771
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":771
  * 
  * cdef inline object PyArray_MultiIterNew1(a):
  *     return PyArray_MultiIterNew(1, <void*>a)             # <<<<<<<<<<<<<<
@@ -4983,7 +4795,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew1(PyObject *__
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":770
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":770
  * ctypedef npy_cdouble     complex_t
  * 
  * cdef inline object PyArray_MultiIterNew1(a):             # <<<<<<<<<<<<<<
@@ -5002,7 +4814,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew1(PyObject *__
   return __pyx_r;
 }
 
-/* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":773
+/* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":773
  *     return PyArray_MultiIterNew(1, <void*>a)
  * 
  * cdef inline object PyArray_MultiIterNew2(a, b):             # <<<<<<<<<<<<<<
@@ -5019,7 +4831,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew2(PyObject *__
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("PyArray_MultiIterNew2", 0);
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":774
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":774
  * 
  * cdef inline object PyArray_MultiIterNew2(a, b):
  *     return PyArray_MultiIterNew(2, <void*>a, <void*>b)             # <<<<<<<<<<<<<<
@@ -5033,7 +4845,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew2(PyObject *__
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":773
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":773
  *     return PyArray_MultiIterNew(1, <void*>a)
  * 
  * cdef inline object PyArray_MultiIterNew2(a, b):             # <<<<<<<<<<<<<<
@@ -5052,7 +4864,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew2(PyObject *__
   return __pyx_r;
 }
 
-/* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":776
+/* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":776
  *     return PyArray_MultiIterNew(2, <void*>a, <void*>b)
  * 
  * cdef inline object PyArray_MultiIterNew3(a, b, c):             # <<<<<<<<<<<<<<
@@ -5069,7 +4881,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew3(PyObject *__
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("PyArray_MultiIterNew3", 0);
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":777
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":777
  * 
  * cdef inline object PyArray_MultiIterNew3(a, b, c):
  *     return PyArray_MultiIterNew(3, <void*>a, <void*>b, <void*> c)             # <<<<<<<<<<<<<<
@@ -5083,7 +4895,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew3(PyObject *__
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":776
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":776
  *     return PyArray_MultiIterNew(2, <void*>a, <void*>b)
  * 
  * cdef inline object PyArray_MultiIterNew3(a, b, c):             # <<<<<<<<<<<<<<
@@ -5102,7 +4914,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew3(PyObject *__
   return __pyx_r;
 }
 
-/* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":779
+/* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":779
  *     return PyArray_MultiIterNew(3, <void*>a, <void*>b, <void*> c)
  * 
  * cdef inline object PyArray_MultiIterNew4(a, b, c, d):             # <<<<<<<<<<<<<<
@@ -5119,7 +4931,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew4(PyObject *__
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("PyArray_MultiIterNew4", 0);
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":780
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":780
  * 
  * cdef inline object PyArray_MultiIterNew4(a, b, c, d):
  *     return PyArray_MultiIterNew(4, <void*>a, <void*>b, <void*>c, <void*> d)             # <<<<<<<<<<<<<<
@@ -5133,7 +4945,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew4(PyObject *__
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":779
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":779
  *     return PyArray_MultiIterNew(3, <void*>a, <void*>b, <void*> c)
  * 
  * cdef inline object PyArray_MultiIterNew4(a, b, c, d):             # <<<<<<<<<<<<<<
@@ -5152,7 +4964,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew4(PyObject *__
   return __pyx_r;
 }
 
-/* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":782
+/* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":782
  *     return PyArray_MultiIterNew(4, <void*>a, <void*>b, <void*>c, <void*> d)
  * 
  * cdef inline object PyArray_MultiIterNew5(a, b, c, d, e):             # <<<<<<<<<<<<<<
@@ -5169,7 +4981,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew5(PyObject *__
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("PyArray_MultiIterNew5", 0);
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":783
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":783
  * 
  * cdef inline object PyArray_MultiIterNew5(a, b, c, d, e):
  *     return PyArray_MultiIterNew(5, <void*>a, <void*>b, <void*>c, <void*> d, <void*> e)             # <<<<<<<<<<<<<<
@@ -5183,7 +4995,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew5(PyObject *__
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":782
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":782
  *     return PyArray_MultiIterNew(4, <void*>a, <void*>b, <void*>c, <void*> d)
  * 
  * cdef inline object PyArray_MultiIterNew5(a, b, c, d, e):             # <<<<<<<<<<<<<<
@@ -5202,7 +5014,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew5(PyObject *__
   return __pyx_r;
 }
 
-/* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":785
+/* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":785
  *     return PyArray_MultiIterNew(5, <void*>a, <void*>b, <void*>c, <void*> d, <void*> e)
  * 
  * cdef inline char* _util_dtypestring(dtype descr, char* f, char* end, int* offset) except NULL:             # <<<<<<<<<<<<<<
@@ -5234,7 +5046,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("_util_dtypestring", 0);
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":790
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":790
  * 
  *     cdef dtype child
  *     cdef int endian_detector = 1             # <<<<<<<<<<<<<<
@@ -5243,7 +5055,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
  */
   __pyx_v_endian_detector = 1;
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":791
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":791
  *     cdef dtype child
  *     cdef int endian_detector = 1
  *     cdef bint little_endian = ((<char*>&endian_detector)[0] != 0)             # <<<<<<<<<<<<<<
@@ -5252,7 +5064,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
  */
   __pyx_v_little_endian = ((((char *)(&__pyx_v_endian_detector))[0]) != 0);
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":794
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":794
  *     cdef tuple fields
  * 
  *     for childname in descr.names:             # <<<<<<<<<<<<<<
@@ -5275,7 +5087,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
     __Pyx_XDECREF_SET(__pyx_v_childname, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":795
+    /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":795
  * 
  *     for childname in descr.names:
  *         fields = descr.fields[childname]             # <<<<<<<<<<<<<<
@@ -5292,7 +5104,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
     __Pyx_XDECREF_SET(__pyx_v_fields, ((PyObject*)__pyx_t_3));
     __pyx_t_3 = 0;
 
-    /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":796
+    /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":796
  *     for childname in descr.names:
  *         fields = descr.fields[childname]
  *         child, new_offset = fields             # <<<<<<<<<<<<<<
@@ -5331,7 +5143,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
     __Pyx_XDECREF_SET(__pyx_v_new_offset, __pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":798
+    /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":798
  *         child, new_offset = fields
  * 
  *         if (end - f) - <int>(new_offset - offset[0]) < 15:             # <<<<<<<<<<<<<<
@@ -5348,7 +5160,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
     __pyx_t_6 = ((((__pyx_v_end - __pyx_v_f) - ((int)__pyx_t_5)) < 15) != 0);
     if (__pyx_t_6) {
 
-      /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":799
+      /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":799
  * 
  *         if (end - f) - <int>(new_offset - offset[0]) < 15:
  *             raise RuntimeError(u"Format string allocated too short, see comment in numpy.pxd")             # <<<<<<<<<<<<<<
@@ -5361,7 +5173,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       {__pyx_filename = __pyx_f[1]; __pyx_lineno = 799; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-      /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":798
+      /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":798
  *         child, new_offset = fields
  * 
  *         if (end - f) - <int>(new_offset - offset[0]) < 15:             # <<<<<<<<<<<<<<
@@ -5370,7 +5182,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
  */
     }
 
-    /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":801
+    /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":801
  *             raise RuntimeError(u"Format string allocated too short, see comment in numpy.pxd")
  * 
  *         if ((child.byteorder == c'>' and little_endian) or             # <<<<<<<<<<<<<<
@@ -5390,7 +5202,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
     }
     __pyx_L8_next_or:;
 
-    /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":802
+    /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":802
  * 
  *         if ((child.byteorder == c'>' and little_endian) or
  *             (child.byteorder == c'<' and not little_endian)):             # <<<<<<<<<<<<<<
@@ -5407,7 +5219,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
     __pyx_t_6 = __pyx_t_7;
     __pyx_L7_bool_binop_done:;
 
-    /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":801
+    /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":801
  *             raise RuntimeError(u"Format string allocated too short, see comment in numpy.pxd")
  * 
  *         if ((child.byteorder == c'>' and little_endian) or             # <<<<<<<<<<<<<<
@@ -5416,7 +5228,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
  */
     if (__pyx_t_6) {
 
-      /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":803
+      /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":803
  *         if ((child.byteorder == c'>' and little_endian) or
  *             (child.byteorder == c'<' and not little_endian)):
  *             raise ValueError(u"Non-native byte order not supported")             # <<<<<<<<<<<<<<
@@ -5429,7 +5241,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       {__pyx_filename = __pyx_f[1]; __pyx_lineno = 803; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-      /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":801
+      /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":801
  *             raise RuntimeError(u"Format string allocated too short, see comment in numpy.pxd")
  * 
  *         if ((child.byteorder == c'>' and little_endian) or             # <<<<<<<<<<<<<<
@@ -5438,7 +5250,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
  */
     }
 
-    /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":813
+    /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":813
  * 
  *         # Output padding bytes
  *         while offset[0] < new_offset:             # <<<<<<<<<<<<<<
@@ -5454,7 +5266,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       if (!__pyx_t_6) break;
 
-      /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":814
+      /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":814
  *         # Output padding bytes
  *         while offset[0] < new_offset:
  *             f[0] = 120 # "x"; pad byte             # <<<<<<<<<<<<<<
@@ -5463,7 +5275,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
  */
       (__pyx_v_f[0]) = 0x78;
 
-      /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":815
+      /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":815
  *         while offset[0] < new_offset:
  *             f[0] = 120 # "x"; pad byte
  *             f += 1             # <<<<<<<<<<<<<<
@@ -5472,7 +5284,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
  */
       __pyx_v_f = (__pyx_v_f + 1);
 
-      /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":816
+      /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":816
  *             f[0] = 120 # "x"; pad byte
  *             f += 1
  *             offset[0] += 1             # <<<<<<<<<<<<<<
@@ -5483,7 +5295,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
       (__pyx_v_offset[__pyx_t_8]) = ((__pyx_v_offset[__pyx_t_8]) + 1);
     }
 
-    /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":818
+    /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":818
  *             offset[0] += 1
  * 
  *         offset[0] += child.itemsize             # <<<<<<<<<<<<<<
@@ -5493,7 +5305,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
     __pyx_t_8 = 0;
     (__pyx_v_offset[__pyx_t_8]) = ((__pyx_v_offset[__pyx_t_8]) + __pyx_v_child->elsize);
 
-    /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":820
+    /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":820
  *         offset[0] += child.itemsize
  * 
  *         if not PyDataType_HASFIELDS(child):             # <<<<<<<<<<<<<<
@@ -5503,7 +5315,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
     __pyx_t_6 = ((!(PyDataType_HASFIELDS(__pyx_v_child) != 0)) != 0);
     if (__pyx_t_6) {
 
-      /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":821
+      /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":821
  * 
  *         if not PyDataType_HASFIELDS(child):
  *             t = child.type_num             # <<<<<<<<<<<<<<
@@ -5515,7 +5327,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
       __Pyx_XDECREF_SET(__pyx_v_t, __pyx_t_4);
       __pyx_t_4 = 0;
 
-      /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":822
+      /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":822
  *         if not PyDataType_HASFIELDS(child):
  *             t = child.type_num
  *             if end - f < 5:             # <<<<<<<<<<<<<<
@@ -5525,7 +5337,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
       __pyx_t_6 = (((__pyx_v_end - __pyx_v_f) < 5) != 0);
       if (__pyx_t_6) {
 
-        /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":823
+        /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":823
  *             t = child.type_num
  *             if end - f < 5:
  *                 raise RuntimeError(u"Format string allocated too short.")             # <<<<<<<<<<<<<<
@@ -5538,7 +5350,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
         {__pyx_filename = __pyx_f[1]; __pyx_lineno = 823; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-        /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":822
+        /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":822
  *         if not PyDataType_HASFIELDS(child):
  *             t = child.type_num
  *             if end - f < 5:             # <<<<<<<<<<<<<<
@@ -5547,7 +5359,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
  */
       }
 
-      /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":826
+      /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":826
  * 
  *             # Until ticket #99 is fixed, use integers to avoid warnings
  *             if   t == NPY_BYTE:        f[0] =  98 #"b"             # <<<<<<<<<<<<<<
@@ -5565,7 +5377,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         goto __pyx_L15;
       }
 
-      /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":827
+      /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":827
  *             # Until ticket #99 is fixed, use integers to avoid warnings
  *             if   t == NPY_BYTE:        f[0] =  98 #"b"
  *             elif t == NPY_UBYTE:       f[0] =  66 #"B"             # <<<<<<<<<<<<<<
@@ -5583,7 +5395,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         goto __pyx_L15;
       }
 
-      /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":828
+      /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":828
  *             if   t == NPY_BYTE:        f[0] =  98 #"b"
  *             elif t == NPY_UBYTE:       f[0] =  66 #"B"
  *             elif t == NPY_SHORT:       f[0] = 104 #"h"             # <<<<<<<<<<<<<<
@@ -5601,7 +5413,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         goto __pyx_L15;
       }
 
-      /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":829
+      /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":829
  *             elif t == NPY_UBYTE:       f[0] =  66 #"B"
  *             elif t == NPY_SHORT:       f[0] = 104 #"h"
  *             elif t == NPY_USHORT:      f[0] =  72 #"H"             # <<<<<<<<<<<<<<
@@ -5619,7 +5431,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         goto __pyx_L15;
       }
 
-      /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":830
+      /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":830
  *             elif t == NPY_SHORT:       f[0] = 104 #"h"
  *             elif t == NPY_USHORT:      f[0] =  72 #"H"
  *             elif t == NPY_INT:         f[0] = 105 #"i"             # <<<<<<<<<<<<<<
@@ -5637,7 +5449,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         goto __pyx_L15;
       }
 
-      /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":831
+      /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":831
  *             elif t == NPY_USHORT:      f[0] =  72 #"H"
  *             elif t == NPY_INT:         f[0] = 105 #"i"
  *             elif t == NPY_UINT:        f[0] =  73 #"I"             # <<<<<<<<<<<<<<
@@ -5655,7 +5467,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         goto __pyx_L15;
       }
 
-      /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":832
+      /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":832
  *             elif t == NPY_INT:         f[0] = 105 #"i"
  *             elif t == NPY_UINT:        f[0] =  73 #"I"
  *             elif t == NPY_LONG:        f[0] = 108 #"l"             # <<<<<<<<<<<<<<
@@ -5673,7 +5485,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         goto __pyx_L15;
       }
 
-      /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":833
+      /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":833
  *             elif t == NPY_UINT:        f[0] =  73 #"I"
  *             elif t == NPY_LONG:        f[0] = 108 #"l"
  *             elif t == NPY_ULONG:       f[0] = 76  #"L"             # <<<<<<<<<<<<<<
@@ -5691,7 +5503,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         goto __pyx_L15;
       }
 
-      /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":834
+      /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":834
  *             elif t == NPY_LONG:        f[0] = 108 #"l"
  *             elif t == NPY_ULONG:       f[0] = 76  #"L"
  *             elif t == NPY_LONGLONG:    f[0] = 113 #"q"             # <<<<<<<<<<<<<<
@@ -5709,7 +5521,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         goto __pyx_L15;
       }
 
-      /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":835
+      /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":835
  *             elif t == NPY_ULONG:       f[0] = 76  #"L"
  *             elif t == NPY_LONGLONG:    f[0] = 113 #"q"
  *             elif t == NPY_ULONGLONG:   f[0] = 81  #"Q"             # <<<<<<<<<<<<<<
@@ -5727,7 +5539,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         goto __pyx_L15;
       }
 
-      /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":836
+      /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":836
  *             elif t == NPY_LONGLONG:    f[0] = 113 #"q"
  *             elif t == NPY_ULONGLONG:   f[0] = 81  #"Q"
  *             elif t == NPY_FLOAT:       f[0] = 102 #"f"             # <<<<<<<<<<<<<<
@@ -5745,7 +5557,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         goto __pyx_L15;
       }
 
-      /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":837
+      /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":837
  *             elif t == NPY_ULONGLONG:   f[0] = 81  #"Q"
  *             elif t == NPY_FLOAT:       f[0] = 102 #"f"
  *             elif t == NPY_DOUBLE:      f[0] = 100 #"d"             # <<<<<<<<<<<<<<
@@ -5763,7 +5575,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         goto __pyx_L15;
       }
 
-      /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":838
+      /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":838
  *             elif t == NPY_FLOAT:       f[0] = 102 #"f"
  *             elif t == NPY_DOUBLE:      f[0] = 100 #"d"
  *             elif t == NPY_LONGDOUBLE:  f[0] = 103 #"g"             # <<<<<<<<<<<<<<
@@ -5781,7 +5593,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         goto __pyx_L15;
       }
 
-      /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":839
+      /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":839
  *             elif t == NPY_DOUBLE:      f[0] = 100 #"d"
  *             elif t == NPY_LONGDOUBLE:  f[0] = 103 #"g"
  *             elif t == NPY_CFLOAT:      f[0] = 90; f[1] = 102; f += 1 # Zf             # <<<<<<<<<<<<<<
@@ -5801,7 +5613,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         goto __pyx_L15;
       }
 
-      /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":840
+      /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":840
  *             elif t == NPY_LONGDOUBLE:  f[0] = 103 #"g"
  *             elif t == NPY_CFLOAT:      f[0] = 90; f[1] = 102; f += 1 # Zf
  *             elif t == NPY_CDOUBLE:     f[0] = 90; f[1] = 100; f += 1 # Zd             # <<<<<<<<<<<<<<
@@ -5821,7 +5633,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         goto __pyx_L15;
       }
 
-      /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":841
+      /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":841
  *             elif t == NPY_CFLOAT:      f[0] = 90; f[1] = 102; f += 1 # Zf
  *             elif t == NPY_CDOUBLE:     f[0] = 90; f[1] = 100; f += 1 # Zd
  *             elif t == NPY_CLONGDOUBLE: f[0] = 90; f[1] = 103; f += 1 # Zg             # <<<<<<<<<<<<<<
@@ -5841,7 +5653,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         goto __pyx_L15;
       }
 
-      /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":842
+      /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":842
  *             elif t == NPY_CDOUBLE:     f[0] = 90; f[1] = 100; f += 1 # Zd
  *             elif t == NPY_CLONGDOUBLE: f[0] = 90; f[1] = 103; f += 1 # Zg
  *             elif t == NPY_OBJECT:      f[0] = 79 #"O"             # <<<<<<<<<<<<<<
@@ -5859,7 +5671,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         goto __pyx_L15;
       }
 
-      /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":844
+      /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":844
  *             elif t == NPY_OBJECT:      f[0] = 79 #"O"
  *             else:
  *                 raise ValueError(u"unknown dtype code in numpy.pxd (%d)" % t)             # <<<<<<<<<<<<<<
@@ -5883,7 +5695,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
       }
       __pyx_L15:;
 
-      /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":845
+      /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":845
  *             else:
  *                 raise ValueError(u"unknown dtype code in numpy.pxd (%d)" % t)
  *             f += 1             # <<<<<<<<<<<<<<
@@ -5892,7 +5704,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
  */
       __pyx_v_f = (__pyx_v_f + 1);
 
-      /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":820
+      /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":820
  *         offset[0] += child.itemsize
  * 
  *         if not PyDataType_HASFIELDS(child):             # <<<<<<<<<<<<<<
@@ -5902,7 +5714,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
       goto __pyx_L13;
     }
 
-    /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":849
+    /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":849
  *             # Cython ignores struct boundary information ("T{...}"),
  *             # so don't output it
  *             f = _util_dtypestring(child, f, end, offset)             # <<<<<<<<<<<<<<
@@ -5915,7 +5727,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
     }
     __pyx_L13:;
 
-    /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":794
+    /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":794
  *     cdef tuple fields
  * 
  *     for childname in descr.names:             # <<<<<<<<<<<<<<
@@ -5925,7 +5737,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":850
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":850
  *             # so don't output it
  *             f = _util_dtypestring(child, f, end, offset)
  *     return f             # <<<<<<<<<<<<<<
@@ -5935,7 +5747,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
   __pyx_r = __pyx_v_f;
   goto __pyx_L0;
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":785
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":785
  *     return PyArray_MultiIterNew(5, <void*>a, <void*>b, <void*>c, <void*> d, <void*> e)
  * 
  * cdef inline char* _util_dtypestring(dtype descr, char* f, char* end, int* offset) except NULL:             # <<<<<<<<<<<<<<
@@ -5960,7 +5772,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
   return __pyx_r;
 }
 
-/* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":966
+/* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":966
  * 
  * 
  * cdef inline void set_array_base(ndarray arr, object base):             # <<<<<<<<<<<<<<
@@ -5975,7 +5787,7 @@ static CYTHON_INLINE void __pyx_f_5numpy_set_array_base(PyArrayObject *__pyx_v_a
   int __pyx_t_2;
   __Pyx_RefNannySetupContext("set_array_base", 0);
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":968
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":968
  * cdef inline void set_array_base(ndarray arr, object base):
  *      cdef PyObject* baseptr
  *      if base is None:             # <<<<<<<<<<<<<<
@@ -5986,7 +5798,7 @@ static CYTHON_INLINE void __pyx_f_5numpy_set_array_base(PyArrayObject *__pyx_v_a
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":969
+    /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":969
  *      cdef PyObject* baseptr
  *      if base is None:
  *          baseptr = NULL             # <<<<<<<<<<<<<<
@@ -5995,7 +5807,7 @@ static CYTHON_INLINE void __pyx_f_5numpy_set_array_base(PyArrayObject *__pyx_v_a
  */
     __pyx_v_baseptr = NULL;
 
-    /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":968
+    /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":968
  * cdef inline void set_array_base(ndarray arr, object base):
  *      cdef PyObject* baseptr
  *      if base is None:             # <<<<<<<<<<<<<<
@@ -6005,7 +5817,7 @@ static CYTHON_INLINE void __pyx_f_5numpy_set_array_base(PyArrayObject *__pyx_v_a
     goto __pyx_L3;
   }
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":971
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":971
  *          baseptr = NULL
  *      else:
  *          Py_INCREF(base) # important to do this before decref below!             # <<<<<<<<<<<<<<
@@ -6015,7 +5827,7 @@ static CYTHON_INLINE void __pyx_f_5numpy_set_array_base(PyArrayObject *__pyx_v_a
   /*else*/ {
     Py_INCREF(__pyx_v_base);
 
-    /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":972
+    /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":972
  *      else:
  *          Py_INCREF(base) # important to do this before decref below!
  *          baseptr = <PyObject*>base             # <<<<<<<<<<<<<<
@@ -6026,7 +5838,7 @@ static CYTHON_INLINE void __pyx_f_5numpy_set_array_base(PyArrayObject *__pyx_v_a
   }
   __pyx_L3:;
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":973
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":973
  *          Py_INCREF(base) # important to do this before decref below!
  *          baseptr = <PyObject*>base
  *      Py_XDECREF(arr.base)             # <<<<<<<<<<<<<<
@@ -6035,7 +5847,7 @@ static CYTHON_INLINE void __pyx_f_5numpy_set_array_base(PyArrayObject *__pyx_v_a
  */
   Py_XDECREF(__pyx_v_arr->base);
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":974
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":974
  *          baseptr = <PyObject*>base
  *      Py_XDECREF(arr.base)
  *      arr.base = baseptr             # <<<<<<<<<<<<<<
@@ -6044,7 +5856,7 @@ static CYTHON_INLINE void __pyx_f_5numpy_set_array_base(PyArrayObject *__pyx_v_a
  */
   __pyx_v_arr->base = __pyx_v_baseptr;
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":966
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":966
  * 
  * 
  * cdef inline void set_array_base(ndarray arr, object base):             # <<<<<<<<<<<<<<
@@ -6056,7 +5868,7 @@ static CYTHON_INLINE void __pyx_f_5numpy_set_array_base(PyArrayObject *__pyx_v_a
   __Pyx_RefNannyFinishContext();
 }
 
-/* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":976
+/* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":976
  *      arr.base = baseptr
  * 
  * cdef inline object get_array_base(ndarray arr):             # <<<<<<<<<<<<<<
@@ -6070,7 +5882,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_get_array_base(PyArrayObject *__py
   int __pyx_t_1;
   __Pyx_RefNannySetupContext("get_array_base", 0);
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":977
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":977
  * 
  * cdef inline object get_array_base(ndarray arr):
  *     if arr.base is NULL:             # <<<<<<<<<<<<<<
@@ -6080,7 +5892,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_get_array_base(PyArrayObject *__py
   __pyx_t_1 = ((__pyx_v_arr->base == NULL) != 0);
   if (__pyx_t_1) {
 
-    /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":978
+    /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":978
  * cdef inline object get_array_base(ndarray arr):
  *     if arr.base is NULL:
  *         return None             # <<<<<<<<<<<<<<
@@ -6092,7 +5904,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_get_array_base(PyArrayObject *__py
     __pyx_r = Py_None;
     goto __pyx_L0;
 
-    /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":977
+    /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":977
  * 
  * cdef inline object get_array_base(ndarray arr):
  *     if arr.base is NULL:             # <<<<<<<<<<<<<<
@@ -6101,7 +5913,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_get_array_base(PyArrayObject *__py
  */
   }
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":980
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":980
  *         return None
  *     else:
  *         return <object>arr.base             # <<<<<<<<<<<<<<
@@ -6113,7 +5925,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_get_array_base(PyArrayObject *__py
     goto __pyx_L0;
   }
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":976
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":976
  *      arr.base = baseptr
  * 
  * cdef inline object get_array_base(ndarray arr):             # <<<<<<<<<<<<<<
@@ -6262,7 +6074,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_weights, __pyx_k_weights, sizeof(__pyx_k_weights), 0, 0, 1, 1},
   {&__pyx_n_s_x1, __pyx_k_x1, sizeof(__pyx_k_x1), 0, 0, 1, 1},
   {&__pyx_n_s_x2, __pyx_k_x2, sizeof(__pyx_k_x2), 0, 0, 1, 1},
-  {&__pyx_n_s_xrange, __pyx_k_xrange, sizeof(__pyx_k_xrange), 0, 0, 1, 1},
   {&__pyx_n_s_xy, __pyx_k_xy, sizeof(__pyx_k_xy), 0, 0, 1, 1},
   {&__pyx_n_s_y1, __pyx_k_y1, sizeof(__pyx_k_y1), 0, 0, 1, 1},
   {&__pyx_n_s_y2, __pyx_k_y2, sizeof(__pyx_k_y2), 0, 0, 1, 1},
@@ -6274,13 +6085,8 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {0, 0, 0, 0, 0, 0, 0}
 };
 static int __Pyx_InitCachedBuiltins(void) {
-  #if PY_MAJOR_VERSION >= 3
-  __pyx_builtin_xrange = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_xrange) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 184; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  #else
-  __pyx_builtin_xrange = __Pyx_GetBuiltinName(__pyx_n_s_xrange); if (!__pyx_builtin_xrange) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 184; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  #endif
+  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 187; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 218; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 231; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_builtin_RuntimeError = __Pyx_GetBuiltinName(__pyx_n_s_RuntimeError); if (!__pyx_builtin_RuntimeError) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 799; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   return 0;
   __pyx_L1_error:;
@@ -6291,29 +6097,29 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "MDAnalysis/lib/qcprot.pyx":265
+  /* "MDAnalysis/lib/qcprot.pyx":245
  *     cdef double SxzmSzx, SxymSyx, SxxpSyy, SxxmSyy
  * 
  *     cdef np.ndarray[np.float64_t,ndim=1] C = np.zeros(4,)             # <<<<<<<<<<<<<<
  *     cdef unsigned int i
  *     cdef double mxEigenV
  */
-  __pyx_tuple_ = PyTuple_Pack(1, __pyx_int_4); if (unlikely(!__pyx_tuple_)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 265; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple_ = PyTuple_Pack(1, __pyx_int_4); if (unlikely(!__pyx_tuple_)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 245; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple_);
   __Pyx_GIVEREF(__pyx_tuple_);
 
-  /* "MDAnalysis/lib/qcprot.pyx":453
+  /* "MDAnalysis/lib/qcprot.pyx":450
  *     """
  *     cdef double E0, rmsd
  *     cdef np.ndarray[np.float64_t,ndim=1] A = np.zeros(9,)             # <<<<<<<<<<<<<<
  * 
  *     E0 = InnerProduct(A,conf,ref,N,weights)
  */
-  __pyx_tuple__2 = PyTuple_Pack(1, __pyx_int_9); if (unlikely(!__pyx_tuple__2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 453; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__2 = PyTuple_Pack(1, __pyx_int_9); if (unlikely(!__pyx_tuple__2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 450; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__2);
   __Pyx_GIVEREF(__pyx_tuple__2);
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":218
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":218
  *             if ((flags & pybuf.PyBUF_C_CONTIGUOUS == pybuf.PyBUF_C_CONTIGUOUS)
  *                 and not PyArray_CHKFLAGS(self, NPY_C_CONTIGUOUS)):
  *                 raise ValueError(u"ndarray is not C contiguous")             # <<<<<<<<<<<<<<
@@ -6324,7 +6130,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__3);
   __Pyx_GIVEREF(__pyx_tuple__3);
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":222
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":222
  *             if ((flags & pybuf.PyBUF_F_CONTIGUOUS == pybuf.PyBUF_F_CONTIGUOUS)
  *                 and not PyArray_CHKFLAGS(self, NPY_F_CONTIGUOUS)):
  *                 raise ValueError(u"ndarray is not Fortran contiguous")             # <<<<<<<<<<<<<<
@@ -6335,7 +6141,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__4);
   __Pyx_GIVEREF(__pyx_tuple__4);
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":259
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":259
  *                 if ((descr.byteorder == c'>' and little_endian) or
  *                     (descr.byteorder == c'<' and not little_endian)):
  *                     raise ValueError(u"Non-native byte order not supported")             # <<<<<<<<<<<<<<
@@ -6346,7 +6152,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__5);
   __Pyx_GIVEREF(__pyx_tuple__5);
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":799
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":799
  * 
  *         if (end - f) - <int>(new_offset - offset[0]) < 15:
  *             raise RuntimeError(u"Format string allocated too short, see comment in numpy.pxd")             # <<<<<<<<<<<<<<
@@ -6357,7 +6163,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__6);
   __Pyx_GIVEREF(__pyx_tuple__6);
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":803
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":803
  *         if ((child.byteorder == c'>' and little_endian) or
  *             (child.byteorder == c'<' and not little_endian)):
  *             raise ValueError(u"Non-native byte order not supported")             # <<<<<<<<<<<<<<
@@ -6368,7 +6174,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__7);
   __Pyx_GIVEREF(__pyx_tuple__7);
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":823
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":823
  *             t = child.type_num
  *             if end - f < 5:
  *                 raise RuntimeError(u"Format string allocated too short.")             # <<<<<<<<<<<<<<
@@ -6391,29 +6197,29 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GIVEREF(__pyx_tuple__9);
   __pyx_codeobj__10 = (PyObject*)__Pyx_PyCode_New(5, 0, 14, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__9, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_max_foss_molecular_dynamic, __pyx_n_s_InnerProduct, 139, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 139; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "MDAnalysis/lib/qcprot.pyx":239
+  /* "MDAnalysis/lib/qcprot.pyx":216
  * @cython.boundscheck(False)
  * @cython.wraparound(False)
- * def FastCalcRMSDAndRotation(np.ndarray[np.float64_t,ndim=1] rot, np.ndarray[np.float64_t,ndim=1] A, double E0, int N):             # <<<<<<<<<<<<<<
- *     """
- *     Calculate the RMSD, and/or the optimal rotation matrix.
+ * def FastCalcRMSDAndRotation(np.ndarray[np.float64_t,ndim=1] rot,             # <<<<<<<<<<<<<<
+ *                             np.ndarray[np.float64_t,ndim=1] A,
+ *                             double E0, int N):
  */
-  __pyx_tuple__11 = PyTuple_Pack(88, __pyx_n_s_rot, __pyx_n_s_A, __pyx_n_s_E0, __pyx_n_s_N, __pyx_n_s_rmsd, __pyx_n_s_Sxx, __pyx_n_s_Sxy, __pyx_n_s_Sxz, __pyx_n_s_Syx, __pyx_n_s_Syy, __pyx_n_s_Syz, __pyx_n_s_Szx, __pyx_n_s_Szy, __pyx_n_s_Szz, __pyx_n_s_Szz2, __pyx_n_s_Syy2, __pyx_n_s_Sxx2, __pyx_n_s_Sxy2, __pyx_n_s_Syz2, __pyx_n_s_Sxz2, __pyx_n_s_Syx2, __pyx_n_s_Szy2, __pyx_n_s_Szx2, __pyx_n_s_SyzSzymSyySzz2, __pyx_n_s_Sxx2Syy2Szz2Syz2Szy2, __pyx_n_s_Sxy2Sxz2Syx2Szx2, __pyx_n_s_SxzpSzx, __pyx_n_s_SyzpSzy, __pyx_n_s_SxypSyx, __pyx_n_s_SyzmSzy, __pyx_n_s_SxzmSzx, __pyx_n_s_SxymSyx, __pyx_n_s_SxxpSyy, __pyx_n_s_SxxmSyy, __pyx_n_s_C, __pyx_n_s_i, __pyx_n_s_mxEigenV, __pyx_n_s_oldg, __pyx_n_s_b, __pyx_n_s_a, __pyx_n_s_delta, __pyx_n_s_rms, __pyx_n_s_qsqr, __pyx_n_s_q1, __pyx_n_s_q2, __pyx_n_s_q3, __pyx_n_s_q4, __pyx_n_s_normq, __pyx_n_s_a11, __pyx_n_s_a12, __pyx_n_s_a13, __pyx_n_s_a14, __pyx_n_s_a21, __pyx_n_s_a22, __pyx_n_s_a23, __pyx_n_s_a24, __pyx_n_s_a31, __pyx_n_s_a32, __pyx_n_s_a33, __pyx_n_s_a34, __pyx_n_s_a41, __pyx_n_s_a42, __pyx_n_s_a43, __pyx_n_s_a44, __pyx_n_s_a2, __pyx_n_s_x2, __pyx_n_s_y2, __pyx_n_s_z2, __pyx_n_s_xy, __pyx_n_s_az, __pyx_n_s_zx, __pyx_n_s_ay, __pyx_n_s_yz, __pyx_n_s_ax, __pyx_n_s_a3344_4334, __pyx_n_s_a3244_4234, __pyx_n_s_a3243_4233, __pyx_n_s_a3143_4133, __pyx_n_s_a3144_4134, __pyx_n_s_a3142_4132, __pyx_n_s_evecprec, __pyx_n_s_evalprec, __pyx_n_s_a1324_1423, __pyx_n_s_a1224_1422, __pyx_n_s_a1223_1322, __pyx_n_s_a1124_1421, __pyx_n_s_a1123_1321, __pyx_n_s_a1122_1221); if (unlikely(!__pyx_tuple__11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 239; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__11 = PyTuple_Pack(88, __pyx_n_s_rot, __pyx_n_s_A, __pyx_n_s_E0, __pyx_n_s_N, __pyx_n_s_rmsd, __pyx_n_s_Sxx, __pyx_n_s_Sxy, __pyx_n_s_Sxz, __pyx_n_s_Syx, __pyx_n_s_Syy, __pyx_n_s_Syz, __pyx_n_s_Szx, __pyx_n_s_Szy, __pyx_n_s_Szz, __pyx_n_s_Szz2, __pyx_n_s_Syy2, __pyx_n_s_Sxx2, __pyx_n_s_Sxy2, __pyx_n_s_Syz2, __pyx_n_s_Sxz2, __pyx_n_s_Syx2, __pyx_n_s_Szy2, __pyx_n_s_Szx2, __pyx_n_s_SyzSzymSyySzz2, __pyx_n_s_Sxx2Syy2Szz2Syz2Szy2, __pyx_n_s_Sxy2Sxz2Syx2Szx2, __pyx_n_s_SxzpSzx, __pyx_n_s_SyzpSzy, __pyx_n_s_SxypSyx, __pyx_n_s_SyzmSzy, __pyx_n_s_SxzmSzx, __pyx_n_s_SxymSyx, __pyx_n_s_SxxpSyy, __pyx_n_s_SxxmSyy, __pyx_n_s_C, __pyx_n_s_i, __pyx_n_s_mxEigenV, __pyx_n_s_oldg, __pyx_n_s_b, __pyx_n_s_a, __pyx_n_s_delta, __pyx_n_s_rms, __pyx_n_s_qsqr, __pyx_n_s_q1, __pyx_n_s_q2, __pyx_n_s_q3, __pyx_n_s_q4, __pyx_n_s_normq, __pyx_n_s_a11, __pyx_n_s_a12, __pyx_n_s_a13, __pyx_n_s_a14, __pyx_n_s_a21, __pyx_n_s_a22, __pyx_n_s_a23, __pyx_n_s_a24, __pyx_n_s_a31, __pyx_n_s_a32, __pyx_n_s_a33, __pyx_n_s_a34, __pyx_n_s_a41, __pyx_n_s_a42, __pyx_n_s_a43, __pyx_n_s_a44, __pyx_n_s_a2, __pyx_n_s_x2, __pyx_n_s_y2, __pyx_n_s_z2, __pyx_n_s_xy, __pyx_n_s_az, __pyx_n_s_zx, __pyx_n_s_ay, __pyx_n_s_yz, __pyx_n_s_ax, __pyx_n_s_a3344_4334, __pyx_n_s_a3244_4234, __pyx_n_s_a3243_4233, __pyx_n_s_a3143_4133, __pyx_n_s_a3144_4134, __pyx_n_s_a3142_4132, __pyx_n_s_evecprec, __pyx_n_s_evalprec, __pyx_n_s_a1324_1423, __pyx_n_s_a1224_1422, __pyx_n_s_a1223_1322, __pyx_n_s_a1124_1421, __pyx_n_s_a1123_1321, __pyx_n_s_a1122_1221); if (unlikely(!__pyx_tuple__11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 216; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__11);
   __Pyx_GIVEREF(__pyx_tuple__11);
-  __pyx_codeobj__12 = (PyObject*)__Pyx_PyCode_New(4, 0, 88, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__11, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_max_foss_molecular_dynamic, __pyx_n_s_FastCalcRMSDAndRotation, 239, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 239; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__12 = (PyObject*)__Pyx_PyCode_New(4, 0, 88, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__11, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_max_foss_molecular_dynamic, __pyx_n_s_FastCalcRMSDAndRotation, 216, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 216; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "MDAnalysis/lib/qcprot.pyx":430
+  /* "MDAnalysis/lib/qcprot.pyx":423
  *     return rms
  * 
  * def CalcRMSDRotationalMatrix(np.ndarray[np.float64_t,ndim=2] ref,             # <<<<<<<<<<<<<<
  *                              np.ndarray[np.float64_t,ndim=2] conf,
  *                              int N,
  */
-  __pyx_tuple__13 = PyTuple_Pack(8, __pyx_n_s_ref, __pyx_n_s_conf, __pyx_n_s_N, __pyx_n_s_rot, __pyx_n_s_weights, __pyx_n_s_E0, __pyx_n_s_rmsd, __pyx_n_s_A); if (unlikely(!__pyx_tuple__13)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 430; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__13 = PyTuple_Pack(8, __pyx_n_s_ref, __pyx_n_s_conf, __pyx_n_s_N, __pyx_n_s_rot, __pyx_n_s_weights, __pyx_n_s_E0, __pyx_n_s_rmsd, __pyx_n_s_A); if (unlikely(!__pyx_tuple__13)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 423; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__13);
   __Pyx_GIVEREF(__pyx_tuple__13);
-  __pyx_codeobj__14 = (PyObject*)__Pyx_PyCode_New(5, 0, 8, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__13, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_max_foss_molecular_dynamic, __pyx_n_s_CalcRMSDRotationalMatrix, 430, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__14)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 430; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__14 = (PyObject*)__Pyx_PyCode_New(5, 0, 8, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__13, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_max_foss_molecular_dynamic, __pyx_n_s_CalcRMSDRotationalMatrix, 423, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__14)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 423; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -6560,28 +6366,28 @@ PyMODINIT_FUNC PyInit_qcprot(void)
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_InnerProduct, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 139; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "MDAnalysis/lib/qcprot.pyx":239
+  /* "MDAnalysis/lib/qcprot.pyx":216
  * @cython.boundscheck(False)
  * @cython.wraparound(False)
- * def FastCalcRMSDAndRotation(np.ndarray[np.float64_t,ndim=1] rot, np.ndarray[np.float64_t,ndim=1] A, double E0, int N):             # <<<<<<<<<<<<<<
- *     """
- *     Calculate the RMSD, and/or the optimal rotation matrix.
+ * def FastCalcRMSDAndRotation(np.ndarray[np.float64_t,ndim=1] rot,             # <<<<<<<<<<<<<<
+ *                             np.ndarray[np.float64_t,ndim=1] A,
+ *                             double E0, int N):
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_10MDAnalysis_3lib_6qcprot_3FastCalcRMSDAndRotation, NULL, __pyx_n_s_MDAnalysis_lib_qcprot); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 239; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_10MDAnalysis_3lib_6qcprot_3FastCalcRMSDAndRotation, NULL, __pyx_n_s_MDAnalysis_lib_qcprot); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 216; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_FastCalcRMSDAndRotation, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 239; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_FastCalcRMSDAndRotation, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 216; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "MDAnalysis/lib/qcprot.pyx":430
+  /* "MDAnalysis/lib/qcprot.pyx":423
  *     return rms
  * 
  * def CalcRMSDRotationalMatrix(np.ndarray[np.float64_t,ndim=2] ref,             # <<<<<<<<<<<<<<
  *                              np.ndarray[np.float64_t,ndim=2] conf,
  *                              int N,
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_10MDAnalysis_3lib_6qcprot_5CalcRMSDRotationalMatrix, NULL, __pyx_n_s_MDAnalysis_lib_qcprot); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 430; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_10MDAnalysis_3lib_6qcprot_5CalcRMSDRotationalMatrix, NULL, __pyx_n_s_MDAnalysis_lib_qcprot); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 423; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_CalcRMSDRotationalMatrix, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 430; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_CalcRMSDRotationalMatrix, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 423; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "MDAnalysis/lib/qcprot.pyx":1
@@ -6594,7 +6400,7 @@ PyMODINIT_FUNC PyInit_qcprot(void)
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "../../../../.virtualenvs/mda-cythonize/local/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":976
+  /* "../../../../.virtualenvs/mda-py2/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":976
  *      arr.base = baseptr
  * 
  * cdef inline object get_array_base(ndarray arr):             # <<<<<<<<<<<<<<
