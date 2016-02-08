@@ -679,26 +679,12 @@ class PrimitivePDBWriter(base.Writer):
     .. versionchanged:: 0.11.0
        Frames now 0-based instead of 1-based
     """
-    #          1         2         3         4         5         6         7         8
-    # 123456789.123456789.123456789.123456789.123456789.123456789.123456789.123456789.
-    # ATOM__seria nameAres CressI   xxxxxxxxyyyyyyyyzzzzzzzzOCCUPAtempft          elCH
-    # ATOM  %5d   %-4s %-3s %4d %1s %8.3f   %8.3f   %8.3f   %6.2f %6.2f           %2s
-    #                 %1s  %1s                                                      %2d
-    #            =        =      ===                                    ==========
-    # ATOM  %5d %-4s%1s%-3s %1s%4d%1s   %8.3f%8.3f%8.3f%6.2f%6.2f          %2s%2d
-    # ATOM  %(serial)5d %(name)-4s%(altLoc)1s%(resName)-3s %(chainID)1s%(resSeq)4d%(iCode)1s   %(x)8.3f%(y)8.3f%(
-    # z)8.3f%(occupancy)6.2f%(tempFactor)6.2f          %(element)2s%(charge)2d
-
-    # Strict PDB format:
-    #fmt = {'ATOM':   "ATOM  %(serial)5d %(name)-4s%(altLoc)1s%(resName)-3s %(chainID)1s%(resSeq)4d%(iCode)1s   %(
-    # x)8.3f%(y)8.3f%(z)8.3f%(occupancy)6.2f%(tempFactor)6.2f          %(element)2s%(charge)2d\n",
-    # PDB format as used by NAMD/CHARMM: 4-letter resnames and segID, altLoc ignored
     fmt = {
         'ATOM': (
             "ATOM  {serial:5d} {name:<4s}{altLoc:<1s}{resName:<4s}"
             "{chainID:1s}{resSeq:4d}{iCode:1s}"
             "   {pos[0]:8.3f}{pos[1]:8.3f}{pos[2]:8.3f}{occupancy:6.2f}"
-            "{tempFactor:6.2f}      {segID:<4s}{element:>2s} {charge:1d}\n"),
+            "{tempFactor:6.2f}      {segID:<4s}{element:>2s}\n"),
         'REMARK': "REMARK     {0}\n",
         'COMPND': "COMPND    {0}\n",
         'HEADER': "HEADER    {0}\n",
@@ -1130,7 +1116,6 @@ class PrimitivePDBWriter(base.Writer):
             vals['tempFactor'] = temp if temp is not None else 0.0
             vals['segID'] = segid[:4]
             vals['element'] = guess_atom_element(atom.name.strip())[:2]
-            vals['charge'] = 0
 
             # .. _ATOM: http://www.wwpdb.org/documentation/format32/sect9.html
             self.pdbfile.write(self.fmt['ATOM'].format(**vals))
