@@ -34,6 +34,7 @@ Enhancement
 
 Changes
 
+  * xdrlib was rebranded libmdaxdr. (Issue #679)
   * xdrlib has been ported to cython. (Issue #441)
   * util.NamedStream no longer inherits from basestring (Issue #649)
   * Short TRZ titles are striped from trailing spaces. A friendlier error

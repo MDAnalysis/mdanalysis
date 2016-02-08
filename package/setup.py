@@ -296,8 +296,8 @@ def extensions(config):
                                   define_macros=define_macros,
                                   include_dirs=include_dirs,
                                   extra_compile_args=extra_compile_args)
-    xdrlib = MDAExtension('lib.formats.xdrlib',
-                          sources=['MDAnalysis/lib/formats/xdrlib.pyx',
+    libmdaxdr = MDAExtension('lib.formats.libmdaxdr',
+                          sources=['MDAnalysis/lib/formats/libmdaxdr.pyx',
                                    'MDAnalysis/lib/formats/src/xdrfile.c',
                                    'MDAnalysis/lib/formats/src/xdrfile_xtc.c',
                                    'MDAnalysis/lib/formats/src/xdrfile_trr.c',
@@ -312,7 +312,7 @@ def extensions(config):
                         include_dirs=include_dirs)
 
     extensions = [dcd, dcd_time, distances, distances_omp, qcprot,
-                  transformation, xdrlib, util]
+                  transformation, libmdaxdr, util]
     if use_cython:
         extensions = cythonize(extensions)
     return extensions

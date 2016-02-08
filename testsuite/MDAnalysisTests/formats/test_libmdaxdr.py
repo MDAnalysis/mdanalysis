@@ -20,11 +20,11 @@ from numpy.testing import assert_equal, assert_array_equal
 from numpy.testing import assert_array_almost_equal
 from numpy.testing import assert_almost_equal
 
-from MDAnalysis.lib.formats.xdrlib import TRRFile
+from MDAnalysis.lib.formats.libmdaxdr import TRRFile
 from MDAnalysisTests.datafiles import TRR_single_frame
 from MDAnalysisTests.datafiles import TRR_multi_frame
 
-from MDAnalysis.lib.formats.xdrlib import XTCFile
+from MDAnalysis.lib.formats.libmdaxdr import XTCFile
 from MDAnalysisTests.datafiles import XTC_single_frame
 from MDAnalysisTests.datafiles import XTC_multi_frame
 
@@ -83,7 +83,7 @@ class XDRFormatBaseTest(object):
         f = self.xdrfile(self.multi_frame)
         assert_array_equal(f.offsets, self.offsets)
 
-    @raises(RuntimeError)
+    @raises(IOError)
     def test_set_offsets(self):
         f = self.xdrfile(self.multi_frame)
         f.set_offsets(np.arange(len(self.offsets)))

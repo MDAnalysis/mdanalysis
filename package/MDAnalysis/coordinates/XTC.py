@@ -14,7 +14,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from .XDR import XDRBaseReader, XDRBaseWriter
-from ..lib.formats.xdrlib import XTCFile
+from ..lib.formats.libmdaxdr import XTCFile
 from ..lib.mdamath import triclinic_vectors
 
 
@@ -69,7 +69,7 @@ class XTCWriter(XDRBaseWriter):
             dimensions = self.convert_dimensions_to_unitcell(ts, inplace=False)
 
         box = triclinic_vectors(dimensions)
-        # xdrlib will multiply the coordinated by precision. This means for a
+        # libmdaxdr will multiply the coordinates by precision. This means for a
         # precision of 3 decimal places we need to pass 1000.0 to the xdr
         # library.
         precision = 10.0 ** self.precision
