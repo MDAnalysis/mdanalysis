@@ -211,7 +211,9 @@ def rotation_matrix(a, b, weights=None):
                  :func:`rms_fit_trj`. A complete fit of two structures can be
                  done with :func:`alignto`.
     """
-    if weights is not None:
+    if weights is None:
+        weight = np.ones(len(a))
+    else:
         # weights are constructed as relative to the mean
         weights = np.asarray(weights) / np.mean(weights)
     rot = np.zeros(9, dtype=np.float64)

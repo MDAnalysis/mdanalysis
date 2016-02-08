@@ -153,7 +153,7 @@ def InnerProduct(np.ndarray[np.float64_t,ndim=1] A,
                    - coords1 -- reference structure
                    - coords2 -- candidate structure
                    - N       -- the size of the system
-                   - weight  -- the weight array of size N: set to None if not needed
+                   - weight  -- the weight array of size N
             :Output:
                    - A[9]    -- the inner product matrix
             :Returns:
@@ -180,57 +180,30 @@ def InnerProduct(np.ndarray[np.float64_t,ndim=1] A,
 
     A[0] = A[1] = A[2] = A[3] = A[4] = A[5] = A[6] = A[7] = A[8] = 0.0
 
-    if (weight is not None):
-        for i in range(N):
-            x1 = weight[i] * coords1[0,i]
-            y1 = weight[i] * coords1[1,i]
-            z1 = weight[i] * coords1[2,i]
+    for i in range(N):
+        x1 = coords1[0,i]
+        y1 = coords1[1,i]
+        z1 = coords1[2,i]
 
-            G1 += x1*coords1[0,i] + y1*coords1[1,i] + z1*coords1[2,i]
+        G1 += (x1*x1 + y1*y1 + z1*z1)
 
-            x2 = coords2[0,i]
-            y2 = coords2[1,i]
-            z2 = coords2[2,i]
+        x2 = coords2[0,i]
+        y2 = coords2[1,i]
+        z2 = coords2[2,i]
 
-            G2 += weight[i] * (x2*x2 + y2*y2 + z2*z2)
+        G2 += (x2*x2 + y2*y2 + z2*z2)
 
-            A[0] +=  (x1 * x2)
-            A[1] +=  (x1 * y2)
-            A[2] +=  (x1 * z2)
+        A[0] +=  (x1 * x2)
+        A[1] +=  (x1 * y2)
+        A[2] +=  (x1 * z2)
 
-            A[3] +=  (y1 * x2)
-            A[4] +=  (y1 * y2)
-            A[5] +=  (y1 * z2)
+        A[3] +=  (y1 * x2)
+        A[4] +=  (y1 * y2)
+        A[5] +=  (y1 * z2)
 
-            A[6] +=  (z1 * x2)
-            A[7] +=  (z1 * y2)
-            A[8] +=  (z1 * z2)
-
-    else:
-        for i in range(N):
-            x1 = coords1[0,i]
-            y1 = coords1[1,i]
-            z1 = coords1[2,i]
-
-            G1 += (x1*x1 + y1*y1 + z1*z1)
-
-            x2 = coords2[0,i]
-            y2 = coords2[1,i]
-            z2 = coords2[2,i]
-
-            G2 += (x2*x2 + y2*y2 + z2*z2)
-
-            A[0] +=  (x1 * x2)
-            A[1] +=  (x1 * y2)
-            A[2] +=  (x1 * z2)
-
-            A[3] +=  (y1 * x2)
-            A[4] +=  (y1 * y2)
-            A[5] +=  (y1 * z2)
-
-            A[6] +=  (z1 * x2)
-            A[7] +=  (z1 * y2)
-            A[8] +=  (z1 * z2)
+        A[6] +=  (z1 * x2)
+        A[7] +=  (z1 * y2)
+        A[8] +=  (z1 * z2)
 
     return (G1 + G2) * 0.5
 
@@ -457,7 +430,7 @@ def CalcRMSDRotationalMatrix(np.ndarray[np.float64_t,ndim=2] ref,
                    - conf    -- candidate structure coordinates (*must* be `numpy.float64`)
                    - N       -- the size of the system
                    - rot[9]  -- array to store rotation matrix; set to None if only calculating rmsd (modified in place)
-                   - weight  -- the weight array of size len; set to None if not needed
+                   - weight  -- the weight array of size len
             :Output:
                    - rot[9]  -- rotation matrix
             :Returns:
@@ -472,6 +445,3 @@ def CalcRMSDRotationalMatrix(np.ndarray[np.float64_t,ndim=2] ref,
     rmsd = FastCalcRMSDAndRotation(rot,A,E0,N)
 
     return rmsd
-
-
-
