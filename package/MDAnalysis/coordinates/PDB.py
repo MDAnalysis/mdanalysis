@@ -672,12 +672,16 @@ class PrimitivePDBWriter(base.Writer):
        Initial support for multi-frame PDB files.
 
     .. versionchanged:: 0.7.6
-       The *multiframe* keyword was added to select the writing mode. The writing
-       of bond information (CONECT_ records) is now disabled by default but can be
-       enabled with the *bonds* keyword.
+       The *multiframe* keyword was added to select the writing mode. The
+       writing of bond information (CONECT_ records) is now disabled by default
+       but can be enabled with the *bonds* keyword.
 
     .. versionchanged:: 0.11.0
        Frames now 0-based instead of 1-based
+
+    .. versionchanged:: 0.14.0
+       PDB doesn't save charge information
+
     """
     fmt = {
         'ATOM': (
