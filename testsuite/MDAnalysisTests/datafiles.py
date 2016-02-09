@@ -85,6 +85,7 @@ __all__ = [
     "merge_protein", "merge_ligand", "merge_water",
     "mol2_molecules", "mol2_molecule", "mol2_broken_molecule",
     "capping_input", "capping_output", "capping_ace", "capping_nma",
+    "contacts_villin_folded", "contacts_villin_unfolded", "contacts_file",
     "LAMMPSdata", "trz4data", "LAMMPSdata_mini",
     "LAMMPSdata2", "LAMMPSdcd2",
     "LAMMPScnt", "LAMMPScnt2",  # triclinic box
@@ -259,6 +260,10 @@ capping_input = resource_filename(__name__, "data/capping/aaqaa.gro")
 capping_output = resource_filename(__name__, "data/capping/maestro_aaqaa_capped.pdb")
 capping_ace = resource_filename(__name__, "data/capping/ace.pdb")
 capping_nma = resource_filename(__name__, "data/capping/nma.pdb")
+
+contacts_villin_folded = resource_filename(__name__, "data/contacts/villin_folded.gro")
+contacts_villin_unfolded = resource_filename(__name__, "data/contacts/villin_unfolded.gro")
+contacts_file = resource_filename(__name__, "data/contacts/2F4K_qlist5_remap.dat")
 
 trz4data = resource_filename(__name__, "data/lammps/datatest.trz")
 LAMMPSdata = resource_filename(__name__, "data/lammps/datatest.data")
