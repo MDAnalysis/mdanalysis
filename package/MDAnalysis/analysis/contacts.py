@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 #
 # MDAnalysis --- http://www.MDAnalysis.org
 # Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
@@ -101,7 +101,8 @@ in MDAnalysis. ::
 The first graph shows that when AdK opens, about 20% of the salt
 bridges that existed in the closed state disappear when the enzyme
 opens. They open in a step-wise fashion (made more clear by the movie
-`AdK_zipper_cartoon.avi`_).
+http://sbcb.bioch.ox.ac.uk/oliver/Movies/AdK/AdK_zipper_cartoon.avi
+(divx, on Mac use http://perian.org)).
 
 The output graphs can be made prettier but if you look at the code
 itself then you'll quickly figure out what to do. The qavg plot is the
@@ -112,9 +113,6 @@ but is is included for illustration.
 See the docs for :class:`ContactAnalysis1` for another example.
 
 
-.. AdK_zipper_cartoon.avi:
-   http://www.ncbi.nlm.nih.gov/pmc/articles/PMC2803350/bin/NIHMS150766-supplement-03.avi
-
 Two-dimensional contact analysis (q1-q2)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -122,7 +120,7 @@ Analyze a single DIMS transition of AdK between its closed and open
 conformation and plot the trajectory projected on q1-q2::
 
   import MDAnalysis.analysis.contacts
-  from MDAnalysis.tests.datafiles import PSF, DCD
+  from MDAnalysis.tests.datafiles import *
   C = MDAnalysis.analysis.contacts.ContactAnalysis(PSF, DCD)
   C.run()
   C.plot()
@@ -146,14 +144,15 @@ import os
 import errno
 import warnings
 import bz2
-from six.moves import zip
+from itertools import izip
 import numpy as np
+import pandas as pd
 import logging
 
 import MDAnalysis
 import MDAnalysis.lib.distances
 from MDAnalysis.lib.util import openany
-
+from MDAnalysis.lib.distances import distance_array
 
 logger = logging.getLogger("MDAnalysis.analysis.contacts")
 
@@ -201,9 +200,9 @@ class ContactAnalysis(object):
             interest; the default is to only select the C-alpha atoms
             in *ref1* and *ref*2 ["name CA"]
 
-            .. Note:: If *selection* produces more than one atom per
-                      residue then you will get multiple contacts per
-                      residue unless you also set *centroids* = ``True``
+           .. Note:: If *selection* produces more than one atom per
+                     residue then you will get multiple contacts per
+                     residue unless you also set *centroids* = ``True``
           *centroids*
             If set to ``True``, use the centroids for the selected atoms on a
             per-residue basis to compute contacts. This allows, for instance
@@ -245,7 +244,7 @@ class ContactAnalysis(object):
         # don't bother if trajectory is empty (can lead to segfaults so better catch it)
         stats = os.stat(trajectory)
         if stats.st_size == 0:
-            warnings.warn('trajectory = {trajectory!s} is empty, skipping...'.format(**vars()))
+            warnings.warn('trajectory = %(trajectory)s is empty, skipping...' % vars())
             self._skip = True
             return
         # under normal circumstances we do not skip
@@ -320,7 +319,9 @@ class ContactAnalysis(object):
         store=True) and writes them to a bzip2-compressed data file.
         """
         if self._skip or self.output_exists(force=force):
-            warnings.warn("File {output!r} or {output_bz2!r} already exists, loading {trajectory!r}.".format(**vars(self)))
+            import warnings
+
+            warnings.warn("File %(output)r or %(output_bz2)r already exists, loading %(trajectory)r." % vars(self))
             try:
                 self.load(self.output)
             except IOError:
@@ -329,7 +330,8 @@ class ContactAnalysis(object):
 
         outbz2 = bz2.BZ2File(self.output_bz2, mode='w', buffering=8192)
         try:
-            outbz2.write("# q1-q2 analysis\n# nref1 = {0:d}\n# nref2 = {1:d}\n".format(self.nref[0], self.nref[1]))
+            outbz2.write("# q1-q2 analysis\n# nref1 = %d\n# nref2 = %d\n"
+                         % (self.nref[0], self.nref[1]))
             outbz2.write("# frame  q1  q2   n1  n2\n")
             records = []
             for ts in self.u.trajectory:
@@ -342,7 +344,7 @@ class ContactAnalysis(object):
 
                 if store:
                     records.append((frame, q1, q2, n1, n2))
-                outbz2.write("{frame:4d}  {q1:8.6f} {q2:8.6f}  {n1:5d} {n2:5d}\n".format(**vars()))
+                outbz2.write("%(frame)4d  %(q1)8.6f %(q2)8.6f  %(n1)5d %(n2)5d\n" % vars())
         finally:
             outbz2.close()
         if store:
@@ -409,6 +411,11 @@ class ContactAnalysis(object):
 class ContactAnalysis1(object):
     """Perform a very flexible native contact analysis with respect to a single reference.
 
+    .. class:: ContactAnalysis1(topology, trajectory[,selection[,refgroup[,radius[,outfile]]]])
+
+    .. class:: ContactAnalysis1(universe[,selection[,refgroup[,radius[,outfile]]]])
+
+
     This analysis class allows one to calculate the fraction of native contacts
     *q* between two arbitrary groups of atoms with respect to an arbitrary
     reference structure. For instance, as a reference one could take a crystal
@@ -420,8 +427,8 @@ class ContactAnalysis1(object):
     the reference atoms; this example uses some arbitrary selections::
 
       ref = Universe('crystal.pdb')
-      refA = ref.select_atoms('name CA and segid A and resid 6:100')
-      refB = ref.select_atoms('name CA and segid B and resid 1:40')
+      refA = re.select_atoms('name CA and segid A and resid 6:100')
+      refB = re.select_atoms('name CA and segid B and resid 1:40')
 
     Load the trajectory::
 
@@ -540,7 +547,7 @@ class ContactAnalysis1(object):
         for x in self.references:
             if x is None:
                 raise ValueError("a reference AtomGroup must be supplied")
-        for ref, sel, s in zip(self.references, self.selections, self.selection_strings):
+        for ref, sel, s in izip(self.references, self.selections, self.selection_strings):
             if ref.atoms.n_atoms != sel.atoms.n_atoms:
                 raise ValueError("selection=%r: Number of atoms differ between "
                                  "reference (%d) and trajectory (%d)" %
@@ -579,36 +586,22 @@ class ContactAnalysis1(object):
         """
         return os.path.isfile(self.output) and not (self.force or force)
 
-    def run(self, store=True, force=False, start=0, stop=None, step=1, **kwargs):
+    def run(self, store=True, force=False, start_frame=1, end_frame=None, step_value=1):
         """Analyze trajectory and produce timeseries.
 
         Stores results in :attr:`ContactAnalysis1.timeseries` (if store=True)
         and writes them to a data file. The average q is written to a second
         data file.
-        *start*
-            The value of the first frame index in the trajectory to be used (default: index 0)
-        *stop*
-            The value of the last frame index in the trajectory to be used (default: None -- use all frames)
-        *step*
+        *start_frame*
+            The value of the first frame number in the trajectory to be used (default: frame 1)
+        *end_frame*
+            The value of the last frame number in the trajectory to be used (default: None -- use all frames)
+        *step_value*
             The number of frames to skip during trajectory iteration (default: use every frame)
         """
-
-        if 'start_frame' in kwargs:
-            warnings.warn("start_frame argument has been deprecated, use start instead --"
-                           "removal targeted for version 0.15.0", DeprecationWarning)
-            start = kwargs.pop('start_frame')
-
-        if 'end_frame' in kwargs:
-            warnings.warn("end_frame argument has been deprecated, use stop instead --"
-                           "removal targeted for version 0.15.0", DeprecationWarning)
-            stop = kwargs.pop('end_frame')
-
-        if 'step_value' in kwargs:
-            warnings.warn("step_value argument has been deprecated, use step instead --"
-                           "removal targeted for version 0.15.0", DeprecationWarning)
-            step = kwargs.pop('step_value')
-
         if self.output_exists(force=force):
+            import warnings
+
             warnings.warn("File %r already exists, loading it INSTEAD of trajectory %r. "
                           "Use force=True to overwrite the output file. " %
                           (self.output, self.universe.trajectory.filename))
@@ -616,12 +609,17 @@ class ContactAnalysis1(object):
             return None
 
         with openany(self.output, 'w') as out:
-            out.write("# q1 analysis\n# nref = {0:d}\n".format((self.nref)))
+            out.write("# q1 analysis\n# nref = %d\n" % (self.nref))
             out.write("# frame  q1  n1\n")
             records = []
             self.qavg *= 0  # average contact existence
             A, B = self.selections
-            for ts in self.universe.trajectory[start:stop:step]:
+            # determine the end_frame value to use:
+            total_frames = self.universe.trajectory.n_frames
+            if not end_frame:
+                # use the total number of frames in trajectory if no final value specified
+                end_frame = total_frames
+            for ts in self.universe.trajectory[start_frame:end_frame:step_value]:
                 frame = ts.frame
                 # use pre-allocated distance array to save a little bit of time
                 MDAnalysis.lib.distances.distance_array(A.coordinates(), B.coordinates(), result=self.d)
@@ -630,16 +628,11 @@ class ContactAnalysis1(object):
                 self.qavg += self.q
                 if store:
                     records.append((frame, q1, n1))
-                out.write("{frame:4d}  {q1:8.6f} {n1:5d}\n".format(**vars()))
+                out.write("%(frame)4d  %(q1)8.6f %(n1)5d\n" % vars())
         if store:
             self.timeseries = np.array(records).T
-        n_frames = len(np.arange(
-            self.universe.trajectory.n_frames)[start:stop:step])
-        if n_frames > 0:
-            self.qavg /= n_frames
-        else:
-            logger.warn("No frames were analyzed. Check values of start, stop, step.") 
-            logger.debug("start={start} stop={stop} step={step}".format(**vars()))
+        n_frames = len(range(total_frames)[start_frame:end_frame:step_value])
+        self.qavg /= n_frames
         np.savetxt(self.outarray, self.qavg, fmt="%8.6f")
         return self.output
 
@@ -715,7 +708,7 @@ class ContactAnalysis1(object):
         xlabel(r"frame number $t$")
         ylabel(r"native contacts $q_1$")
 
-        if filename is not None:
+        if not filename is None:
             savefig(filename)
 
     def _plot_qavg_pcolor(self, filename=None, **kwargs):
@@ -736,7 +729,7 @@ class ContactAnalysis1(object):
 
         colorbar()
 
-        if filename is not None:
+        if not filename is None:
             savefig(filename)
 
     def plot_qavg(self, filename=None, **kwargs):
@@ -766,10 +759,157 @@ class ContactAnalysis1(object):
         xlim(min(x), max(x))
         ylim(min(y), max(y))
 
-        xlabel("residue from {0!r}".format(self.selection_strings[0]))
-        ylabel("residue from {0!r}".format(self.selection_strings[1]))
+        xlabel("residue from %r" % self.selection_strings[0])
+        ylabel("residue from %r" % self.selection_strings[1])
 
         colorbar()
 
-        if filename is not None:
+        if not filename is None:
             savefig(filename)
+
+def calculate_contacts(ref, u, selA, selB, radius=4.5, beta=5.0, alpha=1.8):
+    """Calculate fraction of native contacts (Q) between two groups 
+    defined by selection strings selA and selB. 
+
+    Reference distances are taken from Univere ref. 
+    Distances are taken from trajecotry in Universe u.
+
+    :Arguments:
+      *ref*
+        reference Universe from which the reference distances will be taken
+      *u*
+        Universe from which the distance timeseries will be taken
+      *selA*
+        selection string for group A
+      *selB*
+        selection string for group B
+      *radius*
+        distance cutoff for defining reference contacts (Angstroms)
+      *beta*
+        temperature-like, steepness of the shift function for contacts (1/Angstroms)
+      *alpha*
+        tolerance, contact is formed when r < r0*alpha (unitless)
+
+    :Examples:
+
+    1. Protein folding
+
+        ref = Universe("villin.gro")
+        u = Universe("conf_protein.gro", "traj_protein.xtc")
+        Q = calculate_contacts(u, ref, "protein and not name H*", "protein and not name H*")
+
+    2. A pair of helices
+
+        ref = Universe("glycophorin_dimer.pdb")
+        u = Universe("conf_protein.gro", "traj_protein.xtc")
+        Q = calculate_contacts(u, ref, "protein and resid 75-92 and not name H* and segid A", "protein and resid 75-92 and not name H* and segid B")
+
+    :Parameters:
+    For all-atom simulations, radius = 4.5 A and alpha = 1.8 (unitless)
+    For coarse-grained simulations, radius = 6.0 A and alpha = 1.5 (unitless)
+
+    :Reference:
+    Using the definition from Best, Hummer, and Eaton, "Native contacts determine protein folding mechanisms in atomistic simulations" PNAS (2013) 10.1073/pnas.1311599110        
+
+    Eq. (1) of the SI defines the expression for the fraction of native contacts, $Q(X)$:
+    .. math:: $$ Q(X) = \frac{1}{|S|} \sum_{(i,j) \in S} \frac{1}{1 + \exp[\beta(r_{ij}(X) - \lambda r_{ij}^0)]}, $$
+
+    where
+
+        $X$ is a conformation,
+        $r_{ij}(X)$ is the distance between atoms $i$ and $j$ in conformation $X$,
+        $r^0_{ij}$ is the distance from heavy atom i to j in the native state conformation,
+        $S$ is the set of all pairs of heavy atoms $(i,j)$ belonging to residues $\theta_i$ and $\theta_j$ such that $|\theta_i - \theta_j| > 3$ and $r^0_{i,} < 4.5 \unicode{x212B}$,
+        $\beta=5 \unicode{x212B}^{-1}$,
+        $\lambda=1.8$ for all-atom simulations
+
+    """    
+    # reference groups A and B from selection strings
+    refA, refB = ref.select_atoms(selA), ref.select_atoms(selB)
+
+    # 2D float array, reference distances (r0)
+    dref = distance_array(refA.coordinates(), refB.coordinates())
+
+    # 2D bool array, select reference distances that are less than the cutoff radius
+    mask = dref < radius
+    #print("ref has {:d} contacts within {:.2f}".format(mask.sum(), radius))
+
+    # group A and B in a trajectory
+    grA, grB = u.select_atoms(selA), u.select_atoms(selB)
+    results = []
+
+
+    for ts in u.trajectory:
+        d = distance_array(grA.coordinates(), grB.coordinates())
+        r, r0 = d[mask], dref[mask]
+        x = 1/(1 + np.exp(beta*(r - alpha * r0)))
+        print x
+        results.append(( ts.time, x.sum()/mask.sum() ))
+    results = pd.DataFrame(results, columns=["Time (ps)", "Q"])
+    return results
+
+from .base import AnalysisBase
+logger = logging.getLogger(__name__)
+
+class BestHummerContacts(AnalysisBase):
+    r"""Calculate the persistence length for polymer chains
+
+    The persistence length is the length at which two points on the polymer
+    chain become decorrelated.
+
+    Notes
+    -----
+    This analysis requires that the trajectory supports indexing
+
+    .. versionadded:: 0.13.0
+    """
+    def __init__(self, u, grA, grB, refA, refB, radius=4.5, lambda_constant=1.8, beta=5.0,
+                 start=None, stop=None, step=None):
+        """Calculate the persistence length for polymer chains
+
+        Parameters
+        ----------
+        u : Universe
+            the thing with frame
+        grA, grB:
+            two contacting groups that change over time
+        refA, refB:
+            two contacting groups in their reference conformation
+        radius:
+            radius within which contacts exist
+        lambda_constant: 
+            contact is considered formed between (lambda*r0,r0)
+        beta:
+            softness of the switching function, the lower the softer
+        start : int, optional
+            First frame of trajectory to analyse, Default: 0
+        stop : int, optional
+            Last frame of trajectory to analyse, Default: -1
+        step : int, optional
+            Step between frames to analyse, Default: 1
+        """
+        self.u = u
+        self.grA, self.grB = grA, grB
+
+        r0 = distance_array(refA.coordinates(), refB.coordinates())
+        self.r0 = r0
+        self.mask = r0 < radius
+        self.results = []
+
+        self.beta = beta
+        self.lambda0  = lambda_constant
+
+        self._setup_frames(self.u.trajectory,
+                           start=start,
+                           stop=stop,
+                           step=step)
+
+    def _single_frame(self):
+        grA, grB, r0, mask = self.grA, self.grB, self.r0, self.mask
+
+        d = distance_array(grA.coordinates(), grB.coordinates())
+        r, r0 = d[mask], r0[mask]
+        y = 1/(1 + np.exp(self.beta*(r - self.lambda0 * r0)))
+        print y
+
+        self.results.append(y.sum()/mask.sum())
