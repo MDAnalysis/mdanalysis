@@ -67,6 +67,11 @@ except ImportError:
     cython_found = False
     cmdclass = {}
 
+# NOTE: keep in sync with MDAnalysis.__version__ in version.py
+RELEASE = "0.14.0-dev0"
+
+is_release = not 'dev' in RELEASE
+
 if cython_found:
     # cython has to be >=0.16 to support cython.parallel
     import Cython
@@ -76,13 +81,15 @@ if cython_found:
     required_version = "0.16"
 
     if not LooseVersion(Cython.__version__) >= LooseVersion(required_version):
-        raise ImportError(
-            "Cython version {0} (found {1}) is required because it offers "
-            "a handy parallelisation module".format(
-                required_version, Cython.__version__))
+        # We don't necessarily die here. Maybe we already have
+        #  the cythonized '.c' files.
+        print("Cython version {0} was found but won't be used: version {1} "
+              "or greater is required because it offers a handy "
+              "parallelization module".format(
+               Cython.__version__, required_version))
+        cython_found = False
     del Cython
     del LooseVersion
-
 
 class Config(object):
     """Config wrapper class to get build options
@@ -95,6 +102,9 @@ class Config(object):
     3. given default
 
     Environment variables should start with 'MDA_' and be all uppercase.
+    Values passed to environment variables are checked (case-insensitively)
+    for specific strings with boolean meaning: 'True' or '1' will cause `True`
+    to be returned. '0' or 'False' cause `False` to be returned.
 
     """
 
@@ -106,7 +116,12 @@ class Config(object):
     def get(self, option_name, default=None):
         environ_name = 'MDA_' + option_name.upper()
         if environ_name in os.environ:
-            return os.environ[environ_name]
+            val = os.environ[environ_name]
+            if val.upper() in ('1', 'TRUE'):
+                return True
+            elif val.upper() in ('0', 'FALSE'):
+                return False
+            return val
         try:
             option = self.config.get('options', option_name)
             return option
@@ -222,7 +237,8 @@ def detect_openmp():
 
 
 def extensions(config):
-    use_cython = config.get('use_cython', default=True)
+    # dev installs must build their own cythonized files.
+    use_cython = config.get('use_cython', default=not is_release)
     use_openmp = config.get('use_openmp', default=True)
 
     if config.get('debug_cflags', default=False):
@@ -253,10 +269,13 @@ def extensions(config):
     parallel_macros = [('PARALLEL', None)] if has_openmp and use_openmp else []
 
     if use_cython:
+        print('Will attempt to use Cython.')
         if not cython_found:
-            print("Couldn't find Cython installation. "
-                  "Not recompiling cython extension")
+            print("Couldn't find a Cython installation. "
+                  "Not recompiling cython extensions.")
             use_cython = False
+    else:
+        print('Will not attempt to use Cython.')
 
     source_suffix = '.pyx' if use_cython else '.c'
 
@@ -297,7 +316,7 @@ def extensions(config):
                                   include_dirs=include_dirs,
                                   extra_compile_args=extra_compile_args)
     libmdaxdr = MDAExtension('lib.formats.libmdaxdr',
-                          sources=['MDAnalysis/lib/formats/libmdaxdr.pyx',
+                          sources=['MDAnalysis/lib/formats/libmdaxdr' + source_suffix,
                                    'MDAnalysis/lib/formats/src/xdrfile.c',
                                    'MDAnalysis/lib/formats/src/xdrfile_xtc.c',
                                    'MDAnalysis/lib/formats/src/xdrfile_trr.c',
@@ -308,18 +327,31 @@ def extensions(config):
                                                        'MDAnalysis/lib/formats'],
                           define_macros=largefile_macros)
     util = MDAExtension('lib.formats.cython_util',
-                        sources=['MDAnalysis/lib/formats/cython_util.pyx'],
+                        sources=['MDAnalysis/lib/formats/cython_util' + source_suffix],
                         include_dirs=include_dirs)
 
-    extensions = [dcd, dcd_time, distances, distances_omp, qcprot,
+    pre_exts = [dcd, dcd_time, distances, distances_omp, qcprot,
                   transformation, libmdaxdr, util]
+    cython_generated = []
     if use_cython:
-        extensions = cythonize(extensions)
-    return extensions
+        extensions = cythonize(pre_exts)
+        for pre_ext, post_ext in zip(pre_exts, extensions):
+            for source in post_ext.sources:
+                if source not in pre_ext.sources:
+                    cython_generated.append(source)
+    else:
+        #Let's check early for missing .c files
+        extensions = pre_exts
+        for ext in extensions:
+            for source in ext.sources:
+                if not (os.path.isfile(source) and
+                        os.access(source, os.R_OK)):
+                    raise IOError("Source file '{}' not found. This might be "
+                                "caused by a missing Cython install, or a "
+                                "failed/disabled Cython build.".format(source))
+    return extensions, cython_generated
 
 if __name__ == '__main__':
-    # NOTE: keep in sync with MDAnalysis.__version__ in version.py
-    RELEASE = "0.14.0-dev0"
     with open("SUMMARY.txt") as summary:
         LONG_DESCRIPTION = summary.read()
     CLASSIFIERS = [
@@ -337,6 +369,7 @@ if __name__ == '__main__':
     ]
 
     config = Config()
+    exts, cythonfiles = extensions(config)
 
     setup(name='MDAnalysis',
           version=RELEASE,
@@ -353,7 +386,7 @@ if __name__ == '__main__':
           packages=find_packages(),
           package_dir={'MDAnalysis': 'MDAnalysis'},
           ext_package='MDAnalysis',
-          ext_modules=extensions(config),
+          ext_modules=exts,
           classifiers=CLASSIFIERS,
           cmdclass=cmdclass,
           requires=['numpy (>=1.5.0)', 'biopython',
@@ -391,3 +424,13 @@ if __name__ == '__main__':
           zip_safe=False,  # as a zipped egg the *.so files are not found (at
                            # least in Ubuntu/Linux)
     )
+
+    # Releases keep their cythonized stuff for shipping.
+    if not config.get('keep_cythonized', default=is_release):
+        for cythonized in cythonfiles:
+            try:
+                os.unlink(cythonized)
+            except OSError as err:
+                print("Warning: failed to delete cythonized file {0}: {1}. "
+                    "Moving on.".format(cythonized, err.strerror))
+
