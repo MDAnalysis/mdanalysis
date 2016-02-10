@@ -775,30 +775,41 @@ class ContactAnalysis1(object):
             savefig(filename)
 
 
-def calculate_contacts(ref, u, selA, selB, radius=4.5, beta=5.0, alpha=1.8):
+def calculate_contacts(ref, u, selA, selB, radius=4.5, beta=5.0, lambda_constant=1.8):
     """Calculate fraction of native contacts (Q) between two groups 
     defined by selection strings selA and selB. 
 
     Reference distances are taken from Univere ref. 
     Distances are taken from trajecotry in Universe u.
 
-    :Arguments:
-      *ref*
+    Parameters
+    ----------
+    ref: Universe
         reference Universe from which the reference distances will be taken
-      *u*
+    u: Universe
         Universe from which the distance timeseries will be taken
-      *selA*
+    selA: string
         selection string for group A
-      *selB*
+    selB: string
         selection string for group B
-      *radius*
+    radius: float, optional (4.5 Angstroms)
         distance cutoff for defining reference contacts (Angstroms)
-      *beta*
+    beta: float, optional (5 Angstroms^-1)
         temperature-like, steepness of the shift function for contacts (1/Angstroms)
-      *alpha*
-        tolerance, contact is formed when r < r0*alpha (unitless)
+    lambda_constant: float, optional (1.8 unitless)
+        tolerance, contact is formed when r < r0*lambda_constant (unitless)
 
-    :Examples:
+    Returns
+    -------
+    list 
+        Returns a list of following structure::
+            {
+                [[t1, q1], [t2, q2], ... [tn, qn]]
+            }
+        where t is time in ps and q is the fraction of native contacts
+
+    Examples
+    --------
 
     1. Protein folding
 
@@ -812,11 +823,13 @@ def calculate_contacts(ref, u, selA, selB, radius=4.5, beta=5.0, alpha=1.8):
         u = Universe("conf_protein.gro", "traj_protein.xtc")
         Q = calculate_contacts(u, ref, "protein and resid 75-92 and not name H* and segid A", "protein and resid 75-92 and not name H* and segid B")
 
-    :Parameters:
-    For all-atom simulations, radius = 4.5 A and alpha = 1.8 (unitless)
-    For coarse-grained simulations, radius = 6.0 A and alpha = 1.5 (unitless)
+    Note
+    ----
+    For all-atom simulations, radius = 4.5 A and lambda_constant = 1.8 (unitless)
+    For coarse-grained simulations, radius = 6.0 A and lambda_constant = 1.5 (unitless)
 
-    :Reference:
+    Reference
+    ---------
     Using the definition from Best, Hummer, and Eaton, "Native contacts determine protein folding mechanisms in atomistic simulations" PNAS (2013) 10.1073/pnas.1311599110        
 
     Eq. (1) of the SI defines the expression for the fraction of native contacts, $Q(X)$:
@@ -836,7 +849,7 @@ def calculate_contacts(ref, u, selA, selB, radius=4.5, beta=5.0, alpha=1.8):
     refA, refB = ref.select_atoms(selA), ref.select_atoms(selB)
 
     # 2D float array, reference distances (r0)
-    dref = distance_array(refA.coordinates(), refB.coordinates())
+    dref = distance_array(refA.positions, refB.positions)
 
     # 2D bool array, select reference distances that are less than the cutoff radius
     mask = dref < radius
@@ -848,11 +861,13 @@ def calculate_contacts(ref, u, selA, selB, radius=4.5, beta=5.0, alpha=1.8):
 
 
     for ts in u.trajectory:
-        d = distance_array(grA.coordinates(), grB.coordinates())
+        d = distance_array(grA.positions, grB.positions)
         r, r0 = d[mask], dref[mask]
-        x = 1/(1 + np.exp(beta*(r - alpha * r0)))
-        print x
+        x = 1/(1 + np.exp(beta*(r - lambda_constant * r0)))
+
+        # average/normalize and append to results
         results.append(( ts.time, x.sum()/mask.sum() ))
+
     #results = pd.DataFrame(results, columns=["Time (ps)", "Q"])
     return results
 
@@ -861,18 +876,11 @@ from .base import AnalysisBase
 logger = logging.getLogger(__name__)
 
 class BestHummerContacts(AnalysisBase):
-    r"""Calculate the persistence length for polymer chains
-
-    The persistence length is the length at which two points on the polymer
-    chain become decorrelated.
-
-    Notes
-    -----
-    This analysis requires that the trajectory supports indexing
+    r"""Calculate Best-Hummer fraction of native contacts (Q) from a atrajectory
 
     .. versionadded:: 0.13.0
     """
-    def __init__(self, u, grA, grB, refA, refB, radius=4.5, lambda_constant=1.8, beta=5.0,
+    def __init__(self, grA, grB, refA, refB, radius=4.5, lambda_constant=1.8, beta=5.0,
                  start=None, stop=None, step=None):
         """Calculate the persistence length for polymer chains
 
@@ -880,15 +888,15 @@ class BestHummerContacts(AnalysisBase):
         ----------
         u : Universe
             the thing with frame
-        grA, grB:
+        grA, grB: AtomGroup
             two contacting groups that change over time
-        refA, refB:
+        refA, refB: AtomGroup
             two contacting groups in their reference conformation
-        radius:
+        radius: float, optional (4.5 Angstroms)
             radius within which contacts exist
-        lambda_constant: 
+        lambda_constant: float, optional (1.8 unitless)
             contact is considered formed between (lambda*r0,r0)
-        beta:
+        beta: float, optional (5 Angstroms^-1)
             softness of the switching function, the lower the softer
         start : int, optional
             First frame of trajectory to analyse, Default: 0
@@ -896,17 +904,24 @@ class BestHummerContacts(AnalysisBase):
             Last frame of trajectory to analyse, Default: -1
         step : int, optional
             Step between frames to analyse, Default: 1
+
+
+        Attributes
+        ----------
+        results: list 
+            Fraction of native contacts for each frame
         """
-        self.u = u
+        assert(grA.universe == grB.universe)
+        self.u = grA.universe
         self.grA, self.grB = grA, grB
 
-        r0 = distance_array(refA.coordinates(), refB.coordinates())
+        r0 = distance_array(refA.positions, refB.positions)
         self.r0 = r0
         self.mask = r0 < radius
         self.results = []
 
         self.beta = beta
-        self.lambda0  = lambda_constant
+        self.lambda_constant  = lambda_constant
 
         self._setup_frames(self.u.trajectory,
                            start=start,
@@ -916,9 +931,9 @@ class BestHummerContacts(AnalysisBase):
     def _single_frame(self):
         grA, grB, r0, mask = self.grA, self.grB, self.r0, self.mask
 
-        d = distance_array(grA.coordinates(), grB.coordinates())
+        d = distance_array(grA.positions, grB.positions)
         r, r0 = d[mask], r0[mask]
-        y = 1/(1 + np.exp(self.beta*(r - self.lambda0 * r0)))
+        y = 1/(1 + np.exp(self.beta*(r - self.lambda_constant * r0)))
         print y
 
         self.results.append(y.sum()/mask.sum())

@@ -91,7 +91,7 @@ class TestInterRDF(object):
         grF = f.select_atoms(sel)
         grU = u.select_atoms(sel)
 
-        q = BestHummerContacts(u, grU, grU, grF, grF)
+        q = BestHummerContacts(grU, grU, grF, grF)
         q.run()
         
         results = zip(*calculate_contacts(f, u, sel, sel))[1]
@@ -107,7 +107,7 @@ class TestInterRDF(object):
         grF = f.select_atoms(sel)
         grU = u.select_atoms(sel)
 
-        q = BestHummerContacts(u, grU, grU, grF, grF)
+        q = BestHummerContacts(grU, grU, grF, grF)
         q.run()
         
         results = zip(*calculate_contacts(f, u, sel, sel))[1]
