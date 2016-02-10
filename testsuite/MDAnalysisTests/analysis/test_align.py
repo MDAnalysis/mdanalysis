@@ -32,15 +32,41 @@ from MDAnalysisTests.datafiles import PSF, DCD, FASTA
 from MDAnalysisTests import executable_not_found, parser_not_found
 
 
-def test_rotation_matrix():
-    a = np.array([[0.1, 0.2, 0.3],
-                  [1.1, 1.1, 1.1]])
-    b = np.array([[0.1, 0.1, 0.1],
-                  [1.1, 1.1, 1.1]])
+class TestRotationMatrix(object):
+    def __init__(self):
+        self.a = np.array([[0.1, 0.2, 0.3],
+                           [1.1, 1.1, 1.1]])
+        self.b = np.array([[0.1, 0.1, 0.1],
+                           [1.1, 1.1, 1.1]])
+        self.w = np.array([1.3, 2.3])
 
-    rot, rmsd = align.rotation_matrix(a, b)
-    assert_equal(rot, np.eye(3))
-    assert_equal(rmsd, None)
+    def test_no_solution_no_weights(self):
+        rot, rmsd = align.rotation_matrix(self.a, self.b)
+        assert_equal(rot, np.eye(3))
+        assert_equal(rmsd, None)
+
+    def test_no_solution_with_weights(self):
+        rot, rmsd = align.rotation_matrix(self.a, self.b, self.w)
+        assert_equal(rot, np.eye(3))
+        assert_equal(rmsd, None)
+
+    def test_wrong_dtype(self):
+        rot, rmsd = align.rotation_matrix(self.a.astype(np.int),
+                                          self.b.astype(np.int),
+                                          self.w.astype(np.float32))
+        assert_equal(rot, np.eye(3))
+        assert_equal(rmsd, None)
+
+    @staticmethod
+    def test_list_args():
+        a = [[0.1, 0.2, 0.3],
+             [1.1, 1.1, 1.1]]
+        b = [[0.1, 0.1, 0.1],
+             [1.1, 1.1, 1.1]]
+        w = [1.3, 2.3]
+        rot, rmsd = align.rotation_matrix(a, b, w)
+        assert_equal(rot, np.eye(3))
+        assert_equal(rmsd, None)
 
 
 class TestAlign(TestCase):
