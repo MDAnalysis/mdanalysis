@@ -29,7 +29,7 @@ from MDAnalysisTests.datafiles import (
 )
 
 
-class TestInterRDF(object):
+class TestContactsBest(object):
     def setUp(self):
         self.folded = mda.Universe(contacts_villin_folded)
         self.unfolded = mda.Universe(contacts_villin_unfolded)
