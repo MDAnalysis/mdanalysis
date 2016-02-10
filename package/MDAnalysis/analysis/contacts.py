@@ -911,7 +911,7 @@ class BestHummerContacts(AnalysisBase):
         results: list 
             Fraction of native contacts for each frame
         """
-        assert(grA.universe == grB.universe)
+        if not grA.universe == grB.universe: raise ValueError("grA and grB should come from the same Universe")
         self.u = grA.universe
         self.grA, self.grB = grA, grB
 
