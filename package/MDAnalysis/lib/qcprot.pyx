@@ -476,9 +476,8 @@ def CalcRMSDRotationalMatrix(np.ndarray[np.float64_t,ndim=2] ref,
     rmsd : float
         RMSD value
     """
-    cdef double E0, rmsd
+    cdef double E0
     cdef np.ndarray[np.float64_t,ndim=1] A = np.zeros(9,)
 
     E0 = InnerProduct(A,conf,ref,N,weights)
-    rmsd = FastCalcRMSDAndRotation(rot,A,E0,N)
-    return rmsd
+    return FastCalcRMSDAndRotation(rot,A,E0,N)
