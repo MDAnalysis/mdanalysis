@@ -31,7 +31,6 @@ have to be from the same :class:`~MDAnalysis.core.AtomGroup.Universe`.
 __all__ = ['distance_array', 'self_distance_array', 'contact_matrix', 'dist']
 
 import numpy as np
-from scipy import sparse
 
 from MDAnalysis.lib.distances import distance_array, self_distance_array
 from MDAnalysis.lib.c_distances import contact_matrix_no_pbc, contact_matrix_pbc
@@ -55,6 +54,13 @@ def contact_matrix(coord, cutoff=15.0, returntype="numpy", box=None):
     .. versionchanged:: 0.11.0
        Keyword *suppress_progmet* and *progress_meter_freq* were removed.
     '''
+    try:
+        from scipy import sparse
+    except ImportError:
+        print("scipy.sparse cannot be imported")
+        return
+
+
     if returntype == "numpy":
         adj = (distance_array(coord, coord, box=box) < cutoff)
         return adj
