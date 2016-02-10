@@ -34,9 +34,6 @@ class TestInterRDF(object):
         self.folded = mda.Universe(contacts_villin_folded)
         self.unfolded = mda.Universe(contacts_villin_unfolded)
 
-
-
-
     def tearDown(self):
         del self.folded, self.unfolded
 
@@ -97,7 +94,8 @@ class TestInterRDF(object):
         q = BestHummerContacts(u, grU, grU, grF, grF)
         q.run()
         
-        assert_almost_equal(q.results, calculate_contacts(f, u, sel, sel)["Q"])
+        results = zip(*calculate_contacts(f, u, sel, sel))[1]
+        assert_almost_equal(q.results, results)
 
     def test_math_folded(self):
 
@@ -112,4 +110,5 @@ class TestInterRDF(object):
         q = BestHummerContacts(u, grU, grU, grF, grF)
         q.run()
         
-        assert_almost_equal(q.results, calculate_contacts(f, u, sel, sel)["Q"])        
+        results = zip(*calculate_contacts(f, u, sel, sel))[1]
+        assert_almost_equal(q.results, results)        

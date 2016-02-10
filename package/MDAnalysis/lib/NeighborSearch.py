@@ -27,6 +27,51 @@ from Bio.KDTree import KDTree
 
 from MDAnalysis.core.AtomGroup import AtomGroup
 
+class CoordinateNeighborSearch(object):
+    """This class can be used to find all atoms/residues/segements within the
+    radius of a given query position.
+
+    This class is using the BioPython KDTree for the neighborsearch. This class
+    also does not apply PBC to the distance calculattions. So you have to ensure
+    yourself that the trajectory has been corrected for PBC artifacts.
+    """
+
+    def __init__(self, coordinates, bucket_size=10):
+        """
+        :Arguments:
+         *atom_list*
+          list of atoms (:class: `~MDAnalysis.core.AtomGroup.AtomGroup`)
+         *bucket_size*
+          Number of entries in leafs of the KDTree. If you suffer poor
+          performance you can play around with this number. Increasing the
+          `bucket_size` will speed up the construction of the KDTree but
+          slow down the search.
+        """
+
+        self.kdtree = KDTree(dim=3, bucket_size=bucket_size)
+        self.kdtree.set_coords(coordinates)
+
+    def search(self, coordinates, radius, level='A'):
+        """
+        Return all atoms/residues/segments that are within *radius* of the
+        atoms in *atoms*.
+
+        :Arguments:
+         *atoms*
+          list of atoms (:class: `~MDAnalysis.core.AtomGroup.AtomGroup`)
+         *radius*
+          float. Radius for search in Angstrom.
+         *level* (optional)
+          char (A, R, S). Return atoms(A), residues(R) or segments(S) within
+          *radius* of *atoms*.
+        """
+        indices = []
+        for coord in np.array(coordinates):
+            self.kdtree.search(coord, radius)
+            indices.extend(self.kdtree.get_indices())
+        return indices
+
+    search_list = search
 
 class AtomNeighborSearch(object):
     """This class can be used to find all atoms/residues/segements within the
