@@ -23,6 +23,7 @@ API Changes
   * Offsets files for Gromacs trajectory formats have been changed to a numpy
     style format '.npz'. Offsets files will be regenerated when you load a
     xtc/trr trajectory again. (Issue #441)
+  * rotation_matrix now accepts array-likes as input
 
 Enhancement
 
@@ -55,6 +56,7 @@ Fixes
   * Fixed Reader returning all frames with stop in slice was 0 (Issue #672)
   * Fixed NCDFReader not reading dt (Issue #676)
   * Fixed PDB-Topology read bonds for atom ids larger then 10000 (Issue #693)
+  * Fixed Type Error in qcprot.pyx when no rotation can be fond (Issue #705)
 
 
 01/16/16 tyler.je.reddy, kain88-de, richardjgowers, manuel.nuno.melo,
