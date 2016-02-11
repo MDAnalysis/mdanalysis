@@ -34,7 +34,7 @@ from numpy.testing import (TestCase, dec, raises, assert_equal,
 from nose.plugins.attrib import attr
 
 import os
-import tempfile
+import tempdir
 import itertools
 
 from MDAnalysisTests import parser_not_found
@@ -1454,15 +1454,12 @@ class _WriteAtoms(TestCase):
     def setUp(self):
         self.universe = MDAnalysis.Universe(PSF, DCD)
         suffix = '.' + self.ext
-        fd, self.outfile = tempfile.mkstemp(suffix=suffix)
-        os.close(fd)
+        self.tempdir = tempdir.TempDir()
+        self.outfile = os.path.join(self.tempdir.name, 'writeatoms' + suffix)
 
     def tearDown(self):
-        try:
-            os.unlink(self.outfile)
-        except OSError:
-            pass
         del self.universe
+        del self.tempdir
 
     def universe_from_tmp(self):
         return MDAnalysis.Universe(self.outfile, convert_units=True)
