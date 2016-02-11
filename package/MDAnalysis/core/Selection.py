@@ -391,7 +391,7 @@ class CylindricalSelection(Selection):
 
             if np.all(group.dimensions[3:] == 90.):
                 # Orthogonal version
-                vecs -= box[:3] * np.rint(vecs / box[:3])[:, None]
+                vecs -= box[:3] * np.rint(vecs / box[:3])
             else:
                 #Triclinic version
                 tribox = group.universe.trajectory.ts.triclinic_dimensions
