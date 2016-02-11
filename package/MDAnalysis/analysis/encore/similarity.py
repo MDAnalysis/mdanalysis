@@ -697,7 +697,7 @@ def prepare_ensembles_for_convergence_increasing_window(ensembles, window_size):
 def hes(ensembles, 
         cov_estimator = "shrinkage",
         mass_weighted = True,
-        details = None,
+        details = False,
         estimate_error = False,
         bootstrapping_runs = 100,):
 
@@ -777,9 +777,12 @@ def hes(ensembles,
         for i in range(out_matrix_eln):
             kwds['ensemble%d_mean'%(i+1)] = xs[i]
             kwds['ensemble%d_covariance_matrix'%(i+1)] = sigmas[i]
-        numpy.savez(details, **kwds)
+        details = numpy.array(kwds)
 
-    return values
+    else: 
+        details = None
+
+    return values, details
 
 
 def ces(ensembles,
@@ -817,8 +820,6 @@ def ces(ensembles,
             confdistmatrix = get_similarity_matrix(  ensembles, **kwargs)
         else:
             confdistmatrix = get_similarity_matrix(  ensembles, bootstrapping_samples=bootstrapping_samples, bootstrap_matrix=True)
-            
-    print confdistmatrix, "CDM"
 
     if mode == "ap":
         
@@ -900,6 +901,7 @@ def ces(ensembles,
             return (avgs, stds)
 
         values = {}
+        kwds = {}
         for i,p in enumerate(preferences):
             if ccs[i].clusters == None:
                 continue
@@ -913,16 +915,18 @@ def ces(ensembles,
                     values[p][pair[1],pair[0]] = this_val
 
             if details:
-                kwds = {}
-                kwds['centroids'] = numpy.array([c.centroid for c in ccs[i]])
+                print "doing ", p
+                kwds['centroids_pref%.3f' % p] = numpy.array([c.centroid for c in ccs[i]])
                 kwds['ensemble_sizes'] = numpy.array([e.coordinates.shape[0] for e in ensembles])
                 for cln,cluster in enumerate(ccs[i]):
-                    kwds["cluster%d"%(cln+1)] = numpy.array(cluster.elements)
-                details_array = np.array(kwds)
+                    kwds["cluster%d_pref%.3f"%(cln+1,p)] = numpy.array(cluster.elements)
 
-                return values, details
+    if details:
+        details = numpy.array(kwds)
+    else:
+        details = None
 
-    return values
+    return values, details
         
 
 def dres(   ensembles,
@@ -943,7 +947,6 @@ def dres(   ensembles,
             **kwargs):
 
     dimensions = numpy.array(dimensions, dtype=numpy.int)
-    dimensions = dimensions[dimensions >= 3]
     stressfreq = -1
 
     out_matrix_eln = len(ensembles)
@@ -964,8 +967,6 @@ def dres(   ensembles,
         else:
             confdistmatrix = get_similarity_matrix(  ensembles, bootstrapping_samples=bootstrapping_samples, bootstrap_matrix=True)
             
-    print confdistmatrix, "CDM"
-
     dimensions = map(int, dimensions)
 
     # prepare runs. (e.g.: runs = [1,2,3,1,2,3,1,2,3, ...])
@@ -1066,6 +1067,8 @@ def dres(   ensembles,
             stresses_perdim[dimensions[i]].append(results[j*len(dimensions)+i][1][0])
             embedded_spaces_perdim[dimensions[i]].append(results[j*len(dimensions)+i][1][1])
 
+    kwds = {}
+
     for ndim in dimensions:
 
         values[ndim] = numpy.zeros((len(ensembles),len(ensembles)))
@@ -1083,16 +1086,17 @@ def dres(   ensembles,
             values[ndim][pair[0],pair[1]] = this_value
             values[ndim][pair[1],pair[0]] = this_value
 
-    return values
-
+        if details:
+            kwds["stress_%ddims" % ndim] = numpy.array([embedded_stress])
+            for en,e in enumerate(embedded_ensembles):
+                kwds["ensemble%d_%ddims"%(en,ndim)] = e
+        
     if details:
-        kwds = {}
-        kwds["stress"] = numpy.array([embedded_stress])
-        for en,e in enumerate(embedded_ensembles):
-            kwds[("ensemble%d"%en)] = e
-        details_array = np.array(kwds)
+        details = numpy.array(kwds)
+    else:
+        details = None
 
-    return values, details_array
+    return values, details
 
 
 
