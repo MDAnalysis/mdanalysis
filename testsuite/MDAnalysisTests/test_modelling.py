@@ -2,8 +2,8 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
 # MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver
+# Beckstein and contributors (see AUTHORS for the full list)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
@@ -30,8 +30,7 @@ from numpy.testing import (TestCase, dec, assert_equal, assert_raises, assert_,
 from nose.plugins.attrib import attr
 
 import os
-import tempfile
-import itertools
+import tempdir
 
 from MDAnalysis import Universe, Merge
 from MDAnalysis.analysis.align import alignto
@@ -79,14 +78,11 @@ class TestCapping(TestCase):
 
     def setUp(self):
         suffix = '.' + self.ext
-        fd, self.outfile = tempfile.mkstemp(suffix=suffix)
-        os.close(fd)
+        self.tempdir = tempdir.TempDir()
+        self.outfile = os.path.join(self.tempdir.name, 'test' + suffix)
 
     def tearDown(self):
-        try:
-            os.unlink(self.outfile)
-        except OSError:
-            pass
+        del self.tempdir
 
     def test_capping_file(self):
         peptide = MDAnalysis.Universe(capping_input)
@@ -137,16 +133,13 @@ class TestMerge(TestCase):
         self.universes = [u1, u2, u3]
 
         suffix = '.' + self.ext
-        fd, self.outfile = tempfile.mkstemp(suffix=suffix)
-        os.close(fd)
+        self.tempdir = tempdir.TempDir()
+        self.outfile = os.path.join(self.tempdir.name, 'test' + suffix)
 
     def tearDown(self):
-        try:
-            os.unlink(self.outfile)
-        except OSError:
-            pass
         for u in self.universes:
             del u
+        del self.tempdir
 
     def test_merge(self):
         u1, u2, u3 = self.universes
