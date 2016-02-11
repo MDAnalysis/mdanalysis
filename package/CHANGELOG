@@ -36,6 +36,8 @@ API Changes
     style format '.npz'. Offsets files will be regenerated when you load a
     xtc/trr trajectory again. (Issue #441)
   * rotation_matrix now accepts array-likes as input
+  * rmsd doesn't superimpose by default anymore. The superposition
+    is controlled by the 'superposition' keyword now. (see issue #562)
 
 Enhancement
 
