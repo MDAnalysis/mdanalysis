@@ -114,7 +114,7 @@ for plugin in __all__:
         plugin_classes.extend(cls)
 
 for p_class in plugin_classes:
-    if p_class.name is None: # KnownFailure doesn't implement a name...
+    if p_class.name is None: # some plugins might not implement a name
         loaded_plugins[p_class.__name__] = p_class()
     else:
         loaded_plugins[p_class.name] = p_class()
