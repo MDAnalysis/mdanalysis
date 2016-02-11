@@ -2,8 +2,8 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
 # MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver
+# Beckstein and contributors (see AUTHORS for the full list)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
@@ -16,11 +16,7 @@
 from six.moves import range, StringIO
 import six
 
-import os.path
-import tempfile
-
 import numpy as np
-import numpy.random
 from numpy.testing import (assert_raises, assert_equal, assert_almost_equal,
                            assert_array_almost_equal, assert_,
                            TestCase)
@@ -32,10 +28,13 @@ from MDAnalysis.lib.util import cached
 from MDAnalysis.core.topologyobjects import TopologyGroup, Bond
 from MDAnalysis.exceptions import NoDataError
 
-from MDAnalysisTests.datafiles import PSF, Make_Whole
+
+from MDAnalysisTests.datafiles import Make_Whole
+
 
 def check_parse_residue(rstring, residue):
     assert_equal(util.parse_residue(rstring), residue)
+
 
 def check_convert_aa_3to1(resname3, resname1):
     assert_equal(util.convert_aa_code(resname3), resname1)
