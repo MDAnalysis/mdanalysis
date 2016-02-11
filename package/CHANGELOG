@@ -32,6 +32,9 @@ Enhancement
   * select_atoms now implicitly ORs multiple values after a keyword for
     many types of selections (Issue #345)
   * Performance improvements for the PDBReader of about 10%
+  * LinearDensity analysis module added, which allows to compute linear mass
+    and charge density profiles along the three cartesian axes of the cell.
+    Works for orthorombic, fixed volume cells only. (Issue #670)
 
 Changes
 
