@@ -2,8 +2,8 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
 # MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver
+# Beckstein and contributors (see AUTHORS for the full list)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
@@ -16,10 +16,11 @@
 from six.moves import zip, cPickle
 
 import MDAnalysis
-from MDAnalysis.tests.datafiles import PSF, DCD, PDB_small, GRO, TRR, \
-    merge_protein, merge_water, merge_ligand, \
-    TRZ, TRZ_psf, PSF_notop, PSF_BAD, unordered_res, \
-    XYZ_mini, two_water_gro, two_water_gro_nonames
+from MDAnalysis.tests.datafiles import (PSF, DCD, PDB_small, GRO, TRR,
+                                        TRZ, TRZ_psf, PSF_notop,
+                                        PSF_BAD, unordered_res,
+                                        XYZ_mini, two_water_gro,
+                                        two_water_gro_nonames)
 import MDAnalysis.core.AtomGroup
 from MDAnalysis.core.AtomGroup import Atom, AtomGroup, as_Universe
 from MDAnalysis import NoDataError
@@ -36,7 +37,6 @@ import os
 import tempfile
 import itertools
 
-from MDAnalysisTests.plugins.knownfailure import knownfailure
 from MDAnalysisTests import parser_not_found
 
 
