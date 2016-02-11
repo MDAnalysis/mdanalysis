@@ -37,8 +37,7 @@ class TriangularMatrix:
 `metadata` : dict
 	Metadata for the matrix (date of creation, name of author ...)
 """    
-    
-    
+
     def __init__(self, size, metadata=None, loadfile=None):
         """Class constructor.
         
@@ -123,6 +122,13 @@ class TriangularMatrix:
             for j in xrange(i+1):
                 print "%.3f".ljust(justification) % self.__getitem__((i,j)),
             print ""
+
+    def change_sign(self):
+        """
+        Change sign of each element of the matrix
+        """
+        for k,v in enumerate(self._elements):
+            self._elements[k] = -v
 
 
 
