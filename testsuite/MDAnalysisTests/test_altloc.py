@@ -16,7 +16,7 @@
 from MDAnalysis import Universe
 import tempdir
 import os
-from numpy.testing import *
+from numpy.testing import TestCase, assert_equal
 from MDAnalysisTests.datafiles import PDB_full
 
 
