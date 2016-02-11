@@ -144,7 +144,7 @@ class TestContactAnalysis1(TestCase):
         q = MDAnalysis.analysis.contacts.BestHummerContacts(grU, grU, grF, grF)
         q.run()
         
-        results = zip(*calculate_contacts(f, u, sel, sel))[1]
+        results = zip(*MDAnalysis.analysis.contacts.calculate_contacts(f, u, sel, sel))[1]
         assert_almost_equal(q.results, results)
 
     def test_math_folded(self):
@@ -160,5 +160,5 @@ class TestContactAnalysis1(TestCase):
         q = MDAnalysis.analysis.contacts.BestHummerContacts(grU, grU, grF, grF)
         q.run()
         
-        results = zip(*calculate_contacts(f, u, sel, sel))[1]
+        results = zip(*MDAnalysis.analysis.contacts.calculate_contacts(f, u, sel, sel))[1]
         assert_almost_equal(q.results, results)        
