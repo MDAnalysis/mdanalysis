@@ -28,7 +28,14 @@ from nose.plugins.attrib import attr
 import os
 import tempdir
 
-from MDAnalysisTests.datafiles import PSF, DCD
+from MDAnalysisTests.datafiles import (
+    PSF, 
+    DCD, 
+    contacts_villin_folded, 
+    contacts_villin_unfolded,
+    contacts_file,
+)
+
 from MDAnalysisTests import executable_not_found, parser_not_found
 
 class TestContactAnalysis1(TestCase):
@@ -38,9 +45,12 @@ class TestContactAnalysis1(TestCase):
         self.universe = MDAnalysis.Universe(PSF, DCD)
         self.trajectory = self.universe.trajectory
 
+        self.folded = mda.Universe(contacts_villin_folded)
+        self.unfolded = mda.Universe(contacts_villin_unfolded)
+
     def tearDown(self):
-        del self.universe
-        del self.trajectory
+        del self.universe, self.trajectory
+        del self.folded, self.unfolded  
 
     def _run_ContactAnalysis1(self, **runkwargs):
         sel_basic = "(resname ARG or resname LYS) and (name NH* or name NZ)"
@@ -75,3 +85,80 @@ class TestContactAnalysis1(TestCase):
             CA1 = self._run_ContactAnalysis1(start=start, stop=stop, step=step)
             frames = np.arange(self.universe.trajectory.n_frames)[start:stop:step]
             self.assertEqual(CA1.timeseries.shape[1], len(frames))
+
+
+    def test_math_folded(self):
+
+        u = self.folded
+
+        # read the text files
+        data = [l.split() for l in open(contacts_file).readlines()]
+        # convert to 0-based indexing
+        data = [ (int(i)-1, int(j)-1, float(d))  for i, j, d in data]
+        # get r and r0
+        data = [ (np.linalg.norm(u.atoms[i].pos - u.atoms[j].pos), d)  for i, j, d in data]
+        data = np.array(data)
+
+        r = data[:,0]
+        r0 = data[:,1]
+
+        beta = 5.0
+        lambda_constant = 1.8
+
+        Q = 1/(1 + np.exp(beta*(r - lambda_constant * r0)))
+
+        assert_almost_equal(Q.mean(),  1.0, decimal=3)
+
+    def test_math_unfolded(self):
+
+        u = self.unfolded
+
+        # read the text files
+        data = [l.split() for l in open(contacts_file).readlines()]
+        # convert to 0-based indexing
+        data = [ (int(i)-1, int(j)-1, float(d))  for i, j, d in data]
+        # get r and r0
+        data = [ (np.linalg.norm(u.atoms[i].pos - u.atoms[j].pos), d)  for i, j, d in data]
+        data = np.array(data)
+
+        r = data[:,0]
+        r0 = data[:,1]
+
+        beta = 5.0
+        lambda_constant = 1.8
+
+        Q = 1/(1 + np.exp(beta*(r - lambda_constant * r0)))
+
+        assert_almost_equal(Q.mean(),  0.0, decimal=1)
+
+    def test_math_folded(self):
+
+        # one folded, one unfolded
+        f = mda.Universe(contacts_villin_folded)
+        u = mda.Universe(contacts_villin_unfolded)
+        sel = "protein and not name H*"
+
+        grF = f.select_atoms(sel)
+        grU = u.select_atoms(sel)
+
+        q = BestHummerContacts(grU, grU, grF, grF)
+        q.run()
+        
+        results = zip(*calculate_contacts(f, u, sel, sel))[1]
+        assert_almost_equal(q.results, results)
+
+    def test_math_folded(self):
+
+        # both folded
+        f = mda.Universe(contacts_villin_folded)
+        u = mda.Universe(contacts_villin_folded)
+        sel = "protein and not name H*"
+
+        grF = f.select_atoms(sel)
+        grU = u.select_atoms(sel)
+
+        q = BestHummerContacts(grU, grU, grF, grF)
+        q.run()
+        
+        results = zip(*calculate_contacts(f, u, sel, sel))[1]
+        assert_almost_equal(q.results, results)        
