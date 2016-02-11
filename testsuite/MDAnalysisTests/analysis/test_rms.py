@@ -2,8 +2,8 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
 # MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver
+# Beckstein and contributors (see AUTHORS for the full list)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
@@ -24,23 +24,20 @@ from numpy.testing import TestCase, assert_almost_equal
 import numpy as np
 
 import os
-import tempfile
+import tempdir
 
 from MDAnalysisTests.datafiles import GRO, XTC, rmsfArray
+
 
 class TestRMSF(TestCase):
     def setUp(self):
         self.universe = MDAnalysis.Universe(GRO, XTC)
-        fd, self.outfile = tempfile.mkstemp(suffix=".xtc")  # output is always same as input (=XTC)
-        os.close(fd)
+        self.tempdir = tempdir.TempDir()
+        self.outfile = os.path.join(self.tempdir.name, 'rmsf.xtc')
 
     def tearDown(self):
-        try:
-            os.unlink(self.outfile)
-        except OSError:
-            pass
-
         del self.universe
+        del self.tempdir
 
     def test_rmsf(self):
         rmsfs = MDAnalysis.analysis.rms.RMSF(self.universe.select_atoms('name CA'))
@@ -70,5 +67,3 @@ class TestRMSF(TestCase):
 
         assert_almost_equal(rmsfs.rmsf, 0, 5,
                             err_msg="error: rmsfs should all be 0")
-
-

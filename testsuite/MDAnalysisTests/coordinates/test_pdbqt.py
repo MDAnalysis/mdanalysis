@@ -2,8 +2,8 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
 # MDAnalysis --- http://www.MDAnalysis.org
-# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein
-# and contributors (see AUTHORS for the full list)
+# Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver
+# Beckstein and contributors (see AUTHORS for the full list)
 #
 # Released under the GNU Public Licence, v2 or any higher version
 #
@@ -19,10 +19,9 @@ from MDAnalysis.tests.datafiles import PDBQT_input, PDBQT_querypdb
 from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
 
 from numpy.testing import *
-from nose.plugins.attrib import attr
 
 import os
-import tempfile
+import tempdir
 
 
 class TestPDBQT(TestCase):
@@ -30,8 +29,8 @@ class TestPDBQT(TestCase):
         """Set up the standard AdK system in implicit solvent."""
         self.universe = MDAnalysis.Universe(PDBQT_input)  # PDBQT
         self.query_universe = MDAnalysis.Universe(PDBQT_querypdb)  # PDB file
-        fd, self.outfile = tempfile.mkstemp(suffix='.pdbqt')
-        os.close(fd)
+        self.tempdir = tempdir.TempDir()
+        self.outfile = os.path.join(self.tempdir.name, 'test.pdbqt')
 
     def tearDown(self):
         del self.universe
