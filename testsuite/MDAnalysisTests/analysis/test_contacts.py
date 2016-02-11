@@ -45,8 +45,8 @@ class TestContactAnalysis1(TestCase):
         self.universe = MDAnalysis.Universe(PSF, DCD)
         self.trajectory = self.universe.trajectory
 
-        self.folded = mda.Universe(contacts_villin_folded)
-        self.unfolded = mda.Universe(contacts_villin_unfolded)
+        self.folded = MDAnalysis.Universe(contacts_villin_folded)
+        self.unfolded = MDAnalysis.Universe(contacts_villin_unfolded)
 
     def tearDown(self):
         del self.universe, self.trajectory
@@ -134,8 +134,8 @@ class TestContactAnalysis1(TestCase):
     def test_math_folded(self):
 
         # one folded, one unfolded
-        f = mda.Universe(contacts_villin_folded)
-        u = mda.Universe(contacts_villin_unfolded)
+        f = MDAnalysis.Universe(contacts_villin_folded)
+        u = MDAnalysis.Universe(contacts_villin_unfolded)
         sel = "protein and not name H*"
 
         grF = f.select_atoms(sel)
@@ -150,8 +150,8 @@ class TestContactAnalysis1(TestCase):
     def test_math_folded(self):
 
         # both folded
-        f = mda.Universe(contacts_villin_folded)
-        u = mda.Universe(contacts_villin_folded)
+        f = MDAnalysis.Universe(contacts_villin_folded)
+        u = MDAnalysis.Universe(contacts_villin_folded)
         sel = "protein and not name H*"
 
         grF = f.select_atoms(sel)
