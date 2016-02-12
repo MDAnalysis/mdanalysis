@@ -27,11 +27,16 @@ and, optionally, arguments.
 """
 
 from MDAnalysisTests.plugins import loaded_plugins, _check_plugins_loaded
-# Since we're already doing import checks in MDAnalysisTests and .plugins no need to clutter here
-from numpy.testing.noseclasses import KnownFailure, KnownFailureTest
 import nose
 
-plugin_class = KnownFailure
+try: # numpy < 1.11 had different plugin/exception names
+    from numpy.testing.noseclasses import KnownFailurePlugin, KnownFailureException
+except ImportError:
+    from numpy.testing.noseclasses import KnownFailure as KnownFailurePlugin
+    from numpy.testing.noseclasses import KnownFailureTest as KnownFailureException
+
+plugin_class = KnownFailurePlugin
+plugin_class.name = "knownfailure"
 
 def knownfailure(msg="Test skipped due to expected failure", exc_type=AssertionError, mightpass=False):
     """If decorated function raises exception *exc_type* skip test, else raise AssertionError."""
@@ -40,10 +45,10 @@ def knownfailure(msg="Test skipped due to expected failure", exc_type=AssertionE
             try:
                 f(*args, **kwargs)
             except exc_type:
-                # We have to allow for a number of cases where KnownFailureTest won't be properly caught
+                # We have to allow for a number of cases where KnownFailureException won't be properly caught
                 #  (running from the command-line nosetests or using too old a multiprocess plugin)
-                if _check_plugins_loaded() and loaded_plugins["KnownFailure"].enabled:
-                    raise KnownFailureTest(msg)
+                if _check_plugins_loaded() and loaded_plugins["knownfailure"].enabled:
+                    raise KnownFailureException(msg)
                 else: #Fallback if run from command-line and the plugin isn't loaded 
                     raise nose.SkipTest(msg)
             else:
