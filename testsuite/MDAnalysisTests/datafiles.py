@@ -263,8 +263,8 @@ capping_output = resource_filename(__name__, "data/capping/maestro_aaqaa_capped.
 capping_ace = resource_filename(__name__, "data/capping/ace.pdb")
 capping_nma = resource_filename(__name__, "data/capping/nma.pdb")
 
-contacts_villin_folded = resource_filename(__name__, "data/contacts/villin_folded.gro")
-contacts_villin_unfolded = resource_filename(__name__, "data/contacts/villin_unfolded.gro")
+contacts_villin_folded = resource_filename(__name__, "data/contacts/villin_folded.gro.bz2")
+contacts_villin_unfolded = resource_filename(__name__, "data/contacts/villin_unfolded.gro.bz2")
 contacts_file = resource_filename(__name__, "data/contacts/2F4K_qlist5_remap.dat")
 
 trz4data = resource_filename(__name__, "data/lammps/datatest.trz")
