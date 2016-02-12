@@ -826,24 +826,26 @@ def calculate_contacts(ref, u, selA, selB, radius=4.5, beta=5.0, lambda_constant
 
     Note
     ----
-    For all-atom simulations, radius = 4.5 A and lambda_constant = 1.8 (unitless)
-    For coarse-grained simulations, radius = 6.0 A and lambda_constant = 1.5 (unitless)
+    * For all-atom simulations, radius = 4.5 A and lambda_constant = 1.8 (unitless)
+    * For coarse-grained simulations, radius = 6.0 A and lambda_constant = 1.5 (unitless)
 
     Reference
     ---------
     Using the definition from Best, Hummer, and Eaton, "Native contacts determine protein folding mechanisms in atomistic simulations" PNAS (2013) 10.1073/pnas.1311599110        
 
     Eq. (1) of the SI defines the expression for the fraction of native contacts, $Q(X)$:
-    .. math:: $$ Q(X) = \frac{1}{|S|} \sum_{(i,j) \in S} \frac{1}{1 + \exp[\beta(r_{ij}(X) - \lambda r_{ij}^0)]}, $$
+    .. math:: 
 
-    where
+        Q(X) = \frac{1}{|S|} \sum_{(i,j) \in S} \frac{1}{1 + \exp[\beta(r_{ij}(X) - \lambda r_{ij}^0)]}
 
-        $X$ is a conformation,
-        $r_{ij}(X)$ is the distance between atoms $i$ and $j$ in conformation $X$,
-        $r^0_{ij}$ is the distance from heavy atom i to j in the native state conformation,
-        $S$ is the set of all pairs of heavy atoms $(i,j)$ belonging to residues $\theta_i$ and $\theta_j$ such that $|\theta_i - \theta_j| > 3$ and $r^0_{i,} < 4.5 \unicode{x212B}$,
-        $\beta=5 \unicode{x212B}^{-1}$,
-        $\lambda=1.8$ for all-atom simulations
+    where:
+
+    * :math:`X` is a conformation,
+    * :math:`r_{ij}(X)` is the distance between atoms $i$ and $j$ in conformation $X$,
+    * :math:`r^0_{ij}` is the distance from heavy atom i to j in the native state conformation,
+    * :math:`S` is the set of all pairs of heavy atoms $(i,j)$ belonging to residues $\theta_i$ and $\theta_j$ such that $|\theta_i - \theta_j| > 3$ and $r^0_{i,} < 4.5 \unicode{x212B}$,
+    * :math:`\beta=5 \unicode{x212B}^{-1},
+    * :math:`\lambda=1.8` for all-atom simulations
 
     """    
     # reference groups A and B from selection strings
