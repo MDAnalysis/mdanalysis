@@ -501,6 +501,7 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
     pm = ProgressMeter(u.trajectory.n_frames, interval=interval, quiet=quiet,
                        format="Histogramming %(n_atoms)6d atoms in frame "
                        "%(step)5d/%(numsteps)d  [%(percentage)5.1f%%]\r")
+   start, stop, step = u.trajectory.check_slice_indices(start, stop, step)                    
     for ts in u.trajectory[start:stop:step]:
         if update_selection:
            group = u.select_atoms(atomselection)
@@ -515,7 +516,7 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
         h[:], edges[:] = np.histogramdd(coord, bins=bins, range=arange, normed=False)
         grid += h  # accumulate average histogram
    
-    start, stop, step = u.trajectory.check_slice_indices(start, stop, step)
+    
     n_frames = len(range(start, stop, step))
     grid /= float(n_frames)
 
