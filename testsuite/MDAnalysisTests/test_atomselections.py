@@ -606,6 +606,32 @@ class TestOrthogonalDistanceSelections(BaseDistanceSelection):
     def tearDown(self):
         del self.u
 
+    def _check_cyzone(self, meth, periodic):
+        sel = Parser.parse('cyzone 5 4 -4 resid 2', self.u.atoms)
+        sel.periodic = periodic
+        result = sel.apply(self.u.atoms)
+
+        other = self.u.select_atoms('resid 2')
+        pos = other.center_of_geometry()
+
+        vecs = self.u.atoms.positions - pos
+        if periodic:
+            box = self.u.dimensions[:3]
+            vecs -= box * np.rint(vecs / box)
+
+        mask = (vecs[:,2] > -4) & (vecs[:,2] < 4)
+
+        radii = vecs[:,0] ** 2 + vecs[:, 1] ** 2
+        mask &= radii < 5**2
+
+        ref = set(self.u.atoms[mask].indices)
+
+        assert_(ref == set(result.indices))
+
+    def test_cyzone(self):
+        for meth, periodic in self.methods[1:]:
+            yield self._check_cyzone, meth, periodic
+
 
 class TestTriclinicDistanceSelections(BaseDistanceSelection):
     def setUp(self):

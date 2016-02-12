@@ -60,6 +60,7 @@ Fixes
   * Fixed NCDFReader not reading dt (Issue #676)
   * Fixed PDB-Topology read bonds for atom ids larger then 10000 (Issue #693)
   * Fixed Type Error in qcprot.pyx when no rotation can be fond (Issue #705)
+  * Fixed cyzone selection failing in orthogonal systems (Issue #710)
 
 
 01/16/16 tyler.je.reddy, kain88-de, richardjgowers, manuel.nuno.melo,
