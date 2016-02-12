@@ -54,12 +54,8 @@ def contact_matrix(coord, cutoff=15.0, returntype="numpy", box=None):
     .. versionchanged:: 0.11.0
        Keyword *suppress_progmet* and *progress_meter_freq* were removed.
     '''
-    try:
-        from scipy import sparse
-    except ImportError:
-        print("scipy.sparse cannot be imported")
-        return
-
+    
+    from scipy import sparse      
 
     if returntype == "numpy":
         adj = (distance_array(coord, coord, box=box) < cutoff)

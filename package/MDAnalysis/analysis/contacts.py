@@ -153,7 +153,8 @@ import logging
 import MDAnalysis
 import MDAnalysis.lib.distances
 from MDAnalysis.lib.util import openany
-
+from MDAnalysis.analysis.distances import distance_array
+from .base import AnalysisBase
 
 logger = logging.getLogger("MDAnalysis.analysis.contacts")
 
@@ -871,17 +872,10 @@ def calculate_contacts(ref, u, selA, selB, radius=4.5, beta=5.0, lambda_constant
     #results = pd.DataFrame(results, columns=["Time (ps)", "Q"])
     return results
 
-from MDAnalysis.analysis.distances import distance_array
-from .base import AnalysisBase
-logger = logging.getLogger(__name__)
-
-class BestHummerContacts(AnalysisBase):
-    r"""Calculate Best-Hummer fraction of native contacts (Q) from a atrajectory
-
-    .. versionadded:: 0.13.0
-    """
-    def __init__(self, grA, grB, refA, refB, radius=4.5, lambda_constant=1.8, beta=5.0,
-                 start=None, stop=None, step=None):
+class Contacts(AnalysisBase):
+    """Calculate Best-Hummer fraction of native contacts (Q) from a atrajectory"""
+    def __init__(self, grA, grB, refA, refB, method="cutoff", radius=4.5,
+                 start=None, stop=None, step=None, **kwargs):
         """Calculate the persistence length for polymer chains
 
         Parameters
@@ -894,10 +888,8 @@ class BestHummerContacts(AnalysisBase):
             two contacting groups in their reference conformation
         radius: float, optional (4.5 Angstroms)
             radius within which contacts exist
-        lambda_constant: float, optional (1.8 unitless)
-            contact is considered formed between (lambda*r0,r0)
-        beta: float, optional (5 Angstroms^-1)
-            softness of the switching function, the lower the softer
+        method: string
+            either 'cutoff' or 'best-hummer'
         start : int, optional
             First frame of trajectory to analyse, Default: 0
         stop : int, optional
@@ -905,24 +897,39 @@ class BestHummerContacts(AnalysisBase):
         step : int, optional
             Step between frames to analyse, Default: 1
 
+        Parameters for 'best-hummer' method
+        -----------------------------------
+        lambda_constant: float, optional (1.8 unitless)
+            contact is considered formed between (lambda*r0,r0)
+        beta: float, optional (5 Angstroms^-1)
+            softness of the switching function, the lower the softer
 
         Attributes
         ----------
         results: list 
             Fraction of native contacts for each frame
         """
+
+        # check method
+        if not method in ("cutoff", "best-hummer"): 
+            raise ValueError("method has to be 'cutoff' or 'best-hummer'")
+        self.method = method
+
+        # method-specific parameters
+        if method == "best-hummer":
+            self.beta = kwargs.get('beta', 5.0)
+            self.lambda_constant  = kwargs.get('lambda_constant', 1.8)
+
         if not grA.universe == grB.universe: raise ValueError("grA and grB should come from the same Universe")
         self.u = grA.universe
         self.grA, self.grB = grA, grB
 
+        # contacts formed in reference
         r0 = distance_array(refA.positions, refB.positions)
         self.r0 = r0
         self.mask = r0 < radius
+
         self.results = []
-
-        self.beta = beta
-        self.lambda_constant  = lambda_constant
-
         self._setup_frames(self.u.trajectory,
                            start=start,
                            stop=stop,
@@ -931,9 +938,17 @@ class BestHummerContacts(AnalysisBase):
     def _single_frame(self):
         grA, grB, r0, mask = self.grA, self.grB, self.r0, self.mask
 
+        # compute distance array for a frame
         d = distance_array(grA.positions, grB.positions)
+
+        # select only the contacts that were formed in the reference state
         r, r0 = d[mask], r0[mask]
-        y = 1/(1 + np.exp(self.beta*(r - self.lambda_constant * r0)))
-        print y
+
+        if self.method == "cutoff":
+            y = r < r0
+        elif self.method == "best-hummer":
+            y = 1/(1 + np.exp(self.beta*(r - self.lambda_constant * r0)))
+        else:
+            raise Exception("Unknown method type, has to be 'cutoff' or 'best-hummer'")
 
         self.results.append(y.sum()/mask.sum())

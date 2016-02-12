@@ -141,7 +141,7 @@ class TestContactAnalysis1(TestCase):
         grF = f.select_atoms(sel)
         grU = u.select_atoms(sel)
 
-        q = MDAnalysis.analysis.contacts.BestHummerContacts(grU, grU, grF, grF)
+        q = MDAnalysis.analysis.contacts.Contacts(grU, grU, grF, grF, method="best-hummer")
         q.run()
         
         results = zip(*MDAnalysis.analysis.contacts.calculate_contacts(f, u, sel, sel))[1]
@@ -157,7 +157,7 @@ class TestContactAnalysis1(TestCase):
         grF = f.select_atoms(sel)
         grU = u.select_atoms(sel)
 
-        q = MDAnalysis.analysis.contacts.BestHummerContacts(grU, grU, grF, grF)
+        q = MDAnalysis.analysis.contacts.Contacts(grU, grU, grF, grF, method="best-hummer")
         q.run()
         
         results = zip(*MDAnalysis.analysis.contacts.calculate_contacts(f, u, sel, sel))[1]
