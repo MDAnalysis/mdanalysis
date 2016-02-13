@@ -14,7 +14,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/16 tyler.je.reddy, kain88-de, jbarnoud, richardjgowers, orbeckst
-         manuel.nuno.melo
+         manuel.nuno.melo, Balasubra
 
   * 0.14.0
 
@@ -61,6 +61,7 @@ Fixes
   * Fixed PDB-Topology read bonds for atom ids larger then 10000 (Issue #693)
   * Fixed Type Error in qcprot.pyx when no rotation can be fond (Issue #705)
   * Fixed cyzone selection failing in orthogonal systems (Issue #710)
+  * Fixed Error in calculation of average grid density (Issue #716)
 
 
 01/16/16 tyler.je.reddy, kain88-de, richardjgowers, manuel.nuno.melo,
