@@ -600,7 +600,7 @@ class TestGuessFormat(object):
     compressed_extensions = ['.bz2', '.gz']
 
     def _check_get_ext(self, f, fn):
-        """Check that get ext works"""
+        """Check that get_ext works"""
         a, b = util.get_ext(fn)
 
         assert a == 'file'
@@ -677,6 +677,47 @@ class TestGuessFormat(object):
         s = StringIO('this is a very fun file')
 
         assert_raises(ValueError, util.guess_format, s)
+
+
+class TestGetWritterFor(TestCase):
+    def test_no_arguments(self):
+        """Does ``get_writer_for`` fails as expected when provided no
+        arguments
+        """
+        assert_raises(TypeError, mda.coordinates.core.get_writer_for)
+
+    def test_precedence(self):
+        """Make sure ``get_writer_for`` uses *format* if provided"""
+        writter = mda.coordinates.core.get_writer_for('test.pdb', 'GRO')
+        assert_equal(writter, mda.coordinates.GRO.GROWriter)
+
+    def test_missing_extension(self):
+        """Make sure ``get_writer_for`` behave as expected if *filename*
+        has no extension
+        """
+        assert_raises(TypeError, mda.coordinates.core.get_writer_for,
+                      filename='test', format=None)
+
+    def test_wrong_format(self):
+        """Make sure ``get_writer_for`` fails if the format is unknown"""
+        assert_raises(TypeError, mda.coordinates.core.get_writer_for,
+                      format='UNK')
+
+    def test_compressed_extension(self):
+        """Make sure ``get_writer_for`` works with compressed file file names
+        """
+        for ext in ('.gz', '.bz2'):
+            fn = 'test.gro' + ext
+            writter = mda.coordinates.core.get_writer_for(filename=fn)
+            assert_equal(writter, mda.coordinates.GRO.GROWriter)
+
+    def test_compressed_extension_fail(self):
+        """Make sure ``get_writer_for`` fails if an unknown format is compressed
+        """
+        for ext in ('.gz', '.bz2'):
+            fn = 'test.unk' + ext
+            assert_raises(TypeError, mda.coordinates.core.get_writer_for,
+                          filename=fn)
 
 
 class TestBlocksOf(object):
