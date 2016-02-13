@@ -90,7 +90,7 @@ class Test_density_from_Universe(TestCase):
     references = {'static':
                       {'meandensity': 0.016764271713091212, },
                   'static_sliced':
-                      {'meandensity': 0.0067057088794023143, },
+                      {'meandensity': 0.016764270747693617, },
                   'dynamic':
                       {'meandensity': 0.00062423404854011104, },
                   }
