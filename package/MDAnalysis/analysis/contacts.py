@@ -876,22 +876,23 @@ def calculate_contacts(ref, u, selA, selB, radius=4.5, beta=5.0, lambda_constant
 
 class Contacts(AnalysisBase):
     """Calculate Best-Hummer fraction of native contacts (Q) from a atrajectory"""
-    def __init__(self, grA, grB, refA, refB, method="cutoff", radius=4.5,
+    def __init__(self, u, selection, refgroup, method="cutoff", radius=4.5, outfile=None,
                  start=None, stop=None, step=None, **kwargs):
         """Calculate the persistence length for polymer chains
 
         Parameters
         ----------
-        u : Universe
-            the thing with frame
-        grA, grB: AtomGroup
+        u: Universe
+            trajectory
+        selection: tuple(string, string)
             two contacting groups that change over time
-        refA, refB: AtomGroup
+        refgroup: tuple(AtomGroup, AtomGroup)
             two contacting groups in their reference conformation
         radius: float, optional (4.5 Angstroms)
             radius within which contacts exist
         method: string
             either 'cutoff' or 'best-hummer'
+
         start : int, optional
             First frame of trajectory to analyse, Default: 0
         stop : int, optional
@@ -922,20 +923,25 @@ class Contacts(AnalysisBase):
             self.beta = kwargs.get('beta', 5.0)
             self.lambda_constant  = kwargs.get('lambda_constant', 1.8)
 
-        if not grA.universe == grB.universe: raise ValueError("grA and grB should come from the same Universe")
-        self.u = grA.universe
-        self.grA, self.grB = grA, grB
+        # steup boilerplate
+        self.u = u
+        self._setup_frames(self.u.trajectory,
+                           start=start,
+                           stop=stop,
+                           step=step)
+
+
+        grA, grB = u.select_atoms(selection[0]), u.select_atoms(selection[1])
+        self.grA, self.grB = grA, grB        
+        refA, refB = refgroup
 
         # contacts formed in reference
         r0 = distance_array(refA.positions, refB.positions)
         self.r0 = r0
         self.mask = r0 < radius
 
-        self.results = []
-        self._setup_frames(self.u.trajectory,
-                           start=start,
-                           stop=stop,
-                           step=step)
+        self.timeseries = []
+        self.outfile = outfile
 
     def _single_frame(self):
         grA, grB, r0, mask = self.grA, self.grB, self.r0, self.mask
@@ -947,10 +953,26 @@ class Contacts(AnalysisBase):
         r, r0 = d[mask], r0[mask]
 
         if self.method == "cutoff":
-            y = r < r0
+            y = r <= r0
         elif self.method == "best-hummer":
             y = 1/(1 + np.exp(self.beta*(r - self.lambda_constant * r0)))
         else:
             raise Exception("Unknown method type, has to be 'cutoff' or 'best-hummer'")
 
-        self.results.append(y.sum()/mask.sum())
+        self.timeseries.append((self._ts.frame , y.sum()/mask.sum(), mask.sum()))
+
+    def _conclude(self):
+        """Finalise the timeseries you've gathered.
+
+        Called at the end of the run() method to finish everything up.
+        """
+        # results to numpy array
+        self.timeseries = np.array(self.timeseries)
+
+        # write output
+        if not self.outfile: return
+        with open(self.outfile, "w") as f:
+            f.write("# q1 analysis\n# nref = {0:d}\n".format(self.mask.sum()))
+            f.write("# frame  q1  n1\n")
+            for frame, q1, n1 in self.timeseries:
+                f.write("{frame:4d}  {q1:8.6f} {n1:5d}\n".format(**vars()))            
