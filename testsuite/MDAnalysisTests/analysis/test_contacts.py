@@ -58,10 +58,10 @@ class TestContactAnalysis1(TestCase):
         acidic = self.universe.select_atoms(sel_acidic)
         basic = self.universe.select_atoms(sel_basic)
         outfile = 'qsalt.dat'
-        CA1 = MDAnalysis.analysis.contacts.ContactAnalysis1(
+        CA1 = MDAnalysis.analysis.contacts.Contacts(
             self.universe,
             selection=(sel_acidic, sel_basic), refgroup=(acidic, basic),
-            radius=6.0, outfile=outfile)
+            radius=6.0, outfile=outfile, **runkwargs)
         kwargs = runkwargs.copy()
         kwargs['force'] = True
         CA1.run(**kwargs)
@@ -71,7 +71,7 @@ class TestContactAnalysis1(TestCase):
         """test_startframe: TestContactAnalysis1: start frame set to 0 (resolution of Issue #624)"""
         with tempdir.in_tempdir():
             CA1 = self._run_ContactAnalysis1()
-            self.assertEqual(CA1.timeseries.shape[1], self.universe.trajectory.n_frames)
+            self.assertEqual(CA1.timeseries.shape[0], self.universe.trajectory.n_frames)
 
     def test_end_zero(self):
         """test_end_zero: TestContactAnalysis1: stop frame 0 is not ignored"""
@@ -84,7 +84,7 @@ class TestContactAnalysis1(TestCase):
         with tempdir.in_tempdir():
             CA1 = self._run_ContactAnalysis1(start=start, stop=stop, step=step)
             frames = np.arange(self.universe.trajectory.n_frames)[start:stop:step]
-            self.assertEqual(CA1.timeseries.shape[1], len(frames))
+            self.assertEqual(CA1.timeseries.shape[0], len(frames))
 
 
     def test_math_folded(self):
@@ -131,7 +131,7 @@ class TestContactAnalysis1(TestCase):
 
         assert_almost_equal(Q.mean(),  0.0, decimal=1)
 
-    def test_math_folded(self):
+    def test_villin_folded(self):
 
         # one folded, one unfolded
         f = MDAnalysis.Universe(contacts_villin_folded)
@@ -141,13 +141,14 @@ class TestContactAnalysis1(TestCase):
         grF = f.select_atoms(sel)
         grU = u.select_atoms(sel)
 
-        q = MDAnalysis.analysis.contacts.Contacts(grU, grU, grF, grF, method="best-hummer")
+        q = MDAnalysis.analysis.contacts.Contacts(u, selection=(sel, sel), refgroup=(grF, grF), method="best-hummer")
         q.run()
         
         results = zip(*MDAnalysis.analysis.contacts.calculate_contacts(f, u, sel, sel))[1]
-        assert_almost_equal(q.results, results)
+        print(q.timeseries[:,1], results)
+        assert_almost_equal(q.timeseries[:,1], results)
 
-    def test_math_folded(self):
+    def test_villin_unfolded(self):
 
         # both folded
         f = MDAnalysis.Universe(contacts_villin_folded)
@@ -157,8 +158,8 @@ class TestContactAnalysis1(TestCase):
         grF = f.select_atoms(sel)
         grU = u.select_atoms(sel)
 
-        q = MDAnalysis.analysis.contacts.Contacts(grU, grU, grF, grF, method="best-hummer")
+        q = MDAnalysis.analysis.contacts.Contacts(u, selection=(sel, sel), refgroup=(grF, grF), method="best-hummer")
         q.run()
         
-        results = zip(*MDAnalysis.analysis.contacts.calculate_contacts(f, u, sel, sel))[1]
-        assert_almost_equal(q.results, results)        
+        results = zip(*MDAnalysis.analysis.contacts.calculate_contacts(f, u, sel, sel)) [1]
+        assert_almost_equal(q.timeseries[:,1], results)        
