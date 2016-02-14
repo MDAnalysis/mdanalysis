@@ -127,22 +127,20 @@ def reader(filename, **kwargs):
         return Reader(filename, **kwargs)
 
 
-def get_writer_for(filename=None, format='DCD', multiframe=None):
+def get_writer_for(filename=None, format=None, multiframe=None):
     """Return an appropriate trajectory or frame writer class for *filename*.
 
     The format is determined by the *format* argument or the extension of
-    *filename*. The default is to return a dcd writer (*format* = 'dcd'). If
-    the *filename* is not provided or if it is something like a
-    :class:`cStringIO.StringIO` instance then the *format* argument must be
-    used.
+    *filename*. If *format* is provided, it takes precedence over The
+    extension of *filename*.
 
     Parameters
     ----------
     filename : str
-        The filename for the trajectory is examined for its extension and
-        the Writer is chosen accordingly.
+        If no *format* is supplied, then the filename for the trajectory is
+        examined for its extension and the Writer is chosen accordingly.
     format : str
-        If no *filename* is supplied then the format can be explicitly set
+        Explicitly set a format.
     multiframe : bool
         ``True``: write multiple frames to the trajectory; ``False``: only
         write a single coordinate frame; ``None``: first try trajectory (multi
@@ -152,13 +150,34 @@ def get_writer_for(filename=None, format='DCD', multiframe=None):
     -------
     A Writer object
 
+    Raises
+    ------
+    ValueError:
+        The format could not be deduced from *filename* or an unexpected value
+        was provided for the *multiframe* argument.
+    TypeError:
+        No writer got found for the required format.
+
     .. versionchanged:: 0.7.6
        Added *multiframe* keyword; the default ``None`` reflects the previous
        behaviour.
+
+    .. versionchanged:: 0.14.0
+       Removed the default value for the *format* argument. Now, the value
+       provided with the *format* parameter takes precedence over the extension
+       of *filename*. A ``ValueError`` is raised if the format cannot be
+       deduced from *filename*.
     """
-    if isinstance(filename, six.string_types) and filename:
-        root, ext = util.get_ext(filename)
-        format = util.check_compressed_format(root, ext)
+    if format is None and filename:
+        try:
+            root, ext = util.get_ext(filename)
+        except AttributeError:
+            # An AttributeError is raised if filename cannot
+            # be manipulated as a string.
+            raise ValueError('File format could not be guessed from "{0}"'
+                             .format(filename))
+        else:
+            format = util.check_compressed_format(root, ext)
     if multiframe is None:
         try:
             return _MULTIFRAME_WRITERS[format]
@@ -167,8 +186,8 @@ def get_writer_for(filename=None, format='DCD', multiframe=None):
                 return _SINGLEFRAME_WRITERS[format]
             except KeyError:
                 raise TypeError(
-                    "No trajectory or frame writer for format {0}"
-                    "".format(format))
+                    "No trajectory or frame writer for format '{0}'"
+                    .format(format))
     elif multiframe is True:
         try:
             return _MULTIFRAME_WRITERS[format]

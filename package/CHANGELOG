@@ -45,6 +45,8 @@ Changes
     message is raised when the TRZ writer is asked to write a title longer
     than 80 characters. (Issue #689)
   * PDB doesn't save charge information anymore
+  * coordinates.core.get_writer_for uses the user defined format if provided
+    before trying to deduce the format from file extension. (Issue #712)
 
 Fixes
 
