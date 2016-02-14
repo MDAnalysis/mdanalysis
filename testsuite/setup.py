@@ -108,7 +108,7 @@ For details see the report for `Issue 87`_.
                   'data/merge/2zmm/*.pdb',
                   'data/*.trz',
                   'data/mol2/*.mol2',
-                  'data/contacts/*.gro', 'data/contacts/*.dat',
+                  'data/contacts/*.gro.bz2', 'data/contacts/*.dat',
                   'data/capping/*.gro', 'data/capping/*.pdb',
                   'data/lammps/*.data', 'data/lammps/*.data.bz2',
                   'data/lammps/*.data2',
