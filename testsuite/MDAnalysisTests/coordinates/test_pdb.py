@@ -1,7 +1,9 @@
+from six import StringIO
+from six.moves import zip
+
 import MDAnalysis as mda
 import numpy as np
 import os
-from six.moves import zip
 
 from nose.plugins.attrib import attr
 from numpy.testing import (assert_equal, assert_, dec,
@@ -15,8 +17,7 @@ from MDAnalysisTests.coordinates.reference import (RefAdKSmall, Ref4e43,
 from MDAnalysisTests.coordinates.base import _SingleFrameReader
 from MDAnalysisTests.datafiles import (PDB, PDB_small, PDB_multiframe,
                                        XPDB_small, PSF, DCD, CONECT, CRD,
-                                       INC_PDB, PDB_xlserial,
-                                       NUCL)
+                                       INC_PDB, PDB_xlserial, ALIGN)
 from MDAnalysisTests.plugins.knownfailure import knownfailure
 from MDAnalysisTests import parser_not_found
 
@@ -726,7 +727,7 @@ class TestPDBWriterOccupancies(object):
 
 class TestWriterAlignments(object):
     def __init__(self):
-        u = mda.Universe(NUCL)
+        u = mda.Universe(ALIGN)
         self.tmpdir = tempdir.TempDir()
         outfile = self.tmpdir.name + '/nucl.pdb'
         u.atoms.write(outfile)
@@ -734,10 +735,33 @@ class TestWriterAlignments(object):
 
     def test_atomname_alignment(self):
         # Our PDBWriter adds some stuff up top, so line 1 happens at [4]
-        assert_(self.writtenstuff[4].startswith("ATOM      1  H5T GUA"))
-        assert_(self.writtenstuff[8].startswith("ATOM      5 H5'' GUA"))
+        refs = ("ATOM      1  H5T",
+                "ATOM      2  CA ",
+                "ATOM      3 CA  ",
+                "ATOM      4 H5''",)
+        for written, reference in zip(self.writtenstuff[4:], refs):
+            assert_equal(written[:16], reference)
 
     def test_atomtype_alignment(self):
         result_line = ("ATOM      1  H5T GUA R   1       7.974   6.430   9.561"
                        "  1.00  0.00      RNAA H\n")
         assert_equal(self.writtenstuff[4], result_line)
+
+def test_deduce_PDB_atom_name():
+    # The Pair named tuple is used to mock atoms as we only need them to have a
+    # ``resname`` and a ``name`` attribute.
+    Pair = mda.coordinates.PDB.Pair
+    def _test_PDB_atom_name(atom, ref_atom_name):
+        dummy_file = StringIO()
+        name = (mda.coordinates.PDB.PrimitivePDBWriter(dummy_file, n_atoms=1)
+                ._deduce_PDB_atom_name(atom))
+        assert_equal(name, ref_atom_name)
+    test_cases = ((Pair('ASP', 'CA'), ' CA '),  # Regular protein carbon alpha
+                  (Pair('GLU', 'OE1'), ' OE1'),
+                  (Pair('MSE', 'SE'), 'SE  '),  # Selenium like in 4D3L
+                  (Pair('CA', 'CA'), 'CA  '),   # Calcium like in 4D3L
+                  (Pair('HDD', 'FE'), 'FE  '),  # Iron from a heme like in 1GGE
+                  (Pair('PLC', 'P'), ' P  '),  # Lipid phosphorus (1EIN)
+                  )
+    for atom, ref_name in test_cases:
+        yield _test_PDB_atom_name, atom, ref_name
