@@ -218,6 +218,7 @@ import errno
 import textwrap
 import warnings
 import logging
+import collections
 import numpy as np
 
 from ..core import flags
@@ -229,6 +230,9 @@ from ..exceptions import NoDataError
 
 
 logger = logging.getLogger("MDAnalysis.coordinates.PBD")
+
+# Pairs of residue name / atom name in use to deduce PDB formatted atom names
+Pair = collections.namedtuple('Atom', 'resname name')
 
 
 class PDBReader(base.SingleFrameReader):
@@ -1064,6 +1068,57 @@ class PrimitivePDBWriter(base.Writer):
         self._check_pdb_coordinates()
         self._write_timestep(ts, **kwargs)
 
+    @staticmethod
+    def _deduce_PDB_atom_name(atom):
+        """Deduce how the atom name should be aligned.
+
+        Atom name format can be deduced from the atom type, yet atom type is
+        not always available. This function uses the atom name and residue name
+        to deduce how the atom name should be formatted. The rules in use got
+        inferred from an analysis of the PDB. See gist at
+        <https://gist.github.com/jbarnoud/37a524330f29b5b7b096> for more
+        details.
+        """
+        ions = ('FE', 'AS', 'ZN', 'MG', 'MN', 'CO', 'BR',
+                'CU', 'TA', 'MO', 'AL', 'BE', 'SE', 'PT',
+                'EU', 'NI', 'IR', 'RH', 'AU', 'GD', 'RU')
+        # Mercurial can be confused for hydrogen gamma. Yet, mercurial is
+        # rather rare in the PDB. Here are all the residues that contain
+        # mercurial.
+        special_hg = ('CMH', 'EMC', 'MBO', 'MMC', 'HGB', 'BE7', 'PMB')
+        # Chloride can be confused for a carbon. Here are the residues that
+        # contain chloride.
+        special_cl = ('0QE', 'CPT', 'DCE', 'EAA', 'IMN', 'OCZ', 'OMY', 'OMZ',
+                      'UN9', '1N1', '2T8', '393', '3MY', 'BMU', 'CLM', 'CP6',
+                      'DB8', 'DIF', 'EFZ', 'LUR', 'RDC', 'UCL', 'XMM', 'HLT',
+                      'IRE', 'LCP', 'PCI', 'VGH')
+        # In these pairs, the atom name is aligned on the first column
+        # (column 13).
+        include_pairs = (Pair('OEC', 'CA1'),
+                         Pair('PLL', 'PD'),
+                         Pair('OEX', 'CA1'))
+        # In these pairs, the atom name is aligned on the second column
+        # (column 14), but other rules would align them on the first column.
+        exclude_pairs = (Pair('C14', 'C14'), Pair('C15', 'C15'),
+                         Pair('F9F', 'F9F'), Pair('OAN', 'OAN'),
+                         Pair('BLM', 'NI'), Pair('BZG', 'CO'),
+                         Pair('BZG', 'NI'), Pair('VNL', 'CO1'),
+                         Pair('VNL', 'CO2'), Pair('PF5', 'FE1'),
+                         Pair('PF5', 'FE2'), Pair('UNL', 'UNL'))
+        if len(atom.name) >= 4:
+            return atom.name[:4]
+        elif len(atom.name) == 1:
+            return ' {}  '.format(atom.name)
+        elif ((atom.resname == atom.name
+               or atom.name[:2] in ions
+               or atom.name == 'UNK'
+               or (atom.resname in special_hg and atom.name[:2] == 'HG')
+               or (atom.resname in special_cl and atom.name[:2] == 'CL')
+               or Pair(atom.resname, atom.name) in include_pairs)
+              and Pair(atom.resname, atom.name) not in exclude_pairs):
+            return '{:<4}'.format(atom.name)
+        return ' {:<3}'.format(atom.name)
+
     def _write_timestep(self, ts, multiframe=False):
         """Write a new timestep *ts* to file
 
@@ -1101,10 +1156,7 @@ class PrimitivePDBWriter(base.Writer):
 
             vals = {}
             vals['serial'] = int(str(i + 1)[-5:])  # check for overflow here?
-            name = atom.name[:4]
-            if len(name) < 4:  # Start names in column 14 if we can
-                name = ' ' + name
-            vals['name'] = name
+            vals['name'] = self._deduce_PDB_atom_name(atom)
             vals['altLoc'] = atom.altLoc[:1] if atom.altLoc is not None else " "
             vals['resName'] = atom.resname[:4]
             vals['chainID'] = segid[:1]

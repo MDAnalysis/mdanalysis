@@ -45,6 +45,7 @@ __all__ = [
     "PDB_conect",
     "XPDB_small",
     "PDB_full",   # PDB 4E43 (full HEADER, TITLE, COMPND, REMARK, altloc)
+    "ALIGN",  # Various way to align atom names in PDB files
     "NUCL",  # nucleic acid (PDB)
     "INC_PDB",  # incomplete PDB file (Issue #396)
     "PDB", "GRO", "XTC", "TRR", "TPR", "GRO_velocity",  # Gromacs (AdK)
@@ -139,6 +140,7 @@ PSF_nosegid = resource_filename(__name__, 'data/nosegid.psf')
 PDB_small = resource_filename(__name__, 'data/adk_open.pdb')
 PDB_closed = resource_filename(__name__, 'data/adk_closed.pdb')
 
+ALIGN = resource_filename(__name__, 'data/align.pdb')
 NUCL = resource_filename(__name__, 'data/1k5i.pdb')
 INC_PDB = resource_filename(__name__, 'data/incomplete.pdb')
 PDB_multiframe = resource_filename(__name__, 'data/nmr_neopetrosiamide.pdb')

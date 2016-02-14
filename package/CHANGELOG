@@ -49,9 +49,8 @@ Changes
 Fixes
 
   * XDR file seeking and telling working again for large files (Issue #677).
-  * ContactAnalysis1 run method now starts at frame index 0 by deafult (Issue #624)
-  * Fixed PrimitivePDBWriter getting atom type column shifted to the right
-    (Issue #639)
+  * ContactAnalysis1 run method now starts at frame index 0 by default (Issue #624)
+  * Fixed PrimitivePDBWriter alignment of the atom name. (Issue #639 and #647)
   * The 'atom' selection keyword returns an empty selection rather than an
     error when no atoms are are found. (Issue #644)
   * nucleic selection will now detect nucleic residue names suffixed with 3 or 5
