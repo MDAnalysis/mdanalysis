@@ -1,7 +1,9 @@
+from six import StringIO
+from six.moves import zip
+
 import MDAnalysis as mda
 import numpy as np
 import os
-from six.moves import zip
 
 from nose.plugins.attrib import attr
 from numpy.testing import (assert_equal, assert_, dec,
@@ -750,7 +752,9 @@ def test_deduce_PDB_atom_name():
     # ``resname`` and a ``name`` attribute.
     Pair = mda.coordinates.PDB.Pair
     def _test_PDB_atom_name(atom, ref_atom_name):
-        name = mda.coordinates.PDB.PrimitivePDBWriter._deduce_PDB_atom_name(atom)
+        dummy_file = StringIO()
+        name = (mda.coordinates.PDB.PrimitivePDBWriter(dummy_file, n_atoms=1)
+                ._deduce_PDB_atom_name(atom))
         assert_equal(name, ref_atom_name)
     test_cases = ((Pair('ASP', 'CA'), ' CA '),  # Regular protein carbon alpha
                   (Pair('GLU', 'OE1'), ' OE1'),
