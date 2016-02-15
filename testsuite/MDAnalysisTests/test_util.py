@@ -734,6 +734,9 @@ class TestGetWritterFor(TestCase):
         assert_raises(TypeError, mda.coordinates.core.get_writer_for,
                       filename=None, format='UNK', multiframe=False)
 
+    def test_multiframe_nonsense(self):
+        assert_raises(ValueError, mda.coordinates.core.get_writer_for,
+                      filename='this.gro', multiframe='sandwich')
 
 
 class TestBlocksOf(object):
