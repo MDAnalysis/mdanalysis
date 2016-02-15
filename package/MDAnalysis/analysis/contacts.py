@@ -158,248 +158,6 @@ from .base import AnalysisBase
 
 logger = logging.getLogger("MDAnalysis.analysis.contacts")
 
-
-class ContactAnalysis(object):
-    """Perform a native contact analysis ("q1-q2").
-
-    The analysis of the trajectory is performed with the
-    :meth:`ContactAnalysis.run` method. The result is stored in
-    :attr:`ContactAnalysis.timeseries`. It is a numpy array which
-    contains the frame number at index 0, q1 and q2 at index 1 and 2,
-    and the total number of contacts in 3 and 4. ::
-
-        frame  q1 q2  n1 n2
-
-    The total number of contacts in the reference states 1 and 2 are
-    stored in :attr:`ContactAnalysis.nref` (index 0 and 1).
-    """
-
-    def __init__(self, topology, trajectory, ref1=None, ref2=None, radius=8.0,
-                 targetdir=os.path.curdir, infix="", force=False,
-                 selection="name CA", centroids=False):
-        """Calculate native contacts from two reference structures.
-
-        :Arguments:
-          *topology*
-            psf or pdb file
-          *trajectory*
-            dcd or xtc/trr file
-          *ref1*
-            structure of the reference conformation 1 (pdb); if ``None`` the *first*
-            frame of the trajectory is chosen
-          *ref2*
-            structure of the reference conformation 2 (pdb); if ``None`` the *last*
-            frame of the trajectory is chosen
-          *radius*
-            contacts are deemed any Ca within radius [8 A]
-          *targetdir*
-            output files are saved there [.]
-          *infix*
-            additional tag string that is inserted into the output filename of the
-            data file [""]
-          *selection*
-            MDAnalysis selection string that selects the particles of
-            interest; the default is to only select the C-alpha atoms
-            in *ref1* and *ref*2 ["name CA"]
-
-            .. Note:: If *selection* produces more than one atom per
-                      residue then you will get multiple contacts per
-                      residue unless you also set *centroids* = ``True``
-          *centroids*
-            If set to ``True``, use the centroids for the selected atoms on a
-            per-residue basis to compute contacts. This allows, for instance
-            defining the sidechains as *selection* and then computing distances
-            between sidechain centroids.
-
-        The function calculates the percentage of native contacts *q1* and *q2*
-        along a trajectory. "Contacts" are defined as the number of Ca atoms (or
-        per-residue *centroids* of a user defined *selection*) within *radius* of
-        a primary Ca. *q1* is the fraction of contacts relative to the reference
-        state 1 (typically the starting conformation of the trajectory) and *q2*
-        is the fraction of contacts relative to the conformation 2.
-
-        The timeseries is written to a bzip2-compressed file in *targetdir*
-        named "basename(*trajectory*)*infix*_q1q2.dat.bz2" and is also
-        accessible as the attribute
-        :attr:`ContactAnalysis.timeseries`.
-        """
-
-        self.topology = topology
-        self.trajectory = trajectory
-        self.radius = radius
-        self.targetdir = targetdir
-        self.force = force
-        self.selection = selection
-        self.centroids = centroids
-
-        trajectorybase = os.path.splitext(os.path.basename(trajectory))[0]
-        output = trajectorybase + infix + '_q1q2.dat'
-        self.output = os.path.join(self.targetdir, output)
-        self.output_bz2 = self.output + '.bz2'
-
-        self.timeseries = None  # final result
-
-        # short circuit if output file already exists: skip everything
-        if self.output_exists():
-            self._skip = True
-            return  # do not bother reading any data or initializing arrays... !!
-        # don't bother if trajectory is empty (can lead to segfaults so better catch it)
-        stats = os.stat(trajectory)
-        if stats.st_size == 0:
-            warnings.warn('trajectory = {trajectory!s} is empty, skipping...'.format(**vars()))
-            self._skip = True
-            return
-        # under normal circumstances we do not skip
-        self._skip = False
-
-        # expensive initialization starts with building Universes :-)
-        self.u = MDAnalysis.Universe(topology, trajectory)
-
-        if ref1 is None:
-            ref1 = os.path.join(self.targetdir, trajectorybase + '_first.pdb')
-            self.u.trajectory[0]  # extract first frame
-            self.u.atoms.write(ref1)
-        self.ref1 = ref1
-        if ref2 is None:
-            ref2 = os.path.join(self.targetdir, trajectorybase + '_last.pdb')
-            self.u.trajectory[-1]  # extract last frame
-            self.u.atoms.write(ref2)
-            self.u.trajectory[0]  # rewind, just in case...
-        self.ref2 = ref2
-
-        r1 = MDAnalysis.Universe(topology, self.ref1)
-        r2 = MDAnalysis.Universe(topology, self.ref2)
-
-        self.ca = self.u.select_atoms(self.selection)
-        ca1 = r1.select_atoms(self.selection)
-        ca2 = r2.select_atoms(self.selection)
-
-        # NOTE: self_distance_array() produces a 1D array; this works here
-        #       but is not the same as the 2D output from distance_array()!
-        #       See the docs for self_distance_array().
-        dref = [self.get_distance_array(ca1), self.get_distance_array(ca2)]
-        self.qref = [self.qarray(dref[0]), self.qarray(dref[1])]
-        self.nref = [self.qref[0].sum(), self.qref[1].sum()]
-
-        self.d = np.zeros_like(dref[0])
-        self.q = self.qarray(self.d)
-        self._qtmp = np.zeros_like(self.q)  # pre-allocated array
-
-    def get_distance_array(self, g, **kwargs):
-        """Calculate the self_distance_array for atoms in group *g*.
-
-        :Keywords:
-           *results*
-              passed on to :func:`MDAnalysis.lib.distances.self_distance_array`
-              as a preallocated array
-           *centroids*
-              ``True``: calculate per-residue centroids from the selected atoms;
-              ``False``: consider each atom separately; ``None``: use the class
-              default for *centroids* [``None``]
-
-        """
-        centroids = kwargs.pop("centroids", None)
-        centroids = self.centroids if centroids is None else centroids
-        if not centroids:
-            coordinates = g.positions
-        else:
-            # centroids per residue (but only including the selected atoms)
-            coordinates = np.array([residue.centroid() for residue in g.split("residue")])
-        return MDAnalysis.lib.distances.self_distance_array(coordinates, **kwargs)
-
-    def output_exists(self, force=False):
-        """Return True if default output file already exists.
-
-        Disable with force=True (will always return False)
-        """
-        return (os.path.isfile(self.output) or os.path.isfile(self.output_bz2)) and not (self.force or force)
-
-    def run(self, store=True, force=False):
-        """Analyze trajectory and produce timeseries.
-
-        Stores results in :attr:`ContactAnalysis.timeseries` (if
-        store=True) and writes them to a bzip2-compressed data file.
-        """
-        if self._skip or self.output_exists(force=force):
-            warnings.warn("File {output!r} or {output_bz2!r} already exists, loading {trajectory!r}.".format(**vars(self)))
-            try:
-                self.load(self.output)
-            except IOError:
-                self.load(self.output_bz2)
-            return None
-
-        outbz2 = bz2.BZ2File(self.output_bz2, mode='w', buffering=8192)
-        try:
-            outbz2.write("# q1-q2 analysis\n# nref1 = {0:d}\n# nref2 = {1:d}\n".format(self.nref[0], self.nref[1]))
-            outbz2.write("# frame  q1  q2   n1  n2\n")
-            records = []
-            for ts in self.u.trajectory:
-                frame = ts.frame
-                # use pre-allocated distance array to save a little bit of time
-                self.get_distance_array(self.ca, result=self.d)
-                self.qarray(self.d, out=self.q)
-                n1, q1 = self.qN(self.q, 0, out=self._qtmp)
-                n2, q2 = self.qN(self.q, 1, out=self._qtmp)
-
-                if store:
-                    records.append((frame, q1, q2, n1, n2))
-                outbz2.write("{frame:4d}  {q1:8.6f} {q2:8.6f}  {n1:5d} {n2:5d}\n".format(**vars()))
-        finally:
-            outbz2.close()
-        if store:
-            self.timeseries = np.array(records).T
-        return self.output_bz2
-
-    def qarray(self, d, out=None):
-        """Return distance array with True for contacts.
-
-        If *out* is supplied as a pre-allocated array of the correct
-        shape then it is filled instead of allocating a new one in
-        order to increase performance.
-        """
-        if out is None:
-            out = (d <= self.radius)
-        else:
-            out[:] = (d <= self.radius)
-        return out
-
-    def qN(self, q, n, out=None):
-        """Calculate native contacts relative to state n.
-
-        If *out* is supplied as a pre-allocated array of the correct
-        shape then it is filled instead of allocating a new one in
-        order to increase performance.
-        """
-        if out is None:
-            out = np.logical_and(q, self.qref[n])
-        else:
-            np.logical_and(q, self.qref[n], out)
-        contacts = out.sum()
-        return contacts, float(contacts) / self.nref[n]
-
-    def load(self, filename):
-        """Load the data file."""
-        records = []
-        with openany(filename) as data:
-            for line in data:
-                if line.startswith('#'):
-                    continue
-                records.append(map(float, line.split()))
-        self.timeseries = np.array(records).T
-
-    def plot(self, **kwargs):
-        """Plot q1-q2."""
-        from pylab import plot, xlabel, ylabel
-
-        kwargs.setdefault('color', 'black')
-        if self.timeseries is None:
-            raise ValueError("No timeseries data; do 'ContactAnalysis.run(store=True)' first.")
-        t = self.timeseries
-        plot(t[1], t[2], **kwargs)
-        xlabel(r"$q_1$")
-        ylabel(r"$q_2$")
-
-
 # ContactAnalysis1 is a (hopefully) temporary hack. It should be unified with ContactAnalysis
 # or either should be derived from a base class because many methods are copy&paste with
 # minor changes (mostly for going from q1q2 -> q1 only).
@@ -521,6 +279,8 @@ class ContactAnalysis1(object):
         # - select contact pairs to write out as a timecourse
         # - make this selection based on qavg
         from os.path import splitext
+        
+        warnings.warn("class ContactAnalysis1 will be deprecated, use Contacts instead", DeprecationWarning)
 
         self.selection_strings = self._return_tuple2(kwargs.pop('selection', "name CA or name B*"), "selection")
         self.references = self._return_tuple2(kwargs.pop('refgroup', None), "refgroup")
@@ -874,9 +634,26 @@ def calculate_contacts(ref, u, selA, selB, radius=4.5, beta=5.0, lambda_constant
     #results = pd.DataFrame(results, columns=["Time (ps)", "Q"])
     return results
 
+# JD: this *has* be usable without initializing the Contacts class, just to read-in the data
+# JD: so either a staticmethod or outside of the class
+def load(self, filename):
+    """Load the data file."""
+    records = []
+    with openany(filename) as data:
+        for line in data:
+            if line.startswith('#'):
+                continue
+            records.append(map(float, line.split()))
+    self.timeseries = np.array(records).T
+    try:
+        self.qavg = np.loadtxt(self.outarray)
+    except IOError as err:
+        if err.errno != errno.ENOENT:
+            raise
+
 class Contacts(AnalysisBase):
     """Calculate Best-Hummer fraction of native contacts (Q) from a atrajectory"""
-    def __init__(self, u, selection, refgroup, method="cutoff", radius=4.5, outfile=None,
+    def __init__(self, u, selections, refgroup, method="cutoff", radius=4.5, outfile=None,
                  start=None, stop=None, step=None, **kwargs):
         """Calculate the persistence length for polymer chains
 
@@ -884,7 +661,7 @@ class Contacts(AnalysisBase):
         ----------
         u: Universe
             trajectory
-        selection: tuple(string, string)
+        selections: tuple(string, string)
             two contacting groups that change over time
         refgroup: tuple(AtomGroup, AtomGroup)
             two contacting groups in their reference conformation
@@ -930,8 +707,8 @@ class Contacts(AnalysisBase):
                            stop=stop,
                            step=step)
 
-
-        grA, grB = u.select_atoms(selection[0]), u.select_atoms(selection[1])
+        self.selections = selections
+        grA, grB = u.select_atoms(selections[0]), u.select_atoms(selections[1])
         self.grA, self.grB = grA, grB        
         refA, refB = refgroup
 
@@ -940,6 +717,7 @@ class Contacts(AnalysisBase):
         self.r0 = r0
         self.mask = r0 < radius
 
+        self.contact_matrix = []
         self.timeseries = []
         self.outfile = outfile
 
@@ -950,6 +728,7 @@ class Contacts(AnalysisBase):
         d = distance_array(grA.positions, grB.positions)
 
         # select only the contacts that were formed in the reference state
+        # r, r0 are 1D array
         r, r0 = d[mask], r0[mask]
 
         if self.method == "cutoff":
@@ -959,16 +738,16 @@ class Contacts(AnalysisBase):
         else:
             raise Exception("Unknown method type, has to be 'cutoff' or 'best-hummer'")
 
-        self.timeseries.append((self._ts.frame , y.sum()/mask.sum(), mask.sum()))
+        cm = np.zeros((grA.positions.shape[0], grB.positions.shape[0]))
+        cm[mask] = y
+        self.contact_matrix.append(cm)
+        self.timeseries.append((self._ts.frame , float(y.sum())/mask.sum(), mask.sum()))
 
     def _conclude(self):
         """Finalise the timeseries you've gathered.
 
         Called at the end of the run() method to finish everything up.
         """
-        # results to numpy array
-        self.timeseries = np.array(self.timeseries)
-
         # write output
         if not self.outfile: return
         with open(self.outfile, "w") as f:
@@ -976,3 +755,105 @@ class Contacts(AnalysisBase):
             f.write("# frame  q1  n1\n")
             for frame, q1, n1 in self.timeseries:
                 f.write("{frame:4d}  {q1:8.6f} {n1:5d}\n".format(**vars()))            
+
+    def qarray(self, d, out=None):
+        """Return distance array with True for contacts.
+
+        *d* is the matrix of distances. The method uses the value of
+        :attr:`ContactAnalysis1.radius` to determine if a ``distance < radius``
+        is considered a contact.
+
+        If *out* is supplied as a pre-allocated array of the correct
+        shape then it is filled instead of allocating a new one in
+        order to increase performance.
+
+        This method is typically only used internally.
+        """
+        if out:
+            out[:] = (d <= self.radius)
+        else:
+            out = (d <= self.radius)            
+        return out
+
+    def qN(self, q, out=None):
+        """Calculate native contacts relative to reference state.
+
+        *q* is the matrix of contacts (e.g. :attr:`~ContactAnalysis1.q`).
+
+        If *out* is supplied as a pre-allocated array of the correct
+        shape then it is filled instead of allocating a new one in
+        order to increase performance.
+
+        This method is typically only used internally.
+        """
+        if out:
+            np.logical_and(q, self.mask, out)
+        else:
+            out = np.logical_and(q, self.mask)
+        contacts = out.sum()
+        return contacts, float(contacts) / self.mask.sum()
+
+    def plot(self, filename=None, **kwargs):
+        """Plot q(t).
+
+        .. function:: ContactAnalysis1.plot([filename, ...])
+
+        If *filename* is supplied then the figure is also written to file (the
+        suffix determines the file type, e.g. pdf, png, eps, ...). All other
+        keyword arguments are passed on to :func:`pylab.plot`.
+        """
+        if not self.timeseries :
+            raise ValueError("No timeseries data; do 'Contacts.run()' first.")
+        x, y, _ = zip(*self.timeseries)
+
+        import matplotlib.pyplot as plt
+        kwargs.setdefault('color', 'black')
+        kwargs.setdefault('linewidth', 2)       
+
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+        ax.plot(x, y, **kwargs)
+        ax.set_xlabel(r"frame number $t$")
+        ax.set_ylabel(r"contacts $q_1$")
+
+        if filename:
+            fig.savefig(filename)            
+        else:
+            fig.show()
+
+
+    def plot_qavg(self, filename=None, **kwargs):
+        """Plot :attr:`Contacts.qavg`, the matrix of average contacts.
+
+        .. function:: Contacts.plot_qavg([filename, ...])
+
+        If *filename* is supplied then the figure is also written to file (the
+        suffix determines the file type, e.g. pdf, png, eps, ...). All other
+        keyword arguments are passed on to :func:`pylab.imshow`.
+        """
+        if not self.contact_matrix :
+            raise ValueError("No timeseries data; do 'Contacts.run()' first.")
+        # collapse on the time-axis
+        data = np.array(self.contact_matrix)
+        data = data.mean(axis=0)
+
+        import matplotlib.pyplot as plt
+        import matplotlib.cm as cm
+
+        kwargs['origin'] = 'lower'
+        kwargs.setdefault('aspect', 'equal')
+        kwargs.setdefault('interpolation', 'nearest')
+        kwargs.setdefault('vmin', 0)
+        kwargs.setdefault('vmax', 1)
+        kwargs.setdefault('cmap', cm.hot)
+
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+        cax = ax.imshow(data, **kwargs)
+
+        cbar = fig.colorbar(cax)
+
+        if filename:
+            fig.savefig(filename)            
+        else: 
+            fig.show()
