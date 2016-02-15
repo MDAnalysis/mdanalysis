@@ -71,7 +71,7 @@ class TestContactAnalysis1(TestCase):
         """test_startframe: TestContactAnalysis1: start frame set to 0 (resolution of Issue #624)"""
         with tempdir.in_tempdir():
             CA1 = self._run_ContactAnalysis1()
-            self.assertEqual(CA1.timeseries.shape[0], self.universe.trajectory.n_frames)
+            self.assertEqual(len(CA1.timeseries), self.universe.trajectory.n_frames)
 
     def test_end_zero(self):
         """test_end_zero: TestContactAnalysis1: stop frame 0 is not ignored"""
@@ -84,7 +84,7 @@ class TestContactAnalysis1(TestCase):
         with tempdir.in_tempdir():
             CA1 = self._run_ContactAnalysis1(start=start, stop=stop, step=step)
             frames = np.arange(self.universe.trajectory.n_frames)[start:stop:step]
-            self.assertEqual(CA1.timeseries.shape[0], len(frames))
+            self.assertEqual(len(CA1.timeseries), len(frames))
 
 
     def test_math_folded(self):
@@ -144,9 +144,9 @@ class TestContactAnalysis1(TestCase):
         q = MDAnalysis.analysis.contacts.Contacts(u, selection=(sel, sel), refgroup=(grF, grF), method="best-hummer")
         q.run()
         
-        results = zip(*MDAnalysis.analysis.contacts.calculate_contacts(f, u, sel, sel))[1]
-        print(q.timeseries[:,1], results)
-        assert_almost_equal(q.timeseries[:,1], results)
+        results = zip(*MDAnalysis.analysis.contacts.best_hummer_q(f, u, sel, sel))[1]
+
+        assert_almost_equal(zip(*q.timeseries)[1], results)
 
     def test_villin_unfolded(self):
 
@@ -161,5 +161,5 @@ class TestContactAnalysis1(TestCase):
         q = MDAnalysis.analysis.contacts.Contacts(u, selection=(sel, sel), refgroup=(grF, grF), method="best-hummer")
         q.run()
         
-        results = zip(*MDAnalysis.analysis.contacts.calculate_contacts(f, u, sel, sel)) [1]
-        assert_almost_equal(q.timeseries[:,1], results)        
+        results = zip(*MDAnalysis.analysis.contacts.best_hummer_q(f, u, sel, sel)) [1]
+        assert_almost_equal(zip(*q.timeseries)[1], results)        
