@@ -719,6 +719,22 @@ class TestGetWritterFor(TestCase):
             assert_raises(TypeError, mda.coordinates.core.get_writer_for,
                           filename=fn)
 
+    def test_non_sring_filename(self):
+        """Does ``get_writer_for`` fails with non string filename, no format
+        """
+        assert_raises(ValueError, mda.coordinates.core.get_writer_for,
+                      filename=StringIO(), format=None)
+
+    def test_multiframe_failure(self):
+        """Does ``get_writer_for`` fails with invalid format and multiframe
+        not None
+        """
+        assert_raises(TypeError, mda.coordinates.core.get_writer_for,
+                      filename=None, format='UNK', multiframe=True)
+        assert_raises(TypeError, mda.coordinates.core.get_writer_for,
+                      filename=None, format='UNK', multiframe=False)
+
+
 
 class TestBlocksOf(object):
     def test_blocks_of_1(self):
