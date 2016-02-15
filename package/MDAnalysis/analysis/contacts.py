@@ -536,7 +536,7 @@ class ContactAnalysis1(object):
             savefig(filename)
 
 
-def calculate_contacts(ref, u, selA, selB, radius=4.5, beta=5.0, lambda_constant=1.8):
+def best_hummer_q(ref, u, selA, selB, radius=4.5, beta=5.0, lambda_constant=1.8):
     """Calculate fraction of native contacts (Q) between two groups 
     defined by selection strings selA and selB. 
 
@@ -653,7 +653,7 @@ def load(self, filename):
 
 class Contacts(AnalysisBase):
     """Calculate Best-Hummer fraction of native contacts (Q) from a atrajectory"""
-    def __init__(self, u, selections, refgroup, method="cutoff", radius=4.5, outfile=None,
+    def __init__(self, u, selection, refgroup, method="cutoff", radius=4.5, outfile=None,
                  start=None, stop=None, step=None, **kwargs):
         """Calculate the persistence length for polymer chains
 
@@ -661,7 +661,7 @@ class Contacts(AnalysisBase):
         ----------
         u: Universe
             trajectory
-        selections: tuple(string, string)
+        selection: tuple(string, string)
             two contacting groups that change over time
         refgroup: tuple(AtomGroup, AtomGroup)
             two contacting groups in their reference conformation
@@ -707,8 +707,8 @@ class Contacts(AnalysisBase):
                            stop=stop,
                            step=step)
 
-        self.selections = selections
-        grA, grB = u.select_atoms(selections[0]), u.select_atoms(selections[1])
+        self.selection = selection
+        grA, grB = u.select_atoms(selection[0]), u.select_atoms(selection[1])
         self.grA, self.grB = grA, grB        
         refA, refB = refgroup
 
