@@ -33,26 +33,28 @@ from Ensemble import Ensemble
 
 
 class EstimatorML:
-    ''' 
-    Standard maximum likelihood estimator of the covariance matrix. 
+    """
+    Standard maximum likelihood estimator of the covariance matrix.
     The generated object acts as a functor.
-    '''
+    """
     def calculate(self, coordinates, reference_coordinates=None):
-        '''
-	**Arguments:**
+        """
+	Parameters
+	----------
 
-        `coordinates` : numpy.array
+        coordinates : numpy.array
             Flattened array of coordiantes
-        
-	`reference_coordinates` : numpy.array 
-            Optional reference to use instead of mean
 
-	**Returns:**
+		reference_coordinates : numpy.array
+    		Optional reference to use instead of mean
 
-	`cov_mat` : numpy.array
+	Returns
+	-------
+
+		cov_mat : numpy.array
             Estimate of  covariance matrix
-	
-        '''
+
+        """
 
         if reference_coordinates != None:
 
@@ -74,48 +76,51 @@ class EstimatorML:
     __call__ = calculate
         
 class EstimatorShrinkage:
-    ''' 
+    """
     Shrinkage estimator of the covariance matrix using the method described in
 
-    Improved Estimation of the Covariance Matrix of Stock Returns With an Application 
+    Improved Estimation of the Covariance Matrix of Stock Returns With an Application
     to Portfolio Selection. Ledoit, O.; Wolf, M., Journal of Empirical Finance, 10, 5, 2003
 
     This implementation is based on the matlab code made available by Olivier Ledoit on
     his website:
 
     http://www.ledoit.net/ole2_abstract.htm
-        
+
     The generated object acts as a functor.
 
-    '''
+    """
 
     def __init__(self, shrinkage_parameter=None):
-        '''
+        """
         Constructor.
-        
-        **Arguments:**
 
-        `shrinkage_parameter` : float
+        Parameters
+		----------
+
+        shrinkage_parameter : float
             Makes it possible to set the shrinkage parameter explicitly, rather than having it estimated automatically.
-        '''
+        """
         self.shrinkage_parameter = shrinkage_parameter
 
 
     def calculate(self, coordinates, reference_coordinates=None):
-        '''
-        
-        **Arguments:**
-        
-        `coordinates` : numpy.array
-            Flattened array of coordiantes
-        `reference_coordinates`: numpy.array
-            Optional reference to use instead of mean
-            
-        **Returns**:
+        """
 
-        `cov_mat` : nump.array
+        Parameters
+		----------
+
+        coordinates : numpy.array
+            Flattened array of coordinates
+        reference_coordinates: numpy.array
+            Optional reference to use instead of mean
+
+        Returns
+		--------
+
+        cov_mat : nump.array
             Covariance matrix
-        '''
+        """
 
         x = coordinates
         t = x.shape[0]
@@ -179,29 +184,31 @@ def covariance_matrix(ensemble,
                       start=0,
                       end=None):
 
-    '''
+    """
     Calculates (optionally mass weighted) covariance matrix
 
-    **Arguments:**
-    
-    `ensemble` : Ensemble object
+    Parameters
+	----------
+
+    ensemble : Ensemble object
         The structural ensemble
-    
-    `estimator` : MLEstimator or ShrinkageEstimator object
+
+    estimator : MLEstimator or ShrinkageEstimator object
         Which estimator type to use (maximum likelihood, shrinkage). This object is required to have a __call__ function defined.
-    
-    `mass_weighted` : bool
+
+    mass_weighted : bool
         Whether to do a mass-weighted analysis
-    
-    `reference` : MDAnalysis.Universe object
+
+    reference : MDAnalysis.Universe object
         Use the distances to a specific reference structure rather than the distance to the mean.
-        
-    **Returns:**
+
+    Returns
+	-------
 
     cov_mat : numpy.array
         Covariance matrix
 
-    '''
+    """
 
     # Extract coordinates from ensemble
     # coordinates = ensemble.get_coordinates(start=start, end=end)
