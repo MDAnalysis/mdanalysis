@@ -359,7 +359,7 @@ def alignto(mobile, reference, select="all", mass_weighted=False,
     ref_coordinates = ref_atoms.coordinates() - ref_com
     mobile_coordinates = mobile_atoms.coordinates() - mobile_com
 
-    old_rmsd = rms.rmsd(mobile_atoms.coordinates(), ref_atoms.coordinates())
+    old_rmsd = rms.rmsd(mobile_coordinates, ref_coordinates)
 
     R, new_rmsd = rotation_matrix(mobile_coordinates, ref_coordinates, weights=weights)
 
