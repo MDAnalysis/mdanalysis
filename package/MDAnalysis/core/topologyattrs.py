@@ -384,7 +384,7 @@ class Masses(AtomAttr):
         return masses
 
     def get_segments(self, sg):
-        segatoms = self.top.tt.s2a_2d(sg._ix)
+        segatoms = self.top.tt.segments2atoms_2d(sg._ix)
 
         if isinstance(sg._ix, int):
             # for a single segment
@@ -656,7 +656,7 @@ class Charges(AtomAttr):
     def get_segments(self, sg):
         charges = np.empty(len(sg))
 
-        segatoms = self.top.tt.s2a_2d(sg._ix)
+        segatoms = self.top.tt.segments2atoms_2d(sg._ix)
 
         for i, row in enumerate(segatoms):
             charges[i] = self.values[row].sum()
