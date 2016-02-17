@@ -634,6 +634,16 @@ class TestAtomGroup(TestCase):
         for at in [ag[0], ag[2]]:
             assert_equal(at in ag2, True)
 
+    def test_boolean_indexing_2(self):
+        # index an array with a sequence of bools
+        # issue #282
+        sel = [True, False, True]
+        ag = self.universe.atoms[10:13]
+        ag2 = ag[sel]
+        assert_equal(len(ag2), 2)
+        for at in [ag[0], ag[2]]:
+            assert_equal(at in ag2, True)
+
     def test_bool_IE(self):
         # indexing with empty list doesn't run foul of bool check
         sel = []
