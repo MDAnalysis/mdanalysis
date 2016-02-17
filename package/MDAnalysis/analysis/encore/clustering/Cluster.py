@@ -1,4 +1,4 @@
-e Cluster.py --- classes to handle results of clustering runs
+# Cluster.py --- classes to handle results of clustering runs
 # Copyright (C) 2014 Wouter Boomsma, Matteo Tiberti
 #
 # This program is free software: you can redistribute it and/or modify
@@ -18,8 +18,8 @@ e Cluster.py --- classes to handle results of clustering runs
 Ensemble representation --- :mod:`MDAnalysis.analysis.ensemble.ensemble`
 =====================================================================
 
-The module contains the Cluster and ClusterCollection classes which are designed
-to store results from clustering algorithms. 
+The module contains the Cluster and ClusterCollection classes which are
+designed to store results from clustering algorithms.
 """
 
 import numpy as np
@@ -36,8 +36,9 @@ class Cluster:
 			Cluster ID number. Useful for the ClustersCollection class
 	
 		metadata : iterable
-			dict of lists, containing metadata for the cluster elements. The iterable
-			must return the same number of elements as those that belong to the cluster.
+			dict of lists, containing metadata for the cluster elements. The
+			iterable must return the same number of elements as those that
+			belong to the cluster.
 	
 	   size : int
 			number of elements.
@@ -51,7 +52,7 @@ class Cluster:
 
     def __init__(self, elem_list=None, centroid=None, idn=None, metadata=None):
         """Class constructor. If elem_list is None, an empty cluster is created
-	    and the remaning arguments ignored.
+	    and the remaining arguments ignored.
 
 	Parameters
 	----------
@@ -144,8 +145,8 @@ class ClustersCollection():
 				clustering results. See the previous description for details
 	
 			metadata : {str:list, str:list,...} or None
-				metadata for the data elements. The list must be of the same size as the
-				elements array, with one value per element.
+				metadata for the data elements. The list must be of the same
+				size as the elements array, with one value per element.
 		
 		"""
         idn = 0
