@@ -49,14 +49,14 @@ class TestTransTable(object):
                  np.array([2, 3, 2]),
                  np.array([2, 2, 2])]
         ):
-            assert_array_equal(self.tt.a2r(aix), rix)
+            assert_array_equal(self.tt.atoms2residues(aix), rix)
 
     def test_r2a_1d(self):
         for rix, aix in zip(
                 [[0, 1], [1, 1], [3, 1]],
                 [[0, 1, 4, 5, 8], [4, 5, 8, 4, 5, 8], [6, 7, 4, 5, 8]]
         ):
-            assert_array_equal(self.tt.r2a_1d(rix), aix)
+            assert_array_equal(self.tt.residues2atoms_1d(rix), aix)
 
     def test_r2a_2d(self):
         for rix, aix in zip(
@@ -67,7 +67,7 @@ class TestTransTable(object):
                  [[4, 5, 8], [4, 5, 8]],
                  [[6, 7], [4, 5, 8]]]
         ):
-            answer = self.tt.r2a_2d(rix)
+            answer = self.tt.residues2atoms_2d(rix)
             for a1, a2 in zip(answer, aix):
                 assert_array_equal(a1, a2)
 
@@ -80,7 +80,7 @@ class TestTransTable(object):
                  np.array([1, 1, 0]),
                  np.array([1, 1, 1])]
         ):
-            assert_array_equal(self.tt.r2s(rix), six)
+            assert_array_equal(self.tt.residues2segments(rix), six)
 
     def test_s2r_1d(self):
         for six, rix in zip(
@@ -91,7 +91,7 @@ class TestTransTable(object):
                  [1, 2, 0, 3],
                  [1, 2, 1, 2]]
                 ):
-            assert_array_equal(self.tt.s2r_1d(six), rix)
+            assert_array_equal(self.tt.segments2residues_1d(six), rix)
 
     def test_s2r_2d(self):
         for six, rix in zip(
@@ -102,7 +102,7 @@ class TestTransTable(object):
                  [[1, 2], [0, 3]],
                  [[1, 2], [1, 2]]]
         ):
-            answer = self.tt.s2r_2d(six)
+            answer = self.tt.segments2residues_2d(six)
             for a1, a2 in zip(answer, rix):
                 assert_array_equal(a1, a2)
 
@@ -115,7 +115,7 @@ class TestTransTable(object):
                  [4, 5, 8, 2, 3, 9, 0, 1, 6, 7],
                  [4, 5, 8, 2, 3, 9, 4, 5, 8, 2, 3, 9]],
         ):
-            assert_array_equal(self.tt.s2a_1d(six), aix)
+            assert_array_equal(self.tt.segments2atoms_1d(six), aix)
 
     def test_s2a_2d(self):
         for six, aix in zip(
@@ -126,6 +126,6 @@ class TestTransTable(object):
                  [[4, 5, 8, 2, 3, 9], [0, 1, 6, 7]],
                  [[4, 5, 8, 2, 3, 9], [4, 5, 8, 2, 3, 9]]],
         ):
-            answer = self.tt.s2a_2d(six)
+            answer = self.tt.segments2atoms_2d(six)
             for a1, a2 in zip(answer, aix):
                 assert_array_equal(a1, a2)
